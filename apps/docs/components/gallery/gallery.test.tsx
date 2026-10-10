@@ -3,6 +3,8 @@ import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { describe, expect, test } from 'vite-plus/test'
 import { page } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
+import { PageContents } from '../page-contents.tsx'
+import { componentGroups } from '../site-sections.ts'
 import { Gallery } from './gallery.tsx'
 
 const groups = [
@@ -87,5 +89,28 @@ describe('Gallery', () => {
     const { container } = await renderGallery()
     await expect.element(page.getByRole('link', { name: 'Button' })).toBeInTheDocument()
     await expectNoA11yViolations(container)
+  })
+})
+
+describe('the Components index', () => {
+  test('no two links with different targets share a name (2.4.4)', async () => {
+    const index = componentGroups.map((group) => ({
+      id: group.id,
+      label: group.label,
+      items: group.pages.map((entry) => ({ ...entry })),
+    }))
+    const { container } = await render(
+      <KvirnProvider>
+        <PageContents sections={index} />
+        <Gallery groups={index} />
+      </KvirnProvider>,
+    )
+    const targets = new Map<string, Set<string>>()
+    for (const link of container.querySelectorAll('a')) {
+      const name = (link.textContent ?? '').trim()
+      targets.set(name, (targets.get(name) ?? new Set()).add(link.getAttribute('href') ?? ''))
+    }
+    const clashes = [...targets].filter(([, hrefs]) => hrefs.size > 1).map(([name]) => name)
+    expect(clashes).toEqual([])
   })
 })

@@ -119,7 +119,7 @@ export const messages = {
         actions: 'Actions',
         content: 'Content',
         layout: 'Layout',
-        navigation: 'Navigation',
+        navigation: 'Wayfinding',
         forms: 'Forms',
         choiceAndOverlays: 'Choice and overlays',
         dataAndBehaviour: 'Data and behaviour',

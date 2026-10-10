@@ -49,9 +49,11 @@ Order: G1 first; G2 and G4 in parallel; G3 after G2; G5 and G6 after G1 and G2; 
 
 ## Testing strategy
 
-Behaviour and accessibility only (rule 13), once, in the cheapest layer: per gallery, one `h1`, one `h2` per group with its id, list roles and item count from data, one link per card with a name unique out of context, the contents list resolves, previews hidden from AT, axe clean in four themes. No CSS or layout tests.
+Behaviour and accessibility only (rule 13), once, in the cheapest layer: per gallery, one `h1`, one `h2` per group with its id, list roles and item count from data, one link per card with a name unique out of context, the contents list resolves, previews hidden from AT, no two links with different targets share a name, axe in the docs tests. Four-theme contrast is `theme:check`: the gallery uses only existing measured pairs, and `gallery.css` sets no colour pair of its own. No CSS or layout tests.
 
 ## Risks & open questions
+
+- **Review round 1 (accessibility-reviewer: CHANGES REQUIRED, 2 blocking; fixed).** (1) The Components group "Navigation" and the component Navigation made two links of one name with different targets; the group is now "Wayfinding" (sidebar and "On this page"), and a page-level test asserts that no two links with different hrefs share a name. (2) A preview test repeated the gallery test and is deleted. Also: the Content types index shows no "On this page" list (one group, one entry, an extra Tab stop); the group stays an `h2` with `h3` cards so the three galleries share one shape (spec 3.2 said `h2` per card for a gallery without groups: amended); the figure's alt now says only what is drawn, the facts stay in the paragraph; `gallery.css` is imported globally by `layout.tsx`, not per page.
 
 - **Server components and compound parts.** A docs page that is a server component must use the flat part names (`CardRoot`, not `Card.Root`): `Card` comes from a `'use client'` module, so `Card.Root` is `undefined` across the boundary and the page answers 500 in `next dev`, while a browser-mode test (no boundary) passes. Found on G2; G3, G5 and G6 take the same care.
 - **Same tree as 0099.** Both plans edit `site-sections.ts`, `docs.css` and `messages/en.ts`; one concern per PR, so 0099 lands first.

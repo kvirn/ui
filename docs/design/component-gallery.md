@@ -69,7 +69,7 @@
 
 **Missing (docs-app only, not a library component):** a `GalleryPreview` registry (slug → SVG) and the drawing primitives, in `apps/docs/components/gallery/`. `List` is not needed (`Columns as="ul"` is the list).
 
-**CSS:** docs-only classes in a new `apps/docs/app/gallery.css` (imported by the three index pages), semantic tokens only, nothing in `packages/theme`, **no new token**:
+**CSS:** docs-only classes in a new `apps/docs/app/gallery.css` (imported globally by `app/layout.tsx`, because the item pages use the wireframe too), semantic tokens only, nothing in `packages/theme`, **no new token**:
 
 | Class                                                                | Rule                                                                                                                                                                                                         |
 | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -153,7 +153,7 @@ Patterns: the same, with its groups. Content types: `h1`, lead, contents listing
 ## 7. Accessibility annotations
 
 - **Landmarks:** the shell's `banner`, sidebar `nav`, `main`, `contentinfo`; the contents `nav` named by its heading. No `section` per group, no landmark per card.
-- **Headings:** h1 → h2 per group → h3 per card (Content types: h1 → h2 per card). No skipped level; group ids stable.
+- **Headings:** h1 → h2 per group → h3 per card (Content types: one group, so one `h2` and `h3` cards like the others, and no "On this page" list for a single entry). No skipped level; group ids stable.
 - **Lists:** `ul role="list"` (Columns), `li` per card (1.3.1).
 - **Link names (2.4.4, 2.5.3):** the visible name only, unique on each page (component, pattern and type names don't repeat). The picture is `aria-hidden`; the job line is outside the link, reached in reading order after it.
 - **Tab stops:** skip link → shell → sidebar → contents links → one per card, in group then alphabetical order. Nothing else is focusable; no focus moves; nothing announced.

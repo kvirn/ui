@@ -24,15 +24,13 @@ describe('Content types index', () => {
       .toBeInTheDocument()
   })
 
-  test('the four content types are cards, each with one link named by the type', async () => {
+  test('lists the four content types, each linking to its page', async () => {
     await renderIndex()
     expect(contentTypePages).toHaveLength(4)
     for (const contentType of contentTypePages) {
-      const card = page.getByRole('listitem').filter({ hasText: contentType.summary })
-      const links = card.getByRole('link')
-      expect(links.elements()).toHaveLength(1)
-      await expect.element(links).toHaveAccessibleName(contentType.label)
-      await expect.element(links).toHaveAttribute('href', contentType.href)
+      await expect
+        .element(page.getByRole('link', { name: contentType.label, exact: true }))
+        .toHaveAttribute('href', contentType.href)
     }
   })
 

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Gallery } from '../../components/gallery/gallery.tsx'
 import { contentTypePreviews } from '../../components/gallery/previews/content-types.tsx'
-import { PageContents } from '../../components/page-contents.tsx'
 import { PageHeading } from '../../components/page-heading.tsx'
 import { contentTypeGroups } from '../../components/site-sections.ts'
 import { messages } from '../../messages/en.ts'
@@ -28,7 +27,6 @@ export default function ContentTypesIndexPage() {
     <>
       <PageHeading>{text.title}</PageHeading>
       <p className="kv-lead">{text.lead}</p>
-      <PageContents sections={groups} />
       <Gallery groups={groups} />
     </>
   )
