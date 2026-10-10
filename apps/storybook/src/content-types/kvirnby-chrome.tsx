@@ -14,9 +14,9 @@ import {
 } from '@kvirn-ui/react'
 import { expect, within } from 'storybook/test'
 
-// The header, footer and docs header the content-type stories share, so a page reads
-// `<PageFrame.Root><KvirnbyHeader /> … <KvirnbyFooter /></PageFrame.Root>`. The Site header and Site
-// footer stories spell the parts out; this is the same composition, written once. Story-only.
+// The header, footer and docs header the shell decorator (shell.tsx) puts around every
+// content-type story. The Site header and Site footer stories spell the parts out; this is the
+// same composition, written once. Story-only.
 
 export function KvirnbyHeader({ current }: { current?: 'page' | undefined }) {
   return (

@@ -1,4 +1,3 @@
-import { en } from '@kvirn-ui/i18n/en'
 import { NavTiles, PageFrame, PageTools } from '@kvirn-ui/patterns'
 import { kvirnbySquare } from '@kvirn-ui/patterns/fixtures'
 import {
@@ -6,7 +5,6 @@ import {
   Card,
   Container,
   Heading,
-  KvirnProvider,
   Link,
   List,
   Stack,
@@ -15,7 +13,8 @@ import {
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expectNoHorizontalOverflow } from '../components/theme-story-assertions.ts'
 import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/patterns-story-support.tsx'
-import { KvirnbyFooter, KvirnbyHeader, expectPageOutline } from './kvirnby-chrome.tsx'
+import { expectPageOutline } from './kvirnby-chrome.tsx'
+import { withShell } from './shell.tsx'
 // Content types/Subpage: a whole page in the site chrome (docs/design/storybook-patterns.md section 7).
 // Story-only: the page is literal JSX of the patterns, which an adopter copies. No data objects.
 
@@ -30,8 +29,10 @@ const meta = {
   title: 'Content types/Subpage',
   component: PageFrame.Root,
   globals: { locale: 'en' },
+  decorators: [withShell],
   parameters: {
     layout: 'fullscreen',
+    shell: { header: 'kvirnby' },
     docs: { description: { component: description } },
     viewport: { options: chromeViewports },
   },
@@ -44,128 +45,122 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <KvirnProvider locale="en" messages={en}>
-      <PageFrame.Root>
-        <KvirnbyHeader />
-        <Container>
-          <Breadcrumb.Root label="You are here">
-            <Breadcrumb.List>
-              <Breadcrumb.Item>
-                <Breadcrumb.Link href="#start">Start</Breadcrumb.Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <Breadcrumb.Current>Children and education</Breadcrumb.Current>
-              </Breadcrumb.Item>
-            </Breadcrumb.List>
-          </Breadcrumb.Root>
-        </Container>
-        <PageFrame.Main>
-          <Stack className="kv-stack--gap-8">
-            <Stack className="kv-stack--gap-4">
-              <Heading as="h1">Children and education</Heading>
-              <p className="kv-lead">
-                Preschool, school and adult education in Kvirnby. Find where to apply, what it costs
-                and who to ask.
-              </p>
-            </Stack>
-            <NavTiles.Root>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#preschool">Preschool and childcare</NavTiles.Heading>
-                <NavTiles.Text>Apply for a place, fees and what the day looks like.</NavTiles.Text>
-              </NavTiles.Tile>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#primary">Primary school</NavTiles.Heading>
-                <NavTiles.Text>Choosing a school, school meals and school transport.</NavTiles.Text>
-              </NavTiles.Tile>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#upper-secondary">Upper secondary school</NavTiles.Heading>
-                <NavTiles.Text>Programmes, applying and student support.</NavTiles.Text>
-              </NavTiles.Tile>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#after-school">After-school care</NavTiles.Heading>
-                <NavTiles.Text>Places, fees and opening hours.</NavTiles.Text>
-              </NavTiles.Tile>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#adult">Adult education</NavTiles.Heading>
-                <NavTiles.Text>
-                  Courses, Swedish for immigrants and vocational training.
-                </NavTiles.Text>
-              </NavTiles.Tile>
-            </NavTiles.Root>
-            <Stack className="kv-stack--gap-4">
-              <Heading as="h2" size="heading-3">
-                Shortcuts
-              </Heading>
-              <List.Root className="kv-list--gap-2">
-                <List.Item>
-                  <Link.Root href="#fees">Fees for preschool and after-school care</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#term-dates">Term dates</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#school-meals">School meals and menus</Link.Root>
-                </List.Item>
-              </List.Root>
-            </Stack>
-            <Stack>
-              <Heading as="h2" size="heading-2">
-                In focus
-              </Heading>
-              <Card.Root as="article">
-                <Card.Body className="kv-prose">
-                  <Heading as="h3" size="heading-3">
-                    <Link.Root href="#pool">The new preschool opens in January</Link.Root>
-                  </Heading>
-                  <p>
-                    Forty new places in North Kvirnby. See how the queue and the placement work.
-                  </p>
-                </Card.Body>
-                <Card.Footer className="kv-card-footer--padding-none">
-                  <img src={kvirnbySquare} alt="" />
-                </Card.Footer>
-              </Card.Root>
-            </Stack>
-            <Card.Root>
-              <Card.Body className="kv-prose">
-                <Heading as="h2" size="heading-3">
-                  Contact us
-                </Heading>
-                <p>Preschool office</p>
-                <SummaryList.Root>
-                  <SummaryList.Row>
-                    <SummaryList.Key>Phone</SummaryList.Key>
-                    <SummaryList.Value>
-                      <Link.Root href="tel:+46000000001">0000-00 00 01</Link.Root>
-                    </SummaryList.Value>
-                  </SummaryList.Row>
-                  <SummaryList.Row>
-                    <SummaryList.Key>Email</SummaryList.Key>
-                    <SummaryList.Value>
-                      <Link.Root href="mailto:preschool@kvirnby.example">
-                        preschool@kvirnby.example
-                      </Link.Root>
-                    </SummaryList.Value>
-                  </SummaryList.Row>
-                  <SummaryList.Row>
-                    <SummaryList.Key>Phone hours</SummaryList.Key>
-                    <SummaryList.Value>Monday to Thursday 9.00–11.00</SummaryList.Value>
-                  </SummaryList.Row>
-                </SummaryList.Root>
-              </Card.Body>
-            </Card.Root>
-            <PageTools.Root>
-              <p className="kv-page-tools-updated">
-                Last updated: <time dateTime="2026-10-02">2 October 2026</time>
-              </p>
-              <PageTools.CopyLink>Copy link</PageTools.CopyLink>
-              <PageTools.Print>Print</PageTools.Print>
-            </PageTools.Root>
+    <>
+      <Container>
+        <Breadcrumb.Root label="You are here">
+          <Breadcrumb.List>
+            <Breadcrumb.Item>
+              <Breadcrumb.Link href="#start">Start</Breadcrumb.Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Breadcrumb.Current>Children and education</Breadcrumb.Current>
+            </Breadcrumb.Item>
+          </Breadcrumb.List>
+        </Breadcrumb.Root>
+      </Container>
+      <PageFrame.Main>
+        <Stack className="kv-stack--gap-8">
+          <Stack className="kv-stack--gap-4">
+            <Heading as="h1">Children and education</Heading>
+            <p className="kv-lead">
+              Preschool, school and adult education in Kvirnby. Find where to apply, what it costs
+              and who to ask.
+            </p>
           </Stack>
-        </PageFrame.Main>
-        <KvirnbyFooter />
-      </PageFrame.Root>
-    </KvirnProvider>
+          <NavTiles.Root>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#preschool">Preschool and childcare</NavTiles.Heading>
+              <NavTiles.Text>Apply for a place, fees and what the day looks like.</NavTiles.Text>
+            </NavTiles.Tile>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#primary">Primary school</NavTiles.Heading>
+              <NavTiles.Text>Choosing a school, school meals and school transport.</NavTiles.Text>
+            </NavTiles.Tile>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#upper-secondary">Upper secondary school</NavTiles.Heading>
+              <NavTiles.Text>Programmes, applying and student support.</NavTiles.Text>
+            </NavTiles.Tile>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#after-school">After-school care</NavTiles.Heading>
+              <NavTiles.Text>Places, fees and opening hours.</NavTiles.Text>
+            </NavTiles.Tile>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#adult">Adult education</NavTiles.Heading>
+              <NavTiles.Text>
+                Courses, Swedish for immigrants and vocational training.
+              </NavTiles.Text>
+            </NavTiles.Tile>
+          </NavTiles.Root>
+          <Stack className="kv-stack--gap-4">
+            <Heading as="h2" size="heading-3">
+              Shortcuts
+            </Heading>
+            <List.Root className="kv-list--gap-2">
+              <List.Item>
+                <Link.Root href="#fees">Fees for preschool and after-school care</Link.Root>
+              </List.Item>
+              <List.Item>
+                <Link.Root href="#term-dates">Term dates</Link.Root>
+              </List.Item>
+              <List.Item>
+                <Link.Root href="#school-meals">School meals and menus</Link.Root>
+              </List.Item>
+            </List.Root>
+          </Stack>
+          <Stack>
+            <Heading as="h2" size="heading-2">
+              In focus
+            </Heading>
+            <Card.Root as="article">
+              <Card.Body className="kv-prose">
+                <Heading as="h3" size="heading-3">
+                  <Link.Root href="#pool">The new preschool opens in January</Link.Root>
+                </Heading>
+                <p>Forty new places in North Kvirnby. See how the queue and the placement work.</p>
+              </Card.Body>
+              <Card.Footer className="kv-card-footer--padding-none">
+                <img src={kvirnbySquare} alt="" />
+              </Card.Footer>
+            </Card.Root>
+          </Stack>
+          <Card.Root>
+            <Card.Body className="kv-prose">
+              <Heading as="h2" size="heading-3">
+                Contact us
+              </Heading>
+              <p>Preschool office</p>
+              <SummaryList.Root>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="tel:+46000000001">0000-00 00 01</Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Email</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="mailto:preschool@kvirnby.example">
+                      preschool@kvirnby.example
+                    </Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone hours</SummaryList.Key>
+                  <SummaryList.Value>Monday to Thursday 9.00–11.00</SummaryList.Value>
+                </SummaryList.Row>
+              </SummaryList.Root>
+            </Card.Body>
+          </Card.Root>
+          <PageTools.Root>
+            <p className="kv-page-tools-updated">
+              Last updated: <time dateTime="2026-10-02">2 October 2026</time>
+            </p>
+            <PageTools.CopyLink>Copy link</PageTools.CopyLink>
+            <PageTools.Print>Print</PageTools.Print>
+          </PageTools.Root>
+        </Stack>
+      </PageFrame.Main>
+    </>
   ),
   play: async ({ canvasElement }) => {
     await expectPageOutline(canvasElement)
@@ -176,118 +171,112 @@ export const Default: Story = {
 export const ThreeChildren: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <KvirnProvider locale="en" messages={en}>
-      <PageFrame.Root>
-        <KvirnbyHeader />
-        <Container>
-          <Breadcrumb.Root label="You are here">
-            <Breadcrumb.List>
-              <Breadcrumb.Item>
-                <Breadcrumb.Link href="#start">Start</Breadcrumb.Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <Breadcrumb.Current>Children and education</Breadcrumb.Current>
-              </Breadcrumb.Item>
-            </Breadcrumb.List>
-          </Breadcrumb.Root>
-        </Container>
-        <PageFrame.Main>
-          <Stack className="kv-stack--gap-8">
-            <Stack className="kv-stack--gap-4">
-              <Heading as="h1">Children and education</Heading>
-              <p className="kv-lead">
-                Preschool, school and adult education in Kvirnby. Find where to apply, what it costs
-                and who to ask.
-              </p>
-            </Stack>
-            <NavTiles.Root>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#preschool">Preschool and childcare</NavTiles.Heading>
-                <NavTiles.Text>Apply for a place, fees and what the day looks like.</NavTiles.Text>
-              </NavTiles.Tile>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#primary">Primary school</NavTiles.Heading>
-                <NavTiles.Text>Choosing a school, school meals and school transport.</NavTiles.Text>
-              </NavTiles.Tile>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#upper-secondary">Upper secondary school</NavTiles.Heading>
-                <NavTiles.Text>Programmes, applying and student support.</NavTiles.Text>
-              </NavTiles.Tile>
-            </NavTiles.Root>
-            <Stack className="kv-stack--gap-4">
-              <Heading as="h2" size="heading-3">
-                Shortcuts
-              </Heading>
-              <List.Root className="kv-list--gap-2">
-                <List.Item>
-                  <Link.Root href="#fees">Fees for preschool and after-school care</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#term-dates">Term dates</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#school-meals">School meals and menus</Link.Root>
-                </List.Item>
-              </List.Root>
-            </Stack>
-            <Stack>
-              <Heading as="h2" size="heading-2">
-                In focus
-              </Heading>
-              <Card.Root as="article">
-                <Card.Body className="kv-prose">
-                  <Heading as="h3" size="heading-3">
-                    <Link.Root href="#pool">The new preschool opens in January</Link.Root>
-                  </Heading>
-                  <p>
-                    Forty new places in North Kvirnby. See how the queue and the placement work.
-                  </p>
-                </Card.Body>
-                <Card.Footer className="kv-card-footer--padding-none">
-                  <img src={kvirnbySquare} alt="" />
-                </Card.Footer>
-              </Card.Root>
-            </Stack>
-            <Card.Root>
-              <Card.Body className="kv-prose">
-                <Heading as="h2" size="heading-3">
-                  Contact us
-                </Heading>
-                <p>Preschool office</p>
-                <SummaryList.Root>
-                  <SummaryList.Row>
-                    <SummaryList.Key>Phone</SummaryList.Key>
-                    <SummaryList.Value>
-                      <Link.Root href="tel:+46000000001">0000-00 00 01</Link.Root>
-                    </SummaryList.Value>
-                  </SummaryList.Row>
-                  <SummaryList.Row>
-                    <SummaryList.Key>Email</SummaryList.Key>
-                    <SummaryList.Value>
-                      <Link.Root href="mailto:preschool@kvirnby.example">
-                        preschool@kvirnby.example
-                      </Link.Root>
-                    </SummaryList.Value>
-                  </SummaryList.Row>
-                  <SummaryList.Row>
-                    <SummaryList.Key>Phone hours</SummaryList.Key>
-                    <SummaryList.Value>Monday to Thursday 9.00–11.00</SummaryList.Value>
-                  </SummaryList.Row>
-                </SummaryList.Root>
-              </Card.Body>
-            </Card.Root>
-            <PageTools.Root>
-              <p className="kv-page-tools-updated">
-                Last updated: <time dateTime="2026-10-02">2 October 2026</time>
-              </p>
-              <PageTools.CopyLink>Copy link</PageTools.CopyLink>
-              <PageTools.Print>Print</PageTools.Print>
-            </PageTools.Root>
+    <>
+      <Container>
+        <Breadcrumb.Root label="You are here">
+          <Breadcrumb.List>
+            <Breadcrumb.Item>
+              <Breadcrumb.Link href="#start">Start</Breadcrumb.Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Breadcrumb.Current>Children and education</Breadcrumb.Current>
+            </Breadcrumb.Item>
+          </Breadcrumb.List>
+        </Breadcrumb.Root>
+      </Container>
+      <PageFrame.Main>
+        <Stack className="kv-stack--gap-8">
+          <Stack className="kv-stack--gap-4">
+            <Heading as="h1">Children and education</Heading>
+            <p className="kv-lead">
+              Preschool, school and adult education in Kvirnby. Find where to apply, what it costs
+              and who to ask.
+            </p>
           </Stack>
-        </PageFrame.Main>
-        <KvirnbyFooter />
-      </PageFrame.Root>
-    </KvirnProvider>
+          <NavTiles.Root>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#preschool">Preschool and childcare</NavTiles.Heading>
+              <NavTiles.Text>Apply for a place, fees and what the day looks like.</NavTiles.Text>
+            </NavTiles.Tile>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#primary">Primary school</NavTiles.Heading>
+              <NavTiles.Text>Choosing a school, school meals and school transport.</NavTiles.Text>
+            </NavTiles.Tile>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#upper-secondary">Upper secondary school</NavTiles.Heading>
+              <NavTiles.Text>Programmes, applying and student support.</NavTiles.Text>
+            </NavTiles.Tile>
+          </NavTiles.Root>
+          <Stack className="kv-stack--gap-4">
+            <Heading as="h2" size="heading-3">
+              Shortcuts
+            </Heading>
+            <List.Root className="kv-list--gap-2">
+              <List.Item>
+                <Link.Root href="#fees">Fees for preschool and after-school care</Link.Root>
+              </List.Item>
+              <List.Item>
+                <Link.Root href="#term-dates">Term dates</Link.Root>
+              </List.Item>
+              <List.Item>
+                <Link.Root href="#school-meals">School meals and menus</Link.Root>
+              </List.Item>
+            </List.Root>
+          </Stack>
+          <Stack>
+            <Heading as="h2" size="heading-2">
+              In focus
+            </Heading>
+            <Card.Root as="article">
+              <Card.Body className="kv-prose">
+                <Heading as="h3" size="heading-3">
+                  <Link.Root href="#pool">The new preschool opens in January</Link.Root>
+                </Heading>
+                <p>Forty new places in North Kvirnby. See how the queue and the placement work.</p>
+              </Card.Body>
+              <Card.Footer className="kv-card-footer--padding-none">
+                <img src={kvirnbySquare} alt="" />
+              </Card.Footer>
+            </Card.Root>
+          </Stack>
+          <Card.Root>
+            <Card.Body className="kv-prose">
+              <Heading as="h2" size="heading-3">
+                Contact us
+              </Heading>
+              <p>Preschool office</p>
+              <SummaryList.Root>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="tel:+46000000001">0000-00 00 01</Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Email</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="mailto:preschool@kvirnby.example">
+                      preschool@kvirnby.example
+                    </Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone hours</SummaryList.Key>
+                  <SummaryList.Value>Monday to Thursday 9.00–11.00</SummaryList.Value>
+                </SummaryList.Row>
+              </SummaryList.Root>
+            </Card.Body>
+          </Card.Root>
+          <PageTools.Root>
+            <p className="kv-page-tools-updated">
+              Last updated: <time dateTime="2026-10-02">2 October 2026</time>
+            </p>
+            <PageTools.CopyLink>Copy link</PageTools.CopyLink>
+            <PageTools.Print>Print</PageTools.Print>
+          </PageTools.Root>
+        </Stack>
+      </PageFrame.Main>
+    </>
   ),
   play: async ({ canvasElement }) => {
     await expectPageOutline(canvasElement)
@@ -298,138 +287,132 @@ export const ThreeChildren: Story = {
 export const SevenChildren: Story = {
   globals: { ...wideGlobals },
   render: () => (
-    <KvirnProvider locale="en" messages={en}>
-      <PageFrame.Root>
-        <KvirnbyHeader />
-        <Container>
-          <Breadcrumb.Root label="You are here">
-            <Breadcrumb.List>
-              <Breadcrumb.Item>
-                <Breadcrumb.Link href="#start">Start</Breadcrumb.Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <Breadcrumb.Current>Children and education</Breadcrumb.Current>
-              </Breadcrumb.Item>
-            </Breadcrumb.List>
-          </Breadcrumb.Root>
-        </Container>
-        <PageFrame.Main>
-          <Stack className="kv-stack--gap-8">
-            <Stack className="kv-stack--gap-4">
-              <Heading as="h1">Children and education</Heading>
-              <p className="kv-lead">
-                Preschool, school and adult education in Kvirnby. Find where to apply, what it costs
-                and who to ask.
-              </p>
-            </Stack>
-            <NavTiles.Root>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#preschool">Preschool and childcare</NavTiles.Heading>
-                <NavTiles.Text>Apply for a place, fees and what the day looks like.</NavTiles.Text>
-              </NavTiles.Tile>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#primary">Primary school</NavTiles.Heading>
-                <NavTiles.Text>Choosing a school, school meals and school transport.</NavTiles.Text>
-              </NavTiles.Tile>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#upper-secondary">Upper secondary school</NavTiles.Heading>
-                <NavTiles.Text>Programmes, applying and student support.</NavTiles.Text>
-              </NavTiles.Tile>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#after-school">After-school care</NavTiles.Heading>
-                <NavTiles.Text>Places, fees and opening hours.</NavTiles.Text>
-              </NavTiles.Tile>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#adult">Adult education</NavTiles.Heading>
-                <NavTiles.Text>
-                  Courses, Swedish for immigrants and vocational training.
-                </NavTiles.Text>
-              </NavTiles.Tile>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#special">Special support</NavTiles.Heading>
-                <NavTiles.Text>Support for children and students who need more.</NavTiles.Text>
-              </NavTiles.Tile>
-              <NavTiles.Tile>
-                <NavTiles.Heading href="#health">Student health</NavTiles.Heading>
-                <NavTiles.Text>
-                  School nurse, counsellor and other student health services.
-                </NavTiles.Text>
-              </NavTiles.Tile>
-            </NavTiles.Root>
-            <Stack className="kv-stack--gap-4">
-              <Heading as="h2" size="heading-3">
-                Shortcuts
-              </Heading>
-              <List.Root className="kv-list--gap-2">
-                <List.Item>
-                  <Link.Root href="#fees">Fees for preschool and after-school care</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#term-dates">Term dates</Link.Root>
-                </List.Item>
-                <List.Item>
-                  <Link.Root href="#school-meals">School meals and menus</Link.Root>
-                </List.Item>
-              </List.Root>
-            </Stack>
-            <Stack>
-              <Heading as="h2" size="heading-2">
-                In focus
-              </Heading>
-              <Card.Root as="article">
-                <Card.Body className="kv-prose">
-                  <Heading as="h3" size="heading-3">
-                    <Link.Root href="#pool">The new preschool opens in January</Link.Root>
-                  </Heading>
-                  <p>
-                    Forty new places in North Kvirnby. See how the queue and the placement work.
-                  </p>
-                </Card.Body>
-                <Card.Footer className="kv-card-footer--padding-none">
-                  <img src={kvirnbySquare} alt="" />
-                </Card.Footer>
-              </Card.Root>
-            </Stack>
-            <Card.Root>
-              <Card.Body className="kv-prose">
-                <Heading as="h2" size="heading-3">
-                  Contact us
-                </Heading>
-                <p>Preschool office</p>
-                <SummaryList.Root>
-                  <SummaryList.Row>
-                    <SummaryList.Key>Phone</SummaryList.Key>
-                    <SummaryList.Value>
-                      <Link.Root href="tel:+46000000001">0000-00 00 01</Link.Root>
-                    </SummaryList.Value>
-                  </SummaryList.Row>
-                  <SummaryList.Row>
-                    <SummaryList.Key>Email</SummaryList.Key>
-                    <SummaryList.Value>
-                      <Link.Root href="mailto:preschool@kvirnby.example">
-                        preschool@kvirnby.example
-                      </Link.Root>
-                    </SummaryList.Value>
-                  </SummaryList.Row>
-                  <SummaryList.Row>
-                    <SummaryList.Key>Phone hours</SummaryList.Key>
-                    <SummaryList.Value>Monday to Thursday 9.00–11.00</SummaryList.Value>
-                  </SummaryList.Row>
-                </SummaryList.Root>
-              </Card.Body>
-            </Card.Root>
-            <PageTools.Root>
-              <p className="kv-page-tools-updated">
-                Last updated: <time dateTime="2026-10-02">2 October 2026</time>
-              </p>
-              <PageTools.CopyLink>Copy link</PageTools.CopyLink>
-              <PageTools.Print>Print</PageTools.Print>
-            </PageTools.Root>
+    <>
+      <Container>
+        <Breadcrumb.Root label="You are here">
+          <Breadcrumb.List>
+            <Breadcrumb.Item>
+              <Breadcrumb.Link href="#start">Start</Breadcrumb.Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Breadcrumb.Current>Children and education</Breadcrumb.Current>
+            </Breadcrumb.Item>
+          </Breadcrumb.List>
+        </Breadcrumb.Root>
+      </Container>
+      <PageFrame.Main>
+        <Stack className="kv-stack--gap-8">
+          <Stack className="kv-stack--gap-4">
+            <Heading as="h1">Children and education</Heading>
+            <p className="kv-lead">
+              Preschool, school and adult education in Kvirnby. Find where to apply, what it costs
+              and who to ask.
+            </p>
           </Stack>
-        </PageFrame.Main>
-        <KvirnbyFooter />
-      </PageFrame.Root>
-    </KvirnProvider>
+          <NavTiles.Root>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#preschool">Preschool and childcare</NavTiles.Heading>
+              <NavTiles.Text>Apply for a place, fees and what the day looks like.</NavTiles.Text>
+            </NavTiles.Tile>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#primary">Primary school</NavTiles.Heading>
+              <NavTiles.Text>Choosing a school, school meals and school transport.</NavTiles.Text>
+            </NavTiles.Tile>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#upper-secondary">Upper secondary school</NavTiles.Heading>
+              <NavTiles.Text>Programmes, applying and student support.</NavTiles.Text>
+            </NavTiles.Tile>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#after-school">After-school care</NavTiles.Heading>
+              <NavTiles.Text>Places, fees and opening hours.</NavTiles.Text>
+            </NavTiles.Tile>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#adult">Adult education</NavTiles.Heading>
+              <NavTiles.Text>
+                Courses, Swedish for immigrants and vocational training.
+              </NavTiles.Text>
+            </NavTiles.Tile>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#special">Special support</NavTiles.Heading>
+              <NavTiles.Text>Support for children and students who need more.</NavTiles.Text>
+            </NavTiles.Tile>
+            <NavTiles.Tile>
+              <NavTiles.Heading href="#health">Student health</NavTiles.Heading>
+              <NavTiles.Text>
+                School nurse, counsellor and other student health services.
+              </NavTiles.Text>
+            </NavTiles.Tile>
+          </NavTiles.Root>
+          <Stack className="kv-stack--gap-4">
+            <Heading as="h2" size="heading-3">
+              Shortcuts
+            </Heading>
+            <List.Root className="kv-list--gap-2">
+              <List.Item>
+                <Link.Root href="#fees">Fees for preschool and after-school care</Link.Root>
+              </List.Item>
+              <List.Item>
+                <Link.Root href="#term-dates">Term dates</Link.Root>
+              </List.Item>
+              <List.Item>
+                <Link.Root href="#school-meals">School meals and menus</Link.Root>
+              </List.Item>
+            </List.Root>
+          </Stack>
+          <Stack>
+            <Heading as="h2" size="heading-2">
+              In focus
+            </Heading>
+            <Card.Root as="article">
+              <Card.Body className="kv-prose">
+                <Heading as="h3" size="heading-3">
+                  <Link.Root href="#pool">The new preschool opens in January</Link.Root>
+                </Heading>
+                <p>Forty new places in North Kvirnby. See how the queue and the placement work.</p>
+              </Card.Body>
+              <Card.Footer className="kv-card-footer--padding-none">
+                <img src={kvirnbySquare} alt="" />
+              </Card.Footer>
+            </Card.Root>
+          </Stack>
+          <Card.Root>
+            <Card.Body className="kv-prose">
+              <Heading as="h2" size="heading-3">
+                Contact us
+              </Heading>
+              <p>Preschool office</p>
+              <SummaryList.Root>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="tel:+46000000001">0000-00 00 01</Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Email</SummaryList.Key>
+                  <SummaryList.Value>
+                    <Link.Root href="mailto:preschool@kvirnby.example">
+                      preschool@kvirnby.example
+                    </Link.Root>
+                  </SummaryList.Value>
+                </SummaryList.Row>
+                <SummaryList.Row>
+                  <SummaryList.Key>Phone hours</SummaryList.Key>
+                  <SummaryList.Value>Monday to Thursday 9.00–11.00</SummaryList.Value>
+                </SummaryList.Row>
+              </SummaryList.Root>
+            </Card.Body>
+          </Card.Root>
+          <PageTools.Root>
+            <p className="kv-page-tools-updated">
+              Last updated: <time dateTime="2026-10-02">2 October 2026</time>
+            </p>
+            <PageTools.CopyLink>Copy link</PageTools.CopyLink>
+            <PageTools.Print>Print</PageTools.Print>
+          </PageTools.Root>
+        </Stack>
+      </PageFrame.Main>
+    </>
   ),
   play: async ({ canvasElement }) => {
     await expectPageOutline(canvasElement)

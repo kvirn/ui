@@ -2,12 +2,11 @@ import { en } from '@kvirn-ui/i18n/en'
 import { Address, Card, Heading, KvirnProvider, Link, SummaryList } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
-import { expectNoHorizontalOverflow } from '../components/theme-story-assertions.ts'
-import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns/patterns-story-support.tsx'
+import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
+import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns-story-support.tsx'
 
 // Patterns/Places and contacts/Contact card (docs/design/storybook-patterns.md sections 3 and 6).
 // Story-only: a card with a heading and a summary list is shipped parts, so it has no pattern.
-// It lives beside the content types because it has no contract of its own to import.
 
 const description = `Who to contact: a [Card](?path=/docs/components-content-card--docs) with a heading, the unit that answers and a [SummaryList](?path=/docs/components-forms-summarylist--docs) of labelled rows, such as phone, email and phone hours, and an [Address](?path=/docs/components-content-address--docs) for the visiting address. It is not a landmark, and it is not a component of its own: copy the story's code and replace the text. For a phone number or an email address that is a link, put a \`Link\` in the value with its own \`tel:\` or \`mailto:\` \`href\`. A row you leave out is not drawn.
 

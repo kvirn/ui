@@ -54,6 +54,8 @@ Top level (plan D1): Foundation · Components · Patterns · Content types. Patt
 
 DOM order = reading order = focus order at every width. Nothing sticky (2.4.11). No CSS `order` (1.3.2). `lang` on the page root is the fixture's language.
 
+**Shell and content type (plan 0095, D12).** The _shell_ is the skip link, the header, the site alert, the content type and the footer. The _content type_ is everything between the header and the footer, and nothing else: the breadcrumb, a sidebar, `main#main`. It never renders the header, the alert or the footer. The shell guarantees the skip link targets `#main`; the content type renders it. In the frame below, everything from the breadcrumb to `main` is the content type.
+
 ```
 SkipLink "Hoppa till huvudinnehållet" → #main
 [header: banner]       Site header (or Transaction header)
