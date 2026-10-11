@@ -1,6 +1,6 @@
 # Design spec: docs site header in three primary bands
 
-> **Status note (2026-10-11):** the structure is built by the patterns: `SiteHeader` `variant="primary"`, `TopBar` and `ApplicationLogo` in `@kvirn-ui/patterns`, composed in `apps/docs` (Plan 0099). §6 (tokens, parts, states, contrast) is still the visual contract.
+> **Status note (2026-10-11):** the structure is built by the patterns: `SiteHeader` `variant="primary"` and `ApplicationLogo` in `@kvirn-ui/patterns`, `TopBar` in `@kvirn-ui/react` (Plan 0104), composed in `apps/docs` (Plan 0099). §6 (tokens, parts, states, contrast) is still the visual contract.
 
 - **Status:** Draft · **Designer:** ux-designer agent · **Date:** 2026-10-10
 - **Plan:** to be written (links this spec in its Design section)
