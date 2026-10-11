@@ -145,6 +145,36 @@ describe('CodeBlock', () => {
     await expect.element(page.getByRole('region', { name: text.label })).toBeInTheDocument()
   })
 
+  test('a first line that names a file, with a note, is the header and not the code', async () => {
+    const writeText = vi.fn<(value: string) => Promise<void>>(async () => {})
+    stubClipboard(writeText)
+    const { container } = await renderBlock(
+      <CodeBlock
+        code={'// app/layout.tsx (a Server Component)\nexport default function Layout() {}'}
+      />,
+    )
+    const header = container.querySelector('.docs-code-header')
+    expect(header?.querySelector('.docs-code-file')?.textContent).toBe('app/layout.tsx')
+    expect(header?.querySelector('.docs-code-note')?.textContent).toBe('a Server Component')
+    expect(container.querySelector('pre')?.textContent).not.toContain('app/layout.tsx')
+    await userEvent.click(copyButton())
+    expect(writeText).toHaveBeenCalledWith('export default function Layout() {}')
+  })
+
+  test('a colon note after the file name is the note too', async () => {
+    const { container } = await renderBlock(
+      <CodeBlock
+        code={
+          '// app/theme.ts: one object for the script and the provider\nexport const theme = {}'
+        }
+      />,
+    )
+    expect(container.querySelector('.docs-code-file')?.textContent).toBe('app/theme.ts')
+    expect(container.querySelector('.docs-code-note')?.textContent).toBe(
+      'one object for the script and the provider',
+    )
+  })
+
   test('empty code shows the empty message with no Copy button', async () => {
     await renderBlock(<CodeBlock code="" />)
     await expect.element(page.getByText(text.empty)).toBeVisible()

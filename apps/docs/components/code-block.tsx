@@ -176,19 +176,40 @@ export function CodeScroll({
 
 /**
  * A first line like `// app/providers.tsx` names the file the sample belongs in. It is shown in the
- * header beside Copy code, not in the code, so a copy holds only the code. An explicit `fileName`
- * wins.
+ * header beside Copy code, not in the code, so a copy holds only the code. A note after the name,
+ * `// app/layout.tsx (a Server Component)` or `// app/theme.ts: one object for both`, is shown
+ * beside it. An explicit `fileName` wins.
  */
-const fileNameComment = /^\/\/ ([\w@./[\]-]+\.\w+)\r?\n/
+const fileNameComment = /^\/\/ ([\w@./[\]-]+\.\w+)(?: \(([^)\n]+)\)|: ([^\n]+))?\r?\n/
 
-function splitFileName(source: string, given: string | undefined) {
+export function splitFileName(source: string, given: string | undefined) {
   if (given !== undefined) {
-    return { fileName: given, code: source }
+    return { fileName: given, note: undefined, code: source }
   }
   const match = fileNameComment.exec(source)
   return match === null
-    ? { fileName: undefined, code: source }
-    : { fileName: match[1], code: source.slice(match[0].length) }
+    ? { fileName: undefined, note: undefined, code: source }
+    : { fileName: match[1], note: match[2] ?? match[3], code: source.slice(match[0].length) }
+}
+
+/** The header line of a code sample: its file name, and the note that came with it. */
+export function CodeFileName({
+  id,
+  fileName,
+  note,
+}: {
+  id?: string
+  fileName: string
+  note: string | undefined
+}) {
+  return (
+    <>
+      <span id={id} className="docs-code-file">
+        {fileName}
+      </span>
+      {note !== undefined && <span className="docs-code-note">{note}</span>}
+    </>
+  )
 }
 
 /**
@@ -208,7 +229,7 @@ export function CodeBlock({
 }) {
   const fileNameId = useId()
   const codeRef = useRef<HTMLElement>(null)
-  const { fileName, code } = splitFileName(source, givenFileName)
+  const { fileName, note, code } = splitFileName(source, givenFileName)
   const lines = useCodeLines(code, language)
   const { status, copy } = useCodeCopy({ code, codeRef })
   if (code === '') {
@@ -217,11 +238,7 @@ export function CodeBlock({
   return (
     <div className="docs-code">
       <div className="docs-code-header">
-        {fileName !== undefined && (
-          <span id={fileNameId} className="docs-code-file">
-            {fileName}
-          </span>
-        )}
+        {fileName !== undefined && <CodeFileName id={fileNameId} fileName={fileName} note={note} />}
         {language !== undefined && (
           <span className="docs-code-language">{text.languages[language]}</span>
         )}

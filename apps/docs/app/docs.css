@@ -215,6 +215,11 @@ body {
   overflow-wrap: anywhere;
 }
 
+.docs-code-note {
+  color: var(--kv-color-text-muted);
+  font-size: var(--kv-font-body-small-size);
+}
+
 .docs-code-language {
   font-size: var(--kv-font-body-small-size);
   color: var(--kv-color-text-muted);

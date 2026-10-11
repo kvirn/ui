@@ -4,7 +4,15 @@ import { Card, Heading, KvirnProvider, useLocale } from '@kvirn-ui/react'
 import { Component, useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
-import { CodeCopyButton, CodeScroll, CodeStatus, useCodeCopy, useCodeLines } from './code-block.tsx'
+import {
+  CodeCopyButton,
+  CodeFileName,
+  CodeScroll,
+  CodeStatus,
+  splitFileName,
+  useCodeCopy,
+  useCodeLines,
+} from './code-block.tsx'
 import { DocsDisclosure } from './docs-disclosure.tsx'
 import type { CodeLanguage } from '../lib/highlight.ts'
 
@@ -45,7 +53,7 @@ function ExampleStage({ children }: { children: ReactNode }) {
 export function ExampleFrame({
   caption,
   headingId,
-  code,
+  code: source,
   language = 'tsx',
   children,
 }: {
@@ -62,6 +70,9 @@ export function ExampleFrame({
   const codeRef = useRef<HTMLElement>(null)
   const panelId = useId()
   const codeLabelId = useId()
+  // A first line `// button/default.tsx` is the file the code is in: the panel's header shows it,
+  // and a copy holds only the code.
+  const { fileName, note, code } = splitFileName(source, undefined)
   const lines = useCodeLines(code, language)
   const { status, copy } = useCodeCopy({
     code,
@@ -115,6 +126,11 @@ export function ExampleFrame({
         <CodeStatus status={status} />
       </Card.Footer>
       <div id={panelId} ref={panelRef} className="docs-code docs-code-panel" hidden={!isCodeOpen}>
+        {fileName !== undefined && (
+          <div className="docs-code-header">
+            <CodeFileName fileName={fileName} note={note} />
+          </div>
+        )}
         <span id={codeLabelId} hidden>
           {codeText.label}
         </span>
