@@ -1,0 +1,7 @@
+<!-- KvirnUI mark, first draft (docs-shell-mega-menu.md §6). Themeable: inline it in the page as a
+     decorative <svg aria-hidden="true" focusable="false">. The square is currentColor (on-primary in
+     the header, text in the footer); the K is the colour behind it, via --kv-mark-cut. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" aria-hidden="true" focusable="false">
+  <rect x="2" y="2" width="24" height="24" rx="6" fill="currentColor"/>
+  <path d="M9 7v14M9 14l9-7M12 12l7 9" stroke="var(--kv-mark-cut, var(--kv-color-primary))" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

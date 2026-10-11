@@ -30,4 +30,5 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0092](0092-motion-preference.md)                    | Motion as a theme preference (`data-kv-motion`, `useTheme().selectMotion`)   | Implemented                                      |
 | [0095](0095-storybook-patterns-and-content-types.md) | Storybook Patterns and Content types, the shell of the reference site        | Draft                                            |
 | [0099](0099-docs-header-bands.md)                    | Docs site header in three primary bands, from the Site header patterns       | In progress                                      |
+| [0103](0103-docs-shell-mega-menu.md)                 | Docs shell: mega menu in the masthead and the PageHeader pattern             | In progress (Phase 2 built, gates pending)       |
 | [0100](0100-docs-galleries.md)                       | Galleries for Components, Patterns and Content types on the docs site        | Approved                                         |
