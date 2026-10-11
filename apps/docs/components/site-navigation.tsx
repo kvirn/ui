@@ -13,40 +13,42 @@ function PageItem({ page, pathname }: { page: SitePage; pathname: string }) {
 }
 
 /**
- * A group is a link to its place on the section's index, and the pages of the group that holds
- * the current page are its second level (navigation.md): the theme draws that group as the trail
- * and the page as the solid fill. The other groups show no pages, so the list stays short; their
- * pages are on the index, one link away.
+ * A group with its own page is one link to it: the page is the group's list of cards, so the
+ * sidebar stays short. A page inside the group is not listed, so the group is the deepest item
+ * shown and takes `aria-current="true"` (navigation.md). A group without a page of its own is a
+ * label (plain text) naming the list of its pages. No link goes to a `#`.
  */
-function PageGroup({
-  group,
-  sectionHref,
-  pathname,
-}: {
-  group: SiteGroup
-  sectionHref: string
-  pathname: string
-}) {
-  const isActive = group.pages.some((page) => page.href === pathname)
+function PageGroup({ group, pathname }: { group: SiteGroup; pathname: string }) {
+  if (group.href !== undefined) {
+    const isCurrentPage = group.href === pathname
+    const holdsCurrentPage = group.pages.some((page) => page.href === pathname)
+    return (
+      <Navigation.Item>
+        <Link
+          href={group.href}
+          current={isCurrentPage ? 'page' : holdsCurrentPage ? true : undefined}
+        >
+          {group.label}
+        </Link>
+      </Navigation.Item>
+    )
+  }
   return (
     <Navigation.Item>
-      <Link href={`${sectionHref}#${group.id}`}>{group.label}</Link>
-      {isActive ? (
-        <Navigation.List>
-          {group.pages.map((page) => (
-            <PageItem key={page.href} page={page} pathname={pathname} />
-          ))}
-        </Navigation.List>
-      ) : null}
+      <Navigation.Label>{group.label}</Navigation.Label>
+      <Navigation.List>
+        {group.pages.map((page) => (
+          <PageItem key={page.href} page={page} pathname={pathname} />
+        ))}
+      </Navigation.List>
     </Navigation.Item>
   )
 }
 
 /**
  * The sidebar of the active section: a list of links, not a menu (APG Disclosure Navigation),
- * named by the section. Components list their groups as links with the current group's pages
- * under it. The Section is the surface,
- * and the Menu button shows and hides it below 64rem.
+ * named by the section. Components list their groups, each a link to its page of cards. The
+ * Section is the surface, and the Menu button shows and hides it below 64rem.
  */
 export function SiteNavigation({
   id,
@@ -64,16 +66,13 @@ export function SiteNavigation({
     <Section id={id} className="docs-sidebar kv-section--padding-sm" data-open={isOpen}>
       <Navigation.Root label={section.label}>
         <Navigation.List>
-          {indexPage === undefined ? null : <PageItem page={indexPage} pathname={pathname} />}
+          {indexPage === undefined || section.indexInSidebar === false ? null : (
+            <PageItem page={indexPage} pathname={pathname} />
+          )}
           {section.groups === undefined
             ? otherPages.map((page) => <PageItem key={page.href} page={page} pathname={pathname} />)
             : section.groups.map((group) => (
-                <PageGroup
-                  key={group.label}
-                  group={group}
-                  sectionHref={section.href}
-                  pathname={pathname}
-                />
+                <PageGroup key={group.label} group={group} pathname={pathname} />
               ))}
         </Navigation.List>
       </Navigation.Root>

@@ -16,9 +16,11 @@ export interface SummarisedPage extends SitePage {
 }
 
 export interface SiteGroup {
-  /** The anchor of the group on the Components index. */
+  /** The anchor of the group on the Components index, and the slug of its own page. */
   id: string
   label: string
+  /** The group's own page. The sidebar links to it instead of listing the group's pages. */
+  href?: string | undefined
   pages: readonly SitePage[]
 }
 
@@ -35,6 +37,8 @@ export interface SiteSection {
   pages: readonly SitePage[]
   /** Sidebar groups (docs-landing-and-header.md §3.1); the index page is listed outside them. */
   groups?: readonly SiteGroup[]
+  /** `false` leaves the index out of the sidebar: the header's Site navigation already marks it. */
+  indexInSidebar?: boolean | undefined
 }
 
 export interface SiteTool {
@@ -50,8 +54,11 @@ const component = (label: string, slug: string, summary: string): SummarisedPage
   summary,
 })
 
-/** By purpose, docs-site.md §3. Labels are the page titles. */
-export const componentGroups: readonly SummarisedGroup[] = [
+/**
+ * By purpose, docs-site.md §3. Labels are the page titles. A group's id is its slug under
+ * `/components`, so none may equal a component's slug (`navigation` is the component).
+ */
+const componentGroupList: readonly SummarisedGroup[] = [
   {
     id: 'actions',
     label: groupText.actions,
@@ -174,8 +181,8 @@ export const componentGroups: readonly SummarisedGroup[] = [
     ],
   },
   {
-    id: 'navigation',
-    label: groupText.navigation,
+    id: 'wayfinding',
+    label: groupText.wayfinding,
     pages: [
       component(
         'Breadcrumb',
@@ -376,7 +383,18 @@ export const componentGroups: readonly SummarisedGroup[] = [
   },
 ]
 
+export const componentGroups: readonly SummarisedGroup[] = componentGroupList.map((group) => ({
+  ...group,
+  href: `/components/${group.id}`,
+}))
+
 export const componentPages = componentGroups.flatMap((group) => group.pages)
+
+/** The pages that are a group's own page, between the index and the components. */
+const componentGroupPages: readonly SitePage[] = componentGroups.map((group) => ({
+  href: `/components/${group.id}`,
+  label: group.label,
+}))
 
 /** The gallery groups of Patterns (component-gallery.md §3.2); items arrive with their pages (G5). */
 export const patternGroups: readonly SiteGroup[] = [
@@ -436,15 +454,10 @@ export const contentTypePages = contentTypeGroups.flatMap((group) => group.pages
 
 export const siteSections: readonly SiteSection[] = [
   {
-    id: 'home',
-    label: text.sections.home,
-    href: '/',
-    pages: [{ href: '/', label: text.sections.home }],
-  },
-  {
     id: 'docs',
     label: text.sections.docs,
     href: '/docs',
+    indexInSidebar: false,
     pages: [
       { href: '/docs', label: text.getStarted },
       { href: '/foundation/kvirn-provider', label: text.kvirnProvider },
@@ -456,7 +469,12 @@ export const siteSections: readonly SiteSection[] = [
     id: 'components',
     label: text.sections.components,
     href: '/components',
-    pages: [{ href: '/components', label: text.allComponents }, ...componentPages],
+    indexInSidebar: false,
+    pages: [
+      { href: '/components', label: text.allComponents },
+      ...componentGroupPages,
+      ...componentPages,
+    ],
     groups: componentGroups,
   },
   {

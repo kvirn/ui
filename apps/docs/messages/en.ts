@@ -42,6 +42,8 @@ export const messages = {
       title: 'Components',
       lead: ({ count }: { count: number }) =>
         `${count} components and hooks, grouped by what they do. Each page shows an example, the keyboard contract and the API.`,
+      groupLead: ({ count }: { count: number }) =>
+        `${count} components and hooks. Each page shows an example, the keyboard contract and the API.`,
     },
     contentTypesIndex: {
       title: 'Content types',
@@ -97,8 +99,7 @@ export const messages = {
       menuButton: 'Menu',
       sidebarButton: ({ section }: { section: string }) => `Pages in ${section}`,
       sections: {
-        home: 'Home',
-        docs: 'Docs',
+        docs: 'Get started',
         components: 'Components',
         patterns: 'Patterns',
         contentTypes: 'Content types',
@@ -114,7 +115,7 @@ export const messages = {
         actions: 'Actions',
         content: 'Content',
         layout: 'Layout',
-        navigation: 'Wayfinding',
+        wayfinding: 'Wayfinding',
         forms: 'Forms',
         choiceAndOverlays: 'Choice and overlays',
         dataAndBehaviour: 'Data and behaviour',
