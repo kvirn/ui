@@ -51,6 +51,7 @@ Parts used: \`Section as="section"\`, \`Heading\`, \`Prose\`, \`ButtonGroup\`, \
 const meta = {
   title: 'Patterns/Site chrome/Cookie consent',
   component: CookieConsent.Root,
+  args: { defaultDecision: undefined },
   argTypes: {
     defaultDecision: {
       control: 'inline-radio',
@@ -75,10 +76,10 @@ type Story = StoryObj<typeof meta>
 /** Undecided: text, two equal buttons and the link to the Cookies page. */
 export const Undecided: Story = {
   globals: { ...wideGlobals },
-  render: () => (
+  render: (args) => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
-        <CookieConsent.Root>
+        <CookieConsent.Root key={args.defaultDecision ?? 'undecided'} {...args}>
           <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
           <CookieConsent.Text>
             We use statistics cookies to see which pages are read and to improve the website.
@@ -138,6 +139,7 @@ export const Undecided: Story = {
 /** Accepted: the region shows the result and the way to change it. */
 export const Accepted: Story = {
   globals: { ...wideGlobals },
+  argTypes: { defaultDecision: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -198,6 +200,7 @@ export const Accepted: Story = {
 /** Rejected: the same, for the other choice. */
 export const Rejected: Story = {
   globals: { ...wideGlobals },
+  argTypes: { defaultDecision: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -258,6 +261,7 @@ export const Rejected: Story = {
 /** Choosing moves focus to the result text, not to `body` (the story presses Reject). */
 export const FocusAfterChoice: Story = {
   globals: { ...wideGlobals },
+  argTypes: { defaultDecision: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -319,6 +323,7 @@ export const FocusAfterChoice: Story = {
 /** At 320px the buttons stack at full width and the text wraps. */
 export const Narrow: Story = {
   globals: { ...narrowGlobals },
+  argTypes: { defaultDecision: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -379,6 +384,7 @@ export const Narrow: Story = {
 /** Try the keys (see Keyboard above): Tab, then Enter or Space on a button. */
 export const Keyboard: Story = {
   globals: { ...wideGlobals },
+  argTypes: { defaultDecision: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -436,10 +442,10 @@ export const Keyboard: Story = {
 /** Right to left: the text and buttons start at the right; DOM order is unchanged. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en', ...wideGlobals },
-  render: () => (
+  render: (args) => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
-        <CookieConsent.Root>
+        <CookieConsent.Root key={args.defaultDecision ?? 'undecided'} {...args}>
           <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
           <CookieConsent.Text>
             We use statistics cookies to see which pages are read and to improve the website.
@@ -493,10 +499,10 @@ export const RTL: Story = {
 /** Forced colours: the region keeps its border and both buttons look alike. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active', ...wideGlobals },
-  render: () => (
+  render: (args) => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
-        <CookieConsent.Root>
+        <CookieConsent.Root key={args.defaultDecision ?? 'undecided'} {...args}>
           <CookieConsent.Heading>Cookies on this website</CookieConsent.Heading>
           <CookieConsent.Text>
             We use statistics cookies to see which pages are read and to improve the website.

@@ -48,11 +48,15 @@ Parts used: \`Alert.Warning\` / \`Alert.Info\` as a \`section\`, \`Alert.Title\`
 const meta = {
   title: 'Patterns/Site chrome/Site alert',
   component: SiteAlert.Root,
+  args: { tone: 'warning', mainId: 'main', messages: undefined },
   argTypes: {
     tone: { control: 'inline-radio', options: ['warning', 'info'], description: 'The status.' },
     onDismiss: { control: false, description: 'Called when the alert is dismissed.' },
     mainId: { control: 'text', description: 'The id of `main`, where focus goes on dismiss.' },
-    messages: { control: false, description: 'Per-instance message overrides.' },
+    messages: {
+      control: 'object',
+      description: 'Per-instance message overrides: `close` and the status words.',
+    },
     className: { control: false, description: 'Joins `kv-site-alert`.' },
   },
   globals: { locale: 'en' },
@@ -70,9 +74,9 @@ type Story = StoryObj<typeof meta>
 /** The main example: a warning between the banner and `main`, named by its title. */
 export const Default: Story = {
   globals: { ...wideGlobals },
-  render: () => (
+  render: (args) => (
     <KvirnProvider locale="en" messages={en}>
-      <PageFrame.Root>
+      <PageFrame.Root mainId={args.mainId}>
         <SiteHeader.Root>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start">
@@ -101,7 +105,7 @@ export const Default: Story = {
             </SiteHeader.MenuPanel>
           </SiteHeader.Menu>
         </SiteHeader.Root>
-        <SiteAlert.Root>
+        <SiteAlert.Root {...args}>
           <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
           <SiteAlert.Body>
             The water is off from 9 to 15 because of work on the water main. Fill containers in
@@ -127,6 +131,7 @@ export const Default: Story = {
 /** `tone="info"`: news people may want, with its own status word and shape. */
 export const Info: Story = {
   globals: { ...wideGlobals },
+  argTypes: { tone: { control: false }, mainId: { control: false }, messages: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -182,6 +187,7 @@ export const Info: Story = {
 /** With `SiteAlert.Close`. Closing removes the alert and moves focus to `main`, not `body`. */
 export const Dismissible: Story = {
   globals: { ...wideGlobals },
+  argTypes: { tone: { control: false }, mainId: { control: false }, messages: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -235,6 +241,7 @@ export const Dismissible: Story = {
 /** Dismissed: the alert is gone for the session, and focus is on `main` (the story clicks Close). */
 export const Dismissed: Story = {
   globals: { ...wideGlobals },
+  argTypes: { tone: { control: false }, mainId: { control: false }, messages: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -293,6 +300,7 @@ export const Dismissed: Story = {
 /** A long title wraps and hyphenates; nothing is clipped. */
 export const LongTitle: Story = {
   globals: { ...wideGlobals },
+  argTypes: { tone: { control: false }, mainId: { control: false }, messages: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -352,6 +360,7 @@ export const LongTitle: Story = {
 /** At 320px the title and details wrap and the close button stays reachable. */
 export const Narrow: Story = {
   globals: { ...narrowGlobals },
+  argTypes: { tone: { control: false }, mainId: { control: false }, messages: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -408,6 +417,7 @@ export const Narrow: Story = {
 /** Try the keys (see Keyboard above): Tab reaches the link and Close; Enter on Close moves focus to `main`. */
 export const Keyboard: Story = {
   globals: { ...wideGlobals },
+  argTypes: { tone: { control: false }, mainId: { control: false }, messages: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -461,9 +471,9 @@ export const Keyboard: Story = {
 /** Right to left: the bar and the close button move to the other edge; DOM order is unchanged. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en', ...wideGlobals },
-  render: () => (
+  render: (args) => (
     <KvirnProvider locale="en" messages={en}>
-      <PageFrame.Root>
+      <PageFrame.Root mainId={args.mainId}>
         <SiteHeader.Root>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start">
@@ -492,7 +502,7 @@ export const RTL: Story = {
             </SiteHeader.MenuPanel>
           </SiteHeader.Menu>
         </SiteHeader.Root>
-        <SiteAlert.Root>
+        <SiteAlert.Root {...args}>
           <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
           <SiteAlert.Body>
             The water is off from 9 to 15 because of work on the water main. Fill containers in
@@ -514,9 +524,9 @@ export const RTL: Story = {
 /** Forced colours: the alert keeps its border; the word and shape carry the status. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active', ...wideGlobals },
-  render: () => (
+  render: (args) => (
     <KvirnProvider locale="en" messages={en}>
-      <PageFrame.Root>
+      <PageFrame.Root mainId={args.mainId}>
         <SiteHeader.Root>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start">
@@ -545,7 +555,7 @@ export const ForcedColors: Story = {
             </SiteHeader.MenuPanel>
           </SiteHeader.Menu>
         </SiteHeader.Root>
-        <SiteAlert.Root>
+        <SiteAlert.Root {...args}>
           <SiteAlert.Title>Water shut off in North Kvirnby on Wednesday 14 October</SiteAlert.Title>
           <SiteAlert.Body>
             The water is off from 9 to 15 because of work on the water main. Fill containers in

@@ -45,6 +45,7 @@ Parts used: \`SkipLink\`, \`Container\`, \`SidebarLayout\`. No gap.
 const meta = {
   title: 'Patterns/Site chrome/Page frame',
   component: PageFrame.Root,
+  args: { mainId: 'main' },
   argTypes: {
     mainId: { control: 'text', description: 'The id of `main`. Default `main`.' },
   },
@@ -63,9 +64,9 @@ type Story = StoryObj<typeof meta>
 /** The main example: a page with header, `main` and footer. The skip link shows on the first Tab. */
 export const Default: Story = {
   globals: { ...wideGlobals },
-  render: () => (
+  render: (args) => (
     <KvirnProvider locale="en" messages={en}>
-      <PageFrame.Root>
+      <PageFrame.Root {...args}>
         <SiteHeader.Root>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start" current="page">
@@ -117,6 +118,7 @@ export const Default: Story = {
 /** At 320px: one column, the header in rows, no sideways scroll. */
 export const Narrow: Story = {
   globals: { ...narrowGlobals },
+  argTypes: { mainId: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -167,6 +169,7 @@ export const Narrow: Story = {
  */
 export const WithSidebar: Story = {
   globals: { ...wideGlobals },
+  argTypes: { mainId: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -211,6 +214,7 @@ export const WithSidebar: Story = {
 
 /** Try the keys (see Keyboard above): the skip link is the first Tab stop and moves focus to `main`. */
 export const Keyboard: Story = {
+  argTypes: { mainId: { control: false } },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -265,9 +269,9 @@ export const Keyboard: Story = {
 /** Right to left: the whole frame mirrors; DOM order is unchanged. */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en', ...wideGlobals },
-  render: () => (
+  render: (args) => (
     <KvirnProvider locale="en" messages={en}>
-      <PageFrame.Root>
+      <PageFrame.Root {...args}>
         <SiteHeader.Root>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start" current="page">
@@ -312,9 +316,9 @@ export const RTL: Story = {
 /** Forced colours: sections keep their borders. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active', ...wideGlobals },
-  render: () => (
+  render: (args) => (
     <KvirnProvider locale="en" messages={en}>
-      <PageFrame.Root>
+      <PageFrame.Root {...args}>
         <SiteHeader.Root>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start" current="page">
