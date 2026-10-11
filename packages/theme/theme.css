@@ -938,6 +938,47 @@
     cursor: not-allowed;
   }
 
+  /*
+   * Link look: <Button className="kv-button--link"> reads as a link in a row of links (a Display
+   * settings button in a top bar). Only for an action that changes something in place, such as a
+   * disclosure with its chevron or a toggle: never for submitting, going on a step or a destructive
+   * action. No fill, edge or depth in any state or theme; at least 24px tall (2.5.8); underlined on
+   * hover only. A top bar sets the on-colour of its fill (patterns.css). Disabled is text-muted
+   * with a dashed underline, the non-colour cue.
+   */
+  .kv-button.kv-button--link {
+    display: inline-flex;
+    min-block-size: 1.5rem;
+    padding-block: 0;
+    padding-inline: 0;
+    border-width: 0;
+    border-radius: var(--kv-radius-sm);
+    box-shadow: none;
+    background-color: transparent;
+    color: var(--kv-color-link);
+    font-weight: var(--kv-font-body-weight);
+    text-decoration-line: none;
+    text-decoration-thickness: var(--kv-link-underline-thickness);
+    text-underline-offset: var(--kv-link-underline-offset);
+  }
+
+  .kv-button.kv-button--link:not(:disabled, [data-disabled]):is(:hover, :active) {
+    border-width: 0;
+    box-shadow: none;
+    background-color: transparent;
+    color: var(--kv-color-link-hover);
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+  }
+
+  .kv-button.kv-button--link:is(:disabled, [data-disabled]) {
+    border-width: 0;
+    background-color: transparent;
+    color: var(--kv-color-text-muted);
+    text-decoration-line: underline;
+    text-decoration-style: dashed;
+  }
+
   /* <div class="kv-button-group">: buttons in a row, stacked at full width on narrow screens. */
   .kv-button-group {
     display: flex;
@@ -1006,6 +1047,19 @@
       border-style: dashed;
       border-color: GrayText;
       box-shadow: none;
+      color: GrayText;
+    }
+
+    .kv-button.kv-button--link,
+    .kv-button.kv-button--link:not(:disabled, [data-disabled]):is(:hover, :active) {
+      border-width: 0;
+      background-color: transparent;
+      color: ButtonText;
+    }
+
+    .kv-button.kv-button--link:is(:disabled, [data-disabled]) {
+      border-width: 0;
+      background-color: transparent;
       color: GrayText;
     }
   }
@@ -11886,26 +11940,10 @@
     }
   }
 
-  /* In a TopBar the trigger is one of the bar's links: no edge, no fill and no icon, the bar's
-   * text colour, a navigation item's height, padding and type, underlined on hover. */
+  /* In a TopBar the trigger is one of the bar's links (kv-button--link) and has no icon. */
   .kv-top-bar .kv-display-settings-compact-trigger {
-    min-block-size: var(--kv-control-min-block-size);
-    padding-block: var(--kv-space-1);
-    padding-inline: var(--kv-space-3);
-    border-color: transparent;
-    border-radius: var(--kv-radius-md);
-    background-color: transparent;
-    box-shadow: none;
-    color: inherit;
     font-size: var(--kv-control-font-size);
-    font-weight: var(--kv-font-body-weight);
     line-height: var(--kv-control-line-height);
-  }
-
-  .kv-top-bar .kv-display-settings-compact-trigger:is(:hover, :active) {
-    background-color: transparent;
-    text-decoration-line: underline;
-    text-decoration-thickness: var(--kv-link-underline-thickness-hover);
   }
 
   .kv-top-bar .kv-display-settings-icon {

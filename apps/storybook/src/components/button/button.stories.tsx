@@ -31,6 +31,7 @@ const sv = {
   addChild: 'Lägg till ett barn till',
   continue: 'Fortsätt',
   close: 'Stäng',
+  settings: 'Visningsinställningar',
   comfortable: 'Bekväm (standard)',
   compact: 'Kompakt',
 }
@@ -205,6 +206,31 @@ export const IconOnly: Story = {
     await expect(button.children).toHaveLength(1)
     await expect(button.textContent).toBe('')
     await expectMinimumTargetSize(button)
+  },
+}
+
+/**
+ * `kv-button--link`: a button that reads as a link, for an in-place action in a row of links, such as
+ * a disclosure with its chevron. Underlined on hover only, at least 24px tall. Never for submitting,
+ * going on a step or a destructive action.
+ */
+export const LinkLook: Story = {
+  render: () => (
+    <ButtonGroup>
+      <Button className="kv-button--link" aria-expanded="false">
+        {sv.settings}
+        <Icon name="chevron-down" />
+      </Button>
+      <Button className="kv-button--link" disabled>
+        {sv.settings}
+      </Button>
+    </ButtonGroup>
+  ),
+  play: async ({ canvas }) => {
+    const [enabled, disabled] = canvas.getAllByRole('button', { name: sv.settings })
+    await expectMinimumTargetSize(enabled!)
+    await expectMinimumTargetSize(disabled!)
+    await expect(disabled).toBeDisabled()
   },
 }
 

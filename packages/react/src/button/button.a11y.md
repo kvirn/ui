@@ -83,6 +83,7 @@ Button has no strings of its own. Its name is its content, which the consumer pr
 - Focus indicator: headless. The browser's native ring by default. The default theme restyles it to at least 2px at 3:1 (2.4.7, 2.4.13). Test: `button.stories.tsx › Focus visible`, and `theme:check` for the ring's contrast.
 - Target size: headless. The default theme makes buttons at least 24 × 24 CSS px (2.5.8), in both densities. Test: `button.stories.tsx › Default`, `› Compact density`.
 - forced-colors behaviour: a native `<button>`, so the system's `ButtonText` / `ButtonFace` apply. The disabled state isn't conveyed only by colour in the default theme: it has a dashed edge (1.4.1, `button.stories.tsx › States`).
+- Link look (`kv-button--link`): at least 24px tall at every width (2.5.8), the normal focus ring (2.4.7), underlined on hover only. Disabled is `text-muted` with a dashed underline as the non-colour cue (1.4.1); on a filled top bar it is the bar's on-colour with the dashed underline. Forced colours (`ButtonText`) is checked by reading, not proved by axe (sweep: Plan 0051). Test: `button.stories.tsx › LinkLook` (axe, target size).
 - reduced-motion behaviour: no motion.
 - Reflow: no horizontal scrolling at 320 CSS px (`reflow-320`, 1.4.10).
 
