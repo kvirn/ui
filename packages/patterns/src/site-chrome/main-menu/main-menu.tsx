@@ -47,6 +47,7 @@ export interface MainMenuRootProps extends Omit<
 }
 
 export type MainMenuTopicProps = ComponentPropsWithRef<'li'>
+export type MainMenuGroupProps = ComponentPropsWithRef<'li'>
 export type MainMenuTopicButtonProps = DisclosureTriggerProps
 export type MainMenuTopicPanelProps = Omit<DisclosurePanelProps, 'children'> &
   Pick<ComponentPropsWithRef<'ul'>, 'children'>
@@ -171,17 +172,21 @@ export function MainMenuRoot({
 }
 MainMenuRoot.displayName = 'MainMenu.Root'
 
-function MainMenuItemLink({
-  itemClassName,
-  ...linkProps
-}: LinkProps<'a'> & { itemClassName?: string }): ReactElement {
+function useTopicLink(linkProps: LinkProps<'a'>) {
   const topic = useContext(MainMenuTopicContext)
   const registerCurrent = topic?.registerCurrent
   const isCurrent = isMarkedCurrent(linkProps.current)
   // The trail of the topic button follows the page's link, shown or not.
   useLayoutEffect(() => (isCurrent ? registerCurrent?.() : undefined), [isCurrent, registerCurrent])
   // Never current inside a hidden group: the link is current only while it is shown.
-  const current = topic === null || topic.isOpen ? linkProps.current : undefined
+  return topic === null || topic.isOpen ? linkProps.current : undefined
+}
+
+function MainMenuItemLink({
+  itemClassName,
+  ...linkProps
+}: LinkProps<'a'> & { itemClassName?: string }): ReactElement {
+  const current = useTopicLink(linkProps)
   return (
     <Navigation.Item className={itemClassName}>
       <Link.Root {...linkProps} current={current} />
@@ -209,6 +214,31 @@ export function MainMenuOverview(props: LinkProps<'a'>): ReactElement {
   return <MainMenuItemLink {...props} itemClassName="kv-mega-menu-overview" />
 }
 MainMenuOverview.displayName = 'MainMenu.Overview'
+
+/**
+ * A group in a topic's panel: a `<li>` that holds the group's page link (`MainMenu.GroupLink`, or
+ * a `Navigation.Label` when the group has no page) and a nested `Navigation.List` of
+ * `MainMenu.Link`s. The panel lays its groups out as columns.
+ */
+export function MainMenuGroup(props: MainMenuGroupProps): ReactElement {
+  return <Navigation.Item {...mergeProps(props, { className: 'kv-mega-menu-group' })} />
+}
+MainMenuGroup.displayName = 'MainMenu.Group'
+
+/**
+ * A group's own page, at the top of its `MainMenu.Group`. Not a list item; it follows the
+ * same `current` rule as `MainMenu.Link`.
+ */
+export function MainMenuGroupLink<Component extends ElementType = 'a'>(
+  props: MainMenuLinkProps<Component>,
+): ReactElement
+export function MainMenuGroupLink(props: LinkProps<'a'>): ReactElement {
+  const current = useTopicLink(props)
+  return (
+    <Link.Root {...mergeProps(props, { className: 'kv-mega-menu-group-link' })} current={current} />
+  )
+}
+MainMenuGroupLink.displayName = 'MainMenu.GroupLink'
 
 /**
  * A topic with sub-pages: a `<li>` that owns the open state of its `TopicButton` and
@@ -271,6 +301,8 @@ export const MainMenu = {
   Root: MainMenuRoot,
   Link: MainMenuLink,
   Overview: MainMenuOverview,
+  Group: MainMenuGroup,
+  GroupLink: MainMenuGroupLink,
   Topic: MainMenuTopic,
   TopicButton: MainMenuTopicButton,
   TopicPanel: MainMenuTopicPanel,

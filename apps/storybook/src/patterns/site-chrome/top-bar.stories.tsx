@@ -1,9 +1,13 @@
 import { SiteHeader, TopBar } from '@kvirn-ui/patterns'
-import { Link, Navigation } from '@kvirn-ui/react'
+import { DisplaySettings, Link, Navigation } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/top-bar/top-bar.a11y.md?raw'
-import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
+import {
+  expectMinimumTargetSize,
+  expectNoHorizontalOverflow,
+  expectTopBarTargetSizes,
+} from '../../components/theme-story-assertions.ts'
 import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns-story-support.tsx'
 
 // Patterns/Site chrome/Top bar: a slim bar of two sides, first in the Site header. Each story is
@@ -68,7 +72,8 @@ export const Default: Story = {
       </Navigation.Root>
     </TopBar.Root>
   ),
-  play: async ({ canvas }) => {
+  play: async ({ canvas, canvasElement }) => {
+    await expectTopBarTargetSizes(canvasElement)
     await expect(canvas.getByRole('navigation', { name: 'Tools' })).toBeVisible()
     await expect(canvas.getByRole('link', { name: 'Documentation' })).toHaveAttribute(
       'aria-current',
@@ -100,6 +105,9 @@ export const Primary: Story = {
       </Navigation.Root>
     </TopBar.Root>
   ),
+  play: async ({ canvasElement }) => {
+    await expectTopBarTargetSizes(canvasElement)
+  },
 }
 
 /** `variant="secondary"`: the `secondary` fill with `on-secondary`. */
@@ -125,6 +133,9 @@ export const Secondary: Story = {
       </Navigation.Root>
     </TopBar.Root>
   ),
+  play: async ({ canvasElement }) => {
+    await expectTopBarTargetSizes(canvasElement)
+  },
 }
 
 /** `variant="accent"`: the `accent` fill with `on-accent`. */
@@ -150,6 +161,9 @@ export const Accent: Story = {
       </Navigation.Root>
     </TopBar.Root>
   ),
+  play: async ({ canvasElement }) => {
+    await expectTopBarTargetSizes(canvasElement)
+  },
 }
 
 /** The accent bar right to left: the text is at the right, the navigation at the left. */
@@ -187,6 +201,7 @@ export const Narrow: Story = {
     </TopBar.Root>
   ),
   play: async ({ canvas, canvasElement }) => {
+    await expectTopBarTargetSizes(canvasElement)
     await expect(canvas.getByRole('link', { name: 'GitHub' })).toBeVisible()
     await expectNoHorizontalOverflow(canvasElement)
   },
@@ -216,6 +231,42 @@ export const OnPrimaryBand: Story = {
       </TopBar.Root>
     </SiteHeader.Root>
   ),
+  play: async ({ canvasElement }) => {
+    await expectTopBarTargetSizes(canvasElement)
+  },
+}
+
+/**
+ * A button in the bar takes the link look (`kv-button--link`): `on-primary`, no fill, underlined on
+ * hover only. Display settings opens in place, and its chevron says so.
+ */
+export const DisplaySettingsLinkLook: Story = {
+  globals: { ...wideGlobals },
+  parameters: { layout: 'fullscreen' },
+  render: () => (
+    <TopBar.Root variant="primary">
+      <p>
+        A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
+      </p>
+      <div className="kv-button-group">
+        <Navigation.Root label="Tools" className="kv-navigation--horizontal">
+          <Navigation.List>
+            <Navigation.Item>
+              <Link.Root href="#github">GitHub</Link.Root>
+            </Navigation.Item>
+          </Navigation.List>
+        </Navigation.Root>
+        <DisplaySettings.Compact className="kv-button--link" />
+      </div>
+    </TopBar.Root>
+  ),
+  play: async ({ canvas, canvasElement }) => {
+    await expectTopBarTargetSizes(canvasElement)
+    await expect(canvas.getByRole('link', { name: 'Latest: Pre-alpha' })).toBeVisible()
+    await expect(canvas.getByRole('link', { name: 'GitHub' })).toBeVisible()
+    await expectMinimumTargetSize(canvas.getByRole('button', { name: /display/i }))
+    await expectMinimumTargetSize(canvas.getByRole('link', { name: 'GitHub' }))
+  },
 }
 
 /** Try the keys (see Keyboard above): Tab moves through the links in DOM order. */
@@ -236,7 +287,8 @@ export const Keyboard: Story = {
       </Navigation.Root>
     </TopBar.Root>
   ),
-  play: async ({ canvas }) => {
+  play: async ({ canvasElement, canvas }) => {
+    await expectTopBarTargetSizes(canvasElement)
     await userEvent.tab()
     await expect(canvas.getByRole('link', { name: 'Latest: Pre-alpha' })).toHaveFocus()
     await userEvent.tab()

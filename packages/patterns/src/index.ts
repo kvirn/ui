@@ -23,6 +23,8 @@ export type {
 } from './site-chrome/language-links/language-links.tsx'
 export {
   MainMenu,
+  MainMenuGroup,
+  MainMenuGroupLink,
   MainMenuLink,
   MainMenuOverview,
   MainMenuRoot,
@@ -31,6 +33,7 @@ export {
   MainMenuTopicPanel,
 } from './site-chrome/main-menu/main-menu.tsx'
 export type {
+  MainMenuGroupProps,
   MainMenuLinkProps,
   MainMenuRootProps,
   MainMenuTopicButtonProps,
@@ -69,6 +72,19 @@ export type {
   SiteFooterOrganisationProps,
   SiteFooterRootProps,
 } from './site-chrome/site-footer/site-footer.tsx'
+export {
+  PageHeader,
+  PageHeaderFacts,
+  PageHeaderLead,
+  PageHeaderRoot,
+  PageHeaderTitle,
+} from './site-chrome/page-header/page-header.tsx'
+export type {
+  PageHeaderFactsProps,
+  PageHeaderLeadProps,
+  PageHeaderRootProps,
+  PageHeaderTitleProps,
+} from './site-chrome/page-header/page-header.tsx'
 export {
   PageFrame,
   PageFrameBody,

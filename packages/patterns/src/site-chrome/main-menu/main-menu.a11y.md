@@ -8,13 +8,15 @@
 
 ## Roles, states, properties
 
-| Part                   | Element / role           | ARIA / state                                                                                | Notes                                                                                                      |
-| ---------------------- | ------------------------ | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `MainMenu.Root`        | `<nav>` (navigation)     | `aria-label` from its required `label` prop                                                 | Class `kv-mega-menu`. Distinct from the other navs of the page (2.4.1)                                     |
-| `MainMenu.TopicButton` | `<button type="button">` | `aria-expanded`, `aria-controls` (the panel), `data-trail` on the topic that holds the page | Its text never changes with the state. A decorative chevron follows it. Not `aria-haspopup`                |
-| `MainMenu.TopicPanel`  | `<div>`, no role         | `hidden` while closed                                                                       | Starts with `MainMenu.Overview`, because the trigger is a button and not a link. Not `until-found`         |
-| `MainMenu.Link`        | `<a href>` in a list     | `aria-current="page"` only while its panel is shown, never inside a `hidden` group          | One `aria-current` per nav. The trigger's trail is visual and is not announced: the Breadcrumb is the path |
-| `MainMenu.Link` (top)  | `<a href>`               | `aria-current` as any navigation link                                                       | A topic with no sub-pages is a plain link, not a button                                                    |
+| Part                   | Element / role             | ARIA / state                                                                                | Notes                                                                                                                                                                                                                           |
+| ---------------------- | -------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MainMenu.Root`        | `<nav>` (navigation)       | `aria-label` from its required `label` prop                                                 | Class `kv-mega-menu`. Distinct from the other navs of the page (2.4.1)                                                                                                                                                          |
+| `MainMenu.TopicButton` | `<button type="button">`   | `aria-expanded`, `aria-controls` (the panel), `data-trail` on the topic that holds the page | Its text never changes with the state. A decorative chevron follows it. Not `aria-haspopup`                                                                                                                                     |
+| `MainMenu.TopicPanel`  | `<div>`, no role           | `hidden` while closed                                                                       | Starts with `MainMenu.Overview`, because the trigger is a button and not a link. Not `until-found`                                                                                                                              |
+| `MainMenu.Link`        | `<a href>` in a list       | `aria-current="page"` only while its panel is shown, never inside a `hidden` group          | One `aria-current` per nav. The trigger's trail is visual and is not announced: the Breadcrumb is the path                                                                                                                      |
+| `MainMenu.Group`       | `<li>` in the panel's list | none                                                                                        | Holds a `MainMenu.GroupLink` (or a `Navigation.Label` when the group has no page) and a nested `Navigation.List` of `MainMenu.Link`s: a list of links, named by its label when it has one. The panel lays groups out as columns |
+| `MainMenu.GroupLink`   | `<a href>`                 | `aria-current` by the same rule as `MainMenu.Link`                                          | The group's own page. Counts for the topic's `data-trail`. A group with no page uses a `Navigation.Label`, never a `#` link                                                                                                     |
+| `MainMenu.Link` (top)  | `<a href>`                 | `aria-current` as any navigation link                                                       | A topic with no sub-pages is a plain link, not a button                                                                                                                                                                         |
 
 Rules (the focus-out and outside-press closes and the Escape focus return are shown in `primary-navigation.stories.tsx`):
 
@@ -22,6 +24,7 @@ Rules (the focus-out and outside-press closes and the Escape focus return are sh
 - **Wide (from 64rem):** opening one topic closes any other. A panel closes when focus leaves the nav and when a press lands outside it, so it never covers the element that has focus (2.4.11). Resizing keeps the state, except that crossing to wide keeps one open topic: the one that holds focus, else the last opened.
 - **Escape, wide:** with focus elsewhere in the nav after Tab left an open panel, Escape closes the open panel and focus stays where it is.
 - **Narrow (below 64rem):** panels are in flow and independent, and nothing closes on focus-out.
+- **Groups.** A panel's list may hold groups (nested lists of links). No new keys: Tab goes through the overview, then each group link and its links, in DOM order.
 - **Following a link** closes every panel. The `SiteHeader.Menu` around it closes too.
 - **`data-trail`** is set on a topic's button while a link inside it is `current`, whether its panel is open or not.
 
@@ -68,6 +71,7 @@ None. The state is `aria-expanded`.
 
 - Focus indicator: the token ring on every trigger and link.
 - Target size: the nav-item height (44px, 32px compact from 64rem), at least 24px.
+- Target size, grouped panel (from 64rem): its links have no minimum height and `space-1` block padding, so each is at least 24px (about 28 to 30px measured), 2.5.8.
 - forced-colors behaviour: the panel keeps a `CanvasText` border (the shadow drops); the trail keeps weight 600.
 - reduced-motion behaviour: nothing animates.
 - RTL: the row starts at the right, the chevrons are vertical and do not mirror.

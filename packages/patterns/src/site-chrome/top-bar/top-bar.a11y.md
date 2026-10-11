@@ -49,11 +49,12 @@ None.
 - Text first, the navigation last, each a child of the bar.
 - Name the navigation with its `label`, and mark the current link.
 - A link in the text says where it goes.
+- Write a sentence in a `<p>`, never a bare `<div>`: a link directly in a div of the bar is a bar item and loses its resting underline.
 
 ## Visual / modes
 
-- No fill by default: the page's colours. `primary`, `secondary` and `accent` fill the bar with `primary`, `secondary` or `accent`, and its text, text links (underlined at rest), focus ring and current navigation bar are `on-primary`, `on-secondary` or `on-accent` (`focus-ring` is about 1:1 on a fill). Measured by `theme:check` at 4.5:1, 7:1 in the contrast themes. On the primary Site header it is the darker `primary-hover` band, its text links are `on-primary` and underlined at rest, its ring is `on-primary`, and the current navigation item has the `on-primary` bar.
-- No type rules of its own: the text takes its size from what it sits on; a navigation inside keeps its 44px items (2.5.8).
+- No fill by default: the page's colours. `primary`, `secondary` and `accent` fill the bar with `primary`, `secondary` or `accent`, and its text, text links (a link in a sentence stays underlined at rest), focus ring and current navigation bar are `on-primary`, `on-secondary` or `on-accent` (`focus-ring` is about 1:1 on a fill). Measured by `theme:check` at 4.5:1, 7:1 in the contrast themes. On the primary Site header it is the darker `primary-hover` band, its text links are `on-primary` (a link in a sentence stays underlined at rest), its ring is `on-primary`, and the current navigation item has the `on-primary` bar.
+- No type rules of its own: the text takes its size from what it sits on; bar items (a link that is a direct child of the bar or of a side, a Navigation item, a `kv-button--link` button) are at least 24px tall at every width (2.5.8), in the bar's on-colour, underlined on hover only, with no hover background. A link in a sentence is not a bar item: it keeps its underline at rest (1.4.1). A popup opened from the bar keeps its own tokens.
 - 320px: the two sides wrap onto their own rows, nothing is hidden (1.4.10).
 - forced-colors behaviour: links are `LinkText`. A variant's fill drops to `Canvas` with a 1px `CanvasText` edge, the ring is `Highlight` and the theme's `LinkText` bar marks the current item; so does the primary Site header's band.
 - reduced-motion behaviour: nothing animates.

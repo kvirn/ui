@@ -11,6 +11,25 @@ export async function expectMinimumTargetSize(element: Element) {
   await expect(height).toBeGreaterThanOrEqual(24)
 }
 
+/** Every top bar is a band at least 48 CSS px tall, its items centred in it. */
+export async function expectTopBarBandHeight(root: Element) {
+  const bars = root.querySelectorAll('.kv-top-bar')
+  await expect(bars.length).toBeGreaterThan(0)
+  for (const bar of bars) {
+    await expect(bar.getBoundingClientRect().height).toBeGreaterThanOrEqual(48)
+  }
+}
+
+/** Every bar item in a top bar is at least 24 × 24 CSS px, none skipped (2.5.8). A link in a sentence is inline, which 2.5.8 exempts. */
+export async function expectTopBarTargetSizes(root: Element) {
+  await expectTopBarBandHeight(root)
+  const items = root.querySelectorAll('.kv-top-bar a:not(p a), .kv-top-bar button')
+  await expect(items.length).toBeGreaterThan(0)
+  for (const item of items) {
+    await expectMinimumTargetSize(item)
+  }
+}
+
 /** Nothing inside the element is wider than it (1.4.10). */
 export async function expectNoHorizontalOverflow(element: HTMLElement) {
   await expect(element.scrollWidth).toBeLessThanOrEqual(element.clientWidth)

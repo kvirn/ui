@@ -10,6 +10,7 @@
  *
  * Sections:
  *   P1. Page frame        kv-page-frame: the skip link, banner, main and contentinfo of a page
+ *   P1a. Page header      kv-page-header: the intro band of a page, breadcrumb, h1, lead, facts
  *   P2. Site header       kv-site-header, its rows, the Meny and the plain main navigation
  *   P2a. Primary header   kv-site-header--primary: the same parts as three primary bands
  *   P2b. Application logo kv-application-logo: the link to the start page, mark, name, slogan
@@ -28,6 +29,93 @@
 .kv-page-frame-main,
 .kv-page-frame-body {
   padding-block: var(--kv-space-8);
+}
+
+/* P1a. Page header ----------------------------------------------------------------------------
+ * The first child of main: a full-width surface band with the Container inside. Breadcrumb, h1,
+ * lead and facts follow each other in the DOM and on screen. The facts are a wrapping row from
+ * 40rem and stacked below. */
+.kv-page-header {
+  border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  background-color: var(--kv-color-surface);
+  color: var(--kv-color-text);
+}
+
+/* The band is the first child of main, so main's own top padding would open a gap above it. */
+.kv-page-frame-main:has(> .kv-page-header:first-child) {
+  padding-block-start: 0;
+}
+
+.kv-page-header-inner {
+  padding-block: var(--kv-space-6);
+}
+
+.kv-page-header-inner > .kv-heading {
+  margin: var(--kv-space-4) 0 0;
+}
+
+.kv-page-header-inner > .kv-heading:first-child {
+  margin-block-start: 0;
+}
+
+.kv-page-header-inner > .kv-lead {
+  margin: var(--kv-space-3) 0 0;
+  max-inline-size: 60ch;
+  color: var(--kv-color-text);
+  font-size: var(--kv-font-lead-size);
+  line-height: var(--kv-font-lead-line-height);
+}
+
+.kv-page-header-facts.kv-definition-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kv-space-2);
+  margin-block: var(--kv-space-6) 0;
+  border-block-start: 0;
+  font-size: var(--kv-font-body-small-size);
+  line-height: var(--kv-font-body-small-line-height);
+}
+
+.kv-page-header-facts .kv-definition-list-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--kv-space-1) var(--kv-space-2);
+  padding: 0;
+  border: 0;
+}
+
+.kv-page-header-facts .kv-definition-list-term {
+  color: var(--kv-color-text-muted);
+  font-weight: 400;
+}
+
+.kv-page-header-facts .kv-definition-list-description {
+  color: var(--kv-color-text);
+  font-weight: 500;
+}
+
+.kv-page-header-facts code {
+  font-family: var(--kv-font-family-mono);
+  font-size: var(--kv-font-code-size);
+}
+
+@media (width >= 40rem) {
+  .kv-page-header-inner {
+    padding-block: var(--kv-space-8);
+  }
+
+  .kv-page-header-facts.kv-definition-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: var(--kv-space-6);
+  }
+}
+
+@media (forced-colors: active) {
+  .kv-page-header {
+    border-block-end-color: CanvasText;
+  }
 }
 
 /* P2. Site header -------------------------------------------------------------------------------
@@ -123,8 +211,8 @@
 /* P2a. Primary site header ---------------------------------------------------------------------
  * kv-site-header--primary: every child of the Container is a full-width band, `primary` with
  * `on-primary` content, and a TopBar first is the darker `primary-hover` top bar (the lighter step in
- * dark-contrast, so it still reads as its own band). In the dark themes the bands are neutral
- * instead (below). The Container is full width here and each band
+ * dark-contrast, so it still reads as its own band). The bands are `primary` in every theme. The
+ * Container is full width here and each band
  * pads its inline edges to the Container's content edge, as the mega panel does: the fills reach
  * the viewport and the content lines up. DOM order is band order. `focus-ring` is about 1:1 on
  * `primary`, so the ring, the current bar and the control edges in the bands are `on-primary`. The
@@ -140,28 +228,6 @@
   color: var(--kv-site-header-on);
 }
 
-/* Dark: the bands are a darker neutral, not the brand blue. The page's own surface and canvas
- * steps, so the top bar is the darkest band, with `text` on them and a hairline under the
- * header. The ring and the edges follow `--kv-site-header-on`; the current bar is `primary`, which has
- * 3:1 or more on both neutral steps. */
-:root[data-kv-color-scheme='dark'] .kv-section.kv-site-header.kv-site-header--primary {
-  --kv-site-header-fill: var(--kv-color-surface);
-  --kv-site-header-bar: var(--kv-color-canvas);
-  --kv-site-header-on: var(--kv-color-text);
-  --kv-site-header-current: var(--kv-color-primary);
-  border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-kv-color-scheme]) .kv-section.kv-site-header.kv-site-header--primary {
-    --kv-site-header-fill: var(--kv-color-surface);
-    --kv-site-header-bar: var(--kv-color-canvas);
-    --kv-site-header-on: var(--kv-color-text);
-    --kv-site-header-current: var(--kv-color-primary);
-    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
-  }
-}
-
 .kv-site-header.kv-site-header--primary > .kv-site-header-inner {
   max-inline-size: none;
   padding-inline: 0;
@@ -172,16 +238,30 @@
   padding-inline: max(var(--kv-space-4), calc((100% - 80rem) / 2 + var(--kv-space-4)));
 }
 
-/* Band 1: a TopBar on the darker step. Its links in text are on-primary and underlined at rest;
+/* Band 1: a TopBar on the darker step. Its links and link-look buttons are on-primary; a link in a sentence is
+ * underlined at rest, a bar item on hover only (P2d);
  * its Navigation takes the band's item rules below. */
 .kv-site-header.kv-site-header--primary > .kv-site-header-inner > .kv-top-bar {
-  /* The current tool's bar sits on the band's edge. */
-  padding-block-end: 0;
   background-color: var(--kv-site-header-bar);
 }
 
-.kv-site-header.kv-site-header--primary .kv-top-bar .kv-link:not(.kv-navigation .kv-link) {
+.kv-site-header.kv-site-header--primary
+  .kv-top-bar
+  :is(
+    .kv-link:not(.kv-navigation .kv-link, .kv-popover-popup *),
+    .kv-button.kv-button--link:not(.kv-popover-popup *)
+  ) {
   color: var(--kv-site-header-on);
+}
+
+.kv-site-header.kv-site-header--primary
+  .kv-top-bar
+  .kv-link:not(
+    .kv-navigation .kv-link,
+    .kv-popover-popup *,
+    .kv-top-bar > .kv-link,
+    .kv-top-bar > div > .kv-link
+  ) {
   text-decoration-line: underline;
 }
 
@@ -404,6 +484,10 @@
     border-block-end: var(--kv-border-width) solid CanvasText;
   }
 
+  .kv-site-header.kv-site-header--primary .kv-top-bar .kv-button.kv-button--link {
+    color: ButtonText;
+  }
+
   .kv-site-header.kv-site-header--primary .kv-top-bar .kv-link:not(.kv-navigation .kv-link),
   .kv-site-header.kv-site-header--primary
     .kv-navigation--horizontal
@@ -470,6 +554,33 @@
     > .kv-navigation-item
     > :is(.kv-link, .kv-disclosure-trigger) {
     padding-inline: var(--kv-space-3);
+  }
+}
+
+/* The Menu inside the masthead (two bands): below 64rem a full-width row with its panel in flow
+ * before the search, which is full width too. From 64rem one wrapping row: brand, topics, search
+ * at the end. The Menu is not positioned, so a wide mega panel is still placed against the
+ * header, full width under the masthead. */
+.kv-site-header--primary .kv-site-header-masthead > .kv-site-header-menu {
+  flex: 1 1 100%;
+  min-inline-size: 0;
+  padding-block-end: 0;
+}
+
+.kv-site-header--primary .kv-site-header-masthead > .kv-site-header-menu ~ .kv-site-search {
+  flex: 1 1 100%;
+  max-inline-size: none;
+}
+
+@media (width >= 64rem) {
+  .kv-site-header--primary .kv-site-header-masthead > .kv-site-header-menu {
+    flex: 0 1 auto;
+  }
+
+  .kv-site-header--primary .kv-site-header-masthead > .kv-site-header-menu ~ .kv-site-search {
+    flex: 1 1 min(16rem, 100%);
+    max-inline-size: 22rem;
+    margin-inline-start: auto;
   }
 }
 
@@ -591,13 +702,106 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0 var(--kv-space-6);
-  padding-block: var(--kv-space-1);
+  gap: var(--kv-space-2) var(--kv-space-6);
+  /* A band at least 48px tall at every width and density (no token is 48px in compact), its items
+   * centred; wrapped, each row of items is 24px and the band grows. */
+  box-sizing: border-box;
+  min-block-size: 3rem;
+  padding-block: var(--kv-space-2);
 }
 
 /* The sides are a row: a paragraph's own margins would make the bar taller than its content. */
 .kv-top-bar > * {
   margin-block: 0;
+}
+
+/* Bar items (DESIGN.md, Site chrome patterns): a link that stands alone (a direct child of the bar
+ * or of one of its sides, or a Navigation item) and a link-look button. Inline-block, at least 24px
+ * tall at every width (2.5.8, a 1.5rem line box: the body line height only gives that at 16px), no underline at rest and no background on hover or press; a hover
+ * underlines it, and position in the bar is the cue. A link in a sentence is not one: it keeps its
+ * underline (1.4.1). A Navigation's items drop their padding and minimum width, and the gap between
+ * them stands in for it. A popup opened from the bar keeps its own tokens. */
+:is(
+  .kv-top-bar > .kv-link,
+  .kv-top-bar > div > .kv-link,
+  .kv-top-bar .kv-navigation-item > .kv-link,
+  .kv-top-bar .kv-button.kv-button--link
+):not(.kv-link--service, .kv-popover-popup *) {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-block-size: 1.5rem;
+  padding-block: 0;
+  padding-inline: 0;
+  line-height: 1.5rem;
+}
+
+:is(
+    .kv-top-bar > .kv-link,
+    .kv-top-bar > div > .kv-link,
+    .kv-top-bar .kv-navigation-item > .kv-link,
+    .kv-top-bar .kv-button.kv-button--link
+  ):not(.kv-link--service, .kv-popover-popup *):not(.kv-button) {
+  text-decoration-line: none;
+}
+
+:is(
+    .kv-top-bar > .kv-link,
+    .kv-top-bar > div > .kv-link,
+    .kv-top-bar .kv-navigation-item > .kv-link,
+    .kv-top-bar .kv-button.kv-button--link
+  ):not(.kv-link--service, .kv-popover-popup *):not(:disabled, [data-disabled]):is(
+    :hover,
+    :active
+  ) {
+  background-color: transparent;
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+}
+
+.kv-top-bar .kv-navigation--horizontal > .kv-navigation-list {
+  gap: var(--kv-space-2) var(--kv-space-4);
+}
+
+.kv-top-bar .kv-navigation--horizontal > .kv-navigation-list > .kv-navigation-item {
+  min-inline-size: 1.5rem;
+}
+
+/* From 64rem the bar is one row: its Navigation fills the band's block size (its negative margin eats
+ * the band's padding), so the current tool's bar at the link's block end sits flush on the band's
+ * edge, at the label's width. The text stays centred and 24px high. Below 64rem the rows wrap, keep
+ * their 8px gaps, and the bar sits under its own label. */
+@media (width >= 64rem) {
+  .kv-top-bar .kv-navigation--horizontal {
+    display: flex;
+    align-self: stretch;
+    margin-block: calc(-1 * var(--kv-space-2));
+  }
+
+  .kv-top-bar .kv-navigation--horizontal > .kv-navigation-list {
+    align-items: stretch;
+  }
+
+  .kv-top-bar .kv-navigation--horizontal > .kv-navigation-list > .kv-navigation-item {
+    display: flex;
+  }
+
+  .kv-top-bar
+    .kv-navigation--horizontal
+    > .kv-navigation-list
+    > .kv-navigation-item
+    > .kv-link:not(.kv-link--service) {
+    align-self: stretch;
+  }
+}
+
+/* The row's own item padding in theme.css is more specific than the bar-item rule above. */
+.kv-top-bar
+  .kv-navigation--horizontal
+  > .kv-navigation-list
+  > .kv-navigation-item
+  > .kv-link:not(.kv-link--service) {
+  padding-inline: 0;
 }
 
 /* kv-top-bar--primary, --secondary, --accent: a fill with its own on-colour (DESIGN.md, Colors).
@@ -621,7 +825,6 @@
 
 .kv-top-bar:where(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent) {
   padding-inline: var(--kv-space-4);
-  padding-block-end: 0;
 }
 
 .kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent) {
@@ -630,8 +833,20 @@
 }
 
 .kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-  .kv-link:not(.kv-navigation .kv-link) {
+  :is(
+    .kv-link:not(.kv-navigation .kv-link, .kv-popover-popup *),
+    .kv-button.kv-button--link:not(.kv-popover-popup *)
+  ) {
   color: var(--kv-top-bar-on-fill);
+}
+
+.kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
+  .kv-link:not(
+    .kv-navigation .kv-link,
+    .kv-popover-popup *,
+    .kv-top-bar > .kv-link,
+    .kv-top-bar > div > .kv-link
+  ) {
   text-decoration-line: underline;
 }
 
@@ -670,7 +885,7 @@
 }
 
 .kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-  .kv-link:is(:focus-visible, [data-focus-visible]) {
+  :is(.kv-link, .kv-button):is(:focus-visible, [data-focus-visible]) {
   outline-color: var(--kv-top-bar-on-fill);
 }
 
@@ -704,6 +919,11 @@
   }
 
   .kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
+    .kv-button.kv-button--link {
+    color: ButtonText;
+  }
+
+  .kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
     .kv-navigation--horizontal
     > .kv-navigation-list
     > .kv-navigation-item
@@ -712,7 +932,7 @@
   }
 
   .kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-    .kv-link:is(:focus-visible, [data-focus-visible]) {
+    :is(.kv-link, .kv-button):is(:focus-visible, [data-focus-visible]) {
     outline-color: Highlight;
   }
 }
@@ -798,6 +1018,94 @@
 
   .kv-disclosure-trigger.kv-mega-menu-trigger[data-trail] {
     background-color: Canvas;
+  }
+}
+
+/* A group in a topic's panel: its page link (or a label) and a nested list. Narrow, the group is
+ * a nav item with an indented list. Wide, the groups are columns under the overview, which has
+ * its own row; links are text-coloured, underlined on hover, the current one weight 600 with a
+ * 2px underline. */
+.kv-mega-menu .kv-mega-menu-group.kv-navigation-item > .kv-navigation-label {
+  margin-block-start: 0;
+  font-size: var(--kv-control-font-size);
+  font-weight: 600;
+  line-height: var(--kv-control-line-height);
+}
+
+.kv-mega-menu .kv-mega-menu-group.kv-navigation-item > .kv-link.kv-mega-menu-group-link {
+  font-weight: 600;
+}
+
+@media (width < 64rem) {
+  .kv-site-header.kv-site-header--primary
+    .kv-site-header-menu-panel
+    .kv-mega-menu-group
+    > :is(.kv-link.kv-mega-menu-group-link, .kv-navigation-label) {
+    background-color: transparent;
+    color: var(--kv-site-header-on);
+  }
+}
+
+@media (width >= 64rem) {
+  .kv-mega-menu .kv-navigation-list.kv-mega-menu-list:has(> .kv-mega-menu-group) {
+    grid-template-columns: repeat(auto-fill, minmax(min(9rem, 100%), 1fr));
+    gap: var(--kv-space-6);
+  }
+
+  .kv-mega-menu .kv-mega-menu-list:has(> .kv-mega-menu-group) > .kv-mega-menu-overview {
+    grid-column: 1 / -1;
+  }
+
+  .kv-mega-menu .kv-mega-menu-group > .kv-navigation-list {
+    gap: 0;
+    margin-block-start: var(--kv-space-2);
+    padding-inline-start: 0;
+  }
+
+  .kv-mega-menu .kv-mega-menu-group.kv-navigation-item > .kv-navigation-label {
+    padding-block: var(--kv-space-1);
+    padding-inline: 0;
+    color: var(--kv-color-text);
+  }
+
+  .kv-mega-menu
+    .kv-mega-menu-list:has(> .kv-mega-menu-group)
+    .kv-navigation-item
+    > .kv-link:not(.kv-link--service) {
+    min-block-size: 0;
+    padding-block: var(--kv-space-1);
+    padding-inline: 0;
+    border-radius: var(--kv-radius-none);
+    background-color: transparent;
+    color: var(--kv-color-text);
+    font-weight: 400;
+    text-decoration-line: none;
+  }
+
+  .kv-mega-menu
+    .kv-mega-menu-list:has(> .kv-mega-menu-group)
+    .kv-navigation-item
+    > .kv-link:not(.kv-link--service):is(:hover, :active) {
+    text-decoration-line: underline;
+  }
+
+  .kv-mega-menu
+    .kv-mega-menu-list:has(> .kv-mega-menu-group)
+    .kv-navigation-item
+    > .kv-link:not(.kv-link--service):is(
+      [data-current],
+      [aria-current]:not([aria-current='false'])
+    ) {
+    font-weight: 600;
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+  }
+
+  .kv-mega-menu
+    .kv-mega-menu-list:has(> .kv-mega-menu-group)
+    .kv-navigation-item:is(.kv-mega-menu-overview, .kv-mega-menu-group)
+    > .kv-link:not(.kv-link--service):first-child {
+    font-weight: 600;
   }
 }
 

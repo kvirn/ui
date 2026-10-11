@@ -9,11 +9,14 @@ import {
   TopBar,
 } from '@kvirn-ui/patterns'
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { KvirnProvider, Link, Navigation } from '@kvirn-ui/react'
+import { DisplaySettings, KvirnProvider, Link, Navigation } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/site-header/site-header.a11y.md?raw'
-import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
+import {
+  expectNoHorizontalOverflow,
+  expectTopBarTargetSizes,
+} from '../../components/theme-story-assertions.ts'
 import {
   PlaceholderFooter,
   chromeViewports,
@@ -38,7 +41,7 @@ The pattern holds no text. Put an [Application logo](?path=/docs/patterns-site-c
 | \`SiteHeader.Masthead\` | \`<div>\` | The brand row: the row of the \`ApplicationLogo\`, language links, shortcuts and \`SiteSearch\` |
 | \`SiteHeader.Utility\` | \`<nav>\` | \`label\` (required): its name. \`SiteHeader.UtilityLink\`s inside |
 | \`SiteHeader.UtilityLink\` | \`<li>\` with \`<a href>\` | \`href\`, \`current\`, \`as\` |
-| \`SiteHeader.Menu\` | \`<div>\` that owns the open state | \`defaultOpen\` (below \`64rem\`). Escape, focus and close on a link |
+| \`SiteHeader.Menu\` | \`<div>\` that owns the open state | \`defaultOpen\` (below \`64rem\`). Escape, focus and close on a link. After the \`Masthead\`, or inside it between the logo and the search: two bands (see \`PrimaryMastheadMenu\`) |
 | \`SiteHeader.MenuButton\` | \`<button>\` | The word of the button is its children |
 | \`SiteHeader.MenuPanel\` | \`<div>\` | Holds the \`MainMenu\` |
 
@@ -163,21 +166,22 @@ export const Primary: Story = {
       <PageFrame.Root>
         <SiteHeader.Root variant="primary">
           <TopBar.Root>
-            <p>
-              A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
-            </p>
-            <Navigation.Root label="Tools" className="kv-navigation--horizontal">
-              <Navigation.List>
-                <Navigation.Item>
-                  <Link.Root href="#documentation" current>
-                    Documentation
-                  </Link.Root>
-                </Navigation.Item>
-                <Navigation.Item>
-                  <Link.Root href="#github">GitHub</Link.Root>
-                </Navigation.Item>
-              </Navigation.List>
-            </Navigation.Root>
+            <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
+            <div className="kv-button-group">
+              <Navigation.Root label="Tools" className="kv-navigation--horizontal">
+                <Navigation.List>
+                  <Navigation.Item>
+                    <Link.Root href="#documentation" current>
+                      Documentation
+                    </Link.Root>
+                  </Navigation.Item>
+                  <Navigation.Item>
+                    <Link.Root href="#github">GitHub</Link.Root>
+                  </Navigation.Item>
+                </Navigation.List>
+              </Navigation.Root>
+              <DisplaySettings.Compact className="kv-button--link" />
+            </div>
           </TopBar.Root>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start">
@@ -226,7 +230,8 @@ export const Primary: Story = {
       </PageFrame.Root>
     </KvirnProvider>
   ),
-  play: async ({ canvas }) => {
+  play: async ({ canvas, canvasElement }) => {
+    await expectTopBarTargetSizes(canvasElement)
     await expect(canvas.getAllByRole('banner')).toHaveLength(1)
     await expect(canvas.getByRole('navigation', { name: 'Tools' })).toBeVisible()
     await expectDrawn(canvas.getByRole('navigation', { name: 'Main menu', hidden: true }))
@@ -318,6 +323,296 @@ export const PrimaryRTL: Story = {
 /** The primary bands in forced colours: the fills drop to Canvas and a CanvasText edge keeps the bands apart. */
 export const PrimaryForcedColors: Story = {
   ...Primary,
+  globals: { forcedColors: 'active', ...wideGlobals },
+}
+
+/** The two-band primary header: the top bar, then one masthead row with the logo, the topics and the search at the end. From `64rem` the topics are always shown; below it the Menu is a full-width row. */
+export const PrimaryMastheadMenu: Story = {
+  globals: { ...wideGlobals },
+  render: () => (
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root variant="primary">
+          <TopBar.Root>
+            <p>
+              A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
+            </p>
+            <Navigation.Root label="Tools" className="kv-navigation--horizontal">
+              <Navigation.List>
+                <Navigation.Item>
+                  <Link.Root href="#documentation" current>
+                    Documentation
+                  </Link.Root>
+                </Navigation.Item>
+                <Navigation.Item>
+                  <Link.Root href="#github">GitHub</Link.Root>
+                </Navigation.Item>
+              </Navigation.List>
+            </Navigation.Root>
+          </TopBar.Root>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
+            <SiteHeader.Menu>
+              <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+              <SiteHeader.MenuPanel>
+                <MainMenu.Root label="Main menu">
+                  <MainMenu.Topic>
+                    <MainMenu.TopicButton>Preschool and school</MainMenu.TopicButton>
+                    <MainMenu.TopicPanel>
+                      <MainMenu.Overview href="#school">
+                        All about preschool and school
+                      </MainMenu.Overview>
+                      <MainMenu.Group>
+                        <MainMenu.GroupLink href="#preschool">Preschool</MainMenu.GroupLink>
+                        <Navigation.List>
+                          <MainMenu.Link href="#apply">Apply for a place</MainMenu.Link>
+                          <MainMenu.Link href="#fees">Fees</MainMenu.Link>
+                        </Navigation.List>
+                      </MainMenu.Group>
+                      <MainMenu.Group>
+                        <MainMenu.GroupLink href="#compulsory">
+                          Compulsory school
+                        </MainMenu.GroupLink>
+                        <Navigation.List>
+                          <MainMenu.Link href="#primary-school">Primary school</MainMenu.Link>
+                          <MainMenu.Link href="#lower-secondary">
+                            Lower secondary school
+                          </MainMenu.Link>
+                        </Navigation.List>
+                      </MainMenu.Group>
+                      <MainMenu.Group>
+                        <Navigation.Label>Support at school</Navigation.Label>
+                        <Navigation.List>
+                          <MainMenu.Link href="#student-health">Student health</MainMenu.Link>
+                          <MainMenu.Link href="#special-support">Special support</MainMenu.Link>
+                        </Navigation.List>
+                      </MainMenu.Group>
+                    </MainMenu.TopicPanel>
+                  </MainMenu.Topic>
+                  <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+                  <MainMenu.Link href="#living" current="page">
+                    Living and environment
+                  </MainMenu.Link>
+                  <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
+                </MainMenu.Root>
+              </SiteHeader.MenuPanel>
+            </SiteHeader.Menu>
+            <SiteSearch action="#search" label="Search the site">
+              Search
+            </SiteSearch>
+          </SiteHeader.Masthead>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Living and environment</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getAllByRole('banner')).toHaveLength(1)
+    await expectDrawn(canvas.getByRole('navigation', { name: 'Main menu', hidden: true }))
+    await expect(canvas.getByRole('button', { name: 'Preschool and school' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    )
+    await expect(canvas.getByRole('searchbox', { name: 'Search the site' })).toBeVisible()
+  },
+}
+
+/** A topic with grouped links open: the overview on its own row, then the groups as columns under the masthead. A group with no page has a label instead of a link. */
+export const PrimaryMastheadMenuOpen: Story = {
+  globals: { ...wideGlobals },
+  render: () => (
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root variant="primary">
+          <TopBar.Root>
+            <p>
+              A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
+            </p>
+            <Navigation.Root label="Tools" className="kv-navigation--horizontal">
+              <Navigation.List>
+                <Navigation.Item>
+                  <Link.Root href="#documentation" current>
+                    Documentation
+                  </Link.Root>
+                </Navigation.Item>
+                <Navigation.Item>
+                  <Link.Root href="#github">GitHub</Link.Root>
+                </Navigation.Item>
+              </Navigation.List>
+            </Navigation.Root>
+          </TopBar.Root>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
+            <SiteHeader.Menu>
+              <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+              <SiteHeader.MenuPanel>
+                <MainMenu.Root label="Main menu">
+                  <MainMenu.Topic>
+                    <MainMenu.TopicButton>Preschool and school</MainMenu.TopicButton>
+                    <MainMenu.TopicPanel>
+                      <MainMenu.Overview href="#school">
+                        All about preschool and school
+                      </MainMenu.Overview>
+                      <MainMenu.Group>
+                        <MainMenu.GroupLink href="#preschool">Preschool</MainMenu.GroupLink>
+                        <Navigation.List>
+                          <MainMenu.Link href="#apply">Apply for a place</MainMenu.Link>
+                          <MainMenu.Link href="#fees">Fees</MainMenu.Link>
+                        </Navigation.List>
+                      </MainMenu.Group>
+                      <MainMenu.Group>
+                        <MainMenu.GroupLink href="#compulsory">
+                          Compulsory school
+                        </MainMenu.GroupLink>
+                        <Navigation.List>
+                          <MainMenu.Link href="#primary-school">Primary school</MainMenu.Link>
+                          <MainMenu.Link href="#lower-secondary">
+                            Lower secondary school
+                          </MainMenu.Link>
+                        </Navigation.List>
+                      </MainMenu.Group>
+                      <MainMenu.Group>
+                        <Navigation.Label>Support at school</Navigation.Label>
+                        <Navigation.List>
+                          <MainMenu.Link href="#student-health">Student health</MainMenu.Link>
+                          <MainMenu.Link href="#special-support">Special support</MainMenu.Link>
+                        </Navigation.List>
+                      </MainMenu.Group>
+                    </MainMenu.TopicPanel>
+                  </MainMenu.Topic>
+                  <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+                  <MainMenu.Link href="#living" current="page">
+                    Living and environment
+                  </MainMenu.Link>
+                  <MainMenu.Link href="#culture">Culture and leisure</MainMenu.Link>
+                </MainMenu.Root>
+              </SiteHeader.MenuPanel>
+            </SiteHeader.Menu>
+            <SiteSearch action="#search" label="Search the site">
+              Search
+            </SiteSearch>
+          </SiteHeader.Masthead>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Living and environment</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
+  ),
+  play: async ({ canvas }) => {
+    const topic = canvas.getByRole('button', { name: 'Preschool and school' })
+    await userEvent.click(topic)
+    await expect(topic).toHaveAttribute('aria-expanded', 'true')
+    await expect(canvas.getByRole('link', { name: 'All about preschool and school' })).toBeVisible()
+    await expect(canvas.getByRole('link', { name: 'Preschool' })).toBeVisible()
+    await expect(canvas.getByRole('link', { name: 'Fees' })).toBeVisible()
+    await expect(canvas.getByRole('list', { name: 'Support at school' })).toBeVisible()
+  },
+}
+
+/** At 320px the Menu is a full-width row, the opened topic is in flow before the search, and the search is full width. */
+export const PrimaryMastheadMenuNarrow: Story = {
+  globals: { ...narrowGlobals },
+  render: () => (
+    <KvirnProvider locale="en" messages={en}>
+      <PageFrame.Root>
+        <SiteHeader.Root variant="primary">
+          <TopBar.Root>
+            <p>
+              A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
+            </p>
+            <Navigation.Root label="Tools" className="kv-navigation--horizontal">
+              <Navigation.List>
+                <Navigation.Item>
+                  <Link.Root href="#documentation" current>
+                    Documentation
+                  </Link.Root>
+                </Navigation.Item>
+                <Navigation.Item>
+                  <Link.Root href="#github">GitHub</Link.Root>
+                </Navigation.Item>
+              </Navigation.List>
+            </Navigation.Root>
+          </TopBar.Root>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
+            <SiteHeader.Menu defaultOpen>
+              <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+              <SiteHeader.MenuPanel>
+                <MainMenu.Root label="Main menu">
+                  <MainMenu.Topic>
+                    <MainMenu.TopicButton>Preschool and school</MainMenu.TopicButton>
+                    <MainMenu.TopicPanel>
+                      <MainMenu.Overview href="#school">
+                        All about preschool and school
+                      </MainMenu.Overview>
+                      <MainMenu.Group>
+                        <MainMenu.GroupLink href="#preschool">Preschool</MainMenu.GroupLink>
+                        <Navigation.List>
+                          <MainMenu.Link href="#apply">Apply for a place</MainMenu.Link>
+                          <MainMenu.Link href="#fees">Fees</MainMenu.Link>
+                        </Navigation.List>
+                      </MainMenu.Group>
+                      <MainMenu.Group>
+                        <Navigation.Label>Support at school</Navigation.Label>
+                        <Navigation.List>
+                          <MainMenu.Link href="#student-health">Student health</MainMenu.Link>
+                        </Navigation.List>
+                      </MainMenu.Group>
+                    </MainMenu.TopicPanel>
+                  </MainMenu.Topic>
+                  <MainMenu.Link href="#living" current="page">
+                    Living and environment
+                  </MainMenu.Link>
+                </MainMenu.Root>
+              </SiteHeader.MenuPanel>
+            </SiteHeader.Menu>
+            <SiteSearch action="#search" label="Search the site">
+              Search
+            </SiteSearch>
+          </SiteHeader.Masthead>
+        </SiteHeader.Root>
+        <PageFrame.Main>
+          <h1>Living and environment</h1>
+        </PageFrame.Main>
+        <PlaceholderFooter />
+      </PageFrame.Root>
+    </KvirnProvider>
+  ),
+  play: async ({ canvas, canvasElement }) => {
+    const menu = canvas.getByRole('button', { name: 'Menu' })
+    await expect(menu).toHaveAttribute('aria-expanded', 'true')
+    const topic = canvas.getByRole('button', { name: 'Preschool and school' })
+    await userEvent.click(topic)
+    await expect(topic).toHaveAttribute('aria-expanded', 'true')
+    await expect(canvas.getByRole('link', { name: 'Fees' })).toBeVisible()
+    await expect(canvas.getByRole('searchbox', { name: 'Search the site' })).toBeVisible()
+    await expectNoHorizontalOverflow(canvasElement)
+  },
+}
+
+/** The two-band header with a grouped topic open, right to left: the columns start at the right. */
+export const PrimaryMastheadMenuRTL: Story = {
+  ...PrimaryMastheadMenuOpen,
+  globals: { dir: 'rtl', locale: 'en', ...wideGlobals },
+}
+
+/** The two-band header with a grouped topic open in forced colours: the panel keeps its CanvasText edge and links are LinkText. */
+export const PrimaryMastheadMenuForcedColors: Story = {
+  ...PrimaryMastheadMenuOpen,
   globals: { forcedColors: 'active', ...wideGlobals },
 }
 
@@ -560,7 +855,20 @@ export const Keyboard: Story = {
             <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>
               <MainMenu.Root label="Main menu">
-                <MainMenu.Link href="#school">Preschool and school</MainMenu.Link>
+                <MainMenu.Topic>
+                  <MainMenu.TopicButton>Preschool and school</MainMenu.TopicButton>
+                  <MainMenu.TopicPanel>
+                    <MainMenu.Overview href="#school">
+                      All about preschool and school
+                    </MainMenu.Overview>
+                    <MainMenu.Group>
+                      <MainMenu.GroupLink href="#preschool">Preschool</MainMenu.GroupLink>
+                      <Navigation.List>
+                        <MainMenu.Link href="#fees">Fees</MainMenu.Link>
+                      </Navigation.List>
+                    </MainMenu.Group>
+                  </MainMenu.TopicPanel>
+                </MainMenu.Topic>
                 <MainMenu.Link href="#care">Care and support</MainMenu.Link>
               </MainMenu.Root>
             </SiteHeader.MenuPanel>
@@ -580,6 +888,16 @@ export const Keyboard: Story = {
     await expect(menu).toHaveAttribute('aria-expanded', 'true')
     await userEvent.tab()
     await expect(document.activeElement?.closest('nav')).toHaveAccessibleName('Main menu')
+    const topic = canvas.getByRole('button', { name: 'Preschool and school' })
+    await expect(topic).toHaveFocus()
+    await userEvent.keyboard('{Enter}')
+    await userEvent.tab()
+    await userEvent.tab()
+    await expect(canvas.getByRole('link', { name: 'Preschool' })).toHaveFocus()
+    await userEvent.keyboard('{Escape}')
+    await expect(topic).toHaveAttribute('aria-expanded', 'false')
+    await expect(topic).toHaveFocus()
+    await expect(menu).toHaveAttribute('aria-expanded', 'true')
     await userEvent.keyboard('{Escape}')
     await expect(menu).toHaveAttribute('aria-expanded', 'false')
     await expect(menu).toHaveFocus()
