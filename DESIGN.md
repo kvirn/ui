@@ -387,13 +387,13 @@ Each word means one thing, in this file, the docs, Storybook, specs and code com
 
 Navigation (`Navigation.Root`) and `TableOfContents` share one item look.
 
-| Part                            | Look                                                                                                                           |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `nav-item`                      | `text` at weight 400, no fill, underline on hover. Control height, `--kv-control-min-block-size`                               |
-| `nav-item-current`              | Solid `primary` fill, `on-primary` label, weight 600: a shape at 3:1 against the surface, plus `aria-current`                  |
-| `nav-item-trail`                | Every ancestor of the current item: `primary-subtle` and weight 600, so it differs from the others in weight, not colour alone |
-| `nav-item-current` on `primary` | Weight 600 and a straight `on-primary` bar, no fill (a fill can't show on `primary`)                                           |
-| Forced colours                  | The fills drop. The current item gets a straight `LinkText` bar and the trail keeps its weight                                 |
+| Part                            | Look                                                                                                                                                                                                                                           |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nav-item`                      | `text` at weight 400, no fill, underline on hover. Control height, `--kv-control-min-block-size`                                                                                                                                               |
+| `nav-item-current`              | Solid `primary` fill, `on-primary` label, weight 600: a shape at 3:1 against the surface, plus `aria-current`                                                                                                                                  |
+| `nav-item-trail`                | Every ancestor of the current item: `primary-subtle` and weight 600, so it differs from the others in weight, not colour alone                                                                                                                 |
+| `nav-item-current` on `primary` | In the primary site header's main menu: a pill, `on-primary` fill with a `primary` label, weight 600, `--kv-radius-full` (forced colours: `Highlight` with `HighlightText`). In a top bar: weight 600 and a straight `on-primary` bar, no fill |
+| Forced colours                  | The fills drop. The current item gets a straight `LinkText` bar and the trail keeps its weight                                                                                                                                                 |
 
 - **`aria-current`.** Exactly one link per navigation has it: `page` when the page is listed, otherwise `true` on the deepest item shown. Never on an ancestor of a listed page or on a link inside a `hidden` group. The theme finds the trail with `:has()`, so it needs no prop.
 - **Nesting.** A nested list is indented one step (`--kv-space-4`), two levels at most on resident pages. A collapsed group is rendered with `hidden`, never unmounted.

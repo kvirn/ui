@@ -108,6 +108,7 @@
   .kv-page-header-facts.kv-definition-list {
     flex-direction: row;
     flex-wrap: wrap;
+    align-items: baseline;
     column-gap: var(--kv-space-6);
   }
 }
@@ -312,22 +313,6 @@
   font-weight: 600;
 }
 
-.kv-site-header.kv-site-header--primary
-  .kv-navigation--horizontal
-  > .kv-navigation-list
-  > .kv-navigation-item
-  > :is(
-    .kv-link:is([data-current], [aria-current]:not([aria-current='false'])),
-    .kv-disclosure-trigger[data-trail]
-  )::after {
-  content: '';
-  position: absolute;
-  inset-block-end: 0;
-  inset-inline: 0;
-  block-size: var(--kv-indicator-width);
-  background-color: var(--kv-site-header-current);
-}
-
 /* A card on the band (a raised surface, such as a settings panel) keeps the token ring. */
 .kv-site-header.kv-site-header--primary
   :is(.kv-link, .kv-disclosure-trigger, .kv-button):is(:focus-visible, [data-focus-visible]):not(
@@ -392,24 +377,18 @@
   }
 
   .kv-site-header.kv-site-header--primary
-    .kv-site-header-menu-panel
-    .kv-navigation-item
-    > .kv-link:is([data-current], [aria-current]:not([aria-current='false']))::after,
-  .kv-site-header.kv-site-header--primary
     .kv-navigation--horizontal
     > .kv-navigation-list
     > .kv-navigation-item
     > :is(
       .kv-link:is([data-current], [aria-current]:not([aria-current='false'])),
       .kv-disclosure-trigger[data-trail]
-    ):where(.kv-site-header-menu-panel *)::after {
-    content: '';
-    position: absolute;
+    ):where(.kv-site-header-menu-panel *) {
+    gap: var(--kv-space-2);
+    inline-size: fit-content;
+    border-radius: var(--kv-radius-full);
     background-color: var(--kv-site-header-current);
-    inset-block: var(--kv-space-2);
-    inset-inline: 0 auto;
-    inline-size: var(--kv-indicator-width);
-    block-size: auto;
+    color: var(--kv-site-header-fill);
   }
 }
 
@@ -442,16 +421,33 @@
     padding-block-end: 0;
   }
 
-  /* The navigation band: large items at weight 500, the current one at 600. */
+  /* The navigation band: pill items at weight 500, centred in the band; the current one is a filled
+   * pill at 600 and the others fill with primary-hover, no underline. */
+  .kv-site-header--primary .kv-mega-menu.kv-navigation--horizontal > .kv-navigation-list {
+    align-items: center;
+    gap: var(--kv-space-1);
+  }
+
   .kv-site-header.kv-site-header--primary
     .kv-mega-menu
     > .kv-navigation-list
     > .kv-navigation-item
     > :is(.kv-link:not(.kv-link--service), .kv-disclosure-trigger) {
-    min-block-size: 3.5rem;
+    min-block-size: 2.5rem;
     padding-inline: var(--kv-space-4);
-    font-size: var(--kv-font-body-large-size);
+    border-radius: var(--kv-radius-full);
+    font-size: var(--kv-font-body-size);
     font-weight: 500;
+    line-height: 1.5rem;
+  }
+
+  .kv-site-header.kv-site-header--primary
+    .kv-mega-menu
+    > .kv-navigation-list
+    > .kv-navigation-item
+    > :is(.kv-link:not(.kv-link--service), .kv-disclosure-trigger):is(:hover, :active) {
+    background-color: var(--kv-site-header-bar);
+    text-decoration-line: none;
   }
 
   .kv-site-header.kv-site-header--primary
@@ -461,7 +457,9 @@
     > :is(
       .kv-link:is([data-current], [aria-current]:not([aria-current='false'])),
       .kv-disclosure-trigger[data-trail]
-    ) {
+    ):is(*, :hover, :active) {
+    background-color: var(--kv-site-header-current);
+    color: var(--kv-site-header-fill);
     font-weight: 600;
   }
 
@@ -472,7 +470,7 @@
 }
 
 /* Forced colours: the fills drop to Canvas, a CanvasText edge keeps the bands apart, links are
- * LinkText and the theme's own LinkText bar marks the current item. */
+ * LinkText and the current item is a Highlight pill. */
 @media (forced-colors: active) {
   .kv-section.kv-site-header.kv-site-header--primary,
   .kv-site-header.kv-site-header--primary > .kv-site-header-inner > .kv-top-bar {
@@ -513,18 +511,25 @@
   }
 
   .kv-site-header.kv-site-header--primary
-    .kv-navigation--horizontal
+    .kv-mega-menu.kv-navigation--horizontal
     > .kv-navigation-list
     > .kv-navigation-item
     > :is(
       .kv-link:is([data-current], [aria-current]:not([aria-current='false'])),
       .kv-disclosure-trigger[data-trail]
-    )::after,
+    ) {
+    color: HighlightText;
+  }
+
   .kv-site-header.kv-site-header--primary
-    .kv-site-header-menu-panel
-    .kv-navigation-item
-    > .kv-link:is([data-current], [aria-current]:not([aria-current='false']))::after {
-    content: none;
+    .kv-mega-menu.kv-navigation--horizontal
+    > .kv-navigation-list
+    > .kv-navigation-item
+    > :is(
+      .kv-link:is([data-current], [aria-current]:not([aria-current='false'])),
+      .kv-disclosure-trigger[data-trail]
+    ) {
+    background-color: Highlight;
   }
 
   .kv-site-header.kv-site-header--primary .kv-disclosure-trigger.kv-site-header-menu-trigger {
@@ -544,7 +549,7 @@
  * bar's text start, so the items' own padding hangs outside the content edge. */
 @media (width >= 64rem) {
   .kv-site-header--primary .kv-mega-menu.kv-navigation--horizontal > .kv-navigation-list {
-    margin-inline-start: calc(-1 * var(--kv-space-3));
+    margin-inline-start: calc(-1 * var(--kv-space-4));
   }
 
   /* A link and a topic button have the same padding in the band, so the one margin fits both. */
@@ -553,7 +558,7 @@
     > .kv-navigation-list
     > .kv-navigation-item
     > :is(.kv-link, .kv-disclosure-trigger) {
-    padding-inline: var(--kv-space-3);
+    padding-inline: var(--kv-space-4);
   }
 }
 
