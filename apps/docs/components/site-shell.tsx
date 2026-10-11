@@ -1,6 +1,14 @@
 'use client'
-import { ApplicationLogo, SiteHeader, SiteSearch, TopBar } from '@kvirn-ui/patterns'
-import { Badge, DisplaySettings, Link, Navigation, SkipLink, useRouteFocus } from '@kvirn-ui/react'
+import { ApplicationLogo, SiteHeader, SiteSearch } from '@kvirn-ui/patterns'
+import {
+  Badge,
+  DisplaySettings,
+  Link,
+  Navigation,
+  SkipLink,
+  TopBar,
+  useRouteFocus,
+} from '@kvirn-ui/react'
 import { useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'

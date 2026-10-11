@@ -6,10 +6,9 @@ import {
   PageFrame,
   SiteHeader,
   SiteSearch,
-  TopBar,
 } from '@kvirn-ui/patterns'
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { DisplaySettings, KvirnProvider, Link, Navigation } from '@kvirn-ui/react'
+import { DisplaySettings, KvirnProvider, Link, Navigation, TopBar } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/site-header/site-header.a11y.md?raw'
@@ -167,7 +166,7 @@ export const Primary: Story = {
         <SiteHeader.Root variant="primary">
           <TopBar.Root>
             <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
-            <div className="kv-button-group">
+            <div className="kv-story-top-end">
               <Navigation.Root label="Tools" className="kv-navigation--horizontal">
                 <Navigation.List>
                   <Navigation.Item>

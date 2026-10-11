@@ -154,6 +154,14 @@ body {
   list-style: none;
 }
 
+/* The end side of a top bar story: the navigation and a button in a row, as the docs' own. */
+.kv-story-top-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kv-space-2) var(--kv-space-4);
+}
+
 /* Theme override story: an unlayered consumer rule beats @layer kv. */
 .my-button {
   border-radius: 0;

@@ -15,7 +15,6 @@
  *   P2a. Primary header   kv-site-header--primary: the same parts as three primary bands
  *   P2b. Application logo kv-application-logo: the link to the start page, mark, name, slogan
  *   P2c. Site search      kv-site-search: the search landmark, field and button as one strip
- *   P2d. Top bar          kv-top-bar: a slim bar, its children at the start and the end
  *   P3. Mega menu         kv-mega-menu: topic buttons that open lists of links
  *   P4. Site footer       kv-site-footer: contact, links about the site, organisation
  *   P4a-c. Site alert, Cookie consent, Page tools: kv-site-alert, kv-cookie-consent, kv-page-tools
@@ -240,7 +239,7 @@
 }
 
 /* Band 1: a TopBar on the darker step. Its links and link-look buttons are on-primary; a link in a sentence is
- * underlined at rest, a bar item on hover only (P2d);
+ * underlined at rest, a bar item on hover only (theme.css, 8d);
  * its Navigation takes the band's item rules below. */
 .kv-site-header.kv-site-header--primary > .kv-site-header-inner > .kv-top-bar {
   background-color: var(--kv-site-header-bar);
@@ -311,6 +310,32 @@
   background-color: transparent;
   color: var(--kv-site-header-on);
   font-weight: 600;
+}
+
+/* The TopBar's current tool: weight 600 and a straight on-primary bar at the link's block end, at the
+ * label's width (flush on the band's edge from 64rem, under the label below). Only the top bar: the
+ * main menu's current item is a pill. */
+.kv-site-header.kv-site-header--primary
+  .kv-top-bar
+  .kv-navigation--horizontal
+  > .kv-navigation-list
+  > .kv-navigation-item
+  > .kv-link:is([data-current], [aria-current]:not([aria-current='false'])) {
+  font-weight: 600;
+}
+
+.kv-site-header.kv-site-header--primary
+  .kv-top-bar
+  .kv-navigation--horizontal
+  > .kv-navigation-list
+  > .kv-navigation-item
+  > .kv-link:is([data-current], [aria-current]:not([aria-current='false']))::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  block-size: var(--kv-indicator-width);
+  background-color: var(--kv-site-header-current);
 }
 
 /* A card on the band (a raised surface, such as a settings panel) keeps the token ring. */
@@ -484,6 +509,24 @@
 
   .kv-site-header.kv-site-header--primary .kv-top-bar .kv-button.kv-button--link {
     color: ButtonText;
+  }
+
+  .kv-site-header.kv-site-header--primary
+    .kv-top-bar
+    .kv-navigation--horizontal
+    > .kv-navigation-list
+    > .kv-navigation-item
+    > .kv-link:is([data-current], [aria-current]:not([aria-current='false']))::after {
+    content: none;
+  }
+
+  .kv-site-header.kv-site-header--primary
+    .kv-top-bar
+    .kv-navigation--horizontal
+    > .kv-navigation-list
+    > .kv-navigation-item
+    > .kv-link:is([data-current], [aria-current]:not([aria-current='false']))::before {
+    inset-inline: 0;
   }
 
   .kv-site-header.kv-site-header--primary .kv-top-bar .kv-link:not(.kv-navigation .kv-link),
@@ -697,248 +740,108 @@
   white-space: nowrap;
 }
 
-/* P2d. Top bar -----------------------------------------------------------------------------------
- * kv-top-bar: a slim bar of two sides. Its children sit at the start and the end, in DOM order,
- * and wrap when there is no room; logical properties, so right to left flips them. No type
- * rules, and no fill by default: it takes the colours and the text of what it sits on. A variant
- * class below adds a fill. */
-.kv-top-bar {
-  display: flex;
-  flex-wrap: wrap;
+/* On a primary header the strip is one white pill (DESIGN.md, Site chrome patterns): the input is
+ * transparent inside it, the Search button a solid primary pill at its end, and the focus ring goes
+ * round the whole pill. The magnifier is the decorative Icon SiteSearch renders in the field. */
+.kv-site-search-field > .kv-site-search-icon {
+  display: none;
+}
+
+.kv-site-header--primary .kv-site-search {
+  --kv-site-search-pill-padding: var(--kv-space-1);
+}
+
+.kv-site-header--primary .kv-site-search .kv-button-group.kv-button-group--attached {
   align-items: center;
-  justify-content: space-between;
-  gap: var(--kv-space-2) var(--kv-space-6);
-  /* A band at least 48px tall at every width and density (no token is 48px in compact), its items
-   * centred; wrapped, each row of items is 24px and the band grows. */
-  box-sizing: border-box;
-  min-block-size: 3rem;
-  padding-block: var(--kv-space-2);
+  padding: var(--kv-site-search-pill-padding);
+  border-radius: var(--kv-radius-full);
+  background-color: var(--kv-site-header-on);
 }
 
-/* The sides are a row: a paragraph's own margins would make the bar taller than its content. */
-.kv-top-bar > * {
-  margin-block: 0;
+.kv-site-header--primary
+  .kv-site-search
+  .kv-button-group.kv-button-group--attached:has(.kv-input:focus-visible) {
+  outline: var(--kv-focus-ring-width) solid var(--kv-site-header-on);
+  outline-offset: var(--kv-focus-ring-offset);
 }
 
-/* Bar items (DESIGN.md, Site chrome patterns): a link that stands alone (a direct child of the bar
- * or of one of its sides, or a Navigation item) and a link-look button. Inline-block, at least 24px
- * tall at every width (2.5.8, a 1.5rem line box: the body line height only gives that at 16px), no underline at rest and no background on hover or press; a hover
- * underlines it, and position in the bar is the cue. A link in a sentence is not one: it keeps its
- * underline (1.4.1). A Navigation's items drop their padding and minimum width, and the gap between
- * them stands in for it. A popup opened from the bar keeps its own tokens. */
-:is(
-  .kv-top-bar > .kv-link,
-  .kv-top-bar > div > .kv-link,
-  .kv-top-bar .kv-navigation-item > .kv-link,
-  .kv-top-bar .kv-button.kv-button--link
-):not(.kv-link--service, .kv-popover-popup *) {
-  display: inline-flex;
-  align-items: center;
-  box-sizing: border-box;
-  min-block-size: 1.5rem;
-  padding-block: 0;
-  padding-inline: 0;
-  line-height: 1.5rem;
-}
-
-:is(
-    .kv-top-bar > .kv-link,
-    .kv-top-bar > div > .kv-link,
-    .kv-top-bar .kv-navigation-item > .kv-link,
-    .kv-top-bar .kv-button.kv-button--link
-  ):not(.kv-link--service, .kv-popover-popup *):not(.kv-button) {
-  text-decoration-line: none;
-}
-
-:is(
-    .kv-top-bar > .kv-link,
-    .kv-top-bar > div > .kv-link,
-    .kv-top-bar .kv-navigation-item > .kv-link,
-    .kv-top-bar .kv-button.kv-button--link
-  ):not(.kv-link--service, .kv-popover-popup *):not(:disabled, [data-disabled]):is(
-    :hover,
-    :active
-  ) {
-  background-color: transparent;
-  text-decoration-line: underline;
-  text-decoration-thickness: var(--kv-link-underline-thickness-hover);
-}
-
-.kv-top-bar .kv-navigation--horizontal > .kv-navigation-list {
-  gap: var(--kv-space-2) var(--kv-space-4);
-}
-
-.kv-top-bar .kv-navigation--horizontal > .kv-navigation-list > .kv-navigation-item {
-  min-inline-size: 1.5rem;
-}
-
-/* From 64rem the bar is one row: its Navigation fills the band's block size (its negative margin eats
- * the band's padding), so the current tool's bar at the link's block end sits flush on the band's
- * edge, at the label's width. The text stays centred and 24px high. Below 64rem the rows wrap, keep
- * their 8px gaps, and the bar sits under its own label. */
-@media (width >= 64rem) {
-  .kv-top-bar .kv-navigation--horizontal {
-    display: flex;
-    align-self: stretch;
-    margin-block: calc(-1 * var(--kv-space-2));
-  }
-
-  .kv-top-bar .kv-navigation--horizontal > .kv-navigation-list {
-    align-items: stretch;
-  }
-
-  .kv-top-bar .kv-navigation--horizontal > .kv-navigation-list > .kv-navigation-item {
-    display: flex;
-  }
-
-  .kv-top-bar
-    .kv-navigation--horizontal
-    > .kv-navigation-list
-    > .kv-navigation-item
-    > .kv-link:not(.kv-link--service) {
-    align-self: stretch;
-  }
-}
-
-/* The row's own item padding in theme.css is more specific than the bar-item rule above. */
-.kv-top-bar
-  .kv-navigation--horizontal
-  > .kv-navigation-list
-  > .kv-navigation-item
-  > .kv-link:not(.kv-link--service) {
-  padding-inline: 0;
-}
-
-/* kv-top-bar--primary, --secondary, --accent: a fill with its own on-colour (DESIGN.md, Colors).
- * The normal focus ring is about 1:1 on a fill, so the ring, the text links and the current
- * item's bar are the on-colour, and a Navigation's items drop their fill. The inline padding has
- * no specificity, so a header that lines the bar up with its content wins. */
-.kv-top-bar.kv-top-bar--primary {
-  --kv-top-bar-fill: var(--kv-color-primary);
-  --kv-top-bar-on-fill: var(--kv-color-on-primary);
-}
-
-.kv-top-bar.kv-top-bar--secondary {
-  --kv-top-bar-fill: var(--kv-color-secondary);
-  --kv-top-bar-on-fill: var(--kv-color-on-secondary);
-}
-
-.kv-top-bar.kv-top-bar--accent {
-  --kv-top-bar-fill: var(--kv-color-accent);
-  --kv-top-bar-on-fill: var(--kv-color-on-accent);
-}
-
-.kv-top-bar:where(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent) {
-  padding-inline: var(--kv-space-4);
-}
-
-.kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent) {
-  background-color: var(--kv-top-bar-fill);
-  color: var(--kv-top-bar-on-fill);
-}
-
-.kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-  :is(
-    .kv-link:not(.kv-navigation .kv-link, .kv-popover-popup *),
-    .kv-button.kv-button--link:not(.kv-popover-popup *)
-  ) {
-  color: var(--kv-top-bar-on-fill);
-}
-
-.kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-  .kv-link:not(
-    .kv-navigation .kv-link,
-    .kv-popover-popup *,
-    .kv-top-bar > .kv-link,
-    .kv-top-bar > div > .kv-link
-  ) {
-  text-decoration-line: underline;
-}
-
-.kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-  .kv-navigation--horizontal
-  > .kv-navigation-list
-  > .kv-navigation-item
-  > .kv-link:not(.kv-link--service) {
+.kv-site-header--primary .kv-site-search-field {
   position: relative;
-  border-radius: var(--kv-radius-none);
-  background-color: transparent;
-  color: var(--kv-top-bar-on-fill);
 }
 
-.kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-  .kv-navigation--horizontal
-  > .kv-navigation-list
-  > .kv-navigation-item
-  > .kv-link:is([data-current], [aria-current]:not([aria-current='false'])) {
+.kv-site-header--primary .kv-site-search-field > .kv-site-search-icon {
+  display: block;
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--kv-space-4);
+  margin-block: auto;
+  color: var(--kv-site-header-fill);
+  pointer-events: none;
+}
+
+.kv-site-header--primary .kv-site-search-field .kv-input.kv-input {
+  min-block-size: 2rem;
+  padding-inline: calc(var(--kv-space-4) + 1.25rem + var(--kv-space-2)) var(--kv-space-2);
+  font-size: 1rem;
+  border: 0;
+  border-radius: var(--kv-radius-full);
   background-color: transparent;
-  color: var(--kv-top-bar-on-fill);
+  color: var(--kv-site-header-fill);
+  caret-color: var(--kv-site-header-fill);
+}
+
+.kv-site-header--primary
+  .kv-site-search-field
+  .kv-input[type='search']::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.kv-site-header--primary .kv-site-search-field .kv-input.kv-input:focus {
+  outline: none;
+}
+
+.kv-site-header--primary
+  .kv-site-search
+  .kv-button-group.kv-button-group--attached
+  > .kv-button[type='submit'] {
+  min-block-size: 2rem;
+  margin-inline-start: 0;
+  padding-inline: var(--kv-space-3);
+  font-size: 1rem;
+  line-height: 1.5rem;
+  border: 0;
+  border-radius: var(--kv-radius-full);
+  background-color: var(--kv-site-header-fill);
+  box-shadow: none;
+  color: var(--kv-site-header-on);
   font-weight: 600;
 }
 
-.kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-  .kv-navigation--horizontal
-  > .kv-navigation-list
-  > .kv-navigation-item
-  > .kv-link:is([data-current], [aria-current]:not([aria-current='false']))::after {
-  content: '';
-  position: absolute;
-  inset-block-end: 0;
-  inset-inline: 0;
-  block-size: var(--kv-indicator-width);
-  background-color: var(--kv-top-bar-on-fill);
+.kv-site-header--primary
+  .kv-site-search
+  .kv-button-group.kv-button-group--attached
+  > .kv-button[type='submit']:not(:disabled, [data-disabled]):hover {
+  background-color: var(--kv-color-primary-hover);
+  box-shadow: none;
 }
 
-.kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-  :is(.kv-link, .kv-button):is(:focus-visible, [data-focus-visible]) {
-  outline-color: var(--kv-top-bar-on-fill);
+.kv-site-header--primary
+  .kv-site-search
+  .kv-button-group.kv-button-group--attached
+  > .kv-button[type='submit']:is(:focus-visible, [data-focus-visible]) {
+  box-shadow: 0 0 0 var(--kv-focus-ring-offset) var(--kv-site-header-on);
 }
 
-/* The items fill the bar edge to edge, so their ring sits inside. */
-.kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-  .kv-navigation-item
-  > .kv-link:is(:focus-visible, [data-focus-visible]) {
-  outline-offset: calc(-2 * var(--kv-focus-ring-width));
-}
-
-/* Forced colours: the fill drops to Canvas, a CanvasText edge keeps the bar apart, the links are
- * LinkText and the theme's own LinkText bar marks the current item. */
 @media (forced-colors: active) {
-  .kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent) {
-    border-block-end: var(--kv-border-width) solid CanvasText;
-    background-color: Canvas;
-    color: CanvasText;
+  .kv-site-header--primary .kv-site-search .kv-button-group.kv-button-group--attached {
+    border: 1px solid CanvasText;
   }
 
-  .kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-    .kv-link:not(.kv-navigation .kv-link),
-  .kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-    .kv-navigation--horizontal
-    > .kv-navigation-list
-    > .kv-navigation-item
-    > :is(
-      .kv-link:not(.kv-link--service),
-      .kv-link:is([data-current], [aria-current]:not([aria-current='false']))
-    ) {
-    color: LinkText;
-  }
-
-  .kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-    .kv-button.kv-button--link {
-    color: ButtonText;
-  }
-
-  .kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-    .kv-navigation--horizontal
-    > .kv-navigation-list
-    > .kv-navigation-item
-    > .kv-link:is([data-current], [aria-current]:not([aria-current='false']))::after {
-    content: none;
-  }
-
-  .kv-top-bar:is(.kv-top-bar--primary, .kv-top-bar--secondary, .kv-top-bar--accent)
-    :is(.kv-link, .kv-button):is(:focus-visible, [data-focus-visible]) {
-    outline-color: Highlight;
+  .kv-site-header--primary
+    .kv-site-search
+    .kv-button-group.kv-button-group--attached
+    > .kv-button[type='submit'] {
+    border: 1px solid CanvasText;
   }
 }
 

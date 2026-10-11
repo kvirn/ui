@@ -59,8 +59,6 @@ export type {
   SiteHeaderUtilityLinkProps,
   SiteHeaderUtilityProps,
 } from './site-chrome/site-header/site-header.tsx'
-export { TopBar, TopBarRoot } from './site-chrome/top-bar/top-bar.tsx'
-export type { TopBarRootProps } from './site-chrome/top-bar/top-bar.tsx'
 export { SiteSearch } from './site-chrome/site-search/site-search.tsx'
 export type { SiteSearchProps } from './site-chrome/site-search/site-search.tsx'
 export {

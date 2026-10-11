@@ -409,6 +409,15 @@ export { Section, SectionRoot } from './section/section.tsx'
 export type { SectionRootProps } from './section/section.tsx'
 export { useSection } from './section/use-section.ts'
 export type { SectionPartProps, UseSectionResult } from './section/use-section.ts'
+export { TopBar, TopBarRoot } from './top-bar/top-bar.tsx'
+export type { TopBarRootProps } from './top-bar/top-bar.tsx'
+export { useTopBar } from './top-bar/use-top-bar.ts'
+export type {
+  TopBarRootPartProps,
+  TopBarVariant,
+  UseTopBarOptions,
+  UseTopBarResult,
+} from './top-bar/use-top-bar.ts'
 export { Container } from './container/container.tsx'
 export type { ContainerProps } from './container/container.tsx'
 export { useContainer } from './container/use-container.ts'

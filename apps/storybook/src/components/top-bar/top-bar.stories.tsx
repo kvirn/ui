@@ -1,16 +1,20 @@
-import { SiteHeader, TopBar } from '@kvirn-ui/patterns'
-import { DisplaySettings, Link, Navigation } from '@kvirn-ui/react'
+import { SiteHeader } from '@kvirn-ui/patterns'
+import { DisplaySettings, Link, Navigation, TopBar } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
-import contract from '../../../../../packages/patterns/src/site-chrome/top-bar/top-bar.a11y.md?raw'
+import contract from '../../../../../packages/react/src/top-bar/top-bar.a11y.md?raw'
 import {
   expectMinimumTargetSize,
   expectNoHorizontalOverflow,
   expectTopBarTargetSizes,
-} from '../../components/theme-story-assertions.ts'
-import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns-story-support.tsx'
+} from '../theme-story-assertions.ts'
+import {
+  chromeViewports,
+  narrowGlobals,
+  wideGlobals,
+} from '../../patterns/patterns-story-support.tsx'
 
-// Patterns/Site chrome/Top bar: a slim bar of two sides, first in the Site header. Each story is
+// Components/Navigation/Top bar: a slim bar of two sides, first in the Site header. Each story is
 // the code an adopter copies: literal JSX, literal text.
 
 const description = `A slim bar with two sides: its children sit at the start and at the end, in DOM order, and wrap when there is no room. Write a line of text first and a \`Navigation\` last.
@@ -23,7 +27,7 @@ Put it first in the Site header, or full width at the top of a page. With no \`v
 | ---- | ------- | ----- |
 | \`TopBar.Root\` | \`<div>\` | The \`<div>\` props. \`variant\`: none (default, no fill), \`primary\`, \`secondary\` or \`accent\`, a fill with its on-colour. Children: your text, then your \`Navigation\` |
 
-The pattern has no strings of its own. The part is also a flat export (\`TopBarRoot\`).
+The component has no strings of its own. The part is also a flat export (\`TopBarRoot\`), and \`useTopBar({ variant })\` gives its class for your own element.
 
 ## Parts and gaps
 
@@ -31,13 +35,15 @@ Parts used: none; you write \`Navigation\` and \`Link\` inside it. No gap.
 `
 
 const meta = {
-  title: 'Patterns/Site chrome/Top bar',
+  title: 'Components/Navigation/Top bar',
   component: TopBar.Root,
+  args: { variant: undefined },
   globals: { locale: 'en' },
   argTypes: {
     variant: {
       control: 'select',
       options: [undefined, 'primary', 'secondary', 'accent'],
+      labels: { undefined: 'none (no fill)' },
       description: 'Default: none, no fill. `kv-top-bar--<variant>`: a fill with its on-colour.',
     },
   },
@@ -53,8 +59,8 @@ type Story = StoryObj<typeof meta>
 
 /** Text at the start, the tools at the end. */
 export const Default: Story = {
-  render: () => (
-    <TopBar.Root>
+  render: (args) => (
+    <TopBar.Root {...args}>
       <p>
         A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
       </p>
@@ -84,6 +90,7 @@ export const Default: Story = {
 
 /** `variant="primary"`: the `primary` fill, `on-primary` text, links, ring and current bar. */
 export const Primary: Story = {
+  argTypes: { variant: { control: false } },
   globals: { ...wideGlobals },
   parameters: { layout: 'fullscreen' },
   render: () => (
@@ -112,6 +119,7 @@ export const Primary: Story = {
 
 /** `variant="secondary"`: the `secondary` fill with `on-secondary`. */
 export const Secondary: Story = {
+  argTypes: { variant: { control: false } },
   globals: { ...wideGlobals },
   parameters: { layout: 'fullscreen' },
   render: () => (
@@ -140,6 +148,7 @@ export const Secondary: Story = {
 
 /** `variant="accent"`: the `accent` fill with `on-accent`. */
 export const Accent: Story = {
+  argTypes: { variant: { control: false } },
   globals: { ...wideGlobals },
   parameters: { layout: 'fullscreen' },
   render: () => (
@@ -180,6 +189,7 @@ export const AccentForcedColors: Story = {
 
 /** At 320px the two sides wrap onto their own rows; nothing is hidden or scrolls sideways. */
 export const Narrow: Story = {
+  argTypes: { variant: { control: false } },
   globals: { ...narrowGlobals },
   render: () => (
     <TopBar.Root>
@@ -209,6 +219,7 @@ export const Narrow: Story = {
 
 /** On the primary Site header: the darker band, `on-primary` links, the current tool's bar. */
 export const OnPrimaryBand: Story = {
+  argTypes: { variant: { control: false } },
   parameters: { layout: 'fullscreen' },
   render: () => (
     <SiteHeader.Root variant="primary">
@@ -241,6 +252,7 @@ export const OnPrimaryBand: Story = {
  * hover only. Display settings opens in place, and its chevron says so.
  */
 export const DisplaySettingsLinkLook: Story = {
+  argTypes: { variant: { control: false } },
   globals: { ...wideGlobals },
   parameters: { layout: 'fullscreen' },
   render: () => (
@@ -248,7 +260,7 @@ export const DisplaySettingsLinkLook: Story = {
       <p>
         A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
       </p>
-      <div className="kv-button-group">
+      <div className="kv-story-top-end">
         <Navigation.Root label="Tools" className="kv-navigation--horizontal">
           <Navigation.List>
             <Navigation.Item>
@@ -269,8 +281,9 @@ export const DisplaySettingsLinkLook: Story = {
   },
 }
 
-/** Try the keys (see Keyboard above): Tab moves through the links in DOM order. */
+/** Try the keys (see Keyboard above): Tab moves through the links and the button in DOM order; Enter follows a link, Enter or Space activates the button. */
 export const Keyboard: Story = {
+  argTypes: { variant: { control: false } },
   render: () => (
     <TopBar.Root>
       <p>
@@ -285,6 +298,7 @@ export const Keyboard: Story = {
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>
+      <DisplaySettings.Compact className="kv-button--link" />
     </TopBar.Root>
   ),
   play: async ({ canvasElement, canvas }) => {
