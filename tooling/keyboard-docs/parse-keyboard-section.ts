@@ -221,8 +221,14 @@ export function parseTestCell(cell: string): { references: TestReference[]; inva
 /** The keys of a Key cell: `Tab / Shift+Tab` is `Tab` and `Shift+Tab`. */
 const keyCellKeys = (cell: string): string[] => cell.split(/\s*\/\s*/).map((key) => key.trim())
 
-/** What is wrong with the rows: the Tab rows a focusable component needs, and every row's test. */
-export function keyboardRowProblems(section: KeyboardSection): string[] {
+/**
+ * What is wrong with the rows: the Tab rows a focusable component needs, and every row's test. A
+ * pattern's rows need no test (`requireTests: false`): patterns are proved by axe in their stories.
+ */
+export function keyboardRowProblems(
+  section: KeyboardSection,
+  { requireTests = true }: { requireTests?: boolean } = {},
+): string[] {
   const problems: string[] = []
   const hasFocusLines = !section.noKeys
   if (hasFocusLines) {
@@ -230,7 +236,7 @@ export function keyboardRowProblems(section: KeyboardSection): string[] {
     if (!keys.includes('Tab')) problems.push('has focus lines but no Tab row')
     if (!keys.includes('Shift+Tab')) problems.push('has focus lines but no Shift+Tab row')
   }
-  for (const row of section.rows) {
+  for (const row of requireTests ? section.rows : []) {
     const { references, invalid } = parseTestCell(row.test)
     if (references.length === 0 || invalid.length > 0) {
       problems.push(`row "${row.key}" names no test: "${row.test}"`)

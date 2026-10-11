@@ -4,7 +4,7 @@
 - **Deviations:** none
 - **Native elements used:** `<section>` (region), `<h2>`, `<button type="button">`, `<a href>`, `<p tabindex="-1">` for the result.
 - **Status:** alpha candidate, story only (plan 0095). Manual AT is `pending`. Kvirnby sets no cookies; `TODO(legal-verify)`: the ePrivacy wording of a real site.
-- **Tests:** `cookie-consent.test.tsx` next to this file proves the choice and the focus move; the buttons are proved in `button.test.tsx`. `cookie-consent.stories.tsx` in `apps/storybook/src/patterns/site-chrome/`.
+- **Tests:** none of its own: patterns aren't unit tested. WCAG is proved by axe in every story state in every theme (`cookie-consent.stories.tsx`); the keys and parts are proved in the components' tests that the rows below name.
 
 ## Roles, states, properties
 
@@ -30,11 +30,11 @@
 - **Arrows wrap:** n/a
 - **Shortcuts:** none
 
-| Key          | Context   | Action                                              | Test                                                                |
-| ------------ | --------- | --------------------------------------------------- | ------------------------------------------------------------------- |
-| Tab          | in region | Moves Accept, Reject, then the link                 | `button.test.tsx › Tab moves focus to the button`                   |
-| Shift+Tab    | in region | Moves back                                          | `button.test.tsx › Shift+Tab moves focus off the button`            |
-| Enter, Space | a button  | Makes the choice and moves focus to the result text | `cookie-consent.test.tsx › a choice moves focus to the result text` |
+| Key          | Context   | Action                                              | Test                                                     |
+| ------------ | --------- | --------------------------------------------------- | -------------------------------------------------------- |
+| Tab          | in region | Moves Accept, Reject, then the link                 | `button.test.tsx › Tab moves focus to the button`        |
+| Shift+Tab    | in region | Moves back                                          | `button.test.tsx › Shift+Tab moves focus off the button` |
+| Enter, Space | a button  | Makes the choice and moves focus to the result text | `cookie-consent.stories.tsx › Keyboard`                  |
 
 The region handles no other key. Escape does nothing: it is not a dialog.
 

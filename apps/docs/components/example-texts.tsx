@@ -3,7 +3,7 @@ import type { LocaleCode } from '@kvirn-ui/i18n'
 import { useLocale } from '@kvirn-ui/react'
 import type { ReactNode } from 'react'
 
-// Example text for the docs site examples, in all five languages. This is fixture text, not
+// Example text for the docs site examples, in English. This is fixture text, not
 // library text: library strings (`link.newTabNotice`) come from @kvirn-ui/i18n through the
 // provider.
 
@@ -63,141 +63,7 @@ const en: ExampleTexts = {
   },
 }
 
-const sv: ExampleTexts = {
-  heading: { buttons: 'Knappar', links: 'Länkar' },
-  button: {
-    sendApplication: 'Skicka ansökan',
-    saveDraft: 'Spara utkast',
-    deleteDraft: 'Ta bort utkast',
-    saveLong: 'Spara utkast till bygglovsansökan',
-    disabledReason: 'Fyll i alla obligatoriska fält innan du skickar.',
-    dangerNote:
-      'Knappar som tar bort något behöver alltid ett bekräftelsesteg. De visas tillsammans här bara för att kunna jämföras.',
-    closeLabel: 'Stäng',
-    saving: 'Sparar utkast…',
-    applicantName: 'Ditt namn',
-  },
-  variant: { primary: 'Primär', secondary: 'Sekundär', danger: 'Farlig' },
-  state: {
-    default: 'Standard',
-    disabled: 'Inaktiverad',
-    focusableDisabled: 'Inaktiverad men fokuserbar',
-  },
-  density: { comfortable: 'Bekväm (standard)', compact: 'Kompakt' },
-  link: {
-    applyInText: 'ansöka om parkeringstillstånd',
-    sentence: ({ link }) => <>Du kan {link} på webben.</>,
-    navLabel: 'Parkeringstillstånd',
-    navOverview: 'Översikt',
-    navApply: 'Ansök',
-    navContact: 'Kontakta oss',
-    guidelines: 'Läs riktlinjerna för tillgänglighet',
-  },
-}
-
-const fi: ExampleTexts = {
-  heading: { buttons: 'Painikkeet', links: 'Linkit' },
-  button: {
-    sendApplication: 'Lähetä hakemus',
-    saveDraft: 'Tallenna luonnos',
-    deleteDraft: 'Poista luonnos',
-    saveLong: 'Tallenna rakennuslupahakemuksen luonnos',
-    disabledReason: 'Täytä kaikki pakolliset kentät ennen lähettämistä.',
-    dangerNote:
-      'Poistopainikkeet tarvitsevat aina vahvistusvaiheen. Ne näytetään tässä yhdessä vain vertailun vuoksi.',
-    closeLabel: 'Sulje',
-    saving: 'Tallennetaan luonnosta…',
-    applicantName: 'Nimesi',
-  },
-  variant: { primary: 'Ensisijainen', secondary: 'Toissijainen', danger: 'Vaarallinen' },
-  state: {
-    default: 'Oletus',
-    disabled: 'Pois käytöstä',
-    focusableDisabled: 'Pois käytöstä mutta kohdistettavissa',
-  },
-  density: { comfortable: 'Väljä (oletus)', compact: 'Tiivis' },
-  link: {
-    applyInText: 'hakea pysäköintilupaa',
-    sentence: ({ link }) => <>Voit {link} verkossa.</>,
-    navLabel: 'Pysäköintiluvat',
-    navOverview: 'Yleiskatsaus',
-    navApply: 'Hae',
-    navContact: 'Ota yhteyttä',
-    guidelines: 'Lue saavutettavuusohjeet',
-  },
-}
-
-const nb: ExampleTexts = {
-  heading: { buttons: 'Knapper', links: 'Lenker' },
-  button: {
-    sendApplication: 'Send søknad',
-    saveDraft: 'Lagre utkast',
-    deleteDraft: 'Slett utkast',
-    saveLong: 'Lagre utkast til byggesøknad',
-    disabledReason: 'Fyll ut alle obligatoriske felt før du sender.',
-    dangerNote:
-      'Knapper som sletter noe, trenger alltid et bekreftelsestrinn. De vises sammen her bare for å kunne sammenlignes.',
-    closeLabel: 'Lukk',
-    saving: 'Lagrer utkast…',
-    applicantName: 'Navnet ditt',
-  },
-  variant: { primary: 'Primær', secondary: 'Sekundær', danger: 'Farlig' },
-  state: {
-    default: 'Standard',
-    disabled: 'Deaktivert',
-    focusableDisabled: 'Deaktivert, men kan få fokus',
-  },
-  density: { comfortable: 'Komfortabel (standard)', compact: 'Kompakt' },
-  link: {
-    applyInText: 'søke om parkeringstillatelse',
-    sentence: ({ link }) => <>Du kan {link} på nett.</>,
-    navLabel: 'Parkeringstillatelser',
-    navOverview: 'Oversikt',
-    navApply: 'Søk',
-    navContact: 'Kontakt oss',
-    guidelines: 'Les retningslinjene for universell utforming',
-  },
-}
-
-const nn: ExampleTexts = {
-  heading: { buttons: 'Knappar', links: 'Lenkjer' },
-  button: {
-    sendApplication: 'Send søknad',
-    saveDraft: 'Lagre utkast',
-    deleteDraft: 'Slett utkast',
-    saveLong: 'Lagre utkast til byggjesøknad',
-    disabledReason: 'Fyll ut alle obligatoriske felt før du sender.',
-    dangerNote:
-      'Knappar som slettar noko, treng alltid eit stadfestingssteg. Dei blir viste saman her berre for å kunne samanliknast.',
-    closeLabel: 'Lukk',
-    saving: 'Lagrar utkast…',
-    applicantName: 'Namnet ditt',
-  },
-  variant: { primary: 'Primær', secondary: 'Sekundær', danger: 'Farleg' },
-  state: {
-    default: 'Standard',
-    disabled: 'Deaktivert',
-    focusableDisabled: 'Deaktivert, men kan få fokus',
-  },
-  density: { comfortable: 'Komfortabel (standard)', compact: 'Kompakt' },
-  link: {
-    applyInText: 'søkje om parkeringsløyve',
-    sentence: ({ link }) => <>Du kan {link} på nett.</>,
-    navLabel: 'Parkeringsløyve',
-    navOverview: 'Oversikt',
-    navApply: 'Søk',
-    navContact: 'Kontakt oss',
-    guidelines: 'Les retningslinjene for universell utforming',
-  },
-}
-
-export const exampleTexts: Record<LocaleCode, ExampleTexts | undefined> = {
-  sv,
-  fi,
-  nb,
-  nn,
-  en,
-}
+export const exampleTexts: Partial<Record<LocaleCode, ExampleTexts>> = { en }
 
 export interface ExampleTextsResult {
   texts: ExampleTexts

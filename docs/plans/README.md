@@ -29,4 +29,5 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0091](0091-landing-v2-evidence.md)                  | Landing v2: the people it is for, then the proof, then the doors             | Implemented (docs site; stories and AT pending)  |
 | [0092](0092-motion-preference.md)                    | Motion as a theme preference (`data-kv-motion`, `useTheme().selectMotion`)   | Implemented                                      |
 | [0095](0095-storybook-patterns-and-content-types.md) | Storybook Patterns and Content types, the shell of the reference site        | Draft                                            |
+| [0099](0099-docs-header-bands.md)                    | Docs site header in three primary bands, from the Site header patterns       | In progress                                      |
 | [0100](0100-docs-galleries.md)                       | Galleries for Components, Patterns and Content types on the docs site        | Approved                                         |

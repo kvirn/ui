@@ -9,13 +9,4 @@ const en = {
   ownElement: 'The page content starts here.',
 }
 
-const sv: typeof en = {
-  hint: 'Tryck på Tab en gång för att visa länken, sedan Enter för att hoppa.',
-  header: 'Sidhuvud med meny och sökfält',
-  main: 'Huvudinnehållet börjar här.',
-  customLabel: 'Hoppa till ansökningsformuläret',
-  form: 'Ansökningsformuläret börjar här.',
-  ownElement: 'Sidans innehåll börjar här.',
-}
-
-export const useSkipLinkTexts = defineExampleTexts({ en, sv })
+export const useSkipLinkTexts = defineExampleTexts({ en })

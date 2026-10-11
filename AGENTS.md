@@ -54,14 +54,14 @@ While working, pass your files. The whole tree runs once, at the end.
 
 ## Tests
 
-Vitest is the only runner: `node` for core, `browser` (Chromium, real key events) for components, and four `storybook*` projects that run every story in every theme. Each contract row, ARIA state and announcement is proved once, in the cheapest layer (`testing` skill). **Keyboard rows are tested in `<name>.test.tsx`.** There is no e2e layer.
+Vitest is the only runner: `node` for core, `browser` (Chromium, real key events) for components, and four `storybook*` projects that run every story in every theme. Each contract row, ARIA state and announcement is proved once, in the cheapest layer (`testing` skill). **Keyboard rows are tested in `<name>.test.tsx`.** Patterns (`packages/patterns`) have no unit tests: they are components composed, so WCAG is proved by axe in every story state in every theme and by their contract. There is no e2e layer.
 
 ## Quality gates
 
 Nothing is done until all of these pass. The orchestrator runs them, once, at the end; CI is the whole-tree gate.
 
 1. `vp check`: no lint or type errors. Formatting is advisory: `vp fmt <files>` on what you commit.
-2. `vp run test` (the whole tree): green, with 0 axe violations in every story state (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`) and a named test for every keyboard-contract row.
+2. `vp run test` (the whole tree): green, with 0 axe violations in every story state (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`) and a named test for every keyboard-contract row of a component (a pattern's rows need none).
 3. `vp run i18n:check` and `vp run theme:check`.
 4. The component has a hook, a compound component, stories (every state, RTL, forced-colors, and a `Keyboard` story if it has a focusable part) and a `<name>.a11y.md` that matches the tests. Its Docs page shows the contract's Keyboard section.
 5. `accessibility-reviewer` returns APPROVE.

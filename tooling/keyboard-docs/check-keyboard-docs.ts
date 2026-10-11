@@ -175,10 +175,15 @@ export function findKeyboardDocsProblems(repositoryRoot: string): string[] {
     if (section === undefined) {
       continue
     }
+    // Patterns aren't unit tested (maintainer decision): their rows name no test, and axe runs in
+    // every story state instead.
+    const isPattern = at(contractFile).startsWith('packages/patterns/')
     problems.push(
-      ...keyboardRowProblems(section).map((problem) => `${at(contractFile)}: ${problem}`),
+      ...keyboardRowProblems(section, { requireTests: !isPattern }).map(
+        (problem) => `${at(contractFile)}: ${problem}`,
+      ),
     )
-    for (const row of section.rows) {
+    for (const row of isPattern ? [] : section.rows) {
       problems.push(
         ...testReferenceProblems(row.test, testFiles, sources).map(
           (problem) => `${at(contractFile)}: row "${row.key}": ${problem}`,

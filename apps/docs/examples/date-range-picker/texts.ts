@@ -10,13 +10,4 @@ export const useDateRangePickerTexts = defineExampleTexts({
     closed: 'Fully booked',
     title: 'Choose the dates of your stay',
   },
-  sv: {
-    legend: 'Datum för din vistelse',
-    from: 'Ankomst',
-    to: 'Avresa',
-    hint: (example: string) => `Till exempel ${example}`,
-    limit: 'Högst 14 nätter.',
-    closed: 'Fullbokat',
-    title: 'Välj datum för din vistelse',
-  },
 })

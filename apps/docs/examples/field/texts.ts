@@ -17,21 +17,4 @@ export const useFieldTexts = defineExampleTexts({
     contactByPhone: 'By phone',
     contactHelpText: 'We only use it to tell you about your case.',
   },
-  sv: {
-    fullName: 'Fullständigt namn',
-    email: 'E-postadress',
-    phone: 'Telefonnummer',
-    search: 'Sök i registret',
-    send: 'Skicka ansökan',
-    emailDescription:
-      'Vi skickar beslutet till den här adressen, så kontrollera den innan du skickar.',
-    emailHelpText: 'Till exempel namn@exempel.se',
-    emailError: 'Ange din e-postadress, till exempel namn@exempel.se.',
-    lockedName: 'Namn på ansökan',
-    lockedHelpText: 'Du kan inte ändra det här. Kontakta din handläggare för att rätta det.',
-    contactMethod: 'Hur vill du bli kontaktad?',
-    contactByEmail: 'Med e-post',
-    contactByPhone: 'Per telefon',
-    contactHelpText: 'Vi använder det bara för att berätta om ditt ärende.',
-  },
 })

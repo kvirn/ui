@@ -90,7 +90,7 @@ An adopter can tell from a name alone how a component is built. Five rules:
 
 A pattern wraps shipped components into a feature (Plan 0095, D9). It is a compound component, and the content is children, as literal JSX:
 
-- **`X.Root` plus named parts** (`SiteHeader.Topbar`, `.Brand`, `.Search`, `.Menu`; `MainMenu.Topic`). A namespace like any other: a frozen object, a display name on every part, a flat export for each (`SiteHeaderBrand`).
+- **`X.Root` plus named parts** (`SiteHeader.Masthead`, `.Menu`; `ApplicationLogo.Name`; `MainMenu.Topic`). A namespace like any other: a frozen object, a display name on every part, a flat export for each (`SiteHeaderBrand`).
 - **Never `{ label, href }` objects or arrays in props:** no `items`, `topics`, `links`, `languages`, `brand`, `navigation`. A prop whose type is visible text or an array is wrong. The text is a child (`<SiteHeader.Brand href="/">Kvirnby kommun</SiteHeader.Brand>`), and a topic with sub-pages is the part `MainMenu.Topic`, not a flag.
 - **A part is one native element or one library component,** takes `className` and the rest of the element's props (`mergeProps`), and `as` only where a link or a component is swapped (a router link).
 - **Props are for behaviour and state:** `current`, `defaultOpen`, `action`, `name`, `messages`. DOM order is children order: no `position` or `order` prop.

@@ -14,17 +14,4 @@ export const useScrollAreaTexts = defineExampleTexts({
     ],
     shortText: 'Three fees, all shown at once: nothing here scrolls.',
   },
-  sv: {
-    feesLabel: 'Avgifter för tillstånd 2026',
-    headers: ['Tillstånd', 'Kategori', 'Handläggningstid', 'Avgift', 'Överklagandetid'],
-    rows: [
-      ['Bygglov', 'Bostad', '10 veckor', '12 400 kr', '3 veckor'],
-      ['Rivningslov', 'Bostad', '6 veckor', '4 200 kr', '3 veckor'],
-      ['Ändrad användning', 'Verksamhet', '8 veckor', '9 800 kr', '3 veckor'],
-      ['Skyltlov', 'Verksamhet', '4 veckor', '1 900 kr', '3 veckor'],
-      ['Uteservering', 'Restaurang', '5 veckor', '2 700 kr', '3 veckor'],
-      ['Evenemangstillstånd', 'Kultur', '3 veckor', '1 200 kr', '2 veckor'],
-    ],
-    shortText: 'Tre avgifter, alla syns på en gång: ingenting här rullar.',
-  },
 })

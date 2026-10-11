@@ -99,16 +99,16 @@ Headless: TableOfContents ships no CSS. With `@kvirn-ui/theme/theme.css` (design
 
 - Focus indicator: the `.kv-link` ring, 2px at 3:1 (2.4.7, 2.4.13). Reviewed by eye in the stories.
 - Target size: every item is at least 24 × 24 CSS px, 44px by default and 32px in compact density (2.5.8). Test: `table-of-contents.stories.tsx › CompactDensity` (play) asserts the 24px threshold.
-- The current heading: a solid `primary` fill with an `on-primary` label at weight 600, and `aria-current`, so it is never colour alone (1.4.1). The headings above it, the trail, get the quiet fill at weight 600. In forced colours the fills drop: the current item gets a straight `LinkText` bar at the inline start and the trail keeps its weight.
+- The table of contents is always compact (32px rows, 14px labels). The current heading is underlined at weight 600, with `aria-current`, and no fill, so it is never colour alone (1.4.1). The headings above it, the trail, keep weight 600 and no fill.
 - Contrast: every pair is Navigation's, already in `theme:check` (1.4.3, 1.4.11): `text` on `primary-subtle`, `on-primary` on `primary`, and `primary` on the plain backgrounds.
-- reduced-motion behaviour: the component never scrolls the page. The current fill fades over 120ms only under `prefers-reduced-motion: no-preference`.
-- RTL: logical properties only. The indent and the forced-colours bar sit at the inline start, on the right.
+- reduced-motion behaviour: the component never scrolls the page. The underline of the current heading changes over 120ms only under `prefers-reduced-motion: no-preference`.
+- RTL: logical properties only. The indent sits at the inline start, on the right.
 - Reflow and text spacing: a vertical list at every width, with `overflow-wrap: anywhere` and nothing fixed. No horizontal scrolling at 320 CSS px with the Finnish fixture (the `LongFinnishText` story, in the dedicated sweep).
 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships: a `<nav>` landmark, native lists and nesting (`table-of-contents.test.tsx › nests the lists from the levels, so the depth is announced`, `› a skipped level nests one step`).
-- 1.4.1 Use of Color: the current heading has a fill and weight as well as colour, and the trail has weight (default theme).
+- 1.4.1 Use of Color: the current heading has an underline and weight, and the trail has weight (default theme).
 - 1.4.3 Contrast (Minimum), 1.4.11 Non-text Contrast: `theme:check` pairs.
 - 1.4.10 Reflow, 1.4.12 Text Spacing: the Finnish fixture at 320px, `overflow-wrap`, no fixed heights.
 - 2.1.1 Keyboard, 2.4.3 Focus Order: native links in DOM order (the Keyboard rows above).
@@ -141,5 +141,5 @@ Headless: TableOfContents ships no CSS. With `@kvirn-ui/theme/theme.css` (design
 
 - **Focus after a followed link is the browser's.** A heading isn't focusable, so focus falls back to the viewport (`document.activeElement` is `body`) and the sequential focus starting point moves to the heading. Check in the AT matrix that NVDA, JAWS and VoiceOver put the reading position at the heading, and that the next Tab continues after it, in each browser.
 - **List semantics in Safari.** The default theme draws no list marker, and Safari (VoiceOver) drops the list semantics of such a list, so the lists carry `role="list"`. Check "list, 3 items" and the nested level in VoiceOver + Safari in the manual AT run.
-- **"Mistaken for keyboard focus"** (design spec Q-C1). The solid fill of the current heading moves while the reader scrolls. The usability test, with the quiet fill and no trail as the fallback, is `pending`.
+- **"Mistaken for keyboard focus"** (design spec Q-C1). The underline of the current heading moves while the reader scrolls. The usability test, with the quiet fill and no trail as the fallback, is `pending`.
 - **`IntersectionObserver` does not report the last pixels of a scroll,** so passive `scroll` and `resize` listeners wakes the same measuring. WebKit and mobile Safari behaviour is not automated and is `pending` here.

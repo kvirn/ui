@@ -12,9 +12,4 @@ export const useAnnouncerTexts = defineExampleTexts<AnnouncerTexts>({
     expired: { message: 'Your session has expired. Sign in again.', button: 'Simulate expiry' },
     digits: { message: 'Only digits are allowed here', label: 'Phone number' },
   },
-  sv: {
-    saved: { message: 'Dina ändringar är sparade', button: 'Spara' },
-    expired: { message: 'Sessionen har gått ut. Logga in igen.', button: 'Simulera utgång' },
-    digits: { message: 'Här kan du bara skriva siffror', label: 'Telefonnummer' },
-  },
 })

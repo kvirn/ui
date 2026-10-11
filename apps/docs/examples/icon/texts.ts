@@ -10,13 +10,4 @@ export const useIconTexts = defineExampleTexts({
     next: 'Next',
     ownDrawing: 'Exempelby municipality',
   },
-  sv: {
-    addChild: 'Lägg till ett barn till',
-    language: 'Språk',
-    currentLanguage: 'Svenska',
-    house: 'Startsida',
-    sizes: 'Storlekar',
-    next: 'Nästa',
-    ownDrawing: 'Exempelby kommun',
-  },
 })

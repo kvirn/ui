@@ -9,12 +9,4 @@ export const useLocalesTexts = defineExampleTexts({
     newTab: 'Read the decision',
     newTabNotice: '(external service, new tab)',
   },
-  sv: {
-    amount: 'Avgift',
-    date: 'Beslutsdatum',
-    list: 'Handlingar',
-    documents: ['pass', 'faktura', 'intyg'],
-    newTab: 'Läs beslutet',
-    newTabNotice: '(extern tjänst, ny flik)',
-  },
 })

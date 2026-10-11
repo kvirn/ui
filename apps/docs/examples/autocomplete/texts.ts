@@ -9,12 +9,4 @@ export const useAutocompleteTexts = defineExampleTexts({
     sent: 'Sent',
     entered: 'You entered',
   },
-  sv: {
-    street: 'Gatuadress',
-    hint: 'Börja skriva. Du kan också skriva en gata som inte finns i listan.',
-    address: 'Adress',
-    send: 'Skicka',
-    sent: 'Skickat',
-    entered: 'Du har skrivit',
-  },
 })

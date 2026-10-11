@@ -88,6 +88,10 @@ const inputRef = useRef<HTMLInputElement>(null)
 - Disable the Button when the Field is disabled, and leave it out of a read-only group.
 - The show-password and calendar behaviours themselves aren't part of InputGroup: a DatePicker (M4) will put its named calendar Button in the same place.
 
+### A search bar: a field and a submit Button
+
+A submit Button doesn't go in the box: the box holds an in-field action such as Rensa. For the site's search bar, put the `TextInput` and the submit `Button` side by side in an attached `ButtonGroup` (`className="kv-button-group--attached"`, unnamed, so it adds no group role): one strip, each control with its own edge and focus ring. The [Site search](?path=/docs/patterns-site-chrome-site-search--docs) pattern (`@kvirn-ui/patterns`) renders exactly this inside a `<search>` landmark and a GET form; the Search story shows the code.
+
 ### Your part
 
 - **The label says the unit.** "Månadshyra i kronor", not "Månadshyra" with a "kr" Addon. If the label can't say it, a description (a `Prose`) above the control does.

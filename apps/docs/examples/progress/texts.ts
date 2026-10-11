@@ -12,15 +12,4 @@ export const useProgressTexts = defineExampleTexts({
     export: 'Export cases',
     slowSending: 'Sending your application and its attachments.',
   },
-  sv: {
-    start: 'Starta',
-    stop: 'Stoppa',
-    sending: 'Skickar din ansökan.',
-    send: 'Skicka ansökan',
-    failed: 'Vi kunde inte skicka din ansökan.',
-    retry: 'Försök igen',
-    exporting: 'Exporterar dina ärenden.',
-    export: 'Exportera ärenden',
-    slowSending: 'Skickar din ansökan och bilagorna.',
-  },
 })

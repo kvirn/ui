@@ -15,18 +15,4 @@ export const useTextInputTexts = defineExampleTexts({
     send: 'Send application',
     sent: 'Sent',
   },
-  sv: {
-    fullName: 'Fullständigt namn',
-    email: 'E-postadress',
-    phone: 'Telefonnummer',
-    website: 'Webbplats',
-    postalCode: 'Postnummer',
-    postalCodeHelpText: 'Fem siffror, till exempel 123 45',
-    houseNumber: 'Gatunummer',
-    street: 'Gatuadress',
-    youTyped: 'Du skrev',
-    unmasked: 'Utan mellanslag',
-    send: 'Skicka ansökan',
-    sent: 'Skickat',
-  },
 })

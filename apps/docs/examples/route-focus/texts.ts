@@ -9,13 +9,4 @@ const en = {
   details: 'Details further down the page',
 }
 
-const sv: typeof en = {
-  toStart: 'Till startsidan',
-  toServices: 'Till tjänster',
-  toDetails: 'Hoppa till detaljerna',
-  start: { title: 'Välkommen', body: 'Det här är startsidan.' },
-  services: { title: 'Våra tjänster', body: 'Det här är sidan om tjänsterna.' },
-  details: 'Detaljer längre ner på sidan',
-}
-
-export const useRouteFocusTexts = defineExampleTexts({ en, sv })
+export const useRouteFocusTexts = defineExampleTexts({ en })

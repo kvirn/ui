@@ -463,6 +463,38 @@ export interface KvirnMessages {
     /** The visible text of a row's action link, for example `Ändra`. The row's key is added to the link's name. Owned by SummaryList (Plan 0063). */
     change: TextMessage
   }
+  displaySettings: {
+    /** The visible text and the accessible name of the trigger. */
+    button: TextMessage
+    /** The legend of the colour scheme group. */
+    colorSchemeLegend: TextMessage
+    /** The option for the light colour scheme. */
+    colorSchemeLight: TextMessage
+    /** The option for the dark colour scheme. */
+    colorSchemeDark: TextMessage
+    /** The option that follows the device. */
+    colorSchemeSystem: TextMessage
+    /** The legend of the contrast group. */
+    contrastLegend: TextMessage
+    /** The option for standard contrast. */
+    contrastStandard: TextMessage
+    /** The option for high contrast. */
+    contrastMore: TextMessage
+    /** The option that follows the device. */
+    contrastSystem: TextMessage
+    /** The legend of the motion group. */
+    motionLegend: TextMessage
+    /** The option for full motion. */
+    motionFull: TextMessage
+    /** The option for less motion. */
+    motionReduce: TextMessage
+    /** The option that follows the device. */
+    motionSystem: TextMessage
+    /** Shown when the device forces its own colours (a Windows contrast theme): they replace these settings. */
+    forcedColors: TextMessage
+    /** The shortest name of the option that follows the device, for the compact layout's segments. */
+    systemShort: TextMessage
+  }
   copyButton: {
     /** The visible text and the accessible name of the button. It never changes to the result (Plan 0060). */
     label: TextMessage

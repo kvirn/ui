@@ -25,21 +25,4 @@ export const useStackTexts = defineExampleTexts<StackTexts>({
     },
     form: { title: 'Send feedback', name: 'Name', email: 'Email', send: 'Send' },
   },
-  sv: {
-    sections: {
-      contact: 'Kontakta oss',
-      contactText: 'Ring servicenumret eller skriv till oss.',
-      hours: 'Öppettider',
-      hoursText: 'Vi svarar vardagar 9–16.',
-    },
-    gaps: {
-      label: 'Avstånd',
-      related: ['Besöksadress', 'Kvirnvägen 1', 'Kvirnby'],
-    },
-    list: {
-      label: 'Tjänster',
-      items: ['Betala parkeringsavgift', 'Boka återvinningsbesök', 'Ansök om bygglov'],
-    },
-    form: { title: 'Lämna synpunkter', name: 'Namn', email: 'E-post', send: 'Skicka' },
-  },
 })

@@ -11,14 +11,4 @@ export const useSwitchTexts = defineExampleTexts({
     sent: 'Sent:',
     notChosen: 'off',
   },
-  sv: {
-    smsReminders: 'Påminnelser via sms',
-    smsRemindersHint: 'Vi skickar ett sms dagen före din tid.',
-    savedAtOnce: 'Ändringar sparas direkt.',
-    savedOn: 'Påminnelser via sms är på och sparade.',
-    savedOff: 'Påminnelser via sms är av och sparade.',
-    send: 'Skicka in',
-    sent: 'Skickat:',
-    notChosen: 'av',
-  },
 })

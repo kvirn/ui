@@ -18,6 +18,6 @@ const sv: typeof en = {
   skipped: 'Referens: ärende 2024-0113',
 }
 
-export const useReadAloudTexts = defineExampleTexts({ en, sv })
+export const useReadAloudTexts = defineExampleTexts({ en })
 
 export const swedishArticle = sv

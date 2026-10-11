@@ -24,7 +24,7 @@ We test **behaviour, accessibility and requirements**. We never test CSS. Before
 - Layout and geometry: whether a part sits above, under or beside another, heights, widths, alignment, bounding boxes.
 - The text of `theme.css`: no parsing it for properties or values. `theme:check` covers contrast, fallbacks and the forced-colour mapping. That is the only theme test.
 - Class lists beyond the one part-class test, `tagName`s that aren't a role, and anything React or the browser already guarantees.
-- The same fact twice. Each fact is proved once, in the cheapest layer that can prove it: core, then component, then story. Keyboard rows are proved in the component test.
+- The same fact twice. Each fact is proved once, in the cheapest layer that can prove it: core, then component, then story. Keyboard rows are proved in the component test. Patterns (`packages/patterns`) have no unit tests: axe in every story state in every theme is their proof.
   - One standing exception (maintainer, 2026-10-04): a story's `play` may check the state it renders even when a component test proves it too. Don't delete these as duplicates.
 
 **The one exception: a WCAG criterion that can only be measured visually.** Assert the criterion's threshold on the outcome, never the theme's value, and put the SC number in the test name:
@@ -65,7 +65,7 @@ Vitest projects (root `vite.config.ts`): `node` (core, i18n, theme, tooling), `b
 - **Test RTL in the component test** (`dir="rtl"` in the render). Forced-colors, reduced-motion and 320px are a dedicated sweep (planned, Plan 0051). Assert the outcome (keys still work, nothing scrolls sideways, the boundary is visible), not CSS values.
 - **Test in at least 2 locales** (`sv` + `en`) so hard-coded strings get caught.
 - **No mocking of the DOM or of focus.** Use browser mode, not jsdom, for components.
-- **Keyboard docs are checked:** `tooling/keyboard-docs` fails when a stories file doesn't pass its contract as `parameters.a11yContract`, a Keyboard section is malformed, a row has no test, or a focusable component has no `Keyboard` story. See the `keyboard` skill.
+- **Keyboard docs are checked:** `tooling/keyboard-docs` fails when a stories file doesn't pass its contract as `parameters.a11yContract`, a Keyboard section is malformed, a component's row has no test (a pattern's rows need none), or a focusable component has no `Keyboard` story. See the `keyboard` skill.
 - **Behaviour, accessibility and requirements only.** No CSS, layout or `theme.css` tests (see "What we test, and what we never test").
 - **Never weaken a gate.** No `.skip`/`.only`, no disabled axe rules, no raised timeouts to hide flakiness, and no snapshot updates without reading the diff. Fix flaky tests at the root cause, which is usually a missing `await expect(...)` auto-wait.
 

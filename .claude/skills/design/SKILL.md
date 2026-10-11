@@ -50,7 +50,7 @@ Review a story, block, page or screenshot against `DESIGN.md` and [review-checkl
 
 These are the maintainer's choices for the default theme. `DESIGN.md` holds the values. Keep the look and change the value until it passes WCAG 2.2 AA, never the other way round.
 
-- **Look:** Linear-inspired. Near-black and near-white canvases, a surface ladder with hairlines, one lavender accent and an 8px control radius.
+- **Look:** Linear-inspired. Near-black and near-white canvases, a surface ladder with hairlines, one blue accent and an 8px control radius.
 - **Buttons look like buttons:** gentle, subtle depth (a soft shadow and a tinted edge) in light and dark. Everything else stays flat.
 - **Colours are named by role** (primary, secondary, accent, neutral), so a brand can swap a scale. A lighter hover behind white text, low-contrast greys and faint control borders are not used.
 - **Type:** IBM Plex Sans for text, IBM Plex Serif for headings. Long words hyphenate, and large type steps down below 40rem.

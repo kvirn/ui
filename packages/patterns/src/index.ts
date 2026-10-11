@@ -1,5 +1,18 @@
 // Public API of @kvirn-ui/patterns. The sample images are in `./fixtures`.
 export {
+  ApplicationLogo,
+  ApplicationLogoLogo,
+  ApplicationLogoName,
+  ApplicationLogoRoot,
+  ApplicationLogoSlogan,
+} from './site-chrome/application-logo/application-logo.tsx'
+export type {
+  ApplicationLogoLogoProps,
+  ApplicationLogoNameProps,
+  ApplicationLogoRootProps,
+  ApplicationLogoSloganProps,
+} from './site-chrome/application-logo/application-logo.tsx'
+export {
   LanguageLinks,
   LanguageLinksLink,
   LanguageLinksRoot,
@@ -26,33 +39,27 @@ export type {
 } from './site-chrome/main-menu/main-menu.tsx'
 export {
   SiteHeader,
-  SiteHeaderBrand,
-  SiteHeaderLogo,
   SiteHeaderMenu,
   SiteHeaderMenuButton,
   SiteHeaderMenuPanel,
-  SiteHeaderNotice,
   SiteHeaderRoot,
-  SiteHeaderSearch,
-  SiteHeaderService,
-  SiteHeaderTopbar,
+  SiteHeaderMasthead,
   SiteHeaderUtility,
   SiteHeaderUtilityLink,
 } from './site-chrome/site-header/site-header.tsx'
 export type {
-  SiteHeaderBrandProps,
-  SiteHeaderLogoProps,
   SiteHeaderMenuButtonProps,
   SiteHeaderMenuPanelProps,
   SiteHeaderMenuProps,
-  SiteHeaderNoticeProps,
   SiteHeaderRootProps,
-  SiteHeaderSearchProps,
-  SiteHeaderServiceProps,
-  SiteHeaderTopbarProps,
+  SiteHeaderMastheadProps,
   SiteHeaderUtilityLinkProps,
   SiteHeaderUtilityProps,
 } from './site-chrome/site-header/site-header.tsx'
+export { TopBar, TopBarRoot } from './site-chrome/top-bar/top-bar.tsx'
+export type { TopBarRootProps } from './site-chrome/top-bar/top-bar.tsx'
+export { SiteSearch } from './site-chrome/site-search/site-search.tsx'
+export type { SiteSearchProps } from './site-chrome/site-search/site-search.tsx'
 export {
   SiteFooter,
   SiteFooterOrganisation,

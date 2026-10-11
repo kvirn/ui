@@ -12,12 +12,4 @@ export const usePaginationTexts = defineExampleTexts({
     forward: 'Forward',
     status: 'Showing page 2 of 3',
   },
-  sv: {
-    newsLabel: 'Nyhetssidor',
-    firstLabel: 'Ärendesidor',
-    ownWordsLabel: 'Sökresultatssidor',
-    back: 'Tillbaka',
-    forward: 'Framåt',
-    status: 'Visar sida 2 av 3',
-  },
 })

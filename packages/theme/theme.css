@@ -103,6 +103,8 @@
  *                      scroll region
  *  16. Rich text editor  kv-rich-text: the box, its attached toolbar and content, and the Link and
  *                      Image popovers
+ *  17. Display settings kv-display-settings: colour scheme, contrast and motion, as panels, a
+ *                      Disclosure or a Popover, in a list or as segments
  *  patterns.css         kv-page-frame, kv-site-header, kv-mega-menu, kv-site-footer: the classes of
  *                      @kvirn-ui/patterns, imported at the top of this file
  */
@@ -139,18 +141,18 @@
     --kv-neutral-900: #18191a;
     --kv-neutral-950: #0f1011;
 
-    /* Primary: lavender by default. Primary buttons, links, focus, selection. */
-    --kv-primary-50: #eff0fb;
-    --kv-primary-100: #cdd0ff;
-    --kv-primary-200: #b3b8ff;
-    --kv-primary-300: #a3acff;
-    --kv-primary-400: #7784f2;
-    --kv-primary-500: #5e6ad2;
-    --kv-primary-600: #4f5ac0;
-    --kv-primary-700: #434db3;
-    --kv-primary-800: #2c35a0;
-    --kv-primary-900: #1f2780;
-    --kv-primary-950: #1e2140;
+    /* Primary: blue by default (#0066cc is 500). Primary buttons, links, focus, selection. */
+    --kv-primary-50: #eaf2fc;
+    --kv-primary-100: #bad7fe;
+    --kv-primary-200: #95c2fe;
+    --kv-primary-300: #2589fe;
+    --kv-primary-400: #0070e0;
+    --kv-primary-500: #0066cc;
+    --kv-primary-600: #005fc0;
+    --kv-primary-700: #0150a2;
+    --kv-primary-800: #003f83;
+    --kv-primary-900: #00316a;
+    --kv-primary-950: #022047;
 
     /* Secondary: the neutral steps by default. Give it a hue to colour the secondary
      * button's edge (--kv-color-secondary). */
@@ -246,6 +248,8 @@
     /* Filled buttons darken on hover: a lighter fill behind white text fails 4.5:1. */
     --kv-color-primary-hover: var(--kv-primary-600);
     --kv-color-on-primary: var(--kv-white);
+    --kv-color-on-secondary: var(--kv-white);
+    --kv-color-on-accent: var(--kv-white);
     --kv-color-primary-subtle: var(--kv-primary-50);
     --kv-color-accent: var(--kv-accent-600);
     --kv-color-link: var(--kv-primary-600);
@@ -484,14 +488,16 @@
     --kv-color-text: var(--kv-neutral-50);
     --kv-color-heading: var(--kv-neutral-50);
     --kv-color-text-muted: var(--kv-neutral-400);
-    --kv-color-primary: var(--kv-primary-500);
-    --kv-color-primary-hover: var(--kv-primary-600);
+    --kv-color-primary: var(--kv-primary-400);
+    --kv-color-primary-hover: var(--kv-primary-500);
     --kv-color-on-primary: var(--kv-white);
+    --kv-color-on-secondary: var(--kv-white);
+    --kv-color-on-accent: var(--kv-black);
     --kv-color-primary-subtle: var(--kv-primary-950);
     --kv-color-accent: var(--kv-accent-400);
     /* Lighter than primary: primary-500 as text on the dark canvas is only 4.44:1. */
-    --kv-color-link: var(--kv-primary-400);
-    --kv-color-link-hover: var(--kv-primary-300);
+    --kv-color-link: var(--kv-primary-300);
+    --kv-color-link-hover: var(--kv-primary-200);
     --kv-color-focus-ring: var(--kv-primary-400);
     --kv-color-danger: var(--kv-danger-300);
     --kv-color-danger-hover: var(--kv-danger-200);
@@ -528,6 +534,8 @@
     --kv-color-primary: var(--kv-primary-800);
     --kv-color-primary-hover: var(--kv-primary-900);
     --kv-color-on-primary: var(--kv-white);
+    --kv-color-on-secondary: var(--kv-white);
+    --kv-color-on-accent: var(--kv-white);
     --kv-color-primary-subtle: var(--kv-primary-50);
     --kv-color-accent: var(--kv-accent-800);
     --kv-color-link: var(--kv-primary-800);
@@ -566,6 +574,8 @@
     --kv-color-primary: var(--kv-primary-200);
     --kv-color-primary-hover: var(--kv-primary-100);
     --kv-color-on-primary: var(--kv-black);
+    --kv-color-on-secondary: var(--kv-black);
+    --kv-color-on-accent: var(--kv-black);
     --kv-color-primary-subtle: var(--kv-primary-950);
     --kv-color-accent: var(--kv-accent-200);
     --kv-color-link: var(--kv-primary-200);
@@ -608,13 +618,15 @@
       --kv-color-text: var(--kv-neutral-50);
       --kv-color-heading: var(--kv-neutral-50);
       --kv-color-text-muted: var(--kv-neutral-400);
-      --kv-color-primary: var(--kv-primary-500);
-      --kv-color-primary-hover: var(--kv-primary-600);
+      --kv-color-primary: var(--kv-primary-400);
+      --kv-color-primary-hover: var(--kv-primary-500);
       --kv-color-on-primary: var(--kv-white);
+      --kv-color-on-secondary: var(--kv-white);
+      --kv-color-on-accent: var(--kv-black);
       --kv-color-primary-subtle: var(--kv-primary-950);
       --kv-color-accent: var(--kv-accent-400);
-      --kv-color-link: var(--kv-primary-400);
-      --kv-color-link-hover: var(--kv-primary-300);
+      --kv-color-link: var(--kv-primary-300);
+      --kv-color-link-hover: var(--kv-primary-200);
       --kv-color-focus-ring: var(--kv-primary-400);
       --kv-color-danger: var(--kv-danger-300);
       --kv-color-danger-hover: var(--kv-danger-200);
@@ -652,6 +664,8 @@
       --kv-color-primary: var(--kv-primary-800);
       --kv-color-primary-hover: var(--kv-primary-900);
       --kv-color-on-primary: var(--kv-white);
+      --kv-color-on-secondary: var(--kv-white);
+      --kv-color-on-accent: var(--kv-white);
       --kv-color-primary-subtle: var(--kv-primary-50);
       --kv-color-accent: var(--kv-accent-800);
       --kv-color-link: var(--kv-primary-800);
@@ -691,6 +705,8 @@
       --kv-color-primary: var(--kv-primary-200);
       --kv-color-primary-hover: var(--kv-primary-100);
       --kv-color-on-primary: var(--kv-black);
+      --kv-color-on-secondary: var(--kv-black);
+      --kv-color-on-accent: var(--kv-black);
       --kv-color-primary-subtle: var(--kv-primary-950);
       --kv-color-accent: var(--kv-accent-200);
       --kv-color-link: var(--kv-primary-200);
@@ -738,6 +754,8 @@
       --kv-color-primary: Highlight;
       --kv-color-primary-hover: Highlight;
       --kv-color-on-primary: HighlightText;
+      --kv-color-on-secondary: CanvasText;
+      --kv-color-on-accent: HighlightText;
       --kv-color-primary-subtle: Canvas;
       --kv-color-accent: Highlight;
       --kv-color-link: LinkText;
@@ -1711,19 +1729,73 @@
    *   <TableOfContents.Root aria-labelledby="contents-title" items={…} />
    *
    * - A link is a row in the text colour at weight 400, underlined on hover.
-   * - The heading being read (aria-current="location") is the solid primary fill at weight 600.
+   * - Always compact: 32px rows with 14px labels, at every width.
+   * - The heading being read (aria-current="location") is underlined at weight 600, no fill.
    *   Nothing is current until the reader has passed the first heading.
-   * - The headings above it, its ancestors in the tree, are the quiet fill at weight 600 (the
-   *   trail), found with :has() so it needs no prop.
+   * - The headings above it, its ancestors in the tree, are weight 600 with no fill (the trail),
+   *   found with :has() so it needs no prop.
    * - A nested list is indented 16px per level, and a long heading wraps.
-   * - In forced colours the fills drop: the current link gets a straight LinkText bar at the
-   *   inline start, and the trail keeps its weight.
+   * - In forced colours the underline is LinkText and the trail keeps its weight.
    *
    * There is no horizontal table of contents, so kv-navigation--horizontal doesn't take its
    * parts. The component is never sticky: where it sits is the page's layout. Its title is a
    * heading of your own (the heading-4 look beside an article), and kv-table-of-contents is a
    * prose boundary (section 9).
    */
+
+  /* The table of contents keeps the navigation's rows and drops its fills. It is always compact
+   * (32px rows, 14px labels, at every width: it is a reference list beside an article), and the
+   * heading being read is underlined at weight 600, with aria-current, never a fill. The headings
+   * above it keep weight 600 and no fill. In forced colours the underline is LinkText and the
+   * navigation's bar is not drawn. */
+  .kv-table-of-contents {
+    --kv-control-min-block-size: 2rem;
+    --kv-control-font-size: var(--kv-font-label-compact-size);
+    --kv-control-font-weight: var(--kv-font-label-compact-weight);
+    --kv-control-line-height: var(--kv-font-label-compact-line-height);
+  }
+
+  .kv-table-of-contents
+    .kv-table-of-contents-item
+    > .kv-link:not(.kv-link--service):is(
+      [data-current],
+      [aria-current]:not([aria-current='false'])
+    ) {
+    background-color: transparent;
+    color: var(--kv-color-text);
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+    text-underline-offset: var(--kv-link-underline-offset);
+  }
+
+  .kv-table-of-contents
+    .kv-table-of-contents-item:has(
+      > .kv-table-of-contents-list
+        :where(.kv-link:is([data-current], [aria-current]:not([aria-current='false'])))
+    )
+    > .kv-link:not(.kv-link--service) {
+    background-color: transparent;
+  }
+
+  @media (forced-colors: active) {
+    .kv-table-of-contents
+      .kv-table-of-contents-item
+      > .kv-link:not(.kv-link--service):is(
+        [data-current],
+        [aria-current]:not([aria-current='false'])
+      ) {
+      color: LinkText;
+    }
+
+    .kv-table-of-contents
+      .kv-table-of-contents-item
+      > .kv-link:not(.kv-link--service):is(
+        [data-current],
+        [aria-current]:not([aria-current='false'])
+      )::before {
+      content: none;
+    }
+  }
 
   /* 8c. Disclosure and Accordion ---------------------------------------------------------------
    * <Disclosure.Trigger> renders class="kv-disclosure-trigger", <Disclosure.Panel>
@@ -11585,5 +11657,235 @@
       box-shadow: none;
       color: CanvasText;
     }
+  }
+
+  /* 17. Display settings ------------------------------------------------------------------------
+   * kv-display-settings-*: the three radio groups in a Card. Inline, a Disclosure panel in flow that
+   * pushes the content down, on the content edge. Floating, a Popover popup in the top layer: the
+   * browser places it, the script sets its position and the popup only gets its look and width. */
+  .kv-display-settings-panel {
+    flex-basis: 100%;
+    padding-inline: 0;
+  }
+
+  .kv-display-settings-content {
+    display: grid;
+    gap: var(--kv-space-4);
+  }
+
+  .kv-display-settings-content > * {
+    margin-block: 0;
+  }
+
+  .kv-display-settings-content--compact {
+    gap: var(--kv-space-3);
+  }
+
+  .kv-display-settings-groups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--kv-space-4) var(--kv-space-8);
+  }
+
+  .kv-display-settings-popup {
+    box-sizing: border-box;
+    inline-size: min(40rem, 100vw - 2 * var(--kv-space-4));
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    border: 0;
+    background: transparent;
+    color: var(--kv-color-text);
+  }
+
+  .kv-display-settings-popup .kv-display-settings-card {
+    box-shadow: var(--kv-shadow-popup);
+  }
+
+  /* The compact dropdown: a small popup, each group a row of segments. The radios are real, a
+   * transparent layer over their own segment, so the arrows, the names and the checked state are the
+   * browser's; the segment shows the state with a fill and a ring on the segment, never colour alone
+   * (the checked one is also bolder). The ring is inset: the strip clips an outer one. */
+  .kv-display-settings-dropdown {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--kv-space-2);
+  }
+
+  /* The chevron of a popup layout's button: it points down, and up while the popup is open. */
+  .kv-display-settings-chevron {
+    flex: none;
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
+  }
+
+  .kv-display-settings-dropdown[aria-expanded='true'] .kv-display-settings-chevron {
+    transform: rotate(180deg);
+  }
+
+  .kv-display-settings-compact-trigger {
+    display: inline-flex;
+    white-space: nowrap;
+    align-items: center;
+    gap: var(--kv-space-2);
+    font-size: var(--kv-font-body-small-size);
+    line-height: var(--kv-font-body-small-line-height);
+  }
+
+  .kv-display-settings-icon {
+    flex: none;
+    inline-size: 1rem;
+    block-size: 1rem;
+  }
+
+  .kv-display-settings-compact-popup {
+    box-sizing: border-box;
+    inline-size: min(21rem, 100vw - 2 * var(--kv-space-4));
+    margin: 0;
+    padding: var(--kv-space-3);
+    overflow: auto;
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-lg);
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-shadow-popup);
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-small-size);
+    line-height: var(--kv-font-body-small-line-height);
+  }
+
+  .kv-display-settings-groups--segments {
+    display: grid;
+    gap: var(--kv-space-3);
+  }
+
+  .kv-display-settings-groups--segments .kv-fieldset {
+    gap: var(--kv-space-1);
+  }
+
+  .kv-display-settings-groups--segments legend {
+    font-size: var(--kv-font-body-small-size);
+    font-weight: 600;
+  }
+
+  .kv-display-settings-segments {
+    display: flex;
+    overflow: hidden;
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-md);
+  }
+
+  .kv-display-settings-segments > .kv-field {
+    position: relative;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    gap: 0;
+  }
+
+  .kv-display-settings-segments > .kv-field + .kv-field {
+    border-inline-start: var(--kv-border-width) solid var(--kv-color-border-control);
+  }
+
+  .kv-display-settings-segments .kv-radio {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    inline-size: 100%;
+    block-size: 100%;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .kv-display-settings-groups--segments .kv-display-settings-segments > .kv-field {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .kv-display-settings-groups--segments
+    .kv-display-settings-segments
+    > .kv-field
+    > .kv-field-label {
+    display: flex;
+    grid-row: 1;
+    grid-column: 1;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: 2rem;
+    padding: 0 var(--kv-space-3);
+    color: inherit;
+    white-space: nowrap;
+    font-size: var(--kv-font-body-small-size);
+    line-height: var(--kv-font-body-small-line-height);
+    text-align: center;
+  }
+
+  .kv-display-settings-segments > .kv-field:has(.kv-radio:not(:checked):hover) {
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  .kv-display-settings-segments > .kv-field:has(.kv-radio:checked) {
+    background-color: var(--kv-color-primary);
+    color: var(--kv-color-on-primary);
+    font-weight: 600;
+  }
+
+  .kv-display-settings-segments
+    > .kv-field:has(.kv-radio:is(:focus-visible, [data-focus-visible])) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: calc(-2 * var(--kv-focus-ring-width));
+  }
+
+  .kv-display-settings-segments
+    > .kv-field:has(.kv-radio:checked:is(:focus-visible, [data-focus-visible])) {
+    outline-color: var(--kv-color-on-primary);
+  }
+
+  @media (forced-colors: active) {
+    .kv-display-settings-segments {
+      border-color: ButtonText;
+    }
+
+    .kv-display-settings-segments > .kv-field + .kv-field {
+      border-color: ButtonText;
+    }
+
+    .kv-display-settings-segments > .kv-field:has(.kv-radio:checked) {
+      background-color: Highlight;
+      color: HighlightText;
+    }
+
+    .kv-display-settings-segments
+      > .kv-field:has(.kv-radio:is(:focus-visible, [data-focus-visible])) {
+      outline-color: CanvasText;
+    }
+  }
+
+  /* In a TopBar the trigger is one of the bar's links: no edge, no fill and no icon, the bar's
+   * text colour, a navigation item's height, padding and type, underlined on hover. */
+  .kv-top-bar .kv-display-settings-compact-trigger {
+    min-block-size: var(--kv-control-min-block-size);
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-3);
+    border-color: transparent;
+    border-radius: var(--kv-radius-md);
+    background-color: transparent;
+    box-shadow: none;
+    color: inherit;
+    font-size: var(--kv-control-font-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-control-line-height);
+  }
+
+  .kv-top-bar .kv-display-settings-compact-trigger:is(:hover, :active) {
+    background-color: transparent;
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+  }
+
+  .kv-top-bar .kv-display-settings-icon {
+    display: none;
   }
 }

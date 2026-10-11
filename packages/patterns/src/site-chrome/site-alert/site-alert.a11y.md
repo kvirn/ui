@@ -4,7 +4,7 @@
 - **Deviations:** none
 - **Native elements used:** `<section>` (region), `<p>` for the title, `<a href>`, `<button type="button">` for the optional close.
 - **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
-- **Tests:** `site-alert.test.tsx` next to this file. `site-alert.stories.tsx` in `apps/storybook/src/patterns/site-chrome/`.
+- **Tests:** none of its own: patterns aren't unit tested. WCAG is proved by axe in every story state in every theme (`site-alert.stories.tsx`); the keys and parts are proved in the components' tests that the rows below name.
 
 ## Roles, states, properties
 
@@ -30,7 +30,7 @@
 | ------------ | -------- | --------------------------------------------------- | ------------------------------------------------------------------------ |
 | Tab          | in alert | Moves from the link to Close, then on into the page | `alert.test.tsx › Tab reaches the close button after the actions`        |
 | Shift+Tab    | in alert | Moves back from Close to the link                   | `alert.test.tsx › Shift+Tab from the close button goes back to the link` |
-| Enter, Space | Close    | Dismisses the alert and moves focus to `main`       | `site-alert.test.tsx › Close moves focus to main, not body`              |
+| Enter, Space | Close    | Dismisses the alert and moves focus to `main`       | `site-alert.stories.tsx › Keyboard`                                      |
 
 The alert handles no other key.
 

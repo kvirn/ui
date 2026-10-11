@@ -1,20 +1,20 @@
 import { en } from '@kvirn-ui/i18n/en'
 import { KvirnProvider } from '@kvirn-ui/react'
-import { MainMenu, PageFrame, SiteHeader } from '@kvirn-ui/patterns'
+import { ApplicationLogo, MainMenu, PageFrame, SiteHeader } from '@kvirn-ui/patterns'
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/main-menu/main-menu.a11y.md?raw'
-import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
+import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   PlaceholderFooter,
   chromeViewports,
   expectDrawn,
   narrowGlobals,
   wideGlobals,
-} from '../patterns-story-support.tsx'
+} from '../../patterns/patterns-story-support.tsx'
 
-// Patterns/Site chrome/Main menu: the main navigation as the APG Disclosure Navigation pattern
+// Components/Navigation/Primary navigation: the main navigation as the APG Disclosure Navigation pattern
 // (docs/design/storybook-patterns.md section 5.2), exported as `MainMenu`. Shown inside the Site
 // header, because the open panel is positioned against it.
 
@@ -43,7 +43,7 @@ Parts used: \`Navigation\`, \`Disclosure\`, \`Link\`. Gap: the library plans no 
 `
 
 const meta = {
-  title: 'Patterns/Site chrome/Main menu',
+  title: 'Components/Navigation/Primary navigation',
   component: MainMenu.Root,
   args: { label: 'Main menu' },
   globals: { locale: 'en' },
@@ -68,12 +68,12 @@ export const Default: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
+          </SiteHeader.Masthead>
           <SiteHeader.Menu>
             <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>
@@ -124,12 +124,12 @@ export const OpenWide: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
+          </SiteHeader.Masthead>
           <SiteHeader.Menu>
             <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>
@@ -185,12 +185,12 @@ export const NarrowMenu: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
+          </SiteHeader.Masthead>
           <SiteHeader.Menu defaultOpen>
             <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>
@@ -243,12 +243,12 @@ export const CurrentPage: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
+          </SiteHeader.Masthead>
           <SiteHeader.Menu>
             <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>
@@ -298,12 +298,12 @@ export const Keyboard: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
+          </SiteHeader.Masthead>
           <SiteHeader.Menu>
             <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>
@@ -361,12 +361,12 @@ export const RTL: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
+          </SiteHeader.Masthead>
           <SiteHeader.Menu>
             <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>
@@ -415,12 +415,12 @@ export const ForcedColors: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
+          </SiteHeader.Masthead>
           <SiteHeader.Menu>
             <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>

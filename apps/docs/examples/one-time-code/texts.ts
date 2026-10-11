@@ -17,19 +17,4 @@ export const useOneTimeCodeTexts = defineExampleTexts({
     entered: 'You entered:',
     withoutDash: 'Without the dash:',
   },
-  sv: {
-    smsLabel: 'Kod från sms:et',
-    smsHint:
-      'Koden har 6 siffror. Du hittar den i sms:et som vi just skickade. Vi kontrollerar koden så fort du har skrivit alla 6 siffror.',
-    emailLabel: 'Kod från e-postmeddelandet',
-    emailHint:
-      'Koden har 8 tecken, bokstäver och siffror, i 2 grupper om 4. Du hittar den i e-postmeddelandet som vi just skickade.',
-    plainHint: 'Koden har 6 siffror. Du hittar den i sms:et som vi just skickade.',
-    incomplete: 'Skriv alla 6 siffrorna i koden',
-    wrong: 'Koden stämmer inte med den vi skickade. Kontrollera sms:et och skriv koden igen.',
-    checking: 'Kontrollerar koden',
-    submit: 'Fortsätt',
-    entered: 'Du skrev:',
-    withoutDash: 'Utan bindestreck:',
-  },
 })

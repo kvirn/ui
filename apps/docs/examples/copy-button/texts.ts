@@ -16,11 +16,4 @@ export const useCopyButtonTexts = defineExampleTexts<CopyButtonTexts>({
     copiedCue: 'The case number is copied.',
     ownCue: 'Copy case number',
   },
-  sv: {
-    referenceNumber: 'PK-2026-004217',
-    yourNumber: 'Ditt ärendenummer är',
-    copyNumber: 'Kopiera ärendenumret',
-    copiedCue: 'Ärendenumret är kopierat.',
-    ownCue: 'Kopiera ärendenumret',
-  },
 })

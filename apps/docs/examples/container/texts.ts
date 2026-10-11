@@ -20,15 +20,4 @@ export const useContainerTexts = defineExampleTexts<ContainerTexts>({
     main: { title: 'Welcome to Kvirnby', text: 'Find services, news and contact details.' },
     region: { title: 'News', text: 'The library opens an hour earlier on weekdays.' },
   },
-  sv: {
-    page: { title: 'Kvirnby kommun', text: 'Innehållet håller sig inom sidans bredd.' },
-    reading: {
-      title: 'Sophämtning',
-      intro: 'Kärlen töms varannan vecka. Ställ ut kärlet senast klockan 7.00 på tömningsdagen.',
-      items: ['Hushållsavfall', 'Matavfall', 'Pappersförpackningar'],
-    },
-    form: { title: 'Anmäl flytt', label: 'Ny adress', send: 'Skicka anmälan' },
-    main: { title: 'Välkommen till Kvirnby', text: 'Hitta service, nyheter och kontaktuppgifter.' },
-    region: { title: 'Aktuellt', text: 'Biblioteket öppnar en timme tidigare på vardagar.' },
-  },
 })

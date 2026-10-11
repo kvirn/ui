@@ -4,6 +4,7 @@ import type { KvirnMessages } from '../types.ts'
 // nn: copyButton.* is a draft (Plan 0060): a native speaker should review it.
 // breadcrumb.* and pagination.* are drafts for a native speaker to review (Plan 0062).
 // Draft: errorSummary and summaryList (Plan 0063) need a native speaker's review.
+// displaySettings.* are drafts (Plan 0099): a native speaker should review them.
 export const nn = {
   link: { newTabNotice: '(blir opna i ei ny fane)' },
   field: { optional: '(valfritt)', errorPrefix: 'Feil:' },
@@ -283,6 +284,24 @@ export const nn = {
     page: ({ page }, format) => `Side ${format.number(page)}`,
   },
   routeFocus: { navigated: ({ title }) => `Du har kome til ${title}` },
+  displaySettings: {
+    button: 'Visingsinnstillingar',
+    colorSchemeLegend: 'Fargetema',
+    colorSchemeLight: 'Lyst',
+    colorSchemeDark: 'Mørkt',
+    colorSchemeSystem: 'Same som eininga mi',
+    contrastLegend: 'Kontrast',
+    contrastStandard: 'Standard',
+    contrastMore: 'Høg',
+    contrastSystem: 'Same som eininga mi',
+    motionLegend: 'Rørsle',
+    motionFull: 'Full rørsle',
+    motionReduce: 'Mindre rørsle',
+    motionSystem: 'Same som eininga mi',
+    forcedColors:
+      'Eininga di bruker eigne fargar, til dømes eit kontrasttema i Windows. Dei erstattar innstillingane her. Valet ditt blir hugsa til du slår dei av.',
+    systemShort: 'Eining',
+  },
   copyButton: {
     label: 'Kopier',
     copied: 'Kopiert',

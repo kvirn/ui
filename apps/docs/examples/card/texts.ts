@@ -33,36 +33,4 @@ export const useCardTexts = defineExampleTexts({
       open: 'Open the case',
     },
   },
-  sv: {
-    service: {
-      heading: 'Sophämtning vid Storgatan 12',
-      text: 'Matavfall och restavfall töms varannan vecka.',
-      orderExtra: 'Beställ extra tömning',
-      pause: 'Pausa hämtningen',
-    },
-    news: {
-      recycling: {
-        title: 'Nya öppettider på återvinningscentralen',
-        excerpt: 'Från 1 november har återvinningscentralen öppet till kl. 19 på vardagar.',
-      },
-      snow: {
-        title: 'Vinterväghållning: så plogar vi',
-        excerpt: 'Vi plogar huvudgator och busslinjer först, sedan bostadsgator.',
-      },
-      grants: {
-        title: 'Ansök om föreningsbidrag senast 1 december',
-        excerpt: 'Idrotts- och kulturföreningar kan söka bidrag för nästa år.',
-      },
-    },
-    article: {
-      title: 'Nya öppettider på återvinningscentralen',
-      text: 'Från 1 november har återvinningscentralen öppet till kl. 19 på vardagar. På lördagar stänger den kl. 15.',
-    },
-    dividers: {
-      heading: 'Bostadsanpassningsbidrag',
-      text: 'Väntar på beslut.',
-      next: 'Senaste händelse: arbetsterapeutens intyg har kommit in.',
-      open: 'Öppna ärendet',
-    },
-  },
 })

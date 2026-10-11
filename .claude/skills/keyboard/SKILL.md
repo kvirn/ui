@@ -26,7 +26,7 @@ Load this together with the `accessibility` skill (roles, names, focus visibilit
      Parts documented in another component's contract (Label, Description and ErrorMessage in `field.a11y.md`) import that one.
    - The Docs page template renders the contract's Keyboard section (`<KeyboardSection />`, after Controls): the focus lines, and the table with Key, Context and Action. Keys show in `<kbd>`.
    - A component with a focusable part has a story named `Keyboard`: the fixture for trying the keys by hand, with a JSDoc that says to try the keys in the table.
-   - `tooling/keyboard-docs` fails `vp test run` when a stories file has no contract, a contract is used by no stories file, a contract has no valid Keyboard section, a focusable component has no Tab or Shift+Tab row, or a row has no test.
+   - `tooling/keyboard-docs` fails `vp test run` when a stories file has no contract, a contract is used by no stories file, a contract has no valid Keyboard section, a focusable component has no Tab or Shift+Tab row, or a component's row has no test (a pattern's rows name none: patterns have no unit tests).
 
 ## Practice rules
 

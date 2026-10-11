@@ -38,9 +38,9 @@ const scales: readonly Scale[] = [
   {
     name: 'primary',
     heading: 'Primary',
-    defaultHue: 'lavender',
+    defaultHue: 'blue',
     description:
-      'Primary buttons, links, focus rings, selection and the current page. The default lavender is 500.',
+      'Primary buttons, links, focus rings, selection and the current page. The default blue is 500.',
   },
   {
     name: 'secondary',

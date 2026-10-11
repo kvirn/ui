@@ -30,22 +30,4 @@ export const useBadgeTexts = defineExampleTexts<BadgeTexts>({
       statusValue: 'Granted',
     },
   },
-  sv: {
-    application: 'Bygglov Storgatan 4',
-    draft: 'Utkast',
-    cases: [
-      { title: 'Bygglov Storgatan 4', status: 'Beviljat', variant: 'success' },
-      { title: 'Parkeringstillstånd', status: 'Väntar på komplettering', variant: 'warning' },
-      { title: 'Bullerklagomål', status: 'Under handläggning', variant: 'info' },
-      { title: 'Skolskjuts', status: 'Avslaget', variant: 'danger' },
-      { title: 'Bibliotekskort', status: 'Nytt', variant: 'primary' },
-      { title: 'Grovavfallshämtning', status: 'Utkast', variant: 'neutral' },
-    ],
-    summary: {
-      case: 'Ärende',
-      caseValue: 'Bygglov Storgatan 4',
-      status: 'Status',
-      statusValue: 'Beviljat',
-    },
-  },
 })

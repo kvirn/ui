@@ -16,17 +16,4 @@ export const useBreadcrumbTexts = defineExampleTexts({
     longLabel: 'You are here: a long trail',
     ownLabel: 'Path to this page',
   },
-  sv: {
-    start: 'Start',
-    children: 'Barn och utbildning',
-    preschool: 'Förskola',
-    services: 'Service och stöd',
-    social: 'Omsorg och stöd',
-    homeCare: 'Hemtjänst',
-    homeCareHelp: 'Hjälp i hemmet',
-    homeCareApply: 'Ansök om hemtjänst',
-    homeCareFees: 'Avgifter för hemtjänst',
-    longLabel: 'Du är här: en lång stig',
-    ownLabel: 'Vägen till den här sidan',
-  },
 })

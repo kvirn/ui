@@ -24,27 +24,4 @@ export const useSectionTexts = defineExampleTexts({
       closed: 'Closed cases',
     },
   },
-  sv: {
-    contact: {
-      heading: 'Kontakta oss',
-      text: 'Vi svarar vardagar 9–16.',
-      link: 'Mejla kundcenter',
-    },
-    news: {
-      heading: 'Nyheter',
-      text: 'Öppettiderna på återvinningscentralen ändras den 1 november.',
-    },
-    band: {
-      heading: 'Sophämtning',
-      text: 'Matavfall och restavfall töms varannan vecka.',
-      cardHeading: 'Din nästa tömning',
-      cardText: 'Tisdag vid Storgatan 12.',
-    },
-    navigation: {
-      heading: 'Dina ärenden',
-      overview: 'Översikt',
-      open: 'Pågående ärenden',
-      closed: 'Avslutade ärenden',
-    },
-  },
 })

@@ -9,7 +9,7 @@ The headings of a long page as a named `<nav>` of plain `#id` links, with the he
 - Every link is a plain `<a href="#id">`: the browser scrolls, below a sticky header by the page's `scroll-padding-top`, and the next Tab continues after the heading. It never uses your router's link.
 - The heading being read has `aria-current="location"`, and no other link has it. Before any heading has reached the top, the first one on screen is current.
 - It is never sticky, never scrolls by itself, never moves focus and announces nothing. Where it sits, and whether it sticks, is the page's layout.
-- Headless: no CSS. Each part renders its stable class, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, the links become navigation items: the heading being read is a solid fill, and the headings above it are the quiet trail.
+- Headless: no CSS. Each part renders its stable class, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, the links become compact navigation items: the heading being read is underlined at weight 600, and the headings above it keep their weight with no fill.
 
 ## API
 
@@ -115,11 +115,11 @@ Only the List takes `as` (`ul` or `ol`, a string, so it works from a Server Comp
 
 ### Classes for the default theme
 
-| Class                       | On   | Sets                                                                                                                                 |
-| --------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `kv-table-of-contents`      | Root | a prose boundary: prose never styles inside it                                                                                       |
-| `kv-table-of-contents-list` | List | a column with a small gap, no markers. A nested list is indented                                                                     |
-| `kv-table-of-contents-item` | Item | its `kv-link` becomes a navigation item: a 44px row (32px in compact density), a solid fill and weight when current, the trail above |
+| Class                       | On   | Sets                                                                                                                                           |
+| --------------------------- | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `kv-table-of-contents`      | Root | a prose boundary: prose never styles inside it                                                                                                 |
+| `kv-table-of-contents-list` | List | a column with a small gap, no markers. A nested list is indented                                                                               |
+| `kv-table-of-contents-item` | Item | its `kv-link` becomes a navigation item: a 32px compact row, an underline and weight 600 when current, the trail above with weight and no fill |
 
 In compact density (`kv-compact`) the rows are 32px, never below 24px (2.5.8).
 

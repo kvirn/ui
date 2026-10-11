@@ -1,7 +1,14 @@
 import { en } from '@kvirn-ui/i18n/en'
-import { MainMenu, PageFrame, PageTools, SiteHeader } from '@kvirn-ui/patterns'
+import {
+  ApplicationLogo,
+  MainMenu,
+  PageFrame,
+  PageTools,
+  SiteHeader,
+  SiteSearch,
+} from '@kvirn-ui/patterns'
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { Button, Field, KvirnProvider, TextInput } from '@kvirn-ui/react'
+import { KvirnProvider } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useRef } from 'react'
 import { expect, userEvent } from 'storybook/test'
@@ -69,19 +76,15 @@ export const Default: Story = {
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
           <SiteHeader.Root>
-            <SiteHeader.Topbar>
-              <SiteHeader.Brand href="#start">
-                <SiteHeader.Logo src={kvirnbyMark} />
-                Kvirnby municipality
-              </SiteHeader.Brand>
-            </SiteHeader.Topbar>
-            <SiteHeader.Search action="#search">
-              <Field.Root className="kv-site-header-search-field">
-                <Field.Label marker="none">Search the site</Field.Label>
-                <TextInput type="search" name="q" autoComplete="off" />
-              </Field.Root>
-              <Button type="submit">Search</Button>
-            </SiteHeader.Search>
+            <SiteHeader.Masthead>
+              <ApplicationLogo.Root href="#start">
+                <ApplicationLogo.Logo src={kvirnbyMark} />
+                <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+              </ApplicationLogo.Root>
+              <SiteSearch action="#search" label="Search the site">
+                Search
+              </SiteSearch>
+            </SiteHeader.Masthead>
             <SiteHeader.Menu>
               <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
               <SiteHeader.MenuPanel>
@@ -133,19 +136,15 @@ export const CopySuccess: Story = {
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
           <SiteHeader.Root>
-            <SiteHeader.Topbar>
-              <SiteHeader.Brand href="#start">
-                <SiteHeader.Logo src={kvirnbyMark} />
-                Kvirnby municipality
-              </SiteHeader.Brand>
-            </SiteHeader.Topbar>
-            <SiteHeader.Search action="#search">
-              <Field.Root className="kv-site-header-search-field">
-                <Field.Label marker="none">Search the site</Field.Label>
-                <TextInput type="search" name="q" autoComplete="off" />
-              </Field.Root>
-              <Button type="submit">Search</Button>
-            </SiteHeader.Search>
+            <SiteHeader.Masthead>
+              <ApplicationLogo.Root href="#start">
+                <ApplicationLogo.Logo src={kvirnbyMark} />
+                <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+              </ApplicationLogo.Root>
+              <SiteSearch action="#search" label="Search the site">
+                Search
+              </SiteSearch>
+            </SiteHeader.Masthead>
             <SiteHeader.Menu>
               <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
               <SiteHeader.MenuPanel>
@@ -199,19 +198,15 @@ export const CopyFailure: Story = {
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
           <SiteHeader.Root>
-            <SiteHeader.Topbar>
-              <SiteHeader.Brand href="#start">
-                <SiteHeader.Logo src={kvirnbyMark} />
-                Kvirnby municipality
-              </SiteHeader.Brand>
-            </SiteHeader.Topbar>
-            <SiteHeader.Search action="#search">
-              <Field.Root className="kv-site-header-search-field">
-                <Field.Label marker="none">Search the site</Field.Label>
-                <TextInput type="search" name="q" autoComplete="off" />
-              </Field.Root>
-              <Button type="submit">Search</Button>
-            </SiteHeader.Search>
+            <SiteHeader.Masthead>
+              <ApplicationLogo.Root href="#start">
+                <ApplicationLogo.Logo src={kvirnbyMark} />
+                <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+              </ApplicationLogo.Root>
+              <SiteSearch action="#search" label="Search the site">
+                Search
+              </SiteSearch>
+            </SiteHeader.Masthead>
             <SiteHeader.Menu>
               <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
               <SiteHeader.MenuPanel>
@@ -266,19 +261,15 @@ export const Narrow: Story = {
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
           <SiteHeader.Root>
-            <SiteHeader.Topbar>
-              <SiteHeader.Brand href="#start">
-                <SiteHeader.Logo src={kvirnbyMark} />
-                Kvirnby municipality
-              </SiteHeader.Brand>
-            </SiteHeader.Topbar>
-            <SiteHeader.Search action="#search">
-              <Field.Root className="kv-site-header-search-field">
-                <Field.Label marker="none">Search the site</Field.Label>
-                <TextInput type="search" name="q" autoComplete="off" />
-              </Field.Root>
-              <Button type="submit">Search</Button>
-            </SiteHeader.Search>
+            <SiteHeader.Masthead>
+              <ApplicationLogo.Root href="#start">
+                <ApplicationLogo.Logo src={kvirnbyMark} />
+                <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+              </ApplicationLogo.Root>
+              <SiteSearch action="#search" label="Search the site">
+                Search
+              </SiteSearch>
+            </SiteHeader.Masthead>
             <SiteHeader.Menu>
               <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
               <SiteHeader.MenuPanel>
@@ -328,19 +319,15 @@ export const Keyboard: Story = {
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
           <SiteHeader.Root>
-            <SiteHeader.Topbar>
-              <SiteHeader.Brand href="#start">
-                <SiteHeader.Logo src={kvirnbyMark} />
-                Kvirnby municipality
-              </SiteHeader.Brand>
-            </SiteHeader.Topbar>
-            <SiteHeader.Search action="#search">
-              <Field.Root className="kv-site-header-search-field">
-                <Field.Label marker="none">Search the site</Field.Label>
-                <TextInput type="search" name="q" autoComplete="off" />
-              </Field.Root>
-              <Button type="submit">Search</Button>
-            </SiteHeader.Search>
+            <SiteHeader.Masthead>
+              <ApplicationLogo.Root href="#start">
+                <ApplicationLogo.Logo src={kvirnbyMark} />
+                <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+              </ApplicationLogo.Root>
+              <SiteSearch action="#search" label="Search the site">
+                Search
+              </SiteSearch>
+            </SiteHeader.Masthead>
             <SiteHeader.Menu>
               <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
               <SiteHeader.MenuPanel>
@@ -387,19 +374,15 @@ export const RTL: Story = {
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
           <SiteHeader.Root>
-            <SiteHeader.Topbar>
-              <SiteHeader.Brand href="#start">
-                <SiteHeader.Logo src={kvirnbyMark} />
-                Kvirnby municipality
-              </SiteHeader.Brand>
-            </SiteHeader.Topbar>
-            <SiteHeader.Search action="#search">
-              <Field.Root className="kv-site-header-search-field">
-                <Field.Label marker="none">Search the site</Field.Label>
-                <TextInput type="search" name="q" autoComplete="off" />
-              </Field.Root>
-              <Button type="submit">Search</Button>
-            </SiteHeader.Search>
+            <SiteHeader.Masthead>
+              <ApplicationLogo.Root href="#start">
+                <ApplicationLogo.Logo src={kvirnbyMark} />
+                <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+              </ApplicationLogo.Root>
+              <SiteSearch action="#search" label="Search the site">
+                Search
+              </SiteSearch>
+            </SiteHeader.Masthead>
             <SiteHeader.Menu>
               <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
               <SiteHeader.MenuPanel>
@@ -446,19 +429,15 @@ export const ForcedColors: Story = {
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
           <SiteHeader.Root>
-            <SiteHeader.Topbar>
-              <SiteHeader.Brand href="#start">
-                <SiteHeader.Logo src={kvirnbyMark} />
-                Kvirnby municipality
-              </SiteHeader.Brand>
-            </SiteHeader.Topbar>
-            <SiteHeader.Search action="#search">
-              <Field.Root className="kv-site-header-search-field">
-                <Field.Label marker="none">Search the site</Field.Label>
-                <TextInput type="search" name="q" autoComplete="off" />
-              </Field.Root>
-              <Button type="submit">Search</Button>
-            </SiteHeader.Search>
+            <SiteHeader.Masthead>
+              <ApplicationLogo.Root href="#start">
+                <ApplicationLogo.Logo src={kvirnbyMark} />
+                <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+              </ApplicationLogo.Root>
+              <SiteSearch action="#search" label="Search the site">
+                Search
+              </SiteSearch>
+            </SiteHeader.Masthead>
             <SiteHeader.Menu>
               <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
               <SiteHeader.MenuPanel>

@@ -1,11 +1,11 @@
 'use client'
+import { en } from '@kvirn-ui/i18n/en'
 import { Card, Heading, KvirnProvider, useLocale } from '@kvirn-ui/react'
 import { Component, useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
 import { CodeCopyButton, CodeScroll, CodeStatus, useCodeCopy, useCodeLines } from './code-block.tsx'
 import { DocsDisclosure } from './docs-disclosure.tsx'
-import { exampleCatalogs, useExampleLocale } from './example-locale.tsx'
 import type { CodeLanguage } from '../lib/highlight.ts'
 
 const text = messages.docs.example
@@ -57,7 +57,6 @@ export function ExampleFrame({
   language?: CodeLanguage
   children: ReactNode
 }) {
-  const { locale } = useExampleLocale()
   const [isCodeOpen, setIsCodeOpen] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
   const codeRef = useRef<HTMLElement>(null)
@@ -97,7 +96,7 @@ export function ExampleFrame({
           </Heading>
         )}
       </Card.Header>
-      <KvirnProvider locale={locale} messages={exampleCatalogs[locale]}>
+      <KvirnProvider locale="en" messages={en}>
         <Card.Body className="kv-card-body--padding-lg">
           <ExampleStage>{children}</ExampleStage>
         </Card.Body>

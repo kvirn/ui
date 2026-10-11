@@ -26,29 +26,4 @@ export const useColumnsTexts = defineExampleTexts({
       },
     },
   },
-  sv: {
-    services: {
-      waste: { title: 'Avfall och återvinning', text: 'Hämtningsdagar och återvinningscentraler.' },
-      school: { title: 'Skola och barnomsorg', text: 'Ansök om plats och se terminstider.' },
-      housing: { title: 'Bostad och byggande', text: 'Bygglov, anpassning och bidrag.' },
-    },
-    quickLinks: {
-      pay: 'Betala en faktura',
-      report: 'Felanmälan',
-      book: 'Boka tid',
-      contact: 'Kontakta oss',
-      opening: 'Öppettider',
-      news: 'Nyheter',
-    },
-    news: {
-      recycling: {
-        title: 'Nya öppettider på återvinningscentralen',
-        excerpt: 'Från 1 november har återvinningscentralen öppet till kl. 19 på vardagar.',
-      },
-      snow: {
-        title: 'Vinterväghållning: så plogar vi',
-        excerpt: 'Vi plogar huvudgator och busslinjer först, sedan bostadsgator.',
-      },
-    },
-  },
 })

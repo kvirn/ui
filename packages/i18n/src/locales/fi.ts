@@ -5,6 +5,7 @@ import type { KvirnMessages } from '../types.ts'
 // stepper.* are drafts for native review (Plan 0083).
 // breadcrumb.* and pagination.* are drafts for a native speaker to review (Plan 0062).
 // Draft: errorSummary and summaryList (Plan 0063) need a native speaker's review.
+// displaySettings.* are drafts (Plan 0099): a native speaker should review them.
 export const fi = {
   link: { newTabNotice: '(avautuu uuteen välilehteen)' },
   field: { optional: '(vapaaehtoinen)', errorPrefix: 'Virhe:' },
@@ -289,6 +290,24 @@ export const fi = {
     page: ({ page }, format) => `Sivu ${format.number(page)}`,
   },
   routeFocus: { navigated: ({ title }) => `Siirryit sivulle ${title}` },
+  displaySettings: {
+    button: 'Näyttöasetukset',
+    colorSchemeLegend: 'Värimaailma',
+    colorSchemeLight: 'Vaalea',
+    colorSchemeDark: 'Tumma',
+    colorSchemeSystem: 'Sama kuin laitteessani',
+    contrastLegend: 'Kontrasti',
+    contrastStandard: 'Normaali',
+    contrastMore: 'Korkea',
+    contrastSystem: 'Sama kuin laitteessani',
+    motionLegend: 'Liike',
+    motionFull: 'Täysi liike',
+    motionReduce: 'Vähemmän liikettä',
+    motionSystem: 'Sama kuin laitteessani',
+    forcedColors:
+      'Laitteesi käyttää omia värejään, esimerkiksi Windowsin kontrastiteemaa. Ne korvaavat tässä olevat asetukset. Valintasi säilyy siihen asti, kun poistat ne käytöstä.',
+    systemShort: 'Laite',
+  },
   copyButton: {
     label: 'Kopioi',
     copied: 'Kopioitu',

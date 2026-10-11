@@ -13,16 +13,4 @@ export const useHeadingTexts = defineExampleTexts({
     },
     look: { levelOnly: 'Services', asLarger: 'Services, set larger' },
   },
-  sv: {
-    contact: { heading: 'Kontakta oss', text: 'Vi svarar vardagar 9–16.' },
-    waste: {
-      heading: 'Sophämtning',
-      text: 'Matavfall och restavfall töms varannan vecka.',
-    },
-    opening: {
-      heading: 'Öppettider',
-      text: 'Återvinningscentralen har öppet till kl. 19 på vardagar.',
-    },
-    look: { levelOnly: 'Tjänster', asLarger: 'Tjänster, i större storlek' },
-  },
 })

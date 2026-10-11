@@ -116,7 +116,7 @@ async function scrollToHeading(canvasElement: HTMLElement, name: string) {
  * The main example: every option is a control below. The landmark is named by the message, in the
  * language of the Locale toolbar. In a side column from 64rem, as here, and above the article below
  * that. Scroll the page: the link of the heading being read, or the first one on screen before
- * any has reached the top, is the solid fill, and its parents are the quiet trail.
+ * any has reached the top, is underlined at weight 600, and its parents keep weight 600 with no fill.
  */
 export const Default: Story = {
   decorators: [withContentsColumns],
@@ -326,7 +326,7 @@ export const RTL: Story = {
 
 /**
  * The marker for forced colours, with “Avgifter” as the current heading. In real emulation the
- * fills drop, the current link gets a straight `LinkText` bar, and the trail keeps its weight.
+ * the current link keeps its underline in `LinkText`, and the trail keeps its weight.
  */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },

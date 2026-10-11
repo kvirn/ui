@@ -9,12 +9,4 @@ export const useKbdTexts = defineExampleTexts({
     undo: 'Undo the last change',
     closeDialog: 'Close the dialog',
   },
-  sv: {
-    moveBetweenFields: 'Du kan flytta mellan fälten med',
-    copy: 'Kopiera texten med',
-    shortcuts: 'Kortkommandon i redigeraren',
-    save: 'Spara utkastet',
-    undo: 'Ångra den senaste ändringen',
-    closeDialog: 'Stäng dialogrutan',
-  },
 })

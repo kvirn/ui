@@ -4,7 +4,10 @@
  * theme tokens. Components are styled by theme.css: nothing here restyles a kv-* part.
  */
 :root {
-  --docs-sidebar-width: 15rem;
+  --docs-sidebar-width: 17rem;
+  /* The inline padding of the header's bands and of the main column, by width: the one edge the
+   * brand, the navigation, the sidebar's text and the page's text start from. */
+  --docs-edge: var(--kv-space-4);
   --docs-content-max: 48rem;
   --docs-page-max: 80rem;
   --docs-contents-width: 14rem;
@@ -39,170 +42,22 @@ body {
 }
 
 /*
- * The header in three primary bands (docs/design/docs-header-bands.md §6). Parts are styled by
- * class and never by redefining --kv-color-*, so the Display settings Card keeps its own tokens.
- * Only text, the current bar and the focus ring of a band's own links and buttons are on-primary.
+ * The header is the primary Site header of @kvirn-ui/patterns (docs/design/docs-header-bands.md):
+ * the bands, their on-primary links, current bars and focus rings come from theme.css. Here only
+ * the name with its Badge, and the Display settings button, outlined on-primary with no depth.
  */
-.docs-band--top {
-  background-color: var(--kv-color-primary-hover);
-}
-
-.docs-band--middle,
-.docs-band--bottom {
-  background-color: var(--kv-color-primary);
-}
-
-.docs-band-inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--kv-space-2) var(--kv-space-4);
-  box-sizing: border-box;
-  max-inline-size: var(--docs-page-max);
-  margin-inline: auto;
-  padding-inline: var(--kv-space-4);
-}
-
-.docs-band--middle .docs-band-inner {
-  padding-block: var(--kv-space-4);
-}
-
-.docs-brand,
-.docs-header-actions {
+.docs-brand {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--kv-space-3);
 }
 
-.docs-latest,
-.docs-brand-link,
-.docs-band-nav .kv-navigation-item > .kv-link {
-  color: var(--kv-color-on-primary);
-}
-
-.docs-latest {
-  display: inline-flex;
-  align-items: center;
-  box-sizing: border-box;
-  min-block-size: var(--kv-control-min-block-size);
-  padding-inline: var(--kv-space-1);
-  border-radius: var(--kv-radius-sm);
-  text-decoration: underline;
-}
-
-.docs-latest:is(:hover, :active) {
-  text-decoration-thickness: var(--kv-link-underline-thickness-hover);
-}
-
-.docs-brand-link {
-  font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
-  font-size: var(--kv-font-heading-4-size);
-  font-weight: 600;
-  line-height: var(--kv-font-heading-4-line-height);
-  text-decoration: none;
-}
-
-.docs-brand-link:is(:hover, :active) {
-  text-decoration: underline;
-}
-
-.docs-band-nav .kv-navigation-item > .kv-link {
-  background-color: transparent;
-  font-weight: 400;
-}
-
-.docs-band-nav
-  .kv-navigation-item
-  > .kv-link:is([data-current], [aria-current]:not([aria-current='false'])) {
-  background-color: transparent;
-  color: var(--kv-color-on-primary);
-  font-weight: 600;
-}
-
-/* A fill can't show on primary, so the current item is a straight bar the width of its label. */
-.docs-band-nav
-  .kv-navigation-item
-  > .kv-link:is([data-current], [aria-current]:not([aria-current='false']))::after {
-  content: '';
-  position: absolute;
-  inset-inline: var(--kv-space-3);
-  inset-block-end: 0;
-  block-size: var(--kv-indicator-width);
-  background-color: var(--kv-color-on-primary);
-}
-
-.docs-latest:focus-visible,
-.docs-brand-link:focus-visible,
-.docs-band-nav .kv-navigation-item > .kv-link:focus-visible,
-.docs-band-button:focus-visible {
-  outline: var(--kv-focus-ring-width) solid var(--kv-color-on-primary);
-  outline-offset: var(--kv-focus-ring-offset);
-}
-
-/* Menu and Display settings: outlined, no depth. */
-.docs-band-button {
-  padding-inline: var(--kv-control-padding-inline);
-  border: var(--kv-border-width) solid var(--kv-color-on-primary);
-  border-radius: var(--kv-radius-md);
-  box-shadow: none;
-  background-color: transparent;
-  color: var(--kv-color-on-primary);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.docs-band-button:not(:disabled):is(:hover, :active) {
-  border-color: var(--kv-color-on-primary);
-  box-shadow: none;
-  background-color: var(--kv-color-primary-hover);
-  color: var(--kv-color-on-primary);
-  text-decoration: none;
-}
-
-@media (forced-colors: active) {
-  .docs-band {
-    border-block-end: var(--kv-border-width) solid CanvasText;
-    background-color: Canvas;
-  }
-
-  .docs-latest,
-  .docs-brand-link,
-  .docs-band-nav .kv-navigation-item > .kv-link {
-    color: LinkText;
-  }
-
-  .docs-band-nav
-    .kv-navigation-item
-    > .kv-link:is([data-current], [aria-current]:not([aria-current='false']))::after {
-    background-color: LinkText;
-  }
-
-  .docs-band-button,
-  .docs-band-button:not(:disabled):is(:hover, :active) {
-    border-color: ButtonText;
-    background-color: ButtonFace;
-    color: ButtonText;
-  }
-
-  .docs-latest:focus-visible,
-  .docs-brand-link:focus-visible,
-  .docs-band-nav .kv-navigation-item > .kv-link:focus-visible,
-  .docs-band-button:focus-visible {
-    outline-color: Highlight;
-  }
-}
-
-/* Display settings: in flow under the header row, not an overlay. */
-.docs-display {
-  flex-basis: 100%;
-}
-
-.docs-display-groups {
+.docs-top-end {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--kv-space-4) var(--kv-space-8);
+  align-items: center;
+  gap: 0 var(--kv-space-2);
 }
 
 .docs-footer-inner {
@@ -228,7 +83,34 @@ body {
 }
 
 .docs-sidebar {
+  /* Its links have 16px of their own: the text starts at the same edge as the header's. */
+  padding-inline-start: max(
+    0px,
+    calc(var(--docs-edge) - var(--kv-space-4) - var(--kv-border-width))
+  );
   border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+}
+
+@media (min-width: 40rem) {
+  :root {
+    --docs-edge: var(--kv-space-6);
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --docs-edge: var(--kv-space-10);
+  }
+}
+
+/* The sidebar's own button below 64rem: a full-width row, as the header's Menu. */
+.docs-sidebar-toggle {
+  display: flex;
+  justify-content: space-between;
+  inline-size: 100%;
+  border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-none);
+  box-shadow: none;
 }
 
 .docs-sidebar[data-open='false'] {
@@ -428,25 +310,13 @@ body {
   color: var(--kv-color-text);
 }
 
-/* Below 40rem the Site navigation opens from the Menu; from 40rem it is always shown. */
-@media (width < 40rem) {
-  .docs-band--bottom[data-open='false'] {
-    display: none;
-  }
-}
-
 @media (width >= 40rem) {
-  .docs-menu-toggle--nav-only {
-    display: none;
-  }
-
   .docs-code pre {
     white-space: pre;
     overflow-wrap: normal;
   }
 
-  .docs-footer-inner,
-  .docs-band-inner {
+  .docs-footer-inner {
     padding-inline: var(--kv-space-6);
   }
 
@@ -456,12 +326,11 @@ body {
 }
 
 @media (width >= 64rem) {
-  .docs-menu-toggle {
+  .docs-sidebar-toggle {
     display: none;
   }
 
-  .docs-footer-inner,
-  .docs-band-inner {
+  .docs-footer-inner {
     padding-inline: var(--kv-space-10);
   }
 
@@ -503,6 +372,12 @@ body {
   }
 }
 
+/* The title's text starts where the first level of links does: their rows have 16px of their
+ * own. Nested levels keep their indent. */
+.docs-contents > #contents-title {
+  padding-inline-start: var(--kv-space-4);
+}
+
 /* The contents move to a third column; the DOM order stays, so they still come before Example. */
 @media (width >= 80rem) {
   .docs-article:has(.docs-contents) {
@@ -527,10 +402,6 @@ body {
   }
 }
 
-.docs-nav-group-name {
-  display: none;
-}
-
 /* Without JavaScript, the disclosures can't work: hide them, show the navigation. */
 :root:not([data-kv-color-scheme]) .docs-disclosure,
 :root:not([data-kv-color-scheme]) .docs-code-copy {
@@ -542,15 +413,6 @@ body {
   content-visibility: visible;
 }
 
-:root:not([data-kv-color-scheme]) .docs-sidebar[data-open='false'],
-:root:not([data-kv-color-scheme]) .docs-band--bottom[data-open='false'] {
-  display: block;
-}
-
-:root:not([data-kv-color-scheme]) .docs-nav-group[hidden] {
-  display: block;
-}
-
-:root:not([data-kv-color-scheme]) .docs-nav-group-name {
+:root:not([data-kv-color-scheme]) .docs-sidebar[data-open='false'] {
   display: block;
 }

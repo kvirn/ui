@@ -16,18 +16,4 @@ export const useAlertDialogTexts = defineExampleTexts({
     timeoutSignOut: 'Sign out',
     signedOut: 'You were signed out.',
   },
-  sv: {
-    deleteDraft: 'Ta bort utkastet',
-    deleteTitle: 'Vill du ta bort utkastet till ansökan?',
-    deleteDescription: 'Det går inte att ångra. Dina svar tas bort.',
-    deleteConfirm: 'Ta bort utkastet',
-    deleteKeep: 'Behåll utkastet',
-    deleted: 'Utkastet har tagits bort.',
-    showTimeout: 'Visa varningen om tidsgräns',
-    timeoutTitle: 'Vill du fortsätta vara inloggad?',
-    timeoutDescription: 'Av säkerhetsskäl loggar vi ut dig om 2 minuter. Dina svar är sparade.',
-    timeoutStay: 'Fortsätt vara inloggad',
-    timeoutSignOut: 'Logga ut',
-    signedOut: 'Du har loggats ut.',
-  },
 })

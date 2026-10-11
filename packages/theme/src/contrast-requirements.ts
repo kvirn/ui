@@ -31,6 +31,8 @@ export const colorTokenNames = [
   'on-primary',
   'primary-subtle',
   'accent',
+  'on-secondary',
+  'on-accent',
   'link',
   'link-hover',
   'focus-ring',
@@ -92,6 +94,10 @@ const textPairs: readonly ColorPair[] = [
   ['on-primary', 'primary-hover'],
   ['on-danger', 'danger'],
   ['on-danger', 'danger-hover'],
+  // The secondary and accent top bars (TopBar variants): text, links, the current item's bar and
+  // the focus ring are the on-colour on the fill. The text floor covers the 3:1 of the bar and ring.
+  ['on-secondary', 'secondary'],
+  ['on-accent', 'accent'],
 ]
 
 /**

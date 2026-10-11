@@ -14,17 +14,4 @@ export const useToastTexts = defineExampleTexts({
     saveDraft: 'Save the draft',
     draftSaved: 'Draft saved.',
   },
-  sv: {
-    saveSettings: 'Spara aviseringsinställningar',
-    settingsSaved: 'Aviseringsinställningarna är sparade.',
-    deleteDraft: 'Ta bort utkastet',
-    restoreDraft: 'Återställ utkastet',
-    draftDeleted: 'Utkastet har tagits bort.',
-    undo: 'Ångra',
-    draftLabel: 'Utkastet',
-    draftKept: 'finns',
-    draftRemoved: 'är borttaget',
-    saveDraft: 'Spara utkastet',
-    draftSaved: 'Utkastet är sparat.',
-  },
 })

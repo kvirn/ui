@@ -332,6 +332,29 @@ export type {
   UsePaginationOptions,
   UsePaginationResult,
 } from './pagination/use-pagination.ts'
+export {
+  DisplaySettings,
+  DisplaySettingsCompact,
+  DisplaySettingsCompactPanel,
+  DisplaySettingsFloating,
+  DisplaySettingsInline,
+  DisplaySettingsPanel,
+} from './display-settings/display-settings.tsx'
+export type {
+  DisplaySettingsCompactPanelProps,
+  DisplaySettingsCompactProps,
+  DisplaySettingsFloatingProps,
+  DisplaySettingsInlineProps,
+  DisplaySettingsPanelProps,
+  DisplaySettingsProps,
+} from './display-settings/display-settings.tsx'
+export { useDisplaySettings } from './display-settings/use-display-settings.ts'
+export type {
+  DisplaySettingsGroup,
+  DisplaySettingsOption,
+  UseDisplaySettingsOptions,
+  UseDisplaySettingsResult,
+} from './display-settings/use-display-settings.ts'
 export { CopyButton } from './copy-button/copy-button.tsx'
 export type { CopyButtonProps } from './copy-button/copy-button.tsx'
 export { useCopyButton } from './copy-button/use-copy-button.ts'

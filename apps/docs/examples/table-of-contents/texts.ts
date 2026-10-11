@@ -16,18 +16,4 @@ export const useTableOfContentsTexts = defineExampleTexts({
     sectionCount: ({ count }: { count: number }) => `${count} sections`,
     nameFromMessage: 'Page outline',
   },
-  sv: {
-    title: 'I den här guiden',
-    whenToUse: 'När du använder den',
-    example: 'Exempel',
-    useCases: 'Användningsfall',
-    twoLevels: 'Två nivåer',
-    ownMarkup: 'Egen markup',
-    noTitle: 'Utan synlig rubrik',
-    accessibility: 'Tillgänglighet',
-    keyboard: 'Tangentbord',
-    api: 'API-referens',
-    sectionCount: ({ count }: { count: number }) => `${count} avsnitt`,
-    nameFromMessage: 'Sidans struktur',
-  },
 })

@@ -15,18 +15,4 @@ export const usePopoverTexts = defineExampleTexts({
     help: 'Help with the form',
     helpText: 'Fill in every field marked with a star. You can save and come back later.',
   },
-  sv: {
-    about: 'Om tjänsten',
-    aboutText: 'Tjänsten drivs av kommunen och är öppen dygnet runt.',
-    close: 'Stäng',
-    changePhone: 'Ändra telefonnummer',
-    phoneNumber: 'Telefonnummer',
-    save: 'Spara',
-    cancel: 'Avbryt',
-    stateOpen: 'Öppen',
-    stateClosed: 'Stängd',
-    lastReason: 'Senaste ändring:',
-    help: 'Hjälp med formuläret',
-    helpText: 'Fyll i alla fält med stjärna. Du kan spara och komma tillbaka senare.',
-  },
 })

@@ -1,17 +1,13 @@
-import { LanguageLinks, MainMenu, SiteFooter, SiteHeader } from '@kvirn-ui/patterns'
-import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
 import {
-  Address,
-  Button,
-  Columns,
-  Field,
-  Heading,
-  Link,
-  List,
-  Stack,
-  SummaryList,
-  TextInput,
-} from '@kvirn-ui/react'
+  ApplicationLogo,
+  LanguageLinks,
+  MainMenu,
+  SiteFooter,
+  SiteHeader,
+  SiteSearch,
+} from '@kvirn-ui/patterns'
+import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
+import { Address, Columns, Heading, Link, List, Stack, SummaryList } from '@kvirn-ui/react'
 import { expect, within } from 'storybook/test'
 
 // The header, footer and docs header the shell decorator (shell.tsx) puts around every
@@ -21,11 +17,11 @@ import { expect, within } from 'storybook/test'
 export function KvirnbyHeader({ current }: { current?: 'page' | undefined }) {
   return (
     <SiteHeader.Root>
-      <SiteHeader.Topbar>
-        <SiteHeader.Brand href="#start" current={current}>
-          <SiteHeader.Logo src={kvirnbyMark} />
-          Kvirnby municipality
-        </SiteHeader.Brand>
+      <SiteHeader.Masthead>
+        <ApplicationLogo.Root href="#start" current={current}>
+          <ApplicationLogo.Logo src={kvirnbyMark} />
+          <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+        </ApplicationLogo.Root>
         <LanguageLinks.Root label="Language">
           <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
             Svenska
@@ -39,14 +35,10 @@ export function KvirnbyHeader({ current }: { current?: 'page' | undefined }) {
           <SiteHeader.UtilityLink href="#e-services">E-services</SiteHeader.UtilityLink>
           <SiteHeader.UtilityLink href="#my-pages">My pages</SiteHeader.UtilityLink>
         </SiteHeader.Utility>
-      </SiteHeader.Topbar>
-      <SiteHeader.Search action="#search">
-        <Field.Root className="kv-site-header-search-field">
-          <Field.Label marker="none">Search the site</Field.Label>
-          <TextInput type="search" name="q" autoComplete="off" />
-        </Field.Root>
-        <Button type="submit">Search</Button>
-      </SiteHeader.Search>
+        <SiteSearch action="#search" label="Search the site">
+          Search
+        </SiteSearch>
+      </SiteHeader.Masthead>
       <SiteHeader.Menu>
         <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
         <SiteHeader.MenuPanel>
@@ -161,16 +153,14 @@ export function KvirnbyFooter() {
 export function KvirnUIDocsHeader() {
   return (
     <SiteHeader.Root>
-      <SiteHeader.Topbar>
-        <SiteHeader.Brand href="#home">KvirnUI</SiteHeader.Brand>
-      </SiteHeader.Topbar>
-      <SiteHeader.Search action="#search">
-        <Field.Root className="kv-site-header-search-field">
-          <Field.Label marker="none">Search the documentation</Field.Label>
-          <TextInput type="search" name="q" autoComplete="off" />
-        </Field.Root>
-        <Button type="submit">Search</Button>
-      </SiteHeader.Search>
+      <SiteHeader.Masthead>
+        <ApplicationLogo.Root href="#home">
+          <ApplicationLogo.Name>KvirnUI</ApplicationLogo.Name>
+        </ApplicationLogo.Root>
+        <SiteSearch action="#search" label="Search the documentation">
+          Search
+        </SiteSearch>
+      </SiteHeader.Masthead>
       <SiteHeader.Menu>
         <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
         <SiteHeader.MenuPanel>

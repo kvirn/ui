@@ -9,12 +9,4 @@ export const useInputGroupTexts = defineExampleTexts({
     searchLabel: 'Search services',
     searchClear: 'Clear search',
   },
-  sv: {
-    distance: 'Avstånd till arbetet i kilometer',
-    unit: 'km',
-    errorDistance: 'Skriv avståndet till arbetet i hela kilometer',
-    lockedHint: 'Avståndet fastställdes när din ansökan kom in.',
-    searchLabel: 'Sök bland tjänster',
-    searchClear: 'Rensa sökningen',
-  },
 })

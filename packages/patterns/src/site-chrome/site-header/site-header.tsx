@@ -21,17 +21,14 @@ interface SiteHeaderMenuContextValue {
 
 const SiteHeaderMenuContext = createContext<SiteHeaderMenuContextValue | null>(null)
 
-export type SiteHeaderRootProps = ComponentPropsWithRef<'header'>
-export type SiteHeaderNoticeProps = ComponentPropsWithRef<'div'>
-export type SiteHeaderTopbarProps = ComponentPropsWithRef<'div'>
-export type SiteHeaderServiceProps = ComponentPropsWithRef<'span'>
-
-/**
- * `current` is `page` on the start page. Put a `SiteHeader.Logo` first and the organisation's
- * name as text: the name is the link's accessible name.
- */
-export type SiteHeaderBrandProps<Component extends ElementType = 'a'> = LinkProps<Component>
-export type SiteHeaderLogoProps = Omit<ComponentPropsWithRef<'img'>, 'alt'>
+export interface SiteHeaderRootProps extends ComponentPropsWithRef<'header'> {
+  /**
+   * `canvas` (default) adds no class. `primary` adds `kv-site-header--primary`: each child is a
+   * full-width `primary` band, and a `TopBar` first is the darker top bar.
+   */
+  variant?: 'canvas' | 'primary' | undefined
+}
+export type SiteHeaderMastheadProps = ComponentPropsWithRef<'div'>
 export interface SiteHeaderUtilityProps extends Omit<
   ComponentPropsWithRef<'nav'>,
   'aria-label' | 'aria-labelledby'
@@ -40,10 +37,6 @@ export interface SiteHeaderUtilityProps extends Omit<
   label: string
 }
 export type SiteHeaderUtilityLinkProps<Component extends ElementType = 'a'> = LinkProps<Component>
-export interface SiteHeaderSearchProps extends ComponentPropsWithRef<'search'> {
-  /** Where the form goes: a GET to the search page. */
-  action: string
-}
 export type SiteHeaderMenuProps = ComponentPropsWithRef<'div'> & {
   /** The Menu panel starts open (below 64rem). */
   defaultOpen?: boolean | undefined
@@ -57,6 +50,7 @@ export type SiteHeaderMenuPanelProps = ComponentPropsWithRef<'div'>
  * page's `h1` is in `main`. Contract: site-header.a11y.md.
  */
 export function SiteHeaderRoot({
+  variant = 'canvas',
   children,
   className,
   ...otherProps
@@ -64,7 +58,13 @@ export function SiteHeaderRoot({
   return (
     <Section
       as="header"
-      className={['kv-section--canvas', 'kv-section--padding-sm', 'kv-site-header', className]
+      className={[
+        'kv-section--canvas',
+        'kv-section--padding-sm',
+        'kv-site-header',
+        variant === 'primary' && 'kv-site-header--primary',
+        className,
+      ]
         .filter(Boolean)
         .join(' ')}
       {...otherProps}
@@ -75,38 +75,11 @@ export function SiteHeaderRoot({
 }
 SiteHeaderRoot.displayName = 'SiteHeader.Root'
 
-/** A line above the brand, for reference sites: text and links, no heading. */
-export function SiteHeaderNotice(props: SiteHeaderNoticeProps): ReactElement {
-  return <div {...mergeProps(props, { className: 'kv-site-header-notice' })} />
+/** The row of the `ApplicationLogo`, the language links, the shortcuts and the `SiteSearch`. */
+export function SiteHeaderMasthead(props: SiteHeaderMastheadProps): ReactElement {
+  return <div {...mergeProps(props, { className: 'kv-site-header-masthead' })} />
 }
-SiteHeaderNotice.displayName = 'SiteHeader.Notice'
-
-/** The row of the brand, the language links and the shortcuts. */
-export function SiteHeaderTopbar(props: SiteHeaderTopbarProps): ReactElement {
-  return <div {...mergeProps(props, { className: 'kv-site-header-top' })} />
-}
-SiteHeaderTopbar.displayName = 'SiteHeader.Topbar'
-
-/** The organisation's link to its start page: a `Link.Root`, through the registered router link or `as`. */
-export function SiteHeaderBrand<Component extends ElementType = 'a'>(
-  props: SiteHeaderBrandProps<Component>,
-): ReactElement
-export function SiteHeaderBrand(props: LinkProps<'a'>): ReactElement {
-  return <Link.Root {...mergeProps(props, { className: 'kv-site-header-brand' })} />
-}
-SiteHeaderBrand.displayName = 'SiteHeader.Brand'
-
-/** The brand's mark. It is decorative (`alt=""`): the organisation's name is the text beside it. */
-export function SiteHeaderLogo(props: SiteHeaderLogoProps): ReactElement {
-  return <img alt="" {...mergeProps(props, { className: 'kv-site-header-mark' })} />
-}
-SiteHeaderLogo.displayName = 'SiteHeader.Logo'
-
-/** A transaction header's service name, as text after the brand. */
-export function SiteHeaderService(props: SiteHeaderServiceProps): ReactElement {
-  return <span {...mergeProps(props, { className: 'kv-site-header-service' })} />
-}
-SiteHeaderService.displayName = 'SiteHeader.Service'
+SiteHeaderMasthead.displayName = 'SiteHeader.Masthead'
 
 /**
  * The shortcuts: a horizontal `Navigation` named by `label`. Put `SiteHeader.UtilityLink`s in
@@ -144,26 +117,6 @@ export function SiteHeaderUtilityLink(props: LinkProps<'a'>): ReactElement {
   )
 }
 SiteHeaderUtilityLink.displayName = 'SiteHeader.UtilityLink'
-
-/**
- * The site search: a `<search>` landmark around a GET form. Write the field and the button as
- * children, from `Field`, `TextInput` and `Button`: a visible label, and a button that says
- * "Search" in words (2.5.3).
- */
-export function SiteHeaderSearch({
-  action,
-  children,
-  ...otherProps
-}: SiteHeaderSearchProps): ReactElement {
-  return (
-    <search {...mergeProps(otherProps, { className: 'kv-site-header-search' })}>
-      <form action={action} method="get" className="kv-site-header-search-form">
-        {children}
-      </form>
-    </search>
-  )
-}
-SiteHeaderSearch.displayName = 'SiteHeader.Search'
 
 /**
  * The main navigation behind the Menu button below 64rem, always shown from 64rem. It owns the
@@ -246,14 +199,9 @@ SiteHeaderMenuPanel.displayName = 'SiteHeader.MenuPanel'
 
 export const SiteHeader = {
   Root: SiteHeaderRoot,
-  Notice: SiteHeaderNotice,
-  Topbar: SiteHeaderTopbar,
-  Brand: SiteHeaderBrand,
-  Logo: SiteHeaderLogo,
-  Service: SiteHeaderService,
+  Masthead: SiteHeaderMasthead,
   Utility: SiteHeaderUtility,
   UtilityLink: SiteHeaderUtilityLink,
-  Search: SiteHeaderSearch,
   Menu: SiteHeaderMenu,
   MenuButton: SiteHeaderMenuButton,
   MenuPanel: SiteHeaderMenuPanel,

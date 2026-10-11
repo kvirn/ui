@@ -243,6 +243,16 @@ describe('keyboardRowProblems', () => {
     expect(keyboardRowProblems(section([], true))).toEqual([])
   })
 
+  it('asks a pattern for no test names, but still for its Tab rows', () => {
+    const untested = row('Enter', 'Native behaviour, not asserted')
+    expect(
+      keyboardRowProblems(section([tab, shiftTab, untested]), { requireTests: false }),
+    ).toEqual([])
+    expect(keyboardRowProblems(section([tab, untested]), { requireTests: false })).toEqual([
+      'has focus lines but no Shift+Tab row',
+    ])
+  })
+
   it('requires every row to name a component test', () => {
     expect(
       keyboardRowProblems(

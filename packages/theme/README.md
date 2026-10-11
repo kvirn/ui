@@ -55,7 +55,7 @@ import '@kvirn-ui/theme/theme.css'
   | Scale              | Default hue                                      | Used for                                                        |
   | ------------------ | ------------------------------------------------ | --------------------------------------------------------------- |
   | `--kv-neutral-*`   | grey with a faint cool tint                      | canvases, surfaces, borders, text                               |
-  | `--kv-primary-*`   | lavender (`#5e6ad2` is 500)                      | primary buttons, links, focus rings, selection, current page    |
+  | `--kv-primary-*`   | blue (`#0066cc` is 500)                          | primary buttons, links, focus rings, selection, current page    |
   | `--kv-secondary-*` | the neutral steps (`var(--kv-neutral-500)` etc.) | the secondary button's edge                                     |
   | `--kv-accent-*`    | teal                                             | nothing in the default theme: there for your brand's 2nd colour |
   | `--kv-danger-*`    | red                                              | errors, destructive actions                                     |
@@ -76,8 +76,8 @@ Components only use the semantic tokens. Everything is inside `@layer kv`, so an
   --kv-primary-50: #edfafa;
   --kv-primary-100: #cdf0f0;
   --kv-primary-200: #9be0e2;
-  --kv-primary-300: #5fc6cb;
-  --kv-primary-400: #1e9ca4;
+  --kv-primary-300: #039aa4;
+  --kv-primary-400: #03828c;
   --kv-primary-500: #007d86;
   --kv-primary-600: #00707a;
   --kv-primary-700: #005a62;

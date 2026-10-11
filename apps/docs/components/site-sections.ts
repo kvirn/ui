@@ -485,7 +485,6 @@ export const siteSections: readonly SiteSection[] = [
  * "Documentation" is the home page, never a second "Docs" (Q2).
  */
 export const siteTools: readonly SiteTool[] = [
-  { id: 'documentation', label: messages.docs.header.tools.docs, href: '/' },
   {
     id: 'github',
     label: messages.docs.header.tools.github,

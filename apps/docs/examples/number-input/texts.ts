@@ -17,22 +17,6 @@ export const useNumberInputTexts = defineExampleTexts({
     errorRange: 'Enter a number from 0 to 12',
     send: 'Send',
   },
-  sv: {
-    children: 'Antal barn under 18 år',
-    childrenHint: 'Skriv ett heltal från 0 till 12.',
-    rent: 'Månadshyra',
-    rentHint: (example: string) => `Skriv beloppet utan valutatecken, till exempel ${example}.`,
-    valueToSend: 'Värdet som ditt formulär skickar',
-    rentInCrowns: 'Månadshyra i kronor',
-    unit: 'kr',
-    balance: 'Kontosaldo',
-    balanceHint: 'Använd minustecken för ett negativt saldo, till exempel -8450.',
-    pasted: 'Belopp från ditt kalkylblad',
-    pastedHint:
-      'Klistra in eller skriv beloppet som det är. Vi läser det när du skickar formuläret.',
-    errorRange: 'Skriv ett tal från 0 till 12',
-    send: 'Skicka',
-  },
 })
 
 /** A number written the way the page's language writes it, for a help text's example. */

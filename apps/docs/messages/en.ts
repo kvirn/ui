@@ -1,14 +1,6 @@
 // Docs site shell and template strings (docs/design/docs-site.md §4). The site copy is English
 // for now, keyed so it can be translated later. Library strings live in @kvirn-ui/i18n.
 
-const colorSchemeNames = { light: 'Light', dark: 'Dark', system: 'Same as my device' } as const
-const contrastNames = { standard: 'Standard', more: 'High', system: 'Same as my device' } as const
-const motionNames = {
-  full: 'Full motion',
-  reduce: 'Less motion',
-  system: 'Same as my device',
-} as const
-
 export const messages = {
   docs: {
     meta: {
@@ -97,10 +89,13 @@ export const messages = {
       navLabel: 'Site',
       toolsLabel: 'Tools',
       latest: ({ status }: { status: string }) => `Latest: ${status}`,
-      tools: { docs: 'Documentation', github: 'GitHub' },
+      tools: { github: 'GitHub' },
+      searchLabel: 'Search the documentation',
+      searchButton: 'Search',
     },
     nav: {
       menuButton: 'Menu',
+      sidebarButton: ({ section }: { section: string }) => `Pages in ${section}`,
       sections: {
         home: 'Home',
         docs: 'Docs',
@@ -136,19 +131,8 @@ export const messages = {
         placesAndContacts: 'Places and contacts',
       },
     },
+    /** The note the docs pass to Display settings as a child: the component has none of its own. */
     display: {
-      button: 'Display settings',
-      colorScheme: { legend: 'Colour scheme', ...colorSchemeNames },
-      contrast: { legend: 'Contrast', ...contrastNames },
-      motion: {
-        legend: 'Motion',
-        ...motionNames,
-        note: 'Less motion turns off the fades and transitions on this site. Nothing moves unless you start it.',
-      },
-      exampleLanguage: 'Example language',
-      forcedColors:
-        'Your device is using its own colours, for example a Windows contrast theme. They replace the settings here. Your choice is kept for when you turn them off.',
-      storageTitle: 'Privacy',
       storageNote:
         "We save your choice in this browser only. We don't use cookies or send it anywhere.",
     },
@@ -291,6 +275,14 @@ export const messages = {
       claim:
         'KvirnUI is designed and tested to meet WCAG 2.2 AA. Whether your service meets it depends on how you build and test the whole service.',
       noTracking: 'This site uses no cookies, analytics or third-party services.',
+    },
+    search: {
+      title: 'Search',
+      heading: 'Search the documentation',
+      hint: 'Write a word in the search field to find a page by its title or what it is for.',
+      resultsFor: ({ query, count }: { query: string; count: number }) =>
+        count === 1 ? `1 page for “${query}”` : `${count} pages for “${query}”`,
+      noResults: 'No page matches. Try a shorter word, or look through the Components.',
     },
     notFound: {
       title: 'Page not found',

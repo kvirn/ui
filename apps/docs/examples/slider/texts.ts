@@ -10,13 +10,4 @@ export const useSliderTexts = defineExampleTexts({
     send: 'Search',
     sent: 'Sent:',
   },
-  sv: {
-    distanceLabel: 'Avstånd från din adress i kilometer',
-    distanceHint: 'Från 0 till 50 km. Du kan också skriva ett tal.',
-    distanceEnds: 'Från 0 till 50 km.',
-    distanceUnit: 'km',
-    distanceTooFar: 'Ange ett avstånd på högst 50 km',
-    send: 'Sök',
-    sent: 'Skickat:',
-  },
 })

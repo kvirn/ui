@@ -24,8 +24,8 @@ const tealBrandScale: Record<string, string> = {
   '50': '#edfafa',
   '100': '#cdf0f0',
   '200': '#9be0e2',
-  '300': '#5fc6cb',
-  '400': '#1e9ca4',
+  '300': '#039aa4',
+  '400': '#03828c',
   '500': '#007d86',
   '600': '#00707a',
   '700': '#005a62',
@@ -197,7 +197,6 @@ describe('overrides', () => {
     )
     const problems = checkThemeCss(`${themeCss}\n${scaleOverride('primary', accent)}`)
     expect(problems).toContain('light: on-primary on primary is 4.37:1, needs 4.5:1')
-    expect(problems).toContain('dark: on-primary on primary is 4.37:1, needs 4.5:1')
   })
 
   it('reports a button edge tint that lowers a boundary under 3:1', () => {
@@ -232,12 +231,12 @@ describe('overrides', () => {
     const faint = `${themeCss}\n:root { --kv-neutral-600: #aeb3bb; }`
     expect(checkThemeCss(faint)).toContain('light: text-muted on canvas is 2.11:1, needs 4.5:1')
     const drifted = themeCss.replace(
-      /(@media \(prefers-color-scheme: dark\) \{\s*:root:not\(\[data-kv-color-scheme\]\) \{[^}]*?--kv-color-link: )var\(--kv-primary-400\)/,
-      '$1var(--kv-primary-300)',
+      /(@media \(prefers-color-scheme: dark\) \{\s*:root:not\(\[data-kv-color-scheme\]\) \{[^}]*?--kv-color-link: )var\(--kv-primary-300\)/,
+      '$1var(--kv-primary-400)',
     )
     expect(drifted).not.toBe(themeCss)
     expect(checkThemeCss(drifted)).toContain(
-      'dark: --kv-color-link is #7784f2, but #a3acff in the system fallback',
+      'dark: --kv-color-link is #2589fe, but #0070e0 in the system fallback',
     )
   })
 })

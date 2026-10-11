@@ -1,7 +1,14 @@
 import { en } from '@kvirn-ui/i18n/en'
-import { LanguageLinks, MainMenu, PageFrame, SiteHeader } from '@kvirn-ui/patterns'
+import {
+  ApplicationLogo,
+  LanguageLinks,
+  MainMenu,
+  PageFrame,
+  SiteHeader,
+  SiteSearch,
+} from '@kvirn-ui/patterns'
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { Button, Field, KvirnProvider, Link, Navigation, TextInput } from '@kvirn-ui/react'
+import { KvirnProvider, Link, Navigation } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/page-frame/page-frame.a11y.md?raw'
@@ -60,11 +67,11 @@ export const Default: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start" current="page">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start" current="page">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
             <LanguageLinks.Root label="Language">
               <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
                 Svenska
@@ -73,14 +80,10 @@ export const Default: Story = {
                 English
               </LanguageLinks.Link>
             </LanguageLinks.Root>
-          </SiteHeader.Topbar>
-          <SiteHeader.Search action="#search">
-            <Field.Root className="kv-site-header-search-field">
-              <Field.Label marker="none">Search the site</Field.Label>
-              <TextInput type="search" name="q" autoComplete="off" />
-            </Field.Root>
-            <Button type="submit">Search</Button>
-          </SiteHeader.Search>
+            <SiteSearch action="#search" label="Search the site">
+              Search
+            </SiteSearch>
+          </SiteHeader.Masthead>
           <SiteHeader.Menu>
             <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>
@@ -118,11 +121,11 @@ export const Narrow: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start" current="page">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start" current="page">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
             <LanguageLinks.Root label="Language">
               <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
                 Svenska
@@ -131,14 +134,10 @@ export const Narrow: Story = {
                 English
               </LanguageLinks.Link>
             </LanguageLinks.Root>
-          </SiteHeader.Topbar>
-          <SiteHeader.Search action="#search">
-            <Field.Root className="kv-site-header-search-field">
-              <Field.Label marker="none">Search the site</Field.Label>
-              <TextInput type="search" name="q" autoComplete="off" />
-            </Field.Root>
-            <Button type="submit">Search</Button>
-          </SiteHeader.Search>
+            <SiteSearch action="#search" label="Search the site">
+              Search
+            </SiteSearch>
+          </SiteHeader.Masthead>
           <SiteHeader.Menu>
             <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>
@@ -172,12 +171,12 @@ export const WithSidebar: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
-          </SiteHeader.Topbar>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
+          </SiteHeader.Masthead>
         </SiteHeader.Root>
         <PageFrame.Body>
           <PageFrame.Sidebar as="nav" aria-label="In this section">
@@ -216,11 +215,11 @@ export const Keyboard: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start" current="page">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start" current="page">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
             <LanguageLinks.Root label="Language">
               <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
                 Svenska
@@ -229,14 +228,10 @@ export const Keyboard: Story = {
                 English
               </LanguageLinks.Link>
             </LanguageLinks.Root>
-          </SiteHeader.Topbar>
-          <SiteHeader.Search action="#search">
-            <Field.Root className="kv-site-header-search-field">
-              <Field.Label marker="none">Search the site</Field.Label>
-              <TextInput type="search" name="q" autoComplete="off" />
-            </Field.Root>
-            <Button type="submit">Search</Button>
-          </SiteHeader.Search>
+            <SiteSearch action="#search" label="Search the site">
+              Search
+            </SiteSearch>
+          </SiteHeader.Masthead>
           <SiteHeader.Menu>
             <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>
@@ -274,11 +269,11 @@ export const RTL: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start" current="page">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start" current="page">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
             <LanguageLinks.Root label="Language">
               <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
                 Svenska
@@ -287,14 +282,10 @@ export const RTL: Story = {
                 English
               </LanguageLinks.Link>
             </LanguageLinks.Root>
-          </SiteHeader.Topbar>
-          <SiteHeader.Search action="#search">
-            <Field.Root className="kv-site-header-search-field">
-              <Field.Label marker="none">Search the site</Field.Label>
-              <TextInput type="search" name="q" autoComplete="off" />
-            </Field.Root>
-            <Button type="submit">Search</Button>
-          </SiteHeader.Search>
+            <SiteSearch action="#search" label="Search the site">
+              Search
+            </SiteSearch>
+          </SiteHeader.Masthead>
           <SiteHeader.Menu>
             <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>
@@ -325,11 +316,11 @@ export const ForcedColors: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <SiteHeader.Topbar>
-            <SiteHeader.Brand href="#start" current="page">
-              <SiteHeader.Logo src={kvirnbyMark} />
-              Kvirnby municipality
-            </SiteHeader.Brand>
+          <SiteHeader.Masthead>
+            <ApplicationLogo.Root href="#start" current="page">
+              <ApplicationLogo.Logo src={kvirnbyMark} />
+              <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+            </ApplicationLogo.Root>
             <LanguageLinks.Root label="Language">
               <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
                 Svenska
@@ -338,14 +329,10 @@ export const ForcedColors: Story = {
                 English
               </LanguageLinks.Link>
             </LanguageLinks.Root>
-          </SiteHeader.Topbar>
-          <SiteHeader.Search action="#search">
-            <Field.Root className="kv-site-header-search-field">
-              <Field.Label marker="none">Search the site</Field.Label>
-              <TextInput type="search" name="q" autoComplete="off" />
-            </Field.Root>
-            <Button type="submit">Search</Button>
-          </SiteHeader.Search>
+            <SiteSearch action="#search" label="Search the site">
+              Search
+            </SiteSearch>
+          </SiteHeader.Masthead>
           <SiteHeader.Menu>
             <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>

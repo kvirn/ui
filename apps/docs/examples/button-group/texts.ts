@@ -10,13 +10,4 @@ export const useButtonGroupTexts = defineExampleTexts({
     orderExtra: 'Order an extra collection',
     pause: 'Pause collection',
   },
-  sv: {
-    groupName: 'Din ansökan',
-    send: 'Skicka',
-    saveDraft: 'Spara utkast',
-    cardTitle: 'Sophämtning',
-    cardBody: 'Nästa hämtning är på tisdag. Ställ ut kärlet senast klockan 06.',
-    orderExtra: 'Beställ extra tömning',
-    pause: 'Pausa hämtningen',
-  },
 })

@@ -4,7 +4,7 @@
 - **Deviations:** the APG example's optional arrow keys, Home and End are not adopted (plan 0095, D3 and spec section 5.2): `Disclosure` and `Navigation` handle none, a list of links is learned with Tab, and an arrow on a link scrolls the page for a zoomed keyboard user. Adding them later is additive. Escape and the focus-out close are the composition's own handlers.
 - **Native elements used:** `<nav>`, `<ul>`, `<li>`, `<button type="button">` (Disclosure.Trigger), `<div>` (Disclosure.Panel), `<a href>`.
 - **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
-- **Tests:** `main-menu.test.tsx` next to this file proves Escape returning focus, and the wide focus-out and outside-press closes; the disclosure and link keys are proved in `disclosure.test.tsx` and `link.test.tsx`, and the rest of the rules below are exercised by `main-menu.stories.tsx` (axe, every theme). `main-menu.stories.tsx` in `apps/storybook/src/patterns/site-chrome/`.
+- **Tests:** none of its own: patterns aren't unit tested. WCAG is proved by axe in every story state in every theme (`primary-navigation.stories.tsx`); the keys and parts are proved in the components' tests that the rows below name.
 
 ## Roles, states, properties
 
@@ -16,7 +16,7 @@
 | `MainMenu.Link`        | `<a href>` in a list     | `aria-current="page"` only while its panel is shown, never inside a `hidden` group          | One `aria-current` per nav. The trigger's trail is visual and is not announced: the Breadcrumb is the path |
 | `MainMenu.Link` (top)  | `<a href>`               | `aria-current` as any navigation link                                                       | A topic with no sub-pages is a plain link, not a button                                                    |
 
-Rules (the focus-out and outside-press closes and the Escape focus return are tested in `main-menu.test.tsx`):
+Rules (the focus-out and outside-press closes and the Escape focus return are shown in `primary-navigation.stories.tsx`):
 
 - **Activation only.** A panel opens and closes on click, tap, Enter and Space. There is no hover-open, no focus-open and no delay.
 - **Wide (from 64rem):** opening one topic closes any other. A panel closes when focus leaves the nav and when a press lands outside it, so it never covers the element that has focus (2.4.11). Resizing keeps the state, except that crossing to wide keeps one open topic: the one that holds focus, else the last opened.
@@ -34,17 +34,17 @@ Rules (the focus-out and outside-press closes and the Escape focus return are te
 - **Arrows wrap:** n/a
 - **Shortcuts:** none
 
-| Key               | Context                                  | Action                                                                                              | Test                                                                                           |
-| ----------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Tab               | in the nav                               | Moves through the topic buttons and, when a panel is open, into and through its links, in DOM order | `disclosure.test.tsx › Tab skips the content of a closed panel`                                |
-| Shift+Tab         | in the nav                               | Moves back through the topic buttons and links                                                      | `disclosure.test.tsx › Shift+Tab leaves the trigger backwards`                                 |
-| Enter             | topic button                             | Opens its panel. Focus stays on the button. Wide: closes any other panel                            | `disclosure.test.tsx › Enter and Space on the trigger toggle the panel`                        |
-| Space             | topic button                             | Opens its panel, or closes it. Focus stays on the button                                            | `disclosure.test.tsx › Enter and Space on the trigger toggle the panel`                        |
-| Tab               | on an open topic button                  | Moves into the panel: the overview link first, then the children                                    | `disclosure.test.tsx › Tab goes from the trigger into an open panel`                           |
-| Enter             | link in a panel                          | Follows the link; every panel closes                                                                | `link.test.tsx › Enter activates the link; Space does not`                                     |
-| Escape            | on an open topic button, or in its panel | Closes that panel; focus to its button                                                              | `main-menu.test.tsx › Escape in an open panel closes it and returns focus to its topic button` |
-| Tab               | focus leaves the nav, wide, a panel open | The panel closes. Below 64rem nothing closes on focus-out                                           | `main-menu.test.tsx › focus leaving the nav closes the open panel`                             |
-| Arrows, Home, End | anywhere                                 | Not handled: they scroll the page and are not prevented                                             | `navigation.test.tsx › Arrow keys, Home and End are not handled`                               |
+| Key               | Context                                  | Action                                                                                              | Test                                                                    |
+| ----------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Tab               | in the nav                               | Moves through the topic buttons and, when a panel is open, into and through its links, in DOM order | `disclosure.test.tsx › Tab skips the content of a closed panel`         |
+| Shift+Tab         | in the nav                               | Moves back through the topic buttons and links                                                      | `disclosure.test.tsx › Shift+Tab leaves the trigger backwards`          |
+| Enter             | topic button                             | Opens its panel. Focus stays on the button. Wide: closes any other panel                            | `disclosure.test.tsx › Enter and Space on the trigger toggle the panel` |
+| Space             | topic button                             | Opens its panel, or closes it. Focus stays on the button                                            | `disclosure.test.tsx › Enter and Space on the trigger toggle the panel` |
+| Tab               | on an open topic button                  | Moves into the panel: the overview link first, then the children                                    | `disclosure.test.tsx › Tab goes from the trigger into an open panel`    |
+| Enter             | link in a panel                          | Follows the link; every panel closes                                                                | `link.test.tsx › Enter activates the link; Space does not`              |
+| Escape            | on an open topic button, or in its panel | Closes that panel; focus to its button                                                              | `primary-navigation.stories.tsx › Keyboard`                             |
+| Tab               | focus leaves the nav, wide, a panel open | The panel closes. Below 64rem nothing closes on focus-out                                           | `primary-navigation.stories.tsx › Keyboard`                             |
+| Arrows, Home, End | anywhere                                 | Not handled: they scroll the page and are not prevented                                             | `navigation.test.tsx › Arrow keys, Home and End are not handled`        |
 
 Escape in the open Menu panel (below 64rem, no topic open) closes the Menu and returns focus to it: that row is in `site-header.a11y.md`.
 

@@ -30,25 +30,4 @@ export const useAlertTexts = defineExampleTexts<AlertTexts>({
       showAgain: 'Show the message again',
     },
   },
-  sv: {
-    permit: {
-      title: 'Ditt parkeringstillstånd går ut den 12 november 2026',
-      body: 'Förnya det senast den 5 november, annars kan du få p-bot.',
-      renew: 'Förnya parkeringstillståndet',
-    },
-    sample: { title: 'Något du bör veta' },
-    failed: {
-      title: 'Vi kunde inte skicka din ansökan',
-      body: 'Dina svar är sparade. Försök igen om några minuter.',
-      retry: 'Försök igen',
-      contact: 'Kontakta oss',
-    },
-    saved: { title: 'Dina ändringar är sparade', save: 'Spara' },
-    dismissible: {
-      heading: 'Dina ärenden',
-      title: 'Tjänsten är långsammare än vanligt i dag',
-      body: 'En sökning kan ta upp till en minut. Dina svar sparas ändå.',
-      showAgain: 'Visa meddelandet igen',
-    },
-  },
 })

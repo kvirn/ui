@@ -31,12 +31,19 @@ const tokenGroups: readonly TokenGroup[] = [
   { heading: 'Surfaces', tokens: ['canvas', 'surface', 'surface-raised'] },
   {
     heading: 'Borders',
-    tokens: ['border-subtle', 'border-control', 'border-focus', 'secondary', 'focus-ring'],
+    tokens: [
+      'border-subtle',
+      'border-control',
+      'border-focus',
+      'secondary',
+      'on-secondary',
+      'focus-ring',
+    ],
   },
   { heading: 'Text', tokens: ['text', 'heading', 'text-muted', 'link', 'link-hover'] },
   {
     heading: 'Primary',
-    tokens: ['primary', 'primary-hover', 'on-primary', 'primary-subtle', 'accent'],
+    tokens: ['primary', 'primary-hover', 'on-primary', 'primary-subtle', 'accent', 'on-accent'],
   },
   {
     heading: 'Status',
@@ -63,6 +70,8 @@ const tokenUses: Record<ColorTokenName, string> = {
   'border-focus': 'A field’s edge while it has focus, a click included',
   secondary:
     'The secondary button’s edge. The secondary scale is the neutral steps by default, so it equals border-control until you give it a hue',
+  'on-secondary':
+    'Text, links, the current-item bar and the focus ring on a secondary fill, such as a top bar',
   'focus-ring': 'Focus indicator',
   text: 'Body text',
   heading: 'Headings in prose. The same step as text by default',
@@ -77,6 +86,8 @@ const tokenUses: Record<ColorTokenName, string> = {
     'Current navigation item, secondary button hover, selected rows, info backgrounds',
   accent:
     'The end of the loading indicators’ gradient (primary to accent). Never text, never a status',
+  'on-accent':
+    'Text, links, the current-item bar and the focus ring on an accent fill, such as a top bar',
   danger: 'Errors, destructive actions',
   'danger-hover': 'Hover and pressed state of danger',
   'on-danger': 'Text and icons on danger',

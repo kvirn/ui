@@ -8,9 +8,4 @@ export interface CodeBlockTexts {
 
 export const useCodeBlockTexts = defineExampleTexts<CodeBlockTexts>({
   en: { installLabel: 'Install', requestLabel: 'Send an application', copyCommand: 'Copy command' },
-  sv: {
-    installLabel: 'Installera',
-    requestLabel: 'Skicka ansökan',
-    copyCommand: 'Kopiera kommandot',
-  },
 })

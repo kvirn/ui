@@ -305,6 +305,9 @@ importers:
       '@kvirn-ui/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@kvirn-ui/patterns':
+        specifier: workspace:*
+        version: link:../../packages/patterns
       '@kvirn-ui/react':
         specifier: workspace:*
         version: link:../../packages/react

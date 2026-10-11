@@ -1,4 +1,4 @@
-import { Button, Card, Field, Icon, InputGroup } from '@kvirn-ui/react'
+import { Button, ButtonGroup, Card, Field, Icon, InputGroup, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/input-group/input-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/input-group/input-group.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -218,6 +218,35 @@ export const SearchWithClear: Story = {
     await expect(input).toHaveValue('')
     await expect(input).toHaveFocus()
     await expect(canvas.queryByRole('button', { name: text.searchClear })).toBeNull()
+  },
+}
+
+/**
+ * The site search bar, built from the components: a `Field` with a visually hidden label, and the
+ * `TextInput` and a submit `Button` joined into one strip by an attached `ButtonGroup`. Not an
+ * InputGroup: its box holds an in-field action such as Clear, and a submit belongs outside the
+ * box. The `kv-site-search-*` classes (theme) square the field's end and hide the label. The
+ * [Site search](?path=/docs/patterns-site-chrome-site-search--docs) pattern renders exactly this.
+ */
+export const Search: Story = {
+  globals: { locale: 'en' },
+  render: () => (
+    <search>
+      <form action="#search" method="get">
+        <ButtonGroup className="kv-button-group--attached">
+          <Field.Root className="kv-site-search-field">
+            <Field.Label marker="none">Search the site</Field.Label>
+            <TextInput type="search" name="q" autoComplete="off" />
+          </Field.Root>
+          <Button type="submit">Search</Button>
+        </ButtonGroup>
+      </form>
+    </search>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('searchbox', { name: 'Search the site' })).toBeVisible()
+    await expect(canvas.getByRole('button', { name: 'Search' })).toHaveAttribute('type', 'submit')
+    await expect(canvas.queryByRole('group')).toBeNull()
   },
 }
 

@@ -1,6 +1,7 @@
 import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
 
+// displaySettings.* are drafts (Plan 0099): a native speaker should review them.
 export const sv = {
   link: { newTabNotice: '(öppnas i en ny flik)' },
   field: { optional: '(valfritt)', errorPrefix: 'Fel:' },
@@ -283,6 +284,24 @@ export const sv = {
     page: ({ page }, format) => `Sida ${format.number(page)}`,
   },
   routeFocus: { navigated: ({ title }) => `Du har kommit till ${title}` },
+  displaySettings: {
+    button: 'Visningsinställningar',
+    colorSchemeLegend: 'Färgschema',
+    colorSchemeLight: 'Ljust',
+    colorSchemeDark: 'Mörkt',
+    colorSchemeSystem: 'Samma som min enhet',
+    contrastLegend: 'Kontrast',
+    contrastStandard: 'Standard',
+    contrastMore: 'Hög',
+    contrastSystem: 'Samma som min enhet',
+    motionLegend: 'Rörelse',
+    motionFull: 'Full rörelse',
+    motionReduce: 'Mindre rörelse',
+    motionSystem: 'Samma som min enhet',
+    forcedColors:
+      'Din enhet använder egna färger, till exempel ett kontrasttema i Windows. De ersätter inställningarna här. Ditt val sparas till när du stänger av dem.',
+    systemShort: 'Enhet',
+  },
   copyButton: {
     label: 'Kopiera',
     copied: 'Kopierat',

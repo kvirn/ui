@@ -9,12 +9,4 @@ export const useTooltipTexts = defineExampleTexts({
     printDescription: 'Opens a print view in a new window',
     group: 'Document tools',
   },
-  sv: {
-    search: 'Sök',
-    undo: 'Ångra',
-    redo: 'Gör om',
-    print: 'Skriv ut',
-    printDescription: 'Öppnar en utskriftsvy i ett nytt fönster',
-    group: 'Dokumentverktyg',
-  },
 })

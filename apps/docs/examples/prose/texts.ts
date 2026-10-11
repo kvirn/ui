@@ -57,48 +57,4 @@ export const useProseTexts = defineExampleTexts<ProseTexts>({
         'Zone B has 40 spaces. The entrance is on the north side, next to the pay station.',
     },
   },
-  sv: {
-    contact: {
-      heading: 'Kontakta oss',
-      text: 'Vi svarar vardagar klockan 9–16.',
-      hours: 'Du kan också',
-      link: 'läsa våra öppettider',
-    },
-    article: {
-      lead: 'Det här behöver du för att ansöka om parkeringstillstånd.',
-      heading: 'Innan du ansöker',
-      intro: 'Ha dessa uppgifter redo:',
-      items: ['Ditt registreringsnummer', 'Ditt personnummer', 'En giltig e-postadress'],
-    },
-    large: {
-      heading: 'Vi har tagit emot din ansökan',
-      text: 'Vi svarar inom tio arbetsdagar. Spara ärendenumret från bekräftelsemejlet.',
-    },
-    field: {
-      label: 'Registreringsnummer',
-      description: 'Du hittar det i registreringsbeviset, i rutan som är märkt A.',
-    },
-    own: {
-      heading: 'Handläggningstider',
-      text: 'De flesta ansökningar får beslut inom tio arbetsdagar.',
-    },
-    inset: {
-      lead: 'Viktigt:',
-      text: 'Ansök senast den 30 april. Ansökningar som kommer in senare kan vi inte behandla.',
-    },
-    steps: {
-      heading: 'Så här går det till',
-      items: [
-        { title: 'Ansök i e-tjänsten', text: 'Det tar ungefär tio minuter.' },
-        { title: 'Vi går igenom ansökan', text: 'Vi hör av oss om något saknas.' },
-        { title: 'Du får ett beslut', text: 'Det kommer med post inom tio arbetsdagar.' },
-        { title: 'Betala avgiften', text: 'Fakturan kommer tillsammans med beslutet.' },
-      ],
-    },
-    figure: {
-      alt: 'Karta över zonen med ingången markerad på norra sidan.',
-      caption: 'Parkeringszon B. Källa: stadsbyggnadskontoret.',
-      description: 'Zon B har 40 platser. Ingången ligger på norra sidan, intill betalautomaten.',
-    },
-  },
 })

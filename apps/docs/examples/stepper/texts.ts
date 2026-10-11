@@ -6,9 +6,4 @@ export const useStepperTexts = defineExampleTexts({
     sectionName: 'Your vehicle',
     detailsHeading: 'Your contact details',
   },
-  sv: {
-    heading: 'Vilket fordon gäller tillståndet?',
-    sectionName: 'Ditt fordon',
-    detailsHeading: 'Dina kontaktuppgifter',
-  },
 })

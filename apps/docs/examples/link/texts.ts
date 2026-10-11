@@ -14,17 +14,4 @@ export const useLinkTexts = defineExampleTexts({
     otherLanguageLink: 'Suomeksi',
     service: 'Apply for a building permit',
   },
-  sv: {
-    sentenceBefore: 'Du kan ',
-    sentenceLink: 'ansöka om parkeringstillstånd',
-    sentenceAfter: ' online.',
-    newTabLink: 'Läs vägledningen hos Digg',
-    navLabel: 'Parkeringstillstånd',
-    navOverview: 'Översikt',
-    navApply: 'Ansök',
-    navContact: 'Kontakta oss',
-    otherLanguageIntro: 'Sidan finns också på finska: ',
-    otherLanguageLink: 'Suomeksi',
-    service: 'Ansök om bygglov',
-  },
 })

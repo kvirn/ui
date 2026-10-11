@@ -18,21 +18,4 @@ export const useDisclosureTexts = defineExampleTexts({
     openIt: 'Open the opening hours',
     closeIt: 'Close the opening hours',
   },
-  sv: {
-    openingHours: 'Öppettider',
-    openingHoursText: 'Måndag till fredag 10–19. Lördag 10–15. Stängt på söndag.',
-    news: 'Biblioteket har flyttat',
-    newsIntro: 'Från 1 mars finns huvudbiblioteket i gamla stadshuset på Torget.',
-    showMore: 'Mer om flytten',
-    newsMore:
-      'Barnbiblioteket och läsesalen flyttar samtidigt. Lånedisken är öppen under flytten, och du kan lämna tillbaka böcker i bokinkastet utanför.',
-    help: 'Så lämnar du tillbaka en bok',
-    helpText:
-      'Använd bokinkastet utanför entrén, eller lämna boken i lånedisken. Lånet upphör när vi har skannat boken.',
-    stateOpen: 'Öppen',
-    stateClosed: 'Stängd',
-    lastReason: 'Senaste ändring:',
-    openIt: 'Öppna öppettiderna',
-    closeIt: 'Stäng öppettiderna',
-  },
 })
