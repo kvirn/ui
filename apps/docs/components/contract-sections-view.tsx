@@ -1,4 +1,8 @@
 import {
+  DefinitionListDescription,
+  DefinitionListRoot,
+  DefinitionListRow,
+  DefinitionListTerm,
   Kbd,
   Prose,
   TableBody,
@@ -323,16 +327,16 @@ export function ContractSectionsView({
           ) : (
             <>
               {facts.length === 0 ? null : (
-                <dl>
+                <DefinitionListRoot>
                   {facts.map(({ name, value }) => (
-                    <Fragment key={name}>
-                      <dt>{text.keyboard[name]}</dt>
-                      <dd>
+                    <DefinitionListRow key={name}>
+                      <DefinitionListTerm>{text.keyboard[name]}</DefinitionListTerm>
+                      <DefinitionListDescription>
                         <Inline source={value} />
-                      </dd>
-                    </Fragment>
+                      </DefinitionListDescription>
+                    </DefinitionListRow>
                   ))}
-                </dl>
+                </DefinitionListRoot>
               )}
               <Blocks
                 blocks={keyboard.before}

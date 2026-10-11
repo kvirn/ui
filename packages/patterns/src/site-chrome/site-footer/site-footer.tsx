@@ -13,7 +13,7 @@ function joinClassNames(...classNames: Array<string | undefined>): string {
 /**
  * The `contentinfo` landmark: a surface `<footer class="kv-section">` with its content inside a
  * `Container`. DOM order is reading and focus order. Put the columns of shipped parts in it
- * (`Columns`, `SummaryList`, `Address`, a `nav` around a `Heading` and a `List`), then a
+ * (`Columns`, `DefinitionList`, `Address`, a `nav` around a `Heading` and a `List`), then a
  * `SiteFooter.Organisation`. Contract: site-footer.a11y.md.
  */
 export function SiteFooterRoot({

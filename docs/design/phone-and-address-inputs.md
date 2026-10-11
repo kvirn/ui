@@ -47,7 +47,7 @@
 | Address abroad                                   | Root `country="DE"`: no postal mask, letters allowed, 10-character box. Unknown formats: the consumer uses a `Textarea` instead (GOV.UK) |
 | Pasted "SE-123 45" or "12345"                    | Becomes `123 45` (existing pattern mask)                                                                                                 |
 | Country changed after typing                     | The postal-code value stays as typed; the mask applies to the next edit                                                                  |
-| Address the service already knows                | Not read-only boxes: show it as a SummaryList with a change link (3.3.7)                                                                 |
+| Address the service already knows                | Not read-only boxes: show it as a DefinitionList with a change link (3.3.7)                                                              |
 | Address not found by the service                 | `Fieldset.ErrorMessage`, ErrorSummary link to Line1                                                                                      |
 
 ## 4. Content

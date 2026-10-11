@@ -328,7 +328,7 @@ export const sv = {
     unsupported: 'Den här webbläsaren kan inte läsa upp text.',
   },
   errorSummary: { title: 'Det finns ett problem', titlePrefix: 'Fel:' },
-  summaryList: { change: 'Ändra' },
+  definitionList: { change: 'Ändra' },
   toast: { regionLabel: 'Meddelanden' },
   stepper: {
     status: ({ current, total }, format) =>

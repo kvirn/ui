@@ -4,7 +4,7 @@ import type { KvirnMessages } from '../types.ts'
 // fi: copyButton.* is a draft (Plan 0060): a native speaker should review it.
 // stepper.* are drafts for native review (Plan 0083).
 // breadcrumb.* and pagination.* are drafts for a native speaker to review (Plan 0062).
-// Draft: errorSummary and summaryList (Plan 0063) need a native speaker's review.
+// Draft: errorSummary and definitionList (Plan 0063) need a native speaker's review.
 // displaySettings.* are drafts (Plan 0099): a native speaker should review them.
 export const fi = {
   link: { newTabNotice: '(avautuu uuteen välilehteen)' },
@@ -334,7 +334,7 @@ export const fi = {
     unsupported: 'Tämä selain ei voi lukea tekstiä ääneen.',
   },
   errorSummary: { title: 'Lomakkeessa on virheitä', titlePrefix: 'Virhe:' },
-  summaryList: { change: 'Muuta' },
+  definitionList: { change: 'Muuta' },
   toast: { regionLabel: 'Ilmoitukset' },
   stepper: {
     status: ({ current, total }, format) =>

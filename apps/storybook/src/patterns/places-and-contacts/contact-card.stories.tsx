@@ -1,18 +1,18 @@
 import { en } from '@kvirn-ui/i18n/en'
-import { Address, Card, Heading, KvirnProvider, Link, SummaryList } from '@kvirn-ui/react'
+import { Address, Card, Heading, KvirnProvider, Link, DefinitionList } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
 import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns-story-support.tsx'
 
 // Patterns/Places and contacts/Contact card (docs/design/storybook-patterns.md sections 3 and 6).
-// Story-only: a card with a heading and a summary list is shipped parts, so it has no pattern.
+// Story-only: a card with a heading and a definition list is shipped parts, so it has no pattern.
 
-const description = `Who to contact: a [Card](?path=/docs/components-content-card--docs) with a heading, the unit that answers and a [SummaryList](?path=/docs/components-forms-summarylist--docs) of labelled rows, such as phone, email and phone hours, and an [Address](?path=/docs/components-content-address--docs) for the visiting address. It is not a landmark, and it is not a component of its own: copy the story's code and replace the text. For a phone number or an email address that is a link, put a \`Link\` in the value with its own \`tel:\` or \`mailto:\` \`href\`. A row you leave out is not drawn.
+const description = `Who to contact: a [Card](?path=/docs/components-content-card--docs) with a heading, the unit that answers and a [DefinitionList](?path=/docs/components-data-and-behaviour-definitionlist--docs) of labelled rows, such as phone, email and phone hours, and an [Address](?path=/docs/components-content-address--docs) for the visiting address. It is not a landmark, and it is not a component of its own: copy the story's code and replace the text. For a phone number or an email address that is a link, put a \`Link\` in the value with its own \`tel:\` or \`mailto:\` \`href\`. A row you leave out is not drawn.
 
 ## Parts and gaps
 
-Parts used: \`Card\`, \`Heading\`, \`SummaryList\`, \`Address\`, \`Link\`. No gap.
+Parts used: \`Card\`, \`Heading\`, \`DefinitionList\`, \`Address\`, \`Link\`. No gap.
 `
 
 const meta = {
@@ -38,36 +38,36 @@ export const Default: Story = {
               Contact us
             </Heading>
             <p>Preschool office</p>
-            <SummaryList.Root>
-              <SummaryList.Row>
-                <SummaryList.Key>Phone</SummaryList.Key>
-                <SummaryList.Value>
+            <DefinitionList.Root>
+              <DefinitionList.Row>
+                <DefinitionList.Term>Phone</DefinitionList.Term>
+                <DefinitionList.Description>
                   <Link.Root href="tel:+4681234567">08-123 45 67</Link.Root>
-                </SummaryList.Value>
-              </SummaryList.Row>
-              <SummaryList.Row>
-                <SummaryList.Key>Email</SummaryList.Key>
-                <SummaryList.Value>
+                </DefinitionList.Description>
+              </DefinitionList.Row>
+              <DefinitionList.Row>
+                <DefinitionList.Term>Email</DefinitionList.Term>
+                <DefinitionList.Description>
                   <Link.Root href="mailto:preschool@kvirnby.example">
                     preschool@kvirnby.example
                   </Link.Root>
-                </SummaryList.Value>
-              </SummaryList.Row>
-              <SummaryList.Row>
-                <SummaryList.Key>Phone hours</SummaryList.Key>
-                <SummaryList.Value>Mon–Thu 9–11 am</SummaryList.Value>
-              </SummaryList.Row>
-              <SummaryList.Row>
-                <SummaryList.Key>Visiting address</SummaryList.Key>
-                <SummaryList.Value>
+                </DefinitionList.Description>
+              </DefinitionList.Row>
+              <DefinitionList.Row>
+                <DefinitionList.Term>Phone hours</DefinitionList.Term>
+                <DefinitionList.Description>Mon–Thu 9–11 am</DefinitionList.Description>
+              </DefinitionList.Row>
+              <DefinitionList.Row>
+                <DefinitionList.Term>Visiting address</DefinitionList.Term>
+                <DefinitionList.Description>
                   <Address>
                     Main Street 1
                     <br />
                     123 45 Kvirnby
                   </Address>
-                </SummaryList.Value>
-              </SummaryList.Row>
-            </SummaryList.Root>
+                </DefinitionList.Description>
+              </DefinitionList.Row>
+            </DefinitionList.Root>
           </Card.Body>
         </Card.Root>
       </div>
@@ -89,14 +89,14 @@ export const PhoneOnly: Story = {
             <Heading as="h3" size="heading-3">
               Questions about fees
             </Heading>
-            <SummaryList.Root>
-              <SummaryList.Row>
-                <SummaryList.Key>Phone</SummaryList.Key>
-                <SummaryList.Value>
+            <DefinitionList.Root>
+              <DefinitionList.Row>
+                <DefinitionList.Term>Phone</DefinitionList.Term>
+                <DefinitionList.Description>
                   <Link.Root href="tel:+46812345678">08-123 456 78, switchboard</Link.Root>
-                </SummaryList.Value>
-              </SummaryList.Row>
-            </SummaryList.Root>
+                </DefinitionList.Description>
+              </DefinitionList.Row>
+            </DefinitionList.Root>
           </Card.Body>
         </Card.Root>
       </div>

@@ -308,7 +308,7 @@ Only existing tokens and looks. No new colour pair.
 
 ## 12. Library parts, gaps and maintainer asks
 
-Verified in `packages/react/src` (2026-10-09): Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CodeBlock, Columns, Container, CopyButton, Disclosure, Field, Heading, Icon (incl. `menu`, `search`, `arrow-*`, `chevron-*`, `language`, `external`), Kbd, Link (+ `LinkIcon`, `current`), Navigation (+ Label), Pagination, Prose, ReadAloud, Section (`as` header/footer), SidebarLayout, SkipLink, Stack, SummaryList, Table, TableOfContents, TextInput, VisuallyHidden. **Not shipped:** Site header/footer block (G9), Search block, brand link look, NavigationMenu (not planned), Hero block, Contact card (composition of Card + SummaryList).
+Verified in `packages/react/src` (2026-10-09): Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, CodeBlock, Columns, Container, CopyButton, Disclosure, Field, Heading, Icon (incl. `menu`, `search`, `arrow-*`, `chevron-*`, `language`, `external`), Kbd, Link (+ `LinkIcon`, `current`), Navigation (+ Label), Pagination, Prose, ReadAloud, Section (`as` header/footer), SidebarLayout, SkipLink, Stack, DefinitionList, Table, TableOfContents, TextInput, VisuallyHidden. **Not shipped:** Site header/footer block (G9), Search block, brand link look, NavigationMenu (not planned), Hero block, Contact card (composition of Card + DefinitionList).
 
 **Maintainer asks** (none added by this spec):
 

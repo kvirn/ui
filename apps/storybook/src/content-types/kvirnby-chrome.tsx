@@ -7,7 +7,7 @@ import {
   SiteSearch,
 } from '@kvirn-ui/patterns'
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { Address, Columns, Heading, Link, List, Stack, SummaryList } from '@kvirn-ui/react'
+import { Address, Columns, Heading, Link, List, Stack, DefinitionList } from '@kvirn-ui/react'
 import { expect, within } from 'storybook/test'
 
 // The header, footer and docs header the shell decorator (shell.tsx) puts around every
@@ -83,24 +83,24 @@ export function KvirnbyFooter() {
           <p>
             <strong>Contact centre</strong>
           </p>
-          <SummaryList.Root>
-            <SummaryList.Row>
-              <SummaryList.Key>Phone</SummaryList.Key>
-              <SummaryList.Value>
+          <DefinitionList.Root>
+            <DefinitionList.Row>
+              <DefinitionList.Term>Phone</DefinitionList.Term>
+              <DefinitionList.Description>
                 <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
-              </SummaryList.Value>
-            </SummaryList.Row>
-            <SummaryList.Row>
-              <SummaryList.Key>Email</SummaryList.Key>
-              <SummaryList.Value>
+              </DefinitionList.Description>
+            </DefinitionList.Row>
+            <DefinitionList.Row>
+              <DefinitionList.Term>Email</DefinitionList.Term>
+              <DefinitionList.Description>
                 <Link.Root href="mailto:contact@kvirnby.example">contact@kvirnby.example</Link.Root>
-              </SummaryList.Value>
-            </SummaryList.Row>
-            <SummaryList.Row>
-              <SummaryList.Key>Phone hours</SummaryList.Key>
-              <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
-            </SummaryList.Row>
-          </SummaryList.Root>
+              </DefinitionList.Description>
+            </DefinitionList.Row>
+            <DefinitionList.Row>
+              <DefinitionList.Term>Phone hours</DefinitionList.Term>
+              <DefinitionList.Description>Weekdays 8.00–17.00</DefinitionList.Description>
+            </DefinitionList.Row>
+          </DefinitionList.Root>
           <Address>
             Municipal building
             <br />

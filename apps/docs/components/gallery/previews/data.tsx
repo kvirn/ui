@@ -14,6 +14,21 @@ export const dataPreviews: Record<string, ReactNode> = {
       <Path d="M28 59 q10 6 0 12" tone="key" />
     </Drawing>
   ),
+  'definition-list': (
+    <Drawing>
+      <Bar x={20} y={22} width={30} />
+      <Bar x={64} y={22} width={44} />
+      <Bar x={120} y={22} width={20} tone="key" />
+      <Line x1={20} y1={34} x2={140} y2={34} />
+      <Bar x={20} y={46} width={30} />
+      <Bar x={64} y={46} width={54} />
+      <Bar x={120} y={46} width={20} tone="key" />
+      <Line x1={20} y1={58} x2={140} y2={58} />
+      <Bar x={20} y={70} width={30} />
+      <Bar x={64} y={70} width={36} />
+      <Bar x={120} y={70} width={20} tone="key" />
+    </Drawing>
+  ),
   focus: (
     <Drawing>
       <Rect x={14} y={12} width={132} height={76} radius={6} tone="slot" />

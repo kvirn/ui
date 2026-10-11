@@ -123,7 +123,7 @@ Three rule-local sizes, set on `.kv-slider` and changed under `@media (pointer: 
 | Disabled      | 1px **dashed** `border-control` / `surface`                                                                                                                                                                                                                          | `text-muted`; `cursor: not-allowed` on the box |
 
 - Invalid on the slider is from `[data-invalid]` or `[aria-invalid='true']` (Pattern B; in Pattern A it's the number box). Invalid beats hover, as for inputs.
-- **Read-only:** none; a native range ignores `readonly`. Show the value as text in a Summary list instead.
+- **Read-only:** none; a native range ignores `readonly`. Show the value as text in a Definition list instead.
 - Disabled label: muted as for a disabled TextInput's field.
 
 ### 6.3 Cross-browser pseudo-elements

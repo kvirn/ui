@@ -121,7 +121,7 @@ None. No new colour pair. One new class, `kv-stepper`, for the class contract (D
 
 **Decisions**
 
-1. **One line of text, not a list.** No `ol`, no `aria-current="step"`, no links: a list of all steps puts 5–8 reading stops before the fields, GOV.UK advises against it, and in a branching flow a link to a past step lets a user jump past later steps that depend on the answer they change. Going back is the Back link (B19) and Check answers' Change links (SummaryList).
+1. **One line of text, not a list.** No `ol`, no `aria-current="step"`, no links: a list of all steps puts 5–8 reading stops before the fields, GOV.UK advises against it, and in a branching flow a link to a past step lets a user jump past later steps that depend on the answer they change. Going back is the Back link (B19) and Check answers' Change links (DefinitionList).
 2. **Its own element, directly after the heading.** `useRouteFocus` focuses the `h1`; the Stepper is the **next item in reading order** (1.3.2): one Down arrow (NVDA, JAWS browse mode) or one swipe (VoiceOver, TalkBack) after the question, and it is read by "say all".
 3. **No extra cue.** Weighed and rejected:
    - A live region on step change: the new page is content reached by navigation and carried by focus, so it is not a status message (4.1.3 doesn't apply). It would also queue behind or interrupt the `h1` and be read twice when the user reads on.

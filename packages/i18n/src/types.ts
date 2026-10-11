@@ -459,8 +459,8 @@ export interface KvirnMessages {
     /** Put before the page title while the summary is shown, for example `Fel:`, so the tab or window title says it too (2.4.2). */
     titlePrefix: TextMessage
   }
-  summaryList: {
-    /** The visible text of a row's action link, for example `Ändra`. The row's key is added to the link's name. Owned by SummaryList (Plan 0063). */
+  definitionList: {
+    /** The visible text of a row's action link, for example `Ändra`. The row's term is added to the link's name. Owned by DefinitionList (Plan 0063). */
     change: TextMessage
   }
   displaySettings: {

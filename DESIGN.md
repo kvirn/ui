@@ -445,7 +445,7 @@ Navigation (`Navigation.Root`) and `TableOfContents` share one item look.
 - **Nav tiles** (`kv-nav-tiles`): level 2 cards, `lg` radius, the one link inside the heading and never a clickable card. A news or event item is a plain `Card` in `Columns as="ul"` (heading, date or place, text, then an image in a `kv-card-footer--padding-none` footer, so it runs to the card's edge and rows share its bottom edge).
 - **Service link closed.** While the e-service is closed the link is not drawn: an inset (`kv-inset`) says it in words, so nothing is dimmed and no disabled link is left to focus.
 - **Section nav** (`kv-section-navigation`): below `64rem` the Disclosure trigger is a full-width quiet row with `border-subtle` rules above and below, and its panel opens in the flow; from `64rem` the trigger is gone and the panel is shown whatever its state. The list is the Navigation look, with one current.
-- **Contact card** (no class of its own): a `Card`, a `heading-3`, the unit and a `SummaryList` of labelled rows (a summary list, not a table), with an `Address` for a visiting address. It is not a landmark. It is a story-level composition of shipped parts, not a pattern.
+- **Contact card** (no class of its own): a `Card`, a `heading-3`, the unit and a `DefinitionList` of labelled rows (a description list, not a table), with an `Address` for a visiting address. It is not a landmark. It is a story-level composition of shipped parts, not a pattern.
 
 #### Breadcrumb and pagination
 
@@ -588,16 +588,16 @@ Elevation level 2: `surface-raised`, a `border-subtle` edge, the `lg` radius, no
 - **Never** use `primary-subtle` or a status `-subtle` background as a card surface: status belongs in an Alert, with an icon and a status word.
 - **Border:** every card keeps it, so its edge survives forced colours. On resident pages nest one level at most, with `md` for the inner card. A card on a section keeps its default look.
 
-#### Summary list
+#### Definition list
 
 > **Maintainer review (Plan 0063).** This subsection is new text and a proposal. It reuses existing tokens only (no new token, no new colour pair). Remove this note when approved.
 
-A native `<dl>` of rows for the answers on a check-your-answers page, a contact card, a case card. Read-only: the value is text, the action a link.
+A native `<dl>` of rows for the answers on a check-your-answers page, a contact card, a case card. Read-only: the description is text, the action a link.
 
-- **Rows:** a 1px `border-subtle` line under every row and above the first, `space-3` block padding, no fill and no zebra. The text is `body` in `text`; the key is weight 600.
-- **From `40rem`** a row has three columns: the key, the value (twice as wide) and the actions at the inline end. A row with no actions gives the value the last column too. The column gap is `space-6`.
-- **Below `40rem` and at 320px** a row stacks: key, value, then the actions at the start. A long word wraps anywhere and a value is never truncated.
-- **Change link:** a plain `kv-link` with the word "Ändra" visible; its name adds the key ("Ändra Namn"). 24px tall at least. Several actions are `space-4` apart.
+- **Rows:** a 1px `border-subtle` line under every row and above the first, `space-3` block padding, no fill and no zebra. The text is `body` in `text`; the term is weight 600.
+- **From `40rem`** a row has three columns: the term, the description (twice as wide) and the actions at the inline end. A row with no actions gives the description the last column too. The column gap is `space-6`.
+- **Below `40rem` and at 320px** a row stacks: term, description, then the actions at the start. A long word wraps anywhere and a description is never truncated.
+- **Change link:** a plain `kv-link` with the word "Ändra" visible; its name adds the term ("Ändra Namn"). 24px tall at least. Several actions are `space-4` apart.
 - **Prose** leaves the list alone. In forced colours the row lines are `CanvasText`.
 
 #### Address
@@ -722,7 +722,7 @@ Parts render these classes, choices are classes the consumer adds, and state is 
 - **Breadcrumb:** `kv-breadcrumb`, `-list`, `-item`, `-link`, `-current`, with `kv-link` on its links. State `aria-current` on the current page.
 - **Pagination:** `kv-pagination`, `-list`, `-item`, `-link`, `-previous`, `-next`, `-ellipsis`, `-status`, with `kv-link` on its links. State `aria-current`.
 - **Stepper:** `kv-stepper`. No state.
-- **Summary list:** `kv-summary-list`, `-row`, `-key`, `-value`, `-actions`, and `kv-link kv-summary-list-change`. No state.
+- **Definition list:** `kv-definition-list`, `-row`, `-term`, `-description`, `-actions`, and `kv-link kv-definition-list-change`. No state.
 - **Error summary:** `kv-error-summary` (with `kv-alert kv-alert--danger`), `-list`, `-item`, and `kv-link kv-error-summary-link`. No state.
 - **Prose:** choices `kv-prose`, `kv-prose--large`, `kv-lead`, `kv-not-prose`, `kv-scroll-region`, `kv-inset`, `kv-steps`.
 - **Card:** `kv-card`, `kv-card-header`, `-body`, `-footer`. Choices `kv-card--radius-lg|md|none`, `kv-card--padding-none|sm|md|lg`, `kv-card-header--padding-*` (and body, footer) and `kv-card--dividers`.

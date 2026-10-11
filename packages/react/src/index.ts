@@ -229,29 +229,29 @@ export type { KbdProps } from './kbd/kbd.tsx'
 export { useKbd } from './kbd/use-kbd.ts'
 export type { KbdPartProps, UseKbdResult } from './kbd/use-kbd.ts'
 export {
-  SummaryList,
-  SummaryListActions,
-  SummaryListChange,
-  SummaryListKey,
-  SummaryListRoot,
-  SummaryListRow,
-  SummaryListValue,
-} from './summary-list/summary-list.tsx'
+  DefinitionList,
+  DefinitionListActions,
+  DefinitionListChange,
+  DefinitionListTerm,
+  DefinitionListRoot,
+  DefinitionListRow,
+  DefinitionListDescription,
+} from './definition-list/definition-list.tsx'
 export type {
-  SummaryListActionsProps,
-  SummaryListChangeProps,
-  SummaryListKeyProps,
-  SummaryListRootProps,
-  SummaryListRowProps,
-  SummaryListValueProps,
-} from './summary-list/summary-list.tsx'
-export { useSummaryList } from './summary-list/use-summary-list.ts'
+  DefinitionListActionsProps,
+  DefinitionListChangeProps,
+  DefinitionListTermProps,
+  DefinitionListRootProps,
+  DefinitionListRowProps,
+  DefinitionListDescriptionProps,
+} from './definition-list/definition-list.tsx'
+export { useDefinitionList } from './definition-list/use-definition-list.ts'
 export type {
-  SummaryListChangePartProps,
-  SummaryListPartProps,
-  UseSummaryListOptions,
-  UseSummaryListResult,
-} from './summary-list/use-summary-list.ts'
+  DefinitionListChangePartProps,
+  DefinitionListPartProps,
+  UseDefinitionListOptions,
+  UseDefinitionListResult,
+} from './definition-list/use-definition-list.ts'
 export {
   ErrorSummary,
   ErrorSummaryItem,

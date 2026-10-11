@@ -1,6 +1,6 @@
 # Accessibility contract: Site footer
 
-- **APG pattern:** none: native landmarks, [SummaryList](../../../../react/src/summary-list/summary-list.a11y.md), [Address](../../../../react/src/address/address.a11y.md) and the [List](../../../../react/src/list/list.a11y.md).
+- **APG pattern:** none: native landmarks, [DefinitionList](../../../../react/src/definition-list/definition-list.a11y.md), [Address](../../../../react/src/address/address.a11y.md) and the [List](../../../../react/src/list/list.a11y.md).
 - **Deviations:** none
 - **Native elements used:** `<footer>` (contentinfo), `<h2>`, `<dl>`, `<address>`, `<nav aria-labelledby>`, `<ul>`, `<a href>`.
 - **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
@@ -12,7 +12,7 @@
 | ------------------------- | --------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------- |
 | `SiteFooter.Root`         | `<footer>` (contentinfo)    | none                               | One per page, outside `main`                                                       |
 | `SiteFooter.Organisation` | `<p>`                       | none                               | The organisation's name and address, as text                                       |
-| contact column            | `<h2>`, `<dl>`, `<address>` | none                               | `SummaryList` rows (phone `tel:`, e-mail `mailto:`, hours) and an `Address`        |
+| contact column            | `<h2>`, `<dl>`, `<address>` | none                               | `DefinitionList` rows (phone `tel:`, e-mail `mailto:`, hours) and an `Address`     |
 | link group                | `<nav>`                     | `aria-labelledby` the group's `h2` | A `nav` around a `Heading` (`h2`) and a `List.Root`. Each name is distinct (2.4.1) |
 
 ## Keyboard

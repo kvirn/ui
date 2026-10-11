@@ -50,7 +50,7 @@ Badge renders no text of its own, so it has no message keys. A badge that change
 ## Consumer responsibilities
 
 - **Words, always.** The text says the status (`Beviljad`, `Väntar på komplettering`): the colour is only a second cue (1.4.1). Never an empty badge, a dot or an icon alone.
-- **Give it context.** A badge next to a title reads as part of it. Where "Beviljad" alone is unclear, label what it is for in the surrounding text (a "Status" term in a summary list).
+- **Give it context.** A badge next to a title reads as part of it. Where "Beviljad" alone is unclear, label what it is for in the surrounding text (a "Status" term in a definition list).
 - **Keep it short.** A badge is one word or a few; it does not wrap (`white-space: nowrap`). Long text belongs in a paragraph.
 - **Language.** `lang` on a badge in a text of another language (3.1.2).
 - **Changing status.** Announce a change in your own live region if the user needs to hear it (4.1.3).

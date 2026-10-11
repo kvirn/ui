@@ -13,27 +13,27 @@ import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import {
-  SummaryList,
-  SummaryListActions,
-  SummaryListChange,
-  SummaryListKey,
-  SummaryListRoot,
-  SummaryListRow,
-  SummaryListValue,
-} from './summary-list.tsx'
+  DefinitionList,
+  DefinitionListActions,
+  DefinitionListChange,
+  DefinitionListTerm,
+  DefinitionListRoot,
+  DefinitionListRow,
+  DefinitionListDescription,
+} from './definition-list.tsx'
 import type {
-  SummaryListActionsProps,
-  SummaryListChangeProps,
-  SummaryListKeyProps,
-  SummaryListPartProps,
-  SummaryListRootProps,
-  SummaryListRowProps,
-  SummaryListValueProps,
-} from './summary-list.tsx'
-import { useSummaryList } from './use-summary-list.ts'
-import type { UseSummaryListResult } from './use-summary-list.ts'
+  DefinitionListActionsProps,
+  DefinitionListChangeProps,
+  DefinitionListTermProps,
+  DefinitionListPartProps,
+  DefinitionListRootProps,
+  DefinitionListRowProps,
+  DefinitionListDescriptionProps,
+} from './definition-list.tsx'
+import { useDefinitionList } from './use-definition-list.ts'
+import type { UseDefinitionListResult } from './use-definition-list.ts'
 
-// Contract: summary-list.a11y.md. The stacked layout below 40rem is the theme's, proved by the
+// Contract: definition-list.a11y.md. The stacked layout below 40rem is the theme's, proved by the
 // axe run of the Reflow320 story, where theme.css is loaded.
 
 let consoleWarn: MockInstance<Console['warn']>
@@ -55,44 +55,44 @@ function Answers() {
       {/* Unstyled links: a 24px minimum keeps them clear of axe's target-size rule (2.5.8). */}
       <style>{'a { display: inline-block; min-block-size: 24px; }'}</style>
       <a href="/forra">Föregående</a>
-      <SummaryList.Root aria-label="Dina svar">
-        <SummaryList.Row>
-          <SummaryList.Key>Namn</SummaryList.Key>
-          <SummaryList.Value>Anna Svensson</SummaryList.Value>
-          <SummaryList.Actions>
-            <SummaryList.Change href="/steg/1" />
-          </SummaryList.Actions>
-        </SummaryList.Row>
-        <SummaryList.Row>
-          <SummaryList.Key>Adress</SummaryList.Key>
-          <SummaryList.Value>Storgatan 12</SummaryList.Value>
-          <SummaryList.Actions>
-            <SummaryList.Change href="/steg/2" />
-          </SummaryList.Actions>
-        </SummaryList.Row>
-        <SummaryList.Row>
-          <SummaryList.Key>Telefon</SummaryList.Key>
-          <SummaryList.Value>070-000 00 00</SummaryList.Value>
-        </SummaryList.Row>
-      </SummaryList.Root>
+      <DefinitionList.Root aria-label="Dina svar">
+        <DefinitionList.Row>
+          <DefinitionList.Term>Namn</DefinitionList.Term>
+          <DefinitionList.Description>Anna Svensson</DefinitionList.Description>
+          <DefinitionList.Actions>
+            <DefinitionList.Change href="/steg/1" />
+          </DefinitionList.Actions>
+        </DefinitionList.Row>
+        <DefinitionList.Row>
+          <DefinitionList.Term>Adress</DefinitionList.Term>
+          <DefinitionList.Description>Storgatan 12</DefinitionList.Description>
+          <DefinitionList.Actions>
+            <DefinitionList.Change href="/steg/2" />
+          </DefinitionList.Actions>
+        </DefinitionList.Row>
+        <DefinitionList.Row>
+          <DefinitionList.Term>Telefon</DefinitionList.Term>
+          <DefinitionList.Description>070-000 00 00</DefinitionList.Description>
+        </DefinitionList.Row>
+      </DefinitionList.Root>
       <a href="/nasta">Nästa</a>
     </>
   )
 }
 
-describe('summary list', () => {
-  test('the list is a description list: a term per key and definitions per value', async () => {
+describe('definition list', () => {
+  test('the list is a description list: a term per row and its descriptions', async () => {
     const { container } = await render(<Answers />)
     const list = container.querySelector('dl')
-    expect(list?.className).toBe('kv-summary-list')
+    expect(list?.className).toBe('kv-definition-list')
     const rows = [...(list?.children ?? [])]
     expect(rows.map((row) => row.tagName)).toEqual(['DIV', 'DIV', 'DIV'])
-    expect(rows.map((row) => row.className)).toEqual(Array(3).fill('kv-summary-list-row'))
+    expect(rows.map((row) => row.className)).toEqual(Array(3).fill('kv-definition-list-row'))
     expect([...rows[0]!.children].map((child) => child.tagName)).toEqual(['DT', 'DD', 'DD'])
     expect([...rows[2]!.children].map((child) => child.tagName)).toEqual(['DT', 'DD'])
-    expect(rows[0]!.children[0]!.className).toBe('kv-summary-list-key')
-    expect(rows[0]!.children[1]!.className).toBe('kv-summary-list-value')
-    expect(rows[0]!.children[2]!.className).toBe('kv-summary-list-actions')
+    expect(rows[0]!.children[0]!.className).toBe('kv-definition-list-term')
+    expect(rows[0]!.children[1]!.className).toBe('kv-definition-list-description')
+    expect(rows[0]!.children[2]!.className).toBe('kv-definition-list-actions')
     await expect.element(page.getByRole('term').first()).toHaveTextContent('Namn')
     await expect.element(page.getByRole('definition').first()).toHaveTextContent('Anna Svensson')
   })
@@ -110,66 +110,66 @@ describe('summary list', () => {
   test('each part forwards its ref, its attributes and its class', async () => {
     const rootRef = createRef<HTMLElement>()
     const rowRef = createRef<HTMLElement>()
-    const keyRef = createRef<HTMLElement>()
+    const termRef = createRef<HTMLElement>()
     const valueRef = createRef<HTMLElement>()
     const actionsRef = createRef<HTMLElement>()
     await render(
-      <SummaryListRoot ref={rootRef} className="egen" data-testid="root">
-        <SummaryListRow ref={rowRef} className="egen">
-          <SummaryListKey ref={keyRef} className="egen">
+      <DefinitionListRoot ref={rootRef} className="egen" data-testid="root">
+        <DefinitionListRow ref={rowRef} className="egen">
+          <DefinitionListTerm ref={termRef} className="egen">
             Namn
-          </SummaryListKey>
-          <SummaryListValue ref={valueRef} className="egen">
+          </DefinitionListTerm>
+          <DefinitionListDescription ref={valueRef} className="egen">
             Anna
-          </SummaryListValue>
-          <SummaryListActions ref={actionsRef} className="egen" />
-        </SummaryListRow>
-      </SummaryListRoot>,
+          </DefinitionListDescription>
+          <DefinitionListActions ref={actionsRef} className="egen" />
+        </DefinitionListRow>
+      </DefinitionListRoot>,
     )
     expect(rootRef.current?.tagName).toBe('DL')
-    expect(rootRef.current?.className).toBe('egen kv-summary-list')
-    expect(rowRef.current?.className).toBe('egen kv-summary-list-row')
-    expect(keyRef.current?.tagName).toBe('DT')
-    expect(valueRef.current?.className).toBe('egen kv-summary-list-value')
+    expect(rootRef.current?.className).toBe('egen kv-definition-list')
+    expect(rowRef.current?.className).toBe('egen kv-definition-list-row')
+    expect(termRef.current?.tagName).toBe('DT')
+    expect(valueRef.current?.className).toBe('egen kv-definition-list-description')
     expect(actionsRef.current?.tagName).toBe('DD')
     await expect.element(page.getByTestId('root')).toBeInTheDocument()
   })
 
   test('no part takes as: the dl, div, dt and dd structure is fixed', () => {
-    expectTypeOf<SummaryListRootProps>().not.toHaveProperty('as')
-    expectTypeOf<SummaryListRowProps>().not.toHaveProperty('as')
-    expectTypeOf<SummaryListKeyProps>().not.toHaveProperty('as')
-    expectTypeOf<SummaryListValueProps>().not.toHaveProperty('as')
-    expectTypeOf<SummaryListActionsProps>().not.toHaveProperty('as')
-    expectTypeOf<SummaryListChangeProps>().not.toHaveProperty('as')
+    expectTypeOf<DefinitionListRootProps>().not.toHaveProperty('as')
+    expectTypeOf<DefinitionListRowProps>().not.toHaveProperty('as')
+    expectTypeOf<DefinitionListTermProps>().not.toHaveProperty('as')
+    expectTypeOf<DefinitionListDescriptionProps>().not.toHaveProperty('as')
+    expectTypeOf<DefinitionListActionsProps>().not.toHaveProperty('as')
+    expectTypeOf<DefinitionListChangeProps>().not.toHaveProperty('as')
   })
 
   test('the flat aliases are the compound parts', () => {
-    expect(SummaryList.Root).toBe(SummaryListRoot)
-    expect(SummaryList.Row).toBe(SummaryListRow)
-    expect(SummaryList.Key).toBe(SummaryListKey)
-    expect(SummaryList.Value).toBe(SummaryListValue)
-    expect(SummaryList.Actions).toBe(SummaryListActions)
-    expect(SummaryList.Change).toBe(SummaryListChange)
-    expect(SummaryListChange.displayName).toBe('SummaryList.Change')
+    expect(DefinitionList.Root).toBe(DefinitionListRoot)
+    expect(DefinitionList.Row).toBe(DefinitionListRow)
+    expect(DefinitionList.Term).toBe(DefinitionListTerm)
+    expect(DefinitionList.Description).toBe(DefinitionListDescription)
+    expect(DefinitionList.Actions).toBe(DefinitionListActions)
+    expect(DefinitionList.Change).toBe(DefinitionListChange)
+    expect(DefinitionListChange.displayName).toBe('DefinitionList.Change')
   })
 
   test('it renders on the server with a stable id', () => {
     const html = renderToString(<Answers />)
-    expect(html).toContain('class="kv-summary-list"')
+    expect(html).toContain('class="kv-definition-list"')
     expect(html).toContain('aria-labelledby=')
   })
 
-  test('a Key with its own id is not yet followed by the Change link in server HTML', () => {
+  test('a Term with its own id is not yet followed by the Change link in server HTML', () => {
     const html = renderToString(
-      <SummaryList.Root>
-        <SummaryList.Row>
-          <SummaryList.Key id="namn-nyckel">Namn</SummaryList.Key>
-          <SummaryList.Actions>
-            <SummaryList.Change href="/steg/1" />
-          </SummaryList.Actions>
-        </SummaryList.Row>
-      </SummaryList.Root>,
+      <DefinitionList.Root>
+        <DefinitionList.Row>
+          <DefinitionList.Term id="namn-nyckel">Namn</DefinitionList.Term>
+          <DefinitionList.Actions>
+            <DefinitionList.Change href="/steg/1" />
+          </DefinitionList.Actions>
+        </DefinitionList.Row>
+      </DefinitionList.Root>,
     )
     expect(html).toContain('id="namn-nyckel"')
     expect(html).not.toMatch(/aria-labelledby="[^"]* namn-nyckel"/)
@@ -177,7 +177,7 @@ describe('summary list', () => {
 })
 
 describe('Change link', () => {
-  test('the name is "Change" plus the key and starts with the visible text', async () => {
+  test('the name is "Change" plus the term and starts with the visible text', async () => {
     await render(<Answers />)
     const link = page.getByRole('link', { name: 'Change Namn' })
     await expect.element(link).toHaveAttribute('href', '/steg/1')
@@ -185,16 +185,16 @@ describe('Change link', () => {
     expect(page.getByRole('link', { name: 'Change Adress' }).element().textContent).toBe('Change')
   })
 
-  test('the name is read from the key of its own row', async () => {
+  test('the name is read from the term of its own row', async () => {
     await render(<Answers />)
     const names = page
       .getByRole('link')
       .elements()
       .map((link) => link.getAttribute('aria-labelledby'))
     const [, first, second] = names
-    const keys = [...document.querySelectorAll('dt')].map((term) => term.id)
-    expect(first?.split(' ')[1]).toBe(keys[0])
-    expect(second?.split(' ')[1]).toBe(keys[1])
+    const terms = [...document.querySelectorAll('dt')].map((term) => term.id)
+    expect(first?.split(' ')[1]).toBe(terms[0])
+    expect(second?.split(' ')[1]).toBe(terms[1])
   })
 
   test.each([
@@ -206,15 +206,15 @@ describe('Change link', () => {
   ] as const)('the %s catalog gives the visible word', async (locale, messages, word) => {
     await render(
       <KvirnProvider locale={locale} messages={messages}>
-        <SummaryList.Root>
-          <SummaryList.Row>
-            <SummaryList.Key>Namn</SummaryList.Key>
-            <SummaryList.Value>Anna</SummaryList.Value>
-            <SummaryList.Actions>
-              <SummaryList.Change href="/steg/1" />
-            </SummaryList.Actions>
-          </SummaryList.Row>
-        </SummaryList.Root>
+        <DefinitionList.Root>
+          <DefinitionList.Row>
+            <DefinitionList.Term>Namn</DefinitionList.Term>
+            <DefinitionList.Description>Anna</DefinitionList.Description>
+            <DefinitionList.Actions>
+              <DefinitionList.Change href="/steg/1" />
+            </DefinitionList.Actions>
+          </DefinitionList.Row>
+        </DefinitionList.Root>
       </KvirnProvider>,
     )
     await expect.element(page.getByRole('link', { name: `${word} Namn` })).toBeInTheDocument()
@@ -222,53 +222,53 @@ describe('Change link', () => {
 
   test('messages override the word per instance, and children replace it', async () => {
     await render(
-      <SummaryList.Root>
-        <SummaryList.Row>
-          <SummaryList.Key>Namn</SummaryList.Key>
-          <SummaryList.Actions>
-            <SummaryList.Change href="/a" messages={{ change: 'Redigera' }} />
-            <SummaryList.Change href="/b">Lägg till</SummaryList.Change>
-          </SummaryList.Actions>
-        </SummaryList.Row>
-      </SummaryList.Root>,
+      <DefinitionList.Root>
+        <DefinitionList.Row>
+          <DefinitionList.Term>Namn</DefinitionList.Term>
+          <DefinitionList.Actions>
+            <DefinitionList.Change href="/a" messages={{ change: 'Redigera' }} />
+            <DefinitionList.Change href="/b">Lägg till</DefinitionList.Change>
+          </DefinitionList.Actions>
+        </DefinitionList.Row>
+      </DefinitionList.Root>,
     )
     await expect.element(page.getByRole('link', { name: 'Redigera Namn' })).toBeInTheDocument()
     await expect.element(page.getByRole('link', { name: 'Lägg till Namn' })).toBeInTheDocument()
   })
 
   test('outside a row it keeps its own text and warns once in development', async () => {
-    await render(<SummaryList.Change href="/a" />)
+    await render(<DefinitionList.Change href="/a" />)
     await expect.element(page.getByRole('link', { name: 'Change' })).toBeInTheDocument()
-    expect(warnings()).toEqual([expect.stringContaining('SummaryList.Change is outside a Row')])
+    expect(warnings()).toEqual([expect.stringContaining('DefinitionList.Change is outside a Row')])
   })
 
-  test('a Key with its own id keeps it and still names the Change link', async () => {
+  test('a Term with its own id keeps it and still names the Change link', async () => {
     await render(
-      <SummaryList.Root>
-        <SummaryList.Row>
-          <SummaryList.Key id="namn-nyckel">Namn</SummaryList.Key>
-          <SummaryList.Value>Anna</SummaryList.Value>
-          <SummaryList.Actions>
-            <SummaryList.Change href="/steg/1" />
-          </SummaryList.Actions>
-        </SummaryList.Row>
-      </SummaryList.Root>,
+      <DefinitionList.Root>
+        <DefinitionList.Row>
+          <DefinitionList.Term id="namn-nyckel">Namn</DefinitionList.Term>
+          <DefinitionList.Description>Anna</DefinitionList.Description>
+          <DefinitionList.Actions>
+            <DefinitionList.Change href="/steg/1" />
+          </DefinitionList.Actions>
+        </DefinitionList.Row>
+      </DefinitionList.Root>,
     )
     expect(document.querySelector('dt')?.id).toBe('namn-nyckel')
     await expect.element(page.getByRole('link', { name: 'Change Namn' })).toBeInTheDocument()
     expect(warnings()).toEqual([])
   })
 
-  test('a Change link whose Key is not in the row warns once in development', async () => {
+  test('a Change link whose Term is not in the row warns once in development', async () => {
     const row = (
-      <SummaryList.Root>
-        <SummaryList.Row>
-          <SummaryList.Value>Anna</SummaryList.Value>
-          <SummaryList.Actions>
-            <SummaryList.Change href="/steg/1" />
-          </SummaryList.Actions>
-        </SummaryList.Row>
-      </SummaryList.Root>
+      <DefinitionList.Root>
+        <DefinitionList.Row>
+          <DefinitionList.Description>Anna</DefinitionList.Description>
+          <DefinitionList.Actions>
+            <DefinitionList.Change href="/steg/1" />
+          </DefinitionList.Actions>
+        </DefinitionList.Row>
+      </DefinitionList.Root>
     )
     const { rerender } = await render(row)
     await rerender(row)
@@ -284,15 +284,15 @@ describe('Change link', () => {
 
   test('the link class joins the consumer class', async () => {
     await render(
-      <SummaryList.Root>
-        <SummaryList.Row>
-          <SummaryList.Key>Namn</SummaryList.Key>
-          <SummaryList.Change className="egen" href="/c" data-testid="change" />
-        </SummaryList.Row>
-      </SummaryList.Root>,
+      <DefinitionList.Root>
+        <DefinitionList.Row>
+          <DefinitionList.Term>Namn</DefinitionList.Term>
+          <DefinitionList.Change className="egen" href="/c" data-testid="change" />
+        </DefinitionList.Row>
+      </DefinitionList.Root>,
     )
     expect(page.getByTestId('change').element().className).toBe(
-      'egen kv-link kv-summary-list-change',
+      'egen kv-link kv-definition-list-change',
     )
   })
 })
@@ -333,33 +333,33 @@ describe('keyboard', () => {
 })
 
 describe('hook', () => {
-  test('useSummaryList returns the class props and builds the Change link props', async () => {
+  test('useDefinitionList returns the class props and builds the Change link props', async () => {
     function Probe() {
-      const list = useSummaryList()
-      const result: UseSummaryListResult & { changeProps: unknown } = {
+      const list = useDefinitionList()
+      const result: UseDefinitionListResult & { changeProps: unknown } = {
         ...list,
-        changeProps: list.getChangeProps({ id: 'a', keyId: 'b' }),
+        changeProps: list.getChangeProps({ id: 'a', termId: 'b' }),
       }
       return <output data-testid="result">{JSON.stringify(result)}</output>
     }
     await render(<Probe />)
     const result = JSON.parse(page.getByTestId('result').element().textContent)
-    expect(result.rootProps).toEqual({ className: 'kv-summary-list' })
-    expect(result.rowProps).toEqual({ className: 'kv-summary-list-row' })
-    expect(result.keyProps).toEqual({ className: 'kv-summary-list-key' })
-    expect(result.valueProps).toEqual({ className: 'kv-summary-list-value' })
-    expect(result.actionsProps).toEqual({ className: 'kv-summary-list-actions' })
+    expect(result.rootProps).toEqual({ className: 'kv-definition-list' })
+    expect(result.rowProps).toEqual({ className: 'kv-definition-list-row' })
+    expect(result.termProps).toEqual({ className: 'kv-definition-list-term' })
+    expect(result.descriptionProps).toEqual({ className: 'kv-definition-list-description' })
+    expect(result.actionsProps).toEqual({ className: 'kv-definition-list-actions' })
     expect(result.changeLabel).toBe('Change')
     expect(result.changeProps).toEqual({
-      className: 'kv-link kv-summary-list-change',
+      className: 'kv-link kv-definition-list-change',
       id: 'a',
       'aria-labelledby': 'a b',
     })
   })
 
   test('the types are exported', () => {
-    expectTypeOf<SummaryListPartProps>().toBeObject()
-    expectTypeOf<SummaryListChangeProps['href']>().toEqualTypeOf<string | undefined>()
+    expectTypeOf<DefinitionListPartProps>().toBeObject()
+    expectTypeOf<DefinitionListChangeProps['href']>().toEqualTypeOf<string | undefined>()
   })
 })
 

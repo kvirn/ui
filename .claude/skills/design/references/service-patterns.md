@@ -24,7 +24,7 @@ Evidence-based defaults for municipal and agency services. Deviate only with a r
 - **Question pages.** Label or legend is the question, a help text explains the format, and inputs are sized to the answer. Use `autocomplete` for personal data (1.3.5, 3.3.8).
 - **Don't ask what you already know.** Prefill from login (BankID, Suomi.fi, ID-porten) and earlier answers (3.3.7), and let the user correct it.
 - **Validation.** Validate on submit, not on every keystroke. Show an error summary at the top with links to fields, and an inline message above each invalid field. Keep what the user typed.
-- **Check your answers.** A summary list of every answer with a "Change" link per row, which returns to the summary afterwards. Required before any legally binding submit (3.3.4).
+- **Check your answers.** A definition list of every answer with a "Change" link per row, which returns to the summary afterwards. Required before any legally binding submit (3.3.4).
 - **Confirmation page.** A clear success panel, the reference number (in `numeric`, easy to copy), what happens next, when, and how to get in touch. Offer a receipt by email if the service has one.
 - **Save and return.** Any service longer than a few minutes lets the user save and continue later.
 - **Timeouts.** Warn at least 2 minutes before a session expires, with a way to extend it, and never lose entered data silently (2.2.1).

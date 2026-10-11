@@ -112,7 +112,7 @@ Reading and focus order = DOM order; one Tab stop per switch. In RTL the track i
 | Disabled, off               | `surface` / 1px **dashed** `border-control`                                                                                                                       | `text-muted` / none                 | `text-muted` |
 | Disabled, on                | `text-muted` / 1px solid `text-muted`                                                                                                                             | `canvas` / tick `text-muted`        | `text-muted` |
 
-- **Read-only:** none. A native checkbox ignores `readonly`. A setting the user can't change is shown as text in a Summary list ("Text message reminders: On"), or disabled with a reason in the help text.
+- **Read-only:** none. A native checkbox ignores `readonly`. A setting the user can't change is shown as text in a Definition list ("Text message reminders: On"), or disabled with a reason in the help text.
 - **On vs off without colour (1.4.1):** two cues that aren't colour, in every theme: the thumb's position and the tick. Plus the fill change (empty vs solid), which survives as `Highlight` in forced colours.
 
 ### 6.3 Contrast (existing measured pairs only)

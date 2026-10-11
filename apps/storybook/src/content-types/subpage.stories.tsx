@@ -8,7 +8,7 @@ import {
   Link,
   List,
   Stack,
-  SummaryList,
+  DefinitionList,
 } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expectNoHorizontalOverflow } from '../components/theme-story-assertions.ts'
@@ -129,26 +129,28 @@ export const Default: Story = {
                 Contact us
               </Heading>
               <p>Preschool office</p>
-              <SummaryList.Root>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone</SummaryList.Key>
-                  <SummaryList.Value>
+              <DefinitionList.Root>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="tel:+46000000001">0000-00 00 01</Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Email</SummaryList.Key>
-                  <SummaryList.Value>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Email</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="mailto:preschool@kvirnby.example">
                       preschool@kvirnby.example
                     </Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone hours</SummaryList.Key>
-                  <SummaryList.Value>Monday to Thursday 9.00–11.00</SummaryList.Value>
-                </SummaryList.Row>
-              </SummaryList.Root>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone hours</DefinitionList.Term>
+                  <DefinitionList.Description>
+                    Monday to Thursday 9.00–11.00
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+              </DefinitionList.Root>
             </Card.Body>
           </Card.Root>
           <PageTools.Root>
@@ -245,26 +247,28 @@ export const ThreeChildren: Story = {
                 Contact us
               </Heading>
               <p>Preschool office</p>
-              <SummaryList.Root>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone</SummaryList.Key>
-                  <SummaryList.Value>
+              <DefinitionList.Root>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="tel:+46000000001">0000-00 00 01</Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Email</SummaryList.Key>
-                  <SummaryList.Value>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Email</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="mailto:preschool@kvirnby.example">
                       preschool@kvirnby.example
                     </Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone hours</SummaryList.Key>
-                  <SummaryList.Value>Monday to Thursday 9.00–11.00</SummaryList.Value>
-                </SummaryList.Row>
-              </SummaryList.Root>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone hours</DefinitionList.Term>
+                  <DefinitionList.Description>
+                    Monday to Thursday 9.00–11.00
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+              </DefinitionList.Root>
             </Card.Body>
           </Card.Root>
           <PageTools.Root>
@@ -381,26 +385,28 @@ export const SevenChildren: Story = {
                 Contact us
               </Heading>
               <p>Preschool office</p>
-              <SummaryList.Root>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone</SummaryList.Key>
-                  <SummaryList.Value>
+              <DefinitionList.Root>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="tel:+46000000001">0000-00 00 01</Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Email</SummaryList.Key>
-                  <SummaryList.Value>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Email</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="mailto:preschool@kvirnby.example">
                       preschool@kvirnby.example
                     </Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone hours</SummaryList.Key>
-                  <SummaryList.Value>Monday to Thursday 9.00–11.00</SummaryList.Value>
-                </SummaryList.Row>
-              </SummaryList.Root>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone hours</DefinitionList.Term>
+                  <DefinitionList.Description>
+                    Monday to Thursday 9.00–11.00
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+              </DefinitionList.Root>
             </Card.Body>
           </Card.Root>
           <PageTools.Root>

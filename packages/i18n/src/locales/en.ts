@@ -319,7 +319,7 @@ export const en = {
     unsupported: 'This browser can’t read text aloud.',
   },
   errorSummary: { title: 'There is a problem', titlePrefix: 'Error:' },
-  summaryList: { change: 'Change' },
+  definitionList: { change: 'Change' },
   toast: { regionLabel: 'Messages' },
   stepper: {
     status: ({ current, total }, format) =>

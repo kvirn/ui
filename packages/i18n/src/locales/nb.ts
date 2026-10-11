@@ -3,7 +3,7 @@ import type { KvirnMessages } from '../types.ts'
 
 // nb: copyButton.* is a draft (Plan 0060): a native speaker should review it.
 // breadcrumb.* and pagination.* are drafts for a native speaker to review (Plan 0062).
-// Draft: errorSummary and summaryList (Plan 0063) need a native speaker's review.
+// Draft: errorSummary and definitionList (Plan 0063) need a native speaker's review.
 // displaySettings.* are drafts (Plan 0099): a native speaker should review them.
 export const nb = {
   link: { newTabNotice: '(åpnes i en ny fane)' },
@@ -328,7 +328,7 @@ export const nb = {
     unsupported: 'Denne nettleseren kan ikke lese opp tekst.',
   },
   errorSummary: { title: 'Det er et problem', titlePrefix: 'Feil:' },
-  summaryList: { change: 'Endre' },
+  definitionList: { change: 'Endre' },
   toast: { regionLabel: 'Meldinger' },
   stepper: {
     status: ({ current, total }, format) =>

@@ -8,7 +8,7 @@ import {
   Link,
   List,
   Stack,
-  SummaryList,
+  DefinitionList,
 } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
@@ -24,7 +24,7 @@ const description = `The \`contentinfo\` landmark on every page: who to contact,
 
 Use it on every page after \`main\`. It has no back-to-top link (nothing is sticky, and Home scrolls up) and no social feeds: a link to the municipality's page is a plain link.
 
-The footer holds no text of its own and owns only its frame. Everything inside is a shipped part, written as literal JSX: the contact column is a \`Heading\`, a [SummaryList](?path=/docs/components-forms-summarylist--docs) for phone, email and hours, and an [Address](?path=/docs/components-content-address--docs); each other group is a \`nav\` named by its heading around a [List](?path=/docs/components-content-list--docs) of links; the groups sit in [Columns](?path=/docs/components-layout-columns--docs).
+The footer holds no text of its own and owns only its frame. Everything inside is a shipped part, written as literal JSX: the contact column is a \`Heading\`, a [DefinitionList](?path=/docs/components-data-and-behaviour-definitionlist--docs) for phone, email and hours, and an [Address](?path=/docs/components-content-address--docs); each other group is a \`nav\` named by its heading around a [List](?path=/docs/components-content-list--docs) of links; the groups sit in [Columns](?path=/docs/components-layout-columns--docs).
 
 ## API
 
@@ -37,7 +37,7 @@ Each part is also a flat export (\`SiteFooterRoot\`, \`SiteFooterOrganisation\`)
 
 ## Parts and gaps
 
-Parts used: \`Section as="footer"\`, \`Container\`, \`Columns\`, \`Heading\`, \`SummaryList\`, \`Address\`, \`Link\`, \`List\`. Gap: a Site footer block in \`@kvirn-ui/react\`.
+Parts used: \`Section as="footer"\`, \`Container\`, \`Columns\`, \`Heading\`, \`DefinitionList\`, \`Address\`, \`Link\`, \`List\`. Gap: a Site footer block in \`@kvirn-ui/react\`.
 `
 
 const meta = {
@@ -76,26 +76,26 @@ export const Default: Story = {
               <p>
                 <strong>Contact centre</strong>
               </p>
-              <SummaryList.Root>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone</SummaryList.Key>
-                  <SummaryList.Value>
+              <DefinitionList.Root>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Email</SummaryList.Key>
-                  <SummaryList.Value>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Email</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="mailto:contact@kvirnby.example">
                       contact@kvirnby.example
                     </Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone hours</SummaryList.Key>
-                  <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
-                </SummaryList.Row>
-              </SummaryList.Root>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone hours</DefinitionList.Term>
+                  <DefinitionList.Description>Weekdays 8.00–17.00</DefinitionList.Description>
+                </DefinitionList.Row>
+              </DefinitionList.Root>
               <Address>
                 Municipal building
                 <br />
@@ -180,26 +180,26 @@ export const Narrow: Story = {
               <p>
                 <strong>Contact centre</strong>
               </p>
-              <SummaryList.Root>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone</SummaryList.Key>
-                  <SummaryList.Value>
+              <DefinitionList.Root>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Email</SummaryList.Key>
-                  <SummaryList.Value>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Email</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="mailto:contact@kvirnby.example">
                       contact@kvirnby.example
                     </Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone hours</SummaryList.Key>
-                  <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
-                </SummaryList.Row>
-              </SummaryList.Root>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone hours</DefinitionList.Term>
+                  <DefinitionList.Description>Weekdays 8.00–17.00</DefinitionList.Description>
+                </DefinitionList.Row>
+              </DefinitionList.Root>
               <Address>
                 Municipal building
                 <br />
@@ -280,26 +280,26 @@ export const Keyboard: Story = {
               <p>
                 <strong>Contact centre</strong>
               </p>
-              <SummaryList.Root>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone</SummaryList.Key>
-                  <SummaryList.Value>
+              <DefinitionList.Root>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Email</SummaryList.Key>
-                  <SummaryList.Value>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Email</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="mailto:contact@kvirnby.example">
                       contact@kvirnby.example
                     </Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone hours</SummaryList.Key>
-                  <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
-                </SummaryList.Row>
-              </SummaryList.Root>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone hours</DefinitionList.Term>
+                  <DefinitionList.Description>Weekdays 8.00–17.00</DefinitionList.Description>
+                </DefinitionList.Row>
+              </DefinitionList.Root>
               <Address>
                 Municipal building
                 <br />
@@ -377,26 +377,26 @@ export const RTL: Story = {
               <p>
                 <strong>Contact centre</strong>
               </p>
-              <SummaryList.Root>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone</SummaryList.Key>
-                  <SummaryList.Value>
+              <DefinitionList.Root>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Email</SummaryList.Key>
-                  <SummaryList.Value>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Email</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="mailto:contact@kvirnby.example">
                       contact@kvirnby.example
                     </Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone hours</SummaryList.Key>
-                  <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
-                </SummaryList.Row>
-              </SummaryList.Root>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone hours</DefinitionList.Term>
+                  <DefinitionList.Description>Weekdays 8.00–17.00</DefinitionList.Description>
+                </DefinitionList.Row>
+              </DefinitionList.Root>
               <Address>
                 Municipal building
                 <br />
@@ -474,26 +474,26 @@ export const ForcedColors: Story = {
               <p>
                 <strong>Contact centre</strong>
               </p>
-              <SummaryList.Root>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone</SummaryList.Key>
-                  <SummaryList.Value>
+              <DefinitionList.Root>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="tel:+46000000000">0000-00 00 00</Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Email</SummaryList.Key>
-                  <SummaryList.Value>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Email</DefinitionList.Term>
+                  <DefinitionList.Description>
                     <Link.Root href="mailto:contact@kvirnby.example">
                       contact@kvirnby.example
                     </Link.Root>
-                  </SummaryList.Value>
-                </SummaryList.Row>
-                <SummaryList.Row>
-                  <SummaryList.Key>Phone hours</SummaryList.Key>
-                  <SummaryList.Value>Weekdays 8.00–17.00</SummaryList.Value>
-                </SummaryList.Row>
-              </SummaryList.Root>
+                  </DefinitionList.Description>
+                </DefinitionList.Row>
+                <DefinitionList.Row>
+                  <DefinitionList.Term>Phone hours</DefinitionList.Term>
+                  <DefinitionList.Description>Weekdays 8.00–17.00</DefinitionList.Description>
+                </DefinitionList.Row>
+              </DefinitionList.Root>
               <Address>
                 Municipal building
                 <br />

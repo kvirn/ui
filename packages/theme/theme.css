@@ -90,7 +90,7 @@
  *  10b. Alert            kv-alert: a status message, by status class
  *  10f. Toast            kv-toast-region, kv-toast: a floating status message, level 3, after Alert
  *  10e. Dialog           kv-dialog: a modal sheet or centred box, level 4, and the scroll lock
- *  10d. Summary list and error summary  kv-summary-list: rows of key, value and action. kv-error-summary: the problems of a failed submit
+ *  10d. Definition list and error summary  kv-definition-list: rows of term, description and action. kv-error-summary: the problems of a failed submit
  *  10c. Layout           kv-container, kv-stack, kv-columns, kv-sidebar-layout: where children sit
  *  11. Icon
  *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-textarea,
@@ -2299,7 +2299,7 @@
             .kv-columns,
             .kv-sidebar-layout,
             .kv-code-block,
-            .kv-summary-list,
+            .kv-definition-list,
             .kv-list
           )
           *,
@@ -2348,7 +2348,7 @@
         .kv-columns,
         .kv-sidebar-layout,
         .kv-code-block,
-        .kv-summary-list,
+        .kv-definition-list,
         .kv-list
       )
     ) {
@@ -2757,7 +2757,7 @@
       .kv-field,
       .kv-fieldset,
       .kv-table,
-      .kv-summary-list,
+      .kv-definition-list,
       .kv-list
     ) {
       margin-block: var(--kv-prose-space-block);
@@ -5171,14 +5171,14 @@
     }
   }
 
-  /* 10d. Summary list and error summary ------------------------------------------------------
-   * <SummaryList.Root> renders <dl class="kv-summary-list"> of kv-summary-list-row (a <div>),
-   * each holding a kv-summary-list-key (<dt>), a kv-summary-list-value (<dd>) and optionally
-   * kv-summary-list-actions (<dd>), whose Change link is kv-link kv-summary-list-change. A row has
+  /* 10d. Definition list and error summary ------------------------------------------------------
+   * <DefinitionList.Root> renders <dl class="kv-definition-list"> of kv-definition-list-row (a <div>),
+   * each holding a kv-definition-list-term (<dt>), a kv-definition-list-description (<dd>) and optionally
+   * kv-definition-list-actions (<dd>), whose Change link is kv-link kv-definition-list-change. A row has
    * a 1px border-subtle line under it, and the list one above the first, so the rows read as a
-   * table of answers without being one. From 40rem a row is three columns: the key (a third), the
-   * value and the actions, at the end. Below 40rem, and at 320px, it stacks: key, value, actions at
-   * the start. The key is weight 600, the value wraps anywhere and never truncates. Nothing is
+   * table of answers without being one. From 40rem a row is three columns: the term (a third), the
+   * description and the actions, at the end. Below 40rem, and at 320px, it stacks: term, description, actions at
+   * the start. The term is weight 600, the description wraps anywhere and never truncates. Nothing is
    * interactive but the links. Prose leaves it alone (it is in the not-prose list).
    *
    * <ErrorSummary.Root> is an Alert.Danger (section 10b) with the class kv-error-summary, so it has
@@ -5187,7 +5187,7 @@
    * not a measured pair on danger-subtle, and the underline carries the link without colour,
    * 1.4.1). The ring on the focused summary is the one from section 9d. Zero specificity where
    * it can be, so your own CSS wins. */
-  :where(.kv-summary-list) {
+  :where(.kv-definition-list) {
     margin: 0;
     padding: 0;
     border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
@@ -5197,7 +5197,7 @@
     line-height: var(--kv-font-body-line-height);
   }
 
-  :where(.kv-summary-list-row) {
+  :where(.kv-definition-list-row) {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: var(--kv-space-1) var(--kv-space-6);
@@ -5205,19 +5205,19 @@
     border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
   }
 
-  :where(.kv-summary-list-key) {
+  :where(.kv-definition-list-term) {
     margin: 0;
     font-weight: 600;
     overflow-wrap: anywhere;
   }
 
-  :where(.kv-summary-list-value) {
+  :where(.kv-definition-list-description) {
     margin: 0;
     min-inline-size: 0;
     overflow-wrap: anywhere;
   }
 
-  :where(.kv-summary-list-actions) {
+  :where(.kv-definition-list-actions) {
     display: flex;
     flex-wrap: wrap;
     gap: var(--kv-space-1) var(--kv-space-4);
@@ -5225,23 +5225,23 @@
   }
 
   /* 24px tall at least (2.5.8): the line height of body text is more, but a 1.4.12 override is not. */
-  :where(.kv-summary-list-change) {
+  :where(.kv-definition-list-change) {
     display: inline-flex;
     align-items: center;
     min-block-size: 1.5rem;
   }
 
   @media (width >= 40rem) {
-    :where(.kv-summary-list-row) {
+    :where(.kv-definition-list-row) {
       grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto;
     }
 
     /* A row with no actions gives the value the last column too. */
-    :where(.kv-summary-list-value:last-child) {
+    :where(.kv-definition-list-description:last-child) {
       grid-column: 2 / -1;
     }
 
-    :where(.kv-summary-list-actions) {
+    :where(.kv-definition-list-actions) {
       justify-content: flex-end;
     }
   }
@@ -5276,7 +5276,7 @@
   }
 
   @media (forced-colors: active) {
-    :where(.kv-summary-list, .kv-summary-list-row) {
+    :where(.kv-definition-list, .kv-definition-list-row) {
       border-color: CanvasText;
     }
 

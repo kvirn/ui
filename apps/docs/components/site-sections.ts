@@ -271,11 +271,6 @@ export const componentGroups: readonly SummarisedGroup[] = [
         'One approximate number in a range, such as a search distance or a volume.',
       ),
       component(
-        'SummaryList',
-        'summary-list',
-        'Rows of a label, an answer and a link to change it, as one native description list.',
-      ),
-      component(
         'TextInput',
         'text-input',
         'A native text box for a short answer such as a name, an email address or a case number.',
@@ -355,6 +350,11 @@ export const componentGroups: readonly SummarisedGroup[] = [
         'Announcer',
         'announcer',
         'The shared live regions that tell screen reader users something changed without moving focus.',
+      ),
+      component(
+        'DefinitionList',
+        'definition-list',
+        'Terms with their descriptions, and optionally a link to change each, as one native description list.',
       ),
       component(
         'Focus',

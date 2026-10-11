@@ -1,6 +1,6 @@
 import { defineExampleTexts } from '../../components/local-example-texts.ts'
 
-export const useSummaryListTexts = defineExampleTexts({
+export const useDefinitionListTexts = defineExampleTexts({
   en: {
     heading: 'Check your answers',
     name: 'Name',

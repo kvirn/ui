@@ -57,7 +57,7 @@ export function StepperPage({
             Not for moving between pages: it has no links. Use{' '}
             <Link href="/components/navigation">Navigation</Link> or a{' '}
             <Link href="/components/breadcrumb">Breadcrumb</Link> for that, and a{' '}
-            <Link href="/components/summary-list">SummaryList</Link> for the last check.
+            <Link href="/components/definition-list">DefinitionList</Link> for the last check.
           </li>
         </ul>
       }

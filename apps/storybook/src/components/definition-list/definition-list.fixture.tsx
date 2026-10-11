@@ -12,7 +12,7 @@ import type { Decorator } from '@storybook/react-vite'
 
 const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, en }
 
-export const withSummaryListLocale: Decorator = (Story, { globals }) => {
+export const withDefinitionListLocale: Decorator = (Story, { globals }) => {
   const locale = String(globals['locale'] ?? 'sv')
   return (
     <KvirnProvider locale={locale} messages={catalogs[locale] ?? en}>
