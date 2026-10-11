@@ -6,7 +6,7 @@ The site's search: a `<search>` landmark around a GET form, with a `Field`, a `T
 
 - One part: `SiteSearch`. `action` (required) is the search page, `label` (required) the field's name, and the children the button's word. `name` (default `q`) and `defaultValue` reach the field.
 - The label is visually hidden: the button's word is the visible cue, and the button never shows an icon alone (2.5.3).
-- The field and the button keep their own look. On the primary Site header their focus ring is `on-primary`.
+- The field and the button keep their own look. On the primary Site header the strip is one white pill with a decorative magnifier, a solid `primary` button inside it, and an `on-primary` focus ring round the whole pill.
 - To build the same strip yourself, see [InputGroup › Search](?path=/story/components-forms-inputgroup--search).
 
 ```tsx

@@ -53,10 +53,10 @@ None.
 
 ## Visual / modes
 
-- Focus indicator: the token ring on the field and the button; on a `primary` band of the Site header it is `on-primary` (`focus-ring` is about 1:1 there).
-- The field and the button keep their own tokens and look: one strip, the field's end corners squared.
+- Focus indicator: the token ring on the field and the button; on a `primary` band of the Site header the field's ring goes round the whole pill and is `on-primary` (`focus-ring` is about 1:1 there). The button keeps its own ring.
+- The field and the button keep their own tokens and look: one strip, the field's end corners squared. On a primary Site header the strip is a white pill (`on-primary`, `primary` text, a decorative magnifier at the inline start) with the button a solid `primary` pill inside it; the pill against the band is the field's edge (4.78:1 or more).
 - Target size: 44px controls (2.5.8).
-- forced-colors behaviour: the field and the button keep their system edges.
+- forced-colors behaviour: the field and the button keep their system edges; the primary pill and its button get a `CanvasText` 1px edge.
 - reduced-motion behaviour: nothing animates.
 - RTL: logical properties; the button is at the inline end.
 
