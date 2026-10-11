@@ -8,20 +8,22 @@ import {
   siteSections,
 } from '../../components/site-sections.ts'
 import type { SitePage } from '../../components/site-sections.ts'
+import { buildSearchIndex, searchEntries } from '../../lib/search-index.ts'
+import type { SearchEntry } from '../../lib/search-index.ts'
 import { messages } from '../../messages/en.ts'
 
 const text = messages.docs.search
 
 export const metadata: Metadata = { title: messages.docs.meta.title({ page: text.title }) }
 
-interface Result extends SitePage {
+interface Page extends SitePage {
   summary?: string
 }
 
 /** Every page of the site once, with its one-line job where it has one. */
-function allPages(): readonly Result[] {
-  const pages = new Map<string, Result>()
-  const add = (page: Result) => {
+function allPages(): readonly Page[] {
+  const pages = new Map<string, Page>()
+  const add = (page: Page) => {
     if (!pages.has(page.href)) {
       pages.set(page.href, page)
     }
@@ -33,16 +35,11 @@ function allPages(): readonly Result[] {
   return [...pages.values()]
 }
 
-/** The pages whose title or one-line job contains every word of the query. */
-function search(query: string): readonly Result[] {
-  const words = query.toLocaleLowerCase('en').split(/\s+/).filter(Boolean)
-  if (words.length === 0) {
-    return []
-  }
-  return allPages().filter((page) => {
-    const haystack = `${page.label} ${page.summary ?? ''}`.toLocaleLowerCase('en')
-    return words.every((word) => haystack.includes(word))
-  })
+let searchIndex: readonly SearchEntry[] | undefined
+
+function index(): readonly SearchEntry[] {
+  searchIndex ??= buildSearchIndex(allPages())
+  return searchIndex
 }
 
 export default async function SearchPage({
@@ -52,7 +49,7 @@ export default async function SearchPage({
 }) {
   const { q } = await searchParams
   const query = (Array.isArray(q) ? q[0] : q)?.trim() ?? ''
-  const results = search(query)
+  const results = searchEntries(index(), query)
 
   return (
     <>
@@ -66,10 +63,11 @@ export default async function SearchPage({
             <p>{text.noResults}</p>
           ) : (
             <ul>
-              {results.map((page) => (
-                <li key={page.href}>
-                  <Link href={page.href}>{page.label}</Link>
-                  {page.summary === undefined ? null : <p>{page.summary}</p>}
+              {results.map(({ entry, excerpt }) => (
+                <li key={entry.href}>
+                  <Link href={entry.href}>{entry.label}</Link>
+                  {entry.summary === undefined ? null : <p>{entry.summary}</p>}
+                  {excerpt === undefined ? null : <p>{excerpt}</p>}
                 </li>
               ))}
             </ul>
