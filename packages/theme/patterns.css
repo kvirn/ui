@@ -250,10 +250,11 @@
 
 /* A card on the band (a raised surface, such as a settings panel) keeps the token ring. */
 .kv-site-header.kv-site-header--primary
-  :is(.kv-link, .kv-disclosure-trigger, .kv-button, .kv-input):is(
-    :focus-visible,
-    [data-focus-visible]
-  ):not(.kv-card *) {
+  :is(.kv-link, .kv-disclosure-trigger, .kv-button):is(:focus-visible, [data-focus-visible]):not(
+    .kv-card *
+  ),
+.kv-site-header.kv-site-header--primary
+  .kv-input:is([data-focus-visible], :focus-visible:where(:not([data-focused]))):not(.kv-card *) {
   outline: var(--kv-focus-ring-width) solid var(--kv-site-header-on);
   outline-offset: var(--kv-focus-ring-offset);
 }
@@ -263,10 +264,10 @@
 @media (width >= 64rem) {
   .kv-site-header.kv-site-header--primary
     .kv-disclosure-panel.kv-mega-menu-panel
-    :is(.kv-link, .kv-disclosure-trigger, .kv-button, .kv-input):is(
-      :focus-visible,
-      [data-focus-visible]
-    ) {
+    :is(.kv-link, .kv-disclosure-trigger, .kv-button):is(:focus-visible, [data-focus-visible]),
+  .kv-site-header.kv-site-header--primary
+    .kv-disclosure-panel.kv-mega-menu-panel
+    .kv-input:is([data-focus-visible], :focus-visible:where(:not([data-focused]))) {
     outline-color: var(--kv-color-focus-ring);
   }
 }
@@ -448,10 +449,9 @@
   }
 
   .kv-site-header.kv-site-header--primary
-    :is(.kv-link, .kv-disclosure-trigger, .kv-button, .kv-input):is(
-      :focus-visible,
-      [data-focus-visible]
-    ) {
+    :is(.kv-link, .kv-disclosure-trigger, .kv-button):is(:focus-visible, [data-focus-visible]),
+  .kv-site-header.kv-site-header--primary
+    .kv-input:is([data-focus-visible], :focus-visible:where(:not([data-focused]))) {
     outline-color: Highlight;
   }
 }
@@ -554,6 +554,12 @@
 .kv-button-group.kv-button-group--attached > .kv-site-search-field .kv-input {
   border-start-end-radius: 0;
   border-end-end-radius: 0;
+}
+
+/* A click: the 2px edge is `text`, not border-focus, which is about the band's own blue. */
+.kv-site-search-field
+  .kv-input:not(:disabled, [data-disabled], [data-invalid], [aria-invalid='true']):focus {
+  --kv-input-edge: var(--kv-color-text);
 }
 
 /* A focused field is raised, so the button beside it never covers its ring. */
