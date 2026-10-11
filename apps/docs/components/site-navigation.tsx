@@ -66,9 +66,7 @@ export function SiteNavigation({
     <Section id={id} className="docs-sidebar kv-section--padding-sm" data-open={isOpen}>
       <Navigation.Root label={section.label}>
         <Navigation.List>
-          {indexPage === undefined || section.indexInSidebar === false ? null : (
-            <PageItem page={indexPage} pathname={pathname} />
-          )}
+          {indexPage === undefined ? null : <PageItem page={indexPage} pathname={pathname} />}
           {section.groups === undefined
             ? otherPages.map((page) => <PageItem key={page.href} page={page} pathname={pathname} />)
             : section.groups.map((group) => (

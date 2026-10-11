@@ -4,7 +4,7 @@
  * theme tokens. Components are styled by theme.css: nothing here restyles a kv-* part.
  */
 :root {
-  --docs-sidebar-width: 17rem;
+  --docs-sidebar-width: 15rem;
   /* The inline padding of the header's bands and of the main column, by width: the one edge the
    * brand, the navigation, the sidebar's text and the page's text start from. */
   --docs-edge: var(--kv-space-4);
@@ -38,66 +38,134 @@ body {
 }
 
 .docs-footer {
+  padding-block: var(--kv-space-10);
   border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  font-size: var(--kv-font-body-small-size);
+}
+
+@media (forced-colors: active) {
+  .docs-footer {
+    border-block-start-color: CanvasText;
+  }
 }
 
 /*
- * The header is the primary Site header of @kvirn-ui/patterns (docs/design/docs-header-bands.md):
- * the bands, their on-primary links, current bars and focus rings come from theme.css. Here only
- * the name with its Badge, and the Display settings button, outlined on-primary with no depth.
+ * The header is the primary Site header of @kvirn-ui/patterns (docs/design/docs-shell-mega-menu.md):
+ * the bands, the menu in the masthead, their on-primary links, current bars and focus rings come
+ * from theme.css. Here only the mark and name with its Badge, and the Display settings wrapper.
  */
 .docs-brand {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--kv-space-3);
+  gap: var(--kv-space-2) var(--kv-space-3);
+}
+
+/* The mark is a small square beside the name (the primary header's logo is larger by default). */
+.docs-brand .kv-application-logo-mark {
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+}
+
+.docs-brand .kv-application-logo-name {
+  font-size: 1.25rem;
+  line-height: var(--kv-font-heading-4-line-height);
+}
+
+/* The K is cut in the colour behind the mark: primary in the header, surface in the footer. */
+.kv-site-header--primary .kv-application-logo-mark {
+  --kv-mark-cut: var(--kv-color-primary);
+}
+
+.docs-footer .kv-application-logo-mark {
+  --kv-mark-cut: var(--kv-color-surface);
+}
+
+@media (forced-colors: active) {
+  .kv-application-logo-mark path {
+    stroke: Canvas;
+  }
 }
 
 .docs-top-end {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0 var(--kv-space-2);
+  gap: var(--kv-space-2) var(--kv-space-4);
 }
 
 .docs-footer-inner {
   box-sizing: border-box;
   max-inline-size: var(--docs-page-max);
   margin-inline: auto;
-  padding-inline: var(--kv-space-4);
+  padding-inline: var(--docs-edge);
+}
+
+.docs-footer-grid {
+  display: grid;
+  gap: var(--kv-space-8);
 }
 
 .docs-footer-inner p {
-  max-inline-size: 70ch;
+  max-inline-size: 60ch;
+  margin: var(--kv-space-2) 0 0;
 }
 
-/* Layout: one column, then sidebar and content from 64rem. Nothing is sticky (2.4.11). */
-.docs-layout {
+.docs-footer-heading {
+  margin: 0 0 var(--kv-space-3);
+  font-family: var(--kv-font-family-sans);
+  font-size: var(--kv-font-body-size);
+  font-weight: 600;
+  color: var(--kv-color-text);
+}
+
+.docs-footer ul {
+  display: grid;
+  gap: var(--kv-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * Layout: the intro band is full width. Below it one column, with the Get started sidebar beside
+ * the article from 64rem and the contents beside it from 80rem. Nothing is sticky (2.4.11) except
+ * the contents column, which sits beside the article and never over it.
+ */
+.docs-main {
+  min-inline-size: 0;
+}
+
+.docs-body {
+  box-sizing: border-box;
   max-inline-size: var(--docs-page-max);
   margin-inline: auto;
+  padding: var(--kv-space-10) var(--docs-edge);
 }
 
-/* The landing is full-width bands; each band's own container sets the measure. */
-.docs-layout--landing {
-  max-inline-size: none;
+.docs-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kv-space-6) var(--kv-space-10);
 }
 
-.docs-sidebar {
-  /* Its links have 16px of their own: the text starts at the same edge as the header's. */
-  padding-inline-start: max(
-    0px,
-    calc(var(--docs-edge) - var(--kv-space-4) - var(--kv-border-width))
-  );
-  border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+.docs-article {
+  min-inline-size: 0;
+  max-inline-size: var(--docs-content-max);
 }
 
-@media (min-width: 40rem) {
+/* The column is wider than the prose measure so examples get room; running text keeps it. */
+.docs-article > :is(p, ul, ol, dl) {
+  max-inline-size: var(--kv-prose-measure);
+}
+
+@media (width >= 40rem) {
   :root {
     --docs-edge: var(--kv-space-6);
   }
 }
 
-@media (min-width: 64rem) {
+@media (width >= 64rem) {
   :root {
     --docs-edge: var(--kv-space-10);
   }
@@ -113,23 +181,12 @@ body {
   box-shadow: none;
 }
 
+.docs-sidebar {
+  border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+}
+
 .docs-sidebar[data-open='false'] {
   display: none;
-}
-
-.docs-main {
-  box-sizing: border-box;
-  min-inline-size: 0;
-  padding: var(--kv-space-10) var(--kv-space-4);
-}
-
-.docs-main > * {
-  max-inline-size: var(--docs-content-max);
-}
-
-/* The column is wider than the prose measure so examples get room; running text keeps it. */
-.docs-article > :is(p, ul, ol, dl) {
-  max-inline-size: var(--kv-prose-measure);
 }
 
 /* A section's own link: in the heading, shown on hover and focus, and always without hover. A
@@ -166,7 +223,7 @@ body {
 
 .docs-status {
   max-inline-size: 70ch;
-  margin-block: var(--kv-space-6);
+  margin-block: var(--kv-space-4) 0;
 }
 
 .docs-example-header {
@@ -320,14 +377,6 @@ body {
     white-space: pre;
     overflow-wrap: normal;
   }
-
-  .docs-footer-inner {
-    padding-inline: var(--kv-space-6);
-  }
-
-  .docs-main {
-    padding-inline: var(--kv-space-6);
-  }
 }
 
 @media (width >= 64rem) {
@@ -335,45 +384,21 @@ body {
     display: none;
   }
 
-  .docs-footer-inner {
-    padding-inline: var(--kv-space-10);
+  .docs-footer-grid {
+    grid-template-columns: 2fr 1fr 1fr;
   }
 
-  .docs-layout:has(> .docs-sidebar) {
-    display: grid;
+  .docs-columns:has(> .docs-sidebar) {
     grid-template-columns: var(--docs-sidebar-width) minmax(0, 1fr);
   }
 
-  /* The surface runs on to the screen edge: a decorative bleed behind the sidebar, outside the
-     centred page, so the column reads as one panel. Overflow to the inline start never scrolls. */
   .docs-sidebar {
-    position: relative;
     border-block-end: 0;
     border-inline-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
   }
 
-  .docs-sidebar::before {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    inset-inline-end: 100%;
-    inline-size: 50vw;
-    background-color: var(--kv-color-surface);
-    pointer-events: none;
-  }
-
-  @media (forced-colors: active) {
-    .docs-sidebar::before {
-      background-color: Canvas;
-    }
-  }
-
   .docs-sidebar[data-open='false'] {
     display: block;
-  }
-
-  .docs-main {
-    padding-inline: var(--kv-space-10);
   }
 }
 
@@ -383,7 +408,7 @@ body {
   padding-inline-start: var(--kv-space-4);
 }
 
-/* The contents move to a third column; the DOM order stays, so they still come before Example. */
+/* The contents move to a column beside the article; the DOM order stays, so they still come before Example. */
 @media (width >= 80rem) {
   .docs-article:has(.docs-contents) {
     display: grid;
@@ -420,4 +445,80 @@ body {
 
 :root:not([data-kv-color-scheme]) .docs-sidebar[data-open='false'] {
   display: block;
+}
+
+/* The Components panel's groups flow down 4 columns in DOM order (2 from 40rem), so no row has a
+   gap under a short group. The overview keeps its own row above all of them. */
+@media (width >= 40rem) {
+  .docs-menu-columns .kv-mega-menu-list:has(> .kv-mega-menu-group) {
+    display: block;
+    columns: 2;
+    column-gap: var(--kv-space-6);
+  }
+
+  .docs-menu-columns .kv-mega-menu-list > .kv-mega-menu-overview {
+    column-span: all;
+    margin-block-end: var(--kv-space-6);
+  }
+
+  .docs-menu-columns .kv-mega-menu-group {
+    break-inside: avoid;
+    margin-block-end: var(--kv-space-6);
+  }
+}
+
+@media (width >= 64rem) {
+  .docs-menu-columns .kv-mega-menu-list:has(> .kv-mega-menu-group) {
+    columns: 4;
+  }
+}
+
+/* Previous and next page (docs-shell-mega-menu.md §6): two cards, Next at the inline end. */
+.docs-pager ul {
+  display: grid;
+  gap: var(--kv-space-4);
+  margin: var(--kv-space-12) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.docs-pager a {
+  display: block;
+  padding: var(--kv-space-4);
+  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-lg);
+  text-decoration: none;
+}
+
+.docs-pager a:hover {
+  border-color: var(--kv-color-border-control);
+  text-decoration: underline;
+}
+
+.docs-pager small {
+  display: block;
+  color: var(--kv-color-text);
+  font-size: var(--kv-font-body-small-size);
+}
+
+.docs-pager strong {
+  font-size: var(--kv-font-body-large-size);
+  font-weight: 600;
+}
+
+@media (width >= 40rem) {
+  .docs-pager ul {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .docs-pager-next {
+    grid-column: 2;
+    text-align: end;
+  }
+}
+
+@media (forced-colors: active) {
+  .docs-pager a {
+    border-color: LinkText;
+  }
 }

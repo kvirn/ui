@@ -94,6 +94,7 @@ export function TabsPage({
       title="Tabs"
       lead="Keyboard users pass the list with one Tab press and move between the tabs with the arrow keys."
       status="alpha-candidate"
+      pattern="APG Tabs"
       whenToUse={
         <ul>
           <li>

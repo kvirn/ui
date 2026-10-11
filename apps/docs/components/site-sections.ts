@@ -37,8 +37,12 @@ export interface SiteSection {
   pages: readonly SitePage[]
   /** Sidebar groups (docs-landing-and-header.md §3.1); the index page is listed outside them. */
   groups?: readonly SiteGroup[]
-  /** `false` leaves the index out of the sidebar: the header's Site navigation already marks it. */
-  indexInSidebar?: boolean | undefined
+  /** The label of the index link in a topic's panel, when "All …" reads better than the section's name. */
+  overviewLabel?: string | undefined
+  /** The id of the topic whose panel lists this section as its last groups, instead of a menu item of its own. */
+  menuParent?: string | undefined
+  /** Whether the section's pages share a sidebar. Only Get started does (docs-shell-mega-menu.md §5.1). */
+  sidebar?: boolean | undefined
 }
 
 export interface SiteTool {
@@ -457,7 +461,7 @@ export const siteSections: readonly SiteSection[] = [
     id: 'docs',
     label: text.sections.docs,
     href: '/docs',
-    indexInSidebar: false,
+    sidebar: true,
     pages: [
       { href: '/docs', label: text.getStarted },
       { href: '/foundation/kvirn-provider', label: text.kvirnProvider },
@@ -469,7 +473,7 @@ export const siteSections: readonly SiteSection[] = [
     id: 'components',
     label: text.sections.components,
     href: '/components',
-    indexInSidebar: false,
+    overviewLabel: text.allComponents,
     pages: [
       { href: '/components', label: text.allComponents },
       ...componentGroupPages,
@@ -481,12 +485,15 @@ export const siteSections: readonly SiteSection[] = [
     id: 'patterns',
     label: text.sections.patterns,
     href: '/patterns',
+    menuParent: 'components',
     pages: [{ href: '/patterns', label: text.sections.patterns }],
+    groups: patternGroups,
   },
   {
     id: 'content-types',
     label: text.sections.contentTypes,
     href: '/content-types',
+    menuParent: 'components',
     pages: [{ href: '/content-types', label: text.sections.contentTypes }, ...contentTypePages],
     groups: contentTypeGroups,
   },
@@ -536,6 +543,54 @@ export function sectionCurrent(
   return withoutTrailingSlash(pathname) === section.href ? 'page' : true
 }
 
-/** A sidebar is only worth its place with two or more pages to choose between. */
+/** Only Get started keeps a sidebar: every other section is reached from the menu and the pager. */
 export const hasSidebar = (section: SiteSection | undefined): section is SiteSection =>
-  section !== undefined && section.pages.length >= 2
+  section?.sidebar === true && section.pages.length >= 2
+
+/** `page` on the page's own link, for the links inside a topic's panel. */
+export const pageCurrent = (pathname: string, href: string) =>
+  withoutTrailingSlash(pathname) === href ? 'page' : undefined
+
+/** What the pager can reach from a page: the section's leaf pages in menu order (docs-shell-mega-menu.md §5). */
+const leafPages = (section: SiteSection): readonly SitePage[] =>
+  section.groups === undefined ? section.pages : section.groups.flatMap((group) => group.pages)
+
+/**
+ * The previous and next page within the section's leaf pages. A section index, a group page and a
+ * page in no section are not in the chain, so they get neither. It never crosses sections.
+ */
+export function pagerPages(sections: readonly SiteSection[], pathname: string) {
+  const path = withoutTrailingSlash(pathname)
+  const section = findActiveSection(sections, path)
+  if (section === undefined) {
+    return { previous: undefined, next: undefined }
+  }
+  const leaves = leafPages(section)
+  const index = leaves.findIndex((page) => page.href === path)
+  if (index === -1 || leaves.length < 2) {
+    return { previous: undefined, next: undefined }
+  }
+  return { previous: leaves[index - 1], next: leaves[index + 1] }
+}
+
+/** Section index, then the group's own page if it has one, then the current page. */
+export function breadcrumbTrail(sections: readonly SiteSection[], pathname: string): SitePage[] {
+  const path = withoutTrailingSlash(pathname)
+  const section = findActiveSection(sections, path)
+  const current = section?.pages.find((page) => page.href === path)
+  if (section === undefined || current === undefined) {
+    return []
+  }
+  if (current.href === section.href) {
+    return [{ href: section.href, label: section.label }]
+  }
+  const group = section.groups?.find(
+    (candidate) =>
+      candidate.href !== undefined && candidate.pages.some((page) => page.href === path),
+  )
+  return [
+    { href: section.href, label: section.label },
+    ...(group?.href === undefined ? [] : [{ href: group.href, label: group.label }]),
+    current,
+  ]
+}

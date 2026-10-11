@@ -4,7 +4,7 @@ import { Fragment } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
 import { AnchoredHeading } from './anchored-heading.tsx'
-import { PageHeading } from './page-heading.tsx'
+import { DocsPage } from './docs-page.tsx'
 
 const text = messages.docs.contents
 
@@ -71,22 +71,18 @@ export function SectionHeading({ section }: { section: PageSection }) {
  */
 export function PageWithContents({
   title,
-  titleSize,
   lead,
   intro,
   sections,
 }: {
   title: string
-  titleSize?: 'display' | undefined
   lead: string
   intro?: ReactNode
   sections: readonly PageSectionContent[]
 }) {
   const rendered = sections.filter(({ content }) => hasContent(content))
   return (
-    <>
-      <PageHeading size={titleSize}>{title}</PageHeading>
-      <p className="kv-lead">{lead}</p>
+    <DocsPage title={title} lead={lead}>
       {intro}
       <PageContents sections={rendered} />
       {rendered.map((section) => (
@@ -95,6 +91,6 @@ export function PageWithContents({
           {section.content}
         </Fragment>
       ))}
-    </>
+    </DocsPage>
   )
 }

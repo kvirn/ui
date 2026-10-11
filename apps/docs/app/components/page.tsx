@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
+import { DocsPage } from '../../components/docs-page.tsx'
 import { Gallery } from '../../components/gallery/gallery.tsx'
 import { galleryPreviews } from '../../components/gallery/previews/index.ts'
 import { PageContents } from '../../components/page-contents.tsx'
-import { PageHeading } from '../../components/page-heading.tsx'
 import { componentGroups, componentPages } from '../../components/site-sections.ts'
 import { messages } from '../../messages/en.ts'
 
@@ -25,11 +25,9 @@ const groups = componentGroups.map((group) => ({
 
 export default function ComponentsIndexPage() {
   return (
-    <>
-      <PageHeading>{text.title}</PageHeading>
-      <p className="kv-lead">{text.lead({ count: componentPages.length })}</p>
+    <DocsPage title={text.title} lead={text.lead({ count: componentPages.length })}>
       <PageContents sections={groups} />
       <Gallery groups={groups} />
-    </>
+    </DocsPage>
   )
 }

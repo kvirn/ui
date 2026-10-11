@@ -1,41 +1,40 @@
 'use client'
-import { ApplicationLogo, MainMenu, SiteHeader, SiteSearch, TopBar } from '@kvirn-ui/patterns'
-import {
-  Badge,
-  DisplaySettings,
-  Link,
-  Navigation,
-  Prose,
-  Section,
-  SkipLink,
-  useRouteFocus,
-} from '@kvirn-ui/react'
+import { ApplicationLogo, SiteHeader, SiteSearch, TopBar } from '@kvirn-ui/patterns'
+import { Badge, DisplaySettings, Link, Navigation, SkipLink, useRouteFocus } from '@kvirn-ui/react'
 import { useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
 import { DocsDisclosure } from './docs-disclosure.tsx'
+import { DocsShellContext } from './docs-page.tsx'
+import { KvirnMark } from './kvirn-mark.tsx'
+import { SiteFooter } from './site-footer.tsx'
+import { SiteMenu } from './site-menu.tsx'
 import { SiteNavigation } from './site-navigation.tsx'
+import { SitePager } from './site-pager.tsx'
 import {
+  breadcrumbTrail,
   findActiveSection,
   hasSidebar,
+  pagerPages,
   renderedSections,
-  sectionCurrent,
   siteSections,
   siteTools,
 } from './site-sections.ts'
 import type { SiteSection } from './site-sections.ts'
+import { SiteToolLink } from './site-tool-link.tsx'
 
 const text = messages.docs
 
 const sidebarId = 'docs-sidebar'
 
 /**
- * The docs site shell (docs-header-bands.md §5): skip link, the primary Site header from
- * `@kvirn-ui/patterns` (a TopBar with Latest and Tools, the masthead with the name and Display
- * settings, the Menu with the Site navigation), the active section's sidebar with its own button
- * below 64rem, main and footer. Nothing is sticky (2.4.11). `pathname` comes from the router, so
- * the shell itself doesn't depend on Next.js. The `landing` layout has no sidebar and no Prose
- * article: its page brings its own bands inside `main`.
+ * The docs site shell (docs-shell-mega-menu.md §5): skip link, the primary Site header from
+ * `@kvirn-ui/patterns` (a TopBar with Latest and Tools, and a masthead with the mark and name, the
+ * Site menu with its mega panels, and the search), main and the footer. Nothing is sticky (2.4.11).
+ * `pathname` comes from the router, so the shell itself doesn't depend on Next.js. The `landing`
+ * layout has no article: its page brings its own bands inside `main`. In the `article` layout a
+ * page renders `DocsPage`, which lays out the intro band, the Get started sidebar and the pager
+ * the shell passes down.
  */
 export function SiteShell({
   pathname,
@@ -58,39 +57,49 @@ export function SiteShell({
   const mainRef = useRef<HTMLElement>(null)
   useRouteFocus({ key: pathname, containerRef: mainRef })
 
+  const { previous, next } = pagerPages(visibleSections, pathname)
+  const shellParts = {
+    trail: breadcrumbTrail(visibleSections, pathname),
+    sidebar:
+      sidebarSection === undefined ? null : (
+        <>
+          {/* Below 64rem the sidebar opens from its own button, named by the section. */}
+          <DocsDisclosure
+            className="docs-disclosure docs-sidebar-toggle"
+            controls={sidebarId}
+            isOpen={isSidebarOpen}
+            onToggle={() => setSidebarOpenOn(isSidebarOpen ? null : pathname)}
+          >
+            {text.nav.sidebarButton({ section: sidebarSection.label })}
+          </DocsDisclosure>
+          <SiteNavigation
+            id={sidebarId}
+            section={sidebarSection}
+            pathname={pathname}
+            isOpen={isSidebarOpen}
+          />
+        </>
+      ),
+    pager: <SitePager previous={previous} next={next} />,
+  }
+
   return (
     <>
       <SkipLink href="#main" />
       <SiteHeader.Root variant="primary">
         <TopBar.Root>
-          <p>
-            <Link href="/docs#status">{text.header.latest({ status: text.header.status })}</Link>
-          </p>
+          <Link href="/docs#status">{text.header.latest({ status: text.header.status })}</Link>
           <div className="docs-top-end">
             <Navigation.Root label={text.header.toolsLabel} className="kv-navigation--horizontal">
               <Navigation.List>
                 {siteTools.map((tool) => (
                   <Navigation.Item key={tool.id}>
-                    <Link
-                      href={tool.href}
-                      target={tool.opensInNewTab === true ? '_blank' : undefined}
-                    >
-                      {/* One inline box: in the flex item a bare space before the notice would collapse. */}
-                      <span>
-                        {tool.label}
-                        {tool.opensInNewTab === true ? (
-                          <>
-                            {' '}
-                            <Link.NewTabNotice />
-                          </>
-                        ) : null}
-                      </span>
-                    </Link>
+                    <SiteToolLink tool={tool} />
                   </Navigation.Item>
                 ))}
               </Navigation.List>
             </Navigation.Root>
-            <DisplaySettings.Compact>
+            <DisplaySettings.Compact className="kv-button--link">
               <p>{text.display.storageNote}</p>
             </DisplaySettings.Compact>
           </div>
@@ -98,70 +107,36 @@ export function SiteShell({
         <SiteHeader.Masthead>
           <div className="docs-brand">
             <ApplicationLogo.Root href="/">
+              <KvirnMark />
               <ApplicationLogo.Name>{text.header.home}</ApplicationLogo.Name>
             </ApplicationLogo.Root>
             <Badge>{text.header.status}</Badge>
           </div>
+          <SiteHeader.Menu>
+            <SiteHeader.MenuButton>{text.nav.menuButton}</SiteHeader.MenuButton>
+            <SiteHeader.MenuPanel>
+              <SiteMenu
+                sections={visibleSections}
+                activeSection={activeSection}
+                pathname={pathname}
+              />
+            </SiteHeader.MenuPanel>
+          </SiteHeader.Menu>
           <SiteSearch action="/search" label={text.header.searchLabel}>
             {text.header.searchButton}
           </SiteSearch>
         </SiteHeader.Masthead>
-        <SiteHeader.Menu>
-          <SiteHeader.MenuButton>{text.nav.menuButton}</SiteHeader.MenuButton>
-          <SiteHeader.MenuPanel>
-            <MainMenu.Root label={text.header.navLabel}>
-              {visibleSections.map((section) => (
-                <MainMenu.Link
-                  key={section.id}
-                  href={section.href}
-                  current={sectionCurrent(section, activeSection, pathname)}
-                >
-                  {section.label}
-                </MainMenu.Link>
-              ))}
-            </MainMenu.Root>
-          </SiteHeader.MenuPanel>
-        </SiteHeader.Menu>
       </SiteHeader.Root>
-      <div className={layout === 'landing' ? 'docs-layout docs-layout--landing' : 'docs-layout'}>
-        {sidebarSection === undefined ? null : (
-          <>
-            {/* Below 64rem the sidebar opens from its own button, named by the section. */}
-            <DocsDisclosure
-              className="docs-disclosure docs-sidebar-toggle"
-              controls={sidebarId}
-              isOpen={isSidebarOpen}
-              onToggle={() => setSidebarOpenOn(isSidebarOpen ? null : pathname)}
-            >
-              {text.nav.sidebarButton({ section: sidebarSection.label })}
-            </DocsDisclosure>
-            <SiteNavigation
-              id={sidebarId}
-              section={sidebarSection}
-              pathname={pathname}
-              isOpen={isSidebarOpen}
-            />
-          </>
-        )}
-        {layout === 'landing' ? (
-          <main id="main" ref={mainRef}>
-            {children}
-          </main>
-        ) : (
-          <main id="main" ref={mainRef} className="docs-main">
-            <Prose as="article" className="docs-article">
-              {children}
-            </Prose>
-          </main>
-        )}
-      </div>
-      <Section as="footer" className="docs-footer kv-section--canvas">
-        <div className="docs-footer-inner">
-          <p>{text.footer.licence}</p>
-          <p>{text.footer.claim}</p>
-          <p>{text.footer.noTracking}</p>
-        </div>
-      </Section>
+      {layout === 'landing' ? (
+        <main id="main" ref={mainRef}>
+          {children}
+        </main>
+      ) : (
+        <main id="main" ref={mainRef} className="docs-main">
+          <DocsShellContext.Provider value={shellParts}>{children}</DocsShellContext.Provider>
+        </main>
+      )}
+      <SiteFooter sections={visibleSections} activeSection={activeSection} pathname={pathname} />
     </>
   )
 }

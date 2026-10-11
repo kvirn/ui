@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28">
+  <!-- KvirnUI favicon, first draft. Static, so it can't follow the tokens: primary-500 (#0066cc) and
+       white from the palette; white on it is 5.57:1. A rebrand replaces this file. -->
+  <rect x="2" y="2" width="24" height="24" rx="6" fill="#0066cc"/>
+  <path d="M9 7v14M9 14l9-7M12 12l7 9" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

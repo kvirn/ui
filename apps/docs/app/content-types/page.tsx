@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
+import { DocsPage } from '../../components/docs-page.tsx'
 import { Gallery } from '../../components/gallery/gallery.tsx'
 import { contentTypePreviews } from '../../components/gallery/previews/content-types.tsx'
-import { PageHeading } from '../../components/page-heading.tsx'
 import { contentTypeGroups } from '../../components/site-sections.ts'
 import { messages } from '../../messages/en.ts'
 
@@ -24,10 +24,8 @@ const groups = contentTypeGroups.map((group) => ({
 
 export default function ContentTypesIndexPage() {
   return (
-    <>
-      <PageHeading>{text.title}</PageHeading>
-      <p className="kv-lead">{text.lead}</p>
+    <DocsPage title={text.title} lead={text.lead}>
       <Gallery groups={groups} />
-    </>
+    </DocsPage>
   )
 }

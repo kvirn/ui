@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { DocsPage } from '../../../components/docs-page.tsx'
 import { GalleryCards } from '../../../components/gallery/gallery.tsx'
 import { galleryPreviews } from '../../../components/gallery/previews/index.ts'
-import { PageHeading } from '../../../components/page-heading.tsx'
 import { componentGroups } from '../../../components/site-sections.ts'
 import { messages } from '../../../messages/en.ts'
 
@@ -37,15 +37,13 @@ export default async function ComponentGroupPage({
     notFound()
   }
   return (
-    <>
-      <PageHeading>{group.label}</PageHeading>
-      <p className="kv-lead">{text.groupLead({ count: group.pages.length })}</p>
+    <DocsPage title={group.label} lead={text.groupLead({ count: group.pages.length })}>
       <GalleryCards
         items={group.pages.map((page) => ({
           ...page,
           preview: galleryPreviews[slugOf(page.href)],
         }))}
       />
-    </>
+    </DocsPage>
   )
 }

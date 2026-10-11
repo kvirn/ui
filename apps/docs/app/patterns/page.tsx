@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { PageHeading } from '../../components/page-heading.tsx'
+import { DocsPage } from '../../components/docs-page.tsx'
 import { messages } from '../../messages/en.ts'
 
 export const metadata: Metadata = {
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default function PatternsPage() {
-  return <PageHeading>{messages.docs.nav.sections.patterns}</PageHeading>
+  return <DocsPage title={messages.docs.nav.sections.patterns} />
 }

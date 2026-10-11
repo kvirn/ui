@@ -1,6 +1,6 @@
 import { Link } from '@kvirn-ui/react'
 import type { Metadata } from 'next'
-import { PageHeading } from '../../components/page-heading.tsx'
+import { DocsPage } from '../../components/docs-page.tsx'
 import {
   componentPages,
   contentTypePages,
@@ -52,8 +52,7 @@ export default async function SearchPage({
   const results = searchEntries(index(), query)
 
   return (
-    <>
-      <PageHeading>{text.heading}</PageHeading>
+    <DocsPage title={text.heading}>
       {query === '' ? (
         <p>{text.hint}</p>
       ) : (
@@ -74,6 +73,6 @@ export default async function SearchPage({
           )}
         </>
       )}
-    </>
+    </DocsPage>
   )
 }

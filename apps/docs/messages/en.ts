@@ -276,6 +276,20 @@ export const messages = {
       claim:
         'KvirnUI is designed and tested to meet WCAG 2.2 AA. Whether your service meets it depends on how you build and test the whole service.',
       noTracking: 'This site uses no cookies, analytics or third-party services.',
+      sectionsHeading: 'Sections',
+      projectHeading: 'Project',
+      status: ({ status }: { status: string }) => `Status: ${status}`,
+    },
+    pager: {
+      label: 'Previous and next page',
+      previous: 'Previous page',
+      next: 'Next page',
+    },
+    facts: {
+      package: 'Package',
+      pattern: 'Pattern',
+      atTesting: 'Testing with assistive technology',
+      pending: 'Pending',
     },
     search: {
       title: 'Search',
