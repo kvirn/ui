@@ -177,6 +177,7 @@ export const useNumberInputHook: ApiHook = {
     isInvalid: { type: 'boolean', default: '–', description: 'Whether the Field is invalid.' },
     isRequired: { type: 'boolean', default: '–', description: 'Whether the Field is required.' },
     isDisabled: { type: 'boolean', default: '–', description: 'Whether the input is disabled.' },
+    isFocused: { type: 'boolean', default: '–', description: 'Whether the input has focus.' },
     isFocusVisible: {
       type: 'boolean',
       default: '–',
