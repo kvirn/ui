@@ -1,14 +1,16 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { createElement } from 'react'
-import type { ElementType, HTMLAttributes, ReactElement, Ref, RefCallback } from 'react'
+import { createElement, useContext } from 'react'
+import type { ElementType, HTMLAttributes, ReactElement, ReactNode, Ref, RefCallback } from 'react'
 import { LinkRoot } from '../link/link.tsx'
 import type { LinkProps } from '../link/link.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import type { RegisteredLinkComponent } from '../provider/register.ts'
+import { BreadcrumbContext } from './breadcrumb-context.ts'
 import { useBreadcrumb } from './use-breadcrumb.ts'
 import type {
+  BreadcrumbVariant,
   BreadcrumbCurrentPartProps,
   BreadcrumbItemPartProps,
   BreadcrumbListPartProps,
@@ -21,6 +23,18 @@ interface BreadcrumbPartComponentProps extends HTMLAttributes<HTMLElement> {
 }
 
 export interface BreadcrumbRootProps extends BreadcrumbPartComponentProps {
+  /**
+   * The generated separator: `chevron` (the default) or `slash`. Adds `kv-breadcrumb--slash` for
+   * `slash` and no class otherwise.
+   */
+  variant?: BreadcrumbVariant | undefined
+  /**
+   * Your own separator, for example an `<Icon>`, rendered in every item (the theme hides the
+   * first one, and a custom theme must too). It is decoration and hidden from assistive
+   * technology, so it must not carry a name or be interactive. The built-in `chevron-forward`
+   * mirrors itself in RTL; a registered or own icon needs `mirrorInRtl`.
+   */
+  separator?: ReactNode
   /**
    * The trail's accessible name, from your translations: `Du är här`. Replaces the message
    * `breadcrumb.label`, set as `aria-label`.
@@ -60,14 +74,21 @@ function renderBreadcrumbPart(
  * your `label`. Put a `Breadcrumb.List` in it, and never inside `<main>`.
  */
 export function BreadcrumbRoot({
+  variant,
+  separator,
   label,
   messages,
   ref,
+  children,
   ...otherProps
 }: BreadcrumbRootProps): ReactElement {
-  const breadcrumb = useBreadcrumb({ label, messages })
+  const breadcrumb = useBreadcrumb({ variant, label, messages })
   const mergedRef = useMergedRef(ref, null)
-  return renderBreadcrumbPart(otherProps, 'nav', breadcrumb.rootProps, mergedRef)
+  return (
+    <BreadcrumbContext.Provider value={separator}>
+      {renderBreadcrumbPart({ ...otherProps, children }, 'nav', breadcrumb.rootProps, mergedRef)}
+    </BreadcrumbContext.Provider>
+  )
 }
 BreadcrumbRoot.displayName = 'Breadcrumb.Root'
 
@@ -81,12 +102,32 @@ BreadcrumbList.displayName = 'Breadcrumb.List'
 
 /**
  * An `<li class="kv-breadcrumb-item">`: a `Breadcrumb.Link`, or the last item's
- * `Breadcrumb.Current`. The theme draws the separator before every item but the first.
+ * `Breadcrumb.Current`. The theme draws the separator before every item but the first, or yours
+ * when `Breadcrumb.Root` has a `separator` (rendered in every item; the theme hides the first).
  */
-export function BreadcrumbItem({ ref, ...otherProps }: BreadcrumbItemProps): ReactElement {
+export function BreadcrumbItem({
+  ref,
+  children,
+  ...otherProps
+}: BreadcrumbItemProps): ReactElement {
   const breadcrumb = useBreadcrumb()
+  const separator = useContext(BreadcrumbContext)
   const mergedRef = useMergedRef(ref, null)
-  return renderBreadcrumbPart(otherProps, 'li', breadcrumb.itemProps, mergedRef)
+  const hasSeparator = separator !== undefined && separator !== null && separator !== false
+  return renderBreadcrumbPart(
+    {
+      ...otherProps,
+      children: (
+        <>
+          {hasSeparator ? <span {...breadcrumb.separatorProps}>{separator}</span> : null}
+          {children}
+        </>
+      ),
+    },
+    'li',
+    breadcrumb.itemProps,
+    mergedRef,
+  )
 }
 BreadcrumbItem.displayName = 'Breadcrumb.Item'
 

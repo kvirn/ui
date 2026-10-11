@@ -16,12 +16,16 @@ import {
   breadcrumbRootRows,
   useBreadcrumbHook,
 } from '../content/breadcrumb.api.ts'
+import { CustomSeparator } from '../examples/breadcrumb/custom-separator.tsx'
 import { DefaultBreadcrumb } from '../examples/breadcrumb/default.tsx'
 import { LongTrail } from '../examples/breadcrumb/long-trail.tsx'
 import { OwnLabel } from '../examples/breadcrumb/own-label.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type BreadcrumbExampleSources = Record<'default' | 'long-trail' | 'own-label', string>
+export type BreadcrumbExampleSources = Record<
+  'default' | 'long-trail' | 'own-label' | 'custom-separator',
+  string
+>
 
 const parts: ApiPart[] = [
   {
@@ -154,6 +158,15 @@ export function BreadcrumbPage({
             }
           >
             <OwnLabel />
+          </UseCase>
+          <UseCase
+            id="custom-separator"
+            title="Your own separator"
+            why='The theme draws a chevron between the levels, and variant="slash" draws a slash. To draw something else, an icon or a component of yours, pass it as separator on the root. It is decoration: it is hidden from screen readers, so it must carry no name, and it is rendered in every item, with the first hidden by the theme. The built-in chevron-forward mirrors itself in RTL; a registered or own icon needs mirrorInRtl.'
+            code={sources['custom-separator']}
+            propsUsed={[{ part: 'Breadcrumb.Root', prop: 'separator' }]}
+          >
+            <CustomSeparator />
           </UseCase>
         </>
       }

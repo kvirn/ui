@@ -10,15 +10,16 @@ A breadcrumb tells a resident where they are and gives a way up. It adds no `tab
 
 ## Roles, states, properties
 
-| Part                 | Element / role                    | ARIA                                            | Notes                                                                                                                                                                     |
-| -------------------- | --------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Breadcrumb.Root`    | `<nav>` → `navigation`            | `aria-label` from `label` or `breadcrumb.label` | `class="kv-breadcrumb"`. Named, so a screen reader user finds it in the landmarks list. Place it before `<main>`, not in it. `aria-labelledby` also names it              |
-| `Breadcrumb.List`    | `<ol>` → `list`                   | `role="list"`                                   | Ordered: the sequence is the meaning. The explicit `role="list"` keeps the list announced in Safari/VoiceOver, which drops it from a list with `list-style: none` (1.3.1) |
-| `Breadcrumb.Item`    | `<li>` → `listitem`               | none                                            | Holds a `Breadcrumb.Link`, or the last item's `Breadcrumb.Current`                                                                                                        |
-| `Breadcrumb.Link`    | `<a href>` → `link`               | none                                            | A thin wrapper over `Link.Root`: the registered router link, the same props and `ref`                                                                                     |
-| `Breadcrumb.Current` | `<span>`                          | `aria-current="page"`                           | The page you are on: text, the last item, never a link. One `aria-current` per trail                                                                                      |
-| Separators           | CSS generated content, `::before` | none                                            | Empty alternative text, so never read. Mirrored in RTL. Not in the markup                                                                                                 |
-| Parts                | `as` on `Breadcrumb.Link` only    | none                                            | `Link.Root`'s `as`: `as="a"` bypasses the router. `Root`, `List`, `Item` and `Current` have no `as`: the landmark and the list are fixed by the contract                  |
+| Part                 | Element / role                           | ARIA                                            | Notes                                                                                                                                                                                                |
+| -------------------- | ---------------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Breadcrumb.Root`    | `<nav>` → `navigation`                   | `aria-label` from `label` or `breadcrumb.label` | `class="kv-breadcrumb"`. Named, so a screen reader user finds it in the landmarks list. Place it before `<main>`, not in it. `aria-labelledby` also names it                                         |
+| `Breadcrumb.List`    | `<ol>` → `list`                          | `role="list"`                                   | Ordered: the sequence is the meaning. The explicit `role="list"` keeps the list announced in Safari/VoiceOver, which drops it from a list with `list-style: none` (1.3.1)                            |
+| `Breadcrumb.Item`    | `<li>` → `listitem`                      | none                                            | Holds a `Breadcrumb.Link`, or the last item's `Breadcrumb.Current`                                                                                                                                   |
+| `Breadcrumb.Link`    | `<a href>` → `link`                      | none                                            | A thin wrapper over `Link.Root`: the registered router link, the same props and `ref`                                                                                                                |
+| `Breadcrumb.Current` | `<span>`                                 | `aria-current="page"`                           | The page you are on: text, the last item, never a link. One `aria-current` per trail                                                                                                                 |
+| Separators           | CSS generated content, `::before`        | none                                            | Empty alternative text, so never read. The chevron mirrors in RTL. Not in the markup. `variant="slash"` adds `kv-breadcrumb--slash` to the root and swaps the character                              |
+| Custom separator     | `<span class="kv-breadcrumb-separator">` | `aria-hidden="true"`                            | From `Breadcrumb.Root`'s `separator`, in every item; the theme hides the first one. Replaces the generated one. Decoration only: never interactive or focusable, and never in the accessibility tree |
+| Parts                | `as` on `Breadcrumb.Link` only           | none                                            | `Link.Root`'s `as`: `as="a"` bypasses the router. `Root`, `List`, `Item` and `Current` have no `as`: the landmark and the list are fixed by the contract                                             |
 
 ## Keyboard
 
@@ -57,11 +58,12 @@ The landmark name is the only string: `breadcrumb.label` (en `You are here`, sv 
 - **Link text is the page's title:** "Start", not "Home link" or "Click here" (2.4.4).
 - **Name two navigations differently** when a page has another `<nav>`: this one is named `You are here`, so the other is not.
 - **Language.** A custom `label` is your own string: set `lang` if it differs from the page (3.1.2).
-- **The look.** Targets of at least 24px (2.5.8), a separator that is not the only cue, the wrap at 320px (1.4.10): the theme does it, and a custom theme must keep them.
+- **A custom `separator` is decorative.** It is `aria-hidden`; if it needs a name, it is not a separator. Never put anything interactive or focusable in it (`aria-hidden` over focusable content is a mistake). The built-in `chevron-forward` mirrors itself in RTL; a registered or own icon needs `mirrorInRtl`. It is never the only cue between levels: the items are separate list items (1.4.1).
+- **The look.** The first item's separator is hidden (it is rendered in every item), targets of at least 24px (2.5.8), a separator that is not the only cue, the wrap at 320px (1.4.10): the theme does it, and a custom theme must keep them.
 
 ## WCAG SCs covered
 
-1.3.1 (structure: a landmark, an ordered list, the current page), 1.4.1 (the current page is text in a heavier weight plus `aria-current`, not colour), 1.4.10 (wraps at 320px), 2.4.4 (link purpose), 2.4.5 (a second way to locate a page), 2.4.8 (location), 2.5.8 (target size), 4.1.2 (name, role, value). Designed and tested to meet WCAG 2.2 AA.
+1.1.1 (the separator is decoration, never read), 1.3.1 (structure: a landmark, an ordered list, the current page), 1.4.1 (the current page is text in a heavier weight plus `aria-current`, not colour), 1.4.10 (wraps at 320px), 2.4.4 (link purpose), 2.4.5 (a second way to locate a page), 2.4.8 (location), 2.5.8 (target size), 1.4.11 (a custom separator is decoration, so it has no contrast need), 4.1.2 (name, role, value). Designed and tested to meet WCAG 2.2 AA.
 
 ## Message keys
 

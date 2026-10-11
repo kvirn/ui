@@ -6,7 +6,21 @@ import type {
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-export const breadcrumbRootRows = propRows<Pick<BreadcrumbRootProps, 'label' | 'messages'>>({
+export const breadcrumbRootRows = propRows<
+  Pick<BreadcrumbRootProps, 'variant' | 'separator' | 'label' | 'messages'>
+>({
+  variant: {
+    type: "'chevron' | 'slash'",
+    default: "'chevron'",
+    description:
+      'The generated separator. slash adds kv-breadcrumb--slash; chevron adds no class. Never read by a screen reader.',
+  },
+  separator: {
+    type: 'ReactNode',
+    default: '–',
+    description:
+      'Your own separator, rendered in every item (the theme hides the first one, and a custom theme must too): an Icon or a component. It is aria-hidden, so it must be decorative, never interactive. The built-in chevron-forward mirrors itself in RTL; a registered or own icon needs mirrorInRtl.',
+  },
   label: {
     type: 'string',
     default: 'the message breadcrumb.label',
@@ -27,6 +41,11 @@ export const breadcrumbRootAttributes: readonly AttributeRow[] = [
     meaning: 'The part class. The default theme styles it.',
   },
   {
+    name: 'kv-breadcrumb--slash',
+    values: 'variant="slash"',
+    meaning: 'Swaps the generated chevron for a slash. The default adds no class.',
+  },
+  {
     name: 'aria-label',
     values: 'the label, or absent',
     meaning: 'From label or the message. Not set when you pass aria-labelledby.',
@@ -43,6 +62,11 @@ export const breadcrumbItemAttributes: readonly AttributeRow[] = [
     values: 'always',
     meaning:
       'The part class. The default theme draws the separator before every item but the first.',
+  },
+  {
+    name: 'kv-breadcrumb-separator',
+    values: 'when the root has a separator',
+    meaning: 'A span inside the item with aria-hidden="true", holding your separator.',
   },
 ]
 
@@ -66,6 +90,11 @@ export const breadcrumbCurrentAttributes: readonly AttributeRow[] = [
 export const useBreadcrumbHook: ApiHook = {
   name: 'useBreadcrumb',
   options: propRows<UseBreadcrumbOptions>({
+    variant: {
+      type: "'chevron' | 'slash'",
+      default: "'chevron'",
+      description: 'The generated separator. slash adds kv-breadcrumb--slash to rootProps.',
+    },
     label: {
       type: 'string',
       default: 'the message breadcrumb.label',
@@ -97,6 +126,12 @@ export const useBreadcrumbHook: ApiHook = {
       type: 'BreadcrumbCurrentPartProps',
       default: '–',
       description: 'Spread on the current page’s <span>: the class and aria-current="page".',
+    },
+    separatorProps: {
+      type: 'BreadcrumbSeparatorPartProps',
+      default: '–',
+      description:
+        'Spread on a <span> you render in each item but the first for your own separator: the class and aria-hidden="true".',
     },
     label: {
       type: 'string',

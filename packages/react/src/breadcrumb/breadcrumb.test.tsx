@@ -4,7 +4,7 @@ import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { createRef } from 'react'
+import { createRef, useEffect } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -273,6 +273,38 @@ describe('Breadcrumb', () => {
     await expect.element(link).toHaveClass('kv-breadcrumb-link', 'kv-link')
   })
 
+  test('variant slash adds kv-breadcrumb--slash to the nav', async () => {
+    await render(<Trail variant="slash" data-testid="root" />)
+    await expect
+      .element(page.getByTestId('root'))
+      .toHaveClass('kv-breadcrumb', 'kv-breadcrumb--slash')
+  })
+
+  test('separator renders one aria-hidden kv-breadcrumb-separator per item and the links keep their names', async () => {
+    await render(<Trail separator={<svg data-testid="mark" />} />)
+    const separators = [...document.querySelectorAll('.kv-breadcrumb-separator')]
+    expect(separators).toHaveLength(3)
+    for (const separator of separators) {
+      expect(separator.getAttribute('aria-hidden')).toBe('true')
+      expect(separator.parentElement?.tagName).toBe('LI')
+    }
+    await expect.element(page.getByRole('link', { name: 'Start' })).toBeVisible()
+    await expect.element(page.getByRole('link', { name: 'Barn och utbildning' })).toBeVisible()
+  })
+
+  test('without a separator no separator element is rendered', async () => {
+    await render(<Trail />)
+    expect(document.querySelectorAll('.kv-breadcrumb-separator')).toHaveLength(0)
+  })
+
+  test('has no axe violations with a separator icon', async () => {
+    const { container } = await render(
+      <Trail separator={<svg aria-hidden="true" focusable="false" />} />,
+    )
+    await expect.element(page.getByRole('navigation', { name: 'You are here' })).toBeVisible()
+    await expectNoA11yViolations(container)
+  })
+
   test('renders on the server with the landmark, the list and the current page', () => {
     const html = renderToString(<Trail />)
     expect(html).toContain('aria-label="You are here"')
@@ -304,6 +336,26 @@ describe('useBreadcrumb', () => {
     await expectNoA11yViolations(container)
   })
 
+  test('separatorProps is the decorative class and aria-hidden, and the result is stable per variant', async () => {
+    const results: UseBreadcrumbResult[] = []
+    function Capture(options: UseBreadcrumbOptions) {
+      const breadcrumb = useBreadcrumb(options)
+      useEffect(() => {
+        results.push(breadcrumb)
+      })
+      return null
+    }
+    const { rerender } = await render(<Capture variant="slash" />)
+    const first = results[0]
+    expect(first?.separatorProps).toEqual({
+      className: 'kv-breadcrumb-separator',
+      'aria-hidden': true,
+    })
+    await rerender(<Capture variant="slash" />)
+    expect(results.at(-1)).toBe(first)
+    expect(Object.isFrozen(first?.separatorProps)).toBe(true)
+  })
+
   test('an empty label falls back to the message', async () => {
     await render(<Probe label="  " />)
     await expect.element(page.getByRole('navigation', { name: 'You are here' })).toBeVisible()
@@ -313,7 +365,10 @@ describe('useBreadcrumb', () => {
 describe('Breadcrumb types', () => {
   test('the props are typed', () => {
     expectTypeOf<UseBreadcrumbResult['rootProps']>().toEqualTypeOf<BreadcrumbRootPartProps>()
-    expectTypeOf<BreadcrumbRootPartProps['className']>().toEqualTypeOf<'kv-breadcrumb'>()
+    expectTypeOf<BreadcrumbRootPartProps['className']>().toEqualTypeOf<
+      'kv-breadcrumb' | 'kv-breadcrumb kv-breadcrumb--slash'
+    >()
+    expectTypeOf<BreadcrumbRootProps['variant']>().toEqualTypeOf<'chevron' | 'slash' | undefined>()
     expectTypeOf<BreadcrumbCurrentPartProps['aria-current']>().toEqualTypeOf<'page'>()
     expectTypeOf<BreadcrumbLinkProps>().toHaveProperty('href')
     expectTypeOf<BreadcrumbRootProps['label']>().toEqualTypeOf<string | undefined>()

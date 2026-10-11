@@ -14,6 +14,7 @@ export default function Page() {
         default: readExampleSource('breadcrumb/default.tsx'),
         'long-trail': readExampleSource('breadcrumb/long-trail.tsx'),
         'own-label': readExampleSource('breadcrumb/own-label.tsx'),
+        'custom-separator': readExampleSource('breadcrumb/custom-separator.tsx'),
       }}
     />
   )

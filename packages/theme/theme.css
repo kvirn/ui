@@ -1916,7 +1916,8 @@
    * .Item, .Link (kv-link) and .Current (the last item, text with aria-current). A row that wraps
    * and never collapses into "…": a hidden level is a hidden way out, and wrapping keeps 320px
    * free of horizontal scroll. The separator is generated content with an empty alternative, so
-   * it is never read, and it mirrors in RTL. The links are plain kv-link, 24px tall at least.
+   * it is never read, and the chevron mirrors in RTL; a consumer's own is an aria-hidden span.
+   * The links are plain kv-link, 24px tall at least.
    *
    * kv-pagination: Pagination.Root (a nav), .List (a ul), .Item and its content: .Link (a page),
    * .Previous, .Next, .Ellipsis and .Status. A page link is a navigation item (44px, text colour,
@@ -1955,6 +1956,27 @@
 
   .kv-breadcrumb-item + .kv-breadcrumb-item:dir(rtl)::before {
     content: '\2039' / '';
+  }
+
+  /* The slash variant: the same generated, unread marker; a slash doesn't mirror. */
+  .kv-breadcrumb--slash .kv-breadcrumb-item + .kv-breadcrumb-item::before {
+    content: '/' / '';
+  }
+
+  /* An item holding the consumer's separator (Breadcrumb.Root separator) draws no generated one,
+   * and the first item shows none. */
+  .kv-breadcrumb .kv-breadcrumb-item:has(> .kv-breadcrumb-separator)::before {
+    content: none;
+  }
+
+  .kv-breadcrumb-separator {
+    display: inline-flex;
+    align-items: center;
+    color: var(--kv-color-text-muted);
+  }
+
+  .kv-breadcrumb-item:first-child > .kv-breadcrumb-separator {
+    display: none;
   }
 
   /* 24px tall at least (2.5.8): the line height of a label is less. */
@@ -2072,7 +2094,8 @@
   }
 
   @media (forced-colors: active) {
-    .kv-breadcrumb-item + .kv-breadcrumb-item::before {
+    .kv-breadcrumb-item + .kv-breadcrumb-item::before,
+    .kv-breadcrumb-separator {
       color: CanvasText;
     }
 

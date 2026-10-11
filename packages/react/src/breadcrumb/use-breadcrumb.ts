@@ -2,7 +2,14 @@ import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { useMemo } from 'react'
 import { useMessages } from '../provider/use-messages.ts'
 
+export type BreadcrumbVariant = 'chevron' | 'slash'
+
 export interface UseBreadcrumbOptions {
+  /**
+   * The generated separator. `slash` adds `kv-breadcrumb--slash`; `chevron` (the default) adds
+   * no class. To draw your own, pass `separator` to `Breadcrumb.Root`.
+   */
+  variant?: BreadcrumbVariant | undefined
   /**
    * The trail's accessible name, from your translations. Replaces the message `breadcrumb.label`
    * (`Du är här`). An empty or whitespace-only label counts as none.
@@ -18,7 +25,7 @@ export interface BreadcrumbRootPartProps {
    * The part's class, for `@kvirn-ui/theme` and your own CSS: `.kv-breadcrumb`. Add your own
    * class next to it with `mergeProps`: class names join.
    */
-  className: 'kv-breadcrumb'
+  className: 'kv-breadcrumb' | 'kv-breadcrumb kv-breadcrumb--slash'
   /** From `label`, or the message `breadcrumb.label`. */
   'aria-label': string
 }
@@ -40,11 +47,21 @@ export interface BreadcrumbCurrentPartProps {
   'aria-current': 'page'
 }
 
+/**
+ * Spread on a `<span>` you render inside an item to draw your own separator. It is decorative:
+ * hidden from the accessibility tree.
+ */
+export interface BreadcrumbSeparatorPartProps {
+  className: 'kv-breadcrumb-separator'
+  'aria-hidden': true
+}
+
 export interface UseBreadcrumbResult {
   rootProps: BreadcrumbRootPartProps
   listProps: BreadcrumbListPartProps
   itemProps: BreadcrumbItemPartProps
   currentProps: BreadcrumbCurrentPartProps
+  separatorProps: BreadcrumbSeparatorPartProps
   /** The resolved name of the landmark. */
   label: string
 }
@@ -58,6 +75,10 @@ const itemProps: BreadcrumbItemPartProps = Object.freeze({ className: 'kv-breadc
 const currentProps: BreadcrumbCurrentPartProps = Object.freeze({
   className: 'kv-breadcrumb-current',
   'aria-current': 'page',
+})
+const separatorProps: BreadcrumbSeparatorPartProps = Object.freeze({
+  className: 'kv-breadcrumb-separator',
+  'aria-hidden': true,
 })
 
 /**
@@ -74,15 +95,22 @@ const currentProps: BreadcrumbCurrentPartProps = Object.freeze({
  *   </ol>
  * </nav>
  */
-export function useBreadcrumb({ label, messages }: UseBreadcrumbOptions = {}): UseBreadcrumbResult {
+export function useBreadcrumb({
+  variant = 'chevron',
+  label,
+  messages,
+}: UseBreadcrumbOptions = {}): UseBreadcrumbResult {
   const breadcrumbMessages = useMessages('breadcrumb', messages)
   const name = label !== undefined && label.trim() !== '' ? label : breadcrumbMessages.label
   const rootProps = useMemo<BreadcrumbRootPartProps>(
-    () => ({ className: 'kv-breadcrumb', 'aria-label': name }),
-    [name],
+    () => ({
+      className: variant === 'slash' ? 'kv-breadcrumb kv-breadcrumb--slash' : 'kv-breadcrumb',
+      'aria-label': name,
+    }),
+    [name, variant],
   )
   return useMemo(
-    () => ({ rootProps, listProps, itemProps, currentProps, label: name }),
+    () => ({ rootProps, listProps, itemProps, currentProps, separatorProps, label: name }),
     [rootProps, name],
   )
 }

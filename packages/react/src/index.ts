@@ -298,6 +298,8 @@ export type {
   BreadcrumbItemPartProps,
   BreadcrumbListPartProps,
   BreadcrumbRootPartProps,
+  BreadcrumbSeparatorPartProps,
+  BreadcrumbVariant,
   UseBreadcrumbOptions,
   UseBreadcrumbResult,
 } from './breadcrumb/use-breadcrumb.ts'

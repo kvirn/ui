@@ -15,5 +15,6 @@ export const useBreadcrumbTexts = defineExampleTexts({
     homeCareFees: 'Fees for home help',
     longLabel: 'You are here: a long trail',
     ownLabel: 'Path to this page',
+    separatorLabel: 'You are here: your own separator',
   },
 })

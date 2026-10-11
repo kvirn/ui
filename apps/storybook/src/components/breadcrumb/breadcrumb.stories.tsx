@@ -1,4 +1,4 @@
-import { Breadcrumb } from '@kvirn-ui/react'
+import { Breadcrumb, Icon } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/breadcrumb/breadcrumb.a11y.md?raw'
 import guide from '../../../../../packages/react/src/breadcrumb/breadcrumb.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -16,6 +16,16 @@ const meta = {
   title: 'Components/Navigation/Breadcrumb',
   component: Breadcrumb.Root,
   argTypes: {
+    variant: {
+      control: 'inline-radio',
+      options: ['chevron', 'slash'],
+      description: 'The generated separator: a chevron (the default) or a slash.',
+    },
+    separator: {
+      control: false,
+      description:
+        'Your own separator, drawn in every item but the first. Decorative: aria-hidden.',
+    },
     label: {
       control: 'text',
       description:
@@ -58,6 +68,30 @@ export const Default: Story = {
     for (const link of canvas.getAllByRole('link')) {
       await expectMinimumTargetSize(link)
     }
+  },
+}
+
+/** The slash variant: `kv-breadcrumb--slash` swaps the generated chevron, still never read. */
+export const Slash: Story = {
+  args: { variant: 'slash' },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('navigation', { name: 'Du är här' })).toHaveClass(
+      'kv-breadcrumb--slash',
+    )
+    await expect(canvas.getAllByRole('link')).toHaveLength(2)
+  },
+}
+
+/** Your own separator, here an Icon: hidden from screen readers, and the first item has none. */
+export const CustomSeparator: Story = {
+  args: { separator: <Icon name="chevron-forward" /> },
+  play: async ({ canvas, canvasElement }) => {
+    const separators = canvasElement.querySelectorAll('.kv-breadcrumb-separator')
+    await expect(separators).toHaveLength(3)
+    for (const separator of separators) {
+      await expect(separator).toHaveAttribute('aria-hidden', 'true')
+    }
+    await expect(canvas.getAllByRole('link')).toHaveLength(2)
   },
 }
 
@@ -163,7 +197,47 @@ export const RTL: Story = {
   },
 }
 
+const shortTrail = (
+  <Breadcrumb.List>
+    <Breadcrumb.Item>
+      <Breadcrumb.Link href="#home">Home</Breadcrumb.Link>
+    </Breadcrumb.Item>
+    <Breadcrumb.Item>
+      <Breadcrumb.Current>Preschool</Breadcrumb.Current>
+    </Breadcrumb.Item>
+  </Breadcrumb.List>
+)
+
+/** Right to left: a slash, and the built-in `chevron-forward` icon, which mirrors itself. */
+export const RTLVariants: Story = {
+  globals: { dir: 'rtl', locale: 'en' },
+  args: { variant: 'slash', children: shortTrail },
+  render: (args) => (
+    <>
+      <Breadcrumb.Root {...args} />
+      <Breadcrumb.Root label="Icon separator" separator={<Icon name="chevron-forward" />}>
+        {shortTrail}
+      </Breadcrumb.Root>
+    </>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('navigation', { name: 'You are here' })).toBeVisible()
+    await expect(canvas.getByRole('navigation', { name: 'Icon separator' })).toBeVisible()
+  },
+}
+
 /** Forced colours: system colours, the separators in `CanvasText` and the links in `LinkText`. */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
+  render: (args) => (
+    <>
+      <Breadcrumb.Root {...args} />
+      <Breadcrumb.Root {...args} label="Slash" variant="slash" />
+      <Breadcrumb.Root
+        {...args}
+        label="Icon separator"
+        separator={<Icon name="chevron-forward" />}
+      />
+    </>
+  ),
 }

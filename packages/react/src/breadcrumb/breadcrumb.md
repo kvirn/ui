@@ -9,8 +9,8 @@ A trail from the home page down to the page you are on: where you are, and the w
 - `Breadcrumb.Root` is a `<nav>` named by the message `breadcrumb.label` (`Du är här`), or by `label`. `Breadcrumb.List` is an `<ol>`, `Breadcrumb.Item` an `<li>`.
 - `Breadcrumb.Link` is a link to a level above, a thin wrapper over `Link.Root`: a native `<a href>` rendered by your registered router link (Next.js, TanStack Router), with the same props and `ref`.
 - `Breadcrumb.Current` is the last item: the page you are on as text, `aria-current="page"`, never a link to itself.
-- The separators are drawn by the theme and never read by a screen reader. The trail wraps at a narrow width and never collapses into "…": a hidden level is a hidden way out.
-- Also `useBreadcrumb({ label, messages })`, which returns `rootProps`, `listProps`, `itemProps`, `currentProps` and the resolved `label` for your own elements.
+- The separators are drawn by the theme and never read by a screen reader. `variant="slash"` swaps the chevron for a slash. `separator` takes your own element, for example an `<Icon>`: it is rendered in every item (the theme hides the first one, and a custom theme must too), hidden from screen readers, so it must be decoration. The built-in `chevron-forward` mirrors itself in RTL; a registered or own icon needs `mirrorInRtl`. The trail wraps at a narrow width and never collapses into "…": a hidden level is a hidden way out.
+- Also `useBreadcrumb({ variant, label, messages })`, which returns `rootProps`, `listProps`, `itemProps`, `currentProps`, `separatorProps` (for your own separator `<span>`) and the resolved `label` for your own elements.
 - Attributes and the `ref` reach each element. A `className` joins the part's class. `Breadcrumb.Link` takes `as` like `Link.Root`; the other parts have no `as`, because the landmark and the ordered list are fixed.
 - Headless: no CSS. With `@kvirn-ui/theme/theme.css` it is a wrapping row with chevron separators (mirrored in RTL).
 
@@ -32,6 +32,13 @@ import { Breadcrumb } from '@kvirn-ui/react'
     </Breadcrumb.Item>
   </Breadcrumb.List>
 </Breadcrumb.Root>
+```
+
+A slash, or your own separator:
+
+```tsx
+<Breadcrumb.Root variant="slash">…</Breadcrumb.Root>
+<Breadcrumb.Root separator={<Icon name="chevron-forward" />}>…</Breadcrumb.Root>
 ```
 
 ## Hook
