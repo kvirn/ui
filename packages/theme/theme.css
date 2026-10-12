@@ -1977,7 +1977,8 @@
    *
    *   <TableOfContents.Root aria-labelledby="contents-title" items={…} />
    *
-   * - A link is a row in the text colour at weight 400, underlined on hover.
+   * - A link is a row in the text colour at weight 400, underlined on hover. It has no inline
+   *   padding: with no fill there is no pill to pad, so its text lines up with the title's.
    * - Always compact: 32px rows with 14px labels, at every width.
    * - The heading being read (aria-current="location") is underlined at weight 600, no fill.
    *   Nothing is current until the reader has passed the first heading.
@@ -2002,6 +2003,10 @@
     --kv-control-font-size: var(--kv-font-label-compact-size);
     --kv-control-font-weight: var(--kv-font-label-compact-weight);
     --kv-control-line-height: var(--kv-font-label-compact-line-height);
+  }
+
+  .kv-table-of-contents .kv-table-of-contents-item > .kv-link:not(.kv-link--service) {
+    padding-inline: 0;
   }
 
   .kv-table-of-contents
