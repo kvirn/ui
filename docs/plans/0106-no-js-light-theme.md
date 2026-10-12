@@ -1,6 +1,6 @@
 # Plan 0106: Without JavaScript, the theme is light
 
-- **Status:** Approved
+- **Status:** Done
 - **Owner:** orchestrator → component-engineer
 - **Created:** 2026-10-12 · **Target:** pre-alpha
 - **Related:** `theme-css` skill, `docs/design/button-depth.md`, `kvirn-provider.md`
@@ -105,6 +105,6 @@ the store and follow OS changes; `KvirnThemeScript` sets them before first paint
 - [x] `check-theme.ts`, `read-theme.ts` and their tests; Storybook foundation helpers
 - [x] Docs site `<noscript>` + `messages/en.ts`
 - [x] Docs and skills listed above
-- [ ] Gates: `vp check`, `vp test run packages/theme apps/storybook/src/foundation tooling/foundation-docs`, `vp run theme:check`, `vp run i18n:check`
-- [ ] `accessibility-reviewer` on the diff
-- [ ] `docs/roadmap.md` if it mentions OS fallbacks
+- [x] Gates: `vp check`, `vp test run packages/theme apps/storybook/src/foundation tooling/foundation-docs`, `vp run theme:check`, `vp run i18n:check`
+- [x] `accessibility-reviewer` on the diff: APPROVE; its five non-blocking findings fixed
+- [x] `docs/roadmap.md`: no mention of OS fallbacks, no change
