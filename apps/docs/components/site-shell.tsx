@@ -82,6 +82,8 @@ function useSearchShortcut(searchRef: RefObject<HTMLElement | null>) {
 
 const sidebarId = 'docs-sidebar'
 const siteNavigationId = 'site-navigation'
+// GitHub stays in the footer's Project list only.
+const topBarTools = siteTools.filter((tool) => tool.id !== 'github')
 
 /**
  * The docs site shell (docs-shell-mega-menu.md §5): two skip links, the primary Site header from
@@ -151,7 +153,7 @@ export function SiteShell({
           <div className="docs-top-end">
             <Navigation.Root label={text.header.toolsLabel} className="kv-navigation--horizontal">
               <Navigation.List>
-                {siteTools.map((tool) => (
+                {topBarTools.map((tool) => (
                   <Navigation.Item key={tool.id}>
                     <SiteToolLink tool={tool} pathname={pathname} />
                   </Navigation.Item>

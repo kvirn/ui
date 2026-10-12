@@ -94,7 +94,7 @@ Route `/accessibility-settings` (Q3), layout `article`, built with `PageWithCont
 
 ```
 [skip: Skip to main content] [skip: Skip to site navigation]        ← every page, site-shell.tsx, before the header
-[banner] TopBar: Latest · nav "Tools" › GitHub · Accessibility settings (aria-current=page here) │ Masthead …
+[banner] TopBar: Latest · nav "Tools" › Accessibility settings (aria-current=page here) │ Masthead …
 [main #main]
   PageHeader: h1 Accessibility settings · lead
   nav "On this page" (existing contents)
@@ -151,10 +151,10 @@ No new tokens, colours or pairs. Everything is an existing class.
 ## 7. Accessibility annotations
 
 - **Skip links** (site-shell.tsx, before `SiteHeader.Root`, every page; reviewer P1.1): 1. "Skip to main content" → `#main` (unchanged). 2. Second link, **option A (recommended):** "Skip to site navigation" → an always-rendered element that holds the Menu button and the Site nav (visible at every width; a hidden target does nothing on `focus()`). ≥64rem the next Tab is the first topic; <64rem it is Menu. Engineer confirms `SiteHeader.Menu` forwards `id`, else an apps/docs wrapper that doesn't change the masthead layout. **Option B (reviewer):** "Skip to section navigation" → a wrapper around `DocsDisclosure` + `SiteNavigation` (site-shell.tsx:74-87), rendered only when `sidebarSection` exists (Get started only). See Q2.
-- **Entry link:** a `<a>` in the Tools nav after GitHub, visible text = name (2.5.3), same text and place on every page (3.2.3, 3.2.4, 3.2.6), `aria-current="page"` on this page only, ≥24×24 (2.5.8). Footer Project list: same text and target. One `aria-current` per nav.
+- **Entry link:** a `<a>` in the Tools nav, visible text = name (2.5.3), same text and place on every page (3.2.3, 3.2.4, 3.2.6), `aria-current="page"` on this page only, ≥24×24 (2.5.8). Footer Project list: same text and target. One `aria-current` per nav.
 - **Landmarks:** unchanged; no new `nav`. Each h2 section is plain headings in the article (no extra regions). The Display Card is a `<section aria-labelledby>` its h2 (reviewer P2.6) only if `PageWithContents` allows; otherwise the h2 alone (no unnamed region).
 - **Headings:** h1 → h2 ×6 → h3 (zoom subsections, accordion triggers). Panel uses fieldset/legend, no headings.
-- **Tab order (≥64rem, JS on):** skip main → skip nav → Latest → GitHub → Accessibility settings → KvirnUI → topics → search → Search → contents links → Colour scheme (1 stop) → Contrast (1) → Motion (1) → "Settings on your device" link → Components link → table scroll regions (only while they overflow) → 4 accordion triggers → Project status → Report a problem on GitHub → footer. <64rem: Menu replaces the topics.
+- **Tab order (≥64rem, JS on):** skip main → skip nav → Latest → Accessibility settings → KvirnUI → topics → search → Search → contents links → Colour scheme (1 stop) → Contrast (1) → Motion (1) → "Settings on your device" link → Components link → table scroll regions (only while they overflow) → 4 accordion triggers → Project status → Report a problem on GitHub → footer. <64rem: Menu replaces the topics.
 - **Keys:** links Enter; radios native arrows (wrap, flip in RTL); Accordion: Enter/Space. Plus, by the Q4 revision, Ctrl+K (Cmd+K on Apple) to the search box (`aria-keyshortcuts` on the search input).
 - **Focus moves:** route change → h1 (existing). Choosing a radio: focus stays, nothing announced (DisplaySettings contract; accessibility skill §9). No toast, no live region.
 - **SCs of note:** 1.3.1, 1.4.1, 1.4.4, 1.4.10, 2.1.1, 2.1.4 (no single-key shortcuts), 2.4.1, 2.4.3, 2.4.4/2.4.6 (skip link names its target), 2.4.11, 2.5.3, 2.5.8, 3.2.3, 3.2.4, 3.2.6.

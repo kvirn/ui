@@ -145,8 +145,8 @@ No disabled, invalid, loading or empty states: nothing in the header has them. N
 - **Landmarks:** one `banner`; `nav` "Tools" (band 1), `nav` "Site" (band 3), sidebar `nav`, `main`, `contentinfo`. Bands are plain `div`s. No unnamed `nav`; no `role="menu"`.
 - **Names:** visible text = name everywhere (2.5.3). GitHub's name includes "(opens in a new tab)". Mark `aria-hidden`; brand name "KvirnUI". Badge is static text after the link.
 - **`aria-current`:** one per nav. Tools: `true` on Documentation on every docs page. Site: unchanged (`page` on a section index, `true` below it).
-- **Tab order (≥ 64rem, component page):** skip to main content → skip to site navigation → Latest → Documentation → [Storybook] → GitHub → Accessibility settings → KvirnUI → Home … Theming → sidebar → main (Plan 0107 replaced the Display settings button with the link).
-- **Tab order (< 40rem):** two skip links → Latest → tools (GitHub, Accessibility settings) → KvirnUI → Menu → (open: Site links → sidebar) → main. Menu's content is one stop after it.
+- **Tab order (≥ 64rem, component page):** skip to main content → skip to site navigation → Latest → Documentation → [Storybook] → Accessibility settings → KvirnUI → Home … Theming → sidebar → main (Plan 0107 replaced the Display settings button with the link).
+- **Tab order (< 40rem):** two skip links → Latest → tools (Accessibility settings) → KvirnUI → Menu → (open: Site links → sidebar) → main. Menu's content is one stop after it.
 - **Keys:** links Enter. Menu: the existing Disclosure contract, Enter/Space toggle, no Escape (in flow, not an overlay), no arrow keys (APG Disclosure Navigation).
 - **Focus moves:** none on open/close; route change → `h1` (unchanged). Nothing announced.
 - **SCs of note:** 1.3.1, 1.3.2, 1.4.1 (bar + weight + `aria-current`), 1.4.3, 1.4.10, 1.4.11, 2.4.1, 2.4.3, 2.4.7, 2.4.11, 2.4.13 (ring ≥ 4.70:1), 2.5.3, 2.5.8, 3.2.3, 3.2.4 (Q2), 3.2.5 (AAA, new-tab notice).

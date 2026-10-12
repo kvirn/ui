@@ -114,10 +114,10 @@ describe('Docs site header', () => {
     expect(nav.querySelector('[aria-current]')?.textContent).toBe(text.nav.sections.docs)
   })
 
-  test('Tab goes the two skip links, Latest, GitHub, Accessibility settings, KvirnUI, Menu, the search field and Search', async () => {
+  test('Tab goes the two skip links, Latest, Accessibility settings, KvirnUI, Menu, the search field and Search', async () => {
     await renderShell()
     const reached: string[] = []
-    for (let stop = 0; stop < 9; stop += 1) {
+    for (let stop = 0; stop < 8; stop += 1) {
       await userEvent.tab()
       reached.push(document.activeElement?.textContent?.trim() ?? '')
     }
@@ -125,7 +125,6 @@ describe('Docs site header', () => {
       en.skipLink.label,
       text.skipLinks.navigation,
       text.header.latest({ status: text.header.status }),
-      `${text.header.tools.github} (opens in a new tab)`,
       text.header.accessibilitySettings,
       text.header.home,
       text.nav.menuButton,
