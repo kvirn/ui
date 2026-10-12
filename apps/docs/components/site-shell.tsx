@@ -1,16 +1,8 @@
 'use client'
 import { ApplicationLogo, SiteHeader, SiteSearch } from '@kvirn-ui/patterns'
-import {
-  Badge,
-  DisplaySettings,
-  Link,
-  Navigation,
-  SkipLink,
-  TopBar,
-  useRouteFocus,
-} from '@kvirn-ui/react'
-import { useRef, useState } from 'react'
-import type { ReactNode } from 'react'
+import { Badge, Link, Navigation, SkipLink, TopBar, useRouteFocus } from '@kvirn-ui/react'
+import { useEffect, useRef, useState } from 'react'
+import type { ReactNode, RefObject } from 'react'
 import { messages } from '../messages/en.ts'
 import { DocsDisclosure } from './docs-disclosure.tsx'
 import { DocsShellContext } from './docs-page.tsx'
@@ -33,10 +25,66 @@ import { SiteToolLink } from './site-tool-link.tsx'
 
 const text = messages.docs
 
-const sidebarId = 'docs-sidebar'
+const nonTextInputTypes = new Set([
+  'button',
+  'checkbox',
+  'color',
+  'file',
+  'image',
+  'radio',
+  'range',
+  'reset',
+  'submit',
+])
+
+const takesText = (element: Element) =>
+  element instanceof HTMLTextAreaElement ||
+  element instanceof HTMLSelectElement ||
+  (element instanceof HTMLElement && element.isContentEditable) ||
+  (element instanceof HTMLInputElement && !nonTextInputTypes.has(element.type))
 
 /**
- * The docs site shell (docs-shell-mega-menu.md §5): skip link, the primary Site header from
+ * Ctrl+K (Cmd+K on Apple) goes to the search box (maintainer's decision 2026-10-12, keyboard skill
+ * rule 7). Ctrl+K is "delete to end of line" in a Mac text field, so Apple platforms take Cmd only.
+ * It stays out of the way of text entry, where Mod+K is "insert link".
+ */
+function useSearchShortcut(searchRef: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const input = searchRef.current?.querySelector('input')
+    if (input === null || input === undefined) {
+      return
+    }
+    const isApple = /Mac|iPhone|iPad|iPod/.test(navigator.platform)
+    input.setAttribute('aria-keyshortcuts', isApple ? 'Meta+K' : 'Control+K')
+    const onKeyDown = (event: KeyboardEvent) => {
+      const isK = event.key.toLowerCase() === 'k' || event.code === 'KeyK'
+      const hasModifier = isApple
+        ? event.metaKey && !event.ctrlKey
+        : event.ctrlKey && !event.metaKey
+      if (event.defaultPrevented || !isK || !hasModifier || event.shiftKey || event.altKey) {
+        return
+      }
+      const target = document.activeElement
+      if (target !== null && target !== input && takesText(target)) {
+        return
+      }
+      event.preventDefault()
+      input.focus()
+      input.select()
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      input.removeAttribute('aria-keyshortcuts')
+    }
+  }, [searchRef])
+}
+
+const sidebarId = 'docs-sidebar'
+const siteNavigationId = 'site-navigation'
+
+/**
+ * The docs site shell (docs-shell-mega-menu.md §5): two skip links, the primary Site header from
  * `@kvirn-ui/patterns` (a TopBar with Latest and Tools, and a masthead with the mark and name, the
  * Site menu with its mega panels, and the search), main and the footer. Nothing is sticky (2.4.11).
  * `pathname` comes from the router, so the shell itself doesn't depend on Next.js. The `landing`
@@ -64,6 +112,8 @@ export function SiteShell({
   const isSidebarOpen = sidebarOpenOn === pathname
   const mainRef = useRef<HTMLElement>(null)
   useRouteFocus({ key: pathname, containerRef: mainRef })
+  const searchRef = useRef<HTMLElement>(null)
+  useSearchShortcut(searchRef)
 
   const { previous, next } = pagerPages(visibleSections, pathname)
   const shellParts = {
@@ -94,6 +144,7 @@ export function SiteShell({
   return (
     <>
       <SkipLink href="#main" />
+      <SkipLink href={`#${siteNavigationId}`}>{text.skipLinks.navigation}</SkipLink>
       <SiteHeader.Root variant="primary">
         <TopBar.Root>
           <Link href="/docs#status">{text.header.latest({ status: text.header.status })}</Link>
@@ -102,14 +153,11 @@ export function SiteShell({
               <Navigation.List>
                 {siteTools.map((tool) => (
                   <Navigation.Item key={tool.id}>
-                    <SiteToolLink tool={tool} />
+                    <SiteToolLink tool={tool} pathname={pathname} />
                   </Navigation.Item>
                 ))}
               </Navigation.List>
             </Navigation.Root>
-            <DisplaySettings.Compact className="kv-button--link">
-              <p>{text.display.storageNote}</p>
-            </DisplaySettings.Compact>
           </div>
         </TopBar.Root>
         <SiteHeader.Masthead>
@@ -120,7 +168,7 @@ export function SiteShell({
             </ApplicationLogo.Root>
             <Badge>{text.header.status}</Badge>
           </div>
-          <SiteHeader.Menu>
+          <SiteHeader.Menu id={siteNavigationId}>
             <SiteHeader.MenuButton>{text.nav.menuButton}</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>
               <SiteMenu
@@ -130,7 +178,7 @@ export function SiteShell({
               />
             </SiteHeader.MenuPanel>
           </SiteHeader.Menu>
-          <SiteSearch action="/search" label={text.header.searchLabel}>
+          <SiteSearch ref={searchRef} action="/search" label={text.header.searchLabel}>
             {text.header.searchButton}
           </SiteSearch>
         </SiteHeader.Masthead>

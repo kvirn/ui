@@ -1,0 +1,12 @@
+/* Without JavaScript the colour choices can't be kept and the Accordion can't open: hide the
+   choices (the page says why) and show the device settings. The pattern of docs.css.
+   Showing a `hidden` panel works only because the docs site doesn't load reset.css, whose
+   `[hidden] { display: none !important }` would win. */
+:root:not([data-kv-color-scheme]) .docs-display-panel {
+  display: none;
+}
+
+:root:not([data-kv-color-scheme]) .docs-device-accordion .kv-accordion-panel[hidden] {
+  display: block;
+  content-visibility: visible;
+}

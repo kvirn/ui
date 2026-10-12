@@ -63,7 +63,7 @@ export function SiteFooter({
               </li>
               {siteTools.map((tool) => (
                 <li key={tool.id}>
-                  <SiteToolLink tool={tool} />
+                  <SiteToolLink tool={tool} pathname={pathname} />
                 </li>
               ))}
             </ul>

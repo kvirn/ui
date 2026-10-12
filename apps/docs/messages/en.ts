@@ -94,8 +94,184 @@ export const messages = {
       toolsLabel: 'Tools',
       latest: ({ status }: { status: string }) => `Latest: ${status}`,
       tools: { github: 'GitHub' },
+      accessibilitySettings: 'Accessibility settings',
       searchLabel: 'Search the documentation',
       searchButton: 'Search',
+    },
+    skipLinks: { navigation: 'Skip to site navigation' },
+    /** Text in `**double asterisks**` is a menu or button name, shown in bold. */
+    accessibility: {
+      lead: 'Choose how this site looks, and find the keys and browser settings that make it easier to read and use.',
+      display: {
+        heading: 'Display',
+        intro: 'Your choice changes this page straight away, so you can see it before you go on.',
+        system:
+          '**Same as my device** follows the setting on your phone or computer, and changes when it does.',
+        systemWhere: 'Where to find it:',
+        contrast: '**High** contrast makes text, borders and focus rings stronger.',
+        motion: '**Less motion** turns off animations and moving transitions on this site.',
+        contrastThemes:
+          "If you use a contrast theme in Windows, your device's colours replace the choices here.",
+        noScript:
+          "These choices need JavaScript, which is off in your browser. The site is shown light, with standard contrast. You can still zoom, and a Windows contrast theme replaces the site's colours: see",
+        noScriptLink: 'Zoom and text size',
+      },
+      keyboard: {
+        heading: 'Keyboard',
+        intro: 'You can use the whole site with a keyboard. These keys work on every page.',
+        tableLabel: 'Keys that work on every page',
+        keyColumn: 'Key',
+        actionColumn: 'What it does',
+        rows: [
+          {
+            keys: [['tab'], ['shift', 'tab']],
+            action: 'Go to the next or the previous link, button or field.',
+          },
+          { keys: [['enter']], action: 'Follow a link or press a button.' },
+          {
+            keys: [['space']],
+            action: 'Press a button or choose an option. Elsewhere, scroll down.',
+          },
+          {
+            keys: [['arrows']],
+            action: 'Move and choose in a group of options, such as Display. Elsewhere, scroll.',
+          },
+          {
+            keys: [['enter'], ['space']],
+            action:
+              'On Menu and on the buttons that open the pages of a section: open and close. They open in the page.',
+          },
+          { keys: [['escape']], action: 'Close an open menu topic and go back to its button.' },
+          {
+            keys: [
+              ['ctrl', 'F'],
+              ['command', 'F'],
+            ],
+            action: 'Find on this page.',
+          },
+          {
+            keys: [
+              ['ctrl', 'L'],
+              ['command', 'L'],
+            ],
+            action: 'Go to the address bar.',
+          },
+          {
+            keys: [['ctrl', 'K']],
+            action: 'Go to the search box. On a Mac, press Command and K instead.',
+          },
+        ],
+        noShortcuts:
+          'This site has no single-key shortcuts, so typing, speech input and screen reader keys never set anything off by accident. The search shortcut always needs a modifier key.',
+        componentsBefore:
+          'Each component page has a Keyboard section with every key that component uses. Start at',
+        componentsLink: 'Components',
+      },
+      keys: {
+        and: 'and',
+        or: 'or',
+        tab: 'Tab',
+        shift: 'Shift',
+        enter: 'Enter',
+        space: 'Space',
+        escape: 'Escape',
+        ctrl: 'Ctrl',
+        command: 'Command',
+        option: 'Option',
+        arrows: 'Arrow keys',
+      },
+      skip: {
+        heading: 'Skip links',
+        body: 'Press Tab once when a page opens. A link appears at the top: Skip to main content. Press Tab again for Skip to site navigation. Press Enter to jump.',
+      },
+      zoom: {
+        heading: 'Zoom and text size',
+        intro:
+          'Your browser can make every page bigger. The content moves into fewer columns as you zoom in. If you have to scroll sideways to read a sentence, or something is cut off, please tell us.',
+        page: 'Zoom the whole page',
+        textOnly: 'Make only the text bigger',
+        touch: 'On a phone or tablet',
+        tableLabel: 'Keys for zooming the page',
+        actionColumn: 'Action',
+        windowsColumn: 'Windows, Linux and ChromeOS',
+        macColumn: 'Mac',
+        rows: [
+          { action: 'Zoom in', windows: ['ctrl', '+'], mac: ['command', '+'] },
+          { action: 'Zoom out', windows: ['ctrl', '−'], mac: ['command', '−'] },
+          { action: 'Back to 100%', windows: ['ctrl', '0'], mac: ['command', '0'] },
+        ],
+        usKeyboard: 'On a US keyboard, use the = key for +.',
+        wheel:
+          'You can also hold Ctrl (Command on a Mac) and turn the mouse wheel, or pinch on a trackpad.',
+        firefox:
+          'Firefox: open **View**, then **Zoom**, then turn on **Zoom Text Only**. Press Alt to show the menu on Windows.',
+        defaultSize:
+          'Every browser: change the default font size in its settings, under **Appearance** or **Fonts**. This site follows it.',
+        safari: 'Safari on a Mac: Option, Command and + makes only the text bigger.',
+        ios: 'iPhone and iPad: in Safari, tap the page menu (**aA**) beside the address, then the bigger A. For every app: **Settings**, then **Accessibility**, then **Display & Text Size**.',
+        android:
+          'Android: pinch with two fingers, or open **Settings**, then **Accessibility**, then **Display size and text**, then **Font size**. Names differ between phone makers.',
+      },
+      device: {
+        heading: 'Settings on your device',
+        intro:
+          'Change these once and every site that follows your device changes too. Menu names change between versions: if you can’t find one, search your settings for “dark”, “contrast” or “animation”.',
+        labels: {
+          dark: 'Dark mode',
+          contrast: 'More contrast',
+          motion: 'Less motion',
+          text: 'Text size',
+        },
+        systems: [
+          {
+            name: 'Windows',
+            dark: 'Open **Settings**, then **Personalization**, then **Colors**, then **Choose your mode**.',
+            contrast: 'Open **Settings**, then **Accessibility**, then **Contrast themes**.',
+            motion:
+              'Open **Settings**, then **Accessibility**, then **Visual effects**, then turn off **Animation effects**.',
+            text: 'Open **Settings**, then **Accessibility**, then **Text size**.',
+          },
+          {
+            name: 'Mac',
+            dark: 'Open **System Settings**, then **Appearance**.',
+            contrast:
+              'Open **System Settings**, then **Accessibility**, then **Display**, then turn on **Increase contrast**.',
+            motion:
+              'Open **System Settings**, then **Accessibility**, then **Display**, then turn on **Reduce motion**.',
+            text: 'Open **System Settings**, then **Accessibility**, then **Display**, then **Text size**.',
+          },
+          {
+            name: 'iPhone and iPad',
+            dark: 'Open **Settings**, then **Display & Brightness**.',
+            contrast:
+              'Open **Settings**, then **Accessibility**, then **Display & Text Size**, then turn on **Increase Contrast**.',
+            motion:
+              'Open **Settings**, then **Accessibility**, then **Motion**, then turn on **Reduce Motion**.',
+            text: 'Open **Settings**, then **Accessibility**, then **Display & Text Size**, then **Larger Text**.',
+          },
+          {
+            name: 'Android',
+            note: 'Names differ between phone makers.',
+            dark: 'Open **Settings**, then **Display**, then **Dark theme**.',
+            contrast:
+              'Open **Settings**, then **Accessibility**, then **Display size and text**, then **High contrast text**.',
+            motion:
+              'Open **Settings**, then **Accessibility**, then **Color and motion**, then turn on **Remove animations**.',
+            text: 'Open **Settings**, then **Accessibility**, then **Display size and text**, then **Font size**.',
+          },
+        ],
+        moreBefore: 'More ways to set up a computer or a phone:',
+        moreLink: 'My Computer My Way, from AbilityNet',
+      },
+      report: {
+        heading: 'Report a problem',
+        body: 'KvirnUI is designed and tested to meet WCAG 2.2 AA. Testing by people with assistive technology is still pending, so you may find problems.',
+        statusLink: 'See the project status',
+        action: 'Report a problem on GitHub',
+        privacy: 'GitHub issues are public, so don’t include personal information.',
+        emailBefore: 'No GitHub account, or want to write privately? Email',
+        email: 'support@kvirn.com',
+      },
     },
     nav: {
       menuButton: 'Menu',

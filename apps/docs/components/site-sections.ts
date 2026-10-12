@@ -505,6 +505,8 @@ export const siteSections: readonly SiteSection[] = [
   },
 ]
 
+export const accessibilitySettingsHref = '/accessibility-settings'
+
 /**
  * The header's Tools navigation. No Storybook entry until a deployed URL exists (Plan 0099, Q3);
  * "Documentation" is the home page, never a second "Docs" (Q2).
@@ -515,6 +517,11 @@ export const siteTools: readonly SiteTool[] = [
     label: messages.docs.header.tools.github,
     href: 'https://github.com/kvirn/ui',
     opensInNewTab: true,
+  },
+  {
+    id: 'accessibility-settings',
+    label: messages.docs.header.accessibilitySettings,
+    href: accessibilitySettingsHref,
   },
 ]
 

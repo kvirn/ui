@@ -2,6 +2,7 @@ import { Link } from '@kvirn-ui/react'
 import type { Metadata } from 'next'
 import { DocsPage } from '../../components/docs-page.tsx'
 import {
+  accessibilitySettingsHref,
   componentPages,
   contentTypePages,
   patternGroups,
@@ -32,6 +33,11 @@ function allPages(): readonly Page[] {
   componentPages.forEach(add)
   contentTypePages.forEach(add)
   patternGroups.forEach((group) => group.pages.forEach(add))
+  add({
+    href: accessibilitySettingsHref,
+    label: messages.docs.header.accessibilitySettings,
+    summary: messages.docs.accessibility.lead,
+  })
   return [...pages.values()]
 }
 

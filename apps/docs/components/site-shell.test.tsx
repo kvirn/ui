@@ -1,13 +1,14 @@
 import { KvirnProvider } from '@kvirn-ui/react'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { beforeEach, describe, expect, test } from 'vite-plus/test'
+import type { ReactNode } from 'react'
+import { beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { en } from '@kvirn-ui/i18n/en'
 import { messages } from '../messages/en.ts'
 import { DocsPage } from './docs-page.tsx'
 import { SiteShell } from './site-shell.tsx'
-import { contentTypePages } from './site-sections.ts'
+import { accessibilitySettingsHref, contentTypePages } from './site-sections.ts'
 
 // Contract: docs/design/docs-shell-mega-menu.md §3, §5 and §7. Component tests load no theme, and
 // the viewport is narrow (below 64rem): the Menu and the sidebar button are shown.
@@ -18,19 +19,23 @@ beforeEach(async () => {
   await page.viewport(narrowViewport.width, narrowViewport.height)
 })
 
-const renderShell = (pathname = '/components/tabs') =>
+const renderShell = (pathname = '/components/tabs', content: ReactNode = <p>The article.</p>) =>
   render(
     <KvirnProvider locale="en">
       {/* Space around the targets, so the axe target-size rule has room without the theme. */}
       <style>{'a, button { display: inline-block; padding: 8px; margin: 4px; }'}</style>
       <SiteShell pathname={pathname}>
-        <DocsPage title="A page">
-          <p>The article.</p>
-        </DocsPage>
+        <DocsPage title="A page">{content}</DocsPage>
       </SiteShell>
     </KvirnProvider>,
   )
 
+const searchInput = () => document.querySelector<HTMLInputElement>('search input')!
+const pressKey = (init: KeyboardEventInit) => {
+  const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init })
+  document.activeElement?.dispatchEvent(event)
+  return event
+}
 const toolsNav = () => page.getByRole('navigation', { name: text.header.toolsLabel })
 // The Menu panel is `hidden` while closed below 64rem, so the query includes hidden elements.
 const siteNav = () =>
@@ -109,22 +114,179 @@ describe('Docs site header', () => {
     expect(nav.querySelector('[aria-current]')?.textContent).toBe(text.nav.sections.docs)
   })
 
-  test('Tab goes Latest, GitHub, Display settings, KvirnUI, Menu, the search field and Search', async () => {
+  test('Tab goes the two skip links, Latest, GitHub, Accessibility settings, KvirnUI, Menu, the search field and Search', async () => {
     await renderShell()
     const reached: string[] = []
-    for (let stop = 0; stop < 8; stop += 1) {
+    for (let stop = 0; stop < 9; stop += 1) {
       await userEvent.tab()
       reached.push(document.activeElement?.textContent?.trim() ?? '')
     }
-    expect(reached.slice(1, 8)).toEqual([
+    expect(reached).toEqual([
+      en.skipLink.label,
+      text.skipLinks.navigation,
       text.header.latest({ status: text.header.status }),
       `${text.header.tools.github} (opens in a new tab)`,
-      en.displaySettings.button,
+      text.header.accessibilitySettings,
       text.header.home,
       text.nav.menuButton,
       '',
       text.header.searchButton,
     ])
+  })
+
+  test.each([
+    ['narrow', narrowViewport.width],
+    ['wide', 1280],
+  ])('Skip to site navigation moves focus to #site-navigation at a %s width', async (_, width) => {
+    await page.viewport(width, narrowViewport.height)
+    await renderShell()
+    await userEvent.tab()
+    await userEvent.tab()
+    expect(document.activeElement?.textContent).toBe(text.skipLinks.navigation)
+    await userEvent.keyboard('{Enter}')
+    expect(document.activeElement).toBe(document.getElementById('site-navigation'))
+  })
+
+  test('the Tools link to Accessibility settings is the current page on its own route, once in the top bar and once in the footer', async () => {
+    await renderShell(accessibilitySettingsHref)
+    const toolLinks = toolsNav().element().querySelectorAll('a[href="/accessibility-settings"]')
+    expect(toolLinks).toHaveLength(1)
+    expect(toolLinks[0]?.getAttribute('aria-current')).toBe('page')
+    const project = page.getByRole('navigation', { name: text.footer.projectHeading }).element()
+    expect(
+      project.querySelector('a[href="/accessibility-settings"]')?.getAttribute('aria-current'),
+    ).toBe('page')
+    expect(countCurrent(toolsNav().element())).toBe(1)
+  })
+
+  test('the Accessibility settings link is not the current page elsewhere', async () => {
+    await renderShell('/components/tabs')
+    expect(
+      toolsNav()
+        .element()
+        .querySelector('a[href="/accessibility-settings"]')
+        ?.hasAttribute('aria-current'),
+    ).toBe(false)
+  })
+
+  test('there is no Display settings button in the header', async () => {
+    await renderShell()
+    expect(page.getByRole('button', { name: en.displaySettings.button }).query()).toBeNull()
+  })
+
+  test('the search input lists the shortcut in aria-keyshortcuts', async () => {
+    await renderShell()
+    expect(document.querySelector('search input')?.getAttribute('aria-keyshortcuts')).toBe(
+      'Control+K',
+    )
+  })
+
+  test.each([
+    ['k', '{Control>}k{/Control}'],
+    ['K', '{Control>}K{/Control}'],
+  ])('Control+%s focuses the search input and selects its text', async (_, keys) => {
+    await renderShell()
+    const input = searchInput()
+    input.value = 'tabs'
+    await userEvent.keyboard(keys)
+    expect(document.activeElement).toBe(input)
+    expect(input.selectionStart).toBe(0)
+    expect(input.selectionEnd).toBe(4)
+  })
+
+  test('Control+K works again when focus is already in the search input', async () => {
+    await renderShell()
+    const input = searchInput()
+    input.value = 'tabs'
+    input.focus()
+    input.setSelectionRange(2, 2)
+    await userEvent.keyboard('{Control>}k{/Control}')
+    expect(input.selectionStart).toBe(0)
+    expect(input.selectionEnd).toBe(4)
+  })
+
+  test('Control+K works on a non-Latin layout, by the physical key', async () => {
+    await renderShell()
+    const event = pressKey({ key: 'л', code: 'KeyK', ctrlKey: true })
+    expect(event.defaultPrevented).toBe(true)
+    expect(document.activeElement).toBe(searchInput())
+  })
+
+  test('Control+K works while a radio has focus', async () => {
+    await renderShell(
+      '/components/tabs',
+      <>
+        <input type="radio" aria-label="Choice" />
+      </>,
+    )
+    const radio = document.querySelector<HTMLElement>('input[type="radio"]')!
+    radio.focus()
+    const event = pressKey({ key: 'k', code: 'KeyK', ctrlKey: true })
+    expect(event.defaultPrevented).toBe(true)
+    expect(document.activeElement).toBe(searchInput())
+  })
+
+  test.each([
+    ['Meta', { metaKey: true }],
+    ['Shift', { ctrlKey: true, shiftKey: true }],
+    ['Alt', { ctrlKey: true, altKey: true }],
+    ['no modifier', {}],
+  ])('Control+K is not handled with %s', async (_, modifiers) => {
+    await renderShell()
+    const event = pressKey({ key: 'k', code: 'KeyK', ...modifiers })
+    expect(event.defaultPrevented).toBe(false)
+    expect(document.activeElement).not.toBe(searchInput())
+  })
+
+  test.each([
+    ['a contenteditable', <div key="a" contentEditable suppressContentEditableWarning />],
+    ['a textarea', <textarea key="b" aria-label="Notes" />],
+    ['a text input', <input key="c" aria-label="Other" />],
+    [
+      'a select',
+      <select key="d" aria-label="Pick">
+        <option>One</option>
+      </select>,
+    ],
+  ])('Control+K is left alone inside %s', async (_, field) => {
+    await renderShell('/components/tabs', field)
+    const target = document.querySelector<HTMLElement>(
+      'main :is([contenteditable], textarea, input, select)',
+    )!
+    target.focus()
+    const event = pressKey({ key: 'k', code: 'KeyK', ctrlKey: true })
+    expect(event.defaultPrevented).toBe(false)
+    expect(document.activeElement).toBe(target)
+  })
+
+  test('Control+K does nothing when another handler already prevented it', async () => {
+    await renderShell()
+    const stop = (event: KeyboardEvent) => event.preventDefault()
+    document.addEventListener('keydown', stop, true)
+    pressKey({ key: 'k', code: 'KeyK', ctrlKey: true })
+    document.removeEventListener('keydown', stop, true)
+    expect(document.activeElement).not.toBe(searchInput())
+  })
+
+  test('on an Apple platform Command+K is handled and Control+K is not', async () => {
+    const platform = vi.spyOn(navigator, 'platform', 'get').mockReturnValue('MacIntel')
+    try {
+      await renderShell()
+      expect(searchInput().getAttribute('aria-keyshortcuts')).toBe('Meta+K')
+      expect(pressKey({ key: 'k', code: 'KeyK', ctrlKey: true }).defaultPrevented).toBe(false)
+      expect(pressKey({ key: 'k', code: 'KeyK', metaKey: true }).defaultPrevented).toBe(true)
+      expect(document.activeElement).toBe(searchInput())
+    } finally {
+      platform.mockRestore()
+    }
+  })
+
+  test('aria-keyshortcuts and the shortcut are removed when the shell unmounts', async () => {
+    const screen = await renderShell()
+    const input = searchInput()
+    await screen.unmount()
+    expect(input.hasAttribute('aria-keyshortcuts')).toBe(false)
+    expect(pressKey({ key: 'k', code: 'KeyK', ctrlKey: true }).defaultPrevented).toBe(false)
   })
 
   test('the header has no axe violations', async () => {
