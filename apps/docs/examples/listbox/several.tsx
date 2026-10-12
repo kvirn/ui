@@ -3,31 +3,28 @@ import { Field, Listbox } from '@kvirn-ui/react'
 import { municipalities } from './data.ts'
 import type { Municipality } from './data.ts'
 import { useListboxTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function SeveralListbox() {
-  const { texts, isFallback } = useListboxTexts()
+  const { texts } = useListboxTexts()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <Field.Root>
-        <Field.Label>{texts.several}</Field.Label>
-        <Listbox.Root
-          native="never"
-          multiple
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          defaultValue={['malmo', 'uppsala']}
-          placeholder={texts.severalPlaceholder}
-        >
-          <Listbox.Trigger />
-          <Listbox.Popup>
-            <Listbox.List>
-              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-            </Listbox.List>
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>
-    </InEnglishWhenFallback>
+    <Field.Root>
+      <Field.Label>{texts.several}</Field.Label>
+      <Listbox.Root
+        native="never"
+        multiple
+        items={municipalities}
+        itemToString={(municipality) => municipality.name}
+        itemToKey={(municipality) => municipality.code}
+        defaultValue={['malmo', 'uppsala']}
+        placeholder={texts.severalPlaceholder}
+      >
+        <Listbox.Trigger />
+        <Listbox.Popup>
+          <Listbox.List>
+            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+          </Listbox.List>
+        </Listbox.Popup>
+      </Listbox.Root>
+    </Field.Root>
   )
 }

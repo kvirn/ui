@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import {
   ArrowRightIcon,
   MagnifyingGlassIcon,
@@ -246,7 +245,7 @@ export const isIconFixtureLocale = (value: unknown): value is IconFixtureLocale 
 
 interface ResolvedTexts {
   text: IconTexts
-  /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
+  /** True when the locale has no texts and the fixture shows English. */
   isFallback: boolean
 }
 
@@ -292,11 +291,11 @@ export interface IconFixtureProps {
  * title, so the shapes never carry the meaning alone (1.4.1).
  */
 export function StatusAlerts({ locale }: IconFixtureProps) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const format = useFormat()
   const { info, success, warning, error } = text.status
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-status-lines">
         <Alert.Info>
           <Alert.Title>{info.word}</Alert.Title>
@@ -323,7 +322,7 @@ export function StatusAlerts({ locale }: IconFixtureProps) {
           </Alert.Body>
         </Alert.Danger>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -389,9 +388,9 @@ const joinClasses = (...classNames: (string | undefined)[]): string =>
 
 /** The icon in the right place: start, end or alone. Names come from the fixture. */
 function buttonsRow(locale: IconFixtureLocale, className?: string) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ButtonGroup>
         <Button className={className}>
           <Icon name="add" />
@@ -414,15 +413,15 @@ function buttonsRow(locale: IconFixtureLocale, className?: string) {
           <Icon name="search" />
         </Button>
       </ButtonGroup>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** The same row disabled. A disabled button's icon takes the muted text colour. */
 function disabledButtonsRow(locale: IconFixtureLocale) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ButtonGroup>
         <Button disabled>
           <Icon name="add" />
@@ -439,7 +438,7 @@ function disabledButtonsRow(locale: IconFixtureLocale) {
           <Icon name="search" />
         </Button>
       </ButtonGroup>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -477,9 +476,9 @@ export function buttonMatrix(locale: IconFixtureLocale) {
 
 /** More actions with an icon at the start: remove a file, the password toggle, menu, language. */
 export function moreButtons(locale: IconFixtureLocale) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ButtonGroup>
         <Button>
           <Icon name="delete" />
@@ -502,7 +501,7 @@ export function moreButtons(locale: IconFixtureLocale) {
           <span lang="sv">{text.language.current}</span>
         </Button>
       </ButtonGroup>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -526,9 +525,9 @@ export function narrowButtons() {
 
 /** Lucide, one-off: pass the component as `icon`. Icon's own props replace Lucide's. */
 export function LucideOneOff({ locale }: IconFixtureProps) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ul className="kv-story-inline-list">
         <li>
           <Icon icon={Search} label={text.button.search} />
@@ -542,7 +541,7 @@ export function LucideOneOff({ locale }: IconFixtureProps) {
           <Icon icon={Trash2} />
         </li>
       </ul>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -552,14 +551,14 @@ export function LucideOneOff({ locale }: IconFixtureProps) {
  * replace the built-in ones of the same names, and Lucide draws its own 2 stroke. Names that aren't built in need `Register` (see the Icon guide).
  */
 export function LucideRegistered({ locale }: IconFixtureProps) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const icons = defineIcons({
     search: Search,
     delete: Trash2,
     'arrow-forward': { component: ArrowRight, mirrorInRtl: true },
   })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <KvirnProvider icons={icons}>
         <ButtonGroup>
           <Button>
@@ -572,15 +571,15 @@ export function LucideRegistered({ locale }: IconFixtureProps) {
           </Button>
         </ButtonGroup>
       </KvirnProvider>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Heroicons, one-off: pass the component as `icon`. A `label` removes Heroicons' `aria-hidden`. */
 export function HeroiconsOneOff({ locale }: IconFixtureProps) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ul className="kv-story-inline-list">
         <li>
           <Icon icon={MagnifyingGlassIcon} label={text.button.search} />
@@ -594,20 +593,20 @@ export function HeroiconsOneOff({ locale }: IconFixtureProps) {
           <Icon icon={TrashIcon} />
         </li>
       </ul>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Heroicons, registered: `<Icon name>` and every KvirnUI component use Heroicons' drawings. */
 export function HeroiconsRegistered({ locale }: IconFixtureProps) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const icons = defineIcons({
     search: MagnifyingGlassIcon,
     delete: TrashIcon,
     'arrow-forward': { component: ArrowRightIcon, mirrorInRtl: true },
   })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <KvirnProvider icons={icons}>
         <ButtonGroup>
           <Button>
@@ -620,7 +619,7 @@ export function HeroiconsRegistered({ locale }: IconFixtureProps) {
           </Button>
         </ButtonGroup>
       </KvirnProvider>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -631,7 +630,7 @@ export function HeroiconsRegistered({ locale }: IconFixtureProps) {
  * `logo` isn't built in: an app adds it by augmenting `Register`, so this story casts the name.
  */
 export function LibraryIcons({ locale }: IconFixtureProps) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const icons = defineIcons({
     close: LucideClose,
     delete: TrashIcon,
@@ -641,7 +640,7 @@ export function LibraryIcons({ locale }: IconFixtureProps) {
   })
   const overridden = ['close', 'delete', 'warning', 'arrow-forward'] as const
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <ul className="kv-story-icon-strip" data-testid="registry">
           {overridden.map((name) => (
@@ -678,7 +677,7 @@ export function LibraryIcons({ locale }: IconFixtureProps) {
           </KvirnProvider>
         </div>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -688,15 +687,14 @@ export function LibraryIcons({ locale }: IconFixtureProps) {
  * and `mirrorInRtl` on an Icon wins over the entry. `iconDefaults.size` sizes every Icon below,
  * and a nested provider adds icons and replaces fields, over its parent's.
  */
-export function RegistryEntries({ locale }: IconFixtureProps) {
-  const { isFallback } = textsFor(locale)
+export function RegistryEntries() {
   const icons = defineIcons({
     search: Search,
     'arrow-forward': { component: ArrowRight, mirrorInRtl: false },
   })
   const nestedIcons = defineIcons({ delete: Trash2 })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <KvirnProvider icons={icons} iconDefaults={{ size: '24' }}>
         <ul className="kv-story-inline-list" dir="rtl">
           <li data-testid="entry-says-no-flip">
@@ -721,7 +719,7 @@ export function RegistryEntries({ locale }: IconFixtureProps) {
           </KvirnProvider>
         </ul>
       </KvirnProvider>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -731,9 +729,9 @@ export function RegistryEntries({ locale }: IconFixtureProps) {
  * inside it are what you write.
  */
 export function UnstyledIcons({ locale }: IconFixtureProps) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ShadowIsland data-testid="unstyled" dir="rtl">
         <p>
           {(['16', '20', '24'] as const).map((size) => (
@@ -751,6 +749,6 @@ export function UnstyledIcons({ locale }: IconFixtureProps) {
           </Button>
         </p>
       </ShadowIsland>
-    </InEnglishWhenFallback>
+    </>
   )
 }

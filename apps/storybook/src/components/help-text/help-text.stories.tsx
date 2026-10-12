@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Field, Fieldset, RadioGroup, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import guide from '../../../../../packages/react/src/field/field-help-text.md?raw'
@@ -36,9 +35,9 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.personalNumber}</Field.Label>
           <TextInput
@@ -50,7 +49,7 @@ const meta = {
           />
           <Field.HelpText {...args}>{text.personalNumberFormat}</Field.HelpText>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   parameters: {
@@ -76,9 +75,9 @@ export const UnderTheControl: Story = {}
  */
 export const Keyboard: Story = {
   render: (args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.personalNumber}</Field.Label>
           <Field.Prose>
@@ -93,7 +92,7 @@ export const Keyboard: Story = {
           />
           <Field.HelpText {...args}>{text.personalNumberFormat}</Field.HelpText>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -105,9 +104,9 @@ export const Keyboard: Story = {
  */
 export const WithDescription: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.registration}</Field.Label>
           <Field.Prose>
@@ -116,7 +115,7 @@ export const WithDescription: Story = {
           <TextInput name="registration" className="kv-input--width-10" />
           <Field.HelpText>{text.registrationHint}</Field.HelpText>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -128,9 +127,9 @@ export const WithDescription: Story = {
  */
 export const Invalid: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required invalid>
           <Field.Label>{text.personalNumber}</Field.Label>
           <Field.Prose>
@@ -147,7 +146,7 @@ export const Invalid: Story = {
           <Field.HelpText>{text.personalNumberFormat}</Field.HelpText>
           <Field.ErrorMessage>{text.personalNumberError}</Field.ErrorMessage>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -158,9 +157,9 @@ export const Invalid: Story = {
  */
 export const InFieldset: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Fieldset.Root group required>
           <Fieldset.Legend>{text.visitDate}</Fieldset.Legend>
           <div className="kv-story-date-boxes">
@@ -197,7 +196,7 @@ export const InFieldset: Story = {
           </div>
           <Fieldset.HelpText>{text.visitDateExample}</Fieldset.HelpText>
         </Fieldset.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -209,9 +208,9 @@ export const InFieldset: Story = {
  */
 export const OptionHelpTexts: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = choiceTextsFor(localeOf(globals))
+    const { text } = choiceTextsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <RadioGroup.Root name="duration">
           <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
           <RadioGroup.Prose>
@@ -231,7 +230,7 @@ export const OptionHelpTexts: Story = {
             <Field.HelpText>{text.duration12Hint}</Field.HelpText>
           </Field.Root>
         </RadioGroup.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -250,9 +249,9 @@ export const OptionHelpTexts: Story = {
  */
 export const Disabled: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required disabled>
           <Field.Label>{text.personalNumber}</Field.Label>
           <TextInput
@@ -262,7 +261,7 @@ export const Disabled: Story = {
           />
           <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -273,9 +272,9 @@ export const Disabled: Story = {
  */
 export const ReadOnly: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.personalNumber}</Field.Label>
           <TextInput
@@ -286,7 +285,7 @@ export const ReadOnly: Story = {
           />
           <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -297,9 +296,9 @@ export const ReadOnly: Story = {
  */
 export const Compact: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div className="kv-compact">
           <Field.Root required>
             <Field.Label>{text.personalNumber}</Field.Label>
@@ -316,7 +315,7 @@ export const Compact: Story = {
             <Field.HelpText>{text.personalNumberFormat}</Field.HelpText>
           </Field.Root>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -335,15 +334,15 @@ export const LongFinnish: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.longLabel}</Field.Label>
           <TextInput name="reference" inputMode="numeric" spellCheck={false} />
           <Field.HelpText>{text.grantReferenceHint}</Field.HelpText>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas }) => {
@@ -362,11 +361,11 @@ function splitExample(helpText: string): { lead: string; example: string } {
 const renderHelpTextStates =
   (radioName: string): NonNullable<Story['render']> =>
   (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     const { lead, example } = splitExample(text.registrationHint)
     const choices = choiceTextsFor(localeOf(globals)).text
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div>
           <Field.Root required>
             <Field.Label>{text.registration}</Field.Label>
@@ -422,7 +421,7 @@ const renderHelpTextStates =
             </Field.Root>
           </RadioGroup.Root>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   }
 

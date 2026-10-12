@@ -2,10 +2,9 @@
 import { TableOfContents } from '@kvirn-ui/react'
 import { useId, useMemo } from 'react'
 import { useTableOfContentsTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function DefaultTableOfContents() {
-  const { texts, isFallback } = useTableOfContentsTexts()
+  const { texts } = useTableOfContentsTexts()
   const titleId = useId()
   const items = useMemo(
     () => [
@@ -19,13 +18,11 @@ export function DefaultTableOfContents() {
     [texts],
   )
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <div>
-        <p id={titleId}>
-          <strong>{texts.title}</strong>
-        </p>
-        <TableOfContents.Root aria-labelledby={titleId} items={items} />
-      </div>
-    </InEnglishWhenFallback>
+    <div>
+      <p id={titleId}>
+        <strong>{texts.title}</strong>
+      </p>
+      <TableOfContents.Root aria-labelledby={titleId} items={items} />
+    </div>
   )
 }

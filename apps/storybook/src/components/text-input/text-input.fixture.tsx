@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, masks, TextInput } from '@kvirn-ui/react'
 import type { TextInputChangeDetails } from '@kvirn-ui/react'
 import { useState } from 'react'
@@ -17,10 +16,10 @@ import { maskTextsFor } from '../mask/mask.fixture.tsx'
  * TextInput renders the `value` it's given and reports changes through `onValueChange`.
  */
 export function ControlledName({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const [value, setValue] = useState('')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root required>
           <Field.Label>{text.name}</Field.Label>
@@ -30,7 +29,7 @@ export function ControlledName({ locale }: { locale: FormLocale }) {
           {text.youTyped}: {value}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -40,10 +39,10 @@ export function ControlledName({ locale }: { locale: FormLocale }) {
  * bubbles from replacing your messages.
  */
 export function NameAndEmailForm({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -76,7 +75,7 @@ export function NameAndEmailForm({ locale }: { locale: FormLocale }) {
           </p>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -85,9 +84,9 @@ export function NameAndEmailForm({ locale }: { locale: FormLocale }) {
  * puts the hyphen in. The help text says the format, because the mask doesn't.
  */
 export function PersonalIdentityNumberField({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.personalIdentityNumber}</Field.Label>
         <TextInput
@@ -98,15 +97,15 @@ export function PersonalIdentityNumberField({ locale }: { locale: FormLocale }) 
         />
         <Field.HelpText>{text.personalIdentityNumberHint}</Field.HelpText>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A Swedish postcode: text, so the space is inserted as the user types past it. */
 export function PostcodeField({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.postalCode}</Field.Label>
         <TextInput
@@ -117,7 +116,7 @@ export function PostcodeField({ locale }: { locale: FormLocale }) {
         />
         <Field.HelpText>{text.postalCodeHint}</Field.HelpText>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -127,9 +126,9 @@ export function PostcodeField({ locale }: { locale: FormLocale }) {
  * build masks outside React, or want the type of the mask itself.
  */
 export function ExplicitPostcodeField({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.postalCode}</Field.Label>
         <TextInput
@@ -140,7 +139,7 @@ export function ExplicitPostcodeField({ locale }: { locale: FormLocale }) {
         />
         <Field.HelpText>{text.postalCodeHint}</Field.HelpText>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -150,10 +149,10 @@ export function ExplicitPostcodeField({ locale }: { locale: FormLocale }) {
  * is clear, and so the help text and the field never disagree.
  */
 export function StartDateField({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dateTextsFor(locale)
+  const { text } = dateTextsFor(locale)
   const example = masks.date().withLocale(locale).format('2026-10-27')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.oneFieldLabel}</Field.Label>
         <TextInput
@@ -164,7 +163,7 @@ export function StartDateField({ locale }: { locale: FormLocale }) {
         />
         <Field.HelpText>{text.oneFieldHint(example)}</Field.HelpText>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -173,9 +172,9 @@ export function StartDateField({ locale }: { locale: FormLocale }) {
  * number would drop. For an amount or a quantity, use NumberInput.
  */
 export function ReferenceNumberField({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.caseNumber}</Field.Label>
         <TextInput
@@ -187,7 +186,7 @@ export function ReferenceNumberField({ locale }: { locale: FormLocale }) {
         />
         <Field.HelpText>{text.caseNumberHint}</Field.HelpText>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -198,12 +197,12 @@ export function ReferenceNumberField({ locale }: { locale: FormLocale }) {
  * in a live region that is on the page before the message.
  */
 export function ChangeDetailsField({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   const [value, setValue] = useState('')
   const [details, setDetails] = useState<TextInputChangeDetails | undefined>(undefined)
   const rejected = details?.rejected ?? []
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.digits}</Field.Label>
         <TextInput
@@ -229,7 +228,7 @@ export function ChangeDetailsField({ locale }: { locale: FormLocale }) {
           {details?.isComplete === true ? text.yes : text.no}
         </p>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -238,9 +237,9 @@ export function ChangeDetailsField({ locale }: { locale: FormLocale }) {
  * `characterNotAllowed` here and leaves the provider's other strings alone.
  */
 export function OwnMessagesField({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.digits}</Field.Label>
         <TextInput
@@ -252,7 +251,7 @@ export function OwnMessagesField({ locale }: { locale: FormLocale }) {
         />
         <Field.HelpText>{text.digitsHint}</Field.HelpText>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -261,9 +260,9 @@ export function OwnMessagesField({ locale }: { locale: FormLocale }) {
  * a note that sits outside the Field, such as one that belongs to several fields.
  */
 export function OwnDescribedByField({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Field.Root required>
           <Field.Label>{text.caseNumber}</Field.Label>
@@ -272,6 +271,6 @@ export function OwnDescribedByField({ locale }: { locale: FormLocale }) {
         </Field.Root>
         <p id="case-number-where">{text.describedByNote}</p>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }

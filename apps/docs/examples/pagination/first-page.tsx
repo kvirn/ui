@@ -1,31 +1,28 @@
 'use client'
 import { Pagination } from '@kvirn-ui/react'
 import { usePaginationTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function FirstPagePagination() {
-  const { texts, isFallback } = usePaginationTexts()
+  const { texts } = usePaginationTexts()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <Pagination.Root label={texts.firstLabel}>
-        <Pagination.List>
-          <Pagination.Item>
-            <Pagination.Link page={1} href="#case-1" current />
-          </Pagination.Item>
-          <Pagination.Item>
-            <Pagination.Link page={2} href="#case-2" />
-          </Pagination.Item>
-          <Pagination.Item>
-            <Pagination.Link page={3} href="#case-3" />
-          </Pagination.Item>
-          <Pagination.Item>
-            <Pagination.Status page={1} total={3} />
-          </Pagination.Item>
-          <Pagination.Item>
-            <Pagination.Next href="#case-2" />
-          </Pagination.Item>
-        </Pagination.List>
-      </Pagination.Root>
-    </InEnglishWhenFallback>
+    <Pagination.Root label={texts.firstLabel}>
+      <Pagination.List>
+        <Pagination.Item>
+          <Pagination.Link page={1} href="#case-1" current />
+        </Pagination.Item>
+        <Pagination.Item>
+          <Pagination.Link page={2} href="#case-2" />
+        </Pagination.Item>
+        <Pagination.Item>
+          <Pagination.Link page={3} href="#case-3" />
+        </Pagination.Item>
+        <Pagination.Item>
+          <Pagination.Status page={1} total={3} />
+        </Pagination.Item>
+        <Pagination.Item>
+          <Pagination.Next href="#case-2" />
+        </Pagination.Item>
+      </Pagination.List>
+    </Pagination.Root>
   )
 }

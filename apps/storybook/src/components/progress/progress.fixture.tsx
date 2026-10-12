@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Alert, Button, Progress } from '@kvirn-ui/react'
 import { useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -78,10 +77,9 @@ const progressTexts: Record<FormLocale, ProgressTexts | undefined> = {
 /** The fixture text in a locale. */
 export function progressTextsFor(locale: FormLocale): {
   text: ProgressTexts
-  isFallback: boolean
 } {
   const text = progressTexts[locale]
-  return { text: text ?? textsEn, isFallback: text === undefined }
+  return { text: text ?? textsEn }
 }
 
 /**
@@ -98,7 +96,7 @@ export function SendApplication({
   succeedAfterMilliseconds?: number
   fail?: boolean
 }) {
-  const { text, isFallback } = progressTextsFor(locale)
+  const { text } = progressTextsFor(locale)
   const [state, setState] = useState<'idle' | 'sending' | 'failed'>('idle')
 
   const send = () => {
@@ -107,7 +105,7 @@ export function SendApplication({
   }
 
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <div className="kv-button-group">
           <Button className="kv-button--primary" busy={state === 'sending'} onClick={send}>
@@ -125,6 +123,6 @@ export function SendApplication({
           </Alert.Danger>
         ) : null}
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }

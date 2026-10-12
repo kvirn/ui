@@ -1,28 +1,25 @@
 'use client'
 import { Tabs } from '@kvirn-ui/react'
 import { useTabsTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function VerticalTabs() {
-  const { texts, isFallback } = useTabsTexts()
+  const { texts } = useTabsTexts()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <Tabs.Root defaultValue="applicant" orientation="vertical">
-        <Tabs.List aria-label={texts.sections}>
-          <Tabs.Tab value="applicant">{texts.applicant}</Tabs.Tab>
-          <Tabs.Tab value="property">{texts.property}</Tabs.Tab>
-          <Tabs.Tab value="attachments">{texts.attachments}</Tabs.Tab>
-        </Tabs.List>
-        <Tabs.Panel value="applicant">
-          <p>{texts.applicantText}</p>
-        </Tabs.Panel>
-        <Tabs.Panel value="property">
-          <p>{texts.propertyText}</p>
-        </Tabs.Panel>
-        <Tabs.Panel value="attachments">
-          <p>{texts.attachmentsText}</p>
-        </Tabs.Panel>
-      </Tabs.Root>
-    </InEnglishWhenFallback>
+    <Tabs.Root defaultValue="applicant" orientation="vertical">
+      <Tabs.List aria-label={texts.sections}>
+        <Tabs.Tab value="applicant">{texts.applicant}</Tabs.Tab>
+        <Tabs.Tab value="property">{texts.property}</Tabs.Tab>
+        <Tabs.Tab value="attachments">{texts.attachments}</Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panel value="applicant">
+        <p>{texts.applicantText}</p>
+      </Tabs.Panel>
+      <Tabs.Panel value="property">
+        <p>{texts.propertyText}</p>
+      </Tabs.Panel>
+      <Tabs.Panel value="attachments">
+        <p>{texts.attachmentsText}</p>
+      </Tabs.Panel>
+    </Tabs.Root>
   )
 }

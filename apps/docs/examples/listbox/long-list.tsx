@@ -3,28 +3,25 @@ import { Field, Listbox } from '@kvirn-ui/react'
 import { places } from './data.ts'
 import type { Place } from './data.ts'
 import { useListboxTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function LongListListbox() {
-  const { texts, isFallback } = useListboxTexts()
+  const { texts } = useListboxTexts()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <Field.Root>
-        <Field.Label>{texts.place}</Field.Label>
-        <Listbox.Root
-          native="never"
-          virtualize
-          items={places}
-          itemToString={(place) => place.name}
-          itemToKey={(place) => place.code}
-          placeholder={texts.placePlaceholder}
-        >
-          <Listbox.Trigger />
-          <Listbox.Popup>
-            <Listbox.List>{(place: Place) => <Listbox.Option item={place} />}</Listbox.List>
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>
-    </InEnglishWhenFallback>
+    <Field.Root>
+      <Field.Label>{texts.place}</Field.Label>
+      <Listbox.Root
+        native="never"
+        virtualize
+        items={places}
+        itemToString={(place) => place.name}
+        itemToKey={(place) => place.code}
+        placeholder={texts.placePlaceholder}
+      >
+        <Listbox.Trigger />
+        <Listbox.Popup>
+          <Listbox.List>{(place: Place) => <Listbox.Option item={place} />}</Listbox.List>
+        </Listbox.Popup>
+      </Listbox.Root>
+    </Field.Root>
   )
 }

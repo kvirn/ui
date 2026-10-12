@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { ScrollArea } from '@kvirn-ui/react'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
@@ -105,10 +104,9 @@ const scrollAreaTexts: Record<FormLocale, ScrollAreaTexts | undefined> = {
 /** The fixture text in a locale. */
 export function scrollAreaTextsFor(locale: FormLocale): {
   text: ScrollAreaTexts
-  isFallback: boolean
 } {
   const text = scrollAreaTexts[locale]
-  return { text: text ?? textsEn, isFallback: text === undefined }
+  return { text: text ?? textsEn }
 }
 
 function FeesRows({ text }: { text: ScrollAreaTexts }) {
@@ -144,45 +142,45 @@ function FeesRows({ text }: { text: ScrollAreaTexts }) {
 
 /** A table wider than its box. Name the area with `aria-label` (or `aria-labelledby`). */
 export function FeesTable({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = scrollAreaTextsFor(locale)
+  const { text } = scrollAreaTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ScrollArea aria-label={text.feesLabel} className="kv-story-narrow">
         <FeesRows text={text} />
       </ScrollArea>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Content that fits is a plain `<div>`: no role, no name, no Tab stop. */
 export function FittingArea({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = scrollAreaTextsFor(locale)
+  const { text } = scrollAreaTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ScrollArea aria-label={text.feesLabel}>
         <p>{text.shortText}</p>
       </ScrollArea>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** `region="always"` names the area as a region whether it scrolls or not. It is a Tab stop only while it scrolls. */
 export function AlwaysRegionArea({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = scrollAreaTextsFor(locale)
+  const { text } = scrollAreaTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ScrollArea aria-label={text.feesLabel} region="always">
         <p>{text.shortText}</p>
       </ScrollArea>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A height limit of your own (`max-block-size`) makes the area scroll down as well as sideways. */
 export function TallArea({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = scrollAreaTextsFor(locale)
+  const { text } = scrollAreaTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ScrollArea
         aria-label={text.feesLabel}
         className="kv-story-narrow"
@@ -190,15 +188,15 @@ export function TallArea({ locale }: { locale: FormLocale }) {
       >
         <FeesRows text={text} />
       </ScrollArea>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A button on each side, so Tab and Shift+Tab are visible: the area is one stop between them. */
 export function KeyboardArea({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = scrollAreaTextsFor(locale)
+  const { text } = scrollAreaTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <button type="button" className="kv-button">
           {text.keyboardBefore}
@@ -208,6 +206,6 @@ export function KeyboardArea({ locale }: { locale: FormLocale }) {
           {text.keyboardAfter}
         </button>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }

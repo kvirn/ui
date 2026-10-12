@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { createMessageFormat } from '@kvirn-ui/core'
 import {
   DateInput,
@@ -80,13 +79,13 @@ export function VisitDatePicker({
   isInvalid = false,
   ...pickerProps
 }: VisitDatePickerProps) {
-  const { text, isFallback } = dateTextsFor(locale)
+  const { text } = dateTextsFor(locale)
   const [date, setDate] = useState(initial)
   const { order } = useDateInput()
   const rangeText = useRangeText(locale, pickerProps.minimum, pickerProps.maximum)
   const example = order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <DatePicker.Root
           today="2026-10-14"
@@ -122,7 +121,7 @@ export function VisitDatePicker({
           {text.stored}: {dateInputValueToIsoDate(date)}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -133,12 +132,12 @@ export interface MaskedDatePickerProps extends PickerProps {
 
 /** One `masks.date()` field and the trigger beside it, in a row that wraps. */
 export function MaskedDatePicker({ locale, initial = '', ...pickerProps }: MaskedDatePickerProps) {
-  const { text, isFallback } = dateTextsFor(locale)
+  const { text } = dateTextsFor(locale)
   const { locale: providerLocale } = useLocale()
   const [fieldText, setFieldText] = useState(initial)
   const example = masks.date().withLocale(providerLocale).format('2026-10-27')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <DatePicker.Root
           today="2026-10-14"
@@ -168,7 +167,7 @@ export function MaskedDatePicker({ locale, initial = '', ...pickerProps }: Maske
           {text.stored}: {maskedDateToIsoDate(fieldText, providerLocale)}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 

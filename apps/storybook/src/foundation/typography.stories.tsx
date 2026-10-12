@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../fixture-language.tsx'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { CSSProperties, ReactNode } from 'react'
 import { expect, within } from 'storybook/test'
@@ -230,7 +229,7 @@ function TypeRolesTable({
   const sampleLang = isFallback ? 'en' : locale
   const number = new Intl.NumberFormat(sampleLang)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ScrollTable caption="Type role tokens">
         <thead>
           <tr>
@@ -268,7 +267,7 @@ function TypeRolesTable({
           })}
         </tbody>
       </ScrollTable>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -405,10 +404,10 @@ function TabularFiguresTable() {
 }
 
 function TypeRolesPage({ locale }: { locale: FixtureLocale }): ReactNode {
-  const [ref, roles] = useLiveValue(readTypeRoles)
   const { isFallback } = articleFor(locale)
+  const [ref, roles] = useLiveValue(readTypeRoles)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <FoundationPage title="Type roles">
         <div ref={ref}>
           <p>
@@ -431,7 +430,7 @@ function TypeRolesPage({ locale }: { locale: FixtureLocale }): ReactNode {
           <TypeRolesTable locale={locale} roles={roles} />
         </div>
       </FoundationPage>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -440,9 +439,9 @@ function TypeRolesPage({ locale }: { locale: FixtureLocale }): ReactNode {
  * turn. The article is a self-contained sample with its own h1, so it is not a skipped level.
  */
 function HeadingLevelsPage({ locale }: { locale: FixtureLocale }): ReactNode {
-  const { text, isFallback } = articleFor(locale)
+  const { text } = articleFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <FoundationPage title="Heading levels">
         <p>
           Prose styles <code>h1</code> to <code>h6</code> with the type roles <code>heading-1</code>{' '}
@@ -467,7 +466,7 @@ function HeadingLevelsPage({ locale }: { locale: FixtureLocale }): ReactNode {
           <p>{text.times.intro}</p>
         </article>
       </FoundationPage>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 

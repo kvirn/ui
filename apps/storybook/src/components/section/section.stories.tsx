@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Card, Link, Prose, Section } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/section/section.a11y.md?raw'
 import guide from '../../../../../packages/react/src/section/section.md?raw'
@@ -146,7 +145,7 @@ export const CardsOnASection: Story = {
  */
 export const Surfaces: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     const surfaces = [
       ['surface', 'kv-section--surface'],
       ['canvas', 'kv-section--canvas'],
@@ -161,14 +160,14 @@ export const Surfaces: Story = {
         </Section>
       ))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <>
           <div className="kv-story-columns">{samples('page')}</div>
           <Section className="kv-section--padding-lg kv-story-section" data-testid="frame">
             <div className="kv-story-columns">{samples('frame')}</div>
           </Section>
         </>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -241,9 +240,9 @@ export const OneEdge: Story = {
  */
 export const SurfaceLayers: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div
           lang="en"
           data-testid="canvas"
@@ -287,7 +286,7 @@ export const SurfaceLayers: Story = {
             </div>
           </div>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -338,10 +337,10 @@ export const CardOrSection: Story = {
  */
 export const ProseAndSections: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     const titles = [text.news.recycling.title, text.news.snow.title] as const
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <>
           <Section className="kv-prose" data-testid="prose-on-section">
             <h2>{text.news.heading}</h2>
@@ -372,7 +371,7 @@ export const ProseAndSections: Story = {
             </div>
           </Section>
         </>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -405,16 +404,16 @@ export const RenderedAsLandmarks: Story = {
 /** An image directly in a Section: the theme keeps it inside, because a Section never clips. */
 export const ImageInSection: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div data-testid="column">
           <Section>
             <img src={binsImage} alt="" width={640} height={240} data-testid="wide-image" />
             <p>{text.waste.plan}</p>
           </Section>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas }) => {

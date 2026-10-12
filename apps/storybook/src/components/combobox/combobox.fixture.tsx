@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Card, Combobox, Field, Icon } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
@@ -183,8 +182,8 @@ const comboboxTexts: Partial<Record<FormLocale, ComboboxTexts>> = {
 
 /** The fixture text in a locale, with the shared form texts. */
 export function comboboxTextsFor(locale: FormLocale) {
-  const { text: shared, isFallback } = choiceTextsFor(locale)
-  return { text: comboboxTexts[locale] ?? textsEn, shared, isFallback }
+  const { text: shared } = choiceTextsFor(locale)
+  return { text: comboboxTexts[locale] ?? textsEn, shared }
 }
 
 /**
@@ -193,9 +192,9 @@ export function comboboxTextsFor(locale: FormLocale) {
  * municipality's code, and `name` puts it in a plain `<form>`.
  */
 export function DefaultExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Field.Prose>
@@ -220,7 +219,7 @@ export function DefaultExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -230,9 +229,9 @@ export function DefaultExample({ locale }: { locale: FormLocale }) {
  * The user types to filter first: the list is virtualized only while it stays long.
  */
 export function VirtualizedExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required controlId="municipality">
         <Field.Label>{text.municipality}</Field.Label>
         <Field.Prose>
@@ -258,7 +257,7 @@ export function VirtualizedExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -267,9 +266,9 @@ export function VirtualizedExample({ locale }: { locale: FormLocale }) {
  * every value has a remove button. The popup stays open, so the next choice is a few keys away.
  */
 export function MultipleExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.several}</Field.Label>
         <Field.Prose>
@@ -293,15 +292,15 @@ export function MultipleExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Just the input and the popup, with no box and no buttons: the smallest Combobox. */
 export function MinimalExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Combobox.Root
@@ -318,15 +317,15 @@ export function MinimalExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A chosen option shows its text in the input: `defaultValue` is the option's key. */
 export function SelectedExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Combobox.Root
@@ -348,7 +347,7 @@ export function SelectedExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -357,9 +356,9 @@ export function SelectedExample({ locale }: { locale: FormLocale }) {
  * matches, `Combobox.Empty` says so and the typed text stays.
  */
 export function FilteringExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Field.Prose>
@@ -383,7 +382,7 @@ export function FilteringExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -392,10 +391,10 @@ export function FilteringExample({ locale }: { locale: FormLocale }) {
  * `isLoading` makes `Combobox.Empty` say "Laddar resultat" while the fetch is running.
  */
 export function LoadingExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   const results: Municipality[] = []
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Combobox.Root
@@ -418,13 +417,13 @@ export function LoadingExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Items in named groups: `groups` takes `{ key, label, items }`, and each group is named by its label. */
 export function GroupsExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   const pick = (...picked: string[]) =>
     municipalities.filter((municipality) => picked.includes(municipality.name))
   const groups = [
@@ -433,7 +432,7 @@ export function GroupsExample({ locale }: { locale: FormLocale }) {
     { key: 'south', label: text.groupSouth, items: pick('Malmö') },
   ]
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Combobox.Root
@@ -454,15 +453,15 @@ export function GroupsExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A disabled option: `isItemDisabled` keeps it reachable with the arrow keys, but it can't be chosen. */
 export function DisabledOptionExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Combobox.Root
@@ -484,7 +483,7 @@ export function DisabledOptionExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -493,9 +492,9 @@ export function DisabledOptionExample({ locale }: { locale: FormLocale }) {
  * stays, so the user can fix it instead of starting over.
  */
 export function InvalidExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required invalid>
         <Field.Label>{text.municipality}</Field.Label>
         <Field.Prose>
@@ -521,15 +520,15 @@ export function InvalidExample({ locale }: { locale: FormLocale }) {
         </Combobox.Root>
         <Field.ErrorMessage>{text.notInList}</Field.ErrorMessage>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Disabled: `disabled` on the Field disables the Combobox too, and the popup never opens. */
 export function DisabledExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required disabled>
         <Field.Label>{text.municipality}</Field.Label>
         <Combobox.Root
@@ -551,15 +550,15 @@ export function DisabledExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Several choices, none chosen yet: the first choice appears as a chip before the input. */
 export function MultipleNoneChosenExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.several}</Field.Label>
         <Field.Prose>
@@ -582,15 +581,15 @@ export function MultipleNoneChosenExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Several choices with one chosen: a chip with its remove button. Removing it moves focus to the input. */
 export function MultipleOneChosenExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.several}</Field.Label>
         <Combobox.Root
@@ -611,15 +610,15 @@ export function MultipleOneChosenExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A long list scrolls inside the popup, which is never taller than the room that is left. */
 export function LongListExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Combobox.Root
@@ -640,7 +639,7 @@ export function LongListExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -650,9 +649,9 @@ export function LongListExample({ locale }: { locale: FormLocale }) {
  * on every keystroke and decides which options stay in the list.
  */
 export function StartsWithFilterExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Field.Prose>
@@ -679,7 +678,7 @@ export function StartsWithFilterExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -689,13 +688,13 @@ export function StartsWithFilterExample({ locale }: { locale: FormLocale }) {
  * `selection`, `clear` and more). The two printed lines are the last change of each.
  */
 export function ControlledOpenAndTextExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   const [open, setOpen] = useState(false)
   const [openReason, setOpenReason] = useState('–')
   const [inputValue, setInputValue] = useState('')
   const [inputReason, setInputReason] = useState('–')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root required>
           <Field.Label>{text.municipality}</Field.Label>
@@ -734,7 +733,7 @@ export function ControlledOpenAndTextExample({ locale }: { locale: FormLocale })
           text: {inputValue}, reason: {inputReason}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -744,9 +743,9 @@ export function ControlledOpenAndTextExample({ locale }: { locale: FormLocale })
  * when there is no room, and `data-placement` says which side it is on.
  */
 export function PlacedAboveExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Combobox.Root
@@ -770,7 +769,7 @@ export function PlacedAboveExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -781,9 +780,9 @@ export function PlacedAboveExample({ locale }: { locale: FormLocale }) {
  * list has changed.
  */
 export function OwnAnnouncementExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Field.Prose>
@@ -809,7 +808,7 @@ export function OwnAnnouncementExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -818,9 +817,9 @@ export function OwnAnnouncementExample({ locale }: { locale: FormLocale }) {
  * Any markup also works in `Combobox.Option`, with or without the parts.
  */
 export function RichOptionsExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Combobox.Root
@@ -845,19 +844,19 @@ export function RichOptionsExample({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A long label and a long chosen option, one and several choices: both wrap, and nothing overflows. */
 export function LongFinnishExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, isFallback } = comboboxTextsFor(locale)
+  const { text, shared } = comboboxTextsFor(locale)
   const items: readonly Municipality[] = [
     { code: 'long', name: 'Pohjois-Pohjanmaan sairaanhoitopiirin kuntayhtymä' },
     ...municipalities.slice(0, 3),
   ]
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Field.Root required>
           <Field.Label>{text.longLabel}</Field.Label>
@@ -900,15 +899,15 @@ export function LongFinnishExample({ locale }: { locale: FormLocale }) {
           </Combobox.Root>
         </Field.Root>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11), and the popup its own edge. */
 export function OnSurfacesExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Card.Root>
         <Field.Root required invalid>
           <Field.Label>{text.municipality}</Field.Label>
@@ -932,15 +931,15 @@ export function OnSurfacesExample({ locale }: { locale: FormLocale }) {
           <Field.ErrorMessage>{text.notInList}</Field.ErrorMessage>
         </Field.Root>
       </Card.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Staff density from 64rem: `kv-compact` on an ancestor makes the box and the options 32px high. */
 export function CompactExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = comboboxTextsFor(locale)
+  const { text } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-compact">
         <Field.Root required>
           <Field.Label>{text.municipality}</Field.Label>
@@ -963,7 +962,7 @@ export function CompactExample({ locale }: { locale: FormLocale }) {
           </Combobox.Root>
         </Field.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -973,10 +972,10 @@ export function CompactExample({ locale }: { locale: FormLocale }) {
  * chosen key, or `null` when the text no longer names the chosen option.
  */
 export function ControlledExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, isFallback } = comboboxTextsFor(locale)
+  const { text, shared } = comboboxTextsFor(locale)
   const [value, setValue] = useState<string | null>('göteborg')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root required>
           <Field.Label>{text.municipality}</Field.Label>
@@ -1004,7 +1003,7 @@ export function ControlledExample({ locale }: { locale: FormLocale }) {
           {shared.youChose}: {value ?? '–'}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -1013,10 +1012,10 @@ export function ControlledExample({ locale }: { locale: FormLocale }) {
  * carries the key, and `FormData` has it by `name` on submit. The typed text is never sent.
  */
 export function PlainFormExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, isFallback } = comboboxTextsFor(locale)
+  const { text, shared } = comboboxTextsFor(locale)
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -1059,7 +1058,7 @@ export function PlainFormExample({ locale }: { locale: FormLocale }) {
           </p>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -1069,10 +1068,10 @@ export function PlainFormExample({ locale }: { locale: FormLocale }) {
  * submit button in a form that counts its submissions.
  */
 export function KeyboardExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, isFallback } = comboboxTextsFor(locale)
+  const { text, shared } = comboboxTextsFor(locale)
   const [submissions, setSubmissions] = useState(0)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -1158,7 +1157,7 @@ export function KeyboardExample({ locale }: { locale: FormLocale }) {
           </p>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -1167,9 +1166,9 @@ export function KeyboardExample({ locale }: { locale: FormLocale }) {
  * several choices, and disabled.
  */
 export function ComboboxStates({ locale }: { locale: FormLocale }) {
-  const { text, shared, isFallback } = comboboxTextsFor(locale)
+  const { text, shared } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root required>
           <Field.Label>{text.municipality}</Field.Label>
@@ -1259,6 +1258,6 @@ export function ComboboxStates({ locale }: { locale: FormLocale }) {
           </Combobox.Root>
         </Field.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }

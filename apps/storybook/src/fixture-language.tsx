@@ -1,26 +1,6 @@
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { en } from '@kvirn-ui/i18n/en'
 import { KvirnProvider, useLocale } from '@kvirn-ui/react'
 import type { ReactNode } from 'react'
-
-/** Fixture text that falls back to English renders in a nested English provider (3.1.2). */
-export function InEnglishWhenFallback({
-  isFallback,
-  children,
-}: {
-  isFallback: boolean
-  children: ReactNode
-}) {
-  const { dir } = useLocale()
-  if (!isFallback) {
-    return children
-  }
-  return (
-    <KvirnProvider locale="en" dir={dir} messages={en}>
-      <LocaleScope hasOwnDir={false}>{children}</LocaleScope>
-    </KvirnProvider>
-  )
-}
 
 // Without its own `dir`, the scope leaves `dir` to `<html>`: the story decorator sets the toolbar's
 // direction there, not in a provider, so the context's `dir` would say `ltr` under an RTL toolbar.

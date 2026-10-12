@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
@@ -141,9 +140,9 @@ export const Default: Story = {
  */
 export const BuiltInSet: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <ul className="kv-story-icon-gallery">
           {builtInIconNames.map((name) => (
             <li key={name} className="kv-story-icon-cell" data-testid={iconNamed(name)}>
@@ -159,7 +158,7 @@ export const BuiltInSet: Story = {
             </li>
           ))}
         </ul>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas }) => {
@@ -199,10 +198,10 @@ const textStyles = [
 const iconSizes = ['16', '20', '24', '32'] as const
 
 function sizesBlock(locale: IconFixtureLocale, testId: string) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const format = useFormat()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-icon-sizes" data-testid={testId}>
         {textStyles.map((style) => (
           <section key={style.id} aria-label={style.id}>
@@ -218,7 +217,7 @@ function sizesBlock(locale: IconFixtureLocale, testId: string) {
           </section>
         ))}
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -405,10 +404,10 @@ export const Colors: Story = {
  */
 export const DecorativeAndMeaningful: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     const format = useFormat()
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div className="kv-story-columns">
           <div className="kv-story-panel">
             <p>
@@ -424,7 +423,7 @@ export const DecorativeAndMeaningful: Story = {
             </p>
           </div>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, canvasElement }) => {
@@ -512,7 +511,7 @@ export const RTL: Story = {
  */
 export const RegistryEntriesAndDefaults: Story = {
   parameters: showSource('icon/icon.fixture.tsx', 'RegistryEntries'),
-  render: (_args, { globals }) => <RegistryEntries locale={localeOf(globals)} />,
+  render: () => <RegistryEntries />,
   play: async ({ canvas }) => {
     const iconIn = (testId: string) => canvas.getByTestId(testId).querySelector('svg')
     await expect(iconIn('entry-says-no-flip')).not.toHaveAttribute('data-mirror-in-rtl')
@@ -557,13 +556,13 @@ const hardCodedRed = '#c00'
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     const colors = [
       ['color', hardCodedRed],
       ['token', 'var(--kv-color-danger)'],
     ] as const
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div data-testid="forced">
           {colors.map(([prop, color]) => (
             <div
@@ -593,7 +592,7 @@ export const ForcedColors: Story = {
             </div>
           ))}
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas }) => {
@@ -608,9 +607,9 @@ export const ForcedColors: Story = {
  */
 export const YourOwnSvg: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <ul className="kv-story-inline-list">
           <li>
             <Icon viewBox="0 0 24 24" size="24">
@@ -624,7 +623,7 @@ export const YourOwnSvg: Story = {
             <Icon as={SquareMark} size="24" />
           </li>
         </ul>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, canvasElement }) => {
@@ -734,10 +733,10 @@ export const InRunningTextAndLinks: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     const format = useFormat()
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <>
           <p>
             <Icon name="calendar" size="16" /> {text.text.collection(collectionDate(format))}
@@ -748,7 +747,7 @@ export const InRunningTextAndLinks: Story = {
             </Link.Root>
           </p>
         </>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas }) => {

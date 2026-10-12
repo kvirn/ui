@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Field, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import guide from '../../../../../packages/react/src/field/field-label.md?raw'
@@ -47,14 +46,14 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label {...args}>{text.name}</Field.Label>
           <TextInput name="name" autoComplete="name" />
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   parameters: {
@@ -90,14 +89,14 @@ export const Keyboard: Story = {}
 export const Optional: Story = {
   render: (args, { globals }) => {
     const locale = localeOf(globals)
-    const { text, isFallback } = textsFor(locale)
+    const { text } = textsFor(locale)
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root>
           <Field.Label {...args}>{text.phone}</Field.Label>
           <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -113,14 +112,14 @@ export const Optional: Story = {
 export const WithoutMarker: Story = {
   args: { marker: 'none' },
   render: (args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root>
           <Field.Label {...args}>{text.search}</Field.Label>
           <TextInput name="search" type="search" />
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -132,16 +131,16 @@ export const WithoutMarker: Story = {
 /** The label is the page's `h1`: put the label in the heading, not the heading in the label. */
 export const AsPageHeading: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <h1>
             <Field.Label className="kv-field-label--heading">{text.nameQuestion}</Field.Label>
           </h1>
           <TextInput name="name" autoComplete="name" />
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -154,16 +153,16 @@ export const AsPageHeading: Story = {
 export const LongFinnish: Story = {
   globals: { locale: 'fi' },
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div className="kv-story-narrow" data-testid="narrow">
           <Field.Root required>
             <Field.Label>{text.longLabel}</Field.Label>
             <TextInput name="reference" inputMode="numeric" spellCheck={false} />
           </Field.Root>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas }) => {
@@ -177,16 +176,16 @@ export const LongFinnish: Story = {
 /** Staff density from 64rem: 14px, still weight 500. */
 export const Compact: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div className="kv-compact">
           <Field.Root required>
             <Field.Label>{text.name}</Field.Label>
             <TextInput name="name" autoComplete="name" />
           </Field.Root>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }

@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field } from '@kvirn-ui/react'
 import { defaultExtensions, RichTextEditor } from '@kvirn-ui/rich-text'
 import { Mark } from '@tiptap/core'
@@ -140,9 +139,9 @@ const editorTexts: Record<FormLocale, EditorTexts | undefined> = {
 }
 
 /** The fixture text in a locale. */
-export function editorTextsFor(locale: FormLocale): { text: EditorTexts; isFallback: boolean } {
+export function editorTextsFor(locale: FormLocale): { text: EditorTexts } {
   const text = editorTexts[locale]
-  return { text: text ?? textsEn, isFallback: text === undefined }
+  return { text: text ?? textsEn }
 }
 
 /** Arabic, to show a right-to-left paragraph inside a left-to-right page and back. */
@@ -195,9 +194,9 @@ const highlightPaths = ['M4 19.5h16', 'M7 15.5 15.5 7l3 3L10 18.5H7Z', 'M14 8.5l
  * and a counter: the fixture the keyboard tests drive. The editor is in a plain `<form>`.
  */
 export function KeyboardEditor({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = editorTextsFor(locale)
+  const { text } = editorTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
         <button type="button" className="kv-button">
           {text.before}
@@ -213,7 +212,7 @@ export function KeyboardEditor({ locale }: { locale: FormLocale }) {
           {text.after}
         </button>
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -223,11 +222,11 @@ export function KeyboardEditor({ locale }: { locale: FormLocale }) {
  * is not sanitized: sanitize it on the server.
  */
 export function PostedEditor({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = editorTextsFor(locale)
+  const { text } = editorTextsFor(locale)
   const formText = textsFor(locale).text
   const [posted, setPosted] = useState<string | undefined>()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -257,15 +256,15 @@ export function PostedEditor({ locale }: { locale: FormLocale }) {
           </pre>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** After a submit with nothing written: the Field is invalid, and its message says what to do. */
 export function InvalidEditor({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = editorTextsFor(locale)
+  const { text } = editorTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required invalid>
         <Field.Label>{text.label}</Field.Label>
         <Field.Prose>
@@ -278,15 +277,15 @@ export function InvalidEditor({ locale }: { locale: FormLocale }) {
         <Field.HelpText>{text.hint}</Field.HelpText>
         <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Disabled: the box is dashed, every control is natively disabled and out of the Tab order, and nothing is posted. */
 export function DisabledEditor({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = editorTextsFor(locale)
+  const { text } = editorTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root disabled>
         <Field.Label>{text.label}</Field.Label>
         <RichTextEditor.Root name="news" defaultValue={`<p>${text.intro}</p>`}>
@@ -294,7 +293,7 @@ export function DisabledEditor({ locale }: { locale: FormLocale }) {
           <RichTextEditor.Content />
         </RichTextEditor.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -303,9 +302,9 @@ export function DisabledEditor({ locale }: { locale: FormLocale }) {
  * (not in a form), render it as `Prose` instead.
  */
 export function ReadOnlyEditor({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = editorTextsFor(locale)
+  const { text } = editorTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.label}</Field.Label>
         <RichTextEditor.Root readOnly defaultValue={contentFor(text)}>
@@ -313,7 +312,7 @@ export function ReadOnlyEditor({ locale }: { locale: FormLocale }) {
           <RichTextEditor.Content />
         </RichTextEditor.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -323,10 +322,10 @@ export function ReadOnlyEditor({ locale }: { locale: FormLocale }) {
  * you set one. An empty editor is `null`.
  */
 export function ControlledJsonEditor({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = editorTextsFor(locale)
+  const { text } = editorTextsFor(locale)
   const [value, setValue] = useState<JSONContent | null>(null)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root required>
           <Field.Label>{text.label}</Field.Label>
@@ -339,7 +338,7 @@ export function ControlledJsonEditor({ locale }: { locale: FormLocale }) {
           {JSON.stringify(value)}
         </pre>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -349,9 +348,9 @@ export function ControlledJsonEditor({ locale }: { locale: FormLocale }) {
  * `onPress` get the Tiptap editor.
  */
 export function HighlightEditor({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = editorTextsFor(locale)
+  const { text } = editorTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.label}</Field.Label>
         <RichTextEditor.Root
@@ -380,15 +379,15 @@ export function HighlightEditor({ locale }: { locale: FormLocale }) {
           <RichTextEditor.Content />
         </RichTextEditor.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** No tables and no images: their buttons, the Table group are gone. */
 export function PlainEditor({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = editorTextsFor(locale)
+  const { text } = editorTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.label}</Field.Label>
         <RichTextEditor.Root
@@ -399,7 +398,7 @@ export function PlainEditor({ locale }: { locale: FormLocale }) {
           <RichTextEditor.Content />
         </RichTextEditor.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -408,9 +407,9 @@ export function PlainEditor({ locale }: { locale: FormLocale }) {
  * touch screens have no tooltips, and nobody has to guess an icon.
  */
 export function ResidentEditor({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = editorTextsFor(locale)
+  const { text } = editorTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.label}</Field.Label>
         <RichTextEditor.Root labels="icon-and-text" defaultValue={`<p>${text.intro}</p>`}>
@@ -422,15 +421,15 @@ export function ResidentEditor({ locale }: { locale: FormLocale }) {
           <RichTextEditor.Content />
         </RichTextEditor.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Long names in a narrow column: the toolbar wraps group by group, and the text wraps. */
 export function LongContentEditor({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = editorTextsFor(locale)
+  const { text } = editorTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.label}</Field.Label>
         <RichTextEditor.Root
@@ -441,15 +440,15 @@ export function LongContentEditor({ locale }: { locale: FormLocale }) {
           <RichTextEditor.Content />
         </RichTextEditor.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A paragraph in Arabic. The direction comes from the page: the RTL story sets it through the provider. */
 export function BidirectionalEditor({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = editorTextsFor(locale)
+  const { text } = editorTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.label}</Field.Label>
         <RichTextEditor.Root defaultValue={`<p>${text.intro}</p><p>${arabicParagraph}</p>`}>
@@ -457,15 +456,15 @@ export function BidirectionalEditor({ locale }: { locale: FormLocale }) {
           <RichTextEditor.Content />
         </RichTextEditor.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A count of the characters left, with `characterCount` and `maxLength`: it never blocks typing. */
 export function CountedEditor({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = editorTextsFor(locale)
+  const { text } = editorTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.label}</Field.Label>
         <RichTextEditor.Root name="news" maxLength={200} characterCount>
@@ -474,6 +473,6 @@ export function CountedEditor({ locale }: { locale: FormLocale }) {
         </RichTextEditor.Root>
         <Field.HelpText>{text.hint}</Field.HelpText>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }

@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, Icon, InputGroup } from '@kvirn-ui/react'
 import { useRef, useState } from 'react'
 import { textsFor } from '../form/form.fixture.tsx'
@@ -23,11 +22,11 @@ export function SearchBoxWithClear({
   initialValue?: string
   disabled?: boolean
 }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const [value, setValue] = useState(initialValue)
   const inputRef = useRef<HTMLInputElement | null>(null)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root disabled={disabled}>
         <Field.Label marker="none">{text.searchServices}</Field.Label>
         <InputGroup.Root>
@@ -56,7 +55,7 @@ export function SearchBoxWithClear({
           )}
         </InputGroup.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -71,11 +70,11 @@ export function SearchBoxWithIconOnlyClear({
   locale: FormLocale
   initialValue?: string
 }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const [value, setValue] = useState(initialValue)
   const inputRef = useRef<HTMLInputElement | null>(null)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label marker="none">{text.searchServices}</Field.Label>
         <InputGroup.Root>
@@ -105,6 +104,6 @@ export function SearchBoxWithIconOnlyClear({
           )}
         </InputGroup.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }

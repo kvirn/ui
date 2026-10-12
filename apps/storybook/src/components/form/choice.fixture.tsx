@@ -281,9 +281,9 @@ const choiceTexts: Record<FormLocale, ChoiceTexts | undefined> = {
 }
 
 /** The fixture text in a locale. */
-export function choiceTextsFor(locale: FormLocale): { text: ChoiceTexts; isFallback: boolean } {
+export function choiceTextsFor(locale: FormLocale): { text: ChoiceTexts } {
   const text = choiceTexts[locale]
-  return { text: text ?? textsEn, isFallback: text === undefined }
+  return { text: text ?? textsEn }
 }
 
 /**

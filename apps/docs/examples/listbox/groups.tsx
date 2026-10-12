@@ -4,10 +4,9 @@ import { useMemo } from 'react'
 import { findMunicipality } from './data.ts'
 import type { Municipality } from './data.ts'
 import { useListboxTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function GroupedListbox() {
-  const { texts, isFallback } = useListboxTexts()
+  const { texts } = useListboxTexts()
   const groups = useMemo(
     () => [
       {
@@ -29,24 +28,22 @@ export function GroupedListbox() {
     [texts],
   )
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <Field.Root required>
-        <Field.Label>{texts.municipality}</Field.Label>
-        <Listbox.Root
-          native="never"
-          groups={groups}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          placeholder={texts.municipalityPlaceholder}
-        >
-          <Listbox.Trigger />
-          <Listbox.Popup>
-            <Listbox.List>
-              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-            </Listbox.List>
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>
-    </InEnglishWhenFallback>
+    <Field.Root required>
+      <Field.Label>{texts.municipality}</Field.Label>
+      <Listbox.Root
+        native="never"
+        groups={groups}
+        itemToString={(municipality) => municipality.name}
+        itemToKey={(municipality) => municipality.code}
+        placeholder={texts.municipalityPlaceholder}
+      >
+        <Listbox.Trigger />
+        <Listbox.Popup>
+          <Listbox.List>
+            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+          </Listbox.List>
+        </Listbox.Popup>
+      </Listbox.Root>
+    </Field.Root>
   )
 }

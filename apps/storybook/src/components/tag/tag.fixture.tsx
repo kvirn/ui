@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import {
   Checkbox,
   CheckboxGroup,
@@ -151,9 +150,9 @@ const texts: Partial<Record<FormLocale, TagTexts>> = {
 }
 
 /** The fixture text in a locale. */
-export function tagTextsFor(locale: FormLocale): { text: TagTexts; isFallback: boolean } {
+export function tagTextsFor(locale: FormLocale): { text: TagTexts } {
   const text = texts[locale]
-  return { text: text ?? textsEn, isFallback: text === undefined }
+  return { text: text ?? textsEn }
 }
 
 const textOf = (message: string | (() => string)): string =>
@@ -166,10 +165,10 @@ const languages = ['Svenska', 'Suomi', 'Norsk']
  * moves focus to the next remove button, else the previous, else its label, and announces the removal.
  */
 export function RemovableTags({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = tagTextsFor(locale)
+  const { text } = tagTextsFor(locale)
   const [chosen, setChosen] = useState(languages)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <TagGroup.Root>
         <TagGroup.Label>{text.groupLabel}</TagGroup.Label>
         <TagGroup.List>
@@ -186,15 +185,15 @@ export function RemovableTags({ locale }: { locale: FormLocale }) {
         <TagGroup.Empty>{text.empty}</TagGroup.Empty>
         <TagGroup.ClearAll onClear={() => setChosen([])}>{text.clearAll}</TagGroup.ClearAll>
       </TagGroup.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Static tags: text only, not a Tab stop. A locked value is a static tag, never a disabled button. */
 export function StaticTags({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = tagTextsFor(locale)
+  const { text } = tagTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <TagGroup.Root>
         <TagGroup.Label>{text.groupLabel}</TagGroup.Label>
         <TagGroup.List>
@@ -208,31 +207,31 @@ export function StaticTags({ locale }: { locale: FormLocale }) {
           </Tag.Root>
         </TagGroup.List>
       </TagGroup.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** The group with no tag: the list isn't rendered, the empty text is shown and Clear all is gone. */
 export function EmptyTags({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = tagTextsFor(locale)
+  const { text } = tagTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <TagGroup.Root>
         <TagGroup.Label>{text.groupLabel}</TagGroup.Label>
         <TagGroup.List>{[]}</TagGroup.List>
         <TagGroup.Empty>{text.empty}</TagGroup.Empty>
         <TagGroup.ClearAll onClear={() => {}}>{text.clearAll}</TagGroup.ClearAll>
       </TagGroup.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A long tag wraps over lines, never truncated. */
 export function LongTag({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = tagTextsFor(locale)
+  const { text } = tagTextsFor(locale)
   const [visible, setVisible] = useState(true)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <TagGroup.Root>
         <TagGroup.Label>{text.groupLabel}</TagGroup.Label>
         <TagGroup.List>
@@ -246,7 +245,7 @@ export function LongTag({ locale }: { locale: FormLocale }) {
           </Tag.Root>
         </TagGroup.List>
       </TagGroup.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -258,7 +257,7 @@ export function LongTag({ locale }: { locale: FormLocale }) {
  * live region keeps only the last message. A real list says it after the results settle, debounced.
  */
 export function FilterAList({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = tagTextsFor(locale)
+  const { text } = tagTextsFor(locale)
   const { filters } = messagesFor(locale)
   const format = useFormat()
   const { announce } = useAnnouncer()
@@ -304,7 +303,7 @@ export function FilterAList({ locale }: { locale: FormLocale }) {
   }
 
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <form aria-labelledby="filter-heading">
           <h2 id="filter-heading">{textOf(filters.heading)}</h2>
@@ -375,6 +374,6 @@ export function FilterAList({ locale }: { locale: FormLocale }) {
           </ol>
         )}
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }

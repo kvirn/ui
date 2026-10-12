@@ -3,32 +3,29 @@ import { Autocomplete, Field, Icon } from '@kvirn-ui/react'
 import { streetsWithDistrict } from './data.ts'
 import type { Street } from './data.ts'
 import { useAutocompleteTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function RichSuggestionsAutocomplete() {
-  const { texts, isFallback } = useAutocompleteTexts()
+  const { texts } = useAutocompleteTexts()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <Field.Root>
-        <Field.Label>{texts.street}</Field.Label>
-        <Autocomplete.Root items={streetsWithDistrict} itemToString={(street) => street.name}>
-          <Autocomplete.Input />
-          <Autocomplete.Popup>
-            <Autocomplete.List>
-              {(street: Street) => (
-                <Autocomplete.Option item={street}>
-                  <Autocomplete.OptionIcon>
-                    <Icon name="document" />
-                  </Autocomplete.OptionIcon>
-                  <Autocomplete.OptionText>{street.name}</Autocomplete.OptionText>
-                  <Autocomplete.OptionDescription>{street.district}</Autocomplete.OptionDescription>
-                </Autocomplete.Option>
-              )}
-            </Autocomplete.List>
-            <Autocomplete.Empty />
-          </Autocomplete.Popup>
-        </Autocomplete.Root>
-      </Field.Root>
-    </InEnglishWhenFallback>
+    <Field.Root>
+      <Field.Label>{texts.street}</Field.Label>
+      <Autocomplete.Root items={streetsWithDistrict} itemToString={(street) => street.name}>
+        <Autocomplete.Input />
+        <Autocomplete.Popup>
+          <Autocomplete.List>
+            {(street: Street) => (
+              <Autocomplete.Option item={street}>
+                <Autocomplete.OptionIcon>
+                  <Icon name="document" />
+                </Autocomplete.OptionIcon>
+                <Autocomplete.OptionText>{street.name}</Autocomplete.OptionText>
+                <Autocomplete.OptionDescription>{street.district}</Autocomplete.OptionDescription>
+              </Autocomplete.Option>
+            )}
+          </Autocomplete.List>
+          <Autocomplete.Empty />
+        </Autocomplete.Popup>
+      </Autocomplete.Root>
+    </Field.Root>
   )
 }

@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { AlertDialog, Button, useFormat } from '@kvirn-ui/react'
 import type { AlertDialogRootProps } from '@kvirn-ui/react'
 import { useEffect, useRef, useState } from 'react'
@@ -113,7 +112,7 @@ const alertDialogTexts: Partial<Record<FormLocale, AlertDialogTexts>> = {
 /** The fixture text in a locale, or English for the locales without text. */
 export function alertDialogTextsFor(locale: FormLocale) {
   const text = alertDialogTexts[locale]
-  return { text: text ?? textsEn, isFallback: text === undefined }
+  return { text: text ?? textsEn }
 }
 
 const timeoutSeconds = 120
@@ -138,11 +137,11 @@ export type DeleteDraftConfirmationProps = Omit<
  * `AlertDialog.Close`, so the dialog closes on its own: Escape does what Keep draft does.
  */
 export function DeleteDraftConfirmation({ locale, ...options }: DeleteDraftConfirmationProps) {
-  const { text, isFallback } = alertDialogTextsFor(locale)
+  const { text } = alertDialogTextsFor(locale)
   const keepRef = useRef<HTMLButtonElement>(null)
   const [result, setResult] = useState<string | undefined>()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <AlertDialog.Root {...options} initialFocusRef={keepRef}>
           <AlertDialog.Trigger className="kv-button">{text.deleteTrigger}</AlertDialog.Trigger>
@@ -168,7 +167,7 @@ export function DeleteDraftConfirmation({ locale, ...options }: DeleteDraftConfi
         </AlertDialog.Root>
         <output data-testid="result">{result}</output>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -180,7 +179,7 @@ export function DeleteDraftConfirmation({ locale, ...options }: DeleteDraftConfi
  * signed in" both stay signed in. Nothing is lost when the time runs out: the answers are saved.
  */
 export function SessionTimeoutWarning({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = alertDialogTextsFor(locale)
+  const { text } = alertDialogTextsFor(locale)
   const format = useFormat()
   const stayRef = useRef<HTMLButtonElement>(null)
   const openerRef = useRef<HTMLButtonElement>(null)
@@ -209,7 +208,7 @@ export function SessionTimeoutWarning({ locale }: { locale: FormLocale }) {
   const duration = (seconds: number) =>
     seconds >= 60 ? text.minutes(seconds / 60) : text.seconds(seconds)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Button
           ref={openerRef}
@@ -261,7 +260,7 @@ export function SessionTimeoutWarning({ locale }: { locale: FormLocale }) {
         </AlertDialog.Root>
         <output data-testid="outcome">{outcome}</output>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -271,10 +270,10 @@ export function SessionTimeoutWarning({ locale }: { locale: FormLocale }) {
  * inside, and Escape.
  */
 export function KeyboardAlertDialog({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = alertDialogTextsFor(locale)
+  const { text } = alertDialogTextsFor(locale)
   const keepRef = useRef<HTMLButtonElement>(null)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <p data-testid="outside">{text.textOutside}</p>
         <div className="kv-button-group">
@@ -297,6 +296,6 @@ export function KeyboardAlertDialog({ locale }: { locale: FormLocale }) {
           <Button>{text.after}</Button>
         </div>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }

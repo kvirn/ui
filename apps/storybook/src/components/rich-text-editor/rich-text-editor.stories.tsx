@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Field } from '@kvirn-ui/react'
 import { RichTextEditor } from '@kvirn-ui/rich-text'
 import contract from '../../../../../packages/rich-text/src/rich-text-editor.a11y.md?raw'
@@ -144,9 +143,9 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, isFallback } = editorTextsFor(localeOf(globals))
+    const { text } = editorTextsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.label}</Field.Label>
           <Field.Prose>
@@ -158,7 +157,7 @@ const meta = {
           </RichTextEditor.Root>
           <Field.HelpText>{text.hint}</Field.HelpText>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   parameters: {

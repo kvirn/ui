@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Card, Field, Icon, Listbox } from '@kvirn-ui/react'
 import { useMemo, useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
@@ -222,10 +221,10 @@ export function MunicipalityField() {
  * messages.
  */
 export function KeyboardForm({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const extra = extraTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form className="kv-story-form" noValidate onSubmit={(e) => e.preventDefault()}>
         <div className="kv-button-group">
           <Button type="button">Före</Button>
@@ -298,15 +297,15 @@ export function KeyboardForm({ locale }: { locale: FormLocale }) {
           </Button>
         </div>
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A chosen option shows in the closed trigger: `defaultValue` is its key. */
 export function SelectedMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -327,15 +326,15 @@ export function SelectedMunicipality({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Open from the start with `defaultOpen`, with the chosen option marked. */
 export function OpenMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -357,15 +356,15 @@ export function OpenMunicipality({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** The Field's `Field.Prose` is the trigger's description. */
 export function MunicipalityWithDescription({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Field.Prose>
@@ -388,15 +387,15 @@ export function MunicipalityWithDescription({ locale }: { locale: FormLocale }) 
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Optional: a Field without `required`. Its label says so, as for every field that isn't required. */
 export function OptionalMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -416,15 +415,15 @@ export function OptionalMunicipality({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Invalid: `invalid` on the Field, and the message in `Field.ErrorMessage` under the listbox. */
 export function InvalidMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required invalid>
         <Field.Label>{text.municipality}</Field.Label>
         <Field.Prose>
@@ -448,15 +447,15 @@ export function InvalidMunicipality({ locale }: { locale: FormLocale }) {
         </Listbox.Root>
         <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Disabled with `disabled` on the Field, which disables the listbox too. */
 export function DisabledMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required disabled>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -477,15 +476,15 @@ export function DisabledMunicipality({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** One option that can't be chosen: `isItemDisabled` says which. */
 export function MunicipalityWithClosedOption({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -507,16 +506,16 @@ export function MunicipalityWithClosedOption({ locale }: { locale: FormLocale })
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Groups: `groups` instead of `items`. Each is a `role="group"` named by its label. */
 export function GroupedMunicipalities({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const groups = useMunicipalityGroups(text)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -538,16 +537,15 @@ export function GroupedMunicipalities({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Several choices: `multiple`. The popup stays open, each option toggles, and the value is an array of keys. */
 export function SeveralMunicipalities({ locale }: { locale: FormLocale }) {
-  const { isFallback } = choiceTextsFor(locale)
   const extra = extraTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{extra.several}</Field.Label>
         <Listbox.Root
@@ -570,15 +568,15 @@ export function SeveralMunicipalities({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A long list scrolls inside the popup, which is never taller than the room that is left. */
 export function LongMunicipalityList({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -599,15 +597,15 @@ export function LongMunicipalityList({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** `virtualize` renders only the options in view, for a flat list of thousands. */
 export function VirtualizedPlaces({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required controlId="municipality">
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -629,7 +627,7 @@ export function VirtualizedPlaces({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -639,9 +637,9 @@ export function VirtualizedPlaces({ locale }: { locale: FormLocale }) {
  * screen reader reads "Göteborg", then the county as its description.
  */
 export function RichMunicipalities({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -670,7 +668,7 @@ export function RichMunicipalities({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -680,9 +678,9 @@ export function RichMunicipalities({ locale }: { locale: FormLocale }) {
  * through a function child of `Listbox.Value`.
  */
 export function OwnMarkupMunicipalities({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -722,15 +720,15 @@ export function OwnMarkupMunicipalities({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** No options: `Listbox.Empty` says so in the locale. */
 export function NoMunicipalities({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -751,7 +749,7 @@ export function NoMunicipalities({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -761,10 +759,9 @@ export function NoMunicipalities({ locale }: { locale: FormLocale }) {
  * label followed by this text.
  */
 export function SeveralMunicipalitiesAsCount({ locale }: { locale: FormLocale }) {
-  const { isFallback } = choiceTextsFor(locale)
   const extra = extraTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{extra.several}</Field.Label>
         <Listbox.Root
@@ -787,7 +784,7 @@ export function SeveralMunicipalitiesAsCount({ locale }: { locale: FormLocale })
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -796,10 +793,10 @@ export function SeveralMunicipalitiesAsCount({ locale }: { locale: FormLocale })
  * `Listbox.Empty` shows, for this listbox only. A provider's `messages` change it for every one.
  */
 export function MunicipalitiesWithOwnEmptyText({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const extra = extraTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -821,7 +818,7 @@ export function MunicipalitiesWithOwnEmptyText({ locale }: { locale: FormLocale 
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -831,9 +828,9 @@ export function MunicipalitiesWithOwnEmptyText({ locale }: { locale: FormLocale 
  * when there is no room, and `data-placement` says which side it is on.
  */
 export function MunicipalityPlacedAbove({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -855,7 +852,7 @@ export function MunicipalityPlacedAbove({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -865,11 +862,11 @@ export function MunicipalityPlacedAbove({ locale }: { locale: FormLocale }) {
  * set, nothing opens or closes until you change it.
  */
 export function ControlledOpenMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const [open, setOpen] = useState(false)
   const [reason, setReason] = useState('–')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Button type="button">Före</Button>
         <Field.Root required>
@@ -899,15 +896,15 @@ export function ControlledOpenMunicipality({ locale }: { locale: FormLocale }) {
           open: {String(open)}, reason: {reason}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11), and the popup its own edge. */
 export function MunicipalityInCard({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Card.Root>
         <Field.Root required invalid>
           <Field.Label>{text.municipality}</Field.Label>
@@ -931,15 +928,15 @@ export function MunicipalityInCard({ locale }: { locale: FormLocale }) {
           <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
         </Field.Root>
       </Card.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Staff density: `kv-compact` on a parent gives 32px options and trigger from 64rem. */
 export function CompactMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-compact">
         <Field.Root required>
           <Field.Label>{text.municipality}</Field.Label>
@@ -962,15 +959,15 @@ export function CompactMunicipality({ locale }: { locale: FormLocale }) {
           </Listbox.Root>
         </Field.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A long label and a long option wrap in a narrow column: nothing overflows. */
 export function LongFinnishMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.longSelectLabel}</Field.Label>
         <Listbox.Root
@@ -992,7 +989,7 @@ export function LongFinnishMunicipality({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -1001,10 +998,10 @@ export function LongFinnishMunicipality({ locale }: { locale: FormLocale }) {
  * The listbox shows the `value` it is given and reports changes through `onValueChange`.
  */
 export function ControlledMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const [value, setValue] = useState<string | null>('göteborg')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root required>
           <Field.Label>{text.municipality}</Field.Label>
@@ -1031,16 +1028,16 @@ export function ControlledMunicipality({ locale }: { locale: FormLocale }) {
           {text.youChose}: {value ?? '–'}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A plain `<form>`: no `value` and no handlers. The form's `FormData` has the key by `name` on submit. */
 export function PlainFormMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -1082,15 +1079,15 @@ export function PlainFormMunicipality({ locale }: { locale: FormLocale }) {
           </p>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Every state in one column: described, invalid, optional and disabled. The popup is open on the first. */
 export function MunicipalityStates({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root required>
           <Field.Label>{text.municipality}</Field.Label>
@@ -1177,7 +1174,7 @@ export function MunicipalityStates({ locale }: { locale: FormLocale }) {
           </Listbox.Root>
         </Field.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -1192,11 +1189,11 @@ export function MunicipalityStates({ locale }: { locale: FormLocale }) {
  * message, and a disabled one. The examples share a label, so each has its own `name`.
  */
 export function NativeMunicipalities({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const items = useNativeMunicipalities(text)
   const groups = useMunicipalityGroups(text)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form className="kv-story-form" noValidate onSubmit={(e) => e.preventDefault()}>
         <Field.Root required>
           <Field.Label>{text.municipality}</Field.Label>
@@ -1266,7 +1263,7 @@ export function NativeMunicipalities({ locale }: { locale: FormLocale }) {
           </Button>
         </div>
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 

@@ -1,7 +1,5 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, OneTimeCode, useAnnouncer } from '@kvirn-ui/react'
 import { useState } from 'react'
-import { textsFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
 // Fixture text for Components/Form/OneTimeCode (Plan 0014 and Plan 0019,
@@ -244,13 +242,11 @@ const labelsFor = (texts: OneTimeCodeTexts, kind: CodeKind, pattern: string) => 
 /**
  * What a story's Field says, in a locale: the label, the description above the boxes (the length
  * and the groups must be read before typing), the error for a wrong code, and the Continue button.
- * `isFallback` is true where the fixture shows English: wrap the story in `InEnglishWhenFallback` (3.1.2).
  */
 export function codeTextsFor(locale: FormLocale, kind: CodeKind, pattern: string) {
   const texts = oneTimeCodeTextsFor(locale)
-  const { isFallback } = textsFor(locale)
   const { label, hint } = labelsFor(texts, kind, pattern)
-  return { label, hint, isFallback, errorWrong: texts.errorWrong, submit: texts.submit }
+  return { label, hint, errorWrong: texts.errorWrong, submit: texts.submit }
 }
 
 /**
@@ -260,14 +256,14 @@ export function codeTextsFor(locale: FormLocale, kind: CodeKind, pattern: string
  * in the field with the error under it.
  */
 export function CheckedCodeForm({ locale }: { locale: FormLocale }) {
-  const { label, hint, isFallback, errorWrong, submit } = codeTextsFor(locale, 'sms', '999999')
+  const { label, hint, errorWrong, submit } = codeTextsFor(locale, 'sms', '999999')
   const texts = oneTimeCodeTextsFor(locale)
   const { announce } = useAnnouncer()
   const [value, setValue] = useState('')
   const [isChecking, setIsChecking] = useState(false)
   const [isWrong, setIsWrong] = useState(false)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
         <Field.Root invalid={isWrong}>
           <Field.Label marker="none">{label}</Field.Label>
@@ -309,7 +305,7 @@ export function CheckedCodeForm({ locale }: { locale: FormLocale }) {
           </Button>
         </div>
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -321,7 +317,6 @@ export function CheckedCodeForm({ locale }: { locale: FormLocale }) {
  */
 export function SlotStatesRows({ locale }: { locale: FormLocale }) {
   const texts = oneTimeCodeTextsFor(locale)
-  const { isFallback } = textsFor(locale)
   const rows: {
     caption: string
     code: string
@@ -351,7 +346,7 @@ export function SlotStatesRows({ locale }: { locale: FormLocale }) {
     },
   ]
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         {rows.map(({ caption, code, states }) => (
           <div key={caption}>
@@ -377,6 +372,6 @@ export function SlotStatesRows({ locale }: { locale: FormLocale }) {
           </div>
         ))}
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }

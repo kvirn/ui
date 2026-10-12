@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import {
   Button,
   Checkbox,
@@ -90,7 +89,7 @@ export interface PermitFormProps {
  */
 export function PermitForm({ locale, errors = false, showSubmits = false }: PermitFormProps) {
   const permit = permitTextsFor(locale)
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const { text: choice } = choiceTextsFor(locale)
   const { text: date } = dateTextsFor(locale)
   // The date's example is written in the order the boxes are in.
@@ -100,7 +99,7 @@ export function PermitForm({ locale, errors = false, showSubmits = false }: Perm
   const durationName = `duration-${useId()}`
   const [submits, setSubmits] = useState(0)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -215,6 +214,6 @@ export function PermitForm({ locale, errors = false, showSubmits = false }: Perm
           </p>
         ) : null}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }

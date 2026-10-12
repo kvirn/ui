@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Autocomplete, Button, Card, Field, Icon } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
@@ -121,8 +120,8 @@ const autocompleteTexts: Partial<Record<FormLocale, AutocompleteTexts>> = {
 
 /** The fixture text in a locale, with the shared form texts. */
 export function autocompleteTextsFor(locale: FormLocale) {
-  const { text: shared, isFallback } = choiceTextsFor(locale)
-  return { text: autocompleteTexts[locale] ?? textsEn, shared, isFallback }
+  const { text: shared } = choiceTextsFor(locale)
+  return { text: autocompleteTexts[locale] ?? textsEn, shared }
 }
 
 /**
@@ -131,9 +130,9 @@ export function autocompleteTextsFor(locale: FormLocale) {
  * is the text, which may match nothing, and `name` puts it in a plain `<form>`.
  */
 export function DefaultExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
         <Field.Prose>
@@ -152,7 +151,7 @@ export function DefaultExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -167,9 +166,9 @@ const richStreets: readonly { name: string; district: string }[] = [
  * `OptionDescription`. Any markup also works in `Autocomplete.Option`, with or without the parts.
  */
 export function RichSuggestionsExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
         <Autocomplete.Root
@@ -197,7 +196,7 @@ export function RichSuggestionsExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -207,9 +206,9 @@ export function RichSuggestionsExample({ locale }: { locale: FormLocale }) {
  * Typing narrows the suggestions: the list is virtualized only while it stays long.
  */
 export function VirtualizedExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root controlId="street">
         <Field.Label>{text.street}</Field.Label>
         <Field.Prose>
@@ -228,15 +227,15 @@ export function VirtualizedExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Just the input and the popup, with no box and no buttons: the smallest Autocomplete. */
 export function MinimalExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
         <Autocomplete.Root items={streets} isItemDisabled={(street) => street === 'Stora Torget'}>
@@ -248,15 +247,15 @@ export function MinimalExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A value to begin with: the text shows, and the popup stays closed until the user types or opens it. */
 export function WithValueExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
         <Autocomplete.Root items={streets} defaultValue="Kung">
@@ -272,15 +271,15 @@ export function WithValueExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Typing filters the suggestions, and a Field's help text says that the text may be your own. */
 export function SuggestionsExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
         <Field.Prose>
@@ -299,15 +298,15 @@ export function SuggestionsExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Nothing matches: `Autocomplete.Empty` says so, and the typed text is a fine value. */
 export function NoSuggestionsExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
         <Autocomplete.Root items={streets}>
@@ -320,15 +319,15 @@ export function NoSuggestionsExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Suggestions that a server has chosen: `filter={false}` turns the built-in filter off, and `isLoading` makes `Autocomplete.Empty` say "Laddar resultat". */
 export function LoadingExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
         <Autocomplete.Root items={[]} filter={false} isLoading>
@@ -341,15 +340,15 @@ export function LoadingExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A disabled suggestion: `isItemDisabled` keeps it reachable with the arrow keys, but it can't be picked. */
 export function DisabledSuggestionExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
         <Autocomplete.Root items={streets} isItemDisabled={(street) => street === 'Stora Torget'}>
@@ -365,15 +364,15 @@ export function DisabledSuggestionExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Invalid: `invalid` on the Field, with the error under the field. The text stays, whatever it is. */
 export function InvalidExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required invalid>
         <Field.Label>{text.street}</Field.Label>
         <Field.Prose>
@@ -393,15 +392,15 @@ export function InvalidExample({ locale }: { locale: FormLocale }) {
         </Autocomplete.Root>
         <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Disabled: `disabled` on the Field disables the Autocomplete too, and the popup never opens. */
 export function DisabledExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root disabled>
         <Field.Label>{text.street}</Field.Label>
         <Autocomplete.Root items={streets} defaultValue="Storgatan">
@@ -417,15 +416,15 @@ export function DisabledExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A long list scrolls inside the popup, which is never taller than the room that is left. */
 export function LongListExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
         <Autocomplete.Root items={longList}>
@@ -441,19 +440,19 @@ export function LongListExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Groups: `groups` takes `{ key, label, items }`, and each group is named by its label. */
 export function GroupsExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   const groups = [
     { key: 'streets', label: 'Gator', items: ['Storgatan', 'Kungsgatan'] },
     { key: 'roads', label: 'Vägar', items: ['Björkvägen', 'Tallvägen'] },
   ]
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
         <Autocomplete.Root groups={groups}>
@@ -465,19 +464,19 @@ export function GroupsExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A long label and a long chosen suggestion: both wrap, and nothing overflows. */
 export function LongFinnishExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   const items = [
     'Pohjois-Pohjanmaan sairaanhoitopiirin kuntayhtymän vanhustenhuollon palvelukeskus',
     ...streets.slice(0, 3),
   ]
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.longLabel}</Field.Label>
         <Autocomplete.Root items={items} defaultValue="Pohjois">
@@ -493,15 +492,15 @@ export function LongFinnishExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11), and the popup its own edge. */
 export function OnSurfacesExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Card.Root>
         <Field.Root required invalid>
           <Field.Label>{text.street}</Field.Label>
@@ -520,15 +519,15 @@ export function OnSurfacesExample({ locale }: { locale: FormLocale }) {
           <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
         </Field.Root>
       </Card.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Staff density from 64rem: `kv-compact` on an ancestor makes the box and the options 32px high. */
 export function CompactExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-compact">
         <Field.Root>
           <Field.Label>{text.street}</Field.Label>
@@ -546,7 +545,7 @@ export function CompactExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Root>
         </Field.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -556,9 +555,9 @@ export function CompactExample({ locale }: { locale: FormLocale }) {
  * on every keystroke and decides which suggestions stay in the list.
  */
 export function StartsWithFilterExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
         <Field.Prose>
@@ -580,7 +579,7 @@ export function StartsWithFilterExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -590,13 +589,13 @@ export function StartsWithFilterExample({ locale }: { locale: FormLocale }) {
  * The two printed lines are the last change of each.
  */
 export function ControlledOpenAndTextExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   const [open, setOpen] = useState(false)
   const [openReason, setOpenReason] = useState('–')
   const [value, setValue] = useState('')
   const [valueReason, setValueReason] = useState('–')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root>
           <Field.Label>{text.street}</Field.Label>
@@ -632,7 +631,7 @@ export function ControlledOpenAndTextExample({ locale }: { locale: FormLocale })
           text: {value}, reason: {valueReason}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -642,9 +641,9 @@ export function ControlledOpenAndTextExample({ locale }: { locale: FormLocale })
  * when there is no room, and `data-placement` says which side it is on.
  */
 export function PlacedAboveExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
         <Autocomplete.Root items={fewStreets} placement="top-start" offset={12} padding={16}>
@@ -660,7 +659,7 @@ export function PlacedAboveExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -671,9 +670,9 @@ export function PlacedAboveExample({ locale }: { locale: FormLocale }) {
  * list has changed.
  */
 export function OwnAnnouncementExample({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{text.street}</Field.Label>
         <Field.Prose>
@@ -696,7 +695,7 @@ export function OwnAnnouncementExample({ locale }: { locale: FormLocale }) {
           </Autocomplete.Popup>
         </Autocomplete.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -706,10 +705,10 @@ export function OwnAnnouncementExample({ locale }: { locale: FormLocale }) {
  * the text when the user types, picks a suggestion or clears.
  */
 export function ControlledExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, isFallback } = autocompleteTextsFor(locale)
+  const { text, shared } = autocompleteTextsFor(locale)
   const [value, setValue] = useState('Kung')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root>
           <Field.Label>{text.street}</Field.Label>
@@ -730,7 +729,7 @@ export function ControlledExample({ locale }: { locale: FormLocale }) {
           {shared.youChose}: {value === '' ? '–' : value}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -739,10 +738,10 @@ export function ControlledExample({ locale }: { locale: FormLocale }) {
  * the `name`, and `FormData` has the text by it on submit. Free text is sent as it is.
  */
 export function PlainFormExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, isFallback } = autocompleteTextsFor(locale)
+  const { text, shared } = autocompleteTextsFor(locale)
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -778,7 +777,7 @@ export function PlainFormExample({ locale }: { locale: FormLocale }) {
           </p>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -787,10 +786,10 @@ export function PlainFormExample({ locale }: { locale: FormLocale }) {
  * its two buttons, a disabled Autocomplete, and a submit button in a form that shows what it sent.
  */
 export function KeyboardExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, isFallback } = autocompleteTextsFor(locale)
+  const { text, shared } = autocompleteTextsFor(locale)
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -844,7 +843,7 @@ export function KeyboardExample({ locale }: { locale: FormLocale }) {
           </p>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -853,9 +852,9 @@ export function KeyboardExample({ locale }: { locale: FormLocale }) {
  * with a placeholder and no buttons, and disabled.
  */
 export function AutocompleteStates({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = autocompleteTextsFor(locale)
+  const { text } = autocompleteTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root>
           <Field.Label>{text.street}</Field.Label>
@@ -922,6 +921,6 @@ export function AutocompleteStates({ locale }: { locale: FormLocale }) {
           </Autocomplete.Root>
         </Field.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }

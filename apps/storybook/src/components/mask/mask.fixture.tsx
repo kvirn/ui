@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { en } from '@kvirn-ui/i18n/en'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
@@ -474,16 +473,14 @@ export const maskLocaleOf = (globals: Record<string, unknown>): MaskLocale => {
   return isMaskLocale(locale) ? locale : 'en'
 }
 
-/** The fixture text, and `isFallback` when the toolbar's locale has no texts here (fi; 3.1.2). */
+/** The fixture text for the toolbar locale. */
 export function maskTextsFor(globals: Record<string, unknown>): {
   text: MaskTexts
-  isFallback: boolean
   locale: MaskLocale
 } {
   const locale = maskLocaleOf(globals)
   return {
     text: maskTexts[locale],
-    isFallback: !isMaskLocale(globals['locale']),
     locale,
   }
 }
@@ -515,9 +512,9 @@ export const withMaskLocale: Decorator = (Story, { globals }) => {
 
 /** The identifier presets, each with its own example (the published test numbers). */
 export function IdentifierFields({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Field.Root required>
           <Field.Label>{text.personalIdentityNumber}</Field.Label>
@@ -587,15 +584,15 @@ export function IdentifierFields({ locale }: { locale: FormLocale }) {
           <TextInput name="iban" mask="iban" autoComplete="off" />
         </Field.Root>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** The filter presets: they drop what can't be valid and don't give the value a shape. */
 export function FilterFields({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Field.Root required>
           <Field.Label>{text.digits}</Field.Label>
@@ -654,15 +651,15 @@ export function FilterFields({ locale }: { locale: FormLocale }) {
           />
         </Field.Root>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Your own pattern, and your own regular expression. */
 export function CustomMaskFields({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Field.Root required>
           <Field.Label>{text.caseNumber}</Field.Label>
@@ -700,17 +697,17 @@ export function CustomMaskFields({ locale }: { locale: FormLocale }) {
           />
         </Field.Root>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A number with a range: `isWithinRange` is reported, and the value is never clamped. */
 export function NumberFields({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   const [isWithinRange, setIsWithinRange] = useState<boolean | undefined>(undefined)
   const [unmasked, setUnmasked] = useState('')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Field.Root required>
           <Field.Label>{text.amount}</Field.Label>
@@ -752,7 +749,7 @@ export function NumberFields({ locale }: { locale: FormLocale }) {
           />
         </Field.Root>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -761,12 +758,12 @@ export function NumberFields({ locale }: { locale: FormLocale }) {
  * still typing: the form calls `checks.personalIdentityNumber` and says what is wrong.
  */
 export function PersonalIdentityNumberForm({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   const [value, setValue] = useState('')
   const [error, setError] = useState<string | undefined>(undefined)
   const [sent, setSent] = useState(false)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -810,18 +807,18 @@ export function PersonalIdentityNumberForm({ locale }: { locale: FormLocale }) {
           </p>
         ) : null}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A stored value is unmasked: the form shows it with `mask.format`, never rewritten by TextInput. */
 export function StoredValueField({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   const mask = masks.personalIdentityNumber({ country: 'SE' })
   const [value, setValue] = useState(mask.format('199001012385'))
   const [details, setDetails] = useState<TextInputChangeDetails | undefined>(undefined)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Field.Root required>
           <Field.Label>{text.stored}</Field.Label>
@@ -845,13 +842,13 @@ export function StoredValueField({ locale }: { locale: FormLocale }) {
           {details?.isComplete === false ? text.no : text.yes}
         </p>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** The hook on your own `<input>`, next to your own props: yours win. */
 export function OwnInputField({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   const caseNumber = useMask({
     mask: {
       pattern: 'aa-9999',
@@ -860,7 +857,7 @@ export function OwnInputField({ locale }: { locale: FormLocale }) {
     },
   })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{text.ownInput}</Field.Label>
         <Field.Prose>
@@ -874,15 +871,15 @@ export function OwnInputField({ locale }: { locale: FormLocale }) {
           {...mergeProps(caseNumber.inputProps, { 'data-own': '' })}
         />
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Finland's and Norway's postcodes and organisation numbers, each by `{ preset, country }`. */
 export function NordicCountryFields({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Field.Root required>
           <Field.Label>{text.postalCodeFi}</Field.Label>
@@ -933,7 +930,7 @@ export function NordicCountryFields({ locale }: { locale: FormLocale }) {
           />
         </Field.Root>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -943,7 +940,7 @@ export function NordicCountryFields({ locale }: { locale: FormLocale }) {
  * organisation number and IBAN. Each failure has a reason, so the error says what is wrong.
  */
 export function IdentifierChecksForm({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   const [errors, setErrors] = useState<
     Record<'finnish' | 'norwegian' | 'organisation' | 'iban', string | undefined>
   >({ finnish: undefined, norwegian: undefined, organisation: undefined, iban: undefined })
@@ -954,7 +951,7 @@ export function IdentifierChecksForm({ locale }: { locale: FormLocale }) {
     country: text.checkCountry,
   }
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -1036,7 +1033,7 @@ export function IdentifierChecksForm({ locale }: { locale: FormLocale }) {
           </Button>
         </div>
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -1046,13 +1043,13 @@ export function IdentifierChecksForm({ locale }: { locale: FormLocale }) {
  * field's own mask, so the hint and the field never disagree.
  */
 export function GroupedNumberFields({ locale }: { locale: FormLocale }) {
-  const { text, isFallback, locale: maskLocale } = maskTextsFor({ locale })
+  const { text, locale: maskLocale } = maskTextsFor({ locale })
   const pageMask = masks.number({ decimals: 2, grouping: true })
   const finnishMask = masks.number({ decimals: 2, grouping: true, locale: 'fi' })
   const pageExample = pageMask.withLocale(maskLocale).format('1250000.5')
   const finnishExample = finnishMask.format('1250000.5')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Field.Root required>
           <Field.Label>{text.groupedAmount}</Field.Label>
@@ -1082,15 +1079,15 @@ export function GroupedNumberFields({ locale }: { locale: FormLocale }) {
           {text.storedAmount}: {pageExample}
         </p>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A one-time code on a plain TextInput: `masks.oneTimeCode` with the code's pattern. */
 export function PlainCodeField({ locale }: { locale: FormLocale }) {
-  const { label, hint, isFallback } = codeTextsFor(locale, 'email', '&&&&-&&&&')
+  const { label, hint } = codeTextsFor(locale, 'email', '&&&&-&&&&')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{label}</Field.Label>
         <Field.Prose>
@@ -1103,7 +1100,7 @@ export function PlainCodeField({ locale }: { locale: FormLocale }) {
           className="kv-input--width-10"
         />
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -1113,11 +1110,11 @@ export function PlainCodeField({ locale }: { locale: FormLocale }) {
  * the spaces and hyphens for the value you store.
  */
 export function PatternOptionFields({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   const [isCustomerNumberComplete, setIsCustomerNumberComplete] = useState(false)
   const [account, setAccount] = useState({ unmaskedValue: '', isComplete: false })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Field.Root required>
           <Field.Label>{text.bookingCode}</Field.Label>
@@ -1184,7 +1181,7 @@ export function PatternOptionFields({ locale }: { locale: FormLocale }) {
           </p>
         </Field.Root>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -1194,9 +1191,9 @@ export function PatternOptionFields({ locale }: { locale: FormLocale }) {
  * a filter with a custom set of characters.
  */
 export function RefusalFields({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Field.Root required>
           <Field.Label>{text.digits}</Field.Label>
@@ -1260,16 +1257,16 @@ export function RefusalFields({ locale }: { locale: FormLocale }) {
           />
         </Field.Root>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** The fixture the keyboard tests drive: masked fields and a button in a plain form. */
 export function KeyboardForm({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = maskTextsFor({ locale })
+  const { text } = maskTextsFor({ locale })
   const [sent, setSent] = useState<string | undefined>(undefined)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -1370,6 +1367,6 @@ export function KeyboardForm({ locale }: { locale: FormLocale }) {
           </p>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }

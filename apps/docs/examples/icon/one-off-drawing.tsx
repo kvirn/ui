@@ -1,16 +1,13 @@
 'use client'
 import { Icon } from '@kvirn-ui/react'
 import { useIconTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function OneOffDrawing() {
-  const { texts, isFallback } = useIconTexts()
+  const { texts } = useIconTexts()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <Icon label={texts.ownDrawing} size="40" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth={1.5} />
-        <path d="M8 13h8M12 8v8" fill="none" stroke="currentColor" strokeWidth={1.5} />
-      </Icon>
-    </InEnglishWhenFallback>
+    <Icon label={texts.ownDrawing} size="40" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth={1.5} />
+      <path d="M8 13h8M12 8v8" fill="none" stroke="currentColor" strokeWidth={1.5} />
+    </Icon>
   )
 }

@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, Textarea } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { textsFor } from '../form/form.fixture.tsx'
@@ -109,10 +108,9 @@ const textareaTexts: Record<FormLocale, TextareaTexts | undefined> = {
 /** The fixture text in a locale. */
 export function textareaTextsFor(locale: FormLocale): {
   text: TextareaTexts
-  isFallback: boolean
 } {
   const text = textareaTexts[locale]
-  return { text: text ?? textsEn, isFallback: text === undefined }
+  return { text: text ?? textsEn }
 }
 
 /** A text of exactly `length` characters, made of repeated sentences. */
@@ -126,11 +124,11 @@ export function textOfLength(sentence: string, length: number): string {
  * submit. `noValidate` keeps the browser's own validation bubbles from replacing your messages.
  */
 export function SituationForm({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textareaTextsFor(locale)
+  const { text } = textareaTextsFor(locale)
   const { text: formText } = textsFor(locale)
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -158,7 +156,7 @@ export function SituationForm({ locale }: { locale: FormLocale }) {
           </p>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -167,11 +165,11 @@ export function SituationForm({ locale }: { locale: FormLocale }) {
  * Textarea renders the `value` it's given and reports changes through `onValueChange`.
  */
 export function ControlledSituation({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textareaTextsFor(locale)
+  const { text } = textareaTextsFor(locale)
   const { text: formText } = textsFor(locale)
   const [value, setValue] = useState('')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root required>
           <Field.Label>{text.label}</Field.Label>
@@ -181,7 +179,7 @@ export function ControlledSituation({ locale }: { locale: FormLocale }) {
           {formText.youTyped}: {value}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -191,9 +189,9 @@ export function ControlledSituation({ locale }: { locale: FormLocale }) {
  * are over. Over the limit is a warning: your form decides on submit.
  */
 export function CountedSituation({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textareaTextsFor(locale)
+  const { text } = textareaTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root required>
           <Field.Label>{text.label}</Field.Label>
@@ -204,7 +202,7 @@ export function CountedSituation({ locale }: { locale: FormLocale }) {
           <Field.HelpText>{text.hint}</Field.HelpText>
         </Field.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -214,9 +212,9 @@ export function CountedSituation({ locale }: { locale: FormLocale }) {
  * form writes the error that names the fix.
  */
 export function CountStates({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textareaTextsFor(locale)
+  const { text } = textareaTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root>
           <Field.Label>{`${text.label} (under)`}</Field.Label>
@@ -242,7 +240,7 @@ export function CountStates({ locale }: { locale: FormLocale }) {
           <Field.ErrorMessage>{text.errorTooLong(200)}</Field.ErrorMessage>
         </Field.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -252,9 +250,9 @@ export function CountStates({ locale }: { locale: FormLocale }) {
  * help text under the box. The RTL and ForcedColors stories render it.
  */
 export function TextareaStates({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textareaTextsFor(locale)
+  const { text } = textareaTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root required>
           <Field.Label>{text.label}</Field.Label>
@@ -289,6 +287,6 @@ export function TextareaStates({ locale }: { locale: FormLocale }) {
           <Field.HelpText>{text.readOnlyHint}</Field.HelpText>
         </Field.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }

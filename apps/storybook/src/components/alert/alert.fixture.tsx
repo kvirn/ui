@@ -9,7 +9,6 @@ import type { UseFormatResult } from '@kvirn-ui/react'
 import type { AlertVariant } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 import { providerLocaleOf } from '../form/form.fixture.tsx'
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
@@ -430,18 +429,16 @@ export const localeOf = (globals: Record<string, unknown>): AlertFixtureLocale =
 interface ResolvedTexts {
   text: AlertTexts
   /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
-  isFallback: boolean
 }
 
 /** The fixture text in a locale. */
 export function textsFor(locale: AlertFixtureLocale): ResolvedTexts {
   const text = alertTexts[locale]
   if (text === undefined) {
-    return { text: en, isFallback: true }
+    return { text: en }
   }
   return {
     text,
-    isFallback: false,
   }
 }
 
@@ -476,12 +473,12 @@ export const withAlertLocale: Decorator = (Story, { globals }) => {
  * the English scope where the locale has no texts of its own. It is a
  * decorator so that the code a story shows is the alert and nothing around it.
  */
-export const withAlertColumn: Decorator = (Story, { globals }) => (
-  <InEnglishWhenFallback isFallback={textsFor(localeOf(globals)).isFallback}>
+export const withAlertColumn: Decorator = (Story) => (
+  <>
     <div className="kv-story-alert-column">
       <Story />
     </div>
-  </InEnglishWhenFallback>
+  </>
 )
 
 // Fixed instants, so stories and tests are deterministic. Formatted in UTC.

@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Field, Textarea } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/textarea/textarea.a11y.md?raw'
 import guide from '../../../../../packages/react/src/textarea/textarea.md?raw'
@@ -135,9 +134,9 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, isFallback } = textareaTextsFor(localeOf(globals))
+    const { text } = textareaTextsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.label}</Field.Label>
           <Field.Prose>
@@ -146,7 +145,7 @@ const meta = {
           <Textarea {...args} />
           <Field.HelpText>{text.hint}</Field.HelpText>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   parameters: {
@@ -201,9 +200,9 @@ export const Typing: Story = {
 /** Invalid: a 2px edge and the message under the box, and the text stays where it was. */
 export const Invalid: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textareaTextsFor(localeOf(globals))
+    const { text } = textareaTextsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required invalid>
           <Field.Label>{text.label}</Field.Label>
           <Field.Prose>
@@ -212,7 +211,7 @@ export const Invalid: Story = {
           <Textarea name="situation" />
           <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -305,9 +304,9 @@ export const CharacterCountStates: Story = {
 /** The box is the full width of its field, in a narrow column and in the form column. */
 export const Widths: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textareaTextsFor(localeOf(globals))
+    const { text } = textareaTextsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div className="kv-story-form">
           <div className="kv-story-narrow">
             <Field.Root required>
@@ -320,7 +319,7 @@ export const Widths: Story = {
             <Textarea name="wide" rows={3} />
           </Field.Root>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvasElement }) => {
@@ -332,9 +331,9 @@ export const Widths: Story = {
 export const LongFinnish: Story = {
   globals: { locale: 'fi' },
   render: (_args, { globals }) => {
-    const { text, isFallback } = textareaTextsFor(localeOf(globals))
+    const { text } = textareaTextsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div className="kv-story-narrow">
           <Field.Root required>
             <Field.Label>{text.longLabel}</Field.Label>
@@ -342,7 +341,7 @@ export const LongFinnish: Story = {
             <Field.HelpText>{text.hint}</Field.HelpText>
           </Field.Root>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvasElement }) => {

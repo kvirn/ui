@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Menu, Toolbar, Tooltip, useMenu } from '@kvirn-ui/react'
 import type { ComponentProps } from 'react'
 import { useState } from 'react'
@@ -144,15 +143,14 @@ const texts: Record<FormLocale, MenuTexts> = {
 function textsFor(locale: FormLocale) {
   return {
     text: texts[locale],
-    isFallback: false,
   }
 }
 
 /** A button that opens four actions. The third is unavailable, and keeps its place in the arrows. */
 export function ActionsMenu({ locale, ...rootProps }: MenuRootProps & { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <Menu.Root {...rootProps}>
           <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
@@ -164,15 +162,15 @@ export function ActionsMenu({ locale, ...rootProps }: MenuRootProps & { locale: 
           </Menu.Popup>
         </Menu.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Groups and separators: the actions, a line, then a named group. The destructive item is last. */
 export function GroupedMenu({ locale, ...rootProps }: MenuRootProps & { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <Menu.Root {...rootProps}>
           <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
@@ -190,7 +188,7 @@ export function GroupedMenu({ locale, ...rootProps }: MenuRootProps & { locale: 
           </Menu.Popup>
         </Menu.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -199,9 +197,9 @@ export function GroupedMenu({ locale, ...rootProps }: MenuRootProps & { locale: 
  * shows a tick when it is checked, a radio item a dot. Choosing one closes the menu by default.
  */
 export function ViewOptionsMenu({ locale, ...rootProps }: MenuRootProps & { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <Menu.Root {...rootProps}>
           <Menu.Trigger className="kv-button">{text.viewTrigger}</Menu.Trigger>
@@ -221,7 +219,7 @@ export function ViewOptionsMenu({ locale, ...rootProps }: MenuRootProps & { loca
           </Menu.Popup>
         </Menu.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -234,9 +232,9 @@ export function DisabledItemsMenu({
   locale,
   ...rootProps
 }: MenuRootProps & { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <Menu.Root {...rootProps}>
           <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
@@ -249,7 +247,7 @@ export function DisabledItemsMenu({
         </Menu.Root>
         <p>{text.unavailable}</p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -260,12 +258,12 @@ export function DisabledItemsMenu({
  * `escape`, `outside-press`, `light-dismiss` or `tab`.
  */
 export function ControlledMenu({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const [open, setOpen] = useState(false)
   const [reason, setReason] = useState('–')
   const [action, setAction] = useState(text.none)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <output data-testid="state">{open ? text.stateOpen : text.stateClosed}</output>
         <output data-testid="reason">{reason}</output>
@@ -288,15 +286,15 @@ export function ControlledMenu({ locale }: { locale: FormLocale }) {
           </Menu.Popup>
         </Menu.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Forty actions: more than fit, so the popup scrolls inside, and the labels wrap. */
 export function LongMenu({ locale, ...rootProps }: MenuRootProps & { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <Menu.Root {...rootProps}>
           <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
@@ -309,7 +307,7 @@ export function LongMenu({ locale, ...rootProps }: MenuRootProps & { locale: For
           </Menu.Popup>
         </Menu.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -318,9 +316,9 @@ export function LongMenu({ locale, ...rootProps }: MenuRootProps & { locale: For
  * `as`. ArrowDown on the trigger opens the menu; the toolbar does not also move focus.
  */
 export function ToolbarMenu({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <Toolbar.Root aria-label={text.toolbar} orientation="vertical">
           <Toolbar.Button>{text.before}</Toolbar.Button>
@@ -337,7 +335,7 @@ export function ToolbarMenu({ locale }: { locale: FormLocale }) {
           <Toolbar.Button>{text.after}</Toolbar.Button>
         </Toolbar.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -346,9 +344,9 @@ export function ToolbarMenu({ locale }: { locale: FormLocale }) {
  * item (1.4.13).
  */
 export function TooltipMenu({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <Menu.Root>
           <Tooltip.Root>
@@ -364,7 +362,7 @@ export function TooltipMenu({ locale }: { locale: FormLocale }) {
           </Menu.Popup>
         </Menu.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -374,9 +372,9 @@ export function TooltipMenu({ locale }: { locale: FormLocale }) {
  * trigger, arrows, Home, End and letters in the menu, Tab out of it, and Escape.
  */
 export function KeyboardMenu({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         {/* Above the row, so the popup (placed under the trigger) never covers it. */}
         <p data-testid="outside">{text.outside}</p>
@@ -395,7 +393,7 @@ export function KeyboardMenu({ locale }: { locale: FormLocale }) {
           <Button>{text.after}</Button>
         </div>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -405,7 +403,7 @@ export function KeyboardMenu({ locale }: { locale: FormLocale }) {
  * classes.
  */
 export function HookMenu({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const menu = useMenu()
   const [current, setCurrent] = useState<string>()
   const focusProps = (name: string) => ({
@@ -413,7 +411,7 @@ export function HookMenu({ locale }: { locale: FormLocale }) {
     onBlur: () => setCurrent(undefined),
   })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <button {...menu.triggerProps} className="kv-button">
           {text.trigger}
@@ -446,6 +444,6 @@ export function HookMenu({ locale }: { locale: FormLocale }) {
           ) : null}
         </div>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }

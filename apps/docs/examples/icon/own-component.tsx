@@ -2,7 +2,6 @@
 import { Icon } from '@kvirn-ui/react'
 import type { IconComponentProps } from '@kvirn-ui/react'
 import { useIconTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 function HouseIcon({ ref, ...svgProps }: IconComponentProps) {
   return (
@@ -24,12 +23,10 @@ function HouseIcon({ ref, ...svgProps }: IconComponentProps) {
 }
 
 export function OwnComponent() {
-  const { texts, isFallback } = useIconTexts()
+  const { texts } = useIconTexts()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <p>
-        <Icon icon={HouseIcon} /> {texts.house}
-      </p>
-    </InEnglishWhenFallback>
+    <p>
+      <Icon icon={HouseIcon} /> {texts.house}
+    </p>
   )
 }

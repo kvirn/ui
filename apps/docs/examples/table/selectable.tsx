@@ -14,7 +14,6 @@ import { useMemo } from 'react'
 import { cases } from './cases.ts'
 import type { CaseRecord } from './cases.ts'
 import { useTableTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 const features = tableFeatures({
   rowSortingFeature,
@@ -24,7 +23,7 @@ const features = tableFeatures({
 })
 
 export function SelectableCases() {
-  const { texts, isFallback } = useTableTexts()
+  const { texts } = useTableTexts()
   const format = useFormat()
   const columns = useMemo(() => {
     const column = createColumnHelper<typeof features, CaseRecord>()
@@ -46,49 +45,47 @@ export function SelectableCases() {
     initialState: { rowSelection: { c1: true, c3: true } },
   })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <Table.ScrollRegion table={list}>
-        <Table.Root table={list}>
-          <Table.Caption>{texts.casesCaption}</Table.Caption>
-          <Table.Head>
-            {list.table.getHeaderGroups().map((headerGroup) => (
-              <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
-                <Table.ColumnHeader>
-                  <Table.SelectAllCheckbox />
+    <Table.ScrollRegion table={list}>
+      <Table.Root table={list}>
+        <Table.Caption>{texts.casesCaption}</Table.Caption>
+        <Table.Head>
+          {list.table.getHeaderGroups().map((headerGroup) => (
+            <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
+              <Table.ColumnHeader>
+                <Table.SelectAllCheckbox />
+              </Table.ColumnHeader>
+              {headerGroup.headers.map((header) => (
+                <Table.ColumnHeader
+                  key={header.id}
+                  header={header}
+                  className={
+                    header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
+                  }
+                >
+                  {header.column.getCanSort() ? <Table.SortButton header={header} /> : null}
                 </Table.ColumnHeader>
-                {headerGroup.headers.map((header) => (
-                  <Table.ColumnHeader
-                    key={header.id}
-                    header={header}
-                    className={
-                      header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
-                    }
-                  >
-                    {header.column.getCanSort() ? <Table.SortButton header={header} /> : null}
-                  </Table.ColumnHeader>
-                ))}
-              </Table.Row>
-            ))}
-          </Table.Head>
-          <Table.Body>
-            {(row) => (
-              <Table.Row key={row.id} row={row}>
-                <Table.Cell>
-                  <Table.SelectCheckbox row={row} />
-                </Table.Cell>
-                {row.getAllCells().map((cell) => (
-                  <Table.Cell
-                    key={cell.id}
-                    cell={cell}
-                    className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
-                  />
-                ))}
-              </Table.Row>
-            )}
-          </Table.Body>
-          <Table.Empty />
-        </Table.Root>
-      </Table.ScrollRegion>
-    </InEnglishWhenFallback>
+              ))}
+            </Table.Row>
+          ))}
+        </Table.Head>
+        <Table.Body>
+          {(row) => (
+            <Table.Row key={row.id} row={row}>
+              <Table.Cell>
+                <Table.SelectCheckbox row={row} />
+              </Table.Cell>
+              {row.getAllCells().map((cell) => (
+                <Table.Cell
+                  key={cell.id}
+                  cell={cell}
+                  className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
+                />
+              ))}
+            </Table.Row>
+          )}
+        </Table.Body>
+        <Table.Empty />
+      </Table.Root>
+    </Table.ScrollRegion>
   )
 }

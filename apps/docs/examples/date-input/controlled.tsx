@@ -3,24 +3,21 @@ import { DateInput, Fieldset, useDateInput } from '@kvirn-ui/react'
 import type { DateInputValue } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { useDateInputTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function ControlledDate() {
-  const { texts, isFallback } = useDateInputTexts()
+  const { texts } = useDateInputTexts()
   const { order } = useDateInput()
   const [value, setValue] = useState<DateInputValue>({ year: '', month: '', day: '' })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <Fieldset.Root group required>
-        <Fieldset.Legend>{texts.legend}</Fieldset.Legend>
-        <DateInput.Root name="birth" autoComplete="bday" value={value} onValueChange={setValue} />
-        <Fieldset.HelpText>
-          {order[0] === 'year' ? texts.hintYearFirst : texts.hintDayFirst}
-        </Fieldset.HelpText>
-        <p>
-          {texts.youEntered} {value.year}-{value.month}-{value.day}
-        </p>
-      </Fieldset.Root>
-    </InEnglishWhenFallback>
+    <Fieldset.Root group required>
+      <Fieldset.Legend>{texts.legend}</Fieldset.Legend>
+      <DateInput.Root name="birth" autoComplete="bday" value={value} onValueChange={setValue} />
+      <Fieldset.HelpText>
+        {order[0] === 'year' ? texts.hintYearFirst : texts.hintDayFirst}
+      </Fieldset.HelpText>
+      <p>
+        {texts.youEntered} {value.year}-{value.month}-{value.day}
+      </p>
+    </Fieldset.Root>
   )
 }

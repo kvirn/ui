@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import {
   DateInput,
   DateRangePicker,
@@ -93,9 +92,9 @@ const rangeTexts: Record<FormLocale, RangeTexts | undefined> = {
   en: textsEn,
 }
 
-function rangeTextsFor(locale: FormLocale): { text: RangeTexts; isFallback: boolean } {
+function rangeTextsFor(locale: FormLocale): { text: RangeTexts } {
   const text = rangeTexts[locale]
-  return { text: text ?? textsEn, isFallback: text === undefined }
+  return { text: text ?? textsEn }
 }
 
 const boxes = {
@@ -134,7 +133,7 @@ export function MaskedRangePicker({
   hasLimit = false,
   ...pickerProps
 }: RangePickerProps) {
-  const { text, isFallback } = rangeTextsFor(locale)
+  const { text } = rangeTextsFor(locale)
   const { text: dateText } = dateTextsFor(locale)
   const { locale: providerLocale } = useLocale()
   const [texts, setTexts] = useState({
@@ -149,7 +148,7 @@ export function MaskedRangePicker({
     end: maskedDateToIsoDate(texts.end, providerLocale),
   }
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <DateRangePicker.Root
           today="2026-10-14"
@@ -197,7 +196,7 @@ export function MaskedRangePicker({
         </DateRangePicker.Root>
         <Output range={range} label={text.stored} />
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -209,7 +208,7 @@ export function DateInputRangePicker({
   hasLimit = false,
   ...pickerProps
 }: RangePickerProps) {
-  const { text, isFallback } = rangeTextsFor(locale)
+  const { text } = rangeTextsFor(locale)
   const { text: dateText } = dateTextsFor(locale)
   const { order } = useDateInput()
   const [start, setStart] = useState<DateInputValue>(isoDateToDateInputValue(initial.start))
@@ -217,7 +216,7 @@ export function DateInputRangePicker({
   const example = order[0] === 'year' ? dateText.hintYearFirst : dateText.hintDayFirst
   const range = { start: dateInputValueToIsoDate(start), end: dateInputValueToIsoDate(end) }
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <DateRangePicker.Root
           today="2026-10-14"
@@ -266,7 +265,7 @@ export function DateInputRangePicker({
         </DateRangePicker.Root>
         <Output range={range} label={text.stored} />
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 

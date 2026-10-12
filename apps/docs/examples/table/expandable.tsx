@@ -12,7 +12,6 @@ import { useMemo } from 'react'
 import { cases } from './cases.ts'
 import type { CaseRecord } from './cases.ts'
 import { useTableTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 const features = tableFeatures({
   rowExpandingFeature,
@@ -20,7 +19,7 @@ const features = tableFeatures({
 })
 
 export function ExpandableCases() {
-  const { texts, isFallback } = useTableTexts()
+  const { texts } = useTableTexts()
   const format = useFormat()
   const columns = useMemo(() => {
     const column = createColumnHelper<typeof features, CaseRecord>()
@@ -43,62 +42,58 @@ export function ExpandableCases() {
     initialState: { expanded: { c2: true } },
   })
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <Table.ScrollRegion table={list}>
-        <Table.Root table={list}>
-          <Table.Caption>{texts.casesCaption}</Table.Caption>
-          <Table.Head>
-            {list.table.getHeaderGroups().map((headerGroup) => (
-              <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
-                <Table.ColumnHeader>
-                  <span className="kv-table-visually-hidden">{list.expandButtonText}</span>
-                </Table.ColumnHeader>
-                {headerGroup.headers.map((header) => (
-                  <Table.ColumnHeader
-                    key={header.id}
-                    header={header}
-                    className={
-                      header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
-                    }
-                  />
-                ))}
-              </Table.Row>
-            ))}
-          </Table.Head>
-          <Table.Body>
-            {(row) => {
-              const record = list.table.getRow(row.id).original
-              return (
-                <>
-                  <Table.Row key={row.id} row={row}>
-                    <Table.Cell>
-                      <Table.ExpandButton row={row} />
-                    </Table.Cell>
-                    {row.getAllCells().map((cell) => (
-                      <Table.Cell
-                        key={cell.id}
-                        cell={cell}
-                        className={
-                          cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined
-                        }
-                      />
-                    ))}
-                  </Table.Row>
-                  <Table.DetailRow row={row}>
-                    <dl>
-                      <dt>{texts.handlerLabel}</dt>
-                      <dd>{record.handler}</dd>
-                      <dt>{texts.decisionLabel}</dt>
-                      <dd>{record.decision}</dd>
-                    </dl>
-                  </Table.DetailRow>
-                </>
-              )
-            }}
-          </Table.Body>
-          <Table.Empty />
-        </Table.Root>
-      </Table.ScrollRegion>
-    </InEnglishWhenFallback>
+    <Table.ScrollRegion table={list}>
+      <Table.Root table={list}>
+        <Table.Caption>{texts.casesCaption}</Table.Caption>
+        <Table.Head>
+          {list.table.getHeaderGroups().map((headerGroup) => (
+            <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
+              <Table.ColumnHeader>
+                <span className="kv-table-visually-hidden">{list.expandButtonText}</span>
+              </Table.ColumnHeader>
+              {headerGroup.headers.map((header) => (
+                <Table.ColumnHeader
+                  key={header.id}
+                  header={header}
+                  className={
+                    header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
+                  }
+                />
+              ))}
+            </Table.Row>
+          ))}
+        </Table.Head>
+        <Table.Body>
+          {(row) => {
+            const record = list.table.getRow(row.id).original
+            return (
+              <>
+                <Table.Row key={row.id} row={row}>
+                  <Table.Cell>
+                    <Table.ExpandButton row={row} />
+                  </Table.Cell>
+                  {row.getAllCells().map((cell) => (
+                    <Table.Cell
+                      key={cell.id}
+                      cell={cell}
+                      className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
+                    />
+                  ))}
+                </Table.Row>
+                <Table.DetailRow row={row}>
+                  <dl>
+                    <dt>{texts.handlerLabel}</dt>
+                    <dd>{record.handler}</dd>
+                    <dt>{texts.decisionLabel}</dt>
+                    <dd>{record.decision}</dd>
+                  </dl>
+                </Table.DetailRow>
+              </>
+            )
+          }}
+        </Table.Body>
+        <Table.Empty />
+      </Table.Root>
+    </Table.ScrollRegion>
   )
 }

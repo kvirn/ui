@@ -2,30 +2,26 @@
 import { Button, FocusScope } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { useFocusTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function LoopDrawer() {
-  const { texts, isFallback } = useFocusTexts()
+  const { texts } = useFocusTexts()
   const [open, setOpen] = useState(false)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <div>
-        <Button onClick={() => setOpen(true)}>{texts.open}</Button>
-        <FocusScope
-          as="aside"
-          active={open}
-          contain="loop"
-          onEscape={() => setOpen(false)}
-          hidden={!open}
-          aria-label={texts.filterLabel}
-        >
-          <label>
-            {texts.search} <input type="text" />
-          </label>{' '}
-          <Button>{texts.apply}</Button>{' '}
-          <Button onClick={() => setOpen(false)}>{texts.close}</Button>
-        </FocusScope>
-      </div>
-    </InEnglishWhenFallback>
+    <div>
+      <Button onClick={() => setOpen(true)}>{texts.open}</Button>
+      <FocusScope
+        as="aside"
+        active={open}
+        contain="loop"
+        onEscape={() => setOpen(false)}
+        hidden={!open}
+        aria-label={texts.filterLabel}
+      >
+        <label>
+          {texts.search} <input type="text" />
+        </label>{' '}
+        <Button>{texts.apply}</Button> <Button onClick={() => setOpen(false)}>{texts.close}</Button>
+      </FocusScope>
+    </div>
   )
 }

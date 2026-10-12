@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Link, Navigation, Prose } from '@kvirn-ui/react'
 import { useId } from 'react'
 import type { CSSProperties } from 'react'
@@ -49,7 +48,7 @@ export function GuidanceArticle({
   const date = new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long' })
   const ids = useId()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Prose as="article" className={className}>
         <h1>{text.title}</h1>
         <p className="kv-lead">{text.lead}</p>
@@ -210,7 +209,7 @@ export function GuidanceArticle({
           </small>
         </p>
       </Prose>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -254,7 +253,7 @@ export function ProseOnSurfaces({ locale }: { locale: FixtureLocale }) {
   const date = new Intl.DateTimeFormat(contentLang, { dateStyle: 'long' })
   const ids = useId()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         {surfaces.map((surface, index) => (
           <div key={surface.name}>
@@ -290,7 +289,7 @@ export function ProseOnSurfaces({ locale }: { locale: FixtureLocale }) {
           </div>
         ))}
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 

@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Checkbox, Field } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
@@ -15,10 +14,10 @@ import type { FormLocale } from '../form/form.fixture.tsx'
  * state.
  */
 export function SelectAllCheckbox({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const [state, setState] = useState<'some' | 'all' | 'none'>('some')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Checkbox
           name="all"
@@ -28,7 +27,7 @@ export function SelectAllCheckbox({ locale }: { locale: FormLocale }) {
         />
         <Field.Label marker="none">{text.selectAll}</Field.Label>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -37,10 +36,10 @@ export function SelectAllCheckbox({ locale }: { locale: FormLocale }) {
  * declaration. Tab skips the disabled box, and Space toggles the focused one.
  */
 export function KeyboardForm({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const [state, setState] = useState<'some' | 'all' | 'none'>('some')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form className="kv-story-form" noValidate onSubmit={(e) => e.preventDefault()}>
         <Field.Root>
           <Checkbox name="newsletter" />
@@ -69,7 +68,7 @@ export function KeyboardForm({ locale }: { locale: FormLocale }) {
           </Button>
         </div>
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -79,10 +78,10 @@ export function KeyboardForm({ locale }: { locale: FormLocale }) {
  * `onCheckedChange(checked, { reason: 'input', event })`. It never copies the state of its own.
  */
 export function ControlledDeclaration({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const [checked, setChecked] = useState(false)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root required>
           <Checkbox name="declaration" checked={checked} onCheckedChange={setChecked} />
@@ -92,7 +91,7 @@ export function ControlledDeclaration({ locale }: { locale: FormLocale }) {
           {text.youChose}: {String(checked)}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -101,10 +100,10 @@ export function ControlledDeclaration({ locale }: { locale: FormLocale }) {
  * its state, and the form's `FormData` has it by `name` and `value` on submit.
  */
 export function DeclarationForm({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -129,6 +128,6 @@ export function DeclarationForm({ locale }: { locale: FormLocale }) {
           </p>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }

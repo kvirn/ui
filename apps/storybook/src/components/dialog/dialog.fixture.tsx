@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { AlertDialog, Button, Combobox, Dialog, Field, Popover, TextInput } from '@kvirn-ui/react'
 import { useRef, useState } from 'react'
 import { comboboxTextsFor, municipalities } from '../combobox/combobox.fixture.tsx'
@@ -138,7 +137,7 @@ const dialogTexts: Partial<Record<FormLocale, DialogTexts>> = {
 /** The fixture text in a locale, or English for the locales without text. */
 export function dialogTextsFor(locale: FormLocale) {
   const text = dialogTexts[locale]
-  return { text: text ?? textsEn, isFallback: text === undefined }
+  return { text: text ?? textsEn }
 }
 
 /**
@@ -147,10 +146,10 @@ export function dialogTextsFor(locale: FormLocale) {
  * nothing is cleared when it closes (Escape and Cancel keep what was typed).
  */
 export function PhoneNumberForm({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dialogTextsFor(locale)
+  const { text } = dialogTextsFor(locale)
   const [open, setOpen] = useState(false)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
         <Dialog.Popup>
@@ -178,7 +177,7 @@ export function PhoneNumberForm({ locale }: { locale: FormLocale }) {
           </form>
         </Dialog.Popup>
       </Dialog.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -189,9 +188,9 @@ export function PhoneNumberForm({ locale }: { locale: FormLocale }) {
  * read-only dialog ends with its answer.
  */
 export function LongTerms({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dialogTextsFor(locale)
+  const { text } = dialogTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Dialog.Root>
         <Dialog.Trigger className="kv-button">{text.termsOpen}</Dialog.Trigger>
         <Dialog.Popup>
@@ -206,7 +205,7 @@ export function LongTerms({ locale }: { locale: FormLocale }) {
           </Dialog.Actions>
         </Dialog.Popup>
       </Dialog.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -216,11 +215,11 @@ export function LongTerms({ locale }: { locale: FormLocale }) {
  * their own reason. A press on the backdrop asks only with `dismissOnOutsidePress`.
  */
 export function ControlledDialog({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dialogTextsFor(locale)
+  const { text } = dialogTextsFor(locale)
   const [open, setOpen] = useState(false)
   const [reason, setReason] = useState('–')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Button onClick={() => setOpen(true)}>{text.openFromPage}</Button>
         <output data-testid="state">{open ? text.open : text.closed}</output>
@@ -245,7 +244,7 @@ export function ControlledDialog({ locale }: { locale: FormLocale }) {
           </Dialog.Popup>
         </Dialog.Root>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -254,11 +253,11 @@ export function ControlledDialog({ locale }: { locale: FormLocale }) {
  * has nowhere obvious to return focus to, so `finalFocusRef` says where it goes.
  */
 export function OpenedByAButton({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dialogTextsFor(locale)
+  const { text } = dialogTextsFor(locale)
   const [open, setOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Button ref={buttonRef} onClick={() => setOpen(true)}>
           {text.receiptOpen}
@@ -273,7 +272,7 @@ export function OpenedByAButton({ locale }: { locale: FormLocale }) {
           </Dialog.Popup>
         </Dialog.Root>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -283,10 +282,10 @@ export function OpenedByAButton({ locale }: { locale: FormLocale }) {
  * page never reaches it.
  */
 export function RemoveNumberOverDialog({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dialogTextsFor(locale)
+  const { text } = dialogTextsFor(locale)
   const keepRef = useRef<HTMLButtonElement>(null)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Dialog.Root>
         <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
         <Dialog.Popup>
@@ -311,7 +310,7 @@ export function RemoveNumberOverDialog({ locale }: { locale: FormLocale }) {
           </Dialog.Body>
         </Dialog.Popup>
       </Dialog.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -320,9 +319,9 @@ export function RemoveNumberOverDialog({ locale }: { locale: FormLocale }) {
  * closes it first. The next Escape closes the dialog.
  */
 export function PopoverInDialog({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dialogTextsFor(locale)
+  const { text } = dialogTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Dialog.Root>
         <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
         <Dialog.Popup>
@@ -342,7 +341,7 @@ export function PopoverInDialog({ locale }: { locale: FormLocale }) {
           </Dialog.Body>
         </Dialog.Popup>
       </Dialog.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -351,10 +350,10 @@ export function PopoverInDialog({ locale }: { locale: FormLocale }) {
  * dialog hosts its own and the result count is still announced. Escape closes the list first.
  */
 export function ComboboxInDialog({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dialogTextsFor(locale)
+  const { text } = dialogTextsFor(locale)
   const { text: comboboxText } = comboboxTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Dialog.Root>
         <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
         <Dialog.Popup>
@@ -385,7 +384,7 @@ export function ComboboxInDialog({ locale }: { locale: FormLocale }) {
           </Dialog.Body>
         </Dialog.Popup>
       </Dialog.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -395,9 +394,9 @@ export function ComboboxInDialog({ locale }: { locale: FormLocale }) {
  * Close.
  */
 export function KeyboardDialog({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dialogTextsFor(locale)
+  const { text } = dialogTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <p data-testid="outside">{text.textOutside}</p>
         <div className="kv-button-group">
@@ -423,6 +422,6 @@ export function KeyboardDialog({ locale }: { locale: FormLocale }) {
           <Button>{text.after}</Button>
         </div>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }

@@ -4,41 +4,38 @@ import { useState } from 'react'
 import { municipalities } from '../listbox/data.ts'
 import type { Municipality } from '../listbox/data.ts'
 import { useComboboxTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function NotInListCombobox() {
-  const { texts, isFallback } = useComboboxTexts()
+  const { texts } = useComboboxTexts()
   const [value, setValue] = useState<string | null>(null)
   const [text, setText] = useState('Gö')
   const [isTouched, setIsTouched] = useState(false)
   const isInvalid = isTouched && text !== '' && value === null
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <Field.Root required invalid={isInvalid}>
-        <Field.Label>{texts.municipality}</Field.Label>
-        <Combobox.Root
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          value={value}
-          onValueChange={setValue}
-          inputValue={text}
-          onInputValueChange={setText}
-        >
-          <Combobox.Control>
-            <Combobox.Input onBlur={() => setIsTouched(true)} />
-            <Combobox.Clear />
-            <Combobox.Toggle />
-          </Combobox.Control>
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-        <Field.ErrorMessage>{texts.notInList}</Field.ErrorMessage>
-      </Field.Root>
-    </InEnglishWhenFallback>
+    <Field.Root required invalid={isInvalid}>
+      <Field.Label>{texts.municipality}</Field.Label>
+      <Combobox.Root
+        items={municipalities}
+        itemToString={(municipality) => municipality.name}
+        itemToKey={(municipality) => municipality.code}
+        value={value}
+        onValueChange={setValue}
+        inputValue={text}
+        onInputValueChange={setText}
+      >
+        <Combobox.Control>
+          <Combobox.Input onBlur={() => setIsTouched(true)} />
+          <Combobox.Clear />
+          <Combobox.Toggle />
+        </Combobox.Control>
+        <Combobox.Popup>
+          <Combobox.List>
+            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+          </Combobox.List>
+          <Combobox.Empty />
+        </Combobox.Popup>
+      </Combobox.Root>
+      <Field.ErrorMessage>{texts.notInList}</Field.ErrorMessage>
+    </Field.Root>
   )
 }

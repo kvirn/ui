@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import {
   Calendar,
   Field,
@@ -102,12 +101,12 @@ const fromToTexts: Record<FormLocale, { from: string; to: string }> = {
 
 /** No dialog: the Calendar is a page section, kept in step with a `masks.date()` field beside it. */
 export function InlineCalendarWithField({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dateTextsFor(locale)
+  const { text } = dateTextsFor(locale)
   const { locale: providerLocale } = useLocale()
   const [fieldText, setFieldText] = useState('')
   const example = masks.date().withLocale(providerLocale).format('2026-10-27')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root>
           <Field.Label>{text.oneFieldLabel}</Field.Label>
@@ -134,18 +133,18 @@ export function InlineCalendarWithField({ locale }: { locale: FormLocale }) {
           {text.stored}: {maskedDateToIsoDate(fieldText, providerLocale)}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Two single-date Calendars, one per group: the "to" Calendar starts at the "from" day. */
 export function FromToCalendars({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dateTextsFor(locale)
+  const { text } = dateTextsFor(locale)
   const labels = fromToTexts[locale]
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <div className="kv-story-calendars">
           <Fieldset.Root group>
@@ -186,7 +185,7 @@ export function FromToCalendars({ locale }: { locale: FormLocale }) {
           {text.stored}: {from === '' ? '' : from} – {to}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 

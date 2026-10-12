@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, Switch } from '@kvirn-ui/react'
 import { useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -99,10 +98,9 @@ const switchTexts: Record<FormLocale, SwitchTexts | undefined> = {
 /** The fixture text in a locale. */
 export function switchTextsFor(locale: FormLocale): {
   text: SwitchTexts
-  isFallback: boolean
 } {
   const text = switchTexts[locale]
-  return { text: text ?? textsEn, isFallback: text === undefined }
+  return { text: text ?? textsEn }
 }
 
 /**
@@ -110,9 +108,9 @@ export function switchTextsFor(locale: FormLocale): {
  * after it. Tab skips the disabled switch, Space toggles the focused one, and Enter does nothing.
  */
 export function KeyboardSettings({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = switchTextsFor(locale)
+  const { text } = switchTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root>
           <Switch name="sms" />
@@ -128,7 +126,7 @@ export function KeyboardSettings({ locale }: { locale: FormLocale }) {
           <Field.Label marker="none">{text.emailDecisions}</Field.Label>
         </Field.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -140,11 +138,11 @@ export function KeyboardSettings({ locale }: { locale: FormLocale }) {
  * under the row and announce it through the `Announcer`.
  */
 export function SavedAtOnceSetting({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = switchTextsFor(locale)
+  const { text } = switchTextsFor(locale)
   const [checked, setChecked] = useState(false)
   const [status, setStatus] = useState('')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root>
           <Switch
@@ -162,7 +160,7 @@ export function SavedAtOnceSetting({ locale }: { locale: FormLocale }) {
           {status}
         </output>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -172,10 +170,10 @@ export function SavedAtOnceSetting({ locale }: { locale: FormLocale }) {
  * sends nothing.
  */
 export function SettingsForm({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = switchTextsFor(locale)
+  const { text } = switchTextsFor(locale)
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         onSubmit={(event) => {
@@ -199,6 +197,6 @@ export function SettingsForm({ locale }: { locale: FormLocale }) {
           </p>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }

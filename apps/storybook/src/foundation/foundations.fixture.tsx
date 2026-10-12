@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../fixture-language.tsx'
 import { Button } from '@kvirn-ui/react'
 import { useId } from 'react'
 import type { ReactNode } from 'react'
@@ -567,7 +566,7 @@ export function ProseArticle({
   const date = new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long' })
   const ids = useId()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <article className={size === 'large' ? 'kv-prose kv-prose--large' : 'kv-prose'}>
         <h1>{text.title}</h1>
         <p className="kv-lead">{text.lead}</p>
@@ -712,6 +711,6 @@ export function ProseArticle({
           </small>
         </p>
       </article>
-    </InEnglishWhenFallback>
+    </>
   )
 }

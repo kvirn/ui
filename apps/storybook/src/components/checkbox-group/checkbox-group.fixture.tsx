@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Checkbox, CheckboxGroup, Field } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
@@ -15,10 +14,10 @@ import type { FormLocale } from '../form/form.fixture.tsx'
  * `onValueChange(next, { reason: 'input', event })` with the array to store. It never stores it.
  */
 export function ControlledContactGroup({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const [value, setValue] = useState<string[]>(['email'])
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <CheckboxGroup.Root name="contact" value={value} onValueChange={setValue}>
           <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
@@ -42,7 +41,7 @@ export function ControlledContactGroup({ locale }: { locale: FormLocale }) {
           {text.youChose}: {value.join(', ')}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -52,10 +51,10 @@ export function ControlledContactGroup({ locale }: { locale: FormLocale }) {
  * `noValidate` keeps the browser's own validation bubbles from replacing your messages.
  */
 export function ContactForm({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const [sent, setSent] = useState<string[] | undefined>()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -93,6 +92,6 @@ export function ContactForm({ locale }: { locale: FormLocale }) {
           </p>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }

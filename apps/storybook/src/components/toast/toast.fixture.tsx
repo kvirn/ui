@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, ButtonGroup, Dialog, KvirnProvider, useToast } from '@kvirn-ui/react'
 import type { ToastVariant } from '@kvirn-ui/react'
 import { useState } from 'react'
@@ -249,7 +248,6 @@ export function toastTextsFor(locale: FormLocale) {
   const text = toastTexts[locale]
   return {
     text: text ?? textsEn,
-    isFallback: text === undefined,
     providerLocale: text === undefined ? ('en' as const) : locale,
     messages: messagesFor(locale),
   }
@@ -272,11 +270,11 @@ function SaveSettingsButton({
   withAction,
   focus,
 }: Required<Pick<ToastDemoProps, 'locale' | 'variant' | 'withBody' | 'withAction' | 'focus'>>) {
-  const { text, isFallback } = toastTextsFor(locale)
+  const { text } = toastTextsFor(locale)
   const toast = useToast()
   const [outcome, setOutcome] = useState('–')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Button
           onClick={() =>
@@ -297,7 +295,7 @@ function SaveSettingsButton({
           {text.outcomeLabel}: <output data-testid="outcome">{outcome}</output>
         </p>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -329,10 +327,10 @@ export function SaveSettings({
 }
 
 function StatusButtons({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = toastTextsFor(locale)
+  const { text } = toastTextsFor(locale)
   const toast = useToast()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ButtonGroup aria-label={text.showMessages}>
         <Button onClick={() => toast.show({ variant: 'info', title: text.exportRunning })}>
           {text.startExport}
@@ -341,7 +339,7 @@ function StatusButtons({ locale }: { locale: FormLocale }) {
           {text.saveSettings}
         </Button>
       </ButtonGroup>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -356,10 +354,10 @@ export function StatusToasts({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function JobButtons({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = toastTextsFor(locale)
+  const { text } = toastTextsFor(locale)
   const toast = useToast()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ButtonGroup aria-label={text.startExport}>
         <Button
           onClick={() => {
@@ -373,7 +371,7 @@ function JobButtons({ locale }: { locale: FormLocale }) {
           {text.startExport}
         </Button>
       </ButtonGroup>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -388,11 +386,11 @@ export function JobToast({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function DeleteDraftButtons({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = toastTextsFor(locale)
+  const { text } = toastTextsFor(locale)
   const toast = useToast()
   const [deleted, setDeleted] = useState(false)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <p>
           {text.draftLabel}{' '}
@@ -418,7 +416,7 @@ function DeleteDraftButtons({ locale }: { locale: FormLocale }) {
           </Button>
         </ButtonGroup>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -436,10 +434,10 @@ export function DeleteDraft({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function TimedButtons({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = toastTextsFor(locale)
+  const { text } = toastTextsFor(locale)
   const toast = useToast()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ButtonGroup aria-label={text.showMessages}>
         <Button onClick={() => toast.show({ variant: 'success', title: text.linkCopied })}>
           {text.copyLink}
@@ -456,7 +454,7 @@ function TimedButtons({ locale }: { locale: FormLocale }) {
           {text.reportReady}
         </Button>
       </ButtonGroup>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -476,11 +474,11 @@ export function TimedToasts({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function StackingButtons({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = toastTextsFor(locale)
+  const { text } = toastTextsFor(locale)
   const toast = useToast()
   const [outcome, setOutcome] = useState('–')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <ButtonGroup aria-label={text.showMessages}>
           {[3, 12].map((count) => (
@@ -516,7 +514,7 @@ function StackingButtons({ locale }: { locale: FormLocale }) {
           {text.outcomeLabel}: <output data-testid="outcome">{outcome}</output>
         </p>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -535,10 +533,10 @@ export function StackedToasts({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function KeyboardButtons({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = toastTextsFor(locale)
+  const { text } = toastTextsFor(locale)
   const toast = useToast()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <ButtonGroup aria-label={text.showMessages}>
         <Button
           onClick={() => {
@@ -554,7 +552,7 @@ function KeyboardButtons({ locale }: { locale: FormLocale }) {
         </Button>
         <Button>{text.after}</Button>
       </ButtonGroup>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -573,10 +571,10 @@ export function KeyboardToasts({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function EveryToastButton({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = toastTextsFor(locale)
+  const { text } = toastTextsFor(locale)
   const toast = useToast()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Button
         onClick={() => {
           toast.show({
@@ -593,7 +591,7 @@ function EveryToastButton({ locale }: { locale: FormLocale }) {
       >
         {text.showMessages}
       </Button>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -608,10 +606,10 @@ export function EveryToast({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function LongToastButton({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = toastTextsFor(locale)
+  const { text } = toastTextsFor(locale)
   const toast = useToast()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Button
         onClick={() =>
           toast.show({
@@ -624,7 +622,7 @@ function LongToastButton({ locale }: { locale: FormLocale }) {
       >
         {text.showMessages}
       </Button>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -639,11 +637,11 @@ export function LongToast({ locale = 'fi' }: { locale?: FormLocale }) {
 }
 
 function DialogWithToast({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = toastTextsFor(locale)
+  const { text } = toastTextsFor(locale)
   const toast = useToast()
   const [open, setOpen] = useState(false)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Trigger className="kv-button">{text.openDialog}</Dialog.Trigger>
         <Dialog.Popup>
@@ -667,7 +665,7 @@ function DialogWithToast({ locale }: { locale: FormLocale }) {
           </Dialog.Actions>
         </Dialog.Popup>
       </Dialog.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -695,9 +693,9 @@ function ShowToastButton({ label, title }: { label: string; title: string }) {
  * one region, and the first provider that mounted sets `limit` and `autoDismiss`.
  */
 export function TwoProviders({ locale = 'sv' }: { locale?: FormLocale }) {
-  const { text, isFallback, providerLocale, messages } = toastTextsFor(locale)
+  const { text, providerLocale, messages } = toastTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <KvirnProvider locale={providerLocale} messages={messages} toast={{ limit: 10 }}>
           <ShowToastButton label={text.saveSettings} title={text.settingsSaved} />
@@ -706,6 +704,6 @@ export function TwoProviders({ locale = 'sv' }: { locale?: FormLocale }) {
           <ShowToastButton label={text.copyLink} title={text.linkCopied} />
         </KvirnProvider>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }

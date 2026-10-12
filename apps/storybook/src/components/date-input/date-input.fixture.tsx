@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { sv } from '@kvirn-ui/i18n/sv'
 import {
   Button,
@@ -140,9 +139,9 @@ const dateTexts: Record<FormLocale, DateTexts | undefined> = {
 }
 
 /** The fixture text in a locale. */
-export function dateTextsFor(locale: FormLocale): { text: DateTexts; isFallback: boolean } {
+export function dateTextsFor(locale: FormLocale): { text: DateTexts } {
   const text = dateTexts[locale]
-  return { text: text ?? textsEn, isFallback: text === undefined }
+  return { text: text ?? textsEn }
 }
 
 /**
@@ -169,11 +168,11 @@ export interface BirthDateProps extends Omit<DateInputRootProps, 'children'> {
  * the wrong boxes are marked invalid.
  */
 export function BirthDate({ locale, error, ...dateProps }: BirthDateProps) {
-  const { text, isFallback } = dateTextsFor(locale)
+  const { text } = dateTextsFor(locale)
   // The example is written in the order the boxes are in.
   const { order } = useDateInput()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Fieldset.Root group required invalid={error !== undefined}>
         <Fieldset.Legend>{text.legend}</Fieldset.Legend>
         <DateInput.Root
@@ -191,7 +190,7 @@ export function BirthDate({ locale, error, ...dateProps }: BirthDateProps) {
           {error === 'year' ? text.errorYear : text.errorDate}
         </Fieldset.ErrorMessage>
       </Fieldset.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -200,9 +199,9 @@ export function BirthDate({ locale, error, ...dateProps }: BirthDateProps) {
  * follows the order it chose. Here, day, month, year in Sweden.
  */
 export function PaperFormDate({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dateTextsFor(locale)
+  const { text } = dateTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Fieldset.Root group required>
         <Fieldset.Legend>{text.legend}</Fieldset.Legend>
         <DateInput.Root name="birth" autoComplete="bday">
@@ -212,7 +211,7 @@ export function PaperFormDate({ locale }: { locale: FormLocale }) {
         </DateInput.Root>
         <Fieldset.HelpText>{text.hintDayFirst}</Fieldset.HelpText>
       </Fieldset.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -221,10 +220,10 @@ export function PaperFormDate({ locale }: { locale: FormLocale }) {
  * birthday (1.3.5). Optional, so the legend ends with "(valfritt)".
  */
 export function VisitDate({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dateTextsFor(locale)
+  const { text } = dateTextsFor(locale)
   const { order } = useDateInput()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Fieldset.Root group>
         <Fieldset.Legend>{text.visitLegend}</Fieldset.Legend>
         <DateInput.Root name="visit" />
@@ -232,7 +231,7 @@ export function VisitDate({ locale }: { locale: FormLocale }) {
           {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
         </Fieldset.HelpText>
       </Fieldset.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -241,12 +240,12 @@ export function VisitDate({ locale }: { locale: FormLocale }) {
  * would sit). The Root reports the whole date as the boxes show it: three strings, never parsed.
  */
 export function ControlledDate({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dateTextsFor(locale)
+  const { text } = dateTextsFor(locale)
   const [value, setValue] = useState<DateInputValue>({ year: '1990', month: '3', day: '' })
   // The example is written in the order the boxes are in.
   const { order } = useDateInput()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Fieldset.Root group required>
           <Fieldset.Legend>{text.legend}</Fieldset.Legend>
@@ -259,7 +258,7 @@ export function ControlledDate({ locale }: { locale: FormLocale }) {
           {text.youTyped}: {value.year}-{value.month}-{value.day}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -268,11 +267,11 @@ export function ControlledDate({ locale }: { locale: FormLocale }) {
  * submit reads `birth-day`, `birth-month` and `birth-year` from `FormData`.
  */
 export function PlainFormDate({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dateTextsFor(locale)
+  const { text } = dateTextsFor(locale)
   const { order } = useDateInput()
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -307,7 +306,7 @@ export function PlainFormDate({ locale }: { locale: FormLocale }) {
           </p>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -316,11 +315,11 @@ export function PlainFormDate({ locale }: { locale: FormLocale }) {
  * box submits it, and the output shows that it did.
  */
 export function KeyboardDate({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dateTextsFor(locale)
+  const { text } = dateTextsFor(locale)
   const { order } = useDateInput()
   const [submits, setSubmits] = useState(0)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -348,7 +347,7 @@ export function KeyboardDate({ locale }: { locale: FormLocale }) {
           {text.sent}: {submits}
         </p>
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -358,12 +357,12 @@ export function KeyboardDate({ locale }: { locale: FormLocale }) {
  * them, once.
  */
 export function DateStates({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dateTextsFor(locale)
+  const { text } = dateTextsFor(locale)
   const id = useId()
   const { order } = useDateInput()
   const hint = order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Fieldset.Root group required>
           <Fieldset.Legend>{text.legend}</Fieldset.Legend>
@@ -417,7 +416,7 @@ export function DateStates({ locale }: { locale: FormLocale }) {
           <Fieldset.HelpText>{hint}</Fieldset.HelpText>
         </Fieldset.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -427,12 +426,12 @@ export function DateStates({ locale }: { locale: FormLocale }) {
  * that form. The form keeps the ISO date, which `onValueChange` reports once the date is complete.
  */
 export function OneFieldDate({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = dateTextsFor(locale)
+  const { text } = dateTextsFor(locale)
   const [stored, setStored] = useState('')
   // The example comes from the mask itself, so the help text and the field never disagree.
   const example = masks.date().withLocale(locale).format('2026-10-27')
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root required>
           <Field.Label>{text.oneFieldLabel}</Field.Label>
@@ -448,6 +447,6 @@ export function OneFieldDate({ locale }: { locale: FormLocale }) {
           {text.stored}: {stored}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }

@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, ButtonGroup, Card, Field, Icon, InputGroup, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/input-group/input-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/input-group/input-group.md?raw'
@@ -55,9 +54,9 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
+    const { text, amountExample } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.rentWithUnit}</Field.Label>
           <InputGroup.Root {...args}>
@@ -72,7 +71,7 @@ const meta = {
           </InputGroup.Root>
           <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 } satisfies Meta<typeof InputGroup.Root>
@@ -120,9 +119,9 @@ export const Keyboard: Story = {
 /** A percentage: the "%" at the end, a width of 4 characters. sv and fi write "75 %". */
 export const Percentage: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.workTime}</Field.Label>
           <InputGroup.Root>
@@ -137,7 +136,7 @@ export const Percentage: Story = {
           </InputGroup.Root>
           <Field.HelpText>{text.workTimeExample}</Field.HelpText>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -151,9 +150,9 @@ export const Percentage: Story = {
 /** A distance: "km" at the end, and a description above the box, because it's read before typing. */
 export const Distance: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.distance}</Field.Label>
           <Field.Prose>
@@ -170,7 +169,7 @@ export const Distance: Story = {
             <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
           </InputGroup.Root>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -184,9 +183,9 @@ export const Distance: Story = {
 /** A search with a decorative icon at the start: it repeats what the label says. Full width. */
 export const SearchIcon: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root>
           <Field.Label marker="none">{text.searchServices}</Field.Label>
           <InputGroup.Root>
@@ -201,7 +200,7 @@ export const SearchIcon: Story = {
             />
           </InputGroup.Root>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -296,9 +295,9 @@ export const SearchIconOnlyClear: Story = {
  */
 export const CalendarIcon: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.visitDate}</Field.Label>
           <InputGroup.Root>
@@ -314,7 +313,7 @@ export const CalendarIcon: Story = {
           </InputGroup.Root>
           <Field.HelpText>{text.visitDateExample}</Field.HelpText>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -331,9 +330,9 @@ export const CalendarIcon: Story = {
  */
 export const Invalid: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
+    const { text, amountExample } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required invalid>
           <Field.Label>{text.rentWithUnit}</Field.Label>
           <InputGroup.Root>
@@ -350,7 +349,7 @@ export const Invalid: Story = {
           <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
           <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -373,9 +372,9 @@ export const Invalid: Story = {
  */
 export const WithoutField: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
+    const { text, amountExample } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div>
           <label htmlFor="rent-without-field" className="kv-field-label">
             {text.rentWithUnit}
@@ -412,7 +411,7 @@ export const WithoutField: Story = {
             <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
           </InputGroup.Root>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -429,9 +428,9 @@ export const WithoutField: Story = {
 /** Disabled: a dashed edge on the surface colour, the unit and the value muted. */
 export const Disabled: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
+    const { text, amountExample } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <>
           <Field.Root required disabled>
             <Field.Label>{text.rentWithUnit}</Field.Label>
@@ -465,7 +464,7 @@ export const Disabled: Story = {
             </InputGroup.Root>
           </Field.Root>
         </>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -478,9 +477,9 @@ export const Disabled: Story = {
 /** Read-only, in staff tools: a solid edge on the surface colour, and still focusable. */
 export const ReadOnly: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
+    const { text, amountExample } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.rentWithUnit}</Field.Label>
           <InputGroup.Root>
@@ -497,7 +496,7 @@ export const ReadOnly: Story = {
           </InputGroup.Root>
           <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -512,9 +511,9 @@ export const ReadOnly: Story = {
 /** In a card: a `canvas` box on `surface-raised`, so the edge keeps 3:1 against it (1.4.11). */
 export const InCard: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
+    const { text, amountExample } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Card.Root>
           <Field.Root required invalid>
             <Field.Label>{text.rentWithUnit}</Field.Label>
@@ -533,7 +532,7 @@ export const InCard: Story = {
             <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage>
           </Field.Root>
         </Card.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -553,9 +552,9 @@ export const LongFinnishLabel: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.grantWithUnit}</Field.Label>
           <InputGroup.Root>
@@ -569,7 +568,7 @@ export const LongFinnishLabel: Story = {
             <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
           </InputGroup.Root>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas }) => {
@@ -590,9 +589,9 @@ export const Compact: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
+    const { text, amountExample } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <>
           <Field.Root required>
             <Field.Label>{text.rentWithUnit}</Field.Label>
@@ -625,7 +624,7 @@ export const Compact: Story = {
             </InputGroup.Root>
           </Field.Root>
         </>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -639,9 +638,9 @@ export const Compact: Story = {
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   render: () => {
-    const { text, isFallback } = textsFor('en')
+    const { text } = textsFor('en')
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.amountEuro}</Field.Label>
           <InputGroup.Root>
@@ -655,7 +654,7 @@ export const RTL: Story = {
             />
           </InputGroup.Root>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas }) => {
@@ -668,9 +667,9 @@ export const RTL: Story = {
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   render: (_args, { globals }) => {
-    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
+    const { text, amountExample } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <>
           <Field.Root required invalid>
             <Field.Label>{text.rentWithUnit}</Field.Label>
@@ -728,7 +727,7 @@ export const ForcedColors: Story = {
             </InputGroup.Root>
           </Field.Root>
         </>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }

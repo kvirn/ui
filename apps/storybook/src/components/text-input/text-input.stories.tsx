@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Card, Field, KvirnProvider, masks, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/text-input/text-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/text-input/text-input.md?raw'
@@ -168,14 +167,14 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required>
           <Field.Label>{text.name}</Field.Label>
           <TextInput {...args} />
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   parameters: {
@@ -228,9 +227,9 @@ export const Typing: Story = {
 /** The input types that look the same, each with its `autocomplete` (1.3.5). */
 export const Types: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div className="kv-story-form">
           <Field.Root required>
             <Field.Label>{text.email}</Field.Label>
@@ -253,7 +252,7 @@ export const Types: Story = {
             <TextInput name="search" type="search" />
           </Field.Root>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -332,9 +331,9 @@ export const Widths: Story = {
 /** Invalid: a 2px edge and the message under the input, and the text stays where it was. */
 export const Invalid: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root required invalid>
           <Field.Label>{text.email}</Field.Label>
           <Field.Prose>
@@ -343,7 +342,7 @@ export const Invalid: Story = {
           <TextInput name="email" type="email" autoComplete="email" defaultValue="anna@" />
           <Field.ErrorMessage>{text.emailError}</Field.ErrorMessage>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -415,9 +414,9 @@ export const PlainForm: Story = {
 /** On a `surface` section and in a card: the edge keeps 3:1 against each (1.4.11). */
 export const OnSurfaces: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div className="kv-story-form">
           <div className="kv-story-form-surface">
             <Field.Root required>
@@ -433,7 +432,7 @@ export const OnSurfaces: Story = {
             </Field.Root>
           </Card.Root>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -446,16 +445,16 @@ export const OnSurfaces: Story = {
 /** Staff density from 64rem: 32px high, with the value text still 16px. */
 export const Compact: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div className="kv-compact">
           <Field.Root required>
             <Field.Label>{text.name}</Field.Label>
             <TextInput name="name" autoComplete="name" defaultValue="Anna Andersson" />
           </Field.Root>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -617,9 +616,9 @@ export const OwnDescribedBy: Story = {
 /** An inline filter: the inputs and the Button side by side are the same height (44px). */
 export const InlineFilter: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <form className="kv-story-filter" onSubmit={(event) => event.preventDefault()}>
           <Field.Root>
             <Field.Label>{text.name}</Field.Label>
@@ -633,7 +632,7 @@ export const InlineFilter: Story = {
             {text.filter}
           </Button>
         </form>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -641,9 +640,9 @@ export const InlineFilter: Story = {
 /** The same filter in staff density from 64rem: all three are 32px. */
 export const InlineFilterCompact: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <form className="kv-compact kv-story-filter" onSubmit={(event) => event.preventDefault()}>
           <Field.Root>
             <Field.Label>{text.name}</Field.Label>
@@ -657,7 +656,7 @@ export const InlineFilterCompact: Story = {
             {text.filter}
           </Button>
         </form>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -666,16 +665,16 @@ export const InlineFilterCompact: Story = {
 export const LongFinnish: Story = {
   globals: { locale: 'fi' },
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div className="kv-story-narrow">
           <Field.Root required>
             <Field.Label>{text.longLabel}</Field.Label>
             <TextInput name="reference" inputMode="numeric" spellCheck={false} />
           </Field.Root>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvasElement }) => {

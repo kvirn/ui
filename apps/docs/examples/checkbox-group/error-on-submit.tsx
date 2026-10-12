@@ -2,10 +2,9 @@
 import { Button, Checkbox, CheckboxGroup, Field } from '@kvirn-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { useCheckboxGroupTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function ErrorOnSubmitCheckboxGroup() {
-  const { texts, isFallback } = useCheckboxGroupTexts()
+  const { texts } = useCheckboxGroupTexts()
   const [contact, setContact] = useState<string[]>([])
   const [attempts, setAttempts] = useState(0)
   const formRef = useRef<HTMLFormElement>(null)
@@ -19,43 +18,41 @@ export function ErrorOnSubmitCheckboxGroup() {
   }, [attempts])
 
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <form
-        ref={formRef}
-        noValidate
-        onSubmit={(event) => {
-          event.preventDefault()
-          if (contact.length === 0) {
-            setAttempts((count) => count + 1)
-          }
-        }}
+    <form
+      ref={formRef}
+      noValidate
+      onSubmit={(event) => {
+        event.preventDefault()
+        if (contact.length === 0) {
+          setAttempts((count) => count + 1)
+        }
+      }}
+    >
+      <CheckboxGroup.Root
+        name="contact"
+        required
+        invalid={isInvalid}
+        value={contact}
+        onValueChange={setContact}
       >
-        <CheckboxGroup.Root
-          name="contact"
-          required
-          invalid={isInvalid}
-          value={contact}
-          onValueChange={setContact}
-        >
-          <CheckboxGroup.Legend>{texts.legend}</CheckboxGroup.Legend>
-          <Field.Root>
-            <Checkbox value="email" />
-            <Field.Label>{texts.email}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <Checkbox value="text" />
-            <Field.Label>{texts.text}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <Checkbox value="letter" />
-            <Field.Label>{texts.letter}</Field.Label>
-          </Field.Root>
-          <CheckboxGroup.ErrorMessage>{texts.errorMissing}</CheckboxGroup.ErrorMessage>
-        </CheckboxGroup.Root>
-        <Button type="submit" className="kv-button--primary">
-          {texts.send}
-        </Button>
-      </form>
-    </InEnglishWhenFallback>
+        <CheckboxGroup.Legend>{texts.legend}</CheckboxGroup.Legend>
+        <Field.Root>
+          <Checkbox value="email" />
+          <Field.Label>{texts.email}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <Checkbox value="text" />
+          <Field.Label>{texts.text}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <Checkbox value="letter" />
+          <Field.Label>{texts.letter}</Field.Label>
+        </Field.Root>
+        <CheckboxGroup.ErrorMessage>{texts.errorMissing}</CheckboxGroup.ErrorMessage>
+      </CheckboxGroup.Root>
+      <Button type="submit" className="kv-button--primary">
+        {texts.send}
+      </Button>
+    </form>
   )
 }

@@ -4,8 +4,6 @@ import { useLocale } from '@kvirn-ui/react'
 
 export interface LocalExampleTexts<T> {
   texts: T
-  /** True when the texts fell back to English: wrap the example in `InEnglishWhenFallback`. */
-  isFallback: boolean
 }
 
 /**
@@ -16,8 +14,6 @@ export function defineExampleTexts<T>(byLocale: Partial<Record<LocaleCode, T>> &
   return function useLocalExampleTexts(): LocalExampleTexts<T> {
     const language = getLanguage(useLocale().locale)
     const texts = (byLocale as Record<string, T | undefined>)[language]
-    return texts === undefined
-      ? { texts: byLocale.en, isFallback: language !== 'en' }
-      : { texts, isFallback: false }
+    return { texts: texts ?? byLocale.en }
   }
 }

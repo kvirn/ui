@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, Fieldset, RadioGroup } from '@kvirn-ui/react'
 import { useId, useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
@@ -15,13 +14,13 @@ import type { FormLocale } from '../form/form.fixture.tsx'
  * calls `onValueChange(value, { reason: 'input', event })`. It never stores it.
  */
 export function ControlledDurationGroup({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const [value, setValue] = useState<string | null>('6')
   // Radios that share a name are one group for the whole document, so a Docs page with several
   // groups needs a name each. In your own form, a plain `name="duration"` is enough.
   const name = `duration-${useId()}`
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <RadioGroup.Root name={name} value={value} onValueChange={setValue}>
           <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
@@ -45,7 +44,7 @@ export function ControlledDurationGroup({ locale }: { locale: FormLocale }) {
           {text.youChose}: {value}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -55,11 +54,11 @@ export function ControlledDurationGroup({ locale }: { locale: FormLocale }) {
  * `noValidate` keeps the browser's own validation bubbles from replacing your messages.
  */
 export function DurationForm({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const name = `duration-${useId()}`
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <form
         className="kv-story-form"
         noValidate
@@ -98,7 +97,7 @@ export function DurationForm({ locale }: { locale: FormLocale }) {
           </p>
         )}
       </form>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -109,13 +108,13 @@ export function DurationForm({ locale }: { locale: FormLocale }) {
  * chosen.
  */
 export function ControlledEmptyDurationGroup({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const [value, setValue] = useState<string | null>(null)
   // Radios that share a name are one group for the whole document, so a Docs page with several
   // groups needs a name each. In your own form, a plain `name="duration"` is enough.
   const name = `duration-${useId()}`
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <RadioGroup.Root name={name} value={value} onValueChange={setValue}>
           <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
@@ -139,7 +138,7 @@ export function ControlledEmptyDurationGroup({ locale }: { locale: FormLocale })
           {text.youChose}: {value ?? '–'}
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -150,11 +149,11 @@ export function ControlledEmptyDurationGroup({ locale }: { locale: FormLocale })
  * can: it shares the name and the value for you.
  */
 export function StandaloneDurationRadios({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = choiceTextsFor(locale)
+  const { text } = choiceTextsFor(locale)
   const [value, setValue] = useState('6')
   const name = `standalone-duration-${useId()}`
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Fieldset.Root group required>
         <Fieldset.Legend>{text.durationLegend}</Fieldset.Legend>
         <Field.Root>
@@ -191,6 +190,6 @@ export function StandaloneDurationRadios({ locale }: { locale: FormLocale }) {
           <Field.Label>{text.duration12}</Field.Label>
         </Field.Root>
       </Fieldset.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }

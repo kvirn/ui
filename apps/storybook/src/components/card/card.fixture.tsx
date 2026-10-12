@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { Button, Card, KvirnProvider, Link, useFormat } from '@kvirn-ui/react'
@@ -215,7 +214,6 @@ export const isCardFixtureLocale = (value: unknown): value is CardFixtureLocale 
 interface ResolvedTexts {
   text: CardTexts
   /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
-  isFallback: boolean
 }
 
 /**
@@ -235,11 +233,10 @@ export const withCardLocale: Decorator = (Story, { globals }) => {
 export function textsFor(locale: CardFixtureLocale): ResolvedTexts {
   const text = cardTexts[locale]
   if (text === undefined) {
-    return { text: en, isFallback: true }
+    return { text: en }
   }
   return {
     text,
-    isFallback: false,
   }
 }
 
@@ -291,10 +288,10 @@ const caseNumber = 'BAB-2026-004512'
 
 /** Example B: a service card on My pages, with a full-bleed image and two actions. */
 export function ServiceCard({ locale }: CardFixtureProps) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const format = useFormat()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Card.Root data-testid="service-card">
         <Card.Header className="kv-card-header--padding-none">
           <img src={binsImage} alt="" width={640} height={240} />
@@ -311,7 +308,7 @@ export function ServiceCard({ locale }: CardFixtureProps) {
           <Button>{text.waste.pause}</Button>
         </Card.Footer>
       </Card.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -320,7 +317,7 @@ export function ServiceCard({ locale }: CardFixtureProps) {
  * grid is story CSS: the theme has no card-list attribute yet (Plan 0007, decision 3).
  */
 export function NewsList({ locale }: CardFixtureProps) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const format = useFormat()
   const items = [
     ['atervinning', text.news.recycling, publishedDates.recycling],
@@ -328,7 +325,7 @@ export function NewsList({ locale }: CardFixtureProps) {
     ['foreningsbidrag', text.news.grants, publishedDates.grants],
   ] as const
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <h2>{text.news.heading}</h2>
         <ul role="list" className="kv-story-card-list">
@@ -358,16 +355,16 @@ export function NewsList({ locale }: CardFixtureProps) {
           ))}
         </ul>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** Example D: a staff case card in compact density, with a nested card. */
 export function CaseCard({ locale }: CardFixtureProps) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const format = useFormat()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-compact">
         <Card.Root data-testid="case-card">
           <Card.Body className="kv-prose">
@@ -384,7 +381,7 @@ export function CaseCard({ locale }: CardFixtureProps) {
           </Card.Body>
         </Card.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -394,10 +391,10 @@ export function CaseCard({ locale }: CardFixtureProps) {
  * something users would jump to.
  */
 export function ArticleCard({ locale }: CardFixtureProps) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const headingId = useId()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Card.Root data-testid="article-card" as="article" aria-labelledby={headingId}>
         <Card.Header className="kv-card-header--padding-none">
           <img src={recyclingImage} alt="" width={640} height={240} />
@@ -410,6 +407,6 @@ export function ArticleCard({ locale }: CardFixtureProps) {
           <Button>{text.waste.pause}</Button>
         </Card.Footer>
       </Card.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }

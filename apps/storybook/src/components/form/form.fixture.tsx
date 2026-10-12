@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { createMessageFormat } from '@kvirn-ui/core'
 import type { KvirnMessages, TextMessage } from '@kvirn-ui/i18n'
 import { en } from '@kvirn-ui/i18n/en'
@@ -515,7 +514,6 @@ export const localeOf = (globals: Record<string, unknown>): FormLocale => {
 interface ResolvedFormTexts {
   text: FormTexts
   /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
-  isFallback: boolean
   /** `1250.5` written the way the locale writes an amount: en `1,250.50`, sv `1 250,50`. */
   rentExample: string
   /** `8450` written the way the locale writes a whole amount: en `8,450`, sv `8 450`. */
@@ -525,11 +523,9 @@ interface ResolvedFormTexts {
 /** The fixture text in a locale. */
 export function textsFor(locale: FormLocale): ResolvedFormTexts {
   const text = formTexts[locale]
-  const known = text !== undefined
   const format = createMessageFormat({ locale: providerLocaleOf(locale), timeZone: undefined })
   return {
     text: text ?? textsEn,
-    isFallback: !known,
     rentExample: format.number(1250.5, { minimumFractionDigits: 2 }),
     amountExample: format.number(8450),
   }
@@ -570,9 +566,9 @@ export const withFormLocale: Decorator = (Story, { globals }) => {
  * read-only with its help text under the box. The RTL and ForcedColors stories of each page render it.
  */
 export function FieldStates({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root required>
           <Field.Label>{text.name}</Field.Label>
@@ -603,6 +599,6 @@ export function FieldStates({ locale }: { locale: FormLocale }) {
           <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
         </Field.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }

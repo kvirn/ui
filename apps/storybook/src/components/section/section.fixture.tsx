@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { Button, Card, Field, Fieldset, Link, Section, TextInput, useFormat } from '@kvirn-ui/react'
@@ -122,18 +121,16 @@ const sectionTexts: Record<SectionFixtureLocale, SectionTexts | undefined> = {
 interface ResolvedSectionTexts {
   text: SectionTexts
   /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
-  isFallback: boolean
 }
 
 /** The fixture text in a locale. */
 function sectionTextsFor(locale: SectionFixtureLocale): ResolvedSectionTexts {
   const text = sectionTexts[locale]
   if (text === undefined) {
-    return { text: en, isFallback: true }
+    return { text: en }
   }
   return {
     text,
-    isFallback: false,
   }
 }
 
@@ -150,11 +147,11 @@ export interface SectionFixtureProps {
 
 /** Example A: a text block in a sidebar, a Section rendered as a named `aside`, with prose. */
 export function ContactSection({ locale }: SectionFixtureProps) {
-  const { text, isFallback } = sectionTextsFor(locale)
+  const { text } = sectionTextsFor(locale)
   const format = useFormat()
   const headingId = useId()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Section as="aside" aria-labelledby={headingId} className="kv-prose">
         <h2 id={headingId}>{text.contact.heading}</h2>
         <p>
@@ -170,7 +167,7 @@ export function ContactSection({ locale }: SectionFixtureProps) {
           <Link.Root href="mailto:kundcenter@kvirnby.example">{text.contact.email}</Link.Root>
         </p>
       </Section>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -179,11 +176,11 @@ export function ContactSection({ locale }: SectionFixtureProps) {
  * there and transparent, so colouring one side moves nothing. It follows `dir`, and every theme.
  */
 export function ContactSectionWithEdge({ locale }: SectionFixtureProps) {
-  const { text, isFallback } = sectionTextsFor(locale)
+  const { text } = sectionTextsFor(locale)
   const format = useFormat()
   const headingId = useId()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Section
         as="aside"
         aria-labelledby={headingId}
@@ -204,7 +201,7 @@ export function ContactSectionWithEdge({ locale }: SectionFixtureProps) {
           <Link.Root href="mailto:kundcenter@kvirnby.example">{text.contact.email}</Link.Root>
         </p>
       </Section>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -213,9 +210,9 @@ export function ContactSectionWithEdge({ locale }: SectionFixtureProps) {
  * controls are the reason the container exists, and there is no one destination.
  */
 export function UserSection({ locale }: SectionFixtureProps) {
-  const { text, isFallback } = sectionTextsFor(locale)
+  const { text } = sectionTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Section data-testid="section-with-actions">
         <h2>{text.users.heading}</h2>
         <div className="kv-button-group">
@@ -223,7 +220,7 @@ export function UserSection({ locale }: SectionFixtureProps) {
           <Button>{text.users.delete}</Button>
         </div>
       </Section>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -241,9 +238,9 @@ export function NewsBand({ locale }: SectionFixtureProps) {
 
 /** One thing with one destination: a Card. The link is in the heading. */
 export function NewsCard({ locale }: SectionFixtureProps) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Card.Root as="article" data-testid="news-card">
         <Card.Body className="kv-prose">
           <h2>
@@ -252,15 +249,15 @@ export function NewsCard({ locale }: SectionFixtureProps) {
           <p>{text.news.snow.excerpt}</p>
         </Card.Body>
       </Card.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A form section is neither: a `<fieldset>` with a legend, on the page. */
 export function ContactDetailsFieldset({ locale }: SectionFixtureProps) {
-  const { text, isFallback } = sectionTextsFor(locale)
+  const { text } = sectionTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Fieldset.Root data-testid="form-section">
         <Fieldset.Legend>{text.details.legend}</Fieldset.Legend>
         <Field.Root>
@@ -268,7 +265,7 @@ export function ContactDetailsFieldset({ locale }: SectionFixtureProps) {
           <TextInput name="email" autoComplete="email" />
         </Field.Root>
       </Fieldset.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -278,11 +275,11 @@ export function ContactDetailsFieldset({ locale }: SectionFixtureProps) {
  * a landmark, so keep these few.
  */
 export function RenderedSections({ locale }: SectionFixtureProps) {
-  const { text, isFallback } = textsFor(locale)
+  const { text } = textsFor(locale)
   const statusId = useId()
   const navigationId = useId()
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <Section as="section" aria-labelledby={statusId} data-testid="status-section">
           <h2 id={statusId}>{text.waste.heading}</h2>
@@ -308,6 +305,6 @@ export function RenderedSections({ locale }: SectionFixtureProps) {
           </Section>
         </ul>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }

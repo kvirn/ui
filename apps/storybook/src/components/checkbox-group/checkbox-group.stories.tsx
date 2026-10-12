@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Card, Checkbox, CheckboxGroup, Field } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/checkbox-group/checkbox-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/checkbox-group/checkbox-group.md?raw'
@@ -72,9 +71,9 @@ const meta = {
   // The design spec's contact question: three options under a legend. The localised text is
   // taken at the top, and the locale comes from the toolbar through `withFormLocale`.
   render: (args, { globals }) => {
-    const { text, isFallback } = choiceTextsFor(localeOf(globals))
+    const { text } = choiceTextsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <CheckboxGroup.Root {...args}>
           <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
           <CheckboxGroup.Prose>
@@ -94,7 +93,7 @@ const meta = {
           </Field.Root>
           <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
         </CheckboxGroup.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   parameters: {
@@ -137,14 +136,14 @@ const backTexts: Partial<Record<FormLocale, string>> = {
 export const Keyboard: Story = {
   render: (_args, { globals }) => {
     const locale = localeOf(globals)
-    const { text, isFallback } = choiceTextsFor(locale)
+    const { text } = choiceTextsFor(locale)
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <form className="kv-story-form" noValidate onSubmit={(e) => e.preventDefault()}>
           <div className="kv-button-group">
-            <InEnglishWhenFallback isFallback={backTexts[locale] === undefined}>
+            <>
               <Button type="button">{backTexts[locale] ?? 'Back'}</Button>
-            </InEnglishWhenFallback>
+            </>
           </div>
           <CheckboxGroup.Root name="contact">
             <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
@@ -171,7 +170,7 @@ export const Keyboard: Story = {
             </Button>
           </div>
         </form>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -190,9 +189,9 @@ export const WithDescription: Story = {
 /** An option's own help text is in that checkbox's description, under its label. */
 export const WithOptionHelpTexts: Story = {
   render: (args, { globals }) => {
-    const { text, isFallback } = choiceTextsFor(localeOf(globals))
+    const { text } = choiceTextsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <CheckboxGroup.Root {...args}>
           <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
           <CheckboxGroup.Prose>
@@ -214,7 +213,7 @@ export const WithOptionHelpTexts: Story = {
           </Field.Root>
           <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
         </CheckboxGroup.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -269,9 +268,9 @@ export const Disabled: Story = {
 export const InCard: Story = {
   args: { invalid: true },
   render: (args, { globals }) => {
-    const { text, isFallback } = choiceTextsFor(localeOf(globals))
+    const { text } = choiceTextsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Card.Root>
           <CheckboxGroup.Root {...args}>
             <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
@@ -293,7 +292,7 @@ export const InCard: Story = {
             <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
           </CheckboxGroup.Root>
         </Card.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -305,9 +304,9 @@ export const InCard: Story = {
 /** Staff density from 64rem: the rows are 32px high, the boxes still 24px. */
 export const Compact: Story = {
   render: (args, { globals }) => {
-    const { text, isFallback } = choiceTextsFor(localeOf(globals))
+    const { text } = choiceTextsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div className="kv-compact">
           <CheckboxGroup.Root {...args}>
             <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
@@ -329,7 +328,7 @@ export const Compact: Story = {
             <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
           </CheckboxGroup.Root>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -349,9 +348,9 @@ export const LongFinnish: Story = {
     ),
   ],
   render: (args, { globals }) => {
-    const { text, isFallback } = choiceTextsFor(localeOf(globals))
+    const { text } = choiceTextsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <CheckboxGroup.Root {...args}>
           <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
           <CheckboxGroup.Prose>
@@ -373,7 +372,7 @@ export const LongFinnish: Story = {
           </Field.Root>
           <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
         </CheckboxGroup.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas }) => {
@@ -416,9 +415,9 @@ export const PlainForm: Story = {
 // Every state of the group in one column: checked, invalid and disabled. The RTL and ForcedColors
 // stories render it, so a reader of either sees the real parts.
 const renderGroupStates: NonNullable<Story['render']> = (_args, { globals }) => {
-  const { text, isFallback } = choiceTextsFor(localeOf(globals))
+  const { text } = choiceTextsFor(localeOf(globals))
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <CheckboxGroup.Root name="contact" defaultValue={['email', 'letter']}>
           <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
@@ -476,7 +475,7 @@ const renderGroupStates: NonNullable<Story['render']> = (_args, { globals }) => 
           </Field.Root>
         </CheckboxGroup.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 

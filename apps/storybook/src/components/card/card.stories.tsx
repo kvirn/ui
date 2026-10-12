@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Card } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/card/card.a11y.md?raw'
 import guide from '../../../../../packages/react/src/card/card.md?raw'
@@ -155,9 +154,9 @@ export const Radii: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <>
           {(
             [
@@ -178,7 +177,7 @@ export const Radii: Story = {
             </Card.Root>
           ))}
         </>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -192,9 +191,9 @@ export const Radii: Story = {
  */
 export const Padding: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <>
           <div className="kv-story-columns">
             {(['none', 'sm', 'md', 'lg'] as const).map((padding) => (
@@ -233,7 +232,7 @@ export const Padding: Story = {
             </Card.Root>
           </div>
         </>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas }) => {
@@ -251,9 +250,9 @@ export const Dividers: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <>
           <Card.Root className="kv-card--dividers" data-testid="dividers">
             <Card.Header className="kv-prose">
@@ -278,7 +277,7 @@ export const Dividers: Story = {
             </Card.Footer>
           </Card.Root>
         </>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -290,10 +289,10 @@ export const Dividers: Story = {
  */
 export const ProseAndCards: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     const titles = [text.news.recycling.title, text.news.snow.title] as const
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <article className="kv-prose">
           <h2>{text.news.heading}</h2>
           <p>{text.news.recycling.excerpt}</p>
@@ -324,7 +323,7 @@ export const ProseAndCards: Story = {
             </Card.Body>
           </Card.Root>
         </article>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -339,11 +338,11 @@ export const PlainChildren: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Card.Root data-testid="plain">{text.waste.plan}</Card.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -351,9 +350,9 @@ export const PlainChildren: Story = {
 /** An image in a padded part, without prose: the theme keeps it inside the part. */
 export const ImageInPaddedBody: Story = {
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <div data-testid="column">
           <Card.Root>
             <Card.Body>
@@ -362,7 +361,7 @@ export const ImageInPaddedBody: Story = {
             </Card.Body>
           </Card.Root>
         </div>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas }) => {
@@ -384,9 +383,9 @@ export const WrapperBetweenParts: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, isFallback } = textsFor(localeOf(globals))
+    const { text } = textsFor(localeOf(globals))
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Card.Root data-testid="wrapped">
           <div>
             <Card.Body>
@@ -397,7 +396,7 @@ export const WrapperBetweenParts: Story = {
             </Card.Body>
           </div>
         </Card.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }

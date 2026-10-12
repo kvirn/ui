@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, OneTimeCode } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/one-time-code/one-time-code.a11y.md?raw'
 import guide from '../../../../../packages/react/src/one-time-code/one-time-code.md?raw'
@@ -87,9 +86,9 @@ const meta = {
   ],
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, isFallback } = codeTextsFor(localeOf(globals), 'sms', pattern)
+    const { label, hint } = codeTextsFor(localeOf(globals), 'sms', pattern)
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root>
           <Field.Label marker="none">{label}</Field.Label>
           <Field.Prose>
@@ -102,7 +101,7 @@ const meta = {
             ))}
           </OneTimeCode.Root>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 } satisfies Meta<typeof OneTimeCode.Root>
@@ -193,13 +192,9 @@ export const Invalid: Story = {
   args: { defaultValue: '481920' },
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, isFallback, errorWrong, submit } = codeTextsFor(
-      localeOf(globals),
-      'sms',
-      pattern,
-    )
+    const { label, hint, errorWrong, submit } = codeTextsFor(localeOf(globals), 'sms', pattern)
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
           <Field.Root invalid>
             <Field.Label marker="none">{label}</Field.Label>
@@ -220,7 +215,7 @@ export const Invalid: Story = {
             </Button>
           </div>
         </form>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, canvasElement, globals }) => {
@@ -259,9 +254,9 @@ export const TwoGroups: Story = {
   args: { pattern: '&&&&-&&&&', defaultValue: 'K7QX-2M9P' },
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, isFallback } = codeTextsFor(localeOf(globals), 'email', pattern)
+    const { label, hint } = codeTextsFor(localeOf(globals), 'email', pattern)
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root>
           <Field.Label marker="none">{label}</Field.Label>
           <Field.Prose>
@@ -274,7 +269,7 @@ export const TwoGroups: Story = {
             ))}
           </OneTimeCode.Root>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, canvasElement, globals }) => {
@@ -306,9 +301,9 @@ export const ThreeGroups: Story = {
   args: { pattern: '&&&-&&&-&&&', defaultValue: 'H4T-K92' },
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, isFallback } = codeTextsFor(localeOf(globals), 'email', pattern)
+    const { label, hint } = codeTextsFor(localeOf(globals), 'email', pattern)
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root>
           <Field.Label marker="none">{label}</Field.Label>
           <Field.Prose>
@@ -321,7 +316,7 @@ export const ThreeGroups: Story = {
             ))}
           </OneTimeCode.Root>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, canvasElement, globals }) => {
@@ -365,9 +360,9 @@ export const CaseAsTyped: Story = {
   args: { pattern: 'aa-****' },
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, isFallback } = codeTextsFor(localeOf(globals), 'case', pattern)
+    const { label, hint } = codeTextsFor(localeOf(globals), 'case', pattern)
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root>
           <Field.Label marker="none">{label}</Field.Label>
           <Field.Prose>
@@ -380,7 +375,7 @@ export const CaseAsTyped: Story = {
             ))}
           </OneTimeCode.Root>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -447,9 +442,9 @@ export const PatternLimits: Story = {
   render: (args, { globals }) => (
     <>
       {[...drawnPatterns, ...plainPatterns].map((pattern) => {
-        const { label, hint, isFallback } = codeTextsFor(localeOf(globals), 'letters', pattern)
+        const { label, hint } = codeTextsFor(localeOf(globals), 'letters', pattern)
         return (
-          <InEnglishWhenFallback key={pattern} isFallback={isFallback}>
+          <>
             <Field.Root>
               <Field.Label marker="none">{label}</Field.Label>
               <Field.Prose>
@@ -462,7 +457,7 @@ export const PatternLimits: Story = {
                 ))}
               </OneTimeCode.Root>
             </Field.Root>
-          </InEnglishWhenFallback>
+          </>
         )
       })}
     </>
@@ -481,9 +476,9 @@ export const Compact: Story = {
   ],
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, isFallback } = codeTextsFor(localeOf(globals), 'app', pattern)
+    const { label, hint } = codeTextsFor(localeOf(globals), 'app', pattern)
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <Field.Root>
           <Field.Label marker="none">{label}</Field.Label>
           <Field.Prose>
@@ -496,7 +491,7 @@ export const Compact: Story = {
             ))}
           </OneTimeCode.Root>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -536,7 +531,7 @@ export const ForcedColors: Story = {
     const invalid = codeTextsFor(locale, 'email', '&&&&-&&&&')
     const disabled = codeTextsFor(locale, 'signIn', '999999')
     return (
-      <InEnglishWhenFallback isFallback={empty.isFallback}>
+      <>
         <Field.Root>
           <Field.Label marker="none">{empty.label}</Field.Label>
           <Field.Prose>
@@ -586,7 +581,7 @@ export const ForcedColors: Story = {
             ))}
           </OneTimeCode.Root>
         </Field.Root>
-      </InEnglishWhenFallback>
+      </>
     )
   },
 }
@@ -602,9 +597,9 @@ export const Keyboard: Story = {
   args: { pattern: '****-****' },
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, isFallback, submit } = codeTextsFor(localeOf(globals), 'email', pattern)
+    const { label, hint, submit } = codeTextsFor(localeOf(globals), 'email', pattern)
     return (
-      <InEnglishWhenFallback isFallback={isFallback}>
+      <>
         <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
           <Field.Root>
             <Field.Label marker="none">{label}</Field.Label>
@@ -624,7 +619,7 @@ export const Keyboard: Story = {
             </Button>
           </div>
         </form>
-      </InEnglishWhenFallback>
+      </>
     )
   },
   play: async ({ canvas, globals }) => {

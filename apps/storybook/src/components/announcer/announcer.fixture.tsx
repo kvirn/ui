@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, useAnnouncer } from '@kvirn-ui/react'
 import { useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -138,9 +137,8 @@ const texts: Record<AnnouncerFixtureLocale, AnnouncerTexts> = {
 /** The fixture text in a locale. */
 export function announcerTextsFor(locale: FormLocale): {
   text: AnnouncerTexts
-  isFallback: boolean
 } {
-  return { text: texts[locale], isFallback: false }
+  return { text: texts[locale] }
 }
 
 interface LastCall {
@@ -154,7 +152,7 @@ interface LastCall {
  * `false` when it drops one. The app's `KvirnProvider` renders the live regions.
  */
 export function AnnouncementButtons({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = announcerTextsFor(locale)
+  const { text } = announcerTextsFor(locale)
   const { announce } = useAnnouncer()
   const [lastCall, setLastCall] = useState<LastCall | undefined>()
 
@@ -163,7 +161,7 @@ export function AnnouncementButtons({ locale }: { locale: FormLocale }) {
   }
 
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <h2>{text.heading}</h2>
         <p>{text.intro}</p>
@@ -184,7 +182,7 @@ export function AnnouncementButtons({ locale }: { locale: FormLocale }) {
           </span>
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -195,12 +193,12 @@ export function AnnouncementButtons({ locale }: { locale: FormLocale }) {
  * from your i18n; the app's `KvirnProvider` renders the live regions.
  */
 export function BurstsAndBlanks({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = announcerTextsFor(locale)
+  const { text } = announcerTextsFor(locale)
   const { announce } = useAnnouncer()
   const [lastCall, setLastCall] = useState<LastCall | undefined>()
 
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div>
         <div className="kv-button-group">
           <Button
@@ -234,6 +232,6 @@ export function BurstsAndBlanks({ locale }: { locale: FormLocale }) {
           </span>
         </p>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }

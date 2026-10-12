@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Field, InputGroup, NumberInput, Slider } from '@kvirn-ui/react'
 import { useId, useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -106,10 +105,9 @@ const sliderTexts: Record<FormLocale, SliderTexts | undefined> = {
 /** The fixture text in a locale. */
 export function sliderTextsFor(locale: FormLocale): {
   text: SliderTexts
-  isFallback: boolean
 } {
   const text = sliderTexts[locale]
-  return { text: text ?? textsEn, isFallback: text === undefined }
+  return { text: text ?? textsEn }
 }
 
 /**
@@ -121,14 +119,14 @@ export function sliderTextsFor(locale: FormLocale): {
  * has a `name`, so the form sends the value once.
  */
 export function DistanceWithNumberInput({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = sliderTextsFor(locale)
+  const { text } = sliderTextsFor(locale)
   const labelId = useId()
   const hintId = useId()
   const [distance, setDistance] = useState('10')
   const [sliderValue, setSliderValue] = useState(10)
   const isTooFar = Number(distance) > 50
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root invalid={isTooFar}>
           <Field.Label marker="none">
@@ -168,7 +166,7 @@ export function DistanceWithNumberInput({ locale }: { locale: FormLocale }) {
           <Field.ErrorMessage>{text.distanceTooFar}</Field.ErrorMessage>
         </Field.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -178,9 +176,9 @@ export function DistanceWithNumberInput({ locale }: { locale: FormLocale }) {
  * the focused one.
  */
 export function KeyboardSliders({ locale }: { locale: FormLocale }) {
-  const { text, isFallback } = sliderTextsFor(locale)
+  const { text } = sliderTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <div className="kv-story-form">
         <Field.Root>
           <Field.Label marker="none">{text.volumeLabel}</Field.Label>
@@ -203,6 +201,6 @@ export function KeyboardSliders({ locale }: { locale: FormLocale }) {
           />
         </Field.Root>
       </div>
-    </InEnglishWhenFallback>
+    </>
   )
 }

@@ -2,7 +2,6 @@
 import { Table, useFormat } from '@kvirn-ui/react'
 import { useId } from 'react'
 import { useTableTexts } from './texts.ts'
-import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 const payments = [
   { id: 'p1', month: 'january', date: '2026-01-23', amount: 1050 },
@@ -11,44 +10,42 @@ const payments = [
 ] as const
 
 export function DefaultTable() {
-  const { texts, isFallback } = useTableTexts()
+  const { texts } = useTableTexts()
   const format = useFormat()
   const captionId = useId()
   const total = payments.reduce((sum, payment) => sum + payment.amount, 0)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
-      <Table.ScrollRegion aria-labelledby={captionId}>
-        <Table.Root>
-          <Table.Caption id={captionId}>{texts.paymentsCaption}</Table.Caption>
-          <Table.Head>
-            <Table.Row>
-              <Table.ColumnHeader>{texts.month}</Table.ColumnHeader>
-              <Table.ColumnHeader>{texts.payoutDate}</Table.ColumnHeader>
-              <Table.ColumnHeader className="kv-table-column-header--numeric">
-                {texts.amountPaid}
-              </Table.ColumnHeader>
+    <Table.ScrollRegion aria-labelledby={captionId}>
+      <Table.Root>
+        <Table.Caption id={captionId}>{texts.paymentsCaption}</Table.Caption>
+        <Table.Head>
+          <Table.Row>
+            <Table.ColumnHeader>{texts.month}</Table.ColumnHeader>
+            <Table.ColumnHeader>{texts.payoutDate}</Table.ColumnHeader>
+            <Table.ColumnHeader className="kv-table-column-header--numeric">
+              {texts.amountPaid}
+            </Table.ColumnHeader>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
+          {payments.map((payment) => (
+            <Table.Row key={payment.id}>
+              <Table.RowHeader>{texts[payment.month]}</Table.RowHeader>
+              <Table.Cell>{format.date(payment.date, { dateStyle: 'short' })}</Table.Cell>
+              <Table.Cell className="kv-table-cell--numeric">
+                {format.number(payment.amount)}
+              </Table.Cell>
             </Table.Row>
-          </Table.Head>
-          <Table.Body>
-            {payments.map((payment) => (
-              <Table.Row key={payment.id}>
-                <Table.RowHeader>{texts[payment.month]}</Table.RowHeader>
-                <Table.Cell>{format.date(payment.date, { dateStyle: 'short' })}</Table.Cell>
-                <Table.Cell className="kv-table-cell--numeric">
-                  {format.number(payment.amount)}
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-          <Table.Foot>
-            <Table.Row>
-              <Table.RowHeader>{texts.total}</Table.RowHeader>
-              <Table.Cell />
-              <Table.Cell className="kv-table-cell--numeric">{format.number(total)}</Table.Cell>
-            </Table.Row>
-          </Table.Foot>
-        </Table.Root>
-      </Table.ScrollRegion>
-    </InEnglishWhenFallback>
+          ))}
+        </Table.Body>
+        <Table.Foot>
+          <Table.Row>
+            <Table.RowHeader>{texts.total}</Table.RowHeader>
+            <Table.Cell />
+            <Table.Cell className="kv-table-cell--numeric">{format.number(total)}</Table.Cell>
+          </Table.Row>
+        </Table.Foot>
+      </Table.Root>
+    </Table.ScrollRegion>
   )
 }

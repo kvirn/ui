@@ -1,4 +1,3 @@
-import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, FileUpload, useFileUpload } from '@kvirn-ui/react'
 import type { FileUploadRootProps } from '@kvirn-ui/react'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -96,10 +95,9 @@ const fileUploadTexts: Record<FormLocale, FileUploadTexts | undefined> = {
 
 export function fileUploadTextsFor(locale: FormLocale): {
   texts: FileUploadTexts
-  isFallback: boolean
 } {
   const texts = fileUploadTexts[locale]
-  return texts === undefined ? { texts: textsEn, isFallback: true } : { texts, isFallback: false }
+  return texts === undefined ? { texts: textsEn } : { texts }
 }
 
 /** Every `FileUpload.Root` option, plus the story's locale (the label and description are yours). */
@@ -114,9 +112,9 @@ export interface AttachmentsProps extends FileUploadRootProps {
 
 /** A Field with a drop zone, the limits, the rejections, the summary and the list. */
 export function AttachmentsField({ locale, ...options }: AttachmentsProps) {
-  const { texts, isFallback } = fileUploadTextsFor(locale)
+  const { texts } = fileUploadTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{texts.label}</Field.Label>
         <Field.Prose>
@@ -149,15 +147,15 @@ export function AttachmentsField({ locale, ...options }: AttachmentsProps) {
           </FileUpload.List>
         </FileUpload.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A thumbnail beside each name: opt in by rendering `FileUpload.Preview` in the item. */
 export function AttachmentsWithPreviews({ locale, ...options }: AttachmentsProps) {
-  const { texts, isFallback } = fileUploadTextsFor(locale)
+  const { texts } = fileUploadTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{texts.label}</Field.Label>
         <Field.Prose>
@@ -190,7 +188,7 @@ export function AttachmentsWithPreviews({ locale, ...options }: AttachmentsProps
           </FileUpload.List>
         </FileUpload.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -199,9 +197,9 @@ export function AttachmentsWithPreviews({ locale, ...options }: AttachmentsProps
  * (`FileUpload.Input`) and a plain `<form>` posts them.
  */
 export function AttachmentsPostedWithTheForm({ locale, ...options }: AttachmentsProps) {
-  const { texts, isFallback } = fileUploadTextsFor(locale)
+  const { texts } = fileUploadTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{texts.label}</Field.Label>
         <Field.Prose>
@@ -234,15 +232,15 @@ export function AttachmentsPostedWithTheForm({ locale, ...options }: Attachments
           </FileUpload.List>
         </FileUpload.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** The field, then the button that sends the application. Tab goes on from the field to it. */
 export function AttachmentsWithSendButton({ locale, ...options }: AttachmentsProps) {
-  const { texts, isFallback } = fileUploadTextsFor(locale)
+  const { texts } = fileUploadTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <>
         <Field.Root>
           <Field.Label>{texts.label}</Field.Label>
@@ -281,7 +279,7 @@ export function AttachmentsWithSendButton({ locale, ...options }: AttachmentsPro
           </Button>
         </div>
       </>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -290,9 +288,9 @@ export function AttachmentsWithSendButton({ locale, ...options }: AttachmentsPro
  * message. The Trigger is described by it.
  */
 export function InvalidAttachments({ locale, ...options }: AttachmentsProps) {
-  const { texts, isFallback } = fileUploadTextsFor(locale)
+  const { texts } = fileUploadTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root invalid>
         <Field.Label>{texts.label}</Field.Label>
         <Field.Prose>
@@ -325,15 +323,15 @@ export function InvalidAttachments({ locale, ...options }: AttachmentsProps) {
         </FileUpload.Root>
         <Field.ErrorMessage>{texts.errorMissing}</Field.ErrorMessage>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
 /** A required Field: the Trigger never carries `aria-required` (a button doesn't allow it). */
 export function RequiredAttachments({ locale, ...options }: AttachmentsProps) {
-  const { texts, isFallback } = fileUploadTextsFor(locale)
+  const { texts } = fileUploadTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root required>
         <Field.Label>{texts.label}</Field.Label>
         <Field.Prose>
@@ -365,7 +363,7 @@ export function RequiredAttachments({ locale, ...options }: AttachmentsProps) {
           </FileUpload.List>
         </FileUpload.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -376,9 +374,9 @@ export function RequiredAttachments({ locale, ...options }: AttachmentsProps) {
  * enters the list.
  */
 export function AttachmentsWithOwnChecks({ locale, ...options }: AttachmentsProps) {
-  const { texts, isFallback } = fileUploadTextsFor(locale)
+  const { texts } = fileUploadTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{texts.label}</Field.Label>
         <Field.Prose>
@@ -410,7 +408,7 @@ export function AttachmentsWithOwnChecks({ locale, ...options }: AttachmentsProp
           </FileUpload.List>
         </FileUpload.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -421,9 +419,9 @@ export function AttachmentsWithOwnChecks({ locale, ...options }: AttachmentsProp
  * neutral sentence and Retry. A bare `Error` is never shown to people.
  */
 export function AttachmentsWithFailureReasons({ locale, ...options }: AttachmentsProps) {
-  const { texts, isFallback } = fileUploadTextsFor(locale)
+  const { texts } = fileUploadTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{texts.label}</Field.Label>
         <Field.Prose>
@@ -465,7 +463,7 @@ export function AttachmentsWithFailureReasons({ locale, ...options }: Attachment
           </FileUpload.List>
         </FileUpload.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -475,9 +473,9 @@ export function AttachmentsWithFailureReasons({ locale, ...options }: Attachment
  * change together. Every other string keeps the provider's wording.
  */
 export function AttachmentsWithOwnWords({ locale, ...options }: AttachmentsProps) {
-  const { texts, isFallback } = fileUploadTextsFor(locale)
+  const { texts } = fileUploadTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{texts.label}</Field.Label>
         <Field.Prose>
@@ -513,7 +511,7 @@ export function AttachmentsWithOwnWords({ locale, ...options }: AttachmentsProps
           </FileUpload.List>
         </FileUpload.Root>
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
@@ -523,9 +521,9 @@ export function AttachmentsWithOwnWords({ locale, ...options }: AttachmentsProps
  * this example builds the elements from `useFileUpload`, inside the Field so the hook reads it.
  */
 export function AttachmentsSentByHand({ locale }: { locale: FormLocale }) {
-  const { texts, isFallback } = fileUploadTextsFor(locale)
+  const { texts } = fileUploadTextsFor(locale)
   return (
-    <InEnglishWhenFallback isFallback={isFallback}>
+    <>
       <Field.Root>
         <Field.Label>{texts.label}</Field.Label>
         <Field.Prose>
@@ -533,7 +531,7 @@ export function AttachmentsSentByHand({ locale }: { locale: FormLocale }) {
         </Field.Prose>
         <QueuedAttachments locale={locale} />
       </Field.Root>
-    </InEnglishWhenFallback>
+    </>
   )
 }
 
