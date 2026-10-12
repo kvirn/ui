@@ -433,26 +433,10 @@ export { useStack } from './stack/use-stack.ts'
 export type { StackPartProps, UseStackResult } from './stack/use-stack.ts'
 export { List, ListItem, ListRoot } from './list/list.tsx'
 export type { ListItemProps, ListRootProps } from './list/list.tsx'
-export { Columns } from './columns/columns.tsx'
-export type { ColumnsProps } from './columns/columns.tsx'
-export { useColumns } from './columns/use-columns.ts'
-export type { ColumnsPartProps, UseColumnsResult } from './columns/use-columns.ts'
-export {
-  SidebarLayout,
-  SidebarLayoutContent,
-  SidebarLayoutRoot,
-  SidebarLayoutSidebar,
-} from './sidebar-layout/sidebar-layout.tsx'
-export type {
-  SidebarLayoutContentProps,
-  SidebarLayoutRootProps,
-  SidebarLayoutSidebarProps,
-} from './sidebar-layout/sidebar-layout.tsx'
-export { useSidebarLayout } from './sidebar-layout/use-sidebar-layout.ts'
-export type {
-  SidebarLayoutPartProps,
-  UseSidebarLayoutResult,
-} from './sidebar-layout/use-sidebar-layout.ts'
+export { Grid, GridItem, GridRoot } from './grid/grid.tsx'
+export type { GridItemProps, GridRootProps } from './grid/grid.tsx'
+export { useGrid } from './grid/use-grid.ts'
+export type { GridPartProps, UseGridResult } from './grid/use-grid.ts'
 export {
   Alert,
   AlertActions,

@@ -124,7 +124,6 @@ describe('display names', () => {
     expect(api.Section.displayName).toBe('Section')
     expect(api.Container.displayName).toBe('Container')
     expect(api.Stack.displayName).toBe('Stack')
-    expect(api.Columns.displayName).toBe('Columns')
   })
 
   test('a part aliased onto its parent has its own name, not the source component’s', () => {

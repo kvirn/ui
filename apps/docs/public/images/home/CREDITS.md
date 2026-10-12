@@ -10,9 +10,9 @@ in the landing copy (Maja, Bertil, Amal, Jonas) are fictional and are never atta
 a caption or name. For the live site the maintainer decides whether to keep these, licence a shoot,
 or commission illustration.
 
-| File | Photographer | Source |
-| --- | --- | --- |
-| `maja-kitchen-night-pexels-7128768.jpg` | cottonbro studio, https://www.pexels.com/@cottonbro/ | https://www.pexels.com/photo/tired-woman-sitting-by-table-in-kitchen-7128768/ |
-| `bertil-granddaughter-unsplash-x2qzLL3vdBs.jpg` | Tim Kilby, https://unsplash.com/@timkilby | https://unsplash.com/photos/x2qzLL3vdBs (chosen by the maintainer) |
-| `amal-nurse-phone-pexels-6097955.jpg` | Laura James, https://www.pexels.com/@laura-james/ | https://www.pexels.com/photo/adult-black-nurse-enjoying-takeaway-coffee-in-outdoor-cafe-6097955/ |
-| `jonas-sunlit-desk-pexels-9222424.jpg` | Ron Lach, https://www.pexels.com/@ron-lach/ | https://www.pexels.com/photo/man-with-facial-hair-using-a-laptop-9222424/ |
+| File                                            | Photographer                                         | Source                                                                                           |
+| ----------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `maja-kitchen-night-pexels-7128768.jpg`         | cottonbro studio, https://www.pexels.com/@cottonbro/ | https://www.pexels.com/photo/tired-woman-sitting-by-table-in-kitchen-7128768/                    |
+| `bertil-granddaughter-unsplash-x2qzLL3vdBs.jpg` | Tim Kilby, https://unsplash.com/@timkilby            | https://unsplash.com/photos/x2qzLL3vdBs (chosen by the maintainer)                               |
+| `amal-nurse-phone-pexels-6097955.jpg`           | Laura James, https://www.pexels.com/@laura-james/    | https://www.pexels.com/photo/adult-black-nurse-enjoying-takeaway-coffee-in-outdoor-cafe-6097955/ |
+| `jonas-sunlit-desk-pexels-9222424.jpg`          | Ron Lach, https://www.pexels.com/@ron-lach/          | https://www.pexels.com/photo/man-with-facial-hair-using-a-laptop-9222424/                        |

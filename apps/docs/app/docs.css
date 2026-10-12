@@ -1,16 +1,13 @@
 /*
  * Docs site layout glue (docs/design/docs-site-components.md §6). Plain, unlayered CSS, so it
- * wins over @layer kv. Tokens only: no raw colours. The three --docs-* constants are layout, not
+ * wins over @layer kv. Tokens only: no raw colours. The --docs-* constants are layout, not
  * theme tokens. Components are styled by theme.css: nothing here restyles a kv-* part.
  */
 :root {
-  --docs-sidebar-width: 15rem;
   /* The inline padding of the header's bands and of the main column, by width: the one edge the
    * brand, the navigation, the sidebar's text and the page's text start from. */
   --docs-edge: var(--kv-space-4);
-  --docs-content-max: 48rem;
   --docs-page-max: 80rem;
-  --docs-contents-width: 14rem;
 
   /* Syntax roles: aliases of semantic text tokens that theme:check already holds to AA. */
   --docs-code-keyword: var(--kv-color-link);
@@ -61,30 +58,9 @@ body {
   gap: var(--kv-space-2) var(--kv-space-3);
 }
 
-/* The mark is a small square beside the name (the primary header's logo is larger by default). */
-.docs-brand .kv-application-logo-mark {
-  inline-size: 1.75rem;
-  block-size: 1.75rem;
-}
-
 .docs-brand .kv-application-logo-name {
   font-size: 1.25rem;
   line-height: var(--kv-font-heading-4-line-height);
-}
-
-/* The K is cut in the colour behind the mark: primary in the header, surface in the footer. */
-.kv-site-header--primary .kv-application-logo-mark {
-  --kv-mark-cut: var(--kv-color-primary);
-}
-
-.docs-footer .kv-application-logo-mark {
-  --kv-mark-cut: var(--kv-color-surface);
-}
-
-@media (forced-colors: active) {
-  .kv-application-logo-mark path {
-    stroke: Canvas;
-  }
 }
 
 .docs-top-end {
@@ -128,34 +104,28 @@ body {
 }
 
 /*
- * Layout: the intro band is full width. Below it one column, with the Get started sidebar beside
- * the article from 64rem and the contents beside it from 80rem. Nothing is sticky (2.4.11) except
- * the contents column, which sits beside the article and never over it.
+ * Layout: the intro band is full width. Below it a Container and a Grid (DocsPage): one column,
+ * the sidebar beside the article from the grid's 48rem and the contents beside it from 64rem.
+ * Nothing is sticky (2.4.11) except the contents column, which sits beside the article and never
+ * over it.
  */
 .docs-main {
   min-inline-size: 0;
 }
 
 .docs-body {
-  box-sizing: border-box;
-  max-inline-size: var(--docs-page-max);
-  margin-inline: auto;
-  padding: var(--kv-space-10) var(--docs-edge);
-}
-
-.docs-columns {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--kv-space-6) var(--kv-space-10);
+  padding-block: var(--kv-space-10);
 }
 
 .docs-article {
   min-inline-size: 0;
-  max-inline-size: var(--docs-content-max);
+  /* Fills its grid columns instead of the prose measure, so examples line up with the grid. */
+  max-inline-size: none;
 }
 
-/* The column is wider than the prose measure so examples get room; running text keeps it. */
-.docs-article > :is(p, ul, ol, dl) {
+/* The column is wider than the prose measure so examples and tables get room; running text keeps
+ * it, in the article and in its sections. */
+.docs-article :is(p, ul, ol, dl) {
   max-inline-size: var(--kv-prose-measure);
 }
 
@@ -171,7 +141,7 @@ body {
   }
 }
 
-/* The sidebar's own button below 64rem: a full-width row, as the header's Menu. */
+/* The sidebar's own button below the grid's 48rem: a full-width row, as the header's Menu. */
 .docs-sidebar-toggle {
   display: flex;
   justify-content: space-between;
@@ -224,11 +194,6 @@ body {
 .docs-status {
   max-inline-size: 70ch;
   margin-block: var(--kv-space-4) 0;
-}
-
-/* Carries `lang` for English fallback example text without adding a box. */
-.docs-language-scope {
-  display: contents;
 }
 
 .docs-example-header {
@@ -385,16 +350,15 @@ body {
 }
 
 @media (width >= 64rem) {
-  .docs-sidebar-toggle {
-    display: none;
-  }
-
   .docs-footer-grid {
     grid-template-columns: 2fr 1fr 1fr;
   }
+}
 
-  .docs-columns:has(> .docs-sidebar) {
-    grid-template-columns: var(--docs-sidebar-width) minmax(0, 1fr);
+/* The sidebar and the contents switch with the grid (its own width), not the window. */
+@container kv-grid (width >= 48rem) {
+  .docs-sidebar-toggle {
+    display: none;
   }
 
   .docs-sidebar {
@@ -406,41 +370,9 @@ body {
   }
 }
 
-/* Beside the sidebar, the contents sit above the article in the second column. The sidebar spans
- * both rows and the second row takes up what the sidebar is taller, so no gap opens between them. */
-@media (width >= 64rem) {
-  .docs-columns:has(> .docs-sidebar):has(> .docs-contents) {
-    grid-template-rows: auto 1fr;
-  }
-
-  .docs-columns:has(> .docs-contents) > .docs-sidebar {
-    grid-row: 1 / -1;
-  }
-}
-
-/* From 80rem the contents are the last column. They stay before the article in the DOM, so they
- * are still read and tabbed to before it. */
-@media (width >= 80rem) {
-  .docs-columns:has(> .docs-contents) {
-    grid-template-columns: minmax(0, var(--docs-content-max)) var(--docs-contents-width);
-    grid-template-rows: none;
-  }
-
-  .docs-columns:has(> .docs-sidebar):has(> .docs-contents) {
-    grid-template-columns:
-      var(--docs-sidebar-width) minmax(0, var(--docs-content-max))
-      var(--docs-contents-width);
-    grid-template-rows: none;
-  }
-
-  .docs-columns:has(> .docs-contents) > .docs-sidebar {
-    grid-row: auto;
-  }
-
-  .docs-columns > .docs-contents {
-    grid-column: -2;
-    grid-row: 1;
-    align-self: start;
+/* The contents stay before the article in the DOM, so they are read and tabbed to first. */
+@container kv-grid (width >= 64rem) {
+  .docs-contents {
     position: sticky;
     inset-block-start: var(--kv-space-6);
     max-block-size: calc(100dvh - var(--kv-space-12));

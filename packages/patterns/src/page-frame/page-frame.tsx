@@ -1,7 +1,7 @@
 'use client'
 
-import { Container, SidebarLayout, SkipLink, mergeProps } from '@kvirn-ui/react'
-import type { ContainerProps, SidebarLayoutSidebarProps } from '@kvirn-ui/react'
+import { Container, Grid, SkipLink, mergeProps } from '@kvirn-ui/react'
+import type { ContainerProps, GridItemProps } from '@kvirn-ui/react'
 import { useContext, useMemo } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { PageFrameBodyContext, PageFrameContext } from './page-frame-context.ts'
@@ -17,8 +17,11 @@ export interface PageFrameMainProps extends Omit<ContainerProps, 'as'> {
   bleed?: boolean | undefined
 }
 export type PageFrameBodyProps = ComponentPropsWithRef<'div'>
-/** `as` is `nav` or `aside` with a name; the default is a `div`. */
-export type PageFrameSidebarProps = SidebarLayoutSidebarProps
+/** `as` is `nav` or `aside` with a name; the default is a `div`. Never `main`: the page has one. */
+export type PageFrameSidebarProps = Extract<
+  GridItemProps,
+  { as?: 'div' | 'nav' | 'aside' | undefined }
+>
 
 /**
  * The frame of every page: the skip link first, then your children in the order you write them,
@@ -50,16 +53,16 @@ PageFrameRoot.displayName = 'PageFrame.Root'
 
 /**
  * A page with a section navigation: a `Container` with `PageFrame.Sidebar` before
- * `PageFrame.Main`. The sidebar sits beside `main` from 64rem and stacks above it below, in
- * DOM order.
+ * `PageFrame.Main`. The sidebar sits beside `main` from the grid's 64rem (about a 69rem window
+ * inside the `Container`) and stacks above it below, in DOM order. A section navigation that
+ * collapses by viewport width (`useIsWideViewport`, 64rem) is open and stacked between 64rem and
+ * about 69rem.
  */
 export function PageFrameBody({ children, ...otherProps }: PageFrameBodyProps): ReactElement {
   return (
     <PageFrameBodyContext.Provider value>
       <Container {...mergeProps(otherProps, { className: 'kv-page-frame-body' })}>
-        <SidebarLayout.Root className="kv-sidebar-layout--sidebar-sm">
-          {children}
-        </SidebarLayout.Root>
+        <Grid.Root className="kv-grid--lg-cols-12 kv-grid--lg-gap-10">{children}</Grid.Root>
       </Container>
     </PageFrameBodyContext.Provider>
   )
@@ -67,8 +70,15 @@ export function PageFrameBody({ children, ...otherProps }: PageFrameBodyProps): 
 PageFrameBody.displayName = 'PageFrame.Body'
 
 /** The section navigation, as a named `nav` (`as="nav"`). Inside `PageFrame.Body`, before `Main`. */
-export function PageFrameSidebar(props: PageFrameSidebarProps): ReactElement {
-  return <SidebarLayout.Sidebar {...props} />
+export function PageFrameSidebar({
+  className,
+  ...otherProps
+}: PageFrameSidebarProps): ReactElement {
+  const { className: sidebarClassName } = mergeProps(
+    { className },
+    { className: 'kv-grid-item--lg-span-3' },
+  )
+  return <Grid.Item {...otherProps} className={sidebarClassName} />
 }
 PageFrameSidebar.displayName = 'PageFrame.Sidebar'
 
@@ -78,7 +88,13 @@ export function PageFrameMain({ id, bleed, ...otherProps }: PageFrameMainProps):
   const isInBody = useContext(PageFrameBodyContext)
   const mainProps = mergeProps(otherProps, { className: 'kv-page-frame-main' })
   if (isInBody) {
-    return <SidebarLayout.Content as="main" id={id ?? mainId} {...mainProps} />
+    return (
+      <Grid.Item
+        as="main"
+        id={id ?? mainId}
+        {...mergeProps(mainProps, { className: 'kv-grid-item--lg-span-9' })}
+      />
+    )
   }
   if (bleed === true) {
     return <main id={id ?? mainId} {...mainProps} />

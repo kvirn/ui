@@ -187,8 +187,8 @@ Six levels, `h1` to `h6`, each a role (`heading-1` to `heading-6`), with `displa
 
 - **Grid.** Everything sits on a 4px grid. The spacing scale is `--kv-space-<step>` in `theme.css`, and most layouts use steps 2, 4, 6 and 8.
 - **Reading column.** Resident-facing services use one column, at most `40rem` for forms and `45rem` for prose. One question or topic per page wherever possible.
-- **Staff tools and the docs site** may use a sidebar (a `Section`) and a content area. The sidebar collapses behind a disclosure below `64rem`.
-- **Breakpoints** are content-driven, with reference points at `40rem`, `64rem` and `80rem`. Mobile first.
+- **Staff tools and the docs site** may use a sidebar (a `Section`) and a content area, laid out with Grid: `kv-grid--lg-cols-12` with the sidebar `kv-grid-item--lg-span-3` and the content `lg-span-9`, `kv-grid--lg-gap-10`. It is one column below the grid's own `64rem` (about a `69rem` viewport inside `Container`), and the sidebar collapses behind a disclosure there.
+- **Breakpoints** are content-driven, with reference points at `40rem`, `64rem` and `80rem`. Mobile first. The grid's container breakpoints are `40rem`, `48rem`, `64rem`, `80rem` and `96rem`, measured on the grid's own width; only Grid uses `48rem` and `96rem`.
 - **Reflow (1.4.10).** Everything works at 320 CSS px wide and at 400% zoom with no horizontal scrolling, except data tables, which scroll inside their own named region (`kv-scroll-region`), a Tab stop only while it overflows.
 - **Direction.** Logical properties (`margin-inline-start`, `padding-block`), so RTL works.
 - **Sticky elements** (headers, action bars) never cover the focused element (2.4.11). Use `scroll-padding` to match their height.
@@ -197,16 +197,15 @@ Six levels, `h1` to `h6`, each a role (`heading-1` to `heading-6`), with `displa
 
 > **Maintainer review (Plan 0056):** this section (the `80rem`, `45rem` and `40rem` measures, the `space-4`/`6`/`10` page padding, the column minimums, the sidebar widths and the `64rem` break) is new text. Remove this note when approved.
 
-Four components in `@kvirn-ui/react` place content with typed choices and no CSS of the adopter's own: `Container`, `Stack`, `Columns` and `SidebarLayout`. They draw nothing (no colour, edge or shadow) and add no role, landmark or name. The widths below are layout constants, not tokens; the gaps are `space` steps.
+Three components in `@kvirn-ui/react` place content with typed choices and no CSS of the adopter's own: `Container`, `Stack` and `Grid`. They draw nothing (no colour, edge or shadow) and add no role, landmark or name. The widths below are layout constants, not tokens; the gaps are `space` steps.
 
-| Component       | Choice                  | Values                                                                                                                                                                                                            |
-| --------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Container`     | `size`                  | `page` (default): centred, at most `80rem`, inline padding `space-4`, `space-6` from `40rem`, `space-10` from `64rem`. `reading`: `45rem`. `form`: `40rem`. The two measures are start-aligned and add no padding |
-| `Stack`         | `gap`                   | `space-2`, `space-4`, `space-6` (default), `space-8`                                                                                                                                                              |
-| `Columns`       | `minColumnWidth`, `gap` | `sm` `14rem`, `md` `18rem` (default), `lg` `24rem`; gap `space-4`, `space-6` (default), `space-8`. Tracks are `minmax(min(<width>, 100%), 1fr)`, so there is one column at 320px                                  |
-| `SidebarLayout` | `sidebarWidth`          | `sm` `16rem`, `md` `20rem` (default). One column below `64rem`; from `64rem` the sidebar track and the content, with a `space-10` gap                                                                             |
+| Component   | Choice         | Values                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ----------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Container` | `size`         | `page` (default): centred, at most `80rem`, inline padding `space-4`, `space-6` from `40rem`, `space-10` from `64rem`. `reading`: `45rem`. `form`: `40rem`. The two measures are start-aligned and add no padding                                                                                                                                                                                              |
+| `Stack`     | `gap`          | `space-2`, `space-4`, `space-6` (default), `space-8`                                                                                                                                                                                                                                                                                                                                                           |
+| `Grid`      | class families | `kv-grid--cols-1` to `12`, `--fit-sm\|md\|lg` (`14rem`, `18rem`, `24rem`, tracks `minmax(min(<width>, 100%), 1fr)`), `--rows-1` to `12`, `--flow-*`, `--auto-cols-*`, `--gap-*`, alignment; `kv-grid-item--span-*`, `--start-*`, `--end-*`, row spans and lines, `kv-grid-item--subgrid` and `--rows-subgrid`. Each has `--sm-` to `--2xl-` forms in container queries. One track and gap `space-6` by default |
 
-- **DOM order is visual order.** Whichever part comes first is at inline start. There is no `reverse`, `order` or dense packing (1.3.2, 2.4.3), and RTL mirrors by logical properties.
+- **DOM order is visual order.** Whichever part comes first is at inline start. There is no `reverse`, `order` or dense packing (1.3.2, 2.4.3), and RTL mirrors by logical properties. Grid's line placement (`start`, `end`, `row-*`) can still reorder: keeping the placed order the same as the DOM order is the consumer's responsibility.
 - **A form never gets a sidebar** and a list of results is one column at `45rem` (`Container size="reading"`); a card grid is for entry points, not results.
 - **Nothing sticky.** A layout component never sets `position: sticky`, a fixed height or `overflow`, so a focused element is never covered or clipped (2.4.11) and text spacing never cuts text off (1.4.12).
 - **Lists.** `List` is the one native list for link lists and other short lists: no marker and a `space-4` gap by default, `bullet` or `decimal` markers in the text colour, and `space-2`, `-6` or `-8` gaps. It adds no token and no landmark.
@@ -425,7 +424,7 @@ Navigation (`Navigation.Root`) and `TableOfContents` share one item look.
 - **Trigger:** a quiet text button like a tab: `text` at weight 400, no fill, the 2px link underline on hover and press, at the control height (`--kv-control-min-block-size`), `--kv-space-2` on each side, `--kv-space-2` before the chevron.
 - **The open look:** a decorative chevron at the inline end that points down while closed and up while open. The state is a shape, never colour alone, and `aria-expanded` carries it for assistive technology. The trigger's text never changes with the state. No fill and no rotation animation: nothing animates.
 - **Panel:** in flow, `--kv-space-2` above and on each side. It has no `display` rule, so `hidden` wins.
-- **Accordion:** a `border-subtle` hairline above the stack and one under each item. The trigger is the whole row at weight 600, text at the start and chevron at the end, and wraps (1.4.10). The heading around it has no look of its own. The hairlines are not the only cue: the heading and the chevron mark each row.
+- **Accordion:** a `border-subtle` hairline above the stack and one under each item. The trigger is the whole row at weight 600, text at the start and chevron at the end, and wraps (1.4.10). The heading around it has no look of its own. The hairlines are not the only cue: the heading and the chevron mark each row. The trigger has `space-3` block padding and the panel `space-2` above and `space-6` below.
 - **Focus:** the ring on the trigger.
 - **Forced colours:** hairlines are `CanvasText`, the text `CanvasText` (`GrayText` when disabled), the chevron `currentColor`, the ring `Highlight`.
 
@@ -445,7 +444,7 @@ Navigation (`Navigation.Root`) and `TableOfContents` share one item look.
 > **Maintainer review (Plan 0095):** a proposal that reuses existing tokens only. Classes are in `packages/theme/patterns.css`. Remove this note when approved.
 
 - **Hero** (`kv-hero`): a `canvas` band at padding `lg` in a `Container`, the `h1` at the `display` size, a `body-large` lead and one action. No minimum height, no text over the image, no wash. The image is decorative (`alt=""`), last in the DOM, below the text until `64rem` and beside it (3fr / 2fr) from there.
-- **Nav tiles** (`kv-nav-tiles`): level 2 cards, `lg` radius, the one link inside the heading and never a clickable card. A news or event item is a plain `Card` in `Columns as="ul"` (heading, date or place, text, then an image in a `kv-card-footer--padding-none` footer, so it runs to the card's edge and rows share its bottom edge).
+- **Nav tiles** (`kv-nav-tiles`): level 2 cards, `lg` radius, the one link inside the heading and never a clickable card. A news or event item is a plain `Card` in `Grid.Root as="ul"` (heading, date or place, text, then an image in a `kv-card-footer--padding-none` footer, so it runs to the card's edge and rows share its bottom edge).
 - **Service link closed.** While the e-service is closed the link is not drawn: an inset (`kv-inset`) says it in words, so nothing is dimmed and no disabled link is left to focus.
 - **Section nav** (`kv-section-navigation`): below `64rem` the Disclosure trigger is a full-width quiet row with `border-subtle` rules above and below, and its panel opens in the flow; from `64rem` the trigger is gone and the panel is shown whatever its state. The list is the Navigation look, with one current.
 - **Contact card** (no class of its own): a `Card`, a `heading-3`, the unit and a `DefinitionList` of labelled rows (a description list, not a table), with an `Address` for a visiting address. It is not a landmark. It is a story-level composition of shipped parts, not a pattern.
@@ -628,7 +627,7 @@ Section and Card sit on elevation levels 1 and 2 (Storybook: Foundation / Border
 
 #### Tables
 
-`numeric` for figures, `surface` for the header row, `border-subtle` row dividers, no zebra stripes or frame unless you opt in (`kv-table--striped`, `kv-table--card`). Sortable headers are buttons with a visible sort indicator.
+`numeric` for figures, `surface` for the header row, `border-subtle` row dividers, no zebra stripes or frame unless you opt in (`kv-table--striped`, `kv-table--card`). Cells have `space-4` padding on both axes (rows are 56px at 16px text, 32px in compact density). Sortable headers are buttons with a visible sort indicator.
 
 #### Badges and tags
 

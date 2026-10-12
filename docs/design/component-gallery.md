@@ -58,14 +58,14 @@
 
 ### 3.3 Built from, missing, and CSS
 
-| Need                         | Built from                                                                                                                                            |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Page heading, lead, contents | `PageHeading`, `kv-lead`, `PageContents` (existing docs parts)                                                                                        |
-| Group heading                | `Heading as="h2"` (as the index today)                                                                                                                |
-| List of cards                | `Columns as="ul" className="kv-columns--min-sm kv-not-prose"` (adds `role="list"`; `kv-not-prose` keeps prose margins out, the index sits in `Prose`) |
-| Card                         | `Card.Root as="li"` without parts (a Root without parts pads itself); default `lg` radius, `md` padding                                               |
-| Name                         | `Heading as="h3" className="kv-heading--heading-4"` > `Link` (the `body` size, so names fit 14rem columns)                                            |
-| Job                          | `<p>`, `body`, `text` (never `text-muted`: it is the content)                                                                                         |
+| Need                         | Built from                                                                                                                                           |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Page heading, lead, contents | `PageHeading`, `kv-lead`, `PageContents` (existing docs parts)                                                                                       |
+| Group heading                | `Heading as="h2"` (as the index today)                                                                                                               |
+| List of cards                | `Grid.Root as="ul" className="kv-grid--fit-sm kv-not-prose"` (adds `role="list"`; `kv-not-prose` keeps prose margins out, the index sits in `Prose`) |
+| Card                         | `Card.Root as="li"` without parts (a Root without parts pads itself); default `lg` radius, `md` padding                                              |
+| Name                         | `Heading as="h3" className="kv-heading--heading-4"` > `Link` (the `body` size, so names fit 14rem columns)                                           |
+| Job                          | `<p>`, `body`, `text` (never `text-muted`: it is the content)                                                                                        |
 
 **Missing (docs-app only, not a library component):** a `GalleryPreview` registry (slug → SVG) and the drawing primitives, in `apps/docs/components/gallery/`. `List` is not needed (`Columns as="ul"` is the list).
 

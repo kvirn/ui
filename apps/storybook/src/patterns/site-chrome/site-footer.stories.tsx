@@ -2,7 +2,7 @@ import { en } from '@kvirn-ui/i18n/en'
 import { PageFrame, SiteFooter } from '@kvirn-ui/patterns'
 import {
   Address,
-  Columns,
+  Grid,
   Heading,
   KvirnProvider,
   Link,
@@ -24,7 +24,7 @@ const description = `The \`contentinfo\` landmark on every page: who to contact,
 
 Use it on every page after \`main\`. It has no back-to-top link (nothing is sticky, and Home scrolls up) and no social feeds: a link to the municipality's page is a plain link.
 
-The footer holds no text of its own and owns only its frame. Everything inside is a shipped part, written as literal JSX: the contact column is a \`Heading\`, a [DefinitionList](?path=/docs/components-data-and-behaviour-definitionlist--docs) for phone, email and hours, and an [Address](?path=/docs/components-content-address--docs); each other group is a \`nav\` named by its heading around a [List](?path=/docs/components-content-list--docs) of links; the groups sit in [Columns](?path=/docs/components-layout-columns--docs).
+The footer holds no text of its own and owns only its frame. Everything inside is a shipped part, written as literal JSX: the contact column is a \`Heading\`, a [DefinitionList](?path=/docs/components-data-and-behaviour-definitionlist--docs) for phone, email and hours, and an [Address](?path=/docs/components-content-address--docs); each other group is a \`nav\` named by its heading around a [List](?path=/docs/components-content-list--docs) of links; the groups sit in [Grid](?path=/docs/components-layout-grid--docs).
 
 ## API
 
@@ -37,7 +37,7 @@ Each part is also a flat export (\`SiteFooterRoot\`, \`SiteFooterOrganisation\`)
 
 ## Parts and gaps
 
-Parts used: \`Section as="footer"\`, \`Container\`, \`Columns\`, \`Heading\`, \`DefinitionList\`, \`Address\`, \`Link\`, \`List\`. Gap: a Site footer block in \`@kvirn-ui/react\`.
+Parts used: \`Section as="footer"\`, \`Container\`, \`Grid\`, \`Heading\`, \`DefinitionList\`, \`Address\`, \`Link\`, \`List\`. Gap: a Site footer block in \`@kvirn-ui/react\`.
 `
 
 const meta = {
@@ -68,7 +68,7 @@ export const Default: Story = {
           <h1>Welcome to Kvirnby</h1>
         </PageFrame.Main>
         <SiteFooter.Root>
-          <Columns className="kv-columns--min-sm kv-columns--gap-8">
+          <Grid.Root className="kv-grid--fit-sm kv-grid--gap-8">
             <Stack className="kv-stack--gap-4">
               <Heading as="h2" size="heading-3">
                 Contact us
@@ -145,7 +145,7 @@ export const Default: Story = {
                 </List.Root>
               </Stack>
             </nav>
-          </Columns>
+          </Grid.Root>
           <SiteFooter.Organisation>
             Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
           </SiteFooter.Organisation>
@@ -172,7 +172,7 @@ export const Narrow: Story = {
           <h1>Welcome to Kvirnby</h1>
         </PageFrame.Main>
         <SiteFooter.Root>
-          <Columns className="kv-columns--min-sm kv-columns--gap-8">
+          <Grid.Root className="kv-grid--fit-sm kv-grid--gap-8">
             <Stack className="kv-stack--gap-4">
               <Heading as="h2" size="heading-3">
                 Contact us
@@ -249,7 +249,7 @@ export const Narrow: Story = {
                 </List.Root>
               </Stack>
             </nav>
-          </Columns>
+          </Grid.Root>
           <SiteFooter.Organisation>
             Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
           </SiteFooter.Organisation>
@@ -272,7 +272,7 @@ export const Keyboard: Story = {
           <h1>Welcome to Kvirnby</h1>
         </PageFrame.Main>
         <SiteFooter.Root>
-          <Columns className="kv-columns--min-sm kv-columns--gap-8">
+          <Grid.Root className="kv-grid--fit-sm kv-grid--gap-8">
             <Stack className="kv-stack--gap-4">
               <Heading as="h2" size="heading-3">
                 Contact us
@@ -349,7 +349,7 @@ export const Keyboard: Story = {
                 </List.Root>
               </Stack>
             </nav>
-          </Columns>
+          </Grid.Root>
           <SiteFooter.Organisation>
             Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
           </SiteFooter.Organisation>
@@ -369,7 +369,7 @@ export const RTL: Story = {
           <h1>Welcome to Kvirnby</h1>
         </PageFrame.Main>
         <SiteFooter.Root>
-          <Columns className="kv-columns--min-sm kv-columns--gap-8">
+          <Grid.Root className="kv-grid--fit-sm kv-grid--gap-8">
             <Stack className="kv-stack--gap-4">
               <Heading as="h2" size="heading-3">
                 Contact us
@@ -446,7 +446,7 @@ export const RTL: Story = {
                 </List.Root>
               </Stack>
             </nav>
-          </Columns>
+          </Grid.Root>
           <SiteFooter.Organisation>
             Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
           </SiteFooter.Organisation>
@@ -466,7 +466,7 @@ export const ForcedColors: Story = {
           <h1>Welcome to Kvirnby</h1>
         </PageFrame.Main>
         <SiteFooter.Root>
-          <Columns className="kv-columns--min-sm kv-columns--gap-8">
+          <Grid.Root className="kv-grid--fit-sm kv-grid--gap-8">
             <Stack className="kv-stack--gap-4">
               <Heading as="h2" size="heading-3">
                 Contact us
@@ -543,7 +543,7 @@ export const ForcedColors: Story = {
                 </List.Root>
               </Stack>
             </nav>
-          </Columns>
+          </Grid.Root>
           <SiteFooter.Organisation>
             Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
           </SiteFooter.Organisation>

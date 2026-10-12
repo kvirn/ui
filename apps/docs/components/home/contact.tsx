@@ -1,5 +1,5 @@
 'use client'
-import { CardBody, CardRoot, Columns, Heading, Icon, Link, LinkIcon, Stack } from '@kvirn-ui/react'
+import { CardBody, CardRoot, Grid, Heading, Icon, Link, LinkIcon, Stack } from '@kvirn-ui/react'
 import { homeMessages } from '../../messages/home.ts'
 import { Band } from './band.tsx'
 
@@ -15,7 +15,7 @@ export function Contact() {
       <Heading as="h2" size="heading-1">
         {text.heading}
       </Heading>
-      <Columns>
+      <Grid.Root className="kv-grid--fit-md">
         {cards.map((card) => (
           <CardRoot key={card.heading}>
             <CardBody>
@@ -36,7 +36,7 @@ export function Contact() {
             </CardBody>
           </CardRoot>
         ))}
-      </Columns>
+      </Grid.Root>
     </Band>
   )
 }

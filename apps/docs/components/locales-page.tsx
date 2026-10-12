@@ -102,7 +102,7 @@ export function LocalesPage({
                 catalog you need from its own path and only the catalogs you import are bundled.
               </p>
               <TableScrollRegion aria-labelledby="languages">
-                <TableRoot aria-labelledby="languages">
+                <TableRoot className="kv-table--card kv-table--striped" aria-labelledby="languages">
                   <TableHead>
                     <TableRow>
                       <TableColumnHeader>Code</TableColumnHeader>
@@ -249,7 +249,10 @@ export function LocalesPage({
               </ExampleFrame>
               <CodeBlock code={hookUse} />
               <TableScrollRegion aria-labelledby="formatting">
-                <TableRoot aria-labelledby="formatting">
+                <TableRoot
+                  className="kv-table--card kv-table--striped"
+                  aria-labelledby="formatting"
+                >
                   <TableHead>
                     <TableRow>
                       <TableColumnHeader>Method</TableColumnHeader>

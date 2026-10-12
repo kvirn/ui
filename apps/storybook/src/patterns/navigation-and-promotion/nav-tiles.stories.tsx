@@ -15,14 +15,14 @@ Set \`level\` to the page's outline: \`h2\` on a subpage, \`h3\` under a "Munici
 
 | Part | Element | What it does |
 | ---- | ------- | ------------ |
-| \`NavTiles.Root\` | \`<ul>\` | Columns. Holds the tiles |
+| \`NavTiles.Root\` | \`<ul>\` | Grid. Holds the tiles |
 | \`NavTiles.Tile\` | \`<li>\` card | Holds a heading and a text. Not clickable |
 | \`NavTiles.Heading\` | \`<h2>\` holding an \`<a href>\` | \`level\` (\`h2\` default, or \`h3\`), \`href\`, \`as\` (a router link). The text is the link's name |
 | \`NavTiles.Text\` | \`<p>\` | One sentence |
 
 ## Parts and gaps
 
-Parts used: \`Columns as="ul"\`, \`Card\`, \`Heading\`, \`Link\`, \`Prose\`. No gap.
+Parts used: \`Grid.Root as="ul"\`, \`Card\`, \`Heading\`, \`Link\`, \`Prose\`. No gap.
 `
 
 const meta = {

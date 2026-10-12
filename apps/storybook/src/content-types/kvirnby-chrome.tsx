@@ -7,7 +7,7 @@ import {
   SiteSearch,
 } from '@kvirn-ui/patterns'
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
-import { Address, Columns, Heading, Link, List, Stack, DefinitionList } from '@kvirn-ui/react'
+import { Address, Grid, Heading, Link, List, Stack, DefinitionList } from '@kvirn-ui/react'
 import { expect, within } from 'storybook/test'
 
 // The header, footer and docs header the shell decorator (shell.tsx) puts around every
@@ -75,7 +75,7 @@ export function KvirnbyHeader({ current }: { current?: 'page' | undefined }) {
 export function KvirnbyFooter() {
   return (
     <SiteFooter.Root>
-      <Columns className="kv-columns--min-sm kv-columns--gap-8">
+      <Grid.Root className="kv-grid--fit-sm kv-grid--gap-8">
         <Stack className="kv-stack--gap-4">
           <Heading as="h2" size="heading-3">
             Contact us
@@ -142,7 +142,7 @@ export function KvirnbyFooter() {
             </List.Root>
           </Stack>
         </nav>
-      </Columns>
+      </Grid.Root>
       <SiteFooter.Organisation>
         Kvirnby municipality, Storgatan 1, 123 45 Kvirnby
       </SiteFooter.Organisation>

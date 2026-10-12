@@ -7,10 +7,12 @@ import {
   SiteHeader,
   SiteSearch,
 } from '@kvirn-ui/patterns'
+import type { PageFrameSidebarProps } from '@kvirn-ui/patterns'
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
 import { KvirnProvider, Link, Navigation } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
+import { expectTypeOf } from 'vite-plus/test'
 import contract from '../../../../../packages/patterns/src/page-frame/page-frame.a11y.md?raw'
 import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
 import {
@@ -24,7 +26,7 @@ import {
 
 const description = `The frame of every page: a skip link first, then your children in the order you write them: the banner, an optional site alert and breadcrumb, \`main\`, and the \`contentinfo\`. DOM order is reading order and focus order at every width. Nothing is sticky and nothing is reordered with CSS \`order\`.
 
-The page's language comes from the nearest \`KvirnProvider\` (and \`<html lang>\`), so the library's own strings (the skip link, the status words) and your content agree (3.1.1). The frame holds no text of its own. A page with a section navigation wraps \`PageFrame.Sidebar\` and \`PageFrame.Main\` in \`PageFrame.Body\`: the sidebar sits beside \`main\` from \`64rem\` and stacks above it below.
+The page's language comes from the nearest \`KvirnProvider\` (and \`<html lang>\`), so the library's own strings (the skip link, the status words) and your content agree (3.1.1). The frame holds no text of its own. A page with a section navigation wraps \`PageFrame.Sidebar\` and \`PageFrame.Main\` in \`PageFrame.Body\`: the sidebar sits beside \`main\` from the grid's \`64rem\` (about a \`69rem\` window inside \`Container\`) and stacks above it below. A \`SectionNav\` collapses at a \`64rem\` window, so between \`64rem\` and about \`69rem\` it is open and stacked above \`main\`.
 
 ## API
 
@@ -39,7 +41,7 @@ The header, alert, breadcrumb and footer are children of the root, in the order 
 
 ## Parts and gaps
 
-Parts used: \`SkipLink\`, \`Container\`, \`SidebarLayout\`. No gap.
+Parts used: \`SkipLink\`, \`Container\`, \`Grid\`. No gap.
 `
 
 const meta = {
@@ -60,6 +62,9 @@ const meta = {
 
 export default meta
 type Story = StoryObj<typeof meta>
+
+// The sidebar is never `main`: the page has one.
+expectTypeOf<PageFrameSidebarProps['as']>().toEqualTypeOf<'div' | 'nav' | 'aside' | undefined>()
 
 /** The main example: a page with header, `main` and footer. The skip link shows on the first Tab. */
 export const Default: Story = {
@@ -165,7 +170,7 @@ export const Narrow: Story = {
 
 /**
  * A page with a section navigation: `PageFrame.Body` holds `PageFrame.Sidebar` and
- * `PageFrame.Main`, the sidebar first in the DOM. From `64rem` it sits beside `main`.
+ * `PageFrame.Main`, the sidebar first in the DOM. From the grid's `64rem` (about a 69rem window inside `Container`) it sits beside `main`.
  */
 export const WithSidebar: Story = {
   globals: { ...wideGlobals },
@@ -209,6 +214,16 @@ export const WithSidebar: Story = {
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('navigation', { name: 'In this section' })).toBeVisible()
     await expect(canvas.getAllByRole('main')).toHaveLength(1)
+  },
+}
+
+/** At 320px: the sidebar stacks above `main`, one column, no sideways scroll. */
+export const WithSidebarNarrow: Story = {
+  ...WithSidebar,
+  globals: { ...narrowGlobals },
+  play: async ({ canvas, canvasElement }) => {
+    await expect(canvas.getByRole('navigation', { name: 'In this section' })).toBeVisible()
+    await expectNoHorizontalOverflow(canvasElement)
   },
 }
 

@@ -76,7 +76,7 @@ function ProseHook() {
       </p>
       <p>{text.result}</p>
       <TableScrollRegion aria-labelledby={headingId}>
-        <TableRoot aria-labelledby={headingId}>
+        <TableRoot className="kv-table--card kv-table--striped" aria-labelledby={headingId}>
           <TableHead>
             <TableRow>
               <TableColumnHeader>{text.prop}</TableColumnHeader>

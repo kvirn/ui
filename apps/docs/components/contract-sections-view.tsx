@@ -4,7 +4,6 @@ import {
   DefinitionListRow,
   DefinitionListTerm,
   Kbd,
-  Prose,
   TableBody,
   TableCell,
   TableColumnHeader,
@@ -149,7 +148,7 @@ function DataTable({
 }) {
   return (
     <TableScrollRegion aria-labelledby={labelledBy}>
-      <TableRoot aria-labelledby={labelledBy}>
+      <TableRoot className="kv-table--card kv-table--striped" aria-labelledby={labelledBy}>
         <TableHead>
           <TableRow>
             {columns.map((column, index) => (
@@ -297,7 +296,7 @@ export function ContractSectionsView({
           <AnchoredHeading as="h2" id="accessibility">
             {text.sections.accessibility}
           </AnchoredHeading>
-          <Prose>
+          <>
             {accessibility.map((section) => (
               <Fragment key={section.id}>
                 <AnchoredHeading as="h3" id={section.id}>
@@ -314,14 +313,14 @@ export function ContractSectionsView({
                 ) : null}
               </Fragment>
             ))}
-          </Prose>
+          </>
         </section>
       )}
       <section aria-labelledby="keyboard">
         <AnchoredHeading as="h2" id="keyboard">
           {text.sections.keyboard}
         </AnchoredHeading>
-        <Prose>
+        <>
           {keyboard.kind === 'none' ? (
             <p>{text.keyboard.noKeys({ component: contract.name })}</p>
           ) : (
@@ -353,14 +352,14 @@ export function ContractSectionsView({
               />
             </>
           )}
-        </Prose>
+        </>
       </section>
       {announcements.kind === 'none' ? null : (
         <section aria-labelledby="announcements">
           <AnchoredHeading as="h2" id="announcements">
             {text.sections.announcements}
           </AnchoredHeading>
-          <Prose>
+          <>
             <p>{text.announcements.intro({ component: contract.name })}</p>
             <DataTable
               labelledBy="announcements"
@@ -405,7 +404,7 @@ export function ContractSectionsView({
               </>
             ) : null}
             <Note kind="reminder">{messages.docs.note.announcerProvider}</Note>
-          </Prose>
+          </>
         </section>
       )}
     </>

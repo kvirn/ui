@@ -13,7 +13,6 @@ import * as card from '../content/card.api.ts'
 import * as checkboxGroup from '../content/checkbox-group.api.ts'
 import * as checkbox from '../content/checkbox.api.ts'
 import * as codeBlock from '../content/code-block.api.ts'
-import * as columns from '../content/columns.api.ts'
 import * as combobox from '../content/combobox.api.ts'
 import * as container from '../content/container.api.ts'
 import * as copyButton from '../content/copy-button.api.ts'
@@ -28,6 +27,7 @@ import * as field from '../content/field.api.ts'
 import * as fieldset from '../content/fieldset.api.ts'
 import * as fileUpload from '../content/file-upload.api.ts'
 import * as focus from '../content/focus.api.ts'
+import * as grid from '../content/grid.api.ts'
 import * as heading from '../content/heading.api.ts'
 import * as icon from '../content/icon.api.ts'
 import * as inputGroup from '../content/input-group.api.ts'
@@ -47,7 +47,6 @@ import * as readAloud from '../content/read-aloud.api.ts'
 import * as routeFocus from '../content/route-focus.api.ts'
 import * as scrollArea from '../content/scroll-area.api.ts'
 import * as section from '../content/section.api.ts'
-import * as sidebarLayout from '../content/sidebar-layout.api.ts'
 import * as skipLink from '../content/skip-link.api.ts'
 import * as slider from '../content/slider.api.ts'
 import * as stack from '../content/stack.api.ts'
@@ -81,7 +80,6 @@ const apiModules: Readonly<Record<string, object>> = {
   'checkbox-group': checkboxGroup,
   checkbox,
   'code-block': codeBlock,
-  columns,
   combobox,
   container,
   'copy-button': copyButton,
@@ -96,6 +94,7 @@ const apiModules: Readonly<Record<string, object>> = {
   fieldset,
   'file-upload': fileUpload,
   focus,
+  grid,
   heading,
   icon,
   'input-group': inputGroup,
@@ -115,7 +114,6 @@ const apiModules: Readonly<Record<string, object>> = {
   'route-focus': routeFocus,
   'scroll-area': scrollArea,
   section,
-  'sidebar-layout': sidebarLayout,
   'skip-link': skipLink,
   slider,
   stack,

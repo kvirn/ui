@@ -189,7 +189,10 @@ export function RenderingPage() {
                 a separate import path.
               </p>
               <TableScrollRegion aria-labelledby="where-code-runs">
-                <TableRoot aria-labelledby="where-code-runs">
+                <TableRoot
+                  className="kv-table--card kv-table--striped"
+                  aria-labelledby="where-code-runs"
+                >
                   <TableHead>
                     <TableRow>
                       <TableColumnHeader>Entry</TableColumnHeader>

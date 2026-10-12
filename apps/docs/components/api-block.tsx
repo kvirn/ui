@@ -66,7 +66,7 @@ export function PropTable({
 }) {
   return (
     <TableScrollRegion aria-labelledby={headingId}>
-      <TableRoot aria-labelledby={headingId}>
+      <TableRoot className="kv-table--card kv-table--striped" aria-labelledby={headingId}>
         <TableHead>
           <TableRow>
             <TableColumnHeader>{text.prop}</TableColumnHeader>
@@ -99,7 +99,7 @@ export function PropTable({
 function AttributeTable({ headingId, rows }: { headingId: string; rows: readonly AttributeRow[] }) {
   return (
     <TableScrollRegion aria-labelledby={headingId}>
-      <TableRoot aria-labelledby={headingId}>
+      <TableRoot className="kv-table--card kv-table--striped" aria-labelledby={headingId}>
         <TableHead>
           <TableRow>
             <TableColumnHeader>{text.attribute}</TableColumnHeader>

@@ -153,14 +153,14 @@ const componentGroupList: readonly SummarisedGroup[] = [
     label: groupText.layout,
     pages: [
       component(
-        'Columns',
-        'columns',
-        'As many columns as fit, none narrower than you choose, and one column on a small screen.',
-      ),
-      component(
         'Container',
         'container',
         'A block that centres the page’s content and limits how wide it gets.',
+      ),
+      component(
+        'Grid',
+        'grid',
+        'Columns and rows from one to twelve, or as many as fit, each changing at a breakpoint.',
       ),
       component(
         'ScrollArea',
@@ -171,11 +171,6 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'Section',
         'section',
         'A container for a region of the page, such as a sidebar or a band of content.',
-      ),
-      component(
-        'SidebarLayout',
-        'sidebar-layout',
-        'A side column and a content column: stacked on a small screen, side by side on a wide one.',
       ),
       component(
         'Stack',

@@ -63,7 +63,7 @@ export function ContainerPage({
           </li>
           <li>
             Not for text flow: use <Link href="/components/prose">Prose</Link> for the headings,
-            paragraphs and lists inside it. Not for putting blocks side by side: use Columns.
+            paragraphs and lists inside it. Not for putting blocks side by side: use Grid.
           </li>
         </ul>
       }

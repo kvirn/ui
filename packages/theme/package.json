@@ -7,6 +7,7 @@
   "author": "KvirnUI <magnus@vike.se> (https://ui.kvirn.com)",
   "files": [
     "dist",
+    "grid.css",
     "patterns.css",
     "reset.css",
     "theme.css",
@@ -39,7 +40,8 @@
   },
   "scripts": {
     "build": "vp pack",
-    "dev": "vp pack --watch --no-clean"
+    "dev": "vp pack --watch --no-clean",
+    "grid:generate": "node scripts/grid.ts"
   },
   "devDependencies": {
     "vite-plus": "catalog:"

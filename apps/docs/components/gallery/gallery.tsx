@@ -1,4 +1,4 @@
-import { CardRoot, Columns, Heading, Link } from '@kvirn-ui/react'
+import { CardRoot, GridRoot, Heading, Link } from '@kvirn-ui/react'
 import { Fragment } from 'react'
 import type { ReactNode } from 'react'
 
@@ -19,7 +19,7 @@ export interface GalleryGroup {
 /** The cards of one group, as a list. The page or the group heading above it names the group. */
 export function GalleryCards({ items }: { items: readonly GalleryItem[] }) {
   return (
-    <Columns as="ul" className="kv-columns--min-sm kv-not-prose">
+    <GridRoot as="ul" className="kv-grid--fit-sm kv-not-prose">
       {items.map((item) => (
         <CardRoot as="li" key={item.href}>
           <Heading as="h3" size="heading-4">
@@ -35,7 +35,7 @@ export function GalleryCards({ items }: { items: readonly GalleryItem[] }) {
           <p>{item.summary}</p>
         </CardRoot>
       ))}
-    </Columns>
+    </GridRoot>
   )
 }
 

@@ -70,7 +70,7 @@ export function ExampleFrame({
   const codeRef = useRef<HTMLElement>(null)
   const panelId = useId()
   const codeLabelId = useId()
-  // A first line `// button/default.tsx` is the file the code is in: the panel's header shows it,
+  // A first line `// button/default.tsx` is the file the code is in: the card's header shows it,
   // and a copy holds only the code.
   const { fileName, note, code } = splitFileName(source, undefined)
   const lines = useCodeLines(code, language)
@@ -100,13 +100,16 @@ export function ExampleFrame({
 
   return (
     <Card.Root as="figure" aria-labelledby={titleId} className="kv-card--dividers">
-      <Card.Header className="docs-example-header">
-        {headingId === undefined && (
-          <Heading as="h3" size="heading-5" id={titleId}>
-            {caption}
-          </Heading>
-        )}
-      </Card.Header>
+      {(headingId === undefined || fileName !== undefined) && (
+        <Card.Header className="docs-example-header">
+          {headingId === undefined && (
+            <Heading as="h3" size="heading-5" id={titleId}>
+              {caption}
+            </Heading>
+          )}
+          {fileName !== undefined && <CodeFileName fileName={fileName} note={note} />}
+        </Card.Header>
+      )}
       <KvirnProvider locale="en" messages={en}>
         <Card.Body className="kv-card-body--padding-lg">
           <ExampleStage>{children}</ExampleStage>
@@ -126,11 +129,6 @@ export function ExampleFrame({
         <CodeStatus status={status} />
       </Card.Footer>
       <div id={panelId} ref={panelRef} className="docs-code docs-code-panel" hidden={!isCodeOpen}>
-        {fileName !== undefined && (
-          <div className="docs-code-header">
-            <CodeFileName fileName={fileName} note={note} />
-          </div>
-        )}
         <span id={codeLabelId} hidden>
           {codeText.label}
         </span>

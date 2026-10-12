@@ -60,7 +60,7 @@ export function StackPage({
           </li>
           <li>
             Not for text flow: <Link href="/components/prose">Prose</Link> has its own margins for
-            headings and paragraphs. Not for putting blocks side by side: use Columns.
+            headings and paragraphs. Not for putting blocks side by side: use Grid.
           </li>
         </ul>
       }

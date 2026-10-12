@@ -2,7 +2,7 @@ import { Hero, NavTiles, PageFrame } from '@kvirn-ui/patterns'
 import { kvirnbyHills, kvirnbySquare } from '@kvirn-ui/patterns/fixtures'
 import {
   Card,
-  Columns,
+  Grid,
   Container,
   Heading,
   Link,
@@ -20,7 +20,7 @@ import { withShell } from './shell.tsx'
 
 const description = `The front door of the site: who the municipality is, the most-done tasks, the topics, what is new and how to reach someone. One \`h1\` in the hero, then \`h2\` sections in the order a visitor needs them. The hero has no search field of its own because the header search is the page's search.
 
-Written as literal JSX from the patterns: [Page frame](?path=/docs/patterns-site-chrome-page-frame--docs), [Site header](?path=/docs/patterns-site-chrome-site-header--docs), [Site alert](?path=/docs/patterns-site-chrome-site-alert--docs), [Hero](?path=/docs/patterns-navigation-and-promotion-hero--docs), top tasks (a \`Heading\` over \`Columns as="ul"\` of [Link](?path=/docs/components-actions-link--docs)s, six links here and eight under the site alert), [Nav tiles](?path=/docs/patterns-navigation-and-promotion-nav-tiles--docs), [Card](?path=/docs/components-content-card--docs), [Contact card](?path=/docs/patterns-places-and-contacts-contact-card--docs) and [Site footer](?path=/docs/patterns-site-chrome-site-footer--docs). Copy the story's code and replace the text. News and events are Cards in \`Columns as="ul"\` until a News list and an Event list exist.
+Written as literal JSX from the patterns: [Page frame](?path=/docs/patterns-site-chrome-page-frame--docs), [Site header](?path=/docs/patterns-site-chrome-site-header--docs), [Site alert](?path=/docs/patterns-site-chrome-site-alert--docs), [Hero](?path=/docs/patterns-navigation-and-promotion-hero--docs), top tasks (a \`Heading\` over \`Grid.Root as="ul"\` of [Link](?path=/docs/components-actions-link--docs)s, six links here and eight under the site alert), [Nav tiles](?path=/docs/patterns-navigation-and-promotion-nav-tiles--docs), [Card](?path=/docs/components-content-card--docs), [Contact card](?path=/docs/patterns-places-and-contacts-contact-card--docs) and [Site footer](?path=/docs/patterns-site-chrome-site-footer--docs). Copy the story's code and replace the text. News and events are Cards in \`Grid.Root as="ul"\` until a News list and an Event list exist.
 
 **Page contract.** One \`banner\`, one \`main\`, one \`contentinfo\`; one \`h1\` and no skipped heading level; the skip link is first and targets \`main\`; the site alert is a named region before \`main\`; every repeated navigation has its own name; nothing is sticky and nothing is reordered with CSS. Designed and tested to meet WCAG 2.2 AA.
 
@@ -65,7 +65,7 @@ export const Default: Story = {
                 <Heading as="h2" size="heading-2">
                   Popular services
                 </Heading>
-                <Columns className="kv-columns--min-sm kv-columns--gap-4" as="ul">
+                <Grid.Root className="kv-grid--fit-sm kv-grid--gap-4" as="ul">
                   <li>
                     <Link.Root href="#preschool">Apply for a preschool place</Link.Root>
                   </li>
@@ -84,7 +84,7 @@ export const Default: Story = {
                   <li>
                     <Link.Root href="#transport">Apply for school transport</Link.Root>
                   </li>
-                </Columns>
+                </Grid.Root>
               </Stack>
               <Stack>
                 <Heading as="h2" size="heading-2">
@@ -149,7 +149,7 @@ export const Default: Story = {
                 <Heading as="h2" size="heading-2">
                   News
                 </Heading>
-                <Columns className="kv-columns--min-sm" as="ul">
+                <Grid.Root className="kv-grid--fit-sm" as="ul">
                   <Card.Root as="li">
                     <Card.Body className="kv-prose">
                       <Heading as="h3" size="heading-3">
@@ -183,7 +183,7 @@ export const Default: Story = {
                       <p>The water is shut off on Main Street on 14 October.</p>
                     </Card.Body>
                   </Card.Root>
-                </Columns>
+                </Grid.Root>
                 <p>
                   <Link.Root href="#news">All news</Link.Root>
                 </p>
@@ -192,7 +192,7 @@ export const Default: Story = {
                 <Heading as="h2" size="heading-2">
                   Events
                 </Heading>
-                <Columns className="kv-columns--min-sm" as="ul">
+                <Grid.Root className="kv-grid--fit-sm" as="ul">
                   <Card.Root as="li">
                     <Card.Body className="kv-prose">
                       <Heading as="h3" size="heading-3">
@@ -227,7 +227,7 @@ export const Default: Story = {
                       <p>The municipal choir sings songs of the autumn.</p>
                     </Card.Body>
                   </Card.Root>
-                </Columns>
+                </Grid.Root>
                 <p>
                   <Link.Root href="#events">All events</Link.Root>
                 </p>
@@ -312,7 +312,7 @@ export const WithSiteAlert: Story = {
                 <Heading as="h2" size="heading-2">
                   Popular services
                 </Heading>
-                <Columns className="kv-columns--min-sm kv-columns--gap-4" as="ul">
+                <Grid.Root className="kv-grid--fit-sm kv-grid--gap-4" as="ul">
                   <li>
                     <Link.Root href="#preschool">Apply for a preschool place</Link.Root>
                   </li>
@@ -337,7 +337,7 @@ export const WithSiteAlert: Story = {
                   <li>
                     <Link.Root href="#home-care">Apply for home care</Link.Root>
                   </li>
-                </Columns>
+                </Grid.Root>
               </Stack>
               <Stack>
                 <Heading as="h2" size="heading-2">
@@ -402,7 +402,7 @@ export const WithSiteAlert: Story = {
                 <Heading as="h2" size="heading-2">
                   News
                 </Heading>
-                <Columns className="kv-columns--min-sm" as="ul">
+                <Grid.Root className="kv-grid--fit-sm" as="ul">
                   <Card.Root as="li">
                     <Card.Body className="kv-prose">
                       <Heading as="h3" size="heading-3">
@@ -436,7 +436,7 @@ export const WithSiteAlert: Story = {
                       <p>The water is shut off on Main Street on 14 October.</p>
                     </Card.Body>
                   </Card.Root>
-                </Columns>
+                </Grid.Root>
                 <p>
                   <Link.Root href="#news">All news</Link.Root>
                 </p>
@@ -445,7 +445,7 @@ export const WithSiteAlert: Story = {
                 <Heading as="h2" size="heading-2">
                   Events
                 </Heading>
-                <Columns className="kv-columns--min-sm" as="ul">
+                <Grid.Root className="kv-grid--fit-sm" as="ul">
                   <Card.Root as="li">
                     <Card.Body className="kv-prose">
                       <Heading as="h3" size="heading-3">
@@ -480,7 +480,7 @@ export const WithSiteAlert: Story = {
                       <p>The municipal choir sings songs of the autumn.</p>
                     </Card.Body>
                   </Card.Root>
-                </Columns>
+                </Grid.Root>
                 <p>
                   <Link.Root href="#events">All events</Link.Root>
                 </p>

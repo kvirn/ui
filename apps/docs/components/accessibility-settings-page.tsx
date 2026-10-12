@@ -99,7 +99,7 @@ const keyboard = (
   <>
     <p>{text.keyboard.intro}</p>
     <TableScrollRegion aria-labelledby="keyboard-table-caption">
-      <TableRoot>
+      <TableRoot className="kv-table--card kv-table--striped">
         <TableCaption id="keyboard-table-caption">{text.keyboard.tableLabel}</TableCaption>
         <TableHead>
           <TableRow>
@@ -136,7 +136,7 @@ const zoom = (
       {text.zoom.page}
     </Heading>
     <TableScrollRegion aria-labelledby="zoom-table-caption">
-      <TableRoot>
+      <TableRoot className="kv-table--card kv-table--striped">
         <TableCaption id="zoom-table-caption">{text.zoom.tableLabel}</TableCaption>
         <TableHead>
           <TableRow>

@@ -1,4 +1,4 @@
-import { Card, Columns, mergeProps } from '@kvirn-ui/react'
+import { Card, Grid, mergeProps } from '@kvirn-ui/react'
 import type { ComponentPropsWithRef, ReactElement, Ref } from 'react'
 import { LinkedHeading } from '../linked-heading.tsx'
 import type { LinkedHeadingProps } from '../linked-heading.tsx'
@@ -18,9 +18,9 @@ export type NavTilesTextProps = ComponentPropsWithRef<'p'>
  */
 export function NavTilesRoot({ className, ...otherProps }: NavTilesRootProps): ReactElement {
   return (
-    <Columns
+    <Grid.Root
       as="ul"
-      className={['kv-nav-tiles', className].filter(Boolean).join(' ')}
+      className={['kv-nav-tiles', 'kv-grid--fit-md', className].filter(Boolean).join(' ')}
       {...otherProps}
     />
   )

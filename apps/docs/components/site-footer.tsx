@@ -1,7 +1,6 @@
 import { ApplicationLogo } from '@kvirn-ui/patterns'
 import { Badge, Link, Section } from '@kvirn-ui/react'
 import { messages } from '../messages/en.ts'
-import { KvirnMark } from './kvirn-mark.tsx'
 import { sectionCurrent, siteTools } from './site-sections.ts'
 import type { SiteSection } from './site-sections.ts'
 import { SiteToolLink } from './site-tool-link.tsx'
@@ -25,7 +24,6 @@ export function SiteFooter({
           <div>
             <div className="docs-brand">
               <ApplicationLogo.Root href="/">
-                <KvirnMark />
                 <ApplicationLogo.Name>{text.header.home}</ApplicationLogo.Name>
               </ApplicationLogo.Root>
               <Badge>{text.header.status}</Badge>

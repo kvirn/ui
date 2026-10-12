@@ -6,7 +6,6 @@ import type { ReactNode, RefObject } from 'react'
 import { messages } from '../messages/en.ts'
 import { DocsDisclosure } from './docs-disclosure.tsx'
 import { DocsShellContext } from './docs-page.tsx'
-import { KvirnMark } from './kvirn-mark.tsx'
 import { SiteFooter } from './site-footer.tsx'
 import { SiteMenu } from './site-menu.tsx'
 import { SiteNavigation } from './site-navigation.tsx'
@@ -123,7 +122,7 @@ export function SiteShell({
     sidebar:
       sidebarSection === undefined ? null : (
         <>
-          {/* Below 64rem the sidebar opens from its own button, named by the section. */}
+          {/* Below the grid's 48rem the sidebar opens from its own button, named by the section. */}
           <DocsDisclosure
             className="docs-disclosure docs-sidebar-toggle"
             controls={sidebarId}
@@ -165,7 +164,6 @@ export function SiteShell({
         <SiteHeader.Masthead>
           <div className="docs-brand">
             <ApplicationLogo.Root href="/">
-              <KvirnMark />
               <ApplicationLogo.Name>{text.header.home}</ApplicationLogo.Name>
             </ApplicationLogo.Root>
             <Badge>{text.header.status}</Badge>

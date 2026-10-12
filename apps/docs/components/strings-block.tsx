@@ -99,7 +99,7 @@ function LanguageTable({ entry }: { entry: StringEntry }) {
   const headingId = stringId(entry.key)
   return (
     <TableScrollRegion aria-labelledby={headingId}>
-      <TableRoot aria-labelledby={headingId}>
+      <TableRoot className="kv-table--card kv-table--striped" aria-labelledby={headingId}>
         <TableHead>
           <TableRow>
             <TableColumnHeader>{text.language}</TableColumnHeader>
@@ -122,7 +122,7 @@ function LanguageTable({ entry }: { entry: StringEntry }) {
 function CatalogTable({ entries }: { entries: readonly StringEntry[] }) {
   return (
     <TableScrollRegion aria-labelledby={apiStringsId}>
-      <TableRoot aria-labelledby={apiStringsId}>
+      <TableRoot className="kv-table--card kv-table--striped" aria-labelledby={apiStringsId}>
         <TableHead>
           <TableRow>
             <TableColumnHeader>{text.messageKey}</TableColumnHeader>

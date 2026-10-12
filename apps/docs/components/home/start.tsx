@@ -1,5 +1,5 @@
 'use client'
-import { Columns, Heading, Icon, Link, LinkIcon, Stack } from '@kvirn-ui/react'
+import { Grid, Heading, Icon, Link, LinkIcon, Stack } from '@kvirn-ui/react'
 import { homeMessages } from '../../messages/home.ts'
 import { CodeBlock } from '../code-block.tsx'
 import { Band } from './band.tsx'
@@ -15,7 +15,7 @@ export function Start() {
         </Heading>
         <p className="kv-lead home-lead">{text.lead}</p>
       </Stack>
-      <Columns className="kv-columns--gap-8">
+      <Grid.Root className="kv-grid--fit-md kv-grid--gap-8">
         <Stack className="kv-stack--gap-4">
           <Heading as="h3" size="heading-3">
             {text.hookHeading}
@@ -28,7 +28,7 @@ export function Start() {
           </Heading>
           <CodeBlock code={text.componentCode} language="tsx" />
         </Stack>
-      </Columns>
+      </Grid.Root>
       <p className="home-lead">{text.body}</p>
       <CodeBlock code={text.install} language="bash" />
       <div className="home-actions">

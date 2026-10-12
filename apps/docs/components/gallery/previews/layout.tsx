@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Bar, Drawing, Rect } from './primitives.tsx'
 
 export const layoutPreviews: Record<string, ReactNode> = {
-  columns: (
+  grid: (
     <Drawing>
       <Rect x={16} y={16} width={40} height={30} radius={5} tone="fill" />
       <Rect x={60} y={16} width={40} height={30} radius={5} tone="fill" />
@@ -46,20 +46,6 @@ export const layoutPreviews: Record<string, ReactNode> = {
       <Bar x={26} y={46} width={100} />
       <Bar x={26} y={56} width={88} />
       <Bar x={26} y={66} width={60} />
-    </Drawing>
-  ),
-  'sidebar-layout': (
-    <Drawing>
-      <Rect x={14} y={14} width={42} height={72} radius={5} tone="fill" />
-      <Bar x={22} y={26} width={26} tone="key" />
-      <Bar x={22} y={38} width={26} />
-      <Bar x={22} y={48} width={20} />
-      <Bar x={22} y={58} width={24} />
-      <Rect x={62} y={14} width={84} height={72} radius={5} />
-      <Bar x={72} y={26} width={50} height={5} />
-      <Bar x={72} y={42} width={64} />
-      <Bar x={72} y={52} width={56} />
-      <Bar x={72} y={62} width={40} />
     </Drawing>
   ),
   stack: (

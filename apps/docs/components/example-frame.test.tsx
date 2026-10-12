@@ -96,7 +96,7 @@ describe('ExampleFrame code bar', () => {
     await expect.element(page.getByRole('region', { name: 'A button Code' })).toBeInTheDocument()
   })
 
-  test('a first line that names the file is the code panel’s header, and a copy leaves it out', async () => {
+  test('a first line that names the file is the card’s header, and a copy leaves it out', async () => {
     const writeText = vi.fn<(value: string) => Promise<void>>(async () => {})
     Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true })
     const { container } = await render(
@@ -106,8 +106,9 @@ describe('ExampleFrame code bar', () => {
         </ExampleFrame>
       </KvirnProvider>,
     )
-    const header = container.querySelector('.docs-code-panel .docs-code-header')
+    const header = container.querySelector('.docs-example-header')
     expect(header?.querySelector('.docs-code-file')?.textContent).toBe('button/default.tsx')
+    expect(container.querySelector('.docs-code-panel .docs-code-file')).toBeNull()
     expect(container.querySelector('.docs-code-panel pre')?.textContent).toBe('const size = 4')
     await userEvent.click(page.getByRole('button', { name: messages.docs.code.copy }))
     expect(writeText).toHaveBeenCalledWith('const size = 4')
