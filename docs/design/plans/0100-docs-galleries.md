@@ -1,6 +1,6 @@
 # Plan 0100: Galleries for Components, Patterns and Content types
 
-- **Status:** Approved (maintainer, 2026-10-10: recommendations of spec §10 accepted)
+- **Status:** In progress. Verified against the code 2026-10-13: Components and Content types galleries built; open: G5 the Patterns gallery and a page per pattern, G6 the content-type example route, the reviewer.
 - **Owner:** lead
 - **Created:** 2026-10-10 · **Target:** alpha
 - **Related:** spec [component-gallery.md](../design/component-gallery.md) (the design; this plan doesn't repeat it), [0095](0095-storybook-patterns-and-content-types.md) (D12 shell and content type), [0099](0099-docs-header-bands.md) (same files), `design`, `accessibility`, `storybook-docs` skills

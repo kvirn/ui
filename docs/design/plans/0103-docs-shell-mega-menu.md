@@ -1,6 +1,6 @@
 # Plan 0103: Docs shell, mega menu in the masthead and the PageHeader pattern
 
-- **Status:** In progress (Phase 2 built, gates pending)
+- **Status:** In progress. Verified against the code 2026-10-13: Phases 1 and 2 built; open: gates, the reviewer, roadmap.
 - **Owner:** component-engineer (Phase 1), a second engineer (Phase 2)
 - **Created:** 2026-10-11 · **Target:** alpha candidate
 - **Related:** [docs-shell-mega-menu.md](../design/docs-shell-mega-menu.md) (§10 is the input of Phase 1), plans 0095, 0099

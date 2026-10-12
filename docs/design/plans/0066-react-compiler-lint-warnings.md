@@ -1,6 +1,6 @@
 # Plan 0066: Clear the React Compiler lint warnings
 
-- **Status:** Draft
+- **Status:** In progress. Verified against the code 2026-10-13: Not started: every Compiler lint warning listed is still reported (listbox, file-upload, number-input, mask, checkbox-group tests).
 - **Owner:** component-engineer, orchestrated by lead
 - **Created:** 2026-10-06 · **Target:** next patch
 - **Related:** AGENTS.md rules 1, 10, 12 · `api-conventions` skill · no design spec (no visible change)

@@ -1,6 +1,6 @@
 # Plan 0052: The docs site consumes the built packages, and uses the components as they ship
 
-- **Status:** In progress (A and B built, gates running, C open)
+- **Status:** In progress. Verified against the code 2026-10-13: A and B built; open: Phase C, until docs.css has no focus-ring, outline or forced-colors rules (docs.css:285 and three forced-colors blocks remain), then the reviewer.
 - **Owner:** orchestrator / component-engineer
 - **Created:** 2026-10-06 · **Target:** before `beta`
 - **Related:** [0005](0005-default-theme-storybook-docs.md), [0047](0047-navigation-t3c-and-horizontal.md), [0048](0048-tabs.md), [0049](0049-table-of-contents.md), `docs/design/docs-site.md`

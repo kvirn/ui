@@ -1,6 +1,6 @@
 # Plan 0051: Retire Playwright e2e, test in Vitest browser mode
 
-- **Status:** In progress (e2e retired; the display-mode sweep is open)
+- **Status:** In progress. Verified against the code 2026-10-13: E2e retired; open: the display-mode sweep (forced colours, reduced motion, 320px reflow, 1.4.12 text spacing) as Vitest browser projects, the ported-test re-check, and the design skill screenshot recipe.
 - **Owner:** maintainer, main session
 - **Created:** 2026-10-06 · **Target:** tooling
 - **Related:** `AGENTS.md`, the `testing` and `keyboard` skills

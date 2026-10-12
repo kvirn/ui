@@ -1,6 +1,6 @@
 # Plan 0093: `as` replaces `render`
 
-- **Status:** In progress
+- **Status:** In progress. Verified against the code 2026-10-13: Largely migrated (no `render=` left); open: confirm T4–T6, whole-tree gates, the hydration check on /components/button, the reviewer, the `prefer-tag-over-role` question for the maintainer.
 - **Owner:** lead (maintainer decided the direction)
 - **Created:** 2026-10-09 · **Target:** pre-alpha, breaking, no backward compatibility
 - **Related:** `.claude/skills/api-conventions/SKILL.md`, `docs/architecture.md#api-conventions`, `docs/dev-warnings.md`

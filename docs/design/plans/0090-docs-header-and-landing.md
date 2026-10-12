@@ -1,6 +1,6 @@
 # Plan 0090: Docs site header, sections and landing page
 
-- **Status:** Implemented (reviewer APPROVE; AT and browser pass `pending`) (maintainer answers on Q3, Q6, Q7 recorded below)
+- **Status:** In progress. Verified against the code 2026-10-13: Built; open: gates, the reviewer box, the design README row and roadmap.
 - **Owner:** lead
 - **Created:** 2026-10-08 · **Target:** docs site, pre-alpha
 - **Related:** [design spec](../design/docs-landing-and-header.md), [prose-content-types](../design/prose-content-types.md), Plan 0076 (`kv-inset`, `kv-steps`), `regulations` skill

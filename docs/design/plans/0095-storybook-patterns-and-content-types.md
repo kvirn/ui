@@ -1,6 +1,6 @@
 # Plan 0095: Storybook Patterns and Content types, the shell of the reference site
 
-- **Status:** Draft (decisions D1–D3 wait for the maintainer)
+- **Status:** In progress. Verified against the code 2026-10-13: T0–T4 and T9 built; open: T5 remaining patterns and content types, T10 galleries, the reviewer, D1–D3 for the maintainer.
 - **Owner:** lead
 - **Created:** 2026-10-09 · **Target:** M4 pilot, ahead of the docs shell
 - **Related:** [0053](0053-docs-as-municipality-site.md), [municipality-reference-site.md](../design/municipality-reference-site.md) (inventory, §5 slices, §10 decisions), [0090](0090-docs-header-and-landing.md), `storybook-docs` and `design` skills

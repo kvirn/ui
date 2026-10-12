@@ -1,6 +1,6 @@
 # Plan 0080: Loading indicators (spinner, animated gradient bar)
 
-- **Status:** Implemented; reviewer round 2 not completed at commit time, manual AT pending. Final direction 2026-10-06: endless loops, no library stop control; the consumer owns the 2.2.2 mechanism and the docs say how (see Decisions).
+- **Status:** In progress. Verified against the code 2026-10-13: Built; open: the Q7 browser check (`position: relative` on a `tr` under a sticky head), reviewer round 2, gates, roadmap.
 - **Owner:** lead → ux-designer (done) → component-engineer → accessibility-reviewer
 - **Created:** 2026-10-06 · **Target:** alpha
 - **Related:** supersedes Plan 0074 D2 ("no spinner, no indeterminate bar"); spec `docs/design/loading-indicators.md` (visual spec, tokens, parts, motion); prototype `docs/design/prototypes/loading-indicators.html`; `docs/design/toast-timer-ring.md`; `docs/design/status-patterns.md`

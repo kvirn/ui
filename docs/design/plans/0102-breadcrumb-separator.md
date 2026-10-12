@@ -1,6 +1,6 @@
 # Plan 0102: Breadcrumb separator
 
-- **Status:** Approved
+- **Status:** In progress. Verified against the code 2026-10-13: Built; open: gates and the reviewer.
 - **Owner:** orchestrator / component-engineer
 - **Created:** 2026-10-11 · **Target:** alpha
 - **Related:** `packages/react/src/breadcrumb/breadcrumb.a11y.md`, Alert's `icon` prop (prior art), AGENTS.md rule 14

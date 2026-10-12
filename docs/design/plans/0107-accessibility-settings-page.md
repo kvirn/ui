@@ -1,6 +1,6 @@
 # Plan 0107: Accessibility settings page (docs site)
 
-- **Status:** Approved
+- **Status:** In progress. Verified against the code 2026-10-13: Built; open: the gates and reviewer boxes are unticked (only the Ctrl/Cmd+K shortcut review is recorded).
 - **Owner:** lead / component-engineer
 - **Created:** 2026-10-12 · **Target:** docs site
 - **Related:** spec [docs/design/accessibility-settings-page.md](../design/accessibility-settings-page.md) (the source of truth for copy, structure and states), plans 0092, 0099, 0106; skills accessibility, keyboard, regulations

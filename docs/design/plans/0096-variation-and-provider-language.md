@@ -1,6 +1,6 @@
 # Plan 0096: One rule for variation, and language only from the provider
 
-- **Status:** Approved
+- **Status:** In progress. Verified against the code 2026-10-13: Rule and prop removals done; open: the tooling check that fails on presentation prop names in public Options and Props.
 - **Owner:** lead
 - **Created:** 2026-10-10 · **Target:** before `beta`
 - **Related:** `docs/architecture.md` (Styling contract), `api-conventions`, `theme-css`, `forms`, Plan 0093 (`as`)

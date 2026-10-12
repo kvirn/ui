@@ -1,6 +1,6 @@
 # Plan 0053: The docs site is also a reference municipality site
 
-- **Status:** Draft
+- **Status:** In progress. Verified against the code 2026-10-13: Spec accepted; open: nothing of the reference site is built (P1–P22, the `/reference` index).
 - **Owner:** orchestrator / ux-designer
 - **Created:** 2026-10-06 · **Target:** M4 pilot
 - **Related:** [0052](0052-docs-on-built-packages.md), [docs/roadmap.md](../roadmap.md) (Blocks, M4), `docs/design/docs-site.md`

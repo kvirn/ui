@@ -1,6 +1,6 @@
 # Plan 0091: Landing v2, proof over adjectives
 
-- **Status:** Implemented in the docs site from prototype D (2026-10-09, by the lead, no agent tool available); the three proof pages (ledger, transcript comparison, brand guard) are deferred to their own pages; stories and AT `pending`
+- **Status:** In progress. Verified against the code 2026-10-13: Landing built from prototype D; open: the evidence script and data, the evidence ledger, transcript comparison and brand guard pages, gates, reviewer.
 - **Owner:** lead
 - **Created:** 2026-10-08 · **Target:** docs site, pre-alpha
 - **Related:** [Plan 0090](0090-docs-header-and-landing.md) (v1 landing, baseline), [docs/marketing.md](../marketing.md) (buyer map, message house, proof ideas), [docs-landing-and-header.md](../design/docs-landing-and-header.md) (v1 spec)

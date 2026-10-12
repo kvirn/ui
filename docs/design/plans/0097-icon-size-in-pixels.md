@@ -1,6 +1,6 @@
 # Plan 0097: Icon `size` is a pixel string, converted to rem by a class
 
-- **Status:** Approved (maintainer, 2026-10-10)
+- **Status:** In progress. Verified against the code 2026-10-13: Built; open: the reviewer re-review after its findings were fixed.
 - **Owner:** lead
 - **Related:** Plan 0044 (the step scale, reversed here), Plan 0096 (`size` picks a `kv-<part>--<option>` class), `docs/design/icon.md`
 

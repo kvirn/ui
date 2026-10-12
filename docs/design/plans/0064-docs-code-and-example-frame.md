@@ -1,6 +1,6 @@
 # Plan 0064: Docs-only CodeBlock and ExampleFrame with a highlighter
 
-- **Status:** Approved (D1–D3 and the locale choice approved by the maintainer, 2026-10-06)
+- **Status:** In progress. Verified against the code 2026-10-13: CodeBlock, ExampleFrame and the highlighter are built; open: the docs-site.md D1/D2 amendment, the design README row, the spec §6 contrast numbers, the reviewer.
 - **Owner:** lead → component-engineer
 - **Created:** 2026-10-06 · **Target:** docs site
 - **Related:** [design spec](../design/docs-code.md) (the contract, tokens and strings live there), [0057](0057-docs-component-pages.md), [0060](0060-copy-button-and-code-block.md) (the library CopyButton and CodeBlock; this plan does not replace it), `docs/design/docs-site.md`

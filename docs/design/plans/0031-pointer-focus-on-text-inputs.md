@@ -1,6 +1,6 @@
 # Plan 0031: Pointer focus on text inputs
 
-- **Status:** In progress
+- **Status:** In progress. Verified against the code 2026-10-13: Built; open: reviewer follow-ups (a) forced-colours outline on the box `:has(:focus)` rules, (b) virtual pointer events count as keyboard, (c) click-focused invalid field, (e) a Combobox `data-focused` test.
 - **Owner:** Maintainer / Claude
 - **Created:** 2026-10-04 · **Target:** M1
 - **Related:** Plan 0013 (form fields), Plan 0019 (OneTimeCode), Plan 0026 (Combobox, Autocomplete)

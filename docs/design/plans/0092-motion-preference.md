@@ -1,6 +1,6 @@
 # Plan 0092: Motion as a theme preference
 
-- **Status:** Implemented (gates green; stories and AT `pending`)
+- **Status:** In progress. Verified against the code 2026-10-13: Built; open: the Storybook provider and theme stories in CI, the reviewer.
 - **Owner:** lead
 - **Created:** 2026-10-09 · **Target:** core, react, theme, docs site
 - **Related:** [Plan 0091](0091-landing-v2-evidence.md) (asked for the toggle in the docs header), `theme-css` skill, `packages/react/src/provider/kvirn-provider.md`
