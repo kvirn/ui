@@ -25,8 +25,11 @@ const groups = componentGroups.map((group) => ({
 
 export default function ComponentsIndexPage() {
   return (
-    <DocsPage title={text.title} lead={text.lead({ count: componentPages.length })}>
-      <PageContents sections={groups} />
+    <DocsPage
+      title={text.title}
+      lead={text.lead({ count: componentPages.length })}
+      contents={<PageContents sections={groups} />}
+    >
       <Gallery groups={groups} />
     </DocsPage>
   )

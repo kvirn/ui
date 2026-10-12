@@ -48,7 +48,8 @@ function PageGroup({ group, pathname }: { group: SiteGroup; pathname: string }) 
 /**
  * The sidebar of the active section: a list of links, not a menu (APG Disclosure Navigation),
  * named by the section. Components list their groups, each a link to its page of cards. The
- * Section is the surface, and the Menu button shows and hides it below 64rem.
+ * Section sits on the canvas without padding, so the navigation fills its column, and the Menu
+ * button shows and hides it below 64rem.
  */
 export function SiteNavigation({
   id,
@@ -63,7 +64,11 @@ export function SiteNavigation({
 }) {
   const [indexPage, ...otherPages] = section.pages
   return (
-    <Section id={id} className="docs-sidebar kv-section--padding-sm" data-open={isOpen}>
+    <Section
+      id={id}
+      className="docs-sidebar kv-section--canvas kv-section--padding-none"
+      data-open={isOpen}
+    >
       <Navigation.Root label={section.label}>
         <Navigation.List>
           {indexPage === undefined ? null : <PageItem page={indexPage} pathname={pathname} />}

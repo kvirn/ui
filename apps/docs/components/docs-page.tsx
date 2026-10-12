@@ -20,20 +20,23 @@ export const DocsShellContext = createContext<DocsShellParts>({
 
 /**
  * An article page of the docs: the intro band at the full width of `main` (breadcrumb, `h1`,
- * lead, facts), then the sidebar where the section has one beside the article, then the pager.
- * `facts` are `DefinitionList.Row`s.
+ * lead, facts), then the sidebar where the section has one, the contents and the article, then the
+ * pager. The contents come before the article, so they are read and tabbed to first; from 80rem
+ * they are a column after it. `facts` are `DefinitionList.Row`s.
  */
 export function DocsPage({
   title,
   lead,
   facts,
   afterFacts,
+  contents,
   children,
 }: {
   title: string
   lead?: string | undefined
   facts?: ReactNode
   afterFacts?: ReactNode
+  contents?: ReactNode
   children?: ReactNode
 }) {
   const { trail, sidebar, pager } = useContext(DocsShellContext)
@@ -63,6 +66,7 @@ export function DocsPage({
       <div className="docs-body">
         <div className="docs-columns">
           {sidebar}
+          {contents}
           <Prose as="article" className="docs-article">
             {children}
           </Prose>

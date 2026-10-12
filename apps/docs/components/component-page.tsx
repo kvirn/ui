@@ -165,8 +165,8 @@ export function ComponentPage(props: ComponentPageProps) {
         </>
       }
       afterFacts={status === 'stable' ? null : <p className="docs-status">{statusTexts[status]}</p>}
+      contents={<PageContents sections={parts.flatMap((part) => [...part.sections])} />}
     >
-      <PageContents sections={parts.flatMap((part) => [...part.sections])} />
       {parts.map((part) => part.node)}
     </DocsPage>
   )

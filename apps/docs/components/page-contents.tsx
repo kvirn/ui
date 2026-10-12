@@ -67,7 +67,8 @@ export function SectionHeading({ section }: { section: PageSection }) {
 
 /**
  * A page of `h2` sections with its contents, for Home, Foundation and reference pages. One
- * list gives the contents and the headings, so they can't drift.
+ * list gives the contents and the headings, so they can't drift. The intro sits in the page
+ * header, so it is read before the contents, as a component page's status is.
  */
 export function PageWithContents({
   title,
@@ -82,9 +83,12 @@ export function PageWithContents({
 }) {
   const rendered = sections.filter(({ content }) => hasContent(content))
   return (
-    <DocsPage title={title} lead={lead}>
-      {intro}
-      <PageContents sections={rendered} />
+    <DocsPage
+      title={title}
+      lead={lead}
+      afterFacts={intro}
+      contents={<PageContents sections={rendered} />}
+    >
       {rendered.map((section) => (
         <Fragment key={section.id}>
           <SectionHeading section={section} />

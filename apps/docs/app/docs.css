@@ -399,7 +399,6 @@ body {
 
   .docs-sidebar {
     border-block-end: 0;
-    border-inline-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
   }
 
   .docs-sidebar[data-open='false'] {
@@ -407,33 +406,49 @@ body {
   }
 }
 
-/* The title's text starts where the first level of links does: their rows have 16px of their
- * own. Nested levels keep their indent. */
-.docs-contents > #contents-title {
-  padding-inline-start: var(--kv-space-4);
+/* Beside the sidebar, the contents sit above the article in the second column. The sidebar spans
+ * both rows and the second row takes up what the sidebar is taller, so no gap opens between them. */
+@media (width >= 64rem) {
+  .docs-columns:has(> .docs-sidebar):has(> .docs-contents) {
+    grid-template-rows: auto 1fr;
+  }
+
+  .docs-columns:has(> .docs-contents) > .docs-sidebar {
+    grid-row: 1 / -1;
+  }
 }
 
-/* The contents move to a column beside the article; the DOM order stays, so they still come before Example. */
+/* From 80rem the contents are the last column. They stay before the article in the DOM, so they
+ * are still read and tabbed to before it. */
 @media (width >= 80rem) {
-  .docs-article:has(.docs-contents) {
-    display: grid;
+  .docs-columns:has(> .docs-contents) {
     grid-template-columns: minmax(0, var(--docs-content-max)) var(--docs-contents-width);
-    column-gap: var(--kv-space-10);
-    max-inline-size: none;
+    grid-template-rows: none;
   }
 
-  .docs-article:has(.docs-contents) > * {
-    grid-column: 1;
+  .docs-columns:has(> .docs-sidebar):has(> .docs-contents) {
+    grid-template-columns:
+      var(--docs-sidebar-width) minmax(0, var(--docs-content-max))
+      var(--docs-contents-width);
+    grid-template-rows: none;
   }
 
-  .docs-article:has(.docs-contents) > .docs-contents {
-    grid-column: 2;
-    grid-row: 1 / span 99;
+  .docs-columns:has(> .docs-contents) > .docs-sidebar {
+    grid-row: auto;
+  }
+
+  .docs-columns > .docs-contents {
+    grid-column: -2;
+    grid-row: 1;
     align-self: start;
     position: sticky;
     inset-block-start: var(--kv-space-6);
     max-block-size: calc(100dvh - var(--kv-space-12));
     overflow-y: auto;
+    /* Room for the links' focus ring, which the scroll box would clip, without moving the text. */
+    margin: calc(-1 * var(--docs-ring-room));
+    padding: var(--docs-ring-room);
+    --docs-ring-room: calc(var(--kv-focus-ring-width) + var(--kv-focus-ring-offset));
   }
 }
 

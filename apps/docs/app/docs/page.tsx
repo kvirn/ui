@@ -15,7 +15,11 @@ export default function GetStartedPage() {
     <PageWithContents
       title={messages.docs.nav.getStarted}
       lead={text.lead}
-      intro={<p id="status">{text.status}</p>}
+      intro={
+        <p id="status" className="docs-status">
+          {text.status}
+        </p>
+      }
       sections={[
         {
           id: 'what-you-get',
