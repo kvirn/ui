@@ -145,7 +145,7 @@ Don't use `kv-steps` as a progress indicator, and don't put Stepper on a guidanc
 
 Both classes keep their content prose-styled (paragraphs, links, nested lists), so they are **not** boundaries.
 
-| List in `theme.css` §9                                                         | Add                      | Why                                                                     |
+| List in `theme.css` §8                                                         | Add                      | Why                                                                     |
 | ------------------------------------------------------------------------------ | ------------------------ | ----------------------------------------------------------------------- |
 | Root-only list (`&:not(:where(.kv-not-prose, … .kv-section …))`)               | `.kv-inset`, `.kv-steps` | Prose leaves the root alone; its content stays prose, like `kv-section` |
 | Margin list ("Embedded components … only its own margin")                      | `.kv-inset`, `.kv-steps` | They take `--kv-prose-space-block` in prose                             |
@@ -223,7 +223,7 @@ Guidance: closed `details`/Disclosure content doesn't print; don't put the only 
 ## 9. Task split for the plan
 
 1. **DESIGN.md** (maintainer approval): Prose gets inset, steps and figure guidance; Content and status gets "Inset or Alert"; Patterns notes Steps vs Stepper.
-2. **theme.css §9:** the list growth in §6.5; new rules for `kv-inset` and `kv-steps` (§6.3, §6.4); forced colours (§6.6); the §9 header comment and DESIGN.md Prose "Boundary" bullet. Then `theme:check`.
+2. **theme.css §8:** the list growth in §6.5; new rules for `kv-inset` and `kv-steps` (§6.3, §6.4); forced colours (§6.6); the §8 header comment and DESIGN.md Prose "Boundary" bullet. Then `theme:check`.
 3. **Print** (only if §8.2 is approved): the `@media print` block and the checker question.
 4. **Fixture and stories:** `articleFor` fields (§4) in all six locales; Prose stories gain the inset, steps and a complex figure, and show them in RTL, Text spacing and On surfaces.
 5. **Tests:** `prose.test.tsx`: `ol.kv-steps` exposes `list` with n `listitem`s; the inset adds no role or Tab stop. Axe runs on the stories. No CSS assertions (rule 13).

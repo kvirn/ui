@@ -19,11 +19,6 @@ const css = `
     --kv-color-canvas: var(--kv-black);
     --kv-color-text: var(--kv-neutral-50, #f7f8f8);
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-kv-color-scheme]) {
-      --kv-color-canvas: var(--kv-black);
-    }
-  }
   @media (width >= 64rem) {
     :root { --kv-color-canvas: red; }
   }
@@ -39,12 +34,11 @@ describe('parseCssRules', () => {
       ':root',
       ":root[data-kv-color-scheme='dark'][data-kv-contrast='more']",
       ":root[data-kv-color-scheme='dark']",
-      ':root:not([data-kv-color-scheme])',
       ':root',
       '.kv-button',
       ':root .kv-link',
     ])
-    expect(rules[3]?.media).toEqual(['(prefers-color-scheme: dark)'])
+    expect(rules[3]?.media).toEqual(['(width >= 64rem)'])
     expect(rules[0]?.declarations).toContainEqual(['--kv-font', "'Inter Variable', system-ui"])
   })
 
@@ -87,15 +81,6 @@ describe('readRootProperties', () => {
 
   it('lets specificity beat source order', () => {
     expect(readRootProperties(css, themeEnvironment('dark-contrast'))['--kv-color-text']).toBe(
-      '#ffffff',
-    )
-  })
-
-  it('applies a system fallback only without the attribute', () => {
-    expect(readRootProperties(css, themeEnvironment('dark', 'system'))['--kv-color-canvas']).toBe(
-      '#010102',
-    )
-    expect(readRootProperties(css, themeEnvironment('light', 'system'))['--kv-color-canvas']).toBe(
       '#ffffff',
     )
   })

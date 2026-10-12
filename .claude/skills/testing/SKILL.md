@@ -22,7 +22,7 @@ We test **behaviour, accessibility and requirements**. We never test CSS. Before
 
 - Computed styles or CSS values: border, outline, line height, padding, margin, font, colour, display, overflow, transition, radius, shadow (`toHaveCSS`, `getComputedStyle`).
 - Layout and geometry: whether a part sits above, under or beside another, heights, widths, alignment, bounding boxes.
-- The text of `theme.css`: no parsing it for properties or values. `theme:check` covers contrast, fallbacks and the forced-colour mapping. That is the only theme test.
+- The text of `theme.css`: no parsing it for properties or values. `theme:check` covers contrast and the forced-colour mapping. The only other theme test is that without the `data-kv-*` attributes the page is the light theme.
 - Class lists beyond the one part-class test, `tagName`s that aren't a role, and anything React or the browser already guarantees.
 - The same fact twice. Each fact is proved once, in the cheapest layer that can prove it: core, then component, then story. Keyboard rows are proved in the component test. Patterns (`packages/patterns`) have no unit tests: axe in every story state in every theme is their proof.
   - One standing exception (maintainer, 2026-10-04): a story's `play` may check the state it renders even when a component test proves it too. Don't delete these as duplicates.

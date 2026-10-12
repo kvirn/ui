@@ -78,18 +78,11 @@ export const ratioOf = (foreground: string | undefined, background: string | und
 export const isForcedColors = (element: Element): boolean =>
   element.ownerDocument.defaultView?.matchMedia('(forced-colors: active)').matches ?? false
 
-/** The theme that `<html>` shows: from KvirnProvider's attributes, or else from the OS. */
+/** The theme that `<html>` shows: from KvirnProvider's attributes; none means light, standard. */
 export function currentThemeName(element: Element): ThemeName {
   const root = element.ownerDocument.documentElement
-  const view = element.ownerDocument.defaultView
-  const isDark =
-    (root.getAttribute('data-kv-color-scheme') ??
-      (view?.matchMedia('(prefers-color-scheme: dark)').matches === true ? 'dark' : 'light')) ===
-    'dark'
-  const isMore =
-    (root.getAttribute('data-kv-contrast') ??
-      (view?.matchMedia('(prefers-contrast: more)').matches === true ? 'more' : 'standard')) ===
-    'more'
+  const isDark = root.getAttribute('data-kv-color-scheme') === 'dark'
+  const isMore = root.getAttribute('data-kv-contrast') === 'more'
   if (isDark) {
     return isMore ? 'dark-contrast' : 'dark'
   }

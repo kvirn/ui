@@ -44,7 +44,7 @@ import '@kvirn-ui/theme/theme.css'
   - `kv-heading` and `kv-heading--display|heading-1|heading-2|heading-3|heading-4|heading-5|heading-6` set a heading's type role apart from its level: `<Heading level={3} size="heading-2">` is an `h3` that looks like `heading-2`. Without a `size`, each level has the role of its number. Only the type is set: margins are yours (or Prose's).
   - `kv-prose` styles content you don't control (the same elements as Tailwind's typography plugin), and `kv-prose--small` (14px, for notes only), `kv-prose--large` (18px), `kv-prose--xl` and `kv-prose--2xl` are the other sizes, and `kv-prose--full` lifts the 70ch measure. Recolour one part with its role on the block: `--kv-prose-color-body`, `-headings`, `-lead`, `-links`, `-links-hover`, `-bold`, `-counters`, `-bullets`, `-hr`, `-quotes`, `-quote-borders`, `-captions`, `-code`, `-pre-code`, `-pre-bg`, `-th-borders` and `-td-borders`. It stops at a card or an alert, unless you put `kv-prose` on it or inside it. A section in prose gets prose's block margins on its own element, and its content stays prose. A field or a fieldset in prose is left alone, like `kv-not-prose`, with prose's block margins only. Inside prose, `kv-lead` marks the lead paragraph, `kv-scroll-region` a wide table's labelled scroll region, and `kv-not-prose` anything prose shouldn't style.
 - The theme never sets an icon's size, stroke, fill or colour: those are `<Icon>` props, rendered as attributes, which any CSS would beat. It aligns icons with text, flips directional ones in right-to-left text, and in forced colours gives every icon its parent's system colour.
-- The theme follows `data-kv-color-scheme` and `data-kv-contrast`, which `KvirnProvider` and `KvirnThemeScript` set on `<html>`. Without them, it follows the OS settings. Forced colours always win.
+- The theme follows `data-kv-color-scheme` and `data-kv-contrast`, which `KvirnProvider` and `KvirnThemeScript` set on `<html>`. Without them (no JavaScript, no provider) the page is the light, standard theme, whatever the OS asks. For first paint use `KvirnThemeScript`, and for the attributes `KvirnProvider` or `useTheme`. Forced colours always win.
 
 ### 2. Override variables
 
@@ -201,11 +201,11 @@ The edge tokens are a colour and a percentage: the second argument of `color-mix
 }
 ```
 
-If you copy `theme.css` from an older version, add the four tokens to every theme block (`:root`, dark, both high-contrast blocks, their `prefers-*` fallbacks and forced colours), or `checkThemeCss()` reports them as not defined.
+If you copy `theme.css` from an older version, add the four tokens to every theme block (`:root`, dark, both high-contrast blocks and forced colours), or `checkThemeCss()` reports them as not defined.
 
 ## Check your colours
 
-After changing colours, measure them. `checkThemeCss` reads a theme file the way a browser reads it for `<html>`, in all four themes, and checks that every colour token is defined, that each OS fallback matches its theme, and that every pair meets its WCAG minimum: 4.5:1 for text, 3:1 for control edges and focus, and 7:1 for text in the high-contrast themes. It also reads the two button edge tokens, and requires every tinted button edge to keep 3:1 on `canvas`, `surface` and `surface-raised` (1.4.11), so a rebrand can't weaken a button's boundary.
+After changing colours, measure them. `checkThemeCss` reads a theme file the way a browser reads it for `<html>`, in all four themes, and checks that every colour token is defined, and that every pair meets its WCAG minimum: 4.5:1 for text, 3:1 for control edges and focus, and 7:1 for text in the high-contrast themes. It also reads the two button edge tokens, and requires every tinted button edge to keep 3:1 on `canvas`, `surface` and `surface-raised` (1.4.11), so a rebrand can't weaken a button's boundary.
 
 ```ts
 import { readFileSync } from 'node:fs'
@@ -222,18 +222,47 @@ In this repository, `vp run theme:check` runs it on `theme.css`.
 
 ## What's in theme.css
 
-1. Palette: the role scales, the only place with raw colour values
-2. The light theme: semantic colours and every non-colour token (spacing, radii, type, focus ring, motion, control size)
-3. Dark, light high contrast and dark high contrast
-4. System fallbacks from `prefers-color-scheme` and `prefers-contrast`
-5. Forced colours
-6. Compact density
-7. Button (and its `--kv-button-*` sizing)
-8. Link and navigation lists
-9. Prose
-10. Card (and the card defaults), and 10a. Section
-    10b. Alert
-11. Icon
+- 1. Palette: the role scales, the only place with raw colour values
+- 2. The light theme: semantic colours and every non-colour token (spacing, radii, type, focus ring, motion, control size)
+- 3. Dark, light high contrast and dark high contrast
+- 4. Forced colours
+- 5. Density
+- 6. Button
+- 6a. Toggle
+- 7. Link, service link and Navigation
+- 7d. Top bar
+- 7a. Tabs
+- 7b. Table of contents
+- 7c. Breadcrumb and pagination
+- 7c. Disclosure and Accordion
+- 8. Prose
+- 8a. Heading
+- 8b. Kbd
+- 8l. Address
+- 8m. List
+- 8c. Tooltip
+- 8d. Visually hidden and skip link
+- 8f. Code block
+- 8e. Badge
+- 8g. Tag
+- 8h. Stepper
+- 8k. Read aloud
+- 8i. Calendar
+- 9. Card
+- 9a. Section
+- 9b. Alert
+- 9f. Toast
+- 9e. Dialog
+- 9d. Definition list and error summary
+- 9c. Layout
+- 10. Icon
+- 11. Form fields
+- 12. One-time code
+- 13. File upload
+- 14. Table
+- 15. Rich text editor
+- 16. Display settings kv-display-settings: colour scheme, contrast and motion, as panels, a
+- `patterns.css`: the classes of `@kvirn-ui/patterns`, imported at the top of the file
 
 The site-wide defaults are listed at the top of the file.
 

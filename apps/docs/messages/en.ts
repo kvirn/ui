@@ -9,6 +9,8 @@ export const messages = {
       description:
         'Headless, accessible React components for public services in the Nordics and the EU.',
     },
+    noScript:
+      'JavaScript is off. The page works, but dark mode, more contrast and the interactive examples need JavaScript.',
     contents: {
       heading: 'On this page',
       anchor: ({ label }: { label: string }) => `Link to ${label}`,

@@ -28,32 +28,17 @@ const themeSettings: Record<ThemeName, readonly ['light' | 'dark', 'standard' | 
   'dark-contrast': ['dark', 'more'],
 }
 
-/**
- * A theme as KvirnProvider selects it (`data-kv-color-scheme`, `data-kv-contrast`), or, with
- * `'system'`, as the OS selects it before JavaScript runs.
- */
-export function themeEnvironment(
-  themeName: ThemeName,
-  source: 'attributes' | 'system' = 'attributes',
-): ThemeEnvironment {
+/** A theme as KvirnProvider selects it: `data-kv-color-scheme` and `data-kv-contrast`. */
+export function themeEnvironment(themeName: ThemeName): ThemeEnvironment {
   const [colorScheme, contrast] = themeSettings[themeName]
-  return source === 'attributes'
-    ? {
-        attributes: { 'data-kv-color-scheme': colorScheme, 'data-kv-contrast': contrast },
-        media: {
-          'prefers-color-scheme': 'light',
-          'prefers-contrast': 'no-preference',
-          'forced-colors': 'none',
-        },
-      }
-    : {
-        attributes: {},
-        media: {
-          'prefers-color-scheme': colorScheme,
-          'prefers-contrast': contrast === 'more' ? 'more' : 'no-preference',
-          'forced-colors': 'none',
-        },
-      }
+  return {
+    attributes: { 'data-kv-color-scheme': colorScheme, 'data-kv-contrast': contrast },
+    media: {
+      'prefers-color-scheme': 'light',
+      'prefers-contrast': 'no-preference',
+      'forced-colors': 'none',
+    },
+  }
 }
 
 /** Splits on `separator` outside parentheses and quotes. */
@@ -313,9 +298,8 @@ export function readRootProperties(
 export function resolveThemeColors(
   css: string,
   themeName: ThemeName,
-  source: 'attributes' | 'system' = 'attributes',
 ): Partial<Record<ColorTokenName, string>> {
-  const properties = readRootProperties(css, themeEnvironment(themeName, source))
+  const properties = readRootProperties(css, themeEnvironment(themeName))
   return Object.fromEntries(
     colorTokenNames.flatMap((name) => {
       const value = properties[`--kv-color-${name}`]

@@ -13,7 +13,7 @@ import {
 } from './read-theme.ts'
 
 // The shipped theme.css, the source of truth. Only theme:check lives here: contrast pairs
-// (1.4.3, 1.4.6, 1.4.11), the system fallbacks and the forced-colours mapping. The look is
+// (1.4.3, 1.4.6, 1.4.11), the no-JavaScript light theme and the forced-colours mapping. The look is
 // reviewed visually, never tested (AGENTS.md rule 13).
 const themeCss = readFileSync(new URL('../theme.css', import.meta.url), 'utf8')
 
@@ -56,9 +56,29 @@ const colorDeclarations = rules.flatMap((rule) =>
 )
 
 describe('theme.css contrast and forced colours', () => {
-  it('passes theme:check: every token, every fallback, every contrast pair', () => {
+  it('passes theme:check: every token, every contrast pair', () => {
     expect(checkThemeCss(themeCss)).toEqual([])
   })
+
+  it.each([
+    ['light', 'no-preference'],
+    ['light', 'more'],
+    ['dark', 'no-preference'],
+    ['dark', 'more'],
+  ] as const)(
+    'without JavaScript the page is the light theme, whatever the OS asks (%s, contrast %s)',
+    (colorScheme, contrast) => {
+      const withoutJavaScript = readRootProperties(themeCss, {
+        attributes: {},
+        media: {
+          'prefers-color-scheme': colorScheme,
+          'prefers-contrast': contrast,
+          'forced-colors': 'none',
+        },
+      })
+      expect(withoutJavaScript).toEqual(readRootProperties(themeCss, themeEnvironment('light')))
+    },
+  )
 
   it('maps every colour token to a system colour in forced colours', () => {
     const forced = rules.filter((rule) => rule.media.some((media) => media.includes('forced')))
@@ -210,60 +230,29 @@ describe('overrides', () => {
     expect(problems.filter((problem) => problem.startsWith('dark'))).toEqual([])
   })
 
-  it('reports button edge tokens that are missing, malformed or drifted in a fallback', () => {
+  it('reports button edge tokens that are missing or malformed', () => {
     const withoutShade = themeCss.replaceAll(/--kv-button-edge-shade:[^;]*;/g, '')
     expect(checkThemeCss(withoutShade)).toContain('light: --kv-button-edge-shade is not defined')
     const named = `${themeCss}\n:root { --kv-button-edge-shade: black 35%; }`
     expect(checkThemeCss(named)).toContain(
       'light: --kv-button-edge-shade is "black 35%", not a "#rgb or #rrggbb" colour and a percentage',
     )
-    const drifted = themeCss.replace(
-      /(@media \(prefers-color-scheme: dark\) \{\s*:root:not\(\[data-kv-color-scheme\]\) \{[^}]*?--kv-button-edge-highlight: var\(--kv-white\) )25%/,
-      '$130%',
-    )
-    expect(drifted).not.toBe(themeCss)
-    expect(checkThemeCss(drifted)).toContain(
-      'dark: --kv-button-edge-highlight is #ffffff 25%, but #ffffff 30% in the system fallback',
-    )
   })
 
-  it('reports a copy whose colours fail, and a fallback that drifted', () => {
+  it('reports a copy whose colours fail', () => {
     const faint = `${themeCss}\n:root { --kv-neutral-600: #aeb3bb; }`
     expect(checkThemeCss(faint)).toContain('light: text-muted on canvas is 2.11:1, needs 4.5:1')
-    const drifted = themeCss.replace(
-      /(@media \(prefers-color-scheme: dark\) \{\s*:root:not\(\[data-kv-color-scheme\]\) \{[^}]*?--kv-color-link: )var\(--kv-primary-300\)/,
-      '$1var(--kv-primary-400)',
-    )
-    expect(drifted).not.toBe(themeCss)
-    expect(checkThemeCss(drifted)).toContain(
-      'dark: --kv-color-link is #2589fe, but #0070e0 in the system fallback',
-    )
   })
 })
 
-const buttonDepthTokens = [
-  '--kv-shadow-button',
-  '--kv-shadow-button-hover',
-  '--kv-button-edge-shade',
-  '--kv-button-edge-highlight',
-] as const
-
 describe('theme.css button edge (docs/design/button-depth.md)', () => {
-  const propertiesOf = (themeName: ThemeName, source: 'attributes' | 'system') =>
-    readRootProperties(themeCss, themeEnvironment(themeName, source))
-
-  it.each(themeNames)('%s: the system fallback equals the theme', (themeName) => {
-    const theme = propertiesOf(themeName, 'attributes')
-    const fallback = propertiesOf(themeName, 'system')
-    for (const token of buttonDepthTokens) {
-      expect(fallback[token], `${themeName} ${token}`).toBe(theme[token])
-    }
-  })
+  const propertiesOf = (themeName: ThemeName) =>
+    readRootProperties(themeCss, themeEnvironment(themeName))
 
   it('every tinted edge keeps 3:1 on every surface (1.4.11)', () => {
     for (const themeName of ['light', 'dark'] as const) {
       const colors = resolveThemeColors(themeCss, themeName)
-      const properties = propertiesOf(themeName, 'attributes')
+      const properties = propertiesOf(themeName)
       const tint = themeName === 'light' ? 'shade' : 'highlight'
       const partner = parseButtonEdgeTint(properties[`--kv-button-edge-${tint}`])
       if (partner === undefined) {

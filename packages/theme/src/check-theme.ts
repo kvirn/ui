@@ -36,9 +36,8 @@ export function checkTheme(
  * Checks a theme file, the default `theme.css` or your own copy, in all four themes:
  * - every `--kv-color-*` token is defined and resolves to a hex colour
  * - every contrast pair meets its minimum
- * - the button edge tints are `<#rgb or #rrggbb> <percentage>`, equal in their fallback, and
+ * - the button edge tints are `<#rgb or #rrggbb> <percentage>`, and
  *   every tinted edge keeps 3:1 on `canvas`, `surface` and `surface-raised`
- * - each OS fallback (`prefers-color-scheme`, `prefers-contrast`) equals its theme
  *
  * Returns one message per problem, so `[]` means it passes.
  *
@@ -49,9 +48,7 @@ export function checkTheme(
 export function checkThemeCss(css: string): string[] {
   return themeNames.flatMap((themeName) => {
     const colors = resolveThemeColors(css, themeName)
-    const systemColors = resolveThemeColors(css, themeName, 'system')
     const properties = readRootProperties(css, themeEnvironment(themeName))
-    const systemProperties = readRootProperties(css, themeEnvironment(themeName, 'system'))
     const valueProblems = [
       ...colorTokenNames.flatMap((name) => {
         const value = colors[name]
@@ -61,11 +58,7 @@ export function checkThemeCss(css: string): string[] {
         if (!hexColor.test(value)) {
           return [`${themeName}: --kv-color-${name} is "${value}", not a #rgb or #rrggbb colour`]
         }
-        return systemColors[name] === value
-          ? []
-          : [
-              `${themeName}: --kv-color-${name} is ${value}, but ${systemColors[name] ?? 'not defined'} in the system fallback`,
-            ]
+        return []
       }),
       ...buttonEdgeTokens.flatMap((name) => {
         const value = properties[name]
@@ -77,11 +70,7 @@ export function checkThemeCss(css: string): string[] {
             `${themeName}: ${name} is "${value}", not a "#rgb or #rrggbb" colour and a percentage`,
           ]
         }
-        return systemProperties[name] === value
-          ? []
-          : [
-              `${themeName}: ${name} is ${value}, but ${systemProperties[name] ?? 'not defined'} in the system fallback`,
-            ]
+        return []
       }),
     ]
     if (valueProblems.length > 0) {

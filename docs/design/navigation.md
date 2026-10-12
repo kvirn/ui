@@ -21,7 +21,7 @@
 
 | Source                                          | What we reuse                                                                  | What we change and why                                                                                               |
 | ----------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| `.kv-nav` (`theme.css` §8 today)                | Every item rule: 44px rows, `nav-item`, the current bar, weight and background | Moves to part classes the component renders. Adds a nested indent, which `.kv-nav` never had                         |
+| `.kv-nav` (`theme.css` §7 today)                | Every item rule: 44px rows, `nav-item`, the current bar, weight and background | Moves to part classes the component renders. Adds a nested indent, which `.kv-nav` never had                         |
 | `.kv-button` and `.kv-button--primary`          | The choice is a class the consumer adds; hover darkens a fill; focus ring      | No depth: DESIGN.md forbids button depth on links ("Depth means press me")                                           |
 | APG Disclosure Navigation (site nav example)    | A `<nav>` landmark with a list of links, Tab between links, no arrow keys      | No disclosure here: that is NavigationMenu (M4)                                                                      |
 | GOV.UK start button                             | A distinct, single "start this service" link with an arrow                     | GOV.UK adds `role="button"`. We keep the native link role: it navigates, and a screen reader must say "link" (4.1.2) |
@@ -130,9 +130,9 @@ No new tokens and no new pairs: every pair used is already required in `packages
 
 Why the label is `link` and not `primary` (the plan's "primary text"): `primary` as text is 4.44:1 on the dark canvas (DESIGN.md, Colors). `link` is the same scale, a step that passes.
 
-### 6.5 theme.css changes (section 8, "Link and navigation lists")
+### 6.5 theme.css changes (section 7, "Link and navigation lists")
 
-> **The navigation item rules (steps 2 and 3) are replaced by [navigation-link-options.md](navigation-link-options.md) §12 and §13** (Plan 0047; `theme.css` §8 holds the result). The service link and icon rules stand.
+> **The navigation item rules (steps 2 and 3) are replaced by [navigation-link-options.md](navigation-link-options.md) §12 and §13** (Plan 0047; `theme.css` §7 holds the result). The service link and icon rules stand.
 
 1. Rename the section to "Link, service link and Navigation". Replace the `kv-nav` example in its comment with `<Navigation.Root label=…>` and add the service link example. In the file header (lines 9–11) drop `kv-nav` from the context classes and add `kv-link--service` to the choices.
 2. Replace `.kv-nav` with:

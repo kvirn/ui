@@ -22,7 +22,7 @@ Load `accessibility` together with this skill when you change colour, focus, mot
   - `theme.css` uses `@layer kv`. `reset.css` uses `@layer kv-reset`.
   - Both files declare `@layer kv-reset, kv;` first, so import order never matters and the reset stays lowest.
   - A new rule goes inside `@layer kv`. Nothing sits outside it.
-- `theme.css` is numbered sections (palette, themes, fallbacks, forced colours, density, then one section per component). Put new rules in the section of their component. Add a section only for a new component, and list it in the file header.
+- `theme.css` is numbered sections (palette, themes, forced colours, density, then one section per component). Put new rules in the section of their component. Add a section only for a new component, and list it in the file header.
 
 ## Two token tiers
 
@@ -33,12 +33,12 @@ Load `accessibility` together with this skill when you change colour, focus, mot
    - The four themes (`light`, `dark`, `light-contrast`, `dark-contrast`) only remap semantic colour tokens (and the button edge tints and the two shadow tokens that depend on them).
    - Every non-colour token (space, radius, type roles, durations, prose, control size) is declared once on `:root` and is the same in every theme.
 
-A new or changed token needs the maintainer's approval, with DESIGN.md updated in the same PR. Add a colour token only when no existing one fits. A new colour token means: the name in `colorTokenNames`, a value in all four themes, all four OS-fallback blocks and the forced-colours block, and its pairs in `contrast-requirements.ts`. Then run `theme:check`.
+A new or changed token needs the maintainer's approval, with DESIGN.md updated in the same PR. Add a colour token only when no existing one fits. A new colour token means: the name in `colorTokenNames`, a value in all four themes, and the forced-colours block, and its pairs in `contrast-requirements.ts`. Then run `theme:check`.
 
 ### Selecting a theme
 
 - `data-kv-color-scheme` (`light`/`dark`) and `data-kv-contrast` (`standard`/`more`) on `<html>`, set by `KvirnProvider` and `KvirnThemeScript`. Each theme also sets `color-scheme`.
-- Without the attributes (no JavaScript, no provider), `prefers-color-scheme` and `prefers-contrast` choose the theme. Each fallback block repeats its attribute theme exactly, and `theme:check` fails when they differ.
+- The attributes choose the theme, already resolved from the OS by `KvirnProvider`, `useTheme` or `KvirnThemeScript`. Without them (no JavaScript, no provider) the page is the light, standard theme, whatever the OS asks; there are no `prefers-color-scheme` or `prefers-contrast` fallback blocks. Forced colours needs no script and still applies.
 - Write theme selectors flat (`:root[data-kv-color-scheme='dark']`). The checker reads only selectors that start with `:root`.
 
 ### Rebranding and overrides
@@ -69,7 +69,7 @@ A new or changed token needs the maintainer's approval, with DESIGN.md updated i
 
 ## Rules every section follows
 
-These rules are reviewed, not tested. Don't add tests that read `theme.css` for properties or values: `theme:check` (contrast, fallbacks, forced-colour mapping) is the only theme test, and the WCAG outcomes (target size, reflow, text spacing, forced colours) are measured in the browser (testing skill, "What we test, and what we never test").
+These rules are reviewed, not tested. Don't add tests that read `theme.css` for properties or values: `theme:check` (contrast, forced-colour mapping) and the no-JavaScript light test (no `data-kv-*` attributes means the light theme, whatever the OS asks) are the only theme tests, and the WCAG outcomes (target size, reflow, text spacing, forced colours) are measured in the browser (testing skill, "What we test, and what we never test").
 
 - **Logical properties only** (`margin-inline`, `inset-inline-start`, `padding-block`), so right to left works. No `left`/`right` except where the content is always `ltr`.
 - **A part the theme gives a `display` restates `[hidden]`.** `.kv-navigation-list { display: flex }` beats the browser's `[hidden] { display: none }`, so without `reset.css` a collapsed group would show again. Put `.kv-x[hidden] { display: none }` beside the rule that sets `display`, as `.kv-navigation-list[hidden]` does.
@@ -90,7 +90,6 @@ These rules are reviewed, not tested. Don't add tests that read `theme.css` for 
 `vp run theme:check` (and `checkThemeCss()` for adopters) reads the theme file for each of the four themes and checks:
 
 - every `--kv-color-*` token is defined and resolves to a hex colour;
-- each OS fallback equals its attribute theme (colours and button edge tints);
 - every pair in `packages/theme/src/contrast-requirements.ts` meets its minimum: 4.5:1 for text, 3:1 for control edges, focus rings and indicators, 7:1 for text in both contrast themes;
 - every tinted button edge keeps 3:1 on `canvas`, `surface` and `surface-raised`.
 
@@ -102,7 +101,7 @@ When you use a colour on a new background, add the pair to `contrast-requirement
 - `danger-hover` on the three plain surfaces must be 3:1. If it drops below, give the danger button the same edge.
 - `status` colours (`danger`, `success`, `warning`) and their `-subtle` backgrounds are held to the text minimum wherever prose, links or controls sit on an alert.
 - A new surface that content sits on needs its text, edge and focus pairs.
-- Colours are reviewed for look by eye, never by test. The test checks only contrast, fallbacks and forced-colour mapping.
+- Colours are reviewed for look by eye, never by test. The test checks only contrast and forced-colour mapping.
 
 The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@layer`, `@media` with `and` and `(feature: value)` conditions, and rules whose selector starts with `:root` (attributes, `:not()`, `:is()`, `:where()`). Range queries (`width >= 64rem`) never choose a theme. A copy of `theme.css` must keep theme selectors in that shape to be read correctly.
 
@@ -119,7 +118,7 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 `kv-prose` styles content you don't control (CMS, Markdown). Related classes: `kv-lead` (a lead paragraph), `kv-scroll-region` (a wide table's named, focusable region), `kv-not-prose` (opt out).
 
 - Every prose rule is a zero-specificity `:where()` rule in `@layer kv`, so component rules and consumer CSS win.
-- Prose never styles a component part. The explicit list of part classes (first line of the `:not(...)` list in section 9: button, link, card parts, input group, checkbox, switch, radio, native listbox) is written in one place. **When you add a part or a consumer class that appears inside prose, add it to that list.**
+- Prose never styles a component part. The explicit list of part classes (first line of the `:not(...)` list in section 8: button, link, card parts, input group, checkbox, switch, radio, native listbox) is written in one place. **When you add a part or a consumer class that appears inside prose, add it to that list.**
 - Prose also skips anything inside `kv-not-prose`, `kv-navigation`, `kv-table-of-contents`, `kv-button-group`, `kv-toolbar`, `kv-table` and the four layout classes (`kv-container`, `kv-stack`, `kv-columns`, `kv-sidebar-layout`: their gap is the only spacing, so prose margins never fight it). A component part is added to the not-prose list (the first line of the list in `theme.css`) so prose never styles it: `kv-skip-link` and `kv-visually-hidden` are in it.
 - A card, alert, field or fieldset Root in prose gets prose's block margins only. They are boundaries: nothing inside them is prose-styled unless a `kv-prose` sits between the element and the boundary. The nearest boundary or `kv-prose` wins, for two levels of nesting. Three levels are not supported. A Section is not a boundary.
 - The description of a field or fieldset is a `kv-prose` that is a direct child, so it is prose again, in `body` (16px) wherever it sits. The help text (`kv-field-help-text`, `Field.HelpText`) is a plain paragraph in `body-small` (14px): its size belongs to the part, so no rule sizes a Prose by position, and the theme never styles a help text by `data-invalid` or `data-disabled`. An option's help text is the one spacing exception (column 2, 0 gap under its label).
@@ -128,8 +127,8 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 - Sizes are token swaps on `.kv-prose`: default, `--small` (14px, never for essential text), `--large`, `--xl`, `--2xl` and `--full` (lifts the 70ch measure). `--xl` and `--2xl` step down below `40rem`. Colour roles are `--kv-prose-color-<role>`, declared on `.kv-prose`, never on `:root` (each theme needs its own value).
 - Prose matches `@tailwindcss/typography` element for element in our tokens (logical properties, no Tailwind, nothing imported). Differences: no generated quote marks or backticks, no italic or shadowed blockquote or `kbd`, `dd` has no indent, `pre` wraps, heading sizes are type roles.
 - Tokens: `--kv-prose-measure` (70ch), `-space`, `-space-item`, `-space-block`, `-space-section`, `-list-indent`, `-list-item-indent`, `-code-size`, the size and `--kv-prose-lead-*` aliases, and the type role `lead`. `--kv-shadow-popup` and `--kv-shadow-dialog` are `color-mix` over `neutral-950`, and `none` in the dark themes.
-- `kv-kbd` and prose `kbd` share one zero-specificity rule (section 9b), so a key looks the same in and out of prose.
-- `kv-visually-hidden` and `kv-skip-link` (section 9d): the clip rule is never `display: none`. The skip link is clipped under `:not(:focus)` and in flow on `:focus`, with the token ring on `:focus-visible`.
+- `kv-kbd` and prose `kbd` share one zero-specificity rule (section 8b), so a key looks the same in and out of prose.
+- `kv-visually-hidden` and `kv-skip-link` (section 8d): the clip rule is never `display: none`. The skip link is clipped under `:not(:focus)` and in flow on `:focus`, with the token ring on `:focus-visible`.
 - The nested-boundary selector could collapse into `@scope` once Safari 17.0 to 17.3 leave the support range.
 
 ## Long words and small screens

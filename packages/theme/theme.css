@@ -42,7 +42,7 @@
  *   .kv-card {
  *     --kv-card-padding-default: var(--kv-card-padding-lg);                  md by default
  *   }
- *   <html class="kv-compact">     compact controls on the whole site, from 64rem (section 6)
+ *   <html class="kv-compact">     compact controls on the whole site, from 64rem (section 5)
  *
  * They're read where they're used, with the theme's value as the fallback, for example
  * `font-family: var(--kv-font-family-body, var(--kv-font-family-sans))`. So you can set them
@@ -54,7 +54,7 @@
  *
  * Colours. --kv-color-text is the body text colour, and --kv-color-heading the colour of
  * prose headings, the same step as text by default. They're semantic tokens like every colour,
- * set per theme (sections 2 to 5): a value on :root alone would apply in the dark themes too.
+ * set per theme (sections 2 and 3): a value on :root alone would apply in the dark themes too.
  * To change one, use theme.css's own selectors for each theme, then run checkThemeCss(). If
  * you change --kv-color-text on a wrapper element, change --kv-color-heading there too.
  *
@@ -62,49 +62,48 @@
  *   1. Palette          role scales, the only place with raw colour values
  *   2. Light theme      semantic colours, plus every non-colour token
  *   3. Dark, light high contrast and dark high contrast
- *   4. System fallbacks the same themes from OS settings, before or without JavaScript
- *   5. Forced colours   Windows contrast themes: system colours win
- *   6. Density          kv-compact
- *   7. Button
- *  7a. Toggle         kv-toggle: a button that is on or off. kv-toolbar and its groups
- *   8. Link, service link and Navigation
- *  8d. Top bar          kv-top-bar: a slim bar, its children at the start and the end
- *  8a. Tabs             kv-tabs: a list of tabs, and the panel each one shows
- *  8b. Table of contents  kv-table-of-contents: a page's headings, styled as navigation items
- *  8c. Breadcrumb and pagination  kv-breadcrumb, kv-pagination: where you are, and page links
- *  8c. Disclosure and Accordion  kv-disclosure-*, kv-accordion-*: a button that shows a panel, and a stack of them
- *   9. Prose            kv-prose: articles from a CMS or Markdown
- *  9a. Heading       kv-heading: the type role of a heading, apart from its level
- *  9b. Kbd           kv-kbd: a key in running text
- *  9l. Address       kv-address: contact details of the page or an article, upright
- *  9m. List          kv-list: the one native list, with no marker, bullets or numbers
- *  9c. Tooltip       kv-tooltip: a name and a shortcut for a control, level 3
- *  9d. Visually hidden and skip link  kv-visually-hidden, kv-skip-link: hidden until focused
- *  9f. Code block      kv-code-block: a labelled code sample that wraps, and its copy button
- *  9e. Badge         kv-badge: a status or category in words, by role class
- *  9g. Tag           kv-tag, kv-tag-group: a static or removable chip and the applied-filters row
- *  9h. Stepper       kv-stepper: where the user is in a multi-page form, as one line of text
- *  9k. Read aloud    kv-read-aloud: a worded player in the flow, its selection trigger and the sentence highlight
- *  9i. Calendar      kv-calendar: a month as a grid of days, with month buttons and a range hint
- *  10. Card
- *  10a. Section          kv-section: a region of the page, elevation level 1
- *  10b. Alert            kv-alert: a status message, by status class
- *  10f. Toast            kv-toast-region, kv-toast: a floating status message, level 3, after Alert
- *  10e. Dialog           kv-dialog: a modal sheet or centred box, level 4, and the scroll lock
- *  10d. Definition list and error summary  kv-definition-list: rows of term, description and action. kv-error-summary: the problems of a failed submit
- *  10c. Layout           kv-container, kv-stack, kv-columns, kv-sidebar-layout: where children sit
- *  11. Icon
- *  12. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-textarea,
+ *   4. Forced colours   Windows contrast themes: system colours win
+ *   5. Density          kv-compact
+ *   6. Button
+ *  6a. Toggle         kv-toggle: a button that is on or off. kv-toolbar and its groups
+ *   7. Link, service link and Navigation
+ *  7d. Top bar          kv-top-bar: a slim bar, its children at the start and the end
+ *  7a. Tabs             kv-tabs: a list of tabs, and the panel each one shows
+ *  7b. Table of contents  kv-table-of-contents: a page's headings, styled as navigation items
+ *  7c. Breadcrumb and pagination  kv-breadcrumb, kv-pagination: where you are, and page links
+ *  7c. Disclosure and Accordion  kv-disclosure-*, kv-accordion-*: a button that shows a panel, and a stack of them
+ *   8. Prose            kv-prose: articles from a CMS or Markdown
+ *  8a. Heading       kv-heading: the type role of a heading, apart from its level
+ *  8b. Kbd           kv-kbd: a key in running text
+ *  8l. Address       kv-address: contact details of the page or an article, upright
+ *  8m. List          kv-list: the one native list, with no marker, bullets or numbers
+ *  8c. Tooltip       kv-tooltip: a name and a shortcut for a control, level 3
+ *  8d. Visually hidden and skip link  kv-visually-hidden, kv-skip-link: hidden until focused
+ *  8f. Code block      kv-code-block: a labelled code sample that wraps, and its copy button
+ *  8e. Badge         kv-badge: a status or category in words, by role class
+ *  8g. Tag           kv-tag, kv-tag-group: a static or removable chip and the applied-filters row
+ *  8h. Stepper       kv-stepper: where the user is in a multi-page form, as one line of text
+ *  8k. Read aloud    kv-read-aloud: a worded player in the flow, its selection trigger and the sentence highlight
+ *  8i. Calendar      kv-calendar: a month as a grid of days, with month buttons and a range hint
+ *  9. Card
+ *  9a. Section          kv-section: a region of the page, elevation level 1
+ *  9b. Alert            kv-alert: a status message, by status class
+ *  9f. Toast            kv-toast-region, kv-toast: a floating status message, level 3, after Alert
+ *  9e. Dialog           kv-dialog: a modal sheet or centred box, level 4, and the scroll lock
+ *  9d. Definition list and error summary  kv-definition-list: rows of term, description and action. kv-error-summary: the problems of a failed submit
+ *  9c. Layout           kv-container, kv-stack, kv-columns, kv-sidebar-layout: where children sit
+ *  10. Icon
+ *  11. Form fields     kv-field, kv-fieldset and their text parts, kv-input, kv-textarea,
  *                      kv-character-count, kv-input-group, kv-date-input, kv-address-input, kv-checkbox, kv-switch,
  *                      kv-slider, kv-radio, kv-listbox-native, kv-listbox-trigger and popup, kv-menu
  *                      (trigger, popup, items), kv-combobox and kv-autocomplete (input, control, buttons, value chips)
- *  13. One-time code    kv-one-time-code: one input, drawn as boxes and dashes of its pattern
- *  14. File upload      kv-file-upload: drop zone, trigger, rejections, and the list of files
- *  15. Table            kv-table: a native table, with sort buttons, selection, expanding and a
+ *  12. One-time code    kv-one-time-code: one input, drawn as boxes and dashes of its pattern
+ *  13. File upload      kv-file-upload: drop zone, trigger, rejections, and the list of files
+ *  14. Table            kv-table: a native table, with sort buttons, selection, expanding and a
  *                      scroll region
- *  16. Rich text editor  kv-rich-text: the box, its attached toolbar and content, and the Link and
+ *  15. Rich text editor  kv-rich-text: the box, its attached toolbar and content, and the Link and
  *                      Image popovers
- *  17. Display settings kv-display-settings: colour scheme, contrast and motion, as panels, a
+ *  16. Display settings kv-display-settings: colour scheme, contrast and motion, as panels, a
  *                      Disclosure or a Popover, in a list or as segments
  *  patterns.css         kv-page-frame, kv-site-header, kv-mega-menu, kv-site-footer: the classes of
  *                      @kvirn-ui/patterns, imported at the top of this file
@@ -430,14 +429,14 @@
     --kv-link-underline-thickness-hover: 2px;
     --kv-link-underline-offset: 0.15em;
 
-    /* Control size: comfortable, 44px with 16px labels. Compact is in section 6. */
+    /* Control size: comfortable, 44px with 16px labels. Compact is in section 5. */
     --kv-control-min-block-size: 2.75rem;
     --kv-control-font-size: var(--kv-font-label-size);
     --kv-control-font-weight: var(--kv-font-label-weight);
     --kv-control-line-height: var(--kv-font-label-line-height);
     --kv-control-padding-inline: var(--kv-space-4);
 
-    /* Prose (section 9). kv-prose--large swaps the size tokens for the large ones. */
+    /* Prose (section 8). kv-prose--large swaps the size tokens for the large ones. */
     --kv-prose-measure: 70ch;
     --kv-prose-font-size: var(--kv-font-body-size);
     --kv-prose-line-height: var(--kv-font-body-line-height);
@@ -469,7 +468,9 @@
 
   /* 3. The other themes --------------------------------------------------------------------
    * KvirnProvider and KvirnThemeScript set data-kv-color-scheme ("light" or "dark"),
-   * data-kv-contrast ("standard" or "more") and data-kv-motion ("full" or "reduce") on <html>.
+   * data-kv-contrast ("standard" or "more") and data-kv-motion ("full" or "reduce") on <html>,
+   * already resolved from the OS. Without them (no JavaScript) the page is the light, standard
+   * theme above: the OS settings choose nothing here. Forced colours (section 4) needs no script.
    * Only colours change here. Motion: every transition and animation sits inside
    * `@media (prefers-reduced-motion: no-preference)` AND a zero-specificity
    * `:where(:root:not([data-kv-motion='reduce']))` gate, so the OS setting and the user's
@@ -601,139 +602,7 @@
     --kv-button-edge-highlight: var(--kv-white) 0%;
   }
 
-  /* 4. System fallbacks --------------------------------------------------------------------
-   * Without the attributes (no JavaScript, or no KvirnProvider), the OS settings choose the
-   * theme. Each block repeats the theme above it exactly: a test keeps them equal.
-   */
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-kv-color-scheme]) {
-      color-scheme: dark;
-
-      --kv-color-canvas: var(--kv-black);
-      --kv-color-surface: var(--kv-neutral-950);
-      --kv-color-surface-raised: var(--kv-neutral-900);
-      --kv-color-border-subtle: var(--kv-neutral-800);
-      --kv-color-border-control: var(--kv-neutral-500);
-      --kv-color-border-focus: var(--kv-primary-400);
-      --kv-color-secondary: var(--kv-secondary-500);
-      --kv-color-text: var(--kv-neutral-50);
-      --kv-color-heading: var(--kv-neutral-50);
-      --kv-color-text-muted: var(--kv-neutral-400);
-      --kv-color-primary: var(--kv-primary-400);
-      --kv-color-primary-hover: var(--kv-primary-500);
-      --kv-color-on-primary: var(--kv-white);
-      --kv-color-on-secondary: var(--kv-white);
-      --kv-color-on-accent: var(--kv-black);
-      --kv-color-primary-subtle: var(--kv-primary-950);
-      --kv-color-accent: var(--kv-accent-400);
-      --kv-color-link: var(--kv-primary-300);
-      --kv-color-link-hover: var(--kv-primary-200);
-      --kv-color-focus-ring: var(--kv-primary-400);
-      --kv-color-danger: var(--kv-danger-300);
-      --kv-color-danger-hover: var(--kv-danger-200);
-      --kv-color-on-danger: var(--kv-black);
-      --kv-color-danger-subtle: var(--kv-danger-950);
-      --kv-color-success: var(--kv-success-300);
-      --kv-color-success-subtle: var(--kv-success-950);
-      --kv-color-warning: var(--kv-warning-300);
-      --kv-color-warning-subtle: var(--kv-warning-950);
-
-      --kv-shadow-popup: none;
-      --kv-shadow-dialog: none;
-
-      --kv-shadow-button: 0 1px 2px color-mix(in srgb, var(--kv-black) 60%, transparent);
-      --kv-shadow-button-hover: 0 2px 6px color-mix(in srgb, var(--kv-black) 60%, transparent);
-      --kv-button-edge-shade: var(--kv-neutral-950) 0%;
-      --kv-button-edge-highlight: var(--kv-white) 25%;
-    }
-  }
-
-  @media (prefers-color-scheme: light) and (prefers-contrast: more) {
-    :root:not([data-kv-color-scheme]) {
-      color-scheme: light;
-
-      --kv-color-canvas: var(--kv-white);
-      --kv-color-surface: var(--kv-neutral-50);
-      --kv-color-surface-raised: var(--kv-white);
-      --kv-color-border-subtle: var(--kv-neutral-500);
-      --kv-color-border-control: var(--kv-neutral-700);
-      --kv-color-border-focus: var(--kv-primary-800);
-      --kv-color-secondary: var(--kv-secondary-700);
-      --kv-color-text: var(--kv-black);
-      --kv-color-heading: var(--kv-black);
-      --kv-color-text-muted: var(--kv-neutral-700);
-      --kv-color-primary: var(--kv-primary-800);
-      --kv-color-primary-hover: var(--kv-primary-900);
-      --kv-color-on-primary: var(--kv-white);
-      --kv-color-on-secondary: var(--kv-white);
-      --kv-color-on-accent: var(--kv-white);
-      --kv-color-primary-subtle: var(--kv-primary-50);
-      --kv-color-accent: var(--kv-accent-800);
-      --kv-color-link: var(--kv-primary-800);
-      --kv-color-link-hover: var(--kv-primary-900);
-      --kv-link-decoration-line: underline;
-      --kv-color-focus-ring: var(--kv-primary-800);
-      --kv-color-danger: var(--kv-danger-700);
-      --kv-color-danger-hover: var(--kv-danger-800);
-      --kv-color-on-danger: var(--kv-white);
-      --kv-color-danger-subtle: var(--kv-danger-50);
-      --kv-color-success: var(--kv-success-800);
-      --kv-color-success-subtle: var(--kv-success-50);
-      --kv-color-warning: var(--kv-warning-800);
-      --kv-color-warning-subtle: var(--kv-warning-50);
-
-      --kv-shadow-button: none;
-      --kv-shadow-button-hover: none;
-      --kv-button-edge-shade: var(--kv-neutral-950) 0%;
-      --kv-button-edge-highlight: var(--kv-white) 0%;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) and (prefers-contrast: more) {
-    :root:not([data-kv-color-scheme]) {
-      color-scheme: dark;
-
-      --kv-color-canvas: var(--kv-black);
-      --kv-color-surface: var(--kv-neutral-950);
-      --kv-color-surface-raised: var(--kv-neutral-900);
-      --kv-color-border-subtle: var(--kv-neutral-400);
-      --kv-color-border-control: var(--kv-neutral-200);
-      --kv-color-border-focus: var(--kv-primary-200);
-      --kv-color-secondary: var(--kv-secondary-200);
-      --kv-color-text: var(--kv-white);
-      --kv-color-heading: var(--kv-white);
-      --kv-color-text-muted: var(--kv-neutral-200);
-      --kv-color-primary: var(--kv-primary-200);
-      --kv-color-primary-hover: var(--kv-primary-100);
-      --kv-color-on-primary: var(--kv-black);
-      --kv-color-on-secondary: var(--kv-black);
-      --kv-color-on-accent: var(--kv-black);
-      --kv-color-primary-subtle: var(--kv-primary-950);
-      --kv-color-accent: var(--kv-accent-200);
-      --kv-color-link: var(--kv-primary-200);
-      --kv-color-link-hover: var(--kv-primary-100);
-      --kv-link-decoration-line: underline;
-      --kv-color-focus-ring: var(--kv-primary-200);
-      --kv-color-danger: var(--kv-danger-200);
-      --kv-color-danger-hover: var(--kv-danger-100);
-      --kv-color-on-danger: var(--kv-black);
-      --kv-color-danger-subtle: var(--kv-danger-950);
-      --kv-color-success: var(--kv-success-200);
-      --kv-color-success-subtle: var(--kv-success-950);
-      --kv-color-warning: var(--kv-warning-200);
-      --kv-color-warning-subtle: var(--kv-warning-950);
-
-      --kv-shadow-popup: none;
-      --kv-shadow-dialog: none;
-
-      --kv-shadow-button: none;
-      --kv-shadow-button-hover: none;
-      --kv-button-edge-shade: var(--kv-neutral-950) 0%;
-      --kv-button-edge-highlight: var(--kv-white) 0%;
-    }
-  }
-
-  /* 5. Forced colours ------------------------------------------------------------------------
+  /* 4. Forced colours ------------------------------------------------------------------------
    * The user's palette wins. Every token becomes a system colour, and status colours become
    * the text colour: status is never shown by colour alone (1.4.1). The selector always
    * matches :root, and its specificity (0,3,0) beats every theme selector above.
@@ -779,7 +648,7 @@
     }
   }
 
-  /* 5a. Page base ----------------------------------------------------------------------------
+  /* 4a. Page base ----------------------------------------------------------------------------
    * Nothing else paints the page, so without this the dark themes sit on the browser's own canvas
    * behind KvirnUI text, a pair nobody measured. :where() makes it zero specificity: any CSS of
    * yours, in a layer or not, beats it. text on canvas is held to the floors in every theme. */
@@ -795,10 +664,10 @@
     overflow-wrap: break-word;
   }
 
-  /* 6. Density -------------------------------------------------------------------------------
+  /* 5. Density -------------------------------------------------------------------------------
    * Put class="kv-compact" on any container for 32px controls with 14px labels, for
    * staff tools and toolbars. Below 64rem touch is likely, so controls stay 44px. Cards inside
-   * get less padding too (section 10). For a whole staff tool, put it on <html> or <body>:
+   * get less padding too (section 9). For a whole staff tool, put it on <html> or <body>:
    * every control on the page is compact from 64rem, and 44px below it.
    */
   @media (width >= 64rem) {
@@ -811,7 +680,7 @@
     }
   }
 
-  /* 7. Button --------------------------------------------------------------------------------
+  /* 6. Button --------------------------------------------------------------------------------
    * <Button> renders class="kv-button". The base is the secondary look. Choose a variant with
    * a class: <Button className="kv-button--primary"> for the one main action per view, or
    * <Button className="kv-button--danger"> for a destructive action (with a confirmation step).
@@ -820,7 +689,7 @@
    * Size every button without touching other controls: set --kv-button-min-block-size,
    * --kv-button-padding-inline, --kv-button-font-size, --kv-button-font-weight or
    * --kv-button-line-height (unitless) on :root or on a container. Each falls back to its
-   * --kv-control-* token, so without them buttons follow the density (section 6). Set, they win over it,
+   * --kv-control-* token, so without them buttons follow the density (section 5). Set, they win over it,
    * the compact step and the 44px below 64rem included. Keep --kv-button-min-block-size at
    * 24px or more, and enough --kv-button-padding-inline that a short label is 24px wide:
    * 2.5.8 Target Size (Minimum). Resident-facing buttons should stay at 44px (2.5.5).
@@ -1065,7 +934,7 @@
     }
   }
 
-  /* 7a. Toggle, toolbar and button group -------------------------------------------------------
+  /* 6a. Toggle, toolbar and button group -------------------------------------------------------
    * <Toggle> renders class="kv-button kv-toggle" and aria-pressed (data-pressed too, while on).
    * Off, it is a Button. On, it is a pressed-in primary button: a solid primary fill with the
    * on-primary icon or label, a 1px primary edge on all four sides and no shadow. The fill is a
@@ -1261,7 +1130,7 @@
     }
   }
 
-  /* 8. Link, service link and Navigation ---------------------------------------------------
+  /* 7. Link, service link and Navigation ---------------------------------------------------
    * <Link.Root> renders class="kv-link": the link colour and an underline, for running text.
    * In a <Navigation.Item>, a link becomes a navigation item instead: a row in the text colour,
    * weight 400, with an underline only on hover, because its place in a labelled <nav> is the
@@ -1608,7 +1477,7 @@
     }
   }
 
-  /* 8d. Top bar -----------------------------------------------------------------------------------
+  /* 7d. Top bar -----------------------------------------------------------------------------------
    * kv-top-bar: a slim bar of two sides. Its children sit at the start and the end, in DOM order,
    * and wrap when there is no room; logical properties, so right to left flips them. No type
    * rules, and no fill by default: it takes the colours and the text of what it sits on. A variant
@@ -1933,7 +1802,7 @@
     }
   }
 
-  /* 8a. Tabs ---------------------------------------------------------------------------------
+  /* 7a. Tabs ---------------------------------------------------------------------------------
    * <Tabs.Root> renders class="kv-tabs", <Tabs.List> kv-tabs-list, <Tabs.Tab> kv-tabs-tab and
    * <Tabs.Panel> kv-tabs-panel (design spec docs/design/tabs.md). A tab is a quiet text button, in
    * the text colour at weight 400, like a navigation item. It has no fill: a solid primary fill
@@ -2099,10 +1968,10 @@
     }
   }
 
-  /* 8b. Table of contents ------------------------------------------------------------------
+  /* 7b. Table of contents ------------------------------------------------------------------
    * <TableOfContents.Root> renders class="kv-table-of-contents", with kv-table-of-contents-list,
    * kv-table-of-contents-item and a kv-link on each link. It is a navigation of a page's
-   * headings, so it has no rules of its own: section 8 names its parts beside the navigation's
+   * headings, so it has no rules of its own: section 7 names its parts beside the navigation's
    * in every selector that styles a list, an item, the trail or the current item, and the look
    * is the same.
    *
@@ -2120,7 +1989,7 @@
    * There is no horizontal table of contents, so kv-navigation--horizontal doesn't take its
    * parts. The component is never sticky: where it sits is the page's layout. Its title is a
    * heading of your own (the heading-4 look beside an article), and kv-table-of-contents is a
-   * prose boundary (section 9).
+   * prose boundary (section 8).
    */
 
   /* The table of contents keeps the navigation's rows and drops its fills. It is always compact
@@ -2177,7 +2046,7 @@
     }
   }
 
-  /* 8c. Disclosure and Accordion ---------------------------------------------------------------
+  /* 7c. Disclosure and Accordion ---------------------------------------------------------------
    * <Disclosure.Trigger> renders class="kv-disclosure-trigger", <Disclosure.Panel>
    * kv-disclosure-panel, and the decorative chevron kv-disclosure-icon. <Accordion.Root> adds
    * kv-accordion, .Item kv-accordion-item, .Heading kv-accordion-heading, and .Trigger and .Panel
@@ -2291,7 +2160,7 @@
     }
   }
 
-  /* 8c. Breadcrumb and pagination ----------------------------------------------------------
+  /* 7c. Breadcrumb and pagination ----------------------------------------------------------
    * kv-breadcrumb: where you are and the way up. Parts: Breadcrumb.Root (a nav), .List (an ol),
    * .Item, .Link (kv-link) and .Current (the last item, text with aria-current). A row that wraps
    * and never collapses into "…": a hidden level is a hidden way out, and wrapping keeps 320px
@@ -2503,7 +2372,7 @@
     }
   }
 
-  /* 9. Prose ---------------------------------------------------------------------------------
+  /* 8. Prose ---------------------------------------------------------------------------------
    * Put class="kv-prose" on the element around content you don't control, such as an article
    * from a CMS or Markdown, and its headings, paragraphs, lists, tables, code and figures get
    * the default typography in every theme. Add kv-prose--large for the 18px size, for long
@@ -3296,7 +3165,7 @@
     }
   }
 
-  /* 9a. Heading ------------------------------------------------------------------------------
+  /* 8a. Heading ------------------------------------------------------------------------------
    * <Heading level={2}> renders <h2 class="kv-heading kv-heading--heading-2">: the level is the
    * page's outline, and the modifier is the look. Choose the look apart from the level with
    * kv-heading--display or --heading-1 to --heading-6, the type roles of the same names (a
@@ -3380,7 +3249,7 @@
     font-feature-settings: var(--kv-font-heading-6-feature-settings);
   }
 
-  /* 9b. Kbd -----------------------------------------------------------------------------------
+  /* 8b. Kbd -----------------------------------------------------------------------------------
    * <Kbd> renders <kbd class="kv-kbd">: one key. A bare kbd in prose gets the same rule (outside
    * kv-not-prose), so it looks the same in and out of prose. A flat key in the inline-code family:
    * the same size, fill, radius and padding as code, told apart by the body font instead of mono and
@@ -3421,7 +3290,7 @@
     }
   }
 
-  /* 9l. Address -------------------------------------------------------------------------------
+  /* 8l. Address -------------------------------------------------------------------------------
    * <Address> renders <address class="kv-address">. The browser draws address in italic, which is
    * hard to read over several lines, so this undoes it and keeps the body text size and line
    * height. Nothing else: the layout is the consumer's. Zero specificity, so your own CSS wins. */
@@ -3431,7 +3300,7 @@
     line-height: var(--kv-font-body-line-height);
   }
 
-  /* 9m. List ----------------------------------------------------------------------------------
+  /* 8m. List ----------------------------------------------------------------------------------
    * <List.Root> renders <ul class="kv-list"> or <ol class="kv-list"> of <li>. The default has no
    * marker and no indent, so a list of links reads as links. list-style: none drops the list role in
    * WebKit and VoiceOver, so List.Root adds role="list" itself, and only without a marker.
@@ -3479,7 +3348,7 @@
     margin-block-start: var(--kv-space-2);
   }
 
-  /* 9c. Tooltip ------------------------------------------------------------------------------
+  /* 8c. Tooltip ------------------------------------------------------------------------------
    * <Tooltip.Popup> renders <div class="kv-tooltip" popover="manual" role="tooltip">, a popover in
    * the top layer that the script places (position, left, top and width are inline), above its
    * trigger when there is room and never covering it. Level 3 elevation like every popup:
@@ -3550,7 +3419,7 @@
     }
   }
 
-  /* 9d. Visually hidden and skip link ---------------------------------------------------------
+  /* 8d. Visually hidden and skip link ---------------------------------------------------------
    * <VisuallyHidden> renders kv-visually-hidden: the standard clip rule (a 1px box, clipped,
    * on one line), so the text stays in the accessibility tree. Never display: none or
    * visibility: hidden, which remove it. Zero specificity, so your own CSS wins.
@@ -3611,7 +3480,7 @@
     }
   }
 
-  /* 9e. Badge ---------------------------------------------------------------------------------
+  /* 8e. Badge ---------------------------------------------------------------------------------
    * <Badge> renders <span class="kv-badge">, plus kv-badge--primary|info|success|warning|danger. Bare
    * kv-badge is neutral. A static pill, never interactive: no depth, no hover, no focus style.
    * body-small text, the full radius, space-1 by space-2 padding and a 1px edge. The words carry
@@ -3666,7 +3535,7 @@
     }
   }
 
-  /* 9i. Calendar ------------------------------------------------------------------------------
+  /* 8i. Calendar ------------------------------------------------------------------------------
    * <Calendar.Root> renders kv-calendar, a wrapping row: the optional year buttons and the month
    * buttons around kv-calendar-heading (the month and year), then kv-calendar-range (the range in
    * words) and kv-calendar-grid, a <table role="grid">. Below 40rem the heading takes its own row
@@ -4051,7 +3920,7 @@
     }
   }
 
-  /* 9j. Date picker ---------------------------------------------------------------------------
+  /* 8j. Date picker ---------------------------------------------------------------------------
    * <DatePicker.Trigger> is a kv-button with kv-date-picker-trigger, the last item in the
    * kv-date-input row (or in kv-date-picker-row, a row that wraps for one masks.date() field and
    * its trigger). It sits at the block end of the row, so it wraps below the boxes at 320px or
@@ -4083,7 +3952,7 @@
     }
   }
 
-  /* 9k. Date range picker ---------------------------------------------------------------------
+  /* 8k. Date range picker ---------------------------------------------------------------------
    * kv-date-range-row holds the From and To fields and the one <DateRangePicker.Trigger> after
    * both: a wrapping row like kv-date-picker-row, at the block end, side by side from 40rem and
    * stacked below it with the trigger last. With a Fieldset per end (the three-box alternative) it
@@ -4130,7 +3999,7 @@
     }
   }
 
-  /* 9h. Stepper -------------------------------------------------------------------------------
+  /* 8h. Stepper -------------------------------------------------------------------------------
    * <Stepper> renders <p class="kv-stepper">: "Step 2 of 5: Your vehicle", directly under the page
    * heading. Plain body text in text, never a bar, dots, a border or a fill, so there is nothing for
    * forced colours to redraw and the words carry it all (1.4.1). No margin: the layout owns the
@@ -4150,7 +4019,7 @@
     hyphens: auto;
   }
 
-  /* 9k. Read aloud ----------------------------------------------------------------------------
+  /* 8k. Read aloud ----------------------------------------------------------------------------
    * <ReadAloud.Root> renders <div class="kv-read-aloud" role="group">: controls in the flow, no fill,
    * edge or shadow, never sticky. A wrapping row of worded buttons (kv-button kv-read-aloud-button:
    * the secondary Button, never primary), then each select under its kv-read-aloud-label
@@ -4242,7 +4111,7 @@
     }
   }
 
-  /* 9g. Tag and tag group ---------------------------------------------------------------------
+  /* 8g. Tag and tag group ---------------------------------------------------------------------
    * <TagGroup.Root> renders kv-tag-group, a wrapping row: kv-tag-group-label, then the list
    * kv-tag-group-list (a <ul>, no markers) of <Tag.Root> items kv-tag, then kv-tag-group-empty
    * (shown while there is no tag) and a Clear all kv-button. A static tag is text on surface
@@ -4387,7 +4256,7 @@
     }
   }
 
-  /* 9f. Code block ----------------------------------------------------------------------------
+  /* 8f. Code block ----------------------------------------------------------------------------
    * <CodeBlock.Root> renders <div class="kv-code-block">, with kv-code-block-label (a <p>),
    * kv-code-block-code (a <pre>) and kv-code-block-copy (a Button, so kv-button draws it), then
    * kv-copy-status (a <span>, after the button; also after a standalone CopyButton). A wrapping
@@ -4479,11 +4348,11 @@
     }
   }
 
-  /* 10. Card ---------------------------------------------------------------------------------
+  /* 9. Card ---------------------------------------------------------------------------------
    * <Card.Root> renders class="kv-card", and its parts kv-card-header, kv-card-body and
    * kv-card-footer. Elevation level 2: surface-raised, a 1px border-subtle edge, the lg radius
    * and no shadow. A card is never interactive, so it has no hover, focus or pointer style.
-   * It is always surface-raised: a region of the page is a Section (section 10a).
+   * It is always surface-raised: a region of the page is a Section (section 9a).
    * Choose with modifier classes. Without one, the default applies.
    *
    *   kv-card--radius-md, kv-card--radius-none   Root: md for a card nested in a card. Default lg
@@ -4532,7 +4401,7 @@
     }
   }
 
-  /* Compact density steps down from 64rem, with compact controls (section 6). */
+  /* Compact density steps down from 64rem, with compact controls (section 5). */
   @media (width >= 64rem) {
     .kv-compact {
       --kv-card-padding-md: var(--kv-space-4);
@@ -4712,7 +4581,7 @@
     }
   }
 
-  /* 10a. Section -------------------------------------------------------------------------------
+  /* 9a. Section -------------------------------------------------------------------------------
    * <Section> renders class="kv-section": a region of the page, such as a sidebar or a band of
    * content. Elevation level 1: surface, square, no shadow, and no visible edge. A card is the
    * level 2 object, and a Section is never interactive, so it has no hover, focus or pointer
@@ -4749,7 +4618,7 @@
     }
   }
 
-  /* Compact density steps down from 64rem, with compact controls (section 6). */
+  /* Compact density steps down from 64rem, with compact controls (section 5). */
   @media (width >= 64rem) {
     .kv-compact {
       --kv-section-padding-md: var(--kv-space-4);
@@ -4829,7 +4698,7 @@
     display: none;
   }
 
-  /* 10b. Alert --------------------------------------------------------------------
+  /* 9b. Alert --------------------------------------------------------------------
    * <Alert.Info|Success|Warning|Danger> render class="kv-alert" plus a status class,
    * kv-alert--info|success|warning|danger, an icon and a visually hidden status word.
    * <Alert.Root> renders kv-alert only. Parts: kv-alert-icon,
@@ -4870,7 +4739,7 @@
     }
   }
 
-  /* Compact density steps down from 64rem, with compact controls (section 6). */
+  /* Compact density steps down from 64rem, with compact controls (section 5). */
   @media (width >= 64rem) {
     .kv-compact {
       --kv-alert-padding-block: var(--kv-space-3);
@@ -5115,7 +4984,7 @@
     }
   }
 
-  /* 10f. Toast --------------------------------------------------------------------------------
+  /* 9f. Toast --------------------------------------------------------------------------------
    * <KvirnProvider> renders <section class="kv-toast-region" popover="manual"> once, while a toast
    * exists, in the top layer. Inside it <ul role="list" class="kv-toast-list"> holds <li class="kv-toast-item">,
    * and each item wraps an Alert root with kv-toast (its status look is kv-alert--*). React sets
@@ -5324,7 +5193,7 @@
     }
   }
 
-  /* 10e. Dialog -------------------------------------------------------------------------------
+  /* 9e. Dialog -------------------------------------------------------------------------------
    * <Dialog.Popup> and <AlertDialog.Popup> render <dialog class="kv-dialog"> opened with showModal(),
    * so it sits in the top layer and the page is inert. Parts: kv-dialog-title (an h2, and sometimes the
    * initial focus), kv-dialog-description, kv-dialog-body, kv-dialog-actions and the optional
@@ -5574,7 +5443,7 @@
     }
   }
 
-  /* 10d. Definition list and error summary ------------------------------------------------------
+  /* 9d. Definition list and error summary ------------------------------------------------------
    * <DefinitionList.Root> renders <dl class="kv-definition-list"> of kv-definition-list-row (a <div>),
    * each holding a kv-definition-list-term (<dt>), a kv-definition-list-description (<dd>) and optionally
    * kv-definition-list-actions (<dd>), whose Change link is kv-link kv-definition-list-change. A row has
@@ -5584,11 +5453,11 @@
    * the start. The term is weight 600, the description wraps anywhere and never truncates. Nothing is
    * interactive but the links. Prose leaves it alone (it is in the not-prose list).
    *
-   * <ErrorSummary.Root> is an Alert.Danger (section 10b) with the class kv-error-summary, so it has
+   * <ErrorSummary.Root> is an Alert.Danger (section 9b) with the class kv-error-summary, so it has
    * the danger bar, icon and word. Its list, kv-error-summary-list, has no markers, and each link,
    * kv-error-summary-link, is in the text colour with a permanent underline (the link colour is
    * not a measured pair on danger-subtle, and the underline carries the link without colour,
-   * 1.4.1). The ring on the focused summary is the one from section 9d. Zero specificity where
+   * 1.4.1). The ring on the focused summary is the one from section 8d. Zero specificity where
    * it can be, so your own CSS wins. */
   :where(.kv-definition-list) {
     margin: 0;
@@ -5666,7 +5535,7 @@
     min-inline-size: 0;
   }
 
-  /* After the link rules (section 8), so the text colour wins over the link colour. */
+  /* After the link rules (section 7), so the text colour wins over the link colour. */
   .kv-link.kv-error-summary-link {
     display: inline-flex;
     align-items: center;
@@ -5688,7 +5557,7 @@
     }
   }
 
-  /* 10c. Layout ----------------------------------------------------------------------------
+  /* 9c. Layout ----------------------------------------------------------------------------
    * <Container>, <Stack>, <Columns> and <SidebarLayout> render these classes. They draw nothing:
    * no colour, edge or shadow, only where children sit. DOM order is the visual order, so none
    * has an order or reverse choice. The widths are layout constants, not tokens, and the gaps
@@ -5826,7 +5695,7 @@
     }
   }
 
-  /* 11. Icon ---------------------------------------------------------------------------------
+  /* 10. Icon ---------------------------------------------------------------------------------
    * <Icon name="close" /> renders <svg class="kv-icon kv-icon--size-20">, sized by that class and
    * by width and height attributes in rem, and coloured by attributes. This section never sets an
    * icon's stroke, fill or colour: CSS beats attributes, so a prop would lose. Only forced colours
@@ -5948,7 +5817,7 @@
     }
   }
 
-  /* 12. Form fields --------------------------------------------------------------------------
+  /* 11. Form fields --------------------------------------------------------------------------
    * <Field.Root> renders class="kv-field", and its parts kv-field-label, kv-field-optional,
    * kv-field-help-text (also <Fieldset.HelpText>), kv-field-error-message and kv-field-error-prefix.
    * <Fieldset.Root> renders kv-fieldset and its <legend> kv-fieldset-legend. A description is
@@ -6049,7 +5918,7 @@
    *
    * Site-wide defaults, on :root or on a container: --kv-field-gap (8px, and 4px compact) and
    * --kv-input-padding-inline (12px). --kv-control-border-width-invalid (2px) is shared by the
-   * controls that show an invalid state. Compact density (section 6) gives inputs the
+   * controls that show an invalid state. Compact density (section 5) gives inputs the
    * 32px minimum height and labels 14px, but input text, descriptions and errors stay 16px, and
    * a help text stays 14px: they are essential content, and iOS zooms into an input under 16px.
    */
@@ -6914,7 +6783,7 @@
     }
   }
 
-  /* A date (section 12, continued): the row of three boxes. It is a direct child of the
+  /* A date (section 11, continued): the row of three boxes. It is a direct child of the
    * fieldset, so the fieldset's gap spaces it from the legend, the help text and the error (8px, 4px
    * compact). The boxes never shrink below their width, and wrap in order when the text is
    * large. */
@@ -6960,7 +6829,7 @@
     font-weight: var(--kv-font-body-weight);
   }
 
-  /* An address (section 12, continued): kv-address-input is the layout of an address's fields
+  /* An address (section 11, continued): kv-address-input is the layout of an address's fields
    * inside a plain fieldset (docs/design/phone-and-address-inputs.md §6.2, §7). Each part is an
    * input in the consumer's own field, so every line has its label, help text and error. The
    * fields stack, 24px apart (16px compact, from 64rem), and the field of the postal code and the
@@ -6999,7 +6868,7 @@
     }
   }
 
-  /* Checkbox, radio and native listbox (section 12, continued). <Checkbox> renders
+  /* Checkbox, radio and native listbox (section 11, continued). <Checkbox> renders
    * class="kv-checkbox" and <Radio> class="kv-radio": the native input is the box or the circle
    * (appearance: none), so the browser's keys, focus and form behaviour stay. <Listbox.Root> with
    * native="always" (or on touch devices) renders a <select class="kv-listbox-native">. Design spec: docs/design/form-fields.md §6.5 and §6.8.
@@ -7073,7 +6942,7 @@
     grid-column: 1 / -1;
   }
 
-  /* Options are one gap apart. The 24px between text fields in a fieldset (section 12) is for
+  /* Options are one gap apart. The 24px between text fields in a fieldset (section 11) is for
    * questions, not for the options of one. */
   .kv-fieldset > .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) + .kv-field,
   .kv-fieldset > .kv-field + .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) {
@@ -8413,7 +8282,7 @@
    * chevron) and <*.Clear> (kv-*-clear, a cross) fill the box's height, so the hit area is 44px
    * (32px compact, never under 24px), and the mark is drawn with borders, which stay visible in
    * forced colours. <Combobox.ValueList> renders kv-tag-group-list, a wrapping row of Tag chips
-   * (section 9g): <Combobox.Value> renders kv-tag and its one button kv-tag-remove. The old
+   * (section 8g): <Combobox.Value> renders kv-tag and its one button kv-tag-remove. The old
    * kv-combobox-value* classes stay on them as aliases for one minor version. The popup and its options
    * are the Listbox's (kv-listbox-popup, kv-listbox-option). The one thing added for them: an
    * open popup with no option, no group and no Empty text to show (an Autocomplete with no
@@ -8850,7 +8719,7 @@
     }
   }
 
-  /* 13. One-time code ------------------------------------------------------------------------
+  /* 12. One-time code ------------------------------------------------------------------------
    * <OneTimeCode.Root pattern="****-****"> renders class="kv-one-time-code", <OneTimeCode.Input>
    * the one native input kv-one-time-code-input, and one <OneTimeCode.Slot> per position of the
    * pattern: a box kv-one-time-code-slot for a character symbol, and a dash
@@ -8998,7 +8867,7 @@
     justify-content: flex-end;
   }
 
-  /* The plain field: what .kv-input draws (section 12), with the pattern's width: every
+  /* The plain field: what .kv-input draws (section 11), with the pattern's width: every
    * character and every dash is a character of the value. Written out here, not shared with
    * .kv-input, so a global .kv-input rule of yours can't restyle the overlay. The 1.4.12
    * allowance and the invalid edge are in the width, so the code fits in every state. */
@@ -10174,7 +10043,7 @@
     }
   }
 
-  /* 14. File upload --------------------------------------------------------------------------
+  /* 13. File upload --------------------------------------------------------------------------
    * <FileUpload.Root> renders class="kv-file-upload", and its parts one class each:
    * kv-file-upload-limits, -drop-zone, -trigger, -drop-hint, -rejections, -summary, -list,
    * -item, -preview, -name, -type, -size, -status, -progress, -item-error, -actions and the
@@ -10709,7 +10578,7 @@
       background-color: transparent;
     }
   }
-  /* 14a. Progress, Button busy and Empty state -------------------------------------------------
+  /* 13a. Progress, Button busy and Empty state -------------------------------------------------
    * <Progress.Root> renders class="kv-progress", with kv-progress-label (a <p>), kv-progress-percent
    * and kv-progress-slow (spans in it) and kv-progress-bar (a native <progress>, only with a known
    * value). State is data-state="busy" | "slow" and data-determinate. A Button's busy state is
@@ -11212,7 +11081,7 @@
     }
   }
 
-  /* 15. Table --------------------------------------------------------------------------------
+  /* 14. Table --------------------------------------------------------------------------------
    * <Table.Root> renders class="kv-table", and its parts one class each: kv-table-caption,
    * -head, -body, -foot, -row, -column-header, -row-header, -cell, -sort-button, -sort-icon,
    * -select-checkbox (with kv-checkbox), -expand-button, -expand-icon, -detail-row, -empty,
@@ -11666,7 +11535,7 @@
     }
   }
 
-  /* 16. Rich text editor ---------------------------------------------------------------------
+  /* 15. Rich text editor ---------------------------------------------------------------------
    * <RichTextEditor.Root> renders class="kv-rich-text": the box of a control, with an attached
    * toolbar (<RichTextEditor.Toolbar>: kv-toolbar kv-toolbar--attached, and kv-toolbar--labels
    * with labels="icon-and-text") above the editable text (<RichTextEditor.Content>: the
@@ -11776,7 +11645,7 @@
   }
 
   /* Flat buttons, like an input group's: no depth, no fill, an edge that is there and transparent,
-   * so a button never changes size. A pressed toggle is section 7a's solid tile. */
+   * so a button never changes size. A pressed toggle is section 6a's solid tile. */
   .kv-toolbar--attached .kv-button:not([aria-pressed='true'], [data-pressed]) {
     border-color: transparent;
     box-shadow: none;
@@ -12062,7 +11931,7 @@
     }
   }
 
-  /* 17. Display settings ------------------------------------------------------------------------
+  /* 16. Display settings ------------------------------------------------------------------------
    * kv-display-settings-*: the three radio groups in a Card. Inline, a Disclosure panel in flow that
    * pushes the content down, on the content edge. Floating, a Popover popup in the top layer: the
    * browser places it, the script sets its position and the popup only gets its look and width. */

@@ -26,7 +26,7 @@ This spec records the five variations in the prototype, their exact values, meas
 
 | Source                                                                                                             | What we reuse                                                                                                                                         | What we change and why                                                                                                           |
 | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| KvirnUI Button default theme (`theme.css` section 7, [default-theme-button-link.md](default-theme-button-link.md)) | Every colour token, the 44px height, hover darkens, the dashed disabled state, primary hover edge, and the 2px focus ring with a 2px offset           | Depth is added on top. No label ever sits on a lighter colour than its measured token.                                           |
+| KvirnUI Button default theme (`theme.css` section 6, [default-theme-button-link.md](default-theme-button-link.md)) | Every colour token, the 44px height, hover darkens, the dashed disabled state, primary hover edge, and the 2px focus ring with a 2px offset           | Depth is added on top. No label ever sits on a lighter colour than its measured token.                                           |
 | [GOV.UK Design System, Button](https://design-system.service.gov.uk/components/button/)                            | E copies its pattern: a solid 2px darker ledge under the button, and on press the button moves down onto it, with the hit area kept under the pointer | We use a tinted shade of the fill, not a fixed colour. The focus ring stays an outline with an offset, not GOV.UK's yellow fill. |
 | APG Button pattern                                                                                                 | Native `<button>`. Nothing changes in behaviour.                                                                                                      | None. This is purely visual.                                                                                                     |
 
@@ -281,7 +281,7 @@ The decision is the button-depth decision (Proposed), and the rules are in `DESI
 
 ### Tokens (`packages/theme/theme.css`)
 
-Declare all four in every theme block, the OS fallbacks in section 4 included, so each fallback equals its theme.
+Declare all four in every theme block.
 
 | Where                                                                                                         | Values                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -327,7 +327,7 @@ Resulting edges, for the stories and tests:
 
 Extend `checkThemeCss()` (`packages/theme/src/`), not just a repo test, so a rebranded copy is checked too (`DESIGN.md`, Rebranding).
 
-1. **Parse the edge tokens** in all four themes, from attributes and from the system fallbacks: after `var()` resolution, each must match `<#rgb or #rrggbb> <number>%`, and the system fallback must equal the theme. Report anything else, as the hex check does for `--kv-color-*`.
+1. **Parse the edge tokens** in all four themes: after `var()` resolution, each must match `<#rgb or #rrggbb> <number>%`. Report anything else, as the hex check does for `--kv-color-*`.
 2. **Compute each tinted edge** as an sRGB mix: per channel, `base × (1 − p) + partner × p` on the 0–255 values, rounded. That's what `color-mix(in srgb, …)` does for an opaque edge, and what compositing the partner at `p` over the fill does for a transparent edge.
 3. **Require 3:1** for each tinted edge against `canvas`, `surface` and `surface-raised`, in all four themes. The bases are `secondary` (base at rest), `primary` (base hover, primary at rest and on hover), `danger` and `danger-hover` (danger fills), each tinted with the shade and with the highlight: 4 × 2 × 3 = 24 pairs per theme, 96 in all. At `0%` the result is the token, already required.
 
@@ -337,7 +337,7 @@ No ring-over-shadow pair is needed: the shadow is `none` on keyboard focus, so t
 
 ### Tests the plan must include
 
-- **Theme tests** (`theme-css.test.ts`): the fallbacks equal their themes, and every tinted edge keeps 3:1 on canvas, surface and surface-raised. The token values and the flat contrast and forced-colours rules are reviewed in Storybook, not tested (AGENTS.md rule 13).
+- **Theme tests** (`theme-css.test.ts`): every tinted edge keeps 3:1 on canvas, surface and surface-raised. The token values and the flat contrast and forced-colours rules are reviewed in Storybook, not tested (AGENTS.md rule 13).
 - **e2e** (`apps/storybook/src/components/button/button.e2e.ts`), for each kind, asserts the WCAG outcome and never the look (the shadow, the tinted edges and the transitions are reviewed by eye in Storybook, `testing` skill):
   - **Keyboard focus (2.4.7):** Tab to the button, then the outline is not `none`.
   - **Forced colours (1.4.11):** the border is not `none` and has a width, at rest and when disabled.
@@ -345,7 +345,7 @@ No ring-over-shadow pair is needed: the shadow is `none` on keyboard focus, so t
 
 ### Docs
 
-- `theme.css` comments: section 7's header (depth, and the "only pressed, disabled and forced colours set `border-color`" rule), and section 2's comment next to the new tokens.
+- `theme.css` comments: section 6's header (depth, and the "only pressed, disabled and forced colours set `border-color`" rule), and section 2's comment next to the new tokens.
 - `packages/theme/README.md`: the four tokens, and how to turn depth off.
 - `DESIGN.md`, when it ships: drop "Not yet in `theme.css`" from "Button depth", and "not yet by `theme:check`" from Colors, and update the pair count.
 - A changeset for `@kvirn-ui/theme` (a visible change to every button).

@@ -62,7 +62,7 @@ Unhappy states to cover:
 - A label that wraps to two or three lines (Finnish).
 - A link that wraps.
 - A long Finnish new-tab notice.
-- No JavaScript, so the media-query fallback applies.
+- No JavaScript, so no attribute is set and the page is the light theme.
 - The font fails to load, so the system-ui fallback applies.
 - Forced colours.
 - Compact density on a touch screen below 64rem, which falls back to comfortable.
@@ -92,13 +92,13 @@ The recipes add no strings. The example labels are in [storybook-presentation.md
 
 **Tokens in `tokens.ts` generate `tokens.css`, and `tokens.ts` also generates `tailwind.css`. Opt-in recipes ship from `@kvirn-ui/theme`. Nothing is loaded automatically.**
 
-| Export                               | Contents                                                                                                                                                                                                     |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `@kvirn-ui/theme/tokens.css`         | `@layer kv.tokens`: custom properties for the four themes, media-query fallbacks when the `data-kv-*` attributes are absent, `color-scheme` per theme, and the `.kv-compact` overrides. No element selectors |
-| `@kvirn-ui/theme/recipes/button.css` | `@layer kv.recipes`: `.kv-button`, `.kv-button-primary`, `.kv-button-danger`, `.kv-button-group`                                                                                                             |
-| `@kvirn-ui/theme/recipes/link.css`   | `@layer kv.recipes`: `.kv-link`, `.kv-nav-list`, `.kv-nav-item`                                                                                                                                              |
-| `@kvirn-ui/theme/tailwind.css`       | `@theme inline { … }`. Every Tailwind variable maps to `var(--kv-*)` (`--color-kv-primary`, `--radius-kv-md`, `--spacing-kv-4`, `--font-kv-sans`, …)                                                         |
-| `@kvirn-ui/theme` (JS)               | `colorTokens`, `contrastRequirements`, `checkTheme` and the other token objects                                                                                                                              |
+| Export                               | Contents                                                                                                                                             |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@kvirn-ui/theme/tokens.css`         | `@layer kv.tokens`: custom properties for the four themes, `color-scheme` per theme, and the `.kv-compact` overrides. No element selectors           |
+| `@kvirn-ui/theme/recipes/button.css` | `@layer kv.recipes`: `.kv-button`, `.kv-button-primary`, `.kv-button-danger`, `.kv-button-group`                                                     |
+| `@kvirn-ui/theme/recipes/link.css`   | `@layer kv.recipes`: `.kv-link`, `.kv-nav-list`, `.kv-nav-item`                                                                                      |
+| `@kvirn-ui/theme/tailwind.css`       | `@theme inline { … }`. Every Tailwind variable maps to `var(--kv-*)` (`--color-kv-primary`, `--radius-kv-md`, `--spacing-kv-4`, `--font-kv-sans`, …) |
+| `@kvirn-ui/theme` (JS)               | `colorTokens`, `contrastRequirements`, `checkTheme` and the other token objects                                                                      |
 
 Rules:
 
@@ -127,7 +127,7 @@ Theme selection, following the theme decision:
 
 - `:root` holds light.
 - The `[data-kv-color-scheme]` and `[data-kv-contrast]` combinations select the other themes.
-- The media-query fallbacks apply on `:root:not([data-kv-…])`.
+- Without the `data-kv-*` attributes the page is the light theme.
 - `color-scheme` is set per theme.
 - Under `@media (forced-colors: active)`, the recipes switch to system colours.
 

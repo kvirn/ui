@@ -10,7 +10,7 @@ The provider's contract is about what it guarantees for other components (Plan 0
 
 - `lang` and `dir` are available as `useLocale().localeProps` wherever the locale changes (3.1.2). The provider renders no element that can carry `lang`, so the consumer spreads `localeProps` on the element that starts a section in another language, and sets `<html lang dir>` for the page language itself (3.1.1).
 - Every visible and announced component string comes from `messages`, resolved as instance `messages`, then the nearest provider and its ancestors, then built-in `en` (hard rule 4). An empty or whitespace-only override falls through to the next level, so an accessible name is never empty (4.1.2).
-- The theme follows `prefers-color-scheme` and `prefers-contrast` until the user chooses, and never overrides `forced-colors` (1.4.3, 1.4.6, 1.4.11).
+- The attributes are resolved from `prefers-color-scheme` and `prefers-contrast` until the user chooses (without JavaScript the page is the light, standard theme), and the theme never overrides `forced-colors` (1.4.3, 1.4.6, 1.4.11).
 - A theme change moves no focus and announces nothing. The switcher's own control state is the feedback.
 
 ## Roles, states, properties

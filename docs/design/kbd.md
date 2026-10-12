@@ -17,7 +17,7 @@
 
 ## 2. Review of the current look (2026-10-03)
 
-The current rule (`theme.css` §9b `kv-kbd`, and prose `kbd`): mono at `--kv-prose-code-size`, `surface-raised` fill, 1px `border-control` edge with a 2px bottom edge, `radius-sm`, `padding-inline: space-1`, `nowrap`.
+The current rule (`theme.css` §8b `kv-kbd`, and prose `kbd`): mono at `--kv-prose-code-size`, `surface-raised` fill, 1px `border-control` edge with a 2px bottom edge, `radius-sm`, `padding-inline: space-1`, `nowrap`.
 
 Measured in `Components/Kbd › Default` (light, 16px body text, 24px line): the key box is 19px high and 35px wide, 4px from the top of the line. The `Combination` paragraph is **25px** high instead of 24px.
 
@@ -93,7 +93,7 @@ None.
 
 ## 6. CSS to apply (one shared rule, replaces both current rules)
 
-This goes in `theme.css` §9b, inside `@layer kv`. **Delete** the prose block's `&:where(kbd):not(:where(:has(kbd)))` rule (around line 1313). The selector covers both a `kv-kbd` anywhere and a bare `kbd` in prose. A bare `kbd` inside `kv-not-prose` stays untouched, which keeps the not-prose contract.
+This goes in `theme.css` §8b, inside `@layer kv`. **Delete** the prose block's `&:where(kbd):not(:where(:has(kbd)))` rule (around line 1313). The selector covers both a `kv-kbd` anywhere and a bare `kbd` in prose. A bare `kbd` inside `kv-not-prose` stays untouched, which keeps the not-prose contract.
 
 ```css
 /* 9b. Kbd: one key. kv-kbd anywhere, or a bare kbd in prose (not inside kv-not-prose). A
@@ -153,7 +153,7 @@ There is now one rule, so a change goes in one place. Things to check during the
 - `kbd.a11y.md` § visual: describe the new look. The edge maps to `CanvasText` in forced colours. Change the 1.4.11 wording to: "the edge is `border-control` (at least 3:1) so the key stays distinct at high zoom, though 1.4.11 doesn't require it."
 - `kbd.md`: "drawn like inline code, in the body font, with a control-coloured edge".
 - the Kbd decision (still Proposed): amend decision 3 and the Consequences (text in the hand-off).
-- `theme.css` header comment for section 9b (line 70) if its wording changes.
+- `theme.css` header comment for section 8b (line 70) if its wording changes.
 
 ## 7. Accessibility annotations
 

@@ -33,6 +33,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <KvirnThemeScript nonce={nonce} theme={theme} />
       </head>
       <body>
+        <noscript>
+          <p className="kv-alert kv-alert--info">{messages.docs.noScript}</p>
+        </noscript>
         <AppKvirnProvider locale={locale} timeZone="UTC" theme={theme}>
           {children}
         </AppKvirnProvider>

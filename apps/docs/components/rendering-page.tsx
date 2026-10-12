@@ -331,9 +331,9 @@ export function RenderingPage() {
               </p>
               <ul>
                 <li>
-                  The theme&apos;s CSS follows the device through <code>prefers-color-scheme</code>,{' '}
-                  <code>prefers-contrast</code> and <code>prefers-reduced-motion</code> until an
-                  attribute says otherwise.
+                  The theme&apos;s CSS follows <code>prefers-reduced-motion</code> until an
+                  attribute says otherwise. Colour scheme and contrast come from the attributes
+                  alone, so without JavaScript the page is the light, standard theme.
                 </li>
                 <li>
                   <code>KvirnThemeScript</code> is a small blocking inline script in{' '}

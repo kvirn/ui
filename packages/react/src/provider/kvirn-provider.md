@@ -296,7 +296,7 @@ The default theme has three independent axes: colour scheme (`light`, `dark`), c
 
 `data-kv-motion="reduce"` stops every transition and animation in `@kvirn-ui/theme`, exactly as `prefers-reduced-motion: reduce` does, so a site can offer "less motion" to people whose device setting is out of their reach (a managed computer, a shared one, a setting they never found). `full` is the other explicit choice.
 
-`@kvirn-ui/theme` maps these attributes to `--kv-*` tokens, with media-query fallbacks when JavaScript is off. Under `forced-colors: active`, the operating system's palette always wins.
+`@kvirn-ui/theme` maps these attributes to `--kv-*` tokens, and, when JavaScript is off, the page is the light, standard theme. Under `forced-colors: active`, the operating system's palette always wins.
 
 There is one theme store per document. The outermost provider's `theme` options configure it, and nested providers share it.
 
@@ -394,9 +394,17 @@ export const cookieThemeStorage: ThemeStorageAdapter = {
 
 The store validates whatever the adapter returns and ignores unknown values, and a `read` or `write` that throws is caught.
 
-On the server, read the same cookie and render the attributes on `<html>`. Render an attribute only for an explicit `light`/`dark` or `standard`/`more` choice. For `system`, leave it out: `@kvirn-ui/theme`'s media-query fallback applies until the provider sets the attribute after hydration.
+On the server, read the same cookie and render the attributes on `<html>`. Render an attribute only for an explicit `light`/`dark` or `standard`/`more` choice. For `system`, leave it out: with a cookie adapter the page paints light and switches when the provider sets the attributes after hydration. With the default `localStorage` storage, render `KvirnThemeScript` instead, which resolves the OS settings before first paint.
 
 `KvirnThemeScript` reads `localStorage` only, so don't render it with a custom adapter.
+
+Without JavaScript no attribute is set and the page is the light, standard theme. Say so with a `<noscript>` in `<body>`, with your own text:
+
+```tsx
+<noscript>
+  <p className="kv-alert kv-alert--info">JavaScript is off. Dark mode and more contrast need it.</p>
+</noscript>
+```
 
 ### The theme script
 

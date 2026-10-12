@@ -152,7 +152,7 @@ Every choice is a modifier class the consumer adds next to the part's own class:
 | `kv-card--padding-none`, `-sm`, `-md`, `-lg`; `kv-card-header--padding-*`, `kv-card-body--padding-*`, `kv-card-footer--padding-*` (`none`, `sm`, `md`, `lg`) | Root, and each part | **`md`**, `none`, `sm`, `lg`              | Named steps, not raw spacing steps, so cards stay consistent. On the Root it's the default for every part. On a part it overrides the Root. `none` is for full-bleed media                                                                 |
 | `kv-card--dividers`                                                                                                                                          | Root                | present or absent (**absent**)            | A 1px `border-subtle` line between parts                                                                                                                                                                                                   |
 
-A site can change the defaults for every card without classes, with `--kv-card-padding-default` and `--kv-card-radius-default` (`theme.css` section 10). `kv-card--padding-md` and `kv-card--radius-lg` on the Root then take one card back to the theme's step.
+A site can change the defaults for every card without classes, with `--kv-card-padding-default` and `--kv-card-radius-default` (`theme.css` section 9). `kv-card--padding-md` and `kv-card--radius-lg` on the Root then take one card back to the theme's step.
 
 Also used, existing: `kv-button-group` on `Card.Footer` (§6.4), `kv-prose` on any card part or the Root (§6.6), and `kv-compact` on any ancestor or the Root (§6.2).
 
