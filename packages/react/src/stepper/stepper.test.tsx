@@ -35,13 +35,11 @@ const warnedWith = (code: string) =>
 describe('Stepper', () => {
   test('renders one p with the position and a class, no role or ARIA, and passes attributes and the ref through', async () => {
     const ref = createRef<HTMLElement>()
-    await render(
-      <Stepper current={2} total={5} id="step" lang="en" ref={ref} data-testid="stepper" />,
-    )
+    await render(<Stepper current={2} total={5} id="step" ref={ref} data-testid="stepper" />)
     const element = page.getByTestId('stepper').element()
     expect(element.tagName).toBe('P')
     expect(element.textContent).toBe('Step 2 of 5')
-    expect(element.getAttributeNames().sort()).toEqual(['class', 'data-testid', 'id', 'lang'])
+    expect(element.getAttributeNames().sort()).toEqual(['class', 'data-testid', 'id'])
     expect(element.className).toBe('kv-stepper')
     expect(ref.current).toBe(element)
   })

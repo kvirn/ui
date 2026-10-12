@@ -3,11 +3,12 @@ import { Table, createColumnHelper, tableFeatures, useTable } from '@kvirn-ui/re
 import { useMemo } from 'react'
 import type { CaseRecord } from './cases.ts'
 import { useTableTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 const features = tableFeatures({})
 
 export function EmptyCases() {
-  const { texts, textLang } = useTableTexts()
+  const { texts, isFallback } = useTableTexts()
   const columns = useMemo(() => {
     const column = createColumnHelper<typeof features, CaseRecord>()
     return column.columns([
@@ -23,21 +24,23 @@ export function EmptyCases() {
     rowHeader: 'name',
   })
   return (
-    <Table.ScrollRegion table={list} lang={textLang}>
-      <Table.Root table={list}>
-        <Table.Caption>{texts.casesCaption}</Table.Caption>
-        <Table.Head>
-          {list.table.getHeaderGroups().map((headerGroup) => (
-            <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
-              {headerGroup.headers.map((header) => (
-                <Table.ColumnHeader key={header.id} header={header} />
-              ))}
-            </Table.Row>
-          ))}
-        </Table.Head>
-        <Table.Body>{() => null}</Table.Body>
-        <Table.Empty>{texts.emptyCases}</Table.Empty>
-      </Table.Root>
-    </Table.ScrollRegion>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Table.ScrollRegion table={list}>
+        <Table.Root table={list}>
+          <Table.Caption>{texts.casesCaption}</Table.Caption>
+          <Table.Head>
+            {list.table.getHeaderGroups().map((headerGroup) => (
+              <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
+                {headerGroup.headers.map((header) => (
+                  <Table.ColumnHeader key={header.id} header={header} />
+                ))}
+              </Table.Row>
+            ))}
+          </Table.Head>
+          <Table.Body>{() => null}</Table.Body>
+          <Table.Empty>{texts.emptyCases}</Table.Empty>
+        </Table.Root>
+      </Table.ScrollRegion>
+    </InEnglishWhenFallback>
   )
 }

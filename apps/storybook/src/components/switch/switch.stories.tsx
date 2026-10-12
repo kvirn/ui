@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Card, Field, Switch } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/switch/switch.a11y.md?raw'
 import guide from '../../../../../packages/react/src/switch/switch.md?raw'
@@ -59,12 +60,14 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, lang } = switchTextsFor(localeOf(globals))
+    const { text, isFallback } = switchTextsFor(localeOf(globals))
     return (
-      <Field.Root lang={lang}>
-        <Switch {...args} />
-        <Field.Label marker="none">{text.smsReminders}</Field.Label>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Switch {...args} />
+          <Field.Label marker="none">{text.smsReminders}</Field.Label>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   parameters: {
@@ -103,13 +106,15 @@ export const Checked: Story = {
 /** The help text says what happens when the switch is on. It is the switch's description. */
 export const WithDescription: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = switchTextsFor(localeOf(globals))
+    const { text, isFallback } = switchTextsFor(localeOf(globals))
     return (
-      <Field.Root lang={lang}>
-        <Switch {...args} />
-        <Field.Label marker="none">{text.smsReminders}</Field.Label>
-        <Field.HelpText>{text.smsRemindersHint}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Switch {...args} />
+          <Field.Label marker="none">{text.smsReminders}</Field.Label>
+          <Field.HelpText>{text.smsRemindersHint}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -123,13 +128,15 @@ export const WithDescription: Story = {
 /** A setting that failed to save: a 2px edge and the message under the row. */
 export const Invalid: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = switchTextsFor(localeOf(globals))
+    const { text, isFallback } = switchTextsFor(localeOf(globals))
     return (
-      <Field.Root invalid lang={lang}>
-        <Switch {...args} />
-        <Field.Label marker="none">{text.smsReminders}</Field.Label>
-        <Field.ErrorMessage>{text.saveFailed}</Field.ErrorMessage>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root invalid>
+          <Switch {...args} />
+          <Field.Label marker="none">{text.smsReminders}</Field.Label>
+          <Field.ErrorMessage>{text.saveFailed}</Field.ErrorMessage>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -144,13 +151,15 @@ export const Invalid: Story = {
 /** Disabled: a dashed edge on the surface colour. The help text says why, never a tooltip. */
 export const Disabled: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = switchTextsFor(localeOf(globals))
+    const { text, isFallback } = switchTextsFor(localeOf(globals))
     return (
-      <Field.Root lang={lang}>
-        <Switch {...args} disabled />
-        <Field.Label marker="none">{text.smsReminders}</Field.Label>
-        <Field.HelpText>{text.noMobileHint}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Switch {...args} disabled />
+          <Field.Label marker="none">{text.smsReminders}</Field.Label>
+          <Field.HelpText>{text.noMobileHint}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -181,12 +190,14 @@ export const LongLabel: Story = {
     ),
   ],
   render: (args, { globals }) => {
-    const { text, lang } = switchTextsFor(localeOf(globals))
+    const { text, isFallback } = switchTextsFor(localeOf(globals))
     return (
-      <Field.Root lang={lang}>
-        <Switch {...args} name="reminders" />
-        <Field.Label marker="none">{text.longLabel}</Field.Label>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Switch {...args} name="reminders" />
+          <Field.Label marker="none">{text.longLabel}</Field.Label>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {
@@ -242,18 +253,20 @@ export const PlainForm: Story = {
 /** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11). */
 export const OnSurfaces: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = switchTextsFor(localeOf(globals))
+    const { text, isFallback } = switchTextsFor(localeOf(globals))
     return (
-      <Card.Root lang={lang}>
-        <Field.Root>
-          <Switch name="off" />
-          <Field.Label marker="none">{text.smsReminders}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <Switch name="on" defaultChecked />
-          <Field.Label marker="none">{text.emailDecisions}</Field.Label>
-        </Field.Root>
-      </Card.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Card.Root>
+          <Field.Root>
+            <Switch name="off" />
+            <Field.Label marker="none">{text.smsReminders}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Switch name="on" defaultChecked />
+            <Field.Label marker="none">{text.emailDecisions}</Field.Label>
+          </Field.Root>
+        </Card.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -266,14 +279,16 @@ export const OnSurfaces: Story = {
 /** Staff density from 64rem: the row is 32px high, and the track is still 24px. */
 export const Compact: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = switchTextsFor(localeOf(globals))
+    const { text, isFallback } = switchTextsFor(localeOf(globals))
     return (
-      <div className="kv-compact" lang={lang}>
-        <Field.Root>
-          <Switch name="sms" defaultChecked />
-          <Field.Label marker="none">{text.smsReminders}</Field.Label>
-        </Field.Root>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div className="kv-compact">
+          <Field.Root>
+            <Switch name="sms" defaultChecked />
+            <Field.Label marker="none">{text.smsReminders}</Field.Label>
+          </Field.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -285,32 +300,34 @@ export const Compact: Story = {
 // Every state in one column. The RTL and ForcedColors stories render it, so a reader of either
 // sees the real parts.
 const renderSwitchStates: NonNullable<Story['render']> = (_args, { globals }) => {
-  const { text, lang } = switchTextsFor(localeOf(globals))
+  const { text, isFallback } = switchTextsFor(localeOf(globals))
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root>
-        <Switch name="off" />
-        <Field.Label marker="none">{text.smsReminders}</Field.Label>
-      </Field.Root>
-      <Field.Root>
-        <Switch name="on" defaultChecked />
-        <Field.Label marker="none">{text.emailDecisions}</Field.Label>
-      </Field.Root>
-      <Field.Root invalid>
-        <Switch name="invalid" />
-        <Field.Label marker="none">{text.longLabel}</Field.Label>
-        <Field.ErrorMessage>{text.saveFailed}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root disabled>
-        <Switch name="disabled" />
-        <Field.Label marker="none">{text.smsReminders}</Field.Label>
-        <Field.HelpText>{text.noMobileHint}</Field.HelpText>
-      </Field.Root>
-      <Field.Root disabled>
-        <Switch name="disabled-on" defaultChecked />
-        <Field.Label marker="none">{text.emailDecisions}</Field.Label>
-      </Field.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root>
+          <Switch name="off" />
+          <Field.Label marker="none">{text.smsReminders}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <Switch name="on" defaultChecked />
+          <Field.Label marker="none">{text.emailDecisions}</Field.Label>
+        </Field.Root>
+        <Field.Root invalid>
+          <Switch name="invalid" />
+          <Field.Label marker="none">{text.longLabel}</Field.Label>
+          <Field.ErrorMessage>{text.saveFailed}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root disabled>
+          <Switch name="disabled" />
+          <Field.Label marker="none">{text.smsReminders}</Field.Label>
+          <Field.HelpText>{text.noMobileHint}</Field.HelpText>
+        </Field.Root>
+        <Field.Root disabled>
+          <Switch name="disabled-on" defaultChecked />
+          <Field.Label marker="none">{text.emailDecisions}</Field.Label>
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 

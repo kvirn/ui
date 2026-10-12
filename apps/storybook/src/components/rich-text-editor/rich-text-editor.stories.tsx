@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Field } from '@kvirn-ui/react'
 import { RichTextEditor } from '@kvirn-ui/rich-text'
 import contract from '../../../../../packages/rich-text/src/rich-text-editor.a11y.md?raw'
@@ -143,19 +144,21 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, lang } = editorTextsFor(localeOf(globals))
+    const { text, isFallback } = editorTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.label}</Field.Label>
-        <Field.Prose>
-          <p>{text.description}</p>
-        </Field.Prose>
-        <RichTextEditor.Root {...args}>
-          <RichTextEditor.Toolbar />
-          <RichTextEditor.Content />
-        </RichTextEditor.Root>
-        <Field.HelpText>{text.hint}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.label}</Field.Label>
+          <Field.Prose>
+            <p>{text.description}</p>
+          </Field.Prose>
+          <RichTextEditor.Root {...args}>
+            <RichTextEditor.Toolbar />
+            <RichTextEditor.Content />
+          </RichTextEditor.Root>
+          <Field.HelpText>{text.hint}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   parameters: {

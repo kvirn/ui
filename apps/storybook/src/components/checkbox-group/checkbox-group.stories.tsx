@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Card, Checkbox, CheckboxGroup, Field } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/checkbox-group/checkbox-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/checkbox-group/checkbox-group.md?raw'
@@ -71,27 +72,29 @@ const meta = {
   // The design spec's contact question: three options under a legend. The localised text is
   // taken at the top, and the locale comes from the toolbar through `withFormLocale`.
   render: (args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <CheckboxGroup.Root {...args} lang={lang}>
-        <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
-        <CheckboxGroup.Prose>
-          <p>{text.contactHint}</p>
-        </CheckboxGroup.Prose>
-        <Field.Root>
-          <Checkbox value="email" />
-          <Field.Label>{text.contactEmail}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="text" />
-          <Field.Label>{text.contactText}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="letter" />
-          <Field.Label>{text.contactLetter}</Field.Label>
-        </Field.Root>
-        <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
-      </CheckboxGroup.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <CheckboxGroup.Root {...args}>
+          <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
+          <CheckboxGroup.Prose>
+            <p>{text.contactHint}</p>
+          </CheckboxGroup.Prose>
+          <Field.Root>
+            <Checkbox value="email" />
+            <Field.Label>{text.contactEmail}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="text" />
+            <Field.Label>{text.contactText}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="letter" />
+            <Field.Label>{text.contactLetter}</Field.Label>
+          </Field.Root>
+          <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
+        </CheckboxGroup.Root>
+      </InEnglishWhenFallback>
     )
   },
   parameters: {
@@ -134,39 +137,41 @@ const backTexts: Partial<Record<FormLocale, string>> = {
 export const Keyboard: Story = {
   render: (_args, { globals }) => {
     const locale = localeOf(globals)
-    const { text, lang } = choiceTextsFor(locale)
+    const { text, isFallback } = choiceTextsFor(locale)
     return (
-      <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
-        <div className="kv-button-group">
-          <Button type="button" lang={backTexts[locale] === undefined ? 'en' : undefined}>
-            {backTexts[locale] ?? 'Back'}
-          </Button>
-        </div>
-        <CheckboxGroup.Root name="contact">
-          <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
-          <CheckboxGroup.Prose>
-            <p>{text.contactHint}</p>
-          </CheckboxGroup.Prose>
-          <Field.Root>
-            <Checkbox value="email" />
-            <Field.Label>{text.contactEmail}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <Checkbox value="text" />
-            <Field.Label>{text.contactText}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <Checkbox value="letter" />
-            <Field.Label>{text.contactLetter}</Field.Label>
-          </Field.Root>
-          <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
-        </CheckboxGroup.Root>
-        <div className="kv-button-group">
-          <Button type="submit" className="kv-button--primary">
-            {text.send}
-          </Button>
-        </div>
-      </form>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <form className="kv-story-form" noValidate onSubmit={(e) => e.preventDefault()}>
+          <div className="kv-button-group">
+            <InEnglishWhenFallback isFallback={backTexts[locale] === undefined}>
+              <Button type="button">{backTexts[locale] ?? 'Back'}</Button>
+            </InEnglishWhenFallback>
+          </div>
+          <CheckboxGroup.Root name="contact">
+            <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
+            <CheckboxGroup.Prose>
+              <p>{text.contactHint}</p>
+            </CheckboxGroup.Prose>
+            <Field.Root>
+              <Checkbox value="email" />
+              <Field.Label>{text.contactEmail}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <Checkbox value="text" />
+              <Field.Label>{text.contactText}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <Checkbox value="letter" />
+              <Field.Label>{text.contactLetter}</Field.Label>
+            </Field.Root>
+            <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
+          </CheckboxGroup.Root>
+          <div className="kv-button-group">
+            <Button type="submit" className="kv-button--primary">
+              {text.send}
+            </Button>
+          </div>
+        </form>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -185,29 +190,31 @@ export const WithDescription: Story = {
 /** An option's own help text is in that checkbox's description, under its label. */
 export const WithOptionHelpTexts: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <CheckboxGroup.Root {...args} lang={lang}>
-        <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
-        <CheckboxGroup.Prose>
-          <p>{text.contactHint}</p>
-        </CheckboxGroup.Prose>
-        <Field.Root>
-          <Checkbox value="email" />
-          <Field.Label>{text.contactEmail}</Field.Label>
-          <Field.HelpText>{text.contactEmailHint}</Field.HelpText>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="text" />
-          <Field.Label>{text.contactText}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="letter" />
-          <Field.Label>{text.contactLetter}</Field.Label>
-          <Field.HelpText>{text.contactLetterHint}</Field.HelpText>
-        </Field.Root>
-        <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
-      </CheckboxGroup.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <CheckboxGroup.Root {...args}>
+          <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
+          <CheckboxGroup.Prose>
+            <p>{text.contactHint}</p>
+          </CheckboxGroup.Prose>
+          <Field.Root>
+            <Checkbox value="email" />
+            <Field.Label>{text.contactEmail}</Field.Label>
+            <Field.HelpText>{text.contactEmailHint}</Field.HelpText>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="text" />
+            <Field.Label>{text.contactText}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="letter" />
+            <Field.Label>{text.contactLetter}</Field.Label>
+            <Field.HelpText>{text.contactLetterHint}</Field.HelpText>
+          </Field.Root>
+          <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
+        </CheckboxGroup.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -262,29 +269,31 @@ export const Disabled: Story = {
 export const InCard: Story = {
   args: { invalid: true },
   render: (args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <Card.Root>
-        <CheckboxGroup.Root {...args} lang={lang}>
-          <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
-          <CheckboxGroup.Prose>
-            <p>{text.contactHint}</p>
-          </CheckboxGroup.Prose>
-          <Field.Root>
-            <Checkbox value="email" />
-            <Field.Label>{text.contactEmail}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <Checkbox value="text" />
-            <Field.Label>{text.contactText}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <Checkbox value="letter" />
-            <Field.Label>{text.contactLetter}</Field.Label>
-          </Field.Root>
-          <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
-        </CheckboxGroup.Root>
-      </Card.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Card.Root>
+          <CheckboxGroup.Root {...args}>
+            <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
+            <CheckboxGroup.Prose>
+              <p>{text.contactHint}</p>
+            </CheckboxGroup.Prose>
+            <Field.Root>
+              <Checkbox value="email" />
+              <Field.Label>{text.contactEmail}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <Checkbox value="text" />
+              <Field.Label>{text.contactText}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <Checkbox value="letter" />
+              <Field.Label>{text.contactLetter}</Field.Label>
+            </Field.Root>
+            <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
+          </CheckboxGroup.Root>
+        </Card.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -296,29 +305,31 @@ export const InCard: Story = {
 /** Staff density from 64rem: the rows are 32px high, the boxes still 24px. */
 export const Compact: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <div className="kv-compact">
-        <CheckboxGroup.Root {...args} lang={lang}>
-          <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
-          <CheckboxGroup.Prose>
-            <p>{text.contactHint}</p>
-          </CheckboxGroup.Prose>
-          <Field.Root>
-            <Checkbox value="email" />
-            <Field.Label>{text.contactEmail}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <Checkbox value="text" />
-            <Field.Label>{text.contactText}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <Checkbox value="letter" />
-            <Field.Label>{text.contactLetter}</Field.Label>
-          </Field.Root>
-          <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
-        </CheckboxGroup.Root>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div className="kv-compact">
+          <CheckboxGroup.Root {...args}>
+            <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
+            <CheckboxGroup.Prose>
+              <p>{text.contactHint}</p>
+            </CheckboxGroup.Prose>
+            <Field.Root>
+              <Checkbox value="email" />
+              <Field.Label>{text.contactEmail}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <Checkbox value="text" />
+              <Field.Label>{text.contactText}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <Checkbox value="letter" />
+              <Field.Label>{text.contactLetter}</Field.Label>
+            </Field.Root>
+            <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
+          </CheckboxGroup.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -338,29 +349,31 @@ export const LongFinnish: Story = {
     ),
   ],
   render: (args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <CheckboxGroup.Root {...args} lang={lang}>
-        <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
-        <CheckboxGroup.Prose>
-          <p>{text.contactHint}</p>
-        </CheckboxGroup.Prose>
-        <Field.Root>
-          <Checkbox value="email" />
-          <Field.Label>{text.contactEmail}</Field.Label>
-          <Field.HelpText>{text.contactEmailHint}</Field.HelpText>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="text" />
-          <Field.Label>{text.contactText}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="letter" />
-          <Field.Label>{text.contactLetter}</Field.Label>
-          <Field.HelpText>{text.contactLetterHint}</Field.HelpText>
-        </Field.Root>
-        <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
-      </CheckboxGroup.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <CheckboxGroup.Root {...args}>
+          <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
+          <CheckboxGroup.Prose>
+            <p>{text.contactHint}</p>
+          </CheckboxGroup.Prose>
+          <Field.Root>
+            <Checkbox value="email" />
+            <Field.Label>{text.contactEmail}</Field.Label>
+            <Field.HelpText>{text.contactEmailHint}</Field.HelpText>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="text" />
+            <Field.Label>{text.contactText}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="letter" />
+            <Field.Label>{text.contactLetter}</Field.Label>
+            <Field.HelpText>{text.contactLetterHint}</Field.HelpText>
+          </Field.Root>
+          <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
+        </CheckboxGroup.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {
@@ -403,65 +416,67 @@ export const PlainForm: Story = {
 // Every state of the group in one column: checked, invalid and disabled. The RTL and ForcedColors
 // stories render it, so a reader of either sees the real parts.
 const renderGroupStates: NonNullable<Story['render']> = (_args, { globals }) => {
-  const { text, lang } = choiceTextsFor(localeOf(globals))
+  const { text, isFallback } = choiceTextsFor(localeOf(globals))
   return (
-    <div className="kv-story-form" lang={lang}>
-      <CheckboxGroup.Root name="contact" defaultValue={['email', 'letter']}>
-        <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
-        <CheckboxGroup.Prose>
-          <p>{text.contactHint}</p>
-        </CheckboxGroup.Prose>
-        <Field.Root>
-          <Checkbox value="email" />
-          <Field.Label>{text.contactEmail}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="text" />
-          <Field.Label>{text.contactText}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="letter" />
-          <Field.Label>{text.contactLetter}</Field.Label>
-        </Field.Root>
-      </CheckboxGroup.Root>
-      <CheckboxGroup.Root name="invalid" invalid defaultValue={['text']}>
-        <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
-        <CheckboxGroup.Prose>
-          <p>{text.contactHint}</p>
-        </CheckboxGroup.Prose>
-        <Field.Root>
-          <Checkbox value="email" />
-          <Field.Label>{text.contactEmail}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="text" />
-          <Field.Label>{text.contactText}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="letter" />
-          <Field.Label>{text.contactLetter}</Field.Label>
-        </Field.Root>
-        <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
-      </CheckboxGroup.Root>
-      <CheckboxGroup.Root name="disabled" disabled defaultValue={['email']}>
-        <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
-        <CheckboxGroup.Prose>
-          <p>{text.contactHint}</p>
-        </CheckboxGroup.Prose>
-        <Field.Root>
-          <Checkbox value="email" />
-          <Field.Label>{text.contactEmail}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="text" />
-          <Field.Label>{text.contactText}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="letter" />
-          <Field.Label>{text.contactLetter}</Field.Label>
-        </Field.Root>
-      </CheckboxGroup.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <CheckboxGroup.Root name="contact" defaultValue={['email', 'letter']}>
+          <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
+          <CheckboxGroup.Prose>
+            <p>{text.contactHint}</p>
+          </CheckboxGroup.Prose>
+          <Field.Root>
+            <Checkbox value="email" />
+            <Field.Label>{text.contactEmail}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="text" />
+            <Field.Label>{text.contactText}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="letter" />
+            <Field.Label>{text.contactLetter}</Field.Label>
+          </Field.Root>
+        </CheckboxGroup.Root>
+        <CheckboxGroup.Root name="invalid" invalid defaultValue={['text']}>
+          <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
+          <CheckboxGroup.Prose>
+            <p>{text.contactHint}</p>
+          </CheckboxGroup.Prose>
+          <Field.Root>
+            <Checkbox value="email" />
+            <Field.Label>{text.contactEmail}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="text" />
+            <Field.Label>{text.contactText}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="letter" />
+            <Field.Label>{text.contactLetter}</Field.Label>
+          </Field.Root>
+          <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
+        </CheckboxGroup.Root>
+        <CheckboxGroup.Root name="disabled" disabled defaultValue={['email']}>
+          <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
+          <CheckboxGroup.Prose>
+            <p>{text.contactHint}</p>
+          </CheckboxGroup.Prose>
+          <Field.Root>
+            <Checkbox value="email" />
+            <Field.Label>{text.contactEmail}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="text" />
+            <Field.Label>{text.contactText}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="letter" />
+            <Field.Label>{text.contactLetter}</Field.Label>
+          </Field.Root>
+        </CheckboxGroup.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 

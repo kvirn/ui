@@ -30,14 +30,14 @@ describe('Badge', () => {
   test('renders a span, no role or ARIA, and passes attributes and the ref through', async () => {
     const ref = createRef<HTMLElement>()
     await render(
-      <Badge id="status" lang="sv" ref={ref} data-testid="badge">
+      <Badge id="status" ref={ref} data-testid="badge">
         Beviljad
       </Badge>,
     )
     const element = page.getByTestId('badge').element()
     expect(element.tagName).toBe('SPAN')
     expect(element.textContent).toBe('Beviljad')
-    expect(element.getAttributeNames().sort()).toEqual(['class', 'data-testid', 'id', 'lang'])
+    expect(element.getAttributeNames().sort()).toEqual(['class', 'data-testid', 'id'])
     expect(ref.current).toBe(element)
   })
 

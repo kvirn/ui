@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import {
   Button,
   Checkbox,
@@ -89,7 +90,7 @@ export interface PermitFormProps {
  */
 export function PermitForm({ locale, errors = false, showSubmits = false }: PermitFormProps) {
   const permit = permitTextsFor(locale)
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const { text: choice } = choiceTextsFor(locale)
   const { text: date } = dateTextsFor(locale)
   // The date's example is written in the order the boxes are in.
@@ -99,120 +100,121 @@ export function PermitForm({ locale, errors = false, showSubmits = false }: Perm
   const durationName = `duration-${useId()}`
   const [submits, setSubmits] = useState(0)
   return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        setSubmits((count) => count + 1)
-      }}
-    >
-      <Heading as="h1">{permit.heading}</Heading>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form
+        className="kv-story-form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          setSubmits((count) => count + 1)
+        }}
+      >
+        <Heading as="h1">{permit.heading}</Heading>
 
-      <Field.Root required invalid={errors}>
-        <Field.Label>{text.name}</Field.Label>
-        <TextInput name="name" autoComplete="name" />
-        <Field.ErrorMessage>{text.nameError}</Field.ErrorMessage>
-      </Field.Root>
-
-      <Fieldset.Root group required invalid={errors}>
-        <Fieldset.Legend>{date.legend}</Fieldset.Legend>
-        <DateInput.Root
-          name="birth"
-          autoComplete="bday"
-          invalidParts={errors ? ['year'] : undefined}
-        />
-        <Fieldset.HelpText>
-          {order[0] === 'year' ? date.hintYearFirst : date.hintDayFirst}
-        </Fieldset.HelpText>
-        <Fieldset.ErrorMessage>{date.errorYear}</Fieldset.ErrorMessage>
-      </Fieldset.Root>
-
-      <Field.Root required>
-        <Field.Label>{text.registration}</Field.Label>
-        <Field.Prose>
-          <p>{text.registrationWhere}</p>
-        </Field.Prose>
-        <TextInput
-          name="registration"
-          autoCapitalize="characters"
-          autoComplete="off"
-          spellCheck={false}
-          className="kv-input--width-10"
-        />
-        <Field.HelpText>{text.registrationHint}</Field.HelpText>
-      </Field.Root>
-
-      <Field.Root required>
-        <Field.Label>{text.email}</Field.Label>
-        <Field.Prose>
-          <p>{text.emailHint}</p>
-        </Field.Prose>
-        <TextInput name="email" type="email" autoComplete="email" spellCheck={false} />
-      </Field.Root>
-
-      <Field.Root>
-        <Field.Label>{text.phone}</Field.Label>
-        <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
-      </Field.Root>
-
-      <RadioGroup.Root name={durationName} required invalid={errors}>
-        <RadioGroup.Legend>{choice.durationLegend}</RadioGroup.Legend>
-        <RadioGroup.Prose>
-          <p>{choice.durationHint}</p>
-        </RadioGroup.Prose>
-        <Field.Root>
-          <RadioGroup.Radio value="1" />
-          <Field.Label>{choice.duration1}</Field.Label>
+        <Field.Root required invalid={errors}>
+          <Field.Label>{text.name}</Field.Label>
+          <TextInput name="name" autoComplete="name" />
+          <Field.ErrorMessage>{text.nameError}</Field.ErrorMessage>
         </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="6" />
-          <Field.Label>{choice.duration6}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="12" />
-          <Field.Label>{choice.duration12}</Field.Label>
-          <Field.HelpText>{choice.duration12Hint}</Field.HelpText>
-        </Field.Root>
-        <RadioGroup.ErrorMessage>{choice.durationError}</RadioGroup.ErrorMessage>
-      </RadioGroup.Root>
 
-      <CheckboxGroup.Root name="contact" required>
-        <CheckboxGroup.Legend>{choice.contactLegend}</CheckboxGroup.Legend>
-        <CheckboxGroup.Prose>
-          <p>{choice.contactHint}</p>
-        </CheckboxGroup.Prose>
-        <Field.Root>
-          <Checkbox value="email" />
-          <Field.Label>{choice.contactEmail}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="text" />
-          <Field.Label>{choice.contactText}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <Checkbox value="letter" />
-          <Field.Label>{choice.contactLetter}</Field.Label>
-        </Field.Root>
-      </CheckboxGroup.Root>
+        <Fieldset.Root group required invalid={errors}>
+          <Fieldset.Legend>{date.legend}</Fieldset.Legend>
+          <DateInput.Root
+            name="birth"
+            autoComplete="bday"
+            invalidParts={errors ? ['year'] : undefined}
+          />
+          <Fieldset.HelpText>
+            {order[0] === 'year' ? date.hintYearFirst : date.hintDayFirst}
+          </Fieldset.HelpText>
+          <Fieldset.ErrorMessage>{date.errorYear}</Fieldset.ErrorMessage>
+        </Fieldset.Root>
 
-      <Field.Root required invalid={errors}>
-        <Checkbox name="declaration" />
-        <Field.Label>{choice.declaration}</Field.Label>
-        <Field.ErrorMessage>{choice.declarationError}</Field.ErrorMessage>
-      </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.registration}</Field.Label>
+          <Field.Prose>
+            <p>{text.registrationWhere}</p>
+          </Field.Prose>
+          <TextInput
+            name="registration"
+            autoCapitalize="characters"
+            autoComplete="off"
+            spellCheck={false}
+            className="kv-input--width-10"
+          />
+          <Field.HelpText>{text.registrationHint}</Field.HelpText>
+        </Field.Root>
 
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {permit.submit}
-        </Button>
-      </div>
-      {showSubmits ? (
-        <p className="kv-story-form-output" data-testid="submits">
-          {permit.submitted}: {submits}
-        </p>
-      ) : null}
-    </form>
+        <Field.Root required>
+          <Field.Label>{text.email}</Field.Label>
+          <Field.Prose>
+            <p>{text.emailHint}</p>
+          </Field.Prose>
+          <TextInput name="email" type="email" autoComplete="email" spellCheck={false} />
+        </Field.Root>
+
+        <Field.Root>
+          <Field.Label>{text.phone}</Field.Label>
+          <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
+        </Field.Root>
+
+        <RadioGroup.Root name={durationName} required invalid={errors}>
+          <RadioGroup.Legend>{choice.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{choice.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{choice.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{choice.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{choice.duration12}</Field.Label>
+            <Field.HelpText>{choice.duration12Hint}</Field.HelpText>
+          </Field.Root>
+          <RadioGroup.ErrorMessage>{choice.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+
+        <CheckboxGroup.Root name="contact" required>
+          <CheckboxGroup.Legend>{choice.contactLegend}</CheckboxGroup.Legend>
+          <CheckboxGroup.Prose>
+            <p>{choice.contactHint}</p>
+          </CheckboxGroup.Prose>
+          <Field.Root>
+            <Checkbox value="email" />
+            <Field.Label>{choice.contactEmail}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="text" />
+            <Field.Label>{choice.contactText}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <Checkbox value="letter" />
+            <Field.Label>{choice.contactLetter}</Field.Label>
+          </Field.Root>
+        </CheckboxGroup.Root>
+
+        <Field.Root required invalid={errors}>
+          <Checkbox name="declaration" />
+          <Field.Label>{choice.declaration}</Field.Label>
+          <Field.ErrorMessage>{choice.declarationError}</Field.ErrorMessage>
+        </Field.Root>
+
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {permit.submit}
+          </Button>
+        </div>
+        {showSubmits ? (
+          <p className="kv-story-form-output" data-testid="submits">
+            {permit.submitted}: {submits}
+          </p>
+        ) : null}
+      </form>
+    </InEnglishWhenFallback>
   )
 }

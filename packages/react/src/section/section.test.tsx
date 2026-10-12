@@ -110,15 +110,14 @@ describe('rendering', () => {
     await expect.element(page.getByRole('link', { name: 'Första länken' })).toHaveFocus()
   })
 
-  test('passes attributes through: id, lang and title on the consumer’s element', async () => {
+  test('passes attributes through: id and title on the consumer’s element', async () => {
     await render(
-      <Section data-testid="section" id="kontakt" lang="en" title="Section">
+      <Section data-testid="section" id="kontakt" title="Section">
         Contact us
       </Section>,
     )
     const section = page.getByTestId('section')
     await expect.element(section).toHaveAttribute('id', 'kontakt')
-    await expect.element(section).toHaveAttribute('lang', 'en')
     await expect.element(section).toHaveAttribute('title', 'Section')
   })
 

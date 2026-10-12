@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Field, InputGroup, NumberInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/number-input/number-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/number-input/number-input.md?raw'
@@ -153,13 +154,15 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.children}</Field.Label>
-        <NumberInput {...args} />
-        <Field.HelpText>{text.childrenHint}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.children}</Field.Label>
+          <NumberInput {...args} />
+          <Field.HelpText>{text.childrenHint}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   parameters: {
@@ -204,13 +207,15 @@ export const Default: Story = {
  */
 export const Keyboard: Story = {
   render: (_args, { globals }) => {
-    const { text, lang, rentExample } = textsFor(localeOf(globals))
+    const { text, isFallback, rentExample } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.rent}</Field.Label>
-        <NumberInput name="rent" decimals={2} grouping className="kv-input--width-10" />
-        <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.rent}</Field.Label>
+          <NumberInput name="rent" decimals={2} grouping className="kv-input--width-10" />
+          <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -221,13 +226,15 @@ export const Keyboard: Story = {
  */
 export const WholeNumber: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.children}</Field.Label>
-        <NumberInput name="children" min={0} max={12} className="kv-input--width-2" />
-        <Field.HelpText>{text.childrenHint}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.children}</Field.Label>
+          <NumberInput name="children" min={0} max={12} className="kv-input--width-2" />
+          <Field.HelpText>{text.childrenHint}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -245,13 +252,15 @@ export const WholeNumber: Story = {
  */
 export const Amount: Story = {
   render: (_args, { globals }) => {
-    const { text, lang, rentExample } = textsFor(localeOf(globals))
+    const { text, isFallback, rentExample } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.rent}</Field.Label>
-        <NumberInput name="rent" decimals={2} grouping min={0} className="kv-input--width-10" />
-        <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.rent}</Field.Label>
+          <NumberInput name="rent" decimals={2} grouping min={0} className="kv-input--width-10" />
+          <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -276,13 +285,15 @@ export const Amount: Story = {
  */
 export const WithoutMask: Story = {
   render: (_args, { globals }) => {
-    const { text, lang, rentExample } = textsFor(localeOf(globals))
+    const { text, isFallback, rentExample } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.rent}</Field.Label>
-        <NumberInput name="rent" mask={false} decimals={2} className="kv-input--width-10" />
-        <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.rent}</Field.Label>
+          <NumberInput name="rent" mask={false} decimals={2} className="kv-input--width-10" />
+          <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -302,16 +313,18 @@ export const WithoutMask: Story = {
  */
 export const AmountWithUnit: Story = {
   render: (_args, { globals }) => {
-    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.rentWithUnit}</Field.Label>
-        <InputGroup.Root>
-          <NumberInput name="rent" grouping className="kv-input--width-10" />
-          <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
-        </InputGroup.Root>
-        <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.rentWithUnit}</Field.Label>
+          <InputGroup.Root>
+            <NumberInput name="rent" grouping className="kv-input--width-10" />
+            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+          <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -330,13 +343,15 @@ export const AmountWithUnit: Story = {
  */
 export const Negative: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.balance}</Field.Label>
-        <NumberInput name="balance" allowNegative className="kv-input--width-10" />
-        <Field.HelpText>{text.balanceHint('-8450')}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.balance}</Field.Label>
+          <NumberInput name="balance" allowNegative className="kv-input--width-10" />
+          <Field.HelpText>{text.balanceHint('-8450')}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -356,20 +371,22 @@ export const Negative: Story = {
  */
 export const OutOfRange: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required invalid lang={lang}>
-        <Field.Label>{text.children}</Field.Label>
-        <NumberInput
-          name="children"
-          min={0}
-          max={12}
-          defaultValue="25"
-          className="kv-input--width-2"
-        />
-        <Field.HelpText>{text.childrenHint}</Field.HelpText>
-        <Field.ErrorMessage>{text.childrenRangeError}</Field.ErrorMessage>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required invalid>
+          <Field.Label>{text.children}</Field.Label>
+          <NumberInput
+            name="children"
+            min={0}
+            max={12}
+            defaultValue="25"
+            className="kv-input--width-2"
+          />
+          <Field.HelpText>{text.childrenHint}</Field.HelpText>
+          <Field.ErrorMessage>{text.childrenRangeError}</Field.ErrorMessage>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -396,19 +413,21 @@ export const OutOfRange: Story = {
  */
 export const NativeNumberType: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <div lang={lang}>
-        <label className="kv-field-label" htmlFor="native-case-number">
-          {text.caseNumber}
-        </label>
-        <input
-          id="native-case-number"
-          className="kv-input kv-input--width-6"
-          type="number"
-          name="caseNumber"
-        />
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div>
+          <label className="kv-field-label" htmlFor="native-case-number">
+            {text.caseNumber}
+          </label>
+          <input
+            id="native-case-number"
+            className="kv-input kv-input--width-6"
+            type="number"
+            name="caseNumber"
+          />
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -425,20 +444,22 @@ export const NativeNumberType: Story = {
 export const Finnish: Story = {
   globals: { locale: 'fi' },
   render: (_args, { globals }) => {
-    const { text, lang, rentExample } = textsFor(localeOf(globals))
+    const { text, isFallback, rentExample } = textsFor(localeOf(globals))
     return (
-      <div className="kv-story-narrow">
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.children}</Field.Label>
-          <NumberInput name="children" min={0} max={12} className="kv-input--width-2" />
-          <Field.HelpText>{text.childrenHint}</Field.HelpText>
-        </Field.Root>
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.rent}</Field.Label>
-          <NumberInput name="rent" decimals={2} grouping className="kv-input--width-10" />
-          <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
-        </Field.Root>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div className="kv-story-narrow">
+          <Field.Root required>
+            <Field.Label>{text.children}</Field.Label>
+            <NumberInput name="children" min={0} max={12} className="kv-input--width-2" />
+            <Field.HelpText>{text.childrenHint}</Field.HelpText>
+          </Field.Root>
+          <Field.Root required>
+            <Field.Label>{text.rent}</Field.Label>
+            <NumberInput name="rent" decimals={2} grouping className="kv-input--width-10" />
+            <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
+          </Field.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, canvasElement }) => {
@@ -457,21 +478,23 @@ export const Finnish: Story = {
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   render: (_args, { globals }) => {
-    const { text, lang, rentExample } = textsFor(localeOf(globals))
+    const { text, isFallback, rentExample } = textsFor(localeOf(globals))
     return (
-      <>
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.rent}</Field.Label>
-          <NumberInput name="rent" decimals={2} grouping className="kv-input--width-10" />
-          <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
-        </Field.Root>
-        <Field.Root required invalid lang={lang}>
-          <Field.Label>{text.children}</Field.Label>
-          <NumberInput name="children" defaultValue="25" className="kv-input--width-2" />
-          <Field.HelpText>{text.childrenHint}</Field.HelpText>
-          <Field.ErrorMessage>{text.childrenRangeError}</Field.ErrorMessage>
-        </Field.Root>
-      </>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <>
+          <Field.Root required>
+            <Field.Label>{text.rent}</Field.Label>
+            <NumberInput name="rent" decimals={2} grouping className="kv-input--width-10" />
+            <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
+          </Field.Root>
+          <Field.Root required invalid>
+            <Field.Label>{text.children}</Field.Label>
+            <NumberInput name="children" defaultValue="25" className="kv-input--width-2" />
+            <Field.HelpText>{text.childrenHint}</Field.HelpText>
+            <Field.ErrorMessage>{text.childrenRangeError}</Field.ErrorMessage>
+          </Field.Root>
+        </>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -480,21 +503,23 @@ export const RTL: Story = {
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   render: (_args, { globals }) => {
-    const { text, lang, rentExample } = textsFor(localeOf(globals))
+    const { text, isFallback, rentExample } = textsFor(localeOf(globals))
     return (
-      <>
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.rent}</Field.Label>
-          <NumberInput name="rent" decimals={2} grouping className="kv-input--width-10" />
-          <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
-        </Field.Root>
-        <Field.Root required invalid lang={lang}>
-          <Field.Label>{text.children}</Field.Label>
-          <NumberInput name="children" defaultValue="25" className="kv-input--width-2" />
-          <Field.HelpText>{text.childrenHint}</Field.HelpText>
-          <Field.ErrorMessage>{text.childrenRangeError}</Field.ErrorMessage>
-        </Field.Root>
-      </>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <>
+          <Field.Root required>
+            <Field.Label>{text.rent}</Field.Label>
+            <NumberInput name="rent" decimals={2} grouping className="kv-input--width-10" />
+            <Field.HelpText>{text.rentHint(rentExample)}</Field.HelpText>
+          </Field.Root>
+          <Field.Root required invalid>
+            <Field.Label>{text.children}</Field.Label>
+            <NumberInput name="children" defaultValue="25" className="kv-input--width-2" />
+            <Field.HelpText>{text.childrenHint}</Field.HelpText>
+            <Field.ErrorMessage>{text.childrenRangeError}</Field.ErrorMessage>
+          </Field.Root>
+        </>
+      </InEnglishWhenFallback>
     )
   },
 }

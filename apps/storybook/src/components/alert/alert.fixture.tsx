@@ -9,6 +9,7 @@ import type { UseFormatResult } from '@kvirn-ui/react'
 import type { AlertVariant } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 import { providerLocaleOf } from '../form/form.fixture.tsx'
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
@@ -429,18 +430,18 @@ export const localeOf = (globals: Record<string, unknown>): AlertFixtureLocale =
 interface ResolvedTexts {
   text: AlertTexts
   /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
-  lang: 'en' | undefined
+  isFallback: boolean
 }
 
 /** The fixture text in a locale. */
 export function textsFor(locale: AlertFixtureLocale): ResolvedTexts {
   const text = alertTexts[locale]
   if (text === undefined) {
-    return { text: en, lang: 'en' }
+    return { text: en, isFallback: true }
   }
   return {
     text,
-    lang: undefined,
+    isFallback: false,
   }
 }
 
@@ -459,8 +460,7 @@ const messagesFor = (locale: AlertFixtureLocale): KvirnMessages =>
 /**
  * The status words ("Klart:", "Varning:") follow the locale toolbar through a provider, like an
  * app's would. The provider also renders the live regions that `announce` needs. Where the
- * fixture shows English, the words are English too, so a `lang="en"` element is all
- * English.
+ * fixture shows English, the words are English too.
  */
 export const withAlertLocale: Decorator = (Story, { globals }) => {
   const locale = localeOf(globals)
@@ -473,13 +473,15 @@ export const withAlertLocale: Decorator = (Story, { globals }) => {
 
 /**
  * The layout of every story: one column that can shrink to 320px, with room between examples, and
- * the `lang` of the texts where the locale has none of its own. It is a
+ * the English scope where the locale has no texts of its own. It is a
  * decorator so that the code a story shows is the alert and nothing around it.
  */
 export const withAlertColumn: Decorator = (Story, { globals }) => (
-  <div className="kv-story-alert-column" lang={textsFor(localeOf(globals)).lang}>
-    <Story />
-  </div>
+  <InEnglishWhenFallback isFallback={textsFor(localeOf(globals)).isFallback}>
+    <div className="kv-story-alert-column">
+      <Story />
+    </div>
+  </InEnglishWhenFallback>
 )
 
 // Fixed instants, so stories and tests are deterministic. Formatted in UTC.

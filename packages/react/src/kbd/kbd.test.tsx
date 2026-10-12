@@ -29,7 +29,7 @@ describe('Kbd', () => {
     await render(
       <p>
         Tryck på{' '}
-        <Kbd id="tab" lang="en" ref={ref} data-testid="key">
+        <Kbd id="tab" ref={ref} data-testid="key">
           Tab
         </Kbd>
         .
@@ -38,7 +38,7 @@ describe('Kbd', () => {
     const element = page.getByTestId('key').element()
     expect(element.tagName).toBe('KBD')
     expect(element.textContent).toBe('Tab')
-    expect(element.getAttributeNames().sort()).toEqual(['class', 'data-testid', 'id', 'lang'])
+    expect(element.getAttributeNames().sort()).toEqual(['class', 'data-testid', 'id'])
     expect(ref.current).toBe(element)
   })
 
@@ -108,7 +108,7 @@ describe('Kbd', () => {
     const { container } = await render(
       <main>
         <p>
-          Du kan flytta mellan fälten i formuläret med <Kbd lang="en">Tab</Kbd>.
+          Du kan flytta mellan fälten i formuläret med <Kbd>Tab</Kbd>.
         </p>
       </main>,
     )

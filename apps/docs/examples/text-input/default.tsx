@@ -1,13 +1,16 @@
 'use client'
 import { Field, TextInput } from '@kvirn-ui/react'
 import { useTextInputTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function DefaultTextInput() {
-  const { texts, textLang } = useTextInputTexts()
+  const { texts, isFallback } = useTextInputTexts()
   return (
-    <Field.Root required lang={textLang}>
-      <Field.Label>{texts.fullName}</Field.Label>
-      <TextInput name="name" autoComplete="name" />
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{texts.fullName}</Field.Label>
+        <TextInput name="name" autoComplete="name" />
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }

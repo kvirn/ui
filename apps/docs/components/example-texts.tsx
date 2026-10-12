@@ -67,19 +67,19 @@ export const exampleTexts: Partial<Record<LocaleCode, ExampleTexts>> = { en }
 
 export interface ExampleTextsResult {
   texts: ExampleTexts
-  /** `'en'` when the texts fell back to English: put it on every element that shows them. */
-  textLang: string | undefined
+  /** True when the texts fell back to English: wrap the example in `InEnglishWhenFallback`. */
+  isFallback: boolean
 }
 
 const isLocaleCode = (language: string): language is LocaleCode => language in exampleTexts
 
-/** The example texts for a locale, falling back to English with `lang="en"`. */
+/** The example texts for a locale, falling back to English. */
 export function getExampleTexts(locale: string): ExampleTextsResult {
   const language = getLanguage(locale)
   const texts = isLocaleCode(language) ? exampleTexts[language] : undefined
   return texts === undefined
-    ? { texts: en, textLang: language === 'en' ? undefined : 'en' }
-    : { texts, textLang: undefined }
+    ? { texts: en, isFallback: language !== 'en' }
+    : { texts, isFallback: false }
 }
 
 /** The example texts for the nearest provider's locale. */

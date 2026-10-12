@@ -121,7 +121,7 @@ describe('rendering', () => {
         sv,
         <Fieldset.Root group>
           <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
-          <DateInput.Root ref={rootRef} className="egen" data-testid="row" lang="sv">
+          <DateInput.Root ref={rootRef} className="egen" data-testid="row">
             <DateInput.Day ref={dayRef} className="egen-dag" data-egen="" />
             <DateInput.Month data-egen="false" />
             <DateInput.Year />

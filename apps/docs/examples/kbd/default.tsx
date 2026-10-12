@@ -1,12 +1,15 @@
 'use client'
 import { Kbd } from '@kvirn-ui/react'
 import { useKbdTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function DefaultKbd() {
-  const { texts, textLang } = useKbdTexts()
+  const { texts, isFallback } = useKbdTexts()
   return (
-    <p lang={textLang}>
-      {texts.moveBetweenFields} <Kbd lang="en">Tab</Kbd>.
-    </p>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <p>
+        {texts.moveBetweenFields} <Kbd>Tab</Kbd>.
+      </p>
+    </InEnglishWhenFallback>
   )
 }

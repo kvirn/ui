@@ -99,7 +99,7 @@ Your part:
 - **Say what's wrong and how to fix it,** in the field's own words, without blaming the user: "Ange ditt fullständiga namn", not "Ogiltigt värde". Plain text: the icon, the prefix and the text lay out as one line. Set `invalid` and render the Field.ErrorMessage together.
 - **Validate on submit, not on every key,** so content doesn't move under a magnifier. Keep what the user typed.
 - **`controlId`** gives the control the id you need to link to it, for example from an error summary. Don't pass an `id` to a control inside a Field: the Field's id wins, and a dev warning says so.
-- **`lang`** on a label whose text is in another language (3.1.2).
+- **A label whose text is in another language** goes in a nested `KvirnProvider` with `useLocale().localeProps` on your own element (3.1.2).
 - **Messages.** `field.optional` and `field.errorPrefix` come from `@kvirn-ui/i18n` in five languages, and can be overridden per provider and per instance: `<Field.Root messages={{ optional: '(frivilligt)' }}>`.
 - **A checkbox or radio** must be a direct child of `Field.Root` (later phase): the default theme finds its layout from `.kv-field:has(> .kv-checkbox, > .kv-radio)`.
 

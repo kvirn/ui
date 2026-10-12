@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { AlertDialog, Button, useFormat } from '@kvirn-ui/react'
 import type { AlertDialogRootProps } from '@kvirn-ui/react'
 import { useEffect, useRef, useState } from 'react'
@@ -6,7 +7,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 // Fixtures for Components/AlertDialog: each function is one example, and the story's "Show code"
 // prints it (`showSource`), so it reads the way an adopter writes it. The words are example content
 // (docs/design/dialog.md §4), not the component's strings: an AlertDialog has none. sv, fi and en
-// are written; the other locales show the English text, marked lang="en" (3.1.2).
+// are written; the other locales show the English text, in a nested English provider (3.1.2).
 
 interface AlertDialogTexts {
   draft: string
@@ -109,10 +110,10 @@ const alertDialogTexts: Partial<Record<FormLocale, AlertDialogTexts>> = {
   },
 }
 
-/** The fixture text in a locale, or English with `lang="en"` for the locales without text. */
+/** The fixture text in a locale, or English for the locales without text. */
 export function alertDialogTextsFor(locale: FormLocale) {
   const text = alertDialogTexts[locale]
-  return { text: text ?? textsEn, lang: text === undefined ? ('en' as const) : undefined }
+  return { text: text ?? textsEn, isFallback: text === undefined }
 }
 
 const timeoutSeconds = 120
@@ -137,37 +138,37 @@ export type DeleteDraftConfirmationProps = Omit<
  * `AlertDialog.Close`, so the dialog closes on its own: Escape does what Keep draft does.
  */
 export function DeleteDraftConfirmation({ locale, ...options }: DeleteDraftConfirmationProps) {
-  const { text, lang } = alertDialogTextsFor(locale)
+  const { text, isFallback } = alertDialogTextsFor(locale)
   const keepRef = useRef<HTMLButtonElement>(null)
   const [result, setResult] = useState<string | undefined>()
   return (
-    <>
-      <AlertDialog.Root {...options} initialFocusRef={keepRef}>
-        <AlertDialog.Trigger className="kv-button">{text.deleteTrigger}</AlertDialog.Trigger>
-        <AlertDialog.Popup lang={lang}>
-          <AlertDialog.Title>{text.deleteTitle}</AlertDialog.Title>
-          <AlertDialog.Description>{text.deleteDescription}</AlertDialog.Description>
-          <AlertDialog.Actions>
-            <AlertDialog.Close
-              className="kv-button kv-button--danger"
-              onClick={() => setResult(text.deleted)}
-            >
-              {text.deleteConfirm}
-            </AlertDialog.Close>
-            <AlertDialog.Close
-              ref={keepRef}
-              className="kv-button"
-              onClick={() => setResult(text.kept)}
-            >
-              {text.deleteKeep}
-            </AlertDialog.Close>
-          </AlertDialog.Actions>
-        </AlertDialog.Popup>
-      </AlertDialog.Root>
-      <output lang={lang} data-testid="result">
-        {result}
-      </output>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <AlertDialog.Root {...options} initialFocusRef={keepRef}>
+          <AlertDialog.Trigger className="kv-button">{text.deleteTrigger}</AlertDialog.Trigger>
+          <AlertDialog.Popup>
+            <AlertDialog.Title>{text.deleteTitle}</AlertDialog.Title>
+            <AlertDialog.Description>{text.deleteDescription}</AlertDialog.Description>
+            <AlertDialog.Actions>
+              <AlertDialog.Close
+                className="kv-button kv-button--danger"
+                onClick={() => setResult(text.deleted)}
+              >
+                {text.deleteConfirm}
+              </AlertDialog.Close>
+              <AlertDialog.Close
+                ref={keepRef}
+                className="kv-button"
+                onClick={() => setResult(text.kept)}
+              >
+                {text.deleteKeep}
+              </AlertDialog.Close>
+            </AlertDialog.Actions>
+          </AlertDialog.Popup>
+        </AlertDialog.Root>
+        <output data-testid="result">{result}</output>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -179,7 +180,7 @@ export function DeleteDraftConfirmation({ locale, ...options }: DeleteDraftConfi
  * signed in" both stay signed in. Nothing is lost when the time runs out: the answers are saved.
  */
 export function SessionTimeoutWarning({ locale }: { locale: FormLocale }) {
-  const { text, lang } = alertDialogTextsFor(locale)
+  const { text, isFallback } = alertDialogTextsFor(locale)
   const format = useFormat()
   const stayRef = useRef<HTMLButtonElement>(null)
   const openerRef = useRef<HTMLButtonElement>(null)
@@ -208,59 +209,59 @@ export function SessionTimeoutWarning({ locale }: { locale: FormLocale }) {
   const duration = (seconds: number) =>
     seconds >= 60 ? text.minutes(seconds / 60) : text.seconds(seconds)
   return (
-    <>
-      <Button
-        ref={openerRef}
-        onClick={() => {
-          setExpiresAt(Date.now() + timeoutSeconds * 1000)
-          setSecondsLeft(timeoutSeconds)
-          setOutcome(undefined)
-          setOpen(true)
-        }}
-      >
-        {text.timeoutOpen}
-      </Button>
-      <AlertDialog.Root
-        open={open}
-        onOpenChange={(nextOpen) => {
-          setOpen(nextOpen)
-          if (!nextOpen) {
-            setOutcome(text.stayed)
-          }
-        }}
-        initialFocusRef={stayRef}
-        finalFocusRef={openerRef}
-      >
-        <AlertDialog.Popup lang={lang}>
-          <AlertDialog.Title>{text.timeoutTitle}</AlertDialog.Title>
-          <AlertDialog.Description>
-            {text.timeoutDescription(
-              duration(timeoutSeconds),
-              format.date(expiresAt, { timeStyle: 'short' }),
-            )}
-          </AlertDialog.Description>
-          <AlertDialog.Body>
-            <output>{text.timeoutRemaining(duration(announced))}</output>
-          </AlertDialog.Body>
-          <AlertDialog.Actions>
-            <AlertDialog.Close ref={stayRef} className="kv-button kv-button--primary">
-              {text.timeoutStay}
-            </AlertDialog.Close>
-            <Button
-              onClick={() => {
-                setOpen(false)
-                setOutcome(text.signedOut)
-              }}
-            >
-              {text.timeoutSignOut}
-            </Button>
-          </AlertDialog.Actions>
-        </AlertDialog.Popup>
-      </AlertDialog.Root>
-      <output lang={lang} data-testid="outcome">
-        {outcome}
-      </output>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Button
+          ref={openerRef}
+          onClick={() => {
+            setExpiresAt(Date.now() + timeoutSeconds * 1000)
+            setSecondsLeft(timeoutSeconds)
+            setOutcome(undefined)
+            setOpen(true)
+          }}
+        >
+          {text.timeoutOpen}
+        </Button>
+        <AlertDialog.Root
+          open={open}
+          onOpenChange={(nextOpen) => {
+            setOpen(nextOpen)
+            if (!nextOpen) {
+              setOutcome(text.stayed)
+            }
+          }}
+          initialFocusRef={stayRef}
+          finalFocusRef={openerRef}
+        >
+          <AlertDialog.Popup>
+            <AlertDialog.Title>{text.timeoutTitle}</AlertDialog.Title>
+            <AlertDialog.Description>
+              {text.timeoutDescription(
+                duration(timeoutSeconds),
+                format.date(expiresAt, { timeStyle: 'short' }),
+              )}
+            </AlertDialog.Description>
+            <AlertDialog.Body>
+              <output>{text.timeoutRemaining(duration(announced))}</output>
+            </AlertDialog.Body>
+            <AlertDialog.Actions>
+              <AlertDialog.Close ref={stayRef} className="kv-button kv-button--primary">
+                {text.timeoutStay}
+              </AlertDialog.Close>
+              <Button
+                onClick={() => {
+                  setOpen(false)
+                  setOutcome(text.signedOut)
+                }}
+              >
+                {text.timeoutSignOut}
+              </Button>
+            </AlertDialog.Actions>
+          </AlertDialog.Popup>
+        </AlertDialog.Root>
+        <output data-testid="outcome">{outcome}</output>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -270,30 +271,32 @@ export function SessionTimeoutWarning({ locale }: { locale: FormLocale }) {
  * inside, and Escape.
  */
 export function KeyboardAlertDialog({ locale }: { locale: FormLocale }) {
-  const { text, lang } = alertDialogTextsFor(locale)
+  const { text, isFallback } = alertDialogTextsFor(locale)
   const keepRef = useRef<HTMLButtonElement>(null)
   return (
-    <>
-      <p data-testid="outside">{text.textOutside}</p>
-      <div className="kv-button-group">
-        <Button>{text.before}</Button>
-        <AlertDialog.Root initialFocusRef={keepRef}>
-          <AlertDialog.Trigger className="kv-button">{text.deleteTrigger}</AlertDialog.Trigger>
-          <AlertDialog.Popup lang={lang}>
-            <AlertDialog.Title>{text.deleteTitle}</AlertDialog.Title>
-            <AlertDialog.Description>{text.deleteDescription}</AlertDialog.Description>
-            <AlertDialog.Actions>
-              <AlertDialog.Close className="kv-button kv-button--danger">
-                {text.deleteConfirm}
-              </AlertDialog.Close>
-              <AlertDialog.Close ref={keepRef} className="kv-button">
-                {text.deleteKeep}
-              </AlertDialog.Close>
-            </AlertDialog.Actions>
-          </AlertDialog.Popup>
-        </AlertDialog.Root>
-        <Button>{text.after}</Button>
-      </div>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <p data-testid="outside">{text.textOutside}</p>
+        <div className="kv-button-group">
+          <Button>{text.before}</Button>
+          <AlertDialog.Root initialFocusRef={keepRef}>
+            <AlertDialog.Trigger className="kv-button">{text.deleteTrigger}</AlertDialog.Trigger>
+            <AlertDialog.Popup>
+              <AlertDialog.Title>{text.deleteTitle}</AlertDialog.Title>
+              <AlertDialog.Description>{text.deleteDescription}</AlertDialog.Description>
+              <AlertDialog.Actions>
+                <AlertDialog.Close className="kv-button kv-button--danger">
+                  {text.deleteConfirm}
+                </AlertDialog.Close>
+                <AlertDialog.Close ref={keepRef} className="kv-button">
+                  {text.deleteKeep}
+                </AlertDialog.Close>
+              </AlertDialog.Actions>
+            </AlertDialog.Popup>
+          </AlertDialog.Root>
+          <Button>{text.after}</Button>
+        </div>
+      </>
+    </InEnglishWhenFallback>
   )
 }

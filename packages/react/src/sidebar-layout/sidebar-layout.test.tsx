@@ -105,12 +105,11 @@ describe('rendering', () => {
   test.each(parts)('SidebarLayout.%s passes attributes through', async (_name, Part) => {
     await render(
       <SidebarLayout.Root>
-        <Part data-testid="part" id="del" lang="fi" aria-label="Osa" title="Otsikko" />
+        <Part data-testid="part" id="del" aria-label="Osa" title="Otsikko" />
       </SidebarLayout.Root>,
     )
     const part = page.getByTestId('part')
     await expect.element(part).toHaveAttribute('id', 'del')
-    await expect.element(part).toHaveAttribute('lang', 'fi')
     await expect.element(part).toHaveAttribute('aria-label', 'Osa')
     await expect.element(part).toHaveAttribute('title', 'Otsikko')
   })

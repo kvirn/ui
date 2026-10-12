@@ -1,16 +1,19 @@
 'use client'
 import { Link, Stack } from '@kvirn-ui/react'
 import { useStackTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function StackAsList() {
-  const { texts, textLang } = useStackTexts()
+  const { texts, isFallback } = useStackTexts()
   return (
-    <Stack className="kv-stack--gap-4" as="ul" aria-label={texts.list.label} lang={textLang}>
-      {texts.list.items.map((item) => (
-        <li key={item}>
-          <Link href="#">{item}</Link>
-        </li>
-      ))}
-    </Stack>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Stack className="kv-stack--gap-4" as="ul" aria-label={texts.list.label}>
+        {texts.list.items.map((item) => (
+          <li key={item}>
+            <Link href="#">{item}</Link>
+          </li>
+        ))}
+      </Stack>
+    </InEnglishWhenFallback>
   )
 }

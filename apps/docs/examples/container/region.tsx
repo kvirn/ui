@@ -2,16 +2,19 @@
 import { Container, Heading } from '@kvirn-ui/react'
 import { useId } from 'react'
 import { useContainerTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function NamedRegion() {
-  const { texts, textLang } = useContainerTexts()
+  const { texts, isFallback } = useContainerTexts()
   const headingId = useId()
   return (
-    <Container size="reading" as="section" aria-labelledby={headingId} lang={textLang}>
-      <Heading as="h2" id={headingId}>
-        {texts.region.title}
-      </Heading>
-      <p>{texts.region.text}</p>
-    </Container>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Container size="reading" as="section" aria-labelledby={headingId}>
+        <Heading as="h2" id={headingId}>
+          {texts.region.title}
+        </Heading>
+        <p>{texts.region.text}</p>
+      </Container>
+    </InEnglishWhenFallback>
   )
 }

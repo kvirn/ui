@@ -66,7 +66,7 @@ The label key is `copyButton.label`. Nothing is announced on render. Pressing th
 - Don't copy a secret to the clipboard.
 - Copy needs a secure context (HTTPS or localhost) and a user activation. Elsewhere it fails, and the text is selected instead.
 - The theme-less result cue is yours: with `status={false}` or `useCopyButton`, draw words (not colour alone) from `data-status` after the button. Never put it in the name.
-- `lang` on a text in another language (3.1.2).
+- A text in another language goes in a nested `KvirnProvider` with `useLocale().localeProps` on your own element (3.1.2).
 
 ## Visual / modes
 

@@ -1,4 +1,6 @@
+import { fi } from '@kvirn-ui/i18n/fi'
 import { KvirnProvider, Link, Navigation } from '@kvirn-ui/react'
+import { InLanguage } from '../../fixture-language.tsx'
 import type { ReactNode } from 'react'
 // Package-internal fixture, shared with link.test.tsx. It stands in for a router: not part of
 // the public API.
@@ -259,24 +261,26 @@ export function UnlistedPageNavigation() {
  */
 export function FinnishHorizontalNavigation() {
   return (
-    <Navigation.Root label="Päävalikko" lang="fi" className="kv-navigation--horizontal">
-      <Navigation.List>
-        <Navigation.Item>
-          <Link.Root href="#alku">Alku</Link.Root>
-        </Navigation.Item>
-        <Navigation.Item>
-          <Link.Root href="#rakentaminen">Rakentaminen ja asuminen</Link.Root>
-        </Navigation.Item>
-        <Navigation.Item>
-          <Link.Root href="#rakennuslupa" current="page">
-            Rakennus- ja toimenpidelupahakemuksen liitteet
-          </Link.Root>
-        </Navigation.Item>
-        <Navigation.Item>
-          <Link.Root href="#liikenne">Liikenne ja kadut</Link.Root>
-        </Navigation.Item>
-      </Navigation.List>
-    </Navigation.Root>
+    <InLanguage locale="fi" messages={fi}>
+      <Navigation.Root label="Päävalikko" className="kv-navigation--horizontal">
+        <Navigation.List>
+          <Navigation.Item>
+            <Link.Root href="#alku">Alku</Link.Root>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Link.Root href="#rakentaminen">Rakentaminen ja asuminen</Link.Root>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Link.Root href="#rakennuslupa" current="page">
+              Rakennus- ja toimenpidelupahakemuksen liitteet
+            </Link.Root>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Link.Root href="#liikenne">Liikenne ja kadut</Link.Root>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
+    </InLanguage>
   )
 }
 

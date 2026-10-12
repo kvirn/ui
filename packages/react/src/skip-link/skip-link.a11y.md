@@ -54,7 +54,7 @@ Moving focus to the target reads its name or content. The only string is the lin
 
 - **Put it first in the body,** before the header and any other link, and give the main content the id (`<main id="main">`).
 - **A missing target warns** in development: `skip-link-target-missing:<id>`.
-- **Language.** A custom label is your own string: set `lang` if it differs from the page (3.1.2).
+- **Language.** A custom label is your own string: put it in a nested `KvirnProvider` with `useLocale().localeProps` on your own element if it differs from the page (3.1.2).
 - **Do not hide the target's focus ring.** The target shows the token ring under `:focus-visible` only (the theme's `:where([tabindex='-1']:focus-visible)` rule): no `outline: none` on `[tabindex="-1"]`.
 - **Do not put it in a sticky layer that covers other content** (2.4.11): it stays in the flow.
 
@@ -68,7 +68,6 @@ Headless: no CSS. With `@kvirn-ui/theme/theme.css`, the link is clipped to a 1px
 - 2.4.3 Focus Order: first stop; the next Tab continues in the target.
 - 2.4.7 Focus Visible, 2.4.11 Focus Not Obscured: visible and in flow while focused (`Default` story).
 - 2.5.8 Target Size, 1.4.10 Reflow, 1.4.3 and 1.4.11 Contrast: the theme, by `theme:check`.
-- 3.1.2 Language of Parts: the consumer's `lang` on a custom label.
 - 4.1.2 Name, Role, Value: `link` named by its text (`the name is the default label…`, axe tests).
 
 ## AT test record

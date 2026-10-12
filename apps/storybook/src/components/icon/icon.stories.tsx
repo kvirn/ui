@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
@@ -100,7 +101,7 @@ const meta = {
   decorators: [
     (Story, { globals }) => {
       const locale = localeOf(globals)
-      const catalogLocale = textsFor(locale).lang === 'en' ? 'en' : locale
+      const catalogLocale = textsFor(locale).isFallback ? 'en' : locale
       return (
         <KvirnProvider
           locale={providerLocaleOf(catalogLocale)}
@@ -140,21 +141,25 @@ export const Default: Story = {
  */
 export const BuiltInSet: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <ul className="kv-story-icon-gallery" lang={lang}>
-        {builtInIconNames.map((name) => (
-          <li key={name} className="kv-story-icon-cell" data-testid={iconNamed(name)}>
-            <span className="kv-story-icon-row">
-              <Icon name={name} size="16" />
-              <Icon name={name} size="20" />
-              <Icon name={name} size="24" />
-            </span>
-            <code>{name}</code>
-            <span>{isMirroredIcon(name) ? text.gallery.mirrors : text.gallery.doesNotMirror}</span>
-          </li>
-        ))}
-      </ul>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <ul className="kv-story-icon-gallery">
+          {builtInIconNames.map((name) => (
+            <li key={name} className="kv-story-icon-cell" data-testid={iconNamed(name)}>
+              <span className="kv-story-icon-row">
+                <Icon name={name} size="16" />
+                <Icon name={name} size="20" />
+                <Icon name={name} size="24" />
+              </span>
+              <code>{name}</code>
+              <span>
+                {isMirroredIcon(name) ? text.gallery.mirrors : text.gallery.doesNotMirror}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {
@@ -194,24 +199,26 @@ const textStyles = [
 const iconSizes = ['16', '20', '24', '32'] as const
 
 function sizesBlock(locale: IconFixtureLocale, testId: string) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const format = useFormat()
   return (
-    <div className="kv-story-icon-sizes" data-testid={testId} lang={lang}>
-      {textStyles.map((style) => (
-        <section key={style.id} aria-label={style.id}>
-          <p>
-            <code>{style.id}</code>
-          </p>
-          {iconSizes.map((size) => (
-            <p key={size} className={`kv-story-text-guide ${style.className}`}>
-              <code>{size}</code> {text.text.collection(collectionDate(format))}{' '}
-              <Icon name="calendar" size={size} />
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-icon-sizes" data-testid={testId}>
+        {textStyles.map((style) => (
+          <section key={style.id} aria-label={style.id}>
+            <p>
+              <code>{style.id}</code>
             </p>
-          ))}
-        </section>
-      ))}
-    </div>
+            {iconSizes.map((size) => (
+              <p key={size} className={`kv-story-text-guide ${style.className}`}>
+                <code>{size}</code> {text.text.collection(collectionDate(format))}{' '}
+                <Icon name="calendar" size={size} />
+              </p>
+            ))}
+          </section>
+        ))}
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -398,24 +405,26 @@ export const Colors: Story = {
  */
 export const DecorativeAndMeaningful: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     const format = useFormat()
     return (
-      <div className="kv-story-columns" lang={lang}>
-        <div className="kv-story-panel">
-          <p>
-            <Icon name="calendar" /> {text.text.collection(collectionDate(format))}
-          </p>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div className="kv-story-columns">
+          <div className="kv-story-panel">
+            <p>
+              <Icon name="calendar" /> {text.text.collection(collectionDate(format))}
+            </p>
+          </div>
+          <div className="kv-story-panel">
+            <p>
+              <Icon as={MunicipalityMark} size="48" label={text.label.logo} />
+            </p>
+            <p>
+              <output data-testid="accessible-name" />
+            </p>
+          </div>
         </div>
-        <div className="kv-story-panel">
-          <p>
-            <Icon as={MunicipalityMark} size="48" label={text.label.logo} />
-          </p>
-          <p>
-            <output data-testid="accessible-name" />
-          </p>
-        </div>
-      </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, canvasElement }) => {
@@ -548,41 +557,43 @@ const hardCodedRed = '#c00'
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     const colors = [
       ['color', hardCodedRed],
       ['token', 'var(--kv-color-danger)'],
     ] as const
     return (
-      <div lang={lang} data-testid="forced">
-        {colors.map(([prop, color]) => (
-          <div
-            key={prop}
-            className="kv-story-section kv-story-icon-row"
-            data-testid={`forced-${prop}`}
-          >
-            <code>{prop}</code>
-            <p>
-              <span style={{ color }}>
-                <Icon name="warning" />
-              </span>{' '}
-              {text.status.warning.word}
-            </p>
-            <Button>
-              <span style={{ color }}>
-                <Icon name="add" />
-              </span>
-              {text.button.addChild}
-            </Button>
-            <Link.Root href="#guide">
-              <span style={{ color }}>
-                <Icon name="external" />
-              </span>{' '}
-              {text.text.guide}
-            </Link.Root>
-          </div>
-        ))}
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div data-testid="forced">
+          {colors.map(([prop, color]) => (
+            <div
+              key={prop}
+              className="kv-story-section kv-story-icon-row"
+              data-testid={`forced-${prop}`}
+            >
+              <code>{prop}</code>
+              <p>
+                <span style={{ color }}>
+                  <Icon name="warning" />
+                </span>{' '}
+                {text.status.warning.word}
+              </p>
+              <Button>
+                <span style={{ color }}>
+                  <Icon name="add" />
+                </span>
+                {text.button.addChild}
+              </Button>
+              <Link.Root href="#guide">
+                <span style={{ color }}>
+                  <Icon name="external" />
+                </span>{' '}
+                {text.text.guide}
+              </Link.Root>
+            </div>
+          ))}
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {
@@ -597,21 +608,23 @@ export const ForcedColors: Story = {
  */
 export const YourOwnSvg: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <ul className="kv-story-inline-list" lang={lang}>
-        <li>
-          <Icon viewBox="0 0 24 24" size="24">
-            <path d="M5 12h14M12 5v14" fill="none" stroke="currentColor" strokeWidth={1.5} />
-          </Icon>
-        </li>
-        <li>
-          <Icon as={MunicipalityMark} size="24" label={text.label.logo} />
-        </li>
-        <li>
-          <Icon as={SquareMark} size="24" />
-        </li>
-      </ul>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <ul className="kv-story-inline-list">
+          <li>
+            <Icon viewBox="0 0 24 24" size="24">
+              <path d="M5 12h14M12 5v14" fill="none" stroke="currentColor" strokeWidth={1.5} />
+            </Icon>
+          </li>
+          <li>
+            <Icon as={MunicipalityMark} size="24" label={text.label.logo} />
+          </li>
+          <li>
+            <Icon as={SquareMark} size="24" />
+          </li>
+        </ul>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, canvasElement }) => {
@@ -721,19 +734,21 @@ export const InRunningTextAndLinks: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     const format = useFormat()
     return (
-      <>
-        <p lang={lang}>
-          <Icon name="calendar" size="16" /> {text.text.collection(collectionDate(format))}
-        </p>
-        <p lang={lang}>
-          <Link.Root href="https://www.digg.se/" target="_blank">
-            {text.text.guide} <Link.NewTabNotice /> <Icon name="external" size="16" />
-          </Link.Root>
-        </p>
-      </>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <>
+          <p>
+            <Icon name="calendar" size="16" /> {text.text.collection(collectionDate(format))}
+          </p>
+          <p>
+            <Link.Root href="https://www.digg.se/" target="_blank">
+              {text.text.guide} <Link.NewTabNotice /> <Icon name="external" size="16" />
+            </Link.Root>
+          </p>
+        </>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {

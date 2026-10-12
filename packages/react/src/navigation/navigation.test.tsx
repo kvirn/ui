@@ -152,7 +152,6 @@ describe('rendering', () => {
         ref={rootRef}
         label="Huvudmeny"
         id="huvudmeny"
-        lang="sv"
         className="min-meny"
         data-testid="root"
       >
@@ -165,7 +164,6 @@ describe('rendering', () => {
     )
     const root = page.getByTestId('root')
     await expect.element(root).toHaveAttribute('id', 'huvudmeny')
-    await expect.element(root).toHaveAttribute('lang', 'sv')
     await expect.element(root).toHaveClass('kv-navigation', 'min-meny')
     expect(rootRef.current).toBe(root.element())
     expect(listRef.current).toBe(page.getByTestId('list').element())
@@ -659,7 +657,7 @@ describe('Navigation.Label', () => {
       <Navigation.Root label="Dokumentation">
         <Navigation.List>
           <Navigation.Item>
-            <Navigation.Label ref={ref} id="own-label" className="own" lang="en" as="p">
+            <Navigation.Label ref={ref} id="own-label" className="own" as="p">
               Components
             </Navigation.Label>
             <Navigation.List>
@@ -673,7 +671,6 @@ describe('Navigation.Label', () => {
     )
     expect(ref.current?.tagName).toBe('P')
     expect(ref.current?.className).toBe('own kv-navigation-label')
-    expect(ref.current?.getAttribute('lang')).toBe('en')
     expect(ref.current?.id).toBe('own-label')
     await expect.element(page.getByRole('list', { name: 'Components' })).toBeInTheDocument()
   })

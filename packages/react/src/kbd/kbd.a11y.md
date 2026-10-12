@@ -12,7 +12,7 @@ Kbd is the native `<kbd>` element with a class, so the theme can draw it as a ke
 
 | Part | Element / role    | ARIA                     | Notes                                                                                                                                                                                                        |
 | ---- | ----------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Kbd  | `<kbd>` → no role | none                     | `class="kv-kbd"`. One key per Kbd. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged. The key name is the content: `Tab`, `Esc`, `Ctrl`                                            |
+| Kbd  | `<kbd>` → no role | none                     | `class="kv-kbd"`. One key per Kbd. Attributes (`id`, `aria-*`) and the ref reach the element unchanged. The key name is the content: `Tab`, `Esc`, `Ctrl`                                                    |
 | Kbd  | nested `<kbd>`    | none                     | A combination is an outer Kbd around one Kbd per key, with the separator as text: `<Kbd><Kbd>Ctrl</Kbd>+<Kbd>C</Kbd></Kbd>`. The theme draws the innermost keys and leaves the outer one plain               |
 | Kbd  | `as`              | the chosen element's own | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Kbd:<tag>`) and renders the default element. `className` joins, the ref gets the element |
 | Kbd  | never             | no `role`, `tabindex`    | No click handler, no live region. A key name is text, so screen readers read it as part of the sentence, and the theme draws no content (no generated text, no icons) that would be skipped or read twice    |
@@ -51,7 +51,7 @@ Kbd renders no text, so it has no message keys.
 ## Consumer responsibilities
 
 - **Name the key as printed on the keyboard, and say what it does in words.** `Tab` is the same in every locale, so it is not translated. The sentence around it says what the key is for, and the key is never the only instruction (1.3.3 Sensory Characteristics: "press the key in the box" is not enough).
-- **Language.** `lang="en"` on a key name inside a text in another language, so a screen reader doesn't read `Tab` with the page's accent (3.1.2).
+- **Language.** Key names that are the surrounding language's vernacular (Ctrl, Shift, Tab, Esc in Nordic text) need nothing. A key in another script (Arabic text, say) goes in your own `<span lang="en"><Kbd>Tab</Kbd></span>` (3.1.2).
 - **Offer a way to remember a shortcut that doesn't need a keyboard layout.** A key name differs between keyboards: `Ctrl` is `Cmd` on macOS, and `Enter` is `Retur` on a Swedish Mac. Name what your users have.
 - **A character shortcut needs a way to turn it off or remap it** (2.1.4). Kbd only documents a shortcut: it doesn't make one.
 
@@ -64,7 +64,6 @@ Headless: Kbd ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-kbd` (and a ba
 - 1.3.1 Info and Relationships: keyboard input is marked up as `<kbd>` and not as styled text (`kbd.test.tsx › renders a kbd, no role…`).
 - 1.4.3 Contrast: the key's text on its background, measured by `theme:check`.
 - 1.4.4 Resize Text: the size is in rem.
-- 3.1.2 Language of Parts: the consumer's `lang` reaches the element (`kbd.test.tsx › renders a kbd, no role…`).
 
 ## AT test record
 

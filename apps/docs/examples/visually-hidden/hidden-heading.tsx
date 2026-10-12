@@ -1,13 +1,16 @@
 'use client'
 import { VisuallyHidden } from '@kvirn-ui/react'
 import { useVisuallyHiddenTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function HiddenHeading() {
-  const { texts, textLang } = useVisuallyHiddenTexts()
+  const { texts, isFallback } = useVisuallyHiddenTexts()
   return (
-    <div lang={textLang}>
-      <VisuallyHidden as="h4">{texts.openingHours}</VisuallyHidden>
-      <p>{texts.openingHoursText}</p>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <VisuallyHidden as="h4">{texts.openingHours}</VisuallyHidden>
+        <p>{texts.openingHoursText}</p>
+      </div>
+    </InEnglishWhenFallback>
   )
 }

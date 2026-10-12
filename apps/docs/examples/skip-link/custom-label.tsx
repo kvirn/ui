@@ -1,21 +1,22 @@
 'use client'
 import { SkipLink } from '@kvirn-ui/react'
 import { useSkipLinkTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function CustomLabel() {
-  const { texts, textLang } = useSkipLinkTexts()
+  const { texts, isFallback } = useSkipLinkTexts()
   return (
-    <div>
-      <p lang={textLang}>
-        <small>{texts.hint}</small>
-      </p>
-      <SkipLink href="#skip-link-form" lang={textLang}>
-        {texts.customLabel}
-      </SkipLink>
-      <p lang={textLang}>{texts.header}</p>
-      <div id="skip-link-form" lang={textLang}>
-        <p>{texts.form}</p>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <p>
+          <small>{texts.hint}</small>
+        </p>
+        <SkipLink href="#skip-link-form">{texts.customLabel}</SkipLink>
+        <p>{texts.header}</p>
+        <div id="skip-link-form">
+          <p>{texts.form}</p>
+        </div>
       </div>
-    </div>
+    </InEnglishWhenFallback>
   )
 }

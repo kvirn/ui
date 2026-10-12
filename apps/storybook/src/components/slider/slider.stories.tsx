@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Field, Slider } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/slider/slider.a11y.md?raw'
 import guide from '../../../../../packages/react/src/slider/slider.md?raw'
@@ -57,12 +58,14 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, lang } = sliderTextsFor(localeOf(globals))
+    const { text, isFallback } = sliderTextsFor(localeOf(globals))
     return (
-      <Field.Root lang={lang}>
-        <Field.Label marker="none">{text.volumeLabel}</Field.Label>
-        <Slider {...args} valueText={text.volumeValueText} />
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Field.Label marker="none">{text.volumeLabel}</Field.Label>
+          <Slider {...args} valueText={text.volumeValueText} />
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   parameters: {
@@ -88,13 +91,15 @@ export const Default: Story = {
 /** The help text states the ends of the range in words. It is the slider's description. */
 export const WithValueText: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = sliderTextsFor(localeOf(globals))
+    const { text, isFallback } = sliderTextsFor(localeOf(globals))
     return (
-      <Field.Root lang={lang}>
-        <Field.Label marker="none">{text.distanceLabel}</Field.Label>
-        <Slider {...args} max={50} step={5} valueText={text.distanceValueText} />
-        <Field.HelpText>{text.distanceHint}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Field.Label marker="none">{text.distanceLabel}</Field.Label>
+          <Slider {...args} max={50} step={5} valueText={text.distanceValueText} />
+          <Field.HelpText>{text.distanceHint}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   args: { name: 'distance', defaultValue: 15 },
@@ -109,13 +114,15 @@ export const WithValueText: Story = {
 /** An error from the Field: a 2px `danger` edge on the track, and the message under the control. */
 export const Invalid: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = sliderTextsFor(localeOf(globals))
+    const { text, isFallback } = sliderTextsFor(localeOf(globals))
     return (
-      <Field.Root invalid lang={lang}>
-        <Field.Label marker="none">{text.distanceLabel}</Field.Label>
-        <Slider {...args} max={50} valueText={text.distanceValueText} />
-        <Field.ErrorMessage>{text.distanceTooFar}</Field.ErrorMessage>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root invalid>
+          <Field.Label marker="none">{text.distanceLabel}</Field.Label>
+          <Slider {...args} max={50} valueText={text.distanceValueText} />
+          <Field.ErrorMessage>{text.distanceTooFar}</Field.ErrorMessage>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -129,13 +136,15 @@ export const Invalid: Story = {
 /** Disabled: a dashed track and a muted thumb. The help text says why, never a tooltip. */
 export const Disabled: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = sliderTextsFor(localeOf(globals))
+    const { text, isFallback } = sliderTextsFor(localeOf(globals))
     return (
-      <Field.Root lang={lang}>
-        <Field.Label marker="none">{text.radiusLabel}</Field.Label>
-        <Slider {...args} disabled max={50} valueText={text.distanceValueText} />
-        <Field.HelpText>{text.distanceDisabledHint}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Field.Label marker="none">{text.radiusLabel}</Field.Label>
+          <Slider {...args} disabled max={50} valueText={text.distanceValueText} />
+          <Field.HelpText>{text.distanceDisabledHint}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -185,12 +194,14 @@ export const LongLabel: Story = {
     ),
   ],
   render: (args, { globals }) => {
-    const { text, lang } = sliderTextsFor(localeOf(globals))
+    const { text, isFallback } = sliderTextsFor(localeOf(globals))
     return (
-      <Field.Root lang={lang}>
-        <Field.Label marker="none">{text.longLabel}</Field.Label>
-        <Slider {...args} name="distance" max={50} valueText={text.distanceValueText} />
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Field.Label marker="none">{text.longLabel}</Field.Label>
+          <Slider {...args} name="distance" max={50} valueText={text.distanceValueText} />
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {
@@ -201,24 +212,26 @@ export const LongLabel: Story = {
 // Every state in one column. The RTL and ForcedColors stories render it, so a reader of either
 // sees the real parts.
 const renderSliderStates: NonNullable<Story['render']> = (_args, { globals }) => {
-  const { text, lang } = sliderTextsFor(localeOf(globals))
+  const { text, isFallback } = sliderTextsFor(localeOf(globals))
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root>
-        <Field.Label marker="none">{text.volumeLabel}</Field.Label>
-        <Slider name="default" defaultValue={40} valueText={text.volumeValueText} />
-      </Field.Root>
-      <Field.Root invalid>
-        <Field.Label marker="none">{text.distanceLabel}</Field.Label>
-        <Slider name="invalid" max={50} defaultValue={30} valueText={text.distanceValueText} />
-        <Field.ErrorMessage>{text.distanceTooFar}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root disabled>
-        <Field.Label marker="none">{text.radiusLabel}</Field.Label>
-        <Slider name="disabled" max={50} defaultValue={10} valueText={text.distanceValueText} />
-        <Field.HelpText>{text.distanceDisabledHint}</Field.HelpText>
-      </Field.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root>
+          <Field.Label marker="none">{text.volumeLabel}</Field.Label>
+          <Slider name="default" defaultValue={40} valueText={text.volumeValueText} />
+        </Field.Root>
+        <Field.Root invalid>
+          <Field.Label marker="none">{text.distanceLabel}</Field.Label>
+          <Slider name="invalid" max={50} defaultValue={30} valueText={text.distanceValueText} />
+          <Field.ErrorMessage>{text.distanceTooFar}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root disabled>
+          <Field.Label marker="none">{text.radiusLabel}</Field.Label>
+          <Slider name="disabled" max={50} defaultValue={10} valueText={text.distanceValueText} />
+          <Field.HelpText>{text.distanceDisabledHint}</Field.HelpText>
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 

@@ -85,7 +85,7 @@ describe('rendering', () => {
   test('renders a group with its part classes, a <legend> first, and forwards ref and props', async () => {
     const ref = createRef<HTMLFieldSetElement>()
     const { container } = await render(
-      <CheckboxGroup.Root ref={ref} className="egen" data-testid="root" lang="sv">
+      <CheckboxGroup.Root ref={ref} className="egen" data-testid="root">
         <Fieldset.Legend data-testid="legend">Kontakt</Fieldset.Legend>
       </CheckboxGroup.Root>,
     )
@@ -95,7 +95,6 @@ describe('rendering', () => {
     expect(root.classList.contains('kv-checkbox-group')).toBe(true)
     expect(root.classList.contains('kv-fieldset')).toBe(true)
     expect(root.classList.contains('egen')).toBe(true)
-    expect(root.getAttribute('lang')).toBe('sv')
     // The group's `name` is not a fieldset attribute.
     expect(root.hasAttribute('name')).toBe(false)
     expect(root.firstElementChild).toBe(page.getByTestId('legend').element())

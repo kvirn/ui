@@ -63,9 +63,11 @@ export function KbdPage({ contract, sources }: { contract: Contract; sources: Kb
             code={sources['combination']}
             note={
               <Note kind="reminder">
-                Key names aren’t translated, because they are what’s printed on the keyboard. Set{' '}
-                <code>lang=&quot;en&quot;</code> on each key in a text of another language. See{' '}
-                <Link href="#what-you-need-to-do">What you need to do</Link>.
+                Key names aren’t translated, because they are what’s printed on the keyboard. Names
+                that are vernacular in the surrounding language (Ctrl, Shift, Tab, Esc in Nordic
+                text) need nothing. A key in another script, such as Arabic, goes in your own{' '}
+                <code>&lt;span lang=&quot;en&quot;&gt;&lt;Kbd&gt;Tab&lt;/Kbd&gt;&lt;/span&gt;</code>
+                . See <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >

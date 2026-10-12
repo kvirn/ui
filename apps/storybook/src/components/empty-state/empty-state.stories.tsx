@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Heading } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/empty-state/empty-state.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -59,7 +60,7 @@ const texts: Record<FormLocale, EmptyTexts | undefined> = {
 
 const textsFor = (locale: FormLocale) => ({
   text: texts[locale] ?? texts.en!,
-  lang: texts[locale] === undefined ? ('en' as const) : undefined,
+  isFallback: texts[locale] === undefined,
 })
 
 const meta = {
@@ -75,17 +76,19 @@ const meta = {
     },
   },
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <div className="kv-empty-state" lang={lang}>
-        <Heading as="h2" className="kv-empty-state-title">
-          {text.title}
-        </Heading>
-        <p className="kv-empty-state-body">{text.body}</p>
-        <div className="kv-button-group">
-          <Button className="kv-button--primary">{text.action}</Button>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div className="kv-empty-state">
+          <Heading as="h2" className="kv-empty-state-title">
+            {text.title}
+          </Heading>
+          <p className="kv-empty-state-body">{text.body}</p>
+          <div className="kv-button-group">
+            <Button className="kv-button--primary">{text.action}</Button>
+          </div>
         </div>
-      </div>
+      </InEnglishWhenFallback>
     )
   },
 } satisfies Meta
@@ -105,14 +108,16 @@ export const Default: Story = {
 /** No results: what was searched, and how to widen it. No action needed. */
 export const NoResults: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <div className="kv-empty-state" lang={lang}>
-        <Heading as="h2" className="kv-empty-state-title">
-          {text.searchTitle}
-        </Heading>
-        <p className="kv-empty-state-body">{text.searchBody}</p>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div className="kv-empty-state">
+          <Heading as="h2" className="kv-empty-state-title">
+            {text.searchTitle}
+          </Heading>
+          <p className="kv-empty-state-body">{text.searchBody}</p>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
 }

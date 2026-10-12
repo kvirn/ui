@@ -57,7 +57,7 @@ The landmark name is the only string: `breadcrumb.label` (en `You are here`, sv 
 - **Do not link the current page,** and mark no other item `aria-current`.
 - **Link text is the page's title:** "Start", not "Home link" or "Click here" (2.4.4).
 - **Name two navigations differently** when a page has another `<nav>`: this one is named `You are here`, so the other is not.
-- **Language.** A custom `label` is your own string: set `lang` if it differs from the page (3.1.2).
+- **Language.** A custom `label` is your own string: put it in a nested `KvirnProvider` with `useLocale().localeProps` on your own element if it differs from the page (3.1.2).
 - **A custom `separator` is decorative.** It is `aria-hidden`; if it needs a name, it is not a separator. Never put anything interactive or focusable in it (`aria-hidden` over focusable content is a mistake). The built-in `chevron-forward` mirrors itself in RTL; a registered or own icon needs `mirrorInRtl`. It is never the only cue between levels: the items are separate list items (1.4.1).
 - **The look.** The first item's separator is hidden (it is rendered in every item), targets of at least 24px (2.5.8), a separator that is not the only cue, the wrap at 320px (1.4.10): the theme does it, and a custom theme must keep them.
 

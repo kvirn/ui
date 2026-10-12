@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import {
   DateInput,
   DateRangePicker,
@@ -92,9 +93,9 @@ const rangeTexts: Record<FormLocale, RangeTexts | undefined> = {
   en: textsEn,
 }
 
-function rangeTextsFor(locale: FormLocale): { text: RangeTexts; lang: 'en' | undefined } {
+function rangeTextsFor(locale: FormLocale): { text: RangeTexts; isFallback: boolean } {
   const text = rangeTexts[locale]
-  return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }
+  return { text: text ?? textsEn, isFallback: text === undefined }
 }
 
 const boxes = {
@@ -133,7 +134,7 @@ export function MaskedRangePicker({
   hasLimit = false,
   ...pickerProps
 }: RangePickerProps) {
-  const { text, lang } = rangeTextsFor(locale)
+  const { text, isFallback } = rangeTextsFor(locale)
   const { text: dateText } = dateTextsFor(locale)
   const { locale: providerLocale } = useLocale()
   const [texts, setTexts] = useState({
@@ -148,53 +149,55 @@ export function MaskedRangePicker({
     end: maskedDateToIsoDate(texts.end, providerLocale),
   }
   return (
-    <div className="kv-story-form" lang={lang}>
-      <DateRangePicker.Root
-        today="2026-10-14"
-        {...pickerProps}
-        value={range}
-        onValueChange={(next) => {
-          setTexts({
-            start: isoDateToMaskedDate(next.start, providerLocale),
-            end: isoDateToMaskedDate(next.end, providerLocale),
-          })
-          pickerProps.onValueChange?.(next)
-        }}
-      >
-        <Fieldset.Root group>
-          <Fieldset.Legend>{text.legend}</Fieldset.Legend>
-          <div className="kv-date-range-row">
-            <Field.Root>
-              <Field.Label>{text.from}</Field.Label>
-              <TextInput
-                name="start"
-                mask={masks.date()}
-                className="kv-input--width-10"
-                value={texts.start}
-                onValueChange={(start) => setTexts((current) => ({ ...current, start }))}
-              />
-              <Field.HelpText>{example}</Field.HelpText>
-            </Field.Root>
-            <Field.Root invalid={isInvalid}>
-              <Field.Label>{text.to}</Field.Label>
-              <TextInput
-                name="end"
-                mask={masks.date()}
-                className="kv-input--width-10"
-                value={texts.end}
-                onValueChange={(end) => setTexts((current) => ({ ...current, end }))}
-              />
-              <Field.HelpText>{example}</Field.HelpText>
-              {isInvalid ? <Field.ErrorMessage>{text.error}</Field.ErrorMessage> : null}
-            </Field.Root>
-            <DateRangePicker.Trigger />
-          </div>
-          {hasLimit ? <Fieldset.HelpText>{text.limit}</Fieldset.HelpText> : null}
-        </Fieldset.Root>
-        <DateRangePicker.Popup />
-      </DateRangePicker.Root>
-      <Output range={range} label={text.stored} />
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <DateRangePicker.Root
+          today="2026-10-14"
+          {...pickerProps}
+          value={range}
+          onValueChange={(next) => {
+            setTexts({
+              start: isoDateToMaskedDate(next.start, providerLocale),
+              end: isoDateToMaskedDate(next.end, providerLocale),
+            })
+            pickerProps.onValueChange?.(next)
+          }}
+        >
+          <Fieldset.Root group>
+            <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+            <div className="kv-date-range-row">
+              <Field.Root>
+                <Field.Label>{text.from}</Field.Label>
+                <TextInput
+                  name="start"
+                  mask={masks.date()}
+                  className="kv-input--width-10"
+                  value={texts.start}
+                  onValueChange={(start) => setTexts((current) => ({ ...current, start }))}
+                />
+                <Field.HelpText>{example}</Field.HelpText>
+              </Field.Root>
+              <Field.Root invalid={isInvalid}>
+                <Field.Label>{text.to}</Field.Label>
+                <TextInput
+                  name="end"
+                  mask={masks.date()}
+                  className="kv-input--width-10"
+                  value={texts.end}
+                  onValueChange={(end) => setTexts((current) => ({ ...current, end }))}
+                />
+                <Field.HelpText>{example}</Field.HelpText>
+                {isInvalid ? <Field.ErrorMessage>{text.error}</Field.ErrorMessage> : null}
+              </Field.Root>
+              <DateRangePicker.Trigger />
+            </div>
+            {hasLimit ? <Fieldset.HelpText>{text.limit}</Fieldset.HelpText> : null}
+          </Fieldset.Root>
+          <DateRangePicker.Popup />
+        </DateRangePicker.Root>
+        <Output range={range} label={text.stored} />
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -206,7 +209,7 @@ export function DateInputRangePicker({
   hasLimit = false,
   ...pickerProps
 }: RangePickerProps) {
-  const { text, lang } = rangeTextsFor(locale)
+  const { text, isFallback } = rangeTextsFor(locale)
   const { text: dateText } = dateTextsFor(locale)
   const { order } = useDateInput()
   const [start, setStart] = useState<DateInputValue>(isoDateToDateInputValue(initial.start))
@@ -214,54 +217,56 @@ export function DateInputRangePicker({
   const example = order[0] === 'year' ? dateText.hintYearFirst : dateText.hintDayFirst
   const range = { start: dateInputValueToIsoDate(start), end: dateInputValueToIsoDate(end) }
   return (
-    <div className="kv-story-form" lang={lang}>
-      <DateRangePicker.Root
-        today="2026-10-14"
-        {...pickerProps}
-        value={range}
-        onValueChange={(next) => {
-          setStart(isoDateToDateInputValue(next.start))
-          setEnd(isoDateToDateInputValue(next.end))
-          pickerProps.onValueChange?.(next)
-        }}
-      >
-        <Fieldset.Root group>
-          <Fieldset.Legend>{text.legend}</Fieldset.Legend>
-          <div className="kv-date-range-row">
-            <Fieldset.Root group>
-              <Fieldset.Legend>{text.from}</Fieldset.Legend>
-              <DateInput.Root name="start" value={start} onValueChange={setStart}>
-                {order.map((part) => {
-                  const Box = boxes[part]
-                  return <Box key={part} />
-                })}
-              </DateInput.Root>
-              <Fieldset.HelpText>{example}</Fieldset.HelpText>
-            </Fieldset.Root>
-            <Fieldset.Root group invalid={isInvalid}>
-              <Fieldset.Legend>{text.to}</Fieldset.Legend>
-              <DateInput.Root
-                name="end"
-                value={end}
-                onValueChange={setEnd}
-                invalidParts={isInvalid ? ['day', 'month', 'year'] : undefined}
-              >
-                {order.map((part) => {
-                  const Box = boxes[part]
-                  return <Box key={part} />
-                })}
-                <DateRangePicker.Trigger />
-              </DateInput.Root>
-              <Fieldset.HelpText>{example}</Fieldset.HelpText>
-              {isInvalid ? <Fieldset.ErrorMessage>{text.error}</Fieldset.ErrorMessage> : null}
-            </Fieldset.Root>
-          </div>
-          {hasLimit ? <Fieldset.HelpText>{text.limit}</Fieldset.HelpText> : null}
-        </Fieldset.Root>
-        <DateRangePicker.Popup />
-      </DateRangePicker.Root>
-      <Output range={range} label={text.stored} />
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <DateRangePicker.Root
+          today="2026-10-14"
+          {...pickerProps}
+          value={range}
+          onValueChange={(next) => {
+            setStart(isoDateToDateInputValue(next.start))
+            setEnd(isoDateToDateInputValue(next.end))
+            pickerProps.onValueChange?.(next)
+          }}
+        >
+          <Fieldset.Root group>
+            <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+            <div className="kv-date-range-row">
+              <Fieldset.Root group>
+                <Fieldset.Legend>{text.from}</Fieldset.Legend>
+                <DateInput.Root name="start" value={start} onValueChange={setStart}>
+                  {order.map((part) => {
+                    const Box = boxes[part]
+                    return <Box key={part} />
+                  })}
+                </DateInput.Root>
+                <Fieldset.HelpText>{example}</Fieldset.HelpText>
+              </Fieldset.Root>
+              <Fieldset.Root group invalid={isInvalid}>
+                <Fieldset.Legend>{text.to}</Fieldset.Legend>
+                <DateInput.Root
+                  name="end"
+                  value={end}
+                  onValueChange={setEnd}
+                  invalidParts={isInvalid ? ['day', 'month', 'year'] : undefined}
+                >
+                  {order.map((part) => {
+                    const Box = boxes[part]
+                    return <Box key={part} />
+                  })}
+                  <DateRangePicker.Trigger />
+                </DateInput.Root>
+                <Fieldset.HelpText>{example}</Fieldset.HelpText>
+                {isInvalid ? <Fieldset.ErrorMessage>{text.error}</Fieldset.ErrorMessage> : null}
+              </Fieldset.Root>
+            </div>
+            {hasLimit ? <Fieldset.HelpText>{text.limit}</Fieldset.HelpText> : null}
+          </Fieldset.Root>
+          <DateRangePicker.Popup />
+        </DateRangePicker.Root>
+        <Output range={range} label={text.stored} />
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 

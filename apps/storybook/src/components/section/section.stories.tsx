@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Card, Link, Prose, Section } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/section/section.a11y.md?raw'
 import guide from '../../../../../packages/react/src/section/section.md?raw'
@@ -145,19 +146,14 @@ export const CardsOnASection: Story = {
  */
 export const Surfaces: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     const surfaces = [
       ['surface', 'kv-section--surface'],
       ['canvas', 'kv-section--canvas'],
     ] as const
     const samples = (place: 'page' | 'frame') =>
       surfaces.map(([surface, className]) => (
-        <Section
-          key={surface}
-          className={className}
-          data-testid={`${surface}-on-${place}`}
-          lang={lang}
-        >
+        <Section key={surface} className={className} data-testid={`${surface}-on-${place}`}>
           <p>
             <code>{className}</code>
           </p>
@@ -165,12 +161,14 @@ export const Surfaces: Story = {
         </Section>
       ))
     return (
-      <>
-        <div className="kv-story-columns">{samples('page')}</div>
-        <Section className="kv-section--padding-lg kv-story-section" data-testid="frame">
-          <div className="kv-story-columns">{samples('frame')}</div>
-        </Section>
-      </>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <>
+          <div className="kv-story-columns">{samples('page')}</div>
+          <Section className="kv-section--padding-lg kv-story-section" data-testid="frame">
+            <div className="kv-story-columns">{samples('frame')}</div>
+          </Section>
+        </>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -243,50 +241,53 @@ export const OneEdge: Story = {
  */
 export const SurfaceLayers: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <div
-        lang="en"
-        data-testid="canvas"
-        style={{ padding: 'var(--kv-space-4)', backgroundColor: 'var(--kv-color-canvas)' }}
-      >
-        <p>
-          <strong>Level 0, the page: </strong>
-          <code>canvas</code>. Everything sits on it. Use it for the page itself, and nothing else.
-        </p>
-        <Section className="kv-section--padding-lg" data-testid="surface">
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div
+          lang="en"
+          data-testid="canvas"
+          style={{ padding: 'var(--kv-space-4)', backgroundColor: 'var(--kv-color-canvas)' }}
+        >
           <p>
-            <strong>Level 1, a region: </strong>
-            <code>kv-section</code>, <code>surface</code>. Use it to set a region of the page apart:
-            a sidebar, a filter section or a band of related cards. It has no shadow and no visible
-            edge, except in forced colours.
+            <strong>Level 0, the page: </strong>
+            <code>canvas</code>. Everything sits on it. Use it for the page itself, and nothing
+            else.
           </p>
-          <Card.Root data-testid="surface-raised">
+          <Section className="kv-section--padding-lg" data-testid="surface">
             <p>
-              <strong>Level 2, a card: </strong>
-              <code>kv-card</code>, <code>surface-raised</code>. Use it for one thing on the page or
-              on a section. It has a border and no shadow, and is never interactive.
+              <strong>Level 1, a region: </strong>
+              <code>kv-section</code>, <code>surface</code>. Use it to set a region of the page
+              apart: a sidebar, a filter section or a band of related cards. It has no shadow and no
+              visible edge, except in forced colours.
             </p>
-            <p lang={lang}>{text.waste.plan}</p>
-          </Card.Root>
-        </Section>
-        <div className="kv-story-columns" style={{ marginBlockStart: 'var(--kv-space-6)' }}>
-          <div className="kv-story-popup" data-testid="popup">
-            <p>
-              <strong>Level 3, a popup: </strong>
-              <code>--kv-shadow-popup</code>. Use it for a menu, a listbox or a popover that opens
-              over the page and closes again. It has a border and a soft shadow.
-            </p>
-          </div>
-          <div className="kv-story-dialog" data-testid="dialog">
-            <p>
-              <strong>Level 4, a dialog: </strong>
-              <code>--kv-shadow-dialog</code>. Use it for a dialog that takes over the page, over a
-              backdrop, with the page behind it inert. It has a border and the deepest shadow.
-            </p>
+            <Card.Root data-testid="surface-raised">
+              <p>
+                <strong>Level 2, a card: </strong>
+                <code>kv-card</code>, <code>surface-raised</code>. Use it for one thing on the page
+                or on a section. It has a border and no shadow, and is never interactive.
+              </p>
+              <p>{text.waste.plan}</p>
+            </Card.Root>
+          </Section>
+          <div className="kv-story-columns" style={{ marginBlockStart: 'var(--kv-space-6)' }}>
+            <div className="kv-story-popup" data-testid="popup">
+              <p>
+                <strong>Level 3, a popup: </strong>
+                <code>--kv-shadow-popup</code>. Use it for a menu, a listbox or a popover that opens
+                over the page and closes again. It has a border and a soft shadow.
+              </p>
+            </div>
+            <div className="kv-story-dialog" data-testid="dialog">
+              <p>
+                <strong>Level 4, a dialog: </strong>
+                <code>--kv-shadow-dialog</code>. Use it for a dialog that takes over the page, over
+                a backdrop, with the page behind it inert. It has a border and the deepest shadow.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -337,39 +338,41 @@ export const CardOrSection: Story = {
  */
 export const ProseAndSections: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     const titles = [text.news.recycling.title, text.news.snow.title] as const
     return (
-      <>
-        <Section className="kv-prose" data-testid="prose-on-section" lang={lang}>
-          <h2>{text.news.heading}</h2>
-          <p>{text.news.recycling.excerpt}</p>
-          <ul>
-            {titles.map((title) => (
-              <li key={title}>{title}</li>
-            ))}
-          </ul>
-        </Section>
-        <article className="kv-prose kv-story-section" lang={lang}>
-          <h2>{text.news.heading}</h2>
-          <p>{text.news.snow.excerpt}</p>
-          <Section data-testid="section-in-prose">
-            <p>{text.news.grants.excerpt}</p>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <>
+          <Section className="kv-prose" data-testid="prose-on-section">
+            <h2>{text.news.heading}</h2>
+            <p>{text.news.recycling.excerpt}</p>
             <ul>
               {titles.map((title) => (
                 <li key={title}>{title}</li>
               ))}
             </ul>
           </Section>
-          <p>{text.news.grants.excerpt}</p>
-        </article>
-        <Section className="kv-story-section" data-testid="band" lang={lang}>
-          <div className="kv-prose">
+          <article className="kv-prose kv-story-section">
             <h2>{text.news.heading}</h2>
             <p>{text.news.snow.excerpt}</p>
-          </div>
-        </Section>
-      </>
+            <Section data-testid="section-in-prose">
+              <p>{text.news.grants.excerpt}</p>
+              <ul>
+                {titles.map((title) => (
+                  <li key={title}>{title}</li>
+                ))}
+              </ul>
+            </Section>
+            <p>{text.news.grants.excerpt}</p>
+          </article>
+          <Section className="kv-story-section" data-testid="band">
+            <div className="kv-prose">
+              <h2>{text.news.heading}</h2>
+              <p>{text.news.snow.excerpt}</p>
+            </div>
+          </Section>
+        </>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -402,14 +405,16 @@ export const RenderedAsLandmarks: Story = {
 /** An image directly in a Section: the theme keeps it inside, because a Section never clips. */
 export const ImageInSection: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <div data-testid="column">
-        <Section lang={lang}>
-          <img src={binsImage} alt="" width={640} height={240} data-testid="wide-image" />
-          <p>{text.waste.plan}</p>
-        </Section>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div data-testid="column">
+          <Section>
+            <img src={binsImage} alt="" width={640} height={240} data-testid="wide-image" />
+            <p>{text.waste.plan}</p>
+          </Section>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {

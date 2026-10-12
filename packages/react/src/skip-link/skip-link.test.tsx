@@ -200,7 +200,7 @@ describe('SkipLink name and attributes', () => {
     const ref = createRef<HTMLAnchorElement>()
     await render(
       <>
-        <SkipLink href="#main" className="annan" id="skip" lang="en" ref={ref} />
+        <SkipLink href="#main" className="annan" id="skip" ref={ref} />
         <main id="main" />
       </>,
     )

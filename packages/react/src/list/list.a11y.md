@@ -47,7 +47,7 @@ List renders no text, so it has no message keys.
 - **Link text makes sense alone.** Each link names its target without the text around it (2.4.4).
 - **Use `as="ol"` when order matters,** and `kv-list--decimal` only then (1.3.1).
 - **Items are `List.Item`.** Put nothing but `List.Item` directly in `List.Root`; a nested list goes inside an item.
-- **Language.** `lang` on an item in another language than the page (3.1.2).
+- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2).
 
 ## Visual / modes
 

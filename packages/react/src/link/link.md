@@ -23,7 +23,7 @@ import { Link } from '@kvirn-ui/react'
   Digg <Link.NewTabNotice />
 </Link.Root>
 
-<Link.Root href="/fi" hrefLang="fi" lang="fi">Suomeksi</Link.Root>
+<span lang="fi"><Link.Root href="/fi" hrefLang="fi">Suomeksi</Link.Root></span>
 ```
 
 In a React Server Component, use the named exports `LinkRoot` and `LinkNewTabNotice` instead of `Link.Root` and `Link.NewTabNotice`, because a server component can't dot into a client module. The callable `Link` still works, but docs write `Link.Root`.

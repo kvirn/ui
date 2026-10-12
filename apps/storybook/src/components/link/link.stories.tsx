@@ -10,6 +10,7 @@ import guide from '../../../../../packages/react/src/link/link.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { CSSProperties } from 'react'
 import { expect, waitFor } from 'storybook/test'
+import { InLanguage } from '../../fixture-language.tsx'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { AppRoot, RoutedLinkList, RouterAndPlainLinks } from './link.fixture.tsx'
@@ -355,19 +356,23 @@ export const RoutedLinks: Story = {
   },
 }
 
-/** Each link is in its own language, and says so with `lang` and `hrefLang` (3.1.2). */
+/** Each link is in its own language, and sits in a nested provider and says so with `hrefLang` (3.1.2). */
 export const OtherLanguage: Story = {
   render: () => (
     <ul className="kv-story-inline-list">
       <li>
-        <Link.Root href="#fi" lang="fi" hrefLang="fi">
-          Suomeksi
-        </Link.Root>
+        <InLanguage locale="fi" messages={fi}>
+          <Link.Root href="#fi" hrefLang="fi">
+            Suomeksi
+          </Link.Root>
+        </InLanguage>
       </li>
       <li>
-        <Link.Root href="#sv" lang="sv" hrefLang="sv">
-          På svenska
-        </Link.Root>
+        <InLanguage locale="sv" messages={sv}>
+          <Link.Root href="#sv" hrefLang="sv">
+            På svenska
+          </Link.Root>
+        </InLanguage>
       </li>
     </ul>
   ),
@@ -377,7 +382,7 @@ export const OtherLanguage: Story = {
       ['På svenska', 'sv'],
     ] as const) {
       const link = canvas.getByRole('link', { name })
-      await expect(link).toHaveAttribute('lang', language)
+      await expect(link.closest('[lang]')).toHaveAttribute('lang', language)
       await expect(link).toHaveAttribute('hreflang', language)
     }
   },

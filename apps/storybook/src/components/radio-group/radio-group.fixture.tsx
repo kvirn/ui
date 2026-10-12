@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, Fieldset, RadioGroup } from '@kvirn-ui/react'
 import { useId, useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
@@ -14,35 +15,37 @@ import type { FormLocale } from '../form/form.fixture.tsx'
  * calls `onValueChange(value, { reason: 'input', event })`. It never stores it.
  */
 export function ControlledDurationGroup({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
+  const { text, isFallback } = choiceTextsFor(locale)
   const [value, setValue] = useState<string | null>('6')
   // Radios that share a name are one group for the whole document, so a Docs page with several
   // groups needs a name each. In your own form, a plain `name="duration"` is enough.
   const name = `duration-${useId()}`
   return (
-    <div className="kv-story-form" lang={lang}>
-      <RadioGroup.Root name={name} value={value} onValueChange={setValue}>
-        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-        <RadioGroup.Prose>
-          <p>{text.durationHint}</p>
-        </RadioGroup.Prose>
-        <Field.Root>
-          <RadioGroup.Radio value="1" />
-          <Field.Label>{text.duration1}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="6" />
-          <Field.Label>{text.duration6}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="12" />
-          <Field.Label>{text.duration12}</Field.Label>
-        </Field.Root>
-      </RadioGroup.Root>
-      <p className="kv-story-form-output" data-testid="mirror">
-        {text.youChose}: {value}
-      </p>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <RadioGroup.Root name={name} value={value} onValueChange={setValue}>
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+          </Field.Root>
+        </RadioGroup.Root>
+        <p className="kv-story-form-output" data-testid="mirror">
+          {text.youChose}: {value}
+        </p>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -52,49 +55,50 @@ export function ControlledDurationGroup({ locale }: { locale: FormLocale }) {
  * `noValidate` keeps the browser's own validation bubbles from replacing your messages.
  */
 export function DurationForm({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
+  const { text, isFallback } = choiceTextsFor(locale)
   const name = `duration-${useId()}`
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const value = new FormData(event.currentTarget).get(name)
-        setSent(typeof value === 'string' ? value : '–')
-      }}
-    >
-      <RadioGroup.Root name={name} defaultValue="1">
-        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-        <RadioGroup.Prose>
-          <p>{text.durationHint}</p>
-        </RadioGroup.Prose>
-        <Field.Root>
-          <RadioGroup.Radio value="1" />
-          <Field.Label>{text.duration1}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="6" />
-          <Field.Label>{text.duration6}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="12" />
-          <Field.Label>{text.duration12}</Field.Label>
-        </Field.Root>
-      </RadioGroup.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {text.sent}: {sent}
-        </p>
-      )}
-    </form>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form
+        className="kv-story-form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          const value = new FormData(event.currentTarget).get(name)
+          setSent(typeof value === 'string' ? value : '–')
+        }}
+      >
+        <RadioGroup.Root name={name} defaultValue="1">
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+          </Field.Root>
+        </RadioGroup.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
+        {sent === undefined ? null : (
+          <p className="kv-story-form-output" data-testid="sent">
+            {text.sent}: {sent}
+          </p>
+        )}
+      </form>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -105,35 +109,37 @@ export function DurationForm({ locale }: { locale: FormLocale }) {
  * chosen.
  */
 export function ControlledEmptyDurationGroup({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
+  const { text, isFallback } = choiceTextsFor(locale)
   const [value, setValue] = useState<string | null>(null)
   // Radios that share a name are one group for the whole document, so a Docs page with several
   // groups needs a name each. In your own form, a plain `name="duration"` is enough.
   const name = `duration-${useId()}`
   return (
-    <div className="kv-story-form" lang={lang}>
-      <RadioGroup.Root name={name} value={value} onValueChange={setValue}>
-        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-        <RadioGroup.Prose>
-          <p>{text.durationHint}</p>
-        </RadioGroup.Prose>
-        <Field.Root>
-          <RadioGroup.Radio value="1" />
-          <Field.Label>{text.duration1}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="6" />
-          <Field.Label>{text.duration6}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="12" />
-          <Field.Label>{text.duration12}</Field.Label>
-        </Field.Root>
-      </RadioGroup.Root>
-      <p className="kv-story-form-output" data-testid="mirror">
-        {text.youChose}: {value ?? '–'}
-      </p>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <RadioGroup.Root name={name} value={value} onValueChange={setValue}>
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+          </Field.Root>
+        </RadioGroup.Root>
+        <p className="kv-story-form-output" data-testid="mirror">
+          {text.youChose}: {value ?? '–'}
+        </p>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -144,45 +150,47 @@ export function ControlledEmptyDurationGroup({ locale }: { locale: FormLocale })
  * can: it shares the name and the value for you.
  */
 export function StandaloneDurationRadios({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
+  const { text, isFallback } = choiceTextsFor(locale)
   const [value, setValue] = useState('6')
   const name = `standalone-duration-${useId()}`
   return (
-    <Fieldset.Root group required lang={lang}>
-      <Fieldset.Legend>{text.durationLegend}</Fieldset.Legend>
-      <Field.Root>
-        <RadioGroup.Radio
-          name={name}
-          value="1"
-          checked={value === '1'}
-          onChange={() => {
-            setValue('1')
-          }}
-        />
-        <Field.Label>{text.duration1}</Field.Label>
-      </Field.Root>
-      <Field.Root>
-        <RadioGroup.Radio
-          name={name}
-          value="6"
-          checked={value === '6'}
-          onChange={() => {
-            setValue('6')
-          }}
-        />
-        <Field.Label>{text.duration6}</Field.Label>
-      </Field.Root>
-      <Field.Root>
-        <RadioGroup.Radio
-          name={name}
-          value="12"
-          checked={value === '12'}
-          onChange={() => {
-            setValue('12')
-          }}
-        />
-        <Field.Label>{text.duration12}</Field.Label>
-      </Field.Root>
-    </Fieldset.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Fieldset.Root group required>
+        <Fieldset.Legend>{text.durationLegend}</Fieldset.Legend>
+        <Field.Root>
+          <RadioGroup.Radio
+            name={name}
+            value="1"
+            checked={value === '1'}
+            onChange={() => {
+              setValue('1')
+            }}
+          />
+          <Field.Label>{text.duration1}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio
+            name={name}
+            value="6"
+            checked={value === '6'}
+            onChange={() => {
+              setValue('6')
+            }}
+          />
+          <Field.Label>{text.duration6}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio
+            name={name}
+            value="12"
+            checked={value === '12'}
+            onChange={() => {
+              setValue('12')
+            }}
+          />
+          <Field.Label>{text.duration12}</Field.Label>
+        </Field.Root>
+      </Fieldset.Root>
+    </InEnglishWhenFallback>
   )
 }

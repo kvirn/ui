@@ -1,15 +1,18 @@
 'use client'
 import { Heading, Prose } from '@kvirn-ui/react'
 import { useHeadingTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function InProse() {
-  const { texts, textLang } = useHeadingTexts()
+  const { texts, isFallback } = useHeadingTexts()
   return (
-    <Prose lang={textLang}>
-      <Heading as="h4">{texts.waste.heading}</Heading>
-      <p>{texts.waste.text}</p>
-      <Heading as="h5">{texts.opening.heading}</Heading>
-      <p>{texts.opening.text}</p>
-    </Prose>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Prose>
+        <Heading as="h4">{texts.waste.heading}</Heading>
+        <p>{texts.waste.text}</p>
+        <Heading as="h5">{texts.opening.heading}</Heading>
+        <p>{texts.opening.text}</p>
+      </Prose>
+    </InEnglishWhenFallback>
   )
 }

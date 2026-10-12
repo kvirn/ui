@@ -210,7 +210,6 @@ export const RTL: Story = {
         <Heading as="h1">لأي مركبة هذا الترخيص؟</Heading>
         <Stepper
           {...args}
-          lang="ar"
           messages={{
             statusWithName: ({ current, total, name }) => `الخطوة ${current} من ${total}: ${name}`,
           }}

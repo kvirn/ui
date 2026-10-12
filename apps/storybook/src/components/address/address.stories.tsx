@@ -3,6 +3,8 @@ import contract from '../../../../../packages/react/src/address/address.a11y.md?
 import guide from '../../../../../packages/react/src/address/address.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
+import { en } from '@kvirn-ui/i18n/en'
+import { InLanguage } from '../../fixture-language.tsx'
 import { usageGuide } from '../../docs-source.ts'
 
 // Components/Content/Address: the headless Address, styled by @kvirn-ui/theme. It is static
@@ -78,16 +80,18 @@ export const InCard: Story = {
   },
 }
 
-/** Right to left: the lines follow the reading direction. */
+/** Right to left: the lines follow the reading direction. Address holds no strings, so `en` only satisfies the provider. */
 export const RTL: Story = {
   render: () => (
-    <Address dir="rtl" lang="ar">
-      بلدية كفيرنبي
-      <br />
-      شارع ستورغاتان 1
-      <br />
-      <Link.Root href="tel:+46123456789">+46 123 456 789</Link.Root>
-    </Address>
+    <InLanguage locale="ar" messages={en} dir="rtl">
+      <Address>
+        بلدية كفيرنبي
+        <br />
+        شارع ستورغاتان 1
+        <br />
+        <Link.Root href="tel:+46123456789">+46 123 456 789</Link.Root>
+      </Address>
+    </InLanguage>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('link', { name: '+46 123 456 789' })).toBeVisible()

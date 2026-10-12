@@ -57,7 +57,7 @@ export const RTL: Story = {
   render: () => (
     <p dir="rtl" lang="ar">
       النتائج
-      <VisuallyHidden lang="ar">، ٣ نتائج</VisuallyHidden>
+      <VisuallyHidden>، ٣ نتائج</VisuallyHidden>
     </p>
   ),
   play: async ({ canvas }) => {

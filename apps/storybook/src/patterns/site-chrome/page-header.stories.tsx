@@ -142,8 +142,8 @@ export const LongTitle: Story = {
       <PageFrame.Root>
         <PageFrame.Main bleed>
           <PageHeader.Root>
-            <PageHeader.Title lang="fi">
-              Varhaiskasvatuksen asiakasmaksujen tarkistuslaskelmahakemus
+            <PageHeader.Title>
+              <span lang="fi">Varhaiskasvatuksen asiakasmaksujen tarkistuslaskelmahakemus</span>
             </PageHeader.Title>
             <PageHeader.Lead>Apply for a recalculation of the preschool fee.</PageHeader.Lead>
             <PageHeader.Facts>

@@ -64,7 +64,7 @@ CodeBlock has no strings of its own: the Label is your text. The keys belong to 
 ## Consumer responsibilities
 
 - Give the block a Label that says what it is ("Install", "Example request") so the group has a name (1.3.1, 2.4.6). A block without one is a plain `div`.
-- `lang` on the code or the label if it isn't in the page's language (3.1.2). Code is mostly language-neutral, but a comment or a message in it is not.
+- Code or a label that is not in the page's language goes in a nested `KvirnProvider` with `useLocale().localeProps` on your own element (3.1.2). Code is mostly language-neutral, but a comment or a message in it is not.
 - A long line wraps at any character, so say the exact text in prose when a break would mislead (a path, a hyphenated token).
 - No syntax highlighting: don't convey meaning by colour in the code (1.4.1).
 

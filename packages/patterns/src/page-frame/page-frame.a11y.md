@@ -48,7 +48,7 @@ None.
 
 ## Consumer responsibilities
 
-- One `h1` in `main`, named repeated landmarks, and `lang` on passages in another language.
+- One `h1` in `main`, named repeated landmarks, and passages in another language in a nested `KvirnProvider` with `useLocale().localeProps` on your own element (3.1.2).
 - Write the children in reading order: the frame never reorders them.
 
 ## Visual / modes

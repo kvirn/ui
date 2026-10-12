@@ -1,14 +1,17 @@
 'use client'
 import { useProse } from '@kvirn-ui/react'
 import { useProseTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function OwnElementProse() {
-  const { texts, textLang } = useProseTexts()
+  const { texts, isFallback } = useProseTexts()
   const prose = useProse()
   return (
-    <section {...prose.rootProps} aria-labelledby="processing-times" lang={textLang}>
-      <h2 id="processing-times">{texts.own.heading}</h2>
-      <p>{texts.own.text}</p>
-    </section>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <section {...prose.rootProps} aria-labelledby="processing-times">
+        <h2 id="processing-times">{texts.own.heading}</h2>
+        <p>{texts.own.text}</p>
+      </section>
+    </InEnglishWhenFallback>
   )
 }

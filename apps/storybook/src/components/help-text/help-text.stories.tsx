@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Field, Fieldset, RadioGroup, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import guide from '../../../../../packages/react/src/field/field-help-text.md?raw'
@@ -35,19 +36,21 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.personalNumber}</Field.Label>
-        <TextInput
-          name="personal-number"
-          inputMode="numeric"
-          autoComplete="off"
-          spellCheck={false}
-          className="kv-input--width-20"
-        />
-        <Field.HelpText {...args}>{text.personalNumberFormat}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.personalNumber}</Field.Label>
+          <TextInput
+            name="personal-number"
+            inputMode="numeric"
+            autoComplete="off"
+            spellCheck={false}
+            className="kv-input--width-20"
+          />
+          <Field.HelpText {...args}>{text.personalNumberFormat}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   parameters: {
@@ -73,22 +76,24 @@ export const UnderTheControl: Story = {}
  */
 export const Keyboard: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.personalNumber}</Field.Label>
-        <Field.Prose>
-          <p>{text.personalNumberWhy}</p>
-        </Field.Prose>
-        <TextInput
-          name="personal-number"
-          inputMode="numeric"
-          autoComplete="off"
-          spellCheck={false}
-          className="kv-input--width-20"
-        />
-        <Field.HelpText {...args}>{text.personalNumberFormat}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.personalNumber}</Field.Label>
+          <Field.Prose>
+            <p>{text.personalNumberWhy}</p>
+          </Field.Prose>
+          <TextInput
+            name="personal-number"
+            inputMode="numeric"
+            autoComplete="off"
+            spellCheck={false}
+            className="kv-input--width-20"
+          />
+          <Field.HelpText {...args}>{text.personalNumberFormat}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -100,16 +105,18 @@ export const Keyboard: Story = {
  */
 export const WithDescription: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.registration}</Field.Label>
-        <Field.Prose>
-          <p>{text.registrationWhere}</p>
-        </Field.Prose>
-        <TextInput name="registration" className="kv-input--width-10" />
-        <Field.HelpText>{text.registrationHint}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.registration}</Field.Label>
+          <Field.Prose>
+            <p>{text.registrationWhere}</p>
+          </Field.Prose>
+          <TextInput name="registration" className="kv-input--width-10" />
+          <Field.HelpText>{text.registrationHint}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -121,24 +128,26 @@ export const WithDescription: Story = {
  */
 export const Invalid: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required invalid lang={lang}>
-        <Field.Label>{text.personalNumber}</Field.Label>
-        <Field.Prose>
-          <p>{text.personalNumberWhy}</p>
-        </Field.Prose>
-        <TextInput
-          name="personal-number"
-          inputMode="numeric"
-          autoComplete="off"
-          spellCheck={false}
-          defaultValue="19900101"
-          className="kv-input--width-20"
-        />
-        <Field.HelpText>{text.personalNumberFormat}</Field.HelpText>
-        <Field.ErrorMessage>{text.personalNumberError}</Field.ErrorMessage>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required invalid>
+          <Field.Label>{text.personalNumber}</Field.Label>
+          <Field.Prose>
+            <p>{text.personalNumberWhy}</p>
+          </Field.Prose>
+          <TextInput
+            name="personal-number"
+            inputMode="numeric"
+            autoComplete="off"
+            spellCheck={false}
+            defaultValue="19900101"
+            className="kv-input--width-20"
+          />
+          <Field.HelpText>{text.personalNumberFormat}</Field.HelpText>
+          <Field.ErrorMessage>{text.personalNumberError}</Field.ErrorMessage>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -149,44 +158,46 @@ export const Invalid: Story = {
  */
 export const InFieldset: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Fieldset.Root group required lang={lang}>
-        <Fieldset.Legend>{text.visitDate}</Fieldset.Legend>
-        <div className="kv-story-date-boxes">
-          <Field.Root>
-            <Field.Label>{text.visitDay}</Field.Label>
-            <TextInput
-              name="day"
-              inputMode="numeric"
-              autoComplete="off"
-              spellCheck={false}
-              className="kv-input--width-2"
-            />
-          </Field.Root>
-          <Field.Root>
-            <Field.Label>{text.visitMonth}</Field.Label>
-            <TextInput
-              name="month"
-              inputMode="numeric"
-              autoComplete="off"
-              spellCheck={false}
-              className="kv-input--width-2"
-            />
-          </Field.Root>
-          <Field.Root>
-            <Field.Label>{text.visitYear}</Field.Label>
-            <TextInput
-              name="year"
-              inputMode="numeric"
-              autoComplete="off"
-              spellCheck={false}
-              className="kv-input--width-4"
-            />
-          </Field.Root>
-        </div>
-        <Fieldset.HelpText>{text.visitDateExample}</Fieldset.HelpText>
-      </Fieldset.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Fieldset.Root group required>
+          <Fieldset.Legend>{text.visitDate}</Fieldset.Legend>
+          <div className="kv-story-date-boxes">
+            <Field.Root>
+              <Field.Label>{text.visitDay}</Field.Label>
+              <TextInput
+                name="day"
+                inputMode="numeric"
+                autoComplete="off"
+                spellCheck={false}
+                className="kv-input--width-2"
+              />
+            </Field.Root>
+            <Field.Root>
+              <Field.Label>{text.visitMonth}</Field.Label>
+              <TextInput
+                name="month"
+                inputMode="numeric"
+                autoComplete="off"
+                spellCheck={false}
+                className="kv-input--width-2"
+              />
+            </Field.Root>
+            <Field.Root>
+              <Field.Label>{text.visitYear}</Field.Label>
+              <TextInput
+                name="year"
+                inputMode="numeric"
+                autoComplete="off"
+                spellCheck={false}
+                className="kv-input--width-4"
+              />
+            </Field.Root>
+          </div>
+          <Fieldset.HelpText>{text.visitDateExample}</Fieldset.HelpText>
+        </Fieldset.Root>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -198,27 +209,29 @@ export const InFieldset: Story = {
  */
 export const OptionHelpTexts: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <RadioGroup.Root name="duration" lang={lang}>
-        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-        <RadioGroup.Prose>
-          <p>{text.durationHint}</p>
-        </RadioGroup.Prose>
-        <Field.Root>
-          <RadioGroup.Radio value="1" />
-          <Field.Label>{text.duration1}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="6" />
-          <Field.Label>{text.duration6}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="12" />
-          <Field.Label>{text.duration12}</Field.Label>
-          <Field.HelpText>{text.duration12Hint}</Field.HelpText>
-        </Field.Root>
-      </RadioGroup.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <RadioGroup.Root name="duration">
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+            <Field.HelpText>{text.duration12Hint}</Field.HelpText>
+          </Field.Root>
+        </RadioGroup.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -237,17 +250,19 @@ export const OptionHelpTexts: Story = {
  */
 export const Disabled: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required disabled lang={lang}>
-        <Field.Label>{text.personalNumber}</Field.Label>
-        <TextInput
-          name="personal-number"
-          defaultValue="19900101-1234"
-          className="kv-input--width-20"
-        />
-        <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required disabled>
+          <Field.Label>{text.personalNumber}</Field.Label>
+          <TextInput
+            name="personal-number"
+            defaultValue="19900101-1234"
+            className="kv-input--width-20"
+          />
+          <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -258,18 +273,20 @@ export const Disabled: Story = {
  */
 export const ReadOnly: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.personalNumber}</Field.Label>
-        <TextInput
-          name="personal-number"
-          readOnly
-          defaultValue="19900101-1234"
-          className="kv-input--width-20"
-        />
-        <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.personalNumber}</Field.Label>
+          <TextInput
+            name="personal-number"
+            readOnly
+            defaultValue="19900101-1234"
+            className="kv-input--width-20"
+          />
+          <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -280,24 +297,26 @@ export const ReadOnly: Story = {
  */
 export const Compact: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <div className="kv-compact" lang={lang}>
-        <Field.Root required>
-          <Field.Label>{text.personalNumber}</Field.Label>
-          <Field.Prose>
-            <p>{text.personalNumberWhy}</p>
-          </Field.Prose>
-          <TextInput
-            name="personal-number"
-            inputMode="numeric"
-            autoComplete="off"
-            spellCheck={false}
-            className="kv-input--width-20"
-          />
-          <Field.HelpText>{text.personalNumberFormat}</Field.HelpText>
-        </Field.Root>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div className="kv-compact">
+          <Field.Root required>
+            <Field.Label>{text.personalNumber}</Field.Label>
+            <Field.Prose>
+              <p>{text.personalNumberWhy}</p>
+            </Field.Prose>
+            <TextInput
+              name="personal-number"
+              inputMode="numeric"
+              autoComplete="off"
+              spellCheck={false}
+              className="kv-input--width-20"
+            />
+            <Field.HelpText>{text.personalNumberFormat}</Field.HelpText>
+          </Field.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -316,13 +335,15 @@ export const LongFinnish: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.longLabel}</Field.Label>
-        <TextInput name="reference" inputMode="numeric" spellCheck={false} />
-        <Field.HelpText>{text.grantReferenceHint}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.longLabel}</Field.Label>
+          <TextInput name="reference" inputMode="numeric" spellCheck={false} />
+          <Field.HelpText>{text.grantReferenceHint}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {
@@ -341,65 +362,67 @@ function splitExample(helpText: string): { lead: string; example: string } {
 const renderHelpTextStates =
   (radioName: string): NonNullable<Story['render']> =>
   (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     const { lead, example } = splitExample(text.registrationHint)
     const choices = choiceTextsFor(localeOf(globals)).text
     return (
-      <div lang={lang}>
-        <Field.Root required>
-          <Field.Label>{text.registration}</Field.Label>
-          <Field.Prose>
-            <p>{text.registrationWhere}</p>
-          </Field.Prose>
-          <TextInput name="registration" className="kv-input--width-10" />
-          {/* The example is neutral text at the edge of a right-to-left sentence: `bdi` keeps it in place. */}
-          <Field.HelpText>
-            {lead}
-            {example === '' ? null : <bdi>{example}</bdi>}
-          </Field.HelpText>
-        </Field.Root>
-        <Field.Root required invalid>
-          <Field.Label>{text.personalNumber}</Field.Label>
-          <TextInput
-            name="personal-number"
-            inputMode="numeric"
-            autoComplete="off"
-            spellCheck={false}
-            defaultValue="19900101"
-            className="kv-input--width-20"
-          />
-          <Field.HelpText>{text.personalNumberFormat}</Field.HelpText>
-          <Field.ErrorMessage>{text.personalNumberError}</Field.ErrorMessage>
-        </Field.Root>
-        <Field.Root required disabled>
-          <Field.Label>{text.personalNumber}</Field.Label>
-          <TextInput
-            name="personal-number"
-            defaultValue="19900101-1234"
-            className="kv-input--width-20"
-          />
-          <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
-        </Field.Root>
-        <RadioGroup.Root name={radioName}>
-          <RadioGroup.Legend>{choices.durationLegend}</RadioGroup.Legend>
-          <RadioGroup.Prose>
-            <p>{choices.durationHint}</p>
-          </RadioGroup.Prose>
-          <Field.Root>
-            <RadioGroup.Radio value="1" />
-            <Field.Label>{choices.duration1}</Field.Label>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div>
+          <Field.Root required>
+            <Field.Label>{text.registration}</Field.Label>
+            <Field.Prose>
+              <p>{text.registrationWhere}</p>
+            </Field.Prose>
+            <TextInput name="registration" className="kv-input--width-10" />
+            {/* The example is neutral text at the edge of a right-to-left sentence: `bdi` keeps it in place. */}
+            <Field.HelpText>
+              {lead}
+              {example === '' ? null : <bdi>{example}</bdi>}
+            </Field.HelpText>
           </Field.Root>
-          <Field.Root>
-            <RadioGroup.Radio value="6" />
-            <Field.Label>{choices.duration6}</Field.Label>
+          <Field.Root required invalid>
+            <Field.Label>{text.personalNumber}</Field.Label>
+            <TextInput
+              name="personal-number"
+              inputMode="numeric"
+              autoComplete="off"
+              spellCheck={false}
+              defaultValue="19900101"
+              className="kv-input--width-20"
+            />
+            <Field.HelpText>{text.personalNumberFormat}</Field.HelpText>
+            <Field.ErrorMessage>{text.personalNumberError}</Field.ErrorMessage>
           </Field.Root>
-          <Field.Root>
-            <RadioGroup.Radio value="12" />
-            <Field.Label>{choices.duration12}</Field.Label>
-            <Field.HelpText>{choices.duration12Hint}</Field.HelpText>
+          <Field.Root required disabled>
+            <Field.Label>{text.personalNumber}</Field.Label>
+            <TextInput
+              name="personal-number"
+              defaultValue="19900101-1234"
+              className="kv-input--width-20"
+            />
+            <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
           </Field.Root>
-        </RadioGroup.Root>
-      </div>
+          <RadioGroup.Root name={radioName}>
+            <RadioGroup.Legend>{choices.durationLegend}</RadioGroup.Legend>
+            <RadioGroup.Prose>
+              <p>{choices.durationHint}</p>
+            </RadioGroup.Prose>
+            <Field.Root>
+              <RadioGroup.Radio value="1" />
+              <Field.Label>{choices.duration1}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <RadioGroup.Radio value="6" />
+              <Field.Label>{choices.duration6}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <RadioGroup.Radio value="12" />
+              <Field.Label>{choices.duration12}</Field.Label>
+              <Field.HelpText>{choices.duration12Hint}</Field.HelpText>
+            </Field.Root>
+          </RadioGroup.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   }
 

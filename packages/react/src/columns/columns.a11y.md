@@ -14,7 +14,7 @@ Columns is as many columns as fit, none narrower than `18rem`. It adds no ARIA, 
 | ------- | ------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Columns | `<div>` → `generic` | none. The consumer adds it with the element                            | `class="kv-columns"`, with `kv-columns--min-sm` or `-lg` and `kv-columns--gap-4` or `-8` added by the consumer for a choice that differs from the defaults. `as="ul"` with `<li>` children is a list, and its count is announced |
 | Columns | `as`                | the chosen element's own                                               | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Columns:<tag>`) and renders the default element. `className` joins, `style` and refs pass                    |
-| Columns | attributes          | passed through                                                         | `aria-*`, `id`, `lang` and every other attribute reach the element unchanged                                                                                                                                                     |
+| Columns | attributes          | passed through                                                         | `aria-*`, `id` and every other attribute reach the element unchanged                                                                                                                                                             |
 | Columns | never               | `role="list"` on `ul`/`ol` only; no `tabindex`, `inert`, `aria-hidden` | No handler, no heading, no live region, no text                                                                                                                                                                                  |
 
 `useColumns()` gives the same frozen props object (only `className`) for your own element.
@@ -60,7 +60,7 @@ Columns renders no text, so it has no message keys.
 - **No reordering.** The columns fill in DOM order, left to right (right to left in RTL). There is no `order`, `reverse` or dense packing (1.3.2, 2.4.3).
 - **Landmarks.** Columns has none to give: a landmark is a `Container` (`main`, `section`) or a `Section` (`nav`, `aside`), always named. A page has one `main`.
 - **DOM order is the visual order.** Write children in the order they are read and focused (1.3.2, 2.4.3). There is no way to reorder them visually.
-- **Language.** `lang` on any text in another language (3.1.2).
+- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2).
 
 ## Visual / modes
 

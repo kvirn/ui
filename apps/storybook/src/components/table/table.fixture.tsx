@@ -234,8 +234,8 @@ const formatLocales: Record<'sv' | 'fi' | 'nb' | 'nn' | 'en', string> = {
 
 interface ResolvedTexts {
   texts: TableTexts
-  /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
-  lang: 'en' | undefined
+  /** True when the locale has no texts and the story renders in English (3.1.2). */
+  isFallback: boolean
   /** The provider's `locale` for these texts: what `useFormat()` then formats in. */
   formatLocale: string
 }
@@ -245,7 +245,7 @@ export function tableTextsFor(locale: FormLocale): ResolvedTexts {
   const texts = tableTexts[locale]
   return {
     texts: texts ?? en,
-    lang: texts === undefined ? 'en' : undefined,
+    isFallback: texts === undefined,
     formatLocale: formatLocales[locale],
   }
 }

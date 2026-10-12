@@ -28,12 +28,12 @@ describe('Heading', () => {
   test('adds only its classes, no role or ARIA, and passes attributes and the ref through', async () => {
     const ref = createRef<HTMLHeadingElement>()
     await render(
-      <Heading as="h2" id="kontakt" lang="en" ref={ref}>
+      <Heading as="h2" id="kontakt" ref={ref}>
         Contact us
       </Heading>,
     )
     const element = page.getByRole('heading').element()
-    expect(element.getAttributeNames().sort()).toEqual(['class', 'id', 'lang'])
+    expect(element.getAttributeNames().sort()).toEqual(['class', 'id'])
     expect(ref.current).toBe(element)
   })
 

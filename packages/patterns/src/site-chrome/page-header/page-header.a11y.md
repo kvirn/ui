@@ -49,7 +49,7 @@ None.
 
 - Exactly one `h1` per page, which is `PageHeader.Title`. Do not add another heading in the band.
 - A fact is a real pair: the term names it and the description gives it. Do not write "Passed" for a result that has not been recorded.
-- `lang` on a title or fact in another language than the page (3.1.2).
+- A title or fact in another language than the page goes in a nested `KvirnProvider` with `useLocale().localeProps` on your own element (3.1.2).
 
 ## Visual / modes
 

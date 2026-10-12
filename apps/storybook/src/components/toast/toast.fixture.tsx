@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, ButtonGroup, Dialog, KvirnProvider, useToast } from '@kvirn-ui/react'
 import type { ToastVariant } from '@kvirn-ui/react'
 import { useState } from 'react'
@@ -248,7 +249,7 @@ export function toastTextsFor(locale: FormLocale) {
   const text = toastTexts[locale]
   return {
     text: text ?? textsEn,
-    lang: text === undefined ? ('en' as const) : undefined,
+    isFallback: text === undefined,
     providerLocale: text === undefined ? ('en' as const) : locale,
     messages: messagesFor(locale),
   }
@@ -271,31 +272,32 @@ function SaveSettingsButton({
   withAction,
   focus,
 }: Required<Pick<ToastDemoProps, 'locale' | 'variant' | 'withBody' | 'withAction' | 'focus'>>) {
-  const { text, lang } = toastTextsFor(locale)
+  const { text, isFallback } = toastTextsFor(locale)
   const toast = useToast()
   const [outcome, setOutcome] = useState('–')
   return (
-    <>
-      <Button
-        lang={lang}
-        onClick={() =>
-          toast.show({
-            variant,
-            title: text.settingsSaved,
-            ...(withBody && { body: <p lang={lang}>{text.settingsSavedBody}</p> }),
-            ...(withAction && {
-              action: { label: text.undo, onPress: () => setOutcome(text.undo) },
-            }),
-            focus,
-          })
-        }
-      >
-        {text.saveSettings}
-      </Button>
-      <p lang={lang}>
-        {text.outcomeLabel}: <output data-testid="outcome">{outcome}</output>
-      </p>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Button
+          onClick={() =>
+            toast.show({
+              variant,
+              title: text.settingsSaved,
+              ...(withBody && { body: <p>{text.settingsSavedBody}</p> }),
+              ...(withAction && {
+                action: { label: text.undo, onPress: () => setOutcome(text.undo) },
+              }),
+              focus,
+            })
+          }
+        >
+          {text.saveSettings}
+        </Button>
+        <p>
+          {text.outcomeLabel}: <output data-testid="outcome">{outcome}</output>
+        </p>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -327,17 +329,19 @@ export function SaveSettings({
 }
 
 function StatusButtons({ locale }: { locale: FormLocale }) {
-  const { text, lang } = toastTextsFor(locale)
+  const { text, isFallback } = toastTextsFor(locale)
   const toast = useToast()
   return (
-    <ButtonGroup lang={lang} aria-label={text.showMessages}>
-      <Button onClick={() => toast.show({ variant: 'info', title: text.exportRunning })}>
-        {text.startExport}
-      </Button>
-      <Button onClick={() => toast.show({ variant: 'success', title: text.settingsSaved })}>
-        {text.saveSettings}
-      </Button>
-    </ButtonGroup>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <ButtonGroup aria-label={text.showMessages}>
+        <Button onClick={() => toast.show({ variant: 'info', title: text.exportRunning })}>
+          {text.startExport}
+        </Button>
+        <Button onClick={() => toast.show({ variant: 'success', title: text.settingsSaved })}>
+          {text.saveSettings}
+        </Button>
+      </ButtonGroup>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -352,22 +356,24 @@ export function StatusToasts({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function JobButtons({ locale }: { locale: FormLocale }) {
-  const { text, lang } = toastTextsFor(locale)
+  const { text, isFallback } = toastTextsFor(locale)
   const toast = useToast()
   return (
-    <ButtonGroup lang={lang} aria-label={text.startExport}>
-      <Button
-        onClick={() => {
-          toast.show({ id: 'export', busy: true, title: text.exportRunning })
-          // The result replaces the job toast: the same id, announced once as the result.
-          setTimeout(() => {
-            toast.show({ id: 'export', variant: 'success', title: text.reportReady })
-          }, 2500)
-        }}
-      >
-        {text.startExport}
-      </Button>
-    </ButtonGroup>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <ButtonGroup aria-label={text.startExport}>
+        <Button
+          onClick={() => {
+            toast.show({ id: 'export', busy: true, title: text.exportRunning })
+            // The result replaces the job toast: the same id, announced once as the result.
+            setTimeout(() => {
+              toast.show({ id: 'export', variant: 'success', title: text.reportReady })
+            }, 2500)
+          }}
+        >
+          {text.startExport}
+        </Button>
+      </ButtonGroup>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -382,35 +388,37 @@ export function JobToast({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function DeleteDraftButtons({ locale }: { locale: FormLocale }) {
-  const { text, lang } = toastTextsFor(locale)
+  const { text, isFallback } = toastTextsFor(locale)
   const toast = useToast()
   const [deleted, setDeleted] = useState(false)
   return (
-    <>
-      <p lang={lang}>
-        {text.draftLabel}{' '}
-        <output data-testid="draft">{deleted ? text.draftRemoved : text.draftKept}</output>
-      </p>
-      <ButtonGroup lang={lang} aria-label={text.deleteDraft}>
-        <Button
-          disabled={deleted}
-          onClick={() => {
-            setDeleted(true)
-            toast.show({
-              variant: 'success',
-              title: text.draftDeleted,
-              action: { label: text.undo, onPress: () => setDeleted(false) },
-            })
-          }}
-        >
-          {text.deleteDraft}
-        </Button>
-        {/* Undo also lives on the page: the toast is a shortcut, never the only way back. */}
-        <Button disabled={!deleted} onClick={() => setDeleted(false)}>
-          {text.restoreDraft}
-        </Button>
-      </ButtonGroup>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <p>
+          {text.draftLabel}{' '}
+          <output data-testid="draft">{deleted ? text.draftRemoved : text.draftKept}</output>
+        </p>
+        <ButtonGroup aria-label={text.deleteDraft}>
+          <Button
+            disabled={deleted}
+            onClick={() => {
+              setDeleted(true)
+              toast.show({
+                variant: 'success',
+                title: text.draftDeleted,
+                action: { label: text.undo, onPress: () => setDeleted(false) },
+              })
+            }}
+          >
+            {text.deleteDraft}
+          </Button>
+          {/* Undo also lives on the page: the toast is a shortcut, never the only way back. */}
+          <Button disabled={!deleted} onClick={() => setDeleted(false)}>
+            {text.restoreDraft}
+          </Button>
+        </ButtonGroup>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -428,25 +436,27 @@ export function DeleteDraft({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function TimedButtons({ locale }: { locale: FormLocale }) {
-  const { text, lang } = toastTextsFor(locale)
+  const { text, isFallback } = toastTextsFor(locale)
   const toast = useToast()
   return (
-    <ButtonGroup lang={lang} aria-label={text.showMessages}>
-      <Button onClick={() => toast.show({ variant: 'success', title: text.linkCopied })}>
-        {text.copyLink}
-      </Button>
-      <Button
-        onClick={() =>
-          toast.show({
-            variant: 'info',
-            title: text.reportReady,
-            action: { label: text.openReport, onPress: () => {} },
-          })
-        }
-      >
-        {text.reportReady}
-      </Button>
-    </ButtonGroup>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <ButtonGroup aria-label={text.showMessages}>
+        <Button onClick={() => toast.show({ variant: 'success', title: text.linkCopied })}>
+          {text.copyLink}
+        </Button>
+        <Button
+          onClick={() =>
+            toast.show({
+              variant: 'info',
+              title: text.reportReady,
+              action: { label: text.openReport, onPress: () => {} },
+            })
+          }
+        >
+          {text.reportReady}
+        </Button>
+      </ButtonGroup>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -466,45 +476,47 @@ export function TimedToasts({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function StackingButtons({ locale }: { locale: FormLocale }) {
-  const { text, lang } = toastTextsFor(locale)
+  const { text, isFallback } = toastTextsFor(locale)
   const toast = useToast()
   const [outcome, setOutcome] = useState('–')
   return (
-    <>
-      <ButtonGroup lang={lang} aria-label={text.showMessages}>
-        {[3, 12].map((count) => (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <ButtonGroup aria-label={text.showMessages}>
+          {[3, 12].map((count) => (
+            <Button
+              key={count}
+              onClick={() => {
+                for (let position = 1; position <= count; position += 1) {
+                  toast.show({ variant: 'info', title: text.numbered(position) })
+                }
+              }}
+            >
+              {count === 3 ? text.showThree : text.showTwelve}
+            </Button>
+          ))}
+          {/* The same id updates the toast in place: ten saves are one toast. */}
           <Button
-            key={count}
+            onClick={() =>
+              toast.show({ id: 'draft-saved', variant: 'success', title: text.draftSaved })
+            }
+          >
+            {text.saveDraft}
+          </Button>
+          <Button
             onClick={() => {
-              for (let position = 1; position <= count; position += 1) {
-                toast.show({ variant: 'info', title: text.numbered(position) })
-              }
+              toast.dismissAll()
+              setOutcome(text.allDismissed)
             }}
           >
-            {count === 3 ? text.showThree : text.showTwelve}
+            {text.dismissAll}
           </Button>
-        ))}
-        {/* The same id updates the toast in place: ten saves are one toast. */}
-        <Button
-          onClick={() =>
-            toast.show({ id: 'draft-saved', variant: 'success', title: text.draftSaved })
-          }
-        >
-          {text.saveDraft}
-        </Button>
-        <Button
-          onClick={() => {
-            toast.dismissAll()
-            setOutcome(text.allDismissed)
-          }}
-        >
-          {text.dismissAll}
-        </Button>
-      </ButtonGroup>
-      <p lang={lang}>
-        {text.outcomeLabel}: <output data-testid="outcome">{outcome}</output>
-      </p>
-    </>
+        </ButtonGroup>
+        <p>
+          {text.outcomeLabel}: <output data-testid="outcome">{outcome}</output>
+        </p>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -523,24 +535,26 @@ export function StackedToasts({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function KeyboardButtons({ locale }: { locale: FormLocale }) {
-  const { text, lang } = toastTextsFor(locale)
+  const { text, isFallback } = toastTextsFor(locale)
   const toast = useToast()
   return (
-    <ButtonGroup lang={lang} aria-label={text.showMessages}>
-      <Button
-        onClick={() => {
-          toast.show({
-            variant: 'success',
-            title: text.draftDeleted,
-            action: { label: text.undo, onPress: () => {} },
-          })
-          toast.show({ variant: 'info', title: text.exportRunning })
-        }}
-      >
-        {text.showMessages}
-      </Button>
-      <Button>{text.after}</Button>
-    </ButtonGroup>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <ButtonGroup aria-label={text.showMessages}>
+        <Button
+          onClick={() => {
+            toast.show({
+              variant: 'success',
+              title: text.draftDeleted,
+              action: { label: text.undo, onPress: () => {} },
+            })
+            toast.show({ variant: 'info', title: text.exportRunning })
+          }}
+        >
+          {text.showMessages}
+        </Button>
+        <Button>{text.after}</Button>
+      </ButtonGroup>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -559,26 +573,27 @@ export function KeyboardToasts({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function EveryToastButton({ locale }: { locale: FormLocale }) {
-  const { text, lang } = toastTextsFor(locale)
+  const { text, isFallback } = toastTextsFor(locale)
   const toast = useToast()
   return (
-    <Button
-      lang={lang}
-      onClick={() => {
-        toast.show({
-          variant: 'success',
-          title: text.settingsSaved,
-          body: <p lang={lang}>{text.settingsSavedBody}</p>,
-        })
-        toast.show({
-          variant: 'info',
-          title: text.reportReady,
-          action: { label: text.openReport, onPress: () => {} },
-        })
-      }}
-    >
-      {text.showMessages}
-    </Button>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Button
+        onClick={() => {
+          toast.show({
+            variant: 'success',
+            title: text.settingsSaved,
+            body: <p>{text.settingsSavedBody}</p>,
+          })
+          toast.show({
+            variant: 'info',
+            title: text.reportReady,
+            action: { label: text.openReport, onPress: () => {} },
+          })
+        }}
+      >
+        {text.showMessages}
+      </Button>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -593,22 +608,23 @@ export function EveryToast({ locale = 'sv' }: { locale?: FormLocale }) {
 }
 
 function LongToastButton({ locale }: { locale: FormLocale }) {
-  const { text, lang } = toastTextsFor(locale)
+  const { text, isFallback } = toastTextsFor(locale)
   const toast = useToast()
   return (
-    <Button
-      lang={lang}
-      onClick={() =>
-        toast.show({
-          variant: 'info',
-          title: text.longTitle,
-          body: <p lang={lang}>{text.longBody}</p>,
-          action: { label: text.undo, onPress: () => {} },
-        })
-      }
-    >
-      {text.showMessages}
-    </Button>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Button
+        onClick={() =>
+          toast.show({
+            variant: 'info',
+            title: text.longTitle,
+            body: <p>{text.longBody}</p>,
+            action: { label: text.undo, onPress: () => {} },
+          })
+        }
+      >
+        {text.showMessages}
+      </Button>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -623,35 +639,35 @@ export function LongToast({ locale = 'fi' }: { locale?: FormLocale }) {
 }
 
 function DialogWithToast({ locale }: { locale: FormLocale }) {
-  const { text, lang } = toastTextsFor(locale)
+  const { text, isFallback } = toastTextsFor(locale)
   const toast = useToast()
   const [open, setOpen] = useState(false)
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger className="kv-button" lang={lang}>
-        {text.openDialog}
-      </Dialog.Trigger>
-      <Dialog.Popup lang={lang}>
-        <Dialog.Title>{text.openDialog}</Dialog.Title>
-        <Dialog.Close />
-        <Dialog.Description>{text.dialogDescription}</Dialog.Description>
-        <Dialog.Actions>
-          <Button
-            className="kv-button--primary"
-            onClick={() => {
-              toast.show({ variant: 'success', title: text.numberSaved })
-              setOpen(false)
-            }}
-          >
-            {text.saveNumber}
-          </Button>
-          {/* While the dialog is open the toast waits: the region would be inert behind it. */}
-          <Button onClick={() => toast.show({ variant: 'info', title: text.heldMessage })}>
-            {text.showNow}
-          </Button>
-        </Dialog.Actions>
-      </Dialog.Popup>
-    </Dialog.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Dialog.Root open={open} onOpenChange={setOpen}>
+        <Dialog.Trigger className="kv-button">{text.openDialog}</Dialog.Trigger>
+        <Dialog.Popup>
+          <Dialog.Title>{text.openDialog}</Dialog.Title>
+          <Dialog.Close />
+          <Dialog.Description>{text.dialogDescription}</Dialog.Description>
+          <Dialog.Actions>
+            <Button
+              className="kv-button--primary"
+              onClick={() => {
+                toast.show({ variant: 'success', title: text.numberSaved })
+                setOpen(false)
+              }}
+            >
+              {text.saveNumber}
+            </Button>
+            {/* While the dialog is open the toast waits: the region would be inert behind it. */}
+            <Button onClick={() => toast.show({ variant: 'info', title: text.heldMessage })}>
+              {text.showNow}
+            </Button>
+          </Dialog.Actions>
+        </Dialog.Popup>
+      </Dialog.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -669,21 +685,9 @@ export function ToastNextToADialog({ locale = 'sv' }: { locale?: FormLocale }) {
   )
 }
 
-function ShowToastButton({
-  label,
-  title,
-  lang,
-}: {
-  label: string
-  title: string
-  lang: 'en' | undefined
-}) {
+function ShowToastButton({ label, title }: { label: string; title: string }) {
   const toast = useToast()
-  return (
-    <Button lang={lang} onClick={() => toast.show({ variant: 'success', title })}>
-      {label}
-    </Button>
-  )
+  return <Button onClick={() => toast.show({ variant: 'success', title })}>{label}</Button>
 }
 
 /**
@@ -691,15 +695,17 @@ function ShowToastButton({
  * one region, and the first provider that mounted sets `limit` and `autoDismiss`.
  */
 export function TwoProviders({ locale = 'sv' }: { locale?: FormLocale }) {
-  const { text, lang, providerLocale, messages } = toastTextsFor(locale)
+  const { text, isFallback, providerLocale, messages } = toastTextsFor(locale)
   return (
-    <>
-      <KvirnProvider locale={providerLocale} messages={messages} toast={{ limit: 10 }}>
-        <ShowToastButton label={text.saveSettings} title={text.settingsSaved} lang={lang} />
-      </KvirnProvider>
-      <KvirnProvider locale={providerLocale} messages={messages}>
-        <ShowToastButton label={text.copyLink} title={text.linkCopied} lang={lang} />
-      </KvirnProvider>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <KvirnProvider locale={providerLocale} messages={messages} toast={{ limit: 10 }}>
+          <ShowToastButton label={text.saveSettings} title={text.settingsSaved} />
+        </KvirnProvider>
+        <KvirnProvider locale={providerLocale} messages={messages}>
+          <ShowToastButton label={text.copyLink} title={text.linkCopied} />
+        </KvirnProvider>
+      </>
+    </InEnglishWhenFallback>
   )
 }

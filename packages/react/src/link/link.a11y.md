@@ -10,16 +10,16 @@ Link navigates. An action is a Button. Link has no `disabled` prop, by type: a d
 
 ## Roles, states, properties
 
-| Part              | Element / role                         | ARIA                              | Notes                                                                                                                                                                     |
-| ----------------- | -------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Link.Root         | `<a href>` → `link`                    | `aria-current` from `current`     | `current`: `'page'`, `'step'`, `'location'`, `'date'`, `'time'` or `true`. `false` or absent sets nothing. `data-current` when set                                        |
-|                   | `target="_blank"`                      | none                              | `rel="noopener noreferrer"` is added to the consumer's own `rel` tokens, also with `as="a"` or an `as` component                                                          |
-|                   | keyboard focus                         | none                              | `data-focus-visible` while the link matches `:focus-visible`                                                                                                              |
-|                   | another language                       | `lang`, `hrefLang` passed through | `<Link.Root href="/fi" hrefLang="fi" lang="fi">Suomeksi</Link.Root>` (3.1.2)                                                                                              |
-| Link.Icon         | `<span>`, decorative                   | `aria-hidden="true"`              | `class="kv-link-icon"`. Always hidden: `aria-hidden` can't be turned off, so the icon is never part of the link's name (2.5.3). Put it first. Also exported as `LinkIcon` |
-| Link.NewTabNotice | `<span>`, part of the link's name      | none                              | Text from `link.newTabNotice`. The consumer decides whether to hide it visually. Also exported as `LinkNewTabNotice`                                                      |
-|                   | `target="_blank"` without a notice     | –                                 | Nothing: no type error and no dev warning (maintainer, 2026-10-05). Adding the notice is the consumer's responsibility                                                    |
-|                   | link component doesn't render an `<a>` | –                                 | Dev warning: the registered component must forward its ref and render an `<a>`                                                                                            |
+| Part              | Element / role                         | ARIA                          | Notes                                                                                                                                                                     |
+| ----------------- | -------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Link.Root         | `<a href>` → `link`                    | `aria-current` from `current` | `current`: `'page'`, `'step'`, `'location'`, `'date'`, `'time'` or `true`. `false` or absent sets nothing. `data-current` when set                                        |
+|                   | `target="_blank"`                      | none                          | `rel="noopener noreferrer"` is added to the consumer's own `rel` tokens, also with `as="a"` or an `as` component                                                          |
+|                   | keyboard focus                         | none                          | `data-focus-visible` while the link matches `:focus-visible`                                                                                                              |
+|                   | another language                       | `hrefLang` passed through     | `<span lang="fi"><Link.Root href="/fi" hrefLang="fi">Suomeksi</Link.Root></span>` (3.1.2)                                                                                 |
+| Link.Icon         | `<span>`, decorative                   | `aria-hidden="true"`          | `class="kv-link-icon"`. Always hidden: `aria-hidden` can't be turned off, so the icon is never part of the link's name (2.5.3). Put it first. Also exported as `LinkIcon` |
+| Link.NewTabNotice | `<span>`, part of the link's name      | none                          | Text from `link.newTabNotice`. The consumer decides whether to hide it visually. Also exported as `LinkNewTabNotice`                                                      |
+|                   | `target="_blank"` without a notice     | –                             | Nothing: no type error and no dev warning (maintainer, 2026-10-05). Adding the notice is the consumer's responsibility                                                    |
+|                   | link component doesn't render an `<a>` | –                             | Dev warning: the registered component must forward its ref and render an `<a>`                                                                                            |
 
 The service link is `className="kv-link--service"` on a Link: a look and not a role, so the element, the role and the keys are the same as any link. It has no disabled state, because a link has none (an unavailable e-service is text, not a dimmed link).
 
@@ -74,7 +74,7 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 - A link that opens a new window or tab must say so: put `<Link.NewTabNotice />` inside every `target="_blank"` link, or better, don't open new tabs (3.2.5, G201). Link does not check this: there is no type error and no dev warning. With `useLink`, render `link.newTabNotice` inside the link yourself.
 - If you hide the notice visually, hide it with a visually-hidden technique, not `display: none` or `aria-hidden`, so it stays in the name. Consider showing it: sighted users benefit too.
 - Set `current="page"` on the link to the current page, for example in navigation. Link doesn't detect it from the router.
-- For a link in another language, set `lang` (the text's language) and `hrefLang` (the target's language) (3.1.2).
+- For a link in another language, put it in your own element with `lang` (the text's language, 3.1.2). `hrefLang` names the target's language, not the text's.
 - Register a router link component that forwards its ref and renders an `<a>`. Use `as="a"` for downloads and other links the router mustn't handle.
 - When overriding `newTabNotice`, keep it true to what happens (3.2.5) and consistent with any visible text (2.5.3).
 - Style `[data-current]` and `[data-focus-visible]` (or `:focus-visible`). Don't show the current page by colour alone (1.4.1).
@@ -92,7 +92,7 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 - 2.1.1 Keyboard: native `<a href>`, Enter (Keyboard rows above).
 - 2.4.4 Link Purpose (In Context): consumer text, plus the new-tab notice in the name.
 - 2.4.7 Focus Visible: `data-focus-visible`.
-- 3.1.2 Language of Parts: `lang` and `hrefLang` passed through (`link.test.tsx › passes lang and hrefLang through`).
+- 3.1.2 Language of Parts: yours, a `lang` ancestor on your own element. `hrefLang` is only passed through (`link.test.tsx › passes hrefLang through`).
 - 3.2.5 Change on Request (G201): translated new-tab notice. Using it is the consumer's job: Link doesn't warn when it's missing.
 - 4.1.2 Name, Role, Value: role `link`, `aria-current` (`link.test.tsx`).
 

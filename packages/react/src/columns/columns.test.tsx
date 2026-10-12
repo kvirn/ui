@@ -68,19 +68,12 @@ describe('rendering', () => {
     expect(attributeNames).not.toContain('inert')
   })
 
-  test('passes attributes through: id, lang, aria-label and title', async () => {
+  test('passes attributes through: id, aria-label and title', async () => {
     await render(
-      <Columns
-        data-testid="layout"
-        id="innehall"
-        lang="fi"
-        aria-label="Kokoelma"
-        title="Otsikko"
-      />,
+      <Columns data-testid="layout" id="innehall" aria-label="Kokoelma" title="Otsikko" />,
     )
     const layout = page.getByTestId('layout')
     await expect.element(layout).toHaveAttribute('id', 'innehall')
-    await expect.element(layout).toHaveAttribute('lang', 'fi')
     await expect.element(layout).toHaveAttribute('aria-label', 'Kokoelma')
     await expect.element(layout).toHaveAttribute('title', 'Otsikko')
   })

@@ -127,7 +127,7 @@ describe('rendering', () => {
     const rootRef = createRef<HTMLDivElement>()
     const labelRef = createRef<HTMLLabelElement>()
     await render(
-      <Field.Root ref={rootRef} className="egen" data-testid="root" lang="sv">
+      <Field.Root ref={rootRef} className="egen" data-testid="root">
         <Field.Label ref={labelRef} className="egen-etikett" title="Namnet">
           Namn
         </Field.Label>
@@ -136,7 +136,6 @@ describe('rendering', () => {
     )
     expect(rootRef.current).toBe(page.getByTestId('root').element())
     await expect.element(page.getByTestId('root')).toHaveClass('egen', 'kv-field')
-    await expect.element(page.getByTestId('root')).toHaveAttribute('lang', 'sv')
     expect(labelRef.current?.className).toBe('egen-etikett kv-field-label')
   })
 })
@@ -1157,7 +1156,7 @@ describe('Field.HelpText (Plan 0029)', () => {
       <Field.Root invalid disabled>
         <Field.Label marker="none">Namn</Field.Label>
         <TextInput />
-        <Field.HelpText ref={ref} lang="sv" data-testid="first">
+        <Field.HelpText ref={ref} data-testid="first">
           Som i passet.
         </Field.HelpText>
         <Field.HelpText data-testid="second">Ett till.</Field.HelpText>
@@ -1165,7 +1164,6 @@ describe('Field.HelpText (Plan 0029)', () => {
       </Field.Root>,
     )
     expect(ref.current).toBe(page.getByTestId('first').element())
-    await expect.element(page.getByTestId('first')).toHaveAttribute('lang', 'sv')
     await expect.element(page.getByTestId('second')).toHaveAttribute('data-disabled', '')
     // Both help texts are listed, so each has an id: 2 help texts and the error.
     expect(describedByIds('Namn')).toHaveLength(3)

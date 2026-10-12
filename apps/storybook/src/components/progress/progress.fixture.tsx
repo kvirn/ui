@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Alert, Button, Progress } from '@kvirn-ui/react'
 import { useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -77,10 +78,10 @@ const progressTexts: Record<FormLocale, ProgressTexts | undefined> = {
 /** The fixture text in a locale. */
 export function progressTextsFor(locale: FormLocale): {
   text: ProgressTexts
-  lang: 'en' | undefined
+  isFallback: boolean
 } {
   const text = progressTexts[locale]
-  return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }
+  return { text: text ?? textsEn, isFallback: text === undefined }
 }
 
 /**
@@ -97,7 +98,7 @@ export function SendApplication({
   succeedAfterMilliseconds?: number
   fail?: boolean
 }) {
-  const { text, lang } = progressTextsFor(locale)
+  const { text, isFallback } = progressTextsFor(locale)
   const [state, setState] = useState<'idle' | 'sending' | 'failed'>('idle')
 
   const send = () => {
@@ -106,22 +107,24 @@ export function SendApplication({
   }
 
   return (
-    <div lang={lang}>
-      <div className="kv-button-group">
-        <Button className="kv-button--primary" busy={state === 'sending'} onClick={send}>
-          {text.send}
-        </Button>
-        {state === 'sending' ? (
-          <Progress.Root label={text.sending}>
-            <Progress.Label />
-          </Progress.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <div className="kv-button-group">
+          <Button className="kv-button--primary" busy={state === 'sending'} onClick={send}>
+            {text.send}
+          </Button>
+          {state === 'sending' ? (
+            <Progress.Root label={text.sending}>
+              <Progress.Label />
+            </Progress.Root>
+          ) : null}
+        </div>
+        {state === 'failed' ? (
+          <Alert.Danger announce="polite">
+            <Alert.Title>{text.failed}</Alert.Title>
+          </Alert.Danger>
         ) : null}
       </div>
-      {state === 'failed' ? (
-        <Alert.Danger announce="polite">
-          <Alert.Title>{text.failed}</Alert.Title>
-        </Alert.Danger>
-      ) : null}
-    </div>
+    </InEnglishWhenFallback>
   )
 }

@@ -84,7 +84,7 @@ Prose renders no text, so it has no message keys.
 - **The content's semantics.** Real headings in order, real lists, links that say where they go, tables with headers (1.3.1, 2.4.4). Prose styles what is there. It doesn't add structure.
 - **Content from a CMS or Markdown** needs the same checks before it is rendered.
 - **A description in a Field or Fieldset is short plain text.** Don't put a heading, list, table or link in it: the accessible description keeps only the text. Put such a Prose outside the Field.
-- **Language.** `lang` on prose in another language (3.1.2).
+- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2).
 - **Size and colour choices.** `kv-prose--small` only for notes and metadata, and the contrast of any `--kv-prose-color-*` you override (see Sizes, width and colour roles).
 
 ## Visual / modes

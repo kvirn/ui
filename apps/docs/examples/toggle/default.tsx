@@ -1,8 +1,13 @@
 'use client'
 import { Toggle } from '@kvirn-ui/react'
 import { useToggleTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function DefaultToggle() {
-  const { texts, textLang } = useToggleTexts()
-  return <Toggle lang={textLang}>{texts.unreadOnly}</Toggle>
+  const { texts, isFallback } = useToggleTexts()
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Toggle>{texts.unreadOnly}</Toggle>
+    </InEnglishWhenFallback>
+  )
 }

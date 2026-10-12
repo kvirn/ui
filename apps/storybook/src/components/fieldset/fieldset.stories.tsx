@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Field, Fieldset, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/fieldset/fieldset.a11y.md?raw'
 import guide from '../../../../../packages/react/src/fieldset/fieldset.md?raw'
@@ -69,31 +70,33 @@ const meta = {
   // A street, a postcode and a town: three questions in one group. The localised text is taken at
   // the top, and the locale comes from the toolbar through `withFormLocale`.
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Fieldset.Root {...args} lang={lang}>
-        <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
-        <Field.Root required>
-          <Field.Label>{text.street}</Field.Label>
-          <TextInput name="street" autoComplete="street-address" />
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.postcode}</Field.Label>
-          <TextInput
-            name="postcode"
-            inputMode="numeric"
-            spellCheck={false}
-            autoComplete="postal-code"
-            className="kv-input--width-6"
-          />
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.town}</Field.Label>
-          <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
-        </Field.Root>
-        <Fieldset.HelpText>{text.addressFormat}</Fieldset.HelpText>
-        <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
-      </Fieldset.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Fieldset.Root {...args}>
+          <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
+          <Field.Root required>
+            <Field.Label>{text.street}</Field.Label>
+            <TextInput name="street" autoComplete="street-address" />
+          </Field.Root>
+          <Field.Root required>
+            <Field.Label>{text.postcode}</Field.Label>
+            <TextInput
+              name="postcode"
+              inputMode="numeric"
+              spellCheck={false}
+              autoComplete="postal-code"
+              className="kv-input--width-6"
+            />
+          </Field.Root>
+          <Field.Root required>
+            <Field.Label>{text.town}</Field.Label>
+            <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
+          </Field.Root>
+          <Fieldset.HelpText>{text.addressFormat}</Fieldset.HelpText>
+          <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
+        </Fieldset.Root>
+      </InEnglishWhenFallback>
     )
   },
   parameters: {
@@ -123,34 +126,36 @@ export const Default: Story = {
  */
 export const Keyboard: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Fieldset.Root {...args} lang={lang}>
-        <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
-        <Fieldset.Prose>
-          <p>{text.addressHint}</p>
-        </Fieldset.Prose>
-        <Field.Root required>
-          <Field.Label>{text.street}</Field.Label>
-          <TextInput name="street" autoComplete="street-address" />
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.postcode}</Field.Label>
-          <TextInput
-            name="postcode"
-            inputMode="numeric"
-            spellCheck={false}
-            autoComplete="postal-code"
-            className="kv-input--width-6"
-          />
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.town}</Field.Label>
-          <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
-        </Field.Root>
-        <Fieldset.HelpText>{text.addressFormat}</Fieldset.HelpText>
-        <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
-      </Fieldset.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Fieldset.Root {...args}>
+          <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
+          <Fieldset.Prose>
+            <p>{text.addressHint}</p>
+          </Fieldset.Prose>
+          <Field.Root required>
+            <Field.Label>{text.street}</Field.Label>
+            <TextInput name="street" autoComplete="street-address" />
+          </Field.Root>
+          <Field.Root required>
+            <Field.Label>{text.postcode}</Field.Label>
+            <TextInput
+              name="postcode"
+              inputMode="numeric"
+              spellCheck={false}
+              autoComplete="postal-code"
+              className="kv-input--width-6"
+            />
+          </Field.Root>
+          <Field.Root required>
+            <Field.Label>{text.town}</Field.Label>
+            <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
+          </Field.Root>
+          <Fieldset.HelpText>{text.addressFormat}</Fieldset.HelpText>
+          <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
+        </Fieldset.Root>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -158,33 +163,35 @@ export const Keyboard: Story = {
 /** The description (a Prose) describes the group: it is announced when focus enters it. */
 export const WithDescription: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Fieldset.Root {...args} lang={lang}>
-        <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
-        <Fieldset.Prose>
-          <p>{text.addressHint}</p>
-        </Fieldset.Prose>
-        <Field.Root required>
-          <Field.Label>{text.street}</Field.Label>
-          <TextInput name="street" autoComplete="street-address" />
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.postcode}</Field.Label>
-          <TextInput
-            name="postcode"
-            inputMode="numeric"
-            spellCheck={false}
-            autoComplete="postal-code"
-            className="kv-input--width-6"
-          />
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.town}</Field.Label>
-          <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
-        </Field.Root>
-        <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
-      </Fieldset.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Fieldset.Root {...args}>
+          <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
+          <Fieldset.Prose>
+            <p>{text.addressHint}</p>
+          </Fieldset.Prose>
+          <Field.Root required>
+            <Field.Label>{text.street}</Field.Label>
+            <TextInput name="street" autoComplete="street-address" />
+          </Field.Root>
+          <Field.Root required>
+            <Field.Label>{text.postcode}</Field.Label>
+            <TextInput
+              name="postcode"
+              inputMode="numeric"
+              spellCheck={false}
+              autoComplete="postal-code"
+              className="kv-input--width-6"
+            />
+          </Field.Root>
+          <Field.Root required>
+            <Field.Label>{text.town}</Field.Label>
+            <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
+          </Field.Root>
+          <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
+        </Fieldset.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -201,34 +208,36 @@ export const WithDescription: Story = {
  */
 export const Invalid: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Fieldset.Root {...args} invalid lang={lang}>
-        <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
-        <Fieldset.Prose>
-          <p>{text.addressHint}</p>
-        </Fieldset.Prose>
-        <Field.Root required invalid>
-          <Field.Label>{text.street}</Field.Label>
-          <TextInput name="street" autoComplete="street-address" />
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.postcode}</Field.Label>
-          <TextInput
-            name="postcode"
-            inputMode="numeric"
-            spellCheck={false}
-            autoComplete="postal-code"
-            className="kv-input--width-6"
-          />
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.town}</Field.Label>
-          <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
-        </Field.Root>
-        <Fieldset.HelpText>{text.addressFormat}</Fieldset.HelpText>
-        <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
-      </Fieldset.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Fieldset.Root {...args} invalid>
+          <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
+          <Fieldset.Prose>
+            <p>{text.addressHint}</p>
+          </Fieldset.Prose>
+          <Field.Root required invalid>
+            <Field.Label>{text.street}</Field.Label>
+            <TextInput name="street" autoComplete="street-address" />
+          </Field.Root>
+          <Field.Root required>
+            <Field.Label>{text.postcode}</Field.Label>
+            <TextInput
+              name="postcode"
+              inputMode="numeric"
+              spellCheck={false}
+              autoComplete="postal-code"
+              className="kv-input--width-6"
+            />
+          </Field.Root>
+          <Field.Root required>
+            <Field.Label>{text.town}</Field.Label>
+            <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
+          </Field.Root>
+          <Fieldset.HelpText>{text.addressFormat}</Fieldset.HelpText>
+          <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
+        </Fieldset.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -262,23 +271,25 @@ export const AsGroup: Story = {
   args: { group: true },
   render: (args, { globals }) => {
     const locale = localeOf(globals)
-    const { text, lang } = textsFor(locale)
+    const { text, isFallback } = textsFor(locale)
     const { text: gap } = gapTextsFor(locale)
     return (
-      <Fieldset.Root {...args} lang={lang}>
-        <Fieldset.Legend>{gap.groupLegend}</Fieldset.Legend>
-        <Fieldset.Prose>
-          <p>{gap.groupHint}</p>
-        </Fieldset.Prose>
-        <Field.Root>
-          <Field.Label>{text.phone}</Field.Label>
-          <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
-        </Field.Root>
-        <Field.Root>
-          <Field.Label>{text.email}</Field.Label>
-          <TextInput name="email" type="email" autoComplete="email" />
-        </Field.Root>
-      </Fieldset.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Fieldset.Root {...args}>
+          <Fieldset.Legend>{gap.groupLegend}</Fieldset.Legend>
+          <Fieldset.Prose>
+            <p>{gap.groupHint}</p>
+          </Fieldset.Prose>
+          <Field.Root>
+            <Field.Label>{text.phone}</Field.Label>
+            <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
+          </Field.Root>
+          <Field.Root>
+            <Field.Label>{text.email}</Field.Label>
+            <TextInput name="email" type="email" autoComplete="email" />
+          </Field.Root>
+        </Fieldset.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -306,28 +317,35 @@ export const RequiredGroup: Story = {
   args: { group: true, required: true, id: 'kontakt-grupp' },
   render: (args, { globals }) => {
     const locale = localeOf(globals)
-    const { text, lang } = textsFor(locale)
+    const { text, isFallback } = textsFor(locale)
     const { text: gap } = gapTextsFor(locale)
     return (
-      <>
-        <Fieldset.Root {...args} aria-describedby="kontakt-grupp-integritet" lang={lang}>
-          <Fieldset.Legend>{gap.groupLegend}</Fieldset.Legend>
-          <Fieldset.Prose>
-            <p>{gap.groupHint}</p>
-          </Fieldset.Prose>
-          <Field.Root>
-            <Field.Label>{text.phone}</Field.Label>
-            <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
-          </Field.Root>
-          <Field.Root>
-            <Field.Label>{text.email}</Field.Label>
-            <TextInput name="email" type="email" autoComplete="email" />
-          </Field.Root>
-        </Fieldset.Root>
-        <div className="kv-prose" lang={lang}>
-          <p id="kontakt-grupp-integritet">{gap.groupNote}</p>
-        </div>
-      </>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <>
+          <Fieldset.Root {...args} aria-describedby="kontakt-grupp-integritet">
+            <Fieldset.Legend>{gap.groupLegend}</Fieldset.Legend>
+            <Fieldset.Prose>
+              <p>{gap.groupHint}</p>
+            </Fieldset.Prose>
+            <Field.Root>
+              <Field.Label>{text.phone}</Field.Label>
+              <TextInput
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                className="kv-input--width-20"
+              />
+            </Field.Root>
+            <Field.Root>
+              <Field.Label>{text.email}</Field.Label>
+              <TextInput name="email" type="email" autoComplete="email" />
+            </Field.Root>
+          </Fieldset.Root>
+          <div className="kv-prose">
+            <p id="kontakt-grupp-integritet">{gap.groupNote}</p>
+          </div>
+        </>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, args, globals }) => {
@@ -349,28 +367,30 @@ export const RequiredGroup: Story = {
 export const OptionalSection: Story = {
   render: (args, { globals }) => {
     const locale = localeOf(globals)
-    const { text, lang } = textsFor(locale)
+    const { text, isFallback } = textsFor(locale)
     const { text: gap } = gapTextsFor(locale)
     return (
-      <Fieldset.Root {...args} lang={lang} messages={{ optional: gap.ownOptional }}>
-        <Fieldset.Legend marker="optional">{gap.sectionLegend}</Fieldset.Legend>
-        <Fieldset.Prose>
-          <p>{gap.sectionHint}</p>
-        </Fieldset.Prose>
-        <Field.Root required>
-          <Field.Label>{text.name}</Field.Label>
-          <TextInput name="contact-name" autoComplete="off" />
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.phone}</Field.Label>
-          <TextInput
-            name="contact-phone"
-            type="tel"
-            autoComplete="off"
-            className="kv-input--width-20"
-          />
-        </Field.Root>
-      </Fieldset.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Fieldset.Root {...args} messages={{ optional: gap.ownOptional }}>
+          <Fieldset.Legend marker="optional">{gap.sectionLegend}</Fieldset.Legend>
+          <Fieldset.Prose>
+            <p>{gap.sectionHint}</p>
+          </Fieldset.Prose>
+          <Field.Root required>
+            <Field.Label>{text.name}</Field.Label>
+            <TextInput name="contact-name" autoComplete="off" />
+          </Field.Root>
+          <Field.Root required>
+            <Field.Label>{text.phone}</Field.Label>
+            <TextInput
+              name="contact-phone"
+              type="tel"
+              autoComplete="off"
+              className="kv-input--width-20"
+            />
+          </Field.Root>
+        </Fieldset.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -390,35 +410,37 @@ export const OptionalSection: Story = {
 /** The legend is the page's heading: `legend.kv-fieldset-legend--heading > h1`. */
 export const AsPageHeading: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Fieldset.Root {...args} lang={lang}>
-        <Fieldset.Legend className="kv-fieldset-legend--heading">
-          <h1>{text.addressLegend}</h1>
-        </Fieldset.Legend>
-        <Fieldset.Prose>
-          <p>{text.addressHint}</p>
-        </Fieldset.Prose>
-        <Field.Root required>
-          <Field.Label>{text.street}</Field.Label>
-          <TextInput name="street" autoComplete="street-address" />
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.postcode}</Field.Label>
-          <TextInput
-            name="postcode"
-            inputMode="numeric"
-            spellCheck={false}
-            autoComplete="postal-code"
-            className="kv-input--width-6"
-          />
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.town}</Field.Label>
-          <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
-        </Field.Root>
-        <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
-      </Fieldset.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Fieldset.Root {...args}>
+          <Fieldset.Legend className="kv-fieldset-legend--heading">
+            <h1>{text.addressLegend}</h1>
+          </Fieldset.Legend>
+          <Fieldset.Prose>
+            <p>{text.addressHint}</p>
+          </Fieldset.Prose>
+          <Field.Root required>
+            <Field.Label>{text.street}</Field.Label>
+            <TextInput name="street" autoComplete="street-address" />
+          </Field.Root>
+          <Field.Root required>
+            <Field.Label>{text.postcode}</Field.Label>
+            <TextInput
+              name="postcode"
+              inputMode="numeric"
+              spellCheck={false}
+              autoComplete="postal-code"
+              className="kv-input--width-6"
+            />
+          </Field.Root>
+          <Field.Root required>
+            <Field.Label>{text.town}</Field.Label>
+            <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
+          </Field.Root>
+          <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
+        </Fieldset.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -439,48 +461,10 @@ export const LongFinnish: Story = {
     ),
   ],
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Fieldset.Root {...args} lang={lang}>
-        <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
-        <Fieldset.Prose>
-          <p>{text.addressHint}</p>
-        </Fieldset.Prose>
-        <Field.Root required>
-          <Field.Label>{text.street}</Field.Label>
-          <TextInput name="street" autoComplete="street-address" />
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.postcode}</Field.Label>
-          <TextInput
-            name="postcode"
-            inputMode="numeric"
-            spellCheck={false}
-            autoComplete="postal-code"
-            className="kv-input--width-6"
-          />
-        </Field.Root>
-        <Field.Root required>
-          <Field.Label>{text.town}</Field.Label>
-          <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
-        </Field.Root>
-        <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
-      </Fieldset.Root>
-    )
-  },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByRole('group', { name: 'Missä asut?' })).toBeVisible()
-    await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
-  },
-}
-
-/** Staff density from 64rem: 14px legend and labels, 4px between them. */
-export const Compact: Story = {
-  render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
-    return (
-      <div className="kv-compact">
-        <Fieldset.Root {...args} lang={lang}>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Fieldset.Root {...args}>
           <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
           <Fieldset.Prose>
             <p>{text.addressHint}</p>
@@ -505,40 +489,84 @@ export const Compact: Story = {
           </Field.Root>
           <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
         </Fieldset.Root>
-      </div>
+      </InEnglishWhenFallback>
+    )
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('group', { name: 'Missä asut?' })).toBeVisible()
+    await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
+  },
+}
+
+/** Staff density from 64rem: 14px legend and labels, 4px between them. */
+export const Compact: Story = {
+  render: (args, { globals }) => {
+    const { text, isFallback } = textsFor(localeOf(globals))
+    return (
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div className="kv-compact">
+          <Fieldset.Root {...args}>
+            <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
+            <Fieldset.Prose>
+              <p>{text.addressHint}</p>
+            </Fieldset.Prose>
+            <Field.Root required>
+              <Field.Label>{text.street}</Field.Label>
+              <TextInput name="street" autoComplete="street-address" />
+            </Field.Root>
+            <Field.Root required>
+              <Field.Label>{text.postcode}</Field.Label>
+              <TextInput
+                name="postcode"
+                inputMode="numeric"
+                spellCheck={false}
+                autoComplete="postal-code"
+                className="kv-input--width-6"
+              />
+            </Field.Root>
+            <Field.Root required>
+              <Field.Label>{text.town}</Field.Label>
+              <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
+            </Field.Root>
+            <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
+          </Fieldset.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
 }
 
 // The group with its description and an error, for the RTL and ForcedColors stories.
 const renderInvalidAddress: NonNullable<Story['render']> = (args, { globals }) => {
-  const { text, lang } = textsFor(localeOf(globals))
+  const { text, isFallback } = textsFor(localeOf(globals))
   return (
-    <Fieldset.Root {...args} invalid lang={lang}>
-      <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
-      <Fieldset.Prose>
-        <p>{text.addressHint}</p>
-      </Fieldset.Prose>
-      <Field.Root required invalid>
-        <Field.Label>{text.street}</Field.Label>
-        <TextInput name="street" autoComplete="street-address" />
-      </Field.Root>
-      <Field.Root required>
-        <Field.Label>{text.postcode}</Field.Label>
-        <TextInput
-          name="postcode"
-          inputMode="numeric"
-          spellCheck={false}
-          autoComplete="postal-code"
-          className="kv-input--width-6"
-        />
-      </Field.Root>
-      <Field.Root required>
-        <Field.Label>{text.town}</Field.Label>
-        <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
-      </Field.Root>
-      <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
-    </Fieldset.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Fieldset.Root {...args} invalid>
+        <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
+        <Fieldset.Prose>
+          <p>{text.addressHint}</p>
+        </Fieldset.Prose>
+        <Field.Root required invalid>
+          <Field.Label>{text.street}</Field.Label>
+          <TextInput name="street" autoComplete="street-address" />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.postcode}</Field.Label>
+          <TextInput
+            name="postcode"
+            inputMode="numeric"
+            spellCheck={false}
+            autoComplete="postal-code"
+            className="kv-input--width-6"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.town}</Field.Label>
+          <TextInput name="town" autoComplete="address-level2" className="kv-input--width-20" />
+        </Field.Root>
+        <Fieldset.ErrorMessage>{text.addressError}</Fieldset.ErrorMessage>
+      </Fieldset.Root>
+    </InEnglishWhenFallback>
   )
 }
 

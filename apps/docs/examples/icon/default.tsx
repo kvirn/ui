@@ -1,13 +1,16 @@
 'use client'
 import { Button, Icon } from '@kvirn-ui/react'
 import { useIconTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function DefaultIcon() {
-  const { texts, textLang } = useIconTexts()
+  const { texts, isFallback } = useIconTexts()
   return (
-    <Button lang={textLang}>
-      <Icon name="add" />
-      {texts.addChild}
-    </Button>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Button>
+        <Icon name="add" />
+        {texts.addChild}
+      </Button>
+    </InEnglishWhenFallback>
   )
 }

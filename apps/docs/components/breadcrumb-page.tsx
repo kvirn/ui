@@ -143,7 +143,7 @@ export function BreadcrumbPage({
           <UseCase
             id="own-label"
             title="A name for a page with another navigation"
-            why="The landmark is named You are here, in five languages. When your page already has another navigation with that name, or your service uses other words, give the trail its own with label. A custom label is your own string, so set lang on the root if it differs from the page."
+            why="The landmark is named You are here, in five languages. When your page already has another navigation with that name, or your service uses other words, give the trail its own with label. A custom label is your own string, so wrap the trail in an element with lang if it differs from the page."
             code={sources['own-label']}
             propsUsed={[{ part: 'Breadcrumb.Root', prop: 'label' }]}
             note={

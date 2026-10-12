@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, Icon, InputGroup } from '@kvirn-ui/react'
 import { useRef, useState } from 'react'
 import { textsFor } from '../form/form.fixture.tsx'
@@ -22,38 +23,40 @@ export function SearchBoxWithClear({
   initialValue?: string
   disabled?: boolean
 }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const [value, setValue] = useState(initialValue)
   const inputRef = useRef<HTMLInputElement | null>(null)
   return (
-    <Field.Root disabled={disabled} lang={lang}>
-      <Field.Label marker="none">{text.searchServices}</Field.Label>
-      <InputGroup.Root>
-        <InputGroup.Addon>
-          <Icon name="search" size="20" />
-        </InputGroup.Addon>
-        <InputGroup.Input
-          ref={inputRef}
-          type="search"
-          name="search"
-          enterKeyHint="search"
-          autoComplete="off"
-          value={value}
-          onValueChange={setValue}
-        />
-        {value === '' ? null : (
-          <Button
-            disabled={disabled}
-            onClick={() => {
-              setValue('')
-              inputRef.current?.focus()
-            }}
-          >
-            {text.searchClear}
-          </Button>
-        )}
-      </InputGroup.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root disabled={disabled}>
+        <Field.Label marker="none">{text.searchServices}</Field.Label>
+        <InputGroup.Root>
+          <InputGroup.Addon>
+            <Icon name="search" size="20" />
+          </InputGroup.Addon>
+          <InputGroup.Input
+            ref={inputRef}
+            type="search"
+            name="search"
+            enterKeyHint="search"
+            autoComplete="off"
+            value={value}
+            onValueChange={setValue}
+          />
+          {value === '' ? null : (
+            <Button
+              disabled={disabled}
+              onClick={() => {
+                setValue('')
+                inputRef.current?.focus()
+              }}
+            >
+              {text.searchClear}
+            </Button>
+          )}
+        </InputGroup.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -68,38 +71,40 @@ export function SearchBoxWithIconOnlyClear({
   locale: FormLocale
   initialValue?: string
 }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const [value, setValue] = useState(initialValue)
   const inputRef = useRef<HTMLInputElement | null>(null)
   return (
-    <Field.Root lang={lang}>
-      <Field.Label marker="none">{text.searchServices}</Field.Label>
-      <InputGroup.Root>
-        <InputGroup.Addon>
-          <Icon name="search" size="20" />
-        </InputGroup.Addon>
-        <InputGroup.Input
-          ref={inputRef}
-          type="search"
-          name="search"
-          enterKeyHint="search"
-          autoComplete="off"
-          value={value}
-          onValueChange={setValue}
-        />
-        {value === '' ? null : (
-          <Button
-            className="kv-button--icon-only"
-            aria-label={text.searchClearName}
-            onClick={() => {
-              setValue('')
-              inputRef.current?.focus()
-            }}
-          >
-            <Icon name="close" size="20" />
-          </Button>
-        )}
-      </InputGroup.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root>
+        <Field.Label marker="none">{text.searchServices}</Field.Label>
+        <InputGroup.Root>
+          <InputGroup.Addon>
+            <Icon name="search" size="20" />
+          </InputGroup.Addon>
+          <InputGroup.Input
+            ref={inputRef}
+            type="search"
+            name="search"
+            enterKeyHint="search"
+            autoComplete="off"
+            value={value}
+            onValueChange={setValue}
+          />
+          {value === '' ? null : (
+            <Button
+              className="kv-button--icon-only"
+              aria-label={text.searchClearName}
+              onClick={() => {
+                setValue('')
+                inputRef.current?.focus()
+              }}
+            >
+              <Icon name="close" size="20" />
+            </Button>
+          )}
+        </InputGroup.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }

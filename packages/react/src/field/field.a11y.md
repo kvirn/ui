@@ -86,7 +86,7 @@ Resolution, first match wins: the part's own children (an empty or whitespace-on
 - Validate on submit, not on every key. Move focus to the first invalid field until the error summary block exists (3.3.1).
 - Render the parts in the default order: label, description, control, help text, then the error, so the visual order is the `aria-describedby` order (1.3.2). A help text always goes under the control: text the user must read before answering is a description (`Field.Prose`) above it. With the error under the control, keep `scroll-padding` on the page (the end value leaves room for the message), so the on-screen keyboard or an autocomplete list doesn't hide it when the field gets focus (2.4.11). The order is the consumer's: another order keeps working.
 - Use `autocomplete` on controls that ask for the user's own data (1.3.5), and never block paste (3.3.8).
-- Set `lang` on a Field.Label whose text is in another language (3.1.2).
+- A Field.Label whose text is in another language goes in a nested `KvirnProvider` with `useLocale().localeProps` on your own element (3.1.2).
 - Give a Field the `controlId` you need to link to it, for example from an error summary. Don't pass an `id` to the control inside a Field: the Field's id wins and a dev warning says so.
 
 ## Visual / modes

@@ -1,17 +1,20 @@
 'use client'
 import { Columns, Link } from '@kvirn-ui/react'
 import { useColumnsTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function QuickLinks() {
-  const { texts, textLang } = useColumnsTexts()
+  const { texts, isFallback } = useColumnsTexts()
   const links = Object.values(texts.quickLinks)
   return (
-    <Columns className="kv-columns--min-sm kv-columns--gap-4" as="ul" lang={textLang}>
-      {links.map((label) => (
-        <li key={label}>
-          <Link href="#">{label}</Link>
-        </li>
-      ))}
-    </Columns>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Columns className="kv-columns--min-sm kv-columns--gap-4" as="ul">
+        {links.map((label) => (
+          <li key={label}>
+            <Link href="#">{label}</Link>
+          </li>
+        ))}
+      </Columns>
+    </InEnglishWhenFallback>
   )
 }

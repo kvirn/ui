@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { sv } from '@kvirn-ui/i18n/sv'
 import {
   Button,
@@ -139,9 +140,9 @@ const dateTexts: Record<FormLocale, DateTexts | undefined> = {
 }
 
 /** The fixture text in a locale. */
-export function dateTextsFor(locale: FormLocale): { text: DateTexts; lang: 'en' | undefined } {
+export function dateTextsFor(locale: FormLocale): { text: DateTexts; isFallback: boolean } {
   const text = dateTexts[locale]
-  return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }
+  return { text: text ?? textsEn, isFallback: text === undefined }
 }
 
 /**
@@ -168,27 +169,29 @@ export interface BirthDateProps extends Omit<DateInputRootProps, 'children'> {
  * the wrong boxes are marked invalid.
  */
 export function BirthDate({ locale, error, ...dateProps }: BirthDateProps) {
-  const { text, lang } = dateTextsFor(locale)
+  const { text, isFallback } = dateTextsFor(locale)
   // The example is written in the order the boxes are in.
   const { order } = useDateInput()
   return (
-    <Fieldset.Root group required invalid={error !== undefined} lang={lang}>
-      <Fieldset.Legend>{text.legend}</Fieldset.Legend>
-      <DateInput.Root
-        name="birth"
-        autoComplete="bday"
-        invalidParts={
-          error === 'year' ? ['year'] : error === 'date' ? ['day', 'month', 'year'] : undefined
-        }
-        {...dateProps}
-      />
-      <Fieldset.HelpText>
-        {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
-      </Fieldset.HelpText>
-      <Fieldset.ErrorMessage>
-        {error === 'year' ? text.errorYear : text.errorDate}
-      </Fieldset.ErrorMessage>
-    </Fieldset.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Fieldset.Root group required invalid={error !== undefined}>
+        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+        <DateInput.Root
+          name="birth"
+          autoComplete="bday"
+          invalidParts={
+            error === 'year' ? ['year'] : error === 'date' ? ['day', 'month', 'year'] : undefined
+          }
+          {...dateProps}
+        />
+        <Fieldset.HelpText>
+          {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
+        </Fieldset.HelpText>
+        <Fieldset.ErrorMessage>
+          {error === 'year' ? text.errorYear : text.errorDate}
+        </Fieldset.ErrorMessage>
+      </Fieldset.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -197,17 +200,19 @@ export function BirthDate({ locale, error, ...dateProps }: BirthDateProps) {
  * follows the order it chose. Here, day, month, year in Sweden.
  */
 export function PaperFormDate({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dateTextsFor(locale)
+  const { text, isFallback } = dateTextsFor(locale)
   return (
-    <Fieldset.Root group required lang={lang}>
-      <Fieldset.Legend>{text.legend}</Fieldset.Legend>
-      <DateInput.Root name="birth" autoComplete="bday">
-        <DateInput.Day />
-        <DateInput.Month />
-        <DateInput.Year />
-      </DateInput.Root>
-      <Fieldset.HelpText>{text.hintDayFirst}</Fieldset.HelpText>
-    </Fieldset.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Fieldset.Root group required>
+        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+        <DateInput.Root name="birth" autoComplete="bday">
+          <DateInput.Day />
+          <DateInput.Month />
+          <DateInput.Year />
+        </DateInput.Root>
+        <Fieldset.HelpText>{text.hintDayFirst}</Fieldset.HelpText>
+      </Fieldset.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -216,16 +221,18 @@ export function PaperFormDate({ locale }: { locale: FormLocale }) {
  * birthday (1.3.5). Optional, so the legend ends with "(valfritt)".
  */
 export function VisitDate({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dateTextsFor(locale)
+  const { text, isFallback } = dateTextsFor(locale)
   const { order } = useDateInput()
   return (
-    <Fieldset.Root group lang={lang}>
-      <Fieldset.Legend>{text.visitLegend}</Fieldset.Legend>
-      <DateInput.Root name="visit" />
-      <Fieldset.HelpText>
-        {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
-      </Fieldset.HelpText>
-    </Fieldset.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Fieldset.Root group>
+        <Fieldset.Legend>{text.visitLegend}</Fieldset.Legend>
+        <DateInput.Root name="visit" />
+        <Fieldset.HelpText>
+          {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
+        </Fieldset.HelpText>
+      </Fieldset.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -234,23 +241,25 @@ export function VisitDate({ locale }: { locale: FormLocale }) {
  * would sit). The Root reports the whole date as the boxes show it: three strings, never parsed.
  */
 export function ControlledDate({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dateTextsFor(locale)
+  const { text, isFallback } = dateTextsFor(locale)
   const [value, setValue] = useState<DateInputValue>({ year: '1990', month: '3', day: '' })
   // The example is written in the order the boxes are in.
   const { order } = useDateInput()
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Fieldset.Root group required>
-        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
-        <DateInput.Root name="birth" autoComplete="bday" value={value} onValueChange={setValue} />
-        <Fieldset.HelpText>
-          {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
-        </Fieldset.HelpText>
-      </Fieldset.Root>
-      <p className="kv-story-form-output" data-testid="mirror">
-        {text.youTyped}: {value.year}-{value.month}-{value.day}
-      </p>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Fieldset.Root group required>
+          <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+          <DateInput.Root name="birth" autoComplete="bday" value={value} onValueChange={setValue} />
+          <Fieldset.HelpText>
+            {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
+          </Fieldset.HelpText>
+        </Fieldset.Root>
+        <p className="kv-story-form-output" data-testid="mirror">
+          {text.youTyped}: {value.year}-{value.month}-{value.day}
+        </p>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -259,45 +268,46 @@ export function ControlledDate({ locale }: { locale: FormLocale }) {
  * submit reads `birth-day`, `birth-month` and `birth-year` from `FormData`.
  */
 export function PlainFormDate({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dateTextsFor(locale)
+  const { text, isFallback } = dateTextsFor(locale)
   const { order } = useDateInput()
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const data = new FormData(event.currentTarget)
-        setSent(
-          ['birth-year', 'birth-month', 'birth-day']
-            .map((key) => {
-              const value = data.get(key)
-              return typeof value === 'string' ? value : ''
-            })
-            .join('-'),
-        )
-      }}
-    >
-      <Fieldset.Root group required>
-        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
-        <DateInput.Root name="birth" autoComplete="bday" />
-        <Fieldset.HelpText>
-          {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
-        </Fieldset.HelpText>
-      </Fieldset.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {text.sent}: {sent}
-        </p>
-      )}
-    </form>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form
+        className="kv-story-form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          const data = new FormData(event.currentTarget)
+          setSent(
+            ['birth-year', 'birth-month', 'birth-day']
+              .map((key) => {
+                const value = data.get(key)
+                return typeof value === 'string' ? value : ''
+              })
+              .join('-'),
+          )
+        }}
+      >
+        <Fieldset.Root group required>
+          <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+          <DateInput.Root name="birth" autoComplete="bday" />
+          <Fieldset.HelpText>
+            {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
+          </Fieldset.HelpText>
+        </Fieldset.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
+        {sent === undefined ? null : (
+          <p className="kv-story-form-output" data-testid="sent">
+            {text.sent}: {sent}
+          </p>
+        )}
+      </form>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -306,38 +316,39 @@ export function PlainFormDate({ locale }: { locale: FormLocale }) {
  * box submits it, and the output shows that it did.
  */
 export function KeyboardDate({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dateTextsFor(locale)
+  const { text, isFallback } = dateTextsFor(locale)
   const { order } = useDateInput()
   const [submits, setSubmits] = useState(0)
   return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        setSubmits((count) => count + 1)
-      }}
-    >
-      <div className="kv-button-group">
-        <Button type="button">{text.back}</Button>
-      </div>
-      <Fieldset.Root group required>
-        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
-        <DateInput.Root name="birth" autoComplete="bday" />
-        <Fieldset.HelpText>
-          {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
-        </Fieldset.HelpText>
-      </Fieldset.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-      <p className="kv-story-form-output" data-testid="submits">
-        {text.sent}: {submits}
-      </p>
-    </form>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form
+        className="kv-story-form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          setSubmits((count) => count + 1)
+        }}
+      >
+        <div className="kv-button-group">
+          <Button type="button">{text.back}</Button>
+        </div>
+        <Fieldset.Root group required>
+          <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+          <DateInput.Root name="birth" autoComplete="bday" />
+          <Fieldset.HelpText>
+            {order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst}
+          </Fieldset.HelpText>
+        </Fieldset.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
+        <p className="kv-story-form-output" data-testid="submits">
+          {text.sent}: {submits}
+        </p>
+      </form>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -347,64 +358,66 @@ export function KeyboardDate({ locale }: { locale: FormLocale }) {
  * them, once.
  */
 export function DateStates({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dateTextsFor(locale)
+  const { text, isFallback } = dateTextsFor(locale)
   const id = useId()
   const { order } = useDateInput()
   const hint = order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Fieldset.Root group required>
-        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
-        <DateInput.Root
-          name={`filled-${id}`}
-          autoComplete="bday"
-          defaultValue={{ year: '1990', month: '3', day: '27' }}
-        />
-        <Fieldset.HelpText>{hint}</Fieldset.HelpText>
-      </Fieldset.Root>
-      <Fieldset.Root group required invalid>
-        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
-        <DateInput.Root
-          name={`year-${id}`}
-          autoComplete="bday"
-          invalidParts={['year']}
-          defaultValue={{ month: '3', day: '27' }}
-        />
-        <Fieldset.HelpText>{hint}</Fieldset.HelpText>
-        <Fieldset.ErrorMessage>{text.errorYear}</Fieldset.ErrorMessage>
-      </Fieldset.Root>
-      <Fieldset.Root group required invalid>
-        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
-        <DateInput.Root
-          name={`date-${id}`}
-          autoComplete="bday"
-          invalidParts={['day', 'month', 'year']}
-          defaultValue={{ year: '1990', month: '13', day: '27' }}
-        />
-        <Fieldset.HelpText>{hint}</Fieldset.HelpText>
-        <Fieldset.ErrorMessage>{text.errorDate}</Fieldset.ErrorMessage>
-      </Fieldset.Root>
-      <Fieldset.Root group required>
-        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
-        <DateInput.Root
-          name={`disabled-${id}`}
-          autoComplete="bday"
-          disabled
-          defaultValue={{ year: '1990', month: '3', day: '27' }}
-        />
-        <Fieldset.HelpText>{hint}</Fieldset.HelpText>
-      </Fieldset.Root>
-      <Fieldset.Root group required>
-        <Fieldset.Legend>{text.legend}</Fieldset.Legend>
-        <DateInput.Root
-          name={`readonly-${id}`}
-          autoComplete="bday"
-          readOnly
-          defaultValue={{ year: '1990', month: '3', day: '27' }}
-        />
-        <Fieldset.HelpText>{hint}</Fieldset.HelpText>
-      </Fieldset.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Fieldset.Root group required>
+          <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+          <DateInput.Root
+            name={`filled-${id}`}
+            autoComplete="bday"
+            defaultValue={{ year: '1990', month: '3', day: '27' }}
+          />
+          <Fieldset.HelpText>{hint}</Fieldset.HelpText>
+        </Fieldset.Root>
+        <Fieldset.Root group required invalid>
+          <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+          <DateInput.Root
+            name={`year-${id}`}
+            autoComplete="bday"
+            invalidParts={['year']}
+            defaultValue={{ month: '3', day: '27' }}
+          />
+          <Fieldset.HelpText>{hint}</Fieldset.HelpText>
+          <Fieldset.ErrorMessage>{text.errorYear}</Fieldset.ErrorMessage>
+        </Fieldset.Root>
+        <Fieldset.Root group required invalid>
+          <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+          <DateInput.Root
+            name={`date-${id}`}
+            autoComplete="bday"
+            invalidParts={['day', 'month', 'year']}
+            defaultValue={{ year: '1990', month: '13', day: '27' }}
+          />
+          <Fieldset.HelpText>{hint}</Fieldset.HelpText>
+          <Fieldset.ErrorMessage>{text.errorDate}</Fieldset.ErrorMessage>
+        </Fieldset.Root>
+        <Fieldset.Root group required>
+          <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+          <DateInput.Root
+            name={`disabled-${id}`}
+            autoComplete="bday"
+            disabled
+            defaultValue={{ year: '1990', month: '3', day: '27' }}
+          />
+          <Fieldset.HelpText>{hint}</Fieldset.HelpText>
+        </Fieldset.Root>
+        <Fieldset.Root group required>
+          <Fieldset.Legend>{text.legend}</Fieldset.Legend>
+          <DateInput.Root
+            name={`readonly-${id}`}
+            autoComplete="bday"
+            readOnly
+            defaultValue={{ year: '1990', month: '3', day: '27' }}
+          />
+          <Fieldset.HelpText>{hint}</Fieldset.HelpText>
+        </Fieldset.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -414,25 +427,27 @@ export function DateStates({ locale }: { locale: FormLocale }) {
  * that form. The form keeps the ISO date, which `onValueChange` reports once the date is complete.
  */
 export function OneFieldDate({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dateTextsFor(locale)
+  const { text, isFallback } = dateTextsFor(locale)
   const [stored, setStored] = useState('')
   // The example comes from the mask itself, so the help text and the field never disagree.
   const example = masks.date().withLocale(locale).format('2026-10-27')
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.oneFieldLabel}</Field.Label>
-        <TextInput
-          name="start"
-          mask={masks.date()}
-          className="kv-input--width-10"
-          onValueChange={(_value, details) => setStored(details.unmaskedValue ?? '')}
-        />
-        <Field.HelpText>{text.oneFieldHint(example)}</Field.HelpText>
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="stored">
-        {text.stored}: {stored}
-      </p>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root required>
+          <Field.Label>{text.oneFieldLabel}</Field.Label>
+          <TextInput
+            name="start"
+            mask={masks.date()}
+            className="kv-input--width-10"
+            onValueChange={(_value, details) => setStored(details.unmaskedValue ?? '')}
+          />
+          <Field.HelpText>{text.oneFieldHint(example)}</Field.HelpText>
+        </Field.Root>
+        <p className="kv-story-form-output" data-testid="stored">
+          {text.stored}: {stored}
+        </p>
+      </div>
+    </InEnglishWhenFallback>
   )
 }

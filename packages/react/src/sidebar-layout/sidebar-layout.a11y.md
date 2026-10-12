@@ -16,7 +16,7 @@ SidebarLayout is a side column and a content column: stacked below `64rem`, side
 | SidebarLayout.Sidebar | `<div>` → `generic` | none. The consumer adds it with the element   | `class="kv-sidebar-layout-sidebar"`. `as="nav"` with `aria-label="…"` is a navigation landmark and must be named. Also exported as `SidebarLayoutSidebar`                                                                                         |
 | SidebarLayout.Content | `<div>` → `generic` | none                                          | `class="kv-sidebar-layout-content"`. **Not `<main>` by default:** a page has one `main`, so `as="main"` is the consumer's choice. Also exported as `SidebarLayoutContent`                                                                         |
 | Sidebar, Content      | `as`                | the chosen element's own                      | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:SidebarLayout.Sidebar:<tag>`) and renders the default element. The Root has no `as`. `className` joins, `style` and refs pass |
-| every part            | attributes          | passed through                                | `aria-*`, `id`, `lang` and every other attribute reach the element unchanged                                                                                                                                                                      |
+| every part            | attributes          | passed through                                | `aria-*`, `id` and every other attribute reach the element unchanged                                                                                                                                                                              |
 | every part            | never               | no `role`, `tabindex`, `inert`, `aria-hidden` | No handler, no heading, no live region, no text                                                                                                                                                                                                   |
 
 `useSidebarLayout()` gives the same frozen `rootProps`, `sidebarProps` and `contentProps` (only `className`). A Sidebar or Content outside a Root warns once (`sidebar-layout-<part>-outside-root`).
@@ -63,7 +63,7 @@ SidebarLayout renders no text, so it has no message keys.
 - **Name the landmarks.** `<nav>` and `<aside>` need `aria-label` or `aria-labelledby`, in the page's language. One `main` per page, and it is the Content or an element around the layout.
 - **Order.** Whichever part comes first in the DOM is at inline start (the left in LTR, the right in RTL) and is read and focused first. Write it first only if it should be: there is no `order` or `reverse` (1.3.2, 2.4.3).
 - **A long sidebar on small screens** is stacked above the content and can push it far down. Put a Disclosure inside the Sidebar for a long navigation (WCAG 2.4.1 bypass blocks: also offer a skip link).
-- **Language.** `lang` on any text in another language (3.1.2).
+- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2).
 
 ## Visual / modes
 

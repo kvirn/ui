@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Field, InputGroup, NumberInput, Slider } from '@kvirn-ui/react'
 import { useId, useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -105,10 +106,10 @@ const sliderTexts: Record<FormLocale, SliderTexts | undefined> = {
 /** The fixture text in a locale. */
 export function sliderTextsFor(locale: FormLocale): {
   text: SliderTexts
-  lang: 'en' | undefined
+  isFallback: boolean
 } {
   const text = sliderTexts[locale]
-  return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }
+  return { text: text ?? textsEn, isFallback: text === undefined }
 }
 
 /**
@@ -120,52 +121,54 @@ export function sliderTextsFor(locale: FormLocale): {
  * has a `name`, so the form sends the value once.
  */
 export function DistanceWithNumberInput({ locale }: { locale: FormLocale }) {
-  const { text, lang } = sliderTextsFor(locale)
+  const { text, isFallback } = sliderTextsFor(locale)
   const labelId = useId()
   const hintId = useId()
   const [distance, setDistance] = useState('10')
   const [sliderValue, setSliderValue] = useState(10)
   const isTooFar = Number(distance) > 50
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root invalid={isTooFar}>
-        <Field.Label marker="none">
-          <span id={labelId}>{text.distanceLabel}</span>
-        </Field.Label>
-        <Slider
-          aria-labelledby={labelId}
-          aria-describedby={hintId}
-          min={0}
-          max={50}
-          step={1}
-          value={sliderValue}
-          onValueChange={(value) => {
-            setSliderValue(value)
-            setDistance(String(value))
-          }}
-          valueText={text.distanceValueText}
-        />
-        <InputGroup.Root>
-          <NumberInput
-            name="distance"
-            className="kv-input--width-4"
-            value={distance}
-            onValueChange={(next) => {
-              setDistance(next)
-              const parsed = Number(next)
-              if (next.trim() !== '' && Number.isFinite(parsed)) {
-                setSliderValue(Math.min(50, Math.max(0, parsed)))
-              }
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root invalid={isTooFar}>
+          <Field.Label marker="none">
+            <span id={labelId}>{text.distanceLabel}</span>
+          </Field.Label>
+          <Slider
+            aria-labelledby={labelId}
+            aria-describedby={hintId}
+            min={0}
+            max={50}
+            step={1}
+            value={sliderValue}
+            onValueChange={(value) => {
+              setSliderValue(value)
+              setDistance(String(value))
             }}
+            valueText={text.distanceValueText}
           />
-          <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
-        </InputGroup.Root>
-        <Field.HelpText>
-          <span id={hintId}>{text.distanceHint}</span>
-        </Field.HelpText>
-        <Field.ErrorMessage>{text.distanceTooFar}</Field.ErrorMessage>
-      </Field.Root>
-    </div>
+          <InputGroup.Root>
+            <NumberInput
+              name="distance"
+              className="kv-input--width-4"
+              value={distance}
+              onValueChange={(next) => {
+                setDistance(next)
+                const parsed = Number(next)
+                if (next.trim() !== '' && Number.isFinite(parsed)) {
+                  setSliderValue(Math.min(50, Math.max(0, parsed)))
+                }
+              }}
+            />
+            <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+          <Field.HelpText>
+            <span id={hintId}>{text.distanceHint}</span>
+          </Field.HelpText>
+          <Field.ErrorMessage>{text.distanceTooFar}</Field.ErrorMessage>
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -175,29 +178,31 @@ export function DistanceWithNumberInput({ locale }: { locale: FormLocale }) {
  * the focused one.
  */
 export function KeyboardSliders({ locale }: { locale: FormLocale }) {
-  const { text, lang } = sliderTextsFor(locale)
+  const { text, isFallback } = sliderTextsFor(locale)
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root>
-        <Field.Label marker="none">{text.volumeLabel}</Field.Label>
-        <Slider name="volume" defaultValue={40} step={10} valueText={text.volumeValueText} />
-        <Field.HelpText>{text.volumeHint}</Field.HelpText>
-      </Field.Root>
-      <Field.Root disabled>
-        <Field.Label marker="none">{text.radiusLabel}</Field.Label>
-        <Slider name="distance" max={50} defaultValue={10} valueText={text.distanceValueText} />
-        <Field.HelpText>{text.distanceDisabledHint}</Field.HelpText>
-      </Field.Root>
-      <Field.Root>
-        <Field.Label marker="none">{text.distanceLabel}</Field.Label>
-        <Slider
-          name="radius"
-          max={50}
-          step={5}
-          defaultValue={15}
-          valueText={text.distanceValueText}
-        />
-      </Field.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root>
+          <Field.Label marker="none">{text.volumeLabel}</Field.Label>
+          <Slider name="volume" defaultValue={40} step={10} valueText={text.volumeValueText} />
+          <Field.HelpText>{text.volumeHint}</Field.HelpText>
+        </Field.Root>
+        <Field.Root disabled>
+          <Field.Label marker="none">{text.radiusLabel}</Field.Label>
+          <Slider name="distance" max={50} defaultValue={10} valueText={text.distanceValueText} />
+          <Field.HelpText>{text.distanceDisabledHint}</Field.HelpText>
+        </Field.Root>
+        <Field.Root>
+          <Field.Label marker="none">{text.distanceLabel}</Field.Label>
+          <Slider
+            name="radius"
+            max={50}
+            step={5}
+            defaultValue={15}
+            valueText={text.distanceValueText}
+          />
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }

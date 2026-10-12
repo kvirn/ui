@@ -193,9 +193,9 @@ export function ReadAloudPage({
           <UseCase
             id="language-of-the-text"
             title="Text in another language than the page"
-            why="Each sentence is read with a voice for its own language, never a voice of another one. Set lang on the content, or pass lang to the player. If the device has no voice for it, reading stops, the Status names the language and the player says so once."
+            why="Each sentence is read with a voice for its own language, never a voice of another one. Set lang on your own element around the content. If the device has no voice for it, reading stops, the Status names the language and the player says so once."
             code={sources['swedish-content']}
-            propsUsed={[{ part: 'ReadAloud.Root', prop: 'lang' }]}
+            propsUsed={[{ part: 'ReadAloud.Root', prop: 'contentRef' }]}
             note={
               <Note kind="reminder">
                 Set <code>lang</code> on the content: it picks the voice. See{' '}

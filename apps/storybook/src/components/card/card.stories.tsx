@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Card } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/card/card.a11y.md?raw'
 import guide from '../../../../../packages/react/src/card/card.md?raw'
@@ -154,29 +155,30 @@ export const Radii: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <>
-        {(
-          [
-            ['lg', 'kv-card'],
-            ['md', 'kv-card--radius-md'],
-            ['none', 'kv-card--radius-none'],
-          ] as const
-        ).map(([radius, className]) => (
-          <Card.Root
-            key={radius}
-            className={radius === 'lg' ? undefined : className}
-            data-testid={radius}
-            lang={lang}
-          >
-            <p>
-              <code>{className}</code>
-            </p>
-            <p>{text.waste.plan}</p>
-          </Card.Root>
-        ))}
-      </>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <>
+          {(
+            [
+              ['lg', 'kv-card'],
+              ['md', 'kv-card--radius-md'],
+              ['none', 'kv-card--radius-none'],
+            ] as const
+          ).map(([radius, className]) => (
+            <Card.Root
+              key={radius}
+              className={radius === 'lg' ? undefined : className}
+              data-testid={radius}
+            >
+              <p>
+                <code>{className}</code>
+              </p>
+              <p>{text.waste.plan}</p>
+            </Card.Root>
+          ))}
+        </>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -190,47 +192,48 @@ export const Radii: Story = {
  */
 export const Padding: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <>
-        <div className="kv-story-columns">
-          {(['none', 'sm', 'md', 'lg'] as const).map((padding) => (
-            <Card.Root
-              key={padding}
-              className={padding === 'md' ? undefined : `kv-card--padding-${padding}`}
-              data-testid={padding}
-              lang={lang}
-            >
-              <p>
-                <code>{padding === 'md' ? 'kv-card' : `kv-card--padding-${padding}`}</code>
-              </p>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <>
+          <div className="kv-story-columns">
+            {(['none', 'sm', 'md', 'lg'] as const).map((padding) => (
+              <Card.Root
+                key={padding}
+                className={padding === 'md' ? undefined : `kv-card--padding-${padding}`}
+                data-testid={padding}
+              >
+                <p>
+                  <code>{padding === 'md' ? 'kv-card' : `kv-card--padding-${padding}`}</code>
+                </p>
+              </Card.Root>
+            ))}
+          </div>
+          <div className="kv-story-section kv-story-card-column">
+            <Card.Root className="kv-card--padding-sm" data-testid="per-part">
+              <Card.Header className="kv-card-header--padding-lg">
+                <p>
+                  <code>kv-card-header--padding-lg</code>
+                </p>
+              </Card.Header>
+              <Card.Body>
+                <p>
+                  <code>kv-card--padding-sm</code>
+                </p>
+                <p>{text.waste.plan}</p>
+              </Card.Body>
+              <Card.Footer className="kv-card-footer--padding-md kv-button-group">
+                <Button>{text.waste.pause}</Button>
+              </Card.Footer>
             </Card.Root>
-          ))}
-        </div>
-        <div className="kv-story-section kv-story-card-column">
-          <Card.Root className="kv-card--padding-sm" data-testid="per-part" lang={lang}>
-            <Card.Header className="kv-card-header--padding-lg">
-              <p>
-                <code>kv-card-header--padding-lg</code>
-              </p>
-            </Card.Header>
-            <Card.Body>
-              <p>
-                <code>kv-card--padding-sm</code>
-              </p>
-              <p>{text.waste.plan}</p>
-            </Card.Body>
-            <Card.Footer className="kv-card-footer--padding-md kv-button-group">
-              <Button>{text.waste.pause}</Button>
-            </Card.Footer>
-          </Card.Root>
-          <Card.Root className="kv-story-section" data-testid="body-padding-none" lang={lang}>
-            <Card.Body className="kv-card-body--padding-none">
-              <img src={binsImage} alt="" width={640} height={240} />
-            </Card.Body>
-          </Card.Root>
-        </div>
-      </>
+            <Card.Root className="kv-story-section" data-testid="body-padding-none">
+              <Card.Body className="kv-card-body--padding-none">
+                <img src={binsImage} alt="" width={640} height={240} />
+              </Card.Body>
+            </Card.Root>
+          </div>
+        </>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {
@@ -248,32 +251,34 @@ export const Dividers: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <>
-        <Card.Root className="kv-card--dividers" data-testid="dividers" lang={lang}>
-          <Card.Header className="kv-prose">
-            <h2>{text.waste.heading}</h2>
-          </Card.Header>
-          <Card.Body className="kv-prose">
-            <p>{text.waste.plan}</p>
-          </Card.Body>
-          <Card.Footer className="kv-button-group">
-            <Button>{text.waste.pause}</Button>
-          </Card.Footer>
-        </Card.Root>
-        <Card.Root className="kv-card--dividers" data-testid="dividers-after-image" lang={lang}>
-          <Card.Header className="kv-card-header--padding-none">
-            <img src={binsImage} alt="" width={640} height={240} />
-          </Card.Header>
-          <Card.Body className="kv-prose">
-            <p>{text.waste.plan}</p>
-          </Card.Body>
-          <Card.Footer className="kv-button-group">
-            <Button>{text.waste.pause}</Button>
-          </Card.Footer>
-        </Card.Root>
-      </>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <>
+          <Card.Root className="kv-card--dividers" data-testid="dividers">
+            <Card.Header className="kv-prose">
+              <h2>{text.waste.heading}</h2>
+            </Card.Header>
+            <Card.Body className="kv-prose">
+              <p>{text.waste.plan}</p>
+            </Card.Body>
+            <Card.Footer className="kv-button-group">
+              <Button>{text.waste.pause}</Button>
+            </Card.Footer>
+          </Card.Root>
+          <Card.Root className="kv-card--dividers" data-testid="dividers-after-image">
+            <Card.Header className="kv-card-header--padding-none">
+              <img src={binsImage} alt="" width={640} height={240} />
+            </Card.Header>
+            <Card.Body className="kv-prose">
+              <p>{text.waste.plan}</p>
+            </Card.Body>
+            <Card.Footer className="kv-button-group">
+              <Button>{text.waste.pause}</Button>
+            </Card.Footer>
+          </Card.Root>
+        </>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -285,39 +290,41 @@ export const Dividers: Story = {
  */
 export const ProseAndCards: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     const titles = [text.news.recycling.title, text.news.snow.title] as const
     return (
-      <article className="kv-prose" lang={lang}>
-        <h2>{text.news.heading}</h2>
-        <p>{text.news.recycling.excerpt}</p>
-        <Card.Root data-testid="card-in-prose">
-          <p>{text.news.snow.excerpt}</p>
-          <ul data-testid="list-in-card">
-            {titles.map((title) => (
-              <li key={title}>{title}</li>
-            ))}
-          </ul>
-        </Card.Root>
-        <p>{text.news.grants.excerpt}</p>
-        <Card.Root>
-          <Card.Body className="kv-prose">
-            <p>{text.waste.plan}</p>
-            <ul data-testid="prose-in-card">
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <article className="kv-prose">
+          <h2>{text.news.heading}</h2>
+          <p>{text.news.recycling.excerpt}</p>
+          <Card.Root data-testid="card-in-prose">
+            <p>{text.news.snow.excerpt}</p>
+            <ul data-testid="list-in-card">
               {titles.map((title) => (
                 <li key={title}>{title}</li>
               ))}
             </ul>
-            <Card.Root className="kv-card--radius-md">
-              <ul data-testid="list-in-nested-card">
+          </Card.Root>
+          <p>{text.news.grants.excerpt}</p>
+          <Card.Root>
+            <Card.Body className="kv-prose">
+              <p>{text.waste.plan}</p>
+              <ul data-testid="prose-in-card">
                 {titles.map((title) => (
                   <li key={title}>{title}</li>
                 ))}
               </ul>
-            </Card.Root>
-          </Card.Body>
-        </Card.Root>
-      </article>
+              <Card.Root className="kv-card--radius-md">
+                <ul data-testid="list-in-nested-card">
+                  {titles.map((title) => (
+                    <li key={title}>{title}</li>
+                  ))}
+                </ul>
+              </Card.Root>
+            </Card.Body>
+          </Card.Root>
+        </article>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -332,11 +339,11 @@ export const PlainChildren: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Card.Root data-testid="plain" lang={lang}>
-        {text.waste.plan}
-      </Card.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Card.Root data-testid="plain">{text.waste.plan}</Card.Root>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -344,16 +351,18 @@ export const PlainChildren: Story = {
 /** An image in a padded part, without prose: the theme keeps it inside the part. */
 export const ImageInPaddedBody: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <div data-testid="column">
-        <Card.Root lang={lang}>
-          <Card.Body>
-            <img src={binsImage} alt="" width={640} height={240} data-testid="wide-image" />
-            <p>{text.waste.plan}</p>
-          </Card.Body>
-        </Card.Root>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div data-testid="column">
+          <Card.Root>
+            <Card.Body>
+              <img src={binsImage} alt="" width={640} height={240} data-testid="wide-image" />
+              <p>{text.waste.plan}</p>
+            </Card.Body>
+          </Card.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {
@@ -375,18 +384,20 @@ export const WrapperBetweenParts: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Card.Root data-testid="wrapped" lang={lang}>
-        <div>
-          <Card.Body>
-            <p>
-              <code>Card.Root &gt; div &gt; Card.Body</code>
-            </p>
-            <p>{text.waste.plan}</p>
-          </Card.Body>
-        </div>
-      </Card.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Card.Root data-testid="wrapped">
+          <div>
+            <Card.Body>
+              <p>
+                <code>Card.Root &gt; div &gt; Card.Body</code>
+              </p>
+              <p>{text.waste.plan}</p>
+            </Card.Body>
+          </div>
+        </Card.Root>
+      </InEnglishWhenFallback>
     )
   },
 }

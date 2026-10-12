@@ -301,7 +301,6 @@ describe('rendering', () => {
         ref={rootRef}
         items={entries.slice(0, 1)}
         id="innehall"
-        lang="sv"
         className="min-lista"
         data-testid="root"
       >
@@ -329,7 +328,6 @@ describe('rendering', () => {
     )
     const root = page.getByTestId('root')
     await expect.element(root).toHaveAttribute('id', 'innehall')
-    await expect.element(root).toHaveAttribute('lang', 'sv')
     await expect.element(root).toHaveClass('kv-table-of-contents', 'min-lista')
     expect(rootRef.current).toBe(root.element())
     await expect

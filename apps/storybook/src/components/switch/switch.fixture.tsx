@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, Switch } from '@kvirn-ui/react'
 import { useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -98,10 +99,10 @@ const switchTexts: Record<FormLocale, SwitchTexts | undefined> = {
 /** The fixture text in a locale. */
 export function switchTextsFor(locale: FormLocale): {
   text: SwitchTexts
-  lang: 'en' | undefined
+  isFallback: boolean
 } {
   const text = switchTexts[locale]
-  return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }
+  return { text: text ?? textsEn, isFallback: text === undefined }
 }
 
 /**
@@ -109,23 +110,25 @@ export function switchTextsFor(locale: FormLocale): {
  * after it. Tab skips the disabled switch, Space toggles the focused one, and Enter does nothing.
  */
 export function KeyboardSettings({ locale }: { locale: FormLocale }) {
-  const { text, lang } = switchTextsFor(locale)
+  const { text, isFallback } = switchTextsFor(locale)
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root>
-        <Switch name="sms" />
-        <Field.Label marker="none">{text.smsReminders}</Field.Label>
-      </Field.Root>
-      <Field.Root disabled>
-        <Switch name="disabled" />
-        <Field.Label marker="none">{text.longLabel}</Field.Label>
-        <Field.HelpText>{text.noMobileHint}</Field.HelpText>
-      </Field.Root>
-      <Field.Root>
-        <Switch name="email" defaultChecked />
-        <Field.Label marker="none">{text.emailDecisions}</Field.Label>
-      </Field.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root>
+          <Switch name="sms" />
+          <Field.Label marker="none">{text.smsReminders}</Field.Label>
+        </Field.Root>
+        <Field.Root disabled>
+          <Switch name="disabled" />
+          <Field.Label marker="none">{text.longLabel}</Field.Label>
+          <Field.HelpText>{text.noMobileHint}</Field.HelpText>
+        </Field.Root>
+        <Field.Root>
+          <Switch name="email" defaultChecked />
+          <Field.Label marker="none">{text.emailDecisions}</Field.Label>
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -137,27 +140,29 @@ export function KeyboardSettings({ locale }: { locale: FormLocale }) {
  * under the row and announce it through the `Announcer`.
  */
 export function SavedAtOnceSetting({ locale }: { locale: FormLocale }) {
-  const { text, lang } = switchTextsFor(locale)
+  const { text, isFallback } = switchTextsFor(locale)
   const [checked, setChecked] = useState(false)
   const [status, setStatus] = useState('')
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root>
-        <Switch
-          name="sms"
-          checked={checked}
-          onCheckedChange={(next) => {
-            setChecked(next)
-            setStatus(next ? text.statusOn : text.statusOff)
-          }}
-        />
-        <Field.Label marker="none">{text.smsReminders}</Field.Label>
-        <Field.HelpText>{text.smsRemindersHint}</Field.HelpText>
-      </Field.Root>
-      <output className="kv-story-form-output" data-testid="status">
-        {status}
-      </output>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root>
+          <Switch
+            name="sms"
+            checked={checked}
+            onCheckedChange={(next) => {
+              setChecked(next)
+              setStatus(next ? text.statusOn : text.statusOff)
+            }}
+          />
+          <Field.Label marker="none">{text.smsReminders}</Field.Label>
+          <Field.HelpText>{text.smsRemindersHint}</Field.HelpText>
+        </Field.Root>
+        <output className="kv-story-form-output" data-testid="status">
+          {status}
+        </output>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -167,32 +172,33 @@ export function SavedAtOnceSetting({ locale }: { locale: FormLocale }) {
  * sends nothing.
  */
 export function SettingsForm({ locale }: { locale: FormLocale }) {
-  const { text, lang } = switchTextsFor(locale)
+  const { text, isFallback } = switchTextsFor(locale)
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      onSubmit={(event) => {
-        event.preventDefault()
-        const sms = new FormData(event.currentTarget).get('sms')
-        setSent(typeof sms === 'string' ? sms : '–')
-      }}
-    >
-      <Field.Root>
-        <Switch name="sms" value="sms" />
-        <Field.Label marker="none">{text.smsReminders}</Field.Label>
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {text.sent}: {sent}
-        </p>
-      )}
-    </form>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form
+        className="kv-story-form"
+        onSubmit={(event) => {
+          event.preventDefault()
+          const sms = new FormData(event.currentTarget).get('sms')
+          setSent(typeof sms === 'string' ? sms : '–')
+        }}
+      >
+        <Field.Root>
+          <Switch name="sms" value="sms" />
+          <Field.Label marker="none">{text.smsReminders}</Field.Label>
+        </Field.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
+        {sent === undefined ? null : (
+          <p className="kv-story-form-output" data-testid="sent">
+            {text.sent}: {sent}
+          </p>
+        )}
+      </form>
+    </InEnglishWhenFallback>
   )
 }

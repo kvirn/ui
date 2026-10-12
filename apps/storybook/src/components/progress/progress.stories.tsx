@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Progress } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/progress/progress.a11y.md?raw'
 import guide from '../../../../../packages/react/src/progress/progress.md?raw'
@@ -41,15 +42,17 @@ const meta = {
   args: { delayMilliseconds: 0, announce: false },
   globals: { locale: 'sv' },
   render: (args, { globals }) => {
-    const { text, lang } = progressTextsFor(localeOf(globals))
+    const { text, isFallback } = progressTextsFor(localeOf(globals))
     return (
-      <div lang={lang}>
-        <Progress.Root {...args} label={args.label ?? text.sending}>
-          <Progress.Indicator />
-          <Progress.Label />
-          <Progress.Bar />
-        </Progress.Root>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div>
+          <Progress.Root {...args} label={args.label ?? text.sending}>
+            <Progress.Indicator />
+            <Progress.Label />
+            <Progress.Bar />
+          </Progress.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   parameters: {
@@ -67,19 +70,21 @@ type Story = StoryObj<typeof meta>
  */
 export const Default: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = progressTextsFor(localeOf(globals))
+    const { text, isFallback } = progressTextsFor(localeOf(globals))
     return (
-      <div className="kv-story-form" lang={lang}>
-        <Progress.Root label={text.sending} delayMilliseconds={0} announce={false}>
-          <Progress.Indicator />
-          <Progress.Label />
-        </Progress.Root>
-        <Progress.Root label={text.exporting} value={45} delayMilliseconds={0} announce={false}>
-          <Progress.Indicator />
-          <Progress.Label />
-          <Progress.Bar />
-        </Progress.Root>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div className="kv-story-form">
+          <Progress.Root label={text.sending} delayMilliseconds={0} announce={false}>
+            <Progress.Indicator />
+            <Progress.Label />
+          </Progress.Root>
+          <Progress.Root label={text.exporting} value={45} delayMilliseconds={0} announce={false}>
+            <Progress.Indicator />
+            <Progress.Label />
+            <Progress.Bar />
+          </Progress.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, canvasElement, globals }) => {
@@ -138,14 +143,16 @@ export const LongLabel: Story = {
     ),
   ],
   render: (args, { globals }) => {
-    const { text, lang } = progressTextsFor(localeOf(globals))
+    const { text, isFallback } = progressTextsFor(localeOf(globals))
     return (
-      <div lang={lang}>
-        <Progress.Root {...args} label={text.longLabel}>
-          <Progress.Label />
-          <Progress.Bar />
-        </Progress.Root>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div>
+          <Progress.Root {...args} label={text.longLabel}>
+            <Progress.Label />
+            <Progress.Bar />
+          </Progress.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {
@@ -193,27 +200,29 @@ export const Failed: Story = {
 
 // Every state in one column. The RTL and ForcedColors stories render it.
 const renderProgressStates: NonNullable<Story['render']> = (_args, { globals }) => {
-  const { text, lang } = progressTextsFor(localeOf(globals))
+  const { text, isFallback } = progressTextsFor(localeOf(globals))
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Progress.Root label={text.sending} delayMilliseconds={0} announce={false}>
-        <Progress.Indicator />
-        <Progress.Label />
-      </Progress.Root>
-      <Progress.Root label={text.exporting} value={45} delayMilliseconds={0} announce={false}>
-        <Progress.Label />
-        <Progress.Bar />
-      </Progress.Root>
-      <Progress.Root
-        label={text.sending}
-        delayMilliseconds={0}
-        slowAfterMilliseconds={1}
-        announce={false}
-      >
-        <Progress.Indicator className="kv-spinner--lg" />
-        <Progress.Label />
-      </Progress.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Progress.Root label={text.sending} delayMilliseconds={0} announce={false}>
+          <Progress.Indicator />
+          <Progress.Label />
+        </Progress.Root>
+        <Progress.Root label={text.exporting} value={45} delayMilliseconds={0} announce={false}>
+          <Progress.Label />
+          <Progress.Bar />
+        </Progress.Root>
+        <Progress.Root
+          label={text.sending}
+          delayMilliseconds={0}
+          slowAfterMilliseconds={1}
+          announce={false}
+        >
+          <Progress.Indicator className="kv-spinner--lg" />
+          <Progress.Label />
+        </Progress.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 

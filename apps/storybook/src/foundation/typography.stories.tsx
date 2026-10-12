@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../fixture-language.tsx'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { CSSProperties, ReactNode } from 'react'
 import { expect, within } from 'storybook/test'
@@ -225,47 +226,49 @@ function TypeRolesTable({
   locale: FixtureLocale
   roles: TypeRoleValues | undefined
 }) {
-  const { text, lang } = articleFor(locale)
-  const sampleLang = lang ?? locale
+  const { text, isFallback } = articleFor(locale)
+  const sampleLang = isFallback ? 'en' : locale
   const number = new Intl.NumberFormat(sampleLang)
   return (
-    <ScrollTable caption="Type role tokens">
-      <thead>
-        <tr>
-          <th scope="col">Role</th>
-          <th scope="col">Sample</th>
-          <th scope="col">Size</th>
-          <th scope="col">Weight</th>
-          <th scope="col">Line height</th>
-          <th scope="col">Letter spacing</th>
-          <th scope="col">Features</th>
-          <th scope="col">Token prefix</th>
-        </tr>
-      </thead>
-      <tbody>
-        {typeRoles.map((typeRole) => {
-          const roleValues = roles?.[typeRole.role]
-          return (
-            <tr key={typeRole.role}>
-              <th scope="row">{typeRole.label}</th>
-              <td>
-                <span lang={sampleLang} style={roleStyle(typeRole)}>
-                  {typeRole.sample(text, (value) => number.format(value))}
-                </span>
-              </td>
-              <td>{roleValues === undefined ? notDefined : formatSize(roleValues)}</td>
-              <td>{roleValues?.weight ?? notDefined}</td>
-              <td>{roleValues === undefined ? notDefined : formatLineHeight(roleValues)}</td>
-              <td>{roleValues === undefined ? notDefined : formatLetterSpacing(roleValues)}</td>
-              <td>{formatFeatures(roleValues?.features)}</td>
-              <td>
-                <code>{`${tokenPrefix(typeRole.role)}-*`}</code>
-              </td>
-            </tr>
-          )
-        })}
-      </tbody>
-    </ScrollTable>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <ScrollTable caption="Type role tokens">
+        <thead>
+          <tr>
+            <th scope="col">Role</th>
+            <th scope="col">Sample</th>
+            <th scope="col">Size</th>
+            <th scope="col">Weight</th>
+            <th scope="col">Line height</th>
+            <th scope="col">Letter spacing</th>
+            <th scope="col">Features</th>
+            <th scope="col">Token prefix</th>
+          </tr>
+        </thead>
+        <tbody>
+          {typeRoles.map((typeRole) => {
+            const roleValues = roles?.[typeRole.role]
+            return (
+              <tr key={typeRole.role}>
+                <th scope="row">{typeRole.label}</th>
+                <td>
+                  <span style={roleStyle(typeRole)}>
+                    {typeRole.sample(text, (value) => number.format(value))}
+                  </span>
+                </td>
+                <td>{roleValues === undefined ? notDefined : formatSize(roleValues)}</td>
+                <td>{roleValues?.weight ?? notDefined}</td>
+                <td>{roleValues === undefined ? notDefined : formatLineHeight(roleValues)}</td>
+                <td>{roleValues === undefined ? notDefined : formatLetterSpacing(roleValues)}</td>
+                <td>{formatFeatures(roleValues?.features)}</td>
+                <td>
+                  <code>{`${tokenPrefix(typeRole.role)}-*`}</code>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </ScrollTable>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -403,29 +406,32 @@ function TabularFiguresTable() {
 
 function TypeRolesPage({ locale }: { locale: FixtureLocale }): ReactNode {
   const [ref, roles] = useLiveValue(readTypeRoles)
-  const { lang } = articleFor(locale)
+  const { isFallback } = articleFor(locale)
   return (
-    <FoundationPage title="Type roles">
-      <div ref={ref}>
-        <p>
-          Every type role in <code>theme.css</code>, with its values read live from this page. Each
-          sample is set in the role’s own tokens, so an override shows up here. Sizes are in rem, so
-          they follow the browser’s text size (1.4.4), and the px values are at the current root
-          size.
-        </p>
-        <p>
-          The samples are in the toolbar locale.{' '}
-          {lang === undefined
-            ? null
-            : 'This locale has no translated fixture yet, so they are in English.'}{' '}
-          <code>lead</code> is only for the lead paragraph of large prose. Below 40rem{' '}
-          <code>display</code>, <code>heading-1</code>, <code>heading-2</code> and <code>lead</code>{' '}
-          step down; <code>heading-3</code> to <code>heading-6</code> and the body roles never do.
-          The Heading levels story shows <code>h1</code> to <code>h6</code> together.
-        </p>
-        <TypeRolesTable locale={locale} roles={roles} />
-      </div>
-    </FoundationPage>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <FoundationPage title="Type roles">
+        <div ref={ref}>
+          <p>
+            Every type role in <code>theme.css</code>, with its values read live from this page.
+            Each sample is set in the role’s own tokens, so an override shows up here. Sizes are in
+            rem, so they follow the browser’s text size (1.4.4), and the px values are at the
+            current root size.
+          </p>
+          <p>
+            The samples are in the toolbar locale.{' '}
+            {isFallback
+              ? 'This locale has no translated fixture yet, so they are in English.'
+              : null}{' '}
+            <code>lead</code> is only for the lead paragraph of large prose. Below 40rem{' '}
+            <code>display</code>, <code>heading-1</code>, <code>heading-2</code> and{' '}
+            <code>lead</code> step down; <code>heading-3</code> to <code>heading-6</code> and the
+            body roles never do. The Heading levels story shows <code>h1</code> to <code>h6</code>{' '}
+            together.
+          </p>
+          <TypeRolesTable locale={locale} roles={roles} />
+        </div>
+      </FoundationPage>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -434,33 +440,34 @@ function TypeRolesPage({ locale }: { locale: FixtureLocale }): ReactNode {
  * turn. The article is a self-contained sample with its own h1, so it is not a skipped level.
  */
 function HeadingLevelsPage({ locale }: { locale: FixtureLocale }): ReactNode {
-  const { text, lang } = articleFor(locale)
-  const sampleLang = lang ?? locale
+  const { text, isFallback } = articleFor(locale)
   return (
-    <FoundationPage title="Heading levels">
-      <p>
-        Prose styles <code>h1</code> to <code>h6</code> with the type roles <code>heading-1</code>{' '}
-        to <code>heading-6</code>, and the Heading component does the same through its level. The
-        values are in the Type roles table. <code>heading-4</code> to <code>heading-6</code> stay at
-        16px, because essential content is never smaller. They are told apart by weight and
-        tracking, so stop at <code>h3</code> in text a resident reads where you can, and never pick
-        a level for its look: set the type role with <code>size</code> instead.
-      </p>
-      <article className="kv-prose" lang={sampleLang}>
-        <h1>{text.title}</h1>
-        <p>{text.lead}</p>
-        <h2>{text.who.heading}</h2>
-        <p>{text.who.intro}</p>
-        <h3>{text.what.heading}</h3>
-        <p>{text.what.intro}</p>
-        <h4>{text.paper.heading}</h4>
-        <p>{text.paper.text}</p>
-        <h5>{text.send.heading}</h5>
-        <p>{text.send.address.join(', ')}</p>
-        <h6>{text.times.heading}</h6>
-        <p>{text.times.intro}</p>
-      </article>
-    </FoundationPage>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <FoundationPage title="Heading levels">
+        <p>
+          Prose styles <code>h1</code> to <code>h6</code> with the type roles <code>heading-1</code>{' '}
+          to <code>heading-6</code>, and the Heading component does the same through its level. The
+          values are in the Type roles table. <code>heading-4</code> to <code>heading-6</code> stay
+          at 16px, because essential content is never smaller. They are told apart by weight and
+          tracking, so stop at <code>h3</code> in text a resident reads where you can, and never
+          pick a level for its look: set the type role with <code>size</code> instead.
+        </p>
+        <article className="kv-prose">
+          <h1>{text.title}</h1>
+          <p>{text.lead}</p>
+          <h2>{text.who.heading}</h2>
+          <p>{text.who.intro}</p>
+          <h3>{text.what.heading}</h3>
+          <p>{text.what.intro}</p>
+          <h4>{text.paper.heading}</h4>
+          <p>{text.paper.text}</p>
+          <h5>{text.send.heading}</h5>
+          <p>{text.send.address.join(', ')}</p>
+          <h6>{text.times.heading}</h6>
+          <p>{text.times.intro}</p>
+        </article>
+      </FoundationPage>
+    </InEnglishWhenFallback>
   )
 }
 

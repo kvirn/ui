@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import {
   Checkbox,
   CheckboxGroup,
@@ -150,9 +151,9 @@ const texts: Partial<Record<FormLocale, TagTexts>> = {
 }
 
 /** The fixture text in a locale. */
-export function tagTextsFor(locale: FormLocale): { text: TagTexts; lang: 'en' | undefined } {
+export function tagTextsFor(locale: FormLocale): { text: TagTexts; isFallback: boolean } {
   const text = texts[locale]
-  return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }
+  return { text: text ?? textsEn, isFallback: text === undefined }
 }
 
 const textOf = (message: string | (() => string)): string =>
@@ -165,79 +166,87 @@ const languages = ['Svenska', 'Suomi', 'Norsk']
  * moves focus to the next remove button, else the previous, else its label, and announces the removal.
  */
 export function RemovableTags({ locale }: { locale: FormLocale }) {
-  const { text, lang } = tagTextsFor(locale)
+  const { text, isFallback } = tagTextsFor(locale)
   const [chosen, setChosen] = useState(languages)
   return (
-    <TagGroup.Root lang={lang}>
-      <TagGroup.Label>{text.groupLabel}</TagGroup.Label>
-      <TagGroup.List>
-        {chosen.map((language) => (
-          <Tag.Root key={language}>
-            <Tag.Remove
-              onRemove={() => setChosen((current) => current.filter((l) => l !== language))}
-            >
-              {language}
-            </Tag.Remove>
-          </Tag.Root>
-        ))}
-      </TagGroup.List>
-      <TagGroup.Empty>{text.empty}</TagGroup.Empty>
-      <TagGroup.ClearAll onClear={() => setChosen([])}>{text.clearAll}</TagGroup.ClearAll>
-    </TagGroup.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <TagGroup.Root>
+        <TagGroup.Label>{text.groupLabel}</TagGroup.Label>
+        <TagGroup.List>
+          {chosen.map((language) => (
+            <Tag.Root key={language}>
+              <Tag.Remove
+                onRemove={() => setChosen((current) => current.filter((l) => l !== language))}
+              >
+                {language}
+              </Tag.Remove>
+            </Tag.Root>
+          ))}
+        </TagGroup.List>
+        <TagGroup.Empty>{text.empty}</TagGroup.Empty>
+        <TagGroup.ClearAll onClear={() => setChosen([])}>{text.clearAll}</TagGroup.ClearAll>
+      </TagGroup.Root>
+    </InEnglishWhenFallback>
   )
 }
 
 /** Static tags: text only, not a Tab stop. A locked value is a static tag, never a disabled button. */
 export function StaticTags({ locale }: { locale: FormLocale }) {
-  const { text, lang } = tagTextsFor(locale)
+  const { text, isFallback } = tagTextsFor(locale)
   return (
-    <TagGroup.Root lang={lang}>
-      <TagGroup.Label>{text.groupLabel}</TagGroup.Label>
-      <TagGroup.List>
-        {languages.map((language) => (
-          <Tag.Root key={language}>
-            <Tag.Label>{language}</Tag.Label>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <TagGroup.Root>
+        <TagGroup.Label>{text.groupLabel}</TagGroup.Label>
+        <TagGroup.List>
+          {languages.map((language) => (
+            <Tag.Root key={language}>
+              <Tag.Label>{language}</Tag.Label>
+            </Tag.Root>
+          ))}
+          <Tag.Root>
+            <Tag.Label>{text.locked}</Tag.Label>
           </Tag.Root>
-        ))}
-        <Tag.Root>
-          <Tag.Label>{text.locked}</Tag.Label>
-        </Tag.Root>
-      </TagGroup.List>
-    </TagGroup.Root>
+        </TagGroup.List>
+      </TagGroup.Root>
+    </InEnglishWhenFallback>
   )
 }
 
 /** The group with no tag: the list isn't rendered, the empty text is shown and Clear all is gone. */
 export function EmptyTags({ locale }: { locale: FormLocale }) {
-  const { text, lang } = tagTextsFor(locale)
+  const { text, isFallback } = tagTextsFor(locale)
   return (
-    <TagGroup.Root lang={lang}>
-      <TagGroup.Label>{text.groupLabel}</TagGroup.Label>
-      <TagGroup.List>{[]}</TagGroup.List>
-      <TagGroup.Empty>{text.empty}</TagGroup.Empty>
-      <TagGroup.ClearAll onClear={() => {}}>{text.clearAll}</TagGroup.ClearAll>
-    </TagGroup.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <TagGroup.Root>
+        <TagGroup.Label>{text.groupLabel}</TagGroup.Label>
+        <TagGroup.List>{[]}</TagGroup.List>
+        <TagGroup.Empty>{text.empty}</TagGroup.Empty>
+        <TagGroup.ClearAll onClear={() => {}}>{text.clearAll}</TagGroup.ClearAll>
+      </TagGroup.Root>
+    </InEnglishWhenFallback>
   )
 }
 
 /** A long tag wraps over lines, never truncated. */
 export function LongTag({ locale }: { locale: FormLocale }) {
-  const { text, lang } = tagTextsFor(locale)
+  const { text, isFallback } = tagTextsFor(locale)
   const [visible, setVisible] = useState(true)
   return (
-    <TagGroup.Root lang={lang}>
-      <TagGroup.Label>{text.groupLabel}</TagGroup.Label>
-      <TagGroup.List>
-        {visible ? (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <TagGroup.Root>
+        <TagGroup.Label>{text.groupLabel}</TagGroup.Label>
+        <TagGroup.List>
+          {visible ? (
+            <Tag.Root>
+              <Tag.Remove onRemove={() => setVisible(false)}>{text.longTag}</Tag.Remove>
+            </Tag.Root>
+          ) : null}
           <Tag.Root>
-            <Tag.Remove onRemove={() => setVisible(false)}>{text.longTag}</Tag.Remove>
+            <Tag.Label>{text.locked}</Tag.Label>
           </Tag.Root>
-        ) : null}
-        <Tag.Root>
-          <Tag.Label>{text.locked}</Tag.Label>
-        </Tag.Root>
-      </TagGroup.List>
-    </TagGroup.Root>
+        </TagGroup.List>
+      </TagGroup.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -249,7 +258,7 @@ export function LongTag({ locale }: { locale: FormLocale }) {
  * live region keeps only the last message. A real list says it after the results settle, debounced.
  */
 export function FilterAList({ locale }: { locale: FormLocale }) {
-  const { text, lang } = tagTextsFor(locale)
+  const { text, isFallback } = tagTextsFor(locale)
   const { filters } = messagesFor(locale)
   const format = useFormat()
   const { announce } = useAnnouncer()
@@ -295,75 +304,77 @@ export function FilterAList({ locale }: { locale: FormLocale }) {
   }
 
   return (
-    <div className="kv-story-form" lang={lang}>
-      <form aria-labelledby="filter-heading">
-        <h2 id="filter-heading">{textOf(filters.heading)}</h2>
-        <CheckboxGroup.Root
-          name="category"
-          value={categories}
-          onValueChange={(next) => {
-            setCategories(next)
-            announce(filters.resultCount({ count: countFor(next, years).length }, format))
-          }}
-        >
-          <CheckboxGroup.Legend>{text.categoryLegend}</CheckboxGroup.Legend>
-          {(['kids', 'culture', 'sport'] as const).map((value) => (
-            <Field.Root key={value}>
-              <Checkbox value={value} />
-              <Field.Label>{text.categories[value]}</Field.Label>
-            </Field.Root>
-          ))}
-        </CheckboxGroup.Root>
-        <CheckboxGroup.Root
-          name="year"
-          value={years}
-          onValueChange={(next) => {
-            setYears(next)
-            announce(filters.resultCount({ count: countFor(categories, next).length }, format))
-          }}
-        >
-          <CheckboxGroup.Legend>{text.yearLegend}</CheckboxGroup.Legend>
-          {(['2025', '2024'] as const).map((value) => (
-            <Field.Root key={value}>
-              <Checkbox value={value} />
-              <Field.Label>{value}</Field.Label>
-            </Field.Root>
-          ))}
-        </CheckboxGroup.Root>
-      </form>
-      <TagGroup.Root announceRemoval={false}>
-        <TagGroup.Label>{textOf(filters.applied)}</TagGroup.Label>
-        <TagGroup.List>
-          {applied.map(({ kind, value, label }) => (
-            <Tag.Root key={`${kind}-${value}`}>
-              <Tag.Remove label={label} onRemove={() => removeFilter(kind, value, label)}>
-                {label}
-              </Tag.Remove>
-            </Tag.Root>
-          ))}
-        </TagGroup.List>
-        <TagGroup.Empty>{textOf(filters.none)}</TagGroup.Empty>
-        <TagGroup.ClearAll
-          onClear={() => {
-            setCategories([])
-            setYears([])
-            announce(filters.clearedResultCount({ count: text.results.length }, format))
-          }}
-        />
-      </TagGroup.Root>
-      <h2 data-testid="count">{filters.resultCount({ count: results.length }, format)}</h2>
-      {results.length === 0 ? (
-        <>
-          <p>{textOf(filters.noResults)}</p>
-          <p>{textOf(filters.noResultsHint)}</p>
-        </>
-      ) : (
-        <ol>
-          {results.map((result) => (
-            <li key={result.title}>{result.title}</li>
-          ))}
-        </ol>
-      )}
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <form aria-labelledby="filter-heading">
+          <h2 id="filter-heading">{textOf(filters.heading)}</h2>
+          <CheckboxGroup.Root
+            name="category"
+            value={categories}
+            onValueChange={(next) => {
+              setCategories(next)
+              announce(filters.resultCount({ count: countFor(next, years).length }, format))
+            }}
+          >
+            <CheckboxGroup.Legend>{text.categoryLegend}</CheckboxGroup.Legend>
+            {(['kids', 'culture', 'sport'] as const).map((value) => (
+              <Field.Root key={value}>
+                <Checkbox value={value} />
+                <Field.Label>{text.categories[value]}</Field.Label>
+              </Field.Root>
+            ))}
+          </CheckboxGroup.Root>
+          <CheckboxGroup.Root
+            name="year"
+            value={years}
+            onValueChange={(next) => {
+              setYears(next)
+              announce(filters.resultCount({ count: countFor(categories, next).length }, format))
+            }}
+          >
+            <CheckboxGroup.Legend>{text.yearLegend}</CheckboxGroup.Legend>
+            {(['2025', '2024'] as const).map((value) => (
+              <Field.Root key={value}>
+                <Checkbox value={value} />
+                <Field.Label>{value}</Field.Label>
+              </Field.Root>
+            ))}
+          </CheckboxGroup.Root>
+        </form>
+        <TagGroup.Root announceRemoval={false}>
+          <TagGroup.Label>{textOf(filters.applied)}</TagGroup.Label>
+          <TagGroup.List>
+            {applied.map(({ kind, value, label }) => (
+              <Tag.Root key={`${kind}-${value}`}>
+                <Tag.Remove label={label} onRemove={() => removeFilter(kind, value, label)}>
+                  {label}
+                </Tag.Remove>
+              </Tag.Root>
+            ))}
+          </TagGroup.List>
+          <TagGroup.Empty>{textOf(filters.none)}</TagGroup.Empty>
+          <TagGroup.ClearAll
+            onClear={() => {
+              setCategories([])
+              setYears([])
+              announce(filters.clearedResultCount({ count: text.results.length }, format))
+            }}
+          />
+        </TagGroup.Root>
+        <h2 data-testid="count">{filters.resultCount({ count: results.length }, format)}</h2>
+        {results.length === 0 ? (
+          <>
+            <p>{textOf(filters.noResults)}</p>
+            <p>{textOf(filters.noResultsHint)}</p>
+          </>
+        ) : (
+          <ol>
+            {results.map((result) => (
+              <li key={result.title}>{result.title}</li>
+            ))}
+          </ol>
+        )}
+      </div>
+    </InEnglishWhenFallback>
   )
 }

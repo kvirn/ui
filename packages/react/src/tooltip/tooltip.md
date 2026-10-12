@@ -69,7 +69,7 @@ import { Icon, Kbd, Toolbar, Tooltip } from '@kvirn-ui/react'
     <Tooltip.Name>Fetstil</Tooltip.Name>
     <Tooltip.Shortcut>
       <Kbd>
-        <Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">B</Kbd>
+        <Kbd>Ctrl</Kbd>+<Kbd>B</Kbd>
       </Kbd>
     </Tooltip.Shortcut>
   </Tooltip.Popup>

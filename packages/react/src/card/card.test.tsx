@@ -154,15 +154,14 @@ describe('rendering', () => {
       .toHaveFocus()
   })
 
-  test('passes attributes through: id, lang and title on the consumer’s element', async () => {
+  test('passes attributes through: id and title on the consumer’s element', async () => {
     await render(
-      <Card.Root data-testid="card" id="kontakt" lang="en" title="Kort">
+      <Card.Root data-testid="card" id="kontakt" title="Kort">
         <Card.Body>Contact us</Card.Body>
       </Card.Root>,
     )
     const card = page.getByTestId('card')
     await expect.element(card).toHaveAttribute('id', 'kontakt')
-    await expect.element(card).toHaveAttribute('lang', 'en')
     await expect.element(card).toHaveAttribute('title', 'Kort')
   })
 

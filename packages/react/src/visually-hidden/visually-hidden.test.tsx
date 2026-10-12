@@ -29,14 +29,14 @@ describe('VisuallyHidden', () => {
     await render(
       <p>
         Sökträffar
-        <VisuallyHidden id="count" lang="sv" ref={ref} data-testid="hidden">
+        <VisuallyHidden id="count" ref={ref} data-testid="hidden">
           , 3 resultat
         </VisuallyHidden>
       </p>,
     )
     const element = page.getByTestId('hidden').element()
     expect(element.tagName).toBe('SPAN')
-    expect(element.getAttributeNames().sort()).toEqual(['class', 'data-testid', 'id', 'lang'])
+    expect(element.getAttributeNames().sort()).toEqual(['class', 'data-testid', 'id'])
     expect(element.className).toBe('kv-visually-hidden')
     expect(element.tabIndex).toBe(-1)
     expect(ref.current).toBe(element)

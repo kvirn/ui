@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { Button, Card, KvirnProvider, Link, useFormat } from '@kvirn-ui/react'
@@ -214,7 +215,7 @@ export const isCardFixtureLocale = (value: unknown): value is CardFixtureLocale 
 interface ResolvedTexts {
   text: CardTexts
   /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
-  lang: 'en' | undefined
+  isFallback: boolean
 }
 
 /**
@@ -234,11 +235,11 @@ export const withCardLocale: Decorator = (Story, { globals }) => {
 export function textsFor(locale: CardFixtureLocale): ResolvedTexts {
   const text = cardTexts[locale]
   if (text === undefined) {
-    return { text: en, lang: 'en' }
+    return { text: en, isFallback: true }
   }
   return {
     text,
-    lang: undefined,
+    isFallback: false,
   }
 }
 
@@ -290,25 +291,27 @@ const caseNumber = 'BAB-2026-004512'
 
 /** Example B: a service card on My pages, with a full-bleed image and two actions. */
 export function ServiceCard({ locale }: CardFixtureProps) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const format = useFormat()
   return (
-    <Card.Root lang={lang} data-testid="service-card">
-      <Card.Header className="kv-card-header--padding-none">
-        <img src={binsImage} alt="" width={640} height={240} />
-      </Card.Header>
-      <Card.Body className="kv-prose">
-        <h2>{text.waste.heading}</h2>
-        <p>
-          {text.waste.next(<time dateTime="2026-10-14">{longDate(nextCollection, format)}</time>)}
-        </p>
-        <p>{text.waste.plan}</p>
-      </Card.Body>
-      <Card.Footer className="kv-button-group">
-        <Button className="kv-button--primary">{text.waste.orderExtra}</Button>
-        <Button>{text.waste.pause}</Button>
-      </Card.Footer>
-    </Card.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Card.Root data-testid="service-card">
+        <Card.Header className="kv-card-header--padding-none">
+          <img src={binsImage} alt="" width={640} height={240} />
+        </Card.Header>
+        <Card.Body className="kv-prose">
+          <h2>{text.waste.heading}</h2>
+          <p>
+            {text.waste.next(<time dateTime="2026-10-14">{longDate(nextCollection, format)}</time>)}
+          </p>
+          <p>{text.waste.plan}</p>
+        </Card.Body>
+        <Card.Footer className="kv-button-group">
+          <Button className="kv-button--primary">{text.waste.orderExtra}</Button>
+          <Button>{text.waste.pause}</Button>
+        </Card.Footer>
+      </Card.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -317,7 +320,7 @@ export function ServiceCard({ locale }: CardFixtureProps) {
  * grid is story CSS: the theme has no card-list attribute yet (Plan 0007, decision 3).
  */
 export function NewsList({ locale }: CardFixtureProps) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const format = useFormat()
   const items = [
     ['atervinning', text.news.recycling, publishedDates.recycling],
@@ -325,59 +328,63 @@ export function NewsList({ locale }: CardFixtureProps) {
     ['foreningsbidrag', text.news.grants, publishedDates.grants],
   ] as const
   return (
-    <div lang={lang}>
-      <h2>{text.news.heading}</h2>
-      <ul role="list" className="kv-story-card-list">
-        {items.map(([id, item, published], index) => (
-          <Card.Root key={id} as="li">
-            {index === 0 ? (
-              <Card.Header className="kv-card-header--padding-none">
-                <img src={recyclingImage} alt="" width={640} height={240} />
-              </Card.Header>
-            ) : null}
-            <Card.Body className="kv-prose">
-              <h3>
-                <Link.Root href={`#${id}`}>{item.title}</Link.Root>
-              </h3>
-              <p>{item.excerpt}</p>
-              <p>
-                <small>
-                  {text.news.published(
-                    <time dateTime={published.toISOString().slice(0, 10)}>
-                      {longDate(published, format)}
-                    </time>,
-                  )}
-                </small>
-              </p>
-            </Card.Body>
-          </Card.Root>
-        ))}
-      </ul>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <h2>{text.news.heading}</h2>
+        <ul role="list" className="kv-story-card-list">
+          {items.map(([id, item, published], index) => (
+            <Card.Root key={id} as="li">
+              {index === 0 ? (
+                <Card.Header className="kv-card-header--padding-none">
+                  <img src={recyclingImage} alt="" width={640} height={240} />
+                </Card.Header>
+              ) : null}
+              <Card.Body className="kv-prose">
+                <h3>
+                  <Link.Root href={`#${id}`}>{item.title}</Link.Root>
+                </h3>
+                <p>{item.excerpt}</p>
+                <p>
+                  <small>
+                    {text.news.published(
+                      <time dateTime={published.toISOString().slice(0, 10)}>
+                        {longDate(published, format)}
+                      </time>,
+                    )}
+                  </small>
+                </p>
+              </Card.Body>
+            </Card.Root>
+          ))}
+        </ul>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
 /** Example D: a staff case card in compact density, with a nested card. */
 export function CaseCard({ locale }: CardFixtureProps) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const format = useFormat()
   return (
-    <div className="kv-compact" lang={lang}>
-      <Card.Root data-testid="case-card">
-        <Card.Body className="kv-prose">
-          <h2>{text.case.heading(caseNumber)}</h2>
-          <p>{text.case.status}</p>
-          <Card.Root className="kv-card--radius-md kv-prose" data-testid="nested-card">
-            <h3>{text.case.latestHeading}</h3>
-            <p>
-              {text.case.latestText(
-                <time dateTime="2026-09-30">{longDate(certificateArrived, format)}</time>,
-              )}
-            </p>
-          </Card.Root>
-        </Card.Body>
-      </Card.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-compact">
+        <Card.Root data-testid="case-card">
+          <Card.Body className="kv-prose">
+            <h2>{text.case.heading(caseNumber)}</h2>
+            <p>{text.case.status}</p>
+            <Card.Root className="kv-card--radius-md kv-prose" data-testid="nested-card">
+              <h3>{text.case.latestHeading}</h3>
+              <p>
+                {text.case.latestText(
+                  <time dateTime="2026-09-30">{longDate(certificateArrived, format)}</time>,
+                )}
+              </p>
+            </Card.Root>
+          </Card.Body>
+        </Card.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -387,20 +394,22 @@ export function CaseCard({ locale }: CardFixtureProps) {
  * something users would jump to.
  */
 export function ArticleCard({ locale }: CardFixtureProps) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const headingId = useId()
   return (
-    <Card.Root lang={lang} data-testid="article-card" as="article" aria-labelledby={headingId}>
-      <Card.Header className="kv-card-header--padding-none">
-        <img src={recyclingImage} alt="" width={640} height={240} />
-      </Card.Header>
-      <Card.Body className="kv-prose">
-        <h2 id={headingId}>{text.news.recycling.title}</h2>
-        <p>{text.news.recycling.excerpt}</p>
-      </Card.Body>
-      <Card.Footer className="kv-button-group">
-        <Button>{text.waste.pause}</Button>
-      </Card.Footer>
-    </Card.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Card.Root data-testid="article-card" as="article" aria-labelledby={headingId}>
+        <Card.Header className="kv-card-header--padding-none">
+          <img src={recyclingImage} alt="" width={640} height={240} />
+        </Card.Header>
+        <Card.Body className="kv-prose">
+          <h2 id={headingId}>{text.news.recycling.title}</h2>
+          <p>{text.news.recycling.excerpt}</p>
+        </Card.Body>
+        <Card.Footer className="kv-button-group">
+          <Button>{text.waste.pause}</Button>
+        </Card.Footer>
+      </Card.Root>
+    </InEnglishWhenFallback>
   )
 }

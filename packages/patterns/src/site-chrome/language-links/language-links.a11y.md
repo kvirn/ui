@@ -43,6 +43,7 @@ None.
 ## Consumer responsibilities
 
 - Mark the current language, and say `English (start page)` in English when the page has no translation.
+- `lang` on `LanguageLinks.Link` is the one documented exception to "the language comes from `KvirnProvider`": each language is written in itself (3.1.2).
 
 ## Visual / modes
 

@@ -72,14 +72,13 @@ describe('rendering', () => {
   test('forwards its ref and passes attributes through', async () => {
     const ref = createRef<HTMLDivElement>()
     await render(
-      <TopBar.Root ref={ref} id="verktygsfalt" lang="en" data-testid="top-bar">
+      <TopBar.Root ref={ref} id="verktygsfalt" data-testid="top-bar">
         Text
       </TopBar.Root>,
     )
     const bar = page.getByTestId('top-bar')
     expect(ref.current).toBe(bar.element())
     await expect.element(bar).toHaveAttribute('id', 'verktygsfalt')
-    await expect.element(bar).toHaveAttribute('lang', 'en')
   })
 
   test('TopBar.Root and TopBarRoot are one component', () => {

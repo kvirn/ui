@@ -103,7 +103,7 @@ const gapTexts: Record<FormLocale, FormGapTexts | undefined> = {
 }
 
 /** The fixture text in a locale. */
-export function gapTextsFor(locale: FormLocale): { text: FormGapTexts; lang: 'en' | undefined } {
+export function gapTextsFor(locale: FormLocale): { text: FormGapTexts; isFallback: boolean } {
   const text = gapTexts[locale]
-  return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }
+  return { text: text ?? textsEn, isFallback: text === undefined }
 }

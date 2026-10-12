@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Menu, Toolbar, Tooltip, useMenu } from '@kvirn-ui/react'
 import type { ComponentProps } from 'react'
 import { useState } from 'react'
@@ -143,49 +144,53 @@ const texts: Record<FormLocale, MenuTexts> = {
 function textsFor(locale: FormLocale) {
   return {
     text: texts[locale],
-    lang: undefined,
+    isFallback: false,
   }
 }
 
 /** A button that opens four actions. The third is unavailable, and keeps its place in the arrows. */
 export function ActionsMenu({ locale, ...rootProps }: MenuRootProps & { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <div lang={lang}>
-      <Menu.Root {...rootProps}>
-        <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
-        <Menu.Popup>
-          <Menu.Item>{text.assign}</Menu.Item>
-          <Menu.Item>{text.print}</Menu.Item>
-          <Menu.Item>{text.transfer}</Menu.Item>
-          <Menu.Item>{text.delete}</Menu.Item>
-        </Menu.Popup>
-      </Menu.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <Menu.Root {...rootProps}>
+          <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
+          <Menu.Popup>
+            <Menu.Item>{text.assign}</Menu.Item>
+            <Menu.Item>{text.print}</Menu.Item>
+            <Menu.Item>{text.transfer}</Menu.Item>
+            <Menu.Item>{text.delete}</Menu.Item>
+          </Menu.Popup>
+        </Menu.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
 /** Groups and separators: the actions, a line, then a named group. The destructive item is last. */
 export function GroupedMenu({ locale, ...rootProps }: MenuRootProps & { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <div lang={lang}>
-      <Menu.Root {...rootProps}>
-        <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
-        <Menu.Popup>
-          <Menu.Item>{text.assign}</Menu.Item>
-          <Menu.Item>{text.print}</Menu.Item>
-          <Menu.Separator />
-          <Menu.Group>
-            <Menu.GroupLabel>{text.sortLabel}</Menu.GroupLabel>
-            <Menu.Item>{text.sortNewest}</Menu.Item>
-            <Menu.Item>{text.sortOldest}</Menu.Item>
-          </Menu.Group>
-          <Menu.Separator />
-          <Menu.Item>{text.delete}</Menu.Item>
-        </Menu.Popup>
-      </Menu.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <Menu.Root {...rootProps}>
+          <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
+          <Menu.Popup>
+            <Menu.Item>{text.assign}</Menu.Item>
+            <Menu.Item>{text.print}</Menu.Item>
+            <Menu.Separator />
+            <Menu.Group>
+              <Menu.GroupLabel>{text.sortLabel}</Menu.GroupLabel>
+              <Menu.Item>{text.sortNewest}</Menu.Item>
+              <Menu.Item>{text.sortOldest}</Menu.Item>
+            </Menu.Group>
+            <Menu.Separator />
+            <Menu.Item>{text.delete}</Menu.Item>
+          </Menu.Popup>
+        </Menu.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -194,27 +199,29 @@ export function GroupedMenu({ locale, ...rootProps }: MenuRootProps & { locale: 
  * shows a tick when it is checked, a radio item a dot. Choosing one closes the menu by default.
  */
 export function ViewOptionsMenu({ locale, ...rootProps }: MenuRootProps & { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <div lang={lang}>
-      <Menu.Root {...rootProps}>
-        <Menu.Trigger className="kv-button">{text.viewTrigger}</Menu.Trigger>
-        <Menu.Popup>
-          <Menu.CheckboxItem defaultChecked closeOnSelect={false}>
-            {text.showClosed}
-          </Menu.CheckboxItem>
-          <Menu.Separator />
-          <Menu.RadioGroup defaultValue="newest" aria-label={text.sortLabel}>
-            <Menu.RadioItem value="newest" closeOnSelect={false}>
-              {text.sortNewest}
-            </Menu.RadioItem>
-            <Menu.RadioItem value="oldest" closeOnSelect={false}>
-              {text.sortOldest}
-            </Menu.RadioItem>
-          </Menu.RadioGroup>
-        </Menu.Popup>
-      </Menu.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <Menu.Root {...rootProps}>
+          <Menu.Trigger className="kv-button">{text.viewTrigger}</Menu.Trigger>
+          <Menu.Popup>
+            <Menu.CheckboxItem defaultChecked closeOnSelect={false}>
+              {text.showClosed}
+            </Menu.CheckboxItem>
+            <Menu.Separator />
+            <Menu.RadioGroup defaultValue="newest" aria-label={text.sortLabel}>
+              <Menu.RadioItem value="newest" closeOnSelect={false}>
+                {text.sortNewest}
+              </Menu.RadioItem>
+              <Menu.RadioItem value="oldest" closeOnSelect={false}>
+                {text.sortOldest}
+              </Menu.RadioItem>
+            </Menu.RadioGroup>
+          </Menu.Popup>
+        </Menu.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -227,20 +234,22 @@ export function DisabledItemsMenu({
   locale,
   ...rootProps
 }: MenuRootProps & { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <div lang={lang}>
-      <Menu.Root {...rootProps}>
-        <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
-        <Menu.Popup>
-          <Menu.Item>{text.print}</Menu.Item>
-          <Menu.Item disabled>{text.assign}</Menu.Item>
-          <Menu.Item disabled>{text.transfer}</Menu.Item>
-          <Menu.Item>{text.delete}</Menu.Item>
-        </Menu.Popup>
-      </Menu.Root>
-      <p>{text.unavailable}</p>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <Menu.Root {...rootProps}>
+          <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
+          <Menu.Popup>
+            <Menu.Item>{text.print}</Menu.Item>
+            <Menu.Item disabled>{text.assign}</Menu.Item>
+            <Menu.Item disabled>{text.transfer}</Menu.Item>
+            <Menu.Item>{text.delete}</Menu.Item>
+          </Menu.Popup>
+        </Menu.Root>
+        <p>{text.unavailable}</p>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -251,52 +260,56 @@ export function DisabledItemsMenu({
  * `escape`, `outside-press`, `light-dismiss` or `tab`.
  */
 export function ControlledMenu({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const [open, setOpen] = useState(false)
   const [reason, setReason] = useState('–')
   const [action, setAction] = useState(text.none)
   return (
-    <div lang={lang}>
-      <output data-testid="state">{open ? text.stateOpen : text.stateClosed}</output>
-      <output data-testid="reason">{reason}</output>
-      <output data-testid="action">
-        {text.lastAction}: {action}
-      </output>
-      <Button onClick={() => setOpen((current) => !current)}>{text.before}</Button>
-      <Menu.Root
-        open={open}
-        onOpenChange={(nextOpen, details) => {
-          setOpen(nextOpen)
-          setReason(details.reason)
-        }}
-      >
-        <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
-        <Menu.Popup>
-          <Menu.Item onSelect={() => setAction(text.assign)}>{text.assign}</Menu.Item>
-          <Menu.Item onSelect={() => setAction(text.print)}>{text.print}</Menu.Item>
-          <Menu.Item onSelect={() => setAction(text.delete)}>{text.delete}</Menu.Item>
-        </Menu.Popup>
-      </Menu.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <output data-testid="state">{open ? text.stateOpen : text.stateClosed}</output>
+        <output data-testid="reason">{reason}</output>
+        <output data-testid="action">
+          {text.lastAction}: {action}
+        </output>
+        <Button onClick={() => setOpen((current) => !current)}>{text.before}</Button>
+        <Menu.Root
+          open={open}
+          onOpenChange={(nextOpen, details) => {
+            setOpen(nextOpen)
+            setReason(details.reason)
+          }}
+        >
+          <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
+          <Menu.Popup>
+            <Menu.Item onSelect={() => setAction(text.assign)}>{text.assign}</Menu.Item>
+            <Menu.Item onSelect={() => setAction(text.print)}>{text.print}</Menu.Item>
+            <Menu.Item onSelect={() => setAction(text.delete)}>{text.delete}</Menu.Item>
+          </Menu.Popup>
+        </Menu.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
 /** Forty actions: more than fit, so the popup scrolls inside, and the labels wrap. */
 export function LongMenu({ locale, ...rootProps }: MenuRootProps & { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <div lang={lang}>
-      <Menu.Root {...rootProps}>
-        <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
-        <Menu.Popup>
-          {Array.from({ length: 40 }, (_, index) => (
-            <Menu.Item key={index}>
-              {text.transfer} {index + 1}
-            </Menu.Item>
-          ))}
-        </Menu.Popup>
-      </Menu.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <Menu.Root {...rootProps}>
+          <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
+          <Menu.Popup>
+            {Array.from({ length: 40 }, (_, index) => (
+              <Menu.Item key={index}>
+                {text.transfer} {index + 1}
+              </Menu.Item>
+            ))}
+          </Menu.Popup>
+        </Menu.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -305,24 +318,26 @@ export function LongMenu({ locale, ...rootProps }: MenuRootProps & { locale: For
  * `as`. ArrowDown on the trigger opens the menu; the toolbar does not also move focus.
  */
 export function ToolbarMenu({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <div lang={lang}>
-      <Toolbar.Root aria-label={text.toolbar} orientation="vertical">
-        <Toolbar.Button>{text.before}</Toolbar.Button>
-        <Menu.Root>
-          <Toolbar.Item as={Menu.Trigger} className="kv-button">
-            {text.trigger}
-          </Toolbar.Item>
-          <Menu.Popup>
-            <Menu.Item>{text.assign}</Menu.Item>
-            <Menu.Item>{text.print}</Menu.Item>
-            <Menu.Item>{text.delete}</Menu.Item>
-          </Menu.Popup>
-        </Menu.Root>
-        <Toolbar.Button>{text.after}</Toolbar.Button>
-      </Toolbar.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <Toolbar.Root aria-label={text.toolbar} orientation="vertical">
+          <Toolbar.Button>{text.before}</Toolbar.Button>
+          <Menu.Root>
+            <Toolbar.Item as={Menu.Trigger} className="kv-button">
+              {text.trigger}
+            </Toolbar.Item>
+            <Menu.Popup>
+              <Menu.Item>{text.assign}</Menu.Item>
+              <Menu.Item>{text.print}</Menu.Item>
+              <Menu.Item>{text.delete}</Menu.Item>
+            </Menu.Popup>
+          </Menu.Root>
+          <Toolbar.Button>{text.after}</Toolbar.Button>
+        </Toolbar.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -331,23 +346,25 @@ export function ToolbarMenu({ locale }: { locale: FormLocale }) {
  * item (1.4.13).
  */
 export function TooltipMenu({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <div lang={lang}>
-      <Menu.Root>
-        <Tooltip.Root>
-          <Tooltip.Trigger as={Menu.Trigger} className="kv-button">
-            {text.trigger}
-          </Tooltip.Trigger>
-          <Tooltip.Popup>{text.toolbar}</Tooltip.Popup>
-        </Tooltip.Root>
-        <Menu.Popup>
-          <Menu.Item>{text.assign}</Menu.Item>
-          <Menu.Item>{text.print}</Menu.Item>
-          <Menu.Item>{text.delete}</Menu.Item>
-        </Menu.Popup>
-      </Menu.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <Menu.Root>
+          <Tooltip.Root>
+            <Tooltip.Trigger as={Menu.Trigger} className="kv-button">
+              {text.trigger}
+            </Tooltip.Trigger>
+            <Tooltip.Popup>{text.toolbar}</Tooltip.Popup>
+          </Tooltip.Root>
+          <Menu.Popup>
+            <Menu.Item>{text.assign}</Menu.Item>
+            <Menu.Item>{text.print}</Menu.Item>
+            <Menu.Item>{text.delete}</Menu.Item>
+          </Menu.Popup>
+        </Menu.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -357,26 +374,28 @@ export function TooltipMenu({ locale }: { locale: FormLocale }) {
  * trigger, arrows, Home, End and letters in the menu, Tab out of it, and Escape.
  */
 export function KeyboardMenu({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <div lang={lang}>
-      {/* Above the row, so the popup (placed under the trigger) never covers it. */}
-      <p data-testid="outside">{text.outside}</p>
-      <div className="kv-button-group">
-        <Button>{text.before}</Button>
-        <Menu.Root>
-          <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
-          <Menu.Popup>
-            <Menu.Item>{text.assign}</Menu.Item>
-            <Menu.Item disabled>{text.transfer}</Menu.Item>
-            <Menu.Item>{text.print}</Menu.Item>
-            <Menu.Separator />
-            <Menu.Item>{text.delete}</Menu.Item>
-          </Menu.Popup>
-        </Menu.Root>
-        <Button>{text.after}</Button>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        {/* Above the row, so the popup (placed under the trigger) never covers it. */}
+        <p data-testid="outside">{text.outside}</p>
+        <div className="kv-button-group">
+          <Button>{text.before}</Button>
+          <Menu.Root>
+            <Menu.Trigger className="kv-button">{text.trigger}</Menu.Trigger>
+            <Menu.Popup>
+              <Menu.Item>{text.assign}</Menu.Item>
+              <Menu.Item disabled>{text.transfer}</Menu.Item>
+              <Menu.Item>{text.print}</Menu.Item>
+              <Menu.Separator />
+              <Menu.Item>{text.delete}</Menu.Item>
+            </Menu.Popup>
+          </Menu.Root>
+          <Button>{text.after}</Button>
+        </div>
       </div>
-    </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -386,7 +405,7 @@ export function KeyboardMenu({ locale }: { locale: FormLocale }) {
  * classes.
  */
 export function HookMenu({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const menu = useMenu()
   const [current, setCurrent] = useState<string>()
   const focusProps = (name: string) => ({
@@ -394,34 +413,39 @@ export function HookMenu({ locale }: { locale: FormLocale }) {
     onBlur: () => setCurrent(undefined),
   })
   return (
-    <div lang={lang}>
-      <button {...menu.triggerProps} className="kv-button">
-        {text.trigger}
-      </button>
-      <div {...menu.popupProps}>
-        {menu.isOpen ? (
-          <>
-            <button
-              {...menu.getItemProps('item', { isCurrent: current === 'print' })}
-              {...focusProps('print')}
-            >
-              {text.print}
-            </button>
-            <button
-              {...menu.getItemProps('item', { disabled: true, isCurrent: current === 'assign' })}
-              {...focusProps('assign')}
-            >
-              {text.assign}
-            </button>
-            <button
-              {...menu.getItemProps('checkbox', { checked: true, isCurrent: current === 'closed' })}
-              {...focusProps('closed')}
-            >
-              {text.showClosed}
-            </button>
-          </>
-        ) : null}
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <button {...menu.triggerProps} className="kv-button">
+          {text.trigger}
+        </button>
+        <div {...menu.popupProps}>
+          {menu.isOpen ? (
+            <>
+              <button
+                {...menu.getItemProps('item', { isCurrent: current === 'print' })}
+                {...focusProps('print')}
+              >
+                {text.print}
+              </button>
+              <button
+                {...menu.getItemProps('item', { disabled: true, isCurrent: current === 'assign' })}
+                {...focusProps('assign')}
+              >
+                {text.assign}
+              </button>
+              <button
+                {...menu.getItemProps('checkbox', {
+                  checked: true,
+                  isCurrent: current === 'closed',
+                })}
+                {...focusProps('closed')}
+              >
+                {text.showClosed}
+              </button>
+            </>
+          ) : null}
+        </div>
       </div>
-    </div>
+    </InEnglishWhenFallback>
   )
 }

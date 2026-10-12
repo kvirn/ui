@@ -12,7 +12,7 @@ Stepper says where the user is in a multi-page form: "Step 2 of 5: Your vehicle"
 
 | Part         | Element / role                               | ARIA                           | Notes                                                                                                                                                                                                          |
 | ------------ | -------------------------------------------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Stepper      | `<p>` → implicit paragraph, no explicit role | none                           | `class="kv-stepper"`. No `data-*`: it has no state. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged. The text is the message, never children                                       |
+| Stepper      | `<p>` → implicit paragraph, no explicit role | none                           | `class="kv-stepper"`. No `data-*`: it has no state. Attributes (`id`, `aria-*`) and the ref reach the element unchanged. The text is the message, never children                                               |
 | Stepper      | `as`                                         | the chosen element's own       | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Stepper:<tag>`) and renders the default element. The text is the message, never `children` |
 | Stepper      | never                                        | no `role`, `tabindex`          | No `role="status"`, no `aria-live`, no `aria-current`, no list, no link, no `aria-describedby` from the heading: the text is one reading stop in the page's order                                              |
 | `useStepper` | the same, for your own markup                | `text`, `element`, `rootProps` | `text` can be reused, for example in `<title>`                                                                                                                                                                 |
@@ -71,7 +71,7 @@ The phrases are the virtual screen reader's approximation, not NVDA or JAWS word
 - **Short names in plain words.** Wrap, never truncate: long Finnish names hyphenate.
 - **Never navigation.** No links to steps. Going back is a Back link, and Change links on the check-answers page keep answers (3.3.7).
 - **Not on** a start page, a confirmation, an exit page or a one-page form.
-- **Language.** `lang` on a Stepper in a text of another language (3.1.2).
+- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2).
 
 ## Visual / modes
 
@@ -83,7 +83,6 @@ Headless: Stepper ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-stepper` i
 - 1.4.1 Use of Color: the words say it (story `Default`, axe in every theme).
 - 1.4.3, 1.4.4, 1.4.10: text on measured pairs, in rem, wrapping. 1.4.12: `pending` (no text-spacing story; the Plan 0051 sweep).
 - 2.4.3 Focus Order: no Tab stop; focus moves by `useRouteFocus`.
-- 3.1.2 Language of Parts: the consumer's `lang` reaches the element.
 - 3.2.3 Consistent Navigation: the same place on every step.
 - 3.3.7 Redundant Entry: the flow keeps the answers.
 - 4.1.3 Status Messages: not a status message.

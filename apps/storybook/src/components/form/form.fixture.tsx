@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { createMessageFormat } from '@kvirn-ui/core'
 import type { KvirnMessages, TextMessage } from '@kvirn-ui/i18n'
 import { en } from '@kvirn-ui/i18n/en'
@@ -514,7 +515,7 @@ export const localeOf = (globals: Record<string, unknown>): FormLocale => {
 interface ResolvedFormTexts {
   text: FormTexts
   /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
-  lang: 'en' | undefined
+  isFallback: boolean
   /** `1250.5` written the way the locale writes an amount: en `1,250.50`, sv `1 250,50`. */
   rentExample: string
   /** `8450` written the way the locale writes a whole amount: en `8,450`, sv `8 450`. */
@@ -528,7 +529,7 @@ export function textsFor(locale: FormLocale): ResolvedFormTexts {
   const format = createMessageFormat({ locale: providerLocaleOf(locale), timeZone: undefined })
   return {
     text: text ?? textsEn,
-    lang: known ? undefined : 'en',
+    isFallback: !known,
     rentExample: format.number(1250.5, { minimumFractionDigits: 2 }),
     amountExample: format.number(8450),
   }
@@ -569,37 +570,39 @@ export const withFormLocale: Decorator = (Story, { globals }) => {
  * read-only with its help text under the box. The RTL and ForcedColors stories of each page render it.
  */
 export function FieldStates({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.name}</Field.Label>
-        <Field.Prose>
-          <p>{text.nameHint}</p>
-        </Field.Prose>
-        <TextInput name="name" autoComplete="name" />
-      </Field.Root>
-      <Field.Root required invalid>
-        <Field.Label>{text.email}</Field.Label>
-        <Field.Prose>
-          <p>{text.emailHint}</p>
-        </Field.Prose>
-        <TextInput name="email" type="email" autoComplete="email" defaultValue="anna@" />
-        <Field.ErrorMessage>{text.emailError}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root>
-        <Field.Label>{text.phone}</Field.Label>
-        <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
-      </Field.Root>
-      <Field.Root required disabled>
-        <Field.Label>{text.registration}</Field.Label>
-        <TextInput name="registration" defaultValue="ABC 123" className="kv-input--width-10" />
-      </Field.Root>
-      <Field.Root required>
-        <Field.Label>{text.personalNumber}</Field.Label>
-        <TextInput name="personal-number" readOnly defaultValue="19900101-1234" />
-        <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
-      </Field.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root required>
+          <Field.Label>{text.name}</Field.Label>
+          <Field.Prose>
+            <p>{text.nameHint}</p>
+          </Field.Prose>
+          <TextInput name="name" autoComplete="name" />
+        </Field.Root>
+        <Field.Root required invalid>
+          <Field.Label>{text.email}</Field.Label>
+          <Field.Prose>
+            <p>{text.emailHint}</p>
+          </Field.Prose>
+          <TextInput name="email" type="email" autoComplete="email" defaultValue="anna@" />
+          <Field.ErrorMessage>{text.emailError}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>{text.phone}</Field.Label>
+          <TextInput name="phone" type="tel" autoComplete="tel" className="kv-input--width-20" />
+        </Field.Root>
+        <Field.Root required disabled>
+          <Field.Label>{text.registration}</Field.Label>
+          <TextInput name="registration" defaultValue="ABC 123" className="kv-input--width-10" />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.personalNumber}</Field.Label>
+          <TextInput name="personal-number" readOnly defaultValue="19900101-1234" />
+          <Field.HelpText>{text.personalNumberHint}</Field.HelpText>
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }

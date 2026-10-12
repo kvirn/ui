@@ -2,9 +2,10 @@
 import { TableOfContents } from '@kvirn-ui/react'
 import { useMemo } from 'react'
 import { useTableOfContentsTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function NoVisibleTitle() {
-  const { texts, textLang } = useTableOfContentsTexts()
+  const { texts, isFallback } = useTableOfContentsTexts()
   const items = useMemo(
     () => [
       { id: 'example', label: texts.example, level: 2 },
@@ -14,10 +15,8 @@ export function NoVisibleTitle() {
     [texts],
   )
   return (
-    <TableOfContents.Root
-      items={items}
-      messages={{ label: texts.nameFromMessage }}
-      lang={textLang}
-    />
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <TableOfContents.Root items={items} messages={{ label: texts.nameFromMessage }} />
+    </InEnglishWhenFallback>
   )
 }

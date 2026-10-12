@@ -165,6 +165,7 @@ Notes in prose: choices, pitfalls, combinations. Code blocks here are for packag
 - One-line JSDoc per story says what it shows and when to use it.
 - Every state gets axe in the four theme projects, the component test covers the keyboard rows, and the display-mode sweep covers reflow and forced colours (testing skill).
 - Strings in the story are real: a sentence a resident would read, in sv by default, with the locale toolbar switching them.
+- Text that falls back to English renders inside the fixture-language helper (a nested `KvirnProvider locale="en"`), never `lang` on a part.
 
 ## Foundation pages
 

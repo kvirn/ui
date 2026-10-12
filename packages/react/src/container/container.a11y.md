@@ -14,7 +14,7 @@ Container is a centred block that limits the width of the page's content. It add
 | --------- | ------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Container | `<div>` → `generic` | none. The consumer adds it with the element   | `class="kv-container"`, with `kv-container--reading` or `kv-container--form` for `size`. `as="main"` or `as="section"` with `aria-labelledby` give it a role                                                    |
 | Container | `as`                | the chosen element's own                      | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Container:<tag>`) and renders the default element. `className` joins, `style` and refs pass |
-| Container | attributes          | passed through                                | `aria-*`, `id`, `lang` and every other attribute reach the element unchanged                                                                                                                                    |
+| Container | attributes          | passed through                                | `aria-*`, `id` and every other attribute reach the element unchanged                                                                                                                                            |
 | Container | never               | no `role`, `tabindex`, `inert`, `aria-hidden` | No handler, no heading, no live region, no text                                                                                                                                                                 |
 
 `useContainer()` gives the same frozen props object (only `className`) for your own element.
@@ -59,7 +59,7 @@ Container renders no text, so it has no message keys.
 - **Size.** `'page'` (default, `80rem`, padded) is the page; `'reading'` (`45rem`) is prose; `'form'` (`40rem`) is a form. They are start-aligned and add no padding: nest a `page` container outside if the page needs the gutter.
 - **Landmarks.** `as="main"` or `as="section"` with `aria-labelledby` only for a region a user would want to jump to, always named. A page has one `main`.
 - **DOM order is the visual order.** Write children in the order they are read and focused (1.3.2, 2.4.3). There is no way to reorder them visually.
-- **Language.** `lang` on any text in another language (3.1.2).
+- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2).
 
 ## Visual / modes
 

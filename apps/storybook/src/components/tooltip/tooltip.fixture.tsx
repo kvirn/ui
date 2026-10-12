@@ -88,7 +88,7 @@ export function BoldToggle(props: Omit<TooltipRootProps, 'children'>) {
         <Tooltip.Name>Fetstil</Tooltip.Name>
         <Tooltip.Shortcut>
           <Kbd>
-            <Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">B</Kbd>
+            <Kbd>Ctrl</Kbd>+<Kbd>B</Kbd>
           </Kbd>
         </Tooltip.Shortcut>
       </Tooltip.Popup>
@@ -139,7 +139,7 @@ export function TextToolbar() {
             <Tooltip.Name>Ångra</Tooltip.Name>
             <Tooltip.Shortcut>
               <Kbd>
-                <Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">Z</Kbd>
+                <Kbd>Ctrl</Kbd>+<Kbd>Z</Kbd>
               </Kbd>
             </Tooltip.Shortcut>
           </Tooltip.Popup>
@@ -158,7 +158,7 @@ export function TextToolbar() {
             <Tooltip.Name>Gör om</Tooltip.Name>
             <Tooltip.Shortcut>
               <Kbd>
-                <Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">Y</Kbd>
+                <Kbd>Ctrl</Kbd>+<Kbd>Y</Kbd>
               </Kbd>
             </Tooltip.Shortcut>
           </Tooltip.Popup>
@@ -178,7 +178,7 @@ export function TextToolbar() {
             <Tooltip.Name>Fetstil</Tooltip.Name>
             <Tooltip.Shortcut>
               <Kbd>
-                <Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">B</Kbd>
+                <Kbd>Ctrl</Kbd>+<Kbd>B</Kbd>
               </Kbd>
             </Tooltip.Shortcut>
           </Tooltip.Popup>
@@ -196,7 +196,7 @@ export function TextToolbar() {
             <Tooltip.Name>Kursiv</Tooltip.Name>
             <Tooltip.Shortcut>
               <Kbd>
-                <Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">I</Kbd>
+                <Kbd>Ctrl</Kbd>+<Kbd>I</Kbd>
               </Kbd>
             </Tooltip.Shortcut>
           </Tooltip.Popup>
@@ -231,7 +231,7 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
               <Tooltip.Name>{text.undo}</Tooltip.Name>
               <Tooltip.Shortcut>
                 <Kbd>
-                  <Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">Z</Kbd>
+                  <Kbd>Ctrl</Kbd>+<Kbd>Z</Kbd>
                 </Kbd>
               </Tooltip.Shortcut>
             </Tooltip.Popup>
@@ -250,7 +250,7 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
               <Tooltip.Name>{text.redo}</Tooltip.Name>
               <Tooltip.Shortcut>
                 <Kbd>
-                  <Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">Y</Kbd>
+                  <Kbd>Ctrl</Kbd>+<Kbd>Y</Kbd>
                 </Kbd>
               </Tooltip.Shortcut>
             </Tooltip.Popup>
@@ -270,7 +270,7 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
               <Tooltip.Name>{text.bold}</Tooltip.Name>
               <Tooltip.Shortcut>
                 <Kbd>
-                  <Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">B</Kbd>
+                  <Kbd>Ctrl</Kbd>+<Kbd>B</Kbd>
                 </Kbd>
               </Tooltip.Shortcut>
             </Tooltip.Popup>
@@ -288,7 +288,7 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
               <Tooltip.Name>{text.italic}</Tooltip.Name>
               <Tooltip.Shortcut>
                 <Kbd>
-                  <Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">I</Kbd>
+                  <Kbd>Ctrl</Kbd>+<Kbd>I</Kbd>
                 </Kbd>
               </Tooltip.Shortcut>
             </Tooltip.Popup>
@@ -307,7 +307,7 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
               <Tooltip.Name>{text.link}</Tooltip.Name>
               <Tooltip.Shortcut>
                 <Kbd>
-                  <Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">K</Kbd>
+                  <Kbd>Ctrl</Kbd>+<Kbd>K</Kbd>
                 </Kbd>
               </Tooltip.Shortcut>
             </Tooltip.Popup>
@@ -339,7 +339,7 @@ export function TooltipInAPopover() {
             <Tooltip.Name>Kopiera</Tooltip.Name>
             <Tooltip.Shortcut>
               <Kbd>
-                <Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">C</Kbd>
+                <Kbd>Ctrl</Kbd>+<Kbd>C</Kbd>
               </Kbd>
             </Tooltip.Shortcut>
           </Tooltip.Popup>

@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Card, Checkbox, Field } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/checkbox/checkbox.a11y.md?raw'
 import guide from '../../../../../packages/react/src/checkbox/checkbox.md?raw'
@@ -70,12 +71,14 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Checkbox {...args} />
-        <Field.Label>{text.declaration}</Field.Label>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Checkbox {...args} />
+          <Field.Label>{text.declaration}</Field.Label>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   parameters: {
@@ -128,13 +131,15 @@ export const Indeterminate: Story = {
 /** An option's help text is in the checkbox's description. */
 export const WithDescription: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <Field.Root lang={lang}>
-        <Checkbox {...args} name="newsletter" />
-        <Field.Label>{text.newsletter}</Field.Label>
-        <Field.HelpText>{text.newsletterHint}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Checkbox {...args} name="newsletter" />
+          <Field.Label>{text.newsletter}</Field.Label>
+          <Field.HelpText>{text.newsletterHint}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -153,16 +158,18 @@ export const WithDescription: Story = {
  */
 export const Standalone: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <div lang={lang}>
-        <p>
-          <Checkbox name="row-1" aria-label={text.rowOne} /> {text.rowOne}
-        </p>
-        <p>
-          <Checkbox name="row-2" aria-label={text.rowTwo} defaultChecked /> {text.rowTwo}
-        </p>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div>
+          <p>
+            <Checkbox name="row-1" aria-label={text.rowOne} /> {text.rowOne}
+          </p>
+          <p>
+            <Checkbox name="row-2" aria-label={text.rowTwo} defaultChecked /> {text.rowTwo}
+          </p>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -180,14 +187,16 @@ export const Standalone: Story = {
 /** The declaration is required: a 2px edge and the message under the row. */
 export const Invalid: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <Field.Root required invalid lang={lang}>
-        <Checkbox {...args} />
-        <Field.Label>{text.declaration}</Field.Label>
-        <Field.HelpText>{text.declarationHint}</Field.HelpText>
-        <Field.ErrorMessage>{text.declarationError}</Field.ErrorMessage>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required invalid>
+          <Checkbox {...args} />
+          <Field.Label>{text.declaration}</Field.Label>
+          <Field.HelpText>{text.declarationHint}</Field.HelpText>
+          <Field.ErrorMessage>{text.declarationError}</Field.ErrorMessage>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -230,12 +239,14 @@ export const LongLabel: Story = {
     ),
   ],
   render: (args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Checkbox {...args} name="consent" />
-        <Field.Label>{text.longLabel}</Field.Label>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Checkbox {...args} name="consent" />
+          <Field.Label>{text.longLabel}</Field.Label>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {
@@ -288,15 +299,17 @@ export const PlainForm: Story = {
 /** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11). */
 export const OnSurfaces: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <Card.Root lang={lang}>
-        <Field.Root required invalid>
-          <Checkbox name="declaration" />
-          <Field.Label>{text.declaration}</Field.Label>
-          <Field.ErrorMessage>{text.declarationError}</Field.ErrorMessage>
-        </Field.Root>
-      </Card.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Card.Root>
+          <Field.Root required invalid>
+            <Checkbox name="declaration" />
+            <Field.Label>{text.declaration}</Field.Label>
+            <Field.ErrorMessage>{text.declarationError}</Field.ErrorMessage>
+          </Field.Root>
+        </Card.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -308,14 +321,16 @@ export const OnSurfaces: Story = {
 /** Staff density from 64rem: the row is 32px high, and the box is still 24px. */
 export const Compact: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <div className="kv-compact" lang={lang}>
-        <Field.Root required>
-          <Checkbox name="declaration" defaultChecked />
-          <Field.Label>{text.declaration}</Field.Label>
-        </Field.Root>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div className="kv-compact">
+          <Field.Root required>
+            <Checkbox name="declaration" defaultChecked />
+            <Field.Label>{text.declaration}</Field.Label>
+          </Field.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -327,35 +342,37 @@ export const Compact: Story = {
 // Every state in one column. The RTL and ForcedColors stories render it, so a reader of either
 // sees the real parts.
 const renderCheckboxStates: NonNullable<Story['render']> = (_args, { globals }) => {
-  const { text, lang } = choiceTextsFor(localeOf(globals))
+  const { text, isFallback } = choiceTextsFor(localeOf(globals))
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Checkbox name="unchecked" />
-        <Field.Label>{text.declaration}</Field.Label>
-      </Field.Root>
-      <Field.Root required>
-        <Checkbox name="checked" defaultChecked />
-        <Field.Label>{text.newsletter}</Field.Label>
-      </Field.Root>
-      <Field.Root required>
-        <Checkbox name="indeterminate" indeterminate />
-        <Field.Label>{text.selectAll}</Field.Label>
-      </Field.Root>
-      <Field.Root required invalid>
-        <Checkbox name="invalid" />
-        <Field.Label>{text.longLabel}</Field.Label>
-        <Field.ErrorMessage>{text.declarationError}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root required disabled>
-        <Checkbox name="disabled" />
-        <Field.Label>{text.rowOne}</Field.Label>
-      </Field.Root>
-      <Field.Root required disabled>
-        <Checkbox name="disabled-checked" defaultChecked />
-        <Field.Label>{text.rowTwo}</Field.Label>
-      </Field.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root required>
+          <Checkbox name="unchecked" />
+          <Field.Label>{text.declaration}</Field.Label>
+        </Field.Root>
+        <Field.Root required>
+          <Checkbox name="checked" defaultChecked />
+          <Field.Label>{text.newsletter}</Field.Label>
+        </Field.Root>
+        <Field.Root required>
+          <Checkbox name="indeterminate" indeterminate />
+          <Field.Label>{text.selectAll}</Field.Label>
+        </Field.Root>
+        <Field.Root required invalid>
+          <Checkbox name="invalid" />
+          <Field.Label>{text.longLabel}</Field.Label>
+          <Field.ErrorMessage>{text.declarationError}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root required disabled>
+          <Checkbox name="disabled" />
+          <Field.Label>{text.rowOne}</Field.Label>
+        </Field.Root>
+        <Field.Root required disabled>
+          <Checkbox name="disabled-checked" defaultChecked />
+          <Field.Label>{text.rowTwo}</Field.Label>
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 

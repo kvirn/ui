@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, OneTimeCode, useAnnouncer } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { textsFor } from '../form/form.fixture.tsx'
@@ -243,13 +244,13 @@ const labelsFor = (texts: OneTimeCodeTexts, kind: CodeKind, pattern: string) => 
 /**
  * What a story's Field says, in a locale: the label, the description above the boxes (the length
  * and the groups must be read before typing), the error for a wrong code, and the Continue button.
- * `lang` is `'en'` where the fixture shows English: put it on the Field (3.1.2).
+ * `isFallback` is true where the fixture shows English: wrap the story in `InEnglishWhenFallback` (3.1.2).
  */
 export function codeTextsFor(locale: FormLocale, kind: CodeKind, pattern: string) {
   const texts = oneTimeCodeTextsFor(locale)
-  const { lang } = textsFor(locale)
+  const { isFallback } = textsFor(locale)
   const { label, hint } = labelsFor(texts, kind, pattern)
-  return { label, hint, lang, errorWrong: texts.errorWrong, submit: texts.submit }
+  return { label, hint, isFallback, errorWrong: texts.errorWrong, submit: texts.submit }
 }
 
 /**
@@ -259,54 +260,56 @@ export function codeTextsFor(locale: FormLocale, kind: CodeKind, pattern: string
  * in the field with the error under it.
  */
 export function CheckedCodeForm({ locale }: { locale: FormLocale }) {
-  const { label, hint, lang, errorWrong, submit } = codeTextsFor(locale, 'sms', '999999')
+  const { label, hint, isFallback, errorWrong, submit } = codeTextsFor(locale, 'sms', '999999')
   const texts = oneTimeCodeTextsFor(locale)
   const { announce } = useAnnouncer()
   const [value, setValue] = useState('')
   const [isChecking, setIsChecking] = useState(false)
   const [isWrong, setIsWrong] = useState(false)
   return (
-    <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
-      <Field.Root invalid={isWrong} lang={lang}>
-        <Field.Label marker="none">{label}</Field.Label>
-        <Field.Prose>
-          <p>
-            {hint} {texts.autoCheckHint(6)}
-          </p>
-        </Field.Prose>
-        <OneTimeCode.Root
-          pattern="999999"
-          value={value}
-          onValueChange={(next) => {
-            setValue(next)
-            setIsWrong(false)
-          }}
-          onComplete={() => {
-            setIsChecking(true)
-            announce(texts.checking)
-            // Your own check goes here. This one always finds the code wrong.
-            setTimeout(() => {
-              setIsChecking(false)
-              setIsWrong(true)
-            }, 1000)
-          }}
-        >
-          <OneTimeCode.Input name="code" readOnly={isChecking} />
-          {Array.from('999999', (_, index) => (
-            <OneTimeCode.Slot key={index} index={index} />
-          ))}
-        </OneTimeCode.Root>
-        <Field.ErrorMessage>{errorWrong}</Field.ErrorMessage>
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="checking">
-        {isChecking ? texts.checking : ''}
-      </p>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {submit}
-        </Button>
-      </div>
-    </form>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
+        <Field.Root invalid={isWrong}>
+          <Field.Label marker="none">{label}</Field.Label>
+          <Field.Prose>
+            <p>
+              {hint} {texts.autoCheckHint(6)}
+            </p>
+          </Field.Prose>
+          <OneTimeCode.Root
+            pattern="999999"
+            value={value}
+            onValueChange={(next) => {
+              setValue(next)
+              setIsWrong(false)
+            }}
+            onComplete={() => {
+              setIsChecking(true)
+              announce(texts.checking)
+              // Your own check goes here. This one always finds the code wrong.
+              setTimeout(() => {
+                setIsChecking(false)
+                setIsWrong(true)
+              }, 1000)
+            }}
+          >
+            <OneTimeCode.Input name="code" readOnly={isChecking} />
+            {Array.from('999999', (_, index) => (
+              <OneTimeCode.Slot key={index} index={index} />
+            ))}
+          </OneTimeCode.Root>
+          <Field.ErrorMessage>{errorWrong}</Field.ErrorMessage>
+        </Field.Root>
+        <p className="kv-story-form-output" data-testid="checking">
+          {isChecking ? texts.checking : ''}
+        </p>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {submit}
+          </Button>
+        </div>
+      </form>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -318,7 +321,7 @@ export function CheckedCodeForm({ locale }: { locale: FormLocale }) {
  */
 export function SlotStatesRows({ locale }: { locale: FormLocale }) {
   const texts = oneTimeCodeTextsFor(locale)
-  const { lang } = textsFor(locale)
+  const { isFallback } = textsFor(locale)
   const rows: {
     caption: string
     code: string
@@ -348,30 +351,32 @@ export function SlotStatesRows({ locale }: { locale: FormLocale }) {
     },
   ]
   return (
-    <div className="kv-story-form" lang={lang}>
-      {rows.map(({ caption, code, states }) => (
-        <div key={caption}>
-          <p>{caption}</p>
-          <div
-            className="kv-one-time-code"
-            data-ready=""
-            data-character-count="6"
-            data-separator-count="0"
-          >
-            {Array.from('999999', (_, index) => (
-              <span
-                key={index}
-                className="kv-one-time-code-slot"
-                aria-hidden="true"
-                {...(code.charAt(index) === '' ? {} : { 'data-filled': '' })}
-                {...states[index]}
-              >
-                {code.charAt(index)}
-              </span>
-            ))}
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        {rows.map(({ caption, code, states }) => (
+          <div key={caption}>
+            <p>{caption}</p>
+            <div
+              className="kv-one-time-code"
+              data-ready=""
+              data-character-count="6"
+              data-separator-count="0"
+            >
+              {Array.from('999999', (_, index) => (
+                <span
+                  key={index}
+                  className="kv-one-time-code-slot"
+                  aria-hidden="true"
+                  {...(code.charAt(index) === '' ? {} : { 'data-filled': '' })}
+                  {...states[index]}
+                >
+                  {code.charAt(index)}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </InEnglishWhenFallback>
   )
 }

@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { createMessageFormat } from '@kvirn-ui/core'
 import {
   DateInput,
@@ -79,47 +80,49 @@ export function VisitDatePicker({
   isInvalid = false,
   ...pickerProps
 }: VisitDatePickerProps) {
-  const { text, lang } = dateTextsFor(locale)
+  const { text, isFallback } = dateTextsFor(locale)
   const [date, setDate] = useState(initial)
   const { order } = useDateInput()
   const rangeText = useRangeText(locale, pickerProps.minimum, pickerProps.maximum)
   const example = order[0] === 'year' ? text.hintYearFirst : text.hintDayFirst
   return (
-    <div className="kv-story-form" lang={lang}>
-      <DatePicker.Root
-        today="2026-10-14"
-        {...pickerProps}
-        value={dateInputValueToIsoDate(date)}
-        onValueChange={(isoDate) => {
-          setDate(isoDateToDateInputValue(isoDate))
-          pickerProps.onValueChange?.(isoDate)
-        }}
-      >
-        <Fieldset.Root group invalid={isInvalid}>
-          <Fieldset.Legend>{text.visitLegend}</Fieldset.Legend>
-          <DateInput.Root
-            name="visit"
-            value={date}
-            onValueChange={setDate}
-            invalidParts={isInvalid ? ['day', 'month', 'year'] : undefined}
-          >
-            {order.map((part) => {
-              const Box = boxes[part]
-              return <Box key={part} />
-            })}
-            <DatePicker.Trigger />
-          </DateInput.Root>
-          <Fieldset.HelpText>
-            {rangeText === undefined ? example : `${example}. ${rangeText}.`}
-          </Fieldset.HelpText>
-          {isInvalid ? <Fieldset.ErrorMessage>{errorTexts[locale]}</Fieldset.ErrorMessage> : null}
-        </Fieldset.Root>
-        <DatePicker.Popup />
-      </DatePicker.Root>
-      <p className="kv-story-form-output" data-testid="stored">
-        {text.stored}: {dateInputValueToIsoDate(date)}
-      </p>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <DatePicker.Root
+          today="2026-10-14"
+          {...pickerProps}
+          value={dateInputValueToIsoDate(date)}
+          onValueChange={(isoDate) => {
+            setDate(isoDateToDateInputValue(isoDate))
+            pickerProps.onValueChange?.(isoDate)
+          }}
+        >
+          <Fieldset.Root group invalid={isInvalid}>
+            <Fieldset.Legend>{text.visitLegend}</Fieldset.Legend>
+            <DateInput.Root
+              name="visit"
+              value={date}
+              onValueChange={setDate}
+              invalidParts={isInvalid ? ['day', 'month', 'year'] : undefined}
+            >
+              {order.map((part) => {
+                const Box = boxes[part]
+                return <Box key={part} />
+              })}
+              <DatePicker.Trigger />
+            </DateInput.Root>
+            <Fieldset.HelpText>
+              {rangeText === undefined ? example : `${example}. ${rangeText}.`}
+            </Fieldset.HelpText>
+            {isInvalid ? <Fieldset.ErrorMessage>{errorTexts[locale]}</Fieldset.ErrorMessage> : null}
+          </Fieldset.Root>
+          <DatePicker.Popup />
+        </DatePicker.Root>
+        <p className="kv-story-form-output" data-testid="stored">
+          {text.stored}: {dateInputValueToIsoDate(date)}
+        </p>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -130,40 +133,42 @@ export interface MaskedDatePickerProps extends PickerProps {
 
 /** One `masks.date()` field and the trigger beside it, in a row that wraps. */
 export function MaskedDatePicker({ locale, initial = '', ...pickerProps }: MaskedDatePickerProps) {
-  const { text, lang } = dateTextsFor(locale)
+  const { text, isFallback } = dateTextsFor(locale)
   const { locale: providerLocale } = useLocale()
   const [fieldText, setFieldText] = useState(initial)
   const example = masks.date().withLocale(providerLocale).format('2026-10-27')
   return (
-    <div className="kv-story-form" lang={lang}>
-      <DatePicker.Root
-        today="2026-10-14"
-        {...pickerProps}
-        value={maskedDateToIsoDate(fieldText, providerLocale)}
-        onValueChange={(isoDate) => {
-          setFieldText(isoDateToMaskedDate(isoDate, providerLocale))
-          pickerProps.onValueChange?.(isoDate)
-        }}
-      >
-        <div className="kv-date-picker-row">
-          <Field.Root>
-            <Field.Label>{text.oneFieldLabel}</Field.Label>
-            <TextInput
-              name="start"
-              mask={masks.date()}
-              value={fieldText}
-              onValueChange={setFieldText}
-            />
-            <Field.HelpText>{text.oneFieldHint(example)}</Field.HelpText>
-          </Field.Root>
-          <DatePicker.Trigger />
-        </div>
-        <DatePicker.Popup />
-      </DatePicker.Root>
-      <p className="kv-story-form-output" data-testid="stored">
-        {text.stored}: {maskedDateToIsoDate(fieldText, providerLocale)}
-      </p>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <DatePicker.Root
+          today="2026-10-14"
+          {...pickerProps}
+          value={maskedDateToIsoDate(fieldText, providerLocale)}
+          onValueChange={(isoDate) => {
+            setFieldText(isoDateToMaskedDate(isoDate, providerLocale))
+            pickerProps.onValueChange?.(isoDate)
+          }}
+        >
+          <div className="kv-date-picker-row">
+            <Field.Root>
+              <Field.Label>{text.oneFieldLabel}</Field.Label>
+              <TextInput
+                name="start"
+                mask={masks.date()}
+                value={fieldText}
+                onValueChange={setFieldText}
+              />
+              <Field.HelpText>{text.oneFieldHint(example)}</Field.HelpText>
+            </Field.Root>
+            <DatePicker.Trigger />
+          </div>
+          <DatePicker.Popup />
+        </DatePicker.Root>
+        <p className="kv-story-form-output" data-testid="stored">
+          {text.stored}: {maskedDateToIsoDate(fieldText, providerLocale)}
+        </p>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 

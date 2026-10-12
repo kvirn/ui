@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, OneTimeCode } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/one-time-code/one-time-code.a11y.md?raw'
 import guide from '../../../../../packages/react/src/one-time-code/one-time-code.md?raw'
@@ -86,20 +87,22 @@ const meta = {
   ],
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, lang } = codeTextsFor(localeOf(globals), 'sms', pattern)
+    const { label, hint, isFallback } = codeTextsFor(localeOf(globals), 'sms', pattern)
     return (
-      <Field.Root lang={lang}>
-        <Field.Label marker="none">{label}</Field.Label>
-        <Field.Prose>
-          <p>{hint}</p>
-        </Field.Prose>
-        <OneTimeCode.Root {...args}>
-          <OneTimeCode.Input name="code" />
-          {Array.from(pattern, (_, index) => (
-            <OneTimeCode.Slot key={index} index={index} />
-          ))}
-        </OneTimeCode.Root>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Field.Label marker="none">{label}</Field.Label>
+          <Field.Prose>
+            <p>{hint}</p>
+          </Field.Prose>
+          <OneTimeCode.Root {...args}>
+            <OneTimeCode.Input name="code" />
+            {Array.from(pattern, (_, index) => (
+              <OneTimeCode.Slot key={index} index={index} />
+            ))}
+          </OneTimeCode.Root>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
 } satisfies Meta<typeof OneTimeCode.Root>
@@ -190,32 +193,34 @@ export const Invalid: Story = {
   args: { defaultValue: '481920' },
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, lang, errorWrong, submit } = codeTextsFor(
+    const { label, hint, isFallback, errorWrong, submit } = codeTextsFor(
       localeOf(globals),
       'sms',
       pattern,
     )
     return (
-      <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
-        <Field.Root invalid lang={lang}>
-          <Field.Label marker="none">{label}</Field.Label>
-          <Field.Prose>
-            <p>{hint}</p>
-          </Field.Prose>
-          <OneTimeCode.Root {...args}>
-            <OneTimeCode.Input name="code" />
-            {Array.from(pattern, (_, index) => (
-              <OneTimeCode.Slot key={index} index={index} />
-            ))}
-          </OneTimeCode.Root>
-          <Field.ErrorMessage>{errorWrong}</Field.ErrorMessage>
-        </Field.Root>
-        <div className="kv-button-group">
-          <Button type="submit" className="kv-button--primary">
-            {submit}
-          </Button>
-        </div>
-      </form>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
+          <Field.Root invalid>
+            <Field.Label marker="none">{label}</Field.Label>
+            <Field.Prose>
+              <p>{hint}</p>
+            </Field.Prose>
+            <OneTimeCode.Root {...args}>
+              <OneTimeCode.Input name="code" />
+              {Array.from(pattern, (_, index) => (
+                <OneTimeCode.Slot key={index} index={index} />
+              ))}
+            </OneTimeCode.Root>
+            <Field.ErrorMessage>{errorWrong}</Field.ErrorMessage>
+          </Field.Root>
+          <div className="kv-button-group">
+            <Button type="submit" className="kv-button--primary">
+              {submit}
+            </Button>
+          </div>
+        </form>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, canvasElement, globals }) => {
@@ -254,20 +259,22 @@ export const TwoGroups: Story = {
   args: { pattern: '&&&&-&&&&', defaultValue: 'K7QX-2M9P' },
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, lang } = codeTextsFor(localeOf(globals), 'email', pattern)
+    const { label, hint, isFallback } = codeTextsFor(localeOf(globals), 'email', pattern)
     return (
-      <Field.Root lang={lang}>
-        <Field.Label marker="none">{label}</Field.Label>
-        <Field.Prose>
-          <p>{hint}</p>
-        </Field.Prose>
-        <OneTimeCode.Root {...args}>
-          <OneTimeCode.Input name="code" />
-          {Array.from(pattern, (_, index) => (
-            <OneTimeCode.Slot key={index} index={index} />
-          ))}
-        </OneTimeCode.Root>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Field.Label marker="none">{label}</Field.Label>
+          <Field.Prose>
+            <p>{hint}</p>
+          </Field.Prose>
+          <OneTimeCode.Root {...args}>
+            <OneTimeCode.Input name="code" />
+            {Array.from(pattern, (_, index) => (
+              <OneTimeCode.Slot key={index} index={index} />
+            ))}
+          </OneTimeCode.Root>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, canvasElement, globals }) => {
@@ -299,20 +306,22 @@ export const ThreeGroups: Story = {
   args: { pattern: '&&&-&&&-&&&', defaultValue: 'H4T-K92' },
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, lang } = codeTextsFor(localeOf(globals), 'email', pattern)
+    const { label, hint, isFallback } = codeTextsFor(localeOf(globals), 'email', pattern)
     return (
-      <Field.Root lang={lang}>
-        <Field.Label marker="none">{label}</Field.Label>
-        <Field.Prose>
-          <p>{hint}</p>
-        </Field.Prose>
-        <OneTimeCode.Root {...args}>
-          <OneTimeCode.Input name="code" />
-          {Array.from(pattern, (_, index) => (
-            <OneTimeCode.Slot key={index} index={index} />
-          ))}
-        </OneTimeCode.Root>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Field.Label marker="none">{label}</Field.Label>
+          <Field.Prose>
+            <p>{hint}</p>
+          </Field.Prose>
+          <OneTimeCode.Root {...args}>
+            <OneTimeCode.Input name="code" />
+            {Array.from(pattern, (_, index) => (
+              <OneTimeCode.Slot key={index} index={index} />
+            ))}
+          </OneTimeCode.Root>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, canvasElement, globals }) => {
@@ -356,20 +365,22 @@ export const CaseAsTyped: Story = {
   args: { pattern: 'aa-****' },
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, lang } = codeTextsFor(localeOf(globals), 'case', pattern)
+    const { label, hint, isFallback } = codeTextsFor(localeOf(globals), 'case', pattern)
     return (
-      <Field.Root lang={lang}>
-        <Field.Label marker="none">{label}</Field.Label>
-        <Field.Prose>
-          <p>{hint}</p>
-        </Field.Prose>
-        <OneTimeCode.Root {...args}>
-          <OneTimeCode.Input name="code" />
-          {Array.from(pattern, (_, index) => (
-            <OneTimeCode.Slot key={index} index={index} />
-          ))}
-        </OneTimeCode.Root>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Field.Label marker="none">{label}</Field.Label>
+          <Field.Prose>
+            <p>{hint}</p>
+          </Field.Prose>
+          <OneTimeCode.Root {...args}>
+            <OneTimeCode.Input name="code" />
+            {Array.from(pattern, (_, index) => (
+              <OneTimeCode.Slot key={index} index={index} />
+            ))}
+          </OneTimeCode.Root>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -436,20 +447,22 @@ export const PatternLimits: Story = {
   render: (args, { globals }) => (
     <>
       {[...drawnPatterns, ...plainPatterns].map((pattern) => {
-        const { label, hint, lang } = codeTextsFor(localeOf(globals), 'letters', pattern)
+        const { label, hint, isFallback } = codeTextsFor(localeOf(globals), 'letters', pattern)
         return (
-          <Field.Root key={pattern} lang={lang}>
-            <Field.Label marker="none">{label}</Field.Label>
-            <Field.Prose>
-              <p>{hint}</p>
-            </Field.Prose>
-            <OneTimeCode.Root {...args} pattern={pattern}>
-              <OneTimeCode.Input name={pattern} />
-              {Array.from(pattern, (_, index) => (
-                <OneTimeCode.Slot key={index} index={index} />
-              ))}
-            </OneTimeCode.Root>
-          </Field.Root>
+          <InEnglishWhenFallback key={pattern} isFallback={isFallback}>
+            <Field.Root>
+              <Field.Label marker="none">{label}</Field.Label>
+              <Field.Prose>
+                <p>{hint}</p>
+              </Field.Prose>
+              <OneTimeCode.Root {...args} pattern={pattern}>
+                <OneTimeCode.Input name={pattern} />
+                {Array.from(pattern, (_, index) => (
+                  <OneTimeCode.Slot key={index} index={index} />
+                ))}
+              </OneTimeCode.Root>
+            </Field.Root>
+          </InEnglishWhenFallback>
         )
       })}
     </>
@@ -468,20 +481,22 @@ export const Compact: Story = {
   ],
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, lang } = codeTextsFor(localeOf(globals), 'app', pattern)
+    const { label, hint, isFallback } = codeTextsFor(localeOf(globals), 'app', pattern)
     return (
-      <Field.Root lang={lang}>
-        <Field.Label marker="none">{label}</Field.Label>
-        <Field.Prose>
-          <p>{hint}</p>
-        </Field.Prose>
-        <OneTimeCode.Root {...args}>
-          <OneTimeCode.Input name="code" />
-          {Array.from(pattern, (_, index) => (
-            <OneTimeCode.Slot key={index} index={index} />
-          ))}
-        </OneTimeCode.Root>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Field.Label marker="none">{label}</Field.Label>
+          <Field.Prose>
+            <p>{hint}</p>
+          </Field.Prose>
+          <OneTimeCode.Root {...args}>
+            <OneTimeCode.Input name="code" />
+            {Array.from(pattern, (_, index) => (
+              <OneTimeCode.Slot key={index} index={index} />
+            ))}
+          </OneTimeCode.Root>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -521,8 +536,8 @@ export const ForcedColors: Story = {
     const invalid = codeTextsFor(locale, 'email', '&&&&-&&&&')
     const disabled = codeTextsFor(locale, 'signIn', '999999')
     return (
-      <>
-        <Field.Root lang={empty.lang}>
+      <InEnglishWhenFallback isFallback={empty.isFallback}>
+        <Field.Root>
           <Field.Label marker="none">{empty.label}</Field.Label>
           <Field.Prose>
             <p>{empty.hint}</p>
@@ -534,7 +549,7 @@ export const ForcedColors: Story = {
             ))}
           </OneTimeCode.Root>
         </Field.Root>
-        <Field.Root lang={partly.lang}>
+        <Field.Root>
           <Field.Label marker="none">{partly.label}</Field.Label>
           <Field.Prose>
             <p>{partly.hint}</p>
@@ -546,7 +561,7 @@ export const ForcedColors: Story = {
             ))}
           </OneTimeCode.Root>
         </Field.Root>
-        <Field.Root invalid lang={invalid.lang}>
+        <Field.Root invalid>
           <Field.Label marker="none">{invalid.label}</Field.Label>
           <Field.Prose>
             <p>{invalid.hint}</p>
@@ -559,7 +574,7 @@ export const ForcedColors: Story = {
           </OneTimeCode.Root>
           <Field.ErrorMessage>{invalid.errorWrong}</Field.ErrorMessage>
         </Field.Root>
-        <Field.Root lang={disabled.lang}>
+        <Field.Root>
           <Field.Label marker="none">{disabled.label}</Field.Label>
           <Field.Prose>
             <p>{disabled.hint}</p>
@@ -571,7 +586,7 @@ export const ForcedColors: Story = {
             ))}
           </OneTimeCode.Root>
         </Field.Root>
-      </>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -587,27 +602,29 @@ export const Keyboard: Story = {
   args: { pattern: '****-****' },
   render: (args, { globals }) => {
     const pattern = args.pattern ?? '999999'
-    const { label, hint, lang, submit } = codeTextsFor(localeOf(globals), 'email', pattern)
+    const { label, hint, isFallback, submit } = codeTextsFor(localeOf(globals), 'email', pattern)
     return (
-      <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
-        <Field.Root lang={lang}>
-          <Field.Label marker="none">{label}</Field.Label>
-          <Field.Prose>
-            <p>{hint}</p>
-          </Field.Prose>
-          <OneTimeCode.Root {...args}>
-            <OneTimeCode.Input name="code" />
-            {Array.from(pattern, (_, index) => (
-              <OneTimeCode.Slot key={index} index={index} />
-            ))}
-          </OneTimeCode.Root>
-        </Field.Root>
-        <div className="kv-button-group">
-          <Button type="submit" className="kv-button--primary">
-            {submit}
-          </Button>
-        </div>
-      </form>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
+          <Field.Root>
+            <Field.Label marker="none">{label}</Field.Label>
+            <Field.Prose>
+              <p>{hint}</p>
+            </Field.Prose>
+            <OneTimeCode.Root {...args}>
+              <OneTimeCode.Input name="code" />
+              {Array.from(pattern, (_, index) => (
+                <OneTimeCode.Slot key={index} index={index} />
+              ))}
+            </OneTimeCode.Root>
+          </Field.Root>
+          <div className="kv-button-group">
+            <Button type="submit" className="kv-button--primary">
+              {submit}
+            </Button>
+          </div>
+        </form>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {

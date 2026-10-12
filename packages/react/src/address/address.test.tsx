@@ -10,7 +10,7 @@ describe('Address', () => {
   test('renders an address element, merges className and passes attributes and the ref through', async () => {
     const ref = createRef<HTMLElement>()
     await render(
-      <Address className="other" lang="en" ref={ref} data-testid="address">
+      <Address className="other" ref={ref} data-testid="address">
         Storgatan 1
         <br />
         123 45 Kvirnby
@@ -19,7 +19,6 @@ describe('Address', () => {
     const element = page.getByTestId('address').element()
     expect(element.tagName).toBe('ADDRESS')
     expect(element.className).toBe('other kv-address')
-    expect(element.getAttribute('lang')).toBe('en')
     expect(ref.current).toBe(element)
   })
 

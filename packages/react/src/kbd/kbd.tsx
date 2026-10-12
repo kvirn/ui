@@ -17,14 +17,14 @@ export type KbdProps = AsTag<(typeof kbdTags)[number], 'kbd'>
  * draws as a key. It has no role, ARIA, text or behaviour. One key per `Kbd`. To show a
  * combination, nest them: the outer one groups and stays plain.
  *
- * Key names are not translated, because they are what's printed on the keyboard. Set `lang="en"`
- * on a key in a text of another language (3.1.2).
+ * Key names that are the surrounding language's vernacular (Ctrl, Shift, Tab, Esc in Nordic text) need nothing.
+ * A key in another script (Arabic text, say) goes in your own `<span lang="en"><Kbd>Tab</Kbd></span>` (3.1.2).
  *
  * @example
- * <p>Du kan flytta mellan fälten med <Kbd lang="en">Tab</Kbd>.</p>
+ * <p>Du kan flytta mellan fälten med <Kbd>Tab</Kbd>.</p>
  *
  * @example
- * <Kbd><Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">C</Kbd></Kbd>
+ * <Kbd><Kbd>Ctrl</Kbd>+<Kbd>C</Kbd></Kbd>
  */
 export function Kbd({ as, ref, ...otherProps }: KbdProps): ReactElement {
   const kbd = useKbd()

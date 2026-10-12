@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Card, Combobox, Field, Icon } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
@@ -182,8 +183,8 @@ const comboboxTexts: Partial<Record<FormLocale, ComboboxTexts>> = {
 
 /** The fixture text in a locale, with the shared form texts. */
 export function comboboxTextsFor(locale: FormLocale) {
-  const { text: shared, lang } = choiceTextsFor(locale)
-  return { text: comboboxTexts[locale] ?? textsEn, shared, lang }
+  const { text: shared, isFallback } = choiceTextsFor(locale)
+  return { text: comboboxTexts[locale] ?? textsEn, shared, isFallback }
 }
 
 /**
@@ -192,32 +193,34 @@ export function comboboxTextsFor(locale: FormLocale) {
  * municipality's code, and `name` puts it in a plain `<form>`.
  */
 export function DefaultExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
+  const { text, isFallback } = comboboxTextsFor(locale)
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Field.Prose>
-        <p>{text.hint}</p>
-      </Field.Prose>
-      <Combobox.Root
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        name="municipality"
-      >
-        <Combobox.Control>
-          <Combobox.Input />
-          <Combobox.Clear />
-          <Combobox.Toggle />
-        </Combobox.Control>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Prose>
+          <p>{text.hint}</p>
+        </Field.Prose>
+        <Combobox.Root
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          name="municipality"
+        >
+          <Combobox.Control>
+            <Combobox.Input />
+            <Combobox.Clear />
+            <Combobox.Toggle />
+          </Combobox.Control>
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -227,33 +230,35 @@ export function DefaultExample({ locale }: { locale: FormLocale }) {
  * The user types to filter first: the list is virtualized only while it stays long.
  */
 export function VirtualizedExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
+  const { text, isFallback } = comboboxTextsFor(locale)
   return (
-    <Field.Root required lang={lang} controlId="municipality">
-      <Field.Label>{text.municipality}</Field.Label>
-      <Field.Prose>
-        <p>{text.hint}</p>
-      </Field.Prose>
-      <Combobox.Root
-        virtualize
-        items={virtualizedPlaces}
-        itemToString={(place) => place.name}
-        itemToKey={(place) => place.code}
-        name="municipality"
-      >
-        <Combobox.Control>
-          <Combobox.Input />
-          <Combobox.Clear />
-          <Combobox.Toggle />
-        </Combobox.Control>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(place: VirtualizedPlace) => <Combobox.Option item={place} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required controlId="municipality">
+        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Prose>
+          <p>{text.hint}</p>
+        </Field.Prose>
+        <Combobox.Root
+          virtualize
+          items={virtualizedPlaces}
+          itemToString={(place) => place.name}
+          itemToKey={(place) => place.code}
+          name="municipality"
+        >
+          <Combobox.Control>
+            <Combobox.Input />
+            <Combobox.Clear />
+            <Combobox.Toggle />
+          </Combobox.Control>
+          <Combobox.Popup>
+            <Combobox.List>
+              {(place: VirtualizedPlace) => <Combobox.Option item={place} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -262,933 +267,68 @@ export function VirtualizedExample({ locale }: { locale: FormLocale }) {
  * every value has a remove button. The popup stays open, so the next choice is a few keys away.
  */
 export function MultipleExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
+  const { text, isFallback } = comboboxTextsFor(locale)
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.several}</Field.Label>
-      <Field.Prose>
-        <p>{text.severalHint}</p>
-      </Field.Prose>
-      <Combobox.Root
-        multiple
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultValue={['malmö', 'uppsala']}
-        name="municipalities"
-      >
-        <Combobox.ValueList />
-        <Combobox.Input />
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.several}</Field.Label>
+        <Field.Prose>
+          <p>{text.severalHint}</p>
+        </Field.Prose>
+        <Combobox.Root
+          multiple
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          defaultValue={['malmö', 'uppsala']}
+          name="municipalities"
+        >
+          <Combobox.ValueList />
+          <Combobox.Input />
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
 /** Just the input and the popup, with no box and no buttons: the smallest Combobox. */
 export function MinimalExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
+  const { text, isFallback } = comboboxTextsFor(locale)
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Combobox.Root
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-      >
-        <Combobox.Input />
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Combobox.Root
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+        >
+          <Combobox.Input />
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
 /** A chosen option shows its text in the input: `defaultValue` is the option's key. */
 export function SelectedExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
+  const { text, isFallback } = comboboxTextsFor(locale)
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Combobox.Root
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultValue="malmö"
-      >
-        <Combobox.Control>
-          <Combobox.Input />
-          <Combobox.Clear />
-          <Combobox.Toggle />
-        </Combobox.Control>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * Typing filters the list, and a Field's help text says so before the user types. When nothing
- * matches, `Combobox.Empty` says so and the typed text stays.
- */
-export function FilteringExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Field.Prose>
-        <p>{text.hint}</p>
-      </Field.Prose>
-      <Combobox.Root
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-      >
-        <Combobox.Control>
-          <Combobox.Input />
-          <Combobox.Clear />
-          <Combobox.Toggle />
-        </Combobox.Control>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * Results that a server has filtered: `filter={false}` turns the built-in filter off, and
- * `isLoading` makes `Combobox.Empty` say "Laddar resultat" while the fetch is running.
- */
-export function LoadingExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  const results: Municipality[] = []
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Combobox.Root
-        items={results}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        filter={false}
-        isLoading
-      >
-        <Combobox.Control>
-          <Combobox.Input />
-          <Combobox.Clear />
-          <Combobox.Toggle />
-        </Combobox.Control>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
-  )
-}
-
-/** Items in named groups: `groups` takes `{ key, label, items }`, and each group is named by its label. */
-export function GroupsExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  const pick = (...picked: string[]) =>
-    municipalities.filter((municipality) => picked.includes(municipality.name))
-  const groups = [
-    { key: 'west', label: text.groupWest, items: pick('Göteborg', 'Borås') },
-    { key: 'east', label: text.groupEast, items: pick('Stockholm', 'Uppsala') },
-    { key: 'south', label: text.groupSouth, items: pick('Malmö') },
-  ]
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Combobox.Root
-        groups={groups}
-        itemToString={(municipality: Municipality) => municipality.name}
-        itemToKey={(municipality: Municipality) => municipality.code}
-      >
-        <Combobox.Control>
-          <Combobox.Input />
-          <Combobox.Clear />
-          <Combobox.Toggle />
-        </Combobox.Control>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
-  )
-}
-
-/** A disabled option: `isItemDisabled` keeps it reachable with the arrow keys, but it can't be chosen. */
-export function DisabledOptionExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Combobox.Root
-        items={municipalitiesWithClosed}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        isItemDisabled={(municipality) => municipality.disabled === true}
-      >
-        <Combobox.Control>
-          <Combobox.Input />
-          <Combobox.Clear />
-          <Combobox.Toggle />
-        </Combobox.Control>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * Invalid: `invalid` on the Field, with the error under the field. The text that matched nothing
- * stays, so the user can fix it instead of starting over.
- */
-export function InvalidExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  return (
-    <Field.Root required invalid lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Field.Prose>
-        <p>{text.hint}</p>
-      </Field.Prose>
-      <Combobox.Root
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultInputValue="Gö"
-      >
-        <Combobox.Control>
-          <Combobox.Input />
-          <Combobox.Clear />
-          <Combobox.Toggle />
-        </Combobox.Control>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-      <Field.ErrorMessage>{text.notInList}</Field.ErrorMessage>
-    </Field.Root>
-  )
-}
-
-/** Disabled: `disabled` on the Field disables the Combobox too, and the popup never opens. */
-export function DisabledExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  return (
-    <Field.Root required disabled lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Combobox.Root
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultValue="malmö"
-      >
-        <Combobox.Control>
-          <Combobox.Input />
-          <Combobox.Clear />
-          <Combobox.Toggle />
-        </Combobox.Control>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
-  )
-}
-
-/** Several choices, none chosen yet: the first choice appears as a chip before the input. */
-export function MultipleNoneChosenExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.several}</Field.Label>
-      <Field.Prose>
-        <p>{text.severalHint}</p>
-      </Field.Prose>
-      <Combobox.Root
-        multiple
-        items={municipalitiesWithClosed}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        isItemDisabled={(municipality) => municipality.disabled === true}
-      >
-        <Combobox.ValueList />
-        <Combobox.Input />
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
-  )
-}
-
-/** Several choices with one chosen: a chip with its remove button. Removing it moves focus to the input. */
-export function MultipleOneChosenExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.several}</Field.Label>
-      <Combobox.Root
-        multiple
-        items={municipalitiesWithClosed}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        isItemDisabled={(municipality) => municipality.disabled === true}
-        defaultValue={['malmö']}
-      >
-        <Combobox.ValueList />
-        <Combobox.Input />
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
-  )
-}
-
-/** A long list scrolls inside the popup, which is never taller than the room that is left. */
-export function LongListExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Combobox.Root
-        items={longList}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-      >
-        <Combobox.Control>
-          <Combobox.Input />
-          <Combobox.Clear />
-          <Combobox.Toggle />
-        </Combobox.Control>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * Your own filter: `filter(item, query)` replaces the built-in one, which matches anywhere in the
- * text and keeps å, ä and ö apart from a and o. This one matches the start of the name. It runs
- * on every keystroke and decides which options stay in the list.
- */
-export function StartsWithFilterExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Field.Prose>
-        <p>{text.startsWithHint}</p>
-      </Field.Prose>
-      <Combobox.Root
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        filter={(municipality, query) =>
-          municipality.name.toLowerCase().startsWith(query.toLowerCase())
-        }
-      >
-        <Combobox.Control>
-          <Combobox.Input />
-          <Combobox.Clear />
-          <Combobox.Toggle />
-        </Combobox.Control>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * The popup and the text in your state: `open` and `inputValue` are controlled, and
- * `onOpenChange` and `onInputValueChange` say why each changed (`input`, `option-press`,
- * `selection`, `clear` and more). The two printed lines are the last change of each.
- */
-export function ControlledOpenAndTextExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  const [open, setOpen] = useState(false)
-  const [openReason, setOpenReason] = useState('–')
-  const [inputValue, setInputValue] = useState('')
-  const [inputReason, setInputReason] = useState('–')
-  return (
-    <div className="kv-story-form" lang={lang}>
+    <InEnglishWhenFallback isFallback={isFallback}>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
-        <Combobox.Root
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          open={open}
-          onOpenChange={(nextOpen, details) => {
-            setOpen(nextOpen)
-            setOpenReason(details.reason)
-          }}
-          inputValue={inputValue}
-          onInputValueChange={(nextText, details) => {
-            setInputValue(nextText)
-            setInputReason(details.reason)
-          }}
-        >
-          <Combobox.Control>
-            <Combobox.Input />
-            <Combobox.Clear />
-            <Combobox.Toggle />
-          </Combobox.Control>
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="open">
-        open: {String(open)}, reason: {openReason}
-      </p>
-      <p className="kv-story-form-output" data-testid="text">
-        text: {inputValue}, reason: {inputReason}
-      </p>
-    </div>
-  )
-}
-
-/**
- * The popup above the input, with your own gap and edge distance: `placement` (a side, then
- * `-start`, `-center` or `-end`), `offset` and `padding` in pixels. It flips to the other side
- * when there is no room, and `data-placement` says which side it is on.
- */
-export function PlacedAboveExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Combobox.Root
-        items={fewMunicipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        placement="top-start"
-        offset={12}
-        padding={16}
-      >
-        <Combobox.Control>
-          <Combobox.Input />
-          <Combobox.Clear />
-          <Combobox.Toggle />
-        </Combobox.Control>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * Your own announcement: `messages` replaces the built-in "4 resultat" with your wording (a
- * function gets the count), and `announcementDebounceMilliseconds` is how long after the last
- * keystroke it is said. Nothing is announced while the user types; `0` says it as soon as the
- * list has changed.
- */
-export function OwnAnnouncementExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Field.Prose>
-        <p>{text.hint}</p>
-      </Field.Prose>
-      <Combobox.Root
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        announcementDebounceMilliseconds={0}
-        messages={{ resultCount: ({ count }) => text.countMessage(count) }}
-      >
-        <Combobox.Control>
-          <Combobox.Input />
-          <Combobox.Clear />
-          <Combobox.Toggle />
-        </Combobox.Control>
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-          </Combobox.List>
-          <Combobox.Empty />
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * A rich option: an icon, the text that names the option and a second line that describes it.
- * Any markup also works in `Combobox.Option`, with or without the parts.
- */
-export function RichOptionsExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Combobox.Root
-        items={richMunicipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-      >
-        <Combobox.Input />
-        <Combobox.Popup>
-          <Combobox.List>
-            {(municipality: Municipality) => (
-              <Combobox.Option item={municipality}>
-                <Combobox.OptionIcon>
-                  <Icon name="document" />
-                </Combobox.OptionIcon>
-                <Combobox.OptionText>{municipality.name}</Combobox.OptionText>
-                <Combobox.OptionDescription>{municipality.county}</Combobox.OptionDescription>
-                <Combobox.OptionIndicator />
-              </Combobox.Option>
-            )}
-          </Combobox.List>
-        </Combobox.Popup>
-      </Combobox.Root>
-    </Field.Root>
-  )
-}
-
-/** A long label and a long chosen option, one and several choices: both wrap, and nothing overflows. */
-export function LongFinnishExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, lang } = comboboxTextsFor(locale)
-  const items: readonly Municipality[] = [
-    { code: 'long', name: 'Pohjois-Pohjanmaan sairaanhoitopiirin kuntayhtymä' },
-    ...municipalities.slice(0, 3),
-  ]
-  return (
-    <>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.longLabel}</Field.Label>
-        <Combobox.Root
-          items={items}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          defaultValue="long"
-        >
-          <Combobox.Control>
-            <Combobox.Input />
-            <Combobox.Clear />
-            <Combobox.Toggle />
-          </Combobox.Control>
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{shared.longSelectLabel}</Field.Label>
-        <Combobox.Root
-          multiple
-          items={items}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          defaultValue={['long', 'ale']}
-        >
-          <Combobox.ValueList />
-          <Combobox.Input />
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-      </Field.Root>
-    </>
-  )
-}
-
-/** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11), and the popup its own edge. */
-export function OnSurfacesExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  return (
-    <Card.Root lang={lang}>
-      <Field.Root required invalid>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Combobox.Root
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-        >
-          <Combobox.Control>
-            <Combobox.Input />
-            <Combobox.Clear />
-            <Combobox.Toggle />
-          </Combobox.Control>
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-        <Field.ErrorMessage>{text.notInList}</Field.ErrorMessage>
-      </Field.Root>
-    </Card.Root>
-  )
-}
-
-/** Staff density from 64rem: `kv-compact` on an ancestor makes the box and the options 32px high. */
-export function CompactExample({ locale }: { locale: FormLocale }) {
-  const { text, lang } = comboboxTextsFor(locale)
-  return (
-    <div className="kv-compact" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Combobox.Root
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-        >
-          <Combobox.Control>
-            <Combobox.Input />
-            <Combobox.Clear />
-            <Combobox.Toggle />
-          </Combobox.Control>
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-      </Field.Root>
-    </div>
-  )
-}
-
-/**
- * Controlled by your form state. This `useState` stands in for TanStack Form, React Hook Form or
- * your own reducer: the Combobox shows the `value` it is given and calls `onValueChange` with the
- * chosen key, or `null` when the text no longer names the chosen option.
- */
-export function ControlledExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, lang } = comboboxTextsFor(locale)
-  const [value, setValue] = useState<string | null>('göteborg')
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Combobox.Root
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          value={value}
-          onValueChange={setValue}
-        >
-          <Combobox.Control>
-            <Combobox.Input />
-            <Combobox.Clear />
-            <Combobox.Toggle />
-          </Combobox.Control>
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="mirror">
-        {shared.youChose}: {value ?? '–'}
-      </p>
-    </div>
-  )
-}
-
-/**
- * A plain `<form>`: no `value` and no handlers, only `defaultValue` and `name`. The hidden input
- * carries the key, and `FormData` has it by `name` on submit. The typed text is never sent.
- */
-export function PlainFormExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, lang } = comboboxTextsFor(locale)
-  const [sent, setSent] = useState<string | undefined>()
-  return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const value = new FormData(event.currentTarget).get('municipality')
-        setSent(typeof value === 'string' ? value : '')
-      }}
-    >
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Combobox.Root
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          name="municipality"
-          defaultValue="göteborg"
-        >
-          <Combobox.Control>
-            <Combobox.Input />
-            <Combobox.Clear />
-            <Combobox.Toggle />
-          </Combobox.Control>
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {shared.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {shared.sent}: {sent}
-        </p>
-      )}
-    </form>
-  )
-}
-
-/**
- * The fixture the keyboard tests drive: a button, a Combobox with a disabled option and its two
- * buttons, a disabled Combobox, a Combobox of several choices with two values chosen, and a
- * submit button in a form that counts its submissions.
- */
-export function KeyboardExample({ locale }: { locale: FormLocale }) {
-  const { text, shared, lang } = comboboxTextsFor(locale)
-  const [submissions, setSubmissions] = useState(0)
-  return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        setSubmissions((count) => count + 1)
-      }}
-    >
-      <div className="kv-button-group">
-        <Button type="button">Före</Button>
-      </div>
-      <Field.Root required controlId="municipality">
-        <Field.Label>{text.municipality}</Field.Label>
-        <Combobox.Root
-          items={municipalitiesWithClosed}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          isItemDisabled={(municipality) => municipality.disabled === true}
-          name="municipality"
-        >
-          <Combobox.Control>
-            <Combobox.Input />
-            <Combobox.Clear />
-            <Combobox.Toggle />
-          </Combobox.Control>
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-      </Field.Root>
-      <Field.Root required disabled controlId="closed">
-        <Field.Label>{shared.longSelectLabel}</Field.Label>
-        <Combobox.Root
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          name="closed"
-        >
-          <Combobox.Input />
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-      </Field.Root>
-      <Field.Root required controlId="several">
-        <Field.Label>{text.several}</Field.Label>
-        <Combobox.Root
-          multiple
-          items={municipalitiesWithClosed}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          isItemDisabled={(municipality) => municipality.disabled === true}
-          name="several"
-          defaultValue={['malmö', 'uppsala']}
-        >
-          <Combobox.ValueList />
-          <Combobox.Control>
-            <Combobox.Input />
-            <Combobox.Clear />
-          </Combobox.Control>
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {shared.send}
-        </Button>
-      </div>
-      {submissions === 0 ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {shared.sent}: {submissions}
-        </p>
-      )}
-    </form>
-  )
-}
-
-/**
- * Every state in one column, for the RTL and forced-colours stories: a chosen option, invalid,
- * several choices, and disabled.
- */
-export function ComboboxStates({ locale }: { locale: FormLocale }) {
-  const { text, shared, lang } = comboboxTextsFor(locale)
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Field.Prose>
-          <p>{text.hint}</p>
-        </Field.Prose>
-        <Combobox.Root
-          items={municipalitiesWithClosed.slice(0, 8)}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          isItemDisabled={(municipality) => municipality.disabled === true}
-          defaultValue="ale"
-        >
-          <Combobox.Control>
-            <Combobox.Input />
-            <Combobox.Clear />
-            <Combobox.Toggle />
-          </Combobox.Control>
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-      </Field.Root>
-      <Field.Root required invalid>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Combobox.Root
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-        >
-          <Combobox.Control>
-            <Combobox.Input />
-            <Combobox.Clear />
-            <Combobox.Toggle />
-          </Combobox.Control>
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-        <Field.ErrorMessage>{text.notInList}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root required>
-        <Field.Label>{text.several}</Field.Label>
-        <Combobox.Root
-          multiple
-          items={municipalitiesWithClosed}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          isItemDisabled={(municipality) => municipality.disabled === true}
-          defaultValue={['malmö', 'uppsala', 'göteborg']}
-        >
-          <Combobox.ValueList />
-          <Combobox.Input />
-          <Combobox.Popup>
-            <Combobox.List>
-              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-            </Combobox.List>
-            <Combobox.Empty />
-          </Combobox.Popup>
-        </Combobox.Root>
-      </Field.Root>
-      <Field.Root required disabled>
-        <Field.Label>{shared.municipality}</Field.Label>
         <Combobox.Root
           items={municipalities}
           itemToString={(municipality) => municipality.name}
@@ -1208,6 +348,917 @@ export function ComboboxStates({ locale }: { locale: FormLocale }) {
           </Combobox.Popup>
         </Combobox.Root>
       </Field.Root>
-    </div>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * Typing filters the list, and a Field's help text says so before the user types. When nothing
+ * matches, `Combobox.Empty` says so and the typed text stays.
+ */
+export function FilteringExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Prose>
+          <p>{text.hint}</p>
+        </Field.Prose>
+        <Combobox.Root
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+        >
+          <Combobox.Control>
+            <Combobox.Input />
+            <Combobox.Clear />
+            <Combobox.Toggle />
+          </Combobox.Control>
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * Results that a server has filtered: `filter={false}` turns the built-in filter off, and
+ * `isLoading` makes `Combobox.Empty` say "Laddar resultat" while the fetch is running.
+ */
+export function LoadingExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  const results: Municipality[] = []
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Combobox.Root
+          items={results}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          filter={false}
+          isLoading
+        >
+          <Combobox.Control>
+            <Combobox.Input />
+            <Combobox.Clear />
+            <Combobox.Toggle />
+          </Combobox.Control>
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** Items in named groups: `groups` takes `{ key, label, items }`, and each group is named by its label. */
+export function GroupsExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  const pick = (...picked: string[]) =>
+    municipalities.filter((municipality) => picked.includes(municipality.name))
+  const groups = [
+    { key: 'west', label: text.groupWest, items: pick('Göteborg', 'Borås') },
+    { key: 'east', label: text.groupEast, items: pick('Stockholm', 'Uppsala') },
+    { key: 'south', label: text.groupSouth, items: pick('Malmö') },
+  ]
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Combobox.Root
+          groups={groups}
+          itemToString={(municipality: Municipality) => municipality.name}
+          itemToKey={(municipality: Municipality) => municipality.code}
+        >
+          <Combobox.Control>
+            <Combobox.Input />
+            <Combobox.Clear />
+            <Combobox.Toggle />
+          </Combobox.Control>
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** A disabled option: `isItemDisabled` keeps it reachable with the arrow keys, but it can't be chosen. */
+export function DisabledOptionExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Combobox.Root
+          items={municipalitiesWithClosed}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          isItemDisabled={(municipality) => municipality.disabled === true}
+        >
+          <Combobox.Control>
+            <Combobox.Input />
+            <Combobox.Clear />
+            <Combobox.Toggle />
+          </Combobox.Control>
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * Invalid: `invalid` on the Field, with the error under the field. The text that matched nothing
+ * stays, so the user can fix it instead of starting over.
+ */
+export function InvalidExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required invalid>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Prose>
+          <p>{text.hint}</p>
+        </Field.Prose>
+        <Combobox.Root
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          defaultInputValue="Gö"
+        >
+          <Combobox.Control>
+            <Combobox.Input />
+            <Combobox.Clear />
+            <Combobox.Toggle />
+          </Combobox.Control>
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+        <Field.ErrorMessage>{text.notInList}</Field.ErrorMessage>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** Disabled: `disabled` on the Field disables the Combobox too, and the popup never opens. */
+export function DisabledExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required disabled>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Combobox.Root
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          defaultValue="malmö"
+        >
+          <Combobox.Control>
+            <Combobox.Input />
+            <Combobox.Clear />
+            <Combobox.Toggle />
+          </Combobox.Control>
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** Several choices, none chosen yet: the first choice appears as a chip before the input. */
+export function MultipleNoneChosenExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.several}</Field.Label>
+        <Field.Prose>
+          <p>{text.severalHint}</p>
+        </Field.Prose>
+        <Combobox.Root
+          multiple
+          items={municipalitiesWithClosed}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          isItemDisabled={(municipality) => municipality.disabled === true}
+        >
+          <Combobox.ValueList />
+          <Combobox.Input />
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** Several choices with one chosen: a chip with its remove button. Removing it moves focus to the input. */
+export function MultipleOneChosenExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.several}</Field.Label>
+        <Combobox.Root
+          multiple
+          items={municipalitiesWithClosed}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          isItemDisabled={(municipality) => municipality.disabled === true}
+          defaultValue={['malmö']}
+        >
+          <Combobox.ValueList />
+          <Combobox.Input />
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** A long list scrolls inside the popup, which is never taller than the room that is left. */
+export function LongListExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Combobox.Root
+          items={longList}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+        >
+          <Combobox.Control>
+            <Combobox.Input />
+            <Combobox.Clear />
+            <Combobox.Toggle />
+          </Combobox.Control>
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * Your own filter: `filter(item, query)` replaces the built-in one, which matches anywhere in the
+ * text and keeps å, ä and ö apart from a and o. This one matches the start of the name. It runs
+ * on every keystroke and decides which options stay in the list.
+ */
+export function StartsWithFilterExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Prose>
+          <p>{text.startsWithHint}</p>
+        </Field.Prose>
+        <Combobox.Root
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          filter={(municipality, query) =>
+            municipality.name.toLowerCase().startsWith(query.toLowerCase())
+          }
+        >
+          <Combobox.Control>
+            <Combobox.Input />
+            <Combobox.Clear />
+            <Combobox.Toggle />
+          </Combobox.Control>
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * The popup and the text in your state: `open` and `inputValue` are controlled, and
+ * `onOpenChange` and `onInputValueChange` say why each changed (`input`, `option-press`,
+ * `selection`, `clear` and more). The two printed lines are the last change of each.
+ */
+export function ControlledOpenAndTextExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  const [open, setOpen] = useState(false)
+  const [openReason, setOpenReason] = useState('–')
+  const [inputValue, setInputValue] = useState('')
+  const [inputReason, setInputReason] = useState('–')
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Combobox.Root
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            open={open}
+            onOpenChange={(nextOpen, details) => {
+              setOpen(nextOpen)
+              setOpenReason(details.reason)
+            }}
+            inputValue={inputValue}
+            onInputValueChange={(nextText, details) => {
+              setInputValue(nextText)
+              setInputReason(details.reason)
+            }}
+          >
+            <Combobox.Control>
+              <Combobox.Input />
+              <Combobox.Clear />
+              <Combobox.Toggle />
+            </Combobox.Control>
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+        </Field.Root>
+        <p className="kv-story-form-output" data-testid="open">
+          open: {String(open)}, reason: {openReason}
+        </p>
+        <p className="kv-story-form-output" data-testid="text">
+          text: {inputValue}, reason: {inputReason}
+        </p>
+      </div>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * The popup above the input, with your own gap and edge distance: `placement` (a side, then
+ * `-start`, `-center` or `-end`), `offset` and `padding` in pixels. It flips to the other side
+ * when there is no room, and `data-placement` says which side it is on.
+ */
+export function PlacedAboveExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Combobox.Root
+          items={fewMunicipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          placement="top-start"
+          offset={12}
+          padding={16}
+        >
+          <Combobox.Control>
+            <Combobox.Input />
+            <Combobox.Clear />
+            <Combobox.Toggle />
+          </Combobox.Control>
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * Your own announcement: `messages` replaces the built-in "4 resultat" with your wording (a
+ * function gets the count), and `announcementDebounceMilliseconds` is how long after the last
+ * keystroke it is said. Nothing is announced while the user types; `0` says it as soon as the
+ * list has changed.
+ */
+export function OwnAnnouncementExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Prose>
+          <p>{text.hint}</p>
+        </Field.Prose>
+        <Combobox.Root
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          announcementDebounceMilliseconds={0}
+          messages={{ resultCount: ({ count }) => text.countMessage(count) }}
+        >
+          <Combobox.Control>
+            <Combobox.Input />
+            <Combobox.Clear />
+            <Combobox.Toggle />
+          </Combobox.Control>
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+            </Combobox.List>
+            <Combobox.Empty />
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * A rich option: an icon, the text that names the option and a second line that describes it.
+ * Any markup also works in `Combobox.Option`, with or without the parts.
+ */
+export function RichOptionsExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Combobox.Root
+          items={richMunicipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+        >
+          <Combobox.Input />
+          <Combobox.Popup>
+            <Combobox.List>
+              {(municipality: Municipality) => (
+                <Combobox.Option item={municipality}>
+                  <Combobox.OptionIcon>
+                    <Icon name="document" />
+                  </Combobox.OptionIcon>
+                  <Combobox.OptionText>{municipality.name}</Combobox.OptionText>
+                  <Combobox.OptionDescription>{municipality.county}</Combobox.OptionDescription>
+                  <Combobox.OptionIndicator />
+                </Combobox.Option>
+              )}
+            </Combobox.List>
+          </Combobox.Popup>
+        </Combobox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** A long label and a long chosen option, one and several choices: both wrap, and nothing overflows. */
+export function LongFinnishExample({ locale }: { locale: FormLocale }) {
+  const { text, shared, isFallback } = comboboxTextsFor(locale)
+  const items: readonly Municipality[] = [
+    { code: 'long', name: 'Pohjois-Pohjanmaan sairaanhoitopiirin kuntayhtymä' },
+    ...municipalities.slice(0, 3),
+  ]
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Field.Root required>
+          <Field.Label>{text.longLabel}</Field.Label>
+          <Combobox.Root
+            items={items}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            defaultValue="long"
+          >
+            <Combobox.Control>
+              <Combobox.Input />
+              <Combobox.Clear />
+              <Combobox.Toggle />
+            </Combobox.Control>
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{shared.longSelectLabel}</Field.Label>
+          <Combobox.Root
+            multiple
+            items={items}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            defaultValue={['long', 'ale']}
+          >
+            <Combobox.ValueList />
+            <Combobox.Input />
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+        </Field.Root>
+      </>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11), and the popup its own edge. */
+export function OnSurfacesExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Card.Root>
+        <Field.Root required invalid>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Combobox.Root
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+          >
+            <Combobox.Control>
+              <Combobox.Input />
+              <Combobox.Clear />
+              <Combobox.Toggle />
+            </Combobox.Control>
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+          <Field.ErrorMessage>{text.notInList}</Field.ErrorMessage>
+        </Field.Root>
+      </Card.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** Staff density from 64rem: `kv-compact` on an ancestor makes the box and the options 32px high. */
+export function CompactExample({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-compact">
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Combobox.Root
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+          >
+            <Combobox.Control>
+              <Combobox.Input />
+              <Combobox.Clear />
+              <Combobox.Toggle />
+            </Combobox.Control>
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * Controlled by your form state. This `useState` stands in for TanStack Form, React Hook Form or
+ * your own reducer: the Combobox shows the `value` it is given and calls `onValueChange` with the
+ * chosen key, or `null` when the text no longer names the chosen option.
+ */
+export function ControlledExample({ locale }: { locale: FormLocale }) {
+  const { text, shared, isFallback } = comboboxTextsFor(locale)
+  const [value, setValue] = useState<string | null>('göteborg')
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Combobox.Root
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            value={value}
+            onValueChange={setValue}
+          >
+            <Combobox.Control>
+              <Combobox.Input />
+              <Combobox.Clear />
+              <Combobox.Toggle />
+            </Combobox.Control>
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+        </Field.Root>
+        <p className="kv-story-form-output" data-testid="mirror">
+          {shared.youChose}: {value ?? '–'}
+        </p>
+      </div>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * A plain `<form>`: no `value` and no handlers, only `defaultValue` and `name`. The hidden input
+ * carries the key, and `FormData` has it by `name` on submit. The typed text is never sent.
+ */
+export function PlainFormExample({ locale }: { locale: FormLocale }) {
+  const { text, shared, isFallback } = comboboxTextsFor(locale)
+  const [sent, setSent] = useState<string | undefined>()
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form
+        className="kv-story-form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          const value = new FormData(event.currentTarget).get('municipality')
+          setSent(typeof value === 'string' ? value : '')
+        }}
+      >
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Combobox.Root
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            name="municipality"
+            defaultValue="göteborg"
+          >
+            <Combobox.Control>
+              <Combobox.Input />
+              <Combobox.Clear />
+              <Combobox.Toggle />
+            </Combobox.Control>
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+        </Field.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {shared.send}
+          </Button>
+        </div>
+        {sent === undefined ? null : (
+          <p className="kv-story-form-output" data-testid="sent">
+            {shared.sent}: {sent}
+          </p>
+        )}
+      </form>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * The fixture the keyboard tests drive: a button, a Combobox with a disabled option and its two
+ * buttons, a disabled Combobox, a Combobox of several choices with two values chosen, and a
+ * submit button in a form that counts its submissions.
+ */
+export function KeyboardExample({ locale }: { locale: FormLocale }) {
+  const { text, shared, isFallback } = comboboxTextsFor(locale)
+  const [submissions, setSubmissions] = useState(0)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form
+        className="kv-story-form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          setSubmissions((count) => count + 1)
+        }}
+      >
+        <div className="kv-button-group">
+          <Button type="button">Före</Button>
+        </div>
+        <Field.Root required controlId="municipality">
+          <Field.Label>{text.municipality}</Field.Label>
+          <Combobox.Root
+            items={municipalitiesWithClosed}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            isItemDisabled={(municipality) => municipality.disabled === true}
+            name="municipality"
+          >
+            <Combobox.Control>
+              <Combobox.Input />
+              <Combobox.Clear />
+              <Combobox.Toggle />
+            </Combobox.Control>
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+        </Field.Root>
+        <Field.Root required disabled controlId="closed">
+          <Field.Label>{shared.longSelectLabel}</Field.Label>
+          <Combobox.Root
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            name="closed"
+          >
+            <Combobox.Input />
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+        </Field.Root>
+        <Field.Root required controlId="several">
+          <Field.Label>{text.several}</Field.Label>
+          <Combobox.Root
+            multiple
+            items={municipalitiesWithClosed}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            isItemDisabled={(municipality) => municipality.disabled === true}
+            name="several"
+            defaultValue={['malmö', 'uppsala']}
+          >
+            <Combobox.ValueList />
+            <Combobox.Control>
+              <Combobox.Input />
+              <Combobox.Clear />
+            </Combobox.Control>
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+        </Field.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {shared.send}
+          </Button>
+        </div>
+        {submissions === 0 ? null : (
+          <p className="kv-story-form-output" data-testid="sent">
+            {shared.sent}: {submissions}
+          </p>
+        )}
+      </form>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * Every state in one column, for the RTL and forced-colours stories: a chosen option, invalid,
+ * several choices, and disabled.
+ */
+export function ComboboxStates({ locale }: { locale: FormLocale }) {
+  const { text, shared, isFallback } = comboboxTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Field.Prose>
+            <p>{text.hint}</p>
+          </Field.Prose>
+          <Combobox.Root
+            items={municipalitiesWithClosed.slice(0, 8)}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            isItemDisabled={(municipality) => municipality.disabled === true}
+            defaultValue="ale"
+          >
+            <Combobox.Control>
+              <Combobox.Input />
+              <Combobox.Clear />
+              <Combobox.Toggle />
+            </Combobox.Control>
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+        </Field.Root>
+        <Field.Root required invalid>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Combobox.Root
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+          >
+            <Combobox.Control>
+              <Combobox.Input />
+              <Combobox.Clear />
+              <Combobox.Toggle />
+            </Combobox.Control>
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+          <Field.ErrorMessage>{text.notInList}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.several}</Field.Label>
+          <Combobox.Root
+            multiple
+            items={municipalitiesWithClosed}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            isItemDisabled={(municipality) => municipality.disabled === true}
+            defaultValue={['malmö', 'uppsala', 'göteborg']}
+          >
+            <Combobox.ValueList />
+            <Combobox.Input />
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+        </Field.Root>
+        <Field.Root required disabled>
+          <Field.Label>{shared.municipality}</Field.Label>
+          <Combobox.Root
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            defaultValue="malmö"
+          >
+            <Combobox.Control>
+              <Combobox.Input />
+              <Combobox.Clear />
+              <Combobox.Toggle />
+            </Combobox.Control>
+            <Combobox.Popup>
+              <Combobox.List>
+                {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+              </Combobox.List>
+              <Combobox.Empty />
+            </Combobox.Popup>
+          </Combobox.Root>
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }

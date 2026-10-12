@@ -33,7 +33,7 @@ It is never announced on load and never takes focus: the status word, the shape 
 | Part | Element | Props |
 | ---- | ------- | ----- |
 | \`SiteAlert.Root\` | \`<section>\`, named by its title | \`tone\`: \`warning\` (default) or \`info\`, exposed as \`data-tone\`. \`onDismiss\`. \`mainId\`: the element that gets focus on dismiss, default \`main\`. \`messages\`: the status words and \`close\`, which \`Alert\` owns |
-| \`SiteAlert.Title\` | \`<p>\` | The headline, one line. Wrap another language in \`lang\` |
+| \`SiteAlert.Title\` | \`<p>\` | The headline, one line. Put another language in a nested \`KvirnProvider\` |
 | \`SiteAlert.Body\` | \`<div>\` | The details: a sentence or two |
 | \`SiteAlert.Link\` | \`<a href>\` in the alert's actions | \`href\`, \`as\`. The one link to more information |
 | \`SiteAlert.Close\` | \`<button>\` named by \`Alert.Close\` | Removes the alert, calls \`onDismiss\`, moves focus to \`main\`. Put it last |

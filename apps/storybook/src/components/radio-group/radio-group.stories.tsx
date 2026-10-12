@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Card, Field, RadioGroup } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/radio-group/radio-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/radio-group/radio-group.md?raw'
@@ -79,27 +80,29 @@ const meta = {
   // Docs page every story's radios would otherwise act as one. In your own form, use a plain
   // `name="duration"`.
   render: (args, { globals, id }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
-        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-        <RadioGroup.Prose>
-          <p>{text.durationHint}</p>
-        </RadioGroup.Prose>
-        <Field.Root>
-          <RadioGroup.Radio value="1" />
-          <Field.Label>{text.duration1}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="6" />
-          <Field.Label>{text.duration6}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="12" />
-          <Field.Label>{text.duration12}</Field.Label>
-        </Field.Root>
-        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
-      </RadioGroup.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <RadioGroup.Root name={`duration-${id}`} {...args}>
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+          </Field.Root>
+          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+      </InEnglishWhenFallback>
     )
   },
   parameters: {
@@ -146,39 +149,41 @@ const backTexts: Partial<Record<FormLocale, string>> = {
 export const Keyboard: Story = {
   render: (_args, { globals, id }) => {
     const locale = localeOf(globals)
-    const { text, lang } = choiceTextsFor(locale)
+    const { text, isFallback } = choiceTextsFor(locale)
     return (
-      <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
-        <div className="kv-button-group">
-          <Button type="button" lang={backTexts[locale] === undefined ? 'en' : undefined}>
-            {backTexts[locale] ?? 'Back'}
-          </Button>
-        </div>
-        <RadioGroup.Root name={`duration-${id}`}>
-          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-          <RadioGroup.Prose>
-            <p>{text.durationHint}</p>
-          </RadioGroup.Prose>
-          <Field.Root>
-            <RadioGroup.Radio value="1" />
-            <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <RadioGroup.Radio value="6" />
-            <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <RadioGroup.Radio value="12" />
-            <Field.Label>{text.duration12}</Field.Label>
-          </Field.Root>
-          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
-        </RadioGroup.Root>
-        <div className="kv-button-group">
-          <Button type="submit" className="kv-button--primary">
-            {text.send}
-          </Button>
-        </div>
-      </form>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <form className="kv-story-form" noValidate onSubmit={(e) => e.preventDefault()}>
+          <div className="kv-button-group">
+            <InEnglishWhenFallback isFallback={backTexts[locale] === undefined}>
+              <Button type="button">{backTexts[locale] ?? 'Back'}</Button>
+            </InEnglishWhenFallback>
+          </div>
+          <RadioGroup.Root name={`duration-${id}`}>
+            <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+            <RadioGroup.Prose>
+              <p>{text.durationHint}</p>
+            </RadioGroup.Prose>
+            <Field.Root>
+              <RadioGroup.Radio value="1" />
+              <Field.Label>{text.duration1}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <RadioGroup.Radio value="6" />
+              <Field.Label>{text.duration6}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <RadioGroup.Radio value="12" />
+              <Field.Label>{text.duration12}</Field.Label>
+            </Field.Root>
+            <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+          </RadioGroup.Root>
+          <div className="kv-button-group">
+            <Button type="submit" className="kv-button--primary">
+              {text.send}
+            </Button>
+          </div>
+        </form>
+      </InEnglishWhenFallback>
     )
   },
 }
@@ -187,34 +192,36 @@ export const Keyboard: Story = {
 export const Selected: Story = {
   args: { defaultValue: '6' },
   render: (args, { globals, id }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
-        <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
-          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-          <RadioGroup.Prose>
-            <p>{text.durationHint}</p>
-          </RadioGroup.Prose>
-          <Field.Root>
-            <RadioGroup.Radio value="1" />
-            <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <RadioGroup.Radio value="6" />
-            <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <RadioGroup.Radio value="12" />
-            <Field.Label>{text.duration12}</Field.Label>
-          </Field.Root>
-          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
-        </RadioGroup.Root>
-        <div className="kv-button-group">
-          <Button type="submit" className="kv-button--primary">
-            {text.send}
-          </Button>
-        </div>
-      </form>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <form className="kv-story-form" noValidate onSubmit={(e) => e.preventDefault()}>
+          <RadioGroup.Root name={`duration-${id}`} {...args}>
+            <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+            <RadioGroup.Prose>
+              <p>{text.durationHint}</p>
+            </RadioGroup.Prose>
+            <Field.Root>
+              <RadioGroup.Radio value="1" />
+              <Field.Label>{text.duration1}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <RadioGroup.Radio value="6" />
+              <Field.Label>{text.duration6}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <RadioGroup.Radio value="12" />
+              <Field.Label>{text.duration12}</Field.Label>
+            </Field.Root>
+            <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+          </RadioGroup.Root>
+          <div className="kv-button-group">
+            <Button type="submit" className="kv-button--primary">
+              {text.send}
+            </Button>
+          </div>
+        </form>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -227,28 +234,30 @@ export const Selected: Story = {
 /** An option's own help text is in that radio's description, under its label. */
 export const WithOptionHelpTexts: Story = {
   render: (args, { globals, id }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
-        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-        <RadioGroup.Prose>
-          <p>{text.durationHint}</p>
-        </RadioGroup.Prose>
-        <Field.Root>
-          <RadioGroup.Radio value="1" />
-          <Field.Label>{text.duration1}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="6" />
-          <Field.Label>{text.duration6}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="12" />
-          <Field.Label>{text.duration12}</Field.Label>
-          <Field.HelpText>{text.duration12Hint}</Field.HelpText>
-        </Field.Root>
-        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
-      </RadioGroup.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <RadioGroup.Root name={`duration-${id}`} {...args}>
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+            <Field.HelpText>{text.duration12Hint}</Field.HelpText>
+          </Field.Root>
+          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -293,27 +302,29 @@ export const Required: Story = {
 export const DisabledOption: Story = {
   args: { defaultValue: '1' },
   render: (args, { globals, id }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
-        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-        <RadioGroup.Prose>
-          <p>{text.durationHint}</p>
-        </RadioGroup.Prose>
-        <Field.Root>
-          <RadioGroup.Radio value="1" />
-          <Field.Label>{text.duration1}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="6" disabled />
-          <Field.Label>{text.duration6}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="12" />
-          <Field.Label>{text.duration12}</Field.Label>
-        </Field.Root>
-        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
-      </RadioGroup.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <RadioGroup.Root name={`duration-${id}`} {...args}>
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" disabled />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+          </Field.Root>
+          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -336,29 +347,31 @@ export const Disabled: Story = {
 /** One question per page: the legend is the page's heading (an `h1` inside the legend). */
 export const AsPageHeading: Story = {
   render: (args, { globals, id }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
-        <RadioGroup.Legend className="kv-fieldset-legend--heading">
-          <h1>{text.durationLegend}</h1>
-        </RadioGroup.Legend>
-        <RadioGroup.Prose>
-          <p>{text.durationHint}</p>
-        </RadioGroup.Prose>
-        <Field.Root>
-          <RadioGroup.Radio value="1" />
-          <Field.Label>{text.duration1}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="6" />
-          <Field.Label>{text.duration6}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="12" />
-          <Field.Label>{text.duration12}</Field.Label>
-        </Field.Root>
-        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
-      </RadioGroup.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <RadioGroup.Root name={`duration-${id}`} {...args}>
+          <RadioGroup.Legend className="kv-fieldset-legend--heading">
+            <h1>{text.durationLegend}</h1>
+          </RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+          </Field.Root>
+          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -371,29 +384,31 @@ export const AsPageHeading: Story = {
 export const InCard: Story = {
   args: { invalid: true, defaultValue: '6' },
   render: (args, { globals, id }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <Card.Root>
-        <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
-          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-          <RadioGroup.Prose>
-            <p>{text.durationHint}</p>
-          </RadioGroup.Prose>
-          <Field.Root>
-            <RadioGroup.Radio value="1" />
-            <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <RadioGroup.Radio value="6" />
-            <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <RadioGroup.Radio value="12" />
-            <Field.Label>{text.duration12}</Field.Label>
-          </Field.Root>
-          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
-        </RadioGroup.Root>
-      </Card.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Card.Root>
+          <RadioGroup.Root name={`duration-${id}`} {...args}>
+            <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+            <RadioGroup.Prose>
+              <p>{text.durationHint}</p>
+            </RadioGroup.Prose>
+            <Field.Root>
+              <RadioGroup.Radio value="1" />
+              <Field.Label>{text.duration1}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <RadioGroup.Radio value="6" />
+              <Field.Label>{text.duration6}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <RadioGroup.Radio value="12" />
+              <Field.Label>{text.duration12}</Field.Label>
+            </Field.Root>
+            <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+          </RadioGroup.Root>
+        </Card.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -405,29 +420,31 @@ export const InCard: Story = {
 /** Staff density from 64rem: the rows are 32px high, the circles still 24px. */
 export const Compact: Story = {
   render: (args, { globals, id }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <div className="kv-compact">
-        <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
-          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-          <RadioGroup.Prose>
-            <p>{text.durationHint}</p>
-          </RadioGroup.Prose>
-          <Field.Root>
-            <RadioGroup.Radio value="1" />
-            <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <RadioGroup.Radio value="6" />
-            <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
-            <RadioGroup.Radio value="12" />
-            <Field.Label>{text.duration12}</Field.Label>
-          </Field.Root>
-          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
-        </RadioGroup.Root>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div className="kv-compact">
+          <RadioGroup.Root name={`duration-${id}`} {...args}>
+            <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+            <RadioGroup.Prose>
+              <p>{text.durationHint}</p>
+            </RadioGroup.Prose>
+            <Field.Root>
+              <RadioGroup.Radio value="1" />
+              <Field.Label>{text.duration1}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <RadioGroup.Radio value="6" />
+              <Field.Label>{text.duration6}</Field.Label>
+            </Field.Root>
+            <Field.Root>
+              <RadioGroup.Radio value="12" />
+              <Field.Label>{text.duration12}</Field.Label>
+            </Field.Root>
+            <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+          </RadioGroup.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -447,28 +464,30 @@ export const LongFinnish: Story = {
     ),
   ],
   render: (args, { globals, id }) => {
-    const { text, lang } = choiceTextsFor(localeOf(globals))
+    const { text, isFallback } = choiceTextsFor(localeOf(globals))
     return (
-      <RadioGroup.Root name={`duration-${id}`} {...args} lang={lang}>
-        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-        <RadioGroup.Prose>
-          <p>{text.durationHint}</p>
-        </RadioGroup.Prose>
-        <Field.Root>
-          <RadioGroup.Radio value="1" />
-          <Field.Label>{text.duration1}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="6" />
-          <Field.Label>{text.duration6}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="12" />
-          <Field.Label>{text.duration12}</Field.Label>
-          <Field.HelpText>{text.duration12Hint}</Field.HelpText>
-        </Field.Root>
-        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
-      </RadioGroup.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <RadioGroup.Root name={`duration-${id}`} {...args}>
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+            <Field.HelpText>{text.duration12Hint}</Field.HelpText>
+          </Field.Root>
+          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {
@@ -549,68 +568,70 @@ export const PlainForm: Story = {
 // Every state of the group in one column: checked, invalid and disabled. The RTL and ForcedColors
 // stories render it, so a reader of either sees the real parts.
 const renderGroupStates: NonNullable<Story['render']> = (_args, { globals, id }) => {
-  const { text, lang } = choiceTextsFor(localeOf(globals))
+  const { text, isFallback } = choiceTextsFor(localeOf(globals))
   return (
-    <div className="kv-story-form" lang={lang}>
-      <RadioGroup.Root name={`selected-${id}`} defaultValue="6">
-        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-        <RadioGroup.Prose>
-          <p>{text.durationHint}</p>
-        </RadioGroup.Prose>
-        <Field.Root>
-          <RadioGroup.Radio value="1" />
-          <Field.Label>{text.duration1}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="6" />
-          <Field.Label>{text.duration6}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="12" />
-          <Field.Label>{text.duration12}</Field.Label>
-          <Field.HelpText>{text.duration12Hint}</Field.HelpText>
-        </Field.Root>
-        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
-      </RadioGroup.Root>
-      <RadioGroup.Root name={`invalid-${id}`} invalid>
-        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-        <RadioGroup.Prose>
-          <p>{text.durationHint}</p>
-        </RadioGroup.Prose>
-        <Field.Root>
-          <RadioGroup.Radio value="1" />
-          <Field.Label>{text.duration1}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="6" />
-          <Field.Label>{text.duration6}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="12" />
-          <Field.Label>{text.duration12}</Field.Label>
-        </Field.Root>
-        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
-      </RadioGroup.Root>
-      <RadioGroup.Root name={`disabled-${id}`} disabled defaultValue="12">
-        <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
-        <RadioGroup.Prose>
-          <p>{text.durationHint}</p>
-        </RadioGroup.Prose>
-        <Field.Root>
-          <RadioGroup.Radio value="1" />
-          <Field.Label>{text.duration1}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="6" />
-          <Field.Label>{text.duration6}</Field.Label>
-        </Field.Root>
-        <Field.Root>
-          <RadioGroup.Radio value="12" />
-          <Field.Label>{text.duration12}</Field.Label>
-        </Field.Root>
-        <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
-      </RadioGroup.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <RadioGroup.Root name={`selected-${id}`} defaultValue="6">
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+            <Field.HelpText>{text.duration12Hint}</Field.HelpText>
+          </Field.Root>
+          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+        <RadioGroup.Root name={`invalid-${id}`} invalid>
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+          </Field.Root>
+          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+        <RadioGroup.Root name={`disabled-${id}`} disabled defaultValue="12">
+          <RadioGroup.Legend>{text.durationLegend}</RadioGroup.Legend>
+          <RadioGroup.Prose>
+            <p>{text.durationHint}</p>
+          </RadioGroup.Prose>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>{text.duration1}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>{text.duration6}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="12" />
+            <Field.Label>{text.duration12}</Field.Label>
+          </Field.Root>
+          <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 

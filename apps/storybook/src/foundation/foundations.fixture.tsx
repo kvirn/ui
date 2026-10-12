@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../fixture-language.tsx'
 import { Button } from '@kvirn-ui/react'
 import { useId } from 'react'
 import type { ReactNode } from 'react'
@@ -5,7 +6,7 @@ import { scrollRegionTabIndex } from './foundation-helpers.tsx'
 
 // Fixture text for Components/Prose (docs/design/foundations-and-prose.md §4):
 // a fictional municipality's guidance page that uses every element prose styles. sv, en, nb
-// and nn are written. fi: the English article, marked lang="en" (3.1.2).
+// and nn are written. fi: the English article, in a nested English provider (3.1.2).
 
 export type FixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'en'
 
@@ -510,7 +511,7 @@ const nn: ArticleText = {
   updated: (date) => <>Sist oppdatert {date}</>,
 }
 
-/** fi have no article: they show the English one, marked lang="en". */
+/** fi have no article: they show the English one, in a nested English provider. */
 const articleTexts: Record<FixtureLocale, ArticleText | undefined> = {
   sv,
   en,
@@ -522,10 +523,10 @@ const articleTexts: Record<FixtureLocale, ArticleText | undefined> = {
 export const isFixtureLocale = (value: unknown): value is FixtureLocale =>
   typeof value === 'string' && value in articleTexts
 
-/** The article in a locale, or the English one with `lang="en"` for fi. */
-export function articleFor(locale: FixtureLocale): { text: ArticleText; lang?: 'en' } {
+/** The article in a locale, or the English one for fi. */
+export function articleFor(locale: FixtureLocale): { text: ArticleText; isFallback: boolean } {
   const text = articleTexts[locale]
-  return text === undefined ? { text: en, lang: 'en' } : { text }
+  return text === undefined ? { text: en, isFallback: true } : { text, isFallback: false }
 }
 
 export const updatedDate = new Date(2026, 8, 14)
@@ -560,153 +561,157 @@ export function ProseArticle({
   locale: FixtureLocale
   size?: 'large' | undefined
 }): ReactNode {
-  const { text, lang } = articleFor(locale)
-  const formatLocale = lang ?? locale
+  const { text, isFallback } = articleFor(locale)
+  const formatLocale = isFallback ? 'en' : locale
   const number = new Intl.NumberFormat(formatLocale)
   const date = new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long' })
   const ids = useId()
   return (
-    <article className={size === 'large' ? 'kv-prose kv-prose--large' : 'kv-prose'} lang={lang}>
-      <h1>{text.title}</h1>
-      <p className="kv-lead">{text.lead}</p>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <article className={size === 'large' ? 'kv-prose kv-prose--large' : 'kv-prose'}>
+        <h1>{text.title}</h1>
+        <p className="kv-lead">{text.lead}</p>
 
-      <h2>{text.who.heading}</h2>
-      <p>{text.who.intro}</p>
-      <ul>
-        {text.who.items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-        <li>
-          {text.who.tenure.intro}
-          <ul>
-            {text.who.tenure.items.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </li>
-      </ul>
-
-      <h2>{text.what.heading}</h2>
-      <p>{text.what.intro}</p>
-      <ul>
-        {text.what.items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-      <figure>
-        <BathroomPlan label={text.what.figureLabel} />
-        <figcaption>{text.what.figureCaption}</figcaption>
-      </figure>
-
-      <h2>{text.how.heading}</h2>
-      <ol>
-        <li>
-          <p>{text.how.steps[0]}</p>
-        </li>
-        <li>
-          <p>{text.how.steps[1]}</p>
-          <ol>
-            {text.how.quoteSteps.map((step) => (
-              <li key={step}>{step}</li>
-            ))}
-          </ol>
-        </li>
-        <li>
-          <p>{text.how.steps[2]}</p>
-        </li>
-        <li>
-          <p>{text.how.steps[3]}</p>
-        </li>
-      </ol>
-      <p>{text.how.keyboard(<kbd lang="en">Tab</kbd>)}</p>
-
-      <h3>{text.attach.heading}</h3>
-      <dl>
-        {text.attach.items.map(([term, description]) => (
-          <div key={term}>
-            <dt>{term}</dt>
-            <dd>{description}</dd>
-          </div>
-        ))}
-      </dl>
-
-      <h3>{text.paper.heading}</h3>
-      <p>{text.paper.text}</p>
-      <h4>{text.send.heading}</h4>
-      <p>
-        {text.send.address.map((line, index) => (
-          <span key={line}>
-            {index > 0 ? <br /> : null}
-            {line}
-          </span>
-        ))}
-      </p>
-
-      <h2>{text.times.heading}</h2>
-      <p>{text.times.intro}</p>
-      <p>{text.caseNumber(<code>{caseNumber}</code>)}</p>
-      <p>{text.sms}</p>
-      <pre>
-        <code>{smsCode}</code>
-      </pre>
-      <section
-        className="kv-scroll-region"
-        aria-labelledby={`${ids}-times`}
-        tabIndex={scrollRegionTabIndex}
-      >
-        <table>
-          <caption id={`${ids}-times`}>{text.times.caption}</caption>
-          <thead>
-            <tr>
-              {text.times.columns.map((column) => (
-                <th key={column} scope="col">
-                  {column}
-                </th>
+        <h2>{text.who.heading}</h2>
+        <p>{text.who.intro}</p>
+        <ul>
+          {text.who.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+          <li>
+            {text.who.tenure.intro}
+            <ul>
+              {text.who.tenure.items.map((item) => (
+                <li key={item}>{item}</li>
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            {text.times.rows.map(([adaptation, weeks, grants]) => (
-              <tr key={adaptation}>
-                <th scope="row">{adaptation}</th>
-                <td>{number.format(weeks)}</td>
-                <td>{number.format(grants)}</td>
+            </ul>
+          </li>
+        </ul>
+
+        <h2>{text.what.heading}</h2>
+        <p>{text.what.intro}</p>
+        <ul>
+          {text.what.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+        <figure>
+          <BathroomPlan label={text.what.figureLabel} />
+          <figcaption>{text.what.figureCaption}</figcaption>
+        </figure>
+
+        <h2>{text.how.heading}</h2>
+        <ol>
+          <li>
+            <p>{text.how.steps[0]}</p>
+          </li>
+          <li>
+            <p>{text.how.steps[1]}</p>
+            <ol>
+              {text.how.quoteSteps.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+          </li>
+          <li>
+            <p>{text.how.steps[2]}</p>
+          </li>
+          <li>
+            <p>{text.how.steps[3]}</p>
+          </li>
+        </ol>
+        <p>{text.how.keyboard(<kbd lang="en">Tab</kbd>)}</p>
+
+        <h3>{text.attach.heading}</h3>
+        <dl>
+          {text.attach.items.map(([term, description]) => (
+            <div key={term}>
+              <dt>{term}</dt>
+              <dd>{description}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <h3>{text.paper.heading}</h3>
+        <p>{text.paper.text}</p>
+        <h4>{text.send.heading}</h4>
+        <p>
+          {text.send.address.map((line, index) => (
+            <span key={line}>
+              {index > 0 ? <br /> : null}
+              {line}
+            </span>
+          ))}
+        </p>
+
+        <h2>{text.times.heading}</h2>
+        <p>{text.times.intro}</p>
+        <p>{text.caseNumber(<code>{caseNumber}</code>)}</p>
+        <p>{text.sms}</p>
+        <pre>
+          <code>{smsCode}</code>
+        </pre>
+        <section
+          className="kv-scroll-region"
+          aria-labelledby={`${ids}-times`}
+          tabIndex={scrollRegionTabIndex}
+        >
+          <table>
+            <caption id={`${ids}-times`}>{text.times.caption}</caption>
+            <thead>
+              <tr>
+                {text.times.columns.map((column) => (
+                  <th key={column} scope="col">
+                    {column}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+            </thead>
+            <tbody>
+              {text.times.rows.map(([adaptation, weeks, grants]) => (
+                <tr key={adaptation}>
+                  <th scope="row">{adaptation}</th>
+                  <td>{number.format(weeks)}</td>
+                  <td>{number.format(grants)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
 
-      <figure>
-        <blockquote>
-          <p>{text.quote}</p>
-        </blockquote>
-        <figcaption>{text.quoteSource}</figcaption>
-      </figure>
+        <figure>
+          <blockquote>
+            <p>{text.quote}</p>
+          </blockquote>
+          <figcaption>{text.quoteSource}</figcaption>
+        </figure>
 
-      <hr />
-      <h2>{text.contact.heading}</h2>
-      <p>
-        {text.contact.body((linkText) => (
-          <a href="https://kvirnby.example/e-tjanst">{linkText}</a>
-        ))}
-      </p>
-      <p>
-        <a href="https://kvirnby.example/latt-las">{text.easyRead}</a>
-      </p>
-      <p>
-        <a href="https://kvirnby.example/fi" lang="fi" hrefLang="fi">
-          {text.otherLanguage}
-        </a>
-      </p>
-      <div className="kv-not-prose">
-        <div className="kv-button-group">
-          <Button className="kv-button--primary">{text.apply}</Button>
+        <hr />
+        <h2>{text.contact.heading}</h2>
+        <p>
+          {text.contact.body((linkText) => (
+            <a href="https://kvirnby.example/e-tjanst">{linkText}</a>
+          ))}
+        </p>
+        <p>
+          <a href="https://kvirnby.example/latt-las">{text.easyRead}</a>
+        </p>
+        <p>
+          <a href="https://kvirnby.example/fi" lang="fi" hrefLang="fi">
+            {text.otherLanguage}
+          </a>
+        </p>
+        <div className="kv-not-prose">
+          <div className="kv-button-group">
+            <Button className="kv-button--primary">{text.apply}</Button>
+          </div>
         </div>
-      </div>
-      <p>
-        <small>{text.updated(<time dateTime="2026-09-14">{date.format(updatedDate)}</time>)}</small>
-      </p>
-    </article>
+        <p>
+          <small>
+            {text.updated(<time dateTime="2026-09-14">{date.format(updatedDate)}</time>)}
+          </small>
+        </p>
+      </article>
+    </InEnglishWhenFallback>
   )
 }

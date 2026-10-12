@@ -308,20 +308,16 @@ describe('rendering', () => {
     ).toHaveLength(1)
   })
 
-  test('passes attributes through: id, lang and title on the consumer’s element', async () => {
+  test('passes attributes through: id and title on the consumer’s element', async () => {
     await render(
-      <Alert.Info data-testid="alert" id="deadline" lang="en" title="Info">
-        <Alert.Title id="deadline-title" lang="sv">
-          Sista dag
-        </Alert.Title>
+      <Alert.Info data-testid="alert" id="deadline" title="Info">
+        <Alert.Title id="deadline-title">Sista dag</Alert.Title>
       </Alert.Info>,
     )
     const root = page.getByTestId('alert')
     await expect.element(root).toHaveAttribute('id', 'deadline')
-    await expect.element(root).toHaveAttribute('lang', 'en')
     await expect.element(root).toHaveAttribute('title', 'Info')
     await expect.element(page.getByRole('heading')).toHaveAttribute('id', 'deadline-title')
-    await expect.element(page.getByRole('heading')).toHaveAttribute('lang', 'sv')
   })
 
   test('keeps its own class: a consumer className joins it instead of replacing it', async () => {

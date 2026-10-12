@@ -1,12 +1,15 @@
 'use client'
 import { Badge } from '@kvirn-ui/react'
 import { useBadgeTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function DefaultBadge() {
-  const { texts, textLang } = useBadgeTexts()
+  const { texts, isFallback } = useBadgeTexts()
   return (
-    <p lang={textLang}>
-      {texts.application} <Badge>{texts.draft}</Badge>
-    </p>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <p>
+        {texts.application} <Badge>{texts.draft}</Badge>
+      </p>
+    </InEnglishWhenFallback>
   )
 }

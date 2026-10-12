@@ -1,4 +1,6 @@
+import { fi } from '@kvirn-ui/i18n/fi'
 import { Icon, Link, Navigation } from '@kvirn-ui/react'
+import { InLanguage } from '../../fixture-language.tsx'
 import contract from '../../../../../packages/react/src/navigation/navigation.a11y.md?raw'
 import guide from '../../../../../packages/react/src/navigation/navigation.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -279,18 +281,20 @@ export const LongFinnishGroupLabel: Story = {
     ),
   ],
   render: () => (
-    <Navigation.Root label="Päävalikko" lang="fi">
-      <Navigation.List>
-        <Navigation.Item>
-          <Navigation.Label>Rakentaminen, ympäristö ja kiinteistöasiat</Navigation.Label>
-          <Navigation.List>
-            <Navigation.Item>
-              <Link.Root href="#rakennuslupa">Rakennus- ja toimenpidelupahakemukset</Link.Root>
-            </Navigation.Item>
-          </Navigation.List>
-        </Navigation.Item>
-      </Navigation.List>
-    </Navigation.Root>
+    <InLanguage locale="fi" messages={fi}>
+      <Navigation.Root label="Päävalikko">
+        <Navigation.List>
+          <Navigation.Item>
+            <Navigation.Label>Rakentaminen, ympäristö ja kiinteistöasiat</Navigation.Label>
+            <Navigation.List>
+              <Navigation.Item>
+                <Link.Root href="#rakennuslupa">Rakennus- ja toimenpidelupahakemukset</Link.Root>
+              </Navigation.Item>
+            </Navigation.List>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
+    </InLanguage>
   ),
   play: async ({ canvas }) => {
     await expect(
@@ -508,23 +512,25 @@ export const LongFinnishText: Story = {
     ),
   ],
   render: ({ label }) => (
-    <Navigation.Root label={label} lang="fi">
-      <Navigation.List>
-        <Navigation.Item>
-          <Link.Root href="#alku">Alku</Link.Root>
-        </Navigation.Item>
-        <Navigation.Item>
-          <Link.Root href="#rakentaminen">Rakentaminen ja asuminen</Link.Root>
-          <Navigation.List>
-            <Navigation.Item>
-              <Link.Root href="#rakennuslupa" current="page">
-                Rakennus- ja toimenpidelupahakemuksen liitteet
-              </Link.Root>
-            </Navigation.Item>
-          </Navigation.List>
-        </Navigation.Item>
-      </Navigation.List>
-    </Navigation.Root>
+    <InLanguage locale="fi" messages={fi}>
+      <Navigation.Root label={label}>
+        <Navigation.List>
+          <Navigation.Item>
+            <Link.Root href="#alku">Alku</Link.Root>
+          </Navigation.Item>
+          <Navigation.Item>
+            <Link.Root href="#rakentaminen">Rakentaminen ja asuminen</Link.Root>
+            <Navigation.List>
+              <Navigation.Item>
+                <Link.Root href="#rakennuslupa" current="page">
+                  Rakennus- ja toimenpidelupahakemuksen liitteet
+                </Link.Root>
+              </Navigation.Item>
+            </Navigation.List>
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
+    </InLanguage>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('navigation', { name: 'Päävalikko' })).toBeVisible()

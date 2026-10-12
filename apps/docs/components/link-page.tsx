@@ -143,7 +143,7 @@ export function LinkPage({
           <UseCase
             id="other-language"
             title="A link to a page in another language"
-            why="Set lang on the link text, so a screen reader pronounces it in that language, and hrefLang on where it goes."
+            why="Wrap the link in your own element with lang, so a screen reader pronounces the text in that language, and set hrefLang on where it goes."
             code={sources['other-language']}
           >
             <OtherLanguage />

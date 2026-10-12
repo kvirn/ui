@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Card, Field, Icon, Listbox } from '@kvirn-ui/react'
 import { useMemo, useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
@@ -221,828 +222,150 @@ export function MunicipalityField() {
  * messages.
  */
 export function KeyboardForm({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
+  const { text, isFallback } = choiceTextsFor(locale)
   const extra = extraTextsFor(locale)
   return (
-    <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
-      <div className="kv-button-group">
-        <Button type="button">Före</Button>
-      </div>
-      <Field.Root required controlId="municipality">
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="never"
-          items={municipalitiesWithClosed}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          isItemDisabled={(municipality) => municipality.disabled === true}
-          name="municipality"
-        >
-          <Listbox.Trigger>
-            <Listbox.Value placeholder={text.municipalityPlaceholder} />
-          </Listbox.Trigger>
-          <Listbox.Popup>
-            <Listbox.List>
-              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-            </Listbox.List>
-            <Listbox.Empty />
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>
-      <Field.Root required disabled controlId="closed">
-        <Field.Label>{text.longSelectLabel}</Field.Label>
-        <Listbox.Root
-          native="never"
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          name="disabled"
-        >
-          <Listbox.Trigger>
-            <Listbox.Value placeholder={text.municipalityPlaceholder} />
-          </Listbox.Trigger>
-          <Listbox.Popup>
-            <Listbox.List>
-              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-            </Listbox.List>
-            <Listbox.Empty />
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>
-      <Field.Root required controlId="several">
-        <Field.Label>{extra.several}</Field.Label>
-        <Listbox.Root
-          native="never"
-          multiple
-          items={municipalitiesWithClosed}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          isItemDisabled={(municipality) => municipality.disabled === true}
-          name="several"
-        >
-          <Listbox.Trigger>
-            <Listbox.Value placeholder={extra.severalPlaceholder} />
-          </Listbox.Trigger>
-          <Listbox.Popup>
-            <Listbox.List>
-              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-            </Listbox.List>
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-    </form>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form className="kv-story-form" noValidate onSubmit={(e) => e.preventDefault()}>
+        <div className="kv-button-group">
+          <Button type="button">Före</Button>
+        </div>
+        <Field.Root required controlId="municipality">
+          <Field.Label>{text.municipality}</Field.Label>
+          <Listbox.Root
+            native="never"
+            items={municipalitiesWithClosed}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            isItemDisabled={(municipality) => municipality.disabled === true}
+            name="municipality"
+          >
+            <Listbox.Trigger>
+              <Listbox.Value placeholder={text.municipalityPlaceholder} />
+            </Listbox.Trigger>
+            <Listbox.Popup>
+              <Listbox.List>
+                {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+              </Listbox.List>
+              <Listbox.Empty />
+            </Listbox.Popup>
+          </Listbox.Root>
+        </Field.Root>
+        <Field.Root required disabled controlId="closed">
+          <Field.Label>{text.longSelectLabel}</Field.Label>
+          <Listbox.Root
+            native="never"
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            name="disabled"
+          >
+            <Listbox.Trigger>
+              <Listbox.Value placeholder={text.municipalityPlaceholder} />
+            </Listbox.Trigger>
+            <Listbox.Popup>
+              <Listbox.List>
+                {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+              </Listbox.List>
+              <Listbox.Empty />
+            </Listbox.Popup>
+          </Listbox.Root>
+        </Field.Root>
+        <Field.Root required controlId="several">
+          <Field.Label>{extra.several}</Field.Label>
+          <Listbox.Root
+            native="never"
+            multiple
+            items={municipalitiesWithClosed}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            isItemDisabled={(municipality) => municipality.disabled === true}
+            name="several"
+          >
+            <Listbox.Trigger>
+              <Listbox.Value placeholder={extra.severalPlaceholder} />
+            </Listbox.Trigger>
+            <Listbox.Popup>
+              <Listbox.List>
+                {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+              </Listbox.List>
+            </Listbox.Popup>
+          </Listbox.Root>
+        </Field.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
+      </form>
+    </InEnglishWhenFallback>
   )
 }
 
 /** A chosen option shows in the closed trigger: `defaultValue` is its key. */
 export function SelectedMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
+  const { text, isFallback } = choiceTextsFor(locale)
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="never"
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultValue="malmö"
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-          <Listbox.Empty />
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="never"
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          defaultValue="malmö"
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+            </Listbox.List>
+            <Listbox.Empty />
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
 /** Open from the start with `defaultOpen`, with the chosen option marked. */
 export function OpenMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
+  const { text, isFallback } = choiceTextsFor(locale)
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="never"
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultValue="malmö"
-        defaultOpen
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-          <Listbox.Empty />
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="never"
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          defaultValue="malmö"
+          defaultOpen
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+            </Listbox.List>
+            <Listbox.Empty />
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
 /** The Field's `Field.Prose` is the trigger's description. */
 export function MunicipalityWithDescription({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
+  const { text, isFallback } = choiceTextsFor(locale)
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Field.Prose>
-        <p>{text.municipalityHint}</p>
-      </Field.Prose>
-      <Listbox.Root
-        native="never"
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-          <Listbox.Empty />
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/** Optional: a Field without `required`. Its label says so, as for every field that isn't required. */
-export function OptionalMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <Field.Root lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="never"
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-          <Listbox.Empty />
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/** Invalid: `invalid` on the Field, and the message in `Field.ErrorMessage` under the listbox. */
-export function InvalidMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <Field.Root required invalid lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Field.Prose>
-        <p>{text.municipalityHint}</p>
-      </Field.Prose>
-      <Listbox.Root
-        native="never"
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-          <Listbox.Empty />
-        </Listbox.Popup>
-      </Listbox.Root>
-      <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
-    </Field.Root>
-  )
-}
-
-/** Disabled with `disabled` on the Field, which disables the listbox too. */
-export function DisabledMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <Field.Root required disabled lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="never"
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultValue="malmö"
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-          <Listbox.Empty />
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/** One option that can't be chosen: `isItemDisabled` says which. */
-export function MunicipalityWithClosedOption({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="never"
-        items={municipalitiesWithClosed}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        isItemDisabled={(municipality) => municipality.disabled === true}
-        defaultOpen
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-          <Listbox.Empty />
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/** Groups: `groups` instead of `items`. Each is a `role="group"` named by its label. */
-export function GroupedMunicipalities({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const groups = useMunicipalityGroups(text)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="never"
-        groups={groups}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultOpen
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: { code: string; name: string }) => (
-              <Listbox.Option item={municipality} />
-            )}
-          </Listbox.List>
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/** Several choices: `multiple`. The popup stays open, each option toggles, and the value is an array of keys. */
-export function SeveralMunicipalities({ locale }: { locale: FormLocale }) {
-  const { lang } = choiceTextsFor(locale)
-  const extra = extraTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{extra.several}</Field.Label>
-      <Listbox.Root
-        native="never"
-        multiple
-        items={municipalitiesWithClosed}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        isItemDisabled={(municipality) => municipality.disabled === true}
-        defaultValue={['malmö', 'uppsala']}
-        defaultOpen
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={extra.severalPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/** A long list scrolls inside the popup, which is never taller than the room that is left. */
-export function LongMunicipalityList({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="never"
-        items={longList}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultOpen
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-          <Listbox.Empty />
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/** `virtualize` renders only the options in view, for a flat list of thousands. */
-export function VirtualizedPlaces({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <Field.Root required lang={lang} controlId="municipality">
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="never"
-        virtualize
-        items={virtualizedPlaces}
-        itemToString={(place) => place.name}
-        itemToKey={(place) => place.code}
-        defaultOpen
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(place: VirtualizedPlace) => <Listbox.Option item={place} />}
-          </Listbox.List>
-          <Listbox.Empty />
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * A rich option with the optional parts: an icon, the text that names the option, a second line
- * that describes it and a mark for the chosen one. The icon and the mark are decorative, so a
- * screen reader reads "Göteborg", then the county as its description.
- */
-export function RichMunicipalities({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="never"
-        items={richMunicipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultOpen
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => (
-              <Listbox.Option item={municipality}>
-                <Listbox.OptionIcon>
-                  <Icon name="document" />
-                </Listbox.OptionIcon>
-                <Listbox.OptionText>{municipality.name}</Listbox.OptionText>
-                <Listbox.OptionDescription>{municipality.county}</Listbox.OptionDescription>
-                <Listbox.OptionIndicator />
-              </Listbox.Option>
-            )}
-          </Listbox.List>
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * Your own markup, with none of the parts: any element goes inside `Listbox.Option`, and the name
- * a screen reader reads is its text content. The trigger shows the chosen option's own markup
- * through a function child of `Listbox.Value`.
- */
-export function OwnMarkupMunicipalities({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="never"
-        items={richMunicipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultValue="stockholm"
-        defaultOpen
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder}>
-            {(chosen: readonly Municipality[]) =>
-              chosen.map((municipality) => (
-                <span key={municipality.code} style={{ display: 'inline-flex', gap: '0.5rem' }}>
-                  <Icon name="document" />
-                  {municipality.name}
-                </span>
-              ))
-            }
-          </Listbox.Value>
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => (
-              <Listbox.Option item={municipality}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <Icon name="document" />
-                  <div>
-                    <strong>{municipality.name}</strong>
-                    <div>{municipality.county}</div>
-                  </div>
-                </div>
-              </Listbox.Option>
-            )}
-          </Listbox.List>
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/** No options: `Listbox.Empty` says so in the locale. */
-export function NoMunicipalities({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="never"
-        items={emptyList}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultOpen
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-          <Listbox.Empty />
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * The chosen options as your own text: a function child of `Listbox.Value` gets the chosen items,
- * here to show a count instead of a long list of names. The trigger's name is still the Field's
- * label followed by this text.
- */
-export function SeveralMunicipalitiesAsCount({ locale }: { locale: FormLocale }) {
-  const { lang } = choiceTextsFor(locale)
-  const extra = extraTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{extra.several}</Field.Label>
-      <Listbox.Root
-        native="never"
-        multiple
-        items={municipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultValue={['malmö', 'uppsala']}
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={extra.severalPlaceholder}>
-            {(chosen: readonly Municipality[]) => extra.selectedCount(chosen.length)}
-          </Listbox.Value>
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * Your own empty text: `messages` on the Root replaces the default "Inga resultat" that
- * `Listbox.Empty` shows, for this listbox only. A provider's `messages` change it for every one.
- */
-export function MunicipalitiesWithOwnEmptyText({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const extra = extraTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="never"
-        items={emptyList}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        messages={{ noResults: extra.noneMessage }}
-        defaultOpen
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-          <Listbox.Empty />
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * The popup above the trigger, with your own gap and edge distance: `placement` (a side, then
- * `-start`, `-center` or `-end`), `offset` and `padding` in pixels. It flips to the other side
- * when there is no room, and `data-placement` says which side it is on.
- */
-export function MunicipalityPlacedAbove({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.municipality}</Field.Label>
-      <Listbox.Root
-        native="never"
-        items={fewMunicipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        placement="top-start"
-        offset={12}
-        padding={16}
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * Controlled by your state: the popup shows the `open` it is given, and `onOpenChange(open, { reason })`
- * reports every request to open or close and why. The printed line is the last one. With `open`
- * set, nothing opens or closes until you change it.
- */
-export function ControlledOpenMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const [open, setOpen] = useState(false)
-  const [reason, setReason] = useState('–')
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Button type="button">Före</Button>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="never"
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          open={open}
-          onOpenChange={(nextOpen, details) => {
-            setOpen(nextOpen)
-            setReason(details.reason)
-          }}
-        >
-          <Listbox.Trigger>
-            <Listbox.Value placeholder={text.municipalityPlaceholder} />
-          </Listbox.Trigger>
-          <Listbox.Popup>
-            <Listbox.List>
-              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-            </Listbox.List>
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="open">
-        open: {String(open)}, reason: {reason}
-      </p>
-    </div>
-  )
-}
-
-/** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11), and the popup its own edge. */
-export function MunicipalityInCard({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <Card.Root lang={lang}>
-      <Field.Root required invalid>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="never"
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          defaultOpen
-        >
-          <Listbox.Trigger>
-            <Listbox.Value placeholder={text.municipalityPlaceholder} />
-          </Listbox.Trigger>
-          <Listbox.Popup>
-            <Listbox.List>
-              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-            </Listbox.List>
-            <Listbox.Empty />
-          </Listbox.Popup>
-        </Listbox.Root>
-        <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
-      </Field.Root>
-    </Card.Root>
-  )
-}
-
-/** Staff density: `kv-compact` on a parent gives 32px options and trigger from 64rem. */
-export function CompactMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <div className="kv-compact" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="never"
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          defaultOpen
-        >
-          <Listbox.Trigger>
-            <Listbox.Value placeholder={text.municipalityPlaceholder} />
-          </Listbox.Trigger>
-          <Listbox.Popup>
-            <Listbox.List>
-              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-            </Listbox.List>
-            <Listbox.Empty />
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>
-    </div>
-  )
-}
-
-/** A long label and a long option wrap in a narrow column: nothing overflows. */
-export function LongFinnishMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.longSelectLabel}</Field.Label>
-      <Listbox.Root
-        native="never"
-        items={longNameMunicipalities}
-        itemToString={(municipality) => municipality.name}
-        itemToKey={(municipality) => municipality.code}
-        defaultValue="long"
-        defaultOpen
-      >
-        <Listbox.Trigger>
-          <Listbox.Value placeholder={text.municipalityPlaceholder} />
-        </Listbox.Trigger>
-        <Listbox.Popup>
-          <Listbox.List>
-            {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-          </Listbox.List>
-          <Listbox.Empty />
-        </Listbox.Popup>
-      </Listbox.Root>
-    </Field.Root>
-  )
-}
-
-/**
- * Controlled: the value lives in this `useState`, where your form library's state would live.
- * The listbox shows the `value` it is given and reports changes through `onValueChange`.
- */
-export function ControlledMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const [value, setValue] = useState<string | null>('göteborg')
-  return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="never"
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          value={value}
-          onValueChange={setValue}
-        >
-          <Listbox.Trigger>
-            <Listbox.Value placeholder={text.municipalityPlaceholder} />
-          </Listbox.Trigger>
-          <Listbox.Popup>
-            <Listbox.List>
-              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-            </Listbox.List>
-            <Listbox.Empty />
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="mirror">
-        {text.youChose}: {value ?? '–'}
-      </p>
-    </div>
-  )
-}
-
-/** A plain `<form>`: no `value` and no handlers. The form's `FormData` has the key by `name` on submit. */
-export function PlainFormMunicipality({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  const [sent, setSent] = useState<string | undefined>()
-  return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const value = new FormData(event.currentTarget).get('municipality')
-        setSent(typeof value === 'string' ? value : '')
-      }}
-    >
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="never"
-          items={municipalities}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          name="municipality"
-          defaultValue="göteborg"
-        >
-          <Listbox.Trigger>
-            <Listbox.Value placeholder={text.municipalityPlaceholder} />
-          </Listbox.Trigger>
-          <Listbox.Popup>
-            <Listbox.List>
-              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-            </Listbox.List>
-            <Listbox.Empty />
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {text.sent}: {sent}
-        </p>
-      )}
-    </form>
-  )
-}
-
-/** Every state in one column: described, invalid, optional and disabled. The popup is open on the first. */
-export function MunicipalityStates({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
-  return (
-    <div className="kv-story-form" lang={lang}>
+    <InEnglishWhenFallback isFallback={isFallback}>
       <Field.Root required>
         <Field.Label>{text.municipality}</Field.Label>
         <Field.Prose>
@@ -1050,28 +373,6 @@ export function MunicipalityStates({ locale }: { locale: FormLocale }) {
         </Field.Prose>
         <Listbox.Root
           native="never"
-          items={municipalitiesWithClosed.slice(0, 8)}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          isItemDisabled={(municipality) => municipality.disabled === true}
-          defaultValue="ale"
-          defaultOpen
-        >
-          <Listbox.Trigger>
-            <Listbox.Value placeholder={text.municipalityPlaceholder} />
-          </Listbox.Trigger>
-          <Listbox.Popup>
-            <Listbox.List>
-              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
-            </Listbox.List>
-            <Listbox.Empty />
-          </Listbox.Popup>
-        </Listbox.Root>
-      </Field.Root>
-      <Field.Root required invalid>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="never"
           items={municipalities}
           itemToString={(municipality) => municipality.name}
           itemToKey={(municipality) => municipality.code}
@@ -1086,8 +387,16 @@ export function MunicipalityStates({ locale }: { locale: FormLocale }) {
             <Listbox.Empty />
           </Listbox.Popup>
         </Listbox.Root>
-        <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
       </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** Optional: a Field without `required`. Its label says so, as for every field that isn't required. */
+export function OptionalMunicipality({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
       <Field.Root>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -1107,6 +416,47 @@ export function MunicipalityStates({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** Invalid: `invalid` on the Field, and the message in `Field.ErrorMessage` under the listbox. */
+export function InvalidMunicipality({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required invalid>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Field.Prose>
+          <p>{text.municipalityHint}</p>
+        </Field.Prose>
+        <Listbox.Root
+          native="never"
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+            </Listbox.List>
+            <Listbox.Empty />
+          </Listbox.Popup>
+        </Listbox.Root>
+        <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** Disabled with `disabled` on the Field, which disables the listbox too. */
+export function DisabledMunicipality({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
       <Field.Root required disabled>
         <Field.Label>{text.municipality}</Field.Label>
         <Listbox.Root
@@ -1127,7 +477,707 @@ export function MunicipalityStates({ locale }: { locale: FormLocale }) {
           </Listbox.Popup>
         </Listbox.Root>
       </Field.Root>
-    </div>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** One option that can't be chosen: `isItemDisabled` says which. */
+export function MunicipalityWithClosedOption({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="never"
+          items={municipalitiesWithClosed}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          isItemDisabled={(municipality) => municipality.disabled === true}
+          defaultOpen
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+            </Listbox.List>
+            <Listbox.Empty />
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** Groups: `groups` instead of `items`. Each is a `role="group"` named by its label. */
+export function GroupedMunicipalities({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  const groups = useMunicipalityGroups(text)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="never"
+          groups={groups}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          defaultOpen
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: { code: string; name: string }) => (
+                <Listbox.Option item={municipality} />
+              )}
+            </Listbox.List>
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** Several choices: `multiple`. The popup stays open, each option toggles, and the value is an array of keys. */
+export function SeveralMunicipalities({ locale }: { locale: FormLocale }) {
+  const { isFallback } = choiceTextsFor(locale)
+  const extra = extraTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{extra.several}</Field.Label>
+        <Listbox.Root
+          native="never"
+          multiple
+          items={municipalitiesWithClosed}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          isItemDisabled={(municipality) => municipality.disabled === true}
+          defaultValue={['malmö', 'uppsala']}
+          defaultOpen
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={extra.severalPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+            </Listbox.List>
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** A long list scrolls inside the popup, which is never taller than the room that is left. */
+export function LongMunicipalityList({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="never"
+          items={longList}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          defaultOpen
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+            </Listbox.List>
+            <Listbox.Empty />
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** `virtualize` renders only the options in view, for a flat list of thousands. */
+export function VirtualizedPlaces({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required controlId="municipality">
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="never"
+          virtualize
+          items={virtualizedPlaces}
+          itemToString={(place) => place.name}
+          itemToKey={(place) => place.code}
+          defaultOpen
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(place: VirtualizedPlace) => <Listbox.Option item={place} />}
+            </Listbox.List>
+            <Listbox.Empty />
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * A rich option with the optional parts: an icon, the text that names the option, a second line
+ * that describes it and a mark for the chosen one. The icon and the mark are decorative, so a
+ * screen reader reads "Göteborg", then the county as its description.
+ */
+export function RichMunicipalities({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="never"
+          items={richMunicipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          defaultOpen
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => (
+                <Listbox.Option item={municipality}>
+                  <Listbox.OptionIcon>
+                    <Icon name="document" />
+                  </Listbox.OptionIcon>
+                  <Listbox.OptionText>{municipality.name}</Listbox.OptionText>
+                  <Listbox.OptionDescription>{municipality.county}</Listbox.OptionDescription>
+                  <Listbox.OptionIndicator />
+                </Listbox.Option>
+              )}
+            </Listbox.List>
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * Your own markup, with none of the parts: any element goes inside `Listbox.Option`, and the name
+ * a screen reader reads is its text content. The trigger shows the chosen option's own markup
+ * through a function child of `Listbox.Value`.
+ */
+export function OwnMarkupMunicipalities({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="never"
+          items={richMunicipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          defaultValue="stockholm"
+          defaultOpen
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder}>
+              {(chosen: readonly Municipality[]) =>
+                chosen.map((municipality) => (
+                  <span key={municipality.code} style={{ display: 'inline-flex', gap: '0.5rem' }}>
+                    <Icon name="document" />
+                    {municipality.name}
+                  </span>
+                ))
+              }
+            </Listbox.Value>
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => (
+                <Listbox.Option item={municipality}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <Icon name="document" />
+                    <div>
+                      <strong>{municipality.name}</strong>
+                      <div>{municipality.county}</div>
+                    </div>
+                  </div>
+                </Listbox.Option>
+              )}
+            </Listbox.List>
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** No options: `Listbox.Empty` says so in the locale. */
+export function NoMunicipalities({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="never"
+          items={emptyList}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          defaultOpen
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+            </Listbox.List>
+            <Listbox.Empty />
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * The chosen options as your own text: a function child of `Listbox.Value` gets the chosen items,
+ * here to show a count instead of a long list of names. The trigger's name is still the Field's
+ * label followed by this text.
+ */
+export function SeveralMunicipalitiesAsCount({ locale }: { locale: FormLocale }) {
+  const { isFallback } = choiceTextsFor(locale)
+  const extra = extraTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{extra.several}</Field.Label>
+        <Listbox.Root
+          native="never"
+          multiple
+          items={municipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          defaultValue={['malmö', 'uppsala']}
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={extra.severalPlaceholder}>
+              {(chosen: readonly Municipality[]) => extra.selectedCount(chosen.length)}
+            </Listbox.Value>
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+            </Listbox.List>
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * Your own empty text: `messages` on the Root replaces the default "Inga resultat" that
+ * `Listbox.Empty` shows, for this listbox only. A provider's `messages` change it for every one.
+ */
+export function MunicipalitiesWithOwnEmptyText({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  const extra = extraTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="never"
+          items={emptyList}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          messages={{ noResults: extra.noneMessage }}
+          defaultOpen
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+            </Listbox.List>
+            <Listbox.Empty />
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * The popup above the trigger, with your own gap and edge distance: `placement` (a side, then
+ * `-start`, `-center` or `-end`), `offset` and `padding` in pixels. It flips to the other side
+ * when there is no room, and `data-placement` says which side it is on.
+ */
+export function MunicipalityPlacedAbove({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.municipality}</Field.Label>
+        <Listbox.Root
+          native="never"
+          items={fewMunicipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          placement="top-start"
+          offset={12}
+          padding={16}
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+            </Listbox.List>
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * Controlled by your state: the popup shows the `open` it is given, and `onOpenChange(open, { reason })`
+ * reports every request to open or close and why. The printed line is the last one. With `open`
+ * set, nothing opens or closes until you change it.
+ */
+export function ControlledOpenMunicipality({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  const [open, setOpen] = useState(false)
+  const [reason, setReason] = useState('–')
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Button type="button">Före</Button>
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Listbox.Root
+            native="never"
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            open={open}
+            onOpenChange={(nextOpen, details) => {
+              setOpen(nextOpen)
+              setReason(details.reason)
+            }}
+          >
+            <Listbox.Trigger>
+              <Listbox.Value placeholder={text.municipalityPlaceholder} />
+            </Listbox.Trigger>
+            <Listbox.Popup>
+              <Listbox.List>
+                {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+              </Listbox.List>
+            </Listbox.Popup>
+          </Listbox.Root>
+        </Field.Root>
+        <p className="kv-story-form-output" data-testid="open">
+          open: {String(open)}, reason: {reason}
+        </p>
+      </div>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** In a card: the edge keeps 3:1 against `surface-raised` (1.4.11), and the popup its own edge. */
+export function MunicipalityInCard({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Card.Root>
+        <Field.Root required invalid>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Listbox.Root
+            native="never"
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            defaultOpen
+          >
+            <Listbox.Trigger>
+              <Listbox.Value placeholder={text.municipalityPlaceholder} />
+            </Listbox.Trigger>
+            <Listbox.Popup>
+              <Listbox.List>
+                {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+              </Listbox.List>
+              <Listbox.Empty />
+            </Listbox.Popup>
+          </Listbox.Root>
+          <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
+        </Field.Root>
+      </Card.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** Staff density: `kv-compact` on a parent gives 32px options and trigger from 64rem. */
+export function CompactMunicipality({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-compact">
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Listbox.Root
+            native="never"
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            defaultOpen
+          >
+            <Listbox.Trigger>
+              <Listbox.Value placeholder={text.municipalityPlaceholder} />
+            </Listbox.Trigger>
+            <Listbox.Popup>
+              <Listbox.List>
+                {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+              </Listbox.List>
+              <Listbox.Empty />
+            </Listbox.Popup>
+          </Listbox.Root>
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** A long label and a long option wrap in a narrow column: nothing overflows. */
+export function LongFinnishMunicipality({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.longSelectLabel}</Field.Label>
+        <Listbox.Root
+          native="never"
+          items={longNameMunicipalities}
+          itemToString={(municipality) => municipality.name}
+          itemToKey={(municipality) => municipality.code}
+          defaultValue="long"
+          defaultOpen
+        >
+          <Listbox.Trigger>
+            <Listbox.Value placeholder={text.municipalityPlaceholder} />
+          </Listbox.Trigger>
+          <Listbox.Popup>
+            <Listbox.List>
+              {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+            </Listbox.List>
+            <Listbox.Empty />
+          </Listbox.Popup>
+        </Listbox.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * Controlled: the value lives in this `useState`, where your form library's state would live.
+ * The listbox shows the `value` it is given and reports changes through `onValueChange`.
+ */
+export function ControlledMunicipality({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  const [value, setValue] = useState<string | null>('göteborg')
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Listbox.Root
+            native="never"
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            value={value}
+            onValueChange={setValue}
+          >
+            <Listbox.Trigger>
+              <Listbox.Value placeholder={text.municipalityPlaceholder} />
+            </Listbox.Trigger>
+            <Listbox.Popup>
+              <Listbox.List>
+                {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+              </Listbox.List>
+              <Listbox.Empty />
+            </Listbox.Popup>
+          </Listbox.Root>
+        </Field.Root>
+        <p className="kv-story-form-output" data-testid="mirror">
+          {text.youChose}: {value ?? '–'}
+        </p>
+      </div>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** A plain `<form>`: no `value` and no handlers. The form's `FormData` has the key by `name` on submit. */
+export function PlainFormMunicipality({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  const [sent, setSent] = useState<string | undefined>()
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form
+        className="kv-story-form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          const value = new FormData(event.currentTarget).get('municipality')
+          setSent(typeof value === 'string' ? value : '')
+        }}
+      >
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Listbox.Root
+            native="never"
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            name="municipality"
+            defaultValue="göteborg"
+          >
+            <Listbox.Trigger>
+              <Listbox.Value placeholder={text.municipalityPlaceholder} />
+            </Listbox.Trigger>
+            <Listbox.Popup>
+              <Listbox.List>
+                {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+              </Listbox.List>
+              <Listbox.Empty />
+            </Listbox.Popup>
+          </Listbox.Root>
+        </Field.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
+        {sent === undefined ? null : (
+          <p className="kv-story-form-output" data-testid="sent">
+            {text.sent}: {sent}
+          </p>
+        )}
+      </form>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** Every state in one column: described, invalid, optional and disabled. The popup is open on the first. */
+export function MunicipalityStates({ locale }: { locale: FormLocale }) {
+  const { text, isFallback } = choiceTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Field.Prose>
+            <p>{text.municipalityHint}</p>
+          </Field.Prose>
+          <Listbox.Root
+            native="never"
+            items={municipalitiesWithClosed.slice(0, 8)}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            isItemDisabled={(municipality) => municipality.disabled === true}
+            defaultValue="ale"
+            defaultOpen
+          >
+            <Listbox.Trigger>
+              <Listbox.Value placeholder={text.municipalityPlaceholder} />
+            </Listbox.Trigger>
+            <Listbox.Popup>
+              <Listbox.List>
+                {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+              </Listbox.List>
+              <Listbox.Empty />
+            </Listbox.Popup>
+          </Listbox.Root>
+        </Field.Root>
+        <Field.Root required invalid>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Listbox.Root
+            native="never"
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+          >
+            <Listbox.Trigger>
+              <Listbox.Value placeholder={text.municipalityPlaceholder} />
+            </Listbox.Trigger>
+            <Listbox.Popup>
+              <Listbox.List>
+                {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+              </Listbox.List>
+              <Listbox.Empty />
+            </Listbox.Popup>
+          </Listbox.Root>
+          <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Listbox.Root
+            native="never"
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+          >
+            <Listbox.Trigger>
+              <Listbox.Value placeholder={text.municipalityPlaceholder} />
+            </Listbox.Trigger>
+            <Listbox.Popup>
+              <Listbox.List>
+                {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+              </Listbox.List>
+              <Listbox.Empty />
+            </Listbox.Popup>
+          </Listbox.Root>
+        </Field.Root>
+        <Field.Root required disabled>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Listbox.Root
+            native="never"
+            items={municipalities}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            defaultValue="malmö"
+          >
+            <Listbox.Trigger>
+              <Listbox.Value placeholder={text.municipalityPlaceholder} />
+            </Listbox.Trigger>
+            <Listbox.Popup>
+              <Listbox.List>
+                {(municipality: Municipality) => <Listbox.Option item={municipality} />}
+              </Listbox.List>
+              <Listbox.Empty />
+            </Listbox.Popup>
+          </Listbox.Root>
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -1142,79 +1192,81 @@ export function MunicipalityStates({ locale }: { locale: FormLocale }) {
  * message, and a disabled one. The examples share a label, so each has its own `name`.
  */
 export function NativeMunicipalities({ locale }: { locale: FormLocale }) {
-  const { text, lang } = choiceTextsFor(locale)
+  const { text, isFallback } = choiceTextsFor(locale)
   const items = useNativeMunicipalities(text)
   const groups = useMunicipalityGroups(text)
   return (
-    <form className="kv-story-form" lang={lang} noValidate onSubmit={(e) => e.preventDefault()}>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="always"
-          items={items}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          placeholder={text.municipalityPlaceholder}
-          name="municipality"
-          autoComplete="address-level2"
-        />
-      </Field.Root>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="always"
-          items={items}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          placeholder={text.municipalityPlaceholder}
-          name="chosen"
-          defaultValue="stockholm"
-        />
-      </Field.Root>
-      <Field.Root required>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Listbox.Root
-          native="always"
-          groups={groups}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          placeholder={text.municipalityPlaceholder}
-          name="grouped"
-        />
-      </Field.Root>
-      <Field.Root required invalid>
-        <Field.Label>{text.municipality}</Field.Label>
-        <Field.Prose>
-          <p>{text.municipalityHint}</p>
-        </Field.Prose>
-        <Listbox.Root
-          native="always"
-          items={items}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          placeholder={text.municipalityPlaceholder}
-          name="invalid"
-        />
-        <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root required disabled>
-        <Field.Label>{text.longSelectLabel}</Field.Label>
-        <Listbox.Root
-          native="always"
-          items={items}
-          itemToString={(municipality) => municipality.name}
-          itemToKey={(municipality) => municipality.code}
-          placeholder={text.municipalityPlaceholder}
-          name="disabled"
-          defaultValue="malmo"
-        />
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-    </form>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form className="kv-story-form" noValidate onSubmit={(e) => e.preventDefault()}>
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Listbox.Root
+            native="always"
+            items={items}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            placeholder={text.municipalityPlaceholder}
+            name="municipality"
+            autoComplete="address-level2"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Listbox.Root
+            native="always"
+            items={items}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            placeholder={text.municipalityPlaceholder}
+            name="chosen"
+            defaultValue="stockholm"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Listbox.Root
+            native="always"
+            groups={groups}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            placeholder={text.municipalityPlaceholder}
+            name="grouped"
+          />
+        </Field.Root>
+        <Field.Root required invalid>
+          <Field.Label>{text.municipality}</Field.Label>
+          <Field.Prose>
+            <p>{text.municipalityHint}</p>
+          </Field.Prose>
+          <Listbox.Root
+            native="always"
+            items={items}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            placeholder={text.municipalityPlaceholder}
+            name="invalid"
+          />
+          <Field.ErrorMessage>{text.municipalityError}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root required disabled>
+          <Field.Label>{text.longSelectLabel}</Field.Label>
+          <Listbox.Root
+            native="always"
+            items={items}
+            itemToString={(municipality) => municipality.name}
+            itemToKey={(municipality) => municipality.code}
+            placeholder={text.municipalityPlaceholder}
+            name="disabled"
+            defaultValue="malmo"
+          />
+        </Field.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
+      </form>
+    </InEnglishWhenFallback>
   )
 }
 

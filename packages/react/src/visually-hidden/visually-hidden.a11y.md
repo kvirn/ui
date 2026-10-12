@@ -12,7 +12,7 @@ VisuallyHidden is a span with a class, so the theme can clip it. It adds no role
 
 | Part           | Element / role     | ARIA                     | Notes                                                                                                                                                                                                              |
 | -------------- | ------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| VisuallyHidden | `<span>` → no role | none                     | `class="kv-visually-hidden"`. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged. The text is yours                                                                                       |
+| VisuallyHidden | `<span>` → no role | none                     | `class="kv-visually-hidden"`. Attributes (`id`, `aria-*`) and the ref reach the element unchanged. The text is yours                                                                                               |
 | VisuallyHidden | `as`               | the chosen element's own | One element, chosen with a string. `as="h2"` gives a heading nobody sees. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:VisuallyHidden:<tag>`) and renders the default element. |
 
 ## Allowed elements
@@ -46,7 +46,7 @@ VisuallyHidden has no strings: its text is the consumer's. It is read as part of
 
 ## Consumer responsibilities
 
-- **Write the text in the page's language,** or set `lang` on the element (3.1.2).
+- **Write the text in the page's language,** or put it in a nested `KvirnProvider` with `useLocale().localeProps` on your own element (3.1.2).
 - **Don't hide what everyone needs.** Text that only a screen reader gets is for context (a count, a status word, a name), not for instructions sighted users also need (1.3.3).
 - **Keep it out of a focusable element's name only when the name is complete** without it (2.5.3 Label in Name: the visible label must be in the name).
 

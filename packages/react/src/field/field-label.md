@@ -23,5 +23,5 @@ The visible label of one control: a native `<label for>` that names the control,
 ## Notes
 
 - Write the label as the question or the name of the answer: "Telefonnummer", not "Fyll i ditt telefonnummer".
-- Put a `lang` on a label whose text is in another language (3.1.2).
+- A label whose text is in another language goes in a nested `KvirnProvider` with `useLocale().localeProps` on your own element (3.1.2).
 - Examples and format hints go in a `Field.HelpText` ([Field.HelpText](field-help-text.md)), not in the label.

@@ -226,6 +226,11 @@ body {
   margin-block: var(--kv-space-4) 0;
 }
 
+/* Carries `lang` for English fallback example text without adding a box. */
+.docs-language-scope {
+  display: contents;
+}
+
 .docs-example-header {
   display: flex;
   flex-wrap: wrap;

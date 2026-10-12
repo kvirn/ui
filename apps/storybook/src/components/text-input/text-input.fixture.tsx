@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, masks, TextInput } from '@kvirn-ui/react'
 import type { TextInputChangeDetails } from '@kvirn-ui/react'
 import { useState } from 'react'
@@ -16,18 +17,20 @@ import { maskTextsFor } from '../mask/mask.fixture.tsx'
  * TextInput renders the `value` it's given and reports changes through `onValueChange`.
  */
 export function ControlledName({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const [value, setValue] = useState('')
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.name}</Field.Label>
-        <TextInput name="name" autoComplete="name" value={value} onValueChange={setValue} />
-      </Field.Root>
-      <p className="kv-story-form-output">
-        {text.youTyped}: {value}
-      </p>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root required>
+          <Field.Label>{text.name}</Field.Label>
+          <TextInput name="name" autoComplete="name" value={value} onValueChange={setValue} />
+        </Field.Root>
+        <p className="kv-story-form-output">
+          {text.youTyped}: {value}
+        </p>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -37,42 +40,43 @@ export function ControlledName({ locale }: { locale: FormLocale }) {
  * bubbles from replacing your messages.
  */
 export function NameAndEmailForm({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const data = new FormData(event.currentTarget)
-        setSent(
-          [data.get('name'), data.get('email')]
-            .filter((value) => typeof value === 'string')
-            .join(', '),
-        )
-      }}
-    >
-      <Field.Root required>
-        <Field.Label>{text.name}</Field.Label>
-        <TextInput name="name" autoComplete="name" />
-      </Field.Root>
-      <Field.Root required>
-        <Field.Label>{text.email}</Field.Label>
-        <TextInput name="email" type="email" autoComplete="email" />
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output">
-          {text.sent}: {sent}
-        </p>
-      )}
-    </form>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form
+        className="kv-story-form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          const data = new FormData(event.currentTarget)
+          setSent(
+            [data.get('name'), data.get('email')]
+              .filter((value) => typeof value === 'string')
+              .join(', '),
+          )
+        }}
+      >
+        <Field.Root required>
+          <Field.Label>{text.name}</Field.Label>
+          <TextInput name="name" autoComplete="name" />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.email}</Field.Label>
+          <TextInput name="email" type="email" autoComplete="email" />
+        </Field.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
+        {sent === undefined ? null : (
+          <p className="kv-story-form-output">
+            {text.sent}: {sent}
+          </p>
+        )}
+      </form>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -81,35 +85,39 @@ export function NameAndEmailForm({ locale }: { locale: FormLocale }) {
  * puts the hyphen in. The help text says the format, because the mask doesn't.
  */
 export function PersonalIdentityNumberField({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.personalIdentityNumber}</Field.Label>
-      <TextInput
-        name="personalIdentityNumber"
-        mask="personal-identity-number"
-        autoComplete="off"
-        className="kv-input--width-20"
-      />
-      <Field.HelpText>{text.personalIdentityNumberHint}</Field.HelpText>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.personalIdentityNumber}</Field.Label>
+        <TextInput
+          name="personalIdentityNumber"
+          mask="personal-identity-number"
+          autoComplete="off"
+          className="kv-input--width-20"
+        />
+        <Field.HelpText>{text.personalIdentityNumberHint}</Field.HelpText>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
 /** A Swedish postcode: text, so the space is inserted as the user types past it. */
 export function PostcodeField({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.postalCode}</Field.Label>
-      <TextInput
-        name="postalCode"
-        mask="postal-code"
-        autoComplete="postal-code"
-        className="kv-input--width-6"
-      />
-      <Field.HelpText>{text.postalCodeHint}</Field.HelpText>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.postalCode}</Field.Label>
+        <TextInput
+          name="postalCode"
+          mask="postal-code"
+          autoComplete="postal-code"
+          className="kv-input--width-6"
+        />
+        <Field.HelpText>{text.postalCodeHint}</Field.HelpText>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -119,18 +127,20 @@ export function PostcodeField({ locale }: { locale: FormLocale }) {
  * build masks outside React, or want the type of the mask itself.
  */
 export function ExplicitPostcodeField({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.postalCode}</Field.Label>
-      <TextInput
-        name="postalCode"
-        mask={masks.postalCode({ country: 'SE' })}
-        autoComplete="postal-code"
-        className="kv-input--width-6"
-      />
-      <Field.HelpText>{text.postalCodeHint}</Field.HelpText>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.postalCode}</Field.Label>
+        <TextInput
+          name="postalCode"
+          mask={masks.postalCode({ country: 'SE' })}
+          autoComplete="postal-code"
+          className="kv-input--width-6"
+        />
+        <Field.HelpText>{text.postalCodeHint}</Field.HelpText>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -140,19 +150,21 @@ export function ExplicitPostcodeField({ locale }: { locale: FormLocale }) {
  * is clear, and so the help text and the field never disagree.
  */
 export function StartDateField({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dateTextsFor(locale)
+  const { text, isFallback } = dateTextsFor(locale)
   const example = masks.date().withLocale(locale).format('2026-10-27')
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.oneFieldLabel}</Field.Label>
-      <TextInput
-        name="start"
-        mask={masks.date()}
-        autoComplete="off"
-        className="kv-input--width-10"
-      />
-      <Field.HelpText>{text.oneFieldHint(example)}</Field.HelpText>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.oneFieldLabel}</Field.Label>
+        <TextInput
+          name="start"
+          mask={masks.date()}
+          autoComplete="off"
+          className="kv-input--width-10"
+        />
+        <Field.HelpText>{text.oneFieldHint(example)}</Field.HelpText>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -161,19 +173,21 @@ export function StartDateField({ locale }: { locale: FormLocale }) {
  * number would drop. For an amount or a quantity, use NumberInput.
  */
 export function ReferenceNumberField({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.caseNumber}</Field.Label>
-      <TextInput
-        name="caseNumber"
-        mask={masks.digits()}
-        autoComplete="off"
-        defaultValue="004512"
-        className="kv-input--width-6 kv-input--numeric"
-      />
-      <Field.HelpText>{text.caseNumberHint}</Field.HelpText>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.caseNumber}</Field.Label>
+        <TextInput
+          name="caseNumber"
+          mask={masks.digits()}
+          autoComplete="off"
+          defaultValue="004512"
+          className="kv-input--width-6 kv-input--numeric"
+        />
+        <Field.HelpText>{text.caseNumberHint}</Field.HelpText>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -184,36 +198,38 @@ export function ReferenceNumberField({ locale }: { locale: FormLocale }) {
  * in a live region that is on the page before the message.
  */
 export function ChangeDetailsField({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   const [value, setValue] = useState('')
   const [details, setDetails] = useState<TextInputChangeDetails | undefined>(undefined)
   const rejected = details?.rejected ?? []
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.digits}</Field.Label>
-      <TextInput
-        name="code"
-        mask={masks.digits({ length: 6 })}
-        announceRejections={false}
-        autoComplete="off"
-        className="kv-input--width-10"
-        value={value}
-        onValueChange={(next, nextDetails) => {
-          setValue(next)
-          setDetails(nextDetails)
-        }}
-      />
-      <Field.HelpText>{text.digitsHint}</Field.HelpText>
-      <output className="kv-story-form-output" data-testid="own-message">
-        {rejected.some(({ reason }) => reason === 'digits') ? text.ownRejection : ''}
-      </output>
-      <p className="kv-story-form-output" data-testid="details">
-        {text.rejected}:{' '}
-        {rejected.map(({ characters, reason }) => `${characters} (${reason})`).join(', ')} ·{' '}
-        {text.unmasked}: {details?.unmaskedValue ?? ''} · {text.complete}:{' '}
-        {details?.isComplete === true ? text.yes : text.no}
-      </p>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.digits}</Field.Label>
+        <TextInput
+          name="code"
+          mask={masks.digits({ length: 6 })}
+          announceRejections={false}
+          autoComplete="off"
+          className="kv-input--width-10"
+          value={value}
+          onValueChange={(next, nextDetails) => {
+            setValue(next)
+            setDetails(nextDetails)
+          }}
+        />
+        <Field.HelpText>{text.digitsHint}</Field.HelpText>
+        <output className="kv-story-form-output" data-testid="own-message">
+          {rejected.some(({ reason }) => reason === 'digits') ? text.ownRejection : ''}
+        </output>
+        <p className="kv-story-form-output" data-testid="details">
+          {text.rejected}:{' '}
+          {rejected.map(({ characters, reason }) => `${characters} (${reason})`).join(', ')} ·{' '}
+          {text.unmasked}: {details?.unmaskedValue ?? ''} · {text.complete}:{' '}
+          {details?.isComplete === true ? text.yes : text.no}
+        </p>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -222,19 +238,21 @@ export function ChangeDetailsField({ locale }: { locale: FormLocale }) {
  * `characterNotAllowed` here and leaves the provider's other strings alone.
  */
 export function OwnMessagesField({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.digits}</Field.Label>
-      <TextInput
-        name="code"
-        mask={masks.digits({ length: 6 })}
-        autoComplete="off"
-        className="kv-input--width-10"
-        messages={{ characterNotAllowed: () => text.ownRejection }}
-      />
-      <Field.HelpText>{text.digitsHint}</Field.HelpText>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.digits}</Field.Label>
+        <TextInput
+          name="code"
+          mask={masks.digits({ length: 6 })}
+          autoComplete="off"
+          className="kv-input--width-10"
+          messages={{ characterNotAllowed: () => text.ownRejection }}
+        />
+        <Field.HelpText>{text.digitsHint}</Field.HelpText>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -243,17 +261,17 @@ export function OwnMessagesField({ locale }: { locale: FormLocale }) {
  * a note that sits outside the Field, such as one that belongs to several fields.
  */
 export function OwnDescribedByField({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   return (
-    <>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.caseNumber}</Field.Label>
-        <TextInput name="caseNumber" autoComplete="off" aria-describedby="case-number-where" />
-        <Field.HelpText>{text.caseNumberHint}</Field.HelpText>
-      </Field.Root>
-      <p id="case-number-where" lang={lang}>
-        {text.describedByNote}
-      </p>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Field.Root required>
+          <Field.Label>{text.caseNumber}</Field.Label>
+          <TextInput name="caseNumber" autoComplete="off" aria-describedby="case-number-where" />
+          <Field.HelpText>{text.caseNumberHint}</Field.HelpText>
+        </Field.Root>
+        <p id="case-number-where">{text.describedByNote}</p>
+      </>
+    </InEnglishWhenFallback>
   )
 }

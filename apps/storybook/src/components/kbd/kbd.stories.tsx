@@ -11,7 +11,7 @@ import { usageGuide } from '../../docs-source.ts'
 const meta = {
   title: 'Components/Content/Kbd',
   component: Kbd,
-  args: { children: 'Tab', lang: 'en' },
+  args: { children: 'Tab' },
   argTypes: { as: { control: false } },
   parameters: {
     a11yContract: contract,
@@ -40,7 +40,7 @@ export const Combination: Story = {
     <p>
       Kopiera med{' '}
       <Kbd data-testid="combination">
-        <Kbd lang="en">Ctrl</Kbd>+<Kbd lang="en">C</Kbd>
+        <Kbd>Ctrl</Kbd>+<Kbd>C</Kbd>
       </Kbd>
       .
     </p>
@@ -56,9 +56,9 @@ export const InProse: Story = {
   render: () => (
     <div className="kv-prose">
       <p>
-        Tryck på <Kbd lang="en">Esc</Kbd> för att stänga, eller{' '}
+        Tryck på <Kbd>Esc</Kbd> för att stänga, eller{' '}
         <Kbd>
-          <Kbd lang="en">Shift</Kbd>+<Kbd lang="en">Tab</Kbd>
+          <Kbd>Shift</Kbd>+<Kbd>Tab</Kbd>
         </Kbd>{' '}
         för att gå bakåt.
       </p>
@@ -73,7 +73,11 @@ export const InProse: Story = {
 export const RTL: Story = {
   render: () => (
     <p dir="rtl" lang="ar">
-      اضغط على <Kbd lang="en">Tab</Kbd> للانتقال.
+      اضغط على{' '}
+      <span lang="en">
+        <Kbd>Tab</Kbd>
+      </span>{' '}
+      للانتقال.
     </p>
   ),
   play: async ({ canvas }) => {

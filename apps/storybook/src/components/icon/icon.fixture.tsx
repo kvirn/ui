@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import {
   ArrowRightIcon,
   MagnifyingGlassIcon,
@@ -246,18 +247,18 @@ export const isIconFixtureLocale = (value: unknown): value is IconFixtureLocale 
 interface ResolvedTexts {
   text: IconTexts
   /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
-  lang: 'en' | undefined
+  isFallback: boolean
 }
 
 /** The fixture text in a locale. */
 export function textsFor(locale: IconFixtureLocale): ResolvedTexts {
   const text = iconTexts[locale]
   if (text === undefined) {
-    return { text: en, lang: 'en' }
+    return { text: en, isFallback: true }
   }
   return {
     text,
-    lang: undefined,
+    isFallback: false,
   }
 }
 
@@ -291,36 +292,38 @@ export interface IconFixtureProps {
  * title, so the shapes never carry the meaning alone (1.4.1).
  */
 export function StatusAlerts({ locale }: IconFixtureProps) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const format = useFormat()
   const { info, success, warning, error } = text.status
   return (
-    <div className="kv-story-status-lines" lang={lang}>
-      <Alert.Info>
-        <Alert.Title>{info.word}</Alert.Title>
-        <Alert.Body>
-          <p>{info.line(exampleDate(format))}</p>
-        </Alert.Body>
-      </Alert.Info>
-      <Alert.Success>
-        <Alert.Title>{success.word}</Alert.Title>
-        <Alert.Body>
-          <p>{success.line(exampleDate(format))}</p>
-        </Alert.Body>
-      </Alert.Success>
-      <Alert.Warning>
-        <Alert.Title>{warning.word}</Alert.Title>
-        <Alert.Body>
-          <p>{warning.line(exampleDate(format))}</p>
-        </Alert.Body>
-      </Alert.Warning>
-      <Alert.Danger>
-        <Alert.Title>{error.word}</Alert.Title>
-        <Alert.Body>
-          <p>{error.line(exampleDate(format))}</p>
-        </Alert.Body>
-      </Alert.Danger>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-status-lines">
+        <Alert.Info>
+          <Alert.Title>{info.word}</Alert.Title>
+          <Alert.Body>
+            <p>{info.line(exampleDate(format))}</p>
+          </Alert.Body>
+        </Alert.Info>
+        <Alert.Success>
+          <Alert.Title>{success.word}</Alert.Title>
+          <Alert.Body>
+            <p>{success.line(exampleDate(format))}</p>
+          </Alert.Body>
+        </Alert.Success>
+        <Alert.Warning>
+          <Alert.Title>{warning.word}</Alert.Title>
+          <Alert.Body>
+            <p>{warning.line(exampleDate(format))}</p>
+          </Alert.Body>
+        </Alert.Warning>
+        <Alert.Danger>
+          <Alert.Title>{error.word}</Alert.Title>
+          <Alert.Body>
+            <p>{error.line(exampleDate(format))}</p>
+          </Alert.Body>
+        </Alert.Danger>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -386,53 +389,57 @@ const joinClasses = (...classNames: (string | undefined)[]): string =>
 
 /** The icon in the right place: start, end or alone. Names come from the fixture. */
 function buttonsRow(locale: IconFixtureLocale, className?: string) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <ButtonGroup lang={lang}>
-      <Button className={className}>
-        <Icon name="add" />
-        {text.button.addChild}
-      </Button>
-      <Button className={className}>
-        {text.button.continue}
-        <Icon name="arrow-forward" />
-      </Button>
-      <Button
-        className={joinClasses('kv-button--icon-only', className)}
-        aria-label={text.button.close}
-      >
-        <Icon name="close" />
-      </Button>
-      <Button
-        className={joinClasses('kv-button--icon-only', className)}
-        aria-label={text.button.search}
-      >
-        <Icon name="search" />
-      </Button>
-    </ButtonGroup>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <ButtonGroup>
+        <Button className={className}>
+          <Icon name="add" />
+          {text.button.addChild}
+        </Button>
+        <Button className={className}>
+          {text.button.continue}
+          <Icon name="arrow-forward" />
+        </Button>
+        <Button
+          className={joinClasses('kv-button--icon-only', className)}
+          aria-label={text.button.close}
+        >
+          <Icon name="close" />
+        </Button>
+        <Button
+          className={joinClasses('kv-button--icon-only', className)}
+          aria-label={text.button.search}
+        >
+          <Icon name="search" />
+        </Button>
+      </ButtonGroup>
+    </InEnglishWhenFallback>
   )
 }
 
 /** The same row disabled. A disabled button's icon takes the muted text colour. */
 function disabledButtonsRow(locale: IconFixtureLocale) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <ButtonGroup lang={lang}>
-      <Button disabled>
-        <Icon name="add" />
-        {text.button.addChild}
-      </Button>
-      <Button disabled>
-        {text.button.continue}
-        <Icon name="arrow-forward" />
-      </Button>
-      <Button className="kv-button--icon-only" aria-label={text.button.close} disabled>
-        <Icon name="close" />
-      </Button>
-      <Button className="kv-button--icon-only" aria-label={text.button.search} disabled>
-        <Icon name="search" />
-      </Button>
-    </ButtonGroup>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <ButtonGroup>
+        <Button disabled>
+          <Icon name="add" />
+          {text.button.addChild}
+        </Button>
+        <Button disabled>
+          {text.button.continue}
+          <Icon name="arrow-forward" />
+        </Button>
+        <Button className="kv-button--icon-only" aria-label={text.button.close} disabled>
+          <Icon name="close" />
+        </Button>
+        <Button className="kv-button--icon-only" aria-label={text.button.search} disabled>
+          <Icon name="search" />
+        </Button>
+      </ButtonGroup>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -470,30 +477,32 @@ export function buttonMatrix(locale: IconFixtureLocale) {
 
 /** More actions with an icon at the start: remove a file, the password toggle, menu, language. */
 export function moreButtons(locale: IconFixtureLocale) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <ButtonGroup lang={lang}>
-      <Button>
-        <Icon name="delete" />
-        {text.button.removeFile(exampleFileName)}
-      </Button>
-      <Button>
-        <Icon name="eye" />
-        {text.button.showPassword}
-      </Button>
-      <Button>
-        <Icon name="eye-off" />
-        {text.button.hidePassword}
-      </Button>
-      <Button>
-        <Icon name="menu" />
-        {text.button.menu}
-      </Button>
-      <Button>
-        <Icon name="language" />
-        <span lang="sv">{text.language.current}</span>
-      </Button>
-    </ButtonGroup>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <ButtonGroup>
+        <Button>
+          <Icon name="delete" />
+          {text.button.removeFile(exampleFileName)}
+        </Button>
+        <Button>
+          <Icon name="eye" />
+          {text.button.showPassword}
+        </Button>
+        <Button>
+          <Icon name="eye-off" />
+          {text.button.hidePassword}
+        </Button>
+        <Button>
+          <Icon name="menu" />
+          {text.button.menu}
+        </Button>
+        <Button>
+          <Icon name="language" />
+          <span lang="sv">{text.language.current}</span>
+        </Button>
+      </ButtonGroup>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -517,21 +526,23 @@ export function narrowButtons() {
 
 /** Lucide, one-off: pass the component as `icon`. Icon's own props replace Lucide's. */
 export function LucideOneOff({ locale }: IconFixtureProps) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <ul className="kv-story-inline-list" lang={lang}>
-      <li>
-        <Icon icon={Search} label={text.button.search} />
-      </li>
-      <li>
-        <span style={{ color: 'var(--kv-color-primary)' }}>
-          <Icon icon={MapPin} size="24" />
-        </span>
-      </li>
-      <li>
-        <Icon icon={Trash2} />
-      </li>
-    </ul>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <ul className="kv-story-inline-list">
+        <li>
+          <Icon icon={Search} label={text.button.search} />
+        </li>
+        <li>
+          <span style={{ color: 'var(--kv-color-primary)' }}>
+            <Icon icon={MapPin} size="24" />
+          </span>
+        </li>
+        <li>
+          <Icon icon={Trash2} />
+        </li>
+      </ul>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -541,69 +552,75 @@ export function LucideOneOff({ locale }: IconFixtureProps) {
  * replace the built-in ones of the same names, and Lucide draws its own 2 stroke. Names that aren't built in need `Register` (see the Icon guide).
  */
 export function LucideRegistered({ locale }: IconFixtureProps) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const icons = defineIcons({
     search: Search,
     delete: Trash2,
     'arrow-forward': { component: ArrowRight, mirrorInRtl: true },
   })
   return (
-    <KvirnProvider icons={icons}>
-      <ButtonGroup lang={lang}>
-        <Button>
-          <Icon name="search" />
-          {text.button.search}
-        </Button>
-        <Button>
-          {text.button.continue}
-          <Icon name="arrow-forward" />
-        </Button>
-      </ButtonGroup>
-    </KvirnProvider>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <KvirnProvider icons={icons}>
+        <ButtonGroup>
+          <Button>
+            <Icon name="search" />
+            {text.button.search}
+          </Button>
+          <Button>
+            {text.button.continue}
+            <Icon name="arrow-forward" />
+          </Button>
+        </ButtonGroup>
+      </KvirnProvider>
+    </InEnglishWhenFallback>
   )
 }
 
 /** Heroicons, one-off: pass the component as `icon`. A `label` removes Heroicons' `aria-hidden`. */
 export function HeroiconsOneOff({ locale }: IconFixtureProps) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <ul className="kv-story-inline-list" lang={lang}>
-      <li>
-        <Icon icon={MagnifyingGlassIcon} label={text.button.search} />
-      </li>
-      <li>
-        <span style={{ color: 'var(--kv-color-primary)' }}>
-          <Icon icon={MapPinIcon} size="24" />
-        </span>
-      </li>
-      <li>
-        <Icon icon={TrashIcon} />
-      </li>
-    </ul>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <ul className="kv-story-inline-list">
+        <li>
+          <Icon icon={MagnifyingGlassIcon} label={text.button.search} />
+        </li>
+        <li>
+          <span style={{ color: 'var(--kv-color-primary)' }}>
+            <Icon icon={MapPinIcon} size="24" />
+          </span>
+        </li>
+        <li>
+          <Icon icon={TrashIcon} />
+        </li>
+      </ul>
+    </InEnglishWhenFallback>
   )
 }
 
 /** Heroicons, registered: `<Icon name>` and every KvirnUI component use Heroicons' drawings. */
 export function HeroiconsRegistered({ locale }: IconFixtureProps) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const icons = defineIcons({
     search: MagnifyingGlassIcon,
     delete: TrashIcon,
     'arrow-forward': { component: ArrowRightIcon, mirrorInRtl: true },
   })
   return (
-    <KvirnProvider icons={icons}>
-      <ButtonGroup lang={lang}>
-        <Button>
-          <Icon name="search" />
-          {text.button.search}
-        </Button>
-        <Button>
-          {text.button.continue}
-          <Icon name="arrow-forward" />
-        </Button>
-      </ButtonGroup>
-    </KvirnProvider>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <KvirnProvider icons={icons}>
+        <ButtonGroup>
+          <Button>
+            <Icon name="search" />
+            {text.button.search}
+          </Button>
+          <Button>
+            {text.button.continue}
+            <Icon name="arrow-forward" />
+          </Button>
+        </ButtonGroup>
+      </KvirnProvider>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -614,7 +631,7 @@ export function HeroiconsRegistered({ locale }: IconFixtureProps) {
  * `logo` isn't built in: an app adds it by augmenting `Register`, so this story casts the name.
  */
 export function LibraryIcons({ locale }: IconFixtureProps) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const icons = defineIcons({
     close: LucideClose,
     delete: TrashIcon,
@@ -624,42 +641,44 @@ export function LibraryIcons({ locale }: IconFixtureProps) {
   })
   const overridden = ['close', 'delete', 'warning', 'arrow-forward'] as const
   return (
-    <div lang={lang}>
-      <ul className="kv-story-icon-strip" data-testid="registry">
-        {overridden.map((name) => (
-          <li key={name} className="kv-story-icon-cell">
-            <span className="kv-story-icon-row" data-testid={`built-in-${name}`}>
-              <span style={{ color: 'var(--kv-color-primary)' }}>
-                <Icon name={name} size="24" />
-              </span>
-              <code>{name}</code>
-            </span>
-            <KvirnProvider icons={icons}>
-              <span className="kv-story-icon-row" data-testid={`registered-${name}`}>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <ul className="kv-story-icon-strip" data-testid="registry">
+          {overridden.map((name) => (
+            <li key={name} className="kv-story-icon-cell">
+              <span className="kv-story-icon-row" data-testid={`built-in-${name}`}>
                 <span style={{ color: 'var(--kv-color-primary)' }}>
                   <Icon name={name} size="24" />
                 </span>
                 <code>{name}</code>
               </span>
+              <KvirnProvider icons={icons}>
+                <span className="kv-story-icon-row" data-testid={`registered-${name}`}>
+                  <span style={{ color: 'var(--kv-color-primary)' }}>
+                    <Icon name={name} size="24" />
+                  </span>
+                  <code>{name}</code>
+                </span>
+              </KvirnProvider>
+            </li>
+          ))}
+          <li className="kv-story-icon-cell">
+            <KvirnProvider icons={icons}>
+              <Icon name={'logo' as IconName} size="24" label={text.label.logo} />
             </KvirnProvider>
+            <code>logo</code>
           </li>
-        ))}
-        <li className="kv-story-icon-cell">
+        </ul>
+        <div dir="rtl">
           <KvirnProvider icons={icons}>
-            <Icon name={'logo' as IconName} size="24" label={text.label.logo} />
+            <Button>
+              {text.button.continue}
+              <Icon name="arrow-forward" data-testid="overridden-arrow" />
+            </Button>
           </KvirnProvider>
-          <code>logo</code>
-        </li>
-      </ul>
-      <div dir="rtl">
-        <KvirnProvider icons={icons}>
-          <Button>
-            {text.button.continue}
-            <Icon name="arrow-forward" data-testid="overridden-arrow" />
-          </Button>
-        </KvirnProvider>
+        </div>
       </div>
-    </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -670,37 +689,39 @@ export function LibraryIcons({ locale }: IconFixtureProps) {
  * and a nested provider adds icons and replaces fields, over its parent's.
  */
 export function RegistryEntries({ locale }: IconFixtureProps) {
-  const { lang } = textsFor(locale)
+  const { isFallback } = textsFor(locale)
   const icons = defineIcons({
     search: Search,
     'arrow-forward': { component: ArrowRight, mirrorInRtl: false },
   })
   const nestedIcons = defineIcons({ delete: Trash2 })
   return (
-    <KvirnProvider icons={icons} iconDefaults={{ size: '24' }}>
-      <ul className="kv-story-inline-list" lang={lang} dir="rtl">
-        <li data-testid="entry-says-no-flip">
-          <Icon name="arrow-forward" />
-        </li>
-        <li data-testid="instance-flips">
-          <Icon name="arrow-forward" mirrorInRtl />
-        </li>
-        <li data-testid="default-size">
-          <Icon name="search" />
-        </li>
-        <li data-testid="own-size">
-          <Icon name="search" size="16" />
-        </li>
-        <KvirnProvider icons={nestedIcons}>
-          <li data-testid="nested-delete">
-            <Icon name="delete" />
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <KvirnProvider icons={icons} iconDefaults={{ size: '24' }}>
+        <ul className="kv-story-inline-list" dir="rtl">
+          <li data-testid="entry-says-no-flip">
+            <Icon name="arrow-forward" />
           </li>
-          <li data-testid="nested-keeps-parent">
+          <li data-testid="instance-flips">
+            <Icon name="arrow-forward" mirrorInRtl />
+          </li>
+          <li data-testid="default-size">
             <Icon name="search" />
           </li>
-        </KvirnProvider>
-      </ul>
-    </KvirnProvider>
+          <li data-testid="own-size">
+            <Icon name="search" size="16" />
+          </li>
+          <KvirnProvider icons={nestedIcons}>
+            <li data-testid="nested-delete">
+              <Icon name="delete" />
+            </li>
+            <li data-testid="nested-keeps-parent">
+              <Icon name="search" />
+            </li>
+          </KvirnProvider>
+        </ul>
+      </KvirnProvider>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -710,24 +731,26 @@ export function RegistryEntries({ locale }: IconFixtureProps) {
  * inside it are what you write.
  */
 export function UnstyledIcons({ locale }: IconFixtureProps) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <ShadowIsland data-testid="unstyled" dir="rtl" lang={lang}>
-      <p>
-        {(['16', '20', '24'] as const).map((size) => (
-          <span key={size} style={{ color: 'var(--kv-color-success)' }}>
-            <Icon name="check" size={size} />
-          </span>
-        ))}
-      </p>
-      <p>
-        <Icon name="arrow-forward" size="24" />
-      </p>
-      <p>
-        <Button aria-label={text.button.close}>
-          <Icon name="close" />
-        </Button>
-      </p>
-    </ShadowIsland>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <ShadowIsland data-testid="unstyled" dir="rtl">
+        <p>
+          {(['16', '20', '24'] as const).map((size) => (
+            <span key={size} style={{ color: 'var(--kv-color-success)' }}>
+              <Icon name="check" size={size} />
+            </span>
+          ))}
+        </p>
+        <p>
+          <Icon name="arrow-forward" size="24" />
+        </p>
+        <p>
+          <Button aria-label={text.button.close}>
+            <Icon name="close" />
+          </Button>
+        </p>
+      </ShadowIsland>
+    </InEnglishWhenFallback>
   )
 }

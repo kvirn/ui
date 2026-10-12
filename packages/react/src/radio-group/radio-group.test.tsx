@@ -88,7 +88,7 @@ describe('rendering', () => {
   test('renders a group with its part classes, a <legend> first, and forwards ref and props', async () => {
     const ref = createRef<HTMLFieldSetElement>()
     const { container } = await render(
-      <RadioGroup.Root ref={ref} className="egen" data-testid="root" lang="sv">
+      <RadioGroup.Root ref={ref} className="egen" data-testid="root">
         <Fieldset.Legend data-testid="legend">Språk</Fieldset.Legend>
       </RadioGroup.Root>,
     )

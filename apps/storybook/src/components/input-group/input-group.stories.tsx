@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, ButtonGroup, Card, Field, Icon, InputGroup, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/input-group/input-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/input-group/input-group.md?raw'
@@ -54,22 +55,24 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.rentWithUnit}</Field.Label>
-        <InputGroup.Root {...args}>
-          <InputGroup.Input
-            name="rent"
-            inputMode="decimal"
-            spellCheck={false}
-            autoComplete="off"
-            className="kv-input--width-10 kv-input--numeric"
-          />
-          <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
-        </InputGroup.Root>
-        <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.rentWithUnit}</Field.Label>
+          <InputGroup.Root {...args}>
+            <InputGroup.Input
+              name="rent"
+              inputMode="decimal"
+              spellCheck={false}
+              autoComplete="off"
+              className="kv-input--width-10 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+          <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
 } satisfies Meta<typeof InputGroup.Root>
@@ -117,22 +120,24 @@ export const Keyboard: Story = {
 /** A percentage: the "%" at the end, a width of 4 characters. sv and fi write "75 %". */
 export const Percentage: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.workTime}</Field.Label>
-        <InputGroup.Root>
-          <InputGroup.Input
-            name="work-time"
-            inputMode="decimal"
-            spellCheck={false}
-            autoComplete="off"
-            className="kv-input--width-4 kv-input--numeric"
-          />
-          <InputGroup.Addon>{text.workTimeUnit}</InputGroup.Addon>
-        </InputGroup.Root>
-        <Field.HelpText>{text.workTimeExample}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.workTime}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Input
+              name="work-time"
+              inputMode="decimal"
+              spellCheck={false}
+              autoComplete="off"
+              className="kv-input--width-4 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.workTimeUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+          <Field.HelpText>{text.workTimeExample}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -146,24 +151,26 @@ export const Percentage: Story = {
 /** A distance: "km" at the end, and a description above the box, because it's read before typing. */
 export const Distance: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.distance}</Field.Label>
-        <Field.Prose>
-          <p>{text.distanceHint}</p>
-        </Field.Prose>
-        <InputGroup.Root>
-          <InputGroup.Input
-            name="distance"
-            inputMode="decimal"
-            spellCheck={false}
-            autoComplete="off"
-            className="kv-input--width-6 kv-input--numeric"
-          />
-          <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
-        </InputGroup.Root>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.distance}</Field.Label>
+          <Field.Prose>
+            <p>{text.distanceHint}</p>
+          </Field.Prose>
+          <InputGroup.Root>
+            <InputGroup.Input
+              name="distance"
+              inputMode="decimal"
+              spellCheck={false}
+              autoComplete="off"
+              className="kv-input--width-6 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -177,17 +184,24 @@ export const Distance: Story = {
 /** A search with a decorative icon at the start: it repeats what the label says. Full width. */
 export const SearchIcon: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root lang={lang}>
-        <Field.Label marker="none">{text.searchServices}</Field.Label>
-        <InputGroup.Root>
-          <InputGroup.Addon>
-            <Icon name="search" size="20" />
-          </InputGroup.Addon>
-          <InputGroup.Input type="search" name="search" enterKeyHint="search" autoComplete="off" />
-        </InputGroup.Root>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root>
+          <Field.Label marker="none">{text.searchServices}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Addon>
+              <Icon name="search" size="20" />
+            </InputGroup.Addon>
+            <InputGroup.Input
+              type="search"
+              name="search"
+              enterKeyHint="search"
+              autoComplete="off"
+            />
+          </InputGroup.Root>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -282,23 +296,25 @@ export const SearchIconOnlyClear: Story = {
  */
 export const CalendarIcon: Story = {
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.visitDate}</Field.Label>
-        <InputGroup.Root>
-          <InputGroup.Input
-            name="visit-date"
-            autoComplete="off"
-            spellCheck={false}
-            className="kv-input--width-10 kv-input--numeric"
-          />
-          <InputGroup.Addon>
-            <Icon name="calendar" size="20" />
-          </InputGroup.Addon>
-        </InputGroup.Root>
-        <Field.HelpText>{text.visitDateExample}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.visitDate}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Input
+              name="visit-date"
+              autoComplete="off"
+              spellCheck={false}
+              className="kv-input--width-10 kv-input--numeric"
+            />
+            <InputGroup.Addon>
+              <Icon name="calendar" size="20" />
+            </InputGroup.Addon>
+          </InputGroup.Root>
+          <Field.HelpText>{text.visitDateExample}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -315,24 +331,26 @@ export const CalendarIcon: Story = {
  */
 export const Invalid: Story = {
   render: (_args, { globals }) => {
-    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
     return (
-      <Field.Root required invalid lang={lang}>
-        <Field.Label>{text.rentWithUnit}</Field.Label>
-        <InputGroup.Root>
-          <InputGroup.Input
-            name="rent"
-            inputMode="decimal"
-            spellCheck={false}
-            autoComplete="off"
-            defaultValue="8450"
-            className="kv-input--width-10 kv-input--numeric"
-          />
-          <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
-        </InputGroup.Root>
-        <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
-        <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required invalid>
+          <Field.Label>{text.rentWithUnit}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Input
+              name="rent"
+              inputMode="decimal"
+              spellCheck={false}
+              autoComplete="off"
+              defaultValue="8450"
+              className="kv-input--width-10 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+          <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+          <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -355,44 +373,46 @@ export const Invalid: Story = {
  */
 export const WithoutField: Story = {
   render: (_args, { globals }) => {
-    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
     return (
-      <div lang={lang}>
-        <label htmlFor="rent-without-field" className="kv-field-label">
-          {text.rentWithUnit}
-        </label>
-        <InputGroup.Root invalid>
-          <InputGroup.Input
-            id="rent-without-field"
-            name="rent"
-            inputMode="decimal"
-            spellCheck={false}
-            autoComplete="off"
-            defaultValue="8450"
-            aria-invalid="true"
-            aria-describedby="rent-without-field-error"
-            className="kv-input--width-10 kv-input--numeric"
-          />
-          <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
-        </InputGroup.Root>
-        <p id="rent-without-field-error">{text.rentError(amountExample)}</p>
-        <label htmlFor="distance-without-field" className="kv-field-label">
-          {text.distance}
-        </label>
-        <InputGroup.Root disabled>
-          <InputGroup.Input
-            id="distance-without-field"
-            name="distance"
-            inputMode="decimal"
-            spellCheck={false}
-            autoComplete="off"
-            defaultValue="12"
-            disabled
-            className="kv-input--width-6 kv-input--numeric"
-          />
-          <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
-        </InputGroup.Root>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div>
+          <label htmlFor="rent-without-field" className="kv-field-label">
+            {text.rentWithUnit}
+          </label>
+          <InputGroup.Root invalid>
+            <InputGroup.Input
+              id="rent-without-field"
+              name="rent"
+              inputMode="decimal"
+              spellCheck={false}
+              autoComplete="off"
+              defaultValue="8450"
+              aria-invalid="true"
+              aria-describedby="rent-without-field-error"
+              className="kv-input--width-10 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+          <p id="rent-without-field-error">{text.rentError(amountExample)}</p>
+          <label htmlFor="distance-without-field" className="kv-field-label">
+            {text.distance}
+          </label>
+          <InputGroup.Root disabled>
+            <InputGroup.Input
+              id="distance-without-field"
+              name="distance"
+              inputMode="decimal"
+              spellCheck={false}
+              autoComplete="off"
+              defaultValue="12"
+              disabled
+              className="kv-input--width-6 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -409,41 +429,43 @@ export const WithoutField: Story = {
 /** Disabled: a dashed edge on the surface colour, the unit and the value muted. */
 export const Disabled: Story = {
   render: (_args, { globals }) => {
-    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
     return (
-      <>
-        <Field.Root required disabled lang={lang}>
-          <Field.Label>{text.rentWithUnit}</Field.Label>
-          <InputGroup.Root>
-            <InputGroup.Input
-              name="rent"
-              inputMode="decimal"
-              spellCheck={false}
-              autoComplete="off"
-              defaultValue="8450"
-              className="kv-input--width-10 kv-input--numeric"
-            />
-            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
-          </InputGroup.Root>
-          <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
-        </Field.Root>
-        <Field.Root disabled lang={lang}>
-          <Field.Label marker="none">{text.searchServices}</Field.Label>
-          <InputGroup.Root>
-            <InputGroup.Addon>
-              <Icon name="search" size="20" />
-            </InputGroup.Addon>
-            <InputGroup.Input
-              type="search"
-              name="search"
-              enterKeyHint="search"
-              autoComplete="off"
-              defaultValue="parkering"
-            />
-            <Button disabled>{text.searchClear}</Button>
-          </InputGroup.Root>
-        </Field.Root>
-      </>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <>
+          <Field.Root required disabled>
+            <Field.Label>{text.rentWithUnit}</Field.Label>
+            <InputGroup.Root>
+              <InputGroup.Input
+                name="rent"
+                inputMode="decimal"
+                spellCheck={false}
+                autoComplete="off"
+                defaultValue="8450"
+                className="kv-input--width-10 kv-input--numeric"
+              />
+              <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+            </InputGroup.Root>
+            <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+          </Field.Root>
+          <Field.Root disabled>
+            <Field.Label marker="none">{text.searchServices}</Field.Label>
+            <InputGroup.Root>
+              <InputGroup.Addon>
+                <Icon name="search" size="20" />
+              </InputGroup.Addon>
+              <InputGroup.Input
+                type="search"
+                name="search"
+                enterKeyHint="search"
+                autoComplete="off"
+                defaultValue="parkering"
+              />
+              <Button disabled>{text.searchClear}</Button>
+            </InputGroup.Root>
+          </Field.Root>
+        </>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -456,24 +478,26 @@ export const Disabled: Story = {
 /** Read-only, in staff tools: a solid edge on the surface colour, and still focusable. */
 export const ReadOnly: Story = {
   render: (_args, { globals }) => {
-    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.rentWithUnit}</Field.Label>
-        <InputGroup.Root>
-          <InputGroup.Input
-            name="rent"
-            inputMode="decimal"
-            spellCheck={false}
-            autoComplete="off"
-            readOnly
-            defaultValue="8450"
-            className="kv-input--width-10 kv-input--numeric"
-          />
-          <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
-        </InputGroup.Root>
-        <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.rentWithUnit}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Input
+              name="rent"
+              inputMode="decimal"
+              spellCheck={false}
+              autoComplete="off"
+              readOnly
+              defaultValue="8450"
+              className="kv-input--width-10 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+          <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -488,26 +512,28 @@ export const ReadOnly: Story = {
 /** In a card: a `canvas` box on `surface-raised`, so the edge keeps 3:1 against it (1.4.11). */
 export const InCard: Story = {
   render: (_args, { globals }) => {
-    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
     return (
-      <Card.Root>
-        <Field.Root required invalid lang={lang}>
-          <Field.Label>{text.rentWithUnit}</Field.Label>
-          <InputGroup.Root>
-            <InputGroup.Input
-              name="rent"
-              inputMode="decimal"
-              spellCheck={false}
-              autoComplete="off"
-              defaultValue="8450"
-              className="kv-input--width-10 kv-input--numeric"
-            />
-            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
-          </InputGroup.Root>
-          <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
-          <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage>
-        </Field.Root>
-      </Card.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Card.Root>
+          <Field.Root required invalid>
+            <Field.Label>{text.rentWithUnit}</Field.Label>
+            <InputGroup.Root>
+              <InputGroup.Input
+                name="rent"
+                inputMode="decimal"
+                spellCheck={false}
+                autoComplete="off"
+                defaultValue="8450"
+                className="kv-input--width-10 kv-input--numeric"
+              />
+              <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+            </InputGroup.Root>
+            <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+            <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage>
+          </Field.Root>
+        </Card.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -527,21 +553,23 @@ export const LongFinnishLabel: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.grantWithUnit}</Field.Label>
-        <InputGroup.Root>
-          <InputGroup.Input
-            name="grant"
-            inputMode="decimal"
-            spellCheck={false}
-            autoComplete="off"
-            className="kv-input--width-20 kv-input--numeric"
-          />
-          <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
-        </InputGroup.Root>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.grantWithUnit}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Input
+              name="grant"
+              inputMode="decimal"
+              spellCheck={false}
+              autoComplete="off"
+              className="kv-input--width-20 kv-input--numeric"
+            />
+            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+          </InputGroup.Root>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {
@@ -562,40 +590,42 @@ export const Compact: Story = {
     ),
   ],
   render: (_args, { globals }) => {
-    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
     return (
-      <>
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.rentWithUnit}</Field.Label>
-          <InputGroup.Root>
-            <InputGroup.Input
-              name="rent"
-              inputMode="decimal"
-              spellCheck={false}
-              autoComplete="off"
-              className="kv-input--width-10 kv-input--numeric"
-            />
-            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
-          </InputGroup.Root>
-          <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
-        </Field.Root>
-        <Field.Root lang={lang}>
-          <Field.Label marker="none">{text.searchServices}</Field.Label>
-          <InputGroup.Root>
-            <InputGroup.Addon>
-              <Icon name="search" size="20" />
-            </InputGroup.Addon>
-            <InputGroup.Input
-              type="search"
-              name="search"
-              enterKeyHint="search"
-              autoComplete="off"
-              defaultValue="parkering"
-            />
-            <Button>{text.searchClear}</Button>
-          </InputGroup.Root>
-        </Field.Root>
-      </>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <>
+          <Field.Root required>
+            <Field.Label>{text.rentWithUnit}</Field.Label>
+            <InputGroup.Root>
+              <InputGroup.Input
+                name="rent"
+                inputMode="decimal"
+                spellCheck={false}
+                autoComplete="off"
+                className="kv-input--width-10 kv-input--numeric"
+              />
+              <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+            </InputGroup.Root>
+            <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+          </Field.Root>
+          <Field.Root>
+            <Field.Label marker="none">{text.searchServices}</Field.Label>
+            <InputGroup.Root>
+              <InputGroup.Addon>
+                <Icon name="search" size="20" />
+              </InputGroup.Addon>
+              <InputGroup.Input
+                type="search"
+                name="search"
+                enterKeyHint="search"
+                autoComplete="off"
+                defaultValue="parkering"
+              />
+              <Button>{text.searchClear}</Button>
+            </InputGroup.Root>
+          </Field.Root>
+        </>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -609,21 +639,23 @@ export const Compact: Story = {
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   render: () => {
-    const { text, lang } = textsFor('en')
+    const { text, isFallback } = textsFor('en')
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.amountEuro}</Field.Label>
-        <InputGroup.Root>
-          <InputGroup.Addon>{text.amountEuroUnit}</InputGroup.Addon>
-          <InputGroup.Input
-            name="amount"
-            inputMode="decimal"
-            spellCheck={false}
-            autoComplete="off"
-            className="kv-input--width-10 kv-input--numeric"
-          />
-        </InputGroup.Root>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.amountEuro}</Field.Label>
+          <InputGroup.Root>
+            <InputGroup.Addon>{text.amountEuroUnit}</InputGroup.Addon>
+            <InputGroup.Input
+              name="amount"
+              inputMode="decimal"
+              spellCheck={false}
+              autoComplete="off"
+              className="kv-input--width-10 kv-input--numeric"
+            />
+          </InputGroup.Root>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas }) => {
@@ -636,65 +668,67 @@ export const RTL: Story = {
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   render: (_args, { globals }) => {
-    const { text, lang, amountExample } = textsFor(localeOf(globals))
+    const { text, isFallback, amountExample } = textsFor(localeOf(globals))
     return (
-      <>
-        <Field.Root required invalid lang={lang}>
-          <Field.Label>{text.rentWithUnit}</Field.Label>
-          <InputGroup.Root>
-            <InputGroup.Input
-              name="rent"
-              inputMode="decimal"
-              spellCheck={false}
-              autoComplete="off"
-              className="kv-input--width-10 kv-input--numeric"
-            />
-            <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
-          </InputGroup.Root>
-          <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
-          <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage>
-        </Field.Root>
-        <Field.Root required lang={lang}>
-          <Field.Label>{text.workTime}</Field.Label>
-          <InputGroup.Root>
-            <InputGroup.Input
-              name="work-time"
-              inputMode="decimal"
-              className="kv-input--width-4 kv-input--numeric"
-            />
-            <InputGroup.Addon>{text.workTimeUnit}</InputGroup.Addon>
-          </InputGroup.Root>
-          <Field.HelpText>{text.workTimeExample}</Field.HelpText>
-        </Field.Root>
-        <Field.Root required disabled lang={lang}>
-          <Field.Label>{text.distance}</Field.Label>
-          <InputGroup.Root>
-            <InputGroup.Input
-              name="distance"
-              inputMode="decimal"
-              defaultValue={amountExample}
-              className="kv-input--width-6 kv-input--numeric"
-            />
-            <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
-          </InputGroup.Root>
-        </Field.Root>
-        <Field.Root lang={lang}>
-          <Field.Label marker="none">{text.searchServices}</Field.Label>
-          <InputGroup.Root>
-            <InputGroup.Addon>
-              <Icon name="search" size="20" />
-            </InputGroup.Addon>
-            <InputGroup.Input
-              type="search"
-              name="search"
-              enterKeyHint="search"
-              autoComplete="off"
-              defaultValue="parkering"
-            />
-            <Button>{text.searchClear}</Button>
-          </InputGroup.Root>
-        </Field.Root>
-      </>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <>
+          <Field.Root required invalid>
+            <Field.Label>{text.rentWithUnit}</Field.Label>
+            <InputGroup.Root>
+              <InputGroup.Input
+                name="rent"
+                inputMode="decimal"
+                spellCheck={false}
+                autoComplete="off"
+                className="kv-input--width-10 kv-input--numeric"
+              />
+              <InputGroup.Addon>{text.rentUnit}</InputGroup.Addon>
+            </InputGroup.Root>
+            <Field.HelpText>{text.rentUnitExample(amountExample)}</Field.HelpText>
+            <Field.ErrorMessage>{text.rentError(amountExample)}</Field.ErrorMessage>
+          </Field.Root>
+          <Field.Root required>
+            <Field.Label>{text.workTime}</Field.Label>
+            <InputGroup.Root>
+              <InputGroup.Input
+                name="work-time"
+                inputMode="decimal"
+                className="kv-input--width-4 kv-input--numeric"
+              />
+              <InputGroup.Addon>{text.workTimeUnit}</InputGroup.Addon>
+            </InputGroup.Root>
+            <Field.HelpText>{text.workTimeExample}</Field.HelpText>
+          </Field.Root>
+          <Field.Root required disabled>
+            <Field.Label>{text.distance}</Field.Label>
+            <InputGroup.Root>
+              <InputGroup.Input
+                name="distance"
+                inputMode="decimal"
+                defaultValue={amountExample}
+                className="kv-input--width-6 kv-input--numeric"
+              />
+              <InputGroup.Addon>{text.distanceUnit}</InputGroup.Addon>
+            </InputGroup.Root>
+          </Field.Root>
+          <Field.Root>
+            <Field.Label marker="none">{text.searchServices}</Field.Label>
+            <InputGroup.Root>
+              <InputGroup.Addon>
+                <Icon name="search" size="20" />
+              </InputGroup.Addon>
+              <InputGroup.Input
+                type="search"
+                name="search"
+                enterKeyHint="search"
+                autoComplete="off"
+                defaultValue="parkering"
+              />
+              <Button>{text.searchClear}</Button>
+            </InputGroup.Root>
+          </Field.Root>
+        </>
+      </InEnglishWhenFallback>
     )
   },
 }

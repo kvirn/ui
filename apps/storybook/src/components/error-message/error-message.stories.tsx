@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Field, Fieldset, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/field/field.a11y.md?raw'
 import guide from '../../../../../packages/react/src/field/field-error-message.md?raw'
@@ -40,13 +41,15 @@ const meta = {
     withFormLocale,
   ],
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required invalid lang={lang}>
-        <Field.Label>{text.name}</Field.Label>
-        <TextInput name="name" autoComplete="name" />
-        <Field.ErrorMessage {...args}>{text.nameError}</Field.ErrorMessage>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required invalid>
+          <Field.Label>{text.name}</Field.Label>
+          <TextInput name="name" autoComplete="name" />
+          <Field.ErrorMessage {...args}>{text.nameError}</Field.ErrorMessage>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   parameters: {
@@ -84,13 +87,15 @@ export const Keyboard: Story = {}
 /** Valid: the message isn't rendered, so no stale error is ever referenced. */
 export const NotInvalid: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.name}</Field.Label>
-        <TextInput name="name" autoComplete="name" />
-        <Field.ErrorMessage {...args}>{text.nameError}</Field.ErrorMessage>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required>
+          <Field.Label>{text.name}</Field.Label>
+          <TextInput name="name" autoComplete="name" />
+          <Field.ErrorMessage {...args}>{text.nameError}</Field.ErrorMessage>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -105,19 +110,21 @@ export const NotInvalid: Story = {
 /** In a Fieldset: one message for the group, under its controls. It describes the group. */
 export const InFieldset: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Fieldset.Root invalid lang={lang}>
-        <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
-        <Fieldset.Prose>
-          <p>{text.addressHint}</p>
-        </Fieldset.Prose>
-        <Field.Root required>
-          <Field.Label>{text.street}</Field.Label>
-          <TextInput name="street" autoComplete="street-address" />
-        </Field.Root>
-        <Fieldset.ErrorMessage {...args}>{text.addressError}</Fieldset.ErrorMessage>
-      </Fieldset.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Fieldset.Root invalid>
+          <Fieldset.Legend>{text.addressLegend}</Fieldset.Legend>
+          <Fieldset.Prose>
+            <p>{text.addressHint}</p>
+          </Fieldset.Prose>
+          <Field.Root required>
+            <Field.Label>{text.street}</Field.Label>
+            <TextInput name="street" autoComplete="street-address" />
+          </Field.Root>
+          <Fieldset.ErrorMessage {...args}>{text.addressError}</Fieldset.ErrorMessage>
+        </Fieldset.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -138,14 +145,16 @@ export const InFieldset: Story = {
  */
 export const UnderHelpText: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <Field.Root required invalid lang={lang}>
-        <Field.Label>{text.registration}</Field.Label>
-        <TextInput name="registration" className="kv-input--width-10" defaultValue="AB 1" />
-        <Field.HelpText>{text.registrationHint}</Field.HelpText>
-        <Field.ErrorMessage {...args}>{text.registrationError}</Field.ErrorMessage>
-      </Field.Root>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <Field.Root required invalid>
+          <Field.Label>{text.registration}</Field.Label>
+          <TextInput name="registration" className="kv-input--width-10" defaultValue="AB 1" />
+          <Field.HelpText>{text.registrationHint}</Field.HelpText>
+          <Field.ErrorMessage {...args}>{text.registrationError}</Field.ErrorMessage>
+        </Field.Root>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -166,15 +175,17 @@ export const UnderHelpText: Story = {
 export const LongMessage: Story = {
   globals: { locale: 'fi' },
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <div className="kv-story-narrow" data-testid="narrow">
-        <Field.Root required invalid lang={lang}>
-          <Field.Label>{text.email}</Field.Label>
-          <TextInput name="email" type="email" autoComplete="email" defaultValue="anna@" />
-          <Field.ErrorMessage {...args}>{text.emailError}</Field.ErrorMessage>
-        </Field.Root>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div className="kv-story-narrow" data-testid="narrow">
+          <Field.Root required invalid>
+            <Field.Label>{text.email}</Field.Label>
+            <TextInput name="email" type="email" autoComplete="email" defaultValue="anna@" />
+            <Field.ErrorMessage {...args}>{text.emailError}</Field.ErrorMessage>
+          </Field.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
   play: async ({ canvas, globals }) => {
@@ -187,17 +198,19 @@ export const LongMessage: Story = {
 /** Compact density keeps the message at 16px: errors never go below it. */
 export const Compact: Story = {
   render: (args, { globals }) => {
-    const { text, lang } = textsFor(localeOf(globals))
+    const { text, isFallback } = textsFor(localeOf(globals))
     return (
-      <div className="kv-compact" lang={lang}>
-        <Field.Root required invalid>
-          <Field.Label>{text.name}</Field.Label>
-          <TextInput name="name" autoComplete="name" />
-          <Field.ErrorMessage {...args} data-testid="error">
-            {text.nameError}
-          </Field.ErrorMessage>
-        </Field.Root>
-      </div>
+      <InEnglishWhenFallback isFallback={isFallback}>
+        <div className="kv-compact">
+          <Field.Root required invalid>
+            <Field.Label>{text.name}</Field.Label>
+            <TextInput name="name" autoComplete="name" />
+            <Field.ErrorMessage {...args} data-testid="error">
+              {text.nameError}
+            </Field.ErrorMessage>
+          </Field.Root>
+        </div>
+      </InEnglishWhenFallback>
     )
   },
 }

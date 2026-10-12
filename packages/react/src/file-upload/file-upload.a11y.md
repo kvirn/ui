@@ -104,7 +104,7 @@ Results are reported from the store, so auto upload, Retry and `uploadAll()` go 
 - **Check on the server.** A client check is not security: type, size and content are checked again where the file lands. Photos can carry location data, which the server should strip.
 - **Decide whether refused files block the form.** `onFilesReject` reports them as data. The Field's `invalid` and its message are yours.
 - **Write `upload`.** The library sends nothing. Report progress as a fraction from 0 to 1, honour the `signal`, and reject with an error object that has `retryable` and `message` to say more than the neutral text.
-- **Translate your own text** (the label and the description) and set `lang` where a locale isn't translated yet (3.1.2).
+- **Translate your own text** (the label and the description) and put them in a nested `KvirnProvider` with `useLocale().localeProps` on your own element where a locale isn't translated yet (3.1.2).
 - **Provide the Announcer** (`KvirnProvider`). Without one, nothing is announced and a warning says so.
 - **WCAG 2.2.2 (Pause, Stop, Hide).** The indicators (spinner, bar sheen, busy Button, job Toast, FileUpload track, Table busy sweep) move for as long as the wait lasts, which can be more than 5 s. `prefers-reduced-motion: reduce` is honoured and shows a still rest shape, but to meet WCAG 2.2.2 the app must also offer its own visible control that stops moving content (the library ships none) and applies the stop CSS. [Moving indicators and WCAG 2.2.2](/foundation/theming#moving-indicators). The text, the percent and the 10 s slow sentence carry the wait.
 

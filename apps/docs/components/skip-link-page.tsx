@@ -73,8 +73,8 @@ export function SkipLinkPage({
             ]}
             note={
               <Note kind="reminder">
-                Set <code>lang</code> on a label of your own when it differs from the page. See{' '}
-                <Link href="#what-you-need-to-do">What you need to do</Link>.
+                Wrap a label of your own in an element with <code>lang</code> when it differs from
+                the page. See <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >

@@ -2,6 +2,7 @@
 import { Field, FileUpload } from '@kvirn-ui/react'
 import type { FileUploadContext } from '@kvirn-ui/react'
 import { useFileUploadTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 // Stands in for your own request to your own server: KvirnUI sends nothing anywhere.
 function pretendToUpload(file: File, { signal, onProgress }: FileUploadContext) {
@@ -23,37 +24,39 @@ function pretendToUpload(file: File, { signal, onProgress }: FileUploadContext) 
 }
 
 export function UploadYourself() {
-  const { texts, textLang } = useFileUploadTexts()
+  const { texts, isFallback } = useFileUploadTexts()
   return (
-    <Field.Root lang={textLang}>
-      <Field.Label>{texts.label}</Field.Label>
-      <Field.Prose>
-        <p>{texts.description}</p>
-      </Field.Prose>
-      <FileUpload.Root accept=".pdf,.jpg,.png" maxFiles={5} upload={pretendToUpload}>
-        <FileUpload.DropZone>
-          <FileUpload.Trigger />
-          <FileUpload.DropHint />
-        </FileUpload.DropZone>
-        <FileUpload.Limits />
-        <FileUpload.Rejections />
-        <FileUpload.Summary />
-        <FileUpload.List>
-          {(item) => (
-            <FileUpload.Item key={item.id} item={item}>
-              <FileUpload.Name />
-              <FileUpload.Size />
-              <FileUpload.Status />
-              <FileUpload.Progress />
-              <FileUpload.Actions>
-                <FileUpload.CancelButton />
-                <FileUpload.RetryButton />
-                <FileUpload.RemoveButton />
-              </FileUpload.Actions>
-            </FileUpload.Item>
-          )}
-        </FileUpload.List>
-      </FileUpload.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root>
+        <Field.Label>{texts.label}</Field.Label>
+        <Field.Prose>
+          <p>{texts.description}</p>
+        </Field.Prose>
+        <FileUpload.Root accept=".pdf,.jpg,.png" maxFiles={5} upload={pretendToUpload}>
+          <FileUpload.DropZone>
+            <FileUpload.Trigger />
+            <FileUpload.DropHint />
+          </FileUpload.DropZone>
+          <FileUpload.Limits />
+          <FileUpload.Rejections />
+          <FileUpload.Summary />
+          <FileUpload.List>
+            {(item) => (
+              <FileUpload.Item key={item.id} item={item}>
+                <FileUpload.Name />
+                <FileUpload.Size />
+                <FileUpload.Status />
+                <FileUpload.Progress />
+                <FileUpload.Actions>
+                  <FileUpload.CancelButton />
+                  <FileUpload.RetryButton />
+                  <FileUpload.RemoveButton />
+                </FileUpload.Actions>
+              </FileUpload.Item>
+            )}
+          </FileUpload.List>
+        </FileUpload.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }

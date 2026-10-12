@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, FileUpload, useFileUpload } from '@kvirn-ui/react'
 import type { FileUploadRootProps } from '@kvirn-ui/react'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -93,9 +94,12 @@ const fileUploadTexts: Record<FormLocale, FileUploadTexts | undefined> = {
   en: textsEn,
 }
 
-export function fileUploadTextsFor(locale: FormLocale): { texts: FileUploadTexts; lang?: 'en' } {
+export function fileUploadTextsFor(locale: FormLocale): {
+  texts: FileUploadTexts
+  isFallback: boolean
+} {
   const texts = fileUploadTexts[locale]
-  return texts === undefined ? { texts: textsEn, lang: 'en' } : { texts }
+  return texts === undefined ? { texts: textsEn, isFallback: true } : { texts, isFallback: false }
 }
 
 /** Every `FileUpload.Root` option, plus the story's locale (the label and description are yours). */
@@ -110,79 +114,83 @@ export interface AttachmentsProps extends FileUploadRootProps {
 
 /** A Field with a drop zone, the limits, the rejections, the summary and the list. */
 export function AttachmentsField({ locale, ...options }: AttachmentsProps) {
-  const { texts, lang } = fileUploadTextsFor(locale)
+  const { texts, isFallback } = fileUploadTextsFor(locale)
   return (
-    <Field.Root lang={lang}>
-      <Field.Label>{texts.label}</Field.Label>
-      <Field.Prose>
-        <p>{texts.description}</p>
-      </Field.Prose>
-      <FileUpload.Root {...options}>
-        <FileUpload.DropZone>
-          <FileUpload.Trigger />
-          <FileUpload.DropHint />
-        </FileUpload.DropZone>
-        <FileUpload.Limits />
-        <FileUpload.Rejections />
-        <FileUpload.Summary />
-        <FileUpload.List>
-          {(item) => (
-            <FileUpload.Item key={item.id} item={item}>
-              <FileUpload.Name />
-              <FileUpload.Type />
-              <FileUpload.Size />
-              <FileUpload.Status />
-              <FileUpload.ItemError />
-              <FileUpload.Progress />
-              <FileUpload.Actions>
-                <FileUpload.CancelButton />
-                <FileUpload.RetryButton />
-                <FileUpload.RemoveButton />
-              </FileUpload.Actions>
-            </FileUpload.Item>
-          )}
-        </FileUpload.List>
-      </FileUpload.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root>
+        <Field.Label>{texts.label}</Field.Label>
+        <Field.Prose>
+          <p>{texts.description}</p>
+        </Field.Prose>
+        <FileUpload.Root {...options}>
+          <FileUpload.DropZone>
+            <FileUpload.Trigger />
+            <FileUpload.DropHint />
+          </FileUpload.DropZone>
+          <FileUpload.Limits />
+          <FileUpload.Rejections />
+          <FileUpload.Summary />
+          <FileUpload.List>
+            {(item) => (
+              <FileUpload.Item key={item.id} item={item}>
+                <FileUpload.Name />
+                <FileUpload.Type />
+                <FileUpload.Size />
+                <FileUpload.Status />
+                <FileUpload.ItemError />
+                <FileUpload.Progress />
+                <FileUpload.Actions>
+                  <FileUpload.CancelButton />
+                  <FileUpload.RetryButton />
+                  <FileUpload.RemoveButton />
+                </FileUpload.Actions>
+              </FileUpload.Item>
+            )}
+          </FileUpload.List>
+        </FileUpload.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
 /** A thumbnail beside each name: opt in by rendering `FileUpload.Preview` in the item. */
 export function AttachmentsWithPreviews({ locale, ...options }: AttachmentsProps) {
-  const { texts, lang } = fileUploadTextsFor(locale)
+  const { texts, isFallback } = fileUploadTextsFor(locale)
   return (
-    <Field.Root lang={lang}>
-      <Field.Label>{texts.label}</Field.Label>
-      <Field.Prose>
-        <p>{texts.description}</p>
-      </Field.Prose>
-      <FileUpload.Root {...options}>
-        <FileUpload.DropZone>
-          <FileUpload.Trigger />
-          <FileUpload.DropHint />
-        </FileUpload.DropZone>
-        <FileUpload.Limits />
-        <FileUpload.Rejections />
-        <FileUpload.Summary />
-        <FileUpload.List>
-          {(item) => (
-            <FileUpload.Item key={item.id} item={item}>
-              <FileUpload.Preview />
-              <FileUpload.Name />
-              <FileUpload.Type />
-              <FileUpload.Size />
-              <FileUpload.Status />
-              <FileUpload.Progress />
-              <FileUpload.Actions>
-                <FileUpload.CancelButton />
-                <FileUpload.RetryButton />
-                <FileUpload.RemoveButton />
-              </FileUpload.Actions>
-            </FileUpload.Item>
-          )}
-        </FileUpload.List>
-      </FileUpload.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root>
+        <Field.Label>{texts.label}</Field.Label>
+        <Field.Prose>
+          <p>{texts.description}</p>
+        </Field.Prose>
+        <FileUpload.Root {...options}>
+          <FileUpload.DropZone>
+            <FileUpload.Trigger />
+            <FileUpload.DropHint />
+          </FileUpload.DropZone>
+          <FileUpload.Limits />
+          <FileUpload.Rejections />
+          <FileUpload.Summary />
+          <FileUpload.List>
+            {(item) => (
+              <FileUpload.Item key={item.id} item={item}>
+                <FileUpload.Preview />
+                <FileUpload.Name />
+                <FileUpload.Type />
+                <FileUpload.Size />
+                <FileUpload.Status />
+                <FileUpload.Progress />
+                <FileUpload.Actions>
+                  <FileUpload.CancelButton />
+                  <FileUpload.RetryButton />
+                  <FileUpload.RemoveButton />
+                </FileUpload.Actions>
+              </FileUpload.Item>
+            )}
+          </FileUpload.List>
+        </FileUpload.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -191,49 +199,142 @@ export function AttachmentsWithPreviews({ locale, ...options }: AttachmentsProps
  * (`FileUpload.Input`) and a plain `<form>` posts them.
  */
 export function AttachmentsPostedWithTheForm({ locale, ...options }: AttachmentsProps) {
-  const { texts, lang } = fileUploadTextsFor(locale)
+  const { texts, isFallback } = fileUploadTextsFor(locale)
   return (
-    <Field.Root lang={lang}>
-      <Field.Label>{texts.label}</Field.Label>
-      <Field.Prose>
-        <p>{texts.description}</p>
-      </Field.Prose>
-      <FileUpload.Root {...options}>
-        <FileUpload.DropZone>
-          <FileUpload.Trigger />
-          <FileUpload.DropHint />
-        </FileUpload.DropZone>
-        <FileUpload.Limits />
-        <FileUpload.Rejections />
-        <FileUpload.Summary />
-        <FileUpload.Input name="attachments" />
-        <FileUpload.List>
-          {(item) => (
-            <FileUpload.Item key={item.id} item={item}>
-              <FileUpload.Name />
-              <FileUpload.Type />
-              <FileUpload.Size />
-              <FileUpload.Status />
-              <FileUpload.Progress />
-              <FileUpload.Actions>
-                <FileUpload.CancelButton />
-                <FileUpload.RetryButton />
-                <FileUpload.RemoveButton />
-              </FileUpload.Actions>
-            </FileUpload.Item>
-          )}
-        </FileUpload.List>
-      </FileUpload.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root>
+        <Field.Label>{texts.label}</Field.Label>
+        <Field.Prose>
+          <p>{texts.description}</p>
+        </Field.Prose>
+        <FileUpload.Root {...options}>
+          <FileUpload.DropZone>
+            <FileUpload.Trigger />
+            <FileUpload.DropHint />
+          </FileUpload.DropZone>
+          <FileUpload.Limits />
+          <FileUpload.Rejections />
+          <FileUpload.Summary />
+          <FileUpload.Input name="attachments" />
+          <FileUpload.List>
+            {(item) => (
+              <FileUpload.Item key={item.id} item={item}>
+                <FileUpload.Name />
+                <FileUpload.Type />
+                <FileUpload.Size />
+                <FileUpload.Status />
+                <FileUpload.Progress />
+                <FileUpload.Actions>
+                  <FileUpload.CancelButton />
+                  <FileUpload.RetryButton />
+                  <FileUpload.RemoveButton />
+                </FileUpload.Actions>
+              </FileUpload.Item>
+            )}
+          </FileUpload.List>
+        </FileUpload.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
 /** The field, then the button that sends the application. Tab goes on from the field to it. */
 export function AttachmentsWithSendButton({ locale, ...options }: AttachmentsProps) {
-  const { texts, lang } = fileUploadTextsFor(locale)
+  const { texts, isFallback } = fileUploadTextsFor(locale)
   return (
-    <>
-      <Field.Root lang={lang}>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Field.Root>
+          <Field.Label>{texts.label}</Field.Label>
+          <Field.Prose>
+            <p>{texts.description}</p>
+          </Field.Prose>
+          <FileUpload.Root {...options}>
+            <FileUpload.DropZone>
+              <FileUpload.Trigger />
+              <FileUpload.DropHint />
+            </FileUpload.DropZone>
+            <FileUpload.Limits />
+            <FileUpload.Rejections />
+            <FileUpload.Summary />
+            <FileUpload.List>
+              {(item) => (
+                <FileUpload.Item key={item.id} item={item}>
+                  <FileUpload.Name />
+                  <FileUpload.Type />
+                  <FileUpload.Size />
+                  <FileUpload.Status />
+                  <FileUpload.Progress />
+                  <FileUpload.Actions>
+                    <FileUpload.CancelButton />
+                    <FileUpload.RetryButton />
+                    <FileUpload.RemoveButton />
+                  </FileUpload.Actions>
+                </FileUpload.Item>
+              )}
+            </FileUpload.List>
+          </FileUpload.Root>
+        </Field.Root>
+        <div className="kv-button-group">
+          <Button type="button" className="kv-button--primary">
+            {texts.submit}
+          </Button>
+        </div>
+      </>
+    </InEnglishWhenFallback>
+  )
+}
+
+/**
+ * You decide whether a missing file blocks the form: mark the Field `invalid` and write the
+ * message. The Trigger is described by it.
+ */
+export function InvalidAttachments({ locale, ...options }: AttachmentsProps) {
+  const { texts, isFallback } = fileUploadTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root invalid>
+        <Field.Label>{texts.label}</Field.Label>
+        <Field.Prose>
+          <p>{texts.description}</p>
+        </Field.Prose>
+        <FileUpload.Root {...options}>
+          <FileUpload.DropZone>
+            <FileUpload.Trigger />
+            <FileUpload.DropHint />
+          </FileUpload.DropZone>
+          <FileUpload.Limits />
+          <FileUpload.Rejections />
+          <FileUpload.Summary />
+          <FileUpload.List>
+            {(item) => (
+              <FileUpload.Item key={item.id} item={item}>
+                <FileUpload.Name />
+                <FileUpload.Type />
+                <FileUpload.Size />
+                <FileUpload.Status />
+                <FileUpload.Progress />
+                <FileUpload.Actions>
+                  <FileUpload.CancelButton />
+                  <FileUpload.RetryButton />
+                  <FileUpload.RemoveButton />
+                </FileUpload.Actions>
+              </FileUpload.Item>
+            )}
+          </FileUpload.List>
+        </FileUpload.Root>
+        <Field.ErrorMessage>{texts.errorMissing}</Field.ErrorMessage>
+      </Field.Root>
+    </InEnglishWhenFallback>
+  )
+}
+
+/** A required Field: the Trigger never carries `aria-required` (a button doesn't allow it). */
+export function RequiredAttachments({ locale, ...options }: AttachmentsProps) {
+  const { texts, isFallback } = fileUploadTextsFor(locale)
+  return (
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
         <Field.Label>{texts.label}</Field.Label>
         <Field.Prose>
           <p>{texts.description}</p>
@@ -264,92 +365,7 @@ export function AttachmentsWithSendButton({ locale, ...options }: AttachmentsPro
           </FileUpload.List>
         </FileUpload.Root>
       </Field.Root>
-      <div className="kv-button-group">
-        <Button type="button" className="kv-button--primary">
-          {texts.submit}
-        </Button>
-      </div>
-    </>
-  )
-}
-
-/**
- * You decide whether a missing file blocks the form: mark the Field `invalid` and write the
- * message. The Trigger is described by it.
- */
-export function InvalidAttachments({ locale, ...options }: AttachmentsProps) {
-  const { texts, lang } = fileUploadTextsFor(locale)
-  return (
-    <Field.Root invalid lang={lang}>
-      <Field.Label>{texts.label}</Field.Label>
-      <Field.Prose>
-        <p>{texts.description}</p>
-      </Field.Prose>
-      <FileUpload.Root {...options}>
-        <FileUpload.DropZone>
-          <FileUpload.Trigger />
-          <FileUpload.DropHint />
-        </FileUpload.DropZone>
-        <FileUpload.Limits />
-        <FileUpload.Rejections />
-        <FileUpload.Summary />
-        <FileUpload.List>
-          {(item) => (
-            <FileUpload.Item key={item.id} item={item}>
-              <FileUpload.Name />
-              <FileUpload.Type />
-              <FileUpload.Size />
-              <FileUpload.Status />
-              <FileUpload.Progress />
-              <FileUpload.Actions>
-                <FileUpload.CancelButton />
-                <FileUpload.RetryButton />
-                <FileUpload.RemoveButton />
-              </FileUpload.Actions>
-            </FileUpload.Item>
-          )}
-        </FileUpload.List>
-      </FileUpload.Root>
-      <Field.ErrorMessage>{texts.errorMissing}</Field.ErrorMessage>
-    </Field.Root>
-  )
-}
-
-/** A required Field: the Trigger never carries `aria-required` (a button doesn't allow it). */
-export function RequiredAttachments({ locale, ...options }: AttachmentsProps) {
-  const { texts, lang } = fileUploadTextsFor(locale)
-  return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{texts.label}</Field.Label>
-      <Field.Prose>
-        <p>{texts.description}</p>
-      </Field.Prose>
-      <FileUpload.Root {...options}>
-        <FileUpload.DropZone>
-          <FileUpload.Trigger />
-          <FileUpload.DropHint />
-        </FileUpload.DropZone>
-        <FileUpload.Limits />
-        <FileUpload.Rejections />
-        <FileUpload.Summary />
-        <FileUpload.List>
-          {(item) => (
-            <FileUpload.Item key={item.id} item={item}>
-              <FileUpload.Name />
-              <FileUpload.Type />
-              <FileUpload.Size />
-              <FileUpload.Status />
-              <FileUpload.Progress />
-              <FileUpload.Actions>
-                <FileUpload.CancelButton />
-                <FileUpload.RetryButton />
-                <FileUpload.RemoveButton />
-              </FileUpload.Actions>
-            </FileUpload.Item>
-          )}
-        </FileUpload.List>
-      </FileUpload.Root>
-    </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -360,39 +376,41 @@ export function RequiredAttachments({ locale, ...options }: AttachmentsProps) {
  * enters the list.
  */
 export function AttachmentsWithOwnChecks({ locale, ...options }: AttachmentsProps) {
-  const { texts, lang } = fileUploadTextsFor(locale)
+  const { texts, isFallback } = fileUploadTextsFor(locale)
   return (
-    <Field.Root lang={lang}>
-      <Field.Label>{texts.label}</Field.Label>
-      <Field.Prose>
-        <p>{texts.description}</p>
-      </Field.Prose>
-      <FileUpload.Root
-        {...options}
-        validate={(file) => (file.name.includes(' ') ? texts.nameWithSpaces : undefined)}
-      >
-        <FileUpload.DropZone>
-          <FileUpload.Trigger />
-          <FileUpload.DropHint />
-        </FileUpload.DropZone>
-        <FileUpload.Limits />
-        <FileUpload.Rejections />
-        <FileUpload.Summary />
-        <FileUpload.List>
-          {(item) => (
-            <FileUpload.Item key={item.id} item={item}>
-              <FileUpload.Name />
-              <FileUpload.Type />
-              <FileUpload.Size />
-              <FileUpload.Status />
-              <FileUpload.Actions>
-                <FileUpload.RemoveButton />
-              </FileUpload.Actions>
-            </FileUpload.Item>
-          )}
-        </FileUpload.List>
-      </FileUpload.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root>
+        <Field.Label>{texts.label}</Field.Label>
+        <Field.Prose>
+          <p>{texts.description}</p>
+        </Field.Prose>
+        <FileUpload.Root
+          {...options}
+          validate={(file) => (file.name.includes(' ') ? texts.nameWithSpaces : undefined)}
+        >
+          <FileUpload.DropZone>
+            <FileUpload.Trigger />
+            <FileUpload.DropHint />
+          </FileUpload.DropZone>
+          <FileUpload.Limits />
+          <FileUpload.Rejections />
+          <FileUpload.Summary />
+          <FileUpload.List>
+            {(item) => (
+              <FileUpload.Item key={item.id} item={item}>
+                <FileUpload.Name />
+                <FileUpload.Type />
+                <FileUpload.Size />
+                <FileUpload.Status />
+                <FileUpload.Actions>
+                  <FileUpload.RemoveButton />
+                </FileUpload.Actions>
+              </FileUpload.Item>
+            )}
+          </FileUpload.List>
+        </FileUpload.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -403,49 +421,51 @@ export function AttachmentsWithOwnChecks({ locale, ...options }: AttachmentsProp
  * neutral sentence and Retry. A bare `Error` is never shown to people.
  */
 export function AttachmentsWithFailureReasons({ locale, ...options }: AttachmentsProps) {
-  const { texts, lang } = fileUploadTextsFor(locale)
+  const { texts, isFallback } = fileUploadTextsFor(locale)
   return (
-    <Field.Root lang={lang}>
-      <Field.Label>{texts.label}</Field.Label>
-      <Field.Prose>
-        <p>{texts.description}</p>
-      </Field.Prose>
-      <FileUpload.Root
-        {...options}
-        upload={(file) =>
-          file.type === 'image/jpeg'
-            ? Promise.reject(
-                Object.assign(new Error(texts.notAccepted(file.name)), { retryable: false }),
-              )
-            : Promise.reject(new Error('The server did not answer.'))
-        }
-      >
-        <FileUpload.DropZone>
-          <FileUpload.Trigger />
-          <FileUpload.DropHint />
-        </FileUpload.DropZone>
-        <FileUpload.Limits />
-        <FileUpload.Rejections />
-        <FileUpload.Summary />
-        <FileUpload.List>
-          {(item) => (
-            <FileUpload.Item key={item.id} item={item}>
-              <FileUpload.Name />
-              <FileUpload.Type />
-              <FileUpload.Size />
-              <FileUpload.Status />
-              <FileUpload.ItemError />
-              <FileUpload.Progress />
-              <FileUpload.Actions>
-                <FileUpload.CancelButton />
-                <FileUpload.RetryButton />
-                <FileUpload.RemoveButton />
-              </FileUpload.Actions>
-            </FileUpload.Item>
-          )}
-        </FileUpload.List>
-      </FileUpload.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root>
+        <Field.Label>{texts.label}</Field.Label>
+        <Field.Prose>
+          <p>{texts.description}</p>
+        </Field.Prose>
+        <FileUpload.Root
+          {...options}
+          upload={(file) =>
+            file.type === 'image/jpeg'
+              ? Promise.reject(
+                  Object.assign(new Error(texts.notAccepted(file.name)), { retryable: false }),
+                )
+              : Promise.reject(new Error('The server did not answer.'))
+          }
+        >
+          <FileUpload.DropZone>
+            <FileUpload.Trigger />
+            <FileUpload.DropHint />
+          </FileUpload.DropZone>
+          <FileUpload.Limits />
+          <FileUpload.Rejections />
+          <FileUpload.Summary />
+          <FileUpload.List>
+            {(item) => (
+              <FileUpload.Item key={item.id} item={item}>
+                <FileUpload.Name />
+                <FileUpload.Type />
+                <FileUpload.Size />
+                <FileUpload.Status />
+                <FileUpload.ItemError />
+                <FileUpload.Progress />
+                <FileUpload.Actions>
+                  <FileUpload.CancelButton />
+                  <FileUpload.RetryButton />
+                  <FileUpload.RemoveButton />
+                </FileUpload.Actions>
+              </FileUpload.Item>
+            )}
+          </FileUpload.List>
+        </FileUpload.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -455,43 +475,45 @@ export function AttachmentsWithFailureReasons({ locale, ...options }: Attachment
  * change together. Every other string keeps the provider's wording.
  */
 export function AttachmentsWithOwnWords({ locale, ...options }: AttachmentsProps) {
-  const { texts, lang } = fileUploadTextsFor(locale)
+  const { texts, isFallback } = fileUploadTextsFor(locale)
   return (
-    <Field.Root lang={lang}>
-      <Field.Label>{texts.label}</Field.Label>
-      <Field.Prose>
-        <p>{texts.description}</p>
-      </Field.Prose>
-      <FileUpload.Root
-        {...options}
-        messages={{
-          chooseFiles: texts.ownChooseFiles,
-          remove: texts.ownRemove,
-          removeFile: ({ name }) => `${texts.ownRemove} ${name}`,
-        }}
-      >
-        <FileUpload.DropZone>
-          <FileUpload.Trigger />
-          <FileUpload.DropHint />
-        </FileUpload.DropZone>
-        <FileUpload.Limits />
-        <FileUpload.Rejections />
-        <FileUpload.Summary />
-        <FileUpload.List>
-          {(item) => (
-            <FileUpload.Item key={item.id} item={item}>
-              <FileUpload.Name />
-              <FileUpload.Type />
-              <FileUpload.Size />
-              <FileUpload.Status />
-              <FileUpload.Actions>
-                <FileUpload.RemoveButton />
-              </FileUpload.Actions>
-            </FileUpload.Item>
-          )}
-        </FileUpload.List>
-      </FileUpload.Root>
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root>
+        <Field.Label>{texts.label}</Field.Label>
+        <Field.Prose>
+          <p>{texts.description}</p>
+        </Field.Prose>
+        <FileUpload.Root
+          {...options}
+          messages={{
+            chooseFiles: texts.ownChooseFiles,
+            remove: texts.ownRemove,
+            removeFile: ({ name }) => `${texts.ownRemove} ${name}`,
+          }}
+        >
+          <FileUpload.DropZone>
+            <FileUpload.Trigger />
+            <FileUpload.DropHint />
+          </FileUpload.DropZone>
+          <FileUpload.Limits />
+          <FileUpload.Rejections />
+          <FileUpload.Summary />
+          <FileUpload.List>
+            {(item) => (
+              <FileUpload.Item key={item.id} item={item}>
+                <FileUpload.Name />
+                <FileUpload.Type />
+                <FileUpload.Size />
+                <FileUpload.Status />
+                <FileUpload.Actions>
+                  <FileUpload.RemoveButton />
+                </FileUpload.Actions>
+              </FileUpload.Item>
+            )}
+          </FileUpload.List>
+        </FileUpload.Root>
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -501,15 +523,17 @@ export function AttachmentsWithOwnWords({ locale, ...options }: AttachmentsProps
  * this example builds the elements from `useFileUpload`, inside the Field so the hook reads it.
  */
 export function AttachmentsSentByHand({ locale }: { locale: FormLocale }) {
-  const { texts, lang } = fileUploadTextsFor(locale)
+  const { texts, isFallback } = fileUploadTextsFor(locale)
   return (
-    <Field.Root lang={lang}>
-      <Field.Label>{texts.label}</Field.Label>
-      <Field.Prose>
-        <p>{texts.description}</p>
-      </Field.Prose>
-      <QueuedAttachments locale={locale} />
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root>
+        <Field.Label>{texts.label}</Field.Label>
+        <Field.Prose>
+          <p>{texts.description}</p>
+        </Field.Prose>
+        <QueuedAttachments locale={locale} />
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 

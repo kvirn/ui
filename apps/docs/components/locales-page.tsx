@@ -227,8 +227,8 @@ export function LocalesPage({
               </p>
               <CodeBlock code={localeProps} />
               <p>
-                This site does the same: each example sets <code>lang=&quot;en&quot;</code> on text
-                that fell back to English.
+                This site does the same: an example whose text fell back to English renders in a
+                nested English provider, so nothing sets <code>lang</code> on a component.
               </p>
             </>
           ),

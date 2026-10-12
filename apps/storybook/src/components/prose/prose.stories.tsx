@@ -81,11 +81,12 @@ export const Article: Story = {
   parameters: showSource('prose/prose.fixture.tsx', 'GuidanceArticle'),
   render: (_args, { globals }) => <GuidanceArticle locale={fixtureLocaleOf(globals['locale'])} />,
   play: async ({ canvasElement, globals }) => {
-    const { text, lang } = articleFor(fixtureLocaleOf(globals['locale']))
+    const locale = fixtureLocaleOf(globals['locale'])
+    const { text, isFallback } = articleFor(locale)
     const canvas = within(canvasElement)
     const article = articleOf(canvasElement)
     await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent(text.title)
-    await expect(article.getAttribute('lang') ?? undefined).toBe(lang)
+    await expect(article.closest('[lang]')).toHaveAttribute('lang', isFallback ? 'en' : locale)
     await expectScrollRegion(canvasElement, text.times.caption)
     const steps = within(canvasElement).getByRole('heading', { level: 2, name: text.steps.heading })
     await expect(steps.nextElementSibling).toHaveClass('kv-steps')

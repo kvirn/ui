@@ -12,7 +12,7 @@ Badge is a `<span>` with a class, so the theme can draw a short status or catego
 
 | Part  | Element / role     | ARIA                     | Notes                                                                                                                                                                                                          |
 | ----- | ------------------ | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Badge | `<span>` → no role | none                     | `class="kv-badge"`, plus `kv-badge--<variant>` for `primary`, `info`, `success`, `warning` and `danger`. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged                           |
+| Badge | `<span>` → no role | none                     | `class="kv-badge"`, plus `kv-badge--<variant>` for `primary`, `info`, `success`, `warning` and `danger`. Attributes (`id`, `aria-*`) and the ref reach the element unchanged                                   |
 | Badge | `as`               | the chosen element's own | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Badge:<tag>`) and renders the default element. `className` joins, the ref gets the element |
 | Badge | never              | no `role`, `tabindex`    | No `role="status"`, no live region, no click handler, no icon and no generated text: the words are the consumer's children, so nothing is skipped or read twice                                                |
 
@@ -52,7 +52,7 @@ Badge renders no text of its own, so it has no message keys. A badge that change
 - **Words, always.** The text says the status (`Beviljad`, `Väntar på komplettering`): the colour is only a second cue (1.4.1). Never an empty badge, a dot or an icon alone.
 - **Give it context.** A badge next to a title reads as part of it. Where "Beviljad" alone is unclear, label what it is for in the surrounding text (a "Status" term in a definition list).
 - **Keep it short.** A badge is one word or a few; it does not wrap (`white-space: nowrap`). Long text belongs in a paragraph.
-- **Language.** `lang` on a badge in a text of another language (3.1.2).
+- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2).
 - **Changing status.** Announce a change in your own live region if the user needs to hear it (4.1.3).
 
 ## Visual / modes
@@ -65,7 +65,6 @@ Headless: Badge ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-badge` draws
 - 1.4.1 Use of Color: the consumer's words are the status (story `Variants`, axe in every theme).
 - 1.4.3 Contrast: the text on its background, measured by `theme:check`.
 - 1.4.4 Resize Text: the size is in rem.
-- 3.1.2 Language of Parts: the consumer's `lang` reaches the element.
 
 ## AT test record
 

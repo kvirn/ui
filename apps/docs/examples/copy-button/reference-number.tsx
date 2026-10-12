@@ -2,16 +2,19 @@
 import { CopyButton } from '@kvirn-ui/react'
 import { useRef } from 'react'
 import { useCopyButtonTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function ReferenceNumber() {
-  const { texts, textLang } = useCopyButtonTexts()
+  const { texts, isFallback } = useCopyButtonTexts()
   const numberRef = useRef<HTMLElement>(null)
   return (
-    <p lang={textLang}>
-      {texts.yourNumber} <strong ref={numberRef}>{texts.referenceNumber}</strong>{' '}
-      <CopyButton text={texts.referenceNumber} textRef={numberRef} lang={textLang}>
-        {texts.copyNumber}
-      </CopyButton>
-    </p>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <p>
+        {texts.yourNumber} <strong ref={numberRef}>{texts.referenceNumber}</strong>{' '}
+        <CopyButton text={texts.referenceNumber} textRef={numberRef}>
+          {texts.copyNumber}
+        </CopyButton>
+      </p>
+    </InEnglishWhenFallback>
   )
 }

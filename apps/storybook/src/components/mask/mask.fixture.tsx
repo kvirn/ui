@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { en } from '@kvirn-ui/i18n/en'
 import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
@@ -473,16 +474,16 @@ export const maskLocaleOf = (globals: Record<string, unknown>): MaskLocale => {
   return isMaskLocale(locale) ? locale : 'en'
 }
 
-/** The fixture text, and `lang="en"` when the toolbar's locale has no texts here (fi; 3.1.2). */
+/** The fixture text, and `isFallback` when the toolbar's locale has no texts here (fi; 3.1.2). */
 export function maskTextsFor(globals: Record<string, unknown>): {
   text: MaskTexts
-  lang: 'en' | undefined
+  isFallback: boolean
   locale: MaskLocale
 } {
   const locale = maskLocaleOf(globals)
   return {
     text: maskTexts[locale],
-    lang: isMaskLocale(globals['locale']) ? undefined : 'en',
+    isFallback: !isMaskLocale(globals['locale']),
     locale,
   }
 }
@@ -514,236 +515,244 @@ export const withMaskLocale: Decorator = (Story, { globals }) => {
 
 /** The identifier presets, each with its own example (the published test numbers). */
 export function IdentifierFields({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   return (
-    <>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.personalIdentityNumber}</Field.Label>
-        <Field.Prose>
-          <p>{text.personalIdentityNumberHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="personalIdentityNumber"
-          mask="personal-identity-number"
-          autoComplete="off"
-          className="kv-input--width-20"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.personalIdentityNumberFi}</Field.Label>
-        <Field.Prose>
-          <p>{text.personalIdentityNumberFiHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="personalIdentityNumberFi"
-          mask={{ preset: 'personal-identity-number', country: 'FI' }}
-          autoComplete="off"
-          className="kv-input--width-20"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.personalIdentityNumberNo}</Field.Label>
-        <Field.Prose>
-          <p>{text.personalIdentityNumberNoHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="personalIdentityNumberNo"
-          mask={{ preset: 'personal-identity-number', country: 'NO' }}
-          autoComplete="off"
-          className="kv-input--width-20"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.organisationNumber}</Field.Label>
-        <Field.Prose>
-          <p>{text.organisationNumberHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="organisationNumber"
-          mask="organisation-number"
-          autoComplete="off"
-          className="kv-input--width-20"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.postalCode}</Field.Label>
-        <Field.Prose>
-          <p>{text.postalCodeHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="postalCode"
-          mask="postal-code"
-          autoComplete="postal-code"
-          className="kv-input--width-6"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.iban}</Field.Label>
-        <Field.Prose>
-          <p>{text.ibanHint}</p>
-        </Field.Prose>
-        <TextInput name="iban" mask="iban" autoComplete="off" />
-      </Field.Root>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Field.Root required>
+          <Field.Label>{text.personalIdentityNumber}</Field.Label>
+          <Field.Prose>
+            <p>{text.personalIdentityNumberHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="personalIdentityNumber"
+            mask="personal-identity-number"
+            autoComplete="off"
+            className="kv-input--width-20"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.personalIdentityNumberFi}</Field.Label>
+          <Field.Prose>
+            <p>{text.personalIdentityNumberFiHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="personalIdentityNumberFi"
+            mask={{ preset: 'personal-identity-number', country: 'FI' }}
+            autoComplete="off"
+            className="kv-input--width-20"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.personalIdentityNumberNo}</Field.Label>
+          <Field.Prose>
+            <p>{text.personalIdentityNumberNoHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="personalIdentityNumberNo"
+            mask={{ preset: 'personal-identity-number', country: 'NO' }}
+            autoComplete="off"
+            className="kv-input--width-20"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.organisationNumber}</Field.Label>
+          <Field.Prose>
+            <p>{text.organisationNumberHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="organisationNumber"
+            mask="organisation-number"
+            autoComplete="off"
+            className="kv-input--width-20"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.postalCode}</Field.Label>
+          <Field.Prose>
+            <p>{text.postalCodeHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="postalCode"
+            mask="postal-code"
+            autoComplete="postal-code"
+            className="kv-input--width-6"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.iban}</Field.Label>
+          <Field.Prose>
+            <p>{text.ibanHint}</p>
+          </Field.Prose>
+          <TextInput name="iban" mask="iban" autoComplete="off" />
+        </Field.Root>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
 /** The filter presets: they drop what can't be valid and don't give the value a shape. */
 export function FilterFields({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   return (
-    <>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.digits}</Field.Label>
-        <Field.Prose>
-          <p>{text.digitsHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="digits"
-          mask={masks.digits({ length: 6 })}
-          autoComplete="off"
-          className="kv-input--width-10"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.letters}</Field.Label>
-        <Field.Prose>
-          <p>{text.lettersHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="letters"
-          mask="letters"
-          autoComplete="off"
-          className="kv-input--width-10"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.lettersAndDigits}</Field.Label>
-        <Field.Prose>
-          <p>{text.lettersAndDigitsHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="lettersAndDigits"
-          mask="letters-and-digits"
-          autoComplete="off"
-          className="kv-input--width-10"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.email}</Field.Label>
-        <Field.Prose>
-          <p>{text.emailHint}</p>
-        </Field.Prose>
-        <TextInput name="email" type="email" mask="email" autoComplete="email" />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.telephone}</Field.Label>
-        <Field.Prose>
-          <p>{text.telephoneHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="telephone"
-          type="tel"
-          mask="telephone"
-          autoComplete="tel"
-          className="kv-input--width-20"
-        />
-      </Field.Root>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Field.Root required>
+          <Field.Label>{text.digits}</Field.Label>
+          <Field.Prose>
+            <p>{text.digitsHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="digits"
+            mask={masks.digits({ length: 6 })}
+            autoComplete="off"
+            className="kv-input--width-10"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.letters}</Field.Label>
+          <Field.Prose>
+            <p>{text.lettersHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="letters"
+            mask="letters"
+            autoComplete="off"
+            className="kv-input--width-10"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.lettersAndDigits}</Field.Label>
+          <Field.Prose>
+            <p>{text.lettersAndDigitsHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="lettersAndDigits"
+            mask="letters-and-digits"
+            autoComplete="off"
+            className="kv-input--width-10"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.email}</Field.Label>
+          <Field.Prose>
+            <p>{text.emailHint}</p>
+          </Field.Prose>
+          <TextInput name="email" type="email" mask="email" autoComplete="email" />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.telephone}</Field.Label>
+          <Field.Prose>
+            <p>{text.telephoneHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="telephone"
+            type="tel"
+            mask="telephone"
+            autoComplete="tel"
+            className="kv-input--width-20"
+          />
+        </Field.Root>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
 /** Your own pattern, and your own regular expression. */
 export function CustomMaskFields({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   return (
-    <>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.caseNumber}</Field.Label>
-        <Field.Prose>
-          <p>{text.caseNumberHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="caseNumber"
-          // `a` is a letter, `9` a digit, anything else a literal. The transform capitalises.
-          mask={{
-            pattern: 'aa-9999',
-            transform: { a: (character) => character.toUpperCase() },
-            attributes: { autoCapitalize: 'characters', spellCheck: false, dir: 'ltr' },
-          }}
-          autoComplete="off"
-          className="kv-input--width-6"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.registration}</Field.Label>
-        <Field.Prose>
-          <p>{text.registrationHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="registration"
-          // The expression must accept partial values: the whole new value has to match.
-          mask={masks.regexp(/^[A-Z]{0,3}[0-9]{0,3}$/, {
-            allowed: 'other',
-            transform: (character) => character.toUpperCase(),
-            complete: /^[A-Z]{3}[0-9]{3}$/,
-            attributes: { autoCapitalize: 'characters', spellCheck: false, dir: 'ltr' },
-          })}
-          autoComplete="off"
-          className="kv-input--width-6"
-        />
-      </Field.Root>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Field.Root required>
+          <Field.Label>{text.caseNumber}</Field.Label>
+          <Field.Prose>
+            <p>{text.caseNumberHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="caseNumber"
+            // `a` is a letter, `9` a digit, anything else a literal. The transform capitalises.
+            mask={{
+              pattern: 'aa-9999',
+              transform: { a: (character) => character.toUpperCase() },
+              attributes: { autoCapitalize: 'characters', spellCheck: false, dir: 'ltr' },
+            }}
+            autoComplete="off"
+            className="kv-input--width-6"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.registration}</Field.Label>
+          <Field.Prose>
+            <p>{text.registrationHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="registration"
+            // The expression must accept partial values: the whole new value has to match.
+            mask={masks.regexp(/^[A-Z]{0,3}[0-9]{0,3}$/, {
+              allowed: 'other',
+              transform: (character) => character.toUpperCase(),
+              complete: /^[A-Z]{3}[0-9]{3}$/,
+              attributes: { autoCapitalize: 'characters', spellCheck: false, dir: 'ltr' },
+            })}
+            autoComplete="off"
+            className="kv-input--width-6"
+          />
+        </Field.Root>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
 /** A number with a range: `isWithinRange` is reported, and the value is never clamped. */
 export function NumberFields({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   const [isWithinRange, setIsWithinRange] = useState<boolean | undefined>(undefined)
   const [unmasked, setUnmasked] = useState('')
   return (
-    <>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.amount}</Field.Label>
-        <Field.Prose>
-          <p>{text.amountHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="rent"
-          mask={masks.number({ decimals: 2, min: 0, max: 100_000 })}
-          autoComplete="off"
-          className="kv-input--width-10 kv-input--numeric"
-          onValueChange={(_value, details) => {
-            setIsWithinRange(details.isWithinRange)
-            setUnmasked(details.unmaskedValue ?? '')
-          }}
-        />
-        {/* The consumer's own message, shown as a help text: nothing is clamped or corrected. */}
-        <p className="kv-story-form-output" data-testid="range">
-          {isWithinRange === undefined
-            ? ''
-            : isWithinRange
-              ? text.amountInRange
-              : text.amountOutOfRange}
-        </p>
-        <p className="kv-story-form-output" data-testid="unmasked">
-          {text.unmasked}: {unmasked}
-        </p>
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.temperature}</Field.Label>
-        <Field.Prose>
-          <p>{text.temperatureHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="temperature"
-          mask={masks.number({ decimals: 1, allowNegative: true })}
-          autoComplete="off"
-          className="kv-input--width-6 kv-input--numeric"
-        />
-      </Field.Root>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Field.Root required>
+          <Field.Label>{text.amount}</Field.Label>
+          <Field.Prose>
+            <p>{text.amountHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="rent"
+            mask={masks.number({ decimals: 2, min: 0, max: 100_000 })}
+            autoComplete="off"
+            className="kv-input--width-10 kv-input--numeric"
+            onValueChange={(_value, details) => {
+              setIsWithinRange(details.isWithinRange)
+              setUnmasked(details.unmaskedValue ?? '')
+            }}
+          />
+          {/* The consumer's own message, shown as a help text: nothing is clamped or corrected. */}
+          <p className="kv-story-form-output" data-testid="range">
+            {isWithinRange === undefined
+              ? ''
+              : isWithinRange
+                ? text.amountInRange
+                : text.amountOutOfRange}
+          </p>
+          <p className="kv-story-form-output" data-testid="unmasked">
+            {text.unmasked}: {unmasked}
+          </p>
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.temperature}</Field.Label>
+          <Field.Prose>
+            <p>{text.temperatureHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="temperature"
+            mask={masks.number({ decimals: 1, allowNegative: true })}
+            autoComplete="off"
+            className="kv-input--width-6 kv-input--numeric"
+          />
+        </Field.Root>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -752,94 +761,97 @@ export function NumberFields({ locale }: { locale: FormLocale }) {
  * still typing: the form calls `checks.personalIdentityNumber` and says what is wrong.
  */
 export function PersonalIdentityNumberForm({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   const [value, setValue] = useState('')
   const [error, setError] = useState<string | undefined>(undefined)
   const [sent, setSent] = useState(false)
   return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const result = checks.personalIdentityNumber(value, { country: 'SE' })
-        setSent(result.isValid)
-        setError(
-          result.isValid
-            ? undefined
-            : { format: text.checkFormat, date: text.checkDate, checkDigit: text.checkDigit }[
-                result.reason
-              ],
-        )
-      }}
-    >
-      <Field.Root required invalid={error !== undefined}>
-        <Field.Label>{text.personalIdentityNumber}</Field.Label>
-        <Field.Prose>
-          <p>{text.personalIdentityNumberHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="personalIdentityNumber"
-          mask="personal-identity-number"
-          autoComplete="off"
-          className="kv-input--width-20"
-          value={value}
-          onValueChange={setValue}
-        />
-        <Field.ErrorMessage>{error}</Field.ErrorMessage>
-      </Field.Root>
-      <p className="kv-story-form-output">{text.checkAdvice}</p>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-      {sent ? (
-        <p className="kv-story-form-output" data-testid="sent">
-          {text.sent}: {value}
-        </p>
-      ) : null}
-    </form>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form
+        className="kv-story-form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          const result = checks.personalIdentityNumber(value, { country: 'SE' })
+          setSent(result.isValid)
+          setError(
+            result.isValid
+              ? undefined
+              : { format: text.checkFormat, date: text.checkDate, checkDigit: text.checkDigit }[
+                  result.reason
+                ],
+          )
+        }}
+      >
+        <Field.Root required invalid={error !== undefined}>
+          <Field.Label>{text.personalIdentityNumber}</Field.Label>
+          <Field.Prose>
+            <p>{text.personalIdentityNumberHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="personalIdentityNumber"
+            mask="personal-identity-number"
+            autoComplete="off"
+            className="kv-input--width-20"
+            value={value}
+            onValueChange={setValue}
+          />
+          <Field.ErrorMessage>{error}</Field.ErrorMessage>
+        </Field.Root>
+        <p className="kv-story-form-output">{text.checkAdvice}</p>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
+        {sent ? (
+          <p className="kv-story-form-output" data-testid="sent">
+            {text.sent}: {value}
+          </p>
+        ) : null}
+      </form>
+    </InEnglishWhenFallback>
   )
 }
 
 /** A stored value is unmasked: the form shows it with `mask.format`, never rewritten by TextInput. */
 export function StoredValueField({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   const mask = masks.personalIdentityNumber({ country: 'SE' })
   const [value, setValue] = useState(mask.format('199001012385'))
   const [details, setDetails] = useState<TextInputChangeDetails | undefined>(undefined)
   return (
-    <>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.stored}</Field.Label>
-        <Field.Prose>
-          <p>{text.storedHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="stored"
-          mask={mask}
-          autoComplete="off"
-          className="kv-input--width-20"
-          value={value}
-          onValueChange={(next, nextDetails) => {
-            setValue(next)
-            setDetails(nextDetails)
-          }}
-        />
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="stored-details">
-        {text.unmasked}: {mask.unmask(value)} · {text.complete}:{' '}
-        {details?.isComplete === false ? text.no : text.yes}
-      </p>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Field.Root required>
+          <Field.Label>{text.stored}</Field.Label>
+          <Field.Prose>
+            <p>{text.storedHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="stored"
+            mask={mask}
+            autoComplete="off"
+            className="kv-input--width-20"
+            value={value}
+            onValueChange={(next, nextDetails) => {
+              setValue(next)
+              setDetails(nextDetails)
+            }}
+          />
+        </Field.Root>
+        <p className="kv-story-form-output" data-testid="stored-details">
+          {text.unmasked}: {mask.unmask(value)} · {text.complete}:{' '}
+          {details?.isComplete === false ? text.no : text.yes}
+        </p>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
 /** The hook on your own `<input>`, next to your own props: yours win. */
 export function OwnInputField({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   const caseNumber = useMask({
     mask: {
       pattern: 'aa-9999',
@@ -848,76 +860,80 @@ export function OwnInputField({ locale }: { locale: FormLocale }) {
     },
   })
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{text.ownInput}</Field.Label>
-      <Field.Prose>
-        <p>{text.ownInputHint}</p>
-      </Field.Prose>
-      <TextInput
-        name="ownInput"
-        autoComplete="off"
-        className="kv-input--width-6"
-        // `mergeProps(mask.inputProps, ownProps)`: your own props come last and win.
-        {...mergeProps(caseNumber.inputProps, { 'data-own': '' })}
-      />
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{text.ownInput}</Field.Label>
+        <Field.Prose>
+          <p>{text.ownInputHint}</p>
+        </Field.Prose>
+        <TextInput
+          name="ownInput"
+          autoComplete="off"
+          className="kv-input--width-6"
+          // `mergeProps(mask.inputProps, ownProps)`: your own props come last and win.
+          {...mergeProps(caseNumber.inputProps, { 'data-own': '' })}
+        />
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
 /** Finland's and Norway's postcodes and organisation numbers, each by `{ preset, country }`. */
 export function NordicCountryFields({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   return (
-    <>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.postalCodeFi}</Field.Label>
-        <Field.Prose>
-          <p>{text.postalCodeFiHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="postalCodeFi"
-          mask={{ preset: 'postal-code', country: 'FI' }}
-          autoComplete="postal-code"
-          className="kv-input--width-6"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.postalCodeNo}</Field.Label>
-        <Field.Prose>
-          <p>{text.postalCodeNoHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="postalCodeNo"
-          mask={{ preset: 'postal-code', country: 'NO' }}
-          autoComplete="postal-code"
-          className="kv-input--width-6"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.organisationNumberFi}</Field.Label>
-        <Field.Prose>
-          <p>{text.organisationNumberFiHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="organisationNumberFi"
-          mask={{ preset: 'organisation-number', country: 'FI' }}
-          autoComplete="off"
-          className="kv-input--width-10"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.organisationNumberNo}</Field.Label>
-        <Field.Prose>
-          <p>{text.organisationNumberNoHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="organisationNumberNo"
-          mask={{ preset: 'organisation-number', country: 'NO' }}
-          autoComplete="off"
-          className="kv-input--width-10"
-        />
-      </Field.Root>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Field.Root required>
+          <Field.Label>{text.postalCodeFi}</Field.Label>
+          <Field.Prose>
+            <p>{text.postalCodeFiHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="postalCodeFi"
+            mask={{ preset: 'postal-code', country: 'FI' }}
+            autoComplete="postal-code"
+            className="kv-input--width-6"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.postalCodeNo}</Field.Label>
+          <Field.Prose>
+            <p>{text.postalCodeNoHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="postalCodeNo"
+            mask={{ preset: 'postal-code', country: 'NO' }}
+            autoComplete="postal-code"
+            className="kv-input--width-6"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.organisationNumberFi}</Field.Label>
+          <Field.Prose>
+            <p>{text.organisationNumberFiHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="organisationNumberFi"
+            mask={{ preset: 'organisation-number', country: 'FI' }}
+            autoComplete="off"
+            className="kv-input--width-10"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.organisationNumberNo}</Field.Label>
+          <Field.Prose>
+            <p>{text.organisationNumberNoHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="organisationNumberNo"
+            mask={{ preset: 'organisation-number', country: 'NO' }}
+            autoComplete="off"
+            className="kv-input--width-10"
+          />
+        </Field.Root>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -927,7 +943,7 @@ export function NordicCountryFields({ locale }: { locale: FormLocale }) {
  * organisation number and IBAN. Each failure has a reason, so the error says what is wrong.
  */
 export function IdentifierChecksForm({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   const [errors, setErrors] = useState<
     Record<'finnish' | 'norwegian' | 'organisation' | 'iban', string | undefined>
   >({ finnish: undefined, norwegian: undefined, organisation: undefined, iban: undefined })
@@ -938,88 +954,89 @@ export function IdentifierChecksForm({ locale }: { locale: FormLocale }) {
     country: text.checkCountry,
   }
   return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const data = new FormData(event.currentTarget)
-        const read = (name: string) => {
-          const value = data.get(name)
-          return typeof value === 'string' ? value : ''
-        }
-        const finnish = checks.personalIdentityNumber(read('finnish'), { country: 'FI' })
-        // Only for test data: the test registry's numbers add 80 to the month. Off by default.
-        const norwegian = checks.personalIdentityNumber(read('norwegian'), {
-          country: 'NO',
-          allowSyntheticNumbers: true,
-        })
-        const organisation = checks.organisationNumber(read('organisation'), { country: 'NO' })
-        const iban = checks.iban(read('iban'))
-        setErrors({
-          finnish: finnish.isValid ? undefined : reasons[finnish.reason],
-          norwegian: norwegian.isValid ? undefined : reasons[norwegian.reason],
-          organisation: organisation.isValid ? undefined : reasons[organisation.reason],
-          iban: iban.isValid ? undefined : reasons[iban.reason],
-        })
-      }}
-    >
-      <Field.Root required invalid={errors.finnish !== undefined}>
-        <Field.Label>{text.personalIdentityNumberFi}</Field.Label>
-        <Field.Prose>
-          <p>{text.personalIdentityNumberFiHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="finnish"
-          mask={{ preset: 'personal-identity-number', country: 'FI' }}
-          autoComplete="off"
-          className="kv-input--width-20"
-        />
-        <Field.ErrorMessage>{errors.finnish}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root required invalid={errors.norwegian !== undefined}>
-        <Field.Label>{text.personalIdentityNumberNo}</Field.Label>
-        <Field.Prose>
-          <p>
-            {text.personalIdentityNumberNoHint} {text.syntheticNote}
-          </p>
-        </Field.Prose>
-        <TextInput
-          name="norwegian"
-          mask={{ preset: 'personal-identity-number', country: 'NO' }}
-          autoComplete="off"
-          className="kv-input--width-20"
-        />
-        <Field.ErrorMessage>{errors.norwegian}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root required invalid={errors.organisation !== undefined}>
-        <Field.Label>{text.organisationNumberNo}</Field.Label>
-        <Field.Prose>
-          <p>{text.organisationNumberNoHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="organisation"
-          mask={{ preset: 'organisation-number', country: 'NO' }}
-          autoComplete="off"
-          className="kv-input--width-10"
-        />
-        <Field.ErrorMessage>{errors.organisation}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root required invalid={errors.iban !== undefined}>
-        <Field.Label>{text.iban}</Field.Label>
-        <Field.Prose>
-          <p>{text.ibanHint}</p>
-        </Field.Prose>
-        <TextInput name="iban" mask="iban" autoComplete="off" />
-        <Field.ErrorMessage>{errors.iban}</Field.ErrorMessage>
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-    </form>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form
+        className="kv-story-form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          const data = new FormData(event.currentTarget)
+          const read = (name: string) => {
+            const value = data.get(name)
+            return typeof value === 'string' ? value : ''
+          }
+          const finnish = checks.personalIdentityNumber(read('finnish'), { country: 'FI' })
+          // Only for test data: the test registry's numbers add 80 to the month. Off by default.
+          const norwegian = checks.personalIdentityNumber(read('norwegian'), {
+            country: 'NO',
+            allowSyntheticNumbers: true,
+          })
+          const organisation = checks.organisationNumber(read('organisation'), { country: 'NO' })
+          const iban = checks.iban(read('iban'))
+          setErrors({
+            finnish: finnish.isValid ? undefined : reasons[finnish.reason],
+            norwegian: norwegian.isValid ? undefined : reasons[norwegian.reason],
+            organisation: organisation.isValid ? undefined : reasons[organisation.reason],
+            iban: iban.isValid ? undefined : reasons[iban.reason],
+          })
+        }}
+      >
+        <Field.Root required invalid={errors.finnish !== undefined}>
+          <Field.Label>{text.personalIdentityNumberFi}</Field.Label>
+          <Field.Prose>
+            <p>{text.personalIdentityNumberFiHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="finnish"
+            mask={{ preset: 'personal-identity-number', country: 'FI' }}
+            autoComplete="off"
+            className="kv-input--width-20"
+          />
+          <Field.ErrorMessage>{errors.finnish}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root required invalid={errors.norwegian !== undefined}>
+          <Field.Label>{text.personalIdentityNumberNo}</Field.Label>
+          <Field.Prose>
+            <p>
+              {text.personalIdentityNumberNoHint} {text.syntheticNote}
+            </p>
+          </Field.Prose>
+          <TextInput
+            name="norwegian"
+            mask={{ preset: 'personal-identity-number', country: 'NO' }}
+            autoComplete="off"
+            className="kv-input--width-20"
+          />
+          <Field.ErrorMessage>{errors.norwegian}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root required invalid={errors.organisation !== undefined}>
+          <Field.Label>{text.organisationNumberNo}</Field.Label>
+          <Field.Prose>
+            <p>{text.organisationNumberNoHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="organisation"
+            mask={{ preset: 'organisation-number', country: 'NO' }}
+            autoComplete="off"
+            className="kv-input--width-10"
+          />
+          <Field.ErrorMessage>{errors.organisation}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root required invalid={errors.iban !== undefined}>
+          <Field.Label>{text.iban}</Field.Label>
+          <Field.Prose>
+            <p>{text.ibanHint}</p>
+          </Field.Prose>
+          <TextInput name="iban" mask="iban" autoComplete="off" />
+          <Field.ErrorMessage>{errors.iban}</Field.ErrorMessage>
+        </Field.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
+      </form>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -1029,60 +1046,64 @@ export function IdentifierChecksForm({ locale }: { locale: FormLocale }) {
  * field's own mask, so the hint and the field never disagree.
  */
 export function GroupedNumberFields({ locale }: { locale: FormLocale }) {
-  const { text, lang, locale: maskLocale } = maskTextsFor({ locale })
+  const { text, isFallback, locale: maskLocale } = maskTextsFor({ locale })
   const pageMask = masks.number({ decimals: 2, grouping: true })
   const finnishMask = masks.number({ decimals: 2, grouping: true, locale: 'fi' })
   const pageExample = pageMask.withLocale(maskLocale).format('1250000.5')
   const finnishExample = finnishMask.format('1250000.5')
   return (
-    <>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.groupedAmount}</Field.Label>
-        <Field.Prose>
-          <p>{text.groupedAmountHint(pageExample)}</p>
-        </Field.Prose>
-        <TextInput
-          name="amount"
-          mask={pageMask}
-          autoComplete="off"
-          className="kv-input--width-10 kv-input--numeric"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.finnishAmount}</Field.Label>
-        <Field.Prose>
-          <p>{text.finnishAmountHint(finnishExample)}</p>
-        </Field.Prose>
-        <TextInput
-          name="amountFi"
-          mask={finnishMask}
-          autoComplete="off"
-          className="kv-input--width-10 kv-input--numeric"
-        />
-      </Field.Root>
-      <p className="kv-story-form-output" data-testid="stored">
-        {text.storedAmount}: {pageExample}
-      </p>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Field.Root required>
+          <Field.Label>{text.groupedAmount}</Field.Label>
+          <Field.Prose>
+            <p>{text.groupedAmountHint(pageExample)}</p>
+          </Field.Prose>
+          <TextInput
+            name="amount"
+            mask={pageMask}
+            autoComplete="off"
+            className="kv-input--width-10 kv-input--numeric"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.finnishAmount}</Field.Label>
+          <Field.Prose>
+            <p>{text.finnishAmountHint(finnishExample)}</p>
+          </Field.Prose>
+          <TextInput
+            name="amountFi"
+            mask={finnishMask}
+            autoComplete="off"
+            className="kv-input--width-10 kv-input--numeric"
+          />
+        </Field.Root>
+        <p className="kv-story-form-output" data-testid="stored">
+          {text.storedAmount}: {pageExample}
+        </p>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
 /** A one-time code on a plain TextInput: `masks.oneTimeCode` with the code's pattern. */
 export function PlainCodeField({ locale }: { locale: FormLocale }) {
-  const { label, hint, lang } = codeTextsFor(locale, 'email', '&&&&-&&&&')
+  const { label, hint, isFallback } = codeTextsFor(locale, 'email', '&&&&-&&&&')
   return (
-    <Field.Root required lang={lang}>
-      <Field.Label>{label}</Field.Label>
-      <Field.Prose>
-        <p>{hint}</p>
-      </Field.Prose>
-      <TextInput
-        name="code"
-        mask={masks.oneTimeCode({ pattern: '&&&&-&&&&' })}
-        autoComplete="one-time-code"
-        className="kv-input--width-10"
-      />
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{label}</Field.Label>
+        <Field.Prose>
+          <p>{hint}</p>
+        </Field.Prose>
+        <TextInput
+          name="code"
+          mask={masks.oneTimeCode({ pattern: '&&&&-&&&&' })}
+          autoComplete="one-time-code"
+          className="kv-input--width-10"
+        />
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -1092,76 +1113,78 @@ export function PlainCodeField({ locale }: { locale: FormLocale }) {
  * the spaces and hyphens for the value you store.
  */
 export function PatternOptionFields({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   const [isCustomerNumberComplete, setIsCustomerNumberComplete] = useState(false)
   const [account, setAccount] = useState({ unmaskedValue: '', isComplete: false })
   return (
-    <>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.bookingCode}</Field.Label>
-        <Field.Prose>
-          <p>{text.bookingCodeHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="bookingCode"
-          // `\9` is a literal 9, not a digit. `*` takes a letter or a digit, here in capitals.
-          mask={{
-            pattern: String.raw`\9**-999`,
-            transform: { '*': (character) => character.toUpperCase() },
-            attributes: { autoCapitalize: 'characters', spellCheck: false, dir: 'ltr' },
-          }}
-          autoComplete="off"
-          className="kv-input--width-6"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.customerNumber}</Field.Label>
-        <Field.Prose>
-          <p>{text.customerNumberHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="customerNumber"
-          // Complete at eight digits and at ten, but not at nine.
-          mask={{ pattern: '9999999999', completeLengths: [8, 10] }}
-          autoComplete="off"
-          className="kv-input--width-10"
-          onValueChange={(_value, details) =>
-            setIsCustomerNumberComplete(details.isComplete === true)
-          }
-        />
-        <p className="kv-story-form-output" data-testid="customer-complete">
-          {text.complete}: {isCustomerNumberComplete ? text.yes : text.no}
-        </p>
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.accountNumber}</Field.Label>
-        <Field.Prose>
-          <p>{text.accountNumberHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="accountNumber"
-          // The expression accepts partial values. `unmask` is what you store; `complete` says when
-          // there are enough digits.
-          mask={masks.regexp(/^[\d -]*$/, {
-            unmask: (value) => value.replaceAll(/\D/g, ''),
-            complete: /^(?:[ -]*\d){8}[\d -]*$/,
-            attributes: { inputMode: 'numeric', spellCheck: false },
-          })}
-          autoComplete="off"
-          className="kv-input--width-20"
-          onValueChange={(_value, details) =>
-            setAccount({
-              unmaskedValue: details.unmaskedValue ?? '',
-              isComplete: details.isComplete === true,
-            })
-          }
-        />
-        <p className="kv-story-form-output" data-testid="account-details">
-          {text.unmasked}: {account.unmaskedValue} · {text.complete}:{' '}
-          {account.isComplete ? text.yes : text.no}
-        </p>
-      </Field.Root>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Field.Root required>
+          <Field.Label>{text.bookingCode}</Field.Label>
+          <Field.Prose>
+            <p>{text.bookingCodeHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="bookingCode"
+            // `\9` is a literal 9, not a digit. `*` takes a letter or a digit, here in capitals.
+            mask={{
+              pattern: String.raw`\9**-999`,
+              transform: { '*': (character) => character.toUpperCase() },
+              attributes: { autoCapitalize: 'characters', spellCheck: false, dir: 'ltr' },
+            }}
+            autoComplete="off"
+            className="kv-input--width-6"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.customerNumber}</Field.Label>
+          <Field.Prose>
+            <p>{text.customerNumberHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="customerNumber"
+            // Complete at eight digits and at ten, but not at nine.
+            mask={{ pattern: '9999999999', completeLengths: [8, 10] }}
+            autoComplete="off"
+            className="kv-input--width-10"
+            onValueChange={(_value, details) =>
+              setIsCustomerNumberComplete(details.isComplete === true)
+            }
+          />
+          <p className="kv-story-form-output" data-testid="customer-complete">
+            {text.complete}: {isCustomerNumberComplete ? text.yes : text.no}
+          </p>
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.accountNumber}</Field.Label>
+          <Field.Prose>
+            <p>{text.accountNumberHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="accountNumber"
+            // The expression accepts partial values. `unmask` is what you store; `complete` says when
+            // there are enough digits.
+            mask={masks.regexp(/^[\d -]*$/, {
+              unmask: (value) => value.replaceAll(/\D/g, ''),
+              complete: /^(?:[ -]*\d){8}[\d -]*$/,
+              attributes: { inputMode: 'numeric', spellCheck: false },
+            })}
+            autoComplete="off"
+            className="kv-input--width-20"
+            onValueChange={(_value, details) =>
+              setAccount({
+                unmaskedValue: details.unmaskedValue ?? '',
+                isComplete: details.isComplete === true,
+              })
+            }
+          />
+          <p className="kv-story-form-output" data-testid="account-details">
+            {text.unmasked}: {account.unmaskedValue} · {text.complete}:{' '}
+            {account.isComplete ? text.yes : text.no}
+          </p>
+        </Field.Root>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -1171,179 +1194,182 @@ export function PatternOptionFields({ locale }: { locale: FormLocale }) {
  * a filter with a custom set of characters.
  */
 export function RefusalFields({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   return (
-    <>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.digits}</Field.Label>
-        <Field.Prose>
-          <p>{text.digitsHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="digits"
-          mask={masks.digits({ length: 6 })}
-          autoComplete="off"
-          className="kv-input--width-10"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.postalCode}</Field.Label>
-        <Field.Prose>
-          <p>{text.postalCodeHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="postalCode"
-          mask="postal-code"
-          autoComplete="postal-code"
-          className="kv-input--width-6"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.letters}</Field.Label>
-        <Field.Prose>
-          <p>{text.lettersHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="letters"
-          mask="letters"
-          autoComplete="off"
-          className="kv-input--width-10"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.lettersAndDigits}</Field.Label>
-        <Field.Prose>
-          <p>{text.lettersAndDigitsHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="lettersAndDigits"
-          mask="letters-and-digits"
-          autoComplete="off"
-          className="kv-input--width-10"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.telephone}</Field.Label>
-        <Field.Prose>
-          <p>{text.telephoneHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="telephone"
-          type="tel"
-          mask="telephone"
-          autoComplete="tel"
-          className="kv-input--width-20"
-        />
-      </Field.Root>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Field.Root required>
+          <Field.Label>{text.digits}</Field.Label>
+          <Field.Prose>
+            <p>{text.digitsHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="digits"
+            mask={masks.digits({ length: 6 })}
+            autoComplete="off"
+            className="kv-input--width-10"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.postalCode}</Field.Label>
+          <Field.Prose>
+            <p>{text.postalCodeHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="postalCode"
+            mask="postal-code"
+            autoComplete="postal-code"
+            className="kv-input--width-6"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.letters}</Field.Label>
+          <Field.Prose>
+            <p>{text.lettersHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="letters"
+            mask="letters"
+            autoComplete="off"
+            className="kv-input--width-10"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.lettersAndDigits}</Field.Label>
+          <Field.Prose>
+            <p>{text.lettersAndDigitsHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="lettersAndDigits"
+            mask="letters-and-digits"
+            autoComplete="off"
+            className="kv-input--width-10"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.telephone}</Field.Label>
+          <Field.Prose>
+            <p>{text.telephoneHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="telephone"
+            type="tel"
+            mask="telephone"
+            autoComplete="tel"
+            className="kv-input--width-20"
+          />
+        </Field.Root>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
 /** The fixture the keyboard tests drive: masked fields and a button in a plain form. */
 export function KeyboardForm({ locale }: { locale: FormLocale }) {
-  const { text, lang } = maskTextsFor({ locale })
+  const { text, isFallback } = maskTextsFor({ locale })
   const [sent, setSent] = useState<string | undefined>(undefined)
   return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const data = new FormData(event.currentTarget)
-        setSent(
-          ['personalIdentityNumber', 'postalCode', 'digits', 'amount']
-            .map((name) => {
-              const value = data.get(name)
-              return typeof value === 'string' ? value : ''
-            })
-            .join(' | '),
-        )
-      }}
-    >
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.personalIdentityNumber}</Field.Label>
-        <Field.Prose>
-          <p>{text.personalIdentityNumberHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="personalIdentityNumber"
-          mask="personal-identity-number"
-          autoComplete="off"
-          className="kv-input--width-20"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.postalCode}</Field.Label>
-        <Field.Prose>
-          <p>{text.postalCodeHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="postalCode"
-          mask="postal-code"
-          autoComplete="postal-code"
-          className="kv-input--width-6"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.digits}</Field.Label>
-        <Field.Prose>
-          <p>{text.digitsHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="digits"
-          mask={masks.digits({ length: 6 })}
-          autoComplete="off"
-          className="kv-input--width-10"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.amount}</Field.Label>
-        <Field.Prose>
-          <p>{text.amountHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="amount"
-          mask={masks.number({ decimals: 2, min: 0, max: 100_000 })}
-          autoComplete="off"
-          className="kv-input--width-10 kv-input--numeric"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.quiet}</Field.Label>
-        <Field.Prose>
-          <p>{text.quietHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="quiet"
-          mask="digits"
-          announceRejections={false}
-          autoComplete="off"
-          className="kv-input--width-10"
-        />
-      </Field.Root>
-      <Field.Root required lang={lang}>
-        <Field.Label>{text.letters}</Field.Label>
-        <Field.Prose>
-          <p>{text.lettersHint}</p>
-        </Field.Prose>
-        <TextInput
-          name="letters"
-          mask="letters"
-          autoComplete="off"
-          className="kv-input--width-10"
-        />
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {text.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {text.sent}: {sent}
-        </p>
-      )}
-    </form>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form
+        className="kv-story-form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          const data = new FormData(event.currentTarget)
+          setSent(
+            ['personalIdentityNumber', 'postalCode', 'digits', 'amount']
+              .map((name) => {
+                const value = data.get(name)
+                return typeof value === 'string' ? value : ''
+              })
+              .join(' | '),
+          )
+        }}
+      >
+        <Field.Root required>
+          <Field.Label>{text.personalIdentityNumber}</Field.Label>
+          <Field.Prose>
+            <p>{text.personalIdentityNumberHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="personalIdentityNumber"
+            mask="personal-identity-number"
+            autoComplete="off"
+            className="kv-input--width-20"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.postalCode}</Field.Label>
+          <Field.Prose>
+            <p>{text.postalCodeHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="postalCode"
+            mask="postal-code"
+            autoComplete="postal-code"
+            className="kv-input--width-6"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.digits}</Field.Label>
+          <Field.Prose>
+            <p>{text.digitsHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="digits"
+            mask={masks.digits({ length: 6 })}
+            autoComplete="off"
+            className="kv-input--width-10"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.amount}</Field.Label>
+          <Field.Prose>
+            <p>{text.amountHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="amount"
+            mask={masks.number({ decimals: 2, min: 0, max: 100_000 })}
+            autoComplete="off"
+            className="kv-input--width-10 kv-input--numeric"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.quiet}</Field.Label>
+          <Field.Prose>
+            <p>{text.quietHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="quiet"
+            mask="digits"
+            announceRejections={false}
+            autoComplete="off"
+            className="kv-input--width-10"
+          />
+        </Field.Root>
+        <Field.Root required>
+          <Field.Label>{text.letters}</Field.Label>
+          <Field.Prose>
+            <p>{text.lettersHint}</p>
+          </Field.Prose>
+          <TextInput
+            name="letters"
+            mask="letters"
+            autoComplete="off"
+            className="kv-input--width-10"
+          />
+        </Field.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
+        {sent === undefined ? null : (
+          <p className="kv-story-form-output" data-testid="sent">
+            {text.sent}: {sent}
+          </p>
+        )}
+      </form>
+    </InEnglishWhenFallback>
   )
 }

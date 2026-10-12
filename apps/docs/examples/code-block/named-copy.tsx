@@ -1,14 +1,17 @@
 'use client'
 import { CodeBlock } from '@kvirn-ui/react'
 import { useCodeBlockTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function NamedCopy() {
-  const { texts, textLang } = useCodeBlockTexts()
+  const { texts, isFallback } = useCodeBlockTexts()
   return (
-    <CodeBlock.Root>
-      <CodeBlock.Label lang={textLang}>{texts.installLabel}</CodeBlock.Label>
-      <CodeBlock.Code>pnpm add @kvirn-ui/react @kvirn-ui/theme</CodeBlock.Code>
-      <CodeBlock.Copy lang={textLang}>{texts.copyCommand}</CodeBlock.Copy>
-    </CodeBlock.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <CodeBlock.Root>
+        <CodeBlock.Label>{texts.installLabel}</CodeBlock.Label>
+        <CodeBlock.Code>pnpm add @kvirn-ui/react @kvirn-ui/theme</CodeBlock.Code>
+        <CodeBlock.Copy>{texts.copyCommand}</CodeBlock.Copy>
+      </CodeBlock.Root>
+    </InEnglishWhenFallback>
   )
 }

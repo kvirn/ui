@@ -86,7 +86,7 @@ SiteAlertRoot.displayName = 'SiteAlert.Root'
 
 /**
  * The one-line headline, a `<p>`: the page has no heading before its `h1`. It starts with the
- * status word. Wrap another language in `lang`.
+ * status word. A passage in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your element.
  */
 export function SiteAlertTitle(props: SiteAlertTitleProps): ReactElement {
   const alert = useContext(SiteAlertContext)

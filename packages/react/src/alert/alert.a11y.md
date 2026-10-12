@@ -24,7 +24,7 @@ There are five roots. `Alert.Root` is plain: `kv-alert` only, no status class, n
 | Alert.Close                             | `<button type="button">` → `button`   | `aria-label` from `alert.close` (`Stäng meddelandet`)                  | `class="kv-alert-close"`. Optional, at most one, last in the root. Its content is the decorative `<Icon name="close" />` (`aria-hidden`), so the name is the `aria-label`. `children` replace the icon with visible text, which then names the button and drops the `aria-label`. `onClick` is gated by `disabled`. Also exported as `AlertClose` |
 | every root                              | never                                 | no `role`, `aria-live`, `aria-atomic`, `aria-label`, `aria-labelledby` | Not a landmark and not a live region by default. No `tabindex` either. A development warning fires when a root is given `role="alert"`, `role="status"` or `aria-live`                                                                                                                                                                            |
 | every part except Close                 | `as` (allowed elements below)         | the chosen element's own                                               | One element per part, chosen with a string. The part's class joins a `className` prop, never replaced. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Alert.Title:<tag>`) and renders the default. `Alert.Close` has no `as`: it is always a native `<button>`. For another element use `useAlert`              |
-| every part                              | attributes                            | passed through                                                         | `id`, `lang`, `data-*`, `aria-*` and every other attribute reach the element unchanged                                                                                                                                                                                                                                                            |
+| every part                              | attributes                            | passed through                                                         | `id`, `data-*`, `aria-*` and every other attribute reach the element unchanged                                                                                                                                                                                                                                                                    |
 
 `useAlert({ variant?, announce?, messages? })` gives the same props for your own elements: `rootProps`, `titleProps`, `bodyProps`, `actionsProps`, `closeProps` (`className`, `type`, and the resolved `aria-label`), and with `variant` also `iconProps` and `statusProps`, all from the same table as the components.
 
@@ -100,7 +100,7 @@ Rules:
 
 ## Consumer responsibilities
 
-- **Language of the status word.** The word follows the provider's locale, not the alert's own `lang`. When an alert's content is in another language, set `messages` on that alert (for example `messages={{ warningPrefix: 'Warning:' }}`), so the word and the text agree (3.1.2).
+- **Language of the status word.** The word follows the provider's locale, not set per alert. When an alert's content is in another language, set `messages` on that alert (for example `messages={{ warningPrefix: 'Warning:' }}`), so the word and the text agree (3.1.2).
 - **A Title.** Every alert has one: it holds the status word and names the message. A development warning fires without one.
 - **The heading level** is yours (1.3.1, 2.4.6): one level below the heading of the part of the page it is in, so usually `h2` directly under the page's `h1`, `h3` inside a section with an `h2`. Never skip levels. A one-sentence alert renders the Title as `<p>` with `as="p"`.
 - **Write the Title as the outcome** in the user's words ("Vi kunde inte skicka din ansökan"), never only the status word. The Body says what to do and by when. One alert per region at a time. Never on a timer (2.2.1, 2.2.3): a transient message is a [Toast](../toast/toast.a11y.md), and a warning or danger message never toasts.
@@ -112,7 +112,7 @@ Rules:
 - **On press:** remove the alert and move focus to a sensible place in the same handler (Focus management). Never on a timer (2.2.1).
 - **The name** (`alert.close`, "Stäng meddelandet") follows the provider's locale. When the alert's content is in another language, set `messages={{ close: … }}` on the root or the button, like the status word (3.1.2). A visible label of your own goes in the `children`.
 - **Replacement icons** (`defineIcons`) for `info`, `success`, `warning` or `error` must keep a distinct shape from the other three.
-- **Language.** `lang` on any text in another language (3.1.2). The status word follows the provider's locale.
+- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2). The status word follows the provider's locale.
 
 ## Visual / modes
 

@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { AlertDialog, Button, Combobox, Dialog, Field, Popover, TextInput } from '@kvirn-ui/react'
 import { useRef, useState } from 'react'
 import { comboboxTextsFor, municipalities } from '../combobox/combobox.fixture.tsx'
@@ -7,7 +8,7 @@ import type { FormLocale } from '../form/form.fixture.tsx'
 // Fixtures for Components/Dialog: each function is one example, and the story's "Show code" prints
 // it (`showSource`), so it reads the way an adopter writes it. The words are example content, not
 // the component's strings (the only one it has is `dialog.close`, an icon-only Close's name). sv,
-// fi and en are written; the other locales show the English text, marked lang="en" (3.1.2).
+// fi and en are written; the other locales show the English text, in a nested English provider (3.1.2).
 
 interface DialogTexts {
   phoneTitle: string
@@ -134,10 +135,10 @@ const dialogTexts: Partial<Record<FormLocale, DialogTexts>> = {
   },
 }
 
-/** The fixture text in a locale, or English with `lang="en"` for the locales without text. */
+/** The fixture text in a locale, or English for the locales without text. */
 export function dialogTextsFor(locale: FormLocale) {
   const text = dialogTexts[locale]
-  return { text: text ?? textsEn, lang: text === undefined ? ('en' as const) : undefined }
+  return { text: text ?? textsEn, isFallback: text === undefined }
 }
 
 /**
@@ -146,36 +147,38 @@ export function dialogTextsFor(locale: FormLocale) {
  * nothing is cleared when it closes (Escape and Cancel keep what was typed).
  */
 export function PhoneNumberForm({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dialogTextsFor(locale)
+  const { text, isFallback } = dialogTextsFor(locale)
   const [open, setOpen] = useState(false)
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
-      <Dialog.Popup lang={lang}>
-        <Dialog.Title>{text.phoneTitle}</Dialog.Title>
-        <Dialog.Close />
-        <Dialog.Description>{text.phoneDescription}</Dialog.Description>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault()
-            setOpen(false)
-          }}
-        >
-          <Dialog.Body>
-            <Field.Root required>
-              <Field.Label>{text.phoneLabel}</Field.Label>
-              <TextInput name="phone" type="tel" autoComplete="tel" />
-            </Field.Root>
-          </Dialog.Body>
-          <Dialog.Actions>
-            <Button type="submit" className="kv-button--primary">
-              {text.save}
-            </Button>
-            <Button onClick={() => setOpen(false)}>{text.cancel}</Button>
-          </Dialog.Actions>
-        </form>
-      </Dialog.Popup>
-    </Dialog.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Dialog.Root open={open} onOpenChange={setOpen}>
+        <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
+        <Dialog.Popup>
+          <Dialog.Title>{text.phoneTitle}</Dialog.Title>
+          <Dialog.Close />
+          <Dialog.Description>{text.phoneDescription}</Dialog.Description>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault()
+              setOpen(false)
+            }}
+          >
+            <Dialog.Body>
+              <Field.Root required>
+                <Field.Label>{text.phoneLabel}</Field.Label>
+                <TextInput name="phone" type="tel" autoComplete="tel" />
+              </Field.Root>
+            </Dialog.Body>
+            <Dialog.Actions>
+              <Button type="submit" className="kv-button--primary">
+                {text.save}
+              </Button>
+              <Button onClick={() => setOpen(false)}>{text.cancel}</Button>
+            </Dialog.Actions>
+          </form>
+        </Dialog.Popup>
+      </Dialog.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -186,22 +189,24 @@ export function PhoneNumberForm({ locale }: { locale: FormLocale }) {
  * read-only dialog ends with its answer.
  */
 export function LongTerms({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dialogTextsFor(locale)
+  const { text, isFallback } = dialogTextsFor(locale)
   return (
-    <Dialog.Root>
-      <Dialog.Trigger className="kv-button">{text.termsOpen}</Dialog.Trigger>
-      <Dialog.Popup lang={lang}>
-        <Dialog.Title>{text.termsTitle}</Dialog.Title>
-        <Dialog.Body>
-          {Array.from({ length: 30 }, (_, index) => (
-            <p key={index}>{text.termsParagraph(index + 1)}</p>
-          ))}
-        </Dialog.Body>
-        <Dialog.Actions>
-          <Dialog.Close className="kv-button kv-button--primary">{text.termsRead}</Dialog.Close>
-        </Dialog.Actions>
-      </Dialog.Popup>
-    </Dialog.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Dialog.Root>
+        <Dialog.Trigger className="kv-button">{text.termsOpen}</Dialog.Trigger>
+        <Dialog.Popup>
+          <Dialog.Title>{text.termsTitle}</Dialog.Title>
+          <Dialog.Body>
+            {Array.from({ length: 30 }, (_, index) => (
+              <p key={index}>{text.termsParagraph(index + 1)}</p>
+            ))}
+          </Dialog.Body>
+          <Dialog.Actions>
+            <Dialog.Close className="kv-button kv-button--primary">{text.termsRead}</Dialog.Close>
+          </Dialog.Actions>
+        </Dialog.Popup>
+      </Dialog.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -211,34 +216,36 @@ export function LongTerms({ locale }: { locale: FormLocale }) {
  * their own reason. A press on the backdrop asks only with `dismissOnOutsidePress`.
  */
 export function ControlledDialog({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dialogTextsFor(locale)
+  const { text, isFallback } = dialogTextsFor(locale)
   const [open, setOpen] = useState(false)
   const [reason, setReason] = useState('–')
   return (
-    <>
-      <Button onClick={() => setOpen(true)}>{text.openFromPage}</Button>
-      <output data-testid="state">{open ? text.open : text.closed}</output>
-      <output data-testid="reason">
-        {text.lastReason}: {reason}
-      </output>
-      <Dialog.Root
-        open={open}
-        onOpenChange={(nextOpen, details) => {
-          setOpen(nextOpen)
-          setReason(details.reason)
-        }}
-        dismissOnOutsidePress
-      >
-        <Dialog.Trigger className="kv-button">{text.receiptOpen}</Dialog.Trigger>
-        <Dialog.Popup lang={lang}>
-          <Dialog.Title>{text.receiptTitle}</Dialog.Title>
-          <Dialog.Description>{text.receiptDescription}</Dialog.Description>
-          <Dialog.Actions>
-            <Dialog.Close className="kv-button kv-button--primary">{text.closeText}</Dialog.Close>
-          </Dialog.Actions>
-        </Dialog.Popup>
-      </Dialog.Root>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Button onClick={() => setOpen(true)}>{text.openFromPage}</Button>
+        <output data-testid="state">{open ? text.open : text.closed}</output>
+        <output data-testid="reason">
+          {text.lastReason}: {reason}
+        </output>
+        <Dialog.Root
+          open={open}
+          onOpenChange={(nextOpen, details) => {
+            setOpen(nextOpen)
+            setReason(details.reason)
+          }}
+          dismissOnOutsidePress
+        >
+          <Dialog.Trigger className="kv-button">{text.receiptOpen}</Dialog.Trigger>
+          <Dialog.Popup>
+            <Dialog.Title>{text.receiptTitle}</Dialog.Title>
+            <Dialog.Description>{text.receiptDescription}</Dialog.Description>
+            <Dialog.Actions>
+              <Dialog.Close className="kv-button kv-button--primary">{text.closeText}</Dialog.Close>
+            </Dialog.Actions>
+          </Dialog.Popup>
+        </Dialog.Root>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -247,24 +254,26 @@ export function ControlledDialog({ locale }: { locale: FormLocale }) {
  * has nowhere obvious to return focus to, so `finalFocusRef` says where it goes.
  */
 export function OpenedByAButton({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dialogTextsFor(locale)
+  const { text, isFallback } = dialogTextsFor(locale)
   const [open, setOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
   return (
-    <>
-      <Button ref={buttonRef} onClick={() => setOpen(true)}>
-        {text.receiptOpen}
-      </Button>
-      <Dialog.Root open={open} onOpenChange={setOpen} finalFocusRef={buttonRef}>
-        <Dialog.Popup lang={lang}>
-          <Dialog.Title>{text.receiptTitle}</Dialog.Title>
-          <Dialog.Description>{text.receiptDescription}</Dialog.Description>
-          <Dialog.Actions>
-            <Dialog.Close className="kv-button kv-button--primary">{text.closeText}</Dialog.Close>
-          </Dialog.Actions>
-        </Dialog.Popup>
-      </Dialog.Root>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <Button ref={buttonRef} onClick={() => setOpen(true)}>
+          {text.receiptOpen}
+        </Button>
+        <Dialog.Root open={open} onOpenChange={setOpen} finalFocusRef={buttonRef}>
+          <Dialog.Popup>
+            <Dialog.Title>{text.receiptTitle}</Dialog.Title>
+            <Dialog.Description>{text.receiptDescription}</Dialog.Description>
+            <Dialog.Actions>
+              <Dialog.Close className="kv-button kv-button--primary">{text.closeText}</Dialog.Close>
+            </Dialog.Actions>
+          </Dialog.Popup>
+        </Dialog.Root>
+      </>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -274,33 +283,35 @@ export function OpenedByAButton({ locale }: { locale: FormLocale }) {
  * page never reaches it.
  */
 export function RemoveNumberOverDialog({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dialogTextsFor(locale)
+  const { text, isFallback } = dialogTextsFor(locale)
   const keepRef = useRef<HTMLButtonElement>(null)
   return (
-    <Dialog.Root>
-      <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
-      <Dialog.Popup lang={lang}>
-        <Dialog.Title>{text.phoneTitle}</Dialog.Title>
-        <Dialog.Close />
-        <Dialog.Body>
-          <AlertDialog.Root initialFocusRef={keepRef}>
-            <AlertDialog.Trigger className="kv-button">{text.removeTrigger}</AlertDialog.Trigger>
-            <AlertDialog.Popup>
-              <AlertDialog.Title>{text.removeTitle}</AlertDialog.Title>
-              <AlertDialog.Description>{text.removeDescription}</AlertDialog.Description>
-              <AlertDialog.Actions>
-                <AlertDialog.Close className="kv-button kv-button--danger">
-                  {text.removeConfirm}
-                </AlertDialog.Close>
-                <AlertDialog.Close ref={keepRef} className="kv-button">
-                  {text.removeKeep}
-                </AlertDialog.Close>
-              </AlertDialog.Actions>
-            </AlertDialog.Popup>
-          </AlertDialog.Root>
-        </Dialog.Body>
-      </Dialog.Popup>
-    </Dialog.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Dialog.Root>
+        <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
+        <Dialog.Popup>
+          <Dialog.Title>{text.phoneTitle}</Dialog.Title>
+          <Dialog.Close />
+          <Dialog.Body>
+            <AlertDialog.Root initialFocusRef={keepRef}>
+              <AlertDialog.Trigger className="kv-button">{text.removeTrigger}</AlertDialog.Trigger>
+              <AlertDialog.Popup>
+                <AlertDialog.Title>{text.removeTitle}</AlertDialog.Title>
+                <AlertDialog.Description>{text.removeDescription}</AlertDialog.Description>
+                <AlertDialog.Actions>
+                  <AlertDialog.Close className="kv-button kv-button--danger">
+                    {text.removeConfirm}
+                  </AlertDialog.Close>
+                  <AlertDialog.Close ref={keepRef} className="kv-button">
+                    {text.removeKeep}
+                  </AlertDialog.Close>
+                </AlertDialog.Actions>
+              </AlertDialog.Popup>
+            </AlertDialog.Root>
+          </Dialog.Body>
+        </Dialog.Popup>
+      </Dialog.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -309,27 +320,29 @@ export function RemoveNumberOverDialog({ locale }: { locale: FormLocale }) {
  * closes it first. The next Escape closes the dialog.
  */
 export function PopoverInDialog({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dialogTextsFor(locale)
+  const { text, isFallback } = dialogTextsFor(locale)
   return (
-    <Dialog.Root>
-      <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
-      <Dialog.Popup lang={lang}>
-        <Dialog.Title>{text.phoneTitle}</Dialog.Title>
-        <Dialog.Close />
-        <Dialog.Body>
-          <Field.Root required>
-            <Field.Label>{text.phoneLabel}</Field.Label>
-            <TextInput name="phone" type="tel" autoComplete="tel" />
-          </Field.Root>
-          <Popover.Root>
-            <Popover.Trigger className="kv-button">{text.whyTrigger}</Popover.Trigger>
-            <Popover.Popup aria-label={text.whyTrigger}>
-              <p>{text.whyText}</p>
-            </Popover.Popup>
-          </Popover.Root>
-        </Dialog.Body>
-      </Dialog.Popup>
-    </Dialog.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Dialog.Root>
+        <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
+        <Dialog.Popup>
+          <Dialog.Title>{text.phoneTitle}</Dialog.Title>
+          <Dialog.Close />
+          <Dialog.Body>
+            <Field.Root required>
+              <Field.Label>{text.phoneLabel}</Field.Label>
+              <TextInput name="phone" type="tel" autoComplete="tel" />
+            </Field.Root>
+            <Popover.Root>
+              <Popover.Trigger className="kv-button">{text.whyTrigger}</Popover.Trigger>
+              <Popover.Popup aria-label={text.whyTrigger}>
+                <p>{text.whyText}</p>
+              </Popover.Popup>
+            </Popover.Root>
+          </Dialog.Body>
+        </Dialog.Popup>
+      </Dialog.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -338,39 +351,41 @@ export function PopoverInDialog({ locale }: { locale: FormLocale }) {
  * dialog hosts its own and the result count is still announced. Escape closes the list first.
  */
 export function ComboboxInDialog({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dialogTextsFor(locale)
+  const { text, isFallback } = dialogTextsFor(locale)
   const { text: comboboxText } = comboboxTextsFor(locale)
   return (
-    <Dialog.Root>
-      <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
-      <Dialog.Popup lang={lang}>
-        <Dialog.Title>{text.phoneTitle}</Dialog.Title>
-        <Dialog.Close />
-        <Dialog.Body>
-          <Field.Root required>
-            <Field.Label>{comboboxText.municipality}</Field.Label>
-            <Combobox.Root
-              items={municipalities}
-              itemToString={(municipality) => municipality.name}
-              itemToKey={(municipality) => municipality.code}
-              name="municipality"
-            >
-              <Combobox.Control>
-                <Combobox.Input />
-                <Combobox.Clear />
-                <Combobox.Toggle />
-              </Combobox.Control>
-              <Combobox.Popup>
-                <Combobox.List>
-                  {(municipality: Municipality) => <Combobox.Option item={municipality} />}
-                </Combobox.List>
-                <Combobox.Empty />
-              </Combobox.Popup>
-            </Combobox.Root>
-          </Field.Root>
-        </Dialog.Body>
-      </Dialog.Popup>
-    </Dialog.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Dialog.Root>
+        <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
+        <Dialog.Popup>
+          <Dialog.Title>{text.phoneTitle}</Dialog.Title>
+          <Dialog.Close />
+          <Dialog.Body>
+            <Field.Root required>
+              <Field.Label>{comboboxText.municipality}</Field.Label>
+              <Combobox.Root
+                items={municipalities}
+                itemToString={(municipality) => municipality.name}
+                itemToKey={(municipality) => municipality.code}
+                name="municipality"
+              >
+                <Combobox.Control>
+                  <Combobox.Input />
+                  <Combobox.Clear />
+                  <Combobox.Toggle />
+                </Combobox.Control>
+                <Combobox.Popup>
+                  <Combobox.List>
+                    {(municipality: Municipality) => <Combobox.Option item={municipality} />}
+                  </Combobox.List>
+                  <Combobox.Empty />
+                </Combobox.Popup>
+              </Combobox.Root>
+            </Field.Root>
+          </Dialog.Body>
+        </Dialog.Popup>
+      </Dialog.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -380,30 +395,34 @@ export function ComboboxInDialog({ locale }: { locale: FormLocale }) {
  * Close.
  */
 export function KeyboardDialog({ locale }: { locale: FormLocale }) {
-  const { text, lang } = dialogTextsFor(locale)
+  const { text, isFallback } = dialogTextsFor(locale)
   return (
-    <>
-      <p data-testid="outside">{text.textOutside}</p>
-      <div className="kv-button-group">
-        <Button>{text.before}</Button>
-        <Dialog.Root>
-          <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
-          <Dialog.Popup lang={lang}>
-            <Dialog.Title>{text.phoneTitle}</Dialog.Title>
-            <Dialog.Description>{text.phoneDescription}</Dialog.Description>
-            <Dialog.Body>
-              <Field.Root required>
-                <Field.Label>{text.phoneLabel}</Field.Label>
-                <TextInput name="phone" type="tel" autoComplete="tel" />
-              </Field.Root>
-            </Dialog.Body>
-            <Dialog.Actions>
-              <Dialog.Close className="kv-button kv-button--primary">{text.closeText}</Dialog.Close>
-            </Dialog.Actions>
-          </Dialog.Popup>
-        </Dialog.Root>
-        <Button>{text.after}</Button>
-      </div>
-    </>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <>
+        <p data-testid="outside">{text.textOutside}</p>
+        <div className="kv-button-group">
+          <Button>{text.before}</Button>
+          <Dialog.Root>
+            <Dialog.Trigger className="kv-button">{text.phoneTitle}</Dialog.Trigger>
+            <Dialog.Popup>
+              <Dialog.Title>{text.phoneTitle}</Dialog.Title>
+              <Dialog.Description>{text.phoneDescription}</Dialog.Description>
+              <Dialog.Body>
+                <Field.Root required>
+                  <Field.Label>{text.phoneLabel}</Field.Label>
+                  <TextInput name="phone" type="tel" autoComplete="tel" />
+                </Field.Root>
+              </Dialog.Body>
+              <Dialog.Actions>
+                <Dialog.Close className="kv-button kv-button--primary">
+                  {text.closeText}
+                </Dialog.Close>
+              </Dialog.Actions>
+            </Dialog.Popup>
+          </Dialog.Root>
+          <Button>{text.after}</Button>
+        </div>
+      </>
+    </InEnglishWhenFallback>
   )
 }

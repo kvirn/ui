@@ -10,10 +10,10 @@ Address is the native `<address>` element with a class, so the theme can undo th
 
 ## Roles, states, properties
 
-| Part    | Element / role                 | ARIA                        | Notes                                                                                                                                                     |
-| ------- | ------------------------------ | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Address | `<address>` → native semantics | none                        | `class="kv-address"`. Attributes (`id`, `lang`, `aria-*`) and the ref reach the element unchanged. Links inside it are ordinary links with their own text |
-| Address | never                          | no `role`, `tabindex`, name | It needs no accessible name: a screen reader reads its content in the flow. Don't add `aria-label`, which `address` doesn't reliably expose               |
+| Part    | Element / role                 | ARIA                        | Notes                                                                                                                                             |
+| ------- | ------------------------------ | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Address | `<address>` → native semantics | none                        | `class="kv-address"`. Attributes (`id`, `aria-*`) and the ref reach the element unchanged. Links inside it are ordinary links with their own text |
+| Address | never                          | no `role`, `tabindex`, name | It needs no accessible name: a screen reader reads its content in the flow. Don't add `aria-label`, which `address` doesn't reliably expose       |
 
 ## Keyboard
 
@@ -43,7 +43,7 @@ Address renders no text, so it has no message keys.
 - **Use it for contact details of the page or the article around it only** (1.3.1). Other postal-looking text is plain text.
 - **Say what each address is.** Separate a visiting address and a postal address, with a label in words, never by position or colour alone (1.3.3).
 - **Link text names the target.** A `tel:` link has the number as its text and a `mailto:` link has the email address, so the link makes sense out of context (2.4.4).
-- **Language.** `lang` on an address in another language than the page (3.1.2).
+- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2).
 
 ## Visual / modes
 

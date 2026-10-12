@@ -1,16 +1,19 @@
 'use client'
 import { Field, Textarea } from '@kvirn-ui/react'
 import { useTextareaTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function DefaultTextarea() {
-  const { texts, textLang } = useTextareaTexts()
+  const { texts, isFallback } = useTextareaTexts()
   return (
-    <Field.Root required lang={textLang}>
-      <Field.Label>{texts.label}</Field.Label>
-      <Field.Prose>
-        <p>{texts.description}</p>
-      </Field.Prose>
-      <Textarea name="situation" />
-    </Field.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Field.Root required>
+        <Field.Label>{texts.label}</Field.Label>
+        <Field.Prose>
+          <p>{texts.description}</p>
+        </Field.Prose>
+        <Textarea name="situation" />
+      </Field.Root>
+    </InEnglishWhenFallback>
   )
 }

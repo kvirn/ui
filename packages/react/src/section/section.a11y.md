@@ -14,7 +14,7 @@ Section is a plain container for a region of the page, such as a sidebar or a ba
 | ------- | ------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Section | `<div>` → `generic` | none. The consumer adds it with the element             | `class="kv-section"`. `as="aside"`, `"section"` or `"nav"` with `aria-labelledby` give it a landmark role, and `"li"` a list item. `Section.Root` is a deprecated alias of the same component. Also exported as `SectionRoot` |
 | Section | `as`                | the chosen element's own                                | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Section:<tag>`) and renders the `<div>`. `className` joins, `style` and refs pass                         |
-| Section | attributes          | passed through                                          | `aria-*`, `id`, `lang`, `data-*` and every other attribute reach the element unchanged. The part's class is its own: a `className` prop joins it, never replaces it                                                           |
+| Section | attributes          | passed through                                          | `aria-*`, `id`, `data-*` and every other attribute reach the element unchanged. The part's class is its own: a `className` prop joins it, never replaces it                                                                   |
 | Section | never               | no `role`, `aria-*`, `tabindex`, `inert`, `aria-hidden` | No click handler, no heading, no live region, no text                                                                                                                                                                         |
 
 `useSection()` gives the same `rootProps` (only `className`) for your own element.
@@ -65,7 +65,7 @@ A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `
 - **Nesting.** A Card on a Section, yes. A Section inside a Card, no (a region inside a thing). A Section inside a Section only to switch between `surface` and `canvas`.
 - **Scrolling.** Never `overflow` on the Section. A sidebar that scrolls on its own goes in a `kv-scroll-region` with a name and `tabindex="0"`. A sticky sidebar needs `scroll-padding` (2.4.11).
 - **Not empty.** Don't render a Section with no content: it still has padding and a surface.
-- **Language.** `lang` on any section in another language (3.1.2).
+- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2).
 
 ## Visual / modes
 

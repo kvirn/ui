@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, useAnnouncer } from '@kvirn-ui/react'
 import { useState } from 'react'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -137,9 +138,9 @@ const texts: Record<AnnouncerFixtureLocale, AnnouncerTexts> = {
 /** The fixture text in a locale. */
 export function announcerTextsFor(locale: FormLocale): {
   text: AnnouncerTexts
-  lang: 'en' | undefined
+  isFallback: boolean
 } {
-  return { text: texts[locale], lang: undefined }
+  return { text: texts[locale], isFallback: false }
 }
 
 interface LastCall {
@@ -153,7 +154,7 @@ interface LastCall {
  * `false` when it drops one. The app's `KvirnProvider` renders the live regions.
  */
 export function AnnouncementButtons({ locale }: { locale: FormLocale }) {
-  const { text, lang } = announcerTextsFor(locale)
+  const { text, isFallback } = announcerTextsFor(locale)
   const { announce } = useAnnouncer()
   const [lastCall, setLastCall] = useState<LastCall | undefined>()
 
@@ -162,26 +163,28 @@ export function AnnouncementButtons({ locale }: { locale: FormLocale }) {
   }
 
   return (
-    <div lang={lang}>
-      <h2>{text.heading}</h2>
-      <p>{text.intro}</p>
-      <div className="kv-button-group">
-        <Button onClick={() => say(text.saved)}>{text.polite}</Button>
-        <Button onClick={() => say(text.expired, { politeness: 'assertive' })}>
-          {text.assertive}
-        </Button>
-        <Button onClick={() => say(text.saved)}>{text.repeat}</Button>
-        <Button onClick={() => say(text.digitsOnly, { key: 'phone' })}>{text.throttled}</Button>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <h2>{text.heading}</h2>
+        <p>{text.intro}</p>
+        <div className="kv-button-group">
+          <Button onClick={() => say(text.saved)}>{text.polite}</Button>
+          <Button onClick={() => say(text.expired, { politeness: 'assertive' })}>
+            {text.assertive}
+          </Button>
+          <Button onClick={() => say(text.saved)}>{text.repeat}</Button>
+          <Button onClick={() => say(text.digitsOnly, { key: 'phone' })}>{text.throttled}</Button>
+        </div>
+        <p>
+          {text.lastLabel}:{' '}
+          <span data-testid="last-call">
+            {lastCall === undefined
+              ? text.none
+              : `${lastCall.message} (${lastCall.accepted ? text.accepted : text.dropped})`}
+          </span>
+        </p>
       </div>
-      <p>
-        {text.lastLabel}:{' '}
-        <span data-testid="last-call">
-          {lastCall === undefined
-            ? text.none
-            : `${lastCall.message} (${lastCall.accepted ? text.accepted : text.dropped})`}
-        </span>
-      </p>
-    </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -192,43 +195,45 @@ export function AnnouncementButtons({ locale }: { locale: FormLocale }) {
  * from your i18n; the app's `KvirnProvider` renders the live regions.
  */
 export function BurstsAndBlanks({ locale }: { locale: FormLocale }) {
-  const { text, lang } = announcerTextsFor(locale)
+  const { text, isFallback } = announcerTextsFor(locale)
   const { announce } = useAnnouncer()
   const [lastCall, setLastCall] = useState<LastCall | undefined>()
 
   return (
-    <div lang={lang}>
-      <div className="kv-button-group">
-        <Button
-          onClick={() =>
-            setLastCall({
-              message: text.digitsOnly,
-              accepted: announce(text.digitsOnly, { key: 'phone', throttleMilliseconds: 0 }),
-            })
-          }
-        >
-          {text.unthrottled}
-        </Button>
-        <Button
-          onClick={() => {
-            announce(text.saved)
-            setLastCall({ message: text.expired, accepted: announce(text.expired) })
-          }}
-        >
-          {text.burst}
-        </Button>
-        <Button onClick={() => setLastCall({ message: '', accepted: announce('   ') })}>
-          {text.blank}
-        </Button>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <div className="kv-button-group">
+          <Button
+            onClick={() =>
+              setLastCall({
+                message: text.digitsOnly,
+                accepted: announce(text.digitsOnly, { key: 'phone', throttleMilliseconds: 0 }),
+              })
+            }
+          >
+            {text.unthrottled}
+          </Button>
+          <Button
+            onClick={() => {
+              announce(text.saved)
+              setLastCall({ message: text.expired, accepted: announce(text.expired) })
+            }}
+          >
+            {text.burst}
+          </Button>
+          <Button onClick={() => setLastCall({ message: '', accepted: announce('   ') })}>
+            {text.blank}
+          </Button>
+        </div>
+        <p>
+          {text.lastLabel}:{' '}
+          <span data-testid="last-call">
+            {lastCall === undefined
+              ? text.none
+              : `${lastCall.message} (${lastCall.accepted ? text.accepted : text.blankDropped})`}
+          </span>
+        </p>
       </div>
-      <p>
-        {text.lastLabel}:{' '}
-        <span data-testid="last-call">
-          {lastCall === undefined
-            ? text.none
-            : `${lastCall.message} (${lastCall.accepted ? text.accepted : text.blankDropped})`}
-        </span>
-      </p>
-    </div>
+    </InEnglishWhenFallback>
   )
 }

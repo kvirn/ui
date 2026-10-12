@@ -116,7 +116,7 @@ describe('rendering', () => {
     const rootRef = createRef<HTMLFieldSetElement>()
     const legendRef = createRef<HTMLLegendElement>()
     await render(
-      <Fieldset.Root ref={rootRef} className="egen" data-testid="root" lang="sv">
+      <Fieldset.Root ref={rootRef} className="egen" data-testid="root">
         <Fieldset.Legend ref={legendRef} className="egen-forklaring">
           Adress
         </Fieldset.Legend>
@@ -124,7 +124,6 @@ describe('rendering', () => {
     )
     expect(rootRef.current).toBe(page.getByTestId('root').element())
     await expect.element(page.getByTestId('root')).toHaveClass('egen', 'kv-fieldset')
-    await expect.element(page.getByTestId('root')).toHaveAttribute('lang', 'sv')
     expect(legendRef.current?.className).toBe('egen-forklaring kv-fieldset-legend')
   })
 

@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { Button, Field, Textarea } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { textsFor } from '../form/form.fixture.tsx'
@@ -108,10 +109,10 @@ const textareaTexts: Record<FormLocale, TextareaTexts | undefined> = {
 /** The fixture text in a locale. */
 export function textareaTextsFor(locale: FormLocale): {
   text: TextareaTexts
-  lang: 'en' | undefined
+  isFallback: boolean
 } {
   const text = textareaTexts[locale]
-  return { text: text ?? textsEn, lang: text === undefined ? 'en' : undefined }
+  return { text: text ?? textsEn, isFallback: text === undefined }
 }
 
 /** A text of exactly `length` characters, made of repeated sentences. */
@@ -125,38 +126,39 @@ export function textOfLength(sentence: string, length: number): string {
  * submit. `noValidate` keeps the browser's own validation bubbles from replacing your messages.
  */
 export function SituationForm({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textareaTextsFor(locale)
+  const { text, isFallback } = textareaTextsFor(locale)
   const { text: formText } = textsFor(locale)
   const [sent, setSent] = useState<string | undefined>()
   return (
-    <form
-      className="kv-story-form"
-      lang={lang}
-      noValidate
-      onSubmit={(event) => {
-        event.preventDefault()
-        const situation = new FormData(event.currentTarget).get('situation')
-        setSent(typeof situation === 'string' ? situation : '')
-      }}
-    >
-      <Field.Root required>
-        <Field.Label>{text.label}</Field.Label>
-        <Field.Prose>
-          <p>{text.description}</p>
-        </Field.Prose>
-        <Textarea name="situation" />
-      </Field.Root>
-      <div className="kv-button-group">
-        <Button type="submit" className="kv-button--primary">
-          {formText.send}
-        </Button>
-      </div>
-      {sent === undefined ? null : (
-        <p className="kv-story-form-output" data-testid="sent">
-          {formText.sent}: {sent}
-        </p>
-      )}
-    </form>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <form
+        className="kv-story-form"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          const situation = new FormData(event.currentTarget).get('situation')
+          setSent(typeof situation === 'string' ? situation : '')
+        }}
+      >
+        <Field.Root required>
+          <Field.Label>{text.label}</Field.Label>
+          <Field.Prose>
+            <p>{text.description}</p>
+          </Field.Prose>
+          <Textarea name="situation" />
+        </Field.Root>
+        <div className="kv-button-group">
+          <Button type="submit" className="kv-button--primary">
+            {formText.send}
+          </Button>
+        </div>
+        {sent === undefined ? null : (
+          <p className="kv-story-form-output" data-testid="sent">
+            {formText.sent}: {sent}
+          </p>
+        )}
+      </form>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -165,19 +167,21 @@ export function SituationForm({ locale }: { locale: FormLocale }) {
  * Textarea renders the `value` it's given and reports changes through `onValueChange`.
  */
 export function ControlledSituation({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textareaTextsFor(locale)
+  const { text, isFallback } = textareaTextsFor(locale)
   const { text: formText } = textsFor(locale)
   const [value, setValue] = useState('')
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.label}</Field.Label>
-        <Textarea name="situation" value={value} onValueChange={setValue} />
-      </Field.Root>
-      <p className="kv-story-form-output">
-        {formText.youTyped}: {value}
-      </p>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root required>
+          <Field.Label>{text.label}</Field.Label>
+          <Textarea name="situation" value={value} onValueChange={setValue} />
+        </Field.Root>
+        <p className="kv-story-form-output">
+          {formText.youTyped}: {value}
+        </p>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -187,18 +191,20 @@ export function ControlledSituation({ locale }: { locale: FormLocale }) {
  * are over. Over the limit is a warning: your form decides on submit.
  */
 export function CountedSituation({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textareaTextsFor(locale)
+  const { text, isFallback } = textareaTextsFor(locale)
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.label}</Field.Label>
-        <Field.Prose>
-          <p>{text.description}</p>
-        </Field.Prose>
-        <Textarea name="situation" maxLength={200} characterCount />
-        <Field.HelpText>{text.hint}</Field.HelpText>
-      </Field.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root required>
+          <Field.Label>{text.label}</Field.Label>
+          <Field.Prose>
+            <p>{text.description}</p>
+          </Field.Prose>
+          <Textarea name="situation" maxLength={200} characterCount />
+          <Field.HelpText>{text.hint}</Field.HelpText>
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -208,33 +214,35 @@ export function CountedSituation({ locale }: { locale: FormLocale }) {
  * form writes the error that names the fix.
  */
 export function CountStates({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textareaTextsFor(locale)
+  const { text, isFallback } = textareaTextsFor(locale)
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root>
-        <Field.Label>{`${text.label} (under)`}</Field.Label>
-        <Textarea name="under" maxLength={200} characterCount defaultValue={text.draft} />
-      </Field.Root>
-      <Field.Root>
-        <Field.Label>{`${text.label} (near)`}</Field.Label>
-        <Textarea
-          name="near"
-          maxLength={200}
-          characterCount
-          defaultValue={textOfLength(text.sentence, 170)}
-        />
-      </Field.Root>
-      <Field.Root invalid>
-        <Field.Label>{`${text.label} (over)`}</Field.Label>
-        <Textarea
-          name="over"
-          maxLength={200}
-          characterCount
-          defaultValue={textOfLength(text.sentence, 212)}
-        />
-        <Field.ErrorMessage>{text.errorTooLong(200)}</Field.ErrorMessage>
-      </Field.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root>
+          <Field.Label>{`${text.label} (under)`}</Field.Label>
+          <Textarea name="under" maxLength={200} characterCount defaultValue={text.draft} />
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>{`${text.label} (near)`}</Field.Label>
+          <Textarea
+            name="near"
+            maxLength={200}
+            characterCount
+            defaultValue={textOfLength(text.sentence, 170)}
+          />
+        </Field.Root>
+        <Field.Root invalid>
+          <Field.Label>{`${text.label} (over)`}</Field.Label>
+          <Textarea
+            name="over"
+            maxLength={200}
+            characterCount
+            defaultValue={textOfLength(text.sentence, 212)}
+          />
+          <Field.ErrorMessage>{text.errorTooLong(200)}</Field.ErrorMessage>
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -244,41 +252,43 @@ export function CountStates({ locale }: { locale: FormLocale }) {
  * help text under the box. The RTL and ForcedColors stories render it.
  */
 export function TextareaStates({ locale }: { locale: FormLocale }) {
-  const { text, lang } = textareaTextsFor(locale)
+  const { text, isFallback } = textareaTextsFor(locale)
   return (
-    <div className="kv-story-form" lang={lang}>
-      <Field.Root required>
-        <Field.Label>{text.label}</Field.Label>
-        <Field.Prose>
-          <p>{text.description}</p>
-        </Field.Prose>
-        <Textarea name="situation" maxLength={500} characterCount />
-        <Field.HelpText>{text.hint}</Field.HelpText>
-      </Field.Root>
-      <Field.Root required invalid>
-        <Field.Label>{`${text.label} (invalid)`}</Field.Label>
-        <Textarea name="invalid" rows={3} />
-        <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
-      </Field.Root>
-      <Field.Root>
-        <Field.Label>{`${text.label} (over)`}</Field.Label>
-        <Textarea
-          name="over"
-          rows={3}
-          maxLength={60}
-          characterCount
-          defaultValue={textOfLength(text.sentence, 80)}
-        />
-      </Field.Root>
-      <Field.Root disabled>
-        <Field.Label>{`${text.label} (disabled)`}</Field.Label>
-        <Textarea name="disabled" rows={3} defaultValue={text.draft} />
-      </Field.Root>
-      <Field.Root>
-        <Field.Label>{`${text.label} (read-only)`}</Field.Label>
-        <Textarea name="read-only" rows={3} readOnly defaultValue={text.draft} />
-        <Field.HelpText>{text.readOnlyHint}</Field.HelpText>
-      </Field.Root>
-    </div>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div className="kv-story-form">
+        <Field.Root required>
+          <Field.Label>{text.label}</Field.Label>
+          <Field.Prose>
+            <p>{text.description}</p>
+          </Field.Prose>
+          <Textarea name="situation" maxLength={500} characterCount />
+          <Field.HelpText>{text.hint}</Field.HelpText>
+        </Field.Root>
+        <Field.Root required invalid>
+          <Field.Label>{`${text.label} (invalid)`}</Field.Label>
+          <Textarea name="invalid" rows={3} />
+          <Field.ErrorMessage>{text.error}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>{`${text.label} (over)`}</Field.Label>
+          <Textarea
+            name="over"
+            rows={3}
+            maxLength={60}
+            characterCount
+            defaultValue={textOfLength(text.sentence, 80)}
+          />
+        </Field.Root>
+        <Field.Root disabled>
+          <Field.Label>{`${text.label} (disabled)`}</Field.Label>
+          <Textarea name="disabled" rows={3} defaultValue={text.draft} />
+        </Field.Root>
+        <Field.Root>
+          <Field.Label>{`${text.label} (read-only)`}</Field.Label>
+          <Textarea name="read-only" rows={3} readOnly defaultValue={text.draft} />
+          <Field.HelpText>{text.readOnlyHint}</Field.HelpText>
+        </Field.Root>
+      </div>
+    </InEnglishWhenFallback>
   )
 }

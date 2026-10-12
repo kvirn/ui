@@ -381,7 +381,7 @@ export const optionAttributes: readonly AttributeRow[] = [
   {
     name: 'lang',
     values: 'a language code, or absent',
-    meaning: 'From itemToLang. A lang you pass yourself wins.',
+    meaning: 'From itemToLang.',
   },
   dataRow('data-active', 'The option the arrow keys are on (aria-activedescendant).'),
   dataRow('data-selected', 'The option is chosen.'),

@@ -1,13 +1,16 @@
 'use client'
 import { Heading, Stack } from '@kvirn-ui/react'
 import { useStackTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function DefaultStack() {
-  const { texts, textLang } = useStackTexts()
+  const { texts, isFallback } = useStackTexts()
   return (
-    <Stack lang={textLang}>
-      <Heading as="h2">{texts.sections.contact}</Heading>
-      <p>{texts.sections.contactText}</p>
-    </Stack>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Stack>
+        <Heading as="h2">{texts.sections.contact}</Heading>
+        <p>{texts.sections.contactText}</p>
+      </Stack>
+    </InEnglishWhenFallback>
   )
 }

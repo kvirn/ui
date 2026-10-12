@@ -2,9 +2,10 @@
 import { Button } from '@kvirn-ui/react'
 import { useEffect, useState } from 'react'
 import { useExampleTexts } from '../../components/example-texts.tsx'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function Saving() {
-  const { texts, textLang } = useExampleTexts()
+  const { texts, isFallback } = useExampleTexts()
   const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
@@ -16,8 +17,10 @@ export function Saving() {
   }, [isSaving])
 
   return (
-    <Button lang={textLang} busy={isSaving} onClick={() => setIsSaving(true)}>
-      {texts.button.saveDraft}
-    </Button>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Button busy={isSaving} onClick={() => setIsSaving(true)}>
+        {texts.button.saveDraft}
+      </Button>
+    </InEnglishWhenFallback>
   )
 }

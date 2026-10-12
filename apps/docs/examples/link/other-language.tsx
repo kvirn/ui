@@ -1,15 +1,20 @@
 'use client'
 import { Link } from '@kvirn-ui/react'
 import { useLinkTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 export function OtherLanguage() {
-  const { texts, textLang } = useLinkTexts()
+  const { texts, isFallback } = useLinkTexts()
   return (
-    <p lang={textLang}>
-      {texts.otherLanguageIntro}
-      <Link.Root href="#fi" hrefLang="fi" lang="fi">
-        {texts.otherLanguageLink}
-      </Link.Root>
-    </p>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <p>
+        {texts.otherLanguageIntro}
+        <span lang="fi">
+          <Link.Root href="#fi" hrefLang="fi">
+            {texts.otherLanguageLink}
+          </Link.Root>
+        </span>
+      </p>
+    </InEnglishWhenFallback>
   )
 }

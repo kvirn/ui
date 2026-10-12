@@ -13,6 +13,7 @@ import { useMemo } from 'react'
 import { cases } from './cases.ts'
 import type { CaseRecord } from './cases.ts'
 import { useTableTexts } from './texts.ts'
+import { InEnglishWhenFallback } from '../../components/example-language.tsx'
 
 // The names are Swedish, so å, ä and ö sort after z.
 const features = tableFeatures({
@@ -22,7 +23,7 @@ const features = tableFeatures({
 })
 
 export function SortableCases() {
-  const { texts, textLang } = useTableTexts()
+  const { texts, isFallback } = useTableTexts()
   const format = useFormat()
   const columns = useMemo(() => {
     const column = createColumnHelper<typeof features, CaseRecord>()
@@ -45,41 +46,43 @@ export function SortableCases() {
     initialState: { sorting: [{ id: 'name', desc: false }] },
   })
   return (
-    <Table.ScrollRegion table={list} lang={textLang}>
-      <Table.Root table={list}>
-        <Table.Caption>{texts.casesCaption}</Table.Caption>
-        <Table.Head>
-          {list.table.getHeaderGroups().map((headerGroup) => (
-            <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
-              {headerGroup.headers.map((header) => (
-                <Table.ColumnHeader
-                  key={header.id}
-                  header={header}
-                  className={
-                    header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
-                  }
-                >
-                  {header.column.getCanSort() ? <Table.SortButton header={header} /> : null}
-                </Table.ColumnHeader>
-              ))}
-            </Table.Row>
-          ))}
-        </Table.Head>
-        <Table.Body>
-          {(row) => (
-            <Table.Row key={row.id} row={row}>
-              {row.getAllCells().map((cell) => (
-                <Table.Cell
-                  key={cell.id}
-                  cell={cell}
-                  className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
-                />
-              ))}
-            </Table.Row>
-          )}
-        </Table.Body>
-        <Table.Empty />
-      </Table.Root>
-    </Table.ScrollRegion>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Table.ScrollRegion table={list}>
+        <Table.Root table={list}>
+          <Table.Caption>{texts.casesCaption}</Table.Caption>
+          <Table.Head>
+            {list.table.getHeaderGroups().map((headerGroup) => (
+              <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
+                {headerGroup.headers.map((header) => (
+                  <Table.ColumnHeader
+                    key={header.id}
+                    header={header}
+                    className={
+                      header.column.id === 'amount' ? 'kv-table-column-header--numeric' : undefined
+                    }
+                  >
+                    {header.column.getCanSort() ? <Table.SortButton header={header} /> : null}
+                  </Table.ColumnHeader>
+                ))}
+              </Table.Row>
+            ))}
+          </Table.Head>
+          <Table.Body>
+            {(row) => (
+              <Table.Row key={row.id} row={row}>
+                {row.getAllCells().map((cell) => (
+                  <Table.Cell
+                    key={cell.id}
+                    cell={cell}
+                    className={cell.column.id === 'amount' ? 'kv-table-cell--numeric' : undefined}
+                  />
+                ))}
+              </Table.Row>
+            )}
+          </Table.Body>
+          <Table.Empty />
+        </Table.Root>
+      </Table.ScrollRegion>
+    </InEnglishWhenFallback>
   )
 }

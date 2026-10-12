@@ -13,8 +13,7 @@ export const skipLinkRows = propRows<SkipLinkDocumentedProps>({
   children: {
     type: 'ReactNode',
     default: 'the message skipLink.label',
-    description:
-      'Your own label. It replaces the message, so its language is yours to set with lang.',
+    description: 'Your own label. It replaces the message, so write it in the provider’s language.',
   },
   messages: {
     type: "Partial<KvirnMessages['skipLink']>",

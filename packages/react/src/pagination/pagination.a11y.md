@@ -59,7 +59,7 @@ Pagination announces nothing itself. A page change is announced by the page's ow
 - **Mark exactly one page `current`,** and give the page links consecutive numbers in order. Keep the first and last page and the pages next to the current one, with `Pagination.Ellipsis` for each gap.
 - **Previous and Next are omitted** (not disabled) on the first and last page: a disabled link is not a thing.
 - **Render `Pagination.Status` as well** so the narrow layout has its text: it is hidden by the theme from 40rem.
-- **Language.** A custom `children` or `messages` string is your own: set `lang` if it differs from the page (3.1.2). Changing a visible label also changes its name (2.5.3). A page link with your own `children` has no `aria-label`: the text you write is the name, so it must contain the visible name: an icon-only or `aria-hidden`-only child leaves the link unnamed.
+- **Language.** A custom `children` or `messages` string is your own: put it in a nested `KvirnProvider` with `useLocale().localeProps` on your own element if it differs from the page (3.1.2). Changing a visible label also changes its name (2.5.3). A page link with your own `children` has no `aria-label`: the text you write is the name, so it must contain the visible name: an icon-only or `aria-hidden`-only child leaves the link unnamed.
 - **The look.** 44px targets (24px at minimum, 2.5.8), a current page that is a shape and `aria-current` and never colour alone (1.4.1), the wrap at 320px (1.4.10): the theme does it, and a custom theme must keep them.
 
 ## WCAG SCs covered

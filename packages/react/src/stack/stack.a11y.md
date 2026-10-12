@@ -14,7 +14,7 @@ Stack is its children one below the other with a `space` step between them. It a
 | ----- | ------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Stack | `<div>` → `generic` | `role="list"` on `ul`/`ol` only                                        | `class="kv-stack"`, plus `kv-stack--gap-2`, `-4` or `-8` for another gap, added by the consumer (the default adds none). `as="ul"` or `"ol"` with `<li>` children is a list                                 |
 | Stack | `as`                | the chosen element's own                                               | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Stack:<tag>`) and renders the default element. `className` joins, `style` and refs pass |
-| Stack | attributes          | passed through                                                         | `aria-*`, `id`, `lang` and every other attribute reach the element unchanged                                                                                                                                |
+| Stack | attributes          | passed through                                                         | `aria-*`, `id` and every other attribute reach the element unchanged                                                                                                                                        |
 | Stack | never               | `role="list"` on `ul`/`ol` only; no `tabindex`, `inert`, `aria-hidden` | No handler, no heading, no live region, no text                                                                                                                                                             |
 
 `useStack()` gives the same frozen props object (only `className`) for your own element.
@@ -60,7 +60,7 @@ Stack renders no text, so it has no message keys.
 - **Landmarks.** Stack has none to give: a landmark is a `Container` (`main`, `section`) or a `Section` (`nav`, `aside`), always named. A page has one `main`.
 - **A list is `as="ul"` or `"ol"`.** Stack sets `role="list"` itself, because WebKit and VoiceOver drop the list role without markers. Don't write it.
 - **DOM order is the visual order.** Write children in the order they are read and focused (1.3.2, 2.4.3). There is no way to reorder them visually.
-- **Language.** `lang` on any text in another language (3.1.2).
+- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2).
 
 ## Visual / modes
 

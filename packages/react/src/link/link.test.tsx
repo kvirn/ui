@@ -74,14 +74,13 @@ describe('rendering', () => {
     await expect.element(link).toHaveAttribute('download', '')
   })
 
-  test('passes lang and hrefLang through', async () => {
+  test('passes hrefLang through', async () => {
     const { container } = await render(
-      <Link.Root href="/fi" hrefLang="fi" lang="fi">
+      <Link.Root href="/fi" hrefLang="fi">
         Suomeksi
       </Link.Root>,
     )
     const link = page.getByRole('link', { name: 'Suomeksi' })
-    await expect.element(link).toHaveAttribute('lang', 'fi')
     await expect.element(link).toHaveAttribute('hreflang', 'fi')
     await expectNoA11yViolations(container)
   })
@@ -217,7 +216,7 @@ describe('new-tab notice resolution', () => {
           Digg <Link.NewTabNotice />
         </Link.Root>
         <KvirnProvider locale="fi-FI" messages={fi}>
-          <Link.Root href="https://www.suomi.fi/" target="_blank" lang="fi">
+          <Link.Root href="https://www.suomi.fi/" target="_blank">
             Suomi.fi <Link.NewTabNotice />
           </Link.Root>
         </KvirnProvider>

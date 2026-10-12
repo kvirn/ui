@@ -1,3 +1,4 @@
+import { InEnglishWhenFallback } from '../../fixture-language.tsx'
 import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { Button, Card, Field, Fieldset, Link, Section, TextInput, useFormat } from '@kvirn-ui/react'
@@ -121,18 +122,18 @@ const sectionTexts: Record<SectionFixtureLocale, SectionTexts | undefined> = {
 interface ResolvedSectionTexts {
   text: SectionTexts
   /** `'en'` when the locale has no texts: put it on the element (3.1.2). */
-  lang: 'en' | undefined
+  isFallback: boolean
 }
 
 /** The fixture text in a locale. */
 function sectionTextsFor(locale: SectionFixtureLocale): ResolvedSectionTexts {
   const text = sectionTexts[locale]
   if (text === undefined) {
-    return { text: en, lang: 'en' }
+    return { text: en, isFallback: true }
   }
   return {
     text,
-    lang: undefined,
+    isFallback: false,
   }
 }
 
@@ -149,25 +150,27 @@ export interface SectionFixtureProps {
 
 /** Example A: a text block in a sidebar, a Section rendered as a named `aside`, with prose. */
 export function ContactSection({ locale }: SectionFixtureProps) {
-  const { text, lang } = sectionTextsFor(locale)
+  const { text, isFallback } = sectionTextsFor(locale)
   const format = useFormat()
   const headingId = useId()
   return (
-    <Section as="aside" aria-labelledby={headingId} className="kv-prose" lang={lang}>
-      <h2 id={headingId}>{text.contact.heading}</h2>
-      <p>
-        {text.contact.phone(locale === 'nb' || locale === 'nn' ? '800 12 345' : '0123-45 67 89')}
-      </p>
-      <p>
-        {text.contact.hours(
-          <time dateTime="08:00">{shortTime(opens, format)}</time>,
-          <time dateTime="16:00">{shortTime(closes, format)}</time>,
-        )}
-      </p>
-      <p>
-        <Link.Root href="mailto:kundcenter@kvirnby.example">{text.contact.email}</Link.Root>
-      </p>
-    </Section>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Section as="aside" aria-labelledby={headingId} className="kv-prose">
+        <h2 id={headingId}>{text.contact.heading}</h2>
+        <p>
+          {text.contact.phone(locale === 'nb' || locale === 'nn' ? '800 12 345' : '0123-45 67 89')}
+        </p>
+        <p>
+          {text.contact.hours(
+            <time dateTime="08:00">{shortTime(opens, format)}</time>,
+            <time dateTime="16:00">{shortTime(closes, format)}</time>,
+          )}
+        </p>
+        <p>
+          <Link.Root href="mailto:kundcenter@kvirnby.example">{text.contact.email}</Link.Root>
+        </p>
+      </Section>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -176,31 +179,32 @@ export function ContactSection({ locale }: SectionFixtureProps) {
  * there and transparent, so colouring one side moves nothing. It follows `dir`, and every theme.
  */
 export function ContactSectionWithEdge({ locale }: SectionFixtureProps) {
-  const { text, lang } = sectionTextsFor(locale)
+  const { text, isFallback } = sectionTextsFor(locale)
   const format = useFormat()
   const headingId = useId()
   return (
-    <Section
-      as="aside"
-      aria-labelledby={headingId}
-      className="kv-prose"
-      style={{ borderInlineEndColor: 'var(--kv-color-border-subtle)' }}
-      lang={lang}
-    >
-      <h2 id={headingId}>{text.contact.heading}</h2>
-      <p>
-        {text.contact.phone(locale === 'nb' || locale === 'nn' ? '800 12 345' : '0123-45 67 89')}
-      </p>
-      <p>
-        {text.contact.hours(
-          <time dateTime="08:00">{shortTime(opens, format)}</time>,
-          <time dateTime="16:00">{shortTime(closes, format)}</time>,
-        )}
-      </p>
-      <p>
-        <Link.Root href="mailto:kundcenter@kvirnby.example">{text.contact.email}</Link.Root>
-      </p>
-    </Section>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Section
+        as="aside"
+        aria-labelledby={headingId}
+        className="kv-prose"
+        style={{ borderInlineEndColor: 'var(--kv-color-border-subtle)' }}
+      >
+        <h2 id={headingId}>{text.contact.heading}</h2>
+        <p>
+          {text.contact.phone(locale === 'nb' || locale === 'nn' ? '800 12 345' : '0123-45 67 89')}
+        </p>
+        <p>
+          {text.contact.hours(
+            <time dateTime="08:00">{shortTime(opens, format)}</time>,
+            <time dateTime="16:00">{shortTime(closes, format)}</time>,
+          )}
+        </p>
+        <p>
+          <Link.Root href="mailto:kundcenter@kvirnby.example">{text.contact.email}</Link.Root>
+        </p>
+      </Section>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -209,15 +213,17 @@ export function ContactSectionWithEdge({ locale }: SectionFixtureProps) {
  * controls are the reason the container exists, and there is no one destination.
  */
 export function UserSection({ locale }: SectionFixtureProps) {
-  const { text, lang } = sectionTextsFor(locale)
+  const { text, isFallback } = sectionTextsFor(locale)
   return (
-    <Section lang={lang} data-testid="section-with-actions">
-      <h2>{text.users.heading}</h2>
-      <div className="kv-button-group">
-        <Button>{text.users.edit}</Button>
-        <Button>{text.users.delete}</Button>
-      </div>
-    </Section>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Section data-testid="section-with-actions">
+        <h2>{text.users.heading}</h2>
+        <div className="kv-button-group">
+          <Button>{text.users.edit}</Button>
+          <Button>{text.users.delete}</Button>
+        </div>
+      </Section>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -235,30 +241,34 @@ export function NewsBand({ locale }: SectionFixtureProps) {
 
 /** One thing with one destination: a Card. The link is in the heading. */
 export function NewsCard({ locale }: SectionFixtureProps) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   return (
-    <Card.Root as="article" lang={lang} data-testid="news-card">
-      <Card.Body className="kv-prose">
-        <h2>
-          <Link.Root href="#vintervaghallning">{text.news.snow.title}</Link.Root>
-        </h2>
-        <p>{text.news.snow.excerpt}</p>
-      </Card.Body>
-    </Card.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Card.Root as="article" data-testid="news-card">
+        <Card.Body className="kv-prose">
+          <h2>
+            <Link.Root href="#vintervaghallning">{text.news.snow.title}</Link.Root>
+          </h2>
+          <p>{text.news.snow.excerpt}</p>
+        </Card.Body>
+      </Card.Root>
+    </InEnglishWhenFallback>
   )
 }
 
 /** A form section is neither: a `<fieldset>` with a legend, on the page. */
 export function ContactDetailsFieldset({ locale }: SectionFixtureProps) {
-  const { text, lang } = sectionTextsFor(locale)
+  const { text, isFallback } = sectionTextsFor(locale)
   return (
-    <Fieldset.Root lang={lang} data-testid="form-section">
-      <Fieldset.Legend>{text.details.legend}</Fieldset.Legend>
-      <Field.Root>
-        <Field.Label>{text.details.email}</Field.Label>
-        <TextInput name="email" autoComplete="email" />
-      </Field.Root>
-    </Fieldset.Root>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <Fieldset.Root data-testid="form-section">
+        <Fieldset.Legend>{text.details.legend}</Fieldset.Legend>
+        <Field.Root>
+          <Field.Label>{text.details.email}</Field.Label>
+          <TextInput name="email" autoComplete="email" />
+        </Field.Root>
+      </Fieldset.Root>
+    </InEnglishWhenFallback>
   )
 }
 
@@ -268,34 +278,36 @@ export function ContactDetailsFieldset({ locale }: SectionFixtureProps) {
  * a landmark, so keep these few.
  */
 export function RenderedSections({ locale }: SectionFixtureProps) {
-  const { text, lang } = textsFor(locale)
+  const { text, isFallback } = textsFor(locale)
   const statusId = useId()
   const navigationId = useId()
   return (
-    <div lang={lang}>
-      <Section as="section" aria-labelledby={statusId} data-testid="status-section">
-        <h2 id={statusId}>{text.waste.heading}</h2>
-        <p>{text.waste.plan}</p>
-      </Section>
-      <Section as="nav" aria-labelledby={navigationId} data-testid="news-navigation">
-        <h2 id={navigationId}>{text.news.heading}</h2>
+    <InEnglishWhenFallback isFallback={isFallback}>
+      <div>
+        <Section as="section" aria-labelledby={statusId} data-testid="status-section">
+          <h2 id={statusId}>{text.waste.heading}</h2>
+          <p>{text.waste.plan}</p>
+        </Section>
+        <Section as="nav" aria-labelledby={navigationId} data-testid="news-navigation">
+          <h2 id={navigationId}>{text.news.heading}</h2>
+          <ul>
+            <li>
+              <Link.Root href="#atervinning">{text.news.recycling.title}</Link.Root>
+            </li>
+            <li>
+              <Link.Root href="#vintervaghallning">{text.news.snow.title}</Link.Root>
+            </li>
+          </ul>
+        </Section>
         <ul>
-          <li>
-            <Link.Root href="#atervinning">{text.news.recycling.title}</Link.Root>
-          </li>
-          <li>
-            <Link.Root href="#vintervaghallning">{text.news.snow.title}</Link.Root>
-          </li>
+          <Section as="li">
+            <p>{text.news.grants.title}</p>
+          </Section>
+          <Section as="li">
+            <p>{text.news.snow.title}</p>
+          </Section>
         </ul>
-      </Section>
-      <ul>
-        <Section as="li">
-          <p>{text.news.grants.title}</p>
-        </Section>
-        <Section as="li">
-          <p>{text.news.snow.title}</p>
-        </Section>
-      </ul>
-    </div>
+      </div>
+    </InEnglishWhenFallback>
   )
 }
