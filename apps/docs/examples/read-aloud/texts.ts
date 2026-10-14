@@ -1,7 +1,10 @@
 import { defineExampleTexts } from '../../components/local-example-texts.ts'
 
 const en = {
-  title: 'Applying for a building permit',
+  allowRemoteVoices: 'Allow online voices',
+  allowRemoteVoicesHelp:
+    'Online voices are currently offered only by Google Chrome, with Google’s voices. The browser sends the text to Google to read it, so leave this off for text with personal data.',
+  title: 'Applying for a building permit.',
   firstParagraph:
     'You apply for a building permit in the municipality where the building will stand. Start with the property designation and a short description of the work. Attach a site plan.',
   secondParagraph:
@@ -10,6 +13,9 @@ const en = {
 }
 
 const sv: typeof en = {
+  allowRemoteVoices: 'Tillåt röster online',
+  allowRemoteVoicesHelp:
+    'Röster online erbjuds för närvarande bara av Google Chrome, med Googles röster. Webbläsaren skickar texten till Google för att läsa upp den, så låt den vara avstängd för text med personuppgifter.',
   title: 'Ansöka om bygglov',
   firstParagraph:
     'Du ansöker om bygglov i den kommun där byggnaden ska stå. Börja med fastighetsbeteckningen och en kort beskrivning av arbetet. Bifoga en situationsplan.',
