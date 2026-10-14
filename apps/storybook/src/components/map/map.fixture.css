@@ -1,0 +1,64 @@
+/* The demo's own look for two layers: fuel keeps the default marker, hotels take the accent. */
+@media not (forced-colors: active) {
+  .story-marker--hotels {
+    color: var(--kv-color-on-accent);
+  }
+
+  .story-marker--hotels::before {
+    background-color: var(--kv-color-accent);
+  }
+
+  .story-cluster--fuel {
+    border-color: var(--kv-color-primary);
+  }
+
+  .story-cluster--hotels {
+    border-color: var(--kv-color-accent);
+  }
+}
+
+/* CustomMarkers: a pin per layer (round for fuel, square for hotels) and a ring per cluster. They
+ * restyle the default buttons, so the 44px target and the 24px mark stay. */
+.kv-map-marker.story-pin--hotels::before {
+  border-radius: var(--kv-radius-sm);
+  background-color: var(--kv-color-accent);
+}
+
+.kv-map-marker.story-pin--hotels {
+  color: var(--kv-color-on-accent);
+}
+
+.kv-map-cluster.story-ring {
+  display: flex;
+  gap: var(--kv-space-1);
+  align-items: center;
+  justify-content: center;
+  border-width: 4px;
+  border-color: var(--kv-color-primary);
+}
+
+.kv-map-cluster.story-ring > svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+.kv-map-cluster.story-ring--hotels {
+  border-color: var(--kv-color-accent);
+  border-radius: var(--kv-radius-md);
+}
+
+.kv-map-cluster.story-ring--medium {
+  min-inline-size: 3.5rem;
+  block-size: 3.5rem;
+}
+
+.kv-map-cluster.story-ring--large {
+  min-inline-size: 4.25rem;
+  block-size: 4.25rem;
+}
+
+@media (forced-colors: active) {
+  .kv-map-cluster.story-ring {
+    border-color: CanvasText;
+  }
+}

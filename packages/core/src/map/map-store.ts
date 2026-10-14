@@ -7,6 +7,7 @@ export interface MapState {
   view: MapView
   bounds: MapBounds | null
   selectedPlaceId: string | null
+  openedClusterId: string | null
   hiddenLayerIds: readonly string[]
 }
 
@@ -14,7 +15,9 @@ export interface MapActions {
   setView: (view: MapView) => void
   setBounds: (bounds: MapBounds) => void
   selectPlace: (placeId: string | null) => void
+  openCluster: (clusterId: string | null) => void
   setLayerHidden: (layerId: string, hidden: boolean) => void
+  setHiddenLayers: (layerIds: readonly string[]) => void
 }
 
 export type MapStore = ComponentStore<MapState, MapActions>
@@ -31,12 +34,25 @@ export function createMapStore(options: CreateMapStoreOptions): MapStore {
       view: options.view,
       bounds: null,
       selectedPlaceId: options.selectedPlaceId ?? null,
+      openedClusterId: null,
       hiddenLayerIds: options.hiddenLayerIds ?? [],
     },
     ({ update }) => ({
       setView: (view) => update((state) => ({ ...state, view })),
       setBounds: (bounds) => update((state) => ({ ...state, bounds })),
-      selectPlace: (selectedPlaceId) => update((state) => ({ ...state, selectedPlaceId })),
+      selectPlace: (selectedPlaceId) =>
+        update((state) => ({
+          ...state,
+          selectedPlaceId,
+          openedClusterId: selectedPlaceId === null ? state.openedClusterId : null,
+        })),
+      openCluster: (openedClusterId) =>
+        update((state) => ({
+          ...state,
+          openedClusterId,
+          selectedPlaceId: openedClusterId === null ? state.selectedPlaceId : null,
+        })),
+      setHiddenLayers: (hiddenLayerIds) => update((state) => ({ ...state, hiddenLayerIds })),
       setLayerHidden: (layerId, hidden) =>
         update((state) => {
           const others = state.hiddenLayerIds.filter((id) => id !== layerId)

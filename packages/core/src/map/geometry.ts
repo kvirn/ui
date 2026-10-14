@@ -1,7 +1,7 @@
 import type { LngLat, MapBounds, MapPlace, MapSize, MapView } from './types.ts'
 
 const EARTH_RADIUS_METRES = 6_371_008.8
-const TILE_SIZE = 512
+export const TILE_SIZE = 512
 const MAX_LATITUDE = 85.0511287798
 export const MIN_ZOOM = 0
 export const MAX_ZOOM = 22
@@ -123,5 +123,28 @@ export function boundsOfView(view: MapView, size: MapSize): MapBounds {
     north: northWest.latitude,
     east: southEast.longitude,
     south: southEast.latitude,
+  }
+}
+
+/**
+ * The view at `zoom` that draws `position` at `anchor`, a point of the viewport as fractions of its
+ * size: `{ x: 0.5, y: 0.5 }` centres it, `{ x: 0.5, y: 0.85 }` puts it low with room above.
+ */
+export function viewWithPositionAt(
+  position: LngLat,
+  zoom: number,
+  size: MapSize,
+  anchor: { x: number; y: number },
+): MapView {
+  const target = toWorldPixels(position, zoom)
+  return {
+    zoom,
+    center: fromWorldPixels(
+      {
+        x: target.x + (0.5 - anchor.x) * size.width,
+        y: target.y + (0.5 - anchor.y) * size.height,
+      },
+      zoom,
+    ),
   }
 }

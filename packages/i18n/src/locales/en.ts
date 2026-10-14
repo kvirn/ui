@@ -451,8 +451,20 @@ export const en = {
     gestureWheel: ({ modifier }) => `Hold ${modifier} and scroll to zoom the map`,
     detailsClose: 'Close',
     listEmpty: 'There are no places in the map view. Zoom out or move the map.',
+    indexing: 'Loading the places',
     attributionLabel: 'Map data',
     baseMapLabel: 'Map type',
     baseMapChanged: ({ label }) => `Map type: ${label}.`,
+    clusterLabel: ({ count }, format) =>
+      format.plural(count, { one: '1 place', other: `${format.number(count)} places` }),
+    clusterLayerLabel: ({ count, layer }, format) =>
+      `${layer}: ${format.plural(count, { one: '1 place', other: `${format.number(count)} places` })}`,
+    clusterTitle: ({ count }, format) =>
+      format.plural(count, { one: '1 place', other: `${format.number(count)} places` }),
+    clusterLayerTitle: ({ count, layer }, format) =>
+      `${layer}: ${format.plural(count, { one: '1 place', other: `${format.number(count)} places` })}`,
+    clusterClose: 'Close',
+    layersLegend: 'Show on the map',
+    layerCount: ({ label, count }, format) => `${label} (${format.number(count)})`,
   },
 } satisfies KvirnMessages

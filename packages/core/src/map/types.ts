@@ -25,6 +25,8 @@ export interface MapLayer {
   id: string
   label: string
   description?: string
+  /** Group nearby places of this layer into clusters. Default: true. */
+  cluster?: boolean
 }
 
 export interface MapBaseMap {
@@ -35,13 +37,38 @@ export interface MapBaseMap {
   attribution?: string
 }
 
-export interface MapPlace {
+export interface MapPlace<Data = unknown> {
   id: string
   position: LngLat
   name: string
   layer?: string
   address?: string
+  /** The body of the details popup. */
+  description?: string
+  /** Shown at the top of the details popup. `alt` is yours and required: `''` marks it decorative. */
+  image?: { src: string; alt: string }
+  /** Your own object for this place, handed back to every render function. */
+  data?: Data
 }
+
+export interface MapCluster<Data = unknown> {
+  id: string
+  layer?: string
+  /** The mean position of its places. */
+  position: LngLat
+  bounds: MapBounds
+  /** How many places it holds. Read this, not `places.length`: it costs nothing. */
+  count: number
+  /**
+   * Its places. For a cluster from a `source` this is built on first read and can be large, so a
+   * long list uses `Map.ClusterPopupPlaces`, which reads a row at a time.
+   */
+  places: MapPlace<Data>[]
+}
+
+export type MapMarkerItem<Data = unknown> =
+  | { type: 'place'; place: MapPlace<Data> }
+  | { type: 'cluster'; cluster: MapCluster<Data> }
 
 export interface AddressResult {
   id: string
@@ -78,7 +105,8 @@ export interface MapProviderEvents {
  * viewport drives the camera through `setView` and `fitBounds` only.
  */
 export interface MapHandle {
-  setView: (view: MapView) => void
+  /** Moves the camera. `animate` eases over `duration` ms; the caller decides, from the motion preferences. */
+  setView: (view: MapView, options?: { animate?: boolean; duration?: number }) => void
   getView: () => MapView
   getSize: () => MapSize
   getBounds: () => MapBounds

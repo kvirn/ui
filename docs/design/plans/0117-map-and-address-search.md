@@ -66,15 +66,15 @@ Types: `MapPlace {id, position, name, layer?, address?}`, `MapLayer {id, label, 
 
 The full tables live in spec §7: roles and names, tab order, keys, pointer, AddressSearch, announcements. Summary of the rows each needs a named test in `map.test.tsx`:
 
-| Part       | Rows                                                                                     |
-| ---------- | ---------------------------------------------------------------------------------------- |
-| Viewport   | Tab in/out, arrows pan, `+`/`=`/`-` zoom, Escape hides hint, Ctrl/Cmd never taken        |
-| Marker set | one Tab stop, arrows and Home/End move (flip in RTL), Enter/Space opens details          |
-| Cluster    | Enter/Space zooms in, focus lands on a place, count announced                            |
-| Details    | focus to heading, Escape and Close return focus to the opener                            |
-| Controls   | zoom limits `aria-disabled` with focus kept, Locate flow (finding, found, denied)        |
-| Layers     | checkbox toggles markers and the list, count announced                                   |
-| AddressSearch | Autocomplete table, debounce and min length, Enter standalone vs in a form            |
+| Part          | Rows                                                                              |
+| ------------- | --------------------------------------------------------------------------------- |
+| Viewport      | Tab in/out, arrows pan, `+`/`=`/`-` zoom, Escape hides hint, Ctrl/Cmd never taken |
+| Marker set    | one Tab stop, arrows and Home/End move (flip in RTL), Enter/Space opens details   |
+| Cluster       | Enter/Space zooms in, focus lands on a place, count announced                     |
+| Details       | focus to heading, Escape and Close return focus to the opener                     |
+| Controls      | zoom limits `aria-disabled` with focus kept, Locate flow (finding, found, denied) |
+| Layers        | checkbox toggles markers and the list, count announced                            |
+| AddressSearch | Autocomplete table, debounce and min length, Enter standalone vs in a form        |
 
 Focus never lands on `body`. Announcements are polite, settle about 500 ms after the view, never during a drag. WCAG SCs: 1.1.1, 1.3.1, 1.4.1, 1.4.10, 1.4.11, 1.4.13, 2.1.1, 2.1.2, 2.4.3, 2.4.11, 2.5.1, 2.5.7, 2.5.8, 3.2.1, 3.2.2, 3.3.7, 4.1.2, 4.1.3.
 
@@ -95,7 +95,7 @@ Phase 0 is the gate: nothing past it starts before the approvals below.
 - [ ] P1 `core/map`: geo maths, view state, selection, layer visibility, in-view filter, grid clustering, provider types; node tests
 - [ ] P1 `packages/map` scaffold (package.json, vite preset, exports, optional peers) and the memory provider (no network, used by tests and stories)
 - [ ] P2 `useMap` + Map.Root/Viewport/Markers/Marker/Controls/Attribution/Skip/List/Details; i18n; `kv-map-*` in `theme.css`; `theme:check`
-- [ ] P3 Layers (`Map.Layers`), clustering, GeoJSON as an optional source
+- [x] P3 Layers (`Map.Layers`), clustering (plans 0118, 0119); GeoJSON as an optional source still open
 - [ ] P4 `useAddressSearch` + `AddressSearch` on Autocomplete; `GeocoderProvider`; `nominatim` sub-entry; AddressInput hand-off
 - [ ] P5 MapLibre adapter (first real engine). Leaflet and Google adapters follow once P5 proves the interface; split to plan 0118 if P5 grows
 - [ ] P6 Stories (every state, RTL, forced colours, `Keyboard` story, `parameters.a11yContract`), `map.a11y.md`, docs page, roadmap
@@ -116,6 +116,8 @@ Approved by the maintainer on 2026-10-14 (spec §9 recommendations):
 - **APPROVAL, keyboard (D2, D4):** one Tab stop for the markers in view, arrows between them; arrows pan, `+`/`-` zoom, Escape hides the hint. A deviation from "every marker a Tab stop" (Leaflet), recorded in the `keyboard` skill.
 - **APPROVAL, DESIGN.md (D5–D8):** icon-only zoom and pan buttons, the halo rule, map-view motion, `--kv-map-block-size`. Four icons: `remove`, `arrow-up`, `arrow-down`, `locate`.
 - D1 region + `aria-roledescription`; D3 focus to the details heading; D9 two-finger pan and Ctrl+wheel zoom; D10 pan buttons on; D11 list shows places in view; D12 AddressSearch on Autocomplete; D13 details in flow below 40rem. Approved by the maintainer as recommended.
+- **Details popup at every width (maintainer, 2026-10-14):** `Map.Details` is a non-modal `role=dialog` popup anchored above the pressed marker (below if no room), portalled right after the markers so tab order follows them, with no panel below the map at any width and no hard focus trap (Escape and Close return focus to the opener). The marker moves to the bottom-centre on press. Replaces spec D13's in-flow panel; trade-off against 2.4.11 on 320px handled by capping the popup to the room above the marker so it never covers it.
+- **Details fields and parts (maintainer, 2026-10-14):** `MapPlace` gains `image?: { src, alt }` and `description?`. `Map.Details` without children renders image, title with Close, body and address; with nodes exactly those; the function form stays. Parts `Map.DetailsImage|Title|Body|Address|Close` read the place from context and render nothing when empty. Look: 18rem max, full-bleed 16:9 image, `space-3` content padding, `kv-card` dropped, address in `text-muted`. `title` and `titleAs` props removed (use `Map.DetailsTitle as`).
 - **Sequencing (maintainer, 2026-10-14):** English strings first, no tests until the map works. This defers, it doesn't waive: `sv fi nb nn` strings, `map.test.tsx` (every keyboard row), axe stories and the gates are owed before `accessibility-reviewer` and before the package is un-privated. `i18n:check` stays red until then.
 - Pure logic in `core`, parts in `@kvirn-ui/map` (like `rich-text` on core): keeps rule 3 and one package for engines.
 
@@ -128,10 +130,17 @@ Taken during implementation (foundation and React slices):
 - **i18n:** keys are `map.<key>` flat (`panNorth`, `tilesFailedTitle`), as the catalog depth is fixed. Only the English strings exist; `sv fi nb nn` carry `map: en.map` as a placeholder so types hold, so `i18n:check` passes falsely until real strings land: they are owed before un-privating.
 - **Engine CSS:** the package ships none. A consumer imports `maplibre-gl/dist/maplibre-gl.css` for the engine's canvas and container rules (the Storybook story does).
 - **Icons:** the built-in set stays at 25 (its cap and test are a gate). `remove`, `arrow-up`, `arrow-down`, `locate` are the map package's own icon components (`map-icons.tsx`), passed to `Icon icon={...}`: no consumer registration. The story marker uses the built-in `info` until a consumer brings a place icon.
+
+Taken during the Docs page slice (English only, no tests):
+
+- **Docs page:** `packages/map/src/map.md` (description, `## API`, notes with the rule 7 facts) and `map.a11y.md` (spec §7 as the contract; every Test cell is `pending`, no AT claim). `map.stories.tsx` has `meta.component: Map.Root`, `Default` first with controls for every Root prop, and a `Keyboard` story. The old OpenStreetMap, BaseMaps and MemoryProvider stories are folded into Default: MapLibre with the three real base maps (OSM, Esri, OpenTopoMap), tagged `!test` because it calls third parties. No story-only `engine` control. Coverage in the test run is `Offline` (a plain background style, no tile source), `Keyboard` and `OwnList`; `CustomBaseMapSwitch` switches real tiles, so it is `!test`. The memory provider stays a library export for tests and pages without an engine.
+- **Offline and tiles stories expose the same three map types**, so `baseMap`, `defaultBaseMap` and the switch work in both. The story remounts the map when `defaultBaseMap` or `initialView` changes, since those are read once.
+- **`baseMap` stays controlled only while the control is set:** the radios write back with `useArgs`; clearing it makes the map uncontrolled so `defaultBaseMap` shows.
 - **Skip link target:** the list heading, or the details title while a place is open, so the target always exists.
 - **Not yet:** focus pan under overlays (2.4.11), clusters, layers, Locate, offline notice, zoom-limit announcement from the buttons' own press is announced, details Close name check, Tooltip on markers, marker hover tooltip.
 - **`rasterStyle({ tiles, attribution })`** builds a MapLibre raster style from the consumer's URL templates; no tile URL is in `packages/`. The `OpenStreetMap` story passes OSM's URL and is tagged `!test` (Storybook's own tag, honoured by addon-vitest), so no test run calls a third party. The repo's testing skill does not yet name this tag: add it there.
 - **Base maps (spec §9 answered yes):** `MapBaseMap { id, label, attribution? }` in core; `MapProvider.baseMaps/defaultBaseMap` is read by `useMap` before mount, `MapHandle.setBaseMap(id)` swaps tiles (`map.setStyle`) and keeps camera and markers. `maplibre({ baseMaps, defaultBaseMap })` next to the single `style` option (no switcher). `Map.BaseMapSwitch` is a `RadioGroup` (a fieldset with legend `map.baseMapLabel`) beside the viewport, renders nothing under 2 base maps; `Map.Attribution` takes a node or `(baseMap) => node`, default the active `attribution`. Announces `map.baseMapChanged` on a switch only. No tile URL in `packages/`; the `BaseMaps` story (`!test`) holds OSM, Esri and OpenTopoMap URLs and the consumer owns the terms. No theme.css change (radio group styles suffice). No tests yet; English only.
+- **BaseMapSwitch is templatable, the list is optional (maintainer, 2026-10-14):** `Map.BaseMapSwitch` takes a render function `({ baseMaps, baseMap, setBaseMap }) => ReactNode` that replaces the radios inside `div.kv-map-base-maps`; the consumer names the control; still nothing with fewer than two base maps. `useMapState()` is the public context reader (returns `UseMapResult`, throws outside `Map.Root`). `Map.Skip` renders only with details open, a mounted `Map.List` (registered in a root context) or an `href`; the focus-return fallback is opener, then list heading, then the viewport (it gets an `id`). Show or hide is whether you render the part: no `show*` props (rule 14), the story has controls only. The doc says the omitted list is the consumer's a11y duty.
 
 ## Risks & open questions
 

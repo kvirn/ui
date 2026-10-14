@@ -1,24 +1,25 @@
-import {
-  MAX_ZOOM,
-  MIN_ZOOM,
-  createMapStore,
-  panBy,
-  selectPlacesInView,
-  selectVisiblePlaces,
-  zoomBy,
-} from '@kvirn-ui/core'
+import { createMapStore } from '@kvirn-ui/core'
 import type {
+  MapCluster,
+  MapLayer,
+  MapMarkerItem,
   AddressResult,
   ResolvedMessages,
   MapBaseMap,
   MapBounds,
   MapHandle,
   MapPlace,
+  MapPlaceSource,
   MapProvider,
   MapView,
 } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { useQuietAnnouncer, useMessages, warnAnnouncerMissing } from '@kvirn-ui/react/internal'
+import {
+  useQuietAnnouncer,
+  useMessages,
+  warnAnnouncerMissing,
+  warnOnce,
+} from '@kvirn-ui/react/internal'
 import {
   useCallback,
   useEffect,
@@ -28,30 +29,40 @@ import {
   useState,
   useSyncExternalStore,
 } from 'react'
+import { useMapCamera } from './use-map-camera.ts'
+import type { MapGestureHint, MapPanDirection, MapStatus } from './use-map-camera.ts'
+import { useMapPopup } from './use-map-popup.ts'
+import { useMapPlaces } from './use-map-places.ts'
+import type { MapIndexer } from './use-map-places.ts'
 
-export type MapPanDirection = 'north' | 'south' | 'east' | 'west'
-export type MapStatus = 'loading' | 'ready' | 'failed'
-export type MapGestureHint = 'touch' | 'wheel'
+export type { MapGestureHint, MapIndexer, MapPanDirection, MapStatus }
 
-const panFractions: Record<MapPanDirection, { x: number; y: number }> = {
-  north: { x: 0, y: -1 },
-  south: { x: 0, y: 1 },
-  east: { x: 1, y: 0 },
-  west: { x: -1, y: 0 },
-}
-// A quarter of the viewport's shorter side per press (map.md §7).
-const PAN_STEP = 0.25
-const SETTLE_MILLISECONDS = 500
 const ADDRESS_ZOOM = 15
-const noBaseMaps: readonly MapBaseMap[] = []
+// One 44px target plus a gap, so markers never overlap (WCAG 2.5.8).
+const DEFAULT_CLUSTER_RADIUS = 48
+// More buttons than this in view is a page that struggles, whatever the engine.
+const MAX_COMFORTABLE_MARKERS = 2000
+const noLayers: readonly MapLayer[] = []
+const noPlaces: readonly MapPlace<never>[] = []
+const noHiddenLayers: readonly string[] = []
 
-export interface UseMapOptions {
+export interface UseMapOptions<Data = unknown> {
   /** The engine adapter, for example `maplibre({ style })` from `@kvirn-ui/map/maplibre`. Keep it stable. */
   provider: MapProvider
   /** The map's accessible name: `Karta över förskolor`. Yours, so it is in your language. */
   label: string
-  /** The places. Keep the array stable between renders. */
-  places?: readonly MapPlace[] | undefined
+  /** The places. Keep the array stable between renders. For many places use `source`. */
+  places?: readonly MapPlace<Data>[] | undefined
+  /**
+   * The places as columns, for tens of thousands to millions: no object exists per place until
+   * one is shown. Use it instead of `places`, and keep it stable.
+   */
+  source?: MapPlaceSource<Data> | undefined
+  /**
+   * Where the cluster index is built for a large `source`: `'main'` (default) in 8 ms slices on the
+   * page, or `createMapWorker` from `@kvirn-ui/map/worker` to build it in a worker. The map creates the worker when it needs one and stops it when it is done.
+   */
+  indexIn?: 'main' | (() => MapIndexer) | undefined
   /** Where the map starts, and where Reset returns to. */
   initialView: MapView
   /** The active base map's id. Set it to control the map type; without it the map keeps its own. */
@@ -60,11 +71,21 @@ export interface UseMapOptions {
   defaultBaseMap?: string | undefined
   /** Called with the id when a user picks a map type. */
   onBaseMapChange?: ((id: string) => void) | undefined
+  /** The layers the places belong to, by `place.layer`. Keep the array stable. */
+  layers?: readonly MapLayer[] | undefined
+  /** The ids of the hidden layers. Set it to control which layers show; without it the map keeps its own. */
+  hiddenLayers?: readonly string[] | undefined
+  /** The layers to start hidden when `hiddenLayers` isn't set. */
+  defaultHiddenLayers?: readonly string[] | undefined
+  /** Called with the next hidden ids when a user toggles a layer. */
+  onHiddenLayersChange?: ((ids: readonly string[]) => void) | undefined
+  /** Group nearby places into clusters so markers never overlap. Default on, radius 48 CSS pixels; `false` turns it off. */
+  cluster?: boolean | { radius?: number | undefined } | undefined
   /** Per-instance message overrides. */
   messages?: Partial<KvirnMessages['map']> | undefined
 }
 
-export interface UseMapResult {
+export interface UseMapResult<Data = unknown> {
   label: string
   view: MapView
   bounds: MapBounds | null
@@ -77,10 +98,37 @@ export interface UseMapResult {
   baseMap: string | null
   activeBaseMap: MapBaseMap | null
   isKeyboardHintDismissed: boolean
-  places: readonly MapPlace[]
-  visiblePlaces: MapPlace[]
-  placesInView: MapPlace[]
-  selectedPlace: MapPlace | null
+  /** The `places` array you gave: empty when you gave a `source`. */
+  places: readonly MapPlace<Data>[]
+  /** True while the cluster index of a large source is being built. Markers appear when it is done. */
+  indexing: boolean
+  /** The places on a visible layer. A count, not a list: nothing is materialised for it. */
+  visibleCount: number
+  /** The places inside the bounds, on a visible layer. */
+  placesInViewCount: number
+  /** The place at a position in the list of places in view (ascending source order), once it exists. */
+  getPlaceInView: (index: number) => MapPlace<Data> | undefined
+  /** Where a place sits in that list, or -1. */
+  getPlaceInViewPosition: (placeId: string) => number
+  /** A stable key for that row. */
+  getPlaceInViewKey: (index: number) => string
+  /** The place at a position in a cluster's list, once it exists. */
+  getClusterPlace: (clusterId: string, index: number) => MapPlace<Data> | undefined
+  /** How many places each layer has, by layer id. Counted once per source. */
+  layerCounts: Readonly<Record<string, number>>
+  /** Every place on a visible layer. Builds all of them: for a short list only, prefer `visibleCount`. */
+  readonly visiblePlaces: MapPlace<Data>[]
+  /** The places in view. Builds all of them: for a short list only, prefer `getPlaceInView`. */
+  readonly placesInView: MapPlace<Data>[]
+  /** The layers you gave, so a part can name a cluster's layer. */
+  layers: readonly MapLayer[]
+  hiddenLayerIds: readonly string[]
+  /** The clusters and places drawn as markers: those inside the bounds, on a visible layer. */
+  markersInView: MapMarkerItem<Data>[]
+  /** The key of the one marker or cluster in the Tab order: a place's or a cluster's id. */
+  tabStopKey: string | null
+  selectedPlace: MapPlace<Data> | null
+  openedCluster: MapCluster<Data> | null
   highlightedPlaceId: string | null
   activeMarkerId: string | null
   canZoomIn: boolean
@@ -93,11 +141,20 @@ export interface UseMapResult {
     keyboardHint: string
     details: string
     detailsTitle: string
+    clusterPopup: string
+    clusterPopupTitle: string
     listHeading: string
+    viewport: string
   }
+  /** Where the popup is portalled: an element right after the markers, set by `Map.Markers`. */
+  popupSlot: HTMLElement | null
+  setPopupSlot: (element: HTMLElement | null) => void
+  /** False while the camera moves to a place or cluster just opened: its popup waits for it. */
+  isPopupReady: boolean
   /** Ref callback for the element the engine draws into. */
-  engineRef: (element: HTMLElement | null) => void
+  setEngineElement: (element: HTMLElement | null) => void
   markerId: (placeId: string) => string
+  clusterMarkerId: (clusterId: string) => string
   rowId: (placeId: string) => string
   zoomIn: () => void
   zoomOut: () => void
@@ -108,8 +165,12 @@ export interface UseMapResult {
   /** Opens a place's details. `openerId` is the element focus returns to on close. */
   select: (placeId: string, openerId?: string) => void
   close: () => void
+  /** Opens a cluster's popup, or closes it with `null`. `openerId` is the element focus returns to on close. */
+  openCluster: (clusterId: string | null, openerId?: string) => void
+  /** Hides or shows a layer. Closes the popup of a place or cluster on it and announces the new count. */
+  setLayerHidden: (layerId: string, hidden: boolean) => void
   /** Centres the map on a place or an address without moving focus (WCAG 3.2.2). */
-  show: (target: MapPlace | AddressResult) => void
+  show: (target: MapPlace<Data> | AddressResult) => void
   setHighlightedPlaceId: (placeId: string | null) => void
   setActiveMarkerId: (placeId: string | null) => void
   dismissKeyboardHint: () => void
@@ -117,43 +178,31 @@ export interface UseMapResult {
   announceNextSettle: () => void
 }
 
-export function useMap({
+export function useMap<Data = unknown>({
   provider,
   label,
-  places = [],
+  places,
+  source: sourceProp,
+  indexIn = 'main',
   initialView,
   baseMap: baseMapProp,
   defaultBaseMap,
   onBaseMapChange,
+  layers = noLayers,
+  hiddenLayers,
+  defaultHiddenLayers = noHiddenLayers,
+  onHiddenLayersChange,
+  cluster = true,
   messages: messageOverrides,
-}: UseMapOptions): UseMapResult {
+}: UseMapOptions<Data>): UseMapResult<Data> {
   const messages = useMessages('map', messageOverrides)
   const { announce, isAvailable } = useQuietAnnouncer()
   const baseId = useId()
   const [store] = useState(() => createMapStore({ view: initialView }))
   const state = useSyncExternalStore(store.subscribe, store.getState, store.getState)
-  const [engineContainer, setEngineContainer] = useState<HTMLElement | null>(null)
-  const [handle, setHandle] = useState<MapHandle | null>(null)
-  const [status, setStatus] = useState<MapStatus>('loading')
-  const baseMaps = provider.baseMaps ?? noBaseMaps
-  const fallbackBaseMap = provider.defaultBaseMap ?? baseMaps[0]?.id ?? null
-  const [ownBaseMap, setOwnBaseMap] = useState<string | null>(defaultBaseMap ?? null)
-  const requestedBaseMap = baseMapProp ?? ownBaseMap
-  const baseMap =
-    requestedBaseMap !== null && baseMaps.some((candidate) => candidate.id === requestedBaseMap)
-      ? requestedBaseMap
-      : fallbackBaseMap
-  const baseMapRef = useRef(baseMap)
-  const appliedBaseMap = useRef(baseMap)
-  const [gestureHint, setGestureHint] = useState<MapGestureHint | null>(null)
-  const [isKeyboardHintDismissed, setKeyboardHintDismissed] = useState(false)
   const [highlightedPlaceId, setHighlightedPlaceId] = useState<string | null>(null)
   const [activeMarkerId, setActiveMarkerId] = useState<string | null>(null)
-
-  const initialViewRef = useRef(initialView)
-  const openerId = useRef<string | null>(null)
-  const focusDetailsOnOpen = useRef(false)
-  const announceOnSettle = useRef(false)
+  const [popupSlot, setPopupSlot] = useState<HTMLElement | null>(null)
 
   const ids = useMemo(
     () => ({
@@ -161,16 +210,51 @@ export function useMap({
       keyboardHint: `${baseId}-keyboard-hint`,
       details: `${baseId}-details`,
       detailsTitle: `${baseId}-details-title`,
+      clusterPopup: `${baseId}-cluster-popup`,
+      clusterPopupTitle: `${baseId}-cluster-popup-title`,
       listHeading: `${baseId}-list-heading`,
+      viewport: `${baseId}-viewport`,
     }),
     [baseId],
   )
   const markerId = useCallback((placeId: string) => `${baseId}-marker-${placeId}`, [baseId])
+  const clusterMarkerId = useCallback(
+    (clusterId: string) => `${baseId}-cluster-${clusterId}`,
+    [baseId],
+  )
   const rowId = useCallback((placeId: string) => `${baseId}-row-${placeId}`, [baseId])
 
-  const visiblePlaces = useMemo(() => selectVisiblePlaces(state, places), [state, places])
-  const placesInView = useMemo(() => selectPlacesInView(state, places), [state, places])
-  const selectedPlace = places.find((place) => place.id === state.selectedPlaceId) ?? null
+  const [ownHiddenLayers, setOwnHiddenLayers] = useState(defaultHiddenLayers)
+  const hiddenLayerIds = hiddenLayers ?? ownHiddenLayers
+  const bounds = state.bounds
+
+  const clusterRadius =
+    cluster === false
+      ? null
+      : cluster === true
+        ? DEFAULT_CLUSTER_RADIUS
+        : (cluster.radius ?? DEFAULT_CLUSTER_RADIUS)
+  const zoomStep = Math.floor(state.view.zoom)
+  const selectedPlaceId = state.selectedPlaceId
+  const placeState = useMapPlaces<Data>({
+    places,
+    source: sourceProp,
+    layers,
+    hiddenLayerIds,
+    clusterRadius,
+    indexIn,
+    bounds,
+    zoomStep,
+    selectedPlaceId,
+  })
+  const { markersInView, visibleCount, placesInViewCount, indexing } = placeState
+  const markerKeys = markersInView.map((item) =>
+    item.type === 'place' ? item.place.id : item.cluster.id,
+  )
+  const tabStopKey =
+    [activeMarkerId, selectedPlaceId, markerKeys[0]].find(
+      (key) => key != null && markerKeys.includes(key),
+    ) ?? null
 
   const say = useCallback(
     (text: string, key: string) => {
@@ -183,179 +267,105 @@ export function useMap({
     [announce, isAvailable],
   )
 
+  const markerCount = markersInView.length
   useEffect(() => {
-    if (engineContainer === null) {
-      return
-    }
-    const controller = new AbortController()
-    const mounted = provider.mount(engineContainer, {
-      view: store.getState().view,
-      ...(baseMapRef.current === null ? {} : { baseMap: baseMapRef.current }),
-      signal: controller.signal,
-    })
-    const sync = (view: MapView) => {
-      store.actions.setView(view)
-      store.actions.setBounds(mounted.getBounds())
-    }
-    const unsubscribers = [
-      mounted.on('move', sync),
-      mounted.on('moveend', (view) => {
-        sync(view)
-        setGestureHint(null)
-      }),
-      mounted.on('tilesloaded', () => setStatus('ready')),
-      mounted.on('error', () => setStatus('failed')),
-      mounted.on('gesture', setGestureHint),
-    ]
-    sync(mounted.getView())
-    setHandle(mounted)
-    return () => {
-      for (const unsubscribe of unsubscribers) unsubscribe()
-      controller.abort()
-      setHandle(null)
-      setStatus('loading')
-    }
-  }, [provider, engineContainer, store])
-
-  const placesInViewCount = placesInView.length
-  const visibleCount = visiblePlaces.length
-  useEffect(() => {
-    if (!announceOnSettle.current) {
-      return
-    }
-    const timer = window.setTimeout(() => {
-      announceOnSettle.current = false
-      say(
-        placesInViewCount === visibleCount
-          ? messages.placesAll({ count: visibleCount })
-          : messages.placesInView({ count: placesInViewCount }),
-        `${baseId}-view`,
+    if (markerCount > MAX_COMFORTABLE_MARKERS) {
+      warnOnce(
+        'map-many-markers',
+        `Map shows ${markerCount} markers at once. Keep clustering on, or set cluster: false only on small layers (layer.cluster) so a zoomed-out map groups its places.`,
       )
-    }, SETTLE_MILLISECONDS)
-    return () => window.clearTimeout(timer)
-  }, [state.view, state.bounds, placesInViewCount, visibleCount, messages, say, baseId])
+    }
+  }, [markerCount])
 
+  const announcedIndexing = useRef(false)
   useEffect(() => {
-    if (status === 'failed') {
-      say(messages.tilesFailedTitle, `${baseId}-failed`)
+    if (!indexing) {
+      announcedIndexing.current = false
+    } else if (!announcedIndexing.current) {
+      announcedIndexing.current = true
+      say(messages.indexing, `${baseId}-indexing`)
     }
-  }, [status, messages, say, baseId])
+  }, [indexing, say, messages, baseId])
 
-  useEffect(() => {
-    if (baseMap === null || baseMap === appliedBaseMap.current) {
-      return
-    }
-    appliedBaseMap.current = baseMap
-    baseMapRef.current = baseMap
-    handle?.setBaseMap(baseMap)
-    const next = baseMaps.find((candidate) => candidate.id === baseMap)
-    if (next !== undefined) {
-      say(messages.baseMapChanged({ label: next.label }), `${baseId}-base-map`)
-    }
-  }, [baseMap, baseMaps, handle, messages, say, baseId])
-
-  const selectedPlaceId = state.selectedPlaceId
-  useEffect(() => {
-    if (selectedPlaceId !== null) {
-      if (focusDetailsOnOpen.current) {
-        document.getElementById(ids.detailsTitle)?.focus()
-      }
-      focusDetailsOnOpen.current = false
-      return
-    }
-    const opener = openerId.current
-    if (opener === null) {
-      return
-    }
-    openerId.current = null
-    const target = document.getElementById(opener) ?? document.getElementById(ids.listHeading)
-    target?.focus()
-  }, [selectedPlaceId, ids.detailsTitle, ids.listHeading])
-
-  const moveTo = (view: MapView) => {
-    if (handle) {
-      handle.setView(view)
-    } else {
-      store.actions.setView(view)
-    }
-  }
-
-  const zoomBounded = (delta: number) => {
-    announceOnSettle.current = true
-    const atLimit = delta > 0 ? state.view.zoom >= MAX_ZOOM : state.view.zoom <= MIN_ZOOM
-    if (atLimit) {
-      announceOnSettle.current = false
-      say(delta > 0 ? messages.zoomLimitIn : messages.zoomLimitOut, `${baseId}-limit`)
-      return
-    }
-    moveTo(zoomBy(state.view, delta))
-  }
+  const { moveTo, ...camera } = useMapCamera({
+    store,
+    view: state.view,
+    bounds: state.bounds,
+    provider,
+    initialView,
+    baseMap: baseMapProp,
+    defaultBaseMap,
+    onBaseMapChange,
+    messages,
+    say,
+    baseId,
+    placesInViewCount,
+    visibleCount,
+  })
+  const popup = useMapPopup<Data>({
+    store,
+    view: state.view,
+    selectedPlaceId,
+    openedClusterId: state.openedClusterId,
+    findPlace: placeState.findPlace,
+    getCluster: placeState.getCluster,
+    hiddenLayerIds,
+    handle: camera.handle,
+    moveTo,
+    ids,
+  })
 
   return {
     label,
     view: state.view,
     bounds: state.bounds,
-    status,
-    gestureHint,
-    baseMaps,
-    baseMap,
-    activeBaseMap: baseMaps.find((candidate) => candidate.id === baseMap) ?? null,
-    isKeyboardHintDismissed,
-    places,
-    visiblePlaces,
-    placesInView,
-    selectedPlace,
+    ...camera,
+    ...popup,
+    places: places ?? noPlaces,
+    indexing,
+    visibleCount,
+    placesInViewCount,
+    getPlaceInView: placeState.getPlaceInView,
+    getPlaceInViewPosition: placeState.getPlaceInViewPosition,
+    getPlaceInViewKey: placeState.getPlaceInViewKey,
+    getClusterPlace: placeState.getClusterPlace,
+    layerCounts: placeState.layerCounts,
+    get visiblePlaces() {
+      return placeState.getVisiblePlaces()
+    },
+    get placesInView() {
+      return placeState.getPlacesInView()
+    },
+    layers,
+    hiddenLayerIds,
+    markersInView,
+    tabStopKey,
     highlightedPlaceId,
     activeMarkerId,
-    canZoomIn: state.view.zoom < MAX_ZOOM,
-    canZoomOut: state.view.zoom > MIN_ZOOM,
-    handle,
     messages,
     ids,
-    engineRef: setEngineContainer,
+    popupSlot,
+    setPopupSlot,
     markerId,
+    clusterMarkerId,
     rowId,
-    zoomIn: () => zoomBounded(1),
-    zoomOut: () => zoomBounded(-1),
-    reset: () => {
-      announceOnSettle.current = true
-      moveTo(initialViewRef.current)
-    },
-    setBaseMap: (id) => {
-      if (id === baseMap || !baseMaps.some((candidate) => candidate.id === id)) {
+    setLayerHidden: (layerId, hidden) => {
+      if (hiddenLayerIds.includes(layerId) === hidden) {
         return
       }
-      if (baseMapProp === undefined) {
-        setOwnBaseMap(id)
+      const next = hidden
+        ? [...hiddenLayerIds, layerId]
+        : hiddenLayerIds.filter((id) => id !== layerId)
+      if (hiddenLayers === undefined) {
+        setOwnHiddenLayers(next)
       }
-      onBaseMapChange?.(id)
+      onHiddenLayersChange?.(next)
+      camera.announceNextSettle()
     },
-    pan: (direction) => {
-      announceOnSettle.current = true
-      const size = handle?.getSize() ?? { width: 800, height: 600 }
-      const shorter = Math.min(size.width, size.height)
-      const fraction = panFractions[direction]
-      moveTo(
-        panBy(
-          state.view,
-          {
-            x: (fraction.x * PAN_STEP * shorter) / size.width,
-            y: (fraction.y * PAN_STEP * shorter) / size.height,
-          },
-          size,
-        ),
-      )
-    },
-    select: (placeId, opener) => {
-      openerId.current = opener ?? null
-      focusDetailsOnOpen.current = true
-      store.actions.selectPlace(placeId)
-    },
-    close: () => store.actions.selectPlace(null),
     show: (target) => {
       const position = target.position
-      if ('bounds' in target && target.bounds && handle) {
-        handle.fitBounds(target.bounds)
+      if ('bounds' in target && target.bounds && camera.handle) {
+        camera.handle.fitBounds(target.bounds)
       } else {
         moveTo({ center: position, zoom: Math.max(state.view.zoom, ADDRESS_ZOOM) })
       }
@@ -365,12 +375,5 @@ export function useMap({
     },
     setHighlightedPlaceId,
     setActiveMarkerId,
-    dismissKeyboardHint: () => {
-      setKeyboardHintDismissed(true)
-      setGestureHint(null)
-    },
-    announceNextSettle: () => {
-      announceOnSettle.current = true
-    },
   }
 }

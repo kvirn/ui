@@ -704,11 +704,24 @@ export interface KvirnMessages {
     gestureWheel: MessageFunction<{ modifier: string }>
     detailsClose: TextMessage
     listEmpty: TextMessage
+    indexing: TextMessage
     attributionLabel: TextMessage
     /** The legend of the map type switch: `Map type`. */
     baseMapLabel: TextMessage
     /** Announced after the visitor switches. `label` is the base map's name, the consumer's. */
     baseMapChanged: MessageFunction<{ label: string }>
+    /** The cluster button's name: `12 places`. */
+    clusterLabel: MessageFunction<{ count: number }>
+    /** The name when the cluster belongs to a layer: `Hotels: 12 places`. `layer` is the consumer's label. */
+    clusterLayerLabel: MessageFunction<{ count: number; layer: string }>
+    /** The cluster popup's title. */
+    clusterTitle: MessageFunction<{ count: number }>
+    clusterLayerTitle: MessageFunction<{ count: number; layer: string }>
+    clusterClose: TextMessage
+    /** The legend of the layer checkboxes: `Show on the map`. */
+    layersLegend: TextMessage
+    /** A layer checkbox's label: `Hotels (100)`. `label` is the consumer's layer label. */
+    layerCount: MessageFunction<{ label: string; count: number }>
   }
 }
 

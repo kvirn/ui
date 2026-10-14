@@ -1,0 +1,49 @@
+/* CustomPopup: the consumer's own classes on top of the popup parts. Existing tokens only. */
+/* A taller map than the default, so a popup with everything in it fits above its marker. */
+.story-rich-popup-map {
+  --kv-map-block-size: 38rem;
+}
+
+.story-rich-popup .kv-map-details-image {
+  aspect-ratio: 2 / 1;
+}
+
+.story-rich-popup-media {
+  position: relative;
+}
+
+.story-rich-popup-badge {
+  position: absolute;
+  inset-block-start: var(--kv-space-2);
+  inset-inline-start: var(--kv-space-2);
+}
+
+.story-rich-popup-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kv-space-1) var(--kv-space-2);
+  margin: 0;
+  font-size: var(--kv-font-body-small-size);
+  line-height: var(--kv-font-body-small-line-height);
+}
+
+.story-rich-popup-stars {
+  letter-spacing: 0.1em;
+}
+
+.story-rich-popup-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kv-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.story-rich-popup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kv-space-2);
+  margin-block-start: var(--kv-space-2);
+}

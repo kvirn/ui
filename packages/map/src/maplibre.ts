@@ -135,11 +135,17 @@ export function maplibre(options: MapLibreOptions): MapProvider {
       }
 
       const handle: MapHandle = {
-        setView: (next) =>
-          map.jumpTo({
-            center: [next.center.longitude, next.center.latitude],
+        setView: (next, moveOptions) => {
+          const camera = {
+            center: [next.center.longitude, next.center.latitude] as [number, number],
             zoom: next.zoom,
-          }),
+          }
+          if (moveOptions?.animate) {
+            map.easeTo({ ...camera, duration: moveOptions.duration ?? 240 })
+          } else {
+            map.jumpTo(camera)
+          }
+        },
         getView: () => readView(map),
         getSize: () => {
           const { clientWidth, clientHeight } = container

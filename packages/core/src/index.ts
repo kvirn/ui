@@ -454,8 +454,29 @@ export {
   normalizeLngLat,
   normalizeLongitude,
   panBy,
+  viewWithPositionAt,
   zoomBy,
 } from './map/geometry.ts'
+export { clusterPlaces } from './map/cluster.ts'
+export type { ClusterPlacesOptions } from './map/cluster.ts'
+export {
+  buildClusterTree,
+  clusterTreeTransferables,
+  createClusterTree,
+  createClusterTreeBuilder,
+} from './map/cluster-tree.ts'
+export type {
+  ClusterTree,
+  ClusterTreeBuilder,
+  ClusterTreeData,
+  ClusterTreeItems,
+  ClusterTreeLevel,
+  ClusterTreeOptions,
+} from './map/cluster-tree.ts'
+export { buildKdIndex, createKdIndex, createKdIndexBuilder } from './map/kd-index.ts'
+export type { KdIndex, KdIndexBuilder, KdIndexData } from './map/kd-index.ts'
+export { NO_LAYER, placesToSource } from './map/place-source.ts'
+export type { MapPlaceSource } from './map/place-source.ts'
 export { createMapStore, selectPlacesInView, selectVisiblePlaces } from './map/map-store.ts'
 export type { CreateMapStoreOptions, MapActions, MapState, MapStore } from './map/map-store.ts'
 export type {
@@ -464,8 +485,10 @@ export type {
   LngLat,
   MapBaseMap,
   MapBounds,
+  MapCluster,
   MapHandle,
   MapLayer,
+  MapMarkerItem,
   MapMountOptions,
   MapPlace,
   MapProvider,
