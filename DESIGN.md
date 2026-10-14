@@ -233,6 +233,10 @@ Set on a container with `class="kv-compact"`. Comfortable is the default and nee
 - Below `64rem`, where touch input is likely, compact chrome returns to comfortable.
 - A toolbar has no density of its own: its controls follow the density around them. A toolbar that can sit in a resident-facing form, such as an editor's, is comfortable unless its container is compact.
 
+### Map height
+
+A map's block size is `--kv-map-block-size`, a site default custom property that defaults to `clamp(15rem, 60vh, 40rem)`. A site changes the property, not a prop.
+
 ## Elevation & Depth
 
 Depth comes from the surface ladder (`canvas` → `surface` → `surface-raised`) and 1px hairlines, not shadows. The look is flat and precise. The one exception is the button, which isn't a surface level: see [Button depth](#button-depth).
@@ -289,6 +293,10 @@ Durations are `--kv-duration-fast` (hover, press), `--kv-duration-medium` (popup
 - No parallax, no auto-playing carousels, nothing that flashes, and no animation longer than 5 seconds without a pause control (2.2.2): the loading indicators are the exception the app must cover itself (below).
 - **Loading indicators loop for as long as a wait lasts** (`--kv-duration-loop`, 1600ms: the spinner's arc and the bars' sweep). `prefers-reduced-motion` shows the rest shape (a three-quarter arc, a hatch, a plain gradient) and the library honours that. They move for more than 5 seconds, so **WCAG 2.2.2 (Pause, Stop, Hide) applies, and the app must offer a way to stop them**: the OS setting is read by the library, but 2.2.2 asks for a mechanism on the page, so an app needs its own "reduce motion" control. The library ships none, by decision; `docs/design/loading-indicators.md` ("Consumer duty for 2.2.2") has the CSS to switch the loops off. The toast timer ring, fades and transitions are timers or under 5 seconds.
 
+### Map view motion
+
+A map view's pan and zoom animate only under `prefers-reduced-motion: no-preference` and while `<html>` is not `data-kv-motion="reduce"`, for at most `--kv-duration-slow`; otherwise the view jumps. No bounce, pulse or fly-over. This is a transform, so it is the one exception to "what moves" above.
+
 ## Shapes
 
 ### Radii
@@ -324,7 +332,8 @@ Outline style, a 1.5 stroke on a 24 grid with round caps and joins, in `currentC
 - **Size** is the size in pixels, as a string (`size="20"`, the default; one of 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80 or 96), and the theme turns it into rem with `kv-icon--size-<px>`, so an icon follows the root font size and not the text. Use `"20"` in buttons, because it equals their line height. Another size is a class you add. Stroke and colour are SVG attributes. The theme never sets stroke or colour, except in forced colours, where an icon takes its parent's system colour.
 - **Meaning.** An icon is decorative (`aria-hidden`) unless it has a `label` from i18n. A status icon always comes with the status in words, and the four statuses differ in shape as well as colour: info a square, success a circle, warning a triangle, error an octagon. A meaningful icon has 3:1 contrast against its background.
 - **Direction.** Name by meaning (`chevron-forward`, `arrow-back`). Only icons that show horizontal direction mirror in RTL (`mirrorInRtl`). Check marks, status icons, objects and `search` never mirror.
-- **Icon-only buttons** (`kv-button--icon-only`) are square, at least the button's minimum height, with `--kv-space-2` padding. Use them only for close, search and copy, with an accessible name from i18n and a visible Tooltip with the same text (always for copy, from M2 for close and search); on a touch screen (`(hover: none) and (pointer: coarse)`), where no Tooltip shows, copy shows its word beside the icon. The menu toggle on resident-facing pages shows the word "Menu" too.
+- **Halo.** Anything drawn over imagery (map markers, the focus ring on a marker) has two edges: 2px `canvas`, then 1px `text`. They swap per theme, so one is always light and one dark, which gives an edge of at least 3:1 against any colour.
+- **Icon-only buttons** (`kv-button--icon-only`) are square, at least the button's minimum height, with `--kv-space-2` padding. Use them only for close, search, copy and a map's zoom and pan, with an accessible name from i18n and a visible Tooltip with the same text (always for copy, from M2 for close and search); on a touch screen (`(hover: none) and (pointer: coarse)`), where no Tooltip shows, copy shows its word beside the icon. The menu toggle on resident-facing pages shows the word "Menu" too.
 
 ## Components
 

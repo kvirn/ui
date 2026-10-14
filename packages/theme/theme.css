@@ -12112,6 +12112,344 @@
     padding-inline: 0;
   }
 
+  /* 15a. Map -----------------------------------------------------------------------------------
+   * kv-map-*: the viewport (region), the engine surface, markers, controls, hint, status,
+   * attribution, the place list and the details card. The map never mirrors: north is up and east
+   * is right, so everything placed over it uses physical offsets for the coordinate and the pan
+   * cross. Overlays at the inline end follow the page's direction.
+   *
+   * The halo rule: anything drawn on imagery has a 2px canvas edge and then a 1px text edge. The two
+   * swap per theme, so one is always light and one dark, which keeps an edge of at least 3:1 on any
+   * tile (WCAG 1.4.11). The block size is --kv-map-block-size, a site default. */
+  .kv-map-viewport {
+    --kv-map-halo:
+      0 0 0 var(--kv-border-width) var(--kv-color-canvas),
+      0 0 0 calc(var(--kv-border-width) + 1px) var(--kv-color-text);
+    position: relative;
+    box-sizing: border-box;
+    block-size: var(--kv-map-block-size, clamp(15rem, 60vh, 40rem));
+    overflow: hidden;
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-lg);
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text);
+  }
+
+  .kv-map-viewport:focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  /* The engine's own sheet is unlayered and sets position: relative on this element, so it
+     fills the viewport by size, not by inset. */
+  .kv-map-engine {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .kv-map-markers {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .kv-map-marker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    inline-size: var(--kv-control-min-block-size);
+    block-size: var(--kv-control-min-block-size);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--kv-color-on-primary);
+    cursor: pointer;
+    pointer-events: auto;
+    transform: translate(calc(var(--kv-map-x, 0px) - 50%), calc(var(--kv-map-y, 0px) - 50%));
+  }
+
+  .kv-map-marker::before {
+    content: '';
+    position: absolute;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    border-radius: var(--kv-radius-full);
+    background-color: var(--kv-color-primary);
+    box-shadow: var(--kv-map-halo, 0 0 0 2px var(--kv-color-canvas));
+  }
+
+  .kv-map-marker > * {
+    position: relative;
+    inline-size: 1rem;
+    block-size: 1rem;
+  }
+
+  .kv-map-marker:hover::before {
+    background-color: var(--kv-color-primary-hover);
+  }
+
+  .kv-map-marker:focus-visible {
+    outline: none;
+  }
+
+  .kv-map-marker:focus-visible::before {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-map-marker[data-highlighted]::before {
+    box-shadow:
+      0 0 0 2px var(--kv-color-canvas),
+      0 0 0 4px var(--kv-color-text);
+  }
+
+  .kv-map-marker[aria-expanded='true'] {
+    z-index: 1;
+  }
+
+  .kv-map-marker[aria-expanded='true']::before {
+    inline-size: 2rem;
+    block-size: 2rem;
+    background-color: var(--kv-color-primary-hover);
+    box-shadow:
+      0 0 0 2px var(--kv-color-canvas),
+      0 0 0 4px var(--kv-color-text);
+  }
+
+  .kv-map-hint,
+  .kv-map-status,
+  .kv-map-controls,
+  .kv-map-attribution {
+    position: absolute;
+    box-sizing: border-box;
+    margin: 0;
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-surface-raised);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  .kv-map-hint {
+    inset-block-start: var(--kv-space-2);
+    inset-inline-start: var(--kv-space-2);
+    max-inline-size: min(20rem, calc(100% - 2 * var(--kv-space-2)));
+    padding-block: var(--kv-space-2);
+    padding-inline: var(--kv-space-3);
+    box-shadow: var(--kv-shadow-popup);
+  }
+
+  /* The keyboard hint shows while the viewport has focus, and stays readable to assistive
+   * technology (aria-describedby) before and after: the same clip rule as kv-visually-hidden. */
+  .kv-map-viewport:not(:focus) > .kv-map-hint:not(.kv-map-hint--gesture),
+  .kv-map-hint[data-dismissed]:not(.kv-map-hint--gesture) {
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .kv-map-hint--gesture {
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .kv-map-status {
+    inset-block-start: var(--kv-space-4);
+    inset-inline-start: var(--kv-space-4);
+    max-inline-size: min(40rem, calc(100% - 2 * var(--kv-space-4)));
+    padding: var(--kv-space-3);
+    text-align: start;
+  }
+
+  .kv-map-status > p {
+    margin-block: var(--kv-space-1) 0;
+  }
+
+  .kv-map-status .kv-spinner {
+    margin-inline-end: var(--kv-space-2);
+  }
+
+  .kv-map-controls {
+    inset-block-start: var(--kv-space-2);
+    inset-inline-end: var(--kv-space-2);
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: var(--kv-space-2);
+    padding: var(--kv-space-2);
+  }
+
+  .kv-map-pan {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    grid-template-areas:
+      '. north .'
+      'west . east'
+      '. south .';
+    gap: var(--kv-space-1);
+    direction: ltr;
+  }
+
+  .kv-map-pan-north {
+    grid-area: north;
+  }
+
+  .kv-map-pan-west {
+    grid-area: west;
+  }
+
+  .kv-map-pan-east {
+    grid-area: east;
+  }
+
+  .kv-map-pan-south {
+    grid-area: south;
+  }
+
+  .kv-map-controls .kv-button[aria-disabled='true'] {
+    border-style: dashed;
+  }
+
+  .kv-map-attribution {
+    inset-block-end: var(--kv-space-1);
+    inset-inline-start: var(--kv-space-1);
+    max-inline-size: calc(100% - 2 * var(--kv-space-1));
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-2);
+    border-radius: var(--kv-radius-sm);
+    font-size: var(--kv-font-body-small-size, var(--kv-font-body-size));
+  }
+
+  .kv-map-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .kv-map-list-item {
+    display: grid;
+    gap: var(--kv-space-1);
+    padding-block: var(--kv-space-3);
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  .kv-map-list-item[data-highlighted] {
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  .kv-map-list-item[data-highlighted] .kv-map-list-trigger {
+    text-decoration-line: underline;
+  }
+
+  .kv-map-list-trigger {
+    min-block-size: 1.5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--kv-color-text);
+    font: inherit;
+    font-weight: 600;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .kv-map-list-trigger:hover {
+    text-decoration-line: underline;
+  }
+
+  .kv-map-list-trigger:focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-map-list-heading:focus-visible,
+  .kv-map-details-title:focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-map-details-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--kv-space-3);
+  }
+
+  .kv-map-details-title {
+    margin: 0;
+  }
+
+  @media (max-width: 40rem) {
+    .kv-map-controls,
+    .kv-map-attribution {
+      position: static;
+    }
+
+    .kv-map-controls {
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-block-start: var(--kv-space-2);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .kv-map-viewport,
+    .kv-map-hint,
+    .kv-map-status,
+    .kv-map-controls,
+    .kv-map-attribution {
+      border-color: CanvasText;
+      background-color: Canvas;
+      box-shadow: none;
+      color: CanvasText;
+    }
+
+    .kv-map-marker {
+      forced-color-adjust: none;
+      color: CanvasText;
+    }
+
+    .kv-map-marker::before {
+      border: 2px solid CanvasText;
+      background-color: Canvas;
+      box-shadow: none;
+    }
+
+    .kv-map-marker[aria-expanded='true']::before {
+      border-color: CanvasText;
+      background-color: Highlight;
+      box-shadow: 0 0 0 2px CanvasText;
+    }
+
+    .kv-map-marker[aria-expanded='true'] {
+      color: HighlightText;
+    }
+
+    .kv-map-marker:focus-visible::before {
+      outline-color: Highlight;
+    }
+
+    .kv-map-viewport:focus-visible {
+      outline-color: Highlight;
+    }
+  }
+
   .kv-display-settings-content {
     display: grid;
     gap: var(--kv-space-4);
