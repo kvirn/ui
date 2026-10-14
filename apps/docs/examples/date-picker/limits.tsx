@@ -24,19 +24,19 @@ export function LimitedVisitDate() {
         value={maskedDateToIsoDate(fieldText, locale)}
         onValueChange={(isoDate) => setFieldText(isoDateToMaskedDate(isoDate, locale))}
       >
-        <div className="kv-date-picker-row">
-          <Field.Root>
-            <Field.Label>{texts.fieldLabel}</Field.Label>
+        <Field.Root>
+          <Field.Label>{texts.fieldLabel}</Field.Label>
+          <div className="kv-date-picker-row">
             <TextInput
               name="visit"
               mask={masks.date()}
               value={fieldText}
               onValueChange={setFieldText}
             />
-            <Field.HelpText>{texts.window}</Field.HelpText>
-          </Field.Root>
-          <DatePicker.Trigger />
-        </div>
+            <DatePicker.Trigger />
+          </div>
+          <Field.HelpText>{texts.window}</Field.HelpText>
+        </Field.Root>
         <DatePicker.Popup />
       </DatePicker.Root>
     </div>

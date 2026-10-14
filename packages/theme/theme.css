@@ -4058,8 +4058,8 @@
 
   /* 8j. Date picker ---------------------------------------------------------------------------
    * <DatePicker.Trigger> is a kv-button with kv-date-picker-trigger, the last item in the
-   * kv-date-input row (or in kv-date-picker-row, a row that wraps for one masks.date() field and
-   * its trigger). It sits at the block end of the row, so it wraps below the boxes at 320px or
+   * kv-date-input row (or in kv-date-picker-row, a row that wraps for one masks.date() input and
+   * its trigger, placed inside the Field between the label and the help text). It sits at the block end of the row, so it wraps below the boxes at 320px or
    * with large text. <DatePicker.Popup> is a Dialog plus kv-date-picker-popup: as wide as its
    * calendar from 40rem (the dialog's 40rem form measure is too wide for a grid), and below 40rem
    * the dialog's sheet with the inline padding at space-2, so the 40px cells fit 320px (design
@@ -4073,6 +4073,13 @@
     flex-wrap: wrap;
     align-items: flex-end;
     gap: var(--kv-space-4);
+    min-inline-size: 0;
+  }
+
+  /* The input takes the room the trigger leaves, so the trigger stays beside it, and wraps below
+   * only when the input would be narrower than 12rem. */
+  .kv-date-picker-row > .kv-input {
+    flex: 1 1 12rem;
     min-inline-size: 0;
   }
 

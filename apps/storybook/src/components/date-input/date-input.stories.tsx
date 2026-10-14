@@ -1,4 +1,4 @@
-import { DateInput } from '@kvirn-ui/react'
+import { TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/date-input/date-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/date-input/date-input.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -14,89 +14,45 @@ import {
   dateTextsFor,
   KeyboardDate,
   OneFieldDate,
+  OneFieldDateStates,
   PaperFormDate,
   PlainFormDate,
   VisitDate,
   withRegion,
 } from './date-input.fixture.tsx'
 
-// Components/Form/DateInput: a date of three text boxes, day, month and year, in a group
-// fieldset (design spec docs/design/form-fields.md §6.6). The order follows the region through
-// `Intl` (sv-SE year first, sv-FI day first, month first becomes day first). Three Tab stops in
-// that order, focus moves to the next box when typing fills one (Plan 0040: on by default, with
-// a visible hint, `autoAdvance={false}` turns it off), the arrow keys never step a value, and the
-// value is three strings that nothing parses. KvirnUI holds no form state: `value` and `onValueChange` are the
-// date, and without `value` the native inputs are uncontrolled. Nothing here validates: an
-// invalid story sets `invalid` itself, on the wrong boxes only. The help text is the consumer's,
-// with an example in the order of the boxes.
+// Components/Forms/DateInput: the main example is one field, `masks.date()` in a TextInput (the
+// controls are the field's own). `ThreeBoxes` is the other composition: a date of three text
+// boxes, day, month and year, in a group fieldset (design spec docs/design/form-fields.md §6.6).
+// The order follows the region through `Intl` (sv-SE year first, sv-FI day first, month first
+// becomes day first). Three Tab stops in that order, focus moves to the next box when typing fills
+// one (Plan 0040: on by default, with a visible hint, `autoAdvance={false}` turns it off), the
+// arrow keys never step a value, and the value is three strings that nothing parses. KvirnUI holds
+// no form state: `value` and `onValueChange` are the date, and without `value` the native inputs
+// are uncontrolled. Nothing here validates: an invalid story sets `invalid` itself, on the wrong
+// boxes only. The help text is the consumer's, with an example in the order of the boxes.
 
 const meta = {
   title: 'Components/Forms/DateInput',
-  component: DateInput.Root,
-  args: {
-    name: 'birth',
-    autoComplete: 'bday',
-    autoAdvance: true,
-    onValueChange: logChange('onValueChange'),
-  },
+  component: TextInput,
   argTypes: {
     className: {
       control: 'text',
       description:
-        'Your own classes, added to `kv-date-input`. The theme sizes each box by `kv-date-input-day`, `-month` and `-year` on its field.',
+        'Your own classes, added to the input. The width class here (`kv-input--width-10`) stays.',
     },
-    name: {
+    name: { control: 'text', description: 'The input’s `name`, for a plain form submit.' },
+    defaultValue: {
       control: 'text',
       description:
-        'A prefix for the three inputs’ `name`: `birth` gives `birth-day`, `birth-month` and `birth-year`. A `name` on one box wins.',
-    },
-    value: {
-      control: false,
-      description:
-        'Controlled: `{ year, month, day }`, all strings (`""` for an empty box). Pair it with `onValueChange`.',
-    },
-    defaultValue: {
-      control: 'object',
-      description:
-        'Uncontrolled: the text each box starts with, any of `year`, `month` and `day`. The native inputs keep it after that.',
-    },
-    onValueChange: {
-      control: false,
-      description:
-        'Called with the whole date as the boxes show it, and `{ reason: "input", part, event }`. It only reports.',
-    },
-    autoComplete: {
-      control: 'inline-radio',
-      options: [undefined, 'bday'],
-      description:
-        '`"bday"` gives the boxes `bday-day`, `bday-month` and `bday-year` (1.3.5). For a date of birth only.',
+        'Uncontrolled: the text the field starts with, in the mask’s form (`2026-10-27` in Swedish, `27.10.2026` in Finnish).',
     },
     required: {
       control: 'boolean',
-      description:
-        '`aria-required` on the three boxes. Default: the Fieldset’s `required` (this example’s Fieldset is required).',
+      description: '`aria-required` on the input, and the label’s required marker.',
     },
-    disabled: {
-      control: 'boolean',
-      description:
-        'Native `disabled` and `data-disabled` on the three boxes. Default: the Fieldset’s `disabled`.',
-    },
-    readOnly: { control: 'boolean', description: 'Native `readOnly` on the three boxes.' },
-    autoAdvance: {
-      control: 'boolean',
-      description:
-        'Default `true`: focus moves to the next box, with its text selected, when the user’s typing fills a box (two digits for day and month, four for year). Never from the last box, and never on paste, drop, autofill, deletion or a change of `value`. It shows a visible hint under the boxes (`dateInput.autoAdvanceHint`) that is part of the group’s description (3.2.2). `false` turns both off: typing never moves focus.',
-    },
-    invalidParts: {
-      control: 'object',
-      description:
-        'The wrong boxes, for the boxes the Root renders itself: `["year"]` gives `aria-invalid` and `data-invalid` on the Year box only. With your own children, set `invalid` on each of Day, Month and Year. The Fieldset’s `invalid` marks none of them.',
-    },
-    messages: {
-      control: false,
-      description:
-        'Per-instance overrides for `dateInput.day`, `.month`, `.year` and `.autoAdvanceHint`.',
-    },
+    disabled: { control: 'boolean', description: 'Native `disabled` and `data-disabled`.' },
+    readOnly: { control: 'boolean', description: 'Native `readOnly`.' },
   },
   globals: { locale: 'sv' },
   decorators: [
@@ -107,15 +63,90 @@ const meta = {
     ),
     withFormLocale,
   ],
-  render: (args, { globals }) => <BirthDate locale={localeOf(globals)} {...args} />,
+  render: (args, { globals }) => (
+    <OneFieldDate
+      locale={localeOf(globals)}
+      className={args.className}
+      defaultValue={typeof args.defaultValue === 'string' ? args.defaultValue : undefined}
+      disabled={args.disabled}
+      name={args.name}
+      readOnly={args.readOnly}
+      required={args.required}
+    />
+  ),
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
   },
-} satisfies Meta<typeof DateInput.Root>
+} satisfies Meta<typeof TextInput>
 
 export default meta
 type Story = StoryObj<typeof meta>
+type ThreeBoxStory = StoryObj<typeof BirthDate>
+
+const renderBirthDate: ThreeBoxStory['render'] = (args, { globals }) => (
+  <BirthDate {...args} locale={localeOf(globals)} />
+)
+
+const threeBoxArgTypes: ThreeBoxStory['argTypes'] = {
+  className: {
+    control: 'text',
+    description:
+      'Your own classes, added to `kv-date-input`. The theme sizes each box by `kv-date-input-day`, `-month` and `-year` on its field.',
+  },
+  name: {
+    control: 'text',
+    description:
+      'A prefix for the three inputs’ `name`: `birth` gives `birth-day`, `birth-month` and `birth-year`. A `name` on one box wins.',
+  },
+  value: {
+    control: false,
+    description:
+      'Controlled: `{ year, month, day }`, all strings (`""` for an empty box). Pair it with `onValueChange`.',
+  },
+  defaultValue: {
+    control: 'object',
+    description:
+      'Uncontrolled: the text each box starts with, any of `year`, `month` and `day`. The native inputs keep it after that.',
+  },
+  onValueChange: {
+    control: false,
+    description:
+      'Called with the whole date as the boxes show it, and `{ reason: "input", part, event }`. It only reports.',
+  },
+  autoComplete: {
+    control: 'inline-radio',
+    options: [undefined, 'bday'],
+    description:
+      '`"bday"` gives the boxes `bday-day`, `bday-month` and `bday-year` (1.3.5). For a date of birth only.',
+  },
+  required: {
+    control: 'boolean',
+    description:
+      '`aria-required` on the three boxes. Default: the Fieldset’s `required` (this example’s Fieldset is required).',
+  },
+  disabled: {
+    control: 'boolean',
+    description:
+      'Native `disabled` and `data-disabled` on the three boxes. Default: the Fieldset’s `disabled`.',
+  },
+  readOnly: { control: 'boolean', description: 'Native `readOnly` on the three boxes.' },
+  autoAdvance: {
+    control: 'boolean',
+    description:
+      'Default `true`: focus moves to the next box, with its text selected, when the user’s typing fills a box (two digits for day and month, four for year). Never from the last box, and never on paste, drop, autofill, deletion or a change of `value`. It shows a visible hint under the boxes (`dateInput.autoAdvanceHint`) that is part of the group’s description (3.2.2). `false` turns both off: typing never moves focus.',
+  },
+  invalidParts: {
+    control: 'object',
+    description:
+      'The wrong boxes, for the boxes the Root renders itself: `["year"]` gives `aria-invalid` and `data-invalid` on the Year box only. With your own children, set `invalid` on each of Day, Month and Year. The Fieldset’s `invalid` marks none of them.',
+  },
+  messages: {
+    control: false,
+    description:
+      'Per-instance overrides for `dateInput.day`, `.month`, `.year` and `.autoAdvanceHint`.',
+  },
+}
 
 /** The labels of the boxes in the order a user meets them. */
 const boxLabels = (canvasElement: HTMLElement) =>
@@ -136,9 +167,9 @@ const box = (canvasElement: HTMLElement, part: 'day' | 'month' | 'year') => {
  * `4.10.2026` in Finnish, `20261004` in Swedish. The form keeps the ISO date. Use the three boxes
  * below when you want separate labelled day, month and year, for a date of birth (`bday`), or auto-advance.
  */
-export const OneField: Story = {
+export const Default: Story = {
+  args: { name: 'start', required: true, disabled: false, readOnly: false },
   parameters: showSource('date-input/date-input.fixture.tsx', 'OneFieldDate'),
-  render: (_args, { globals }) => <OneFieldDate locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = dateTextsFor(localeOf(globals))
     const field = canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) })
@@ -160,7 +191,6 @@ export const OneField: Story = {
 export const OneFieldFinnish: Story = {
   globals: { locale: 'fi' },
   parameters: showSource('date-input/date-input.fixture.tsx', 'OneFieldDate'),
-  render: (_args, { globals }) => <OneFieldDate locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     const { text } = dateTextsFor('fi')
     const field = canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) })
@@ -172,10 +202,35 @@ export const OneFieldFinnish: Story = {
 }
 
 /**
+ * The one field in its states: the date is wrong ("must be a real date"), disabled and read only.
+ * The story sets `invalid` itself: nothing validates.
+ */
+export const OneFieldStates: Story = {
+  parameters: showSource('date-input/date-input.fixture.tsx', 'OneFieldDateStates'),
+  render: (_args, { globals }) => <OneFieldDateStates locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = dateTextsFor(localeOf(globals))
+    const [invalid, disabled, readOnly] = canvas.getAllByRole('textbox')
+    await expect(invalid).toHaveAttribute('aria-invalid', 'true')
+    await expect(invalid).toHaveAccessibleDescription(new RegExp(`${text.oneFieldError}$`))
+    await expect(disabled).toBeDisabled()
+    await expect(readOnly).toHaveAttribute('readonly')
+  },
+}
+
+/**
  * The three boxes: a date of birth, with every option of `DateInput.Root` as a control. The
  * boxes follow the Locale toolbar: Swedish writes the year first, Finnish, Norwegian and English the day.
  */
-export const Default: Story = {
+export const ThreeBoxes: ThreeBoxStory = {
+  args: {
+    name: 'birth',
+    autoComplete: 'bday',
+    autoAdvance: true,
+    onValueChange: logChange('onValueChange'),
+  },
+  argTypes: threeBoxArgTypes,
+  render: renderBirthDate,
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   play: async ({ canvas, canvasElement, globals }) => {
     const locale = localeOf(globals)
@@ -214,7 +269,8 @@ export const Keyboard: Story = {
  * Turn the auto-advance off with `autoAdvance={false}`, for a service that follows the stricter
  * reading of 3.2.2: typing never moves focus, and the hint under the boxes is gone.
  */
-export const NoAutoAdvance: Story = {
+export const NoAutoAdvance: ThreeBoxStory = {
+  render: renderBirthDate,
   args: { autoAdvance: false },
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   play: async ({ canvas, canvasElement, globals }) => {
@@ -231,7 +287,8 @@ export const NoAutoAdvance: Story = {
 }
 
 /** `sv-SE`: year, month, day, and the help text's example is written in that order. */
-export const SwedishSweden: Story = {
+export const SwedishSweden: ThreeBoxStory = {
+  render: renderBirthDate,
   decorators: [withRegion('sv-SE')],
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   play: async ({ canvasElement, canvas }) => {
@@ -244,7 +301,8 @@ export const SwedishSweden: Story = {
  * `sv-FI`: the same Swedish catalog, but Finland-Swedish writes day, month, year. The language
  * alone would give these residents the wrong order, so the region decides.
  */
-export const SwedishFinland: Story = {
+export const SwedishFinland: ThreeBoxStory = {
+  render: renderBirthDate,
   decorators: [withRegion('sv-FI')],
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   play: async ({ canvasElement, canvas }) => {
@@ -254,7 +312,8 @@ export const SwedishFinland: Story = {
 }
 
 /** Finnish: day, month, year. The strings are designer drafts, for length checks. */
-export const Finnish: Story = {
+export const Finnish: ThreeBoxStory = {
+  render: renderBirthDate,
   globals: { locale: 'fi' },
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   play: async ({ canvasElement, canvas }) => {
@@ -267,7 +326,8 @@ export const Finnish: Story = {
  * English: day, month, year, though `Intl` puts the month first for `en`. Month first reads as
  * day first for the readers in the EU, and gives wrong dates (3 7 2007).
  */
-export const English: Story = {
+export const English: ThreeBoxStory = {
+  render: renderBirthDate,
   globals: { locale: 'en' },
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   play: async ({ canvasElement }) => {
@@ -291,7 +351,7 @@ export const OwnOrder: Story = {
  * Only the Year box is wrong: "must include a year" marks Year, and the message is under the
  * boxes, once, for the whole date.
  */
-export const InvalidYear: Story = {
+export const InvalidYear: ThreeBoxStory = {
   render: (args, { globals }) => <BirthDate {...args} locale={localeOf(globals)} error="year" />,
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   play: async ({ canvas, canvasElement, globals }) => {
@@ -306,7 +366,7 @@ export const InvalidYear: Story = {
 }
 
 /** "Must be a real date" marks all three boxes: the message is the same one, under them. */
-export const InvalidDate: Story = {
+export const InvalidDate: ThreeBoxStory = {
   render: (args, { globals }) => <BirthDate {...args} locale={localeOf(globals)} error="date" />,
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   play: async ({ canvasElement }) => {
@@ -332,7 +392,8 @@ export const NotABirthday: Story = {
 }
 
 /** The whole date disabled: a dashed edge on each box, skipped by Tab. */
-export const Disabled: Story = {
+export const Disabled: ThreeBoxStory = {
+  render: renderBirthDate,
   args: { disabled: true, defaultValue: { year: '1990', month: '3', day: '27' } },
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   play: async ({ canvas }) => {
@@ -343,7 +404,8 @@ export const Disabled: Story = {
 }
 
 /** Read only: a solid edge on the surface colour, and the boxes still take focus. */
-export const ReadOnly: Story = {
+export const ReadOnly: ThreeBoxStory = {
+  render: renderBirthDate,
   args: { readOnly: true, defaultValue: { year: '1990', month: '3', day: '27' } },
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   play: async ({ canvas }) => {
@@ -354,7 +416,7 @@ export const ReadOnly: Story = {
 }
 
 /** Staff density from 64rem: 32px boxes and 12px between them, the digits still 16px. */
-export const Compact: Story = {
+export const Compact: ThreeBoxStory = {
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   render: (args, { globals }) => (
     <div className="kv-compact">
@@ -369,7 +431,7 @@ export const Compact: Story = {
 }
 
 /** A narrow column: the three boxes stay in one row, and wrap in order at larger text sizes. */
-export const Narrow: Story = {
+export const Narrow: ThreeBoxStory = {
   globals: { locale: 'fi' },
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   render: (args, { globals }) => (

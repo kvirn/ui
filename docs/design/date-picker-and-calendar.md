@@ -81,7 +81,7 @@ From `Intl` with `calendar: 'gregory'`, `numberingSystem: 'latn'`: heading `{ mo
       tbody: [42] ·  ·  1  2  3  4  5   ← empty td before the 1st
 ```
 
-Trigger: last item in the DateInput row (`align-self: end`), so it wraps below the Year box at 320px or 200% text. Tab order: boxes in field order → Choose date.
+Trigger: last item in the DateInput row (`align-self: end`), so it wraps below the Year box at 320px or 200% text. Masked: the `kv-date-picker-row` sits inside the Field around the input and the trigger, between the label and the help text, so the trigger is level with the input. Tab order: boxes in field order → Choose date.
 
 | Part                         | Tokens / style                                                                                                                                       | Notes                                                                                                        |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |

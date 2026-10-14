@@ -47,6 +47,8 @@ export interface DateTexts {
   oneFieldHint: (example: string) => string
   /** "Stored as": the ISO date the form keeps. */
   stored: string
+  /** "Start date must be a real date": the message under the one-field date. */
+  oneFieldError: string
 }
 
 const textsEn: DateTexts = {
@@ -63,6 +65,7 @@ const textsEn: DateTexts = {
   oneFieldLabel: 'Start date',
   oneFieldHint: (example) => `For example, ${example}`,
   stored: 'Stored as',
+  oneFieldError: 'Start date must be a real date',
 }
 
 const textsSv: DateTexts = {
@@ -79,6 +82,7 @@ const textsSv: DateTexts = {
   oneFieldLabel: 'Startdatum',
   oneFieldHint: (example) => `Till exempel ${example}`,
   stored: 'Sparas som',
+  oneFieldError: 'Startdatumet måste vara ett riktigt datum',
 }
 
 /** Designer drafts (docs/design/form-fields.md §4.3), for length checks. */
@@ -96,6 +100,7 @@ const textsFi: DateTexts = {
   oneFieldLabel: 'Alkamispäivä',
   oneFieldHint: (example) => `Esimerkiksi ${example}`,
   stored: 'Tallennetaan muodossa',
+  oneFieldError: 'Alkamispäivän on oltava oikea päivämäärä',
 }
 
 const textsNb: DateTexts = {
@@ -112,6 +117,7 @@ const textsNb: DateTexts = {
   oneFieldLabel: 'Startdato',
   oneFieldHint: (example) => `For eksempel ${example}`,
   stored: 'Lagres som',
+  oneFieldError: 'Startdatoen må være en gyldig dato',
 }
 
 const textsNn: DateTexts = {
@@ -128,6 +134,7 @@ const textsNn: DateTexts = {
   oneFieldLabel: 'Startdato',
   oneFieldHint: (example) => `Til dømes ${example}`,
   stored: 'Vert lagra som',
+  oneFieldError: 'Startdatoen må vere ein gyldig dato',
 }
 
 const dateTexts: Record<FormLocale, DateTexts | undefined> = {
@@ -420,12 +427,34 @@ export function DateStates({ locale }: { locale: FormLocale }) {
   )
 }
 
+export interface OneFieldDateProps {
+  locale: FormLocale
+  className?: string | undefined
+  /** The text the field starts with, in the mask's form. */
+  defaultValue?: string | undefined
+  disabled?: boolean | undefined
+  /** Marks the field wrong and shows "must be a real date". The story sets it, nothing validates. */
+  invalid?: boolean | undefined
+  name?: string | undefined
+  readOnly?: boolean | undefined
+  required?: boolean | undefined
+}
+
 /**
  * A date in one field: `masks.date()` follows the page's locale for the order and the separator
  * (`2026-10-27` in sv, `27.10.2026` in fi, `27/10/2026` in en), and the help text gives an example in
  * that form. The form keeps the ISO date, which `onValueChange` reports once the date is complete.
  */
-export function OneFieldDate({ locale }: { locale: FormLocale }) {
+export function OneFieldDate({
+  locale,
+  className,
+  defaultValue,
+  disabled,
+  invalid,
+  name = 'start',
+  readOnly,
+  required = true,
+}: OneFieldDateProps) {
   const { text } = dateTextsFor(locale)
   const [stored, setStored] = useState('')
   // The example comes from the mask itself, so the help text and the field never disagree.
@@ -433,20 +462,35 @@ export function OneFieldDate({ locale }: { locale: FormLocale }) {
   return (
     <>
       <div className="kv-story-form">
-        <Field.Root required>
+        <Field.Root required={required} disabled={disabled} invalid={invalid}>
           <Field.Label>{text.oneFieldLabel}</Field.Label>
           <TextInput
-            name="start"
+            name={name}
             mask={masks.date()}
-            className="kv-input--width-10"
+            readOnly={readOnly}
+            defaultValue={defaultValue}
+            className={`kv-input--width-10${className === undefined ? '' : ` ${className}`}`}
             onValueChange={(_value, details) => setStored(details.unmaskedValue ?? '')}
           />
           <Field.HelpText>{text.oneFieldHint(example)}</Field.HelpText>
+          <Field.ErrorMessage>{text.oneFieldError}</Field.ErrorMessage>
         </Field.Root>
         <p className="kv-story-form-output" data-testid="stored">
           {text.stored}: {stored}
         </p>
       </div>
+    </>
+  )
+}
+
+/** The one-field date in its states: invalid ("must be a real date"), disabled and read only. */
+export function OneFieldDateStates({ locale }: { locale: FormLocale }) {
+  const id = useId()
+  return (
+    <>
+      <OneFieldDate locale={locale} name={`invalid-${id}`} defaultValue="2026-13-27" invalid />
+      <OneFieldDate locale={locale} name={`disabled-${id}`} defaultValue="2026-10-27" disabled />
+      <OneFieldDate locale={locale} name={`readonly-${id}`} defaultValue="2026-10-27" readOnly />
     </>
   )
 }

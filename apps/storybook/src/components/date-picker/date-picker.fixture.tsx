@@ -148,19 +148,19 @@ export function MaskedDatePicker({ locale, initial = '', ...pickerProps }: Maske
             pickerProps.onValueChange?.(isoDate)
           }}
         >
-          <div className="kv-date-picker-row">
-            <Field.Root>
-              <Field.Label>{text.oneFieldLabel}</Field.Label>
+          <Field.Root>
+            <Field.Label>{text.oneFieldLabel}</Field.Label>
+            <div className="kv-date-picker-row">
               <TextInput
                 name="start"
                 mask={masks.date()}
                 value={fieldText}
                 onValueChange={setFieldText}
               />
-              <Field.HelpText>{text.oneFieldHint(example)}</Field.HelpText>
-            </Field.Root>
-            <DatePicker.Trigger />
-          </div>
+              <DatePicker.Trigger />
+            </div>
+            <Field.HelpText>{text.oneFieldHint(example)}</Field.HelpText>
+          </Field.Root>
           <DatePicker.Popup />
         </DatePicker.Root>
         <p className="kv-story-form-output" data-testid="stored">

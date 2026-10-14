@@ -7,6 +7,16 @@ import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf } from '../form/form.fixture.tsx'
 import { codeTextsFor } from '../one-time-code/one-time-code.fixture.tsx'
 import {
+  ContactFamilyFields,
+  DateFamilyField,
+  IbanFamilyField,
+  familyTextsFor,
+  OrganisationNumberFamilyFields,
+  PatternFamilyFields,
+  PersonalIdentityNumberFamilyFields,
+  PostalCodeFamilyFields,
+} from './mask-families.fixture.tsx'
+import {
   characterNotAllowedMessage,
   CustomMaskFields,
   FilterFields,
@@ -71,6 +81,303 @@ type Story = StoryObj<typeof meta>
 /** A label as the whole accessible name, escaped: several labels here start with the same words. */
 const exactly = (label: string) =>
   new RegExp(`^${label.replaceAll(/[.*+?^$()[\]{}|\\]/g, String.raw`\$&`)}$`)
+
+interface DateStoryArgs {
+  dateLocale: 'page' | 'sv' | 'fi' | 'nb' | 'en'
+  minimum: string
+  maximum: string
+}
+
+const fill = async (input: HTMLElement, value: string) => {
+  await userEvent.clear(input)
+  await userEvent.type(input, value)
+}
+
+const withoutSeparators = (value: string) => value.replaceAll(/\D/g, '')
+
+/**
+ * A date in one field, in the order and with the separator of the page's language (`2026-10-04`
+ * in Swedish, `04.10.2026` in Norwegian). Type the digits only: the separators are written as
+ * you go and a pasted ISO date is reordered. The stored value is the ISO date once the date is
+ * complete. The mask checks the shape: `checks.date` finds `31.02` and a date outside
+ * `minimum` and `maximum` on submit. Change the controls to pin another language's order or to
+ * move the range.
+ */
+export const Date: StoryObj<DateStoryArgs> = {
+  args: { dateLocale: 'page', minimum: '1900-01-01', maximum: '2026-12-31' },
+  argTypes: {
+    dateLocale: {
+      control: 'select',
+      options: ['page', 'sv', 'fi', 'nb', 'en'],
+      description:
+        '`page` follows the provider (`mask="date"`). Another value pins `masks.date({ locale })`.',
+    },
+    minimum: {
+      control: 'text',
+      description: 'The earliest date for `checks.date`, ISO `YYYY-MM-DD`. Empty for none.',
+    },
+    maximum: {
+      control: 'text',
+      description: 'The latest date for `checks.date`, ISO `YYYY-MM-DD`. Empty for none.',
+    },
+  },
+  parameters: showSource('mask/mask-families.fixture.tsx', 'DateFamilyField'),
+  render: (args, { globals }) => <DateFamilyField locale={localeOf(globals)} {...args} />,
+  play: async ({ canvas, globals, args }) => {
+    const { text, locale } = maskTextsFor(globals)
+    const family = familyTextsFor(locale)
+    const mask = masks.date(args.dateLocale === 'page' ? {} : { locale: args.dateLocale })
+    const pageMask = args.dateLocale === 'page' ? mask.withLocale(locale) : mask
+    const input = canvas.getByRole('textbox', { name: exactly(family.date) })
+    const details = canvas.getByTestId('date-details')
+    const send = canvas.getByRole('button', { name: text.send })
+
+    const complete = pageMask.format('2026-10-04')
+    await userEvent.type(input, withoutSeparators(complete))
+    await expect(input).toHaveValue(complete)
+    await expect(input).toHaveAttribute('inputmode', 'numeric')
+    await expect(details).toHaveTextContent(
+      `${text.unmasked}: 2026-10-04 · ${text.complete}: ${text.yes}`,
+    )
+    await userEvent.click(send)
+    await expect(input).not.toHaveAttribute('aria-invalid')
+
+    // A shape that is not a day: the mask accepts it, the check says why.
+    await fill(input, withoutSeparators(pageMask.format('2026-02-31')))
+    await userEvent.click(send)
+    await expect(input).toHaveAttribute('aria-invalid', 'true')
+    await expect(input).toHaveAccessibleDescription(expect.stringContaining(text.checkDate))
+
+    // After the maximum.
+    await fill(input, withoutSeparators(pageMask.format('2027-01-01')))
+    await userEvent.click(send)
+    await expect(input).toHaveAccessibleDescription(expect.stringContaining(family.dateRange))
+
+    // Still being typed: the unmasked value is empty and the shape is incomplete.
+    await fill(input, withoutSeparators(complete).slice(0, 5))
+    await expect(details).toHaveTextContent(`${text.complete}: ${text.no}`)
+    await userEvent.click(send)
+    await expect(input).toHaveAccessibleDescription(
+      expect.stringContaining(text.checkFormatGeneric),
+    )
+  },
+}
+
+/**
+ * Personal identity numbers: Swedish (`19900101-2385`), Finnish (`131052-308T`) and Norwegian
+ * (eleven digits). Type the raw characters; the form's check runs on submit and says `format`,
+ * `date` or `checkDigit`. The number stays as typed so the user can fix it.
+ */
+export const PersonalIdentityNumbers: Story = {
+  parameters: showSource('mask/mask-families.fixture.tsx', 'PersonalIdentityNumberFamilyFields'),
+  render: (_args, { globals }) => <PersonalIdentityNumberFamilyFields locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = maskTextsFor(globals)
+    const send = canvas.getByRole('button', { name: text.send })
+    const swedish = canvas.getByRole('textbox', { name: exactly(text.personalIdentityNumber) })
+    const finnish = canvas.getByRole('textbox', { name: exactly(text.personalIdentityNumberFi) })
+    const norwegian = canvas.getByRole('textbox', { name: exactly(text.personalIdentityNumberNo) })
+
+    await userEvent.type(swedish, '199001012385')
+    await expect(swedish).toHaveValue('19900101-2385')
+    await expect(canvas.getByTestId('swedish-details')).toHaveTextContent(
+      `${text.unmasked}: 199001012385 · ${text.complete}: ${text.yes}`,
+    )
+    await userEvent.type(finnish, '131052-308t')
+    await expect(finnish).toHaveValue('131052-308T')
+    await userEvent.type(norwegian, '01019049961')
+    await expect(canvas.getByTestId('norwegian-details')).toHaveTextContent(
+      `${text.unmasked}: 01019049961 · ${text.complete}: ${text.yes}`,
+    )
+    await userEvent.click(send)
+    await expect(swedish).not.toHaveAttribute('aria-invalid')
+    await expect(finnish).not.toHaveAttribute('aria-invalid')
+    await expect(norwegian).not.toHaveAttribute('aria-invalid')
+
+    await fill(swedish, '199001012386')
+    await fill(finnish, '131352-308t')
+    await fill(norwegian, '01019049962')
+    await userEvent.click(send)
+    await expect(swedish).toHaveAccessibleDescription(expect.stringContaining(text.checkControl))
+    await expect(finnish).toHaveAccessibleDescription(expect.stringContaining(text.checkDate))
+    await expect(norwegian).toHaveAccessibleDescription(expect.stringContaining(text.checkControl))
+    await expect(swedish).toHaveValue('19900101-2386')
+
+    // Ten digits is a complete number too; eight is not.
+    await fill(swedish, '19900101')
+    await expect(canvas.getByTestId('swedish-details')).toHaveTextContent(
+      `${text.complete}: ${text.no}`,
+    )
+  },
+}
+
+/**
+ * Organisation numbers: Swedish (`556000-0001`), Finnish (`0112038-9`) and Norwegian
+ * (`974 760 673`). Each displays its country's grouping; the stored value has no separators.
+ */
+export const OrganisationNumbers: Story = {
+  parameters: showSource('mask/mask-families.fixture.tsx', 'OrganisationNumberFamilyFields'),
+  render: (_args, { globals }) => <OrganisationNumberFamilyFields locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = maskTextsFor(globals)
+    const send = canvas.getByRole('button', { name: text.send })
+    const swedish = canvas.getByRole('textbox', { name: exactly(text.organisationNumber) })
+    const finnish = canvas.getByRole('textbox', { name: exactly(text.organisationNumberFi) })
+    const norwegian = canvas.getByRole('textbox', { name: exactly(text.organisationNumberNo) })
+
+    await userEvent.type(swedish, '5560000001')
+    await expect(swedish).toHaveValue('556000-0001')
+    await expect(canvas.getByTestId('swedish-details')).toHaveTextContent(
+      `${text.unmasked}: 5560000001 · ${text.complete}: ${text.yes}`,
+    )
+    await userEvent.type(finnish, '01120389')
+    await expect(finnish).toHaveValue('0112038-9')
+    await userEvent.type(norwegian, '974760673')
+    await expect(norwegian).toHaveValue('974 760 673')
+    await userEvent.click(send)
+    await expect(swedish).not.toHaveAttribute('aria-invalid')
+    await expect(finnish).not.toHaveAttribute('aria-invalid')
+    await expect(norwegian).not.toHaveAttribute('aria-invalid')
+
+    await fill(swedish, '5560000002')
+    await fill(finnish, '12345678')
+    await fill(norwegian, '97476067')
+    await userEvent.click(send)
+    await expect(swedish).toHaveAccessibleDescription(expect.stringContaining(text.checkControl))
+    await expect(finnish).toHaveAccessibleDescription(expect.stringContaining(text.checkControl))
+    await expect(norwegian).toHaveAccessibleDescription(
+      expect.stringContaining(text.checkFormatGeneric),
+    )
+    await expect(norwegian).toHaveValue('974 760 67')
+  },
+}
+
+/**
+ * An IBAN, written in groups of four as you type in any case and with or without spaces. The
+ * stored value is the compact upper-case IBAN. The check finds an unknown country, a wrong length
+ * and a wrong check digit.
+ */
+export const BankAccount: Story = {
+  parameters: showSource('mask/mask-families.fixture.tsx', 'IbanFamilyField'),
+  render: (_args, { globals }) => <IbanFamilyField locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = maskTextsFor(globals)
+    const send = canvas.getByRole('button', { name: text.send })
+    const iban = canvas.getByRole('textbox', { name: exactly(text.iban) })
+
+    await userEvent.type(iban, 'se4550000000058398257466')
+    await expect(iban).toHaveValue('SE45 5000 0000 0583 9825 7466')
+    await expect(canvas.getByTestId('iban-details')).toHaveTextContent(
+      `${text.unmasked}: SE4550000000058398257466 · ${text.complete}: ${text.yes}`,
+    )
+    await userEvent.click(send)
+    await expect(iban).not.toHaveAttribute('aria-invalid')
+
+    await fill(iban, 'se4650000000058398257466')
+    await userEvent.click(send)
+    await expect(iban).toHaveAccessibleDescription(expect.stringContaining(text.checkControl))
+
+    await fill(iban, 'zz89370400440532013000')
+    await userEvent.click(send)
+    await expect(iban).toHaveAccessibleDescription(expect.stringContaining(text.checkCountry))
+
+    await fill(iban, 'se45 5000')
+    await expect(canvas.getByTestId('iban-details')).toHaveTextContent(
+      `${text.complete}: ${text.no}`,
+    )
+    await userEvent.click(send)
+    await expect(iban).toHaveAccessibleDescription(expect.stringContaining(text.checkFormatGeneric))
+  },
+}
+
+/**
+ * Postal codes in Sweden (`123 45`), Finland (`00100`) and Norway (`0150`). A postcode has no
+ * check digit: the mask reports whether the shape is complete, and your form decides.
+ */
+export const PostalCodes: Story = {
+  parameters: showSource('mask/mask-families.fixture.tsx', 'PostalCodeFamilyFields'),
+  render: (_args, { globals }) => <PostalCodeFamilyFields locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = maskTextsFor(globals)
+    const swedish = canvas.getByRole('textbox', { name: exactly(text.postalCode) })
+    const finnish = canvas.getByRole('textbox', { name: exactly(text.postalCodeFi) })
+    const norwegian = canvas.getByRole('textbox', { name: exactly(text.postalCodeNo) })
+
+    await userEvent.type(swedish, '12345')
+    await expect(swedish).toHaveValue('123 45')
+    await expect(canvas.getByTestId('swedish-details')).toHaveTextContent(
+      `${text.unmasked}: 12345 · ${text.complete}: ${text.yes}`,
+    )
+    await userEvent.type(finnish, '00100')
+    await expect(finnish).toHaveValue('00100')
+    await userEvent.type(norwegian, '0150')
+    await expect(norwegian).toHaveValue('0150')
+    await expect(canvas.getByTestId('norwegian-details')).toHaveTextContent(
+      `${text.unmasked}: 0150 · ${text.complete}: ${text.yes}`,
+    )
+
+    await fill(swedish, '1234')
+    await expect(canvas.getByTestId('swedish-details')).toHaveTextContent(
+      `${text.unmasked}: 1234 · ${text.complete}: ${text.no}`,
+    )
+  },
+}
+
+/**
+ * A telephone number and an email address. They are filters: a character that can't be valid is
+ * dropped and the value has no shape, so the stored value is what is displayed. Your form checks
+ * the address.
+ */
+export const TelephoneAndEmail: Story = {
+  parameters: showSource('mask/mask-families.fixture.tsx', 'ContactFamilyFields'),
+  render: (_args, { globals }) => <ContactFamilyFields locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = maskTextsFor(globals)
+    const telephone = canvas.getByRole('textbox', { name: exactly(text.telephone) })
+    await userEvent.type(telephone, '+46 70-12x3')
+    await expect(telephone).toHaveValue('+46 70-123')
+    await expect(canvas.getByTestId('telephone-details')).toHaveTextContent(
+      `${text.unmasked}: +46 70-123`,
+    )
+
+    const email = canvas.getByRole('textbox', { name: exactly(text.email) })
+    await userEvent.type(email, 'anna @example.se')
+    await expect(email).toHaveValue('anna@example.se')
+    await expect(canvas.getByTestId('email-details')).toHaveTextContent(
+      `${text.unmasked}: anna@example.se`,
+    )
+  },
+}
+
+/**
+ * Card numbers and times have no preset: each is a `pattern`, so the literal is written as you
+ * type and the stored value is the digits alone.
+ */
+export const CardAndTime: Story = {
+  parameters: showSource('mask/mask-families.fixture.tsx', 'PatternFamilyFields'),
+  render: (_args, { globals }) => <PatternFamilyFields locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text, locale } = maskTextsFor(globals)
+    const family = familyTextsFor(locale)
+    const card = canvas.getByRole('textbox', { name: exactly(family.card) })
+    await userEvent.type(card, '4111111111111111')
+    await expect(card).toHaveValue('4111 1111 1111 1111')
+    await expect(canvas.getByTestId('card-details')).toHaveTextContent(
+      `${text.unmasked}: 4111111111111111 · ${text.complete}: ${text.yes}`,
+    )
+
+    const time = canvas.getByRole('textbox', { name: exactly(family.time) })
+    await userEvent.type(time, '0830')
+    await expect(time).toHaveValue('08:30')
+    await expect(canvas.getByTestId('time-details')).toHaveTextContent(
+      `${text.unmasked}: 0830 · ${text.complete}: ${text.yes}`,
+    )
+    await fill(time, '083')
+    await expect(canvas.getByTestId('time-details')).toHaveTextContent(
+      `${text.complete}: ${text.no}`,
+    )
+  },
+}
 
 /**
  * The identifier presets: personal identity numbers (SE, FI, NO), an organisation number, a
@@ -173,6 +480,11 @@ export const Numbers: Story = {
     // Out of range, and still exactly what was typed.
     await expect(rent).toHaveValue('200000')
     await expect(canvas.getByTestId('range')).toHaveTextContent(text.amountOutOfRange)
+
+    // A minus sign and one decimal: the temperature field allows negatives.
+    const temperature = canvas.getByRole('textbox', { name: exactly(text.temperature) })
+    await userEvent.type(temperature, '-4.5')
+    await expect(temperature).toHaveValue(locale === 'en' ? '-4.5' : '-4,5')
   },
 }
 

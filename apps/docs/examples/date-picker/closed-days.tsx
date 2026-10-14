@@ -32,22 +32,22 @@ export function ClosedVisitDays() {
         value={typedDate}
         onValueChange={(isoDate) => setFieldText(isoDateToMaskedDate(isoDate, locale))}
       >
-        <div className="kv-date-picker-row">
-          <Field.Root invalid={isClosed}>
-            <Field.Label>{texts.fieldLabel}</Field.Label>
+        <Field.Root invalid={isClosed}>
+          <Field.Label>{texts.fieldLabel}</Field.Label>
+          <div className="kv-date-picker-row">
             <TextInput
               name="visit"
               mask={masks.date()}
               value={fieldText}
               onValueChange={setFieldText}
             />
-            <Field.HelpText>
-              {texts.closedHint(format.list(closedDays.map(shortDate)))}
-            </Field.HelpText>
-            <Field.ErrorMessage>{closedError}</Field.ErrorMessage>
-          </Field.Root>
-          <DatePicker.Trigger />
-        </div>
+            <DatePicker.Trigger />
+          </div>
+          <Field.HelpText>
+            {texts.closedHint(format.list(closedDays.map(shortDate)))}
+          </Field.HelpText>
+          <Field.ErrorMessage>{closedError}</Field.ErrorMessage>
+        </Field.Root>
         <DatePicker.Popup />
       </DatePicker.Root>
     </div>
