@@ -79,35 +79,22 @@ export function RouteFocusPage({
         </ul>
       }
       example={
-        <ExampleFrame headingId="example" code={sources['default']}>
-          <ChangePage />
-        </ExampleFrame>
+        <>
+          <ExampleFrame headingId="example" code={sources['default']}>
+            <ChangePage />
+          </ExampleFrame>
+          <Note kind="recipe" more={<CodeBlock code={nextRecipe} />}>
+            In Next.js, build the key from the pathname and the search in a client wrapper in the
+            root layout.{' '}
+            <Link href="https://nextjs.org/docs/architecture/accessibility">
+              Next.js announces routes itself
+            </Link>
+            , so leave announce off.
+          </Note>
+        </>
       }
       useCases={
         <>
-          <UseCase
-            id="after-a-link"
-            title="After someone follows a link to another page"
-            why="Follow a link and the page changes, but focus stays on the link, or on nothing if the link is gone. The hook moves focus to the page title, and the next Tab continues from there. Press “To services” to try it."
-            code={sources['default']}
-            propsUsed={[
-              { part: routeFocusOptions, label: 'useRouteFocus', prop: 'key' },
-              { part: routeFocusOptions, label: 'useRouteFocus', prop: 'containerRef' },
-              { part: routeFocusOptions, label: 'useRouteFocus', prop: 'selector' },
-            ]}
-            note={
-              <Note kind="recipe" more={<CodeBlock code={nextRecipe} />}>
-                In Next.js, build the key from the pathname and the search in a client wrapper in
-                the root layout.{' '}
-                <Link href="https://nextjs.org/docs/architecture/accessibility">
-                  Next.js announces routes itself
-                </Link>
-                , so leave announce off.
-              </Note>
-            }
-          >
-            <ChangePage />
-          </UseCase>
           <UseCase
             id="hash-change"
             title="A link to a section on the same page"

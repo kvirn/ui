@@ -374,6 +374,14 @@ body {
   overflow-x: auto;
 }
 
+/* A heading that script focuses after a click has no :focus-visible, so the theme draws no ring.
+ * The route-focus demos need to show where focus went, so any focused tabindex="-1" target in an
+ * example stage gets the ring. Docs only: the library keeps :focus-visible. */
+.docs-example-stage [tabindex='-1']:focus {
+  outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+  outline-offset: var(--kv-focus-ring-offset);
+}
+
 .docs-code-scroll:focus-visible {
   outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
   outline-offset: calc(-1 * var(--kv-focus-ring-offset));
