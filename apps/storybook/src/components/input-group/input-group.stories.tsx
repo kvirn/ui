@@ -264,6 +264,36 @@ export const Search: Story = {
 }
 
 /**
+ * The attached search with compact controls on a comfortable page: `kv-compact` on the Field and
+ * `kv-button--compact` on the Button, so the two halves are the same height and the join stays flush.
+ */
+export const SearchCompact: Story = {
+  globals: { locale: 'en' },
+  render: () => (
+    <search>
+      <form action="#search" method="get">
+        <ButtonGroup className="kv-button-group--attached">
+          <Field.Root className="kv-site-search-field kv-compact">
+            <Field.Label marker="none">Search the site</Field.Label>
+            <TextInput type="search" name="q" autoComplete="off" />
+          </Field.Root>
+          <Button type="submit" className="kv-button--compact">
+            Search
+          </Button>
+        </ButtonGroup>
+      </form>
+    </search>
+  ),
+  play: async ({ canvas }) => {
+    const field = canvas.getByRole('searchbox', { name: 'Search the site' })
+    const button = canvas.getByRole('button', { name: 'Search' })
+    await expect(
+      Math.abs(field.getBoundingClientRect().height - button.getBoundingClientRect().height),
+    ).toBeLessThan(1)
+  },
+}
+
+/**
  * The icon-only clear Button, for staff tools and compact density: a button, not a form
  * control, so its name is an `aria-label` from the translations.
  */

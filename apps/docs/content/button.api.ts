@@ -64,6 +64,12 @@ export const buttonAttributes: readonly AttributeRow[] = [
     meaning: 'A square button with only an icon. Give it an aria-label. Theme option.',
   },
   {
+    name: 'kv-button--compact',
+    values: 'class you add',
+    meaning:
+      'As tall as a compact input (32px) from 64rem, and 44px below it. For staff tools. Theme option.',
+  },
+  {
     name: 'data-disabled',
     values: 'present or absent',
     meaning: 'The button is disabled, natively or focusable.',

@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Card, Icon, Section } from '@kvirn-ui/react'
+import { Button, ButtonGroup, Card, Field, Icon, Section, TextInput } from '@kvirn-ui/react'
 import type { ButtonProps } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/button/button.a11y.md?raw'
 import guide from '../../../../../packages/react/src/button/button.md?raw'
@@ -34,6 +34,8 @@ const sv = {
   settings: 'Visningsinställningar',
   comfortable: 'Bekväm (standard)',
   compact: 'Kompakt',
+  caseNumber: 'Ärendenummer',
+  search: 'Sök',
 }
 const fiSaveLong = 'Tallenna rakennuslupahakemuksen luonnos'
 
@@ -231,6 +233,52 @@ export const LinkLook: Story = {
     await expectMinimumTargetSize(enabled!)
     await expectMinimumTargetSize(disabled!)
     await expect(disabled).toBeDisabled()
+  },
+}
+
+/**
+ * `kv-button--compact`: the compact density's height (32px, from 64rem; 44px below it) on one
+ * button, so it is as tall as a compact input beside it. Put `kv-compact` on the Field for the
+ * input and the class on the Button; in a comfortable row, neither. For staff tools.
+ */
+export const Size: Story = {
+  render: () => (
+    <>
+      <section className="kv-story-section" aria-labelledby="size-comfortable">
+        <h2 id="size-comfortable">{sv.comfortable}</h2>
+        <form className="kv-story-filter" onSubmit={(event) => event.preventDefault()}>
+          <Field.Root>
+            <Field.Label>{sv.caseNumber}</Field.Label>
+            <TextInput name="case-comfortable" autoComplete="off" />
+          </Field.Root>
+          <Button type="submit">{sv.search}</Button>
+        </form>
+      </section>
+      <section className="kv-story-section" aria-labelledby="size-compact">
+        <h2 id="size-compact">{sv.compact}</h2>
+        <form className="kv-story-filter" onSubmit={(event) => event.preventDefault()}>
+          <Field.Root className="kv-compact">
+            <Field.Label>{sv.caseNumber}</Field.Label>
+            <TextInput name="case-compact" autoComplete="off" />
+          </Field.Root>
+          <Button type="submit" className="kv-button--compact">
+            {sv.search}
+          </Button>
+        </form>
+      </section>
+    </>
+  ),
+  play: async ({ canvas }) => {
+    for (const name of [sv.comfortable, sv.compact]) {
+      const region = within(canvas.getByRole('region', { name }))
+      const input = region.getByRole('textbox', { name: new RegExp(`^${sv.caseNumber}`) })
+      const button = region.getByRole('button', { name: sv.search })
+      await expectMinimumTargetSize(button)
+      // The same height at every width: 44px both below 64rem, 32px both from it.
+      await expect(
+        Math.abs(input.getBoundingClientRect().height - button.getBoundingClientRect().height),
+      ).toBeLessThan(1)
+    }
   },
 }
 

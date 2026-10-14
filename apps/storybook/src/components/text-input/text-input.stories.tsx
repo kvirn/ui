@@ -661,6 +661,40 @@ export const InlineFilterCompact: Story = {
   },
 }
 
+/**
+ * A filter on a comfortable page with compact controls: `kv-compact` on each Field and
+ * `kv-button--compact` on the Button make all three the same height (32px from 64rem, 44px below).
+ */
+export const InlineFilterCompactControls: Story = {
+  render: (_args, { globals }) => {
+    const { text } = textsFor(localeOf(globals))
+    return (
+      <form className="kv-story-filter" onSubmit={(event) => event.preventDefault()}>
+        <Field.Root className="kv-compact">
+          <Field.Label>{text.name}</Field.Label>
+          <TextInput name="name" autoComplete="off" />
+        </Field.Root>
+        <Field.Root className="kv-compact">
+          <Field.Label>{text.caseNumber}</Field.Label>
+          <TextInput name="case" autoComplete="off" spellCheck={false} />
+        </Field.Root>
+        <Button type="submit" className="kv-button--primary kv-button--compact">
+          {text.filter}
+        </Button>
+      </form>
+    )
+  },
+  play: async ({ canvas, globals }) => {
+    const { text } = textsFor(localeOf(globals))
+    const button = canvas.getByRole('button', { name: text.filter })
+    for (const input of canvas.getAllByRole('textbox')) {
+      await expect(
+        Math.abs(input.getBoundingClientRect().height - button.getBoundingClientRect().height),
+      ).toBeLessThan(1)
+    }
+  },
+}
+
 /** A long Finnish label in a 320px column: the input fills it and nothing overflows. */
 export const LongFinnish: Story = {
   globals: { locale: 'fi' },

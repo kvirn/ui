@@ -359,6 +359,7 @@ Each word means one thing, in this file, the docs, Storybook, specs and code com
 - Depth, tinted edges and flat cases (disabled, contrast themes, forced colours, a button inside an input group): see [Button depth](#button-depth).
 - A hovered or pressed primary button keeps a `primary` edge around its `primary-hover` fill, so its boundary stays at 3:1 on `surface-raised` in dark. `theme:check` tests that a hovered filled button's edge (its border, or its fill when transparent) reaches 3:1 on `canvas`, `surface` and `surface-raised`.
 - Size follows the density. A site sizes every button without touching other controls with `--kv-button-min-block-size`, `--kv-button-padding-inline`, `--kv-button-font-size`, `--kv-button-font-weight` and `--kv-button-line-height`, which fall back to the `--kv-control-*` tokens. Set, they win over density, but the height never goes below 24px (2.5.8) and resident-facing buttons stay at 44px.
+- **Compact** (`kv-button--compact`): the compact density's control height (32px, `label-compact`, `--kv-space-3` inline padding) on one button, so it lines up beside a compact input in a comfortable container. From `64rem` only, like `kv-compact`; below it the button is 44px, as the inputs are. Meets 2.5.8 only.
 - **Link look** (`kv-button--link`): a button that reads as a link in a row of links, such as a disclosure in a top bar. `link` text (or the on-colour of the fill it sits on), no fill, edge, depth or hover background; underlined on hover only, with the link hover thickness; inline-block, at least 24px tall (2.5.8), the normal focus ring. Only for an action that changes something in place (a disclosure with its chevron, a toggle with `aria-expanded` or `aria-pressed`), never for submitting, going on a step or a destructive action. Disabled: `text-muted` with a dashed underline at rest as the non-colour cue. Forced colours: `ButtonText`, underlined on hover.
 - `kv-button-group` lays buttons out start-aligned, primary first.
 - A busy button (`data-busy`, `aria-disabled`) keeps its look and depth, with the `progress` cursor. It is not the dashed disabled look: the label beside it says what is happening.
@@ -717,7 +718,7 @@ A value that refers to another token (`var(--kv-card-padding-lg)`) is resolved w
 
 Parts render these classes, choices are classes the consumer adds, and state is `data-*` or ARIA.
 
-- **Button:** `kv-button`. Choices `kv-button--primary`, `--danger`, `--icon-only`, and `kv-button-group`. State `[data-disabled]`.
+- **Button:** `kv-button`. Choices `kv-button--primary`, `--danger`, `--compact`, `--icon-only`, and `kv-button-group`. State `[data-disabled]`.
 - **Link:** `kv-link`, `kv-link-new-tab-notice`, `kv-link-icon`. Choice `kv-link--service`.
 - **Navigation:** `kv-navigation`, `-list`, `-item`, `-label`, with `kv-link` on its links. Choice `kv-navigation--horizontal`. State `aria-current`.
 - **Table of contents:** `kv-table-of-contents`, `-list`, `-item`, with `kv-link` on its links. State `aria-current`.

@@ -6,7 +6,7 @@
  * file styles them through the class each part renders (`kv-button`, `kv-link`, `kv-card`,
  * `kv-field`, `kv-input` and so on) and their state attributes (`data-disabled`,
  * `data-focus-visible`, `data-current`, `data-invalid`),
- * plus classes you add yourself: variants and options (`kv-button--primary`,
+ * plus classes you add yourself: variants and options (`kv-button--primary`, `kv-button--compact`,
  * `kv-section--canvas`, `kv-link--service`, `kv-navigation--horizontal`, `kv-input--width-6`), and context (`kv-compact`,
  * `kv-button-group`, `kv-prose`, `kv-lead`, `kv-heading--display`, `kv-not-prose`, `kv-scroll-region`). Classes style,
  * data-* attributes are state.
@@ -887,6 +887,22 @@
   .kv-button-group > .kv-button.kv-button--icon-only {
     inline-size: auto;
     align-self: flex-start;
+  }
+
+  /*
+   * Compact: <Button className="kv-button--compact"> is as tall as a control in kv-compact (32px,
+   * 14px label), so it lines up beside a compact input in a comfortable container. Like
+   * kv-compact it applies from 64rem only: below it touch is likely and the button stays 44px,
+   * the same as the inputs next to it. Meets 2.5.8 only, so keep it for staff tools.
+   */
+  @media (width >= 64rem) {
+    .kv-button.kv-button--compact {
+      --kv-button-min-block-size: 2rem;
+      --kv-button-font-size: var(--kv-font-label-compact-size);
+      --kv-button-font-weight: var(--kv-font-label-compact-weight);
+      --kv-button-line-height: var(--kv-font-label-compact-line-height);
+      --kv-button-padding-inline: var(--kv-space-3);
+    }
   }
 
   @media (prefers-reduced-motion: no-preference) {
