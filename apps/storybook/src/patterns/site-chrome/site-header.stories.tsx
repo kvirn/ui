@@ -13,6 +13,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/site-header/site-header.a11y.md?raw'
 import {
+  expectAnimationsSettled,
   expectNoHorizontalOverflow,
   expectTopBarTargetSizes,
 } from '../../components/theme-story-assertions.ts'
@@ -303,11 +304,13 @@ export const PrimaryMenuOpen: Story = {
       'aria-expanded',
       'true',
     )
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('link', { name: 'Documentation' })).toBeVisible()
     await expect(canvas.getByRole('navigation', { name: 'Main menu' })).toBeVisible()
     const topic = canvas.getByRole('button', { name: 'Care and support' })
     await userEvent.click(topic)
     await expect(topic).toHaveAttribute('aria-expanded', 'true')
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('link', { name: 'Elderly care' })).toBeVisible()
     await expectNoHorizontalOverflow(canvasElement)
   },
@@ -512,6 +515,7 @@ export const PrimaryMastheadMenuOpen: Story = {
     const topic = canvas.getByRole('button', { name: 'Preschool and school' })
     await userEvent.click(topic)
     await expect(topic).toHaveAttribute('aria-expanded', 'true')
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('link', { name: 'All about preschool and school' })).toBeVisible()
     await expect(canvas.getByRole('link', { name: 'Preschool' })).toBeVisible()
     await expect(canvas.getByRole('link', { name: 'Fees' })).toBeVisible()
@@ -597,6 +601,7 @@ export const PrimaryMastheadMenuNarrow: Story = {
     const topic = canvas.getByRole('button', { name: 'Preschool and school' })
     await userEvent.click(topic)
     await expect(topic).toHaveAttribute('aria-expanded', 'true')
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('link', { name: 'Fees' })).toBeVisible()
     await expect(canvas.getByRole('searchbox', { name: 'Search the site' })).toBeVisible()
     await expectNoHorizontalOverflow(canvasElement)
@@ -784,6 +789,7 @@ export const MenuOpen: Story = {
       'aria-expanded',
       'true',
     )
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('navigation', { name: 'Main menu' })).toBeVisible()
     await expect(canvas.getByRole('searchbox', { name: 'Search the site' })).toBeVisible()
     await expectNoHorizontalOverflow(canvasElement)

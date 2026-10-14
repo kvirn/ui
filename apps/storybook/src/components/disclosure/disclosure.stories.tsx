@@ -4,7 +4,11 @@ import guide from '../../../../../packages/react/src/disclosure/disclosure.md?ra
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
-import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import {
+  expectAnimationsSettled,
+  expectMinimumTargetSize,
+  expectNoHorizontalOverflow,
+} from '../theme-story-assertions.ts'
 import {
   ControlledDisclosure,
   DisabledDisclosures,
@@ -90,6 +94,7 @@ export const Default: Story = {
     await expectMinimumTargetSize(trigger)
     await userEvent.click(trigger)
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    await expectAnimationsSettled()
     await expect(canvas.getByText(/Måndag till fredag/)).toBeVisible()
   },
 }

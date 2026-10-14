@@ -4,6 +4,7 @@ import guide from '../../../../../packages/react/src/popover/popover.md?raw'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
+import { expectAnimationsSettled } from '../theme-story-assertions.ts'
 import { ControlledPopover } from './popover.fixture.tsx'
 
 // Components/Popover: a button that opens a small floating panel in the browser's top layer
@@ -129,6 +130,7 @@ export const Open: Story = {
     await waitFor(() => expect(isPopupOpen()).toBe(true))
     const trigger = canvas.getByRole('button', { name: 'Om tjänsten' })
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('dialog', { name: 'Om tjänsten' })).toBeVisible()
     await expect(document.querySelector('.kv-popover-popup')).toHaveAttribute('data-open')
   },

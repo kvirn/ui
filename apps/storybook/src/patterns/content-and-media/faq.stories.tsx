@@ -4,7 +4,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import contract from '../../../../../packages/patterns/src/content-and-media/faq/faq.a11y.md?raw'
 import type { ReactNode } from 'react'
 import { expect, userEvent } from 'storybook/test'
-import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
+import {
+  expectAnimationsSettled,
+  expectNoHorizontalOverflow,
+} from '../../components/theme-story-assertions.ts'
 import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns-story-support.tsx'
 
 // Patterns/Content and media/FAQ (docs/design/storybook-patterns-t5.md S13).
@@ -114,6 +117,7 @@ export const PanelWithListAndLink: Story = {
   ),
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('button', { name: 'What do I need to apply?' }))
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('list')).toBeVisible()
     await expect(canvas.getByRole('link', { name: 'Apply for a preschool place' })).toBeVisible()
   },

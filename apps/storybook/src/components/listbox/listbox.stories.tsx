@@ -7,7 +7,11 @@ import { choiceTextsFor, logChange } from '../form/choice.fixture.tsx'
 import type { ChoiceTexts } from '../form/choice.fixture.tsx'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import { virtualizedCount } from '../form/virtualized.fixture.ts'
-import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import {
+  expectAnimationsSettled,
+  expectMinimumTargetSize,
+  expectNoHorizontalOverflow,
+} from '../theme-story-assertions.ts'
 import {
   CompactMunicipality,
   ControlledMunicipality,
@@ -168,6 +172,7 @@ export const Default: Story = {
     await expectMinimumTargetSize(trigger)
     await userEvent.click(trigger)
     await waitFor(() => expect(trigger).toHaveAttribute('aria-expanded', 'true'))
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('listbox')).toBeVisible()
     await userEvent.click(canvas.getByRole('option', { name: 'Göteborg' }))
     await waitFor(() => expect(trigger).toHaveAttribute('aria-expanded', 'false'))

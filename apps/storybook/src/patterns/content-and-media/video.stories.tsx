@@ -4,7 +4,10 @@ import { Disclosure, Heading, KvirnProvider, Link, List } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import contract from '../../../../../packages/patterns/src/content-and-media/video/video.a11y.md?raw'
 import { expect, userEvent } from 'storybook/test'
-import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
+import {
+  expectAnimationsSettled,
+  expectNoHorizontalOverflow,
+} from '../../components/theme-story-assertions.ts'
 import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns-story-support.tsx'
 
 // Patterns/Content and media/Video (docs/design/storybook-patterns-t5.md S16).
@@ -77,6 +80,7 @@ export const WithTranscript: Story = {
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await userEvent.click(trigger)
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    await expectAnimationsSettled()
     await expect(canvas.getByText('Ask us for a visit on any weekday.')).toBeVisible()
   },
 }

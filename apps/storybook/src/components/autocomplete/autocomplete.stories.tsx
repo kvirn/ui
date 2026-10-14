@@ -5,7 +5,11 @@ import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import { virtualizedCount } from '../form/virtualized.fixture.ts'
-import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import {
+  expectAnimationsSettled,
+  expectMinimumTargetSize,
+  expectNoHorizontalOverflow,
+} from '../theme-story-assertions.ts'
 import {
   AutocompleteStates,
   CompactExample,
@@ -291,6 +295,7 @@ export const Loading: Story = {
     await waitFor(() =>
       expect(canvasElement.querySelector('.kv-listbox-popup')).toHaveAttribute('data-loading'),
     )
+    await expectAnimationsSettled()
     await expect(canvasElement.querySelector('.kv-listbox-empty')).toBeVisible()
     await expect(canvas.queryAllByRole('option')).toHaveLength(0)
   },

@@ -4,7 +4,11 @@ import guide from '../../../../../packages/react/src/accordion/accordion.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
-import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import {
+  expectAnimationsSettled,
+  expectMinimumTargetSize,
+  expectNoHorizontalOverflow,
+} from '../theme-story-assertions.ts'
 import {
   CompactAccordion,
   EnglishAccordion,
@@ -97,6 +101,7 @@ export const Default: Story = {
     await expectMinimumTargetSize(trigger)
     await userEvent.click(trigger)
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    await expectAnimationsSettled()
     await expect(canvas.getByText(/Avgiften beror/)).toBeVisible()
   },
 }
@@ -136,6 +141,7 @@ export const Regions: Story = {
   parameters: showSource('accordion/accordion.fixture.tsx', 'RegionPanels'),
   render: () => <RegionPanels />,
   play: async ({ canvas }) => {
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('region', { name: 'Sophämtning' })).toBeVisible()
   },
 }

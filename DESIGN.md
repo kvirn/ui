@@ -283,7 +283,7 @@ The shadows mix the palette with `color-mix(in srgb, <colour> N%, transparent)`.
 
 ## Motion
 
-Durations are `--kv-duration-fast` (hover, press), `--kv-duration-medium` (popups, disclosures) and `--kv-duration-slow` (dialogs, page-level). Easing is `--kv-easing-standard`.
+Durations are `--kv-duration-fast` (hover, press), `--kv-duration-medium` (popups, disclosures) and `--kv-duration-slow` (dialogs, page-level). Easing is `--kv-easing-standard`. What moves: opacity, colour, background, border and box-shadow only. Disclosure, accordion and tab panels fade in (medium); menu, listbox, autocomplete and popover popups fade in on open, entry only (fast); tabs, checkbox, radio, menu items and listbox options transition colour (fast); the check mark and radio dot fade in; button, switch, dialog and tooltip already move. No exit animations, and nothing animates height, layout or outline.
 
 - Motion only runs under `prefers-reduced-motion: no-preference`, and only while `<html>` is not `data-kv-motion="reduce"` (the user's own choice in the app, written by `KvirnProvider` like colour scheme and contrast). Otherwise state changes are instant.
 - No parallax, no auto-playing carousels, nothing that flashes, and no animation longer than 5 seconds without a pause control (2.2.2): the loading indicators are the exception the app must cover itself (below).
@@ -422,7 +422,7 @@ Navigation (`Navigation.Root`) and `TableOfContents` share one item look.
 `kv-disclosure-trigger` is a button that shows and hides one panel. `kv-accordion` is a stack of them with headings, for a FAQ. A disclosure changes content on the same page: links to other pages are a navigation.
 
 - **Trigger:** a quiet text button like a tab: `text` at weight 400, no fill, the 2px link underline on hover and press, at the control height (`--kv-control-min-block-size`), `--kv-space-2` on each side, `--kv-space-2` before the chevron.
-- **The open look:** a decorative chevron at the inline end that points down while closed and up while open. The state is a shape, never colour alone, and `aria-expanded` carries it for assistive technology. The trigger's text never changes with the state. No fill and no rotation animation: nothing animates.
+- **The open look:** a decorative chevron at the inline end that points down while closed and up while open. The state is a shape, never colour alone, and `aria-expanded` carries it for assistive technology. The trigger's text never changes with the state. No fill, and the chevron swaps shape rather than rotating. The panel fades in as it opens (`--kv-duration-medium`).
 - **Panel:** in flow, `--kv-space-2` above and on each side. It has no `display` rule, so `hidden` wins.
 - **Accordion:** a `border-subtle` hairline above the stack and one under each item. The trigger is the whole row at weight 600, text at the start and chevron at the end, and wraps (1.4.10). The heading around it has no look of its own. The hairlines are not the only cue: the heading and the chevron mark each row. The trigger has `space-3` block padding and the panel `space-2` above and `space-6` below.
 - **Focus:** the ring on the trigger.

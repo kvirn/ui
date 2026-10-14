@@ -2,7 +2,10 @@ import { SectionNav } from '@kvirn-ui/patterns'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/navigation-and-promotion/section-nav/section-nav.a11y.md?raw'
-import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
+import {
+  expectAnimationsSettled,
+  expectNoHorizontalOverflow,
+} from '../../components/theme-story-assertions.ts'
 import {
   chromeViewports,
   expectDrawn,
@@ -92,6 +95,7 @@ export const Narrow: Story = {
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await userEvent.click(trigger)
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('navigation', { name: 'In this section' })).toBeVisible()
     await expectNoHorizontalOverflow(canvasElement)
   },

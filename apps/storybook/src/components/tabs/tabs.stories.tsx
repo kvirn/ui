@@ -4,7 +4,11 @@ import guide from '../../../../../packages/react/src/tabs/tabs.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
-import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import {
+  expectAnimationsSettled,
+  expectMinimumTargetSize,
+  expectNoHorizontalOverflow,
+} from '../theme-story-assertions.ts'
 import {
   ApplicationTabs,
   CardTabs,
@@ -110,6 +114,7 @@ export const Default: Story = {
       'aria-selected',
       'true',
     )
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('tabpanel', { name: 'Uppgifter' })).toBeVisible()
     // One Tab stop: the selected tab has tabindex 0 and the others -1.
     await expect(list.querySelectorAll('[tabindex="0"]')).toHaveLength(1)

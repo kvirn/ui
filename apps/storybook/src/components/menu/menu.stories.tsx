@@ -5,7 +5,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf } from '../form/form.fixture.tsx'
-import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import {
+  expectAnimationsSettled,
+  expectMinimumTargetSize,
+  expectNoHorizontalOverflow,
+} from '../theme-story-assertions.ts'
 import {
   ActionsMenu,
   ControlledMenu,
@@ -101,6 +105,7 @@ export const Open: Story = {
     const trigger = canvas.getByRole('button', { name: 'Åtgärder' })
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
     const menu = canvas.getByRole('menu', { name: 'Åtgärder' })
+    await expectAnimationsSettled()
     await expect(menu).toBeVisible()
     await expect(canvas.getAllByRole('menuitem')).toHaveLength(4)
     for (const item of canvas.getAllByRole('menuitem')) {
@@ -123,6 +128,7 @@ export const WithGroupsAndSeparators: Story = {
   render: (args, { globals }) => <GroupedMenu {...args} locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await waitFor(() => expect(isPopupOpen()).toBe(true))
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('group', { name: 'Sortera efter' })).toBeVisible()
     await expect(canvas.getAllByRole('separator')).toHaveLength(2)
     await expect(canvas.getAllByRole('menuitem')).toHaveLength(5)

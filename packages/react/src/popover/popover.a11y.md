@@ -88,10 +88,10 @@ Popover has no strings of its own and announces nothing: `aria-expanded` changes
 
 ## Visual / modes
 
-- Focus indicator: the trigger and the Close button are Buttons, so they use the Button focus ring: at least 2px thick, with at least 3:1 contrast against its background (2.4.7 Focus Visible, AA). The default theme does not draw the popup (see Known issues), so its surface, edge, corners and padding are yours.
+- Focus indicator: the trigger and the Close button are Buttons, so they use the Button focus ring: at least 2px thick, with at least 3:1 contrast against its background (2.4.7 Focus Visible, AA). The default theme draws the popup like a menu (raised surface, edge, rounded corners, padding); if you restyle it, keep the edge and the surface.
 - Target size: the trigger and Close are at least 24 by 24 CSS pixels, and taller in comfortable density (2.5.8 Target Size (Minimum), AA). Nothing in the popup is smaller.
-- Colour: the popup's edge keeps at least 3:1 contrast against the page (1.4.11 Non-text Contrast, AA) and its text at least 4.5:1 on its surface (1.4.3 Contrast (Minimum), AA). The default theme draws neither, so you meet both pairs.
-- forced-colors behaviour (a mode where the system chooses the colours): give your popup a visible edge, since the theme draws none: a border takes the system's text colour. The open state is shown by `aria-expanded`, never by colour alone (1.4.1 Use of Color, A).
+- Colour: the popup's edge keeps at least 3:1 contrast against the page (1.4.11 Non-text Contrast, AA) and its text at least 4.5:1 on its surface (1.4.3 Contrast (Minimum), AA). The default theme draws the popup on the raised surface in the body text colour, the same pair as a menu; if you restyle it you meet both pairs.
+- forced-colors behaviour (a mode where the system chooses the colours): the default theme gives the popup a `CanvasText` border and no shadow; if you restyle it, keep a visible edge in the system's text colour. The open state is shown by `aria-expanded`, never by colour alone (1.4.1 Use of Color, A).
 - reduced-motion behaviour: the hook animates nothing. If you fade the popup, fade opacity only and switch it off under `prefers-reduced-motion`.
 - Reflow: at 320px the popup is never wider than the viewport minus the padding, scrolls inside when it is too tall, and the page has no horizontal scroll. No horizontal scrolling at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA).
 - RTL (right-to-left text): `start` and `end` placements follow the anchor's direction: `bottom-start` lines the popup's right edge with the trigger's in right-to-left text.
@@ -131,4 +131,4 @@ Also pending, by hand: whether screen readers announce the popup's name when foc
 - **Opening does not move focus,** so a screen reader user hears only "expanded" on the trigger and has to move on with Tab (or a virtual cursor key) to reach the popup. This is the disclosure pattern and is deliberate. A Dialog is the pattern for content that must take focus.
 - **A closed popup's content is in the DOM,** hidden by the browser. A popup with a heavy subtree, or with ids that must be unique, is the consumer's to render conditionally.
 - **No Safari 17 or iOS run yet.** `popover` light dismiss and the toggle event differ a little between browsers. The Chromium baseline is green; the Safari rows wait for CI and the AT matrix.
-- **The default theme does not style Popover yet.** The parts carry classes and `data-*` only (`kv-popover-trigger`, `kv-popover-popup`, `kv-popover-close`), plus the inline placement. A themed look follows with its design review.
+- **The popup's default look is new.** The theme draws `kv-popover-popup` like a menu popup (level 3, `xl` radius, `--kv-space-4` padding, 24rem at most) and fades it in on open; `kv-popover-trigger` and `kv-popover-close` take the Button look you give them. Its design review is still open.

@@ -143,3 +143,24 @@ export async function expectNoClippedTextWithSpacing(root: Element) {
     style.remove()
   }
 }
+
+const settleTimeout = 1000
+
+/**
+ * Waits for the finite animations running now (the soft fade-in of a panel or popup) to finish,
+ * so a visibility or contrast check does not read the first frame. Looping ones are skipped.
+ */
+export async function expectAnimationsSettled() {
+  const finite = document.getAnimations().filter((animation) => {
+    const { endTime, iterations } = animation.effect?.getComputedTiming() ?? {}
+    return (
+      animation.playState === 'running' &&
+      iterations !== Number.POSITIVE_INFINITY &&
+      Number.isFinite(Number(endTime))
+    )
+  })
+  await Promise.race([
+    Promise.allSettled(finite.map((animation) => animation.finished)),
+    new Promise((resolve) => setTimeout(resolve, settleTimeout)),
+  ])
+}

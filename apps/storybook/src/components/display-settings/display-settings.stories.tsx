@@ -4,6 +4,7 @@ import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/react/src/display-settings/display-settings.a11y.md?raw'
 import guide from '../../../../../packages/react/src/display-settings/display-settings.md?raw'
 import { usageGuide } from '../../docs-source.ts'
+import { expectAnimationsSettled } from '../theme-story-assertions.ts'
 
 // Components/Choice and overlays/DisplaySettings: colour scheme, contrast and motion, inline or floating.
 // Each story is the code an adopter copies.
@@ -36,6 +37,7 @@ export const Inline: Story = {
     await expect(button).toHaveAttribute('aria-expanded', 'false')
     await userEvent.click(button)
     await expect(button).toHaveAttribute('aria-expanded', 'true')
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('group', { name: 'Colour scheme' })).toBeVisible()
     await expect(canvas.getByRole('group', { name: 'Contrast' })).toBeVisible()
     await expect(canvas.getByRole('group', { name: 'Motion' })).toBeVisible()
@@ -67,6 +69,7 @@ export const Floating: Story = {
     const button = canvas.getByRole('button', { name: 'Display settings' })
     await userEvent.click(button)
     await expect(button).toHaveAttribute('aria-expanded', 'true')
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('dialog', { name: 'Display settings' })).toBeVisible()
   },
 }
@@ -143,6 +146,7 @@ export const Compact: Story = {
   play: async ({ canvas }) => {
     const button = canvas.getByRole('button', { name: 'Display settings' })
     await userEvent.click(button)
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('dialog', { name: 'Display settings' })).toBeVisible()
     await expect(canvas.getByRole('radio', { name: 'Light' })).toBeEnabled()
     await expect(canvas.getAllByRole('radio', { name: 'Device' })).toHaveLength(3)
@@ -203,6 +207,7 @@ export const CompactKeyboard: Story = {
   play: async ({ canvas }) => {
     await userEvent.tab()
     await userEvent.keyboard('{Enter}')
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('dialog', { name: 'Display settings' })).toBeVisible()
     await userEvent.tab()
     await expect(canvas.getByRole('radio', { name: 'Device', checked: true })).toBeDefined()
@@ -326,6 +331,7 @@ export const Keyboard: Story = {
     const button = canvas.getByRole('button', { name: 'Display settings' })
     await expect(button).toHaveFocus()
     await userEvent.keyboard('{Enter}')
+    await expectAnimationsSettled()
     await expect(canvas.getByRole('dialog', { name: 'Display settings' })).toBeVisible()
     await userEvent.keyboard('{Escape}')
     await expect(button).toHaveFocus()

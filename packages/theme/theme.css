@@ -8121,7 +8121,7 @@
    * active Listbox option, so it is never only a shade. A checked item has a tick or a dot drawn
    * from borders, which stay visible in forced colours. <Menu.Group>, <Menu.RadioGroup>,
    * <Menu.GroupLabel> and <Menu.Separator> render kv-menu-group, kv-menu-radio-group,
-   * kv-menu-group-label and kv-menu-separator. The popup has no animation. */
+   * kv-menu-group-label and kv-menu-separator. The popup fades in on open, opacity only: placement is never animated. */
   .kv-menu-trigger::after {
     content: '';
     flex: none;
@@ -8152,6 +8152,40 @@
     border-color: var(--kv-button-edge);
     background-color: var(--kv-color-primary-subtle);
     box-shadow: none;
+  }
+
+  /* <Popover.Popup> renders kv-popover-popup, a dialog in the top layer that the script places.
+   * Level 3 elevation like a menu; it holds the consumer's content, so its first and last child
+   * add no margin of their own and its text wraps at a readable width. */
+  .kv-popover-popup {
+    box-sizing: border-box;
+    max-inline-size: min(24rem, calc(100vw - 2 * var(--kv-space-2)));
+    margin: 0;
+    padding: var(--kv-space-4);
+    overflow: auto;
+    overscroll-behavior: contain;
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-xl);
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-shadow-popup);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: normal;
+  }
+
+  .kv-popover-popup > :first-child {
+    margin-block-start: 0;
+  }
+
+  .kv-popover-popup > :last-child {
+    margin-block-end: 0;
+  }
+
+  .kv-popover-popup > * + * {
+    margin-block-start: var(--kv-space-3);
   }
 
   .kv-menu-popup {
@@ -8309,6 +8343,13 @@
       --kv-button-edge: Highlight;
 
       background-color: ButtonFace;
+    }
+
+    .kv-popover-popup {
+      border-color: CanvasText;
+      background-color: Canvas;
+      color: CanvasText;
+      box-shadow: none;
     }
 
     .kv-menu-popup {
@@ -10969,7 +11010,7 @@
    * meet for an app: the app offers its own control and switches the loops off with the rule in
    * docs/design/loading-indicators.md ("Consumer duty for 2.2.2"). */
   .kv-button[data-busy] > .kv-spinner {
-    animation: kv-spinner-reveal 1ms steps(1, end) 1000ms both;
+    animation: kv-spinner-reveal 1ms linear 1000ms both;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -10984,7 +11025,7 @@
       .kv-button[data-busy] > .kv-spinner {
         animation:
           kv-spinner-turn calc(var(--kv-duration-loop) * 1.5) linear infinite,
-          kv-spinner-reveal 1ms steps(1, end) 1000ms both;
+          kv-spinner-reveal 1ms linear 1000ms both;
       }
 
       /* The arc crawls: head and tail each go round once a loop, the tail on a rule-local
@@ -12270,5 +12311,44 @@
 
   .kv-top-bar .kv-display-settings-icon {
     display: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-disclosure-panel:not([hidden]),
+      .kv-accordion-panel:not([hidden]),
+      .kv-tabs-panel:not([hidden]) {
+        animation: kv-soft-fade-in var(--kv-duration-medium) var(--kv-easing-standard);
+      }
+
+      .kv-tabs-tab,
+      .kv-checkbox,
+      .kv-radio,
+      .kv-menu-item,
+      .kv-menu-checkbox-item,
+      .kv-menu-radio-item,
+      .kv-listbox-option {
+        transition-property: background-color, border-color, color, box-shadow;
+        transition-duration: var(--kv-duration-fast);
+        transition-timing-function: var(--kv-easing-standard);
+      }
+
+      .kv-checkbox:is(:checked, :indeterminate)::before,
+      .kv-radio:checked::before {
+        animation: kv-soft-fade-in var(--kv-duration-fast) var(--kv-easing-standard);
+      }
+
+      .kv-menu-popup:popover-open,
+      .kv-listbox-popup:popover-open,
+      .kv-popover-popup:popover-open {
+        animation: kv-soft-fade-in var(--kv-duration-fast) var(--kv-easing-standard);
+      }
+    }
+
+    @keyframes kv-soft-fade-in {
+      from {
+        opacity: 0;
+      }
+    }
   }
 }
