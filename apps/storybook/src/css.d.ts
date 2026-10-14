@@ -27,3 +27,9 @@ interface ImportMeta {
     options: { query: string; import: string; eager: true },
   ): Record<string, unknown>
 }
+
+// An asset's URL, bundled by Vite: the MapLibre worker the map stories hand to the adapter.
+declare module '*?url' {
+  const url: string
+  export default url
+}

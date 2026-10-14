@@ -441,3 +441,36 @@ export type {
   SentenceChunk,
   SplitSentencesOptions,
 } from './read-aloud/split-sentences.ts'
+export {
+  MAX_ZOOM,
+  MIN_ZOOM,
+  boundsContains,
+  boundsFromPlaces,
+  boundsOfView,
+  clamp,
+  clampLatitude,
+  clampZoom,
+  distanceBetween,
+  normalizeLngLat,
+  normalizeLongitude,
+  panBy,
+  zoomBy,
+} from './map/geometry.ts'
+export { createMapStore, selectPlacesInView, selectVisiblePlaces } from './map/map-store.ts'
+export type { CreateMapStoreOptions, MapActions, MapState, MapStore } from './map/map-store.ts'
+export type {
+  AddressResult,
+  GeocoderProvider,
+  LngLat,
+  MapBaseMap,
+  MapBounds,
+  MapHandle,
+  MapLayer,
+  MapMountOptions,
+  MapPlace,
+  MapProvider,
+  MapProviderEventName,
+  MapProviderEvents,
+  MapSize,
+  MapView,
+} from './map/types.ts'
