@@ -6029,6 +6029,13 @@
     overflow-wrap: break-word;
   }
 
+  /* A fieldset and a date input space their own fields (the gap, and the 24px below), so a field
+   * inside one has no block margin of its own: the options of a group are one gap apart. */
+  .kv-fieldset > .kv-field,
+  .kv-date-input > .kv-field {
+    margin-block: 0;
+  }
+
   /* Text fields side by side in a column inside a fieldset (an address) are 24px apart: 16px
    * on top of the gap. Choice controls are spaced as options in a later section. */
   .kv-fieldset > .kv-field + .kv-field {
