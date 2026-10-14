@@ -1,6 +1,6 @@
 # Design spec: docs code blocks, the example's code disclosure and a docs-only highlighter
 
-- **Status:** Draft · **Designer:** ux-designer agent · **Date:** 2026-10-06
+- **Status:** Approved by the maintainer (D1–D9, 2026-10-14) · **Designer:** ux-designer agent · **Date:** 2026-10-06 · **Revised 2026-10-14:** the code bar becomes variant B, "Title bar", of [prototypes/docs-code-variants.html](prototypes/docs-code-variants.html), chosen by the maintainer, with its open points settled (§5, §6, §7, D4–D7, §11); **revised again 2026-10-14:** Copy code moves into the open code as an icon-only button with a Tooltip (D8, D9)
 - **Plan:** to be written (closes the docs side of G7 in [docs-site-components.md](docs-site-components.md); amends [docs-site.md](docs-site.md) §6 "Code block" row and Open question 4, and [docs-component-page.md](docs-component-page.md) "Example Card")
 - **Type:** docs page parts (`apps/docs` only). No change to `packages/`, `theme.css` or any token value.
 
@@ -15,101 +15,102 @@
 
 ## 2. Prior art
 
-| Source (checked 2026-10-06)                                                                                                         | What we take                                                                | What we leave                                                                                       |
-| ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| Reference image 1 (line numbers, copy)                                                                                              | Muted line numbers outside the copied text, a calm 4-colour palette         | The icon-only copy button floating over the code (not universal, can cover a long line)             |
-| Reference image 2 (file-name header, language)                                                                                      | A header with the file name and language                                    | The language label floating inside the code area                                                    |
-| Reference image 3 (shadcn preview, "View Code")                                                                                     | Preview above, code below and collapsed, copy without opening               | The faded 3-line peek under an overlay button: faded code text fails 1.4.3 and the button covers it |
-| [GOV.UK Design System](https://design-system.service.gov.uk/components/button/) examples                                            | Code under each example, all code visible without JavaScript                | Tabs for one view only (we have one language of code per example)                                   |
-| [APG Disclosure](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/) · [APG Tabs](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/) | Disclosure for show/hide code (see §7 for why not Tabs)                     | –                                                                                                   |
-| [`hidden="until-found"`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/hidden)                                | Collapsed code is still found by the browser's find in page, which opens it | –                                                                                                   |
+| Source (checked 2026-10-06)                                                                                                         | What we take                                                                | What we leave                                                                                               |
+| ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Reference image 1 (line numbers, copy)                                                                                              | Muted line numbers outside the copied text, a calm 4-colour palette         | The copy button floating over the code (it covers a long line); see D8 for the row                          |
+| Reference image 2 (file-name header, language)                                                                                      | A header with the file name and language                                    | The language label floating inside the code area                                                            |
+| Reference image 3 (shadcn preview, "View Code")                                                                                     | Preview above, code below and collapsed, copy without opening               | The faded 3-line peek under an overlay button: faded code text fails 1.4.3 and the button covers it         |
+| [GOV.UK Design System](https://design-system.service.gov.uk/components/button/) examples                                            | Code under each example, all code visible without JavaScript                | Tabs for one view only (we have one language of code per example)                                           |
+| [APG Disclosure](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/) · [APG Tabs](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/) | Disclosure for show/hide code (see §7 for why not Tabs)                     | –                                                                                                           |
+| [`hidden="until-found"`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/hidden)                                | Collapsed code is still found by the browser's find in page, which opens it | –                                                                                                           |
+| [Variants prototype](prototypes/docs-code-variants.html), B "Title bar" (chosen)                                                    | The file name in an editor-like title bar on the code                       | The language label (D7), the filled open toggle (D4) and, since D8, the attached Code / Copy code pair (D5) |
 
 ## 3. Flow
 
-1. Reader reaches an example: the preview, then a **code bar**: `Code, 24 lines ▾` · `TSX` · `Copy code`.
-2. **Copy without reading:** activates Copy code → text copied → visible "Code copied" with a check icon in the bar, polite announcement "Code copied". Focus stays on the button.
-3. **Read first:** activates the Code button → the code opens below the bar, focus stays on the button; Tab moves to the scroll region (only if it overflows), then on.
+1. Reader reaches an example under its section heading: the preview, then a **title bar**: `field/use-field.tsx` …… `Code, 24 lines ▾`.
+2. **Read or copy:** activates the Code button → the code opens below the bar with a small **Copy code** icon button at its top-end corner; focus stays on the toggle. Tab → Copy code → the scroll region (only if it overflows) → on.
+3. **Copy:** activates Copy code → text copied → "Code copied" with a check icon beside the button, polite announcement "Code copied". Focus stays on the button. Copying now takes two activations (open, copy): D1, D8.
 4. **Find in page** (Ctrl+F) for a word in collapsed code → the browser opens it (`until-found`), the button's state follows.
 5. **Change the example language** (Display settings, applies to every example) → only the previews change; the code doesn't (it shows `t('…')`, docs-component-page.md §6).
 
 **Unhappy paths**
 
-| Case                                                          | What happens                                                                                                                                                                                                     |
-| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Clipboard refused (insecure context, permission, old browser) | The code opens if collapsed, its text is selected, the bar shows "Couldn't copy…" with a warning icon, and the same text is announced politely. Focus stays on Copy code, so Ctrl+C / Cmd+C copies the selection |
-| Copy pressed again                                            | Copies again, re-announces (the Announcer repeats identical text), the status stays                                                                                                                              |
-| JavaScript off or failed                                      | Code is open and plain (highlighting is server-rendered, so colours stay). The Code and Copy buttons are hidden (the existing `:root:not([data-kv-color-scheme])` rule in `docs.css`)                            |
-| Unknown language, or the tokenizer meets text it can't read   | That text is plain `text` colour. The tokenizer never throws; highlighting is decoration                                                                                                                         |
-| Empty code                                                    | Build fails for an example source (docs-site.md §3, "a section that can't be derived fails the build"). A hand-written empty `CodeBlock` shows `docs.code.empty`, with no Copy, toggle or region                 |
-| Example throws                                                | Existing `docs.example.error` in the stage; the code bar and code still work                                                                                                                                     |
+| Case                                                          | What happens                                                                                                                                                                                                                                     |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Clipboard refused (insecure context, permission, old browser) | The code is already open (Copy exists only there); its text is selected, "Couldn't copy…" shows beside the button with a warning icon, and the same text is announced politely. Focus stays on Copy code, so Ctrl+C / Cmd+C copies the selection |
+| Copy pressed again                                            | Copies again, re-announces (the Announcer repeats identical text), the status stays                                                                                                                                                              |
+| JavaScript off or failed                                      | Code is open and plain (highlighting is server-rendered, so colours stay). The Code toggle and the whole tools row with Copy code are hidden (copying needs script; the code can be selected by hand)                                            |
+| Unknown language, or the tokenizer meets text it can't read   | That text is plain `text` colour. The tokenizer never throws; highlighting is decoration                                                                                                                                                         |
+| Empty code                                                    | Build fails for an example source (docs-site.md §3, "a section that can't be derived fails the build"). A hand-written empty `CodeBlock` shows `docs.code.empty`, with no Copy, toggle or region                                                 |
+| Example throws                                                | Existing `docs.example.error` in the stage; the code bar and code still work                                                                                                                                                                     |
 
 ## 4. Content
 
-Site copy is en (`apps/docs/messages/en.ts`); sv is given for the planned translation (docs-site.md Open question 7) and to size the layout. Language names are technical names and the same in both.
+Site copy is en (`apps/docs/messages/en.ts`); sv is given for the planned translation (docs-site.md Open question 7) and to size the layout.
 
-| Key                                               | en                                                                       | sv                                                                                 | Use                                                                               |
-| ------------------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `docs.code.label`                                 | Code                                                                     | Kod                                                                                | Scroll region name when there's no file name. Replaces `docs.example.codeHeading` |
-| `docs.code.toggle({ count })`                     | Code, 1 line / Code, {count} lines                                       | Kod, 1 rad / Kod, {count} rader                                                    | The disclosure button's visible label (constant: state is `aria-expanded`)        |
-| `docs.code.copy`                                  | Copy code                                                                | Kopiera koden                                                                      | Copy button label, never changes                                                  |
-| `docs.code.copied`                                | Code copied                                                              | Koden är kopierad                                                                  | Visible status and the announcement (one string)                                  |
-| `docs.code.copyFailed`                            | Couldn't copy. The code is selected, so press Ctrl+C, or Cmd+C on a Mac. | Det gick inte att kopiera. Koden är markerad, så tryck Ctrl+C, eller Cmd+C på Mac. | Visible status and the announcement                                               |
-| `docs.code.empty`                                 | No code to show.                                                         | Det finns ingen kod att visa.                                                      | Empty state                                                                       |
-| `docs.code.languages.{tsx,ts,json,css,bash,html}` | TSX, TypeScript, JSON, CSS, Bash, HTML                                   | same                                                                               | Language label                                                                    |
+| Key                           | en                                                                       | sv                                                                                 | Use                                                                               |
+| ----------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `docs.code.label`             | Code                                                                     | Kod                                                                                | Scroll region name when there's no file name. Replaces `docs.example.codeHeading` |
+| `docs.code.toggle({ count })` | Code, 1 line / Code, {count} lines                                       | Kod, 1 rad / Kod, {count} rader                                                    | The disclosure button's visible label (constant: state is `aria-expanded`)        |
+| `docs.code.copy`              | Copy code                                                                | Kopiera koden                                                                      | Copy button's name (from its content) and its Tooltip, never changes              |
+| `docs.code.copied`            | Code copied                                                              | Koden är kopierad                                                                  | Visible status and the announcement (one string)                                  |
+| `docs.code.copyFailed`        | Couldn't copy. The code is selected, so press Ctrl+C, or Cmd+C on a Mac. | Det gick inte att kopiera. Koden är markerad, så tryck Ctrl+C, eller Cmd+C på Mac. | Visible status and the announcement                                               |
+| `docs.code.empty`             | No code to show.                                                         | Det finns ingen kod att visa.                                                      | Empty state                                                                       |
 
-Longest fi-like length check: the sv `copyFailed` is the longest; it wraps under the buttons at 320px (§5). Code shown never includes a `$` prompt or line numbers in its text, so a paste runs.
+Longest fi-like length check: the sv `copyFailed` is the longest; it wraps beside the copy button at 320px (§5). Code shown never includes a `$` prompt or line numbers in its text, so a paste runs.
 
 ## 5. Structure
 
-**CodeBlock** (code only)
-
-```
-div.docs-code [data-language]                      surface, 1px border-subtle, radius md
-  div.docs-code-header                             only if fileName, language or copy
-    span.docs-code-file (mono)  span.docs-code-language   ……   Button "Copy code"
-    p.docs-code-status (when present, wraps to its own row)
-  div.docs-code-scroll  [role=region tabindex=0 aria-labelledby only while overflowing]
-    pre > code > span.docs-code-line* > (span.docs-code-number[aria-hidden]) + tokens
-```
+**Variant B, "Title bar", with Copy code in the code (D8).** The title bar holds the file name, note and the Code toggle; the card has no top band (D6). Copy code sits in a tools row at the top of the open code. _Superseded:_ the Card.Header with the file name and an own `h3`, the language label, the open toggle's fill, and the attached Code / Copy code pair (D5).
 
 **ExampleFrame** (keeps its name: every page already uses it)
 
 ```
-figure (Card.Root, kv-card--dividers, aria-labelledby = section h2 or own h3)
-  Card.Header   [h3 caption?]  ……  (no language select: the example language is global, in Display settings)
-  Card.Body     nested KvirnProvider: Sámi note, stage
-  div.docs-code-bar   Button "Code, 24 lines ▾" [aria-expanded aria-controls]  ·  TSX  ……  Button "Copy code"
-                      p.docs-code-status
-  div#…-code [hidden=until-found when collapsed]   CodeBlock without its own header
+figure (Card.Root, kv-card--dividers, aria-labelledby = headingId: the section h2 or the use case's heading)
+  Card.Body          nested KvirnProvider: Sámi note, stage                     (first child: no header band)
+  Card.Footer.docs-code-bar                                                     the title bar
+    span.docs-code-meta      span.docs-code-file (mono) · span.docs-code-note?   (plain text-muted, D7)
+    Button.docs-disclosure.docs-code-toggle "Code, 24 lines" + chevron  [aria-expanded aria-controls]
+  div#…-code.docs-code.docs-code-panel [hidden=until-found when collapsed]
+    div.docs-code-tools                                                         outside the scroll div
+      p.docs-code-status?    (when present)
+      Tooltip.Root > Tooltip.Trigger as Button.kv-button--icon-only.docs-code-copy
+                       Icon copy (D9) + span.docs-code-copy-label "Copy code"
+                     Tooltip.Popup > Tooltip.Name "Copy code"
+    CodeScroll
 ```
 
-The bar sits **outside** the nested provider, so its strings, `lang` and announcement are the site's (en). One Copy per example: the bar's, never a second one in the panel.
+**CodeBlock** (code only, no preview): the same tools overlay in a `div.docs-code-body` with the scroll area, so Copy always sits at the code's top-end corner. `div.docs-code-header` keeps only `docs-code-meta`, and is left out when there's no file name. Then `docs-code-scroll > pre > code > span.docs-code-line* > (span.docs-code-number[aria-hidden]) + tokens`. Bar and panel sit **outside** the nested provider, so strings, `lang` and announcement are the site's (en). One Copy per example.
 
-| Width  | Layout                                                                                                                                         |
-| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 320px  | Header/bar wrap: Code button and language on row 1, Copy code on row 2 at inline start, status on row 3. **Lines wrap** (§6). Comfortable 44px |
-| 40rem+ | One row: toggle and language at inline start, Copy at inline end, status below. **Long lines scroll** horizontally                             |
-| 64rem+ | As 40rem; buttons compact (32px), as the docs chrome                                                                                           |
+**Placement (D8).** A row above the code, not an overlay in the code's corner: an overlay covers the end of the first line when lines wrap (< 40rem) and covers code scrolling under it (40rem+), and reserving an inline-end gutter for it takes about 52px from the code at 320px. The row costs only block space, sits outside the scroll div (so horizontal scroll and RTL never move it), and at 400% zoom it is in the page's flow at the top of the code.
 
-DOM order = visual order = focus order: Code toggle → Copy code → (scroll region) → next content.
+| Width  | Layout                                                                                                                                    |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 320px  | Bar: row 1 file name (wraps anywhere), note; row 2 the toggle, full width, 44px. Panel: no Copy code (hidden below 40rem). **Lines wrap** |
+| 40rem+ | Bar: one row, meta at inline start, toggle at inline end; wraps to a second, end-aligned row when meta is long. **Lines scroll**          |
+| 64rem+ | As 40rem; the copy button stays 44×44 (the docs site isn't kv-compact)                                                                    |
+
+DOM order = visual order = reading order: file name → note → Code toggle → (open:) status → Copy code → (scroll region) → next content. Tab stops: Code toggle → Copy code (only while open) → scroll region (only while it overflows).
 
 ## 6. Visual specification
 
-| Part                                   | Specification                                                                                                                                                                                                           |
-| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Container                              | `surface` bg, 1px `border-subtle`, radius `md` (8px). In ExampleFrame: no own border/radius; the Card's `kv-card--dividers` hairline separates bar and code                                                             |
-| Header / bar                           | `surface` bg, bottom 1px `border-subtle` (bar: only when open), padding `space-2` `space-3`, flex wrap, gap `space-2` `space-3`, items centred                                                                          |
-| File name                              | `--kv-font-family-mono`, `code` role (14px), `text`. Long names `overflow-wrap: anywhere`                                                                                                                               |
-| Language                               | `body-small` (14px), `text-muted` (metadata)                                                                                                                                                                            |
-| Code toggle                            | `DocsDisclosure` (KvirnUI `Button`, secondary) with `chevron-down`/`chevron-up`, as Menu and Display settings                                                                                                           |
-| Copy code                              | KvirnUI `Button`, secondary, text only (the built-in set has no copy icon; an icon would not be universal anyway)                                                                                                       |
-| Status                                 | `body-small`, `text`, 16px icon (`aria-hidden`): `check` for copied, `warning` (in `warning` colour) for failed. Words carry the meaning. Copied clears after 4 s or on the next copy; failed stays until the next copy |
-| Code area                              | padding `space-4`, `code` role: 14px, line height 1.6, `--kv-font-family-mono`, `tab-size: 2`. Native scrollbar, never hidden or thinned                                                                                |
-| Line                                   | `display: grid; grid-template-columns: auto 1fr` when numbered. One row per source line                                                                                                                                 |
-| Line number (optional, off by default) | `text-muted`, `font-variant-numeric: tabular-nums`, `text-align: end`, padding-inline-end `space-4`, `user-select: none`, `aria-hidden`. Sticky at inline start with `surface` bg while scrolling                       |
-| Long lines, 40rem+                     | `white-space: pre`, the scroll div `overflow-x: auto`                                                                                                                                                                   |
-| Long lines, < 40rem                    | `white-space: pre-wrap`, `overflow-wrap: anywhere`; a wrapped line hangs under its own text, its number stays on the first row                                                                                          |
-| Focus ring                             | Buttons: the theme ring. Scroll region: `--kv-focus-ring-width` `focus-ring`, offset negated (`calc(-1 * var(--kv-focus-ring-offset))`) so it isn't clipped by the container                                            |
+| Part                                   | Specification                                                                                                                                                                                                                                                                                                                                                                             |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Container                              | CodeBlock: `surface` bg, 1px `border-subtle`, radius `md` (8px). In ExampleFrame: no own border/radius; the Card's `kv-card--dividers` hairlines separate stage, bar and code                                                                                                                                                                                                             |
+| Title bar (`docs-code-bar`, `-header`) | `surface` bg on the `surface-raised` card, so bar and code read as one object. Flex wrap, items centred, gap `space-2` `space-3`, padding-block `space-2`, padding-inline `space-4` start, `space-2` end. ExampleFrame: closed, it is the card's last part and takes its end corners (`calc(var(--kv-radius-lg) - 1px)`) so the fill doesn't poke out                                     |
+| Meta (`docs-code-meta`)                | Flex wrap, gap `space-1` `space-3`, `min-inline-size: 0`                                                                                                                                                                                                                                                                                                                                  |
+| File name                              | `--kv-font-family-mono`, `code` role (14px), `text-muted` (D7). Long names `overflow-wrap: anywhere`                                                                                                                                                                                                                                                                                      |
+| Note                                   | `body-small`, `text-muted` (metadata, as today)                                                                                                                                                                                                                                                                                                                                           |
+| Code toggle (alone)                    | `DocsDisclosure` with `kv-button--link`: text and `chevron-down`/`chevron-up` (the icon swaps, never rotates), no fill, edge or depth, underlined on hover only, 24px minimum height; `margin-inline-start: auto`. A bordered button above the icon-only Copy code read as button on button (maintainer, 2026-10-14). Open keeps the rest look (D4). Below 40rem `flex-basis: 100%`, 44px |
+| Tools row (`docs-code-tools`)          | Absolute at the code's inline-end top corner (`inset-block-start` and `inset-inline-end` `space-1`), no padding, `display: none` below 40rem; the status at its inline start, then the button. The code's `pre` gets inline-end padding from 40rem so no line sits under it                                                                                                               |
+| Copy code                              | `kv-button kv-button--icon-only` (square, 44×44px at every width: the docs site isn't `kv-compact`; ≥ 24px for 2.5.8), icon `'20'` in `currentColor`. `span.docs-code-copy-label` is visually hidden, and shown beside the icon under `(hover: none) and (pointer: coarse)`, where no tooltip can show (D9). Tooltip as it ships (`tooltip.md`)                                           |
+| Status                                 | `flex: 0 1 auto`, `min-inline-size: 0`, `body-small`, `text`, 16px icon (`aria-hidden`): `check` for copied, `warning` (in `warning` colour) for failed, at the button's inline start. Words carry the meaning (copy-button.md §2 D). Copied clears after 4 s or on the next copy; failed stays until the next copy (copy-button.md §3)                                                   |
+| Code area                              | padding `space-4`, `code` role: 14px, line height 1.6, `--kv-font-family-mono`, `tab-size: 2`. Native scrollbar, never hidden or thinned                                                                                                                                                                                                                                                  |
+| Line                                   | `display: grid; grid-template-columns: auto 1fr` when numbered. One row per source line                                                                                                                                                                                                                                                                                                   |
+| Line number (optional, off by default) | `text-muted`, `font-variant-numeric: tabular-nums`, `text-align: end`, padding-inline-end `space-4`, `user-select: none`, `aria-hidden`. Sticky at inline start with `surface` bg while scrolling                                                                                                                                                                                         |
+| Long lines, 40rem+                     | `white-space: pre`, the scroll div `overflow-x: auto`                                                                                                                                                                                                                                                                                                                                     |
+| Long lines, < 40rem                    | `white-space: pre-wrap`, `overflow-wrap: anywhere`; a wrapped line hangs under its own text, its number stays on the first row                                                                                                                                                                                                                                                            |
+| Focus ring                             | Buttons: the theme ring. Scroll region: `--kv-focus-ring-width` `focus-ring`, offset negated (`calc(-1 * var(--kv-focus-ring-offset))`) so it isn't clipped by the container                                                                                                                                                                                                              |
 
 ### Highlighter (docs-only)
 
@@ -125,29 +126,29 @@ A small tokenizer in `apps/docs` (no dependency), run inside `CodeBlock` (a clie
 
 - **Not colour alone (1.4.1):** the colours add nothing the text doesn't say. A comment starts with `//`, a string has quotes, so the code reads the same in forced colours, greyscale or a screen reader. No weight or italic changes (Plex is upright only; mono widths must not shift).
 - **Measured pairs** (theme:check floors; numbers from docs-site.md §6 where already recorded): `text` on `surface` 17.75 / 17.90 / 19.57 / 19.05; `text-muted` 5.79 / 5.86 / 11.27 / 13.04; `link` 4.94 / 6.64 / 9.21 / 10.17. `success` and `warning` on `surface`: gated by the same floors, **numbers to record from `vp run theme:check`** (orchestrator).
-- Selection uses the browser's own `::selection`.
 
 ### States
 
-| Part        | default                 | hover  | focus-visible      | active / open                                                                           | copied / failed                                  | long line                                          | empty                                                 |
-| ----------- | ----------------------- | ------ | ------------------ | --------------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------- | ----------------------------------------------------- |
-| Code toggle | collapsed, chevron down | recipe | ring               | open: `aria-expanded=true`, chevron up, `primary-subtle` bg, `primary` border (as Menu) | –                                                | –                                                  | not rendered                                          |
-| Copy code   | secondary button        | recipe | ring               | recipe                                                                                  | label unchanged; status row shows                | –                                                  | not rendered                                          |
-| Status      | absent                  | –      | –                  | –                                                                                       | `check` + "Code copied" / `warning` + copyFailed | –                                                  | –                                                     |
-| Scroll area | plain div               | –      | ring (region only) | –                                                                                       | failed: code text selected                       | 40rem+: region, Tab stop, scrollbar; <40rem: wraps | `docs.code.empty` in `text` (a message, not metadata) |
-| Line number | `text-muted`            | –      | –                  | –                                                                                       | –                                                | sticky                                             | –                                                     |
+| Part        | default                      | hover                       | focus-visible         | active / open                                                                                  | copied / failed                                  | long line                                          | empty                                                 |
+| ----------- | ---------------------------- | --------------------------- | --------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------- | ----------------------------------------------------- |
+| Code toggle | collapsed, chevron down      | recipe                      | ring                  | open: `aria-expanded=true`, chevron up, rest fill and edge (D4); the panel shows under the bar | –                                                | –                                                  | not rendered                                          |
+| Copy code   | icon button, only while open | recipe; Tooltip after 500ms | ring; Tooltip at once | recipe; a pointer press closes the Tooltip                                                     | name unchanged; status beside it                 | –                                                  | not rendered                                          |
+| Title bar   | file, note, toggle           | –                           | –                     | open: hairline under it, code below; closed: the card's last part, end corners round           | –                                                | –                                                  | CodeBlock: `docs.code.empty`, no bar                  |
+| Status      | absent                       | –                           | –                     | –                                                                                              | `check` + "Code copied" / `warning` + copyFailed | –                                                  | –                                                     |
+| Scroll area | plain div                    | –                           | ring (region only)    | –                                                                                              | failed: code text selected                       | 40rem+: region, Tab stop, scrollbar; <40rem: wraps | `docs.code.empty` in `text` (a message, not metadata) |
+| Line number | `text-muted`                 | –                           | –                     | –                                                                                              | –                                                | sticky                                             | –                                                     |
 
 ### Modes
 
 - **Four themes:** tokens only; no theme rules.
-- **Forced colours:** code text, numbers and status become `CanvasText`; the container, bar and buttons keep 1px borders; the open toggle keeps its chevron and `aria-expanded`; the status keeps its words and icon. `forced-color-adjust` is never set.
-- **Reduced motion:** nothing moves; the open/close is instant. Chevron rotation only under `no-preference` (none here: the icon swaps).
-- **RTL:** logical properties throughout (`inset-inline-start`, `padding-inline-end`). Code itself is always `dir="ltr"` with `unicode-bidi: isolate` on `pre`, so an RTL page doesn't reorder code; the bar follows the site's direction.
-- **320px / 400% zoom / 1.4.12:** lines wrap, bar wraps, no fixed heights; under 1.4.12 overrides number and line stay in one grid row, so they never drift.
+- **Forced colours:** code text, numbers and status become `CanvasText`; the container, bar and buttons keep 1px borders (`CanvasText`, buttons `ButtonText`); the copy icon is `currentColor`, so `ButtonText`; the Tooltip keeps its own forced-colours rules; the open toggle keeps its chevron and `aria-expanded`, with no `Highlight` edge (that is the buttons' hover and pressed look); the status keeps its words and icon. `forced-color-adjust` is never set.
+- **Reduced motion:** nothing moves; the open/close is instant. Chevron rotation only under `no-preference` (none here: the icon swaps). The status text fades in over `--kv-duration-fast` (opacity only, no movement), gated like the Tooltip: only under `no-preference` and not `data-kv-motion='reduce'`.
+- **RTL:** logical properties throughout (`inset-inline-start`, `padding-inline-end`). Code itself is always `dir="ltr"` with `unicode-bidi: isolate` on `pre`, so an RTL page doesn't reorder code; the bar and tools row follow the site's direction, so Copy code sits at the inline end (left in RTL); the icon doesn't mirror.
+- **320px / 400% zoom / 1.4.12:** lines wrap, bar and tools row wrap, no fixed heights, and the code keeps its full width; under 1.4.12 overrides number and line stay in one grid row, so they never drift.
 
 ### New or changed tokens
 
-None in `theme.css` or `DESIGN.md`. Four docs-only custom properties in `apps/docs/app/docs.css` (`--docs-code-keyword|string|literal|comment`), each an alias of an existing semantic text token (table above). They follow the `--docs-*` layout-constant precedent (docs-site.md §6) and add no raw colour, so the raw-colour check stays green. **Maintainer approval needed** (D3).
+None in `theme.css` or `DESIGN.md`, and variant B adds no colour pair: `text` and `text-muted` on `surface`, the tinted `secondary` button edges on `surface` (the icon button's boundary), the icon in `text` on the button fill (1.4.11: ≥ 3:1 via the 4.5:1 text floor), and `focus-ring` on `surface` are all held by `theme:check` already. Four docs-only custom properties in `apps/docs/app/docs.css` (`--docs-code-keyword|string|literal|comment`), each an alias of an existing semantic text token (table above). They follow the `--docs-*` layout-constant precedent (docs-site.md §6) and add no raw colour, so the raw-colour check stays green. Approved by the maintainer (D3).
 
 ## 7. Accessibility annotations (draft contract)
 
@@ -155,39 +156,43 @@ None in `theme.css` or `DESIGN.md`. Four docs-only custom properties in `apps/do
 
 - Tabs say "pick one of several mutually exclusive views". Preview and code are two parts of one example that people want together (look, then read). Tabs would hide the preview while reading the code, add an arrow-key model for two items, and a Tab-stop rule readers don't expect in a page.
 - A toggle button (`aria-pressed`) is for an on/off setting; showing and hiding a region is APG Disclosure (`aria-expanded` + `aria-controls`).
-- Tabs are right later for real alternatives (pnpm / npm / yarn, or `tsx` / `css` files of one example): KvirnUI `Tabs` then (Open question 3).
 
-| Element       | Role / name                                                                                                                          | State                                    |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
-| Example       | `figure`, named by the section h2 or its own h3 (as today)                                                                           | –                                        |
-| Code toggle   | native `button`, name = visible `docs.code.toggle` ("Code, 24 lines")                                                                | `aria-expanded`, `aria-controls` → panel |
-| Copy code     | native `button`, name = visible "Copy code" (2.5.3). Context comes from the figure or file name around it                            | –                                        |
-| Scroll region | `role=region`, `aria-labelledby` the file name, else `aria-label` `docs.code.label`; only while overflowing (accessibility skill §8) | `tabindex=0` only while overflowing      |
-| Code          | `pre > code`, `lang` not set (code isn't a human language), `dir=ltr`                                                                | –                                        |
-| Line numbers  | `aria-hidden="true"`, excluded from selection and from the copied text                                                               | –                                        |
-| Status        | plain `p` (not a live region); the Announcer speaks                                                                                  | –                                        |
+| Element         | Role / name                                                                                                                                                                                                                                                                                                        | State                                                  |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------ |
+| Example         | `figure`, `aria-labelledby` = `headingId`, the page heading right above it (D6)                                                                                                                                                                                                                                    | –                                                      |
+| File name, note | plain text in reading order, referenced by no `aria-labelledby` or `aria-describedby` in ExampleFrame, so each is read once (D7)                                                                                                                                                                                   | –                                                      |
+| Code toggle     | native `button`, name = visible `docs.code.toggle` ("Code, 24 lines"), constant                                                                                                                                                                                                                                    | `aria-expanded`, `aria-controls` → panel               |
+| Copy code       | native `button`, name from its content `docs.code.copy` ("Copy code"), the same key as the Tooltip's `Tooltip.Name`, which is hidden from AT so the name is read once (tooltip.md §7). No visible text on a fine pointer, so 2.5.3 asks only for a sensible name, and the Tooltip shows exactly it for voice users | no `aria-describedby`: the Tooltip holds only the name |
+| Scroll region   | `role=region`, only while overflowing (accessibility skill §8). ExampleFrame: `aria-labelledby` = heading + hidden `docs.code.label` ("Disabled with a reason Code"). CodeBlock: the file name, else `aria-label` `docs.code.label`                                                                                | `tabindex=0` only while overflowing                    |
+| Code            | `pre > code`, `lang` not set (code isn't a human language), `dir=ltr`                                                                                                                                                                                                                                              | –                                                      |
+| Line numbers    | `aria-hidden="true"`, excluded from selection and from the copied text                                                                                                                                                                                                                                             | –                                                      |
+| Status          | plain `p` (not a live region); the Announcer speaks                                                                                                                                                                                                                                                                | –                                                      |
 
 **Keyboard** (native elements only; no custom key handlers)
 
-| Key                | Where               | What happens                                                          |
-| ------------------ | ------------------- | --------------------------------------------------------------------- |
-| Tab / Shift+Tab    | example             | Code toggle → Copy code → scroll region (only if it overflows) → next |
-| Enter, Space       | Code toggle         | Opens or closes the code. Focus stays on the toggle                   |
-| Enter, Space       | Copy code           | Copies; focus stays; status shown and announced                       |
-| Arrow Left / Right | scroll region       | Scrolls horizontally (native)                                         |
-| Home / End         | scroll region       | Native scroll to start or end                                         |
-| Ctrl+C / Cmd+C     | after a failed copy | Copies the selected code (native)                                     |
+| Key                | Where               | What happens                                                                 |
+| ------------------ | ------------------- | ---------------------------------------------------------------------------- |
+| Tab / Shift+Tab    | example             | Code toggle → Copy code (open only) → scroll region (if it overflows) → next |
+| Tab                | onto Copy code      | Its Tooltip shows at once (tooltip.md)                                       |
+| Escape             | Tooltip open        | Hides it; focus stays (1.4.13 dismissable)                                   |
+| Enter, Space       | Code toggle         | Opens or closes the code. Focus stays on the toggle                          |
+| Enter, Space       | Copy code           | Copies; focus stays; status shown and announced                              |
+| Arrow Left / Right | scroll region       | Scrolls horizontally (native)                                                |
+| Home / End         | scroll region       | Native scroll to start or end                                                |
+| Ctrl+C / Cmd+C     | after a failed copy | Copies the selected code (native)                                            |
 
-- **Focus moves:** none. Opening, closing, copying and failing all keep focus on the control. Closing while focus is in the region can't happen (focus is on the toggle to close). Nothing is obscured (2.4.11): no sticky parts except the line-number gutter inside the region.
+- **Focus moves:** none. Opening, closing, copying and failing all keep focus on the control. Closing while focus is on Copy code or in the region can't happen (focus is on the toggle to close). Nothing is obscured (2.4.11): no sticky parts except the line-number gutter inside the region; the Tooltip never covers its own button, and Escape hides it.
 - **Announcements (4.1.3):** through `useAnnouncer()` of the site's provider, **polite**: `docs.code.copied` or `docs.code.copyFailed`. Opening or closing announces nothing (`aria-expanded` does). Changing the example language (global, in Display settings) announces nothing.
 - **Find in page:** the collapsed panel is `hidden="until-found"`; on `beforematch` the toggle sets open so `aria-expanded` matches. Browsers without it: plain `hidden`.
-- **Targets:** 44px below 64rem, 32px from 64rem (docs chrome rule, 2.5.8).
+- **Targets:** 44px below 64rem, 32px from 64rem (docs chrome rule, 2.5.8); the copy button is square at those sizes.
+- **1.4.13:** the Tooltip as it ships: hoverable (100ms grace), dismissable (Escape), persistent (no timeout); no tooltip on touch, hence the touch label (D9).
 - **SCs of note:** 1.3.1, 1.3.2, 1.4.1, 1.4.3, 1.4.10, 1.4.11, 1.4.12, 2.1.1, 2.4.3, 2.4.7, 2.4.11, 2.5.3, 2.5.8, 3.2.2, 4.1.2, 4.1.3.
-- **Test rows** (cheapest layer, `testing` skill): toggle `aria-expanded` + Enter/Space; copy announces `copied`; refused clipboard announces `copyFailed` and selects the code; region role/tabindex only when overflowing; line numbers absent from the copied text and `aria-hidden`; tokenizer unit tests per language (node), including "never throws". axe on a docs page in four themes when the docs harness exists (docs-site.md Open question 6).
+- **Test rows** (cheapest layer, `testing` skill): toggle `aria-expanded` + Enter/Space; copy announces `copied`; refused clipboard announces `copyFailed` and selects the code; region role/tabindex only when overflowing; line numbers absent from the copied text and `aria-hidden`; tokenizer unit tests per language (node), including "never throws". axe on a docs page in four themes when the docs harness exists (docs-site.md Open question 6). **Variant B (D8) adds:** collapsed, Tab from the toggle skips Copy code; open, Tab reaches it and Shift+Tab returns; its name is `docs.code.copy` and its Tooltip adds no description; status in `.docs-code-tools`; the file name is in the title bar (`.docs-code-bar .docs-code-file`), not in the panel or a header, and absent from the copy; the figure's name is the `headingId` heading; the region's name in ExampleFrame doesn't contain the file name; the toggle's name is the same open and closed.
 
 ## 8. Validation
 
-- [x] Self-review against `review-checklist.md`: no blockers open. Faded "peek" rejected (1.4.3); icon-only copy rejected; colour-only cues none; no new colour pair.
+- [x] Self-review against `review-checklist.md`: no blockers open. Faded "peek" rejected (1.4.3); colour-only cues none; no new colour pair. Icon-only copy was rejected, then directed by the maintainer (D8) with the D9 mitigations.
+- [x] Variant B self-review (2026-10-14): open fill dropped (D4), pill dropped (D7); then Copy moved into the code (D8): no new string, token or pair; the icon is #25 of the built-in set (D9).
 - [ ] `vp run theme:check` numbers for `success` and `warning` on `surface` recorded (orchestrator).
 - [x] Usability test plan written. **Status: `pending`.** No sessions have taken place.
 
@@ -195,23 +200,46 @@ None in `theme.css` or `DESIGN.md`. Four docs-only custom properties in `apps/do
 
 ## 9. Decisions for the maintainer and open questions
 
-**Decisions (approval needed):**
+**Decisions (D1–D9 approved by the maintainer, 2026-10-14):**
 
-- **D1. Code collapsed by default** behind a Disclosure, Copy available while collapsed. This reverses docs-site.md "no tabs for code, code always visible". Why: page length at 320px, and copy, the main task, is one action either way. Mitigations: line count in the label, find in page opens it, no-JS shows it. Alternative: open by default on the page's main Example, collapsed on use cases (two rules).
+- **D1. Code collapsed by default** behind a Disclosure; since D8, Copy only once open. This reverses docs-site.md "no tabs for code, code always visible". Why: page length at 320px. **Re-confirmed by the maintainer, 2026-10-14, with D8:** copy is now two steps (open, then copy); kept because a short, calm page of previews matters more than one activation, the toggle sits right above the button and states the line count, and Copy beside the code it copies is clearer than a Copy for code you can't see (usability task 1 measures the cost). Mitigations: line count in the label, find in page opens it, no-JS shows it. Alternative: open by default on the page's main Example, collapsed on use cases (two rules).
 - **D2. Long lines scroll horizontally from 40rem, wrap below.** Amends docs-site.md "No 2D scrolling". Why: line structure is meaning in code; 320px still reflows (1.4.10). Alternative: always wrap (today).
 - **D3. Syntax roles reuse status and link tokens:** keyword = `link`, string = `success`, literal = `warning`, comment = `text-muted`, via four `--docs-code-*` aliases. Gated already, no new pair, no hue names. The cost: `success`/`warning` carry no status meaning here, and `link` colours non-links. Alternative: new docs tokens on the `accent` scale per theme, which need new measured pairs and four theme mappings.
+
+**Variant B, settled 2026-10-14 (approved by the maintainer, with D5 reversed and D7 amended):**
+
+- **D4. The open toggle keeps the rest look; no `primary-subtle` fill or `primary` edge.** It would pass (`primary` on `primary-subtle` is held to 3:1 and `text` on `primary-subtle` to 4.5:1 / 7:1 by `theme:check`), but it is exactly the `kv-button` hover and pressed look, so "open" would read as "hovered". State is carried by the chevron's shape (down/up), the panel appearing under the bar and `aria-expanded`, as DESIGN.md Disclosure says ("no fill"); the label stays constant.
+- **D5. _Superseded by D8:_** the attached Code / Copy code pair is gone; the toggle is alone in the bar.
+- **D6. The example's name is the page heading above the figure, not a band in the card.** Every ExampleFrame call already passes `headingId` (the h2 "Example" or the use case's heading); `caption` and the own `h3` are used only by tests, so `headingId` becomes required and `caption` goes. The figure keeps `aria-labelledby`, so it still has an accessible name.
+- **D7. The file name is read once and is plain muted text; there is no language label** (the file name carries the extension; the `language` prop only drives highlighting). It is `text-muted` (mono), no Badge or pill; `text-muted` on `surface` is already gated (4.5:1 / 7:1). In ExampleFrame it is plain text in the bar and no name or description points at it (the region is named by the heading + "Code"), and Copy code's name stays "Copy code" (2.5.3). CodeBlock's region still uses the file name as its name, the usual labelled-region pattern, only while it overflows: that is a landmark name, not a second reading of the text.
+
+- **D8. Copy code inside the open code** (maintainer's direction): an icon-only button with the shipped Tooltip, in a tools row above the code (placement in §5). Collapsed, there is no Copy: acceptable because opening is one activation and states the line count, but it costs the copy-first reader a step (D1). No JavaScript: the row is hidden, since copying needs script. **Revised (maintainer, 2026-10-14):** the button is a small (`kv-button--compact`) icon-only button absolutely positioned over the code's inline-end corner (logical inset, so RTL works), from 40rem; below 40rem it is `display: none` (not in the Tab order or the a11y tree). The overlay is accepted by the maintainer's decision; its mitigation is inline-end padding on the code's `pre` so no line starts or ends under it. The status sits beside the button on a `surface` background and goes after 4 s (failed stays until the next copy, so it keeps covering the corner).
+- **D9. The `copy` icon and the icon-only rule (approved, 2026-10-14).** (a) A new built-in `copy` icon, #25 (two offset sheets, no RTL mirroring; drawing in icon.md §4.1 and §6.1), in the library via [Plan 0112](plans/0112-copy-icon.md). (b) DESIGN.md Icons: copy joins close and search as an icon-only button, always with a Tooltip and a name from i18n (a general rule, not a docs exception). (c) On touch, `(hover: none) and (pointer: coarse)`, where no Tooltip shows, the word "Copy code" shows beside the icon; hover and keyboard layouts stay icon-only. `(hover: none) and (pointer: coarse)` reads the primary input only, so a mouse-primary touchscreen laptop gets neither a Tooltip nor the visible word on tap; the name is still "Copy code". **Revised:** the touch label shows only from 40rem; below it Copy code is hidden, so a reader on a phone, at 320px or at 400% zoom copies by selecting the code. A known trade-off for 1.4.10 and 2.5.8: nothing is lost or clipped, but the shortcut is gone.
 
 **Open questions:**
 
 1. The example language select (now one global select in Display settings) offers Swedish and English only. Finnish and Sámi break layouts first, so adding them later is a decision for the maintainer.
-2. A `copy` icon in the built-in Icon set (a `packages/react` change, icon.md) or text-only Copy (recommended now).
+2. A `copy` icon in the built-in Icon set: now D9.
 3. Package-manager tabs (reference image 3) for install commands: out of scope; KvirnUI `Tabs` when wanted.
 4. When G7's library `CopyButton` ships, the docs swap to it and its `@kvirn-ui/i18n` keys; `docs.code.copy*` then retire.
-5. One-line blocks (image 3, "Usage"): same header rule (a bar with only Copy), or Copy inline at the line's end? Recommendation: same rule (fewer ceremonies).
+5. One-line blocks (image 3, "Usage"): the same tools row above the line (fewer ceremonies), or Copy inline at its end?
 
 ## 10. Handoff: text for the plan's Design section
 
-> Spec: [docs/design/docs-code.md](../design/docs-code.md). `CodeBlock` (code only: optional file name, language, line numbers; Copy code with a polite announcement and a select-on-failure fallback; horizontal scroll region from 40rem, wrap below) and `ExampleFrame` (preview, then a code bar with a Disclosure "Code, n lines" and Copy code; panel `hidden="until-found"`). A server-side tokenizer in `apps/docs` for tsx/ts, json, css, bash and html emits four role classes aliased to `link`, `success`, `warning` and `text-muted`. Keys `docs.code.*`; `docs.example.codeHeading` retires. Needs D1–D3 approved. No `packages/` or `theme.css` change.
+> Spec: [docs/design/docs-code.md](../design/docs-code.md), variant B "Title bar" with D8. `ExampleFrame`: no header band, named by its `headingId` heading (now required; `caption` goes); the preview, then a title bar with the file name and note in `text-muted` and the Disclosure "Code, n lines" alone at the end (rest look when open); panel `hidden="until-found"` with a tools row on top (the copy status and an icon-only Copy code with the shipped Tooltip), then the code. `CodeBlock` gets the same tools row. Existing keys `docs.code.*` only. D1–D9 approved; the icon comes from Plan 0112. No `theme.css` change, no new token or pair. Files: §11.
+
+## 11. Implementation notes (variant B + D8, for component-engineer)
+
+| File                                          | Change                                                                                                                                                                                                                                                                         |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `apps/docs/components/example-frame.tsx`      | Drop `Card.Header`, own `h3`, `caption`; `headingId` required. Bar: `docs-code-meta` + the toggle. Panel: `CodeTools` (status, copy), then `CodeScroll`. `onFailed` no longer opens the panel (it is open)                                                                     |
+| `apps/docs/components/code-block.tsx`         | `CodeCopyButton` becomes the Tooltip-wrapped icon button (as `apps/docs/examples/tooltip/icon-toolbar.tsx`, but named by its content span); a `CodeTools` row; `CodeBlock` header holds meta only, omitted with no file name                                                   |
+| `apps/docs/app/(docs)/docs.css`               | Bar, toggle, tools row, copy label (shown from 40rem under `(hover: none) and (pointer: coarse)`; the button is hidden below 40rem) per §6; drop `.docs-code-actions`, `.docs-code-copy { margin-inline-start: auto }`, `.docs-example-header`; no-JS hides `.docs-code-tools` |
+| `apps/docs/components/example-frame.test.tsx` | `headingId` instead of `caption`; the Tab rows (closed skips Copy, open reaches it); file name in `.docs-code-bar`; status in `.docs-code-tools`; refused copy selects the code                                                                                                |
+| `apps/docs/components/code-block.test.tsx`    | Copy in `.docs-code-tools`; header without a button, absent without a file name; region name still the file name                                                                                                                                                               |
+| `apps/docs/messages/en.ts`                    | Only `docs.code.languages` goes (D7). No new string                                                                                                                                                                                                                            |
+
+**Separate plan item, [Plan 0112](plans/0112-copy-icon.md) (library, lands first):** the `copy` built-in per icon.md §6.1 in `packages/react/src/icon/built-in-icons.tsx` (`shapes`, no `mirrorInRtl`); `icon.test.tsx` name list and its "24 icons" title → 25; `icon.a11y.md` icon-only list; `apps/docs/examples/icon/built-in-set.tsx`; the Icon stories' built-in grid and icon-only row (icon.md §6.6). The docs button uses `<Icon name="copy" />` once it lands. Not affected: `docs-disclosure.tsx`, `lib/highlight.ts`, `theme.css`.
 
 ## Built (Plan 0064; decisions taken during implementation)
 

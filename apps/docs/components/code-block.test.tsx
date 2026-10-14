@@ -50,6 +50,9 @@ describe('CodeBlock', () => {
     await expect.element(politeRegion()).toHaveTextContent(text.copyFailed)
     await vi.waitFor(() => expect(window.getSelection()?.toString()).toBe(code))
     expect(document.activeElement).toBe(copyButton().element())
+    await new Promise((resolve) => setTimeout(resolve, 4500))
+    await expect.element(politeRegion()).toHaveTextContent(text.copyFailed)
+    expect(page.getByText(text.copyFailed, { exact: true }).elements().length).toBeGreaterThan(0)
   })
 
   test('a refused clipboard with line numbers still selects exactly the code', async () => {
@@ -154,7 +157,10 @@ describe('CodeBlock', () => {
       />,
     )
     const header = container.querySelector('.docs-code-header')
-    expect(header?.querySelector('.docs-code-file')?.textContent).toBe('app/layout.tsx')
+    expect(header?.querySelector('button')).toBeNull()
+    expect(header?.querySelector('.docs-code-meta .docs-code-file')?.textContent).toBe(
+      'app/layout.tsx',
+    )
     expect(header?.querySelector('.docs-code-note')?.textContent).toBe('a Server Component')
     expect(container.querySelector('pre')?.textContent).not.toContain('app/layout.tsx')
     await userEvent.click(copyButton())
@@ -173,6 +179,24 @@ describe('CodeBlock', () => {
     expect(container.querySelector('.docs-code-note')?.textContent).toBe(
       'one object for the script and the provider',
     )
+  })
+
+  test('Copy code is in the tools row, and the header is left out without a file name', async () => {
+    const { container } = await renderBlock(<CodeBlock code={code} />)
+    expect(container.querySelector('.docs-code-header')).toBeNull()
+    expect(container.querySelector('.docs-code-tools')?.contains(copyButton().element())).toBe(true)
+  })
+
+  test('Copy code has the name Copy code and its Tooltip adds no description', async () => {
+    await renderBlock(<CodeBlock code={code} />)
+    const button = copyButton().element() as HTMLElement
+    expect(button.getAttribute('aria-describedby')).toBeNull()
+    await userEvent.tab()
+    await expect.element(copyButton()).toHaveFocus()
+    await vi.waitFor(() =>
+      expect(document.querySelector('.kv-tooltip')?.matches(':popover-open')).toBe(true),
+    )
+    expect(document.querySelector('.kv-tooltip')?.textContent).toBe(text.copy)
   })
 
   test('empty code shows the empty message with no Copy button', async () => {

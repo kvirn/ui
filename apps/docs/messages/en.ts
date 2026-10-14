@@ -549,14 +549,6 @@ export const messages = {
       copied: 'Code copied',
       copyFailed: "Couldn't copy. The code is selected, so press Ctrl+C, or Cmd+C on a Mac.",
       empty: 'No code to show.',
-      languages: {
-        tsx: 'TSX',
-        ts: 'TypeScript',
-        json: 'JSON',
-        css: 'CSS',
-        bash: 'Bash',
-        html: 'HTML',
-      },
     },
     /** The sections built from a component's accessibility contract (docs-component-page.md §2, §4). */
     contract: {

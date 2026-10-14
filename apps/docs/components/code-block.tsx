@@ -1,5 +1,5 @@
 'use client'
-import { Button, Icon, useAnnouncer } from '@kvirn-ui/react'
+import { Button, Icon, Tooltip, useAnnouncer } from '@kvirn-ui/react'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { highlight, splitLines } from '../lib/highlight.ts'
@@ -17,16 +17,14 @@ export function useCodeLines(code: string, language: CodeLanguage = 'tsx') {
 
 /**
  * Writes `code` to the clipboard and tells screen reader users how it went. When the browser
- * refuses, `onFailed` runs (the example opens its code) and the code is selected, so Ctrl+C works.
+ * refuses, the code is selected, so Ctrl+C works.
  */
 export function useCodeCopy({
   code,
   codeRef,
-  onFailed,
 }: {
   code: string
   codeRef: RefObject<HTMLElement | null>
-  onFailed?: () => void
 }) {
   const { announce } = useAnnouncer()
   const [result, setResult] = useState<{ status: CopyStatus; attempt: number }>({
@@ -60,9 +58,6 @@ export function useCodeCopy({
       status = 'failed'
     }
     announce(status === 'copied' ? text.copied : text.copyFailed)
-    if (status === 'failed') {
-      onFailed?.()
-    }
     setResult((previous) => ({ status, attempt: previous.attempt + 1 }))
   }
 
@@ -71,14 +66,21 @@ export function useCodeCopy({
 
 export function CodeCopyButton({ onCopy }: { onCopy: () => Promise<void> }) {
   return (
-    <Button
-      className="docs-code-copy"
-      onClick={() => {
-        void onCopy()
-      }}
-    >
-      {text.copy}
-    </Button>
+    <Tooltip.Root>
+      <Tooltip.Trigger
+        as={Button}
+        className="kv-button--icon-only kv-button--compact docs-code-copy"
+        onClick={() => {
+          void onCopy()
+        }}
+      >
+        <Icon name="copy" size="20" />
+        <span className="docs-code-copy-label">{text.copy}</span>
+      </Tooltip.Trigger>
+      <Tooltip.Popup>
+        <Tooltip.Name>{text.copy}</Tooltip.Name>
+      </Tooltip.Popup>
+    </Tooltip.Root>
   )
 }
 
@@ -92,6 +94,16 @@ export function CodeStatus({ status }: { status: CopyStatus }) {
       <Icon name={status === 'copied' ? 'check' : 'warning'} />
       {status === 'copied' ? text.copied : text.copyFailed}
     </p>
+  )
+}
+
+/** Status, then Copy code, over the code's inline-end corner, outside the scroll area so it never scrolls. */
+export function CodeTools({ status, onCopy }: { status: CopyStatus; onCopy: () => Promise<void> }) {
+  return (
+    <div className="docs-code-tools">
+      <CodeStatus status={status} />
+      <CodeCopyButton onCopy={onCopy} />
+    </div>
   )
 }
 
@@ -176,7 +188,7 @@ export function CodeScroll({
 
 /**
  * A first line like `// app/providers.tsx` names the file the sample belongs in. It is shown in the
- * header beside Copy code, not in the code, so a copy holds only the code. A note after the name,
+ * header, not in the code, so a copy holds only the code. A note after the name,
  * `// app/layout.tsx (a Server Component)` or `// app/theme.ts: one object for both`, is shown
  * beside it. An explicit `fileName` wins.
  */
@@ -213,8 +225,8 @@ export function CodeFileName({
 }
 
 /**
- * Highlighted code with a copy button. The header holds the optional file name and language, and
- * Copy code. Long lines scroll from 40rem and wrap below (docs/design/docs-code.md §5, §6).
+ * Highlighted code with a copy button. The header holds the optional file name, and Copy code sits
+ * in a tools row above the code. Long lines scroll from 40rem and wrap below (docs/design/docs-code.md §5, §6).
  */
 export function CodeBlock({
   code: source,
@@ -237,20 +249,22 @@ export function CodeBlock({
   }
   return (
     <div className="docs-code">
-      <div className="docs-code-header">
-        {fileName !== undefined && <CodeFileName id={fileNameId} fileName={fileName} note={note} />}
-        {language !== undefined && (
-          <span className="docs-code-language">{text.languages[language]}</span>
-        )}
-        <CodeCopyButton onCopy={copy} />
-        <CodeStatus status={status} />
+      {fileName !== undefined && (
+        <div className="docs-code-header">
+          <span className="docs-code-meta">
+            <CodeFileName id={fileNameId} fileName={fileName} note={note} />
+          </span>
+        </div>
+      )}
+      <div className="docs-code-body">
+        <CodeTools status={status} onCopy={copy} />
+        <CodeScroll
+          lines={lines}
+          lineNumbers={lineNumbers}
+          labelledBy={fileName === undefined ? undefined : fileNameId}
+          codeRef={codeRef}
+        />
       </div>
-      <CodeScroll
-        lines={lines}
-        lineNumbers={lineNumbers}
-        labelledBy={fileName === undefined ? undefined : fileNameId}
-        codeRef={codeRef}
-      />
     </div>
   )
 }

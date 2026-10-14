@@ -196,14 +196,6 @@ body {
   margin-block: var(--kv-space-4) 0;
 }
 
-.docs-example-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--kv-space-2) var(--kv-space-4);
-}
-
 /* Code blocks and the example's code bar (docs/design/docs-code.md §6). */
 .docs-code {
   margin-block: var(--kv-space-4);
@@ -222,23 +214,49 @@ body {
   border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
 }
 
+@media (forced-colors: active) {
+  .docs-code,
+  .docs-code-header,
+  .docs-code-panel:not([hidden]) {
+    border-color: CanvasText;
+  }
+}
+
 .docs-code-header,
 .docs-code-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--kv-space-2) var(--kv-space-3);
-  padding: var(--kv-space-2) var(--kv-space-3);
+  padding-block: var(--kv-space-2);
+  padding-inline: var(--kv-space-4) var(--kv-space-2);
+  background-color: var(--kv-color-surface);
 }
 
 .docs-code-header {
   border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-start-start-radius: calc(var(--kv-radius-md) - 1px);
+  border-start-end-radius: calc(var(--kv-radius-md) - 1px);
+}
+
+/* Closed, the bar is the card's last part: it takes the card's end corners. */
+.docs-code-bar:has(+ .docs-code-panel[hidden]) {
+  border-end-start-radius: calc(var(--kv-radius-lg) - 1px);
+  border-end-end-radius: calc(var(--kv-radius-lg) - 1px);
+}
+
+.docs-code-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--kv-space-1) var(--kv-space-3);
+  min-inline-size: 0;
 }
 
 .docs-code-file {
   font-family: var(--kv-font-family-mono);
   font-size: var(--kv-font-code-size);
-  color: var(--kv-color-text);
+  color: var(--kv-color-text-muted);
   overflow-wrap: anywhere;
 }
 
@@ -247,21 +265,89 @@ body {
   font-size: var(--kv-font-body-small-size);
 }
 
-.docs-code-language {
-  font-size: var(--kv-font-body-small-size);
-  color: var(--kv-color-text-muted);
+.docs-code-bar .docs-disclosure {
+  flex-basis: 100%;
+  margin-inline-start: auto;
 }
 
+.docs-code-panel,
+.docs-code-body {
+  position: relative;
+}
+
+/* Over the code's inline-end corner, from 40rem. Below it Copy code is left out: the code wraps
+   and an overlay would cover it (docs/design/docs-code.md D8). */
+.docs-code-tools {
+  position: absolute;
+  inset-block-start: var(--kv-space-1);
+  /* The bar's own inline-end padding, so Copy code lines up under the Code toggle. */
+  inset-inline-end: var(--kv-space-2);
+  z-index: 1;
+  display: none;
+  align-items: flex-start;
+  gap: var(--kv-space-2);
+}
+
+@media (width >= 40rem) {
+  .docs-code-tools {
+    display: flex;
+  }
+
+  /* A line never starts or ends under the button. */
+  .docs-code pre {
+    padding-inline-end: calc(var(--kv-space-4) + 2.75rem);
+  }
+}
+
+/* Square: the icon-only floor is the button's height, and compact's own inline padding would
+   make it wider than tall. */
 .docs-code-copy {
-  margin-inline-start: auto;
+  flex: none;
+  justify-content: center;
+  padding-inline: 0;
+  inline-size: var(--kv-button-min-block-size, var(--kv-control-min-block-size));
+}
+
+.docs-code-copy-label {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Touch has no Tooltip, so from 40rem the name is shown beside the icon (docs-code.md D9). */
+@media (width >= 40rem) and (hover: none) and (pointer: coarse) {
+  .docs-code-copy {
+    inline-size: auto;
+    padding-inline: var(--kv-space-3);
+    gap: var(--kv-space-2);
+  }
+
+  .docs-code-copy-label {
+    position: static;
+    inline-size: auto;
+    block-size: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+
+  .docs-code pre {
+    padding-inline-end: calc(var(--kv-space-4) + 9rem);
+  }
 }
 
 .docs-code-status {
   display: flex;
   align-items: center;
-  flex-basis: 100%;
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  min-block-size: var(--kv-button-min-block-size, var(--kv-control-min-block-size));
   gap: var(--kv-space-2);
   margin: 0;
+  padding-inline: var(--kv-space-2);
+  background-color: var(--kv-color-surface);
   font-size: var(--kv-font-body-small-size);
   color: var(--kv-color-text);
 }
@@ -270,6 +356,18 @@ body {
   flex: none;
   inline-size: 1rem;
   block-size: 1rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where(:root:not([data-kv-motion='reduce'])) .docs-code-status {
+    animation: docs-code-status-in var(--kv-duration-fast) var(--kv-easing-standard);
+  }
+
+  @keyframes docs-code-status-in {
+    from {
+      opacity: 0;
+    }
+  }
 }
 
 .docs-code-scroll {
@@ -343,6 +441,10 @@ body {
 }
 
 @media (width >= 40rem) {
+  .docs-code-bar .docs-disclosure {
+    flex-basis: auto;
+  }
+
   .docs-code pre {
     white-space: pre;
     overflow-wrap: normal;
@@ -385,8 +487,7 @@ body {
 }
 
 /* Without JavaScript, the disclosures can't work: hide them, show the navigation. */
-:root:not([data-kv-color-scheme]) .docs-disclosure,
-:root:not([data-kv-color-scheme]) .docs-code-copy {
+:root:not([data-kv-color-scheme]) :is(.docs-disclosure, .docs-code-tools) {
   display: none;
 }
 

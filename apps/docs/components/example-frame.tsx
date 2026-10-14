@@ -1,14 +1,13 @@
 'use client'
 import { en } from '@kvirn-ui/i18n/en'
-import { Card, Heading, KvirnProvider, useLocale } from '@kvirn-ui/react'
+import { Card, KvirnProvider, useLocale } from '@kvirn-ui/react'
 import { Component, useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
 import {
-  CodeCopyButton,
   CodeFileName,
   CodeScroll,
-  CodeStatus,
+  CodeTools,
   splitFileName,
   useCodeCopy,
   useCodeLines,
@@ -51,16 +50,13 @@ function ExampleStage({ children }: { children: ReactNode }) {
  * (docs/design/docs-code.md).
  */
 export function ExampleFrame({
-  caption,
   headingId,
   code: source,
   language = 'tsx',
   children,
 }: {
-  /** Names the figure with its own `h3`. */
-  caption?: string
-  /** Names the figure with a heading the page already has, so the title isn't said twice. */
-  headingId?: string
+  /** The heading the page already has right above the example: it names the figure. */
+  headingId: string
   code: string
   language?: CodeLanguage
   children: ReactNode
@@ -70,17 +66,11 @@ export function ExampleFrame({
   const codeRef = useRef<HTMLElement>(null)
   const panelId = useId()
   const codeLabelId = useId()
-  // A first line `// button/default.tsx` is the file the code is in: the card's header shows it,
+  // A first line `// button/default.tsx` is the file the code is in: the code bar shows it,
   // and a copy holds only the code.
   const { fileName, note, code } = splitFileName(source, undefined)
   const lines = useCodeLines(code, language)
-  const { status, copy } = useCodeCopy({
-    code,
-    codeRef,
-    onFailed: () => setIsCodeOpen(true),
-  })
-  const ownTitleId = useId()
-  const titleId = headingId ?? ownTitleId
+  const { status, copy } = useCodeCopy({ code, codeRef })
 
   // React only knows `hidden` as a boolean, so the server renders plain `hidden` (found by
   // nobody, shown without JavaScript) and this upgrades it to `until-found`.
@@ -99,40 +89,31 @@ export function ExampleFrame({
   }, [])
 
   return (
-    <Card.Root as="figure" aria-labelledby={titleId} className="kv-card--dividers">
-      {(headingId === undefined || fileName !== undefined) && (
-        <Card.Header className="docs-example-header">
-          {headingId === undefined && (
-            <Heading as="h3" size="heading-5" id={titleId}>
-              {caption}
-            </Heading>
-          )}
-          {fileName !== undefined && <CodeFileName fileName={fileName} note={note} />}
-        </Card.Header>
-      )}
+    <Card.Root as="figure" aria-labelledby={headingId} className="kv-card--dividers">
       <KvirnProvider locale="en" messages={en}>
         <Card.Body className="kv-card-body--padding-lg">
           <ExampleStage>{children}</ExampleStage>
         </Card.Body>
       </KvirnProvider>
       <Card.Footer className="docs-code-bar">
+        <span className="docs-code-meta">
+          {fileName !== undefined && <CodeFileName fileName={fileName} note={note} />}
+        </span>
         <DocsDisclosure
-          className="docs-disclosure"
+          className="docs-disclosure kv-button--link"
           controls={panelId}
           isOpen={isCodeOpen}
           onToggle={() => setIsCodeOpen((isOpen) => !isOpen)}
         >
           {codeText.toggle({ count: lines.length })}
         </DocsDisclosure>
-        <span className="docs-code-language">{codeText.languages[language]}</span>
-        <CodeCopyButton onCopy={copy} />
-        <CodeStatus status={status} />
       </Card.Footer>
       <div id={panelId} ref={panelRef} className="docs-code docs-code-panel" hidden={!isCodeOpen}>
         <span id={codeLabelId} hidden>
           {codeText.label}
         </span>
-        <CodeScroll lines={lines} codeRef={codeRef} labelledBy={`${titleId} ${codeLabelId}`} />
+        <CodeTools status={status} onCopy={copy} />
+        <CodeScroll lines={lines} codeRef={codeRef} labelledBy={`${headingId} ${codeLabelId}`} />
       </div>
     </Card.Root>
   )
