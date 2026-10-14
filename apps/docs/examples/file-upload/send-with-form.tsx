@@ -47,11 +47,11 @@ export function SendWithForm() {
       <Button type="submit" className="kv-button--primary">
         {texts.send}
       </Button>
-      {sent === undefined ? null : (
-        <p>
-          {texts.sent}: {sent.length === 0 ? texts.noFiles : sent.join(', ')}
-        </p>
-      )}
+      <output>
+        {sent === undefined
+          ? null
+          : `${texts.sent}: ${sent.length === 0 ? texts.noFiles : sent.join(', ')}`}
+      </output>
     </form>
   )
 }

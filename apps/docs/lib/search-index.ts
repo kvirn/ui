@@ -61,6 +61,7 @@ import * as toast from '../content/toast.api.ts'
 import * as toggle from '../content/toggle.api.ts'
 import * as toolbar from '../content/toolbar.api.ts'
 import * as tooltip from '../content/tooltip.api.ts'
+import * as topBar from '../content/top-bar.api.ts'
 import * as visuallyHidden from '../content/visually-hidden.api.ts'
 
 // Explicit imports, not `import(`../content/${slug}.api.ts`)`: the index is built synchronously, and a
@@ -128,6 +129,7 @@ const apiModules: Readonly<Record<string, object>> = {
   toggle,
   toolbar,
   tooltip,
+  'top-bar': topBar,
   'visually-hidden': visuallyHidden,
 }
 

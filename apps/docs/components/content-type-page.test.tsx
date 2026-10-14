@@ -4,7 +4,7 @@ import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { describe, expect, test } from 'vite-plus/test'
 import { page } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
-import ContentTypesIndexPage from '../app/content-types/page.tsx'
+import ContentTypesIndexPage from '../app/(docs)/content-types/page.tsx'
 import { ContentTypePage } from './content-type-page.tsx'
 import { contentTypePages } from './site-sections.ts'
 
@@ -24,9 +24,11 @@ describe('Content types index', () => {
       .toBeInTheDocument()
   })
 
-  test('lists the four content types, each linking to its page', async () => {
-    await renderIndex()
-    expect(contentTypePages).toHaveLength(4)
+  test('lists every content type, each linking to its page', async () => {
+    const { container } = await renderIndex()
+    expect(container.querySelectorAll('a[href^="/content-types/"]')).toHaveLength(
+      contentTypePages.length,
+    )
     for (const contentType of contentTypePages) {
       await expect
         .element(page.getByRole('link', { name: contentType.label, exact: true }))

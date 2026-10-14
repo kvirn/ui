@@ -84,4 +84,12 @@ export const navigationPreviews: Record<string, ReactNode> = {
       <Bar x={28} y={68} width={50} />
     </Drawing>
   ),
+  'top-bar': (
+    <Drawing>
+      <Rect x={10} y={36} width={140} height={28} radius={4} tone="fill" />
+      <Bar x={20} y={48.5} width={52} />
+      <Bar x={98} y={48.5} width={16} tone="key" />
+      <Bar x={120} y={48.5} width={20} />
+    </Drawing>
+  ),
 }

@@ -4,11 +4,11 @@ export const useOneTimeCodeTexts = defineExampleTexts({
   en: {
     smsLabel: 'Code from the text message',
     smsHint:
-      'The code has 6 digits. You find it in the text message we just sent you. We check it as soon as you have entered all 6 digits.',
+      'We sent you a text message to confirm your mobile number. The code has 6 digits. We check it as soon as you have entered all 6 digits.',
     emailLabel: 'Code from the email',
     emailHint:
-      'The code has 8 letters and digits in 2 groups of 4. You find it in the email we just sent you.',
-    plainHint: 'The code has 6 digits. You find it in the text message we just sent you.',
+      'You are signing in without BankID, so we sent a code to your email. The code has 8 letters and digits in 2 groups of 4. It never contains 0, O, 1 or I.',
+    plainHint: 'We sent you a text message to confirm your mobile number. The code has 6 digits.',
     incomplete: 'Enter all 6 digits of the code',
     wrong:
       'The code doesn’t match the one we sent. Check the text message and enter the code again.',

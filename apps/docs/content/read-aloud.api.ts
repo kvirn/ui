@@ -28,7 +28,7 @@ export const useReadAloudRows = propRows<UseReadAloudOptions>({
     type: 'boolean',
     default: 'true',
     description:
-      'Highlights the sentence being read where the browser supports the CSS Custom Highlight API.',
+      'Registers the sentence being read as a highlight where the browser supports the CSS Custom Highlight API. Nothing is painted until you style ::highlight(kv-read-aloud).',
   },
   scroll: {
     type: 'boolean',

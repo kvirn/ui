@@ -1,15 +1,20 @@
 import type {
   MenuCheckboxItemProps,
+  MenuGroupLabelProps,
+  MenuGroupProps,
   MenuItemProps,
+  MenuPopupProps,
   MenuRadioGroupProps,
   MenuRadioItemProps,
   MenuRootProps,
   MenuTriggerProps,
+  UseMenuOptions,
+  UseMenuResult,
 } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
-import type { AttributeRow } from '../components/api-block.tsx'
+import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-export const menuRootRows = propRows<MenuRootProps>({
+const menuOptionRows = {
   open: {
     type: 'boolean',
     default: '–',
@@ -42,10 +47,23 @@ export const menuRootRows = propRows<MenuRootProps>({
     default: '8',
     description: 'The space kept to the edge of the viewport, in pixels.',
   },
+} as const
+
+export const menuRootRows = propRows<MenuRootProps>({
+  ...menuOptionRows,
   children: {
     type: 'ReactNode',
     default: '–',
     description: 'The Trigger and the Popup. Root renders no element.',
+  },
+})
+
+export const menuPopupRows = propRows<Pick<MenuPopupProps, 'as'>>({
+  as: {
+    type: "'div' | 'section'",
+    default: "'div'",
+    description:
+      'The role is menu either way. Another tag warns once in development and renders a div.',
   },
 })
 
@@ -60,7 +78,7 @@ export const menuTriggerRows = propRows<Pick<MenuTriggerProps, 'as'>>({
 
 const itemOptionRows = {
   onSelect: {
-    type: '(event: Event) => void',
+    type: '(event: MouseEvent<HTMLButtonElement>) => void',
     default: '–',
     description:
       'Runs when the item is chosen by Enter, Space or a press. It does not run on a disabled item. Call event.preventDefault() to keep the menu open and skip the toggle of a checkbox or radio item.',
@@ -120,7 +138,7 @@ export const menuCheckboxItemRows = propRows<
 })
 
 export const menuRadioGroupRows = propRows<
-  Pick<MenuRadioGroupProps, 'value' | 'defaultValue' | 'onValueChange'>
+  Pick<MenuRadioGroupProps, 'value' | 'defaultValue' | 'onValueChange' | 'as'>
 >({
   value: {
     type: 'string',
@@ -136,6 +154,29 @@ export const menuRadioGroupRows = propRows<
     type: '(value: string) => void',
     default: '–',
     description: 'Called with the value of the item that was chosen.',
+  },
+  as: {
+    type: "'div' | 'section'",
+    default: "'div'",
+    description:
+      'The role is group either way. Another tag warns once in development and renders a div.',
+  },
+})
+
+export const menuGroupRows = propRows<Pick<MenuGroupProps, 'as'>>({
+  as: {
+    type: "'div' | 'section'",
+    default: "'div'",
+    description:
+      'The role is group either way. Another tag warns once in development and renders a div.',
+  },
+})
+
+export const menuGroupLabelRows = propRows<Pick<MenuGroupLabelProps, 'as'>>({
+  as: {
+    type: "'div' | 'span' | 'p'",
+    default: "'div'",
+    description: 'Another tag warns once in development and renders a div.',
   },
 })
 
@@ -239,3 +280,37 @@ export const menuSeparatorAttributes: readonly AttributeRow[] = [
   { name: 'kv-menu-separator', values: 'always', meaning: 'The part class.' },
   { name: 'role', values: '"separator"', meaning: 'A divider between items.' },
 ]
+
+export const useMenuHook: ApiHook = {
+  name: 'useMenu',
+  intro:
+    'The hook gives props for your own elements: a trigger, a popup and the items in it. Put the popup right after the trigger in the DOM, and mark the item that has focus with isCurrent.',
+  options: propRows<UseMenuOptions>(menuOptionRows),
+  result: propRows<UseMenuResult>({
+    isOpen: { type: 'boolean', default: '–', description: 'Whether the menu is open.' },
+    placement: {
+      type: 'Placement',
+      default: '–',
+      description:
+        'The placement in use. It differs from the one asked for when the popup flipped.',
+    },
+    triggerProps: {
+      type: 'MenuTriggerPartProps',
+      default: '–',
+      description:
+        'Spread on a <button>: type, aria-haspopup, aria-expanded, aria-controls, data-open, ref and the pointer, click and key handlers.',
+    },
+    popupProps: {
+      type: 'MenuPopupPartProps',
+      default: '–',
+      description:
+        'Spread on a <div>: popover, role menu, aria-labelledby the trigger, data-open, data-placement, ref and the handlers.',
+    },
+    getItemProps: {
+      type: "(kind: 'item' | 'checkbox' | 'radio', options?: MenuItemOptions) => MenuItemPartProps",
+      default: '–',
+      description:
+        'The props of one item: its role, tabindex, aria-disabled, aria-checked and handlers. The options are disabled, closeOnSelect, onSelect, textValue, checked and isCurrent, true on the item that has focus.',
+    },
+  }),
+}

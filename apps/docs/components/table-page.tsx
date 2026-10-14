@@ -238,8 +238,9 @@ export function TablePage({
   return (
     <ComponentPage
       title="Table"
-      lead="It names its rows and columns for assistive technology, and can sort, select, expand and render long lists without losing the table’s meaning."
+      lead="A screen reader (software that reads the screen aloud) reads each cell together with its row and column headers. A table can also sort, select and expand rows, and show long lists, and it is still a table."
       status="alpha-candidate"
+      pattern="APG Table"
       whenToUse={
         <ul>
           <li>
@@ -303,6 +304,13 @@ export function TablePage({
               { part: 'Table.SelectCheckbox, Table.SelectAllCheckbox', prop: 'row' },
               { ...optionsOf, prop: 'rowHeader' },
             ]}
+            note={
+              <Note kind="tip">
+                The header checkbox selects every row of the table, including rows on other pages.
+                With pagination, say so in the table’s description, or change the checkbox’s name
+                with <code>messages.selectAllRows</code>.
+              </Note>
+            }
           >
             <SelectableCases />
           </UseCase>
@@ -315,6 +323,13 @@ export function TablePage({
               { part: 'Table.ExpandButton', prop: 'row' },
               { part: 'Table.DetailRow', prop: 'row' },
             ]}
+            note={
+              <Note kind="reminder">
+                Put the button’s text in the expand column’s header, hidden from sight, as in the
+                code. Without it that header cell is empty, and a screen reader user can’t tell what
+                the column is (1.3.1 Info and Relationships).
+              </Note>
+            }
           >
             <ExpandableCases />
           </UseCase>
@@ -344,7 +359,39 @@ export function TablePage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Give every table a caption that says what the data is. A screen reader lists the
+                tables on a page by name, and without a name they are hard to tell apart (1.3.1 Info
+                and Relationships). A development warning says so.
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                While <code>isLoading</code> is on, the table head shows a bar that keeps moving. An
+                indicator that can keep moving for more than 5 seconds alongside other content needs
+                a visible control on the page that stops or hides it (2.2.2 Pause, Stop, Hide). An
+                indicator that is the only content during a wait where nothing else can be done is
+                exempt. The reduced motion setting alone is not that control. See{' '}
+                <Link href="/foundation/theming#moving-indicators">
+                  Moving indicators and WCAG 2.2.2
+                </Link>
+                .
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If an issue here affects your service, list it in your accessibility statement with
+                its workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

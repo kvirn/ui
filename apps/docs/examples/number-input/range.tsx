@@ -6,7 +6,7 @@ import { useNumberInputTexts } from './texts.ts'
 export function Range() {
   const { texts } = useNumberInputTexts()
   const inputRef = useRef<HTMLInputElement>(null)
-  const [isWithinRange, setIsWithinRange] = useState(true)
+  const [isValid, setIsValid] = useState(false)
   const [hasError, setHasError] = useState(false)
   const [attempts, setAttempts] = useState(0)
 
@@ -22,23 +22,27 @@ export function Range() {
       noValidate
       onSubmit={(event) => {
         event.preventDefault()
-        setHasError(!isWithinRange)
+        setHasError(!isValid)
         setAttempts((count) => count + 1)
       }}
     >
       <Field.Root required invalid={hasError}>
-        <Field.Label>{texts.children}</Field.Label>
+        <Field.Label>{texts.people}</Field.Label>
         <NumberInput
           ref={inputRef}
-          name="children"
-          min={0}
-          max={12}
+          name="people"
+          min={1}
+          max={8}
           className="kv-input--width-2"
-          onValueChange={(_value, details) => {
-            setIsWithinRange(details.isWithinRange !== false)
+          onValueChange={(value, details) => {
+            const isNowValid = value !== '' && details.isWithinRange !== false
+            setIsValid(isNowValid)
+            if (isNowValid) {
+              setHasError(false)
+            }
           }}
         />
-        <Field.HelpText>{texts.childrenHint}</Field.HelpText>
+        <Field.HelpText>{texts.peopleHint}</Field.HelpText>
         <Field.ErrorMessage>{texts.errorRange}</Field.ErrorMessage>
       </Field.Root>
       <Button type="submit" className="kv-button--primary">

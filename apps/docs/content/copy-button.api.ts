@@ -12,6 +12,7 @@ export type CopyButtonDocumentedProps = Pick<
   | 'onClick'
   | 'children'
   | 'messages'
+  | 'status'
   | 'disabled'
   | 'focusableWhenDisabled'
 >
@@ -36,13 +37,12 @@ export const copyButtonRows = propRows<CopyButtonDocumentedProps>({
   onCopyError: {
     type: '(text: string) => void',
     default: '–',
-    description: 'Called when the text could not be written, after the failure is announced.',
+    description: 'Called with the text when it could not be written to the clipboard.',
   },
   onClick: {
     type: 'MouseEventHandler<HTMLButtonElement>',
     default: '–',
-    description:
-      'Called first on activation, before the text is written. Not called while disabled.',
+    description: 'Called when the button is activated, and never while it is disabled.',
   },
   children: {
     type: 'ReactNode',
@@ -54,6 +54,12 @@ export const copyButtonRows = propRows<CopyButtonDocumentedProps>({
     type: 'Partial<{ label, copied, failed }>',
     default: '–',
     description: 'Per-instance overrides of the three messages. See Strings.',
+  },
+  status: {
+    type: 'boolean',
+    default: 'true',
+    description:
+      'false removes the result text after the button. The result is still announced and data-status is still set, so you can draw your own cue in words.',
   },
   disabled: {
     type: 'boolean',
@@ -77,7 +83,13 @@ export const copyButtonAttributes: readonly AttributeRow[] = [
     name: 'data-status',
     values: 'idle, copied or failed',
     meaning:
-      'The result of the last copy, back to idle after 5 seconds. A hook for your own cue: it is no name and no announcement.',
+      'The result of the last copy. copied returns to idle after 5 seconds. failed stays until the next press. A hook for your own cue: it is no name and no announcement.',
+  },
+  {
+    name: 'kv-copy-status',
+    values: 'while copied or failed',
+    meaning:
+      'The result text after the button, with a decorative icon. It is not there while idle or disabled, or with status={false}. It is not a live region: the announcement carries the news.',
   },
   {
     name: 'data-disabled',
@@ -111,12 +123,12 @@ export const useCopyButtonHook: ApiHook = {
     onCopyError: {
       type: '(text: string) => void',
       default: '–',
-      description: 'Called when the text could not be written.',
+      description: 'Called with the text when it could not be written.',
     },
     onClick: {
       type: 'MouseEventHandler<HTMLButtonElement>',
       default: '–',
-      description: 'Called first on activation. Not called while disabled.',
+      description: 'Called when the button is activated, and never while it is disabled.',
     },
     messages: {
       type: 'Partial<{ label, copied, failed }>',
@@ -144,7 +156,8 @@ export const useCopyButtonHook: ApiHook = {
     status: {
       type: "'idle' | 'copied' | 'failed'",
       default: '–',
-      description: 'The result of the last copy, idle again after 5 seconds.',
+      description:
+        'The result of the last copy. copied is idle again after 5 seconds. failed stays until the next press.',
     },
     isDisabled: { type: 'boolean', default: '–', description: 'Whether the button is disabled.' },
     isFocusVisible: {

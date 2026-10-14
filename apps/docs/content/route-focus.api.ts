@@ -15,13 +15,14 @@ export const useRouteFocusRows = propRows<UseRouteFocusOptions>({
   selector: {
     type: 'string',
     default: "'h1'",
-    description: 'The element to focus. It gets tabindex="-1" for as long as it has focus.',
+    description:
+      'The element to focus. If it has no tabindex of its own, it gets tabindex="-1" for as long as it has focus.',
   },
   announce: {
     type: 'boolean',
     default: 'false',
     description:
-      'Also says “Navigated to {title}” in the shared live region. Leave it off where the router already announces routes.',
+      'Also says “Navigated to {title}” in the shared live region, with document.title as the title, or the heading’s text when the title is empty. Leave it off where the router already announces routes.',
   },
   messages: {
     type: "Partial<KvirnMessages['routeFocus']>",

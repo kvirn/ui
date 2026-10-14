@@ -10,7 +10,7 @@ export function IconOnly() {
   return (
     <div>
       <label htmlFor={inputId}>{texts.passwordLabel}</label>
-      <input id={inputId} type={isShown ? 'text' : 'password'} />
+      <input id={inputId} type={isShown ? 'text' : 'password'} autoComplete="current-password" />
       <Toggle
         className="kv-button--icon-only"
         aria-label={texts.showPassword}

@@ -26,9 +26,9 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> with the role <code>heading</code>,
-        depending on <code>as</code>. It takes every attribute of a heading and passes{' '}
-        <code>ref</code> to it. The default theme is described on{' '}
-        <Link href="/foundation/theming">Theming</Link>.
+        depending on <code>as</code>. Any other value warns in development and renders an{' '}
+        <code>&lt;h2&gt;</code>. It takes every attribute of a heading and passes <code>ref</code>{' '}
+        to it. The default theme is described on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: headingRows,
@@ -46,8 +46,8 @@ export function HeadingPage({
   return (
     <ComponentPage
       title="Heading"
-      lead="The level is the page’s outline, and the size is how it looks, so you never pick a level because of its size."
-      status="alpha"
+      lead="The level gives the page its outline and the size only changes how it looks, so you never pick a level because of how big it should be."
+      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
@@ -63,8 +63,8 @@ export function HeadingPage({
             to it.
           </li>
           <li>
-            Not for making text bigger or bolder: use a type role in your CSS. Not for the name of a
-            form field: use a <Link href="/components/field">Field</Link> label.
+            Not for making text bigger or bolder: do that in your CSS. Not for the name of a form
+            field: use a <Link href="/components/field">Field</Link> label.
           </li>
         </ul>
       }
@@ -78,7 +78,12 @@ export function HeadingPage({
           <UseCase
             id="size-apart-from-level"
             title="Another look without another level"
-            why="A heading under an h3 is an h4, even when the design wants it larger. Keep the level for the outline and set the size for the look."
+            why={
+              <>
+                A heading under an <code>h3</code> is an <code>h4</code>, even when the design wants
+                it larger. Keep the level for the outline and set <code>size</code> for the look.
+              </>
+            }
             code={sources['size']}
             propsUsed={[
               { part: 'Heading', prop: 'as' },
@@ -86,8 +91,9 @@ export function HeadingPage({
             ]}
             note={
               <Note kind="reminder">
-                Don’t skip a level to get a smaller or larger heading: screen reader users move by
-                level. See <Link href="#what-you-need-to-do">What you need to do</Link>.
+                Choose each level for the outline, never for its size, and don’t skip a level.
+                People who move through a page by heading rely on the levels (1.3.1 Info and
+                Relationships). See <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >
@@ -99,8 +105,8 @@ export function HeadingPage({
             why={
               <>
                 Give the heading an <code>id</code> and point to it with{' '}
-                <code>aria-labelledby</code> on the region, so the region’s name is the heading’s
-                text and is said once.
+                <code>aria-labelledby</code> on the region. The region’s name is then the heading’s
+                text, so the two never differ.
               </>
             }
             code={sources['names-region']}
@@ -111,7 +117,7 @@ export function HeadingPage({
           <UseCase
             id="in-running-text"
             title="Headings in running text"
-            why="Inside prose the headings get their margins from the prose, and each level keeps its own look, so an h4 and an h5 differ by weight and tracking rather than size."
+            why="Inside a block of running text (Prose) the headings get their margins from the Prose. In the default theme the levels h4 to h6 keep one size and differ by weight and letter spacing, not by getting smaller."
             code={sources['in-prose']}
             propsUsed={[{ part: 'Heading', prop: 'as' }]}
           >
@@ -120,7 +126,13 @@ export function HeadingPage({
           <UseCase
             id="own-element"
             title="Your own element"
-            why="When you already have the element, such as a heading from your CMS, take its classes from useHeading and keep the level you pass in step with the element."
+            why={
+              <>
+                When the element is not a Heading, such as one drawn by your own component, take its
+                classes from <code>useHeading</code>. Keep the <code>level</code> you pass in step
+                with the element.
+              </>
+            }
             code={sources['hook']}
             propsUsed={[
               {

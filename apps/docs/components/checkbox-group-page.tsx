@@ -99,8 +99,9 @@ export function CheckboxGroupPage({
   return (
     <ComponentPage
       title="CheckboxGroup"
-      lead="It names the group with a legend and keeps the choice in your form state."
+      lead="It names the group with a legend. It keeps no state of its own: the checked values are yours."
       status="alpha-candidate"
+      pattern="APG Checkbox (in a labelled group)"
       whenToUse={
         <ul>
           <li>
@@ -111,8 +112,9 @@ export function CheckboxGroupPage({
             Ask the question in the legend, and say how many answers are allowed above the options.
           </li>
           <li>
-            Keep the list short. About 15 options is the limit before a search or another pattern is
-            easier to use. Don’t use <code>&lt;select multiple&gt;</code>.
+            Keep the list short. Past about 15 options, a search or another pattern is easier to
+            use, such as a <Link href="/components/combobox">Combobox</Link> that takes several
+            choices. Don’t use <code>&lt;select multiple&gt;</code>.
           </li>
           <li>
             Not for one yes or no answer, such as “I confirm the details are correct”: use a single{' '}
@@ -132,19 +134,6 @@ export function CheckboxGroupPage({
       useCases={
         <>
           <UseCase
-            id="controlled"
-            title="Keep the choice in your form state"
-            why="Your form library or reducer owns the values. Give the group the checked values and store the next ones it reports. The group never stores them, so if you don’t update value, the boxes stay as they were."
-            code={sources['controlled']}
-            propsUsed={[
-              { part: 'CheckboxGroup.Root', prop: 'value' },
-              { part: 'CheckboxGroup.Root', prop: 'onValueChange' },
-              { part: 'CheckboxGroup.Root', prop: 'name' },
-            ]}
-          >
-            <ControlledCheckboxGroup />
-          </UseCase>
-          <UseCase
             id="plain-form"
             title="A plain form with no state"
             why="Without value the checkboxes are native and uncontrolled. Set which boxes start checked with defaultValue, and give the group a name. A form submit then sends every checked box under that name."
@@ -163,6 +152,48 @@ export function CheckboxGroupPage({
             <PlainFormCheckboxGroup />
           </UseCase>
           <UseCase
+            id="controlled"
+            title="Keep the choice in your form state"
+            why="Your form library or reducer owns the values. Give the group the checked values and store the next ones it reports. The group never stores them, so if you don’t update value, the boxes stay as they were."
+            code={sources['controlled']}
+            propsUsed={[
+              { part: 'CheckboxGroup.Root', prop: 'value' },
+              { part: 'CheckboxGroup.Root', prop: 'onValueChange' },
+              { part: 'CheckboxGroup.Root', prop: 'name' },
+            ]}
+          >
+            <ControlledCheckboxGroup />
+          </UseCase>
+          <UseCase
+            id="error-on-submit"
+            title="Say what is wrong when nothing is chosen"
+            why={
+              <>
+                Check the answer when the user sends the form. Set <code>invalid</code> and render a{' '}
+                <code>CheckboxGroup.ErrorMessage</code> that says what to do. The error is read as
+                part of the group’s description. <code>required</code> removes “(optional)” from the
+                legend, but a group can’t be announced as required, so the text above the options
+                must say it, as this example does.
+              </>
+            }
+            code={sources['error-on-submit']}
+            propsUsed={[
+              { part: 'CheckboxGroup.Root', prop: 'invalid' },
+              { part: 'CheckboxGroup.Root', prop: 'required' },
+              { part: 'CheckboxGroup.Root', prop: 'value' },
+            ]}
+            note={
+              <Note kind="reminder">
+                The group never moves focus. After a failed submit, move it to the first checkbox or
+                to an <Link href="/components/error-summary">ErrorSummary</Link>. The error is read
+                only when focus enters the group, so without the move a screen reader user isn’t
+                told what went wrong (3.3.1 Error Identification).
+              </Note>
+            }
+          >
+            <ErrorOnSubmitCheckboxGroup />
+          </UseCase>
+          <UseCase
             id="option-help-text"
             title="Explain one option"
             why={
@@ -179,34 +210,6 @@ export function CheckboxGroupPage({
             <OptionHelpTextCheckboxGroup />
           </UseCase>
           <UseCase
-            id="error-on-submit"
-            title="Say what is wrong when nothing is chosen"
-            why={
-              <>
-                Check the answer when the user sends the form. Set <code>invalid</code> and render a{' '}
-                <code>CheckboxGroup.ErrorMessage</code> that says what to do. The error is read as
-                part of the group’s description. <code>required</code> removes “(optional)” from the
-                legend, but a group can’t be announced as required, so the legend or the description
-                must say it.
-              </>
-            }
-            code={sources['error-on-submit']}
-            propsUsed={[
-              { part: 'CheckboxGroup.Root', prop: 'invalid' },
-              { part: 'CheckboxGroup.Root', prop: 'required' },
-              { part: 'CheckboxGroup.Root', prop: 'value' },
-            ]}
-            note={
-              <Note kind="reminder">
-                The group never moves focus. After a failed submit, move it to the first checkbox or
-                to an error summary, as in{' '}
-                <Link href="#what-you-need-to-do">What you need to do</Link>.
-              </Note>
-            }
-          >
-            <ErrorOnSubmitCheckboxGroup />
-          </UseCase>
-          <UseCase
             id="disabled"
             title="A group that can’t be changed now"
             why="Disabling the group disables every checkbox natively, so Tab skips them. Say why in a help text, because a disabled control can’t explain itself."
@@ -217,7 +220,26 @@ export function CheckboxGroupPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Start the group with a <code>CheckboxGroup.Legend</code> that asks the question.
+                Without it, a screen reader user hears the options with no question to answer (1.3.1
+                Info and Relationships; 3.3.2 Labels or Instructions).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="reminder">
+                Until a required group can be announced as required, write it in the legend or in
+                the text above the options (3.3.2 Labels or Instructions).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

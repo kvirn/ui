@@ -1,10 +1,11 @@
 'use client'
-import { Calendar } from '@kvirn-ui/react'
+import { Calendar, useFormat } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { useCalendarTexts } from './texts.ts'
 
 export function BookableWindow() {
   const { texts } = useCalendarTexts()
+  const format = useFormat()
   const [date, setDate] = useState('')
   return (
     <div>
@@ -22,7 +23,7 @@ export function BookableWindow() {
         <Calendar.Grid />
       </Calendar.Root>
       <p>
-        {texts.chosen} {date === '' ? texts.none : date}
+        {texts.chosen} {date === '' ? texts.none : format.date(date, { dateStyle: 'long' })}
       </p>
     </div>
   )

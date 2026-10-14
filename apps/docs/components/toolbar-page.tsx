@@ -107,14 +107,20 @@ export function ToolbarPage({
   return (
     <ComponentPage
       title="Toolbar"
+      lead="A control that isn’t available now stays in the arrow-key order, and a screen reader says it is unavailable."
       status="alpha-candidate"
+      pattern="APG Toolbar"
       whenToUse={
         <ul>
           <li>
-            Use a toolbar for three or more related commands that act on one thing, such as the
-            formatting buttons above a text editor.
+            Use a toolbar for three or more related controls, such as the formatting buttons above a
+            text editor. Someone using the keyboard presses Tab once to get in, then the arrow keys
+            to move between the controls.
           </li>
-          <li>Name the toolbar, and name each group, so a screen reader says where focus is.</li>
+          <li>
+            Name the toolbar and each group, so a screen reader (software that reads the screen
+            aloud) says where focus is.
+          </li>
           <li>
             Not for two controls or fewer: separate <Link href="/components/button">Buttons</Link>{' '}
             or a <Link href="/components/button-group">ButtonGroup</Link> are easier to find.
@@ -137,8 +143,8 @@ export function ToolbarPage({
             title="Toggles that change what the user sees"
             why={
               <>
-                A style such as bold is on or off. Use a <code>Toolbar.Toggle</code>, so{' '}
-                <code>aria-pressed</code> says which are on and the name never changes. Point the
+                A style such as bold is on or off. Use a <code>Toolbar.Toggle</code>: the toolbar
+                says which are on (<code>aria-pressed</code>) and the name never changes. Point the
                 toolbar at the element it changes with <code>aria-controls</code>.
               </>
             }
@@ -153,7 +159,7 @@ export function ToolbarPage({
           <UseCase
             id="unavailable-command"
             title="A command that isn’t available now"
-            why="Redo has nothing to redo yet. The button stays in the arrow-key order and a screen reader says it is unavailable, so users can find it. Pressing it does nothing."
+            why="Redo has nothing to redo yet. The button stays in the arrow-key order and a screen reader says it is unavailable, so users can find it. Pressing it does nothing. Say why in text next to the toolbar."
             code={sources['unavailable']}
             propsUsed={[{ part: 'Toolbar.Button', prop: 'disabled' }]}
             note={
@@ -171,9 +177,9 @@ export function ToolbarPage({
             why={
               <>
                 A control that isn’t a button joins the toolbar through <code>Toolbar.Item</code>{' '}
-                and <code>as</code>: a link, a <code>Popover.Trigger</code> or a{' '}
-                <code>Listbox.Trigger</code>. A plain element placed in the toolbar is a Tab stop of
-                its own and the arrows skip it.
+                and <code>as</code>: a link, a <Link href="/components/popover">Popover</Link>{' '}
+                trigger or a <Link href="/components/listbox">Listbox</Link> trigger. A plain
+                control placed in the toolbar is a Tab stop of its own and the arrows skip it.
               </>
             }
             code={sources['other-controls']}
@@ -192,7 +198,7 @@ export function ToolbarPage({
           <UseCase
             id="vertical"
             title="A column of commands"
-            why="A toolbar beside or below something, such as the actions for a row in a list. Down and Up move between the controls, and aria-orientation tells a screen reader."
+            why="A toolbar beside or below something, such as the actions for a row in a list. Down and Up move between the controls, and the toolbar says it is vertical, so a screen reader can tell."
             code={sources['vertical']}
             propsUsed={[{ part: 'Toolbar.Root', prop: 'orientation' }]}
             note={
@@ -206,8 +212,8 @@ export function ToolbarPage({
           </UseCase>
           <UseCase
             id="no-loop"
-            title="Arrows that stop at the ends"
-            why="The arrows wrap from the last control to the first by default, as in the APG example. Set loop to false when the order has a start and an end that users should feel."
+            title="Focus stops at the first and last control"
+            why="The arrows wrap from the last control to the first by default, as in the APG example. Set loop to false when the controls run from one end to the other, as in a map or document viewer, so focus stops at the ends."
             code={sources['no-loop']}
             propsUsed={[{ part: 'Toolbar.Root', prop: 'loop' }]}
           >
@@ -215,7 +221,20 @@ export function ToolbarPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Name the toolbar and every group, and name every control that has only an icon.
+                Without a name a screen reader says only “toolbar”, “group” or “button”, and the
+                user can’t tell what it is for (4.1.2 Name, Role, Value).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

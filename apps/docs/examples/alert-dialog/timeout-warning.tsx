@@ -1,33 +1,70 @@
 'use client'
-import { AlertDialog } from '@kvirn-ui/react'
-import { useRef, useState } from 'react'
+import { AlertDialog, useFormat } from '@kvirn-ui/react'
+import { useEffect, useRef, useState } from 'react'
 import { useAlertDialogTexts } from './texts.ts'
+
+const secondsToExpiry = 120
 
 export function TimeoutWarning() {
   const { texts } = useAlertDialogTexts()
+  const format = useFormat()
   const [open, setOpen] = useState(false)
-  const [isSignedOut, setIsSignedOut] = useState(false)
+  const [expiresAt, setExpiresAt] = useState(0)
+  const [minutesLeft, setMinutesLeft] = useState(secondsToExpiry / 60)
+  const [outcome, setOutcome] = useState<string | undefined>()
   const stayReference = useRef<HTMLButtonElement>(null)
   const returnReference = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!open) {
+      return undefined
+    }
+    const timer = setInterval(() => {
+      const secondsLeft = Math.ceil((expiresAt - Date.now()) / 1000)
+      if (secondsLeft <= 0) {
+        setOpen(false)
+        setOutcome(texts.signedOut)
+      } else {
+        setMinutesLeft(Math.ceil(secondsLeft / 60))
+      }
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [open, expiresAt, texts.signedOut])
+
   return (
     <>
       <button
         ref={returnReference}
         type="button"
         className="kv-button"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setExpiresAt(Date.now() + secondsToExpiry * 1000)
+          setMinutesLeft(secondsToExpiry / 60)
+          setOutcome(undefined)
+          setOpen(true)
+        }}
       >
         {texts.showTimeout}
       </button>
       <AlertDialog.Root
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={(nextOpen) => {
+          setOpen(nextOpen)
+          if (!nextOpen) {
+            setOutcome(texts.stayed)
+          }
+        }}
         initialFocusRef={stayReference}
         finalFocusRef={returnReference}
       >
         <AlertDialog.Popup>
           <AlertDialog.Title>{texts.timeoutTitle}</AlertDialog.Title>
-          <AlertDialog.Description>{texts.timeoutDescription}</AlertDialog.Description>
+          <AlertDialog.Description>
+            {texts.timeoutDescription(format.date(expiresAt, { timeStyle: 'short' }))}
+          </AlertDialog.Description>
+          <AlertDialog.Body>
+            <output>{texts.timeoutRemaining(minutesLeft)}</output>
+          </AlertDialog.Body>
           <AlertDialog.Actions>
             <AlertDialog.Close ref={stayReference} className="kv-button kv-button--primary">
               {texts.timeoutStay}
@@ -36,8 +73,8 @@ export function TimeoutWarning() {
               type="button"
               className="kv-button"
               onClick={() => {
-                setIsSignedOut(true)
                 setOpen(false)
+                setOutcome(texts.signedOut)
               }}
             >
               {texts.timeoutSignOut}
@@ -45,7 +82,7 @@ export function TimeoutWarning() {
           </AlertDialog.Actions>
         </AlertDialog.Popup>
       </AlertDialog.Root>
-      <output>{isSignedOut ? texts.signedOut : null}</output>
+      <output>{outcome}</output>
     </>
   )
 }

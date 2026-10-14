@@ -4,7 +4,7 @@ export const useTextareaTexts = defineExampleTexts({
   en: {
     label: 'Describe your situation',
     description: 'Tell us what has happened and what you need help with.',
-    errorEmpty: 'Describe your situation',
+    errorEmpty: 'Describe your situation, so that we can help you',
     errorTooLong: (limit: number) =>
       `The description can be at most ${limit} characters. Remove some text.`,
     send: 'Send',

@@ -47,25 +47,28 @@ export function FocusPage({
   return (
     <ComponentPage
       title="Focus"
-      lead="They add no role and no ARIA: you choose the element and its name."
-      status="in-progress"
+      lead="Neither adds a role or ARIA: you choose the element and give it a name."
+      status="alpha-candidate"
+      pattern="APG Dialog (Modal), focus rules only"
       whenToUse={
         <ul>
           <li>
-            Use it for a drawer, a panel or a wizard step that is not a dialog, and for a layout
-            that changes under a router.
+            Use it for a panel, a drawer or a step in a form that is not a dialog. Focus (the part
+            of the page the keyboard is acting on) moves in when it opens and goes back to where it
+            was when it closes.
           </li>
           <li>
             Prefer the native elements. A <code>&lt;dialog&gt;</code> opened with{' '}
-            <code>showModal()</code> holds focus, makes the page inert and returns focus with no
-            code. For a dialog with KvirnUI&rsquo;s parts, use{' '}
+            <code>showModal()</code> holds focus, makes the rest of the page inert (unreachable) and
+            returns focus with no code. For a dialog built from KvirnUI&rsquo;s parts, use{' '}
             <Link href="/components/dialog">Dialog</Link>.
           </li>
           <li>
-            Hold focus (<code>contain</code>) only when you must, and always give a way out.
+            Hold focus inside the scope (<code>contain</code>) only when you must, and always give a
+            way out.
           </li>
           <li>
-            To move focus to the page title after a client-side navigation, use{' '}
+            Not for moving focus to the title of a new page after a client-side navigation: use{' '}
             <Link href="/components/route-focus">Route focus</Link>.
           </li>
         </ul>
@@ -79,17 +82,25 @@ export function FocusPage({
         <>
           <UseCase
             id="return-focus"
-            title="A drawer that gives focus back"
-            why="When the drawer opens, focus moves to its first control. When it closes, focus returns to the button that opened it, so a keyboard user carries on where they were. Tab can still leave the drawer, as it can leave the page."
+            title="A filter panel that gives focus back"
+            why="When someone using a keyboard opens the panel, focus moves to its first field. When they close it, focus returns to the button that opened it, so they carry on where they were. Tab can still leave the panel, as it can leave the page."
             code={sources['restore-drawer']}
             propsUsed={[{ part: useFocusOptions, label: 'useFocus (options)', prop: 'active' }]}
+            note={
+              <Note kind="reminder">
+                Neither FocusScope nor useFocus adds a name to your element, so give it one, as the
+                example does with <code>aria-label</code>. A <code>nav</code> scope is a landmark
+                and needs a name. See <Link href="#what-it-does-for-you">What it does for you</Link>
+                .
+              </Note>
+            }
           >
             <RestoreDrawer />
           </UseCase>
           <UseCase
             id="hold-focus"
-            title="A drawer that holds focus"
-            why="With contain set to loop, Tab on the last control goes to the first, and Shift+Tab on the first goes to the last. Escape calls onEscape, where you close the drawer. A scope that holds focus needs a way out."
+            title="A panel that keeps Tab inside until it is closed"
+            why="Use it when the panel covers the page and the rest of the page is no use while it is open. With contain set to loop, Tab on the last control goes to the first, and Shift+Tab on the first goes to the last. Escape calls onEscape, where you close the panel."
             code={sources['loop-drawer']}
             propsUsed={[
               { part: 'FocusScope', prop: 'contain' },
@@ -98,9 +109,9 @@ export function FocusPage({
             ]}
             note={
               <Note kind="reminder">
-                Without <code>onEscape</code> a keyboard user has no way out (2.1.2), and a
-                development warning says so. See{' '}
-                <Link href="#what-you-need-to-do">what you need to do</Link>.
+                Without <code>onEscape</code> a keyboard user has no way out (2.1.2 No Keyboard
+                Trap), and a development warning says so. See{' '}
+                <Link href="#focus">Focus management</Link>.
               </Note>
             }
           >
@@ -108,8 +119,8 @@ export function FocusPage({
           </UseCase>
           <UseCase
             id="wizard-step"
-            title="A step that moves focus to its heading"
-            why="When the step changes, focus moves to the step’s heading and Tab continues after it. It works with no scope at all, and never on the first render."
+            title="A form step that moves focus to its heading"
+            why="When someone goes to the next or the previous step, focus moves to that step’s heading and Tab continues after it. It needs no scope, and it never moves focus on the first render."
             code={sources['wizard-step']}
             propsUsed={[{ part: useFocusOptions, label: 'useFocus (options)', prop: 'moveOn' }]}
           >
@@ -117,13 +128,36 @@ export function FocusPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            focus: (
+              <Note kind="tip">
+                With <code>contain=&quot;inert&quot;</code> the rest of the page is made inert at
+                the moment the scope opens. Something added to the page while the scope is open is
+                not made inert.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
           importLine="import { FocusScope, useFocus } from '@kvirn-ui/react'"
           parts={parts}
-          hook={{ name: 'useFocus', options: useFocusRows, result: useFocusResultRows }}
+          hook={{
+            name: 'useFocus',
+            intro: (
+              <>
+                Spread <code>scopeProps</code> on your own element. <code>FocusScope</code> does
+                that for you.
+              </>
+            ),
+            options: useFocusRows,
+            result: useFocusResultRows,
+          }}
         />
       }
     />

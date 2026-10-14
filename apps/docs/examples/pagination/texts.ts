@@ -8,8 +8,8 @@ export const usePaginationTexts = defineExampleTexts({
     newsLabel: 'News pages',
     firstLabel: 'Case pages',
     ownWordsLabel: 'Search result pages',
-    back: 'Back',
-    forward: 'Forward',
-    status: 'Showing page 2 of 3',
+    back: 'Previous results',
+    forward: 'Next results',
+    status: 'Results page 2 of 3',
   },
 })

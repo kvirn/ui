@@ -15,8 +15,8 @@ export const useFieldsetTexts = defineExampleTexts({
     nameHelpText: 'Both names are needed to find your case.',
     nameError: 'Enter both your first and your last name.',
     send: 'Send application',
-    lockedLegend: 'Applicant',
-    lockedHelpText: 'The applicant can’t be changed after the application is sent.',
-    applicant: 'Name of the applicant',
+    contactHeading: 'How can we contact you?',
+    email: 'Email address',
+    phone: 'Phone number',
   },
 })

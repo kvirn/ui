@@ -129,7 +129,14 @@ export function ProgressPage({
           <UseCase
             id="busy-button"
             title="A busy button while sending"
-            why="The pattern for a long action. The Button is busy, so a second press is blocked and focus stays on it, and the Progress sits right after it. On failure the Progress goes, an Alert takes its place and busy turns off."
+            why={
+              <>
+                The pattern for a long action. The Button is <code>busy</code>, so a second press is
+                blocked and focus stays on it, and the Progress sits right after it, without a
+                spinner of its own because the button has one. On failure the Progress goes, an{' '}
+                <Link href="/components/alert">Alert</Link> takes its place and busy turns off.
+              </>
+            }
             code={sources['busy-button']}
             propsUsed={[{ part: 'Progress.Root', prop: 'label' }]}
             note={
@@ -144,7 +151,7 @@ export function ProgressPage({
           <UseCase
             id="known-value"
             title="A wait with a known value"
-            why="When you know how far along it is, pass a value. The native progress bar renders, named by the label, and the percent is shown as text after it. The percent is never announced, so the screen reader is not interrupted at every step."
+            why="When you know how far along it is, pass a value. A built-in HTML progress bar renders, named by the label, and the percent is shown as text after it. The library never announces the percent, so a screen reader is not interrupted at every step. When the wait ends the Progress disappears without a word, so show the result, here an Alert."
             code={sources['known-value']}
             propsUsed={[
               { part: 'Progress.Root', prop: 'value' },
@@ -162,21 +169,20 @@ export function ProgressPage({
               { part: 'Progress.Root', prop: 'slowAfterMilliseconds' },
               { part: 'Progress.Root', prop: 'delayMilliseconds' },
             ]}
-            note={
-              <Note kind="tip">
-                The moving indicators loop for as long as the wait lasts. The theme shows a still
-                shape under reduced motion, but the app must also offer its own control to stop
-                moving content (WCAG 2.2.2). See{' '}
-                <Link href="/foundation/theming#moving-indicators">Theming</Link>.
-              </Note>
-            }
           >
             <SlowWait />
           </UseCase>
           <UseCase
             id="own-markup"
             title="With your own elements"
-            why="When the markup is yours, spread the props of the hook on your elements and render nothing while isShown is false. The id of the label text names the bar."
+            why={
+              <>
+                When the markup is yours, spread the props of the hook on your elements and render
+                nothing while <code>isShown</code> is false. Put <code>labelId</code> on the label
+                text and spread <code>barProps</code> on a <code>&lt;progress&gt;</code>, so the
+                label names the bar.
+              </>
+            }
             code={sources['own-markup']}
             propsUsed={[
               {
@@ -189,13 +195,43 @@ export function ProgressPage({
                 label: 'useProgress (result)',
                 prop: 'labelId',
               },
+              {
+                part: apiHookPart('useProgress', 'result'),
+                label: 'useProgress (result)',
+                prop: 'barProps',
+              },
             ]}
           >
             <OwnMarkup />
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                An indicator that can keep moving for more than 5 seconds alongside other content
+                needs a visible control on the page that stops or hides it (2.2.2 Pause, Stop,
+                Hide). An indicator that is the only content during a wait where nothing else can be
+                done is exempt. The reduced motion setting alone is not that control. See{' '}
+                <Link href="/foundation/theming#moving-indicators">
+                  Moving indicators and WCAG 2.2.2
+                </Link>
+                .
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If an issue here affects your service, list it in your accessibility statement with
+                its workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

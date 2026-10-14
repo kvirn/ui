@@ -9,12 +9,19 @@ import { UseCase } from './use-case.tsx'
 import { switchAttributes, switchRows, useSwitchHook } from '../content/switch.api.ts'
 import { ControlledSetting } from '../examples/switch/controlled-setting.tsx'
 import { DefaultSwitch } from '../examples/switch/default.tsx'
+import { DisabledWithReason } from '../examples/switch/disabled-with-reason.tsx'
 import { WithHelpText } from '../examples/switch/help-text.tsx'
 import { PlainForm } from '../examples/switch/plain-form.tsx'
+import { SaveFails } from '../examples/switch/save-fails.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type SwitchExampleSources = Record<
-  'default' | 'controlled-setting' | 'plain-form' | 'help-text',
+  | 'default'
+  | 'controlled-setting'
+  | 'save-fails'
+  | 'help-text'
+  | 'disabled-with-reason'
+  | 'plain-form',
   string
 >
 
@@ -24,10 +31,10 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;input type=&quot;checkbox&quot; role=&quot;switch&quot;&gt;</code>. It takes every
-        attribute of an <code>&lt;input&gt;</code> except <code>type</code>, <code>role</code>,{' '}
-        <code>required</code> and <code>indeterminate</code>, and passes <code>ref</code> to it. Put
-        it directly in a <code>Field.Root</code>, before the <code>Field.Label</code>. The label,
-        help text and error are the Field’s parts, and the switch has no strings of its own. Write{' '}
+        attribute of an <code>&lt;input&gt;</code> except <code>type</code>, <code>role</code> and{' '}
+        <code>required</code>, and passes <code>ref</code> to it. Put it directly in a{' '}
+        <code>Field.Root</code>, before the <code>Field.Label</code>. The label, help text and error
+        are the Field’s parts, and the switch has no strings of its own. Write{' '}
         <code>marker=&quot;none&quot;</code> on the <code>Field.Label</code>: a switch has no
         required state, so “(optional)” beside a setting is noise. The default theme is described on{' '}
         <Link href="/foundation/theming">Theming</Link>.
@@ -48,8 +55,9 @@ export function SwitchPage({
   return (
     <ComponentPage
       title="Switch"
-      lead="It is a native checkbox with the role switch, so the browser gives it the Space key, the label click and form submission, and it holds no state of its own."
+      lead="It is built on the browser’s own checkbox, so the Space key, a click on the label and form submission work as people expect. It holds no state of its own."
       status="alpha-candidate"
+      pattern="APG Switch"
       whenToUse={
         <ul>
           <li>
@@ -84,7 +92,7 @@ export function SwitchPage({
           <UseCase
             id="controlled-setting"
             title="A setting that is saved at once"
-            why="A switch has no Save button, so the page must say that the change is saved straight away, and confirm it. Keep a message region such as an output in the page from the start and fill it after the save, so a screen reader announces it. If the save fails, restore the previous state, show an error under the switch and keep focus on it."
+            why="A switch has no Save button, so the page should say that the change is saved straight away. When the save succeeds, say nothing more: a screen reader already speaks the new state. Keep the switch enabled and focused while it saves."
             code={sources['controlled-setting']}
             propsUsed={[
               { part: 'Switch', prop: 'checked' },
@@ -92,12 +100,54 @@ export function SwitchPage({
             ]}
             note={
               <Note kind="reminder">
-                Never disable the switch while it saves: a disabled element loses focus (WCAG
-                2.4.3). A switch never navigates, reloads or moves focus (3.2.2).
+                Don’t disable the switch while it saves: a disabled element can lose focus (2.4.3
+                Focus Order). Don’t navigate, reload or move focus when it changes (3.2.2 On Input).
               </Note>
             }
           >
             <ControlledSetting />
+          </UseCase>
+          <UseCase
+            id="save-fails"
+            title="When the save fails"
+            why="If the save fails, put the switch back to its previous state, show an error under it and announce it. Keep focus on the switch. This example always fails, to show how."
+            code={sources['save-fails']}
+            propsUsed={[
+              { part: 'Switch', prop: 'checked' },
+              { part: 'Switch', prop: 'onCheckedChange' },
+            ]}
+            note={
+              <Note kind="reminder">
+                The error is text, linked to the switch, and also announced, because it isn’t a live
+                region (3.3.1 Error Identification, 4.1.3 Status Messages). Say what to do next
+                (3.3.3 Error Suggestion).
+              </Note>
+            }
+          >
+            <SaveFails />
+          </UseCase>
+          <UseCase
+            id="help-text"
+            title="A setting with a short explanation"
+            why="Say in a Field.HelpText what happens when the switch is on. The screen reader reads it as the switch’s description."
+            code={sources['help-text']}
+            note={
+              <Note kind="tip">
+                A help text is plain text: no link, list or heading, because a screen reader reads
+                it as one flat string.
+              </Note>
+            }
+          >
+            <WithHelpText />
+          </UseCase>
+          <UseCase
+            id="disabled-with-reason"
+            title="A setting that isn’t available"
+            why="Disable the switch and say why in its help text, with what the user can do about it. Never put the reason in a tooltip. A disabled switch is skipped by Tab, so the help text is the only place the reason is."
+            code={sources['disabled-with-reason']}
+            propsUsed={[{ part: 'Switch', prop: 'disabled' }]}
+          >
+            <DisabledWithReason />
           </UseCase>
           <UseCase
             id="plain-form"
@@ -121,23 +171,22 @@ export function SwitchPage({
           >
             <PlainForm />
           </UseCase>
-          <UseCase
-            id="help-text"
-            title="A setting with a short explanation"
-            why="Say in a Field.HelpText what happens when the switch is on. The screen reader reads it as the switch’s description. For a disabled switch, say why and what to do, never in a tooltip."
-            code={sources['help-text']}
-            note={
-              <Note kind="tip">
-                A help text is plain text: no link, list or heading, because a screen reader reads
-                it as one flat string.
-              </Note>
-            }
-          >
-            <WithHelpText />
-          </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Put the switch directly in a Field, before a label with{' '}
+                <code>marker=&quot;none&quot;</code>. Without a label a screen reader says only
+                “switch” (4.1.2 Name, Role, Value).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

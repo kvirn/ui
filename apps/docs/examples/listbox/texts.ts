@@ -10,10 +10,11 @@ export const useListboxTexts = defineExampleTexts({
     several: 'Municipalities',
     severalPlaceholder: 'Choose municipalities',
     closedHint: 'Stockholm is closed for new applications until 1 March.',
-    send: 'Send',
+    send: 'Send application',
     sent: 'Sent',
     place: 'Place',
     placePlaceholder: 'Choose a place',
-    language: 'Language',
+    letterLanguage: 'Language for our letters to you',
+    chooseError: 'Choose a municipality.',
   },
 })

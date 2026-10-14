@@ -5,7 +5,7 @@ import { ComponentPage } from './component-page.tsx'
 import { ContractSectionsView, contractSectionList } from './contract-sections-view.tsx'
 import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
-import { StringsBlock, stringText } from './strings-block.tsx'
+import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   fileUploadDropHintRows,
@@ -38,7 +38,7 @@ import { OwnChecks } from '../examples/file-upload/own-checks.tsx'
 import { SendWithForm } from '../examples/file-upload/send-with-form.tsx'
 import { SingleFile } from '../examples/file-upload/single-file.tsx'
 import { UploadYourself } from '../examples/file-upload/upload-yourself.tsx'
-import type { Contract, ContractAnnouncementRow } from '../lib/contract-parser.ts'
+import type { Contract } from '../lib/contract-parser.ts'
 
 export type FileUploadExampleSources = Record<
   | 'default'
@@ -50,62 +50,6 @@ export type FileUploadExampleSources = Record<
   | 'missing-file',
   string
 >
-
-// The contract describes the announcements in prose, so the page gives the rows, built from the
-// same message keys. A contract that gains its own table wins.
-const announcementRows: readonly ContractAnnouncementRow[] = [
-  {
-    event: 'One file is added by a drop. After the dialog, only refused files are counted.',
-    messageKeys: ['fileAdded', 'filesAdded'],
-    example: stringText('fileUpload', 'fileAdded', { name: 'report.pdf' }),
-    politeness: 'polite',
-  },
-  {
-    event: 'Files are refused',
-    messageKeys: ['filesRejected'],
-    example: stringText('fileUpload', 'filesRejected', { count: 2 }),
-    politeness: 'polite',
-  },
-  {
-    event: 'A file is removed',
-    messageKeys: ['fileRemoved'],
-    example: stringText('fileUpload', 'fileRemoved', { name: 'report.pdf' }),
-    politeness: 'polite',
-  },
-  {
-    event: 'The list becomes full',
-    messageKeys: ['summaryFull'],
-    example: stringText('fileUpload', 'summaryFull', { maxFiles: 5 }),
-    politeness: 'polite',
-  },
-  {
-    event: 'Uploads start with autoUpload off (uploadAll)',
-    messageKeys: ['uploadsStarted'],
-    example: stringText('fileUpload', 'uploadsStarted', { count: 3 }),
-    politeness: 'polite',
-  },
-  {
-    event: 'Uploads finish, after about a second of quiet',
-    messageKeys: ['uploadComplete', 'uploadsComplete', 'allUploadsComplete'],
-    example: stringText('fileUpload', 'uploadsComplete', { count: 3 }),
-    politeness: 'polite',
-  },
-  {
-    event: 'Uploads fail, after about a second of quiet',
-    messageKeys: ['uploadFailed', 'uploadsFailed'],
-    example: stringText('fileUpload', 'uploadsFailed', { count: 2 }),
-    politeness: 'polite',
-  },
-  {
-    event: 'Several FileUploads share the page: the message starts with the Field label',
-    messageKeys: ['announcementForField'],
-    example: stringText('fileUpload', 'announcementForField', {
-      label: 'Attachments',
-      message: '2 files uploaded.',
-    }),
-    politeness: 'polite',
-  },
-]
 
 const parts: ApiPart[] = [
   {
@@ -215,8 +159,9 @@ const parts: ApiPart[] = [
     name: 'FileUpload.Item',
     renders: (
       <>
-        <code>&lt;li&gt;</code> with the class <code>kv-file-upload-item</code>: one file. When the
-        button that had focus goes away, focus moves to this item, then to the next one.
+        <code>&lt;li&gt;</code> with the class <code>kv-file-upload-item</code>: one file. When
+        Cancel or Retry goes away while the file stays, focus moves to this item. Remove moves focus
+        to the next item, else the previous one, else the Trigger.
       </>
     ),
     props: fileUploadItemRows,
@@ -262,8 +207,8 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;p&gt;</code> with the class <code>kv-file-upload-item-error</code>, the error icon
-        and the hidden prefix. It renders only while the item is failed, and the item’s buttons are
-        described by it.
+        and a prefix that screen readers read and the default theme doesn’t show. It renders only
+        while the item is failed, and the item’s buttons are described by it.
       </>
     ),
     props: fileUploadItemErrorRows,
@@ -294,10 +239,10 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;button type=&quot;button&quot;&gt;</code>, one action per state: Cancel while the
-        file uploads, Retry after a failure (unless the upload said it can’t be retried) or a
-        cancel, otherwise Remove. A button that doesn’t apply, or any button in a disabled Field,
-        isn’t rendered. When the focused button goes away, focus never falls to the page or to
-        another button.
+        file uploads, Retry and Remove after a cancel or a failure (only Remove if the upload said
+        it can’t be retried), and Remove otherwise. A button that doesn’t apply, or any button in a
+        disabled Field, isn’t rendered. When the focused button goes away, focus never falls to the
+        page or to another button.
       </>
     ),
     props: fileUploadItemButtonRows,
@@ -322,6 +267,11 @@ export function FileUploadPage({
           <li>
             Use it when someone must attach documents, receipts or photos to an application or a
             report.
+          </li>
+          <li>
+            Dragging files onto the page is an extra, never the only way. Someone using only a
+            keyboard, a screen reader (software that reads the screen aloud) or a voice control uses
+            the button.
           </li>
           <li>
             Say what to attach in the label and the description, and say the limits with{' '}
@@ -450,9 +400,9 @@ export function FileUploadPage({
                 A file field is required when your form says so. Mark the Field{' '}
                 <code>required</code> and <code>invalid</code> and render a{' '}
                 <code>Field.ErrorMessage</code> that says what to do. The Trigger never has{' '}
-                <code>aria-required</code>, because a button doesn’t allow it, so the label or the
-                description must say that a file is needed. Read the files from{' '}
-                <code>onFilesChange</code>.
+                <code>aria-required</code>, because a button doesn’t allow it. A required Field
+                shows no “(optional)” after its label, so the description should also say that a
+                file is needed. Read the files from <code>onFilesChange</code>.
               </>
             }
             code={sources['missing-file']}
@@ -463,9 +413,26 @@ export function FileUploadPage({
         </>
       }
       contract={
-        <ContractSectionsView contract={contract} extraAnnouncementRows={announcementRows} />
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Say the limits before people choose files (3.3.2 Labels or Instructions), and mount
+                the <code>KvirnProvider</code>: without it nothing is announced (4.1.3 Status
+                Messages).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                Add the items that apply to your service to your accessibility statement, with the
+                workaround. Photos from iPhones are the open one: test them with your own limits.
+              </Note>
+            ),
+          }}
+        />
       }
-      contractSections={contractSectionList(contract, announcementRows)}
+      contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
           importLine="import { Field, FileUpload, useFileUpload } from '@kvirn-ui/react'"

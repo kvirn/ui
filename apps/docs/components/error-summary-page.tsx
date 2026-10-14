@@ -87,9 +87,10 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;a href=&quot;#controlId&quot;&gt;</code> with the role <code>link</code>. Its text
         is the field’s own error text. A click or Enter focuses the control and scrolls its label
-        into view; with a modifier key, or when no element has the id, the browser handles it. It
-        takes every attribute of an <code>&lt;a&gt;</code> except <code>href</code>, and passes{' '}
-        <code>ref</code> to it. Also exported as <code>ErrorSummaryLink</code>.
+        into view. With a modifier key, when no element has the id, or when the control can’t take
+        focus, the browser handles it. It takes every attribute of an <code>&lt;a&gt;</code> except{' '}
+        <code>href</code>, and passes <code>ref</code> to it. Also exported as{' '}
+        <code>ErrorSummaryLink</code>.
       </>
     ),
     props: linkRows,
@@ -107,13 +108,13 @@ export function ErrorSummaryPage({
   return (
     <ComponentPage
       title="ErrorSummary"
-      lead="It takes focus once, so the screen reader reads it and a keyboard user starts at the list."
+      lead="It takes focus once, so a screen reader can say its title and a keyboard user starts at the list."
       status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
-            Use it after a failed submit of a form with more than one field, or any form where the
-            errors can be out of sight.
+            Use it after a failed submit, when people may not see every error at once: a form with
+            several fields, or a long one.
           </li>
           <li>
             Show it at the top of the page, only while there are errors. Pass the submit count as{' '}
@@ -169,9 +170,8 @@ export function ErrorSummaryPage({
               <>
                 When the question is the group, such as first and last name, the error belongs to
                 the <Link href="/components/fieldset">Fieldset</Link>. Link to the first field of
-                the group: the link focuses it and scrolls the legend into view, so the question
-                shows with the field. A group of radio buttons links to its first option in the same
-                way.
+                the group: the link focuses it and scrolls its label into view. A group of radio
+                buttons links to its first option in the same way.
               </>
             }
             code={sources['group-error']}
@@ -182,7 +182,7 @@ export function ErrorSummaryPage({
           <UseCase
             id="page-title"
             title="Say it in the page title too"
-            why="The tab and the window title are the first thing a screen reader reads on a new page. With prefixDocumentTitle the title starts with “Error:” while the summary is shown, and it is restored when you remove it."
+            why="The page title shows in the browser tab and is read first when a page loads. With prefixDocumentTitle the title starts with “Error:” while the summary is shown, and it is restored when you remove it."
             code={sources['page-title']}
             propsUsed={[{ part: 'ErrorSummary.Root', prop: 'prefixDocumentTitle' }]}
             note={
@@ -197,13 +197,27 @@ export function ErrorSummaryPage({
         </>
       }
       contract={
-        <>
-          <ContractSectionsView contract={contract} linkToStrings />
-          <Note kind="tip">
-            The summary has no live region on purpose: the focus move is the announcement. Adding{' '}
-            <code>role=&quot;alert&quot;</code> or an announcer message as well would read it twice.
-          </Note>
-        </>
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-it-does-for-you': (
+              <Note kind="tip">
+                The summary has no live region on purpose: the focus move is the announcement, and
+                adding <code>role=&quot;alert&quot;</code> would read it twice. A screen reader
+                usually says only the name of a focused group, so whether it also reads the list is
+                not yet checked with a real screen reader.
+              </Note>
+            ),
+            focus: (
+              <Note kind="reminder">
+                If your page has a sticky header, set <code>scroll-padding-top</code> on the page,
+                so the focused summary isn’t hidden behind it (2.4.11 Focus Not Obscured (Minimum),
+                AA).
+              </Note>
+            ),
+          }}
+        />
       }
       contractSections={contractSectionList(contract)}
       api={

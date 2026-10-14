@@ -119,7 +119,7 @@ export const homeMessages = {
     email: 'magnus@vike.se',
     decide: {
       heading: 'You decide what your organisation builds with',
-      body: "Tell us about the service and the deadline. We'll tell you plainly what KvirnUI does today, what is still pending, and what a licence covers. No forms, no mailing list: one email, answered by the person who builds it.",
+      body: "Tell us about the service and the deadline. We'll tell you plainly what KvirnUI does today, what is still pending, and what a licence covers. No mailing list: one message, answered by the person who builds it.",
       link: 'Email about a licence or a pilot',
       subject: 'KvirnUI for our organisation',
     },

@@ -2,6 +2,8 @@ import { KvirnProvider } from '@kvirn-ui/react'
 import { describe, expect, test } from 'vite-plus/test'
 import { render } from 'vitest-browser-react'
 import { ComponentPage } from './component-page.tsx'
+import { ContractSectionsView, contractSectionList } from './contract-sections-view.tsx'
+import { parseContract } from '../lib/contract-parser.ts'
 import { messages } from '../messages/en.ts'
 import { componentPages } from './site-sections.ts'
 
@@ -62,19 +64,16 @@ describe('component page facts', () => {
   const factsList = () => document.querySelector('dl')!
   const termsOf = () => [...factsList().querySelectorAll('dt')].map((term) => term.textContent)
 
-  test('the facts are Status, Package and Testing with assistive technology, which is pending', async () => {
-    await renderPage()
-    expect(termsOf()).toEqual([messages.docs.status.label, facts.package, facts.atTesting])
+  test('the facts are Status and, when the page names its pattern, Pattern', async () => {
+    await renderPage({ pattern: 'APG Tabs' })
+    expect(termsOf()).toEqual([messages.docs.status.label, facts.pattern])
     expect(factsList().textContent).toContain(messages.docs.status.alphaCandidate)
-    expect(factsList().textContent).toContain('@kvirn-ui/react')
-    expect(factsList().textContent).toContain(facts.pending)
+    expect(factsList().textContent).toContain('APG Tabs')
   })
 
-  test('a page that names its pattern gets a Pattern fact, and the package can be changed', async () => {
-    await renderPage({ pattern: 'APG Tabs', packageName: '@kvirn-ui/patterns' })
-    expect(termsOf()).toContain(facts.pattern)
-    expect(factsList().textContent).toContain('APG Tabs')
-    expect(factsList().textContent).toContain('@kvirn-ui/patterns')
+  test('a page that gives no pattern has the Status fact alone', async () => {
+    await renderPage()
+    expect(termsOf()).toEqual([messages.docs.status.label])
   })
 
   test('the status sentence follows the facts unless the component is stable', async () => {
@@ -85,5 +84,96 @@ describe('component page facts', () => {
     await screen.unmount()
     const stable = await renderPage({ status: 'stable' })
     expect(stable.getByText(messages.docs.status.stableText).query()).toBeNull()
+  })
+})
+
+describe('component page sections', () => {
+  const contracts = import.meta.glob('../../../packages/react/src/button/button.a11y.md', {
+    query: '?raw',
+    import: 'default',
+    eager: true,
+  })
+
+  test('the h2s are Accessibility, Keyboard, Known issues, then API reference, and the contents match', async () => {
+    const contract = parseContract(Object.values(contracts)[0] as string, 'button.a11y.md')
+    const screen = await render(
+      <KvirnProvider locale="en">
+        <ComponentPage
+          title="Button"
+          status="alpha"
+          contract={<ContractSectionsView contract={contract} />}
+          contractSections={contractSectionList(contract)}
+          api={<p>Props.</p>}
+        />
+      </KvirnProvider>,
+    )
+    const sections = messages.docs.contract.sections
+    const headingIds = [...document.querySelectorAll('h2[id]')]
+      .map((heading) => heading.id)
+      .filter((id) => id !== 'contents-title')
+    expect(headingIds).toEqual(['accessibility', 'keyboard', 'known-issues', 'api'])
+    expect(document.getElementById('known-issues')?.textContent).toContain(sections.knownIssues)
+    const contents = [...document.querySelectorAll('nav a[href^="#"]')].map((link) =>
+      link.getAttribute('href'),
+    )
+    const h2Contents = contents.filter(
+      (href) => document.getElementById(href?.slice(1) ?? '')?.tagName === 'H2',
+    )
+    expect(h2Contents).toEqual(headingIds.map((id) => `#${id}`))
+    await expect
+      .element(screen.getByText(messages.docs.contract.accessibility.testingIntro))
+      .toBeInTheDocument()
+  })
+
+  test('a relative link in a contract renders as a link with its href', async () => {
+    const contract = parseContract(Object.values(contracts)[0] as string, 'button.a11y.md')
+    await render(
+      <KvirnProvider locale="en">
+        <ContractSectionsView contract={contract} />
+      </KvirnProvider>,
+    )
+    const link = [...document.querySelectorAll('a')].find(
+      (anchor) => anchor.getAttribute('href') === '/foundation/theming#moving-indicators',
+    )
+    expect(link?.textContent).toBe('Moving indicators and WCAG 2.2.2')
+  })
+
+  test("a note given for a contract section renders after that section's content", async () => {
+    const contract = parseContract(Object.values(contracts)[0] as string, 'button.a11y.md')
+    const sectionId = contract.accessibility[0]?.id ?? ''
+    await render(
+      <KvirnProvider locale="en">
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            [sectionId]: <p data-testid="section-note">Read this first</p>,
+            keyboard: <p data-testid="keyboard-note">Keys</p>,
+          }}
+        />
+      </KvirnProvider>,
+    )
+    const isInsideSection = (headingId: string, testId: string) => {
+      const headings = [...document.querySelectorAll('h2, h3')]
+      const heading = document.getElementById(headingId)!
+      const nextHeading = headings[headings.indexOf(heading) + 1]
+      const note = document.querySelector(`[data-testid="${testId}"]`)!
+      const after = heading.compareDocumentPosition(note) & Node.DOCUMENT_POSITION_FOLLOWING
+      const before =
+        nextHeading === undefined ||
+        note.compareDocumentPosition(nextHeading) & Node.DOCUMENT_POSITION_FOLLOWING
+      return Boolean(after && before)
+    }
+    expect(isInsideSection(sectionId, 'section-note')).toBe(true)
+    expect(isInsideSection('keyboard', 'keyboard-note')).toBe(true)
+  })
+
+  test('a note for a section the contract does not render is a developer error', () => {
+    const contract = {
+      ...parseContract(Object.values(contracts)[0] as string, 'button.a11y.md'),
+      knownIssues: [],
+    }
+    expect(() =>
+      ContractSectionsView({ contract, notes: { 'known-issues': 'Never shown' } }),
+    ).toThrow(/known-issues/)
   })
 })

@@ -3,15 +3,21 @@ import { Button, Field, Fieldset, Stack, TextInput } from '@kvirn-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { useFieldsetTexts } from './texts.ts'
 
+type NameField = 'firstName' | 'lastName'
+
 export function GroupError() {
   const { texts } = useFieldsetTexts()
-  const firstNameRef = useRef<HTMLInputElement>(null)
+  const inputs = useRef<Record<NameField, HTMLInputElement | null>>({
+    firstName: null,
+    lastName: null,
+  })
   const [invalid, setInvalid] = useState(false)
-  const [focusRequest, setFocusRequest] = useState(0)
+  const [focusRequest, setFocusRequest] = useState<{ field: NameField } | undefined>(undefined)
 
+  // Focus moves after the error has rendered, so the group's description includes it.
   useEffect(() => {
-    if (focusRequest > 0) {
-      firstNameRef.current?.focus()
+    if (focusRequest !== undefined) {
+      inputs.current[focusRequest.field]?.focus()
     }
   }, [focusRequest])
 
@@ -23,10 +29,15 @@ export function GroupError() {
       onSubmit={(event) => {
         event.preventDefault()
         const data = new FormData(event.currentTarget)
-        const isIncomplete = data.get('firstName') === '' || data.get('lastName') === ''
-        setInvalid(isIncomplete)
-        if (isIncomplete) {
-          setFocusRequest((request) => request + 1)
+        const firstEmpty: NameField | undefined =
+          data.get('firstName') === ''
+            ? 'firstName'
+            : data.get('lastName') === ''
+              ? 'lastName'
+              : undefined
+        setInvalid(firstEmpty !== undefined)
+        if (firstEmpty !== undefined) {
+          setFocusRequest({ field: firstEmpty })
         }
       }}
     >
@@ -37,11 +48,23 @@ export function GroupError() {
         </Fieldset.Prose>
         <Field.Root required>
           <Field.Label>{texts.firstName}</Field.Label>
-          <TextInput ref={firstNameRef} name="firstName" autoComplete="given-name" />
+          <TextInput
+            ref={(element) => {
+              inputs.current.firstName = element
+            }}
+            name="firstName"
+            autoComplete="given-name"
+          />
         </Field.Root>
         <Field.Root required>
           <Field.Label>{texts.lastName}</Field.Label>
-          <TextInput name="lastName" autoComplete="family-name" />
+          <TextInput
+            ref={(element) => {
+              inputs.current.lastName = element
+            }}
+            name="lastName"
+            autoComplete="family-name"
+          />
         </Field.Root>
         <Fieldset.HelpText>{texts.nameHelpText}</Fieldset.HelpText>
         <Fieldset.ErrorMessage>{texts.nameError}</Fieldset.ErrorMessage>

@@ -10,7 +10,7 @@ const positionRows = {
   total: {
     type: 'number',
     description:
-      'How many steps there are. Count sections, so an answer that adds a page never changes it.',
+      'How many steps there are: a positive whole number. Count sections, so an answer that adds a page never changes it.',
   },
   name: {
     type: 'string',

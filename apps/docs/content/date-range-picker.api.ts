@@ -108,6 +108,7 @@ export const dateRangePickerTriggerAttributes: readonly AttributeRow[] = [
     values: '"true" or "false"',
     meaning: 'Whether the dialog is open.',
   },
+  { name: 'data-open', values: 'present or absent', meaning: 'The dialog is open.' },
 ]
 
 export const dateRangePickerPopupAttributes: readonly AttributeRow[] = [
@@ -116,6 +117,13 @@ export const dateRangePickerPopupAttributes: readonly AttributeRow[] = [
     values: 'always',
     meaning: 'The part classes. The default theme styles them.',
   },
+  { name: 'aria-modal', values: '"true" while open', meaning: 'The page behind is inert.' },
+  {
+    name: 'aria-labelledby',
+    values: 'the Title’s id',
+    meaning: 'Names the dialog. Give it a title.',
+  },
+  { name: 'data-open', values: 'present or absent', meaning: 'The dialog is open.' },
 ]
 
 export const dateRangePickerTitleRows = propRows<Pick<DateRangePickerTitleProps, 'as'>>({

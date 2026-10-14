@@ -17,15 +17,15 @@ import {
   tooltipTriggerRows,
   useTooltipHook,
 } from '../content/tooltip.api.ts'
-import { ButtonRow } from '../examples/tooltip/button-row.tsx'
 import { DefaultTooltip } from '../examples/tooltip/default.tsx'
 import { ExtraInformation } from '../examples/tooltip/extra-information.tsx'
+import { IconToolbar } from '../examples/tooltip/icon-toolbar.tsx'
 import { Timing } from '../examples/tooltip/timing.tsx'
 import { WithAShortcut } from '../examples/tooltip/with-a-shortcut.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type TooltipExampleSources = Record<
-  'default' | 'with-a-shortcut' | 'extra-information' | 'button-row' | 'timing',
+  'default' | 'with-a-shortcut' | 'extra-information' | 'icon-toolbar' | 'timing',
   string
 >
 
@@ -98,7 +98,8 @@ export function TooltipPage({
     <ComponentPage
       title="Tooltip"
       lead="It never takes focus and holds no controls."
-      status="in-progress"
+      status="alpha-candidate"
+      pattern="APG Tooltip"
       whenToUse={
         <ul>
           <li>
@@ -109,13 +110,17 @@ export function TooltipPage({
             Use it for a short extra hint that is nice to have, never for what a user needs to
             finish a task: touch users never see a tooltip.
           </li>
-          <li>The control keeps its own accessible name. A tooltip is never the only name.</li>
           <li>
             Not for text with a link, a button or a field: use a{' '}
             <Link href="/components/popover">Popover</Link>. A tooltip disappears with the pointer
             and the focus, so nothing in it can be reached with Tab.
           </li>
           <li>Not for an error or an important message: write it as visible text.</li>
+          <li>
+            Not on a button that is natively disabled: it gets no pointer events and no focus, so
+            the tooltip never shows. Keep the button focusable and say why it is off in visible
+            text.
+          </li>
         </ul>
       }
       example={
@@ -132,7 +137,8 @@ export function TooltipPage({
               <>
                 Show the key that does the same thing. The name is hidden from assistive technology
                 and the shortcut is the button’s description, so a screen reader says the name once,
-                then the shortcut. Set <code>aria-keyshortcuts</code> on the button too.
+                then the shortcut. Set <code>aria-keyshortcuts</code> on the button too, and handle
+                the key in your app: the tooltip only shows it.
               </>
             }
             code={sources['with-a-shortcut']}
@@ -140,7 +146,8 @@ export function TooltipPage({
             note={
               <Note kind="reminder">
                 Give the control a name of its own, with <code>aria-label</code> from your
-                translations, and start the tooltip with the same text. See{' '}
+                translations, and start the tooltip with the same text. Then a person using voice
+                control can say what they see (2.5.3 Label in Name). See{' '}
                 <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
@@ -150,16 +157,16 @@ export function TooltipPage({
           <UseCase
             id="extra-information"
             title="A little extra information"
-            why="Plain text in the popup is the button’s description as a whole. Use it for something the name does not say, such as what will happen, and keep it short and never essential."
+            why="Plain text in the popup becomes the button’s description. Use it for something the name does not say, such as what will happen. Keep it short, and never put anything in it that a user needs."
             code={sources['extra-information']}
           >
             <ExtraInformation />
           </UseCase>
           <UseCase
-            id="row-of-buttons"
-            title="A row of icon buttons"
-            why="Every button has its own tooltip. Once one has opened, the next one opens at once, so a user moving along the row does not wait for each."
-            code={sources['button-row']}
+            id="icon-toolbar"
+            title="A toolbar of icon buttons"
+            why="Every button has its own tooltip. Once one has opened, the next one opens at once, so a user moving along the row with the mouse or the arrow keys does not wait for each."
+            code={sources['icon-toolbar']}
             propsUsed={[{ part: 'Tooltip.Trigger', prop: 'as' }]}
             note={
               <Note kind="tip">
@@ -169,7 +176,7 @@ export function TooltipPage({
               </Note>
             }
           >
-            <ButtonRow />
+            <IconToolbar />
           </UseCase>
           <UseCase
             id="timing-and-place"
@@ -186,7 +193,26 @@ export function TooltipPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Don’t add a <code>title</code> attribute to the control next to a tooltip. The
+                browser’s own tooltip can’t be hovered or dismissed (1.4.13 Content on Hover or
+                Focus), and with <code>aria-label</code> it is read twice.
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If an issue here affects your service, list it in your accessibility statement with
+                its workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

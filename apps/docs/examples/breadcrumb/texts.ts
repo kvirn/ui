@@ -1,9 +1,11 @@
 import { defineExampleTexts } from '../../components/local-example-texts.ts'
 
-// Every example is its own landmark on the page, so each but the first has its own name: two
-// navigations with the same name can't be told apart in a screen reader's landmark list.
+// Every example is its own landmark on the page, and the site's own trail above the title is
+// named You are here, so each example has its own name: two navigations with the same name can't
+// be told apart in a screen reader's landmark list.
 export const useBreadcrumbTexts = defineExampleTexts({
   en: {
+    defaultLabel: 'You are here: the preschool page',
     start: 'Start',
     children: 'Children and education',
     preschool: 'Preschool',

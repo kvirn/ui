@@ -25,13 +25,15 @@ export function DefaultErrorSummary() {
           </ErrorSummary.List>
         </ErrorSummary.Root>
       ) : null}
-      <Field.Root controlId={emailId}>
+      <Field.Root controlId={emailId} invalid={isShown}>
         <Field.Label>{texts.email}</Field.Label>
         <TextInput type="email" autoComplete="email" />
+        <Field.ErrorMessage>{texts.emailError}</Field.ErrorMessage>
       </Field.Root>
-      <Field.Root controlId={phoneId}>
+      <Field.Root controlId={phoneId} invalid={isShown}>
         <Field.Label>{texts.phone}</Field.Label>
         <TextInput type="tel" autoComplete="tel" />
+        <Field.ErrorMessage>{texts.phoneError}</Field.ErrorMessage>
       </Field.Root>
     </Stack>
   )

@@ -18,7 +18,7 @@ export function ConfirmDelete() {
           <AlertDialog.Actions>
             <button
               type="button"
-              className="kv-button kv-button--primary"
+              className="kv-button kv-button--danger"
               onClick={() => {
                 setIsDeleted(true)
                 setOpen(false)

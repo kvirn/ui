@@ -1,7 +1,8 @@
 import { defineExampleTexts } from '../../components/local-example-texts.ts'
 
 export interface BadgeTexts {
-  application: string
+  statusLabel: string
+  statusHidden: string
   draft: string
   cases: {
     title: string
@@ -13,7 +14,8 @@ export interface BadgeTexts {
 
 export const useBadgeTexts = defineExampleTexts<BadgeTexts>({
   en: {
-    application: 'Building permit, 4 Storgatan',
+    statusLabel: 'Application status:',
+    statusHidden: 'Status:',
     draft: 'Draft',
     cases: [
       { title: 'Building permit, 4 Storgatan', status: 'Granted', variant: 'success' },

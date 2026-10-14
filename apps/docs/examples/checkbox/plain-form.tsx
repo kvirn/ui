@@ -9,13 +9,14 @@ export function PlainForm() {
   return (
     <form
       onSubmit={(event) => {
+        // A real form sends the data from here.
         event.preventDefault()
         const newsletter = new FormData(event.currentTarget).get('newsletter')
         setSent(typeof newsletter === 'string' ? newsletter : texts.notChosen)
       }}
     >
       <Field.Root>
-        <Checkbox name="newsletter" value="yes" defaultChecked />
+        <Checkbox name="newsletter" value="yes" />
         <Field.Label>{texts.newsletter}</Field.Label>
       </Field.Root>
       <Button type="submit" className="kv-button--primary">

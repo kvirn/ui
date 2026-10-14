@@ -1,5 +1,5 @@
 import { ApplicationLogo } from '@kvirn-ui/patterns'
-import { Badge, Link, Section } from '@kvirn-ui/react'
+import { Badge, Heading, Link, Section } from '@kvirn-ui/react'
 import { messages } from '../messages/en.ts'
 import { sectionCurrent, siteTools } from './site-sections.ts'
 import type { SiteSection } from './site-sections.ts'
@@ -29,13 +29,15 @@ export function SiteFooter({
               <Badge>{text.header.status}</Badge>
             </div>
             <p>{text.footer.licence}</p>
-            <p>{text.footer.claim}</p>
+            <p>
+              {text.footer.claim} <Link href="/docs#what-wcag-means">{text.footer.claimLink}</Link>
+            </p>
             <p>{text.footer.noTracking}</p>
           </div>
           <nav aria-labelledby="docs-footer-sections">
-            <h2 id="docs-footer-sections" className="docs-footer-heading">
+            <Heading as="h2" id="docs-footer-sections" className="docs-footer-heading">
               {text.footer.sectionsHeading}
-            </h2>
+            </Heading>
             <ul role="list">
               {sections.map((section) => (
                 <li key={section.id}>
@@ -50,9 +52,9 @@ export function SiteFooter({
             </ul>
           </nav>
           <nav aria-labelledby="docs-footer-project">
-            <h2 id="docs-footer-project" className="docs-footer-heading">
+            <Heading as="h2" id="docs-footer-project" className="docs-footer-heading">
               {text.footer.projectHeading}
-            </h2>
+            </Heading>
             <ul role="list">
               <li>
                 <Link href="/docs#status">
@@ -64,6 +66,16 @@ export function SiteFooter({
                   <SiteToolLink tool={tool} pathname={pathname} />
                 </li>
               ))}
+              <li>
+                <Link href="/privacy" current={pathname === '/privacy' ? 'page' : undefined}>
+                  {text.footer.privacy}
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" current={pathname === '/contact' ? 'page' : undefined}>
+                  {text.footer.contact}
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>

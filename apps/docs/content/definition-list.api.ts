@@ -27,7 +27,15 @@ export const termRows = propRows<Pick<DefinitionListTermProps, 'ref'>>(partRows)
 export const descriptionRows = propRows<Pick<DefinitionListDescriptionProps, 'ref'>>(partRows)
 export const actionsRows = propRows<Pick<DefinitionListActionsProps, 'ref'>>(partRows)
 
-export const changeRows = propRows<Pick<DefinitionListChangeProps, 'messages' | 'ref'>>({
+export const changeRows = propRows<
+  Pick<DefinitionListChangeProps, 'children' | 'messages' | 'ref'>
+>({
+  children: {
+    type: 'ReactNode',
+    default: 'the message definitionList.change',
+    description:
+      'The visible text of the link, such as “Add”. The term is still added to the accessible name.',
+  },
   messages: {
     type: "Partial<KvirnMessages['definitionList']>",
     default: '–',

@@ -32,6 +32,8 @@ export function CheckedAsEntered() {
             setTimeout(() => {
               setIsChecking(false)
               setIsWrong(true)
+              // Focus stays in the field, so say the error aloud too.
+              announce(texts.wrong)
             }, 1000)
           }}
         >

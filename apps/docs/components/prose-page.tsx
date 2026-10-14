@@ -14,7 +14,6 @@ import { messages } from '../messages/en.ts'
 import { apiPartId, apiRowId } from './api-ids.ts'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
-import { CodeBlock } from './code-block.tsx'
 import { ComponentPage } from './component-page.tsx'
 import { ContractSectionsView, contractSectionList } from './contract-sections-view.tsx'
 import { ExampleFrame } from './example-frame.tsx'
@@ -22,12 +21,12 @@ import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import { proseAttributes, proseRows, useProseResultRows } from '../content/prose.api.ts'
 import { ArticleProse } from '../examples/prose/article.tsx'
+import { CmsText } from '../examples/prose/cms-text.tsx'
 import { DefaultProse } from '../examples/prose/default.tsx'
 import { FieldDescription } from '../examples/prose/field-description.tsx'
 import { ImagesAndMediaProse } from '../examples/prose/images-and-media.tsx'
 import { InsetTextProse } from '../examples/prose/inset-text.tsx'
 import { LargeProse } from '../examples/prose/large.tsx'
-import { OwnElementProse } from '../examples/prose/own-element.tsx'
 import { StepsProse } from '../examples/prose/steps.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
@@ -38,7 +37,7 @@ export type ProseExampleSources = Record<
   | 'article'
   | 'large'
   | 'field-description'
-  | 'own-element'
+  | 'cms-text'
   | 'inset-text'
   | 'steps'
   | 'images-and-media',
@@ -117,8 +116,8 @@ export function ProsePage({
   return (
     <ComponentPage
       title="Prose"
-      lead="It adds no role and no behaviour, so the semantics are the ones you write."
-      status="alpha"
+      lead="It adds no role, so what assistive technology finds is the headings, lists and links you write."
+      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
@@ -131,11 +130,12 @@ export function ProsePage({
           </li>
           <li>
             Use it for the description of a field or a group of fields: inside a Field or Fieldset
-            it is read before the answer.
+            it is linked to the control, so a screen reader reads it with the control.
           </li>
           <li>
-            Not for a region with its own surface: use a Section and put the Prose inside it. Not
-            for a help text that helps while typing: that is a <code>Field.HelpText</code>.
+            Not for a region with its own surface: use a{' '}
+            <Link href="/components/section">Section</Link> and put the Prose inside it. Not for a
+            help text that helps while typing: that is a <code>Field.HelpText</code>.
           </li>
         </ul>
       }
@@ -149,7 +149,7 @@ export function ProsePage({
           <UseCase
             id="article"
             title="A page of text"
-            why="Render the Prose as an article when the text is a piece of content in its own right. The element keeps its own meaning, so a screen reader user can find it with landmark or article navigation."
+            why="Render the Prose as an article when the text is a piece of content in its own right. The element keeps its own meaning: Prose adds nothing to it."
             code={sources['article']}
             propsUsed={[{ part: 'Prose', prop: 'as' }]}
           >
@@ -166,7 +166,7 @@ export function ProsePage({
           <UseCase
             id="field-description"
             title="A description of a field"
-            why="Inside a Field, a Prose is the description of the control: it gets an id and the control lists it in aria-describedby, before the error. Write it as Field.Prose, or Fieldset.Prose for a group."
+            why="Inside a Field, a Prose is the description of the control. A screen reader reads it with the control, before any error message. Write it as Field.Prose, or Fieldset.Prose for a group."
             code={sources['field-description']}
             note={
               <Note kind="reminder">
@@ -181,12 +181,20 @@ export function ProsePage({
           <UseCase
             id="inset-text"
             title="A paragraph that must not be missed"
-            why="Set a condition, an exception or a tip apart from the text around it with the kv-inset class. It adds no role and nothing is announced, so start it with a word that says why it is set apart."
+            why={
+              <>
+                Set a condition, an exception or a tip apart from the text around it with the{' '}
+                <code>kv-inset</code> class. It is part of the article, has no role, and nothing is
+                announced. A deadline that loses someone their right, or money, is an{' '}
+                <Link href="/components/alert">Alert</Link> (<code>Alert.Warning</code>) instead.
+              </>
+            }
             code={sources['inset-text']}
             note={
-              <Note kind="tip">
-                Inset or Alert: an inset is part of the article. A deadline that loses someone their
-                right, or money, is an Alert.Warning, not an inset.
+              <Note kind="reminder">
+                Start an inset with a word that says why it is set apart, such as “Important:”. The
+                bar and the fill aren’t read aloud, and colour must never be the only cue (1.4.1 Use
+                of Color).
               </Note>
             }
           >
@@ -195,7 +203,7 @@ export function ProsePage({
           <UseCase
             id="steps"
             title="A process in order"
-            why="Write the steps as a native ol with the kv-steps class. Every step has a heading and text, or none has. The list keeps its native numbers, so a screen reader announces the count."
+            why="Write the steps as a native ol with the kv-steps class. Every step has a heading and text, or none has a heading. Start each heading with a verb. The list keeps its native numbers and list role, which a test checks in Chromium. The same in Safari with VoiceOver is not proven yet."
             code={sources['steps']}
             note={
               <Note kind="tip">
@@ -213,32 +221,45 @@ export function ProsePage({
             code={sources['images-and-media']}
             note={
               <Note kind="reminder">
-                Captions, never an embed: put every fact a picture carries in the text next to it,
-                and link to a video rather than embedding one from a third party.
+                Captions, never an embed: put every fact a picture carries in the text next to it
+                (1.1.1 Non-text Content). If you use video, host it yourself with captions, and
+                don’t embed one from a third party.
               </Note>
             }
           >
             <ImagesAndMediaProse />
           </UseCase>
           <UseCase
-            id="own-element"
-            title="Your own element"
-            why="When as doesn’t fit, for example on a component of your own, spread the hook’s props on your element."
-            code={sources['own-element']}
+            id="cms-text"
+            title="Text from a CMS"
+            why="When a component of your own renders text from a CMS, spread the hook’s props on its root element so the body gets the prose styles."
+            code={sources['cms-text']}
             note={
-              <Note
-                kind="tip"
-                more={<CodeBlock code={'<Prose as="section" aria-labelledby={titleId}>'} />}
-              >
-                Most of the time as does the same with less code.
+              <Note kind="reminder">
+                CMS content still needs real headings in order and real lists (1.3.1 Info and
+                Relationships). Prose styles them but adds no structure. See{' '}
+                <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >
-            <OwnElementProse />
+            <CmsText />
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Prose styles your text but adds no structure. Use real headings in order, real
+                lists, and links that say where they go (1.3.1 Info and Relationships, 2.4.4 Link
+                Purpose (In Context)). Check text from a CMS or Markdown the same way.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <>

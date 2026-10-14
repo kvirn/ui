@@ -15,6 +15,7 @@ import {
   findActiveSection,
   hasSidebar,
   pagerPages,
+  listedSections,
   renderedSections,
   siteSections,
   siteTools,
@@ -105,6 +106,7 @@ export function SiteShell({
   layout?: 'article' | 'landing'
 }) {
   const visibleSections = renderedSections(sections)
+  const menuSections = listedSections(sections)
   const activeSection = findActiveSection(visibleSections, pathname)
   const sidebarSection =
     layout === 'article' && hasSidebar(activeSection) ? activeSection : undefined
@@ -147,7 +149,7 @@ export function SiteShell({
       <SkipLink href="#main" />
       <SkipLink href={`#${siteNavigationId}`}>{text.skipLinks.navigation}</SkipLink>
       <SiteHeader.Root variant="primary">
-        <TopBar.Root>
+        <TopBar>
           <Link href="/docs#status">{text.header.latest({ status: text.header.status })}</Link>
           <div className="docs-top-end">
             <Navigation.Root label={text.header.toolsLabel} className="kv-navigation--horizontal">
@@ -160,7 +162,7 @@ export function SiteShell({
               </Navigation.List>
             </Navigation.Root>
           </div>
-        </TopBar.Root>
+        </TopBar>
         <SiteHeader.Masthead>
           <div className="docs-brand">
             <ApplicationLogo.Root href="/">
@@ -171,11 +173,7 @@ export function SiteShell({
           <SiteHeader.Menu id={siteNavigationId}>
             <SiteHeader.MenuButton>{text.nav.menuButton}</SiteHeader.MenuButton>
             <SiteHeader.MenuPanel>
-              <SiteMenu
-                sections={visibleSections}
-                activeSection={activeSection}
-                pathname={pathname}
-              />
+              <SiteMenu sections={menuSections} activeSection={activeSection} pathname={pathname} />
             </SiteHeader.MenuPanel>
           </SiteHeader.Menu>
           <SiteSearch ref={searchRef} action="/search" label={text.header.searchLabel}>
@@ -192,7 +190,7 @@ export function SiteShell({
           <DocsShellContext.Provider value={shellParts}>{children}</DocsShellContext.Provider>
         </main>
       )}
-      <SiteFooter sections={visibleSections} activeSection={activeSection} pathname={pathname} />
+      <SiteFooter sections={menuSections} activeSection={activeSection} pathname={pathname} />
     </>
   )
 }

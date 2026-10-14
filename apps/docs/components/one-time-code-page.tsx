@@ -78,7 +78,7 @@ export function OneTimeCodePage({
   return (
     <ComponentPage
       title="OneTimeCode"
-      lead="It is one native input drawn as boxes, so SMS autofill, paste, dictation and undo keep working."
+      lead="It is one native text box drawn as boxes, so paste, undo and the screen reader work as in any text box. The box carries the attribute browsers use to offer a code from a text message."
       status="alpha-candidate"
       whenToUse={
         <ul>
@@ -116,8 +116,16 @@ export function OneTimeCodePage({
         <>
           <UseCase
             id="two-groups"
-            title="A code with letters and digits in groups"
-            why="Write the pattern the way the message groups the code: &&&&-&&&& for “ABCD-1234”. The dash is drawn but is not part of the code, so read unmaskedValue when your service wants the code without it."
+            title="Sign in without BankID with a code from an email"
+            why={
+              <>
+                Write the pattern the way the email groups the code: <code>{'&&&&-&&&&'}</code> for
+                “ABCD-1234”. The dash is part of the value the boxes show, so read{' '}
+                <code>unmaskedValue</code> when your service wants the code without it. Make your
+                service leave out look-alike characters (0 and O, 1 and I), so nobody has to guess
+                what they read.
+              </>
+            }
             code={sources['two-groups']}
             propsUsed={[
               { part: 'OneTimeCode.Root', prop: 'pattern' },
@@ -127,7 +135,8 @@ export function OneTimeCodePage({
             note={
               <Note kind="tip">
                 Render one <code>OneTimeCode.Slot</code> for every position of the pattern,
-                separators included: the theme counts the slots to draw the row.
+                separators included. With fewer, a character is typed that nobody sees, and a
+                development warning says so.
               </Note>
             }
           >
@@ -135,8 +144,15 @@ export function OneTimeCodePage({
           </UseCase>
           <UseCase
             id="checked-as-entered"
-            title="Checking the code as soon as it is complete"
-            why="onComplete starts your check. Use readOnly while it runs, not disabled, so focus stays, and keep the code in the field after a wrong-code error so the user can fix one digit. Tell the user in the description that the code is checked as soon as they enter it (3.2.2)."
+            title="Confirm your mobile number as soon as the code is complete"
+            why={
+              <>
+                <code>onComplete</code> starts your check. Use <code>readOnly</code> while it runs,
+                not <code>disabled</code>, so focus stays, and keep the code in the field after a
+                wrong-code error so the user can fix one digit. Focus stays in the field, so the
+                example says “Checking the code” and then the error aloud.
+              </>
+            }
             code={sources['checked-as-entered']}
             propsUsed={[
               { part: 'OneTimeCode.Root', prop: 'value' },
@@ -145,8 +161,9 @@ export function OneTimeCodePage({
             ]}
             note={
               <Note kind="reminder">
-                Announcements, such as “Checking the code”, need a <code>KvirnProvider</code> around
-                your app. The submit button stays. See{' '}
+                Tell the user in the description, before they type, that the code is checked as soon
+                as it is complete, and keep the submit button (3.2.2 On Input). Announcements need a{' '}
+                <code>KvirnProvider</code> around your app. See{' '}
                 <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
@@ -155,12 +172,12 @@ export function OneTimeCodePage({
           </UseCase>
           <UseCase
             id="plain-form"
-            title="In a plain form, with a message when it is incomplete"
+            title="Confirm your mobile number in a plain form"
             why={
               <>
-                Without <code>value</code> the native input keeps the code, and a form submit sends
-                it under the input’s <code>name</code>, with its separators. Validate on submit and
-                say what to do: “Enter all 6 digits of the code”.
+                Without <code>value</code> the native input keeps the code, and sending the form
+                posts it under the input’s <code>name</code>, with its dash. Check it when the form
+                is sent, move focus to the box and say what to do: “Enter all 6 digits of the code”.
               </>
             }
             code={sources['plain-form']}
@@ -170,7 +187,35 @@ export function OneTimeCodePage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} messageNamespace="mask" linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          messageNamespace="mask"
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Write a visible label that says where the code is, and a description with its length
+                and groups. The boxes are hidden from screen readers, so the description is the only
+                place they learn the length (2.5.3 Label in Name, 3.3.2 Labels or Instructions).
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                If you restyle the boxes, keep their edges at least 3:1 against the background and
+                keep the plain field that shows when the boxes don’t fit, so nothing scrolls
+                sideways at 320px (1.4.11 Non-text Contrast, 1.4.10 Reflow).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If an issue here affects your service, list it in your accessibility statement with
+                its workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

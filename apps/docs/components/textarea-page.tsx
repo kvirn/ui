@@ -72,7 +72,7 @@ export function TextareaPage({
   return (
     <ComponentPage
       title="Textarea"
-      lead="It never cuts a pasted text, and it can show how many characters are left."
+      lead="With a count, a pasted text is never cut: the box says how many characters are left or over, and the user shortens the text."
       status="alpha-candidate"
       whenToUse={
         <ul>
@@ -89,9 +89,9 @@ export function TextareaPage({
             one. Don’t cut the text: let the user shorten it.
           </li>
           <li>
-            Not for a short answer such as a name or a phone number: use a <code>TextInput</code>.
-            Not for an amount or a quantity: use a{' '}
-            <Link href="/components/number-input">NumberInput</Link>.
+            Not for a short answer such as a name or a phone number: use a{' '}
+            <Link href="/components/text-input">TextInput</Link>. Not for an amount or a quantity:
+            use a <Link href="/components/number-input">NumberInput</Link>.
           </li>
         </ul>
       }
@@ -160,6 +160,13 @@ export function TextareaPage({
               { part: 'Textarea', prop: 'value' },
               { part: 'Textarea', prop: 'onValueChange' },
             ]}
+            note={
+              <Note kind="tip">
+                A long answer is the worst thing to lose. Warn before a session ends, for example
+                with an <Link href="/components/alert-dialog">AlertDialog</Link> (2.2.1 Timing
+                Adjustable), and save drafts in staff tools.
+              </Note>
+            }
           >
             <RestoredDraft />
           </UseCase>
@@ -177,7 +184,27 @@ export function TextareaPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Give every box a visible label in a Field. A placeholder is not a label: it
+                disappears when the user types (3.3.2 Labels or Instructions). Without a name a
+                screen reader says only that there is a text box (4.1.2 Name, Role, Value).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If one of these affects your service, put it in your accessibility statement, with
+                the workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

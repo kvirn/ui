@@ -13,6 +13,7 @@ export const useCheckboxGroupTexts = defineExampleTexts({
     nothing: 'nothing yet',
     send: 'Send',
     sent: 'Sent',
+    requiredHint: 'Required. Choose at least one.',
     errorMissing: 'Choose at least one way for us to contact you.',
     disabledLegend: 'Contact by letter or text message',
     disabledHelp: 'You can’t change this while your application is being processed.',

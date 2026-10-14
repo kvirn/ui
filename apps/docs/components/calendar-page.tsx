@@ -45,7 +45,8 @@ const stepPart = (name: string, className: string, renders: string): ApiPart => 
       A <code>&lt;button type=&quot;button&quot;&gt;</code> with an icon and the name{' '}
       <code>{renders}</code>, shown as a tooltip too. It takes every attribute of a{' '}
       <code>&lt;button&gt;</code> and passes <code>ref</code> to it. At the edge of the range it
-      stays focusable and sets <code>aria-disabled</code>.
+      stays focusable and sets <code>aria-disabled</code>. Pass children to replace the icon, and
+      keep any visible text the same as the name (2.5.3 Label in Name).
     </>
   ),
   attributes: calendarStepAttributes(className),
@@ -116,28 +117,29 @@ export function CalendarPage({
   return (
     <ComponentPage
       title="Calendar"
-      lead="It has one Tab stop, the date keys and names for every day, and it never replaces typing the date."
+      lead="Someone using only a keyboard reaches the whole month with one Tab stop and the date keys. Every day has a full name that a screen reader (software that reads the screen aloud) speaks. It sits beside a typed field and never replaces it."
       status="alpha-candidate"
+      pattern="APG Date Picker Dialog (the calendar grid)"
       whenToUse={
         <ul>
           <li>
-            Use it to choose a date near today, such as a booking or a start date, next to a field
-            where the same date can be typed. Typing must always work: the calendar is the slower
-            way for keyboard and screen reader users.
+            Use it to choose a date near today, such as a booking or a start date. Put it beside a
+            field where the same date can be typed. Typing must always work, because the calendar is
+            the slower way for people who use a keyboard or a screen reader.
           </li>
           <li>
             Use it in forms for residents and for staff, and as a section of a page. To open it from
             a button, use <Link href="/components/date-picker">DatePicker</Link>, or{' '}
-            <Link href="/components/date-range-picker">DateRangePicker</Link> for a start and an
-            end.
+            <Link href="/components/date-range-picker">DateRangePicker</Link> for a start and an end
+            in two fields.
           </li>
           <li>
             Not for a date the user knows by heart, such as a date of birth: use{' '}
             <Link href="/components/date-input">DateInput</Link>.
           </li>
           <li>
-            Not for a time or a whole month: use a{' '}
-            <Link href="/components/text-input">TextInput</Link> with a mask.
+            Not when most days are unavailable: offer the few open days as{' '}
+            <Link href="/components/radio-group">radio buttons</Link>.
           </li>
         </ul>
       }
@@ -153,9 +155,10 @@ export function CalendarPage({
             title="Beside a typed field"
             why={
               <>
-                Hold the date in your form state as the text of the field, and give the Calendar the
-                ISO date. Choosing a day writes it into the field, and typing a real date selects it
-                in the Calendar. Calendar is a companion to typing, never the only way.
+                Keep the date in your form state as the text of the field, and give the Calendar the
+                same date as <code>YYYY-MM-DD</code>. Choosing a day writes it into the field, and
+                typing a real date selects it in the Calendar. The Calendar is a companion to
+                typing, never the only way.
               </>
             }
             code={sources['beside-a-field']}
@@ -171,9 +174,10 @@ export function CalendarPage({
             title="Only some dates can be chosen"
             why={
               <>
-                Set <code>minimum</code> and <code>maximum</code>: the keys and the month buttons
-                stop there, and days outside are struck through. <code>today</code> is fixed in this
-                example so the dates are the same on any day.
+                Set <code>minimum</code> and <code>maximum</code>, such as the days a service takes
+                bookings. The keys and the month buttons stop there, and days outside are struck
+                through. <code>today</code> is fixed in this example so the dates are the same on
+                any day.
               </>
             }
             code={sources['bookable-window']}
@@ -195,7 +199,7 @@ export function CalendarPage({
           <UseCase
             id="closed-days"
             title="Days that are closed, with the reason"
-            why="A day that can't be chosen stays focusable, drawn struck through, so a keyboard user can find it and read why. The reason is part of the day's name."
+            why="A day that can’t be chosen, such as a closed recycling centre, stays focusable and is drawn struck through. A screen reader says the reason as part of the day’s name. Say in words above the calendar that closed days are struck through and can’t be chosen, so the meaning is never carried by the shape alone (1.3.3 Sensory Characteristics)."
             code={sources['closed-days']}
             propsUsed={[
               { part: 'Calendar.Root', prop: 'isDateUnavailable' },
@@ -206,8 +210,8 @@ export function CalendarPage({
           </UseCase>
           <UseCase
             id="week-numbers"
-            title="Week numbers"
-            why="Planners often name a week by its number. The ISO number only fits a week that starts on Monday, so the Calendar hides the column and warns in development with any other start."
+            title="Week numbers for planners"
+            why="People who plan by week, such as staff on a rota, name a week by its number. The ISO number only fits a week that starts on Monday, so the Calendar hides the column and warns in development with any other start."
             code={sources['week-numbers']}
             propsUsed={[
               { part: 'Calendar.Root', prop: 'weekNumbers' },
@@ -218,12 +222,12 @@ export function CalendarPage({
           </UseCase>
           <UseCase
             id="year-buttons"
-            title="Far from today"
+            title="A date years away"
             why={
               <>
                 Add <code>Calendar.PreviousYear</code> and <code>Calendar.NextYear</code> when the
-                date can be years away, and open on a day near it with{' '}
-                <code>defaultFocusedDate</code>. For a date of birth, typing in{' '}
+                date can be years from today, such as the date on an archived document, and open on
+                a day near it with <code>defaultFocusedDate</code>. For a date of birth, typing in{' '}
                 <Link href="/components/date-input">DateInput</Link> is faster than any calendar.
               </>
             }
@@ -237,7 +241,7 @@ export function CalendarPage({
             title="A start and an end"
             why={
               <>
-                With <code>mode=&quot;range&quot;</code> the value is{' '}
+                For a stay or a leave, set <code>mode=&quot;range&quot;</code>. The value is{' '}
                 <code>{'{ start, end }'}</code> and the user presses the start, then the end: no
                 extra key. A start alone is reported at once. Two months show side by side from
                 64rem wide, one below it.
@@ -246,6 +250,7 @@ export function CalendarPage({
             code={sources['range']}
             propsUsed={[
               { part: 'Calendar.Root', prop: 'mode' },
+              { part: 'Calendar.Root', prop: 'minimum' },
               { part: 'Calendar.Root', prop: 'minimumDays' },
               { part: 'Calendar.Root', prop: 'maximumDays' },
               { part: 'Calendar.Root', prop: 'visibleMonths' },
@@ -260,15 +265,30 @@ export function CalendarPage({
           >
             <StayRange />
           </UseCase>
-          <Note kind="reminder">
-            Without a <code>timeZone</code> on <code>KvirnProvider</code>, hydration renders the UTC
-            date and the grid then switches to the browser&apos;s date; a Calendar mounted later
-            starts on it. Pass <code>timeZone</code> for the same day on the server and in the
-            browser.
-          </Note>
         </>
       }
-      contract={<ContractSectionsView contract={contract} linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Render <code>Calendar.Heading</code> in every Calendar. It names the grid: without
+                it the grid has no name and a screen reader user can’t tell which month it shows
+                (4.1.2 Name, Role, Value). A warning in development tells you.
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                Pass <code>timeZone</code> on <code>KvirnProvider</code> so the server and the
+                browser agree which day is today. Anything else on this list that affects your
+                service belongs in your accessibility statement, with its workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
@@ -288,11 +308,12 @@ export function CalendarPage({
                 {
                   key: 'dayName',
                   meaning:
-                    'A day’s name: the date, then today, its place in a range and your description.',
+                    'A day’s name: the date, then today, its place in a range, the range note (its length, or why it can’t be the end) and your description.',
                   values: {
                     date: 'Wednesday 14 October 2026',
                     isToday: true,
                     rangePosition: 'start date',
+                    rangeNote: '7 days',
                     description: 'Closed',
                   },
                 },

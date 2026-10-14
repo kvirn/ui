@@ -14,24 +14,14 @@ import {
   useGridHook,
 } from '../content/grid.api.ts'
 import { DefaultGrid } from '../examples/grid/default.tsx'
-import { NewsGrid } from '../examples/grid/news.tsx'
 import { PageLayout } from '../examples/grid/page-layout.tsx'
 import { QuickLinks } from '../examples/grid/quick-links.tsx'
 import { ServicePage } from '../examples/grid/service-page.tsx'
-import { ServiceList } from '../examples/grid/service-list.tsx'
-import { SideColumn } from '../examples/grid/side-column.tsx'
 import { SideInformation } from '../examples/grid/side-information.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type GridExampleSources = Record<
-  | 'default'
-  | 'page-layout'
-  | 'side-column'
-  | 'service-page'
-  | 'side-information'
-  | 'service-list'
-  | 'quick-links'
-  | 'news',
+  'default' | 'page-layout' | 'service-page' | 'side-information' | 'quick-links',
   string
 >
 
@@ -80,39 +70,32 @@ export function GridPage({
   return (
     <ComponentPage
       title="Grid"
-      lead="It lays out cells in columns and rows with no CSS of your own, and it adds no role, text or behaviour."
+      lead="You choose the columns with classes, so you need no CSS of your own. Grid adds no meaning of its own: what a screen reader reads and what the keyboard visits follows the order you write."
       status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
-            Use Grid to place things in columns: a page with a main part and a side part, or a grid
+            Use Grid to place things in columns: a page with a main part and a side part, or a set
             of service cards, news items or quick links.
           </li>
           <li>
-            Start at one track and add columns from a breakpoint:{' '}
-            <code>kv-grid--cols-1 kv-grid--lg-cols-12</code>. A bare <code>cols-n</code> (n above
-            1), <code>flow-col</code> without <code>rows-n</code> or <code>auto-cols-min|max</code>{' '}
-            keeps its tracks at 320px, so the cells squeeze and content overflows or overlaps (WCAG
-            1.4.10). Breakpoints answer to the grid’s own width, so the same markup works in a
-            sidebar or a card and at 400% zoom.
+            Start with one column and add columns from a breakpoint (a width of the grid itself):{' '}
+            <code>kv-grid--cols-1 kv-grid--lg-cols-12</code>. The grid measures its own width, so
+            the same markup works in a sidebar, in a card and at 400% zoom.
           </li>
           <li>
             For as many columns as fit, none narrower than you choose, use{' '}
             <code>kv-grid--fit-sm</code>, <code>-md</code> or <code>-lg</code>.
           </li>
           <li>
-            A grid of cards or links is a list: render Grid.Root as a <code>&lt;ul&gt;</code> with
-            one <code>&lt;li&gt;</code> per item, so a screen reader says how many there are.
+            A grid of cards or links is a list. Render <code>Grid.Root</code> as a{' '}
+            <code>&lt;ul&gt;</code> with one <code>&lt;li&gt;</code> per item, so a screen reader
+            says how many there are.
           </li>
           <li>
-            Not for one column of things with space between them: use Stack. For a page with a side
-            column, make the side <code>kv-grid-item--lg-span-3</code> and the content{' '}
-            <code>kv-grid-item--lg-span-9</code>; below 64rem they stack in the order you wrote
-            them.
-          </li>
-          <li>
-            Not for data with rows and columns the user compares: use a{' '}
-            <Link href="/components/table">Table</Link>.
+            Not for one column of things with space between them: use{' '}
+            <Link href="/components/stack">Stack</Link>. Not for data with rows and columns that
+            people compare: use a <Link href="/components/table">Table</Link>.
           </li>
         </ul>
       }
@@ -126,7 +109,7 @@ export function GridPage({
           <UseCase
             id="page-layout"
             title="A 12-column page layout"
-            why="One column on a phone, and from 64rem a main part over eight columns and a side part over four. The cells are in reading order, so a keyboard and a screen reader get the order you see."
+            why="One column on a phone. When the grid is at least 64rem wide, the main part takes eight columns and the side part four. The cells are in reading order, so a keyboard and a screen reader get the order you see."
             code={sources['page-layout']}
             propsUsed={[
               { part: 'Grid.Root', prop: 'className' },
@@ -136,25 +119,16 @@ export function GridPage({
               <Note kind="reminder">
                 Line placement (<code>start-n</code>, <code>end-n</code>) can put a later cell
                 before an earlier one. Keep it in DOM order, because focus and reading order follow
-                the DOM (WCAG 1.3.2, 2.4.3).
+                the DOM (1.3.2 Meaningful Sequence, 2.4.3 Focus Order).
               </Note>
             }
           >
             <PageLayout />
           </UseCase>
           <UseCase
-            id="side-column"
-            title="A side column and a content column"
-            why="Three of twelve columns for the side and nine for the content from 64rem, stacked in DOM order below. The side is proportional, about 14rem at 64rem and 18rem at 80rem."
-            code={sources['side-column']}
-            propsUsed={[{ part: 'Grid.Item', prop: 'className' }]}
-          >
-            <SideColumn />
-          </UseCase>
-          <UseCase
             id="service-page"
             title="A service page with navigation for its section"
-            why="Pages in the same section link to each other from a side column. Render the side Item as a nav and name it, and mark the current page with aria-current."
+            why="Pages in the same section link to each other from a side column of three of twelve columns, with the content over the other nine. Render the side Item as a nav and name it, and mark the current page with current."
             code={sources['service-page']}
             propsUsed={[
               { part: 'Grid.Root', prop: 'className' },
@@ -162,9 +136,9 @@ export function GridPage({
             ]}
             note={
               <Note kind="reminder">
-                A nav is a landmark and needs a name, in the page’s language. An Item is never{' '}
-                <code>&lt;main&gt;</code> by default: a page has one, so choose it with{' '}
-                <code>as</code> where it fits.
+                A nav is a landmark (a region people can jump to) and needs a name, in the page’s
+                language. An Item is never <code>&lt;main&gt;</code> by default: a page has one, so
+                choose it with <code>as</code> where it fits (1.3.1 Info and Relationships).
               </Note>
             }
           >
@@ -173,66 +147,59 @@ export function GridPage({
           <UseCase
             id="side-information"
             title="Contact details beside the text"
-            why="Information that belongs to the page but isn’t part of the text goes in a side column. Write the content first and the side after it, so the content is at inline start and is read and focused first. Render the side as an aside and name it."
+            why="Information that belongs to the page but isn’t part of the text goes in a side column. Write the content first and the side after it, so the content is at the start of the line and is read and visited first. Render the side as an aside and name it."
             code={sources['side-information']}
             propsUsed={[{ part: 'Grid.Item', prop: 'as' }]}
             note={
               <Note kind="tip">
-                The side follows the DOM order, and it mirrors in right-to-left languages: the first
-                part is at the right.
+                The cells follow the DOM order, and the grid mirrors in right-to-left languages: the
+                first cell is at the right.
               </Note>
             }
           >
             <SideInformation />
           </UseCase>
           <UseCase
-            id="service-cards"
-            title="A grid of services on the start page"
-            why="Cards that lead to the services residents look for most. Render Grid.Root as a list and each card as a list item, so the count is announced and the cards are read in the order they are written."
-            code={sources['service-list']}
-            propsUsed={[{ part: 'Grid.Root', prop: 'as' }]}
-            note={
-              <Note kind="reminder">
-                Write the items in reading order. Grid fills left to right (right to left in
-                right-to-left languages) in DOM order, and there is no way to reorder them.
-              </Note>
-            }
-          >
-            <ServiceList />
-          </UseCase>
-          <UseCase
             id="quick-links"
             title="Short links in narrow columns"
-            why="Links with a few words fit in a narrow column, so more of them sit side by side. Choose a narrower fit class and a smaller gap."
+            why="Links with a few words fit in a narrow column, so more of them sit side by side. Choose the narrowest fit class and a smaller gap."
             code={sources['quick-links']}
-            propsUsed={[
-              { part: 'Grid.Root', prop: 'className' },
-              { part: 'Grid.Root', prop: 'as' },
-            ]}
-          >
-            <QuickLinks />
-          </UseCase>
-          <UseCase
-            id="news"
-            title="News items with room to read"
-            why="Items with a heading and a few lines of text read better in wider columns, so fewer fit in a row. Choose a wider fit class and more space between them."
-            code={sources['news']}
             propsUsed={[
               { part: 'Grid.Root', prop: 'className' },
               { part: 'Grid.Root', prop: 'as' },
             ]}
             note={
               <Note kind="tip">
-                On a screen narrower than the fit size there is one column, so nothing scrolls
+                A grid that is narrower than the fit size gets one column, so nothing scrolls
                 sideways at 320px.
               </Note>
             }
           >
-            <NewsGrid />
+            <QuickLinks />
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Start with one column: <code>kv-grid--cols-1</code> or a <code>fit</code> class.
+                Then add columns with a breakpoint, such as <code>kv-grid--lg-cols-3</code>. A bare{' '}
+                <code>kv-grid--cols-3</code> keeps three columns on a 320px screen, and content
+                overflows (1.4.10 Reflow).
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                If you style a cell, don’t give it a fixed height or hide its overflow. When people
+                widen the text spacing, the text would be cut off (1.4.12 Text Spacing).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

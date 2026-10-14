@@ -35,7 +35,8 @@ export const buttonRows = propRows<ButtonDocumentedProps>({
   onClick: {
     type: 'MouseEventHandler<HTMLButtonElement>',
     default: '–',
-    description: 'Called on click, Enter and Space, and never while the button is disabled.',
+    description:
+      'Called on click, Enter and Space, and never while the button is disabled or busy.',
   },
 })
 
@@ -50,6 +51,12 @@ export const buttonAttributes: readonly AttributeRow[] = [
     name: 'kv-button--danger',
     values: 'class you add',
     meaning: 'An action that deletes something. Theme variant.',
+  },
+  {
+    name: 'kv-button--link',
+    values: 'class you add',
+    meaning:
+      'Reads as a link in a row of links. Only for an action that changes something in place, such as a toggle. Never for sending, going on a step or deleting. Theme option.',
   },
   {
     name: 'kv-button--icon-only',
@@ -74,7 +81,8 @@ export const buttonAttributes: readonly AttributeRow[] = [
   {
     name: 'aria-disabled',
     values: '"true" or absent',
-    meaning: 'Set when disabled and focusableWhenDisabled are both on. Not passed directly.',
+    meaning:
+      'Set when disabled and focusableWhenDisabled are both on, and while busy. Not passed directly.',
   },
 ]
 

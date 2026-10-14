@@ -41,8 +41,9 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;div&gt;</code> with the role <code>group</code>, named by the message{' '}
         <code>readAloud.label</code>. It takes the options of <code>useReadAloud</code> as props and
-        every attribute of a <code>&lt;div&gt;</code>. Put the other parts inside it. The default
-        theme is described on <Link href="/foundation/theming">Theming</Link>.
+        every attribute of a <code>&lt;div&gt;</code> except <code>lang</code> and{' '}
+        <code>onKeyDown</code>, and passes <code>ref</code> to it. Put the other parts inside it.
+        The default theme is described on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: useReadAloudRows,
@@ -104,8 +105,8 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;span&gt;</code> with <code>role=&quot;status&quot;</code> and{' '}
         <code>aria-live=&quot;off&quot;</code>: findable, but silent, since the speech is the
-        feedback. It shows the sentence position, or why nothing is read, and it is the only part
-        left when the browser cannot read text aloud.
+        feedback. It shows the sentence position, or why nothing is read. With the group, it is the
+        only part left when the browser cannot read text aloud.
       </>
     ),
     props: readAloudStatusRows,
@@ -136,7 +137,7 @@ export function ReadAloudPage({
   return (
     <ComponentPage
       title="ReadAloud"
-      lead="It never starts by itself, and it is not a substitute for a screen reader. Blocked: waiting for an npm package update and a re-test."
+      lead="It never starts by itself, and it is not a substitute for a screen reader (software that reads the whole screen aloud). Work on it is blocked: the maintainers are waiting for an update to an npm package (a published JavaScript package) and a re-test."
       status="in-planning"
       whenToUse={
         <ul>
@@ -146,11 +147,13 @@ export function ReadAloudPage({
           </li>
           <li>
             Put it before the text it reads, and offer it to everyone. Don&rsquo;t start it
-            automatically and don&rsquo;t hide it from assistive technology.
+            automatically and don&rsquo;t hide it from assistive technology (software that people
+            with disabilities use, such as a screen reader).
           </li>
           <li>
-            It uses the voices on the user&rsquo;s device and sends nothing to a server. A browser
-            may have no voice for a language, or none at all, and the player then says so.
+            By default it uses only voices stored on the user&rsquo;s device, so the text is not
+            sent anywhere. A device may have no voice for a language, or none at all, and the player
+            then says so.
           </li>
           <li>
             It is not for announcing a change in the page. Use the{' '}
@@ -167,15 +170,15 @@ export function ReadAloudPage({
         <>
           <UseCase
             id="read-an-article"
-            title="Read an article"
-            why="Listen reads the whole article, then Pause and Stop control it, and Previous and Next move a sentence. Select text first and Listen reads only the selection. In a browser without speech, the player shows only a status text instead of buttons that cannot work."
+            title="Let residents listen to a guidance page"
+            why="Listen reads the whole article. Pause and Stop control it, and Previous and Next move one sentence. Select text first and Listen reads only the selection. In a browser without speech, the player shows only a status text instead of buttons that cannot work."
             code={sources['default']}
             propsUsed={[{ part: 'ReadAloud.Root', prop: 'contentRef' }]}
             note={
               <Note kind="tip">
-                Reading a selection collapses it, so the browser&rsquo;s selection colour does not
-                hide the sentence highlight. The Status shows the position as well, so the highlight
-                is never the only cue.
+                Select text with the pointer and a “Listen to selected text” button appears next to
+                it. With the keyboard, select with Shift and the arrow keys, then press Listen. The
+                Status shows the sentence position either way.
               </Note>
             }
           >
@@ -183,8 +186,8 @@ export function ReadAloudPage({
           </UseCase>
           <UseCase
             id="small-player"
-            title="Only the controls you need"
-            why="Every part is optional. Leave out Rate, Voice, Previous and Next for a short text. Mark text that must not be read, such as a reference number, with data-kv-read-aloud-skip."
+            title="A short notice with a simple player"
+            why="Every part is optional. For a short text, leave out Speed, Voice, Previous and Next. Mark text that must not be read, such as a reference number, with data-kv-read-aloud-skip."
             code={sources['minimal']}
             propsUsed={[{ part: 'ReadAloud.Root', prop: 'contentRef' }]}
           >
@@ -193,13 +196,14 @@ export function ReadAloudPage({
           <UseCase
             id="language-of-the-text"
             title="Text in another language than the page"
-            why="Each sentence is read with a voice for its own language, never a voice of another one. Set lang on your own element around the content. If the device has no voice for it, reading stops, the Status names the language and the player says so once."
+            why="The text below is Swedish: the building permit paragraph from the first example. Each sentence is read with a voice for its own language, never a voice of another one. If the device has no voice for it, reading stops, the Status names the language and the player says so once."
             code={sources['swedish-content']}
             propsUsed={[{ part: 'ReadAloud.Root', prop: 'contentRef' }]}
             note={
               <Note kind="reminder">
-                Set <code>lang</code> on the content: it picks the voice. See{' '}
-                <Link href="#what-you-need-to-do">what you need to do</Link>.
+                Set <code>lang</code> on your own element around the content: it picks the voice.
+                The player takes no <code>lang</code> itself. See{' '}
+                <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >
@@ -207,7 +211,33 @@ export function ReadAloudPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="tip">
+                With <code>allowRemoteVoices</code> on, the browser may send the text to the voice’s
+                provider. Leave it off on pages with personal data.
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="tip">
+                The default theme styles the player but not the sentence highlight yet. The sentence
+                is registered as <code>::highlight(kv-read-aloud)</code>, and nothing paints it
+                until you add that style. The Status text gives the position meanwhile.
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If an issue here affects your service, list it in your accessibility statement with
+                its workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

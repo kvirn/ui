@@ -12,6 +12,8 @@ export const useTextInputTexts = defineExampleTexts({
     street: 'Street address',
     youTyped: 'You typed',
     unmasked: 'Without the space',
+    nameMissing: 'Enter your full name',
+    emailMissing: 'Enter your email address, for example name@example.com',
     send: 'Send application',
     sent: 'Sent',
   },

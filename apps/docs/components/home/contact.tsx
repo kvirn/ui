@@ -5,9 +5,7 @@ import { Band } from './band.tsx'
 
 const text = homeMessages.contact
 
-const mailto = (subject: string) => `mailto:${text.email}?subject=${encodeURIComponent(subject)}`
-
-/** Three doors, none a dead end. Email only: no form, no third-party service. */
+/** Three doors, none a dead end. Each leads to the contact page, where the address is. */
 export function Contact() {
   const cards = [text.decide, text.build, text.licence]
   return (
@@ -25,7 +23,7 @@ export function Contact() {
                 </Heading>
                 <p>{card.body}</p>
                 <p>
-                  <Link href={mailto(card.subject)} className="kv-link--service">
+                  <Link href="/contact" className="kv-link--service">
                     <LinkIcon>
                       <Icon name="arrow-forward" size="24" />
                     </LinkIcon>

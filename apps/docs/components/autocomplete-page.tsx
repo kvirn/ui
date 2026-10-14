@@ -29,6 +29,7 @@ import { DefaultAutocomplete } from '../examples/autocomplete/default.tsx'
 import { LongListAutocomplete } from '../examples/autocomplete/long-list.tsx'
 import { OwnFilterAutocomplete } from '../examples/autocomplete/own-filter.tsx'
 import { PlainFormAutocomplete } from '../examples/autocomplete/plain-form.tsx'
+import { RequiredAutocomplete } from '../examples/autocomplete/required.tsx'
 import { RichSuggestionsAutocomplete } from '../examples/autocomplete/rich-suggestions.tsx'
 import { ServerSuggestionsAutocomplete } from '../examples/autocomplete/server-suggestions.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
@@ -43,6 +44,7 @@ export type AutocompleteExampleSources = Record<
   | 'own-filter'
   | 'rich-suggestions'
   | 'plain-form'
+  | 'required'
   | 'long-list',
   string
 >
@@ -67,9 +69,9 @@ const parts: ApiPart[] = [
     renders: (
       <>
         {element('div')} with no role, around the input and its Toggle and Clear. It is optional.
-        The popup is placed against it and is as wide as it. It takes every attribute of a{' '}
-        {element('div')} and passes <code>ref</code> to it. Theming is on{' '}
-        <Link href="/foundation/theming">Theming</Link>.
+        The popup is placed against it and is as wide as it, and the default theme draws the field’s
+        edge and focus ring on it. It takes every attribute of a {element('div')} and passes{' '}
+        <code>ref</code> to it. Theming is on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     attributes: field.control,
@@ -111,7 +113,7 @@ const parts: ApiPart[] = [
     renders: (
       <>
         {element('div popover="manual"')} with no role, in the top layer: the same part as{' '}
-        <Link href="/components/listbox">Listbox.Popup</Link>.
+        <Link href="/components/listbox">Listbox.Popup</Link>. Focus never enters it.
       </>
     ),
     attributes: popupWithLoadingAttributes(popupAttributes),
@@ -220,24 +222,26 @@ export function AutocompletePage({
       title="Autocomplete"
       lead="The value is the text itself, so the user can write something that is not in the list."
       status="alpha-candidate"
+      pattern="APG Combobox (editable, list autocomplete)"
       whenToUse={
         <ul>
           <li>
-            Use an Autocomplete for free text where suggestions help, such as a street address, and
+            Use an Autocomplete for free text where suggestions help, such as a street name, and
             where any text is a valid answer.
           </li>
           <li>
-            Picking a suggestion fills the input. Nothing is chosen from a list, so validate the
+            Picking a suggestion only fills the input. Nothing is chosen from a list, so check the
             text yourself.
           </li>
           <li>
             When only one of the options is a valid answer, use a{' '}
             <Link href="/components/combobox">Combobox</Link>. For a short list, use a{' '}
-            <Link href="/components/listbox">Listbox</Link>.
+            <Link href="/components/listbox">Listbox</Link> or{' '}
+            <Link href="/components/radio-group">radio buttons</Link>.
           </li>
           <li>
-            The browser may also suggest from its own history. Set <code>autoComplete</code> on the
-            input only for a known purpose, where ours add something.
+            The browser can also suggest from its own history. Set <code>autoComplete</code> on the
+            input only when the field is for a known purpose and your suggestions add something.
           </li>
         </ul>
       }
@@ -259,6 +263,32 @@ export function AutocompletePage({
             ]}
           >
             <ControlledAutocomplete />
+          </UseCase>
+          <UseCase
+            id="required"
+            title="A required answer with an error"
+            why={
+              <>
+                Mark the Field as required and check the text when the user sends the form. Any text
+                is a valid answer, so the usual error is an empty field. Set <code>invalid</code>{' '}
+                and say what to do. An invalid field keeps its error edge and shows the focus ring
+                whenever it has focus.
+              </>
+            }
+            code={sources['required']}
+            propsUsed={[
+              { part: 'Autocomplete.Root', prop: 'value' },
+              { part: 'Autocomplete.Root', prop: 'onValueChange' },
+            ]}
+            note={
+              <Note kind="reminder">
+                The field never moves focus. After a failed send, move it to the input: an error is
+                read only when its field gets focus, so without the move a screen reader user isn’t
+                told what went wrong (3.3.1 Error Identification).
+              </Note>
+            }
+          >
+            <RequiredAutocomplete />
           </UseCase>
           <UseCase
             id="server-suggestions"
@@ -284,8 +314,8 @@ export function AutocompletePage({
           </UseCase>
           <UseCase
             id="rich-suggestions"
-            title="An icon and a second line in each suggestion"
-            why="A suggestion can hold any markup. The optional parts keep its name to its text, which is also what goes in the input when it is picked, and give the second line as a description."
+            title="A second line in each suggestion"
+            why="A suggestion can hold more than its name, such as the district of a street. The optional parts keep its name to its text, which is also what goes in the input when it is picked, and give the second line as a description."
             code={sources['rich-suggestions']}
             propsUsed={[
               { part: 'Autocomplete.Root', prop: 'itemToString' },
@@ -297,16 +327,17 @@ export function AutocompletePage({
           <UseCase
             id="plain-form"
             title="Sending the text in a plain form"
-            why="The text is the value, so the input itself carries the name and a plain form sends it. There is no hidden input. Set autoComplete for a known purpose, such as a street address."
+            why="The text is the value, so the input itself carries the name and a plain form sends it. There is no hidden input. Enter with no active suggestion is the browser’s own, so the form is sent with whatever was typed."
             code={sources['plain-form']}
             propsUsed={[
               { part: 'Autocomplete.Root', prop: 'name' },
               { part: 'Autocomplete.Root', prop: 'defaultValue' },
             ]}
             note={
-              <Note kind="tip">
-                Enter with no active suggestion is the browser’s own, so the form is sent with
-                whatever was typed.
+              <Note kind="reminder">
+                If the field asks for the user’s own street address, set <code>autoComplete</code>{' '}
+                to the matching token, as here (1.3.5 Identify Input Purpose). The browser’s own
+                suggestions then appear too, so do it only when yours add something.
               </Note>
             }
           >
@@ -324,7 +355,27 @@ export function AutocompletePage({
         </>
       }
       contract={
-        <ContractSectionsView contract={contract} messageNamespace="combobox" linkToStrings />
+        <ContractSectionsView
+          contract={contract}
+          messageNamespace="combobox"
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Give the input a visible <code>Field.Label</code>. A placeholder is not a label: it
+                disappears when the user types (3.3.2 Labels or Instructions; 4.1.2 Name, Role,
+                Value).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                Anything on this list that affects your service belongs in your accessibility
+                statement, with the workaround. Public-sector sites in the EU must publish one (the
+                Web Accessibility Directive).
+              </Note>
+            ),
+          }}
+        />
       }
       contractSections={contractSectionList(contract)}
       api={

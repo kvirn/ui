@@ -100,8 +100,9 @@ export function DatePickerPage({
   return (
     <ComponentPage
       title="DatePicker"
-      lead="Typing always works: the picker is the slower path, not a replacement."
+      lead="Choosing a day fills the field and returns focus to the button. Typing always works: the picker is the slower path, not a replacement."
       status="alpha-candidate"
+      pattern="APG Date Picker Dialog"
       whenToUse={
         <ul>
           <li>
@@ -173,9 +174,9 @@ export function DatePickerPage({
             ]}
             note={
               <Note kind="reminder">
-                The picker never validates what is typed. Check the typed date against the same
-                limits in your form, and say what is wrong. See{' '}
-                <Link href="#what-you-need-to-do">What you need to do</Link>.
+                The picker never checks what is typed. Check the typed date against the same limits
+                in your form, for example with <code>checks.date</code> and its range, and say what
+                is wrong.
               </Note>
             }
           >
@@ -184,7 +185,7 @@ export function DatePickerPage({
           <UseCase
             id="closed-days"
             title="Days that are closed, with the reason"
-            why="A day that can't be chosen stays focusable, struck through, with the reason in its name, so a keyboard or screen reader user can find it and read why."
+            why="A day that can’t be chosen stays focusable, struck through, with the reason in its name, so a keyboard or screen reader user can find it and read why. The typed field is where most people look first, so state the closed days in words in its help text, and show an error when a closed date is typed."
             code={sources['closed-days']}
             propsUsed={[
               { part: 'DatePicker.Root', prop: 'isDateUnavailable' },
@@ -208,14 +209,28 @@ export function DatePickerPage({
           >
             <TitledVisitDate />
           </UseCase>
-          <Note kind="reminder">
-            Without a <code>timeZone</code> on <code>KvirnProvider</code>, the first paint uses the
-            UTC date; a popup that opens after mount starts on the browser&apos;s date. Pass{' '}
-            <code>timeZone</code> for the same day on the server and in the browser.
-          </Note>
         </>
       }
-      contract={<ContractSectionsView contract={contract} linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Say the dates that can be chosen in the field’s help text too. The dialog’s own line
+                is only visible once the dialog is open (3.3.2 Labels or Instructions).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If an issue here affects your service, list it in your accessibility statement with
+                its workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

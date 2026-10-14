@@ -1,4 +1,6 @@
 import type {
+  NavigationLabelProps,
+  NavigationListProps,
   NavigationRootProps,
   UseNavigationOptions,
   UseNavigationResult,
@@ -32,6 +34,24 @@ export const navigationRootAttributes: readonly AttributeRow[] = [
     meaning: 'From label. Not set when you pass aria-labelledby.',
   },
 ]
+
+export const navigationListRows = propRows<Pick<NavigationListProps, 'as'>>({
+  as: {
+    type: "'ul' | 'ol'",
+    default: "'ul'",
+    description:
+      'Changes the element. Use ol when the order is the meaning. Another tag warns once in development and falls back to ul.',
+  },
+})
+
+export const navigationLabelRows = propRows<Pick<NavigationLabelProps, 'as'>>({
+  as: {
+    type: "'span' | 'p'",
+    default: "'span'",
+    description:
+      'Changes the element. It stays a name, never a heading. Another tag warns once in development and falls back to span.',
+  },
+})
 
 export const navigationListAttributes: readonly AttributeRow[] = [
   { name: 'kv-navigation-list', values: 'always', meaning: 'The part class.' },

@@ -1,5 +1,6 @@
 import type {
   PopoverCloseProps,
+  PopoverPopupProps,
   PopoverRootProps,
   PopoverTriggerProps,
   UsePopoverOptions,
@@ -68,6 +69,15 @@ const asRow = {
 
 export const popoverTriggerRows = propRows<Pick<PopoverTriggerProps, 'as'>>(asRow)
 export const popoverCloseRows = propRows<Pick<PopoverCloseProps, 'as'>>(asRow)
+
+export const popoverPopupRows = propRows<Pick<PopoverPopupProps, 'as'>>({
+  as: {
+    type: "'div' | 'section'",
+    default: "'div'",
+    description:
+      'The element the popup is. Any other tag warns once in development and falls back to a div. The role is dialog either way.',
+  },
+})
 
 export const popoverTriggerAttributes: readonly AttributeRow[] = [
   { name: 'kv-popover-trigger', values: 'always', meaning: 'The part class.' },

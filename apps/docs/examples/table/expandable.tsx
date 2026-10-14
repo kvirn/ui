@@ -85,7 +85,7 @@ export function ExpandableCases() {
                     <dt>{texts.handlerLabel}</dt>
                     <dd>{record.handler}</dd>
                     <dt>{texts.decisionLabel}</dt>
-                    <dd>{record.decision}</dd>
+                    <dd>{texts.decisions[record.decision]}</dd>
                   </dl>
                 </Table.DetailRow>
               </>

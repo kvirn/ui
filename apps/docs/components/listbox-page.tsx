@@ -218,8 +218,9 @@ export function ListboxPage({
   return (
     <ComponentPage
       title="Listbox"
-      lead="It reads well with a keyboard and a screen reader, and it can be the browser’s own select."
+      lead="On a phone it can be the browser’s own select. With a keyboard or a screen reader, focus stays on one control while you move through the options."
       status="alpha-candidate"
+      pattern="APG Combobox (select-only)"
       whenToUse={
         <ul>
           <li>
@@ -232,15 +233,20 @@ export function ListboxPage({
             suggestions, use an <Link href="/components/autocomplete">Autocomplete</Link>.
           </li>
           <li>
-            For a few choices that all fit on the page, a group of checkboxes or radio buttons is
-            easier to use than any list.
+            For a few choices that all fit on the page,{' '}
+            <Link href="/components/radio-group">radio buttons</Link> or{' '}
+            <Link href="/components/checkbox-group">checkboxes</Link> are easier to use than any
+            list.
           </li>
           <li>
             On a touch device the default, <code>native=&quot;auto&quot;</code>, shows the browser’s
             own select. The examples set <code>native=&quot;never&quot;</code> so you see the popup
             everywhere. See <Link href="#native-select">The browser’s own select</Link>.
           </li>
-          <li>Not for actions: use a Button for something that does, and a Link for going.</li>
+          <li>
+            Not for actions: use a <Link href="/components/button">Button</Link> for something that
+            does, and a <Link href="/components/link">Link</Link> for going.
+          </li>
         </ul>
       }
       example={
@@ -288,13 +294,21 @@ export function ListboxPage({
           </UseCase>
           <UseCase
             id="plain-form"
-            title="Sending the choice in a plain form"
-            why="KvirnUI holds no form state. Give the Root a name and the chosen key goes into the form as a hidden input, so FormData and a plain submit work. With nothing chosen it sends an empty value."
+            title="A required choice in a form"
+            why="KvirnUI holds no form state. Give the Root a name and the chosen key goes into the form as a hidden input, so FormData and a plain submit work. With nothing chosen it sends an empty value: check for that yourself, say what to do, and move focus to the field."
             code={sources['plain-form']}
             propsUsed={[
               { part: 'Listbox.Root', prop: 'name' },
-              { part: 'Listbox.Root', prop: 'defaultValue' },
+              { part: 'Listbox.Root', prop: 'onValueChange' },
             ]}
+            note={
+              <Note kind="reminder">
+                Write the error as an instruction, “Choose a municipality”, and set{' '}
+                <code>invalid</code> on the Field so the error is read with the field (3.3.1 Error
+                Identification, 3.3.3 Error Suggestion). Don’t change the page or send the form when
+                the value changes (3.2.2 On Input).
+              </Note>
+            }
           >
             <PlainFormListbox />
           </UseCase>
@@ -325,7 +339,7 @@ export function ListboxPage({
             <NativeSelect />
           </UseCase>
           <UseCase
-            id="rich-options"
+            id="use-rich-options"
             title="An icon and a second line in each option"
             why="An option can hold any markup. The optional parts give it a place and keep its name right: the icon is decorative, the text is the name, the description is read as help and the indicator marks the chosen one."
             code={sources['rich-options']}
@@ -342,15 +356,15 @@ export function ListboxPage({
           </UseCase>
           <UseCase
             id="language-switcher"
-            title="A language switcher"
+            title="Choices in another language"
             why={
               <>
                 Name each language in its own language, so people find theirs: Svenska, Suomi,
                 English. A screen reader reads text in the voice of the page’s language unless the
-                text says otherwise (WCAG 3.1.2), so give <code>itemToLang</code> the code of each
-                item. It sets <code>lang</code> on each native option, each popup option and the
-                chosen text in the trigger. It is not supported by Combobox or Autocomplete yet:
-                their value is an input, which has one <code>lang</code> for the whole text.
+                text says otherwise (3.1.2 Language of Parts), so give <code>itemToLang</code> the
+                code of each item. It sets <code>lang</code> on each native option, each popup
+                option and the chosen text in the trigger. Combobox and Autocomplete don’t support
+                it yet: their value is an input, which has one <code>lang</code> for the whole text.
               </>
             }
             code={sources['language-switcher']}
@@ -358,6 +372,14 @@ export function ListboxPage({
               { part: 'Listbox.Root', prop: 'itemToLang' },
               { part: 'Listbox.Root', prop: 'itemToString' },
             ]}
+            note={
+              <Note kind="tip">
+                This chooses a setting in a form. To switch the language of the page itself, use
+                links: a select that changes the page when you choose breaks 3.2.2 On Input. In a
+                form for residents, three to five options usually work better as{' '}
+                <Link href="/components/radio-group">radio buttons</Link>.
+              </Note>
+            }
           >
             <LanguageSwitcherListbox />
           </UseCase>
@@ -373,7 +395,20 @@ export function ListboxPage({
         </>
       }
       contract={
-        <ContractSectionsView contract={contract} messageNamespace="combobox" linkToStrings />
+        <ContractSectionsView
+          contract={contract}
+          messageNamespace="combobox"
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Give every Listbox a visible label, in a Field. A placeholder is not a label: it
+                disappears once something is chosen, and without a name a screen reader says only
+                “combobox” (3.3.2 Labels or Instructions, 4.1.2 Name, Role, Value).
+              </Note>
+            ),
+          }}
+        />
       }
       contractSections={contractSectionList(contract)}
       api={

@@ -11,19 +11,20 @@ import { UseCase } from './use-case.tsx'
 import { stepperAttributes, stepperRows, useStepperHook } from '../content/stepper.api.ts'
 import { DefaultStepper } from '../examples/stepper/default.tsx'
 import { OwnMarkup } from '../examples/stepper/own-markup.tsx'
-import { WithoutName } from '../examples/stepper/without-name.tsx'
+import { QuestionPage } from '../examples/stepper/question-page.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type StepperExampleSources = Record<'default' | 'without-name' | 'own-markup', string>
+export type StepperExampleSources = Record<'default' | 'question-page' | 'own-markup', string>
 
 const parts: ApiPart[] = [
   {
     name: 'Stepper',
     renders: (
       <>
-        <code>&lt;p&gt;</code> with no role of its own. The text is the message, so it takes no
-        children. It takes every attribute of a <code>&lt;p&gt;</code> and passes <code>ref</code>{' '}
-        to it. The default theme is described on <Link href="/foundation/theming">Theming</Link>.
+        <code>&lt;p&gt;</code> with no role of its own, or a <code>&lt;div&gt;</code> with{' '}
+        <code>as</code>. The text is the message, so it takes no children. It takes every attribute
+        of a <code>&lt;p&gt;</code> and passes <code>ref</code> to it. The default theme is
+        described on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: stepperRows,
@@ -41,7 +42,7 @@ export function StepperPage({
   return (
     <ComponentPage
       title="Stepper"
-      lead="It is orientation, not navigation."
+      lead="It is orientation, not navigation: it has no links and is not a Tab stop."
       status="alpha-candidate"
       whenToUse={
         <ul>
@@ -53,11 +54,12 @@ export function StepperPage({
             Count sections, not pages, so an answer that adds a page never changes the total. If you
             can’t count the sections reliably, leave it out: never “Step 3 of ?”.
           </li>
+          <li>Not on a start page, a confirmation page, an exit page or a form with one page.</li>
           <li>
-            Not for moving between pages: it has no links. Use{' '}
-            <Link href="/components/navigation">Navigation</Link> or a{' '}
-            <Link href="/components/breadcrumb">Breadcrumb</Link> for that, and a{' '}
-            <Link href="/components/definition-list">DefinitionList</Link> for the last check.
+            Not for moving between steps: it has no links. Going back is a Back link, made with a{' '}
+            <Link href="/components/link">Link</Link>. The check-answers page can use a{' '}
+            <Link href="/components/definition-list">DefinitionList</Link> with a Change link for
+            each answer.
           </li>
         </ul>
       }
@@ -69,28 +71,22 @@ export function StepperPage({
       useCases={
         <>
           <UseCase
-            id="without-name"
-            title="Without a section name"
-            why="Leave out the name when the heading already says it. The text is then “Step 1 of 3”. A blank name counts as none."
-            code={sources['without-name']}
+            id="question-page"
+            title="A page with a question in an application"
+            why="A step is a section, and a section can take more than one page. This is the second page of “Your vehicle”, so it still says step 2 of 5. The name is optional: without one the text is “Step 2 of 5”."
+            code={sources['question-page']}
             propsUsed={[
               { part: 'Stepper', prop: 'current' },
               { part: 'Stepper', prop: 'total' },
+              { part: 'Stepper', prop: 'name' },
             ]}
-            note={
-              <Note kind="reminder">
-                Put it after the heading as its own element, never inside a heading, label, legend
-                or button, or its text joins that name. A development warning says so. See{' '}
-                <Link href="#what-you-need-to-do">what you need to do</Link>.
-              </Note>
-            }
           >
-            <WithoutName />
+            <QuestionPage />
           </UseCase>
           <UseCase
             id="own-markup"
             title="With your own element"
-            why="When the markup is yours, spread the class on your own element and use the text from the hook. The same text is useful in the page title."
+            why="When the markup is yours, spread the props from the hook on your own element and use the text from the hook. You can use the same text in the page title."
             code={sources['own-markup']}
             propsUsed={[
               {
@@ -104,7 +100,21 @@ export function StepperPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Put the Stepper directly after the page heading, as its own element. Inside a
+                heading, label or legend its text becomes part of that name (1.3.1 Info and
+                Relationships, level A). A development warning says so.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

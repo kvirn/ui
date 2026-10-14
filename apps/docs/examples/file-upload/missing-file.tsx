@@ -31,7 +31,7 @@ export function MissingFile() {
       <Field.Root required invalid={isInvalid}>
         <Field.Label>{texts.label}</Field.Label>
         <Field.Prose>
-          <p>{texts.description}</p>
+          <p>{texts.requiredDescription}</p>
         </Field.Prose>
         <FileUpload.Root
           accept=".pdf,.jpg,.png"

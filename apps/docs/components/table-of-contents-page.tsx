@@ -91,7 +91,7 @@ export function TableOfContentsPage({
   return (
     <ComponentPage
       title="TableOfContents"
-      lead="It never scrolls by itself, never moves focus and announces nothing."
+      lead="The mark follows the reader’s scrolling. Nothing moves focus and nothing is announced when it changes."
       status="alpha-candidate"
       whenToUse={
         <ul>
@@ -104,7 +104,10 @@ export function TableOfContentsPage({
             give it a visible title.
           </li>
           <li>
-            Not for a short page: a few sections need no list. Not for moving between pages: use{' '}
+            Not for a short page: fewer than three sections need no list. Use one list per page.
+          </li>
+          <li>
+            Not for moving between pages: use{' '}
             <LinkRoot href="/components/navigation">Navigation</LinkRoot>.
           </li>
           <li>
@@ -123,13 +126,14 @@ export function TableOfContentsPage({
           <UseCase
             id="two-levels"
             title="Sections and the parts under them"
-            why="A long page has h2 sections with h3 parts. A deeper level nests under the entry above it, as a native nested list, so a screen reader announces the depth. Only the order of the levels matters."
+            why="A long page has h2 sections with h3 parts. Give each entry its heading level, and a deeper level nests under the entry above it. It is a native nested list, so a screen reader says how deep it is. Two levels are enough for most pages. Only the order of the levels matters, not their numbers."
             code={sources['two-levels']}
             propsUsed={[{ part: 'TableOfContents.Root', prop: 'items' }]}
             note={
               <Note kind="reminder">
                 Every id in the list must be on a heading of the page, and the order must be the
-                page’s order. A missing one warns in development and its link goes nowhere. See{' '}
+                page’s order. A missing one warns in development and its link goes nowhere (2.4.1
+                Bypass Blocks, level A). See{' '}
                 <LinkRoot href="#what-you-need-to-do">What you need to do</LinkRoot>.
               </Note>
             }
@@ -139,7 +143,7 @@ export function TableOfContentsPage({
           <UseCase
             id="own-markup"
             title="Drawing the list your own way"
-            why="Pass a function as the child to get the nested entries and the current id, and draw the list yourself with the parts. Use it to add something next to the links, or to show only the top level."
+            why="Pass a function as the child to get the nested entries and the current id, and draw the list yourself with the parts. Use it to show only the top level in a narrow column, or to add something next to the links."
             code={sources['own-markup']}
             propsUsed={[
               { part: 'TableOfContents.Root', prop: 'children' },
@@ -151,21 +155,35 @@ export function TableOfContentsPage({
           <UseCase
             id="no-visible-title"
             title="A name without a visible title"
-            why="Prefer a visible title and aria-labelledby. Where the page has no room for one, the landmark takes its name from the message tableOfContents.label, which you can change for this list only with messages."
+            why={
+              <>
+                Prefer a visible title, pointed to with <code>aria-labelledby</code>. Where the page
+                has no room for one, the landmark takes its name from the message{' '}
+                <code>tableOfContents.label</code>, which you can change for this list only with{' '}
+                <code>messages</code>.
+              </>
+            }
             code={sources['no-visible-title']}
             propsUsed={[{ part: 'TableOfContents.Root', prop: 'messages' }]}
-            note={
-              <Note kind="recipe" more={<CodeBlock code={stickyHeaderCode} />}>
-                With a sticky header, give its height to offset and to scroll-padding-top, so a
-                heading you jump to isn’t hidden under it.
-              </Note>
-            }
           >
             <NoVisibleTitle />
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            focus: (
+              <Note kind="reminder" more={<CodeBlock code={stickyHeaderCode} />}>
+                With a sticky header, give its height to <code>offset</code> and to{' '}
+                <code>scroll-padding-top</code>. Otherwise the header can hide the heading you jump
+                to, and a link you tab back to (2.4.11 Focus Not Obscured (Minimum), level AA).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

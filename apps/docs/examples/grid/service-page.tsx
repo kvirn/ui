@@ -1,5 +1,5 @@
 'use client'
-import { Grid, Heading, Link } from '@kvirn-ui/react'
+import { Grid, Heading, Link, Stack } from '@kvirn-ui/react'
 import { useGridTexts } from './texts.ts'
 
 export function ServicePage() {
@@ -8,15 +8,15 @@ export function ServicePage() {
   return (
     <Grid.Root className="kv-grid--lg-cols-12 kv-grid--lg-gap-10">
       <Grid.Item as="nav" aria-label={service.navigationLabel} className="kv-grid-item--lg-span-3">
-        <ul className="kv-stack kv-stack--gap-2">
+        <Stack as="ul" className="kv-stack--gap-2">
           {service.links.map((label) => (
             <li key={label}>
-              <Link href="#" aria-current={label === service.current ? 'page' : undefined}>
+              <Link href="#" current={label === service.current ? 'page' : undefined}>
                 {label}
               </Link>
             </li>
           ))}
-        </ul>
+        </Stack>
       </Grid.Item>
       <Grid.Item className="kv-grid-item--lg-span-9 kv-prose">
         <Heading as="h3">{service.heading}</Heading>

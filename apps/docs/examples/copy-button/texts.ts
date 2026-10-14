@@ -5,7 +5,12 @@ export interface CopyButtonTexts {
   yourNumber: string
   copyNumber: string
   copiedCue: string
-  ownCue: string
+  failedCue: string
+  caseNumber: string
+  buildingPermit: string
+  parkingPermit: string
+  secondReferenceNumber: string
+  copyNamed: (number: string) => string
 }
 
 export const useCopyButtonTexts = defineExampleTexts<CopyButtonTexts>({
@@ -14,6 +19,11 @@ export const useCopyButtonTexts = defineExampleTexts<CopyButtonTexts>({
     yourNumber: 'Your case number is',
     copyNumber: 'Copy case number',
     copiedCue: 'The case number is copied.',
-    ownCue: 'Copy case number',
+    failedCue: 'Could not copy. Select the case number and copy it yourself.',
+    caseNumber: 'case number',
+    buildingPermit: 'Building permit',
+    parkingPermit: 'Parking permit',
+    secondReferenceNumber: 'PK-2026-004218',
+    copyNamed: (number) => `Copy case number ${number}`,
   },
 })

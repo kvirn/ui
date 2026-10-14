@@ -6,23 +6,18 @@ import { useSwitchTexts } from './texts.ts'
 export function ControlledSetting() {
   const { texts } = useSwitchTexts()
   const [isOn, setIsOn] = useState(false)
-  const [message, setMessage] = useState<string | null>(null)
   return (
-    <>
-      <Field.Root>
-        <Switch
-          name="sms"
-          checked={isOn}
-          onCheckedChange={(checked) => {
-            setIsOn(checked)
-            // A real app saves here, and shows an error and restores the old state if it fails.
-            setMessage(checked ? texts.savedOn : texts.savedOff)
-          }}
-        />
-        <Field.Label marker="none">{texts.smsReminders}</Field.Label>
-        <Field.HelpText>{texts.savedAtOnce}</Field.HelpText>
-      </Field.Root>
-      <output>{message}</output>
-    </>
+    <Field.Root>
+      <Switch
+        name="sms"
+        checked={isOn}
+        onCheckedChange={(checked) => {
+          setIsOn(checked)
+          // A real app saves here. See "When the save fails" for the error path.
+        }}
+      />
+      <Field.Label marker="none">{texts.smsReminders}</Field.Label>
+      <Field.HelpText>{texts.savedAtOnce}</Field.HelpText>
+    </Field.Root>
   )
 }

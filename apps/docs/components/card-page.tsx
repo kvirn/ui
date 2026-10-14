@@ -13,6 +13,7 @@ import {
   cardHeaderAttributes,
   cardPartRows,
   cardRootAttributes,
+  cardRootRows,
   useCardResult,
 } from '../content/card.api.ts'
 import { CardWithActions } from '../examples/card/actions.tsx'
@@ -43,7 +44,7 @@ const parts: ApiPart[] = [
         {partRenders('div')} Also exported as <code>CardRoot</code>.
       </>
     ),
-    props: cardPartRows,
+    props: cardRootRows,
     attributes: cardRootAttributes,
   },
   {
@@ -91,20 +92,20 @@ export function CardPage({
     <ComponentPage
       title="Card"
       lead="It groups what belongs together on a raised surface and adds no role, text or behaviour of its own."
-      status="alpha"
+      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
-            Use a card for one identifiable thing a resident or a case worker looks at as a unit: a
-            service, a news item, a case.
+            Use a card for one thing that a resident or a case worker looks at as a unit: a service,
+            a news item, a case.
           </li>
           <li>
             Put a heading at the top and, if the card leads somewhere, one link in the heading.
             Actions go in the footer as buttons.
           </li>
           <li>
-            A list of cards is a list: render each card as a list item, so a screen reader says how
-            many there are.
+            A list of cards is a list: render each card as a list item, so a screen reader (software
+            that reads the screen aloud) says how many there are.
           </li>
           <li>
             Not for a region of the page, such as a sidebar or a band of content: use a{' '}
@@ -125,28 +126,26 @@ export function CardPage({
             title="A service with actions"
             why="Use it when a card is a service the user can act on. The text goes in the body, with the heading first, and the actions go in the footer: one primary button, the rest secondary."
             code={sources['actions']}
-            propsUsed={[{ part: 'Card.Root', prop: 'className' }]}
-            note={
-              <Note kind="reminder">
-                Card can’t know the heading level, so you choose the one the page’s outline needs.
-                See <Link href="#what-you-need-to-do">What you need to do</Link>.
-              </Note>
-            }
+            propsUsed={[
+              { part: 'Card.Body', prop: 'className' },
+              { part: 'Card.Footer', prop: 'className' },
+            ]}
           >
             <CardWithActions />
           </UseCase>
           <UseCase
             id="list-of-cards"
             title="A list of news items"
-            why="Several cards of the same kind are a list. Render each card as a list item with render, so a screen reader announces how many items there are. Give each card one link, in its heading, with text that makes sense on its own."
+            why="Several cards of the same kind are a list. Make each card a list item with as, so a screen reader announces how many items there are. Give each card one link, in its heading, with text that makes sense on its own."
             code={sources['list']}
             propsUsed={[{ part: 'Card.Root', prop: 'as' }]}
             note={
-              <Note kind="tip">
+              <Note kind="reminder">
+                Put <code>role=&quot;list&quot;</code> on a hand-written <code>&lt;ul&gt;</code>.
                 The default theme draws no marker on a card, and Safari with VoiceOver can then read
-                the list as a plain group. <code>role=&quot;list&quot;</code> on the{' '}
-                <code>&lt;ul&gt;</code> keeps it a list. This example leaves it out only because
-                KvirnUI’s own linter rejects it as redundant.
+                the list as a plain group (1.3.1 Info and Relationships). A{' '}
+                <Link href="/components/stack">Stack</Link> as a <code>&lt;ul&gt;</code> adds it for
+                you.
               </Note>
             }
           >
@@ -158,9 +157,9 @@ export function CardPage({
             why={
               <>
                 Render the card as an <code>&lt;article&gt;</code> when it is a self-contained item,
-                such as a news story. Name it with <code>aria-labelledby</code> pointing at its
-                heading. Use a landmark only where a user would want to jump to it, and never for
-                every card in a list.
+                such as a news story, and name it with <code>aria-labelledby</code> pointing at its
+                heading. An <code>&lt;article&gt;</code> is not a landmark, so many of them don’t
+                crowd a screen reader’s list of landmarks.
               </>
             }
             code={sources['article']}
@@ -179,7 +178,21 @@ export function CardPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Choose the heading level the page’s outline needs, because Card can’t know it (2.4.6
+                Headings and Labels). Give a decorative image <code>alt=&quot;&quot;</code>, and put
+                one link per card in the heading, with text that makes sense on its own (1.1.1
+                Non-text Content, 2.4.4 Link Purpose (In Context)).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <>

@@ -7,10 +7,10 @@ export function MirrorInRtl() {
   return (
     <div>
       <p>
-        {texts.next} <Icon name="arrow-forward" />
+        {texts.nextLeftToRight} <Icon name="arrow-forward" />
       </p>
       <p dir="rtl">
-        {texts.next} <Icon name="arrow-forward" />
+        {texts.nextRightToLeft} <Icon name="arrow-forward" />
       </p>
     </div>
   )

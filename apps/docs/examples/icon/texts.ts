@@ -6,8 +6,9 @@ export const useIconTexts = defineExampleTexts({
     language: 'Language',
     currentLanguage: 'Svenska',
     house: 'Home',
-    sizes: 'Sizes',
-    next: 'Next',
-    ownDrawing: 'Exempelby municipality',
+    sizes: 'Sizes 16, 20 (the default), 24, 32 and 40:',
+    nextLeftToRight: 'Left to right: next',
+    nextRightToLeft: 'Right to left: next',
+    ownDrawing: 'Exampleville municipality',
   },
 })

@@ -2,7 +2,7 @@ import type { SkipLinkProps, UseSkipLinkOptions, UseSkipLinkResult } from '@kvir
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-export type SkipLinkDocumentedProps = Pick<SkipLinkProps, 'href' | 'children' | 'messages'>
+export type SkipLinkDocumentedProps = Pick<SkipLinkProps, 'href' | 'children' | 'messages' | 'as'>
 
 export const skipLinkRows = propRows<SkipLinkDocumentedProps>({
   href: {
@@ -19,6 +19,12 @@ export const skipLinkRows = propRows<SkipLinkDocumentedProps>({
     type: "Partial<KvirnMessages['skipLink']>",
     default: '–',
     description: 'Overrides the message for this link: { label: "Hoppa till innehållet" }.',
+  },
+  as: {
+    type: 'ElementType',
+    default: "'a'",
+    description:
+      'Changes the element to a component of your own, such as your design system’s link. It must render an <a href> and forward its ref, and it gets the other props, the ref and the part’s class. Don’t use Link.Root: a same-page address is not a route.',
   },
 })
 

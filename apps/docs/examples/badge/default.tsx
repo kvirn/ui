@@ -6,7 +6,7 @@ export function DefaultBadge() {
   const { texts } = useBadgeTexts()
   return (
     <p>
-      {texts.application} <Badge>{texts.draft}</Badge>
+      {texts.statusLabel} <Badge>{texts.draft}</Badge>
     </p>
   )
 }

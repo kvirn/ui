@@ -30,7 +30,7 @@ export const useCardTexts = defineExampleTexts({
       heading: 'Housing adaptation grant',
       text: 'Waiting for a decision.',
       next: 'Latest event: the occupational therapist’s certificate arrived.',
-      open: 'Open the case',
+      addDocument: 'Add a document',
     },
   },
 })

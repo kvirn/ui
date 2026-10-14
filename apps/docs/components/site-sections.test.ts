@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vite-plus/test'
-import { breadcrumbTrail, pagerPages, siteSections } from './site-sections.ts'
+import { breadcrumbTrail, listedSections, pagerPages, siteSections } from './site-sections.ts'
 
 // Contract: docs/design/docs-shell-mega-menu.md §3 and §5 (pager order, breadcrumb trail).
 const labelsAround = (pathname: string) => {
@@ -8,8 +8,8 @@ const labelsAround = (pathname: string) => {
 }
 
 describe('pager', () => {
-  test('Tabs sits between TableOfContents and Calendar, in menu order across groups', () => {
-    expect(labelsAround('/components/tabs')).toEqual(['TableOfContents', 'Calendar'])
+  test('TopBar sits between Tabs and Calendar, in menu order across groups', () => {
+    expect(labelsAround('/components/top-bar')).toEqual(['Tabs', 'Calendar'])
   })
 
   test('the first and the last component have only a next and only a previous page', () => {
@@ -30,6 +30,17 @@ describe('pager', () => {
       expect(labelsAround(pathname)).toEqual([undefined, undefined])
     },
   )
+})
+
+describe('hidden sections', () => {
+  test('Patterns and Content types stay routable but are not listed in menus or search', () => {
+    const listed = listedSections(siteSections).map((section) => section.id)
+    expect(listed).not.toContain('patterns')
+    expect(listed).not.toContain('content-types')
+    expect(siteSections.map((section) => section.id)).toEqual(
+      expect.arrayContaining(['patterns', 'content-types']),
+    )
+  })
 })
 
 describe('breadcrumb trail', () => {

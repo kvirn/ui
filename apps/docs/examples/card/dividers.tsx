@@ -14,7 +14,7 @@ export function CardWithDividers() {
         <p>{texts.dividers.next}</p>
       </Card.Body>
       <Card.Footer>
-        <Button>{texts.dividers.open}</Button>
+        <Button>{texts.dividers.addDocument}</Button>
       </Card.Footer>
     </Card.Root>
   )

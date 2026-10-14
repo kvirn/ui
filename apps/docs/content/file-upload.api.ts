@@ -101,7 +101,7 @@ const optionRows = propRows<UseFileUploadOptions>({
     type: 'boolean',
     default: 'false',
     description:
-      'Native disabled on the Trigger and the input, no drop zone and no item buttons. A disabled Field does the same.',
+      'Native disabled on the Trigger and the input, no item buttons, and a drop adds nothing. A disabled Field does the same.',
   },
   onFilesChange: {
     type: '(items: readonly FileUploadEntry<Result>[]) => void',

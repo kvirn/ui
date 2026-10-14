@@ -10,6 +10,8 @@ export function OwnMarkup() {
     () => [
       { id: 'example', label: texts.example, level: 2 },
       { id: 'use-cases', label: texts.useCases, level: 2 },
+      { id: 'two-levels', label: texts.twoLevels, level: 3 },
+      { id: 'own-markup', label: texts.ownMarkup, level: 3 },
       { id: 'keyboard', label: texts.keyboard, level: 2 },
     ],
     [texts],

@@ -15,11 +15,12 @@ import {
 import { ControlledDisclosure } from '../examples/disclosure/controlled.tsx'
 import { DefaultDisclosure } from '../examples/disclosure/default.tsx'
 import { FindInPage } from '../examples/disclosure/find-in-page.tsx'
+import { HelpWithAQuestion } from '../examples/disclosure/help-with-a-question.tsx'
 import { ShowMore } from '../examples/disclosure/show-more.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type DisclosureExampleSources = Record<
-  'default' | 'show-more' | 'find-in-page' | 'controlled',
+  'default' | 'show-more' | 'help-with-a-question' | 'find-in-page' | 'controlled',
   string
 >
 
@@ -69,30 +70,31 @@ export function DisclosurePage({
   return (
     <ComponentPage
       title="Disclosure"
-      lead="The state is a chevron and words for a screen reader, never colour alone."
+      lead="Whether it is open shows as a chevron and as a state a screen reader (software that reads the screen aloud) reports, never as colour alone."
       status="alpha-candidate"
+      pattern="APG Disclosure"
       whenToUse={
         <ul>
           <li>
             Use it for content that some readers want and most don’t: opening hours, help with a
-            field, a longer explanation after a short one.
+            question, a longer explanation after a short one.
           </li>
           <li>
-            Name the button after what the panel holds (“Opening hours”), and keep the name the same
-            open and closed. The chevron and the browser say whether it is open.
+            Name the button after what the panel holds (“Opening hours”) and keep the name the same
+            open and closed. The chevron and a screen reader show whether it is open.
           </li>
           <li>
             Keep what the page needs out of it: an error message, or the only way to finish a task.
           </li>
           <li>
             For a list of questions and answers, use an{' '}
-            <Link href="/components/accordion">Accordion</Link>, which adds a heading around each
+            <Link href="/components/accordion">Accordion</Link>, which puts a heading around each
             button.
           </li>
           <li>
             Not for a menu that is always shown on a wide screen and a button on a narrow one: a
-            Disclosure can’t show its panel while it says it is closed. That is the planned
-            NavigationMenu. For a floating panel over the page, use a{' '}
+            Disclosure can’t show its panel while it says it is closed, and the library has no
+            component for that yet. For a floating panel over the page, use a{' '}
             <Link href="/components/popover">Popover</Link>.
           </li>
         </ul>
@@ -110,19 +112,35 @@ export function DisclosurePage({
             why="A news item or a page gives its main point first, and the details sit behind one button for the readers who want them. The panel follows the button, so the next Tab goes into the details."
             code={sources['show-more']}
             note={
-              <Note kind="reminder">
+              <Note kind="tip">
                 Don’t swap “Show more” for “Show less” when it opens. Name the content (“More about
-                the move”) and leave the text alone: <code>aria-expanded</code> tells a screen
-                reader user the state.
+                the move”) and leave the text alone. A screen reader already says whether the button
+                is expanded, so a changing name says it twice (see{' '}
+                <Link href="#what-you-need-to-do">What you need to do</Link>).
               </Note>
             }
           >
             <ShowMore />
           </UseCase>
           <UseCase
+            id="help-with-a-question"
+            title="Help with a form question"
+            why="A form asks for something people may wonder about. The explanation sits behind a button right after the field, so those who need it can read it and the form stays short."
+            code={sources['help-with-a-question']}
+          >
+            <HelpWithAQuestion />
+          </UseCase>
+          <UseCase
             id="find-in-page"
             title="Findable with the browser’s search"
-            why="A resident presses Ctrl+F for a word that is inside a closed panel. With hiddenUntilFound the browser finds it, opens the panel and tells you why, so the page and your own state stay in step."
+            why={
+              <>
+                A resident presses Ctrl+F for a word that is inside a closed panel. With{' '}
+                <code>hiddenUntilFound</code> the browser finds the word and opens the panel.{' '}
+                <code>onOpenChange</code> reports it with the reason <code>find-in-page</code>, so
+                your own state stays in step.
+              </>
+            }
             code={sources['find-in-page']}
             propsUsed={[
               { part: 'Disclosure.Root', prop: 'hiddenUntilFound' },
@@ -140,7 +158,13 @@ export function DisclosurePage({
           <UseCase
             id="controlled"
             title="Opened from somewhere else"
-            why="Another button, a link or a saved preference opens the panel. Hold the state yourself with open and onOpenChange, which only reports what the user did."
+            why={
+              <>
+                Another button or a saved choice opens the panel. Keep the state yourself with{' '}
+                <code>open</code> and <code>onOpenChange</code>. <code>onOpenChange</code> only
+                reports what the reader did, so you change <code>open</code> yourself.
+              </>
+            }
             code={sources['controlled']}
             propsUsed={[
               { part: 'Disclosure.Root', prop: 'open' },
@@ -151,7 +175,19 @@ export function DisclosurePage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Put the panel right after its button, in the same parent. If it sits elsewhere, Tab
+                goes to the panel in a different order from what people see (2.4.3 Focus Order).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

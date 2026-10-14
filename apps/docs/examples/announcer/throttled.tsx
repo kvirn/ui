@@ -10,13 +10,17 @@ export function ThrottledAnnouncer() {
       <Field.Label marker="none">{texts.digits.label}</Field.Label>
       <TextInput
         inputMode="numeric"
-        autoComplete="off"
+        autoComplete="tel"
         onChange={(event) => {
-          if (/\D/.test(event.currentTarget.value)) {
+          const input = event.currentTarget
+          const digits = input.value.replaceAll(/\D/g, '')
+          if (digits !== input.value) {
+            input.value = digits
             announce(texts.digits.message, { key: 'phone-number' })
           }
         }}
       />
+      <Field.HelpText>{texts.digits.hint}</Field.HelpText>
     </Field.Root>
   )
 }

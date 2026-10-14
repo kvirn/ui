@@ -1,5 +1,5 @@
 'use client'
-import { Autocomplete, Field, Icon } from '@kvirn-ui/react'
+import { Autocomplete, Field } from '@kvirn-ui/react'
 import { streetsWithDistrict } from './data.ts'
 import type { Street } from './data.ts'
 import { useAutocompleteTexts } from './texts.ts'
@@ -15,9 +15,6 @@ export function RichSuggestionsAutocomplete() {
           <Autocomplete.List>
             {(street: Street) => (
               <Autocomplete.Option item={street}>
-                <Autocomplete.OptionIcon>
-                  <Icon name="document" />
-                </Autocomplete.OptionIcon>
                 <Autocomplete.OptionText>{street.name}</Autocomplete.OptionText>
                 <Autocomplete.OptionDescription>{street.district}</Autocomplete.OptionDescription>
               </Autocomplete.Option>

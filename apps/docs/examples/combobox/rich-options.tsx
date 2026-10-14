@@ -1,5 +1,5 @@
 'use client'
-import { Combobox, Field, Icon } from '@kvirn-ui/react'
+import { Combobox, Field } from '@kvirn-ui/react'
 import { municipalities } from '../listbox/data.ts'
 import type { Municipality } from '../listbox/data.ts'
 import { useComboboxTexts } from './texts.ts'
@@ -19,9 +19,6 @@ export function RichOptionsCombobox() {
           <Combobox.List>
             {(municipality: Municipality) => (
               <Combobox.Option item={municipality}>
-                <Combobox.OptionIcon>
-                  <Icon name="document" />
-                </Combobox.OptionIcon>
                 <Combobox.OptionText>{municipality.name}</Combobox.OptionText>
                 <Combobox.OptionDescription>{municipality.county}</Combobox.OptionDescription>
                 <Combobox.OptionIndicator />

@@ -41,11 +41,14 @@ export function SkipLinkPage({
   return (
     <ComponentPage
       title="SkipLink"
-      lead="It is hidden until it has focus."
+      lead="The default theme keeps it out of sight until it has focus, so it doesn’t change how the page looks for people who use a mouse."
       status="alpha-candidate"
       whenToUse={
         <ul>
-          <li>Use one on every page that has a header or a menu before the main content.</li>
+          <li>
+            Use one on every page that has a header or a menu before the main content. People who
+            use a keyboard can then skip it instead of tabbing through it on every page.
+          </li>
           <li>Put it first in the page, before the header and any other link.</li>
           <li>Give the main content an id, and point the link at it with a same-page address.</li>
           <li>
@@ -65,7 +68,7 @@ export function SkipLinkPage({
           <UseCase
             id="custom-label"
             title="A link to something other than the main content"
-            why="A long page may have a block that people want to reach directly, such as the application form. Write the label yourself so it says where the link goes. A label of your own has the language you give it."
+            why="A long page may have a block that people want to reach directly, such as the application form. Write the label yourself so it says where the link goes."
             code={sources['custom-label']}
             propsUsed={[
               { part: 'SkipLink', prop: 'href' },
@@ -73,8 +76,9 @@ export function SkipLinkPage({
             ]}
             note={
               <Note kind="reminder">
-                Wrap a label of your own in an element with <code>lang</code> when it differs from
-                the page. See <Link href="#what-you-need-to-do">What you need to do</Link>.
+                A label of your own is not translated for you. When it is in another language than
+                the page, put it in an element with <code>lang</code> (3.1.2 Language of Parts,
+                level AA). See <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >
@@ -83,7 +87,13 @@ export function SkipLinkPage({
           <UseCase
             id="own-element"
             title="Your own link element"
-            why="Your design system already has a link component, or you need an element with more attributes. Spread the props on a plain link and write the label from the hook."
+            why={
+              <>
+                You need markup the component doesn’t give you. Spread the props from the hook on
+                your own link and use the label from the hook. If you only want your design system’s
+                link, pass it to the component with <code>as</code>.
+              </>
+            }
             code={sources['own-element']}
             propsUsed={[
               {
@@ -94,8 +104,8 @@ export function SkipLinkPage({
             ]}
             note={
               <Note kind="tip">
-                The link doesn’t cancel the browser’s own jump, so it still works before the scripts
-                have loaded.
+                The link doesn’t cancel the browser’s own jump. The jump still works before the
+                scripts have loaded.
               </Note>
             }
           >
@@ -103,7 +113,28 @@ export function SkipLinkPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Put the link first in the page and give the main content the id it points to. If the
+                id is missing, the link goes nowhere and people using a keyboard still have to tab
+                through the whole header (2.4.1 Bypass Blocks, level A). A development warning tells
+                you when the id is missing.
+              </Note>
+            ),
+            focus: (
+              <Note kind="reminder">
+                Keep the focus ring on the target. If your styles remove the outline from elements
+                with <code>tabindex=&quot;-1&quot;</code>, someone using a keyboard can’t see where
+                the link took them (2.4.7 Focus Visible, level AA).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

@@ -23,7 +23,7 @@ export function VisitDate() {
         value={dateInputValueToIsoDate(date)}
         onValueChange={(isoDate) => setDate(isoDateToDateInputValue(isoDate))}
       >
-        <Fieldset.Root group>
+        <Fieldset.Root group required>
           <Fieldset.Legend>{texts.legend}</Fieldset.Legend>
           <DateInput.Root name="visit" value={date} onValueChange={setDate}>
             {order.map((part) => {

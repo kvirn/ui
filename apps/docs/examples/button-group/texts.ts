@@ -9,5 +9,9 @@ export const useButtonGroupTexts = defineExampleTexts({
     cardBody: 'The next collection is on Tuesday. Put the bin out by 6 am.',
     orderExtra: 'Order an extra collection',
     pause: 'Pause collection',
+    letterIntro: 'You are editing the decision letter.',
+    historyName: 'Edit history',
+    undo: 'Undo',
+    redo: 'Redo',
   },
 })

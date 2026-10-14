@@ -9,8 +9,16 @@ const regionRow = {
     'overflow: a named region only while the content doesn’t fit. always: a named region whether it scrolls or not. It is a Tab stop only while it scrolls, in both.',
 } as const
 
-export const scrollAreaRows = propRows<Pick<ScrollAreaProps, 'region' | 'as' | 'ref'>>({
+export const scrollAreaRows = propRows<
+  Pick<ScrollAreaProps, 'region' | 'className' | 'as' | 'ref'>
+>({
   region: regionRow,
+  className: {
+    type: 'string',
+    default: '–',
+    description:
+      'Your own classes. They join kv-scroll-region kv-scroll-area and never replace them, so the theme keeps styling the area. Use one to limit its height.',
+  },
   as: {
     type: "'div' | 'section'",
     default: "'div'",
@@ -28,7 +36,8 @@ export const scrollAreaAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-scroll-region kv-scroll-area',
     values: 'always',
-    meaning: 'The part classes. The default theme sets overflow, the focus ring and the edges.',
+    meaning:
+      'The part classes. The default theme sets overflow, the focus ring and the rounded corners.',
   },
   {
     name: 'role',

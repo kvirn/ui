@@ -6,13 +6,13 @@ export const toastProviderRows = propRows<NonNullable<KvirnProviderProps['toast'
     type: 'number',
     default: '10',
     description:
-      'The most toasts shown at once. The region scrolls when they don’t fit. Past the limit the next toast is ignored: show returns an empty string and a development warning says so.',
+      'The most toasts shown at once. The region scrolls when they don’t fit. When it is full, the oldest toast that can time out makes room. If none can, the new toast is ignored: show returns an empty string and a development warning says so.',
   },
   autoDismiss: {
     type: 'false | number',
     default: 'false',
     description:
-      'false: nothing times out. A number is how long, in milliseconds, an info or success toast without an action stays. There is no minimum: a short value can remove a toast before it is read (2.2.1 trade-off), so tie it to a user setting. 0, a negative number or NaN acts as false and warns in development.',
+      'false: nothing times out. A number is how long, in milliseconds, an info or success toast without an action stays. There is no minimum: a short value can remove a toast before it is read (2.2.1 Timing Adjustable), so tie it to a user setting. 0, a negative number or NaN acts as false and warns in development.',
   },
 })
 
@@ -21,7 +21,7 @@ export const useToastResultRows = propRows<UseToastResult>({
     type: '(options: ToastShowOptions) => string',
     default: '–',
     description:
-      'Shows a toast and returns its id, or an empty string when it was dropped (no provider, or before the provider mounted). Showing an id that is already shown updates it in place.',
+      'Shows a toast and returns its id, or an empty string when it was dropped (no provider, before the provider mounted, or the limit is reached). Showing an id that is already shown updates it in place.',
   },
   dismiss: {
     type: '(id: string) => boolean',
@@ -56,7 +56,7 @@ export const toastShowOptionRows = propRows<ToastShowOptions>({
     type: 'boolean',
     default: 'false',
     description:
-      'A job in progress: a decorative spinner replaces the status icon and the status word stays. Show the result with the same id to replace it. The timer ring is unchanged.',
+      'A job in progress: a decorative spinner replaces the status icon and the status word stays. Show the result with the same id to replace it. Show it without an auto-dismiss timer.',
   },
   body: {
     type: 'ReactNode',
@@ -79,6 +79,6 @@ export const toastShowOptionRows = propRows<ToastShowOptions>({
     type: 'boolean',
     default: 'false',
     description:
-      'Moves focus to the toast and skips the announcement. Only for an action the user just took whose button is gone (3.2.2).',
+      'Moves focus to the toast and skips the announcement. Only for an action the user just took whose button is gone (3.2.2 On Input).',
   },
 })

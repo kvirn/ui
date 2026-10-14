@@ -3,6 +3,7 @@ import { defineExampleTexts } from '../../components/local-example-texts.ts'
 export const useToggleTexts = defineExampleTexts({
   en: {
     unreadOnly: 'Show only unread',
+    showing: (shown: number, total: number) => `Showing ${shown} of ${total} messages`,
     messages: [
       { id: 'parking', text: 'Parking permit approved', isUnread: false },
       { id: 'building', text: 'Building permit: more information needed', isUnread: true },
@@ -11,6 +12,6 @@ export const useToggleTexts = defineExampleTexts({
     ],
     showPassword: 'Show password',
     passwordLabel: 'Password',
-    noMessages: 'There are no messages yet.',
+    noMessages: 'There are no messages to filter yet.',
   },
 })

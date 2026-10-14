@@ -6,7 +6,7 @@ export function DefaultStack() {
   const { texts } = useStackTexts()
   return (
     <Stack>
-      <Heading as="h2">{texts.sections.contact}</Heading>
+      <Heading as="h3">{texts.sections.contact}</Heading>
       <p>{texts.sections.contactText}</p>
     </Stack>
   )

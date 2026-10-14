@@ -13,7 +13,7 @@ export function Edges() {
         <Heading as="h2" size="heading-1" className="home-statement-title">
           {edges.titleFirst}
           <br />
-          <strong>{edges.titleSecond}</strong>
+          <span className="home-statement-emphasis">{edges.titleSecond}</span>
         </Heading>
         <div>
           <p className="home-statement-text">{edges.body}</p>
@@ -31,7 +31,7 @@ export function Why() {
     <Band tone="canvas" id="why-we-build-it">
       <p className="home-kicker">{why.kicker}</p>
       <Heading as="h2" size="heading-1" className="home-statement-title home-statement-title--wide">
-        {why.titleFirst} <strong>{why.titleSecond}</strong>
+        {why.titleFirst} <span className="home-statement-emphasis">{why.titleSecond}</span>
       </Heading>
       <div className="home-statement-grid">
         <p className="home-big">{why.big}</p>

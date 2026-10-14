@@ -35,8 +35,8 @@ export const paginationRootAttributes: readonly AttributeRow[] = [
   },
   {
     name: 'aria-label',
-    values: 'the label, or absent',
-    meaning: 'From label or the message. Not set when you pass aria-labelledby.',
+    values: 'the name',
+    meaning: 'Always set, from label or the message pagination.label.',
   },
 ]
 
@@ -64,13 +64,13 @@ export const paginationLinkRows = propRows<
   },
   messages: {
     ...messagesRow,
-    description: 'Overrides pagination.page and pagination.currentPage for this link.',
+    description: 'Overrides pagination.page for this link.',
   },
   children: {
     type: 'ReactNode',
     default: 'the page number',
     description:
-      'Your own text. It replaces the number. The name stays the message, so keep the visible text in it (2.5.3).',
+      'Your own text. It replaces the number and the aria-label, so the text you write is the link’s name. Keep it a real name: an icon alone leaves the link unnamed.',
   },
 })
 
@@ -82,8 +82,8 @@ export const paginationLinkAttributes: readonly AttributeRow[] = [
   },
   {
     name: 'aria-label',
-    values: '"Page 2"',
-    meaning: 'From the messages page and currentPage.',
+    values: '"Page 2", or absent',
+    meaning: 'From the message pagination.page. Not set when you give your own children.',
   },
   {
     name: 'aria-current',
@@ -174,7 +174,8 @@ export const paginationStatusAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-pagination-status',
     values: 'always',
-    meaning: 'The part class. The default theme shows it below 40rem, instead of the page links.',
+    meaning:
+      'The part class. The default theme shows it below 40rem, with Previous, Next and the current page, and hides it on wider screens.',
   },
 ]
 

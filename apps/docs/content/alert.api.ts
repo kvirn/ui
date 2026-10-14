@@ -14,10 +14,10 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 export const readyMadeRootName = 'Alert.Info'
 
 const rootAsRow = {
-  type: "'div' | 'section' | 'aside'",
+  type: "'div' | 'section'",
   default: "'div'",
   description:
-    'Changes the element. A section with aria-labelledby is a named region for a site-wide alert; use aside only where the alert is tangential content. Another tag warns once in development.',
+    'Changes the element. A section with aria-labelledby is a named region, only for one site-wide alert such as an outage. Another tag warns once in development.',
 }
 
 const refRow = {
@@ -40,7 +40,7 @@ export const rootRows = propRows<Pick<AlertRootProps, 'announce' | 'as' | 'ref'>
 })
 
 export const readyMadeRootRows = propRows<
-  Pick<AlertStatusRootProps, 'announce' | 'messages' | 'as' | 'ref'>
+  Pick<AlertStatusRootProps, 'announce' | 'messages' | 'icon' | 'as' | 'ref'>
 >({
   announce: {
     ...announceRow,
@@ -51,6 +51,12 @@ export const readyMadeRootRows = propRows<
     default: '–',
     description:
       'Per-instance override of this root’s status word, such as { dangerPrefix: "Viktigt:" }, and of the close button’s name.',
+  },
+  icon: {
+    type: 'ReactNode',
+    default: 'the status icon',
+    description:
+      'Replaces the status icon, such as a spinner for a job in progress. Give it className="kv-alert-icon" and aria-hidden="true": the status stays in the word.',
   },
   as: rootAsRow,
   ref: refRow,

@@ -9,6 +9,8 @@ export const useDatePickerTexts = defineExampleTexts({
     fieldHint: (example: string) => `For example ${example}`,
     window: 'You can choose a date from 14 October to 31 December 2026.',
     closed: 'Closed',
+    closedHint: (days: string) => `We’re closed on ${days}.`,
+    closedError: (day: string) => `We’re closed on ${day}. Choose another date.`,
     title: 'Choose the date of your visit',
   },
 })

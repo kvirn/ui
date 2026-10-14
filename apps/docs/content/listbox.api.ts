@@ -337,6 +337,34 @@ export const classRow = (name: string, meaning: string): AttributeRow => ({
 
 export const triggerAttributes: readonly AttributeRow[] = [
   classRow('kv-listbox-trigger', 'The part class. The default theme styles it.'),
+  { name: 'role', values: '"combobox"', meaning: 'A select-only combobox. Focus stays on it.' },
+  {
+    name: 'tabindex',
+    values: '"0", or yours',
+    meaning: 'One Tab stop. A disabled trigger has none of its own.',
+  },
+  { name: 'aria-expanded', values: '"true" or "false"', meaning: 'Whether the popup is open.' },
+  {
+    name: 'aria-controls',
+    values: 'the list’s id',
+    meaning: 'Points at the list, which stays in the page while the popup is closed.',
+  },
+  { name: 'aria-haspopup', values: '"listbox"', meaning: 'The trigger opens a list of options.' },
+  {
+    name: 'aria-activedescendant',
+    values: 'an option’s id',
+    meaning: 'The active option, only while open and only when it is rendered.',
+  },
+  {
+    name: 'aria-labelledby',
+    values: 'the Field’s label, then the value',
+    meaning: 'Its name. Outside a Field, give it aria-label or aria-labelledby.',
+  },
+  {
+    name: 'aria-describedby, aria-invalid, aria-required, aria-disabled',
+    values: 'from the Field',
+    meaning: 'The help text and error describe it. The Field sets the state.',
+  },
   dataRow('data-open', 'The popup is open.'),
   dataRow('data-focus-visible', 'The trigger has keyboard focus (:focus-visible).'),
   dataRow('data-invalid', 'The Field is invalid.'),

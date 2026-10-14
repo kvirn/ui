@@ -76,22 +76,22 @@ export function CodeBlockPage({
   return (
     <ComponentPage
       title="CodeBlock"
-      lead="The code wraps, so there is nothing to scroll sideways, and nothing is highlighted, so no colour carries meaning."
+      lead="In the default theme the code wraps, so there is nothing to scroll sideways. Nothing is highlighted, so no colour carries meaning."
       status="alpha-candidate"
       whenToUse={
         <ul>
-          <li>Use it for a command, a request or a short sample the reader will copy and run.</li>
+          <li>
+            Use it for a command, a request or a short sample that the reader will copy and run.
+          </li>
           <li>
             Give it a label that says what it is: “Install”, “Send an application”. The label names
-            the block for screen reader users.
+            the block for screen reader users (people using software that reads the screen aloud).
           </li>
           <li>
             For one short text such as a case number, use a{' '}
             <Link href="/components/copy-button">CopyButton</Link> next to it.
           </li>
-          <li>
-            Not for running text: use a paragraph. Don’t convey meaning by colour in the code.
-          </li>
+          <li>Not for running text: use a paragraph.</li>
         </ul>
       }
       example={
@@ -118,7 +118,7 @@ export function CodeBlockPage({
           <UseCase
             id="named-copy-button"
             title="A copy button that says what it copies"
-            why="With several blocks on a page, “Copy” alone doesn’t say which one. Give Copy a label of your own, and keep the words visible so the name and the text match."
+            why="With several blocks on a page, “Copy” alone doesn’t say which one. Give Copy a label of your own as its content. The visible words are then its name, and you take them from your own translations."
             code={sources['named-copy']}
             propsUsed={[{ part: 'CodeBlock.Copy', prop: 'children' }]}
           >
@@ -127,7 +127,19 @@ export function CodeBlockPage({
         </>
       }
       contract={
-        <ContractSectionsView contract={contract} messageNamespace="copyButton" linkToStrings />
+        <ContractSectionsView
+          contract={contract}
+          messageNamespace="copyButton"
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Give every block a label. Without one, a screen reader user hears no name for the
+                block (1.3.1 Info and Relationships, 2.4.6 Headings and Labels).
+              </Note>
+            ),
+          }}
+        />
       }
       contractSections={contractSectionList(contract)}
       api={

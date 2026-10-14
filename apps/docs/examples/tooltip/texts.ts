@@ -6,7 +6,7 @@ export const useTooltipTexts = defineExampleTexts({
     undo: 'Undo',
     redo: 'Redo',
     print: 'Print',
-    printDescription: 'Opens a print view in a new window',
+    printDescription: 'Prints this page or saves it as a PDF',
     group: 'Document tools',
   },
 })

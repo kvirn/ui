@@ -53,26 +53,30 @@ export function NumberInputPage({
   return (
     <ComponentPage
       title="NumberInput"
-      lead="It takes digits and the decimal mark of the page’s language, leaves out everything else and says so, and never changes the number with the arrow keys."
+      lead="It accepts digits and the decimal mark of the page’s language, leaves out other characters and says so, and never changes the number with the arrow keys."
       status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
-            Use a NumberInput for a quantity or an amount the user types: a number of children, a
-            rent, a balance.
+            Use a NumberInput for a quantity or an amount the user types: a number of people in a
+            booking, hours per week, a rent. A number mask (a rule for which characters the box
+            accepts) leaves out letters and signs the number can’t have.
           </li>
           <li>
             Put it in a <code>Field</code> with a visible label. Put the unit in the label, and with
             decimals put the format and an example in a help text under the box.
           </li>
           <li>
-            Choose a width that fits the answer (<code>kv-input--width-2</code> to <code>-20</code>
-            ). A width is a hint, not a limit.
+            Choose a width that fits the answer, from <code>kv-input--width-2</code> up to{' '}
+            <code>kv-input--width-20</code>. A width is a hint, not a limit.
           </li>
           <li>
             Not for a code that keeps its leading zeros, such as a postcode, a case number or a
-            personal identity number: use a <code>TextInput</code> with a <code>mask</code>, or a
-            number would drop the zeros. Not for a date: use three date boxes.
+            personal identity number: use a <Link href="/components/text-input">TextInput</Link>{' '}
+            with a <code>mask</code>, or a number would drop the zeros.
+          </li>
+          <li>
+            Not for a date: use a <Link href="/components/date-input">DateInput</Link>.
           </li>
         </ul>
       }
@@ -85,19 +89,19 @@ export function NumberInputPage({
         <>
           <UseCase
             id="amount"
-            title="An amount with decimals"
-            why="Money has a decimal mark, and the mark depends on the language of the page: a comma in Swedish, a point in English. The box writes the groups and the mark the way the page does, and a typed comma or point is read as the mark. The mark is not explained by the box, so say it in a help text with an example."
+            title="Working hours per week, with a decimal"
+            why="Some answers have a decimal mark, and it depends on the language of the page: a comma in Swedish, a point in English. The box writes the mark the way the page does, and a typed comma or point is read as the mark. Under the box, the example shows the plain number your form should send."
             code={sources['amount']}
             propsUsed={[
               { part: 'NumberInput', prop: 'decimals' },
-              { part: 'NumberInput', prop: 'grouping' },
               { part: 'NumberInput', prop: 'onValueChange' },
             ]}
             note={
-              <Note kind="tip">
-                The box shows the number as the page writes it, <code>1 250,50</code> in Swedish.
-                Send <code>details.unmaskedValue</code> to your server: it is always the machine
-                form, <code>1250.5</code>.
+              <Note kind="reminder">
+                The box doesn’t explain the decimal mark. Say it in a help text under the box, with
+                an example, as here (3.3.2 Labels or Instructions). Send{' '}
+                <code>details.unmaskedValue</code> to your server: with the number mask it is the
+                plain number, such as <code>37.5</code>, whatever the page shows.
               </Note>
             }
           >
@@ -105,8 +109,14 @@ export function NumberInputPage({
           </UseCase>
           <UseCase
             id="range"
-            title="A number with a range"
-            why="A quantity has limits, but the box never clamps or corrects what the user typed. It reports whether the number is inside min and max, and your form decides on submit, writes the message and moves focus to the input."
+            title="Number of people in a booking, 1 to 8"
+            why={
+              <>
+                A quantity has limits, but the box never clamps or corrects what the user typed. It
+                reports whether the number is inside <code>min</code> and <code>max</code>. Your
+                form decides when the user sends it, writes the error and moves focus to the box.
+              </>
+            }
             code={sources['range']}
             propsUsed={[
               { part: 'NumberInput', prop: 'min' },
@@ -115,8 +125,9 @@ export function NumberInputPage({
             ]}
             note={
               <Note kind="reminder">
-                The range is never announced. Say it in a help text under the box, as here. See{' '}
-                <Link href="#what-you-need-to-do">What you need to do</Link>.
+                The range is never announced, so say it in a help text under the box, as here (3.3.2
+                Labels or Instructions). The error then says what to enter (3.3.3 Error Suggestion).
+                See <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >
@@ -124,8 +135,15 @@ export function NumberInputPage({
           </UseCase>
           <UseCase
             id="negative"
-            title="A number below zero"
-            why="A balance or a difference can be negative. allowNegative accepts a leading minus sign. The on-screen keyboard then shows text, because the numeric keyboards on iOS have no minus sign, so show in the help text how to write it."
+            title="Business profit or loss last year"
+            why={
+              <>
+                A result can be below zero: a loss. <code>allowNegative</code> accepts a leading
+                minus sign, and a minus sign pasted from a document, also the typographic minus (−),
+                is read too. Phones then show the text keyboard, because the number keyboard on
+                iPhone has no minus sign, so say in the help text how to write it.
+              </>
+            }
             code={sources['negative']}
             propsUsed={[{ part: 'NumberInput', prop: 'allowNegative' }]}
           >
@@ -133,22 +151,32 @@ export function NumberInputPage({
           </UseCase>
           <UseCase
             id="unit-in-the-box"
-            title="A unit in the box"
+            title="A monthly rent in whole kronor, with the unit in the box"
             why={
               <>
                 A unit such as “kr” can sit inside the box, in an{' '}
-                <Link href="/components/input-group">InputGroup</Link> addon. The addon is hidden
-                from screen readers, so the label still says the unit: “Monthly rent in kronor”.
+                <Link href="/components/input-group">InputGroup</Link> addon. Screen readers
+                (software that reads the screen aloud) skip the addon, so the label still says the
+                unit: “Monthly rent in kronor”.
               </>
             }
             code={sources['unit-in-box']}
+            propsUsed={[{ part: 'NumberInput', prop: 'grouping' }]}
           >
             <UnitInBox />
           </UseCase>
           <UseCase
             id="plain-text-box"
-            title="An amount you read yourself"
-            why="Sometimes the mask is in the way: an amount pasted from a spreadsheet, or a figure in a format the mask doesn’t know. mask false makes the box a plain numeric text box. Nothing is left out or announced, and onValueChange reports no mask details, so you parse the value."
+            title="Total project costs pasted from a budget"
+            why={
+              <>
+                Sometimes the mask is in the way: an amount pasted from a spreadsheet, or a figure
+                in a format the mask doesn’t know. With <code>{'mask={false}'}</code> the box is a
+                plain numeric text box. Nothing is left out or announced, and{' '}
+                <code>onValueChange</code> reports no mask details, so you read and check the value
+                yourself.
+              </>
+            }
             code={sources['plain-text-box']}
             propsUsed={[{ part: 'NumberInput', prop: 'mask' }]}
           >
@@ -156,7 +184,35 @@ export function NumberInputPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} messageNamespace="mask" linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          messageNamespace="mask"
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Give every NumberInput a visible label in a <code>Field</code>. Without a name a
+                screen reader user can’t tell what the box is for, and a placeholder is gone as soon
+                as the user types (4.1.2 Name, Role, Value; 3.3.2 Labels or Instructions).
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                If you restyle the box, keep a focus ring with at least 3:1 contrast against what is
+                next to it, and keep an invalid box recognisable by more than colour: the error text
+                carries it (2.4.7 Focus Visible, 1.4.1 Use of Color).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If an issue here affects your service, list it in your accessibility statement with
+                its workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
@@ -179,11 +235,17 @@ export function NumberInputPage({
                 },
                 {
                   key: 'maximumLength',
-                  meaning: 'Announced when a character is left out because the mask is full.',
+                  meaning:
+                    'Announced by a pattern or RegExp mask of your own when a character is left out because it is full. The number mask never uses it.',
                   values: { length: 12 },
                 },
               ]}
-            />
+            >
+              <p>
+                NumberInput has no strings of its own. It announces the mask’s, and{' '}
+                <code>messages</code> replaces them for one box.
+              </p>
+            </StringsBlock>
           }
         />
       }

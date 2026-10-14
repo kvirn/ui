@@ -36,6 +36,9 @@ export function ErrorOnSubmitCheckboxGroup() {
         onValueChange={setContact}
       >
         <CheckboxGroup.Legend>{texts.legend}</CheckboxGroup.Legend>
+        <CheckboxGroup.Prose>
+          <p>{texts.requiredHint}</p>
+        </CheckboxGroup.Prose>
         <Field.Root>
           <Checkbox value="email" />
           <Field.Label>{texts.email}</Field.Label>

@@ -122,8 +122,8 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;span&gt;</code> with the text from <code>pagination.status</code>, such as “Page 2
-        of 9”. The default theme shows it with Previous and Next instead of the page links below
-        40rem.
+        of 9”. The default theme shows it, with Previous, Next and the current page, below 40rem,
+        and hides it on wider screens, where the last page link gives the total.
       </>
     ),
     props: paginationStatusRows,
@@ -141,7 +141,7 @@ export function PaginationPage({
   return (
     <ComponentPage
       title="Pagination"
-      lead="Every page is a URL, so Back, sharing and opening in a new tab work, and the current page is marked in words and shape, not colour alone."
+      lead="Every page is a link to its own address, so Back, sharing and opening in a new tab work. The current page has a filled shape and bold text as well as its colour."
       status="alpha-candidate"
       whenToUse={
         <ul>
@@ -159,8 +159,9 @@ export function PaginationPage({
             Next on the last, never disable them.
           </li>
           <li>
-            On a screen narrower than 40rem the theme shows only Previous, the status and Next, so
-            always render <code>Pagination.Status</code> too.
+            On a screen narrower than 40rem the theme shows only Previous, the current page, the
+            status and Next. Always render <code>Pagination.Status</code> too, so people on a phone
+            see how many pages there are. From 40rem the total is the last page link, so keep it.
           </li>
           <li>
             Not for steps in a form or a flow. Not for the sections of a site: use{' '}
@@ -170,16 +171,26 @@ export function PaginationPage({
         </ul>
       }
       example={
-        <ExampleFrame headingId="example" code={sources['default']}>
-          <DefaultPagination />
-        </ExampleFrame>
+        <>
+          <ExampleFrame headingId="example" code={sources['default']}>
+            <DefaultPagination />
+          </ExampleFrame>
+          <Note kind="recipe">
+            Register your router’s link once on the provider and every link here is rendered by it,
+            so a click doesn’t reload the page. See{' '}
+            <LinkRoot href="/foundation/kvirn-provider#next-js">
+              the Next.js setup on KvirnProvider
+            </LinkRoot>
+            .
+          </Note>
+        </>
       }
       useCases={
         <>
           <UseCase
             id="news-list"
             title="A news list with ten pages"
-            why="With many pages, show the first and the last, and the pages around the current one, and put a Pagination.Ellipsis in each gap. The ellipsis is plain text in its own item: it is not a link and not a Tab stop. The status and Next still tell people where they are."
+            why="With many pages, show the first and the last page and the pages around the current one. Put a Pagination.Ellipsis in each gap. The ellipsis is plain text in its own item, so it is not a link and not a Tab stop. The filled current page shows where you are, and on a narrow screen the status does too."
             code={sources['news-list']}
             propsUsed={[
               { part: 'Pagination.Link', prop: 'page' },
@@ -189,9 +200,10 @@ export function PaginationPage({
             ]}
             note={
               <Note kind="tip">
-                The current page stays a link, so it is a Tab stop and the address can be copied. It
-                has aria-current="page", so a screen reader says “Page 5, current page” once, and
-                the digit it shows is in the name.
+                The current page stays a link, so it is a Tab stop and its address can be copied. It
+                has <code>aria-current=&quot;page&quot;</code>, which a screen reader announces
+                itself, so its name stays “Page 5”. The digit people see is in the name (2.5.3 Label
+                in Name, A).
               </Note>
             }
           >
@@ -200,13 +212,13 @@ export function PaginationPage({
           <UseCase
             id="first-page"
             title="The first page of a short list"
-            why="On the first page there is no page before, so leave Previous out instead of disabling it: a disabled link is not a thing. Do the same with Next on the last page. With three pages there is nothing to leave a gap for."
+            why="On the first page there is no page before, so leave Previous out instead of disabling it. A link can’t be disabled, and a dimmed one would lead nowhere. Do the same with Next on the last page. With three pages there is no gap to mark."
             code={sources['first-page']}
             propsUsed={[{ part: 'Pagination.Link', prop: 'current' }]}
             note={
               <Note kind="reminder">
-                Mark exactly one page as <code>current</code>, and list the pages in order with
-                consecutive numbers.
+                Mark exactly one page as <code>current</code>, and list the pages in order, lowest
+                first.
               </Note>
             }
           >
@@ -215,7 +227,7 @@ export function PaginationPage({
           <UseCase
             id="own-words"
             title="Your own words for the controls"
-            why="Previous, Next and the status come from the library’s messages in five languages. To use other words, pass children, or override the message with messages on the part or the provider. Your own text is yours to translate, so wrap it in an element with lang when it differs from the page."
+            why="Previous, Next and the status come from the library’s messages in five languages. To use other words, pass children, or override the message with messages on the part or on the provider. Say where the link leads, such as “Previous results”, and not just “Back” (2.4.4 Link Purpose, A)."
             code={sources['own-words']}
             propsUsed={[
               { part: 'Pagination.Previous', prop: 'children' },
@@ -223,13 +235,10 @@ export function PaginationPage({
               { part: 'Pagination.Status', prop: 'children' },
             ]}
             note={
-              <Note kind="recipe">
-                Register your router’s link once on the provider and every link here is rendered by
-                it, with no full page load. See{' '}
-                <LinkRoot href="/foundation/kvirn-provider#next-js">
-                  the Next.js setup on KvirnProvider
-                </LinkRoot>
-                .
+              <Note kind="reminder">
+                Words you write are your own text. If their language differs from the page, put them
+                in a nested KvirnProvider and spread <code>useLocale().localeProps</code> on your
+                own element around them (3.1.2 Language of Parts, AA).
               </Note>
             }
           >
@@ -237,7 +246,21 @@ export function PaginationPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Always render <code>Pagination.Status</code>. Below 40rem the page numbers are
+                hidden, so without it a phone shows no total. A development warning says so when it
+                is missing.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
@@ -263,8 +286,7 @@ export function PaginationPage({
                 },
                 {
                   key: 'status',
-                  meaning:
-                    'The status shown on a narrow screen instead of the page links, and read as text.',
+                  meaning: 'The status text, shown on a narrow screen instead of most page links.',
                   values: { page: 2, total: 9 },
                 },
                 {

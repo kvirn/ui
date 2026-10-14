@@ -163,6 +163,7 @@ export type CharacterCountDocumentedProps = Pick<
   | 'announceChanges'
   | 'messages'
   | 'id'
+  | 'as'
 >
 
 export const characterCountRows = propRows<CharacterCountDocumentedProps>({
@@ -208,6 +209,12 @@ export const characterCountRows = propRows<CharacterCountDocumentedProps>({
     description:
       'Outside a Field (also directly in a Fieldset): the id to list in your control’s aria-describedby. In a Field the Field gives it.',
   },
+  as: {
+    type: "'p' | 'div' | 'span'",
+    default: "'p'",
+    description:
+      'The element. The count is plain help text, never a heading. Another tag warns once.',
+  },
 })
 
 export const characterCountAttributes: readonly AttributeRow[] = [
@@ -243,7 +250,7 @@ export const useCharacterCountRows = propRows<UseCharacterCountOptions>({
   messages: characterCountRows.messages,
   id: characterCountRows.id,
   ref: {
-    type: 'Ref<HTMLParagraphElement>',
+    type: 'Ref<HTMLElement>',
     default: '–',
     description: 'The element’s ref. Pass it here: the hook also needs the element.',
   },

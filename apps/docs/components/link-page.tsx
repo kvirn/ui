@@ -18,13 +18,14 @@ import {
 } from '../content/link.api.ts'
 import { CurrentPage } from '../examples/link/current-page.tsx'
 import { DefaultLink } from '../examples/link/default.tsx'
+import { FileLink } from '../examples/link/file.tsx'
 import { NewTab } from '../examples/link/new-tab.tsx'
 import { OtherLanguage } from '../examples/link/other-language.tsx'
 import { ServiceLink } from '../examples/link/service-link.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type LinkExampleSources = Record<
-  'default' | 'new-tab' | 'current-page' | 'other-language' | 'service-link',
+  'default' | 'new-tab' | 'current-page' | 'other-language' | 'file' | 'service-link',
   string
 >
 
@@ -79,17 +80,17 @@ export function LinkPage({
   return (
     <ComponentPage
       title="Link"
-      lead="It is a native link, so it works the way people expect, and it can tell them when it opens a new tab."
+      lead="It is a native link, so it behaves the way people expect. Add the new-tab notice and the link says when it opens a new tab, also to a screen reader (software that reads the screen aloud)."
       status="alpha-candidate"
       whenToUse={
         <ul>
           <li>Use a link to go somewhere: another page, a place on this page or a file.</li>
           <li>
-            Write text that says where the link goes, also out of context. “Apply for a parking
-            permit”, not “click here”.
+            Write text that says where the link goes: “Apply for a parking permit”, not “click
+            here”.
           </li>
           <li>
-            Use <code>kv-link--service</code> once on a page, for the link that starts an e-service.
+            Use <code>kv-link--service</code> for the link that starts an e-service.
           </li>
           <li>
             Not for an action that changes something, such as sending or saving: use a{' '}
@@ -108,18 +109,26 @@ export function LinkPage({
           <UseCase
             id="new-tab"
             title="A link that opens a new tab"
-            why="Opening a new tab changes where the user is, so say so in the link’s name. Link.NewTabNotice adds the translated text inside the link, and Link adds noopener noreferrer to rel."
+            why={
+              <>
+                Opening a new tab takes people somewhere they may not expect, so say so in the
+                link’s name. <code>Link.NewTabNotice</code> adds that text inside the link,
+                translated. Link also adds <code>noopener noreferrer</code> to <code>rel</code> for
+                you.
+              </>
+            }
             code={sources['new-tab']}
             propsUsed={[
               { part: 'Link.Root', prop: 'target' },
               { part: 'Link.NewTabNotice', prop: 'children' },
             ]}
             note={
-              <Note kind="reminder">
+              <Note kind="tip">
                 Link does not check that you added the notice: there is no type error and no
-                warning. Put it in every link with <code>target=&quot;_blank&quot;</code>, or
-                better, don’t open new tabs. See{' '}
-                <Link href="#what-you-need-to-do">What you need to do</Link>.
+                warning, so review every <code>target=&quot;_blank&quot;</code> link by hand. No
+                level A or AA criterion requires the warning (3.2.5 Change on Request is level AAA),
+                but without it a screen reader user isn’t told that a new tab opens. Better still,
+                don’t open new tabs.
               </Note>
             }
           >
@@ -133,8 +142,8 @@ export function LinkPage({
             propsUsed={[{ part: 'Link.Root', prop: 'current' }]}
             note={
               <Note kind="tip">
-                With a router, compare the link’s path to the router’s own pathname, and pass{' '}
-                <code>current=&quot;page&quot;</code> or <code>false</code>.
+                With a router, compare the link’s address with the router’s own current address, and
+                pass <code>current=&quot;page&quot;</code> or <code>false</code>.
               </Note>
             }
           >
@@ -143,22 +152,79 @@ export function LinkPage({
           <UseCase
             id="other-language"
             title="A link to a page in another language"
-            why="Wrap the link in your own element with lang, so a screen reader pronounces the text in that language, and set hrefLang on where it goes."
+            why={
+              <>
+                Put the link in your own element with <code>lang</code> set to the language of its
+                text, so a screen reader reads “Suomeksi” (in Finnish) in Finnish.{' '}
+                <code>hrefLang</code> names the language of the page it goes to. It doesn’t change
+                how the text is read.
+              </>
+            }
             code={sources['other-language']}
+            note={
+              <Note kind="reminder">
+                Link never sets <code>lang</code> for you. Without it, a screen reader reads the
+                Finnish text with the page’s language (3.1.2 Language of Parts).
+              </Note>
+            }
           >
             <OtherLanguage />
           </UseCase>
           <UseCase
+            id="file"
+            title="A link to a file"
+            why={
+              <>
+                People decide before they tap, and some pay for their data by the megabyte. Put the
+                file type and size in the link text itself, in brackets. Don’t leave them to a{' '}
+                <code>title</code>, an icon alone or text beside the link. Offer a web page version
+                where you can.
+              </>
+            }
+            code={sources['file']}
+            propsUsed={[{ part: 'Link.Root', prop: 'as' }]}
+            note={
+              <Note kind="tip">
+                Write the size with <code>useFormat</code>, so the number follows the page’s
+                language. Swedish uses a decimal comma, for example “2,5 MB”. Both come from the
+                example’s texts, which exist in all five languages.
+              </Note>
+            }
+          >
+            <FileLink />
+          </UseCase>
+          <UseCase
             id="service-link"
             title="The link that starts an e-service"
-            why="One link on a page is the way in to the service. Add the class kv-link--service and put the icon first, in Link.Icon: it is hidden from screen readers, so the name is only the text."
+            why={
+              <>
+                The way in to the service should be easy to find among plain links. Add the class{' '}
+                <code>kv-link--service</code> and put the icon first, in <code>Link.Icon</code>. The
+                icon is hidden from screen readers, so the link’s name is only its text.
+              </>
+            }
             code={sources['service-link']}
           >
             <ServiceLink />
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                A link that says only “click here” or “read more” fails 2.4.4 Link Purpose (In
+                Context) unless the paragraph, list item or table cell around it says where it goes.
+                If you show or override the new-tab notice, keep its visible words in the link’s
+                name: don’t hide it with <code>display: none</code> or <code>aria-hidden</code>{' '}
+                (2.5.3 Label in Name).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

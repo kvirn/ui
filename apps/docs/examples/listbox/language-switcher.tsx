@@ -8,7 +8,7 @@ export function LanguageSwitcherListbox() {
   const { texts } = useListboxTexts()
   return (
     <Field.Root>
-      <Field.Label>{texts.language}</Field.Label>
+      <Field.Label>{texts.letterLanguage}</Field.Label>
       <Listbox.Root
         native="never"
         items={languages}

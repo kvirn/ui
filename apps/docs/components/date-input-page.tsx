@@ -41,8 +41,9 @@ const boxPart = (name: 'Day' | 'Month' | 'Year'): ApiPart => ({
       A <code>&lt;div class=&quot;kv-field&quot;&gt;</code> with a visible label (
       <code>dateInput.{name.toLowerCase()}</code>) and a text <code>&lt;input&gt;</code>. It takes
       the props of a <code>TextInput</code> except <code>type</code>, <code>value</code>,{' '}
-      <code>defaultValue</code>, <code>onValueChange</code>, <code>mask</code> and{' '}
-      <code>messages</code>: the Root gives it its name, value and autocomplete.
+      <code>defaultValue</code>, <code>onValueChange</code>, <code>mask</code>,{' '}
+      <code>announceRejections</code>, <code>messages</code> and <code>part</code>: the Root gives
+      it its name, value and autocomplete. The props and <code>ref</code> go to the input.
     </>
   ),
   props: dateInputBoxRows,
@@ -79,30 +80,28 @@ export function DateInputPage({
   return (
     <ComponentPage
       title="DateInput"
-      lead="It works with autofill, dictation and any screen reader, and it never parses or validates the date."
+      lead="Each box has a visible label, so autofill, dictation and screen readers (software that reads the screen aloud) all work. It never parses or checks the date: that is your form’s job."
       status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
-            Use it for a date the user knows by heart, such as a date of birth, or reads off a
-            document. Put it in a <code>Fieldset</code> whose legend asks the question.
+            Use it for a date the user knows by heart or reads off a document, such as a date of
+            birth. Put it in a <code>Fieldset</code> whose legend asks the question.
           </li>
           <li>
             Use it in forms for residents and for staff, wherever the date is typed rather than
-            picked.
+            picked. For a date near today, add a{' '}
+            <Link href="/components/date-picker">DatePicker</Link> button after the boxes: typing
+            still works.
           </li>
           <li>
-            Write an example under the boxes in the order the boxes are in. KvirnUI supplies no
-            example text, because the example is the service’s.
-          </li>
-          <li>
-            Not for a date near today that is easier to pick: a calendar DatePicker, when it exists,
-            will also accept typing. For one date read off a document, one{' '}
-            <Link href="/components/text-input">TextInput</Link> with a date mask is an option.
+            For most other dates, one <Link href="/components/text-input">TextInput</Link> with a
+            date mask is shorter: one box and one Tab stop instead of three.
           </li>
           <li>
             Not for a time or a month alone: use a{' '}
-            <Link href="/components/text-input">TextInput</Link> with a mask or a Listbox.
+            <Link href="/components/text-input">TextInput</Link> with a mask or a{' '}
+            <Link href="/components/listbox">Listbox</Link>.
           </li>
         </ul>
       }
@@ -119,8 +118,8 @@ export function DateInputPage({
             why={
               <>
                 Leave <code>autoComplete</code> off: the token would offer the user’s own birthday
-                (1.3.5). In a <code>group</code> Fieldset that isn’t required, the legend ends with
-                “(optional)” and no box does.
+                (1.3.5 Identify Input Purpose). In a <code>group</code> Fieldset that isn’t
+                required, the legend ends with “(optional)” and no box does.
               </>
             }
             code={sources['not-a-birthday']}
@@ -155,7 +154,13 @@ export function DateInputPage({
           <UseCase
             id="controlled"
             title="In your own form state"
-            why="Pass value and onValueChange from your form logic. The Root reports the whole date as the boxes show it: three strings, never padded or parsed. Validating it is your job."
+            why={
+              <>
+                Pass <code>value</code> and <code>onValueChange</code> from your form logic. The
+                Root reports the whole date as the boxes show it: three strings, never padded or
+                parsed. Checking it is your job, for example with <code>checks.date</code>.
+              </>
+            }
             code={sources['controlled']}
             propsUsed={[
               { part: 'DateInput.Root', prop: 'value' },
@@ -185,22 +190,15 @@ export function DateInputPage({
           <UseCase
             id="paper-form-order"
             title="Matching a paper form"
-            why="The order follows the region. When the service must match a paper form, write Day, Month and Year as children in the order you want, and write the example in that order."
+            why="The order follows the region. When the service must match a paper form, write Day, Month and Year as children in the order you want, and write the example under the boxes in that order."
             code={sources['paper-form-order']}
-            propsUsed={[{ part: 'DateInput.Root', prop: 'order' }]}
-            note={
-              <Note kind="tip">
-                To change the order without writing the children, pass <code>order</code> to the
-                Root. The example in the help text still follows the order you chose.
-              </Note>
-            }
           >
             <PaperFormOrder />
           </UseCase>
           <UseCase
             id="no-auto-advance"
             title="Typing never moves focus"
-            why="By default, focus moves to the next box when typing fills one, and a visible hint says so before anyone types. If your service follows the stricter reading of 3.2.2, turn it off: the hint goes too."
+            why="By default, focus moves to the next box when typing fills one, and a visible hint says so before anyone types. If your service follows the stricter reading of 3.2.2 On Input, turn it off: the hint goes too."
             code={sources['no-auto-advance']}
             propsUsed={[{ part: 'DateInput.Root', prop: 'autoAdvance' }]}
           >
@@ -208,7 +206,28 @@ export function DateInputPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Ask the question in the legend and write an example under the boxes, in the order
+                the boxes are in. Without them the three boxes have no shared name and nobody knows
+                the format (1.3.1 Info and Relationships, 3.3.2 Labels or Instructions).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If a screen reader does not read the group’s error when only one box is wrong, list
+                it in your accessibility statement with its workaround. Test it with the screen
+                readers your users have.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

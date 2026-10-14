@@ -104,6 +104,7 @@ export function AccordionPage({
       title="Accordion"
       lead="Readers open them one by one, and every item opens on its own."
       status="alpha-candidate"
+      pattern="APG Accordion"
       whenToUse={
         <ul>
           <li>
@@ -111,8 +112,9 @@ export function AccordionPage({
             most readers want one or two answers.
           </li>
           <li>
-            Write each button as the question or the section title. Screen reader users find them by
-            heading, so the heading level has to fit your page’s outline.
+            Write each button as the question or the section title. Screen reader users (people
+            using software that reads the screen aloud) find the questions by heading, so the
+            heading level has to fit your page’s outline.
           </li>
           <li>
             Keep content that everyone needs in plain view. Hiding an answer behind a press costs
@@ -120,12 +122,12 @@ export function AccordionPage({
           </li>
           <li>
             For a single button and panel, use a{' '}
-            <Link href="/components/disclosure">Disclosure</Link>.
+            <Link href="/components/disclosure">Disclosure</Link>. For a menu in the page header,
+            use <Link href="/components/navigation">Navigation</Link>.
           </li>
           <li>
-            There is no “only one open” mode and no “show all” button yet. Not for a responsive menu
-            either: a panel can’t be visible while its button says closed. That is the planned
-            NavigationMenu.
+            This version has no “only one open” mode and no “show all” button, and the arrow keys
+            don’t move between the questions.
           </li>
         </ul>
       }
@@ -148,13 +150,19 @@ export function AccordionPage({
           <UseCase
             id="find-in-page"
             title="A long FAQ that people search"
-            why="On a long page of questions, residents press Ctrl+F for a word from the answer. Set hiddenUntilFound once on the root and the browser opens the item that matches."
+            why={
+              <>
+                On a long page of questions, residents search the page (Ctrl+F) for a word from an
+                answer. Set <code>hiddenUntilFound</code> once on the root, and a browser that
+                supports it opens the item that matches.
+              </>
+            }
             code={sources['find-in-page']}
             propsUsed={[{ part: 'Accordion.Root', prop: 'hiddenUntilFound' }]}
             note={
               <Note kind="tip">
-                Only some browsers can reveal a hidden panel. In the others a match inside a closed
-                answer isn’t found, and nothing else changes.
+                Chromium browsers such as Chrome and Edge can reveal a closed answer. In a browser
+                that can’t, a match inside a closed answer isn’t found, and nothing else changes.
               </Note>
             }
           >
@@ -163,13 +171,18 @@ export function AccordionPage({
           <UseCase
             id="regions"
             title="A few sections that people jump between"
-            why="With region, each open answer is a landmark named by its question, so a screen reader user can move between them."
+            why={
+              <>
+                With <code>region</code>, each open answer is a landmark named by its question, so a
+                screen reader user can jump between them.
+              </>
+            }
             code={sources['regions']}
             propsUsed={[{ part: 'Accordion.Panel', prop: 'region' }]}
             note={
-              <Note kind="reminder">
-                Use it for about six sections or fewer. Many open regions crowd the landmark list,
-                and the heading already names each question.
+              <Note kind="tip">
+                Many open regions crowd a screen reader’s list of landmarks, and the heading already
+                names each question. The ARIA Authoring Practices advise about six or fewer.
               </Note>
             }
           >
@@ -178,16 +191,22 @@ export function AccordionPage({
           <UseCase
             id="as-a-list"
             title="As a list of items"
-            why="If you want the screen reader to say how many questions there are, make the root a list and each item a list item. The markup is yours, through render."
+            why={
+              <>
+                If you want a screen reader to say how many questions there are, make the root a
+                list and each item a list item. You choose the markup with <code>as</code>.
+              </>
+            }
             code={sources['as-a-list']}
             propsUsed={[
               { part: 'Accordion.Root', prop: 'as' },
               { part: 'Accordion.Item', prop: 'as' },
             ]}
             note={
-              <Note kind="recipe">
-                Add role=&quot;list&quot; on the <code>&lt;ul&gt;</code> and give it a name, so it
-                is still read as a list when the theme removes the bullets.
+              <Note kind="tip">
+                The root adds <code>role=&quot;list&quot;</code> to a <code>&lt;ul&gt;</code> or{' '}
+                <code>&lt;ol&gt;</code> itself, so it is still read as a list when the theme removes
+                the bullets. Safari with VoiceOver drops the list otherwise.
               </Note>
             }
           >
@@ -195,7 +214,26 @@ export function AccordionPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Choose the heading level that fits your page’s outline, and write each button as the
+                question (1.3.1 Info and Relationships, 2.4.6 Headings and Labels). Keep the words
+                the same open and closed (2.5.3 Label in Name).
+              </Note>
+            ),
+            focus: (
+              <Note kind="reminder">
+                If your page has a sticky header, set <code>scroll-padding-top</code> so it doesn’t
+                cover the focused button (2.4.11 Focus Not Obscured (Minimum)).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

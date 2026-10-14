@@ -1,16 +1,20 @@
 'use client'
-import { Badge } from '@kvirn-ui/react'
+import { Badge, Stack, VisuallyHidden } from '@kvirn-ui/react'
 import { useBadgeTexts } from './texts.ts'
 
 export function StatusInList() {
   const { texts } = useBadgeTexts()
   return (
-    <ul>
+    <Stack as="ul" className="kv-stack--gap-4">
       {texts.cases.map((item) => (
-        <li key={item.title}>
-          {item.title} <Badge variant={item.variant}>{item.status}</Badge>
-        </li>
+        <Stack as="li" key={item.title} className="kv-stack--gap-2">
+          <span>{item.title}</span>
+          <span>
+            <VisuallyHidden>{texts.statusHidden}</VisuallyHidden>{' '}
+            <Badge variant={item.variant}>{item.status}</Badge>
+          </span>
+        </Stack>
       ))}
-    </ul>
+    </Stack>
   )
 }

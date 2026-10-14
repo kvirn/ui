@@ -13,6 +13,7 @@ import {
   TableRowHeader,
   TableScrollRegion,
 } from '@kvirn-ui/react'
+import { Link } from '@kvirn-ui/react'
 import type { HeadingTag } from '@kvirn-ui/react'
 import { AnchoredHeading } from './anchored-heading.tsx'
 import { Fragment } from 'react'
@@ -55,6 +56,9 @@ export function contractSectionList(
           block.type === 'heading' ? [{ id: `keyboard-${block.id}`, label: block.text }] : [],
         )
       : []
+  const knownIssuesHeadings = contract.knownIssues.flatMap((block) =>
+    block.type === 'heading' ? [{ id: `known-issues-${block.id}`, label: block.text }] : [],
+  )
   return [
     ...(contract.accessibility.length === 0
       ? []
@@ -69,15 +73,29 @@ export function contractSectionList(
           },
         ]),
     { id: 'keyboard', label: text.sections.keyboard, children: keyboardHeadings },
-    ...(announcements.kind === 'none'
+    ...(contract.knownIssues.length === 0
+      ? []
+      : [{ id: 'known-issues', label: text.sections.knownIssues, children: knownIssuesHeadings }]),
+    ...(announcements.kind === 'none' && contract.readAloud.length === 0
       ? []
       : [
           {
             id: 'announcements',
             label: text.sections.announcements,
-            children: announcements.rows.some((row) => row.messageKeys.length > 0)
-              ? [{ id: 'announcements-change-the-text', label: text.announcements.overrideHeading }]
-              : [],
+            children: [
+              ...(announcements.kind === 'rows' &&
+              announcements.rows.some((row) => row.messageKeys.length > 0)
+                ? [
+                    {
+                      id: 'announcements-change-the-text',
+                      label: text.announcements.overrideHeading,
+                    },
+                  ]
+                : []),
+              ...(contract.readAloud.length === 0
+                ? []
+                : [{ id: 'announcements-read-aloud', label: text.announcements.readAloudHeading }]),
+            ],
           },
         ]),
   ]
@@ -85,7 +103,7 @@ export function contractSectionList(
 
 const inlinePattern = /(`[^`]+`|\*\*.+?\*\*(?!\*)|\[[^\]]+\]\([^)]+\))/g
 
-/** `code`, **bold** and [links](https://…) of a contract's text. Relative links keep only their text. */
+/** `code`, **bold** and [links](https://…) of a contract's text. Site links (`/path`, `#id`) use the docs `Link`; other relative links keep only their text. */
 function Inline({ source }: { source: string }): ReactNode {
   return source.split(inlinePattern).map((part, index) => {
     if (part.startsWith('`') && part.endsWith('`') && part.length > 1) {
@@ -105,6 +123,10 @@ function Inline({ source }: { source: string }): ReactNode {
         <a key={index} href={href}>
           {label}
         </a>
+      ) : href.startsWith('/') || href.startsWith('#') ? (
+        <Link key={index} href={href}>
+          {label}
+        </Link>
       ) : (
         <Fragment key={index}>{label}</Fragment>
       )
@@ -262,13 +284,35 @@ function overrideExample(row: ContractAnnouncementRow, namespace: string) {
   return `<KvirnProvider messages={{ ${keyNamespace}: { ${key}: ${quote(row.example ?? '…')} } }}>`
 }
 
+/** An accessibility section id from the contract, or `keyboard` or `known-issues`. */
+export type ContractNoteSection = 'keyboard' | 'known-issues' | (string & {})
+
+export type ContractNotes = Partial<Record<ContractNoteSection, ReactNode>>
+
+function assertNotesHaveSections(contract: Contract, notes: ContractNotes) {
+  if (process.env.NODE_ENV === 'production') return
+  const rendered = new Set<string>(contract.accessibility.map((section) => section.id))
+  rendered.add('keyboard')
+  if (contract.knownIssues.length > 0) rendered.add('known-issues')
+  for (const id of Object.keys(notes)) {
+    if (notes[id] !== undefined && !rendered.has(id)) {
+      throw new Error(
+        `${contract.name}: a note is given for "${id}", which the contract does not render`,
+      )
+    }
+  }
+}
+
 export function ContractSectionsView({
   contract,
   extraAnnouncementRows,
   messageNamespace = lowerFirst(contract.name),
   linkToStrings = false,
+  notes = {},
 }: {
   contract: Contract
+  /** One note under a section that comes from the contract, after the section's body. */
+  notes?: ContractNotes
   /** The rows to show when the contract's Announcements is prose, built from the catalog keys. */
   extraAnnouncementRows?: readonly ContractAnnouncementRow[]
   /** The component's namespace in `@kvirn-ui/i18n`, when it isn't the contract name in camelCase. */
@@ -276,7 +320,8 @@ export function ContractSectionsView({
   /** The page has a Strings section, so the table links to it. */
   linkToStrings?: boolean
 }) {
-  const { keyboard, accessibility } = contract
+  const { keyboard, accessibility, knownIssues } = contract
+  assertNotesHaveSections(contract, notes)
   const announcements = announcementsOf(contract, extraAnnouncementRows)
   const facts =
     keyboard.kind === 'keys'
@@ -302,6 +347,7 @@ export function ContractSectionsView({
                 <AnchoredHeading as="h3" id={section.id}>
                   {section.title}
                 </AnchoredHeading>
+                {section.id === 'testing' ? <p>{text.accessibility.testingIntro}</p> : null}
                 <Blocks
                   blocks={section.body}
                   labelledBy={section.id}
@@ -311,6 +357,7 @@ export function ContractSectionsView({
                 {section.id === 'what-it-does-for-you' && announcements.kind === 'none' ? (
                   <p>{text.accessibility.announcesNothing}</p>
                 ) : null}
+                {notes[section.id]}
               </Fragment>
             ))}
           </>
@@ -352,59 +399,100 @@ export function ContractSectionsView({
               />
             </>
           )}
+          {notes['keyboard']}
         </>
       </section>
-      {announcements.kind === 'none' ? null : (
+      {knownIssues.length === 0 ? null : (
+        <section aria-labelledby="known-issues">
+          <AnchoredHeading as="h2" id="known-issues">
+            {text.sections.knownIssues}
+          </AnchoredHeading>
+          <Blocks
+            blocks={knownIssues}
+            labelledBy="known-issues"
+            headingTag="h3"
+            idPrefix="known-issues"
+          />
+          {notes['known-issues']}
+        </section>
+      )}
+      {announcements.kind === 'none' && contract.readAloud.length === 0 ? null : (
         <section aria-labelledby="announcements">
           <AnchoredHeading as="h2" id="announcements">
             {text.sections.announcements}
           </AnchoredHeading>
-          <>
-            <p>{text.announcements.intro({ component: contract.name })}</p>
-            <DataTable
-              labelledBy="announcements"
-              columns={[
-                text.announcements.when,
-                text.announcements.whatItSays,
-                text.announcements.messageKey,
-                text.announcements.politeness,
-              ]}
-              rows={announcements.rows.map((row) =>
-                cells(
-                  <Inline source={row.event} />,
-                  row.example === undefined ? null : <span lang="en">{row.example}</span>,
-                  row.messageKeys.map((key, index) => (
-                    <Fragment key={key}>
-                      {index > 0 ? ' ' : null}
-                      <code>{key}</code>
-                    </Fragment>
-                  )),
-                  politenessLabel(row.politeness),
-                ),
-              )}
-            />
-            {linkToStrings ? (
-              <p>
-                <a href="#api-strings">{text.announcements.allLanguages}</a>
-              </p>
-            ) : null}
-            {announcements.rows.some((row) => row.messageKeys.length > 0) ? (
-              <>
-                <AnchoredHeading as="h3" id="announcements-change-the-text">
-                  {text.announcements.overrideHeading}
-                </AnchoredHeading>
-                <OverrideText component={contract.name} />
-                <CodeBlock
-                  code={overrideExample(
-                    announcements.rows.find((row) => row.messageKeys.length > 0) ??
-                      announcements.rows[0]!,
-                    messageNamespace,
-                  )}
-                />
-              </>
-            ) : null}
-            <Note kind="reminder">{messages.docs.note.announcerProvider}</Note>
-          </>
+          {announcements.kind === 'none' ? null : (
+            <>
+              <p>{text.announcements.intro({ component: contract.name })}</p>
+              <DataTable
+                labelledBy="announcements"
+                columns={[
+                  text.announcements.when,
+                  text.announcements.whatItSays,
+                  text.announcements.messageKey,
+                  text.announcements.politeness,
+                ]}
+                rows={announcements.rows.map((row) =>
+                  cells(
+                    <Inline source={row.event} />,
+                    row.example === undefined ? null : <span lang="en">{row.example}</span>,
+                    row.messageKeys.map((key, index) => (
+                      <Fragment key={key}>
+                        {index > 0 ? ' ' : null}
+                        <code>{key}</code>
+                      </Fragment>
+                    )),
+                    politenessLabel(row.politeness),
+                  ),
+                )}
+              />
+              {linkToStrings ? (
+                <p>
+                  <a href="#api-strings">{text.announcements.allLanguages}</a>
+                </p>
+              ) : null}
+              {announcements.rows.some((row) => row.messageKeys.length > 0) ? (
+                <>
+                  <AnchoredHeading as="h3" id="announcements-change-the-text">
+                    {text.announcements.overrideHeading}
+                  </AnchoredHeading>
+                  <OverrideText component={contract.name} />
+                  <CodeBlock
+                    code={overrideExample(
+                      announcements.rows.find((row) => row.messageKeys.length > 0) ??
+                        announcements.rows[0]!,
+                      messageNamespace,
+                    )}
+                  />
+                </>
+              ) : null}
+              <Note kind="reminder">{messages.docs.note.announcerProvider}</Note>
+            </>
+          )}
+          {contract.readAloud.length === 0 ? null : (
+            <>
+              <AnchoredHeading as="h3" id="announcements-read-aloud">
+                {text.announcements.readAloudHeading}
+              </AnchoredHeading>
+              <DataTable
+                labelledBy="announcements-read-aloud"
+                columns={[
+                  text.announcements.readAloudState,
+                  text.announcements.readAloudPhrases,
+                  text.announcements.politeness,
+                  text.announcements.readAloudTest,
+                ]}
+                rows={contract.readAloud.map((row) =>
+                  cells(
+                    <Inline source={row.state} />,
+                    <Inline source={row.phrases} />,
+                    <Inline source={row.politeness} />,
+                    <Inline source={row.test} />,
+                  ),
+                )}
+              />
+            </>
+          )}
         </section>
       )}
     </>

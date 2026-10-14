@@ -51,9 +51,67 @@ export const messages = {
       title: 'Content types',
       lead: 'Every page has the same shell: the skip link, the site header, the site alert and the footer. A content type is everything in between, and nothing else.',
     },
+    patternsIndex: {
+      title: 'Patterns',
+      lead: 'Parts of a public-sector site built from the components: the site chrome, navigation and promotion. They are composed in Storybook and tested with axe in every theme.',
+    },
+    patterns: {
+      builtFrom: 'Built from',
+      builtFromLead: 'The native elements the pattern renders. You own the markup around it.',
+      whatItLooksLike: 'What it looks like',
+      elements: {
+        'application-logo': ['A link', 'A decorative image', 'The name as text'],
+        'site-header': [
+          'A header landmark',
+          'A navigation landmark with the main menu',
+          'A Menu button on narrow screens',
+          'A search form',
+        ],
+        'main-menu': [
+          'A navigation landmark',
+          'Buttons that open lists of links',
+          'Links to pages, never a menu role',
+        ],
+        'site-search': ['A search landmark and form', 'A labelled search field', 'A submit button'],
+        'language-links': ['A navigation landmark', 'A list of links, each with its language'],
+        'site-alert': ['A named region', 'A title, text and links', 'An optional close button'],
+        'cookie-consent': [
+          'A named region in the page flow, not a dialog',
+          'Buttons to accept and to choose',
+          'A link to the policy',
+        ],
+        'page-frame': ['A skip link', 'A header, a main and a footer landmark'],
+        'site-footer': [
+          'A footer landmark',
+          'An address',
+          'Navigation landmarks with lists of links',
+        ],
+        'page-header': [
+          'The page’s h1 and a lead',
+          'A breadcrumb you pass in',
+          'A definition list',
+        ],
+        'page-tools': ['Buttons to read aloud and to copy', 'A time element for the last update'],
+        hero: ['A band with the page’s h1', 'A lead', 'A link', 'A decorative image'],
+        'nav-tiles': ['A list of tiles', 'A heading and a link in each', 'A short text'],
+        'section-nav': [
+          'A button that opens and closes the list',
+          'A navigation landmark with a list of links',
+        ],
+        'service-link': ['A link in the service look', 'A closed state as inset text'],
+      },
+    },
     contentTypes: {
       whatIsOnIt: 'What is on it',
       whereItSits: 'Where it sits',
+      example: {
+        siteName: 'Content type example – Kvirnby (fictional municipality) – KvirnUI',
+        title: ({ page }: { page: string }) =>
+          `${page} example – Kvirnby (fictional municipality) – KvirnUI`,
+        notice: 'Kvirnby is a fictional municipality. This page is a KvirnUI example.',
+        back: 'Back to the documentation',
+        open: 'See a full-page example',
+      },
       shell: ({ name }: { name: string }) =>
         `The ${name} is only the part between the header and the footer. The skip link, the site header, the site alert and the footer belong to the shell and are the same on every page.`,
       blocks: {
@@ -84,6 +142,102 @@ export const messages = {
           'An article with an example, use cases and the accessibility contract',
           'The headings of the article as a contents list',
           'Links to the previous and the next page',
+        ],
+        'unit-page': [
+          'The unit’s h1 and a short description',
+          'Opening hours and the address, with the building’s access facts',
+          'A notice when the unit is temporarily closed',
+          'A contact card',
+        ],
+        contact: [
+          'The page’s h1 and a preamble',
+          'Contact cards for phone, email and visits',
+          'Opening hours, with a holiday notice when it applies',
+          'A closed phone line explained, with another way to get help',
+        ],
+        'news-article': [
+          'The article’s h1, the date published and, if changed, updated',
+          'An image with a description, when there is one',
+          'The text',
+          'A link to all news',
+        ],
+        'news-list': [
+          'The page’s h1 and the number of items',
+          'Teasers with a heading, a date and an introduction',
+          'Pagination between the pages',
+          'A message when there is no news',
+        ],
+        event: [
+          'The event’s h1, date, time and place',
+          'A notice for a cancelled, ended or fully booked event',
+          'How to sign up',
+          'Address and access facts, and a contact card',
+        ],
+        'event-list': [
+          'The page’s h1 and the number of events',
+          'Filters, with the applied ones as removable tags',
+          'Teasers with a heading, a date and a place',
+          'A message when no event matches',
+        ],
+        'form-page': [
+          'The page’s h1 and what happens next',
+          'An error summary first in the page, when there are errors',
+          'Fields with labels, help and errors',
+          'A submit button, and a message when sending failed or worked',
+        ],
+        'my-pages': [
+          'The page’s h1',
+          'Cases that need an action, first',
+          'The other cases, with their status in words',
+          'A message when there are no cases',
+        ],
+        'case-detail': [
+          'The case’s h1 and its status in words',
+          'What is needed from the person, first',
+          'The steps so far, as a list',
+          'Documents and a contact card',
+        ],
+        'session-ended': [
+          'The page’s h1 and what happened',
+          'Whether the answers were saved',
+          'A button to sign in again',
+          'Where to get help',
+        ],
+        'search-results': [
+          'The page’s h1 with the search words and the count',
+          'Filters, with the applied ones shown',
+          'Results with a heading, a type and an excerpt',
+          'Pagination, and tips when there are no results',
+        ],
+        'accessibility-statement': [
+          'The page’s h1 and the compliance status',
+          'What is not accessible, and why',
+          'How to report a problem',
+          'The enforcement body, by country',
+        ],
+        'privacy-page': [
+          'The page’s h1 and a contents list',
+          'What is collected, and the legal basis',
+          'Retention and sharing',
+          'Rights and who to contact',
+        ],
+        'cookies-page': [
+          'The page’s h1',
+          'The cookies in use, as a table',
+          'How to change or withdraw the choice',
+          'A contact card',
+        ],
+        'easy-to-read-page': [
+          'The page’s h1',
+          'Short sentences, one idea each',
+          'Headings that say what comes next',
+          'A contact card',
+        ],
+        'status-pages': [
+          'The page’s h1 saying what happened',
+          'What the person can do now',
+          'Links to the start page and to search',
+          'A contact card',
         ],
       },
     },
@@ -300,6 +454,9 @@ export const messages = {
       },
       contentTypeGroups: {
         pageTypes: 'Page types',
+        newsAndEvents: 'News and events',
+        servicesAndAccounts: 'Services and accounts',
+        policiesAndStatus: 'Policies and status',
       },
       patternGroups: {
         siteChrome: 'Site chrome',
@@ -406,15 +563,17 @@ export const messages = {
       sections: {
         accessibility: 'Accessibility',
         keyboard: 'Keyboard',
+        knownIssues: 'Known issues',
         announcements: 'Announcements',
       },
       accessibility: {
         whatItDoes: 'What it does for you',
         whatYouNeedToDo: 'What you need to do',
-        focus: 'Focus',
+        focus: 'Focus management',
         visual: 'Visual and modes',
-        testing: 'Testing with assistive technology',
-        knownIssues: 'Known issues',
+        testing: 'Testing',
+        testingIntro:
+          'The automated tests prove the keyboard behaviour, the names and states, and that axe finds no violations in every story and theme. A row passes only when an automated agent check and a person on the real assistive technology have both checked it. "agent-verified" means automated tests in the repository (with a virtual screen reader for the screen reader rows), not the real assistive technology.',
         wcag: 'WCAG success criteria',
         announcesNothing: 'It announces nothing.',
       },
@@ -442,6 +601,10 @@ export const messages = {
         assertive: 'Assertive',
         politeOrAssertive: 'Polite or assertive, as you choose',
         allLanguages: 'The text in all five languages',
+        readAloudHeading: 'What a screen reader reads',
+        readAloudState: 'State or action',
+        readAloudPhrases: 'Read aloud',
+        readAloudTest: 'Test',
         overrideHeading: 'Change the text',
         overrideWholeApp: 'For your whole app, pass',
         overrideTo: 'to',
@@ -452,11 +615,102 @@ export const messages = {
     footer: {
       licence: 'KvirnUI is free for personal use. Any other use needs a commercial licence.',
       claim:
-        'KvirnUI is designed and tested to meet WCAG 2.2 AA. Whether your service meets it depends on how you build and test the whole service.',
-      noTracking: 'This site uses no cookies, analytics or third-party services.',
+        'KvirnUI is designed to meet WCAG 2.2 AA, and tested automatically and by keyboard. Testing with assistive technology is pending.',
+      claimLink: 'What this means',
+      noTracking:
+        'This site uses no cookies or analytics. A message sent from the contact form goes through an email service.',
       sectionsHeading: 'Sections',
       projectHeading: 'Project',
       status: ({ status }: { status: string }) => `Status: ${status}`,
+      privacy: 'Privacy',
+      contact: 'Contact',
+    },
+    privacyPage: {
+      title: 'Privacy',
+      lead: 'What this site does with your data, in plain words. Short version: almost nothing.',
+      // TODO(legal-verify): postal address and organisation number for the controller (Art. 13(1)(a)).
+      controller: {
+        label: 'Who is responsible',
+        body: 'Magnus Vike, a sole trader in Sweden, is responsible for this site.',
+        emailPrefix: 'Email:',
+      },
+      doesNot: {
+        label: 'What this site does not do',
+        body: 'It sets no cookies. It has no analytics. Your browser makes no requests to other companies. The fonts are served from this site.',
+      },
+      device: {
+        label: 'What is stored on your device',
+        // Verified against packages/core/src/theme (theme-constants.ts, theme-store.ts): key `kvirn-ui:theme`, JSON of the axes that differ from the defaults, removed when all are default.
+        // The reference service demo keeps its demo answers in sessionStorage (apply-answers.tsx).
+        body: 'When you choose a colour scheme, contrast or motion setting, this site saves it in your browser in localStorage, under the name kvirn-ui:theme. Nothing is saved until you choose. Choosing the default again removes it. The setting is never sent to us.',
+        reference:
+          'The example service in the reference section keeps the answers you type in your browser for the current tab only. They are not sent anywhere and are gone when you close the tab.',
+      },
+      logs: {
+        label: 'Server logs',
+        // TODO(legal-verify): retention period of the host's logs, and the data processing agreement with Vercel.
+        body: 'The site is hosted by Vercel, who act as our processor. Vercel logs your IP address, the time, the address you asked for and your browser. This is used for security and to run the site. Our legal basis is legitimate interest (GDPR Article 6(1)(f)). Vercel keeps the logs for a short period that it sets.',
+      },
+      // TODO(legal-verify): Resend data processing agreement, the sending region and Resend's retention of message content and delivery logs.
+      mail: {
+        label: 'Email sending',
+        body: 'We use Resend (resend.com) to send the email that the contact form creates. When you send the form, our server passes your name, email address, the topic and your message to Resend, which delivers it to our inbox. Resend acts as our processor. Your browser makes no request to Resend, and we do not use Resend for anything else, such as newsletters or tracking.',
+        legalBasis: 'Our legal basis is legitimate interest (GDPR Article 6(1)(f)): answering you.',
+        link: 'Resend privacy policy',
+        linkHref: 'https://resend.com/legal/privacy-policy',
+      },
+      email: {
+        label: 'When you email us or use the contact form',
+        // TODO(legal-verify): confirm the retention wording and whether any longer limit applies.
+        body: 'We use your address and your message to answer you. We keep them for as long as the conversation needs, then delete them. Our legal basis is legitimate interest (GDPR Article 6(1)(f)).',
+        form: 'The contact form sends your name, email address, the topic and your message to us as an email. How that email is sent is described under Email sending.',
+      },
+      rights: {
+        label: 'Your rights',
+        body: 'You can ask us for access to your data, and for it to be corrected, erased or restricted. You can object to how we use it. You can also complain to the Swedish supervisory authority, Integritetsskyddsmyndigheten (IMY).',
+        imy: 'imy.se',
+        imyHref: 'https://www.imy.se/',
+      },
+      updated: { label: 'Last updated', date: '2026-10-14' },
+    },
+    contactPage: {
+      title: 'Contact',
+      lead: 'Write to us in the form, or by email. One person reads it and answers it.',
+      // TODO(legal-verify): maintainer to add a reply time if one can be promised. None is stated now.
+      form: {
+        label: 'Send us a message',
+        nameLabel: 'Your name',
+        emailLabel: 'Your email address',
+        emailHelp: 'We use it only to answer you.',
+        reasonLegend: 'What is it about',
+        messageLabel: 'Your message',
+        send: 'Send message',
+        sending: 'Sending your message',
+        honeypotLabel: 'Leave this field empty',
+        nameError: 'Write your name',
+        nameTooLong: ({ max }: { max: number }) => `Write a name of at most ${max} characters`,
+        emailError: 'Write your email address, for example name@example.com',
+        reasonError: 'Choose what it is about',
+        messageError: 'Write your message',
+        messageTooLong: ({ max }: { max: number }) =>
+          `Shorten the message to at most ${max} characters`,
+        sentHeading: 'Your message is sent',
+        sentBody: 'We have sent it. Your address is only used to answer you.',
+        failedEmail: ({ email }: { email: string }) =>
+          `We could not send your message. Email us at ${email} instead.`,
+        tooMany: 'You have sent several messages in a short time. Try again later, or email us.',
+      },
+      address: {
+        label: 'Our email address',
+        prefix: 'You can also write to',
+        link: 'Email magnus@vike.se',
+      },
+      handling: {
+        label: 'What happens to your message',
+        // TODO(legal-verify): the same wording as privacyPage.email once the Resend DPA, region and retention are confirmed.
+        body: 'The form sends your name, address and message from our server to an email service, Resend, which delivers it to our inbox. Nothing is sent from your browser to anyone else, and we store nothing but the email we receive.',
+        privacyLink: 'How we handle your message',
+      },
     },
     pager: {
       label: 'Previous and next page',
@@ -464,10 +718,7 @@ export const messages = {
       next: 'Next page',
     },
     facts: {
-      package: 'Package',
       pattern: 'Pattern',
-      atTesting: 'Testing with assistive technology',
-      pending: 'Pending',
     },
     search: {
       title: 'Search',

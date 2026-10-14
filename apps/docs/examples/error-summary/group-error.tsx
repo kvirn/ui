@@ -23,7 +23,6 @@ export function GroupError() {
       ) : null}
       <Stack
         className="kv-stack--gap-8"
-
         as="form"
         noValidate
         onSubmit={(event) => {

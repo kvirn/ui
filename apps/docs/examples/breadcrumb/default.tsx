@@ -5,7 +5,7 @@ import { useBreadcrumbTexts } from './texts.ts'
 export function DefaultBreadcrumb() {
   const { texts } = useBreadcrumbTexts()
   return (
-    <Breadcrumb.Root>
+    <Breadcrumb.Root label={texts.defaultLabel}>
       <Breadcrumb.List>
         <Breadcrumb.Item>
           <Breadcrumb.Link href="#start">{texts.start}</Breadcrumb.Link>

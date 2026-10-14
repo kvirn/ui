@@ -1,6 +1,10 @@
 import type {
+  DialogActionsProps,
+  DialogBodyProps,
   DialogCloseProps,
+  DialogDescriptionProps,
   DialogRootProps,
+  DialogTitleProps,
   UseDialogOptions,
   UseDialogResult,
 } from '@kvirn-ui/react'
@@ -79,6 +83,40 @@ export const dialogCloseRows = propRows<Pick<DialogCloseProps, 'messages' | 'as'
   as: dialogCloseAsRow,
 })
 
+export const dialogTitleRows = propRows<Pick<DialogTitleProps, 'as'>>({
+  as: {
+    type: "'h2' | 'h3' | 'h4' | 'h5' | 'h6'",
+    default: "'h2'",
+    description:
+      'The heading level, so the title fits the page’s outline. Another tag warns once in development and renders an h2.',
+  },
+})
+
+export const dialogDescriptionRows = propRows<Pick<DialogDescriptionProps, 'as'>>({
+  as: {
+    type: "'p' | 'div'",
+    default: "'p'",
+    description:
+      'Use div when the description has more than one paragraph. Another tag warns once in development and renders a p.',
+  },
+})
+
+export const dialogBodyRows = propRows<Pick<DialogBodyProps, 'as'>>({
+  as: {
+    type: "'div' | 'section'",
+    default: "'div'",
+    description: 'Another tag warns once in development and renders a div.',
+  },
+})
+
+export const dialogActionsRows = propRows<Pick<DialogActionsProps, 'as'>>({
+  as: {
+    type: "'div' | 'section'",
+    default: "'div'",
+    description: 'Another tag warns once in development and renders a div.',
+  },
+})
+
 export const dialogTriggerAttributes: readonly AttributeRow[] = [
   { name: 'kv-dialog-trigger', values: 'always', meaning: 'The part class.' },
   { name: 'aria-haspopup', values: '"dialog"', meaning: 'The trigger opens a dialog.' },
@@ -91,6 +129,11 @@ export const dialogPopupAttributes: readonly AttributeRow[] = [
     name: 'role',
     values: '"dialog"',
     meaning: 'A modal dialog, shown with showModal(). The page behind it is inert.',
+  },
+  {
+    name: 'aria-modal',
+    values: '"true" while open',
+    meaning: 'The page behind the dialog is inert.',
   },
   {
     name: 'aria-labelledby',
@@ -153,7 +196,7 @@ export const dialogHookResultRows = {
     type: 'DialogPopupPartProps',
     default: '–',
     description:
-      'Spread on a <dialog>: role, aria-modal, aria-labelledby, aria-describedby, data-open, ref and the cancel and close handlers. Render its children only while isOpen.',
+      'Spread on a <dialog>: role, aria-modal, aria-labelledby, aria-describedby, data-open, ref and the cancel and close handlers. The browser hides a closed dialog and its children, so they can stay mounted and keep what was typed. Render them only while isOpen to start fresh each time.',
   },
   titleProps: {
     type: 'DialogTitlePartProps',

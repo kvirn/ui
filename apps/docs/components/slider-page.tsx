@@ -42,18 +42,19 @@ export function SliderPage({
   return (
     <ComponentPage
       title="Slider"
-      lead="It is a native range input, so the browser gives it the arrow keys, Home, End, PageUp, PageDown, the drag and form submission."
+      lead="It is the browser’s own range control, so the arrow keys, Home, End, Page Up, Page Down, dragging and sending a form work without extra code."
       status="alpha-candidate"
+      pattern="APG Slider (single thumb)"
       whenToUse={
         <ul>
           <li>
             Use a slider for an approximate value over a small range with a coarse step, where
-            seeing the position helps.
+            seeing the position helps: a search distance, a volume.
           </li>
           <li>
             Name the quantity and its unit in the label, state the ends of the range in the help
-            text, and give <code>valueText</code> the unit so a screen reader says “15 km”, not
-            “15”.
+            text, and give <code>valueText</code> the unit so a screen reader (software that reads
+            the screen aloud) says “15 km”, not “15”.
           </li>
           <li>
             Not for an exact value, such as an amount or an age: use a{' '}
@@ -71,12 +72,12 @@ export function SliderPage({
         <>
           <UseCase
             id="plain-form"
-            title="In a plain form, with no form logic"
+            title="A search distance in a plain form"
             why={
               <>
-                Without <code>value</code> the browser keeps the number, and a form submit sends the{' '}
-                <code>name</code> and the number as a string. A form reset restores{' '}
-                <code>defaultValue</code>.
+                Use it when the form needs only the number. Without <code>value</code> the browser
+                keeps the number, and sending the form posts it under the slider’s <code>name</code>
+                . A form reset puts back <code>defaultValue</code>.
               </>
             }
             code={sources['plain-form']}
@@ -90,8 +91,8 @@ export function SliderPage({
           </UseCase>
           <UseCase
             id="with-number-input"
-            title="A slider beside a number box"
-            why="Dragging is hard for some users and imprecise for everyone, so give an exact way in. The NumberInput owns the Field, so the label click and the error land on it. The Slider takes aria-labelledby and aria-describedby, which opts it out of the Field. The Field’s label and help text take no id, so put a span with an id inside each and point at it."
+            title="A search distance with an exact box beside it"
+            why="Dragging is hard for some people and imprecise for everyone, so give an exact way in: the slider for a rough choice, the number box for the exact distance. In the example the two stay in step."
             code={sources['with-number-input']}
             propsUsed={[
               { part: 'Slider', prop: 'value' },
@@ -99,8 +100,12 @@ export function SliderPage({
               { part: 'Slider', prop: 'aria-labelledby' },
             ]}
             note={
-              <Note kind="reminder">
-                Give only the NumberInput a <code>name</code>, so the form sends the value once.
+              <Note kind="recipe">
+                Let the NumberInput own the Field, so a click on the label and the error land on it.
+                Name and describe the slider with <code>aria-labelledby</code> and{' '}
+                <code>aria-describedby</code>, pointing at a <code>span</code> with an id inside the
+                label and the help text. Give only the NumberInput a <code>name</code>, so the form
+                sends the value once.
               </Note>
             }
           >
@@ -108,7 +113,33 @@ export function SliderPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Name the quantity and its unit in the label, and give <code>valueText</code> the
+                unit. Without them a screen reader says only a bare number, and the user can’t tell
+                what it measures (4.1.2 Name, Role, Value).
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                If you restyle the slider, keep the thumb and the track edge at least 3:1 against
+                their background, and keep the thumb and its hit area large enough to press (1.4.11
+                Non-text Contrast, 2.5.8 Target Size (Minimum)).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If an issue here affects your service, list it in your accessibility statement with
+                its workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

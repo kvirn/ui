@@ -1,13 +1,23 @@
 'use client'
 import { Button, Field, OneTimeCode } from '@kvirn-ui/react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useOneTimeCodeTexts } from './texts.ts'
 
 const pattern = '999999'
 
 export function PlainForm() {
   const { texts } = useOneTimeCodeTexts()
+  const inputRef = useRef<HTMLInputElement>(null)
   const [isIncomplete, setIsIncomplete] = useState(false)
+  const [attempts, setAttempts] = useState(0)
+
+  // Focus moves after the error has rendered, so the screen reader reads it with the input.
+  useEffect(() => {
+    if (attempts > 0 && isIncomplete) {
+      inputRef.current?.focus()
+    }
+  }, [attempts, isIncomplete])
+
   return (
     <form
       noValidate
@@ -16,6 +26,7 @@ export function PlainForm() {
         event.preventDefault()
         const code = new FormData(event.currentTarget).get('code')
         setIsIncomplete(typeof code !== 'string' || code.length < pattern.length)
+        setAttempts((count) => count + 1)
       }}
     >
       <Field.Root invalid={isIncomplete}>
@@ -24,7 +35,7 @@ export function PlainForm() {
           <p>{texts.plainHint}</p>
         </Field.Prose>
         <OneTimeCode.Root pattern={pattern} onValueChange={() => setIsIncomplete(false)}>
-          <OneTimeCode.Input name="code" />
+          <OneTimeCode.Input ref={inputRef} name="code" />
           {Array.from(pattern, (_, index) => (
             <OneTimeCode.Slot key={index} index={index} />
           ))}

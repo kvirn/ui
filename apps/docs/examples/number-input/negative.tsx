@@ -6,9 +6,9 @@ export function Negative() {
   const { texts } = useNumberInputTexts()
   return (
     <Field.Root>
-      <Field.Label>{texts.balance}</Field.Label>
-      <NumberInput name="balance" allowNegative className="kv-input--width-10" />
-      <Field.HelpText>{texts.balanceHint}</Field.HelpText>
+      <Field.Label>{texts.result}</Field.Label>
+      <NumberInput name="result" allowNegative className="kv-input--width-10" />
+      <Field.HelpText>{texts.resultHint}</Field.HelpText>
     </Field.Root>
   )
 }

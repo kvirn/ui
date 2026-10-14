@@ -10,10 +10,14 @@ import { UseCase } from './use-case.tsx'
 import { announceOptionRows, useAnnouncerResultRows } from '../content/announcer.api.ts'
 import { AssertiveAnnouncer } from '../examples/announcer/assertive.tsx'
 import { DefaultAnnouncer } from '../examples/announcer/default.tsx'
+import { ResultCountAnnouncer } from '../examples/announcer/results.tsx'
 import { ThrottledAnnouncer } from '../examples/announcer/throttled.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type AnnouncerExampleSources = Record<'default' | 'assertive' | 'throttled', string>
+export type AnnouncerExampleSources = Record<
+  'default' | 'results' | 'assertive' | 'throttled',
+  string
+>
 
 export function AnnouncerPage({
   contract,
@@ -25,8 +29,8 @@ export function AnnouncerPage({
   return (
     <ComponentPage
       title="Announcer"
-      lead="You call a hook, and the outermost KvirnProvider renders the regions."
-      status="alpha"
+      lead="A live region is a part of the page that a screen reader (software that reads the screen aloud) speaks when its text changes. You send a message with a hook, and the outermost KvirnProvider renders the regions."
+      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
@@ -37,6 +41,11 @@ export function AnnouncerPage({
             Don’t announce what focus already reads, such as a focused control’s own label or state,
             and don’t add your own <code>role=&quot;status&quot;</code> or <code>aria-live</code>{' '}
             for the same message: it would be read twice.
+          </li>
+          <li>
+            Keep a message short, with the number or the name in it: “3 services found”, not “The
+            list has been updated”. Send it from an event handler or an effect, never while the
+            component renders.
           </li>
           <li>
             For a status message that is also shown on the page, use an{' '}
@@ -56,6 +65,20 @@ export function AnnouncerPage({
       }
       useCases={
         <>
+          <UseCase
+            id="result-count"
+            title="Say how many results there are"
+            why="A search list changes while the user types and focus stays in the field. Show the count on the page, and send the same words to the Announcer once the user pauses, so people who can’t see the list hear the result too."
+            code={sources['results']}
+            note={
+              <Note kind="tip">
+                Showing the message on the page as well is right: not everyone hears it. The visible
+                text is not a live region, so it is not read twice.
+              </Note>
+            }
+          >
+            <ResultCountAnnouncer />
+          </UseCase>
           <UseCase
             id="assertive"
             title="Something to act on now"
@@ -86,7 +109,26 @@ export function AnnouncerPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Set the page language to the provider’s language. The live regions have no language
+                of their own, so a screen reader speaks every message in the page’s language (3.1.1
+                Language of Page).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If an issue here affects your service, list it in your accessibility statement with
+                its workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <>

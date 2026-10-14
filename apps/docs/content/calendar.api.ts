@@ -34,7 +34,7 @@ const baseOptionRows = {
     type: 'IsoDate',
     default: '–',
     description:
-      'The first day that can be chosen, as YYYY-MM-DD. The keys and the month buttons stop here.',
+      'The first day that can be chosen, as YYYY-MM-DD. The keys and the month buttons stop here. A minimum after the maximum throws a RangeError.',
   },
   maximum: {
     type: 'IsoDate',

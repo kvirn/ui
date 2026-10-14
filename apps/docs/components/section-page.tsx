@@ -1,7 +1,6 @@
 import { Link } from '@kvirn-ui/react'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
-import { CodeBlock } from './code-block.tsx'
 import { ComponentPage } from './component-page.tsx'
 import { ContractSectionsView, contractSectionList } from './contract-sections-view.tsx'
 import { ExampleFrame } from './example-frame.tsx'
@@ -22,11 +21,11 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;div&gt;</code> with no role. It takes every attribute of a{' '}
-        <code>&lt;div&gt;</code> and passes <code>ref</code> to it. It is one element, so it is
-        written <code>&lt;Section&gt;</code>; <code>Section.Root</code> still works but is
-        deprecated and removed in 1.0. Also exported as <code>SectionRoot</code>. This is not the{' '}
-        <code>Section</code> part of Disclosure or Tabs. The default theme is described on{' '}
-        <Link href="/foundation/theming">Theming</Link>.
+        <code>&lt;div&gt;</code> and passes <code>ref</code> to it, whichever element{' '}
+        <code>as</code> picks. It is one element, so it is written <code>&lt;Section&gt;</code>;{' '}
+        <code>Section.Root</code> still works but is deprecated and removed in 1.0. Also exported as{' '}
+        <code>SectionRoot</code>. This is not the <code>Section</code> part of Disclosure or Tabs.
+        The default theme is described on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: sectionRows,
@@ -45,7 +44,7 @@ export function SectionPage({
     <ComponentPage
       title="Section"
       lead="It gives the region its own surface and padding, and it can become a named landmark when you choose the element."
-      status="alpha"
+      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
@@ -54,7 +53,8 @@ export function SectionPage({
           </li>
           <li>
             Put a heading at the top, at the level the page’s outline needs. Make the section a
-            landmark only for a region a user would want to jump to.
+            landmark (a part of the page that screen readers list, so users can jump to it) only for
+            a region a user would want to jump to.
           </li>
           <li>
             Keep the DOM order the same as the reading order: a sidebar that sits beside the main
@@ -77,12 +77,12 @@ export function SectionPage({
         <>
           <UseCase
             id="sidebar"
-            title="A sidebar users can jump to"
+            title="A sidebar with contact details"
             why={
               <>
                 Render the section as an <code>&lt;aside&gt;</code> for complementary content, such
                 as contact details. Name it with <code>aria-labelledby</code> pointing at its
-                heading, so it is a landmark in the screen reader’s list.
+                heading, so it is in the screen reader’s list of landmarks.
               </>
             }
             code={sources['sidebar']}
@@ -92,9 +92,9 @@ export function SectionPage({
             ]}
             note={
               <Note kind="reminder">
-                A landmark needs a name, and a <code>&lt;section&gt;</code> without one is not a
-                landmark at all. Keep landmarks few. See{' '}
-                <Link href="#what-you-need-to-do">What you need to do</Link>.
+                Name every landmark with the heading it holds. A <code>&lt;section&gt;</code>{' '}
+                without a name is not a landmark, so users can’t jump to it (4.1.2 Name, Role,
+                Value). Keep landmarks few.
               </Note>
             }
           >
@@ -102,7 +102,7 @@ export function SectionPage({
           </UseCase>
           <UseCase
             id="navigation"
-            title="A group of navigation links"
+            title="A sidebar of links to your cases"
             why={
               <>
                 Render the section as a <code>&lt;nav&gt;</code> for a sidebar of links, and name it
@@ -117,14 +117,14 @@ export function SectionPage({
           </UseCase>
           <UseCase
             id="band-that-looks-like-the-page"
-            title="A band with a card on it"
-            why="Use canvas when a region should look like the page again, for example a band that holds a card. It has no landmark: it is a visual region, and its heading gives it a name in the outline."
+            title="A waste-collection band with a card"
+            why="Use canvas when a region should look like the page again, for example a band that holds a card. It is not a landmark: its heading shows it in the page outline."
             code={sources['band']}
             propsUsed={[{ part: 'Section', prop: 'className' }]}
             note={
               <Note kind="tip">
-                A card on a section keeps its default look. The other way round doesn’t work: don’t
-                put a section inside a card.
+                A card on a section is fine. A section inside a card isn’t, and a section inside a
+                section is only for switching between the surface and canvas looks.
               </Note>
             }
           >
@@ -132,19 +132,38 @@ export function SectionPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Write the children in the order people should read and Tab through them, so a
+                sidebar beside the main content comes after it in the code. Reordering with your own
+                CSS breaks the match between what people see and what a keyboard or screen reader
+                follows (1.3.2 Meaningful Sequence, 2.4.3 Focus Order).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
-        <>
-          <ApiBlock
-            importLine="import { Section, useSection } from '@kvirn-ui/react'"
-            parts={parts}
-            hook={{ name: 'useSection', intro: 'Takes no options.', result: useSectionResult }}
-          />
-          <CodeBlock
-            code={`const section = useSection()\n<nav {...section.rootProps} aria-labelledby={headingId}>…</nav>`}
-          />
-        </>
+        <ApiBlock
+          importLine="import { Section, useSection } from '@kvirn-ui/react'"
+          parts={parts}
+          hook={{
+            name: 'useSection',
+            intro: (
+              <>
+                Takes no options. Spread <code>rootProps</code> on your own element, such as a{' '}
+                <code>&lt;nav&gt;</code> with <code>aria-labelledby</code>. To add a class, join it
+                with <code>mergeProps</code>.
+              </>
+            ),
+            result: useSectionResult,
+          }}
+        />
       }
     />
   )

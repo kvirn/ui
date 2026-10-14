@@ -91,7 +91,11 @@ export const fieldsetProseAttributes: readonly AttributeRow[] = [
 ]
 
 export const fieldsetHelpTextAttributes: readonly AttributeRow[] = [
-  { name: 'kv-field-help-text', values: 'always', meaning: 'The part class: 14px in the theme.' },
+  {
+    name: 'kv-field-help-text',
+    values: 'always',
+    meaning: 'The part class. The default theme sets it in smaller text.',
+  },
   { name: 'data-invalid', values: 'present or absent', meaning: 'The fieldset is invalid.' },
   { name: 'data-disabled', values: 'present or absent', meaning: 'The fieldset is disabled.' },
 ]

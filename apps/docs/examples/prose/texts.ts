@@ -1,11 +1,16 @@
 import { defineExampleTexts } from '../../components/local-example-texts.ts'
 
+export type CmsBlock =
+  | { type: 'heading'; text: string }
+  | { type: 'paragraph'; text: string }
+  | { type: 'list'; items: readonly string[] }
+
 export interface ProseTexts {
   contact: { heading: string; text: string; hours: string; link: string }
   article: { lead: string; heading: string; intro: string; items: readonly string[] }
   large: { heading: string; text: string }
   field: { label: string; description: string }
-  own: { heading: string; text: string }
+  cms: { blocks: readonly CmsBlock[] }
   inset: { lead: string; text: string }
   steps: { heading: string; items: readonly { title: string; text: string }[] }
   figure: { alt: string; caption: string; description: string }
@@ -33,9 +38,16 @@ export const useProseTexts = defineExampleTexts<ProseTexts>({
       label: 'Registration number',
       description: 'You find it in the registration certificate, in the box marked A.',
     },
-    own: {
-      heading: 'Processing times',
-      text: 'Most applications are decided within ten working days.',
+    cms: {
+      blocks: [
+        { type: 'heading', text: 'Processing times' },
+        { type: 'paragraph', text: 'Most applications are decided within ten working days.' },
+        { type: 'paragraph', text: 'A decision can take longer in July. You can see why:' },
+        {
+          type: 'list',
+          items: ['The case officers are on leave', 'Your application is missing a document'],
+        },
+      ],
     },
     inset: {
       lead: 'Important:',
@@ -45,8 +57,11 @@ export const useProseTexts = defineExampleTexts<ProseTexts>({
       heading: 'How it works',
       items: [
         { title: 'Apply in the e-service', text: 'It takes about ten minutes.' },
-        { title: 'We check your application', text: 'We contact you if something is missing.' },
-        { title: 'You get a decision', text: 'It arrives by post within ten working days.' },
+        {
+          title: 'Wait while we check your application',
+          text: 'We contact you if something is missing.',
+        },
+        { title: 'Read your decision', text: 'It arrives by post within ten working days.' },
         { title: 'Pay the fee', text: 'The invoice comes with the decision.' },
       ],
     },

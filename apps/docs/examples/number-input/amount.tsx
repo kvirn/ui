@@ -1,7 +1,7 @@
 'use client'
 import { Field, NumberInput, useLocale } from '@kvirn-ui/react'
 import { useState } from 'react'
-import { exampleAmount, useNumberInputTexts } from './texts.ts'
+import { exampleHours, useNumberInputTexts } from './texts.ts'
 
 export function Amount() {
   const { texts } = useNumberInputTexts()
@@ -10,17 +10,16 @@ export function Amount() {
   return (
     <div>
       <Field.Root required>
-        <Field.Label>{texts.rent}</Field.Label>
+        <Field.Label>{texts.hours}</Field.Label>
         <NumberInput
-          name="rent"
-          decimals={2}
-          grouping
-          className="kv-input--width-10"
+          name="hours"
+          decimals={1}
+          className="kv-input--width-6"
           onValueChange={(_value, details) => {
             setUnmaskedValue(details.unmaskedValue ?? '')
           }}
         />
-        <Field.HelpText>{texts.rentHint(exampleAmount(locale))}</Field.HelpText>
+        <Field.HelpText>{texts.hoursHint(exampleHours(locale))}</Field.HelpText>
       </Field.Root>
       <p>
         {texts.valueToSend}: <code>{unmaskedValue}</code>

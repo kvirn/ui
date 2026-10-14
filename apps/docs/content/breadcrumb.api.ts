@@ -13,7 +13,7 @@ export const breadcrumbRootRows = propRows<
     type: "'chevron' | 'slash'",
     default: "'chevron'",
     description:
-      'The generated separator. slash adds kv-breadcrumb--slash; chevron adds no class. Never read by a screen reader.',
+      'The separator the theme draws. slash adds kv-breadcrumb--slash; chevron adds no class. It is decoration with an empty text alternative.',
   },
   separator: {
     type: 'ReactNode',
@@ -25,7 +25,7 @@ export const breadcrumbRootRows = propRows<
     type: 'string',
     default: 'the message breadcrumb.label',
     description:
-      'The accessible name, from your translations. Set as aria-label. An empty or whitespace-only label counts as none. Where a visible heading names the trail, pass aria-labelledby instead.',
+      'The accessible name, from your translations. Set as aria-label. An empty or whitespace-only label counts as none and the message is used.',
   },
   messages: {
     type: "Partial<KvirnMessages['breadcrumb']>",
@@ -47,8 +47,8 @@ export const breadcrumbRootAttributes: readonly AttributeRow[] = [
   },
   {
     name: 'aria-label',
-    values: 'the label, or absent',
-    meaning: 'From label or the message. Not set when you pass aria-labelledby.',
+    values: 'the name',
+    meaning: 'Always set, from label or the message breadcrumb.label.',
   },
 ]
 

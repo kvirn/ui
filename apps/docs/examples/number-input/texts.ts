@@ -3,22 +3,22 @@ import { defineExampleTexts } from '../../components/local-example-texts.ts'
 export const useNumberInputTexts = defineExampleTexts({
   en: {
     children: 'Number of children under 18',
-    childrenHint: 'Enter a whole number from 0 to 12.',
-    rent: 'Monthly rent',
-    rentHint: (example: string) =>
-      `Enter the amount without a currency sign, for example ${example}.`,
+    people: 'Number of people in your booking',
+    peopleHint: 'Enter a whole number from 1 to 8.',
+    hours: 'Working hours per week',
+    hoursHint: (example: string) => `Enter the hours as a number, for example ${example}.`,
     valueToSend: 'The value your form sends',
     rentInCrowns: 'Monthly rent in kronor',
     unit: 'kr',
-    balance: 'Account balance',
-    balanceHint: 'Use a minus sign for a negative balance, for example -8450.',
-    pasted: 'Amount from your spreadsheet',
+    result: 'Business profit or loss last year',
+    resultHint: 'Write a loss with a minus sign, for example -8450.',
+    pasted: 'Total project costs from your budget',
     pastedHint: 'Paste or type the amount as it is. We read it when you send the form.',
-    errorRange: 'Enter a number from 0 to 12',
+    errorRange: 'Enter a whole number from 1 to 8',
     send: 'Send',
   },
 })
 
 /** A number written the way the page's language writes it, for a help text's example. */
-export const exampleAmount = (locale: string) =>
-  new Intl.NumberFormat(locale, { minimumFractionDigits: 2 }).format(1250.5)
+export const exampleHours = (locale: string) =>
+  new Intl.NumberFormat(locale, { minimumFractionDigits: 1 }).format(37.5)

@@ -1,3 +1,4 @@
+import { Link, VisuallyHidden } from '@kvirn-ui/react'
 import { messages } from '../messages/en.ts'
 import { contentTypePreviews } from './gallery/previews/content-types.tsx'
 import { PageWithContents } from './page-contents.tsx'
@@ -35,9 +36,17 @@ export function ContentTypePage({ slug }: { slug: ContentTypeSlug }) {
           content: (
             <>
               <p>{text.shell({ name: page.label })}</p>
-              <div className="docs-gallery-preview" aria-hidden="true">
-                {contentTypePreviews[slug]}
-              </div>
+              {contentTypePreviews[slug] === undefined ? null : (
+                <div className="docs-gallery-preview" aria-hidden="true">
+                  {contentTypePreviews[slug]}
+                </div>
+              )}
+              <p>
+                <Link href={`/examples/content-types/${slug}`}>
+                  {text.example.open}
+                  <VisuallyHidden>{` (${page.label})`}</VisuallyHidden>
+                </Link>
+              </p>
             </>
           ),
         },

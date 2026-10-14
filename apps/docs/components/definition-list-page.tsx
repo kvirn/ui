@@ -183,7 +183,8 @@ export function DefinitionListPage({
             note={
               <Note kind="tip">
                 The list takes its width from its container, so it fits a Card, a side column or the
-                page. Below 40rem the rows stack with the term above the description.
+                page. On screens narrower than 40rem the rows stack, with the term above the
+                description.
               </Note>
             }
           >
@@ -195,6 +196,12 @@ export function DefinitionListPage({
             why="Say that nothing is given, and let the link say what to do. The word on the link comes from the messages, so “Add” still ends up as “Add Phone number”."
             code={sources['missing-answer']}
             propsUsed={[{ part: 'DefinitionList.Change', prop: 'messages' }]}
+            note={
+              <Note kind="tip">
+                An empty description is read as a term with nothing after it. Write “Not provided”
+                so everyone knows the answer is missing and not lost.
+              </Note>
+            }
           >
             <MissingAnswer />
           </UseCase>
@@ -223,7 +230,27 @@ export function DefinitionListPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Send people back to the page they came from after they change an answer, with what
+                they entered still there. 3.3.7 Redundant Entry asks you not to make people enter it
+                again.
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If an issue here affects your service, list it in your accessibility statement with
+                its workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

@@ -254,12 +254,13 @@ export function ComboboxPage({
   return (
     <ComponentPage
       title="Combobox"
-      lead="The value is always one of the options, never the free text."
+      lead="The chosen value is always one of the options in the list, never just the text someone typed."
       status="alpha-candidate"
+      pattern="APG Combobox (editable, list autocomplete)"
       whenToUse={
         <ul>
           <li>
-            Use a Combobox when the list is too long to scan and the user can type a few letters to
+            Use a Combobox when the list is too long to scan and people can type a few letters to
             narrow it, such as a municipality, an authority or a country.
           </li>
           <li>
@@ -268,11 +269,15 @@ export function ComboboxPage({
             <Link href="/components/autocomplete">Autocomplete</Link>.
           </li>
           <li>
-            For up to about 15 options, a <Link href="/components/listbox">Listbox</Link> or radio
-            buttons are easier. A Combobox is always custom: it has no native rendering on touch
-            devices.
+            For up to about 15 options, a <Link href="/components/listbox">Listbox</Link> or{' '}
+            <Link href="/components/radio-group">radio buttons</Link> are easier. A Combobox always
+            draws its own list, also on phones and tablets.
           </li>
-          <li>Not for a list of actions or for going to a page. Use a Button or a Link.</li>
+          <li>
+            Not for a list of actions or for going to a page. Use a{' '}
+            <Link href="/components/button">Button</Link> or a{' '}
+            <Link href="/components/link">Link</Link>.
+          </li>
         </ul>
       }
       example={
@@ -285,7 +290,13 @@ export function ComboboxPage({
           <UseCase
             id="several"
             title="Choosing several options"
-            why="With multiple, each choice moves out of the field into a list of values before the input, and the popup stays open for the next one. Each value has a remove button, so the user can take one back."
+            why={
+              <>
+                With <code>multiple</code>, each choice moves out of the field into a list of values
+                before the input, and the list of options stays open for the next one. Each value
+                has a remove button, so people can take one back.
+              </>
+            }
             code={sources['several']}
             propsUsed={[
               { part: 'Combobox.Root', prop: 'multiple' },
@@ -297,7 +308,15 @@ export function ComboboxPage({
           <UseCase
             id="server-results"
             title="Results from your server"
-            why="When the list lives on a server, turn the filter off, pass isLoading while you fetch and keep the last result in items. You write the debounce and the fetch. The popup shows “Loading results” and announces it."
+            why={
+              <>
+                When the list lives on a server, turn the filter off with <code>filter</code>, pass{' '}
+                <code>isLoading</code> while you fetch and keep the last result in{' '}
+                <code>items</code>. You write the fetch and the wait before it starts. The list
+                shows “Loading results” and a screen reader (software that reads the screen aloud)
+                says it.
+              </>
+            }
             code={sources['server-results']}
             propsUsed={[
               { part: 'Combobox.Root', prop: 'filter' },
@@ -310,7 +329,13 @@ export function ComboboxPage({
           <UseCase
             id="own-filter"
             title="Your own filter"
-            why="The default filter matches the query anywhere in the text, in the provider’s locale. Pass a function to change the rule, here to match only the start. It runs on the next keystroke."
+            why={
+              <>
+                The default filter matches what was typed anywhere in the text, in the provider’s
+                language. Pass a function to <code>filter</code> to change the rule, here to match
+                only the start. It runs on the next keystroke.
+              </>
+            }
             code={sources['own-filter']}
             propsUsed={[{ part: 'Combobox.Root', prop: 'filter' }]}
           >
@@ -319,7 +344,13 @@ export function ComboboxPage({
           <UseCase
             id="not-in-list"
             title="Text that matches nothing"
-            why="The Combobox never clears what the user typed, and the value stays null. You decide when that is an error and say what to do. Here the field is invalid once it has been left with text that is not an option."
+            why={
+              <>
+                The Combobox never clears what the user typed, and the value stays <code>null</code>
+                . You decide when that is an error and say what to do. Here the field is invalid
+                once it has been left with text that is not an option.
+              </>
+            }
             code={sources['not-in-list']}
             propsUsed={[
               { part: 'Combobox.Root', prop: 'value' },
@@ -338,9 +369,9 @@ export function ComboboxPage({
             <NotInListCombobox />
           </UseCase>
           <UseCase
-            id="rich-options"
-            title="An icon and a second line in each option"
-            why="An option can hold any markup. The optional parts give it a place and keep its name right: the icon is decorative, the text is the name and what goes in the input, and the description is read as help."
+            id="use-rich-options"
+            title="A second line in each suggestion"
+            why="Use it when the name alone is not enough to choose. An option can hold any markup. The optional parts keep its name right: the text is the name and what goes in the input, and the description is read as help."
             code={sources['rich-options']}
             propsUsed={[{ part: 'Combobox.Option', prop: 'children' }]}
           >
@@ -349,7 +380,13 @@ export function ComboboxPage({
           <UseCase
             id="plain-form"
             title="Sending the choice in a plain form"
-            why="KvirnUI holds no form state. Give the Root a name and each chosen key goes into the form as a hidden input, so FormData and a plain submit work."
+            why={
+              <>
+                KvirnUI holds no form state. Give the Root a <code>name</code> and each chosen key
+                goes into the form as a hidden input, so <code>FormData</code> and a plain submit
+                work.
+              </>
+            }
             code={sources['plain-form']}
             propsUsed={[
               { part: 'Combobox.Root', prop: 'name' },
@@ -367,7 +404,14 @@ export function ComboboxPage({
           <UseCase
             id="long-list"
             title="A list of thousands"
-            why="Let the user filter first. If the list stays long after that, virtualize renders only the options in view plus the active and the chosen one, and each option says how many there are and where it is. Unrendered options can’t be found with find in page or printed."
+            why={
+              <>
+                Let people filter first. If the list stays long after that, <code>virtualize</code>{' '}
+                renders only the options in view plus the active and the chosen one, and each option
+                says how many there are and where it is. Options that are not drawn can’t be found
+                with find in page or printed.
+              </>
+            }
             code={sources['long-list']}
             propsUsed={[{ part: 'Combobox.Root', prop: 'virtualize' }]}
           >

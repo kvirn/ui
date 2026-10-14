@@ -11,20 +11,20 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 const itemsRow = {
   type: 'readonly { id: string; label: string; level: number }[]',
   description:
-    'The headings of the page in document order. The id is the heading’s own and unique, and the link is #id. Keep the array in one place: a constant, or useMemo.',
+    'The headings of the page in document order. The id is the heading’s own and unique, and the link is #id. The level is the heading’s level, 2 for an h2: a deeper level nests under the entry above it. Keep the array in one place: a constant, or useMemo.',
 } as const
 
 const offsetRow = {
   type: 'number',
   default: '0',
   description:
-    'The line, in px from the top of the viewport, a heading has to reach to become the current one. With a sticky header, use its height here and as scroll-padding-top on html.',
+    'The top of the area a heading is read in, in px from the top of the viewport. The current heading is the last one in the top fifth of the space below it. With a sticky header, use its height here and as scroll-padding-top on html.',
 } as const
 
 const messagesRow = {
-  type: 'Partial<{ label: string }>',
+  type: "Partial<KvirnMessages['tableOfContents']>",
   default: '–',
-  description: 'Per-instance text overrides. See Strings.',
+  description: 'Overrides the message tableOfContents.label for this list. See Strings.',
 } as const
 
 export const tableOfContentsRootRows = propRows<
@@ -40,7 +40,7 @@ export const tableOfContentsRootRows = propRows<
   },
   messages: messagesRow,
   children: {
-    type: '(state: { tree, activeId }) => ReactNode',
+    type: 'ReactNode | ((state: { tree: TableOfContentsNode[]; activeId: string | undefined }) => ReactNode)',
     default: '–',
     description:
       'Draws your own list instead of the built one. It isn’t called when items is empty, so a title drawn in it goes too.',
@@ -135,7 +135,7 @@ export const useTableOfContentsHook: ApiHook = {
     listProps: {
       type: 'TableOfContentsListPartProps',
       default: '–',
-      description: 'Spread on every <ul>, nested ones too: the class.',
+      description: 'Spread on every <ul>, nested ones too: the class and role="list".',
     },
     itemProps: {
       type: 'TableOfContentsItemPartProps',
@@ -152,7 +152,7 @@ export const useTableOfContentsHook: ApiHook = {
       type: 'string | undefined',
       default: '–',
       description:
-        'The id of the heading being read. Undefined before the first heading, on the server, during hydration and without IntersectionObserver.',
+        'The id of the heading being read. Undefined while no heading is on screen, on the server, during hydration and without IntersectionObserver.',
     },
     getLinkProps: {
       type: '(item: TableOfContentsEntry) => TableOfContentsLinkPartProps',

@@ -1,5 +1,6 @@
 import { Link } from '@kvirn-ui/react'
 import { ApiBlock } from './api-block.tsx'
+import { apiHookPart } from './api-ids.ts'
 import type { ApiPart } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
 import { ContractSectionsView, contractSectionList } from './contract-sections-view.tsx'
@@ -15,9 +16,13 @@ import {
 import { DefaultCopyButton } from '../examples/copy-button/default.tsx'
 import { OwnCue } from '../examples/copy-button/own-cue.tsx'
 import { ReferenceNumber } from '../examples/copy-button/reference-number.tsx'
+import { Several } from '../examples/copy-button/several.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type CopyButtonExampleSources = Record<'default' | 'reference-number' | 'own-cue', string>
+export type CopyButtonExampleSources = Record<
+  'default' | 'reference-number' | 'several' | 'own-cue',
+  string
+>
 
 const parts: ApiPart[] = [
   {
@@ -27,7 +32,8 @@ const parts: ApiPart[] = [
         A <Link href="/components/button">Button</Link>:{' '}
         <code>&lt;button type=&quot;button&quot;&gt;</code> with the role <code>button</code>. It
         takes every attribute of a Button except <code>type</code> and passes <code>ref</code> to
-        it.
+        it. After the button it renders <code>&lt;span class=&quot;kv-copy-status&quot;&gt;</code>{' '}
+        with the result, while the result is <code>copied</code> or <code>failed</code>.
       </>
     ),
     props: copyButtonRows,
@@ -45,30 +51,31 @@ export function CopyButtonPage({
   return (
     <ComponentPage
       title="CopyButton"
-      lead="Its name stays “Copy”, and the result is announced to screen reader users. If the browser refuses, the text is selected so the user can copy it by hand."
+      lead="Its name never changes to “Copied”. The result shows as words next to the button, and a screen reader (software that reads the screen aloud) announces it. If the browser refuses, the text is selected so people can copy it by hand."
       status="alpha-candidate"
+      pattern="APG Button"
       whenToUse={
         <ul>
           <li>
-            Use it for a short text the user will paste somewhere else: a reference or case number,
-            a link, a code.
+            Use it for a short text people will paste somewhere else: a case or reference number, a
+            link, a code.
           </li>
           <li>
             Show the text on the page next to the button and pass its element as{' '}
-            <code>textRef</code>, so a failed copy can select it.
+            <code>textRef</code>, so the text can be selected if copying fails.
           </li>
           <li>
-            Give each button a name that says what it copies when a page has more than one: “Copy
+            When a page has more than one, give each button a name that says what it copies: “Copy
             case number”.
           </li>
           <li>
-            For a code sample with a label, use a{' '}
-            <Link href="/components/code-block">CodeBlock</Link>, which has a copy button built in.
+            Copying works only on a secure page (HTTPS, or localhost while you build). Elsewhere it
+            fails, and the text in <code>textRef</code> is selected instead.
           </li>
-          <li>Don’t copy a secret, such as a password or a token.</li>
           <li>
-            Copying needs a secure context (HTTPS or localhost) and a user action. Elsewhere it
-            fails, and the text is selected instead.
+            Not for a secret such as a password or a token. Not for a code sample with a label: use
+            a <Link href="/components/code-block">CodeBlock</Link>, which has a copy button built
+            in.
           </li>
         </ul>
       }
@@ -82,7 +89,7 @@ export function CopyButtonPage({
           <UseCase
             id="reference-number"
             title="A case number to keep"
-            why="A citizen gets a case number after sending an application and needs it again on the phone or in a later form. Name the button after what it copies, and pass the element that shows the number so it is selected if copying fails."
+            why="A resident gets a case number after sending an application and needs it again on the phone or in a later form. Name the button after what it copies, and pass the element that shows the number so it is selected if copying fails."
             code={sources['reference-number']}
             propsUsed={[
               { part: 'CopyButton', prop: 'text' },
@@ -91,24 +98,48 @@ export function CopyButtonPage({
             ]}
             note={
               <Note kind="tip">
-                If the user is on an address without HTTPS, copying fails and the number is selected
-                instead. The failure is announced, so they know to press Ctrl+C.
+                The result shows as words next to the button: “Copied” for five seconds. A failure
+                message stays until the next press, so a slow reader still has the instruction
+                (3.3.1 Error Identification).
               </Note>
             }
           >
             <ReferenceNumber />
           </UseCase>
           <UseCase
-            id="your-own-confirmation"
-            title="A confirmation of your own"
-            why="The result is announced for screen reader users. Sighted users see nothing change, so a confirmation is yours to show: act on onCopied, or read data-status for styling."
-            code={sources['own-cue']}
-            propsUsed={[{ part: 'CopyButton', prop: 'onCopied' }]}
+            id="several-buttons"
+            title="A copy button for each case in a list"
+            why="A caseworker or a resident has several cases on one page. A bare “Copy” repeated down the list tells a screen reader user nothing, so each button gets a name that says which number it copies."
+            code={sources['several']}
+            propsUsed={[
+              { part: 'CopyButton', prop: 'text' },
+              { part: 'CopyButton', prop: 'textRef' },
+            ]}
             note={
               <Note kind="reminder">
-                Known gap: the default theme shows no “Copied” cue yet. A designer’s spec is in
-                progress, so for now the cue above is yours to build. Never put the result in the
-                button’s name: it stays the same.
+                Keep the visible word “Copy” at the start of the name, so someone using voice
+                control can say what they see (2.5.3 Label in Name).
+              </Note>
+            }
+          >
+            <Several />
+          </UseCase>
+          <UseCase
+            id="your-own-result"
+            title="The result in your own words and place"
+            why="Use the hook when the result must appear somewhere the built-in text doesn’t, or in words of your own. Pass the same words in messages, so what people see is what a screen reader announces."
+            code={sources['own-cue']}
+            propsUsed={[
+              {
+                part: apiHookPart('useCopyButton', 'options'),
+                label: 'useCopyButton (options)',
+                prop: 'messages',
+              },
+            ]}
+            note={
+              <Note kind="tip">
+                With the component, <code>{'status={false}'}</code> removes the built-in result
+                text. The button still gets <code>data-status</code> for your own styling.
               </Note>
             }
           >
@@ -116,7 +147,20 @@ export function CopyButtonPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Wrap your app in <code>KvirnProvider</code>. Without it nothing is announced, and a
+                screen reader user never hears that the text was copied (4.1.3 Status Messages).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
@@ -135,11 +179,13 @@ export function CopyButtonPage({
                 },
                 {
                   key: 'copied',
-                  meaning: 'Announced politely after the text was written to the clipboard.',
+                  meaning:
+                    'Announced politely and shown after the button when the text was written to the clipboard.',
                 },
                 {
                   key: 'failed',
-                  meaning: 'Announced assertively when the browser refused. The text is selected.',
+                  meaning:
+                    'Announced assertively and shown after the button when the browser refused. It stays until the next press. The text in textRef is selected.',
                 },
               ]}
             />

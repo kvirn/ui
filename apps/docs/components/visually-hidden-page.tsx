@@ -7,7 +7,7 @@ import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import {
-  useVisuallyHiddenRows,
+  useVisuallyHiddenHook,
   visuallyHiddenAttributes,
   visuallyHiddenRows,
 } from '../content/visually-hidden.api.ts'
@@ -35,16 +35,6 @@ const parts: ApiPart[] = [
     props: visuallyHiddenRows,
     attributes: visuallyHiddenAttributes,
   },
-  {
-    name: 'useVisuallyHidden',
-    renders: (
-      <>
-        nothing. The hook takes no options and returns <code>visuallyHiddenProps</code> to spread on
-        your own element.
-      </>
-    ),
-    props: useVisuallyHiddenRows,
-  },
 ]
 
 export function VisuallyHiddenPage({
@@ -57,26 +47,26 @@ export function VisuallyHiddenPage({
   return (
     <ComponentPage
       title="VisuallyHidden"
-      lead="It stays in the page, so it is read in the flow of the sentence."
+      lead="It stays in the page, so a screen reader (software that reads the screen aloud) reads it in the flow of the sentence."
       status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
-            Use it for context a sighted user gets from the layout: which item a button belongs to,
-            what an icon means, or a heading that names a block.
+            Use it for context that sighted users get from the layout: which item a button belongs
+            to, what a number counts, or a heading that names a block.
           </li>
           <li>
-            Use it in lists, tables and cards, where the same short label repeats and each needs its
-            own name.
+            Use it in lists, tables and cards, where the same short label repeats and each one needs
+            its own name.
           </li>
           <li>
-            Don’t hide instructions or information that sighted users need too: write it in the page
-            instead.
+            Not for instructions or facts that sighted users need too: write them on the page for
+            everyone.
           </li>
           <li>
             Not for a link that skips past the header: use a{' '}
             <Link href="/components/skip-link">SkipLink</Link>. Never put a link or a control inside
-            it, because a control that has focus must be seen.
+            VisuallyHidden, because someone using a keyboard would land on something they can’t see.
           </li>
         </ul>
       }
@@ -94,14 +84,16 @@ export function VisuallyHiddenPage({
               <>
                 A list has a “Remove” button on each item. Sighted users see which item a button
                 belongs to by its place. Add the item’s name as hidden text, so each button has its
-                own name. The visible word stays first in the name.
+                own name and shows up in a list of buttons. The visible word stays first in the
+                name.
               </>
             }
             code={sources['button-context']}
             note={
               <Note kind="reminder">
-                Keep the visible label at the start of the name, so voice control users can say what
-                they see. See <Link href="#what-you-need-to-do">What you need to do</Link>.
+                Keep the visible label at the start of the name, so people who use voice control can
+                say what they see (2.5.3 Label in Name). See{' '}
+                <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >
@@ -110,7 +102,7 @@ export function VisuallyHiddenPage({
           <UseCase
             id="hidden-heading"
             title="A heading nobody sees"
-            why="A block of text has no visible title, but screen reader users move by heading. Render the hidden text as the heading level that fits the page."
+            why="A block of text has no visible title, but screen reader users move from heading to heading. Render the hidden text as the heading level that fits the page."
             code={sources['hidden-heading']}
             propsUsed={[{ part: 'VisuallyHidden', prop: 'as' }]}
             note={
@@ -127,17 +119,43 @@ export function VisuallyHiddenPage({
             title="A status shown by an icon"
             why="An icon says “approved” to sighted users. Put the same word in hidden text next to it, so it is not lost. Keep the icon itself decorative."
             code={sources['icon-status']}
+            note={
+              <Note kind="tip">
+                An <Link href="/components/icon">Icon</Link> with a <code>label</code> is read as an
+                image with that name. Hidden text is read as part of the sentence around it.
+              </Note>
+            }
           >
             <IconStatus />
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="tip">
+                Keep the hidden text short. W3C’s{' '}
+                <a href="https://www.w3.org/WAI/WCAG22/Techniques/css/C7">technique C7</a> notes
+                that hidden text can make a page “overly chatty” for screen reader users.
+              </Note>
+            ),
+            focus: (
+              <Note kind="reminder">
+                Never put a link, button or field inside VisuallyHidden. Someone using a keyboard
+                would land on it and see nothing (2.4.7 Focus Visible).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
           importLine="import { VisuallyHidden, useVisuallyHidden } from '@kvirn-ui/react'"
           parts={parts}
+          hook={useVisuallyHiddenHook}
         />
       }
     />

@@ -92,7 +92,7 @@ export function TabsPage({
   return (
     <ComponentPage
       title="Tabs"
-      lead="Keyboard users pass the list with one Tab press and move between the tabs with the arrow keys."
+      lead="A keyboard user reaches the tab list with one Tab press, moves between the tabs with the arrow keys and reaches the open panel with the next Tab."
       status="alpha-candidate"
       pattern="APG Tabs"
       whenToUse={
@@ -102,8 +102,8 @@ export function TabsPage({
             documents and history of a case, and people need one part at a time.
           </li>
           <li>
-            Keep the labels short and in the same register, and use two to five tabs. Content that
-            people must read together doesn’t belong in tabs.
+            Keep the labels short and in the same style. Content that people must read together
+            doesn’t belong in tabs.
           </li>
           <li>
             Not for going to another page: use{' '}
@@ -111,7 +111,8 @@ export function TabsPage({
             <code>kv-navigation--horizontal</code>. A tab never changes the URL.
           </li>
           <li>
-            Not for showing and hiding one block of text: use a disclosure. Don’t put interactive
+            Not for showing and hiding one block of text: use a{' '}
+            <LinkRoot href="/components/disclosure">Disclosure</LinkRoot>. Don’t put interactive
             content, such as a close button, inside a tab.
           </li>
         </ul>
@@ -126,7 +127,14 @@ export function TabsPage({
           <UseCase
             id="manual-activation"
             title="Panels that are slow to show"
-            why="With the default, the arrow keys select the tab they move to, and its panel shows at once. If showing a panel loads data or is heavy, arrowing through the tabs would trigger it for every tab. Use manual activation: the arrows move focus, and Enter or Space selects."
+            why={
+              <>
+                By default, the arrow keys select the tab they move to, and its panel shows at once.
+                If showing a panel loads data or is heavy, arrowing through the tabs would load
+                every panel on the way. Set <code>activationMode</code> to <code>manual</code>: the
+                arrows only move focus, and Enter or Space selects.
+              </>
+            }
             code={sources['manual-activation']}
             propsUsed={[{ part: 'Tabs.Root', prop: 'activationMode' }]}
             note={
@@ -141,7 +149,13 @@ export function TabsPage({
           <UseCase
             id="vertical"
             title="A column of tabs beside the content"
-            why="Use it when there are many tabs with short names, such as the sections of an application. The arrow keys become Down and Up, and the list gets aria-orientation."
+            why={
+              <>
+                Use it when there are many tabs with short names, such as the sections of an
+                application. The arrow keys become Down and Up, and the list gets{' '}
+                <code>aria-orientation</code>.
+              </>
+            }
             code={sources['vertical']}
             propsUsed={[{ part: 'Tabs.Root', prop: 'orientation' }]}
           >
@@ -152,8 +166,9 @@ export function TabsPage({
             title="A tab that isn’t available yet"
             why={
               <>
-                A tab can’t be used until something has happened. It stays in the Tab order and is
-                read as unavailable, so people can find it. Link the reason to it with{' '}
+                A tab can’t be used until something has happened. People can still reach it with the
+                arrow keys, and a screen reader (software that reads the screen aloud) says it is
+                unavailable, so they can find it. Link the reason to it with{' '}
                 <code>aria-describedby</code>.
               </>
             }
@@ -171,7 +186,13 @@ export function TabsPage({
           <UseCase
             id="controlled"
             title="Choosing the tab from your own code"
-            why="Use it when something else on the page must select a tab or read which one is selected. You hold the value and change it from onValueChange, which only reports what the user did."
+            why={
+              <>
+                Use it when something else on the page must select a tab or read which one is
+                selected. You hold the value and change it from <code>onValueChange</code>, which
+                only reports what the user did.
+              </>
+            }
             code={sources['controlled']}
             propsUsed={[
               { part: 'Tabs.Root', prop: 'value' },
@@ -189,7 +210,14 @@ export function TabsPage({
           <UseCase
             id="focusable-panel"
             title="A panel that starts with a link or a field"
-            why="A panel has tabindex 0 so keyboard users can reach one that holds only text. When its first content is focusable, pass tabIndex -1 so Tab goes straight to it and the panel isn’t an extra stop."
+            why={
+              <>
+                A panel is a Tab stop (<code>tabindex</code> 0), so keyboard users can reach one
+                that holds only text and scroll it. When its first content is a link or a field,
+                pass <code>tabIndex</code> -1 so Tab goes straight to it and the panel isn’t an
+                extra stop.
+              </>
+            }
             code={sources['focusable-panel']}
             propsUsed={[{ part: 'Tabs.Panel', prop: 'tabIndex' }]}
           >

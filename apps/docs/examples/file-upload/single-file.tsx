@@ -5,7 +5,7 @@ import { useFileUploadTexts } from './texts.ts'
 export function SingleFile() {
   const { texts } = useFileUploadTexts()
   return (
-    <Field.Root>
+    <Field.Root required>
       <Field.Label>{texts.photoLabel}</Field.Label>
       <Field.Prose>
         <p>{texts.photoDescription}</p>

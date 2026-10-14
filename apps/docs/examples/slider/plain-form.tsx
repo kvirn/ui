@@ -18,9 +18,9 @@ export function PlainForm() {
         <Field.Label marker="none">{texts.distanceLabel}</Field.Label>
         <Slider
           name="distance"
-          max={50}
-          step={5}
-          defaultValue={15}
+          min={1}
+          max={20}
+          defaultValue={1}
           valueText={(km) => `${km} ${texts.distanceUnit}`}
         />
         <Field.HelpText>{texts.distanceEnds}</Field.HelpText>

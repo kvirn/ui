@@ -1,9 +1,18 @@
-import type { CardRootProps, UseCardResult } from '@kvirn-ui/react'
+import type { CardBodyProps, CardRootProps, UseCardResult } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
 import type { AttributeRow } from '../components/api-block.tsx'
 
-/** The same two rows for every part: a Card part takes the attributes of one `<div>` and nothing else. */
-export const cardPartRows = propRows<Pick<CardRootProps, 'className' | 'as'>>({
+/** Header, Body and Footer take the attributes of one `<div>` and nothing else: no `as`. */
+export const cardPartRows = propRows<Pick<CardBodyProps, 'className'>>({
+  className: {
+    type: 'string',
+    default: '–',
+    description:
+      'Your own classes. They join the part’s class and never replace it, so the theme keeps styling the card.',
+  },
+})
+
+export const cardRootRows = propRows<Pick<CardRootProps, 'className' | 'as'>>({
   className: {
     type: 'string',
     default: '–',
@@ -14,7 +23,7 @@ export const cardPartRows = propRows<Pick<CardRootProps, 'className' | 'as'>>({
     type: "'div' | 'li' | 'article' | 'figure' | 'section'",
     default: "'div'",
     description:
-      'Changes the element: li in a list of cards, article for a self-contained item, figure with a caption, or section with aria-labelledby. Card adds no role. Header, Body and Footer take no as. Another tag warns once in development.',
+      'Changes the element: li in a list of cards, article for a self-contained item, figure with a caption, or section with aria-labelledby. Card adds no role. Another tag warns once in development.',
   },
 })
 

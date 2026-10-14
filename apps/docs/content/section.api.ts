@@ -2,7 +2,7 @@ import type { SectionRootProps, UseSectionResult } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
 import type { AttributeRow } from '../components/api-block.tsx'
 
-export const sectionRows = propRows<Pick<SectionRootProps, 'className' | 'as'>>({
+export const sectionRows = propRows<Pick<SectionRootProps, 'className' | 'as' | 'ref'>>({
   className: {
     type: 'string',
     default: '–',
@@ -14,6 +14,11 @@ export const sectionRows = propRows<Pick<SectionRootProps, 'className' | 'as'>>(
     default: "'div'",
     description:
       'Changes the element: aside, section or nav with aria-labelledby, header or footer, article, or li in a list of sections. Section adds no role. Another tag warns once in development.',
+  },
+  ref: {
+    type: 'Ref<HTMLElement>',
+    default: '–',
+    description: 'Reaches the element, whichever it is.',
   },
 })
 

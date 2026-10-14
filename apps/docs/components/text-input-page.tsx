@@ -50,7 +50,7 @@ export function TextInputPage({
   return (
     <ComponentPage
       title="TextInput"
-      lead="Inside a Field its label, help text and error are read with it. It holds no form state."
+      lead="Inside a Field, its label, help text and error are read with the box. It can shape what is typed with a mask, and it holds no form state."
       status="alpha-candidate"
       whenToUse={
         <ul>
@@ -69,8 +69,8 @@ export function TextInputPage({
           <li>
             Not for a quantity or an amount: use{' '}
             <Link href="/components/number-input">NumberInput</Link>. Not for a longer answer: use{' '}
-            <Link href="/components/textarea">Textarea</Link>. Not for a date: use DateInput, three
-            boxes in a Fieldset.
+            <Link href="/components/textarea">Textarea</Link>. Not for a date: use{' '}
+            <Link href="/components/date-input">DateInput</Link>.
           </li>
           <li>
             For a unit or an icon inside the box, use{' '}
@@ -87,8 +87,14 @@ export function TextInputPage({
         <>
           <UseCase
             id="input-types"
-            title="The right keyboard for the answer"
-            why="The type gives phones the right keyboard and lets the browser check the shape. Add autoComplete wherever the question asks for the user’s own data, so the browser can fill it in."
+            title="Contact details with the right keyboard"
+            why={
+              <>
+                The <code>type</code> gives phones the right keyboard for an email address or a
+                phone number. Add <code>autoComplete</code> wherever the question asks for the
+                user’s own data, so the browser can fill it in.
+              </>
+            }
             code={sources['input-types']}
             propsUsed={[{ part: 'TextInput', prop: 'type' }]}
             note={
@@ -103,16 +109,23 @@ export function TextInputPage({
           </UseCase>
           <UseCase
             id="width"
-            title="A width that fits the answer"
-            why="A box as wide as the expected answer tells the user how much to write. The width classes are 2, 4, 6, 10 and 20, and never limit what can be typed."
+            title="Address details with a width that fits each answer"
+            why="A box as wide as the expected answer tells the user how much to write. The width classes are 2, 4, 6, 10 and 20 characters, and never limit what can be typed."
             code={sources['width']}
           >
             <Widths />
           </UseCase>
           <UseCase
             id="controlled"
-            title="Keep the value in your form state"
-            why="Pass value and onValueChange and the value lives in your state, or in your form library’s. TextInput renders what it is given and only reports changes."
+            title="Use the text while the user types"
+            why={
+              <>
+                Pass <code>value</code> and <code>onValueChange</code> when your code needs the text
+                as it changes, for example to check it or show it elsewhere. The value then lives in
+                your state, or in your form library’s. TextInput shows what it is given and only
+                reports changes.
+              </>
+            }
             code={sources['controlled']}
             propsUsed={[
               { part: 'TextInput', prop: 'value' },
@@ -123,8 +136,17 @@ export function TextInputPage({
           </UseCase>
           <UseCase
             id="plain-form"
-            title="A plain form that reads its values"
-            why="Without value the native input keeps the value and a form submit sends it by name. Start it with defaultValue, and read it from FormData."
+            title="A form that is sent as a whole"
+            why={
+              <>
+                Without <code>value</code> the native input keeps the text, and sending the form
+                sends it by <code>name</code>. Start it with <code>defaultValue</code> and read it
+                from <code>FormData</code>. KvirnUI checks nothing: after sending, say what is
+                missing in a <code>Field.ErrorMessage</code> and move focus to the first box with an
+                error. For a longer form, add an{' '}
+                <Link href="/components/error-summary">ErrorSummary</Link>.
+              </>
+            }
             code={sources['plain-form']}
             propsUsed={[{ part: 'TextInput', prop: 'defaultValue' }]}
             note={
@@ -139,7 +161,7 @@ export function TextInputPage({
           <UseCase
             id="masked-code"
             title="A code with a fixed shape"
-            why="A mask shapes what is typed and puts the space in. A character it can’t take is left out and announced politely. The country comes from the language unless you pass it, and the mask never says a value is wrong: you validate after submit."
+            why="A mask shapes what is typed and puts the space in. A character it can’t take is left out and announced politely. The country comes from the language unless you pass it. The mask never says a value is wrong: you check it after the form is sent."
             code={sources['masked-code']}
             propsUsed={[
               { part: 'TextInput', prop: 'mask' },
@@ -158,7 +180,13 @@ export function TextInputPage({
           <UseCase
             id="own-input"
             title="Your own input element"
-            why="For markup of your own, useTextInput gives the class, type, the Field’s id and aria attributes, and the handlers to spread on a native input. It reads the nearest Field too."
+            why={
+              <>
+                For markup of your own, <code>useTextInput</code> gives the class, the type, the
+                Field’s id and aria attributes, and the handlers to spread on a native input. It
+                reads the nearest Field too.
+              </>
+            }
             code={sources['own-input']}
             propsUsed={[
               {
@@ -172,7 +200,28 @@ export function TextInputPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} messageNamespace="mask" linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          messageNamespace="mask"
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Give every box a visible label in a Field. A placeholder is not a label: it
+                disappears when the user types (3.3.2 Labels or Instructions). Without a name a
+                screen reader says only that there is a text box (4.1.2 Name, Role, Value).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If one of these affects your service, put it in your accessibility statement, with
+                the workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

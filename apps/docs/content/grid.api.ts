@@ -9,13 +9,13 @@ export const gridRootRows = propRows<Pick<GridRootProps, 'className' | 'as'>>({
   className: {
     type: 'string',
     default: '–',
-    description: `${classNameDescription} Add kv-grid--cols-1 to -12 for a number of columns, kv-grid--fit-sm, -md or -lg for as many as fit, kv-grid--gap-n for the space, and a breakpoint for a wider screen: kv-grid--md-cols-2.`,
+    description: `${classNameDescription} Add kv-grid--cols-1 to -12 for a number of columns, kv-grid--fit-sm, -md or -lg for as many as fit, kv-grid--gap-n for the space, and a breakpoint for a wider grid: kv-grid--md-cols-2.`,
   },
   as: {
     type: "'div' | 'ul' | 'ol'",
     default: "'div'",
     description:
-      'Changes the element: ul or ol with li children for a list whose count is announced. A list gets role="list", because Safari drops the role when the list style is removed.',
+      'Changes the element: ul or ol with li children for a list whose count is announced. A list gets role="list", because Safari drops the list role when the bullets are removed. In JavaScript, an element outside the list is replaced by a div and warns once in development.',
   },
 })
 
@@ -23,18 +23,23 @@ export const gridItemRows = propRows<Pick<GridItemProps, 'className' | 'as'>>({
   className: {
     type: 'string',
     default: '–',
-    description: `${classNameDescription} Add kv-grid-item--span-n for the columns it covers, start-n and end-n for the lines, row-span-n for rows, and a breakpoint: kv-grid-item--lg-span-8.`,
+    description: `${classNameDescription} Add kv-grid-item--span-n for the columns it covers, start-n and end-n for the column lines, row-span-n for rows, and a breakpoint: kv-grid-item--lg-span-8.`,
   },
   as: {
-    type: "'div' | 'li' | 'article' | 'section'",
+    type: "'div' | 'li' | 'article' | 'section' | 'nav' | 'aside' | 'main'",
     default: "'div'",
     description:
-      'Changes the element: li inside a ul or ol Root, article, or section with a name. Grid adds no role.',
+      'Changes the element: li inside a ul or ol Root, article, section, nav or aside with a name, or main (one per page, never the default). Grid adds no role of its own: the element’s meaning applies.',
   },
 })
 
 export const gridRootAttributes: readonly AttributeRow[] = [
   { name: 'kv-grid', values: 'always', meaning: 'The part class. The default theme styles it.' },
+  {
+    name: 'kv-grid-container',
+    values: 'always',
+    meaning: 'On the internal wrapper around the grid element. The breakpoints measure its width.',
+  },
   {
     name: 'kv-grid--cols-n',
     values: 'you add it',
@@ -49,13 +54,14 @@ export const gridRootAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-grid--gap-n',
     values: 'you add it',
-    meaning: 'The space between cells. The default is the space-6 step; gap-0 removes it.',
+    meaning:
+      'The space between cells. n is 0 to 6, 8, 10, 12 or 16. The default gap is 1.5rem; gap-0 removes it.',
   },
   {
-    name: 'kv-grid--sm-… | md | lg | xl | 2xl',
+    name: 'kv-grid--sm-… | --md-… | --lg-… | --xl-… | --2xl-…',
     values: 'you add it',
     meaning:
-      'Any of the above from a breakpoint (40, 48, 64, 80 and 96rem) of the grid’s own width: kv-grid--lg-cols-12.',
+      'Any of the above from a breakpoint of the grid’s own width: sm 40rem, md 48rem, lg 64rem, xl 80rem, 2xl 96rem. For example kv-grid--lg-cols-12.',
   },
 ]
 
@@ -66,7 +72,7 @@ export const gridItemAttributes: readonly AttributeRow[] = [
     meaning: 'The part class. The default theme styles it.',
   },
   {
-    name: 'kv-grid-item--span-n | start-n | end-n | row-span-n',
+    name: 'kv-grid-item--span-n | span-full | start-n | end-n | row-span-n | row-start-n | row-end-n',
     values: 'you add it',
     meaning:
       'The columns and rows a cell covers, or the line it starts or ends at. Keep line placement in DOM order: reading and focus order follow the DOM.',
@@ -74,13 +80,14 @@ export const gridItemAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-grid-item--lg-span-8',
     values: 'you add it',
-    meaning: 'Any of the above from a breakpoint of the grid’s own width.',
+    meaning: 'Any of the above from a breakpoint of the grid’s own width, as for the Root.',
   },
 ]
 
 export const useGridHook: ApiHook = {
   name: 'useGrid',
-  intro: 'Gives the classes for your own elements. They add no role, ARIA or tabindex.',
+  intro:
+    'Gives the classes for your own elements. It takes no options, and the classes add no role, ARIA or tabindex.',
   result: propRows<UseGridResult>({
     containerProps: {
       type: 'GridPartProps',

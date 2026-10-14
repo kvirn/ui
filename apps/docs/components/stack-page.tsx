@@ -21,8 +21,9 @@ const parts: ApiPart[] = [
     name: 'Stack',
     renders: (
       <>
-        <code>&lt;div class=&quot;kv-stack&quot;&gt;</code> with no role. It takes every attribute
-        of a <code>&lt;div&gt;</code> and passes <code>ref</code> to it. It has no state, so no{' '}
+        <code>&lt;div class=&quot;kv-stack&quot;&gt;</code> with no role. As a <code>ul</code> or{' '}
+        <code>ol</code> it gets <code>role=&quot;list&quot;</code>. It takes every attribute of a{' '}
+        <code>&lt;div&gt;</code> and passes <code>ref</code> to it. It has no state, so no{' '}
         <code>data-*</code>, and it works in a server component. The default theme is described on{' '}
         <Link href="/foundation/theming">Theming</Link>.
       </>
@@ -42,13 +43,13 @@ export function StackPage({
   return (
     <ComponentPage
       title="Stack"
-      lead="It adds no role and no behaviour, so the element and its semantics are the ones you choose."
+      lead="It adds no behaviour and no new meaning: the element you choose decides what a screen reader says."
       status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
-            Use it for the vertical rhythm between blocks: the sections of a page, the parts of a
-            form or the items of a list.
+            Use it for the vertical rhythm between blocks: the bands of a page, the parts of a form
+            or the items of a list.
           </li>
           <li>
             Pick the space with a gap class, <code>kv-stack--gap-2</code>, <code>-4</code> or{' '}
@@ -60,7 +61,8 @@ export function StackPage({
           </li>
           <li>
             Not for text flow: <Link href="/components/prose">Prose</Link> has its own margins for
-            headings and paragraphs. Not for putting blocks side by side: use Grid.
+            headings and paragraphs. Not for putting blocks side by side: use{' '}
+            <Link href="/components/grid">Grid</Link>.
           </li>
         </ul>
       }
@@ -73,19 +75,16 @@ export function StackPage({
         <>
           <UseCase
             id="stack-of-sections"
-            title="A stack of sections"
-            why="A page is a series of bands. Nest a tight stack for each section’s own content inside a loose stack for the page, so the sections read as groups."
+            title="A contact page in two bands"
+            why="A page is a series of bands. Nest a tight stack for each band’s own content inside a loose stack for the page, so the bands read as groups."
             code={sources['sections']}
-            propsUsed={[
-              { part: 'Stack', prop: 'className' },
-              { part: 'Stack', prop: 'as' },
-            ]}
+            propsUsed={[{ part: 'Stack', prop: 'className' }]}
           >
             <StackOfSections />
           </UseCase>
           <UseCase
             id="gaps"
-            title="Choosing the space"
+            title="Address lines that belong together"
             why="Items that belong together sit closer than separate blocks. The same lines are shown with the three steps that differ from the default."
             code={sources['gaps']}
             propsUsed={[{ part: 'Stack', prop: 'className' }]}
@@ -94,11 +93,12 @@ export function StackPage({
           </UseCase>
           <UseCase
             id="list"
-            title="A list of links"
+            title="A list of services"
             why={
               <>
                 Render the stack as a <code>ul</code> with <code>li</code> children and a screen
-                reader announces a list with its number of items.
+                reader (software that reads the screen aloud) announces a list with its number of
+                items.
               </>
             }
             code={sources['list']}
@@ -108,8 +108,9 @@ export function StackPage({
             ]}
             note={
               <Note kind="tip">
-                The theme may remove list markers. A list keeps its list role either way, because
-                the element decides, not the style.
+                Stack adds <code>role=&quot;list&quot;</code> to a <code>ul</code> or{' '}
+                <code>ol</code> itself, because Safari and VoiceOver drop the list role when the
+                markers are gone. Don’t write the role yourself.
               </Note>
             }
           >
@@ -117,7 +118,7 @@ export function StackPage({
           </UseCase>
           <UseCase
             id="form"
-            title="The parts of a form"
+            title="A feedback form"
             why="Render the stack as a form, and stack each label with its field in a tighter stack inside it. The reading order stays the DOM order."
             code={sources['form']}
             propsUsed={[
@@ -129,7 +130,20 @@ export function StackPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Write the children in the order people should read and Tab through them. Stack can’t
+                reorder them, and if your own CSS does, keyboard and screen reader users no longer
+                follow what they see (1.3.2 Meaningful Sequence, 2.4.3 Focus Order).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

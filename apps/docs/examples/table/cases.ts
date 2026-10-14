@@ -4,7 +4,7 @@ export interface CaseRecord {
   caseNumber: string
   amount: number
   handler: string
-  decision: string
+  decision: 'approved' | 'moreInformation' | 'inProgress'
 }
 
 export const cases: CaseRecord[] = [
@@ -14,7 +14,7 @@ export const cases: CaseRecord[] = [
     caseNumber: 'BN 2026-0142',
     amount: 4200,
     handler: 'Karin Lund',
-    decision: 'Approved',
+    decision: 'approved',
   },
   {
     id: 'c2',
@@ -22,7 +22,7 @@ export const cases: CaseRecord[] = [
     caseNumber: 'BN 2026-0157',
     amount: 1850,
     handler: 'Johan Ek',
-    decision: 'More information needed',
+    decision: 'moreInformation',
   },
   {
     id: 'c3',
@@ -30,7 +30,7 @@ export const cases: CaseRecord[] = [
     caseNumber: 'BN 2026-0163',
     amount: 12500,
     handler: 'Karin Lund',
-    decision: 'In progress',
+    decision: 'inProgress',
   },
   {
     id: 'c4',
@@ -38,7 +38,7 @@ export const cases: CaseRecord[] = [
     caseNumber: 'BN 2026-0171',
     amount: 960,
     handler: 'Maria Berg',
-    decision: 'Approved',
+    decision: 'approved',
   },
   {
     id: 'c5',
@@ -46,7 +46,7 @@ export const cases: CaseRecord[] = [
     caseNumber: 'BN 2026-0188',
     amount: 7300,
     handler: 'Johan Ek',
-    decision: 'In progress',
+    decision: 'inProgress',
   },
 ]
 
@@ -57,6 +57,6 @@ export function manyCases(count: number): CaseRecord[] {
     caseNumber: `BN 2026-${String(1000 + index).padStart(4, '0')}`,
     amount: 500 + ((index * 937) % 20000),
     handler: cases[index % cases.length]?.handler ?? '',
-    decision: cases[index % cases.length]?.decision ?? '',
+    decision: cases[index % cases.length]?.decision ?? 'inProgress',
   }))
 }

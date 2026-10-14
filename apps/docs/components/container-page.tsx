@@ -26,8 +26,8 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;div class=&quot;kv-container&quot;&gt;</code> with no role. It takes every
         attribute of a <code>&lt;div&gt;</code> and passes <code>ref</code> to it. It has no state,
-        so no <code>data-*</code>, and it works in a server component. The default theme is
-        described on <Link href="/foundation/theming">Theming</Link>.
+        so no <code>data-*</code>, and it renders on the server too. The default theme is described
+        on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: containerRows,
@@ -45,25 +45,27 @@ export function ContainerPage({
   return (
     <ComponentPage
       title="Container"
-      lead="It adds no role and no behaviour, so the element and its semantics are the ones you choose."
+      lead="It is a plain layout box. It adds nothing for assistive technology such as screen readers, so the element you choose keeps its own meaning."
       status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
-            Use it to keep a page’s content inside a readable width: the whole page, a reading
-            column or a form column.
+            Use it to keep a page’s content inside a readable width: the whole page, a column of
+            text or a form.
           </li>
           <li>
             Pick the width with <code>size</code>: <code>page</code> for the page,{' '}
             <code>reading</code> for text and <code>form</code> for one form.
           </li>
           <li>
-            Use <code>as</code> when the container should be a landmark such as <code>main</code>,
-            or a named <code>section</code>.
+            Use <code>as</code> when the container should be a landmark (a region people can jump
+            to) such as <code>main</code>, or a named <code>section</code>.
           </li>
           <li>
-            Not for text flow: use <Link href="/components/prose">Prose</Link> for the headings,
-            paragraphs and lists inside it. Not for putting blocks side by side: use Grid.
+            Not for the text inside it: use <Link href="/components/prose">Prose</Link> for
+            headings, paragraphs and lists. Not for putting blocks side by side: use{' '}
+            <Link href="/components/grid">Grid</Link>. Not for stacking blocks with space between
+            them: use <Link href="/components/stack">Stack</Link>.
           </li>
         </ul>
       }
@@ -77,7 +79,7 @@ export function ContainerPage({
           <UseCase
             id="reading-column"
             title="A reading column"
-            why="Long text is hard to read on a wide screen. A reading container keeps lines to a comfortable length, for guidance, news and case pages."
+            why="Long text is hard to read on a wide screen. A reading container keeps lines to a comfortable length, for guidance, news, case pages and lists of search results."
             code={sources['reading']}
             propsUsed={[{ part: 'Container', prop: 'size' }]}
           >
@@ -95,7 +97,7 @@ export function ContainerPage({
           <UseCase
             id="page-with-column"
             title="The page and a column inside it"
-            why="The reading and form measures add no padding and sit at the start of the line. Put them inside a page container, which keeps the page’s side gutter."
+            why="The reading and form widths add no side padding and sit at the start of the line. Put them inside a page container, which keeps the page’s side margin."
             code={sources['nested']}
             propsUsed={[{ part: 'Container', prop: 'size' }]}
           >
@@ -119,7 +121,7 @@ export function ContainerPage({
               <Note kind="reminder">
                 Make a container a landmark only for a region people want to jump to, and always
                 name it with <code>aria-labelledby</code> or <code>aria-label</code>. The container
-                itself adds no name.
+                itself adds no name (1.3.1 Info and Relationships).
               </Note>
             }
           >
@@ -127,7 +129,26 @@ export function ContainerPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="tip">
+                A page-width Container with <code>as=&quot;main&quot;</code> gives the page its main
+                landmark. Landmarks let people jump past repeated content (technique ARIA11 for
+                2.4.1 Bypass Blocks).
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                If you change the widths in your own CSS, keep them as a maximum width and not a
+                fixed one. Then nothing scrolls sideways at 320px or at 400% zoom (1.4.10 Reflow).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

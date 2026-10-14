@@ -8,7 +8,7 @@ import { en } from '@kvirn-ui/i18n/en'
 import { messages } from '../messages/en.ts'
 import { DocsPage } from './docs-page.tsx'
 import { SiteShell } from './site-shell.tsx'
-import { accessibilitySettingsHref, contentTypePages } from './site-sections.ts'
+import { accessibilitySettingsHref } from './site-sections.ts'
 
 // Contract: docs/design/docs-shell-mega-menu.md §3, §5 and §7. Component tests load no theme, and
 // the viewport is narrow (below 64rem): the Menu and the sidebar button are shown.
@@ -70,28 +70,13 @@ describe('Docs site header', () => {
     ])
   })
 
-  test('Patterns and Content types are the last groups of the Components panel', async () => {
-    await renderShell()
-    const panel = siteNav().element().querySelector('.kv-mega-menu-panel')!
-    const groupLinks = [...panel.querySelectorAll('a')]
-    expect(groupLinks.find((link) => link.getAttribute('href') === '/patterns')?.textContent).toBe(
-      text.nav.sections.patterns,
-    )
-    const contentTypes = panel.querySelector('a[href="/content-types"]')!
-    expect(contentTypes.textContent).toBe(text.nav.sections.contentTypes)
-    expect(contentTypes.closest('li')?.querySelectorAll(':scope > ul a')).toHaveLength(
-      contentTypePages.length,
-    )
-    expect(panel.querySelectorAll('ul:empty')).toHaveLength(0)
-  })
-
-  test('a content type page marks its own link once, in an open Components panel', async () => {
-    await renderShell('/content-types/subpage')
-    await userEvent.click(page.getByRole('button', { name: text.nav.menuButton }))
-    await userEvent.click(page.getByRole('button', { name: text.nav.sections.components }))
+  test('the header and the Components panel have no Patterns or Content types entry, while /patterns still renders', async () => {
+    await renderShell('/patterns')
     const nav = siteNav().element()
-    expect(countCurrent(nav)).toBe(1)
-    expect(nav.querySelector('[aria-current="page"]')?.textContent).toBe('Subpage')
+    expect(nav.querySelector('a[href="/patterns"], a[href="/content-types"]')).toBeNull()
+    expect(nav.textContent).not.toContain(text.nav.sections.patterns)
+    expect(nav.textContent).not.toContain(text.nav.sections.contentTypes)
+    expect(document.querySelector('main')?.textContent).toContain('The article.')
   })
 
   test('the Components panel opens on a button and marks the page the reader is on', async () => {
@@ -344,9 +329,9 @@ describe('Docs page intro and pager', () => {
   })
 
   test('the pager links the previous and the next page of the section, named by direction and title', async () => {
-    await renderShell('/components/tabs')
+    await renderShell('/components/top-bar')
     const pager = page.getByRole('navigation', { name: text.pager.label })
-    const previous = pager.getByRole('link', { name: `${text.pager.previous} TableOfContents` })
+    const previous = pager.getByRole('link', { name: `${text.pager.previous} Tabs` })
     const next = pager.getByRole('link', { name: `${text.pager.next} Calendar` })
     expect(previous.element().getAttribute('rel')).toBe('prev')
     expect(next.element().getAttribute('rel')).toBe('next')
@@ -374,8 +359,6 @@ describe('Docs site footer', () => {
     expect([...sections.element().querySelectorAll('a')].map((link) => link.textContent)).toEqual([
       text.nav.sections.docs,
       text.nav.sections.components,
-      text.nav.sections.patterns,
-      text.nav.sections.contentTypes,
       text.nav.sections.theming,
     ])
     expect(countCurrent(sections.element())).toBe(1)

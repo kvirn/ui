@@ -6,10 +6,10 @@ export type KbdDocumentedProps = Pick<KbdProps, 'as'>
 
 export const kbdRows = propRows<KbdDocumentedProps>({
   as: {
-    type: "'kbd' | 'samp'",
+    type: "'kbd'",
     default: "'kbd'",
     description:
-      'Changes the element to samp for text a program prints. Nothing else names keyboard input.',
+      'Only kbd is allowed. Program output (samp) is not a key, and nothing else names keyboard input.',
   },
 })
 

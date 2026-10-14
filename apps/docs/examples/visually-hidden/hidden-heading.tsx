@@ -6,8 +6,8 @@ export function HiddenHeading() {
   const { texts } = useVisuallyHiddenTexts()
   return (
     <div>
-      <VisuallyHidden as="h4">{texts.openingHours}</VisuallyHidden>
-      <p>{texts.openingHoursText}</p>
+      <VisuallyHidden as="h4">{texts.contactHeading}</VisuallyHidden>
+      <p>{texts.contactText}</p>
     </div>
   )
 }

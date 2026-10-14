@@ -148,6 +148,12 @@ export const toolbarGroupAttributes: readonly AttributeRow[] = [
 export const toolbarButtonAttributes: readonly AttributeRow[] = [
   { name: 'kv-button', values: 'always', meaning: 'The Button part class, and its variants.' },
   {
+    name: 'aria-disabled',
+    values: '"true" or absent',
+    meaning:
+      'Set when disabled and focusableWhenDisabled are both on, which is the default in a toolbar.',
+  },
+  {
     name: 'tabindex',
     values: '"0" or "-1"',
     meaning: 'Roving: "0" on the one item the Tab key reaches, "-1" on the others.',
@@ -172,6 +178,12 @@ export const toolbarToggleAttributes: readonly AttributeRow[] = [
   },
   { name: 'aria-pressed', values: '"true" or "false"', meaning: 'Whether the toggle is on.' },
   { name: 'data-pressed', values: 'present or absent', meaning: 'The toggle is on.' },
+  {
+    name: 'aria-disabled',
+    values: '"true" or absent',
+    meaning:
+      'Set when disabled and focusableWhenDisabled are both on, which is the default in a toolbar.',
+  },
   {
     name: 'tabindex',
     values: '"0" or "-1"',

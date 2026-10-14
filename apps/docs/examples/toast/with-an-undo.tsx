@@ -10,11 +10,12 @@ export function WithAnUndo() {
   return (
     <>
       <p>
-        {texts.draftLabel} <output>{deleted ? texts.draftRemoved : texts.draftKept}</output>
+        {texts.draftLabel} {deleted ? texts.draftRemoved : texts.draftKept}
       </p>
-      <ButtonGroup aria-label={texts.deleteDraft}>
+      <ButtonGroup aria-label={texts.draftActions}>
         <Button
           disabled={deleted}
+          focusableWhenDisabled
           onClick={() => {
             setDeleted(true)
             toast.show({
@@ -27,7 +28,7 @@ export function WithAnUndo() {
           {texts.deleteDraft}
         </Button>
         {/* The same undo on the page: the toast is a shortcut, never the only way back. */}
-        <Button disabled={!deleted} onClick={() => setDeleted(false)}>
+        <Button disabled={!deleted} focusableWhenDisabled onClick={() => setDeleted(false)}>
           {texts.restoreDraft}
         </Button>
       </ButtonGroup>

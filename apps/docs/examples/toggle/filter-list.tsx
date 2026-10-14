@@ -12,6 +12,7 @@ export function FilterList() {
       <Toggle pressed={isUnreadOnly} onPressedChange={setIsUnreadOnly}>
         {texts.unreadOnly}
       </Toggle>
+      <output>{texts.showing(shown.length, texts.messages.length)}</output>
       <ul>
         {shown.map((message) => (
           <li key={message.id}>{message.text}</li>

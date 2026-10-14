@@ -7,6 +7,7 @@ export const useComboboxTexts = defineExampleTexts({
     several: 'Municipalities',
     severalHint: 'Choose as many as you like.',
     notInList: 'Choose a municipality from the list.',
+    typedStart: 'Gö',
     place: 'Place',
     placeHint: 'Type the first letters of the place.',
     send: 'Send',

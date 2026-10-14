@@ -99,6 +99,11 @@ export const accordionRootAttributes: readonly AttributeRow[] = [
     values: 'always',
     meaning: 'The part class. The default theme styles it.',
   },
+  {
+    name: 'role="list"',
+    values: 'with as="ul" or as="ol"',
+    meaning: 'Added by the Accordion, so the list is kept when the theme removes the bullets.',
+  },
 ]
 
 export const accordionItemAttributes: readonly AttributeRow[] = [

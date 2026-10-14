@@ -1,5 +1,5 @@
 'use client'
-import { VisuallyHidden } from '@kvirn-ui/react'
+import { Badge, VisuallyHidden } from '@kvirn-ui/react'
 import { useVisuallyHiddenTexts } from './texts.ts'
 
 export function DefaultVisuallyHidden() {
@@ -7,7 +7,7 @@ export function DefaultVisuallyHidden() {
   return (
     <div>
       <p>
-        {texts.unread}
+        {texts.messages} <Badge variant="primary">{texts.messageCount}</Badge>
         <VisuallyHidden>{texts.unreadHidden}</VisuallyHidden>
       </p>
       <p>

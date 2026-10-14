@@ -1,29 +1,38 @@
-import { Heading, Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn-ui/react'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
 import { ContractSectionsView, contractSectionList } from './contract-sections-view.tsx'
 import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
+import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   dialogActionsAttributes,
+  dialogActionsRows,
   dialogBodyAttributes,
+  dialogBodyRows,
   dialogCloseAttributes,
   dialogCloseRows,
   dialogDescriptionAttributes,
+  dialogDescriptionRows,
   dialogPopupAttributes,
   dialogRootRows,
   dialogTitleAttributes,
+  dialogTitleRows,
   dialogTriggerAttributes,
   useDialogHook,
 } from '../content/dialog.api.ts'
 import { ControlledDialog } from '../examples/dialog/controlled.tsx'
 import { DefaultDialog } from '../examples/dialog/default.tsx'
+import { ManyRows } from '../examples/dialog/many-rows.tsx'
 import { WithAForm } from '../examples/dialog/with-a-form.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type DialogExampleSources = Record<'default' | 'with-a-form' | 'controlled', string>
+export type DialogExampleSources = Record<
+  'default' | 'with-a-form' | 'many-rows' | 'controlled',
+  string
+>
 
 const parts: ApiPart[] = [
   {
@@ -65,6 +74,7 @@ const parts: ApiPart[] = [
         <code>&lt;h2&gt;</code> that names the dialog.
       </>
     ),
+    props: dialogTitleRows,
     attributes: dialogTitleAttributes,
   },
   {
@@ -74,6 +84,7 @@ const parts: ApiPart[] = [
         <code>&lt;p&gt;</code> with a short explanation, read out after the title.
       </>
     ),
+    props: dialogDescriptionRows,
     attributes: dialogDescriptionAttributes,
   },
   {
@@ -83,6 +94,7 @@ const parts: ApiPart[] = [
         <code>&lt;div&gt;</code> for the content between the description and the actions.
       </>
     ),
+    props: dialogBodyRows,
     attributes: dialogBodyAttributes,
   },
   {
@@ -92,6 +104,7 @@ const parts: ApiPart[] = [
         <code>&lt;div&gt;</code> for the buttons, the primary one first.
       </>
     ),
+    props: dialogActionsRows,
     attributes: dialogActionsAttributes,
   },
   {
@@ -120,16 +133,17 @@ export function DialogPage({
     <ComponentPage
       title="Dialog"
       lead="The page behind it is out of reach until it closes, and focus goes back to where it was."
-      status="in-progress"
+      status="alpha-candidate"
+      pattern="APG Dialog (Modal)"
       whenToUse={
         <ul>
           <li>
-            Use a dialog for one short task or read that the user should finish or dismiss before
+            Use a dialog for one short task or read that someone should finish or dismiss before
             going on: change a value, confirm details, read a notice.
           </li>
           <li>
-            Use it in a page or a form for residents and in staff tools alike, when the content fits
-            on one screen, also at 320 px.
+            It suits a form for residents and a staff tool alike, when the content fits on one
+            screen, also at 320 px.
           </li>
           <li>
             Not for a message that needs an answer, such as a confirmation before deleting: that is
@@ -143,7 +157,6 @@ export function DialogPage({
             Not for a multi-step form or long reading: use a page. Not for anything that opens on
             page load, except a system message such as a session timeout.
           </li>
-          <li>Write the copy as the next section says.</li>
         </ul>
       }
       example={
@@ -156,21 +169,45 @@ export function DialogPage({
           <UseCase
             id="form-in-a-dialog"
             title="A form in a dialog"
-            why="Changing one value does not need a page of its own. Closing with Escape or Close keeps what was typed, and a press on the backdrop does nothing by default."
+            why="Changing one value does not need a page of its own. The title says the task, the description says what happens next, and each button says what it does. Closing with Escape or Close keeps what was typed, and a press on the backdrop does nothing by default."
             code={sources['with-a-form']}
+            propsUsed={[
+              { part: 'Dialog.Root', prop: 'open' },
+              { part: 'Dialog.Root', prop: 'onOpenChange' },
+            ]}
             note={
               <Note kind="reminder">
-                Name the dialog with a <code>Dialog.Title</code>, or <code>aria-label</code>. Say
-                what each button does: verb and object, never “OK” or “Yes”.
+                Put the dialog outside any form on the page. A required or invalid field in the
+                closed dialog would otherwise stop that form from sending, with no message (3.3.1
+                Error Identification).
               </Note>
             }
           >
             <WithAForm />
           </UseCase>
           <UseCase
+            id="one-dialog-many-rows"
+            title="One dialog for every row of a list"
+            why="A list of cases or applications can share one dialog. Open it from your own state, set what it shows, and leave out the Trigger. When it closes, focus goes back to the button that opened it."
+            code={sources['many-rows']}
+            propsUsed={[
+              { part: 'Dialog.Root', prop: 'open' },
+              { part: 'Dialog.Root', prop: 'onOpenChange' },
+            ]}
+            note={
+              <Note kind="reminder">
+                If the button that opens the dialog can leave the page, pass{' '}
+                <code>finalFocusRef</code>. Otherwise focus has nowhere to go back to (2.4.3 Focus
+                Order).
+              </Note>
+            }
+          >
+            <ManyRows />
+          </UseCase>
+          <UseCase
             id="know-why-it-closed"
             title="Know why it closed"
-            why="You keep the open state yourself when the page needs to react. onOpenChange says why it changed. With open set, closing is a request: you decide whether to close."
+            why="Keep the open state yourself when the page needs to react to it. onOpenChange says why the dialog changed. While open is set, a close is only a request: you decide whether to close it."
             code={sources['controlled']}
             propsUsed={[
               { part: 'Dialog.Root', prop: 'open' },
@@ -179,47 +216,48 @@ export function DialogPage({
           >
             <ControlledDialog />
           </UseCase>
-          <section aria-labelledby="copy-rules">
-            <Heading as="h3" id="copy-rules">
-              Write the copy
-            </Heading>
-            <ul>
-              <li>
-                <strong>Title:</strong> the question the buttons answer, or a verb phrase for a task
-                (“Change phone number”). Never “Are you sure?”, “Warning” or “Confirm”.
-              </li>
-              <li>
-                <strong>Description:</strong> the consequence and whether it can be undone, in one
-                or two short sentences, in the normal text colour.
-              </li>
-              <li>
-                <strong>Buttons:</strong> verb and object (“Save number”), so each makes sense
-                alone. Never “OK”, “Yes” or “No”. Avoid “Cancel” when it could mean cancelling the
-                whole application: say what is kept.
-              </li>
-              <li>One primary action. No blame and no jargon.</li>
-            </ul>
-          </section>
-          <section aria-labelledby="scroll-lock">
-            <Heading as="h3" id="scroll-lock">
-              Scroll lock needs CSS
-            </Heading>
-            <p>
-              While a dialog is open, <code>&lt;html&gt;</code> has{' '}
-              <code>data-kv-scroll-locked</code>, counted across nested dialogs. The default theme
-              turns it into <code>overflow: hidden</code>. The headless package ships no CSS, so
-              without the theme add that rule yourself, or the page behind will scroll.
-            </p>
-          </section>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Give the dialog a title. Without a name a screen reader says only “dialog”, and the
+                person can’t tell what it is for (4.1.2 Name, Role, Value). Say what each button
+                does, with a verb and an object, never “OK” or “Yes”.
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="tip">
+                While a dialog is open, the page has <code>data-kv-scroll-locked</code>. The default
+                theme turns it into no scrolling. Without the theme, add that rule yourself, or the
+                page behind the dialog scrolls.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
           importLine="import { Dialog, useDialog } from '@kvirn-ui/react'"
           parts={parts}
           hook={useDialogHook}
+          strings={
+            <StringsBlock
+              namespace="dialog"
+              component="Dialog"
+              keys={[
+                {
+                  key: 'close',
+                  meaning:
+                    'The name of a Dialog.Close that has no text, only the icon. A Close with text is named by that text.',
+                },
+              ]}
+            />
+          }
         />
       }
     />

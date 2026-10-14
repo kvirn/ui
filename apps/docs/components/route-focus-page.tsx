@@ -49,17 +49,27 @@ export function RouteFocusPage({
   return (
     <ComponentPage
       title="Route focus"
-      status="in-progress"
+      lead="It renders nothing. It does nothing on the first load, when only the hash changes, or while someone is typing in a field."
+      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
-            Use it in a single-page app, where following a link changes the page without a reload.
+            Use it in a single-page app, where following a link changes the page without loading it
+            again. Without it focus (the part of the page the keyboard is acting on) stays on the
+            link, which may be gone.
           </li>
-          <li>Call it once, in the layout that holds every page, with the router’s location.</li>
+          <li>
+            Call it once, in the layout that holds every page, with the router’s location as the
+            key: the path and the search, never the hash.
+          </li>
           <li>Give each page one h1 inside that layout. That is the element that gets focus.</li>
           <li>
             Not for the first load, or a link to a section on the same page: it does nothing there.
             To jump past the header, use a <Link href="/components/skip-link">SkipLink</Link>.
+          </li>
+          <li>
+            Not for a step in a form on one page: use the <code>moveOn</code> option of{' '}
+            <Link href="/components/focus">Focus</Link>.
           </li>
         </ul>
       }
@@ -72,8 +82,8 @@ export function RouteFocusPage({
         <>
           <UseCase
             id="after-a-link"
-            title="After the user follows a link"
-            why="Follow a link and the page changes, but focus stays on the link, or on nothing if the link is gone. The hook moves focus to the title, and the next Tab continues from there."
+            title="After someone follows a link to another page"
+            why="Follow a link and the page changes, but focus stays on the link, or on nothing if the link is gone. The hook moves focus to the page title, and the next Tab continues from there. Press “To services” to try it."
             code={sources['default']}
             propsUsed={[
               { part: routeFocusOptions, label: 'useRouteFocus', prop: 'key' },
@@ -83,7 +93,11 @@ export function RouteFocusPage({
             note={
               <Note kind="recipe" more={<CodeBlock code={nextRecipe} />}>
                 In Next.js, build the key from the pathname and the search in a client wrapper in
-                the root layout. Next.js announces routes itself, so leave announce off.
+                the root layout.{' '}
+                <Link href="https://nextjs.org/docs/architecture/accessibility">
+                  Next.js announces routes itself
+                </Link>
+                , so leave announce off.
               </Note>
             }
           >
@@ -92,12 +106,13 @@ export function RouteFocusPage({
           <UseCase
             id="hash-change"
             title="A link to a section on the same page"
-            why="Jumping to a section isn’t a new page, so focus should stay where it is. Leave the hash out of the key: the hook then ignores it."
+            why="Jumping to a section isn’t a new page, so focus should stay where it is. Leave the hash out of the key and the hook ignores it. Press “To services” and focus moves to the title; press “Jump to the details” and it stays on the button."
             code={sources['hash-change']}
             propsUsed={[{ part: routeFocusOptions, label: 'useRouteFocus', prop: 'key' }]}
             note={
               <Note kind="recipe" more={<CodeBlock code={tanStackRecipe} />}>
-                TanStack Router has no route announcer: set announce, and the page’s title is also
+                In TanStack Router, build the key from the path and the search, as below. If your
+                router does not announce route changes, set announce: the page’s title is then also
                 said in the live region. Update document.title before the key changes.
               </Note>
             }
@@ -106,7 +121,28 @@ export function RouteFocusPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Keep <code>scroll-padding-top</code> above a sticky header, so it doesn’t cover the
+                title that gets focus (2.4.11 Focus Not Obscured (Minimum)).
+              </Note>
+            ),
+            focus: (
+              <Note kind="tip">
+                On Back and Forward the hook leaves focus alone while the browser restores the
+                scroll position, so someone going back does not land on the title. The contract
+                lists this as still to be confirmed. With <code>history.scrollRestoration</code> set
+                to <code>manual</code> the hook moves focus then too.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

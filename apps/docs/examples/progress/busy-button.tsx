@@ -33,7 +33,7 @@ export function BusyButton() {
       </div>
       {state === 'failed' ? (
         <Alert.Danger announce="polite">
-          <Alert.Title>{texts.failed}</Alert.Title>
+          <Alert.Title as="p">{texts.failed}</Alert.Title>
         </Alert.Danger>
       ) : null}
     </div>

@@ -11,6 +11,6 @@ export const useHeadingTexts = defineExampleTexts({
       heading: 'Opening hours',
       text: 'The recycling centre is open until 19:00 on weekdays.',
     },
-    look: { levelOnly: 'Services', asLarger: 'Services, set larger' },
+    look: { levelOnly: 'Collection days', asLarger: 'Report a missed collection' },
   },
 })

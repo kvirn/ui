@@ -4,7 +4,7 @@ import { useFieldTexts } from './texts.ts'
 
 export function OwnElements() {
   const { texts } = useFieldTexts()
-  const field = useField({ descriptions: ['helpText'] })
+  const field = useField({ required: true, descriptions: ['helpText'] })
   return (
     <div {...field.rootProps}>
       <label {...field.labelProps}>

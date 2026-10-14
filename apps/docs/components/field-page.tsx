@@ -54,8 +54,9 @@ const parts: ApiPart[] = [
     name: 'Field.Label',
     renders: (
       <>
-        <code>&lt;label for&gt;</code>. It names the control and ends with the optional text when
-        the field is not required.
+        <code>&lt;label for&gt;</code>. It names the control. It ends with the optional text when
+        the field is not required, unless <code>marker=&quot;none&quot;</code> or the Field is in a
+        group Fieldset.
       </>
     ),
     props: fieldLabelRows,
@@ -88,8 +89,9 @@ const parts: ApiPart[] = [
     name: 'Field.ErrorMessage',
     renders: (
       <>
-        <code>&lt;p&gt;</code>, rendered only while the field is invalid. It starts with an error
-        icon and the <code>field.errorPrefix</code> text. It is not a live region.
+        <code>&lt;p&gt;</code>, rendered only while the field is invalid. It starts with a
+        decorative error icon and the <code>field.errorPrefix</code> text, which the default theme
+        hides from sight but not from screen readers. It is not a live region.
       </>
     ),
     attributes: fieldErrorMessageAttributes,
@@ -106,7 +108,7 @@ export function FieldPage({
   return (
     <ComponentPage
       title="Field"
-      lead="It holds no form state and never validates."
+      lead="It holds no form state and never validates: you decide when a field is invalid."
       status="alpha-candidate"
       whenToUse={
         <ul>
@@ -121,6 +123,11 @@ export function FieldPage({
           <li>
             Set <code>required</code> and <code>invalid</code> from your own form logic. Field only
             shows the state: the validation is yours.
+          </li>
+          <li>
+            On a form with several fields, add an{' '}
+            <Link href="/components/error-summary">ErrorSummary</Link> that lists the errors with a
+            link to each field.
           </li>
           <li>
             Not for one question answered with several controls, such as a date or a group of
@@ -162,12 +169,13 @@ export function FieldPage({
           <UseCase
             id="description-and-help-text"
             title="Explain the question and show the format"
-            why="A description is read before answering, so it goes above the control and may hold paragraphs. A help text is a short instruction, example or limit, so it goes under the control. Both are read when the control gets focus, in the order they appear."
+            why="A description is what people must read before answering, so it goes above the control and may hold a few short paragraphs. A help text is a short instruction, example or limit, so it goes under the control. Both are linked to the control, so a screen reader can read them when the control gets focus, in the order they appear."
             code={sources['description-and-help-text']}
             note={
               <Note kind="recipe">
                 Keep a help text to plain text of one or two sentences: no link, list or heading. A
-                screen reader reads it as one flat string. Text with structure is a description.
+                screen reader reads the description and the help text as flat text, so anything with
+                structure goes outside the Field.
               </Note>
             }
           >
@@ -181,8 +189,9 @@ export function FieldPage({
             propsUsed={[{ part: 'Field.Root', prop: 'invalid' }]}
             note={
               <Note kind="reminder">
-                Field never moves focus. Move it to the first invalid field when the form is sent,
-                as in <Link href="#what-you-need-to-do">What you need to do</Link>.
+                Field never moves focus. When the form is sent, move it to the first invalid field
+                or to an <Link href="/components/error-summary">ErrorSummary</Link>. See{' '}
+                <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >
@@ -191,7 +200,7 @@ export function FieldPage({
           <UseCase
             id="disabled-with-reason"
             title="A field that can’t be changed"
-            why="Disabling a field disables its control natively and marks every part. In a resident form avoid it, and where you can’t, say why in the help text."
+            why="Disabling a field disables its control natively and marks every part. A disabled control can’t take focus, so avoid it in a resident form. Where you can’t, say why in the help text. A read-only control stays reachable with the keyboard if people only need to read the value."
             code={sources['disabled']}
             propsUsed={[{ part: 'Field.Root', prop: 'disabled' }]}
           >
@@ -214,7 +223,20 @@ export function FieldPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Give every control a visible label. A placeholder is not a label: it is gone once
+                people type (3.3.2 Labels or Instructions).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

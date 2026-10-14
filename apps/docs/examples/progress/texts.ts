@@ -10,6 +10,7 @@ export const useProgressTexts = defineExampleTexts({
     retry: 'Try again',
     exporting: 'Exporting your cases.',
     export: 'Export cases',
+    exported: 'Your cases are exported.',
     slowSending: 'Sending your application and its attachments.',
   },
 })

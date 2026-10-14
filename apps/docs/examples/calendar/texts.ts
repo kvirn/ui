@@ -7,6 +7,8 @@ export const useCalendarTexts = defineExampleTexts({
     fieldLabel: 'Date of your visit',
     fieldHint: (example: string) => `For example ${example}`,
     closed: 'Closed',
+    closedLegend: 'Closed days are struck through and can’t be chosen.',
     chosenRange: 'Chosen stay:',
+    noEndYet: 'no end date yet',
   },
 })

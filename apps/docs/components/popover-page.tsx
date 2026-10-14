@@ -10,6 +10,7 @@ import {
   popoverCloseAttributes,
   popoverCloseRows,
   popoverPopupAttributes,
+  popoverPopupRows,
   popoverRootRows,
   popoverTriggerAttributes,
   popoverTriggerRows,
@@ -58,6 +59,7 @@ const parts: ApiPart[] = [
         Render it right after the trigger.
       </>
     ),
+    props: popoverPopupRows,
     attributes: popoverPopupAttributes,
   },
   {
@@ -86,27 +88,31 @@ export function PopoverPage({
       title="Popover"
       lead="It sits next to the button, stays inside the screen, and closes with Escape or a press outside."
       status="alpha-candidate"
+      pattern="None exactly: APG Disclosure for the button, Dialog (Modal) roles for the popup, used non-modal"
       whenToUse={
         <ul>
           <li>
-            Use a popover for a little extra that the user asks for with a press: help for a field,
-            a short form, a few related controls.
+            Use a popover for a little extra that the user asks for with a press: a short
+            explanation, a short form, a few related controls, small enough to sit beside the
+            button.
           </li>
           <li>
-            Use it in a page or a form for residents and in staff tools alike, where the content is
-            small enough to sit beside the button.
+            Give a popover with a form or several controls a visible Close button. It is
+            recommended, not required: it gives touch, voice and magnifier users a target.
           </li>
           <li>
-            Give a popover with a form or several controls a visible Close button, so touch and
-            voice users have a target.
+            Not for instructions people need to fill in a field correctly: show those under the
+            field as <Link href="/components/field">help text</Link>, where everyone sees them, or
+            in a <Link href="/components/disclosure">Disclosure</Link> for longer optional help.
           </li>
           <li>
             Not for text that should appear on hover or focus: use a{' '}
             <Link href="/components/tooltip">Tooltip</Link> for a name or a shortcut.
           </li>
           <li>
-            Not for content that must take over the page or stop the user from going on: that is a
-            Dialog. A popover never blocks the page behind it.
+            Not for content that must take over the page or stop the user from going on: use a{' '}
+            <Link href="/components/dialog">Dialog</Link>. A popover never blocks the page behind
+            it.
           </li>
         </ul>
       }
@@ -119,14 +125,19 @@ export function PopoverPage({
         <>
           <UseCase
             id="small-form"
-            title="A small form next to its button"
-            why="Changing one value does not need a page of its own. The form sits in the popup, so Tab goes from the button into the form and on to Close."
+            title="Change one value without leaving the page"
+            why="Changing a phone number does not need a page of its own. The form sits in the popup, so Tab goes from the button into the form and on to Cancel. After saving, close the popup, put focus back on the button and confirm the change in text that is already on the page."
             code={sources['with-a-form']}
+            propsUsed={[
+              { part: 'Popover.Root', prop: 'open' },
+              { part: 'Popover.Root', prop: 'onOpenChange' },
+            ]}
             note={
               <Note kind="reminder">
-                Name the popup with <code>aria-label</code> or <code>aria-labelledby</code>: its
-                role is <code>dialog</code> and needs a name. See{' '}
-                <Link href="#what-you-need-to-do">What you need to do</Link>.
+                Focus goes back to the button by itself when the popup closes with Escape, Close, a
+                press outside or a light dismiss. When your own code closes it, as after Save, move
+                focus there yourself (2.4.3 Focus Order). See{' '}
+                <Link href="#focus">Focus management</Link>.
               </Note>
             }
           >
@@ -135,7 +146,13 @@ export function PopoverPage({
           <UseCase
             id="know-why-it-closed"
             title="Know why it closed"
-            why="You keep the open state yourself when the page needs to react, for example to save a draft. onOpenChange says why it changed. With open set, closing is a request: you decide whether to close."
+            why={
+              <>
+                Keep the open state yourself when the page needs to react, for example to save a
+                draft. <code>onOpenChange</code> says why it changed. With <code>open</code> set,
+                closing is a request: you decide whether to close.
+              </>
+            }
             code={sources['controlled']}
             propsUsed={[
               { part: 'Popover.Root', prop: 'open' },
@@ -164,7 +181,27 @@ export function PopoverPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Name the popup with <code>aria-label</code> or <code>aria-labelledby</code>, and
+                render it right after its button. Without a name a screen reader says only “dialog”
+                (4.1.2 Name, Role, Value). Out of order, Tab skips it (2.4.3 Focus Order).
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                The default theme does not style the popup yet (see Known issues). If you add your
+                own styles, keep its edge at 3:1 contrast against the page (1.4.11 Non-text
+                Contrast) and its text at 4.5:1 (1.4.3 Contrast (Minimum)).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

@@ -174,7 +174,7 @@ export const radioGroupProseAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-prose',
     values: 'always',
-    meaning: 'The part class. The default theme sets it at 16px.',
+    meaning: 'The part class. The default theme styles it.',
   },
   { name: 'data-invalid', values: 'present or absent', meaning: 'The group is invalid.' },
   { name: 'data-disabled', values: 'present or absent', meaning: 'The group is disabled.' },
@@ -184,7 +184,7 @@ export const radioGroupHelpTextAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-field-help-text',
     values: 'always',
-    meaning: 'The part class. The default theme sets it at 14px.',
+    meaning: 'The part class. The default theme styles it.',
   },
   { name: 'data-invalid', values: 'present or absent', meaning: 'The group is invalid.' },
   { name: 'data-disabled', values: 'present or absent', meaning: 'The group is disabled.' },

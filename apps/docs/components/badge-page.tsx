@@ -57,7 +57,10 @@ export function BadgePage({
             <Link href="/components/button">Button</Link> or a{' '}
             <Link href="/components/toggle">Toggle</Link>. Don’t make a badge look pressable.
           </li>
-          <li>Not as a dot or an icon alone: an empty badge says nothing to a screen reader.</li>
+          <li>
+            Not as a dot or an icon alone: an empty badge says nothing to a screen reader (software
+            that reads the screen aloud).
+          </li>
         </ul>
       }
       example={
@@ -70,7 +73,7 @@ export function BadgePage({
           <UseCase
             id="status-in-a-list"
             title="A status for each case in a list"
-            why="Each item says its status in words, and the variant adds a colour for those who see it. Pick the variant by the role of the status, not by the colour you like."
+            why="Each item says its status in words, with a hidden “Status:” before it so a screen reader says what the badge is. The variant adds a colour for those who see it: pick it by the role of the status, not by the colour you like. A table pays off only when each row carries several attributes."
             code={sources['status-in-list']}
             propsUsed={[{ part: 'Badge', prop: 'variant' }]}
             note={
@@ -94,7 +97,19 @@ export function BadgePage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Write the status in words, every time. Colour alone doesn’t reach people who can’t
+                see it or who see it differently (1.4.1 Use of Color).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

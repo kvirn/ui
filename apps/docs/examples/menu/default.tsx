@@ -10,8 +10,6 @@ export function DefaultMenu() {
       <Menu.Popup>
         <Menu.Item onSelect={() => window.print()}>{texts.print}</Menu.Item>
         <Menu.Item>{texts.download}</Menu.Item>
-        <Menu.Separator />
-        <Menu.Item disabled>{texts.share}</Menu.Item>
       </Menu.Popup>
     </Menu.Root>
   )

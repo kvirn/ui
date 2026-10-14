@@ -15,7 +15,9 @@ export function ControlledDisclosure() {
         </Disclosure.Panel>
       </Disclosure.Root>
       <p>{open ? texts.stateOpen : texts.stateClosed}</p>
-      <Button onClick={() => setOpen(!open)}>{open ? texts.closeIt : texts.openIt}</Button>
+      <Button aria-expanded={open} onClick={() => setOpen(!open)}>
+        {texts.toggleIt}
+      </Button>
     </div>
   )
 }

@@ -7,6 +7,7 @@ export const usePopoverTexts = defineExampleTexts({
     close: 'Close',
     changePhone: 'Change phone number',
     phoneNumber: 'Phone number',
+    phoneSaved: 'Phone number saved.',
     save: 'Save',
     cancel: 'Cancel',
     stateOpen: 'Open',

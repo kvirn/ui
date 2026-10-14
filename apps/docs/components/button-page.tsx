@@ -50,8 +50,9 @@ export function ButtonPage({
   return (
     <ComponentPage
       title="Button"
-      lead="It never sends a form by accident, and it can stay reachable by keyboard when it’s disabled."
-      status="alpha"
+      lead="It never sends a form by accident. A disabled button can stay reachable with the keyboard, so people can still find it and read why."
+      status="alpha-candidate"
+      pattern="APG Button"
       whenToUse={
         <ul>
           <li>Use a button when the user does something: sends, saves, deletes or opens.</li>
@@ -61,8 +62,7 @@ export function ButtonPage({
           <li>Use one primary button per page, for the main next step.</li>
           <li>Deleting and other actions that can’t be undone need a confirmation step.</li>
           <li>
-            Not for going to another page: use a <Link href="/components/link">Link</Link>. Don’t
-            make a link look like a button, or a button look like a link.
+            Not for going to another page: use a <Link href="/components/link">Link</Link>.
           </li>
         </ul>
       }
@@ -87,8 +87,9 @@ export function ButtonPage({
             why={
               <>
                 You can’t avoid disabling the button, for example until the form is complete. Keep
-                it in the Tab order and link the reason to it with <code>aria-describedby</code>, so
-                keyboard and screen reader users find it and learn why.
+                it reachable with the keyboard and link the reason to it with{' '}
+                <code>aria-describedby</code>, so people using a keyboard or a screen reader
+                (software that reads the screen aloud) find it and learn why.
               </>
             }
             code={sources['disabled-with-reason']}
@@ -130,7 +131,15 @@ export function ButtonPage({
           <UseCase
             id="save-that-takes-a-moment"
             title="A save that takes a moment"
-            why="Set busy while it works: the button shows a spinner, blocks every press and keeps focus, and its name stays the same. It is never natively disabled, which would drop focus to the page body."
+            why={
+              <>
+                Set <code>busy</code> while the save runs. The button shows a spinner, ignores every
+                press and keeps keyboard focus, and its name stays the same. It is never natively
+                disabled, which would drop focus to the page body. The button says nothing by
+                itself, so put a <Link href="/components/progress">Progress</Link> with the words
+                beside it, and no <code>Progress.Indicator</code>.
+              </>
+            }
             code={sources['saving']}
             propsUsed={[
               { part: 'Button', prop: 'busy' },
@@ -142,7 +151,12 @@ export function ButtonPage({
           <UseCase
             id="icon-only"
             title="A button with only an icon"
-            why="Use it where there is room for an icon and not a word, such as closing a panel. The name comes from an aria-label you take from your own translations."
+            why={
+              <>
+                Use it where there is room for an icon and not a word, such as closing a panel. The
+                name comes from an <code>aria-label</code> you take from your own translations.
+              </>
+            }
             code={sources['icon-only']}
             note={
               <Note

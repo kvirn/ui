@@ -47,6 +47,14 @@ export interface ContractAnnouncementRow {
   politeness: 'polite' | 'assertive' | 'polite or assertive'
 }
 
+/** A row of the `### Read aloud` table: what a screen reader reads, apart from live-region messages. */
+export interface ContractReadAloudRow {
+  state: string
+  phrases: string
+  politeness: string
+  test: string
+}
+
 export type ContractAnnouncements =
   | { kind: 'none' }
   | { kind: 'rows'; rows: ContractAnnouncementRow[] }
@@ -56,7 +64,11 @@ export interface Contract {
   name: string
   accessibility: ContractAccessibilitySection[]
   keyboard: ContractKeyboard
+  /** Empty when the contract says there are none. */
+  knownIssues: ContractBlock[]
   announcements: ContractAnnouncements
+  /** Rows of a `### Read aloud` table under Announcements, shown even when the section says "None". */
+  readAloud: ContractReadAloudRow[]
 }
 
 export class ContractError extends Error {
@@ -126,7 +138,7 @@ const knownColumnSets = [
   ['key', 'used by (owner)', 'en'],
   ['key', 'part', 'en', 'sv'],
   ['key', 'part', 'en', 'sv', 'fi'],
-  ['at + browser + os', 'date', 'tester', 'result', 'notes'],
+  ['at + browser + os', 'agent check', 'human check', 'result', 'notes'],
   ['sc', 'name', 'how'],
   ['action', 'result', 'test'],
   ['part', '`as`', 'why'],
@@ -388,10 +400,34 @@ function parseAnnouncements(lines: string[], file: string): ContractAnnouncement
   return rows.length === 0 ? { kind: 'none' } : { kind: 'rows', rows }
 }
 
+function parseReadAloud(lines: string[], file: string): ContractReadAloudRow[] {
+  return parseBlocks(lines, file, 'Announcements').flatMap((block) =>
+    block.type === 'table' && normalisedColumn(block.columns[0] ?? '') === 'state or action'
+      ? block.rows.map(([state = '', phrases = '', politeness = '', test = '']) => ({
+          state,
+          phrases,
+          politeness,
+          test,
+        }))
+      : [],
+  )
+}
+
+const saysNone = (text: string) => /^none\.?$/i.test(text.trim())
+
+function knownIssuesIn(blocks: ContractBlock[]): ContractBlock[] {
+  const [only] = blocks
+  const isNone =
+    blocks.length === 1 &&
+    only !== undefined &&
+    ((only.type === 'paragraph' && saysNone(only.text)) ||
+      (only.type === 'list' && only.items.length === 1 && saysNone(only.items[0] ?? '')))
+  return isNone ? [] : blocks
+}
+
 const accessibilityOrder = [
   ['what-it-does-for-you', 'whatItDoes'],
   ['what-you-need-to-do', 'whatYouNeedToDo'],
-  ['focus', 'focus'],
 ] as const
 
 export function parseContract(markdown: string, file: string): Contract {
@@ -438,18 +474,27 @@ export function parseContract(markdown: string, file: string): Contract {
       accessibility.push({ id, title, body })
     }
   }
+  const addTitled = (id: string, key: keyof typeof text.accessibility, heading: string) =>
+    add(id, text.accessibility[key], blocksOf(heading))
   for (const [id, key] of accessibilityOrder) {
     add(id, text.accessibility[key], candidates[key] ?? [])
   }
+  addTitled('visual-and-modes', 'visual', 'Visual / modes')
+  add('focus', text.accessibility.focus, candidates['focus'] ?? [])
   for (const heading of componentHeadings) {
     add(slug(heading), heading, blocksOf(heading))
   }
-  add('visual-and-modes', text.accessibility.visual, blocksOf('Visual / modes'))
-  add('testing-with-assistive-technology', text.accessibility.testing, blocksOf('AT test record'))
-  add('known-issues', text.accessibility.knownIssues, blocksOf('Known issues'))
-  add('wcag-success-criteria', text.accessibility.wcag, blocksOf('WCAG SCs covered'))
+  addTitled('wcag-success-criteria', 'wcag', 'WCAG SCs covered')
+  addTitled('testing', 'testing', 'AT test record')
 
-  return { name, accessibility, keyboard: parseKeyboard(keyboardLines, file), announcements }
+  return {
+    name,
+    accessibility,
+    keyboard: parseKeyboard(keyboardLines, file),
+    knownIssues: knownIssuesIn(blocksOf('Known issues')),
+    announcements,
+    readAloud: announcementLines === undefined ? [] : parseReadAloud(announcementLines, file),
+  }
 }
 
 const keyName =

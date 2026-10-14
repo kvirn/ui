@@ -47,6 +47,7 @@ export function TogglePage({
       title="Toggle"
       lead="Use it for a choice with a direct, visible effect, such as showing only unread messages."
       status="alpha-candidate"
+      pattern="APG Button (toggle button)"
       whenToUse={
         <ul>
           <li>
@@ -79,16 +80,24 @@ export function TogglePage({
           <UseCase
             id="filter-list"
             title="A filter on a list"
-            why="The choice changes the page at once, so you keep the state yourself: pass pressed and update it in onPressedChange."
+            why={
+              <>
+                The choice changes the page at once, so you keep the state yourself: pass{' '}
+                <code>pressed</code> and update it in <code>onPressedChange</code>. That callback
+                only reports the new value, so with <code>pressed</code> set the toggle changes only
+                when you change it.
+              </>
+            }
             code={sources['filter-list']}
             propsUsed={[
               { part: 'Toggle', prop: 'pressed' },
               { part: 'Toggle', prop: 'onPressedChange' },
             ]}
             note={
-              <Note kind="tip">
-                <code>onPressedChange</code> only reports the new value. With <code>pressed</code>{' '}
-                set, the toggle does not change until you change it.
+              <Note kind="reminder">
+                When a toggle changes a list, show how many results are left in a status message
+                (4.1.3 Status Messages). The count in this example is an <code>output</code> element
+                that is on the page from the start, so a screen reader announces the change.
               </Note>
             }
           >
@@ -97,13 +106,19 @@ export function TogglePage({
           <UseCase
             id="icon-only"
             title="A toggle with only an icon"
-            why="Use it where there is room for an icon and not a word, such as showing a password. The name comes from an aria-label you take from your own translations, and it stays the same when the toggle switches."
+            why={
+              <>
+                Use it where there is room for an icon and not a word, such as showing a password.
+                The name comes from an <code>aria-label</code> you take from your own translations,
+                and it stays the same when the toggle switches.
+              </>
+            }
             code={sources['icon-only']}
             propsUsed={[{ part: 'Toggle', prop: 'pressed' }]}
             note={
               <Note kind="reminder">
-                Don’t change the label when the state changes: the screen reader already says
-                “pressed” or “not pressed”. See{' '}
+                Don’t change the label when the state changes: a screen reader reports the state
+                from <code>aria-pressed</code>. See{' '}
                 <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
@@ -117,8 +132,9 @@ export function TogglePage({
               <>
                 You can’t avoid disabling the toggle, for example when there is nothing to filter.
                 Keep it in the Tab order and link the reason to it with{' '}
-                <code>aria-describedby</code>, so keyboard and screen reader users find it and learn
-                why. It still says whether it is on.
+                <code>aria-describedby</code>, so people using a keyboard or a screen reader
+                (software that reads the screen aloud) find it and learn why. It still says whether
+                it is on.
               </>
             }
             code={sources['disabled-with-reason']}
@@ -131,7 +147,25 @@ export function TogglePage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'visual-and-modes': (
+              <Note kind="reminder">
+                If you restyle the pressed state, don’t rely on colour alone. Change the fill, the
+                icon or the label as well (1.4.1 Use of Color).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If an issue here affects your service, list it in your accessibility statement with
+                its workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

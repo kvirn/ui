@@ -1,12 +1,14 @@
 'use client'
-import { Calendar } from '@kvirn-ui/react'
+import { Calendar, useFormat } from '@kvirn-ui/react'
 import type { DateRange } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { useCalendarTexts } from './texts.ts'
 
 export function StayRange() {
   const { texts } = useCalendarTexts()
+  const format = useFormat()
   const [range, setRange] = useState<DateRange>({ start: '', end: '' })
+  const longDate = (date: string) => format.date(date, { dateStyle: 'long' })
   return (
     <div>
       <Calendar.Root
@@ -28,7 +30,12 @@ export function StayRange() {
         <Calendar.Grid offset={1} />
       </Calendar.Root>
       <p>
-        {texts.chosenRange} {range.start === '' ? texts.none : `${range.start} – ${range.end}`}
+        {texts.chosenRange}{' '}
+        {range.start === ''
+          ? texts.none
+          : range.end === ''
+            ? `${longDate(range.start)}, ${texts.noEndYet}`
+            : `${longDate(range.start)} – ${longDate(range.end)}`}
       </p>
     </div>
   )

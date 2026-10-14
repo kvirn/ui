@@ -95,8 +95,9 @@ export function BreadcrumbPage({
   return (
     <ComponentPage
       title="Breadcrumb"
-      lead="Every level is a link; the current page is text."
+      lead="Each level above you is a link. The page you are on is plain text, so someone using the keyboard doesn’t stop on it."
       status="alpha-candidate"
+      pattern="APG Breadcrumb"
       whenToUse={
         <ul>
           <li>
@@ -106,6 +107,10 @@ export function BreadcrumbPage({
           <li>
             Put it before <code>&lt;main&gt;</code>, not in it, and give it a different name from
             any other <code>&lt;nav&gt;</code> on the page.
+          </li>
+          <li>
+            Put it in the same place on every page that has one. People look for it there (3.2.3
+            Consistent Navigation, AA).
           </li>
           <li>
             List every level from the start page to the parent of the current page. It never
@@ -120,16 +125,26 @@ export function BreadcrumbPage({
         </ul>
       }
       example={
-        <ExampleFrame headingId="example" code={sources['default']}>
-          <DefaultBreadcrumb />
-        </ExampleFrame>
+        <>
+          <ExampleFrame headingId="example" code={sources['default']}>
+            <DefaultBreadcrumb />
+          </ExampleFrame>
+          <Note kind="recipe">
+            Register your router’s link once on the provider and every Breadcrumb.Link is rendered
+            by it, so a click doesn’t reload the page. See{' '}
+            <LinkRoot href="/foundation/kvirn-provider#next-js">
+              the Next.js setup on KvirnProvider
+            </LinkRoot>
+            .
+          </Note>
+        </>
       }
       useCases={
         <>
           <UseCase
             id="long-trail"
             title="A page deep in the structure"
-            why="A service page can sit five or six levels down. Write every level as a Breadcrumb.Link and keep the last as Breadcrumb.Current. The trail wraps onto more lines instead of hiding the middle, so the way up is always there, also at 320px width or at 400% zoom."
+            why="A service page can sit five or six levels down. Write every level as a Breadcrumb.Link and the page you are on as Breadcrumb.Current. The trail wraps onto more lines instead of hiding the middle, so every way up stays visible, also on a screen 320px wide."
             code={sources['long-trail']}
             note={
               <Note kind="reminder">
@@ -142,18 +157,15 @@ export function BreadcrumbPage({
           </UseCase>
           <UseCase
             id="own-label"
-            title="A name for a page with another navigation"
-            why="The landmark is named You are here, in five languages. When your page already has another navigation with that name, or your service uses other words, give the trail its own with label. A custom label is your own string, so wrap the trail in an element with lang if it differs from the page."
+            title="Your own name for the trail"
+            why="The trail is named “You are here” by default, in five languages. Give it another name with label when your service uses other words, or when the page has another navigation with that name. A screen reader lists landmarks by name, so two with the same name can’t be told apart."
             code={sources['own-label']}
             propsUsed={[{ part: 'Breadcrumb.Root', prop: 'label' }]}
             note={
-              <Note kind="recipe">
-                Register your router’s link once on the provider and every Breadcrumb.Link is
-                rendered by it, with no full page load. See{' '}
-                <LinkRoot href="/foundation/kvirn-provider#next-js">
-                  the Next.js setup on KvirnProvider
-                </LinkRoot>
-                .
+              <Note kind="reminder">
+                A name you write is your own text. If its language differs from the page, put the
+                trail in a nested KvirnProvider and spread <code>useLocale().localeProps</code> on
+                your own element around it (3.1.2 Language of Parts, AA).
               </Note>
             }
           >
@@ -162,9 +174,25 @@ export function BreadcrumbPage({
           <UseCase
             id="custom-separator"
             title="Your own separator"
-            why='The theme draws a chevron between the levels, and variant="slash" draws a slash. To draw something else, an icon or a component of yours, pass it as separator on the root. It is decoration: it is hidden from screen readers, so it must carry no name, and it is rendered in every item, with the first hidden by the theme. The built-in chevron-forward mirrors itself in RTL; a registered or own icon needs mirrorInRtl.'
+            why={
+              <>
+                The theme draws a chevron between the levels, and{' '}
+                <code>variant=&quot;slash&quot;</code> draws a slash. For anything else, such as an
+                icon or a component of yours, pass it as <code>separator</code> on the root. It goes
+                in every item, and the theme hides the first. The built-in{' '}
+                <code>chevron-forward</code> icon flips itself in right-to-left text; an icon you
+                register needs <code>mirrorInRtl</code>.
+              </>
+            }
             code={sources['custom-separator']}
             propsUsed={[{ part: 'Breadcrumb.Root', prop: 'separator' }]}
+            note={
+              <Note kind="reminder">
+                Keep a separator to decoration: nothing a keyboard can reach, such as a link or a
+                button. Screen readers skip it, so anything focusable in it would be reachable but
+                have no name (4.1.2 Name, Role, Value, A).
+              </Note>
+            }
           >
             <CustomSeparator />
           </UseCase>

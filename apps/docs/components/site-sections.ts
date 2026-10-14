@@ -43,6 +43,8 @@ export interface SiteSection {
   menuParent?: string | undefined
   /** Whether the section's pages share a sidebar. Only Get started does (docs-shell-mega-menu.md §5.1). */
   sidebar?: boolean | undefined
+  /** Work in progress: routable, but left out of every menu, the pager from other sections, search and the gallery. */
+  hidden?: boolean | undefined
 }
 
 export interface SiteTool {
@@ -217,6 +219,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'Tabs',
         'tabs',
         'Tabs show one panel of content at a time, with a list of tabs to switch between them.',
+      ),
+      component(
+        'TopBar',
+        'top-bar',
+        'A slim bar above the site header with a line of text at the start and a navigation of tools at the end, such as the language or contact.',
       ),
     ],
   },
@@ -395,13 +402,100 @@ const componentGroupPages: readonly SitePage[] = componentGroups.map((group) => 
   label: group.label,
 }))
 
-/** The gallery groups of Patterns (component-gallery.md §3.2); items arrive with their pages (G5). */
-export const patternGroups: readonly SiteGroup[] = [
-  { id: 'siteChrome', label: patternGroupText.siteChrome, pages: [] },
+const pattern = (label: string, slug: string, summary: string): SummarisedPage => ({
+  href: `/patterns/${slug}`,
+  label,
+  summary,
+})
+
+/** The gallery groups of Patterns (component-gallery.md §3.2); a group without a page yet is hidden from the gallery. */
+export const patternGroups: readonly SummarisedGroup[] = [
+  {
+    id: 'siteChrome',
+    label: patternGroupText.siteChrome,
+    pages: [
+      pattern(
+        'Application logo',
+        'application-logo',
+        'The link to the start page: the mark, the name as text and an optional slogan.',
+      ),
+      pattern(
+        'Site header',
+        'site-header',
+        'The top of every page: the logo, the main menu, a search field and the language links.',
+      ),
+      pattern(
+        'Main menu',
+        'main-menu',
+        'The main navigation: links, or topics that open lists of links.',
+      ),
+      pattern(
+        'Site search',
+        'site-search',
+        'A search form with a labelled field and a button, in a search landmark.',
+      ),
+      pattern(
+        'Language links',
+        'language-links',
+        'Links to the same page in other languages, each marked with its language.',
+      ),
+      pattern(
+        'Site alert',
+        'site-alert',
+        'A notice on every page, such as a disruption, with an optional close button.',
+      ),
+      pattern(
+        'Cookie consent',
+        'cookie-consent',
+        'A notice in the page flow where the visitor accepts or chooses cookies. It is not a dialog.',
+      ),
+      pattern(
+        'Page frame',
+        'page-frame',
+        'The landmarks of a page: a skip link, the header, the main area and the footer.',
+      ),
+      pattern(
+        'Site footer',
+        'site-footer',
+        'The bottom of every page: contact details and lists of links.',
+      ),
+      pattern(
+        'Page header',
+        'page-header',
+        'The top of the main area: the breadcrumb, the page’s h1, a lead and a few facts.',
+      ),
+      pattern(
+        'Page tools',
+        'page-tools',
+        'Buttons for reading the page aloud and copying its link, with the date it was last updated.',
+      ),
+    ],
+  },
   {
     id: 'navigationAndPromotion',
     label: patternGroupText.navigationAndPromotion,
-    pages: [],
+    pages: [
+      pattern(
+        'Hero',
+        'hero',
+        'A band at the top of the start page with the h1, a short lead and a link.',
+      ),
+      pattern(
+        'Nav tiles',
+        'nav-tiles',
+        'A grid of tiles, each a heading and a link to one part of the site.',
+      ),
+      pattern(
+        'Section nav',
+        'section-nav',
+        'The pages of one section as a list of links, folded into a button on narrow screens.',
+      ),
+      pattern(
+        'Service link',
+        'service-link',
+        'A link to a digital service, with a note when the service is closed.',
+      ),
+    ],
   },
   { id: 'contentAndMedia', label: patternGroupText.contentAndMedia, pages: [] },
   {
@@ -412,6 +506,8 @@ export const patternGroups: readonly SiteGroup[] = [
   { id: 'searchAndForms', label: patternGroupText.searchAndForms, pages: [] },
   { id: 'placesAndContacts', label: patternGroupText.placesAndContacts, pages: [] },
 ]
+
+export const patternPages = patternGroups.flatMap((group) => group.pages)
 
 const contentType = (label: string, slug: string, summary: string): SummarisedPage => ({
   href: `/content-types/${slug}`,
@@ -444,6 +540,104 @@ export const contentTypeGroups: readonly SummarisedGroup[] = [
         'Documentation page',
         'documentation-page',
         'An article of the documentation, with the section’s pages beside it and its headings as a contents list.',
+      ),
+      contentType(
+        'Unit page',
+        'unit-page',
+        'A page for one place, such as a library or a preschool: opening hours, address, how to get there and who to contact.',
+      ),
+      contentType(
+        'Contact',
+        'contact',
+        'The ways to reach the municipality: phone, email and visiting hours, with the exceptions in words.',
+      ),
+    ],
+  },
+  {
+    id: 'news-and-events',
+    label: contentTypeGroupText.newsAndEvents,
+    pages: [
+      contentType(
+        'News article',
+        'news-article',
+        'One news item with its date, an optional image and the text, and a link back to the list.',
+      ),
+      contentType(
+        'News list',
+        'news-list',
+        'All news, newest first, as teasers in pages, with a link to each article.',
+      ),
+      contentType(
+        'Event',
+        'event',
+        'One event: when and where, how to take part and how to get there, and a notice when it is cancelled or full.',
+      ),
+      contentType(
+        'Event list',
+        'event-list',
+        'The upcoming events as teasers, with the applied filters shown and a message when nothing matches.',
+      ),
+    ],
+  },
+  {
+    id: 'services-and-accounts',
+    label: contentTypeGroupText.servicesAndAccounts,
+    pages: [
+      contentType(
+        'Form page',
+        'form-page',
+        'A form for one task, under a header with no search and no menu, with an error summary first when answers are wrong.',
+      ),
+      contentType(
+        'My pages',
+        'my-pages',
+        'A signed-in overview of a person’s cases, with the ones that need an answer first.',
+      ),
+      contentType(
+        'Case detail',
+        'case-detail',
+        'One case: its status, what happens next and the documents, with a clear action when something is needed from the person.',
+      ),
+      contentType(
+        'Session ended',
+        'session-ended',
+        'The page after signing out because of inactivity: what happened, whether the answers were kept and how to continue.',
+      ),
+      contentType(
+        'Search results',
+        'search-results',
+        'The results of a search: the count, the filters, the hits and what to do when there are none.',
+      ),
+    ],
+  },
+  {
+    id: 'policies-and-status',
+    label: contentTypeGroupText.policiesAndStatus,
+    pages: [
+      contentType(
+        'Accessibility statement',
+        'accessibility-statement',
+        'The statement the law requires: what does not work, how to report a problem and who enforces it.',
+      ),
+      contentType(
+        'Privacy page',
+        'privacy-page',
+        'How personal data is handled: what is collected, why, for how long and what rights people have.',
+      ),
+      contentType(
+        'Cookies page',
+        'cookies-page',
+        'What cookies the site uses and how to change the choice.',
+      ),
+      contentType(
+        'Easy-to-read page',
+        'easy-to-read-page',
+        'A page in short sentences and plain words, for people who find ordinary text hard to read.',
+      ),
+      contentType(
+        'Status pages',
+        'status-pages',
+        'Not found, server error and unavailable: what happened, what to do and where to go instead.',
       ),
     ],
   },
@@ -481,7 +675,8 @@ export const siteSections: readonly SiteSection[] = [
     label: text.sections.patterns,
     href: '/patterns',
     menuParent: 'components',
-    pages: [{ href: '/patterns', label: text.sections.patterns }],
+    hidden: true,
+    pages: [{ href: '/patterns', label: text.sections.patterns }, ...patternPages],
     groups: patternGroups,
   },
   {
@@ -489,6 +684,7 @@ export const siteSections: readonly SiteSection[] = [
     label: text.sections.contentTypes,
     href: '/content-types',
     menuParent: 'components',
+    hidden: true,
     pages: [{ href: '/content-types', label: text.sections.contentTypes }, ...contentTypePages],
     groups: contentTypeGroups,
   },
@@ -523,6 +719,10 @@ export const siteTools: readonly SiteTool[] = [
 /** A section with no pages is not rendered, so the header never links to an empty section. */
 export const renderedSections = (sections: readonly SiteSection[]) =>
   sections.filter((section) => section.pages.length > 0)
+
+/** The sections the menus, the footer and the search list: a hidden one is reachable by URL only. */
+export const listedSections = (sections: readonly SiteSection[]) =>
+  renderedSections(sections).filter((section) => section.hidden !== true)
 
 const withoutTrailingSlash = (pathname: string) =>
   pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname

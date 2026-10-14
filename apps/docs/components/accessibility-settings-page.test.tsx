@@ -5,10 +5,10 @@ import { useEffect } from 'react'
 import { afterEach, beforeEach, describe, expect, test } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
-import AccessibilitySettingsRoute, { metadata } from '../app/accessibility-settings/page.tsx'
+import AccessibilitySettingsRoute, { metadata } from '../app/(docs)/accessibility-settings/page.tsx'
 import { messages } from '../messages/en.ts'
 
-// Contract: docs/plans/0107-accessibility-settings-page.md §Accessibility contract and
+// Contract: Plan 0107 contract, and
 // docs/design/accessibility-settings-page.md §4 and §5. The theme script sets the colour scheme
 // before first paint, so a test that stands in for JavaScript sets it too.
 const text = messages.docs.accessibility

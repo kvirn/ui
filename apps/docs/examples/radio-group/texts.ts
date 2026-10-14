@@ -3,6 +3,7 @@ import { defineExampleTexts } from '../../components/local-example-texts.ts'
 export const useRadioGroupTexts = defineExampleTexts({
   en: {
     legend: 'How long do you need the permit?',
+    allRequired: 'Every question must be answered unless it says (optional).',
     hint: 'Choose the period that matches your project.',
     oneMonth: '1 month',
     sixMonths: '6 months',

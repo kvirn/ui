@@ -6,7 +6,7 @@ export function WithLabel() {
   const { texts } = useIconTexts()
   return (
     <p>
-      <Icon name="language" label={texts.language} /> {texts.currentLanguage}
+      <Icon name="language" label={texts.language} /> <span lang="sv">{texts.currentLanguage}</span>
     </p>
   )
 }

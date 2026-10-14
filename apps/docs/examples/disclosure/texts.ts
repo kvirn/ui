@@ -12,10 +12,12 @@ export const useDisclosureTexts = defineExampleTexts({
     help: 'How to return a book',
     helpText:
       'Use the book drop outside the entrance, or hand the book in at the loan desk. Your loan ends when we scan it.',
+    phone: 'Phone number',
+    whyPhone: 'Why do we ask for your phone number?',
+    whyPhoneText: 'We call you only if something is missing from your application.',
     stateOpen: 'Open',
     stateClosed: 'Closed',
     lastReason: 'Last change:',
-    openIt: 'Open the opening hours',
-    closeIt: 'Close the opening hours',
+    toggleIt: 'Toggle the opening hours',
   },
 })

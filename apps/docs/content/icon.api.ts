@@ -18,13 +18,13 @@ export const iconRows = propRows<IconDocumentedProps>({
     type: 'IconComponent',
     default: '–',
     description:
-      'A component from an icon library, or your own: icon={Search}. It needs no registration. Icon’s size, color and label replace the component’s own, and className is joined with it.',
+      'A component from an icon library, or your own: icon={Search}. It needs no registration. Icon’s size and label replace the component’s own, and className is joined with it.',
   },
   as: {
     type: 'ElementType',
     default: '–',
     description:
-      'A one-off icon of your own that isn’t registered: as={MunicipalityMark}. It gets Icon’s props (width, height, aria-hidden, role, className) as plain props and must spread them on its own <svg>.',
+      'A one-off icon of your own that isn’t registered: as={MunicipalityMark}. It gets Icon’s props (width, height, aria-hidden, role, aria-label, className) as plain props and must spread them on its own <svg> and take a ref. Icon’s size and label do not reach it under those names.',
   },
   children: {
     type: 'ReactNode',
@@ -100,7 +100,7 @@ export const useIconHook: ApiHook = {
       type: 'IconPartProps',
       default: '–',
       description:
-        'Spread on the root <svg>, or pass to an icon component: class, size, colour and the aria attributes.',
+        'Spread on the root <svg>, or pass to an icon component: class, width and height, and the aria attributes.',
     },
     component: {
       type: 'IconComponent | undefined',

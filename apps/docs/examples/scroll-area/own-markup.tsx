@@ -1,6 +1,5 @@
 'use client'
 import { useScrollArea } from '@kvirn-ui/react'
-import { FeesRows } from './fees-rows.tsx'
 import { useScrollAreaTexts } from './texts.ts'
 
 export function OwnMarkup() {
@@ -10,9 +9,33 @@ export function OwnMarkup() {
     <div
       {...scrollArea.scrollAreaProps}
       aria-label={scrollArea.isRegion ? texts.feesLabel : undefined}
-      style={{ maxInlineSize: '24rem' }}
     >
-      <FeesRows headers={texts.headers} rows={texts.rows} />
+      <table className="kv-table">
+        <thead>
+          <tr>
+            {texts.headers.map((header) => (
+              <th key={header} scope="col">
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {texts.rows.map((row) => (
+            <tr key={row[0]}>
+              {row.map((cell, index) =>
+                index === 0 ? (
+                  <th key={cell} scope="row">
+                    {cell}
+                  </th>
+                ) : (
+                  <td key={texts.headers[index]}>{cell}</td>
+                ),
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }

@@ -46,8 +46,9 @@ export function CheckboxPage({
   return (
     <ComponentPage
       title="Checkbox"
-      lead="It is a native checkbox, so the browser gives it the Space key, the label click and form submission, and it holds no form state."
+      lead="It is a native checkbox, so the browser handles the Space key, clicking the label and sending the form. It keeps no form state of its own."
       status="alpha-candidate"
+      pattern="APG Checkbox (two-state and mixed)"
       whenToUse={
         <ul>
           <li>
@@ -61,7 +62,8 @@ export function CheckboxPage({
           <li>
             Not for several answers to one question: use a{' '}
             <Link href="/components/checkbox-group">CheckboxGroup</Link>. Not for exactly one answer
-            out of several, or for a question that needs both a yes and a no: use a RadioGroup.
+            out of several, or for a question that needs both a yes and a no: use a{' '}
+            <Link href="/components/radio-group">RadioGroup</Link>.
           </li>
           <li>
             Not for an action or a setting that takes effect at once: use a{' '}
@@ -80,7 +82,7 @@ export function CheckboxPage({
           <UseCase
             id="declaration"
             title="A declaration that must be confirmed"
-            why="A declaration or a consent is one box the user has to tick before sending. Mark the Field as required, so the label has no “(optional)” and the box is announced as required. Validate on submit, set invalid and say what to do."
+            why="A declaration or a consent is one box the user has to tick before sending. Mark the Field as required, so the label has no “(optional)” and a screen reader (software that reads the screen aloud) says the box is required. Check the answer when the user sends the form, set invalid and say what to do."
             code={sources['declaration']}
             propsUsed={[
               { part: 'Checkbox', prop: 'checked' },
@@ -88,9 +90,10 @@ export function CheckboxPage({
             ]}
             note={
               <Note kind="reminder">
-                Set <code>invalid</code> and render the <code>Field.ErrorMessage</code> together,
-                and move focus to the first invalid field on submit. See{' '}
-                <Link href="#what-you-need-to-do">What you need to do</Link>.
+                Set <code>invalid</code> and show the <code>Field.ErrorMessage</code> together, then
+                move focus to the box after a failed send. An error is read only when its field gets
+                focus, so without the move a screen reader user isn’t told what went wrong (3.3.1
+                Error Identification).
               </Note>
             }
           >
@@ -101,17 +104,22 @@ export function CheckboxPage({
             title="In a plain form, with no form logic"
             why={
               <>
-                Without <code>checked</code> the browser keeps the state, and a form submit sends
-                the <code>name</code> and <code>value</code> of a ticked box. Use{' '}
-                <code>defaultChecked</code> for a box that starts ticked.
+                Without <code>checked</code> the browser keeps the state. A form submit sends the{' '}
+                <code>name</code> and <code>value</code> of a ticked box, and nothing for an
+                unticked one.
               </>
             }
             code={sources['plain-form']}
             propsUsed={[
               { part: 'Checkbox', prop: 'name' },
               { part: 'Checkbox', prop: 'value' },
-              { part: 'Checkbox', prop: 'defaultChecked' },
             ]}
+            note={
+              <Note kind="tip">
+                <code>defaultChecked</code> starts a box ticked. Don’t use it for a consent: the
+                GDPR says pre-ticked boxes don’t count as consent (recital 32).
+              </Note>
+            }
           >
             <PlainForm />
           </UseCase>
@@ -144,7 +152,20 @@ export function CheckboxPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Give every checkbox a visible <code>Field.Label</code>. Without one, a screen reader
+                says only “checkbox” and nobody knows what is being asked (4.1.2 Name, Role, Value;
+                3.3.2 Labels or Instructions). A development warning says so.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

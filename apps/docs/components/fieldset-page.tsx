@@ -19,14 +19,14 @@ import {
   useFieldsetHook,
 } from '../content/fieldset.api.ts'
 import { DefaultFieldset } from '../examples/fieldset/default.tsx'
-import { DisabledGroup } from '../examples/fieldset/disabled.tsx'
 import { GroupError } from '../examples/fieldset/error-on-submit.tsx'
 import { OneQuestion } from '../examples/fieldset/group.tsx'
+import { QuestionAsHeading } from '../examples/fieldset/page-heading.tsx'
 import { OwnElements } from '../examples/fieldset/use-fieldset.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type FieldsetExampleSources = Record<
-  'default' | 'group' | 'error-on-submit' | 'disabled' | 'use-fieldset',
+  'default' | 'group' | 'page-heading' | 'error-on-submit' | 'use-fieldset',
   string
 >
 
@@ -98,30 +98,40 @@ export function FieldsetPage({
   return (
     <ComponentPage
       title="Fieldset"
-      lead="It holds no form state."
+      lead="It holds no form state, and it never moves focus."
       status="alpha-candidate"
       whenToUse={
-        <ul>
-          <li>
-            Use a Fieldset for one question answered with several controls, such as the options of a{' '}
-            <Link href="/components/checkbox">checkbox</Link> or radio group, or a date in three
-            boxes. Set <code>group</code>.
-          </li>
-          <li>
-            Use a plain Fieldset to group related questions under one name, such as an address.
-          </li>
-          <li>
-            Always write a legend that asks the question or names the group, and put it first.
-          </li>
-          <li>
-            Don’t wrap every Field in a Fieldset: a fieldset announces itself, and nested ones get
-            noisy.
-          </li>
-          <li>
-            Not for a single control: use a <Link href="/components/field">Field</Link>, whose label
-            names it.
-          </li>
-        </ul>
+        <>
+          <ul>
+            <li>
+              Use a Fieldset when one question is answered in several boxes, such as a name in a
+              first and a last name box. Set <code>group</code>.
+            </li>
+            <li>
+              Use a plain Fieldset to put related questions under one name, such as an address.
+            </li>
+            <li>
+              Write a legend that asks the question or names the group, and put it first. A screen
+              reader (software that reads the screen aloud) uses it as the name of the group.
+            </li>
+            <li>
+              Don’t wrap every Field in a Fieldset: a fieldset announces itself, and nested ones get
+              noisy.
+            </li>
+            <li>
+              Not for one control: use a <Link href="/components/field">Field</Link>, whose label
+              names it. Not for checkboxes, radio buttons or a date: a{' '}
+              <Link href="/components/checkbox-group">CheckboxGroup</Link>, a{' '}
+              <Link href="/components/radio-group">RadioGroup</Link> and a{' '}
+              <Link href="/components/date-input">DateInput</Link> already include a fieldset.
+            </li>
+          </ul>
+          <Note kind="tip">
+            To show an answer that can’t be changed, show it as text (such as “Applicant: Anna
+            Andersson. The applicant can’t be changed after the application is sent.”), not as a
+            disabled group.
+          </Note>
+        </>
       }
       example={
         <ExampleFrame headingId="example" code={sources['default']}>
@@ -133,22 +143,16 @@ export function FieldsetPage({
           <UseCase
             id="one-question"
             title="One question, several boxes"
-            why="When the boxes together make one answer, set group. The legend then takes the optional text if the group isn’t required, and the Fields inside never say “(optional)” on their own: a box is never optional by itself."
+            why="When the boxes together make one answer, set group. The legend then ends with “(optional)” if the group isn’t required, and the Fields inside never say “(optional)” on their own: one box of a name is never optional by itself."
             code={sources['group']}
             propsUsed={[{ part: 'Fieldset.Root', prop: 'group' }]}
-            note={
-              <Note kind="recipe">
-                Use a Fieldset only where controls belong together. A screen reader announces the
-                legend each time focus enters the group.
-              </Note>
-            }
           >
             <OneQuestion />
           </UseCase>
           <UseCase
             id="group-error"
             title="Describe the group and report its error"
-            why="The description is read before answering, so it goes above the controls. The help text goes under them, and the error last. All three are the group’s: screen reader users hear them when focus enters the group."
+            why="The description is read before answering, so it goes above the controls. The help text goes under them, and the error last. All three belong to the group: a screen reader usually reads them when focus enters the group. After a failed send, move focus to the first control that is wrong."
             code={sources['error-on-submit']}
             propsUsed={[
               { part: 'Fieldset.Root', prop: 'invalid' },
@@ -164,18 +168,31 @@ export function FieldsetPage({
             <GroupError />
           </UseCase>
           <UseCase
-            id="disabled-group"
-            title="A group that can’t be changed"
-            why="Disabling a Fieldset disables every control inside it natively, and Tab skips them. Say why in the help text."
-            code={sources['disabled']}
-            propsUsed={[{ part: 'Fieldset.Root', prop: 'disabled' }]}
+            id="question-as-heading"
+            title="The question is the page heading"
+            why={
+              <>
+                When a page asks one thing, the legend can be the page’s heading. Put the heading
+                inside the legend and add the class <code>kv-fieldset-legend--heading</code>. Use{' '}
+                <code>h1</code> if it is the page’s main heading: this example is in a page that
+                already has one, so it uses <code>h2</code>.
+              </>
+            }
+            code={sources['page-heading']}
           >
-            <DisabledGroup />
+            <QuestionAsHeading />
           </UseCase>
           <UseCase
             id="own-elements"
             title="Wire your own fieldset"
-            why="For markup of your own, useFieldset gives the id, aria-describedby and state attributes to spread on a native fieldset and its legend. Name the descriptions from the first render, so server-rendered markup is complete."
+            why={
+              <>
+                For markup of your own, <code>useFieldset</code> gives the id,{' '}
+                <code>aria-describedby</code> and state attributes to spread on a native fieldset
+                and its legend. Name the descriptions from the first render, so server-rendered
+                markup is complete.
+              </>
+            }
             code={sources['use-fieldset']}
             propsUsed={[
               {
@@ -186,7 +203,8 @@ export function FieldsetPage({
             ]}
             note={
               <Note kind="reminder">
-                Every fieldset needs a legend as its first child, or the group has no name. See{' '}
+                Every fieldset needs a legend as its first child, or the group has no name (1.3.1
+                Info and Relationships, 4.1.2 Name, Role, Value). See{' '}
                 <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
@@ -195,7 +213,30 @@ export function FieldsetPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} messageNamespace="field" linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          messageNamespace="field"
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Set <code>invalid</code> and render a <code>Fieldset.ErrorMessage</code> together,
+                with text that says what is wrong and how to fix it. A group has no invalid state of
+                its own, so without the text a screen reader user isn’t told anything is wrong
+                (3.3.1 Error Identification, 3.3.3 Error Suggestion).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                Our own testing with screen readers is still pending (see Testing), so read these
+                items as reports, not results. Add what applies to your service to your
+                accessibility statement, with the workaround.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

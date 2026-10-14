@@ -2,14 +2,12 @@ import { defineExampleTexts } from '../../components/local-example-texts.ts'
 
 export const useGridTexts = defineExampleTexts({
   en: {
-    side: 'Side column',
-    content: 'The content column. Its text is read after the side column.',
     service: {
       navigationLabel: 'In this section',
       links: ['Apply for a place', 'Fees and invoices', 'Term dates', 'Contact the preschool'],
       current: 'Apply for a place',
       heading: 'Apply for a place at a preschool',
-      text: 'You can apply from the day your child is four months old. Apply at least four months before you need the place.',
+      text: 'You can apply from the year your child turns one. Apply at least four months before you need the place.',
     },
     contact: {
       heading: 'Contact',
@@ -39,16 +37,6 @@ export const useGridTexts = defineExampleTexts({
       contact: {
         title: 'Contact',
         text: 'Preschool administration, 08:00 to 16:00 on weekdays.',
-      },
-    },
-    news: {
-      recycling: {
-        title: 'New opening hours at the recycling centre',
-        excerpt: 'From 1 November the recycling centre is open until 19:00 on weekdays.',
-      },
-      snow: {
-        title: 'Winter road maintenance: how we clear snow',
-        excerpt: 'We clear main roads and bus routes first, then residential streets.',
       },
     },
   },

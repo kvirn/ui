@@ -11,9 +11,12 @@ import {
   menuCheckboxItemRows,
   menuGroupAttributes,
   menuGroupLabelAttributes,
+  menuGroupLabelRows,
+  menuGroupRows,
   menuItemAttributes,
   menuItemRows,
   menuPopupAttributes,
+  menuPopupRows,
   menuRadioGroupAttributes,
   menuRadioGroupRows,
   menuRadioItemRows,
@@ -21,13 +24,20 @@ import {
   menuSeparatorAttributes,
   menuTriggerAttributes,
   menuTriggerRows,
+  useMenuHook,
 } from '../content/menu.api.ts'
+import { AskFirst } from '../examples/menu/ask-first.tsx'
 import { CheckboxAndRadioMenu } from '../examples/menu/checkbox-and-radio.tsx'
 import { ControlledMenu } from '../examples/menu/controlled.tsx'
 import { DefaultMenu } from '../examples/menu/default.tsx'
+import { RowActions } from '../examples/menu/row-actions.tsx'
+import { Unavailable } from '../examples/menu/unavailable.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type MenuExampleSources = Record<'default' | 'checkbox-and-radio' | 'controlled', string>
+export type MenuExampleSources = Record<
+  'default' | 'row-actions' | 'ask-first' | 'unavailable' | 'checkbox-and-radio' | 'controlled',
+  string
+>
 
 const elementNote = (element: string) => (
   <>
@@ -61,6 +71,7 @@ const parts: ApiPart[] = [
         render only while it is open. Render it right after the trigger.
       </>
     ),
+    props: menuPopupRows,
     attributes: menuPopupAttributes,
   },
   {
@@ -111,11 +122,13 @@ const parts: ApiPart[] = [
   {
     name: 'Menu.Group',
     renders: <>{elementNote('div')} Name it with a GroupLabel.</>,
+    props: menuGroupRows,
     attributes: menuGroupAttributes,
   },
   {
     name: 'Menu.GroupLabel',
     renders: <>{elementNote('div')} It names the Group around it.</>,
+    props: menuGroupLabelRows,
     attributes: menuGroupLabelAttributes,
   },
   {
@@ -135,18 +148,20 @@ export function MenuPage({
   return (
     <ComponentPage
       title="Menu"
-      lead="Menus are for actions, not navigation: for links to other pages, use Navigation or Disclosure."
+      lead="Someone using only a keyboard opens it, moves with the arrow keys and lands back on the button."
       status="alpha-candidate"
+      pattern="APG Menu Button"
       whenToUse={
         <ul>
+          <li>
+            Use a menu for several related actions on one thing, such as print, download and
+            withdraw on a case, or the view options of a table. It suits staff tools where space is
+            tight.
+          </li>
           <li>
             Menus are for actions, not navigation. A list of links to pages is a{' '}
             <Link href="/components/navigation">Navigation</Link> or a{' '}
             <Link href="/components/disclosure">Disclosure</Link>, never a menu.
-          </li>
-          <li>
-            Use a menu for several related actions on one thing, such as print, download and share
-            on a case, or the view options of a table. It suits staff tools where space is tight.
           </li>
           <li>
             Not for one or two actions, and not for the main action of a page: show visible buttons.
@@ -168,6 +183,40 @@ export function MenuPage({
       }
       useCases={
         <>
+          <UseCase
+            id="row-actions"
+            title="Actions for one row of a list"
+            why="A list of cases often has the same few actions on each row. Give every trigger the row’s name, so “Actions for case 2024-118” and “Actions for case 2024-131” differ. The menu is named by its trigger."
+            code={sources['row-actions']}
+            note={
+              <Note kind="reminder">
+                Start the trigger’s name with its visible text, then add what it is for, hidden from
+                sight. A name that doesn’t start with the visible text fails 2.5.3 Label in Name,
+                and identical “Actions” buttons leave a screen reader user guessing which row each
+                one belongs to.
+              </Note>
+            }
+          >
+            <RowActions />
+          </UseCase>
+          <UseCase
+            id="ask-first"
+            title="An action that asks first"
+            why="An action that can’t be undone, such as withdrawing an application, opens an AlertDialog from its item. Keep the open state yourself and set it in onSelect. When the dialog closes, focus goes back to the menu’s trigger."
+            code={sources['ask-first']}
+            propsUsed={[{ part: 'Menu.Item', prop: 'onSelect' }]}
+          >
+            <AskFirst />
+          </UseCase>
+          <UseCase
+            id="unavailable"
+            title="An action that is not available now"
+            why="A disabled item stays in the menu, and the arrow keys still reach it, so people know the action exists. A screen reader says it is unavailable, not why. Say why in text on the page and link it to the item."
+            code={sources['unavailable']}
+            propsUsed={[{ part: 'Menu.Item', prop: 'disabled' }]}
+          >
+            <Unavailable />
+          </UseCase>
           <UseCase
             id="checkbox-and-radio"
             title="Options that stay on or off"
@@ -208,9 +257,28 @@ export function MenuPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Put <code>Menu.Popup</code> right after <code>Menu.Trigger</code>, in the same
+                parent. Otherwise Tab and Shift+Tab don’t leave the menu as described under Keyboard
+                (2.4.3 Focus Order).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
-      api={<ApiBlock importLine="import { Menu } from '@kvirn-ui/react'" parts={parts} />}
+      api={
+        <ApiBlock
+          importLine="import { Menu, useMenu } from '@kvirn-ui/react'"
+          parts={parts}
+          hook={useMenuHook}
+        />
+      }
     />
   )
 }

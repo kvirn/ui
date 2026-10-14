@@ -17,11 +17,18 @@ import {
 } from './dialog.api.ts'
 
 const alertDialogOptionRows = {
-  ...dialogSharedOptionRows,
+  open: dialogSharedOptionRows.open,
+  defaultOpen: dialogSharedOptionRows.defaultOpen,
+  finalFocusRef: dialogSharedOptionRows.finalFocusRef,
   initialFocusRef: {
     ...dialogSharedOptionRows.initialFocusRef,
     description:
-      'Where focus goes when it opens. Set it: the least destructive action, or the primary one when nothing is destroyed. A development warning fires without it.',
+      'Where focus goes when it opens. Set it: the least destructive action, or the primary one when nothing is destroyed. A development warning fires without it. Without it focus starts on the title.',
+  },
+  onOpenChange: {
+    ...dialogSharedOptionRows.onOpenChange,
+    description:
+      'Called on every request to open or close. It only reports: with open set, you change open yourself, and if you keep it open the alert dialog stays. details.reason is trigger-press, close-press, escape or native-close (the browser closed it). It is never outside-press: a press on the backdrop does nothing. Answer escape with the safe outcome. details.event is the native event.',
   },
 } as const
 

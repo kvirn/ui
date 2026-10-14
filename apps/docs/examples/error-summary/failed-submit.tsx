@@ -34,7 +34,6 @@ export function FailedSubmit() {
       ) : null}
       <Stack
         className="kv-stack--gap-8"
-
         as="form"
         noValidate
         onSubmit={(event) => {
@@ -60,7 +59,7 @@ export function FailedSubmit() {
           {texts.send}
         </Button>
       </Stack>
-      {isSent ? <p>{texts.sent}</p> : null}
+      <output>{isSent ? texts.sent : null}</output>
     </Stack>
   )
 }

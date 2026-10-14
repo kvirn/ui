@@ -8,7 +8,7 @@ import { useComboboxTexts } from './texts.ts'
 export function NotInListCombobox() {
   const { texts } = useComboboxTexts()
   const [value, setValue] = useState<string | null>(null)
-  const [text, setText] = useState('Gö')
+  const [text, setText] = useState<string>(texts.typedStart)
   const [isTouched, setIsTouched] = useState(false)
   const isInvalid = isTouched && text !== '' && value === null
   return (

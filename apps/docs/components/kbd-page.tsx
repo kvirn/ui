@@ -63,11 +63,11 @@ export function KbdPage({ contract, sources }: { contract: Contract; sources: Kb
             code={sources['combination']}
             note={
               <Note kind="reminder">
-                Key names aren’t translated, because they are what’s printed on the keyboard. Names
-                that are vernacular in the surrounding language (Ctrl, Shift, Tab, Esc in Nordic
-                text) need nothing. A key in another script, such as Arabic, goes in your own{' '}
-                <code>&lt;span lang=&quot;en&quot;&gt;&lt;Kbd&gt;Tab&lt;/Kbd&gt;&lt;/span&gt;</code>
-                . See <Link href="#what-you-need-to-do">What you need to do</Link>.
+                Don’t translate key names: write them as printed on the keyboard. In Nordic text,
+                Ctrl, Shift, Tab and Esc need nothing more. In text in another script, such as
+                Arabic, wrap the key in your own{' '}
+                <code>&lt;span lang=&quot;en&quot;&gt;&lt;Kbd&gt;Tab&lt;/Kbd&gt;&lt;/span&gt;</code>{' '}
+                (3.1.2 Language of Parts).
               </Note>
             }
           >
@@ -80,8 +80,9 @@ export function KbdPage({ contract, sources }: { contract: Contract; sources: Kb
             code={sources['shortcut-list']}
             note={
               <Note kind="tip">
-                A plain <code>&lt;kbd&gt;</code> inside <code>kv-prose</code> gets the same look as
-                a Kbd, so text you don’t write in React, such as Markdown, needs no component.
+                A plain <code>&lt;kbd&gt;</code> inside a{' '}
+                <Link href="/components/prose">Prose</Link> gets the same look as a Kbd, so text you
+                don’t write in React, such as Markdown, needs no component.
               </Note>
             }
           >
@@ -89,7 +90,27 @@ export function KbdPage({ contract, sources }: { contract: Contract; sources: Kb
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                If your service has a shortcut of a single letter or number, let people turn it off
+                or change it (2.1.4 Character Key Shortcuts). Kbd only shows a shortcut. It doesn’t
+                make one work.
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                If you restyle the key, keep its text at 4.5:1 contrast against its background
+                (1.4.3 Contrast (Minimum)), and size it relative to the surrounding text so it
+                follows the browser’s text size (1.4.4 Resize Text).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

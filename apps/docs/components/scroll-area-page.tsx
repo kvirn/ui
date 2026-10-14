@@ -2,6 +2,7 @@ import { Link } from '@kvirn-ui/react'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { apiHookPart } from './api-ids.ts'
+import { CodeBlock } from './code-block.tsx'
 import { ComponentPage } from './component-page.tsx'
 import { ContractSectionsView, contractSectionList } from './contract-sections-view.tsx'
 import { ExampleFrame } from './example-frame.tsx'
@@ -13,14 +14,14 @@ import {
   useScrollAreaHook,
 } from '../content/scroll-area.api.ts'
 import { AlwaysRegion } from '../examples/scroll-area/always-region.tsx'
+import { CodeSample } from '../examples/scroll-area/code-sample.tsx'
 import { DefaultScrollArea } from '../examples/scroll-area/default.tsx'
 import { Fits } from '../examples/scroll-area/fits.tsx'
 import { OwnMarkup } from '../examples/scroll-area/own-markup.tsx'
-import { Tall } from '../examples/scroll-area/tall.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type ScrollAreaExampleSources = Record<
-  'default' | 'fits' | 'always-region' | 'tall' | 'own-markup',
+  'default' | 'fits' | 'always-region' | 'code-sample' | 'own-markup',
   string
 >
 
@@ -55,65 +56,66 @@ export function ScrollAreaPage({
       whenToUse={
         <ul>
           <li>
-            Use it around content you can’t make fit at a narrow width or a large text size: a wide
-            table, a code sample, pasted text. Everything else should wrap (WCAG 1.4.10).
+            Use it around content that needs two directions to make sense and can’t wrap: a wide
+            table from your content system, or a long line of code. Everything else must wrap, so
+            the page never scrolls sideways at 320 pixels wide (1.4.10 Reflow).
           </li>
           <li>
             When everything fits it is a plain <code>&lt;div&gt;</code>. Only while it scrolls is it
-            a named region and a Tab stop.
+            a named region (a part of the page that a screen reader, software that reads the screen
+            aloud, can list so users jump to it) and a Tab stop (a place the Tab key stops at).
           </li>
+          <li>Name it, and say what is inside.</li>
           <li>
-            Name it, and say what is inside. A region without a name is read as an unlabelled
-            landmark.
-          </li>
-          <li>
-            For a table, <Link href="/components/table">Table</Link> has its own scroll region that
-            shares this logic. Not for a long page: let the page scroll.
+            Not for a table you build with Table: <Link href="/components/table">Table</Link> has
+            its own scroll region. Not for a long page: let the page scroll.
           </li>
         </ul>
       }
       example={
-        <ExampleFrame headingId="example" code={sources['default']}>
-          <DefaultScrollArea />
-        </ExampleFrame>
+        <>
+          <ExampleFrame headingId="example" code={sources['default']}>
+            <DefaultScrollArea />
+          </ExampleFrame>
+          <Note
+            kind="recipe"
+            more={<CodeBlock language="css" code={'.permit-list {\n  max-block-size: 20rem;\n}'} />}
+          >
+            The area sets no size. Add your own class with a height limit, such as{' '}
+            <code>className=&quot;permit-list&quot;</code>, and it scrolls down as well as sideways.
+          </Note>
+        </>
       }
       useCases={
         <>
           <UseCase
-            id="content-fits"
-            title="When everything fits"
-            why="Nothing scrolls, so the area is a plain div: no role, no name and no Tab stop. It becomes a region on its own if the window narrows or the text grows."
+            id="short-table"
+            title="A short fee list that fits"
+            why="A short table fits, so nothing scrolls and the area is a plain div: no role, no name and no Tab stop. It becomes a named region by itself if the window narrows or the text grows."
             code={sources['fits']}
           >
             <Fits />
           </UseCase>
           <UseCase
-            id="always-a-region"
-            title="A region whether it scrolls or not"
-            why='Use region="always" when the area should be a named place for people to jump to, however much it holds. It is still a Tab stop only while it scrolls.'
+            id="table-to-jump-to"
+            title="A table people can jump to"
+            why="Set region to always when a table matters enough that screen reader users should find it in their list of regions, even when it fits. It is still a Tab stop only while it scrolls."
             code={sources['always-region']}
             propsUsed={[{ part: 'ScrollArea', prop: 'region' }]}
           >
             <AlwaysRegion />
           </UseCase>
           <UseCase
-            id="limited-height"
-            title="Scrolling down as well"
-            why="Limit the height with your own CSS, such as max-block-size, and the area scrolls down as well as sideways. The arrow keys, Page Up, Page Down, Home and End scroll it natively."
-            code={sources['tall']}
-            note={
-              <Note kind="reminder">
-                Name the area with <code>aria-label</code> or <code>aria-labelledby</code>. A
-                development warning says so once it is a region. See{' '}
-                <Link href="#what-you-need-to-do">what you need to do</Link>.
-              </Note>
-            }
+            id="code-sample"
+            title="A code sample in an open-data guide"
+            why="A long line of code keeps its meaning only when it isn’t wrapped. Let the area scroll sideways, and name it so people know what it holds."
+            code={sources['code-sample']}
           >
-            <Tall />
+            <CodeSample />
           </UseCase>
           <UseCase
             id="own-markup"
-            title="With your own element"
+            title="A table in your own element"
             why="When the markup is yours, spread the props of the hook on the element that scrolls. Add the name only while isRegion is true, because a name on a plain div is not allowed."
             code={sources['own-markup']}
             propsUsed={[
@@ -128,7 +130,25 @@ export function ScrollAreaPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Name the area and say what is inside. Without a name a screen reader says only
+                “region”, and the user can’t tell what it holds (4.1.2 Name, Role, Value).
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                If you restyle the area, keep its focus ring and its native scrollbars. Keyboard
+                users need the ring to see where they are (2.4.7 Focus Visible).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

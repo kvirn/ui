@@ -28,6 +28,7 @@ export function ErrorOnSubmitRadioGroup() {
         }
       }}
     >
+      <p>{texts.allRequired}</p>
       <RadioGroup.Root
         name="duration"
         required

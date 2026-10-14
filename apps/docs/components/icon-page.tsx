@@ -7,6 +7,7 @@ import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import { iconAttributes, iconRows, useIconHook } from '../content/icon.api.ts'
+import { BuiltInSet } from '../examples/icon/built-in-set.tsx'
 import { DefaultIcon } from '../examples/icon/default.tsx'
 import { MirrorInRtl } from '../examples/icon/mirror-in-rtl.tsx'
 import { OneOffDrawing } from '../examples/icon/one-off-drawing.tsx'
@@ -16,7 +17,13 @@ import { WithLabel } from '../examples/icon/with-label.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type IconExampleSources = Record<
-  'default' | 'with-label' | 'sizes' | 'own-component' | 'one-off-drawing' | 'mirror-in-rtl',
+  | 'default'
+  | 'built-in-set'
+  | 'with-label'
+  | 'sizes'
+  | 'own-component'
+  | 'one-off-drawing'
+  | 'mirror-in-rtl',
   string
 >
 
@@ -27,9 +34,13 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;svg class=&quot;kv-icon&quot;&gt;</code>, hidden from assistive technology, or{' '}
         <code>role=&quot;img&quot;</code> with a <code>label</code>. It takes every attribute of an{' '}
-        <code>&lt;svg&gt;</code> except <code>width</code>, <code>height</code>,{' '}
-        <code>aria-label</code>, <code>aria-hidden</code> and <code>role</code>, and passes{' '}
-        <code>ref</code> to it. Register your own names with <code>defineIcons</code> and the{' '}
+        <code>&lt;svg&gt;</code> and passes <code>ref</code> to it, except the ones that would
+        change what it is or does: <code>width</code>, <code>height</code>, <code>aria-label</code>,{' '}
+        <code>aria-hidden</code>, <code>role</code>, <code>color</code>, <code>fill</code>,{' '}
+        <code>stroke</code>, <code>strokeWidth</code>, <code>tabIndex</code>, <code>onClick</code>,{' '}
+        <code>aria-labelledby</code> and <code>aria-describedby</code>. An icon can’t be focused or
+        pressed, and its name comes only from <code>label</code>: put focus and press on the Button
+        or Link around it. Register your own names with <code>defineIcons</code> and the{' '}
         <code>icons</code> prop of <code>KvirnProvider</code>. The default theme is described on{' '}
         <Link href="/foundation/theming">Theming</Link>.
       </>
@@ -49,7 +60,7 @@ export function IconPage({
   return (
     <ComponentPage
       title="Icon"
-      lead="It is hidden from screen readers unless you give it a name, and it takes its size and colour from the text around it."
+      lead="It is hidden from screen readers unless you give it a name. It is drawn in the colour of the text around it, and its size follows the reader’s browser text-size setting."
       status="alpha-candidate"
       whenToUse={
         <ul>
@@ -80,14 +91,24 @@ export function IconPage({
       useCases={
         <>
           <UseCase
+            id="built-in-set"
+            title="Pick an icon from the built-in set"
+            why="Start here. The set covers the common actions and statuses. You pass the name shown beside each icon, and the icon stays hidden from assistive technology until you give it a label."
+            code={sources['built-in-set']}
+            propsUsed={[{ part: 'Icon', prop: 'name' }]}
+          >
+            <BuiltInSet />
+          </UseCase>
+          <UseCase
             id="meaningful-icon"
             title="An icon that adds meaning"
-            why="Here the icon says what the word beside it is: the language. A label turns it into an image with that name, so a screen reader says the label, “Language” in English, before the word."
+            why="Here the icon says what the word beside it is: the language. A label turns it into an image with that name, so a screen reader says “Language” before the word."
             code={sources['with-label']}
             propsUsed={[{ part: 'Icon', prop: 'label' }]}
             note={
               <Note kind="reminder">
-                Give an icon a label only when no text beside it says the same, or it is read twice.
+                An icon that carries a meaning no text beside it gives needs a label (1.1.1 Non-text
+                Content). If text beside it says the same, leave the label out, or it is read twice.
                 See <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
@@ -96,8 +117,8 @@ export function IconPage({
           </UseCase>
           <UseCase
             id="size"
-            title="A size that follows the text"
-            why="The size is a pixel string, set in rem by the theme, so icons grow with the user’s text size setting. Another size is a class you add."
+            title="A size that follows the reader’s settings"
+            why="The size is a pixel size as a string, such as “24”. The icon is drawn in rem, so it grows with the browser’s text-size setting and zoom. For another size, add a class."
             code={sources['sizes']}
             propsUsed={[{ part: 'Icon', prop: 'size' }]}
           >
@@ -105,14 +126,14 @@ export function IconPage({
           </UseCase>
           <UseCase
             id="library-icon"
-            title="An icon from your own library"
-            why="Pass a component that spreads SVG props onto one svg and forwards its ref, such as one from Lucide, Heroicons, Phosphor or Tabler, or your own."
+            title="An icon from a library, or of your own"
+            why="Pass a component that spreads SVG props onto one svg and forwards its ref, such as one from Lucide, Heroicons or Phosphor, or your own. It needs no registration."
             code={sources['own-component']}
             propsUsed={[{ part: 'Icon', prop: 'icon' }]}
             note={
               <Note kind="tip">
-                Icon’s size, colour and label replace the component’s own, so every icon in the page
-                is sized the same way.
+                Icon’s <code>size</code> and <code>label</code> replace the component’s own, so
+                every icon on the page is sized the same way.
               </Note>
             }
           >
@@ -121,7 +142,7 @@ export function IconPage({
           <UseCase
             id="one-off-drawing"
             title="A one-off drawing"
-            why="For a shape you use once, pass your own shapes as children, with a viewBox. Icon is the svg, so the size, colour and name work as for any icon."
+            why="For a mark you use once, such as a municipality’s own, pass its shapes as children, with a viewBox. Icon is the svg, so the size, the name and the colour work as for any icon. Draw the shapes with currentColor so they follow the text colour, also in forced colours (a Windows contrast theme)."
             code={sources['one-off-drawing']}
             propsUsed={[
               { part: 'Icon', prop: 'children' },
@@ -133,13 +154,19 @@ export function IconPage({
           <UseCase
             id="right-to-left"
             title="An arrow in right-to-left text"
-            why="The built-in arrows and chevrons flip in right-to-left text, so “next” still points forward. Set mirrorInRtl yourself on a directional icon of your own."
+            why={
+              <>
+                In right-to-left text the built-in arrows, chevrons and the external-link icon are
+                flipped by the default theme, so “next” still points forward. Set{' '}
+                <code>mirrorInRtl</code> yourself on a directional icon of your own.
+              </>
+            }
             code={sources['mirror-in-rtl']}
             propsUsed={[{ part: 'Icon', prop: 'mirrorInRtl' }]}
             note={
-              <Note kind="reminder">
-                Set <code>mirrorInRtl</code> only on directional icons: arrows and chevrons, never a
-                tick, a logo or an icon with text in it.
+              <Note kind="tip">
+                Set <code>mirrorInRtl</code> only on icons that point somewhere: arrows and
+                chevrons, never a tick, a logo or an icon with text in it.
               </Note>
             }
           >

@@ -10,7 +10,9 @@ import { UseCase } from './use-case.tsx'
 import {
   navigationItemAttributes,
   navigationLabelAttributes,
+  navigationLabelRows,
   navigationListAttributes,
+  navigationListRows,
   navigationRootAttributes,
   navigationRootRows,
   useNavigationHook,
@@ -59,6 +61,7 @@ const parts: ApiPart[] = [
         <code>Navigation.Item</code> for a second level.
       </>
     ),
+    props: navigationListRows,
     attributes: navigationListAttributes,
   },
   {
@@ -84,6 +87,7 @@ const parts: ApiPart[] = [
         <code>navigation-label-outside-item</code>).
       </>
     ),
+    props: navigationLabelRows,
     attributes: navigationLabelAttributes,
   },
 ]
@@ -98,7 +102,7 @@ export function NavigationPage({
   return (
     <ComponentPage
       title="Navigation"
-      lead="It adds no keys of its own: every link is a plain Tab stop."
+      lead="Every link is a plain Tab stop, in the order you write them, so a keyboard user has no new keys to learn."
       status="alpha-candidate"
       whenToUse={
         <ul>
@@ -107,6 +111,10 @@ export function NavigationPage({
             menu, a section menu, or a menu beside a long guide.
           </li>
           <li>Give every navigation a name, and a different name when a page has more than one.</li>
+          <li>
+            Keep it in the same place and the same order on every page (3.2.3 Consistent Navigation,
+            AA).
+          </li>
           <li>Keep to two levels on pages for residents. A staff or CMS sidebar can go deeper.</li>
           <li>
             Not for switching content on the same page: use{' '}
@@ -114,8 +122,9 @@ export function NavigationPage({
             page: use <LinkRoot href="/components/table-of-contents">TableOfContents</LinkRoot>.
           </li>
           <li>
-            Not for a menu with flyouts or one that opens and closes by itself: that is
-            NavigationMenu, which is planned.
+            Not for a menu with flyouts or one that opens and closes by itself. Navigation has none
+            and there is no NavigationMenu component. You can open and close a group yourself, as in
+            “A group that opens and closes” below.
           </li>
         </ul>
       }
@@ -129,7 +138,7 @@ export function NavigationPage({
           <UseCase
             id="two-levels"
             title="A section with a second level"
-            why="A section has pages under it. Put a second Navigation.List inside the item they belong to: the lists nest natively, so a screen reader announces the level. Mark only the page you are on, never its parent."
+            why="A section has pages under it. Put a second Navigation.List inside the item they belong to. The lists nest as ordinary HTML lists, so a screen reader can tell people which level they are on. Mark only the page you are on, never its parent."
             code={sources['two-levels']}
             note={
               <Note kind="tip">
@@ -143,7 +152,7 @@ export function NavigationPage({
           <UseCase
             id="horizontal"
             title="A row of sections at the top"
-            why="Add kv-navigation--horizontal to the root to lay the top level out as a row that wraps. It is a look: the roles, the names and the keys are the same as in a column, and the links stay in reading order."
+            why="Add the class kv-navigation--horizontal to the root to lay the top level out as a row that wraps. It changes the look only. The roles, the names and the keys are the same as in a column, and the links stay in reading order."
             code={sources['horizontal']}
           >
             <HorizontalNavigation />
@@ -151,7 +160,7 @@ export function NavigationPage({
           <UseCase
             id="page-not-listed"
             title="When the page isn’t in the navigation"
-            why='On a page the menu doesn’t list, such as one application, put current on the deepest item that is shown. It sets aria-current="true", and the menu still has exactly one current link.'
+            why="Some pages are not in the menu, such as one application. Put current on the deepest item the menu does show. It sets aria-current to true, so the menu still has exactly one current link."
             code={sources['page-not-listed']}
             note={
               <Note kind="reminder">
@@ -165,7 +174,7 @@ export function NavigationPage({
           <UseCase
             id="collapsible-group"
             title="A group that opens and closes"
-            why="Navigation has no toggle of its own. Render the group with hidden and open it from a Button with aria-expanded and aria-controls. A hidden group’s links leave the Tab order and the accessibility tree."
+            why="Navigation has no toggle of its own. Render the group with hidden and open it from a Button with aria-expanded and aria-controls. The links of a hidden group leave the Tab order, so keyboard users skip them until the group is open."
             code={sources['collapsible-group']}
             note={
               <Note kind="recipe" more={<CodeBlock code={collapsibleCode} />}>
@@ -178,14 +187,28 @@ export function NavigationPage({
           <UseCase
             id="group-labels"
             title="Links grouped under labels"
-            why="A staff sidebar groups its links under names such as Permits and Services. Put a Navigation.Label in each item, next to its nested list: the list is named by it, so a screen reader says “Permits, list, 2 items”. The label is plain text, not a heading and not a link. The name is set when the page hydrates, so it is not in the server HTML."
+            why="A staff sidebar groups its links under names such as Permits and Services. Put a Navigation.Label in each item, next to its nested list. The list takes the label as its name, so people using a screen reader hear which group they are in. The label is plain text, not a heading and not a link. The name is added when the page loads in the browser, so it is not in the server-rendered HTML."
             code={sources['group-labels']}
           >
             <GroupLabels />
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Give every navigation a name, and a different one on each. A screen reader user
+                picks a landmark by its name. Where a visible heading exists, point{' '}
+                <code>aria-labelledby</code> at it. A development warning fires if a name is missing
+                or used twice (2.4.1 Bypass Blocks, A; 2.4.6 Headings and Labels, AA).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

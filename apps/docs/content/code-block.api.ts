@@ -4,7 +4,7 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
 export type CodeBlockCopyDocumentedProps = Pick<
   CodeBlockCopyProps,
-  'text' | 'textRef' | 'onCopied' | 'onCopyError' | 'children' | 'messages'
+  'text' | 'textRef' | 'onCopied' | 'onCopyError' | 'children' | 'status' | 'messages'
 >
 
 export const codeBlockCopyRows = propRows<CodeBlockCopyDocumentedProps>({
@@ -32,6 +32,12 @@ export const codeBlockCopyRows = propRows<CodeBlockCopyDocumentedProps>({
     type: 'ReactNode',
     default: 'the message copyButton.label',
     description: 'Your own label, which replaces the message, so its language is yours to set.',
+  },
+  status: {
+    type: 'boolean',
+    default: 'true',
+    description:
+      'false removes the words shown after the button, so you draw your own from data-status. The result is announced either way.',
   },
   messages: {
     type: 'Partial<{ label, copied, failed }>',

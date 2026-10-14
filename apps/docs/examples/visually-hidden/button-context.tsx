@@ -7,12 +7,14 @@ export function ButtonContext() {
   return (
     <ul>
       <li>
+        {texts.savedSearch}{' '}
         <Button>
           {texts.remove}
           <VisuallyHidden>{texts.removeSavedSearch}</VisuallyHidden>
         </Button>
       </li>
       <li>
+        {texts.address}{' '}
         <Button>
           {texts.remove}
           <VisuallyHidden>{texts.removeAddress}</VisuallyHidden>

@@ -123,6 +123,7 @@ export function RadioGroupPage({
       title="RadioGroup"
       lead="It names the group with a legend, and the browser’s own radio keys do the rest."
       status="alpha-candidate"
+      pattern="APG Radio Group"
       whenToUse={
         <ul>
           <li>
@@ -211,7 +212,8 @@ export function RadioGroupPage({
                 <code>RadioGroup.ErrorMessage</code> that says what to do. The error is read as part
                 of the group’s description, because a radio can’t be marked invalid.{' '}
                 <code>required</code> removes “(optional)” from the legend, but a group can’t be
-                announced as required, so the legend or the description must say it.
+                announced as required, so say once, before the first question, that every question
+                must be answered unless it says “(optional)”.
               </>
             }
             code={sources['error-on-submit']}
@@ -223,8 +225,8 @@ export function RadioGroupPage({
             note={
               <Note kind="reminder">
                 The group never moves focus. After a failed submit, move it to the first radio or to
-                an error summary, as in <Link href="#what-you-need-to-do">What you need to do</Link>
-                .
+                an <Link href="/components/error-summary">Error summary</Link>, as in{' '}
+                <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >
@@ -244,7 +246,26 @@ export function RadioGroupPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Ask the question in the legend, and give every radio a value and a label. Without
+                the legend a screen reader reads the options with no question (1.3.1 Info and
+                Relationships, 3.3.2 Labels or Instructions).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                Check these against your own service. Where one applies, name it in your
+                accessibility statement with the workaround, so users know before they meet it.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

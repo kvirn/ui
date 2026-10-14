@@ -8,6 +8,7 @@ export function ClosedDays() {
   const { texts } = useCalendarTexts()
   return (
     <div>
+      <p>{texts.closedLegend}</p>
       <Calendar.Root
         today="2026-10-14"
         isDateUnavailable={(date) => closedDays.has(date)}

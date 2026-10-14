@@ -9,14 +9,14 @@ export function StackedForm() {
   const emailId = useId()
   return (
     <Stack className="kv-stack--gap-4" as="form" onSubmit={(event) => event.preventDefault()}>
-      <Heading as="h2">{texts.form.title}</Heading>
+      <Heading as="h4">{texts.form.title}</Heading>
       <Stack className="kv-stack--gap-2">
         <label htmlFor={nameId}>{texts.form.name}</label>
-        <input id={nameId} autoComplete="name" />
+        <input id={nameId} autoComplete="name" className="kv-input" />
       </Stack>
       <Stack className="kv-stack--gap-2">
         <label htmlFor={emailId}>{texts.form.email}</label>
-        <input id={emailId} type="email" autoComplete="email" />
+        <input id={emailId} type="email" autoComplete="email" className="kv-input" />
       </Stack>
       <Button type="submit">{texts.form.send}</Button>
     </Stack>

@@ -17,6 +17,11 @@ export const useTableTexts = defineExampleTexts({
     handler: 'Handler',
     handlerLabel: 'Handler',
     decisionLabel: 'Decision',
+    decisions: {
+      approved: 'Approved',
+      moreInformation: 'More information needed',
+      inProgress: 'In progress',
+    },
     emptyCases: 'You have no open cases. New applications show up here when you send them.',
     allCases: 'All cases',
   },

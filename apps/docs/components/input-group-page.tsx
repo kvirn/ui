@@ -16,10 +16,11 @@ import { DefaultInputGroup } from '../examples/input-group/default.tsx'
 import { DisabledWithReason } from '../examples/input-group/disabled-with-reason.tsx'
 import { Invalid } from '../examples/input-group/invalid.tsx'
 import { SearchWithClear } from '../examples/input-group/search-with-clear.tsx'
+import { UnitFirst } from '../examples/input-group/unit-first.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type InputGroupExampleSources = Record<
-  'default' | 'search-with-clear' | 'invalid' | 'disabled-with-reason',
+  'default' | 'unit-first' | 'search-with-clear' | 'invalid' | 'disabled-with-reason',
   string
 >
 
@@ -30,8 +31,8 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;div&gt;</code> with no role. It takes every attribute of a{' '}
         <code>&lt;div&gt;</code> and passes <code>ref</code> to it. It draws the input’s box, and
-        holds one input and its addons or buttons. Start and end follow the order you write them in,
-        and the reading direction: there is no side prop. The default theme is described on{' '}
+        holds one input and its addons or buttons. Start and end follow the order you write them in:
+        there is no side prop. The default theme is described on{' '}
         <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
@@ -82,12 +83,18 @@ export function InputGroupPage({
             when a button such as clear acts on the input.
           </li>
           <li>
-            Always put it in a <code>Field</code> with a visible label that says the unit: an addon
-            is a visual repeat, hidden from screen readers.
+            Put it in a <Link href="/components/field">Field</Link> with a visible label that says
+            the unit. An addon is a visual repeat, hidden from screen readers (software that reads
+            the screen aloud).
           </li>
           <li>
             Put a button directly in the box, never inside an addon. It keeps its own name and Tab
             stop.
+          </li>
+          <li>
+            Not for a plain input with nothing inside the box: use a{' '}
+            <Link href="/components/text-input">TextInput</Link> or a{' '}
+            <Link href="/components/number-input">NumberInput</Link>.
           </li>
           <li>
             Not for a long unit or a sentence: use the label or a help text. Not for a button that
@@ -103,15 +110,23 @@ export function InputGroupPage({
       useCases={
         <>
           <UseCase
+            id="unit-first"
+            title="A unit before the value"
+            why="Some forms write the unit first, as in “kr 4 500”. Put the addon before the input in the box. It sits at the start of the box in either reading direction. The label still says the unit, because screen readers skip the addon."
+            code={sources['unit-first']}
+          >
+            <UnitFirst />
+          </UseCase>
+          <UseCase
             id="search-with-clear"
             title="A search with a clear button"
-            why="A search box has an icon at the start and a button at the end that empties it. The icon is decorative and the button is a real Button directly in the box, with its own name. It shows only while there is a text, and moves focus back to the input when it empties it."
+            why="A search box has an icon at the start and a button at the end that empties it. The icon is decorative and the button is a real Button directly in the box, with its own name. It shows only while there is a text, and moves focus back to the input when it empties it. Clearing announces nothing: the focused, empty input is read as such."
             code={sources['search-with-clear']}
             note={
-              <Note kind="tip">
-                Clearing a search announces nothing: the focused, empty input is read as such. Keep
-                the clear button’s name a visible text, “Clear search”, or an{' '}
-                <code>aria-label</code> from your translations when it only has an icon.
+              <Note kind="reminder">
+                The clear button disappears when it empties the box, so move focus to the input
+                yourself, as the example does. Otherwise focus falls to the page (2.4.3 Focus
+                Order).
               </Note>
             }
           >
@@ -120,7 +135,7 @@ export function InputGroupPage({
           <UseCase
             id="error"
             title="An error on the box"
-            why="Put the group in a Field with invalid and write the message in the Field. The Field marks the input with aria-invalid and the box takes the invalid edge from it, so the box and the input agree."
+            why="Put the group in a Field with invalid and write the message in the Field. The Field marks the input with aria-invalid and the box takes the invalid edge from it, so the box and the input agree. The focus ring shows on any focus in an invalid box, and the invalid edge stays."
             code={sources['invalid']}
             propsUsed={[{ part: 'InputGroup.Root', prop: 'invalid' }]}
             note={
@@ -144,7 +159,20 @@ export function InputGroupPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Write the unit in the label, as in “Monthly rent in kroner”. A screen reader skips
+                the addon, so a unit that only the addon shows is never heard (3.3.2 Labels or
+                Instructions).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

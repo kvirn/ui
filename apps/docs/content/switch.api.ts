@@ -5,7 +5,7 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 /** The props Switch documents: its own, and the native ones whose behaviour it changes. */
 export type SwitchDocumentedProps = Pick<
   SwitchProps,
-  'checked' | 'defaultChecked' | 'value' | 'name' | 'disabled' | 'onCheckedChange'
+  'checked' | 'defaultChecked' | 'value' | 'name' | 'disabled' | 'onCheckedChange' | 'id'
 >
 
 export const switchRows = propRows<SwitchDocumentedProps>({
@@ -41,6 +41,12 @@ export const switchRows = propRows<SwitchDocumentedProps>({
     default: '–',
     description:
       'Called on every change with the new state and { reason: "input", event }. It only reports. onChange still works too.',
+  },
+  id: {
+    type: 'string',
+    default: 'generated',
+    description:
+      'Inside a Field the Field’s id is used and yours is ignored, with a development warning. Set controlId on the Field instead. Outside a Field it is the input’s id.',
   },
 })
 
@@ -79,6 +85,11 @@ export const switchAttributes: readonly AttributeRow[] = [
     name: 'aria-invalid',
     values: '"true" or absent',
     meaning: 'Set when its Field is invalid.',
+  },
+  {
+    name: 'aria-describedby',
+    values: 'ids',
+    meaning: 'Set for you inside a Field: the help text, then the error. Your own ids come after.',
   },
 ]
 

@@ -14,6 +14,7 @@ import { useDatePickerTexts } from './texts.ts'
 export function TitledVisitDate() {
   const { texts } = useDatePickerTexts()
   const { locale } = useLocale()
+  const example = masks.date().withLocale(locale).format('2026-10-27')
   const [fieldText, setFieldText] = useState('')
   return (
     <div>
@@ -31,6 +32,7 @@ export function TitledVisitDate() {
               value={fieldText}
               onValueChange={setFieldText}
             />
+            <Field.HelpText>{texts.fieldHint(example)}</Field.HelpText>
           </Field.Root>
           <DatePicker.Trigger />
         </div>

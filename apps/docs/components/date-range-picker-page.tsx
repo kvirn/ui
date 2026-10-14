@@ -32,9 +32,11 @@ const parts: ApiPart[] = [
     renders: (
       <>
         No element. It owns the open state, the draft range and the limits, and gives the Dialog its
-        context. Put the From and To fields, one <code>DateRangePicker.Trigger</code> after both,
-        and <code>DateRangePicker.Popup</code> inside it, and the fields’ group Fieldset inside it
-        too. The default theme is described on <Link href="/foundation/theming">Theming</Link>.
+        context. Inside it, put the group Fieldset with the From and To fields and one{' '}
+        <code>DateRangePicker.Trigger</code> after both, then <code>DateRangePicker.Popup</code>.
+        Each end can be a masked <code>TextInput</code> or a{' '}
+        <Link href="/components/date-input">DateInput</Link>. The default theme is described on{' '}
+        <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: dateRangePickerRootRows,
@@ -99,14 +101,15 @@ export function DateRangePickerPage({
   return (
     <ComponentPage
       title="DateRangePicker"
-      lead="Typing always works: the picker is the slower path, not a replacement."
+      lead="Typing always works: the picker is an extra way to fill in the dates, not a replacement."
       status="alpha-candidate"
+      pattern="APG Date Picker Dialog"
       whenToUse={
         <ul>
           <li>
             Use it for a start and an end near today, such as a stay or a leave, with a typed field
-            for each end. You keep the form state: the picker takes both fields’ dates and gives
-            back the finished range.
+            for each end. You keep the form state: the picker reads both fields and gives back the
+            finished range.
           </li>
           <li>
             Use it in forms for residents and for staff. Put the two fields in a group Fieldset
@@ -114,6 +117,11 @@ export function DateRangePickerPage({
           </li>
           <li>
             Not for one date: use <Link href="/components/date-picker">DatePicker</Link>.
+          </li>
+          <li>Not for a range far from today: let people type it.</li>
+          <li>
+            Not when most days are taken: offer the free periods as{' '}
+            <Link href="/components/radio-group">radio buttons</Link>.
           </li>
           <li>
             Not as a section of the page: use a <Link href="/components/calendar">Calendar</Link>{' '}
@@ -130,13 +138,14 @@ export function DateRangePickerPage({
         <>
           <UseCase
             id="nights-limit"
-            title="A longest stay"
+            title="A stay with a longest length"
             why={
               <>
                 Set <code>maximumDays</code> and say the limit in your own unit in the group’s help
-                text. The days count both ends, so a booking of 14 nights is 15. The dialog writes
-                the limit in days as well. <code>today</code> is fixed in this example so the dates
-                are the same on any day.
+                text. Days count both ends, so a booking of 14 nights is 15 days. The dialog writes
+                the limit in days as well. Someone can still type a reversed or too long range, so
+                the example checks it when the form is sent and puts the error on the To field. (It
+                fixes <code>today</code>, so the dates are the same on any day.)
               </>
             }
             code={sources['nights-limit']}
@@ -147,9 +156,9 @@ export function DateRangePickerPage({
             ]}
             note={
               <Note kind="reminder">
-                The picker never validates what is typed. Check that the end is on or after the
-                start and inside the limit in your form, and say what is wrong. See{' '}
-                <Link href="#what-you-need-to-do">What you need to do</Link>.
+                The picker never checks what is typed, so a reversed or too long range reaches your
+                form (3.3.1 Error Identification). Check it, and say what is wrong and how to fix
+                it. See <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >
@@ -160,9 +169,10 @@ export function DateRangePickerPage({
             title="Days that are taken"
             why={
               <>
-                A day that can’t be chosen stays focusable, struck through, with the reason in its
-                name. By default a range cannot pass over it; set{' '}
-                <code>allowUnavailableInRange</code> when it can, such as a leave across a holiday.
+                A day that can’t be chosen stays reachable with the keyboard, shows as unavailable
+                (struck through in the default theme) and has the reason in its name. By default a
+                range cannot pass over it; set <code>allowUnavailableInRange</code> when it can,
+                such as a leave across a holiday.
               </>
             }
             code={sources['booked-days']}
@@ -176,7 +186,7 @@ export function DateRangePickerPage({
           </UseCase>
           <UseCase
             id="own-title"
-            title="Naming the dialog after the question"
+            title="A dialog title that asks your question"
             why="The default title says “Choose the dates”. A title that repeats the group’s question tells the user which dates they are choosing."
             code={sources['own-title']}
             propsUsed={[{ part: 'DateRangePicker.Root', prop: 'messages' }]}
@@ -189,14 +199,23 @@ export function DateRangePickerPage({
           >
             <TitledStay />
           </UseCase>
-          <Note kind="reminder">
-            Without a <code>timeZone</code> on <code>KvirnProvider</code>, the first paint uses the
-            UTC date; a popup that opens after mount starts on the browser&apos;s date. Pass{' '}
-            <code>timeZone</code> for the same day on the server and in the browser.
-          </Note>
         </>
       }
-      contract={<ContractSectionsView contract={contract} linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            focus: (
+              <Note kind="tip">
+                Without a <code>timeZone</code> on <code>KvirnProvider</code>, the first paint uses
+                today’s date in UTC, and a dialog that opens later starts on the browser’s date.
+                Pass <code>timeZone</code> so the server and the browser agree on the day.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

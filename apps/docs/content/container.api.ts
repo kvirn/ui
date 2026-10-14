@@ -15,7 +15,7 @@ export const containerRows = propRows<ContainerDocumentedProps>({
     type: "'div' | 'main' | 'section' | 'article'",
     default: "'div'",
     description:
-      'Changes the element: main (one per page), section with aria-labelledby, or article. Container adds no role.',
+      'Changes the element: main (one per page), section with a name, or article. Container adds no role of its own: the element’s meaning applies. In JavaScript, an element outside the list is replaced by a div and warns once in development.',
   },
   ref: {
     type: 'Ref<HTMLElement>',
@@ -28,7 +28,7 @@ export const containerAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-container',
     values: 'always',
-    meaning: 'The part class. Your className joins it.',
+    meaning: 'The part class. The default theme styles it. Your className joins it.',
   },
   {
     name: 'kv-container--reading',
@@ -45,7 +45,7 @@ export const containerAttributes: readonly AttributeRow[] = [
 export const useContainerHook: ApiHook = {
   name: 'useContainer',
   intro:
-    'Use it when you can’t use as, for example on a component of your own. It adds no role, ARIA or tabindex, and it returns the same frozen object for each size.',
+    'Use it to give an element or component of your own the container classes. It adds no role, ARIA or tabindex, and it returns the same frozen object for each size.',
   options: propRows<UseContainerOptions>({
     size: {
       type: "'page' | 'reading' | 'form'",

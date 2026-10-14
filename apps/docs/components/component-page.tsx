@@ -63,8 +63,6 @@ export interface ComponentPageProps {
   /** The rest of the lead: its first sentence is the page's `summary` in `site-sections.ts`. */
   lead?: string
   status: ComponentStatus
-  /** The `Package` fact. */
-  packageName?: string
   /** The `Pattern` fact, such as "APG Tabs". The row is left out when a page gives none. */
   pattern?: string
   /** When, where and when not: the content of the "When to use it" section. */
@@ -73,7 +71,7 @@ export interface ComponentPageProps {
   example?: ReactNode
   /** `UseCase` blocks, most common first. */
   useCases?: ReactNode
-  /** Accessibility, Keyboard and Announcements, which bring their own `h2`s. */
+  /** Accessibility, Keyboard, Known issues and Announcements, which bring their own `h2`s. */
   contract?: ReactNode
   /** Those `h2`s, in the order `contract` renders them (`contractSectionIds`, with their labels). */
   contractSections?: readonly PageSection[]
@@ -147,7 +145,7 @@ function Fact({ term, children }: { term: string; children: ReactNode }) {
  */
 export function ComponentPage(props: ComponentPageProps) {
   const parts = pageParts(props)
-  const { status, packageName = '@kvirn-ui/react', pattern } = props
+  const { status, pattern } = props
   return (
     <DocsPage
       title={props.title}
@@ -157,11 +155,7 @@ export function ComponentPage(props: ComponentPageProps) {
           <Fact term={text.label}>
             <Badge variant={statusVariants[status]}>{statusLabels[status]}</Badge>
           </Fact>
-          <Fact term={factText.package}>
-            <code>{packageName}</code>
-          </Fact>
           {pattern === undefined ? null : <Fact term={factText.pattern}>{pattern}</Fact>}
-          <Fact term={factText.atTesting}>{factText.pending}</Fact>
         </>
       }
       afterFacts={status === 'stable' ? null : <p className="docs-status">{statusTexts[status]}</p>}
