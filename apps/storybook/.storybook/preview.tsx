@@ -11,6 +11,13 @@ import '../../docs/fonts/ibm-plex/ibm-plex.css'
 // The default theme, as an adopter imports it.
 import '@kvirn-ui/theme/theme.css'
 import './preview.css'
+import {
+  expectNoClippedTextWithSpacing,
+  expectNoHorizontalOverflow,
+  expectNoMotionInReducedMotion,
+  expectReflowViewport,
+  expectVisibleInForcedColors,
+} from '../src/components/theme-story-assertions.ts'
 import { KeyboardSection } from './keyboard-section.tsx'
 import { ApiSection, UsageSection } from './usage-section.tsx'
 
@@ -171,12 +178,34 @@ const preview: Preview = {
     locale: 'sv',
     dir: 'ltr',
     forcedColors: 'none',
+    // The reflow sweep (1.4.10) opens every story in a 320 CSS px wide viewport.
+    ...(import.meta.env.VITE_STORYBOOK_SWEEP === 'reflow' && { viewport: { value: 'reflow320' } }),
   },
   decorators: [withStoryEnvironment],
   // A selected theme must not leak into the next story, even if the canvas isn't unmounted.
   beforeEach: ({ parameters }) => (drivesThemeStore(parameters) ? undefined : resetStoryTheme),
+  // The display-mode sweep (`vite.config.ts`): each story is also checked in the mode
+  // its Vitest project emulates.
+  afterEach: async ({ canvasElement }) => {
+    const sweep = import.meta.env.VITE_STORYBOOK_SWEEP
+    if (sweep === 'forced-colors') {
+      await expectVisibleInForcedColors(canvasElement)
+    } else if (sweep === 'reduced-motion') {
+      await expectNoMotionInReducedMotion()
+    } else if (sweep === 'reflow') {
+      await expectReflowViewport()
+      await expectNoHorizontalOverflow(canvasElement)
+    } else if (sweep === 'text-spacing') {
+      await expectNoClippedTextWithSpacing(canvasElement)
+    }
+  },
   parameters: {
     // Every story state is an axe test in `vp test run` (AGENTS.md, gate 2). Never lower to 'todo' or 'off'.
+    viewport: {
+      options: {
+        reflow320: { name: '320 px', styles: { width: '320px', height: '800px' }, type: 'mobile' },
+      },
+    },
     a11y: {
       test: 'error',
       options: { runOnly: { type: 'tag', values: [...wcagTags] } },

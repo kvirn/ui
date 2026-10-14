@@ -4,7 +4,7 @@
 - **Deviations:** none. Pages are URLs, so each is a link and none is a button: Back, sharing and opening in a new tab work.
 - **Native elements used:** `<nav>` (the `navigation` landmark), `<ul>` and `<li>`. The links are [Link](../link/link.a11y.md): native `<a href>`, rendered by the registered router link.
 - **Status:** alpha candidate. Gates green, accessibility-reviewer APPROVE after fixes (2026-10-06); the review of `variant` and `separator` is pending. Manual AT is `pending`.
-- **Tests:** `pagination.test.tsx` next to this file. `pagination.stories.tsx` in `apps/storybook/src/components/pagination/`, where `theme.css` is loaded and the targets and the current page's shape are proved. The narrow layout (below 40rem) is a manual check, `pending`, until the display-mode sweep (Plan 0110) runs: a 320px column in a wide preview can't trigger the media query. Design brief: `docs/design/municipality-reference-site.md` (B17) and `DESIGN.md`, Breadcrumb and pagination.
+- **Tests:** `pagination.test.tsx` next to this file. `pagination.stories.tsx` in `apps/storybook/src/components/pagination/`, where `theme.css` is loaded and the targets and the current page's shape are proved. The narrow layout (below 40rem) is a manual check, `pending`, until the opt-in `storybook-reflow` sweep is widened to its stories: a 320px column in a wide preview can't trigger the media query. Design brief: `docs/design/municipality-reference-site.md` (B17) and `DESIGN.md`, Breadcrumb and pagination.
 
 Pagination lets a resident move through a long list. It adds no `tabindex`, no key handling and no live announcement: the links are the focusable parts and own the keys. Which numbers and gaps to show is the consumer's.
 

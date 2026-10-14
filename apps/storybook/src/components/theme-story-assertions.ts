@@ -39,3 +39,107 @@ export async function expectNoHorizontalOverflow(element: HTMLElement) {
     )
   }
 }
+
+const focusableSelector =
+  'a[href], button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])'
+
+const isDrawn = (
+  style: CSSStyleDeclaration,
+  side: 'top' | 'right' | 'bottom' | 'left' | 'outline',
+) => {
+  const property = side === 'outline' ? 'outline' : `border-${side}`
+  return (
+    style.getPropertyValue(`${property}-style`) !== 'none' &&
+    Number.parseFloat(style.getPropertyValue(`${property}-width`)) > 0 &&
+    style.getPropertyValue(`${property}-color`) !== 'rgba(0, 0, 0, 0)'
+  )
+}
+
+const backgroundBehind = (element: Element) => {
+  for (let node: Element | null = element; node; node = node.parentElement) {
+    const { backgroundColor } = getComputedStyle(node)
+    if (backgroundColor !== 'rgba(0, 0, 0, 0)') return backgroundColor
+  }
+  return 'rgba(0, 0, 0, 0)'
+}
+
+/** The Playwright context option took effect: the page really is in forced-colors mode. */
+export async function expectForcedColorsActive() {
+  await expect(window.matchMedia('(forced-colors: active)').matches).toBe(true)
+}
+
+/**
+ * Forced colours (1.4.11): every focusable part keeps a visible boundary (a drawn border or
+ * outline, not `transparent`), and a part with keyboard focus keeps a visible focus indicator.
+ */
+export async function expectVisibleInForcedColors(root: Element) {
+  await expectForcedColorsActive()
+  for (const element of root.querySelectorAll<HTMLElement>(focusableSelector)) {
+    const style = getComputedStyle(element)
+    const hasBoundary =
+      (['top', 'right', 'bottom', 'left'] as const).some((side) => isDrawn(style, side)) ||
+      isDrawn(style, 'outline')
+    // A text-only control (the link look) has no boundary: its text must stand out from what is
+    // behind it instead, which is what 1.4.11 asks of an identifying part.
+    await expect(hasBoundary || style.color !== backgroundBehind(element)).toBe(true)
+  }
+  const focused = document.activeElement
+  if (focused && root.contains(focused) && focused.matches(':focus-visible')) {
+    await expect(isDrawn(getComputedStyle(focused), 'outline')).toBe(true)
+  }
+}
+
+/** The Playwright context option took effect: the page really asks for reduced motion. */
+export async function expectReducedMotionActive() {
+  await expect(window.matchMedia('(prefers-reduced-motion: reduce)').matches).toBe(true)
+}
+
+// A reduced duration is effectively instant: 1 ms leaves room for the 0.01 ms most resets use.
+const reducedDurationLimit = 1
+
+/**
+ * Reduced motion (2.3.3): no animation or transition still running is longer than the reduced
+ * duration or loops.
+ */
+export async function expectNoMotionInReducedMotion() {
+  await expectReducedMotionActive()
+  for (const animation of document.getAnimations()) {
+    if (animation.playState !== 'running') continue
+    const { endTime, iterations } = animation.effect?.getComputedTiming() ?? {}
+    await expect(iterations).not.toBe(Number.POSITIVE_INFINITY)
+    await expect(Number(endTime)).toBeLessThanOrEqual(reducedDurationLimit)
+  }
+}
+
+/** The Playwright viewport took effect: the layout viewport is the 320 CSS px of 1.4.10. */
+export async function expectReflowViewport() {
+  await expect(document.documentElement.clientWidth).toBe(320)
+}
+
+/** The 1.4.12 spacing, as the SC's bookmarklet sets it. */
+const textSpacingCss = `
+  * { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; }
+  p { margin-block-end: 2em !important; }
+`
+
+/**
+ * Text spacing (1.4.12): with the spacing applied, no element that clips its content (overflow
+ * hidden or clip, or a fixed height) has more content than box.
+ */
+export async function expectNoClippedTextWithSpacing(root: Element) {
+  const style = document.createElement('style')
+  style.textContent = textSpacingCss
+  document.head.append(style)
+  try {
+    for (const element of root.querySelectorAll<HTMLElement>('*')) {
+      if (!element.textContent?.trim()) continue
+      const { overflowX, overflowY } = getComputedStyle(element)
+      const clipsX = overflowX === 'hidden' || overflowX === 'clip'
+      const clipsY = overflowY === 'hidden' || overflowY === 'clip'
+      if (clipsX) await expect(element.scrollWidth).toBeLessThanOrEqual(element.clientWidth)
+      if (clipsY) await expect(element.scrollHeight).toBeLessThanOrEqual(element.clientHeight)
+    }
+  } finally {
+    style.remove()
+  }
+}

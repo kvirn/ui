@@ -68,7 +68,7 @@ Nothing is done until all of these pass. The orchestrator runs them, once, at th
 5. `accessibility-reviewer` returns APPROVE.
 6. Every Core row of the AT matrix (`docs/accessibility.md`) passes before `beta`: an agent check proved by tests that re-run, **and** a human check on the real AT. **Agents never write or claim a human check.**
 
-Forced colours, reduced motion and 320px reflow are not gated per change; a Vitest sweep for them is planned (Plan 0110).
+Forced colours, reduced motion and 320px reflow are not gated per change. Four opt-in projects sweep the Button stories (`vp test run --project storybook-forced-colors | -reduced-motion | -reflow | -text-spacing`); they are not in `vp run test` or CI, and other components are not swept (`testing` skill).
 
 ## Hard rules
 

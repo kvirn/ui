@@ -1,6 +1,8 @@
+import { readdirSync } from 'node:fs'
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
 import { defineConfig } from 'vite-plus'
 import { playwright } from 'vite-plus/test/browser-playwright'
+import type { PlaywrightProviderOptions } from 'vite-plus/test/browser-playwright'
 import { cspFixturePlugin } from './tooling/vite-preset/csp-fixture.ts'
 import { workspaceSourceAlias } from './tooling/vite-preset/workspace-source.ts'
 
@@ -100,6 +102,30 @@ const noRedundantRoles: ['error', { ul: string[] }] = ['error', { ul: ['list'] }
 // `VITEST_MAX_WORKERS=4 vp test run <files>`.
 const maxWorkers = Number(process.env['VITEST_MAX_WORKERS'] ?? 2)
 
+// Vitest's exclude globs have no negation, so the other component directories are listed.
+const sweepExcludeAllBut = (component: string) =>
+  readdirSync('apps/storybook/src/components', { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && entry.name !== component)
+    .map((entry) => `**/components/${entry.name}/**`)
+
+type ContextOptions = NonNullable<PlaywrightProviderOptions['contextOptions']>
+
+const sweepExclude = [
+  ...sweepExcludeAllBut('button'),
+  '**/patterns/**',
+  '**/foundation/**',
+  '**/content-types/**',
+]
+
+// The reflow sweep's 320 px viewport is the preview's, not Playwright's: Storybook's Vitest plugin
+// resizes the page to each story's viewport.
+const displayModeSweeps: { name: string; contextOptions: ContextOptions }[] = [
+  { name: 'forced-colors', contextOptions: { forcedColors: 'active' } },
+  { name: 'reduced-motion', contextOptions: { reducedMotion: 'reduce' } },
+  { name: 'reflow', contextOptions: {} },
+  { name: 'text-spacing', contextOptions: {} },
+]
+
 // Packages export their built `dist`; tests and stories run on the source.
 const resolve = { alias: workspaceSourceAlias() }
 
@@ -108,17 +134,23 @@ const resolve = { alias: workspaceSourceAlias() }
  * `storybookTest()` servers in one process make story files fail to load at random. `env` sets the preview's initial Mode and Contrast
  * globals (apps/storybook/.storybook/preview.tsx), so every story starts in that theme.
  */
-const storybookProject = (name: string, mode: 'light' | 'dark', contrast: 'standard' | 'more') => ({
+const storybookProject = (
+  name: string,
+  mode: 'light' | 'dark',
+  contrast: 'standard' | 'more',
+  sweep?: { env: Record<string, string>; exclude: string[]; contextOptions: ContextOptions },
+) => ({
   resolve,
   plugins: [storybookTest({ configDir: 'apps/storybook/.storybook' })],
   test: {
     name,
     maxWorkers,
-    env: { VITE_STORYBOOK_MODE: mode, VITE_STORYBOOK_CONTRAST: contrast },
+    env: { VITE_STORYBOOK_MODE: mode, VITE_STORYBOOK_CONTRAST: contrast, ...sweep?.env },
+    exclude: sweep?.exclude ?? [],
     browser: {
       enabled: true,
       headless: true,
-      provider: playwright(),
+      provider: playwright(sweep ? { contextOptions: sweep.contextOptions } : {}),
       instances: [{ browser: 'chromium' as const }],
     },
   },
@@ -258,6 +290,16 @@ export default defineConfig({
       storybookProject('storybook-dark', 'dark', 'standard'),
       storybookProject('storybook-light-contrast', 'light', 'more'),
       storybookProject('storybook-dark-contrast', 'dark', 'more'),
+      // The display-mode sweep, Button only for now. Not in `vp run test` or CI: run one
+      // with `vp test run --project storybook-<mode>`. The preview's afterEach reads
+      // VITE_STORYBOOK_SWEEP and asserts the outcome after each story's play function.
+      ...displayModeSweeps.map(({ name, contextOptions }) =>
+        storybookProject(`storybook-${name}`, 'light', 'standard', {
+          env: { VITE_STORYBOOK_SWEEP: name },
+          exclude: sweepExclude,
+          contextOptions,
+        }),
+      ),
     ],
   },
   run: {

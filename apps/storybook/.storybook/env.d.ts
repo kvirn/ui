@@ -3,6 +3,7 @@
 interface ImportMetaEnv {
   readonly VITE_STORYBOOK_MODE?: string
   readonly VITE_STORYBOOK_CONTRAST?: string
+  readonly VITE_STORYBOOK_SWEEP?: string
 }
 
 interface ImportMeta {

@@ -29,13 +29,13 @@ We test **behaviour, accessibility and requirements**. We never test CSS. Before
 
 **The one exception: a WCAG criterion that can only be measured visually.** Assert the criterion's threshold on the outcome, never the theme's value, and put the SC number in the test name:
 
-| SC                      | Assert                                                  | Never assert                     |
-| ----------------------- | ------------------------------------------------------- | -------------------------------- |
-| 2.5.8 Target size       | the target is at least 24×24 CSS px                     | its padding or height            |
-| 2.4.7 Focus visible     | a focused part shows an indicator (outline is not none) | outline width, offset or colour  |
-| 1.4.10 Reflow           | no horizontal scroll at 320px (sweep project)           | grid or flex rules               |
-| 1.4.12 Text spacing     | with the SC's spacing applied, no text is clipped       | line height or `overflow` values |
-| 1.4.11 / forced colours | the boundary stays visible in forced colours (sweep)    | border width or system colours   |
+| SC                      | Assert                                                                                                          | Never assert                     |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| 2.5.8 Target size       | the target is at least 24×24 CSS px                                                                             | its padding or height            |
+| 2.4.7 Focus visible     | a focused part shows an indicator (outline is not none)                                                         | outline width, offset or colour  |
+| 1.4.10 Reflow           | no horizontal scroll at 320px (`storybook-reflow`, opt-in)                                                      | grid or flex rules               |
+| 1.4.12 Text spacing     | with the SC's spacing applied, no text is clipped (`storybook-text-spacing`, opt-in)                            | line height or `overflow` values |
+| 1.4.11 / forced colours | a drawn boundary, or text distinct from its background, and a focus outline (`storybook-forced-colors`, opt-in) | border width or system colours   |
 
 The look is reviewed by eye in Storybook, never by test. When a test you meet breaks these rules, delete it in the change that touches it, and say so in the summary.
 
@@ -62,7 +62,7 @@ Vitest projects (root `vite.config.ts`): `node` (core, i18n, theme, tooling), `b
 - **Assert the accessibility tree** with `expect(locator).toMatchAriaSnapshot(...)` for complex widgets.
 - **Assert what is read aloud** with `readAloud(container)` and `readAnnouncements(container, act, { timeout? })` from `@kvirn-ui/testing/read-aloud`, one named test per row of the contract's Read aloud table. Use `toMatchAriaSnapshot` for role, name and state (no dependency), axe for rule violations, and these two for spoken phrases, order and live-region text. Limits: built on `@guidepup/virtual-screen-reader` (MIT, optional peer of the sub-entry, pre-1.0, phrases can change between versions); its own approximation of an accessibility tree, not NVDA or JAWS wording; it doesn't enforce or prove modality or focus containment; label and description text can be read as extra stops. Assert the key phrase, not the whole transcript.
 - **Test focus explicitly**: `toBeFocused()` after every interaction that moves focus, and restore on close.
-- **Test RTL in the component test** (`dir="rtl"` in the render). Forced-colors, reduced-motion and 320px are a dedicated sweep (planned, Plan 0110). Assert the outcome (keys still work, nothing scrolls sideways, the boundary is visible), not CSS values.
+- **Test RTL in the component test** (`dir="rtl"` in the render). The display-mode sweep is four opt-in projects on the Button stories (`vp test run --project storybook-forced-colors | storybook-reduced-motion | storybook-reflow | storybook-text-spacing`), outside `vp run test` and CI, with their assertions in `theme-story-assertions.ts`; run them on a component's stories when you change its display-mode behaviour (extend the Button-only `sweepExclude` in `vite.config.ts`). Assert the outcome (keys still work, nothing scrolls sideways, the boundary is visible), not CSS values.
 - **Test in at least 2 locales** (`sv` + `en`) so hard-coded strings get caught.
 - **No mocking of the DOM or of focus.** Use browser mode, not jsdom, for components.
 - **Keyboard docs are checked:** `tooling/keyboard-docs` fails when a stories file doesn't pass its contract as `parameters.a11yContract`, a Keyboard section is malformed, a component's row has no test (a pattern's rows need none), or a focusable component has no `Keyboard` story. See the `keyboard` skill.
