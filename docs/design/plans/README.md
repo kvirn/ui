@@ -10,7 +10,7 @@ Plans describe **how** we will build something. Decisions live in the skills and
 
 ## Index
 
-| #                                        | Title                                                  | Status      |
-| ---------------------------------------- | ------------------------------------------------------ | ----------- |
-| [0088](0088-read-aloud.md)               | ReadAloud (text to speech player and selection reader) | In progress |
-| [0110](0110-display-mode-sweep.md)       | Display-mode sweep in Vitest browser mode              | Draft       |
+| #                                  | Title                                                  | Status      |
+| ---------------------------------- | ------------------------------------------------------ | ----------- |
+| [0088](0088-read-aloud.md)         | ReadAloud (text to speech player and selection reader) | In progress |
+| [0110](0110-display-mode-sweep.md) | Display-mode sweep in Vitest browser mode              | Draft       |

@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import { initialContactState } from './contact-state.ts'
 
-// Contract: docs/design/plans/0112-docs-contact-form.md §Design. fetch is mocked: no network.
+// Contract: validate on the server, a honeypot hit looks like success and sends nothing, missing env
+// never throws, one failure state for an API error. fetch is mocked: no network.
 let forwardedFor = 'unknown'
 vi.mock('next/headers', () => ({
   headers: async () => new Headers({ 'x-forwarded-for': forwardedFor }),

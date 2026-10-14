@@ -1,3 +1,4 @@
+// Apart from actions.ts because a 'use server' file may export only async functions.
 export const reasons = ['decide', 'build', 'licence'] as const
 
 export type ContactReason = (typeof reasons)[number]

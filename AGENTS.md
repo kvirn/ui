@@ -78,7 +78,7 @@ Forced colours, reduced motion and 320px reflow are not gated per change; a Vite
 4. **No hard-coded visible or announced strings.** Every string exists in all 5 locales and can be overridden per provider and per instance (`api-conventions` skill).
 5. **Headless packages ship zero CSS.** State is exposed as `data-*`.
 6. **No runtime dependencies beyond the sanctioned ones** (`docs/architecture.md`): React as a peer; in `core` only `@tanstack/store`, `@tanstack/virtual-core` and `@tanstack/table-core`, each in its own directory; Tiptap as peers of `@kvirn-ui/rich-text` only; `@guidepup/virtual-screen-reader` as an optional peer of `@kvirn-ui/testing` (its `/read-aloud` sub-entry) only. Any new dependency, runtime or dev, needs the maintainer's approval. A runtime one also updates `docs/architecture.md` and the `regulations` skill. A dev one is pinned exactly in the pnpm catalog and recorded in the PR with its licence, network and install-script check.
-7. **No telemetry and no third-party network calls,** the docs site included. The one exception: the docs site's contact form sends a visitor's message from the server to an email API (Resend), only when a visitor submits it and never from the browser (plan 0112).
+7. **No telemetry and no third-party network calls,** the docs site included. The one exception: the docs site's contact form sends a visitor's message from the server to an email API (Resend), only when a visitor submits it and never from the browser.
 8. **Never claim legal compliance.** Say "designed and tested to meet WCAG 2.2 AA".
 9. **Public API changes** need a docs update. Changesets are off until alpha.
 10. **Stay in scope.** No drive-by refactors. If the plan is wrong, update the plan first.
