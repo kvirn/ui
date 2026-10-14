@@ -8,8 +8,8 @@ const labelsAround = (pathname: string) => {
 }
 
 describe('pager', () => {
-  test('TopBar sits between Tabs and Calendar, in menu order across groups', () => {
-    expect(labelsAround('/components/top-bar')).toEqual(['Tabs', 'Calendar'])
+  test('TopBar sits between Tabs and Autocomplete, in menu order across groups', () => {
+    expect(labelsAround('/components/top-bar')).toEqual(['Tabs', 'Autocomplete'])
   })
 
   test('the first and the last component have only a next and only a previous page', () => {

@@ -88,7 +88,7 @@ interface ListboxStoryArgs {
 }
 
 const meta = {
-  title: 'Components/Choice and overlays/Listbox',
+  title: 'Components/Forms/Listbox',
   argTypes: {
     items: { control: false, description: 'A flat list of items. Ignored when `groups` is given.' },
     groups: { control: false, description: 'Items in named groups: `{ key, label, items }`.' },

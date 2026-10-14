@@ -10,7 +10,7 @@ import { withShell } from './shell.tsx'
 // Content types/Event list: a whole page in the site chrome (docs/design/storybook-patterns-t5.md S11).
 // The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
-const description = `The events archive: the title, the filters (category as a [CheckboxGroup](?path=/docs/components-choice-and-overlays-checkboxgroup--docs) and a [DateRangePicker](?path=/docs/components-forms-daterangepicker--docs) after two typed date fields), the result count, the events and Pagination. Typing a date always works. The filters change the list in place and say the new count once, politely, through the provider's announcer. A cancelled event starts its title with "Cancelled:" and adds a Badge; a moved event says its new date in words.
+const description = `The events archive: the title, the filters (category as a [CheckboxGroup](?path=/docs/components-forms-checkboxgroup--docs) and a [DateRangePicker](?path=/docs/components-forms-daterangepicker--docs) after two typed date fields), the result count, the events and Pagination. Typing a date always works. The filters change the list in place and say the new count once, politely, through the provider's announcer. A cancelled event starts its title with "Cancelled:" and adds a Badge; a moved event says its new date in words.
 
 **Page contract.** One \`banner\`, one \`main\`, one \`contentinfo\`; one \`h1\` and no skipped heading level; the skip link is first and targets \`main\`. Designed and tested to meet WCAG 2.2 AA.
 `

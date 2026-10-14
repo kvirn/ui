@@ -51,7 +51,7 @@ Hooks `useField` and `useFieldset` return the props. The components (`Field`, `L
 1. Read `FieldContext` for `controlProps`, and spread them on the native element. Add `data-*` state from the Field.
 2. Call `useControlWarnings` (internal) for the shared warnings: an ignored `id`, and no accessible name.
 3. Disabled comes from the Field or the control's own `disabled`.
-4. Contract: list the Field wiring in `<name>.a11y.md`. Stories go under `Components/Forms/<Name>` (or the Choice and overlays group for choice controls).
+4. Contract: list the Field wiring in `<name>.a11y.md`. Stories go under `Components/Forms/<Name>`: choice controls (radio, checkbox, switch, listbox, combobox, autocomplete) too. The Choice and overlays group is for dialogs, popovers, menus, toasts, toggles and tooltips.
 
 ### Order and submit
 

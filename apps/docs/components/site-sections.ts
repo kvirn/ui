@@ -231,10 +231,21 @@ const componentGroupList: readonly SummarisedGroup[] = [
     id: 'forms',
     label: groupText.forms,
     pages: [
+      component('Autocomplete', 'autocomplete', 'A text field that suggests as the user types.'),
       component(
-        'Calendar',
-        'calendar',
-        'A month as a grid of days, for choosing one date near today or, in range mode, a start and an end.',
+        'Checkbox',
+        'checkbox',
+        'One yes-or-no answer, such as a declaration or a consent.',
+      ),
+      component(
+        'CheckboxGroup',
+        'checkbox-group',
+        'One question with several answers that can all be true, such as how a resident wants to be contacted.',
+      ),
+      component(
+        'Combobox',
+        'combobox',
+        'A text field with a list of options that shrinks as the user types, for choosing one option or several from a long list.',
       ),
       component(
         'DateInput',
@@ -272,11 +283,21 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'input-group',
         'The box around an input and what sits inside it: a unit, an icon or a button such as clear.',
       ),
+      component(
+        'Listbox',
+        'listbox',
+        'A list of options that opens from a box, for choosing one option or several.',
+      ),
       component('NumberInput', 'number-input', 'A box for a quantity or an amount.'),
       component(
         'OneTimeCode',
         'one-time-code',
         'A field for a code sent to the user by text message, email or an authenticator app.',
+      ),
+      component(
+        'RadioGroup',
+        'radio-group',
+        'One question with exactly one answer, such as how long a permit should last.',
       ),
       component(
         'RichTextEditor',
@@ -289,14 +310,19 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'One approximate number in a range, such as a search distance or a volume.',
       ),
       component(
-        'TextInput',
-        'text-input',
-        'A native text box for a short answer such as a name, an email address or a case number.',
+        'Switch',
+        'switch',
+        'One setting that is on or off and takes effect at once, such as text message reminders on My pages.',
       ),
       component(
         'Textarea',
         'textarea',
         'A box for a longer answer, such as describing a situation or giving a reason.',
+      ),
+      component(
+        'TextInput',
+        'text-input',
+        'A native text box for a short answer such as a name, an email address or a case number.',
       ),
     ],
   },
@@ -309,47 +335,16 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'alert-dialog',
         'A dialog for a message that needs an answer: a confirmation before deleting, a warning that the session is about to end.',
       ),
-      component('Autocomplete', 'autocomplete', 'A text field that suggests as the user types.'),
-      component(
-        'Checkbox',
-        'checkbox',
-        'One yes-or-no answer, such as a declaration or a consent.',
-      ),
-      component(
-        'CheckboxGroup',
-        'checkbox-group',
-        'One question with several answers that can all be true, such as how a resident wants to be contacted.',
-      ),
-      component(
-        'Combobox',
-        'combobox',
-        'A text field with a list of options that shrinks as the user types, for choosing one option or several from a long list.',
-      ),
       component(
         'Dialog',
         'dialog',
         'A window on top of the page that asks for the user’s attention: a form, a short read, a decision.',
-      ),
-      component(
-        'Listbox',
-        'listbox',
-        'A list of options that opens from a box, for choosing one option or several.',
       ),
       component('Menu', 'menu', 'A button that opens a short list of actions.'),
       component(
         'Popover',
         'popover',
         'A small panel that a button opens: a hint, a short form or a few controls.',
-      ),
-      component(
-        'RadioGroup',
-        'radio-group',
-        'One question with exactly one answer, such as how long a permit should last.',
-      ),
-      component(
-        'Switch',
-        'switch',
-        'One setting that is on or off and takes effect at once, such as text message reminders on My pages.',
       ),
       component('Toast', 'toast', 'A short status message in the corner after something worked.'),
       component('Toggle', 'toggle', 'A button that is on or off, and says which.'),
@@ -368,6 +363,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'Announcer',
         'announcer',
         'The shared live regions that tell screen reader users something changed without moving focus.',
+      ),
+      component(
+        'Calendar',
+        'calendar',
+        'A month as a grid of days, for choosing one date near today or, in range mode, a start and an end.',
       ),
       component(
         'DefinitionList',

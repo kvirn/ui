@@ -332,7 +332,7 @@ describe('Docs page intro and pager', () => {
     await renderShell('/components/top-bar')
     const pager = page.getByRole('navigation', { name: text.pager.label })
     const previous = pager.getByRole('link', { name: `${text.pager.previous} Tabs` })
-    const next = pager.getByRole('link', { name: `${text.pager.next} Calendar` })
+    const next = pager.getByRole('link', { name: `${text.pager.next} Autocomplete` })
     expect(previous.element().getAttribute('rel')).toBe('prev')
     expect(next.element().getAttribute('rel')).toBe('next')
   })
