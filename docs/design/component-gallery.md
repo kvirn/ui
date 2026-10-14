@@ -2,7 +2,7 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-10
-- **Plan:** [0095](../plans/0095-storybook-patterns-and-content-types.md) T10 (spec); the build plan is to be written
+- **Plan:** Plan 0095 T10 (spec); the build plan is to be written
 - **Type:** docs page (three index pages, one shared gallery; no library change, no new token)
 - **Changes:** [docs-landing-and-header.md](docs-landing-and-header.md) §3.1 rows Components, Patterns and Content types, §8 T3 (superseded: the prose pieces move, §4 here) and §10 Q8 (answered in §6 here). Its shell rules, keys and guards stand.
 
@@ -183,6 +183,8 @@ G1 first; G2 and G4 in parallel; G3 after G2; G5 and G6 after G1 and G2.
 **Usability test plan (`pending`):** 7 participants: 3 integrators, 1 NVDA user, 1 ZoomText user at 400%, 1 keyboard-only, 1 developer with dyslexia; 2 of them read English as a second language. Tasks: (1) "You need people to pick a date from a calendar: which page?" (2) "Find how to set apart an important paragraph in an article" (tests §3.4). (3) "What does a content type include, and what not?" (4) Jump to the Forms group. Measure: completion, time, wrong page opened, whether the picture or the name was used (think-aloud), whether anyone looks for search.
 
 ## 10. Open questions (the maintainer's)
+
+**Decided 2026-10-14 (maintainer):** Patterns and Content types are hidden from the menus and the search (`hidden: true` on the section in `apps/docs/components/site-sections.ts`) until reviewed; the pages stay routable, each with its own breadcrumb and pager. The G6 route belongs to the Plan 0095 S5 slice; server-component pages use the flat part names (architecture.md).
 
 | #   | Decision                                                                                                                                                                                                                                                                                            | Recommendation                                                                      |
 | --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |

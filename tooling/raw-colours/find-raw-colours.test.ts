@@ -63,7 +63,7 @@ describe('theme.css and app CSS', () => {
     expect(files).toEqual(
       expect.arrayContaining([
         'packages/theme/theme.css',
-        'apps/docs/app/docs.css',
+        'apps/docs/app/(docs)/docs.css',
         'apps/storybook/.storybook/preview.css',
       ]),
     )

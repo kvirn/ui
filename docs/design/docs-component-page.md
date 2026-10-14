@@ -1,7 +1,7 @@
 # Design spec: the component page and the contents list on every docs page
 
 - **Status:** Draft · **Designer:** ux-designer agent · **Date:** 2026-10-06
-- **Plan:** to be written (amends [0052](../plans/0052-docs-on-built-packages.md) Phase C and docs-site.md Phase 2, C3–C4)
+- **Plan:** to be written (amends Plan 0052 Phase C and docs-site.md Phase 2, C3–C4)
 - **Type:** docs site template (`apps/docs`, not Storybook). Amends [docs-site-components.md](docs-site-components.md) §2 (Sections, Example and Contents rows) and R9, and [docs-site.md](docs-site.md) §4 "Page content outlines" (component pages). Everything else there stands.
 
 ## 1. Brief
@@ -13,6 +13,8 @@
 - **Assumption:** evaluators jump straight to Keyboard and Accessibility. Research question: do they use the contents list or the H key? (`pending`)
 
 ## 2. Page anatomy
+
+> **Amended 2026-10-13 (maintainer):** the section order and the header facts are now in the `docs-pages` skill, [component-page-template.md](../../.claude/skills/docs-pages/references/component-page-template.md): header facts are Status and APG pattern only; Accessibility h3s are What it does for you, What you need to do, Visual and modes, Focus management, WCAG success criteria, Testing; Known issues is its own h2 after Keyboard; Announcements and API reference come last. The template wins where the table below differs.
 
 Prior art: GOV.UK (guidance before code, one long page, no code tabs), Radix (per-part props and data-attribute tables), APG (key tables). DOM order = reading order = focus order. Sections without content are **not rendered**: no heading without content under it.
 
@@ -65,7 +67,7 @@ DESIGN.md "Words we use" retires "callout" and keeps status for Alert, so these 
 
 - **Title: a lead-in, not a heading and not a labelled region.** The kind word is the first text of the note, in `strong`, so it's read first and exists without CSS (1.3.1). A heading would add up to three "Did you know?" stops to the H-key list that name a kind, not a topic, and would cut a use case's h3 into pieces. An `aside` with a name would add a landmark per note (card.md §7: landmarks only for regions people jump to). `role="note"` adds little in screen readers today: native first.
 - **Colour is never a cue:** every kind is the same `surface-raised` Card with its `border-subtle` edge (DESIGN.md: no `-subtle` status surface on a Card). Kinds differ by word and icon shape. The icon is `currentColor` (`text`), so no new pair. Forced colours: the Card's border becomes `CanvasText`, the icon follows the text.
-- **Limits:** at most 3 notes a page, at most 1 per h2 or h3 section, never two in a row, never inside the Example Card or a table, at most 3 sentences. More than that means the page's text or the contract is wrong.
+- **Limits:** at most 1 per h2 or h3 section (the page cap of 3 was lifted by the maintainer on 2026-10-13, so that every adopter task that fails WCAG when forgotten can have its reminder; `docs-pages` skill, "Notes"), never two in a row, never inside the Example Card or a table, at most 3 sentences. More than that means the page's text or the contract is wrong.
 - **Plain English:** a note reads well without its word: "Don't forget" is not a substitute for a reason.
 
 ## 4. Blocks

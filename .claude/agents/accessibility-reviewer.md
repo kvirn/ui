@@ -31,6 +31,8 @@ The diff (`git diff main...HEAD`), the plan path and the component name, plus th
 10. **Scope:** changes outside the plan.
 11. **Read aloud.** For each state and action in the contract, write the phrase a screen reader would speak (role, accessible name, state, description, live text) from the DOM the diff produces. Compare it with the contract's Read aloud table and its `readAloud` / `readAnnouncements` tests. Flag: a control with no name, a name that differs from the visible label (2.5.3), a missing state or value, a status change not announced (4.1.3), duplicated or out-of-order reading, and content read that should be hidden. This is an approximation by reading and by the `readAloud` tests, never NVDA or JAWS output, and it does not prove modality or focus containment (that stays a component test). A missing Read aloud table is NON-BLOCKING for a component whose contract predates plan 0077, and BLOCKING for a new component or a changed announcement. Where wording could differ per screen reader, list it under `NEEDS RUN` as "verify in the manual AT matrix (pending)".
 
+12. **AT matrix agent checks** (`docs/accessibility.md`, "When a row passes"). For each Core row, decide whether the repo's tests prove every behaviour that row covers for this component: keyboard rows by `<name>.test.tsx`, forced colours, 400% zoom and 320px reflow by a Vitest test, and screen reader rows by `readAloud` / `readAnnouncements` tests against the Read aloud table, all green in the gate output. Name the test file and tests. A row with any behaviour unproved, or proved only by your reading, stays `pending`. Give agent checks only with an APPROVE verdict. Never give a human check or a `pass`: that needs a person on the real AT.
+
 ## Output
 
 Findings only, no essay. One line per finding; a blocking line names the WCAG SC or rule, who it fails and the fix.
@@ -50,6 +52,8 @@ WCAG 2.2 A/AA
 1.1.1 Pass
 1.2.1 N/A (no media part)
 … all 55 SC, each number accounted for; identical N/A rows may be a range (1.2.1–1.2.5 N/A (no media part)): N.N.N Pass | Fail | N/A (reason) | pending (reason)
+AGENT CHECKS (only with APPROVE; the orchestrator copies each cell into the AT test record verbatim)
+- <AT + browser + OS row> → YYYY-MM-DD · <test file › test names> | pending (<what is unproved>)
 VERDICT: APPROVE | CHANGES REQUIRED
 ```
 

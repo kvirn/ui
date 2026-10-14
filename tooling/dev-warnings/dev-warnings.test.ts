@@ -101,6 +101,7 @@ function sourceFiles(directory: string): string[] {
       found.push(...sourceFiles(path))
     } else if (
       /\.(ts|tsx)$/.test(entry.name) &&
+      !entry.name.endsWith('.d.ts') &&
       !/\.(test|stories)\.tsx?$/.test(entry.name) &&
       // The definition of `warnOnce` itself, whose parameter is not a code.
       entry.name !== 'dev-warning.ts'

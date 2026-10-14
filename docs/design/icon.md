@@ -2,7 +2,7 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-01
-- **Plan:** [Plan 0009](../plans/0009-icon.md)
+- **Plan:** Plan 0009
 - **Type:** component default styling + built-in asset set + DESIGN.md rule change
 
 The API is decided in the Icon API decision and Plan 0009: a typed name registry in `KvirnProvider`, attributes on the root `<svg>`, a size scale (changed 2026-10-04, see the note below), and decorative by default. The maintainer has also decided (2026-10-01) that `@kvirn-ui/react` ships a **built-in set** as the registry's base layer. It's drawn in the Heroicons outline style, but every drawing is original. An app that registers the same name replaces the built-in.

@@ -1,7 +1,7 @@
 # Design spec: Accessibility settings page (docs site)
 
 - **Status:** Approved · **Designer:** ux-designer agent · **Date:** 2026-10-12
-- **Plan:** [0107](../plans/0107-accessibility-settings-page.md) · **Type:** docs page + site chrome change (apps/docs only)
+- **Plan:** Plan 0107 · **Type:** docs page + site chrome change (apps/docs only)
 - **Amends:** [docs-header-bands.md](docs-header-bands.md) §7 Tab order (:148-149) and [docs-shell-mega-menu.md](docs-shell-mega-menu.md) §7 Tab order (:168-170): "Display settings" becomes the "Accessibility settings" link, and the second skip link is added. Those lines change when this is approved.
 - **Includes:** the accessibility reviewer's advice (P1–P3). Where it and this design differ, §9 records the decision.
 
@@ -179,3 +179,10 @@ No new tokens, colours or pairs. Everything is an existing class.
 | Q6  | DESIGN.md top-bar example                | Update the wording with this change (no token)                                                                                                    |
 | Q7  | Optional extras                          | (c) AbilityNet link yes; (a) Screen readers section later; (b) no                                                                                 |
 | Q8  | Translate the new keys now               | en-only, as docs-site.md §4                                                                                                                       |
+
+## 10. Built (Plan 0107; decisions taken during implementation)
+
+- The link is a `siteTools` entry (`accessibilitySettingsHref`), so the top bar and the footer's Project list share it; `SiteToolLink` sets `aria-current="page"` from `pathname`. The page is in the search through `allPages()`.
+- Ctrl/Cmd+K: Apple platforms take Command+K only (Control+K is "delete to end of line" there), others Control+K only, detected in an effect. `aria-keyshortcuts` is `Meta+K` or `Control+K` to match and is removed on cleanup. The key matches `event.key` k/K or `event.code` KeyK (non-Latin layouts). Only text-entry targets (textarea, select, contenteditable, text inputs) and an already-prevented event block it. It overrides the browser's web-search key, an accepted trade-off. Access keys were removed (`jsx-a11y/no-access-key`).
+- No JavaScript: `accessibility-settings.css` (imported by the route only) hides `.docs-display-panel` on `:root:not([data-kv-color-scheme])` and shows the closed Accordion panels (`[hidden]` plain until hydration). The note is a `<noscript>`. The Display Card is a plain `div` under the `h2`, not a `section`.
+- The second skip link targets the site navigation on every page (Q2).

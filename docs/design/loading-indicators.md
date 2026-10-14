@@ -1,7 +1,7 @@
 # Design spec: Loading indicators (spinner, animated gradient bar)
 
 - **Status:** In review (maintainer decisions of 2026-10-06 applied) · **Designer:** ux-designer agent · **Date:** 2026-10-06
-- **Plan:** [0080](../plans/0080-loading-indicators.md). Amends [status-patterns.md](status-patterns.md) D2 ("no spinner and no indeterminate bar"), which the maintainer rejected.
+- **Plan:** Plan 0080. Amends [status-patterns.md](status-patterns.md) D2 ("no spinner and no indeterminate bar"), which the maintainer rejected.
 - **Prototype:** [prototypes/loading-indicators.html](prototypes/loading-indicators.html): no script, links `packages/theme/theme.css`. It has theme, reduced-motion and "Stop animations" switches, LTR and RTL side by side, and a simulated forced-colours mode. The "Stop animations" switch stands in for the **app's own control** (see "Consumer duty for 2.2.2"); the library has none. The variants that won't ship are marked "Not shipping".
 - **Type:** component default styling + approved tokens. No new public part.
 - **Maintainer decisions:**
@@ -70,7 +70,7 @@ Never: an indicator alone, two moving indicators for one wait, a skeleton over t
 
 | Class                      | Element                                                      | Tokens / style                                                                                                                                                                                                                                  |
 | -------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `kv-spinner`               | `<span aria-hidden>`                                         | Box `--kv-spinner-size` (1.25em, icon step 5). `::before` ring: a 2px `--kv-spinner-stroke` border in `--kv-spinner-color` (default `primary`), `--kv-radius-full`, mask: the Crawl arc (§6.2)                                                  |
+| `kv-spinner`               | `<span aria-hidden>`                                         | Box `--kv-spinner-size` (1.25em, icon size `'20'`). `::before` ring: a 2px `--kv-spinner-stroke` border in `--kv-spinner-color` (default `primary`), `--kv-radius-full`, mask: the Crawl arc (§6.2)                                             |
 | `kv-spinner--sm` / `--lg`  | modifier                                                     | sm: 1em. lg: `--kv-space-12` with a `--kv-indicator-width` stroke                                                                                                                                                                               |
 | `kv-progress-track`        | `<span aria-hidden>`                                         | As `kv-progress-bar`: 8px `--kv-space-2`, a `border-control` edge, a `surface` track, `radius-sm`, with the hatch as background. `::before` band: 40 %, `linear-gradient(to right in oklab, transparent, primary 25%, accent 75%, transparent)` |
 | `kv-progress-track--thin`  | modifier                                                     | 4px `--kv-indicator-width`, no edge. Indeterminate only                                                                                                                                                                                         |

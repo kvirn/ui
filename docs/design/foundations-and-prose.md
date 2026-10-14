@@ -2,7 +2,7 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-01
-- **Plan:** to be written (proposed Plan 0006). Builds on [Plan 0005](../plans/0005-default-theme-storybook-docs.md)
+- **Plan:** to be written (proposed Plan 0006). Builds on [Plan 0005](plans/0005-default-theme-storybook-docs.md)
 - **Type:** component default styling (prose) + theme/token change + docs page (Storybook)
 - **Companion specs:** [default-theme-button-link.md](default-theme-button-link.md), [storybook-presentation.md](storybook-presentation.md)
 

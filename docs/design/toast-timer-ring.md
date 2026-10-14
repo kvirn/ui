@@ -1,7 +1,7 @@
 # Design spec: Toast timer ring
 
 - **Status:** Draft · **Designer:** ux-designer agent · **Date:** 2026-10-06
-- **Plan:** 0071 (not found in `docs/plans/`; the plan's Design section links here once it exists). Amends [toast.md](toast.md) §6 "No visible countdown or progress bar"
+- **Plan:** 0071 (not found in `docs/design/plans/`; the plan's Design section links here once it exists). Amends [toast.md](toast.md) §6 "No visible countdown or progress bar"
 - **Prototype:** [prototypes/toast-timer-ring.html](prototypes/toast-timer-ring.html) (variants A, B, C; theme, RTL, reduced motion and forced colours toggles)
 - **Given (maintainer):** `autoDismiss: false` (default) or a number of ms. There is no minimum time (maintainer-approved 2.2.1 trade-off); paused on hover, focus, hidden tab and blurred window; resumes with ≥ 5 s; an action toast never times out; info and success only.
 

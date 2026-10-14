@@ -171,4 +171,4 @@ Minor changeset for `core`, `react`, `i18n`. Status `alpha` in the roadmap with 
 
 - [ ] All quality gates in AGENTS.md pass (manual AT `pending`)
 - [ ] `accessibility-reviewer` APPROVE
-- [ ] Plan tasks ticked, `docs/roadmap.md` and `docs/plans/README.md` updated
+- [ ] Plan tasks ticked, `docs/roadmap.md` and `docs/design/plans/README.md` updated

@@ -113,7 +113,7 @@ DOM order = visual order = focus order: Code toggle → Copy code → (scroll re
 
 ### Highlighter (docs-only)
 
-A small tokenizer in `apps/docs` (no dependency), run on the server, emitting `<span class="docs-code-<role>">`. Plain text has no span. **Five roles, four colours,** each mapped to a semantic text token that `theme:check` already holds to 4.5:1 (standard) and 7:1 (contrast) on `surface` and `surface-raised` (`contrast-requirements.ts`, `textPairs`). No new colour pair.
+A small tokenizer in `apps/docs` (no dependency), run inside `CodeBlock` (a client component, since it copies and observes overflow; the highlighted code is still in the server-rendered HTML of CodeBlock and ExampleFrame), emitting `<span class="docs-code-<role>">`. Plain text has no span. **Five roles, four colours,** each mapped to a semantic text token that `theme:check` already holds to 4.5:1 (standard) and 7:1 (contrast) on `surface` and `surface-raised` (`contrast-requirements.ts`, `textPairs`). No new colour pair.
 
 | Docs token (`docs.css`, `--docs-code-*`) | Value                        | tsx / ts                                                             | json                           | css                                         | bash                               | html             |
 | ---------------------------------------- | ---------------------------- | -------------------------------------------------------------------- | ------------------------------ | ------------------------------------------- | ---------------------------------- | ---------------- |
@@ -212,3 +212,10 @@ None in `theme.css` or `DESIGN.md`. Four docs-only custom properties in `apps/do
 ## 10. Handoff: text for the plan's Design section
 
 > Spec: [docs/design/docs-code.md](../design/docs-code.md). `CodeBlock` (code only: optional file name, language, line numbers; Copy code with a polite announcement and a select-on-failure fallback; horizontal scroll region from 40rem, wrap below) and `ExampleFrame` (preview, then a code bar with a Disclosure "Code, n lines" and Copy code; panel `hidden="until-found"`). A server-side tokenizer in `apps/docs` for tsx/ts, json, css, bash and html emits four role classes aliased to `link`, `success`, `warning` and `text-muted`. Keys `docs.code.*`; `docs.example.codeHeading` retires. Needs D1–D3 approved. No `packages/` or `theme.css` change.
+
+## Built (Plan 0064; decisions taken during implementation)
+
+- No highlighter dependency: Shiki and Prism were weighed and both add a runtime dependency (rule 6) and far more than five languages of code. The preview and the code are parts of one example, so the code is a Disclosure, not Tabs.
+- `language` is optional on `CodeBlock` (no label, tokenised as tsx). The bar is a `Card.Footer`, the panel a plain `div` after it. React 19 knows `hidden` only as a boolean, so the panel renders plain `hidden` and an effect upgrades it to `until-found`; without JavaScript it keeps plain `hidden`, which `docs.css` shows.
+- `ExampleFrame` no longer imports the `fi nb nn se` catalogs; the `languages` message keys stay (strings block, locales page).
+- `apps/docs` test files run in the existing `node` and `browser` projects through an `apps/docs/**/*.test.{ts,tsx}` glob, which extends coverage and weakens no gate.

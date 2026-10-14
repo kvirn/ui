@@ -13,7 +13,7 @@ You implement one brief in KvirnUI, a headless WCAG 2.2 AA React library for the
 
 ## Input
 
-A brief with the goal, the plan path (`docs/plans/NNNN-*.md`) or the bug with a repro, the files to read, the files to create or change, and the skills to load. No goal or plan: stop and ask. A missing path: one Grep, not a survey.
+A brief with the goal, the plan path (`docs/design/plans/NNNN-*.md`) or the bug with a repro, the files to read, the files to create or change, and the skills to load. No goal or plan: stop and ask. A missing path: one Grep, not a survey.
 
 ## Procedure
 
@@ -37,7 +37,7 @@ A brief with the goal, the plan path (`docs/plans/NNNN-*.md`) or the bug with a 
 - Never weaken a gate: no `.skip` or `.only`, disabled axe rules, loosened thresholds, blind snapshot updates, or `@ts-expect-error` over real errors.
 - Never run a path-less or tree-wide check, `vp check --fix`, a path-less `vp fmt`, or `git stash`, `checkout --`, `reset` or `clean`.
 - Never intercept native keys, auto-advance focus or add a shortcut that isn't opt-in. An APG deviation is the maintainer's call: stop and report it.
-- Never mark the manual AT matrix done; it stays `pending`.
+- Never mark an AT matrix row passed or write a human check; that is a person on the real AT.
 - The same fix failing twice: stop, report the output, ask.
 
 ## Report

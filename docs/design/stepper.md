@@ -2,7 +2,7 @@
 
 - **Status:** Approved 2026-10-06 (maintainer: the name `Stepper`; its own element under the page heading; Check answers counts as the last step)
 - **Designer:** ux-designer agent · **Date:** 2026-10-06
-- **Plan:** to be written (S4 of [0053](../plans/0053-docs-as-municipality-site.md); B20 in [municipality-reference-site.md](municipality-reference-site.md))
+- **Plan:** to be written (S4 of Plan 0053; B20 in [municipality-reference-site.md](municipality-reference-site.md))
 - **Type:** component default styling (one text part) + flow annotations
 
 ## 1. Brief

@@ -285,3 +285,13 @@ Focus: on route change the Menu closes and focus goes to the page `h1` (`useRout
 | Code block    | CodeBlock + Copy                                                             | existing                                 | existing                                                                                                         | existing (`copyButton.copied`)         |
 
 Manual AT matrix for these pages: `pending`.
+
+## 12. Decided and built (Plans 0090, 0091; maintainer unless noted)
+
+- Q2 URLs stay (`/foundation/*`); section membership is data. Q4 "Get started" uses `kv-link--service`. Q5 the landing hero size is docs CSS only (lead). Q6 `accent` in the decorative hero bar is approved and in DESIGN.md. Q7 no `@guidepup/virtual-screen-reader` in `apps/docs` ("it's just a test"): the transcript is hand-kept, labelled as what a screen reader may announce "approximately", and never asserted equal to a real read. Q8 the Components index lists names by group.
+- Six menus (2026-10-08 scope change): Home, Docs, Components, Patterns, Content types, Theming; Patterns and Content types began as blank pages (they are galleries now, see [component-gallery.md](component-gallery.md)).
+- No tests in the docs site (maintainer): the facts (components, locales, themes, dependencies, zeros) are derived from source, and a component without a test shows `pending`, never green. No competitor names or comparisons in any copy.
+- Every `components/home/*` file is `'use client'`: a Server Component that passed `render`/`as` elements to client parts lost the element on the client and hydration failed (`<section>` against `<div>`). Each demo sits in an error boundary and `home.noScript` replaces it while `<html>` has no `data-kv-color-scheme`.
+- The Sámi demo tests `Intl.DateTimeFormat.supportedLocalesOf('se')` at run time and drops "and the date" from its note when unsupported.
+- `AnchoredHeading` gives every section heading with an id its own link ("Link to <section>", shown on hover and focus, always shown without hover and in forced colours); "On this page" is sticky from 80rem and nests `h3`s under `h2`s, with `offset={40}` equal to the landing position of a jump (heading `scroll-margin` 24px + `scroll-padding` 16px).
+- Compliance facts (2026-10-08): EN 301 549 v4.1.1 (WCAG 2.2 AA) published by ETSI 2026-09-02, OJ citation not yet verified; Digg merges into PTS 2027-01-01, the DOS-lagen supervisor after that is unverified. The conformance report, SBOM, provenance, `SECURITY.md` and known issues are roadmap rows.

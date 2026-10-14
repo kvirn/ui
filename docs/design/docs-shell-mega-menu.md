@@ -225,3 +225,12 @@ The Site menu is Get started · Components ▾ · Theming. The Components panel 
 ## 13. Site search in the primary header (maintainer, 2026-10-11)
 
 Five options were prototyped in [prototypes/search-in-header.html](prototypes/search-in-header.html): A tinted field, **B white pill (chosen)**, C white pill with an icon button, D search as a menu item opening a band, E a visible label. B: the rule in DESIGN.md Site chrome patterns ("The site search on a primary header"). It fixes the black (dark) or white (light) box that read as a hole in the band. Pairs: the white pill against `primary` 4.78:1 or more (1.4.11), `primary` text on `on-primary` 4.78:1 or more (1.4.3), the button's `on-primary` label on `primary` and `primary-hover` (existing pairs).
+
+## 11. Built (Plan 0103; decisions taken during implementation)
+
+- `MainMenu.Group` (`<li class="kv-mega-menu-group">`) and `MainMenu.GroupLink` (registers the trail like `MainMenu.Link`, is not a list item) exist because a group page can be the current page and its `data-trail` and only-while-shown rule must work. A group with no page uses `Navigation.Label`. Grouped-panel link underlines apply only to panels that hold a `MainMenu.Group`.
+- The menu in the masthead is CSS on `.kv-site-header-masthead > .kv-site-header-menu`, no prop. Wide search wraps to its own row when the brand and topics fill the row; below 64rem it is full width.
+- The intro band must sit outside the article and above the Get started sidebar, but pages render inside the shell's `main`. A portal (breaks server rendering) and a CSS breakout (fragile) were rejected: the shell passes sidebar, trail and pager down in a context and each page renders `DocsPage`.
+- `SiteSection.groups` makes a section a topic, `overviewLabel` names its overview link, `sidebar: true` marks Get started. Menu, breadcrumb and pager all derive from `site-sections.ts`; the pager chain is a section's leaf pages (index and group pages have none).
+- `PageHeader.Title` is `Heading as="h1" size="display"`; `Facts` is a `DefinitionList.Root`. `ComponentPage` takes `pattern` (only Tabs sets it) and keeps the status sentence under the facts unless the status is stable.
+- Link look: `kv-button--link` is a class (Button has no `variant`). A top-bar fill sets the link look's on-colour in `patterns.css`; a disabled control in a fill keeps the on-colour with a dashed underline. Every `.kv-link` and `button` in a top bar is `inline-flex`, 24px minimum at every width, underlined on hover only.

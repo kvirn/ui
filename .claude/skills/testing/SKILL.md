@@ -62,12 +62,13 @@ Vitest projects (root `vite.config.ts`): `node` (core, i18n, theme, tooling), `b
 - **Assert the accessibility tree** with `expect(locator).toMatchAriaSnapshot(...)` for complex widgets.
 - **Assert what is read aloud** with `readAloud(container)` and `readAnnouncements(container, act, { timeout? })` from `@kvirn-ui/testing/read-aloud`, one named test per row of the contract's Read aloud table. Use `toMatchAriaSnapshot` for role, name and state (no dependency), axe for rule violations, and these two for spoken phrases, order and live-region text. Limits: built on `@guidepup/virtual-screen-reader` (MIT, optional peer of the sub-entry, pre-1.0, phrases can change between versions); its own approximation of an accessibility tree, not NVDA or JAWS wording; it doesn't enforce or prove modality or focus containment; label and description text can be read as extra stops. Assert the key phrase, not the whole transcript.
 - **Test focus explicitly**: `toBeFocused()` after every interaction that moves focus, and restore on close.
-- **Test RTL in the component test** (`dir="rtl"` in the render). Forced-colors, reduced-motion and 320px are a dedicated sweep (planned, Plan 0051). Assert the outcome (keys still work, nothing scrolls sideways, the boundary is visible), not CSS values.
+- **Test RTL in the component test** (`dir="rtl"` in the render). Forced-colors, reduced-motion and 320px are a dedicated sweep (planned, Plan 0110). Assert the outcome (keys still work, nothing scrolls sideways, the boundary is visible), not CSS values.
 - **Test in at least 2 locales** (`sv` + `en`) so hard-coded strings get caught.
 - **No mocking of the DOM or of focus.** Use browser mode, not jsdom, for components.
 - **Keyboard docs are checked:** `tooling/keyboard-docs` fails when a stories file doesn't pass its contract as `parameters.a11yContract`, a Keyboard section is malformed, a component's row has no test (a pattern's rows need none), or a focusable component has no `Keyboard` story. See the `keyboard` skill.
 - **Behaviour, accessibility and requirements only.** No CSS, layout or `theme.css` tests (see "What we test, and what we never test").
 - **Never weaken a gate.** No `.skip`/`.only`, no disabled axe rules, no raised timeouts to hide flakiness, and no snapshot updates without reading the diff. Fix flaky tests at the root cause, which is usually a missing `await expect(...)` auto-wait.
+- **React Compiler lint warnings** (`react/refs`, `react/set-state-in-effect`, `react/preserve-manual-memoization`, `react-hooks/exhaustive-deps`) are fixed, or left in place with `// eslint-disable-next-line <rule> -- <reason>` (the form `vp check` honours) where a fix would change memo identity or caret and focus timing. Never turn the rules off or add a path-wide disable: that weakens a gate. In tests, assert on a `vi.fn` or `toHaveProperty('current', …)` instead of reading a ref or an outer variable.
 
 ## Stories and themes
 

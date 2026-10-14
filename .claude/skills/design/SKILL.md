@@ -29,7 +29,7 @@ Design for the resident who uses the service once, on a phone, under stress, in 
 6. **Specify.** For each part: which DESIGN.md tokens and component styles it uses, a state matrix (default, hover, focus-visible, active, disabled, invalid, loading, selected, open, empty), density, all four themes plus forced colours, RTL, motion and reduced motion, and the accessibility annotations (names, roles, Tab stops and keys per the `keyboard` skill, focus moves, announcements). The annotations are the draft of the plan's accessibility contract, not a replacement for it.
    - Use only semantic tokens. If you need a new token or a changed value, propose it in the spec, check contrast with `vp run theme:check` or `packages/theme/src/contrast.ts`, and mark it for the maintainer's approval. An approved change updates `DESIGN.md` and `theme.css` in the same change.
 7. **Validate before handoff.** Walk the spec through [review-checklist.md](references/review-checklist.md) and fix every blocker. Add a usability test plan (tasks, participants including assistive-technology users and people with low digital confidence). Mark it `pending`: you can plan research, but never claim it happened.
-8. **Hand off.** Link the spec from the plan (`docs/plans/NNNN-*.md` → Design section), list open questions for the user, and add the spec to `docs/design/README.md`.
+8. **Hand off.** Link the spec from the plan (`docs/design/plans/NNNN-*.md` → Design section), list open questions for the user, and add the spec to `docs/design/README.md`.
 
 ## Procedure: design review
 
@@ -38,7 +38,7 @@ Review a story, block, page or screenshot against `DESIGN.md` and [review-checkl
 1. Read the spec, the plan and `DESIGN.md`. Read the code only for classes, tokens and `data-*` styling.
 2. If there's a running Storybook (`vp run storybook`, port 6006), take screenshots into a temp directory, never into the repo, and look at them with Read:
    `pnpm exec playwright screenshot --viewport-size=320,800 --full-page "http://localhost:6006/iframe.html?id=<story-id>&viewMode=story" /tmp/kv-<story>-320.png`
-   Repeat at 1280 wide and with `--color-scheme=dark`. The forced-colours check belongs to the display-mode sweep (Plan 0051).
+   Repeat at 1280 wide and with `--color-scheme=dark`. The forced-colours check belongs to the display-mode sweep (Plan 0110).
 3. Report findings as `location — issue — DESIGN.md rule or WCAG SC — who it affects — fix`, grouped by severity:
    - **Blocker:** fails WCAG 2.2 AA, breaks a DESIGN.md rule that protects accessibility, or stops a user completing the task.
    - **Major:** users will likely struggle, make errors or lose trust.

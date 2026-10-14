@@ -2,7 +2,7 @@
 
 - **Status:** Draft <!-- Draft | In review | Approved | Superseded -->
 - **Designer:** <name / ux-designer agent> · **Date:** YYYY-MM-DD
-- **Plan:** docs/plans/NNNN-*.md
+- **Plan:** docs/design/plans/NNNN-*.md
 - **Type:** block | flow | component default styling | theme/token change | docs page
 
 ## 1. Brief

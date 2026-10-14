@@ -56,11 +56,11 @@ The bar is WCAG 2.2 AA with real assistive technology, not just a clean axe run.
 - axe: rule violations only. It doesn't say what is read.
 - `readAloud`: what is spoken, and in which order.
 
-Limits: built on `@guidepup/virtual-screen-reader` (MIT, optional peer of the `/read-aloud` sub-entry and a pinned dev dependency, pre-1.0, so phrases can change). It is its own approximation of an accessibility tree, and its wording is not NVDA's or JAWS's. It doesn't enforce or prove modality or focus containment. Label and description text can be read as extra stops. It never replaces the manual AT matrix, which stays `pending`.
+Limits: built on `@guidepup/virtual-screen-reader` (MIT, optional peer of the `/read-aloud` sub-entry and a pinned dev dependency, pre-1.0, so phrases can change). It is its own approximation of an accessibility tree, and its wording is not NVDA's or JAWS's. It doesn't enforce or prove modality or focus containment. Label and description text can be read as extra stops. It is evidence for a matrix row's agent check, never for its human check.
 
 ## Waivers
 
-A blocking finding from `accessibility-reviewer` is fixed, or waived with the maintainer's approval and a note in the plan. The manual AT matrix (`docs/accessibility.md`) is `pending` until humans run it, and agents never mark a row passed.
+A blocking finding from `accessibility-reviewer` is fixed, or waived with the maintainer's approval and a note in the plan. An AT matrix row (`docs/accessibility.md`) passes only with an agent check proved by re-runnable tests and a human check on the real AT. Agents never write or claim the human check.
 
 ## Review mode
 

@@ -68,20 +68,20 @@ What the consumer must provide, such as a label, a heading level or an error tex
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 

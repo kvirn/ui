@@ -1,7 +1,7 @@
 # Design spec: ReadAloud player and selection trigger
 
 - **Status:** Draft · **Designer:** ux-designer agent · **Date:** 2026-10-07
-- **Plan:** [0088](../plans/0088-read-aloud.md) (T1) · **Type:** component default styling and copy. No new token, no new colour pair
+- **Plan:** [0088](plans/0088-read-aloud.md) (T1) · **Type:** component default styling and copy. No new token, no new colour pair
 
 ## 1. Brief
 

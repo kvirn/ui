@@ -618,7 +618,7 @@ All pass.
    - Revisit MDX (`@next/mdx`, which needs the maintainer's approval) when there are more than about 10 pages or outside contributors writing prose.
    - Does the maintainer agree?
 3. **`packages/react/src/provider/kvirn-provider.md`:** when its content moves to the docs site, should the package file be deleted or turned into a short pointer, so there is one source?
-4. **Syntax highlighting and "Copy code":** done in [Plan 0064](../plans/0064-docs-code-and-example-frame.md): a hand-written tokenizer (no dependency) and a Copy button that announces through the Announcer.
+4. **Syntax highlighting and "Copy code":** done in Plan 0064: a hand-written tokenizer (no dependency) and a Copy button that announces through the Announcer.
 5. **Source of truth for status:** `docs/roadmap.md` or the `Status` line in each `.a11y.md`? The docs should derive it from one of them. The recommendation is `.a11y.md`, because it sits next to the evidence.
 6. **Docs e2e harness:**
    - Playwright currently targets Storybook only.
@@ -708,3 +708,9 @@ The maintainer decides the theme delivery and visual direction decisions **after
 - [ ] B6. Storybook e2e: `reflow-320` (including compact resetting to 44px), forced colours, reduced motion, and focus-ring width.
 - [ ] C5. The docs e2e harness (§9 Open question 6): axe on every page in four themes, keyboard flows, reflow, forced colours, reduced motion.
 - [ ] C6. Gates: `vp check`, `vp test run`, `vp run e2e`, `i18n:check` and `theme:check`. accessibility-reviewer. Set the theme delivery and visual direction decisions to Accepted. Manual AT `pending`.
+
+## 11. Built on the packages' `dist` (Plan 0052; maintainer, 2026-10-06 unless noted)
+
+- The docs app consumes the packages through `dist` `exports`, as an adopter does. Weighed and rejected: a tarball-install script (deleted as non-standard), `file:` deps, injected deps, Verdaccio, a `publishConfig` swap. Format, `react-dom` and SSR notes: `docs/engineering.md`.
+- Phase C: a token ring on a script-focused target; `theme.css` styles `body` at zero specificity; a `surface-raised` example stage; contents in a third column from 80rem; the `h2` hairline is dropped; no Tabs for page sections.
+- The `docs.css` rules that remain have no library equivalent yet (footer and pager forced-colours edge, the heading anchor, the `CodeBlock` scroll-region ring). They are Gaps rows in `docs/roadmap.md` and go when the parts ship.
