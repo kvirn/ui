@@ -15,5 +15,6 @@ export const useTableOfContentsTexts = defineExampleTexts({
     api: 'API reference',
     sectionCount: ({ count }: { count: number }) => `${count} sections`,
     nameFromMessage: 'Page outline',
+    reading: ({ section }: { section: string }) => `you are reading: ${section}`,
   },
 })

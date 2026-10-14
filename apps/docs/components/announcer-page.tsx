@@ -9,13 +9,15 @@ import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import { announceOptionRows, useAnnouncerResultRows } from '../content/announcer.api.ts'
 import { AssertiveAnnouncer } from '../examples/announcer/assertive.tsx'
+import { AutosaveAnnouncer } from '../examples/announcer/autosave.tsx'
 import { DefaultAnnouncer } from '../examples/announcer/default.tsx'
+import { InsideDialog } from '../examples/announcer/inside-dialog.tsx'
 import { ResultCountAnnouncer } from '../examples/announcer/results.tsx'
 import { ThrottledAnnouncer } from '../examples/announcer/throttled.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type AnnouncerExampleSources = Record<
-  'default' | 'results' | 'assertive' | 'throttled',
+  'default' | 'results' | 'assertive' | 'throttled' | 'inside-dialog' | 'autosave',
   string
 >
 
@@ -106,6 +108,45 @@ export function AnnouncerPage({
             }
           >
             <ThrottledAnnouncer />
+          </UseCase>
+          <UseCase
+            id="inside-dialog"
+            title="A message from inside a dialog"
+            why="A modal dialog makes the rest of the page silent, including the page’s live regions. A Dialog has its own live regions while it is open, so a message sent from a component inside it is still spoken. Nothing else changes: you call announce as usual."
+            code={sources['inside-dialog']}
+            note={
+              <Note kind="reminder">
+                Call <code>useAnnouncer</code> in a component that sits inside the dialog, as{' '}
+                <code>FreeTimes</code> does here. Inside a dialog you build yourself, with a native{' '}
+                <code>&lt;dialog&gt;</code> or <code>inert</code>, put a live region of your own
+                inside it (4.1.3 Status Messages, AA).
+              </Note>
+            }
+          >
+            <InsideDialog />
+          </UseCase>
+          <UseCase
+            id="autosave"
+            title="A draft that saves itself"
+            why="A form saves the draft each time a field loses focus, so tabbing through it saves many times. Show “Draft saved” on the page each time, and give the spoken message a key and a longer window, so it is read at most once every 30 seconds."
+            code={sources['autosave']}
+            propsUsed={[
+              { part: apiHookPart('announce', 'options'), label: 'announce', prop: 'key' },
+              {
+                part: apiHookPart('announce', 'options'),
+                label: 'announce',
+                prop: 'throttleMilliseconds',
+              },
+            ]}
+            note={
+              <Note kind="tip">
+                A throttled message is dropped, not delayed. That suits a message that never
+                changes. For a count that changes, wait until the user pauses and send the latest
+                value, as in the search above.
+              </Note>
+            }
+          >
+            <AutosaveAnnouncer />
           </UseCase>
         </>
       }

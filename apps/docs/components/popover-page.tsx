@@ -16,14 +16,21 @@ import {
   popoverTriggerRows,
   usePopoverHook,
 } from '../content/popover.api.ts'
+import { ApplicationRows } from '../examples/popover/application-rows.tsx'
 import { ControlledPopover } from '../examples/popover/controlled.tsx'
 import { DefaultPopover } from '../examples/popover/default.tsx'
+import { FocusInTheField } from '../examples/popover/focus-in-the-field.tsx'
 import { Placement } from '../examples/popover/placement.tsx'
 import { WithAForm } from '../examples/popover/with-a-form.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type PopoverExampleSources = Record<
-  'default' | 'with-a-form' | 'controlled' | 'placement',
+  | 'default'
+  | 'with-a-form'
+  | 'focus-in-the-field'
+  | 'application-rows'
+  | 'controlled'
+  | 'placement',
   string
 >
 
@@ -144,6 +151,40 @@ export function PopoverPage({
             <WithAForm />
           </UseCase>
           <UseCase
+            id="focus-in-the-field"
+            title="Open with the cursor in the field"
+            why="Opening a popover leaves focus on its button, so a screen reader user hears only “expanded” and has to move on to find the popup. When it opens with one field, move focus to that field yourself, in an effect that runs after it has opened. Escape or Close then returns focus to the button."
+            code={sources['focus-in-the-field']}
+            propsUsed={[
+              { part: 'Popover.Root', prop: 'open' },
+              { part: 'Popover.Root', prop: 'onOpenChange' },
+            ]}
+            note={
+              <Note kind="tip">
+                Moving focus is your choice, and the contract names it as the one case where the
+                pattern asks for a move. For a hint or a few links, leave focus on the button. See{' '}
+                <Link href="#focus">Focus management</Link>.
+              </Note>
+            }
+          >
+            <FocusInTheField />
+          </UseCase>
+          <UseCase
+            id="application-rows"
+            title="A details button on every row"
+            why="Each row gets its own Popover. The browser allows one open popover at a time, so opening another closes the first. Give every button a name that says which row it is for, starting with the visible word, and name each popup by its own heading."
+            code={sources['application-rows']}
+            note={
+              <Note kind="reminder">
+                Give each repeated button a name that begins with its visible word (“Details for
+                application 2024-118”), so a screen reader’s list of buttons can tell them apart
+                (2.5.3 Label in Name). Name each popup too (4.1.2 Name, Role, Value).
+              </Note>
+            }
+          >
+            <ApplicationRows />
+          </UseCase>
+          <UseCase
             id="know-why-it-closed"
             title="Know why it closed"
             why={
@@ -194,9 +235,8 @@ export function PopoverPage({
             ),
             'visual-and-modes': (
               <Note kind="reminder">
-                The default theme does not style the popup yet (see Known issues). If you add your
-                own styles, keep its edge at 3:1 contrast against the page (1.4.11 Non-text
-                Contrast) and its text at 4.5:1 (1.4.3 Contrast (Minimum)).
+                If you style the popup yourself, keep its edge at 3:1 contrast against the page
+                (1.4.11 Non-text Contrast) and its text at 4.5:1 (1.4.3 Contrast (Minimum)).
               </Note>
             ),
           }}

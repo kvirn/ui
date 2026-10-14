@@ -15,6 +15,8 @@ export default function Page() {
         results: readExampleSource('announcer/results.tsx'),
         assertive: readExampleSource('announcer/assertive.tsx'),
         throttled: readExampleSource('announcer/throttled.tsx'),
+        'inside-dialog': readExampleSource('announcer/inside-dialog.tsx'),
+        autosave: readExampleSource('announcer/autosave.tsx'),
       }}
     />
   )

@@ -11,14 +11,21 @@ import {
   visuallyHiddenAttributes,
   visuallyHiddenRows,
 } from '../content/visually-hidden.api.ts'
+import { ActionsColumn } from '../examples/visually-hidden/actions-column.tsx'
 import { ButtonContext } from '../examples/visually-hidden/button-context.tsx'
 import { DefaultVisuallyHidden } from '../examples/visually-hidden/default.tsx'
 import { HiddenHeading } from '../examples/visually-hidden/hidden-heading.tsx'
 import { IconStatus } from '../examples/visually-hidden/icon-status.tsx'
+import { LandmarkName } from '../examples/visually-hidden/landmark-name.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type VisuallyHiddenExampleSources = Record<
-  'default' | 'button-context' | 'hidden-heading' | 'icon-status',
+  | 'default'
+  | 'button-context'
+  | 'hidden-heading'
+  | 'icon-status'
+  | 'actions-column'
+  | 'landmark-name',
   string
 >
 
@@ -127,6 +134,36 @@ export function VisuallyHiddenPage({
             }
           >
             <IconStatus />
+          </UseCase>
+          <UseCase
+            id="actions-column"
+            title="A table column with only buttons"
+            why="A column of buttons needs no title for sighted users, but its header cell can’t stay empty. Put hidden text in it, so a screen reader user knows what the column holds."
+            code={sources['actions-column']}
+            note={
+              <Note kind="tip">
+                The <Link href="/components/table">Table</Link> does the same for its details
+                column: the header holds the word “Details”, visually hidden.
+              </Note>
+            }
+          >
+            <ActionsColumn />
+          </UseCase>
+          <UseCase
+            id="landmark-name"
+            title="A heading that also names a navigation"
+            why={
+              <>
+                A footer holds a few links and needs no visible title. Give the hidden heading an{' '}
+                <code>id</code> and point the navigation’s <code>aria-labelledby</code> at it. The
+                heading is in the outline, and the same words name the navigation in the list of
+                landmarks a screen reader user can jump through.
+              </>
+            }
+            code={sources['landmark-name']}
+            propsUsed={[{ part: 'VisuallyHidden', prop: 'as' }]}
+          >
+            <LandmarkName />
           </UseCase>
         </>
       }

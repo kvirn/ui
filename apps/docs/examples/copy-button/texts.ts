@@ -10,6 +10,12 @@ export interface CopyButtonTexts {
   buildingPermit: string
   parkingPermit: string
   secondReferenceNumber: string
+  thirdReferenceNumber: string
+  yourCases: string
+  copyAll: string
+  sendApplication: string
+  sent: string
+  notYet: string
   copyNamed: (number: string) => string
 }
 
@@ -24,6 +30,12 @@ export const useCopyButtonTexts = defineExampleTexts<CopyButtonTexts>({
     buildingPermit: 'Building permit',
     parkingPermit: 'Parking permit',
     secondReferenceNumber: 'PK-2026-004218',
+    thirdReferenceNumber: 'PK-2026-004219',
+    yourCases: 'Your open cases:',
+    copyAll: 'Copy all case numbers',
+    sendApplication: 'Send the application',
+    sent: 'Your application is sent.',
+    notYet: 'You get a case number when you send the application.',
     copyNamed: (number) => `Copy case number ${number}`,
   },
 })

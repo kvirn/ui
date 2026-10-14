@@ -1,4 +1,5 @@
 import { Link } from '@kvirn-ui/react'
+import { apiHookPart } from './api-ids.ts'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
@@ -20,11 +21,16 @@ import {
   useReadAloudRows,
 } from '../content/read-aloud.api.ts'
 import { Player } from '../examples/read-aloud/default.tsx'
+import { PlayerInsideContent } from '../examples/read-aloud/inside-content.tsx'
 import { MinimalPlayer } from '../examples/read-aloud/minimal.tsx'
+import { OwnPlayer } from '../examples/read-aloud/own-markup.tsx'
 import { SwedishContent } from '../examples/read-aloud/swedish-content.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type ReadAloudExampleSources = Record<'default' | 'minimal' | 'swedish-content', string>
+export type ReadAloudExampleSources = Record<
+  'default' | 'minimal' | 'swedish-content' | 'inside-content' | 'own-markup',
+  string
+>
 
 const buttonRenders = (role: string) => (
   <>
@@ -208,6 +214,48 @@ export function ReadAloudPage({
             }
           >
             <SwedishContent />
+          </UseCase>
+          <UseCase
+            id="player-inside-the-text"
+            title="A player at the top of a notice"
+            why="Put the player inside the element it reads, with the notice. One ref covers the whole notice, and the player never reads its own button names or status text."
+            code={sources['inside-content']}
+            propsUsed={[{ part: 'ReadAloud.Root', prop: 'contentRef' }]}
+          >
+            <PlayerInsideContent />
+          </UseCase>
+          <UseCase
+            id="your-own-markup"
+            title="One Listen button in your own markup"
+            why={
+              <>
+                When a design has room for only one button, call <code>useReadAloud</code> and
+                spread its props on your own elements. This notice gets a Listen button that becomes
+                Pause, and the position as text. In a browser that can’t read text aloud,{' '}
+                <code>isSupported</code> is false and only the status text is shown.
+              </>
+            }
+            code={sources['own-markup']}
+            propsUsed={[
+              {
+                part: apiHookPart('useReadAloud', 'result'),
+                label: 'useReadAloud (result)',
+                prop: 'isSupported',
+              },
+              {
+                part: apiHookPart('useReadAloud', 'result'),
+                label: 'useReadAloud (result)',
+                prop: 'rootProps',
+              },
+            ]}
+            note={
+              <Note kind="tip">
+                Spread <code>rootProps</code> on the element around the controls. It gives the group
+                its name and makes Escape stop the reading, as in the other examples.
+              </Note>
+            }
+          >
+            <OwnPlayer />
           </UseCase>
         </>
       }

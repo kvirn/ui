@@ -34,7 +34,7 @@ Prior art: GOV.UK (guidance before code, one long page, no code tabs), Radix (pe
 
 **Leaving the component page** (amends docs-site.md §4): Installation goes to Home "Start here" (it's the same for every component, and each code sample shows its import); Styling's "override variables / replace the theme" goes to one Foundation page, Theming, linked from every API part; the classes and `data-*` move into the API (§4.3); Strings becomes an h3 of the API; Related moves into "When to use it".
 
-**Contents list: h2s only.** A component page has 6–7 entries (the Announcements one only when shown). At 320px an item is 44px (comfortable below 64rem), so 7 items + title ≈ 370px: one screen with the h1 and lead above it. Use cases as h3 entries would add 2–8 more, push the main example two screens down and make the list longer than the content it skips. Every h3 still has an id for deep links. Same list at every width: a list that changes with the window is a list you can't describe to a colleague.
+**Contents list: h2s, with the use cases and the contract's h3s nested under their h2** (amended 2026-10-14, maintainer: with 4–8 use cases a page's cases are what an integrator jumps to, so each is an entry). A component page has 6–7 h2 entries (the Announcements one only when shown); the use cases and the contract h3s sit one level deeper, so the list is longer than a screen at 320px and the sections stay the cap below. Every h3 has an id for deep links. Same list at every width: a list that changes with the window is a list you can't describe to a colleague.
 
 ```
 320px to 80rem                                     80rem and wider (docs-site-components §9.4)

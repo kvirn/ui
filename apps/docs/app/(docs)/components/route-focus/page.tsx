@@ -13,6 +13,8 @@ export default function Page() {
       sources={{
         default: readExampleSource('route-focus/default.tsx'),
         'hash-change': readExampleSource('route-focus/hash-change.tsx'),
+        search: readExampleSource('route-focus/search.tsx'),
+        announce: readExampleSource('route-focus/announce.tsx'),
       }}
     />
   )

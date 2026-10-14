@@ -20,11 +20,13 @@ import {
 } from '../content/alert-dialog.api.ts'
 import { ConfirmDelete } from '../examples/alert-dialog/confirm-delete.tsx'
 import { DeleteCases } from '../examples/alert-dialog/delete-cases.tsx'
+import { DiscardChanges } from '../examples/alert-dialog/discard-changes.tsx'
+import { FailedDelete } from '../examples/alert-dialog/failed-delete.tsx'
 import { TimeoutWarning } from '../examples/alert-dialog/timeout-warning.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type AlertDialogExampleSources = Record<
-  'confirm-delete' | 'timeout-warning' | 'delete-cases',
+  'confirm-delete' | 'timeout-warning' | 'delete-cases' | 'discard-changes' | 'failed-delete',
   string
 >
 
@@ -195,6 +197,44 @@ export function AlertDialogPage({
             ]}
           >
             <DeleteCases />
+          </UseCase>
+          <UseCase
+            id="discard-changes"
+            title="Discard changes made in a dialog"
+            why={
+              <>
+                Closing a <Link href="/components/dialog">Dialog</Link> with changes in it loses
+                them. Keep the dialog open, and open an alert dialog from inside it. Escape and
+                Close ask first, and “Keep editing” is where focus starts.
+              </>
+            }
+            code={sources['discard-changes']}
+            propsUsed={[
+              { part: 'AlertDialog.Root', prop: 'open' },
+              { part: 'AlertDialog.Root', prop: 'onOpenChange' },
+              { part: 'AlertDialog.Root', prop: 'initialFocusRef' },
+            ]}
+            note={
+              <Note kind="tip">
+                Escape closes the alert dialog only, and the Dialog stays open. It reports{' '}
+                <code>escape</code> to <code>onOpenChange</code>: answer it with “Keep editing”,
+                never with a discard.
+              </Note>
+            }
+          >
+            <DiscardChanges />
+          </UseCase>
+          <UseCase
+            id="action-fails"
+            title="Delete a booking when the delete fails"
+            why="A confirm button can fail. Keep the alert dialog open, so nothing is lost, and show the error inside it with an Alert. The page’s live regions are inert while the dialog is open, so the dialog hosts its own. An Alert with announce is read out through it."
+            code={sources['failed-delete']}
+            propsUsed={[
+              { part: 'AlertDialog.Root', prop: 'open' },
+              { part: 'AlertDialog.Root', prop: 'onOpenChange' },
+            ]}
+          >
+            <FailedDelete />
           </UseCase>
         </>
       }

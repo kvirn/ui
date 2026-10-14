@@ -13,14 +13,16 @@ import {
   copyButtonRows,
   useCopyButtonHook,
 } from '../content/copy-button.api.ts'
+import { AllNumbers } from '../examples/copy-button/all-numbers.tsx'
 import { DefaultCopyButton } from '../examples/copy-button/default.tsx'
+import { NotReady } from '../examples/copy-button/not-ready.tsx'
 import { OwnCue } from '../examples/copy-button/own-cue.tsx'
 import { ReferenceNumber } from '../examples/copy-button/reference-number.tsx'
 import { Several } from '../examples/copy-button/several.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type CopyButtonExampleSources = Record<
-  'default' | 'reference-number' | 'several' | 'own-cue',
+  'default' | 'reference-number' | 'several' | 'own-cue' | 'all-numbers' | 'not-ready',
   string
 >
 
@@ -144,6 +146,51 @@ export function CopyButtonPage({
             }
           >
             <OwnCue />
+          </UseCase>
+          <UseCase
+            id="all-numbers"
+            title="All your case numbers in one press"
+            why={
+              <>
+                A resident has three open cases and wants every number in a message to the office.
+                Pass a function as <code>text</code>: it is read when the button is pressed, so the
+                list is joined then. Point <code>textRef</code> at the whole list, so a refused copy
+                selects every number.
+              </>
+            }
+            code={sources['all-numbers']}
+            propsUsed={[
+              { part: 'CopyButton', prop: 'text' },
+              { part: 'CopyButton', prop: 'textRef' },
+              { part: 'CopyButton', prop: 'children' },
+            ]}
+          >
+            <AllNumbers />
+          </UseCase>
+          <UseCase
+            id="not-ready"
+            title="A copy button that waits for the number"
+            why={
+              <>
+                The case number exists only after the application is sent. Until then the button is
+                off, but with <code>focusableWhenDisabled</code> it stays in the Tab order, and the
+                text next to it says why. A disabled button copies nothing and shows no result.
+              </>
+            }
+            code={sources['not-ready']}
+            propsUsed={[
+              { part: 'CopyButton', prop: 'disabled' },
+              { part: 'CopyButton', prop: 'focusableWhenDisabled' },
+            ]}
+            note={
+              <Note kind="tip">
+                Link the reason to the button with <code>aria-describedby</code>, as the Button page
+                advises. Where you can, don’t disable it at all: show the button when there is
+                something to copy.
+              </Note>
+            }
+          >
+            <NotReady />
           </UseCase>
         </>
       }

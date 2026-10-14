@@ -14,6 +14,8 @@ export default function Page() {
         default: readExampleSource('badge/default.tsx'),
         'status-in-list': readExampleSource('badge/status-in-list.tsx'),
         'with-context': readExampleSource('badge/with-context.tsx'),
+        'status-changes': readExampleSource('badge/status-changes.tsx'),
+        'count-in-a-link': readExampleSource('badge/count-in-a-link.tsx'),
       }}
     />
   )

@@ -14,11 +14,13 @@ import {
 import { Attached } from '../examples/button-group/attached.tsx'
 import { CardFooter } from '../examples/button-group/card-footer.tsx'
 import { DefaultButtonGroup } from '../examples/button-group/default.tsx'
+import { FilterStrip } from '../examples/button-group/filter-strip.tsx'
+import { InAToolbar } from '../examples/button-group/in-a-toolbar.tsx'
 import { NamedByHeading } from '../examples/button-group/named-by-heading.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type ButtonGroupExampleSources = Record<
-  'default' | 'card-footer' | 'named-by-heading' | 'attached',
+  'default' | 'card-footer' | 'named-by-heading' | 'attached' | 'filter-strip' | 'in-a-toolbar',
   string
 >
 
@@ -127,6 +129,43 @@ export function ButtonGroupPage({
             propsUsed={[{ part: 'ButtonGroup', prop: 'className' }]}
           >
             <Attached />
+          </UseCase>
+          <UseCase
+            id="filter-strip"
+            title="A strip of filters for a list of cases"
+            why={
+              <>
+                A caseworker narrows a list with filters that can be on together. The group holds no
+                state: each <Link href="/components/toggle">Toggle</Link> is on or off for itself,
+                and a screen reader says which are pressed. The name says what the strip does, and
+                the count under it says what changed.
+              </>
+            }
+            code={sources['filter-strip']}
+            propsUsed={[{ part: 'ButtonGroup', prop: 'className' }]}
+          >
+            <FilterStrip />
+          </UseCase>
+          <UseCase
+            id="in-a-toolbar"
+            title="Groups of case actions in a toolbar"
+            why={
+              <>
+                With three or more actions, a <Link href="/components/toolbar">Toolbar</Link> is one
+                Tab stop and the arrow keys move between the buttons, across groups. Name each group
+                so a screen reader says which one focus has entered. Use <code>Toolbar.Button</code>{' '}
+                for the buttons.
+              </>
+            }
+            code={sources['in-a-toolbar']}
+            note={
+              <Note kind="tip">
+                A toolbar with fewer than three controls warns in development: with two buttons, use
+                a plain ButtonGroup so each stays easy to find.
+              </Note>
+            }
+          >
+            <InAToolbar />
           </UseCase>
         </>
       }

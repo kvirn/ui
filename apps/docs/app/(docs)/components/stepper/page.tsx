@@ -13,6 +13,8 @@ export default function Page() {
       sources={{
         default: readExampleSource('stepper/default.tsx'),
         'question-page': readExampleSource('stepper/question-page.tsx'),
+        'application-flow': readExampleSource('stepper/application-flow.tsx'),
+        'options-page': readExampleSource('stepper/options-page.tsx'),
         'own-markup': readExampleSource('stepper/own-markup.tsx'),
       }}
     />

@@ -11,10 +11,15 @@ import { UseCase } from './use-case.tsx'
 import { skipLinkAttributes, skipLinkRows, useSkipLinkHook } from '../content/skip-link.api.ts'
 import { CustomLabel } from '../examples/skip-link/custom-label.tsx'
 import { DefaultSkipLink } from '../examples/skip-link/default.tsx'
+import { DesignSystemLink } from '../examples/skip-link/design-system-link.tsx'
 import { OwnElement } from '../examples/skip-link/own-element.tsx'
+import { TwoLinks } from '../examples/skip-link/two-links.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type SkipLinkExampleSources = Record<'default' | 'custom-label' | 'own-element', string>
+export type SkipLinkExampleSources = Record<
+  'default' | 'custom-label' | 'two-links' | 'design-system-link' | 'own-element',
+  string
+>
 
 const parts: ApiPart[] = [
   {
@@ -85,13 +90,49 @@ export function SkipLinkPage({
             <CustomLabel />
           </UseCase>
           <UseCase
+            id="two-links"
+            title="A way past the header and a way to the search"
+            why="Some pages have two things people look for first. Give each its own link, one after the other at the top: the main content first, then the search. Each has a target with its own id."
+            code={sources['two-links']}
+            propsUsed={[
+              { part: 'SkipLink', prop: 'href' },
+              { part: 'SkipLink', prop: 'children' },
+            ]}
+          >
+            <TwoLinks />
+          </UseCase>
+          <UseCase
+            id="design-system-link"
+            title="Your design system’s link component"
+            why={
+              <>
+                Your project already has a link component with its own class or markup. Pass it with{' '}
+                <code>as</code>. It gets the other props, the <code>ref</code> and the{' '}
+                <code>kv-skip-link</code> class, so the link still hides until it has focus.
+              </>
+            }
+            code={sources['design-system-link']}
+            propsUsed={[
+              { part: 'SkipLink', prop: 'as' },
+              { part: 'SkipLink', prop: 'href' },
+            ]}
+            note={
+              <Note kind="tip">
+                The component must render an <code>&lt;a href&gt;</code> and pass on its ref. Don’t
+                use a router link for a same-page address: it isn’t a route.
+              </Note>
+            }
+          >
+            <DesignSystemLink />
+          </UseCase>
+          <UseCase
             id="own-element"
             title="Your own link element"
             why={
               <>
                 You need markup the component doesn’t give you. Spread the props from the hook on
                 your own link and use the label from the hook. If you only want your design system’s
-                link, pass it to the component with <code>as</code>.
+                link, use <code>as</code>, as in the case above.
               </>
             }
             code={sources['own-element']}

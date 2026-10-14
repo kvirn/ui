@@ -23,11 +23,13 @@ import {
 import { DefaultErrorSummary } from '../examples/error-summary/default.tsx'
 import { FailedSubmit } from '../examples/error-summary/failed-submit.tsx'
 import { GroupError } from '../examples/error-summary/group-error.tsx'
+import { InADialog } from '../examples/error-summary/in-a-dialog.tsx'
+import { MixedControls } from '../examples/error-summary/mixed-controls.tsx'
 import { PageTitle } from '../examples/error-summary/page-title.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type ErrorSummaryExampleSources = Record<
-  'default' | 'failed-submit' | 'group-error' | 'page-title',
+  'default' | 'failed-submit' | 'group-error' | 'mixed-controls' | 'in-a-dialog' | 'page-title',
   string
 >
 
@@ -178,6 +180,44 @@ export function ErrorSummaryPage({
             propsUsed={[{ part: 'ErrorSummary.Link', prop: 'controlId' }]}
           >
             <GroupError />
+          </UseCase>
+          <UseCase
+            id="mixed-controls"
+            title="A choice and a confirmation that were left out"
+            why={
+              <>
+                Most forms mix text fields with options and a confirmation. A group of radio buttons
+                links to its first option, and a checkbox to the box itself. Set{' '}
+                <code>controlId</code> on the first option’s Field.Root and on the checkbox’s, and
+                link to those ids.
+              </>
+            }
+            code={sources['mixed-controls']}
+            propsUsed={[
+              { part: 'ErrorSummary.Link', prop: 'controlId' },
+              { part: 'ErrorSummary.Root', prop: 'focusKey' },
+            ]}
+          >
+            <MixedControls />
+          </UseCase>
+          <UseCase
+            id="in-a-dialog"
+            title="A summary inside a dialog"
+            why={
+              <>
+                A form in a <Link href="/components/dialog">Dialog</Link> needs the same summary.
+                The dialog’s title is an h2, so give the summary’s Title{' '}
+                <code>as=&quot;h3&quot;</code> to keep the outline right. Clear the errors when the
+                dialog closes, because its content stays in the page.
+              </>
+            }
+            code={sources['in-a-dialog']}
+            propsUsed={[
+              { part: 'ErrorSummary.Title', prop: 'as' },
+              { part: 'ErrorSummary.Root', prop: 'focusKey' },
+            ]}
+          >
+            <InADialog />
           </UseCase>
           <UseCase
             id="page-title"

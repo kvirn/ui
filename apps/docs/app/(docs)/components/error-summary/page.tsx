@@ -14,6 +14,8 @@ export default function Page() {
         default: readExampleSource('error-summary/default.tsx'),
         'failed-submit': readExampleSource('error-summary/failed-submit.tsx'),
         'group-error': readExampleSource('error-summary/group-error.tsx'),
+        'mixed-controls': readExampleSource('error-summary/mixed-controls.tsx'),
+        'in-a-dialog': readExampleSource('error-summary/in-a-dialog.tsx'),
         'page-title': readExampleSource('error-summary/page-title.tsx'),
       }}
     />

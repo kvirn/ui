@@ -14,6 +14,11 @@ export const useOneTimeCodeTexts = defineExampleTexts({
       'The code doesn’t match the one we sent. Check the text message and enter the code again.',
     checking: 'Checking the code',
     submit: 'Continue',
+    validHint:
+      'We sent you a text message to confirm your mobile number. The code has 6 digits and works for 10 minutes. If it does not arrive, send a new one.',
+    sendNew: 'Send a new code',
+    newCodeSent: 'We sent you a new code. Use the newest text message.',
+    onlyDigits: 'Only digits fit in the code.',
     entered: 'You entered:',
     withoutDash: 'Without the dash:',
   },

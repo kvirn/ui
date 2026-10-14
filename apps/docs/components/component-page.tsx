@@ -5,13 +5,14 @@ import {
   DefinitionListTerm,
 } from '@kvirn-ui/react'
 import type { BadgeVariant } from '@kvirn-ui/react'
-import { Fragment } from 'react'
+import { Children, Fragment, isValidElement } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
 import { hasContent, PageContents, SectionHeading } from './page-contents.tsx'
 import type { PageSection } from './page-contents.tsx'
 import { DocsPage } from './docs-page.tsx'
 import { componentPages } from './site-sections.ts'
+import { UseCase } from './use-case.tsx'
 
 const text = messages.docs.status
 const template = messages.docs.template
@@ -84,6 +85,20 @@ interface PagePart {
   node: ReactNode
 }
 
+/** The `UseCase` blocks in a node, in order: each is an entry under "Use cases" in the contents. */
+function collectUseCases(node: ReactNode): PageSection[] {
+  return Children.toArray(node).flatMap((child) => {
+    if (!isValidElement<{ id?: string; title?: string; children?: ReactNode }>(child)) {
+      return []
+    }
+    if (child.type === UseCase) {
+      const { id, title } = child.props
+      return id === undefined || title === undefined ? [] : [{ id, label: title }]
+    }
+    return collectUseCases(child.props.children)
+  })
+}
+
 /**
  * The fixed order of the page (docs-component-page.md §2). One list gives the contents and the
  * headings, and a part without content gives neither.
@@ -96,11 +111,16 @@ function pageParts({
   contractSections = [],
   api,
 }: ComponentPageProps): PagePart[] {
-  const own = (id: string, label: string, content: ReactNode): PagePart[] => {
+  const own = (
+    id: string,
+    label: string,
+    content: ReactNode,
+    children?: readonly PageSection[],
+  ): PagePart[] => {
     if (!hasContent(content)) {
       return []
     }
-    const section = { id, label }
+    const section: PageSection = children === undefined ? { id, label } : { id, label, children }
     return [
       {
         sections: [section],
@@ -116,7 +136,7 @@ function pageParts({
   return [
     ...own('when-to-use', template.whenToUse, whenToUse),
     ...own('example', template.example, example),
-    ...own('use-cases', template.useCases, useCases),
+    ...own('use-cases', template.useCases, useCases, collectUseCases(useCases)),
     ...(hasContent(contract)
       ? [{ sections: contractSections, node: <Fragment key="contract">{contract}</Fragment> }]
       : []),

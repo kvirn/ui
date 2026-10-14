@@ -15,6 +15,8 @@ export default function Page() {
         sidebar: readExampleSource('section/sidebar.tsx'),
         navigation: readExampleSource('section/navigation.tsx'),
         band: readExampleSource('section/band.tsx'),
+        list: readExampleSource('section/list.tsx'),
+        'other-language': readExampleSource('section/other-language.tsx'),
       }}
     />
   )

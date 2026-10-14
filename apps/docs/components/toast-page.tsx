@@ -10,14 +10,21 @@ import { Note } from './note.tsx'
 import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import { toastProviderRows, toastShowOptionRows, useToastResultRows } from '../content/toast.api.ts'
+import { AutoClose } from '../examples/toast/auto-close.tsx'
+import { ClearBeforeSummary } from '../examples/toast/clear-before-summary.tsx'
 import { DefaultToast } from '../examples/toast/default.tsx'
 import { JobInProgress } from '../examples/toast/job-in-progress.tsx'
-import { UpdateInPlace } from '../examples/toast/update-in-place.tsx'
+import { RemoveAttachment } from '../examples/toast/remove-attachment.tsx'
 import { WithAnUndo } from '../examples/toast/with-an-undo.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type ToastExampleSources = Record<
-  'default' | 'with-an-undo' | 'update-in-place' | 'job-in-progress',
+  | 'default'
+  | 'with-an-undo'
+  | 'auto-close'
+  | 'job-in-progress'
+  | 'remove-attachment'
+  | 'clear-before-summary',
   string
 >
 
@@ -109,18 +116,28 @@ export function ToastPage({
             <WithAnUndo />
           </UseCase>
           <UseCase
-            id="update-in-place"
-            title="Saving again, with one toast"
-            why="Give the toast an id. Showing the same id again updates it in place and announces it once, so ten saves are one toast."
-            code={sources['update-in-place']}
-            propsUsed={[{ part: apiHookPart('show', 'options'), label: 'show', prop: 'id' }]}
+            id="auto-close"
+            title="Messages that close by themselves"
+            why="With autoDismiss on, a confirmation fades away by itself and a ring on the toast counts down the time left. The timer pauses while you hover or focus the toast, while the tab is hidden and while a dialog is open. A toast with an Undo or any other action never closes by itself, and neither does one the person must act on. Offer it as a user setting, not a fixed choice."
+            code={sources['auto-close']}
+            propsUsed={[
+              { part: providerPart.name, prop: 'autoDismiss' },
+              { part: apiHookPart('show', 'options'), label: 'show', prop: 'action' },
+            ]}
+            note={
+              <Note kind="reminder">
+                Never time out an error or anything the person must act on (2.2.1 Timing
+                Adjustable). Use the toast only for a confirmation, and let the user turn the timer
+                off.
+              </Note>
+            }
           >
-            <UpdateInPlace />
+            <AutoClose />
           </UseCase>
           <UseCase
             id="job-in-progress"
             title="A job that takes a while"
-            why="Show a toast with busy while a job runs, then show the result with the same id. The spinner is replaced, and the result is announced once. The words carry the wait: the status word and the title say what is happening."
+            why="Show a toast with busy while a job runs, then show the result with the same id, so one toast updates in place instead of a second one stacking. The spinner is replaced, and the result is announced once. The words carry the wait: the status word and the title say what is happening."
             code={sources['job-in-progress']}
             propsUsed={[
               { part: apiHookPart('show', 'options'), label: 'show', prop: 'busy' },
@@ -140,6 +157,36 @@ export function ToastPage({
             }
           >
             <JobInProgress />
+          </UseCase>
+          <UseCase
+            id="remove-attachment"
+            title="Removing a file from an application"
+            why="The button the user pressed leaves the page with its row, so focus has nowhere to go. Focus a heading that stays, then show the toast with focus. The user hears the message where focus is, and one Tab reaches Undo. When the toast closes, focus goes back to the heading."
+            code={sources['remove-attachment']}
+            propsUsed={[
+              { part: apiHookPart('show', 'options'), label: 'show', prop: 'focus' },
+              { part: apiHookPart('show', 'options'), label: 'show', prop: 'action' },
+            ]}
+            note={
+              <Note kind="reminder">
+                Move focus to something that stays on the page before you show the toast. If the
+                element that had focus before is gone, the browser puts focus on the page and the
+                user loses their place (2.4.3 Focus Order). A development warning says so.
+              </Note>
+            }
+          >
+            <RemoveAttachment />
+          </UseCase>
+          <UseCase
+            id="clear-before-summary"
+            title="Sending a form that has an error"
+            why="A persistent toast from earlier stays on screen. Call dismissAll before the error summary appears, so nothing competes with it. Show the problem in the summary and beside the field, never in a toast."
+            code={sources['clear-before-summary']}
+            propsUsed={[
+              { part: apiHookPart('useToast', 'result'), label: 'useToast', prop: 'dismissAll' },
+            ]}
+          >
+            <ClearBeforeSummary />
           </UseCase>
         </>
       }

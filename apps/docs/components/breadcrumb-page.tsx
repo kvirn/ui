@@ -1,4 +1,5 @@
 import { LinkRoot } from '@kvirn-ui/react'
+import { apiHookPart } from './api-ids.ts'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
@@ -19,11 +20,13 @@ import {
 import { CustomSeparator } from '../examples/breadcrumb/custom-separator.tsx'
 import { DefaultBreadcrumb } from '../examples/breadcrumb/default.tsx'
 import { LongTrail } from '../examples/breadcrumb/long-trail.tsx'
+import { OtherLanguageBreadcrumb } from '../examples/breadcrumb/other-language.tsx'
 import { OwnLabel } from '../examples/breadcrumb/own-label.tsx'
+import { OwnMarkup } from '../examples/breadcrumb/own-markup.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type BreadcrumbExampleSources = Record<
-  'default' | 'long-trail' | 'own-label' | 'custom-separator',
+  'default' | 'long-trail' | 'own-label' | 'custom-separator' | 'other-language' | 'own-markup',
   string
 >
 
@@ -195,6 +198,62 @@ export function BreadcrumbPage({
             }
           >
             <CustomSeparator />
+          </UseCase>
+          <UseCase
+            id="other-language"
+            title="A trail in Swedish"
+            why={
+              <>
+                The trail takes its name from the provider’s language: “Du är här” in Swedish, “Olet
+                tässä” in Finnish. Give the provider the locale and its messages, and write no{' '}
+                <code>label</code>. Here a nested provider keeps the rest of this page in English. A
+                site that is in Swedish throughout sets the locale once, on the provider at the top.
+              </>
+            }
+            code={sources['other-language']}
+            note={
+              <Note kind="tip">
+                The name exists in all five languages. The Finnish, Norwegian Bokmål and Nynorsk
+                names are drafts: ask a native speaker to check them before you publish.
+              </Note>
+            }
+          >
+            <OtherLanguageBreadcrumb />
+          </UseCase>
+          <UseCase
+            id="own-markup"
+            title="A trail in your own markup"
+            why={
+              <>
+                When you write the elements yourself, call <code>useBreadcrumb</code> and spread
+                each set of props on the element it names: the <code>&lt;nav&gt;</code>, the{' '}
+                <code>&lt;ol&gt;</code>, each <code>&lt;li&gt;</code> and the last item’s{' '}
+                <code>&lt;span&gt;</code>. You get the classes, the name, the list role and{' '}
+                <code>aria-current</code>. Here the slash variant gives a path-like trail for a case
+                system that staff use.
+              </>
+            }
+            code={sources['own-markup']}
+            propsUsed={[
+              {
+                part: apiHookPart('useBreadcrumb', 'options'),
+                label: 'useBreadcrumb (options)',
+                prop: 'variant',
+              },
+              {
+                part: apiHookPart('useBreadcrumb', 'options'),
+                label: 'useBreadcrumb (options)',
+                prop: 'label',
+              },
+            ]}
+            note={
+              <Note kind="reminder">
+                Give each link the class <code>kv-breadcrumb-link</code>: the hook doesn’t. It keeps
+                the link at least 24px tall (2.5.8 Target Size (Minimum), AA).
+              </Note>
+            }
+          >
+            <OwnMarkup />
           </UseCase>
         </>
       }

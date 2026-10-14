@@ -11,5 +11,10 @@ export const usePaginationTexts = defineExampleTexts({
     back: 'Previous results',
     forward: 'Next results',
     status: 'Results page 2 of 3',
+    searchLabel: 'Permit search pages',
+    messagesLabel: 'Message pages',
+    documentsLabel: 'Document pages',
+    messagesCaption: 'Messages about your case',
+    documentsCaption: 'Documents in your case',
   },
 })

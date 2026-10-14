@@ -28,10 +28,12 @@ import { DefaultPagination } from '../examples/pagination/default.tsx'
 import { FirstPagePagination } from '../examples/pagination/first-page.tsx'
 import { NewsListPagination } from '../examples/pagination/news-list.tsx'
 import { OwnWordsPagination } from '../examples/pagination/own-words.tsx'
+import { SearchResultsPagination } from '../examples/pagination/search-results.tsx'
+import { TwoListsPagination } from '../examples/pagination/two-lists.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type PaginationExampleSources = Record<
-  'default' | 'news-list' | 'first-page' | 'own-words',
+  'default' | 'news-list' | 'search-results' | 'first-page' | 'own-words' | 'two-lists',
   string
 >
 
@@ -210,6 +212,26 @@ export function PaginationPage({
             <NewsListPagination />
           </UseCase>
           <UseCase
+            id="search-results"
+            title="Search results that keep the search"
+            why="The library draws the links you give it and doesn’t count pages, so work the numbers out from the current page and the total: the first and last page, the one before and after the current page, and an ellipsis where two or more pages are left out. Build every address from the search the visitor made, so Back, a copied link and a new tab open the same results."
+            code={sources['search-results']}
+            propsUsed={[
+              { part: 'Pagination.Link', prop: 'page' },
+              { part: 'Pagination.Link', prop: 'current' },
+              { part: 'Pagination.Status', prop: 'page' },
+              { part: 'Pagination.Status', prop: 'total' },
+            ]}
+            note={
+              <Note kind="tip">
+                A page is a URL, so a link that drops the search words or the filter opens a
+                different list. Put them in every link, next to the page number.
+              </Note>
+            }
+          >
+            <SearchResultsPagination />
+          </UseCase>
+          <UseCase
             id="first-page"
             title="The first page of a short list"
             why="On the first page there is no page before, so leave Previous out instead of disabling it. A link can’t be disabled, and a dimmed one would lead nowhere. Do the same with Next on the last page. With three pages there is no gap to mark."
@@ -243,6 +265,31 @@ export function PaginationPage({
             }
           >
             <OwnWordsPagination />
+          </UseCase>
+          <UseCase
+            id="two-lists"
+            title="Two lists on one page"
+            why={
+              <>
+                A case page can hold messages and documents, each with its own pages. Give each
+                Pagination its own <code>label</code>, and put the page of both lists in every
+                address, so paging one list leaves the other where it was.
+              </>
+            }
+            code={sources['two-lists']}
+            propsUsed={[
+              { part: 'Pagination.Root', prop: 'label' },
+              { part: 'Pagination.Link', prop: 'current' },
+            ]}
+            note={
+              <Note kind="tip">
+                Without a <code>label</code> every Pagination is named by the message{' '}
+                <code>pagination.label</code> (“Pages”), so a screen reader’s list of landmarks
+                shows the same name twice.
+              </Note>
+            }
+          >
+            <TwoListsPagination />
           </UseCase>
         </>
       }

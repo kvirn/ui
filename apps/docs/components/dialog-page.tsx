@@ -23,14 +23,16 @@ import {
   dialogTriggerAttributes,
   useDialogHook,
 } from '../content/dialog.api.ts'
+import { CloseFromList } from '../examples/dialog/close-from-list.tsx'
 import { ControlledDialog } from '../examples/dialog/controlled.tsx'
 import { DefaultDialog } from '../examples/dialog/default.tsx'
+import { InitialFocus } from '../examples/dialog/initial-focus.tsx'
 import { ManyRows } from '../examples/dialog/many-rows.tsx'
 import { WithAForm } from '../examples/dialog/with-a-form.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type DialogExampleSources = Record<
-  'default' | 'with-a-form' | 'many-rows' | 'controlled',
+  'default' | 'with-a-form' | 'many-rows' | 'close-from-list' | 'controlled' | 'initial-focus',
   string
 >
 
@@ -62,7 +64,8 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;dialog&gt;</code> shown with <code>showModal()</code>, so it is in the top layer
-        and needs no portal or <code>z-index</code>. Its children render only while it is open.
+        and needs no portal or <code>z-index</code>. Its children stay in the page while it is
+        closed, hidden and out of reach, so what was typed is kept.
       </>
     ),
     attributes: dialogPopupAttributes,
@@ -205,6 +208,26 @@ export function DialogPage({
             <ManyRows />
           </UseCase>
           <UseCase
+            id="close-a-case-from-a-list"
+            title="Close a case and keep your place in the list"
+            why="Closing a case removes its row, and the button that opened the dialog goes with it. After the case is closed, pass finalFocusRef with the list’s heading and focus lands there. If the dialog is dismissed instead, leave it out and focus returns to the button. The heading also shows how many cases are left."
+            code={sources['close-from-list']}
+            propsUsed={[
+              { part: 'Dialog.Root', prop: 'finalFocusRef' },
+              { part: 'Dialog.Root', prop: 'open' },
+              { part: 'Dialog.Root', prop: 'onOpenChange' },
+            ]}
+            note={
+              <Note kind="reminder">
+                The element you pass must be able to take focus, or focus is not returned to it. A
+                heading needs <code>tabindex=&quot;-1&quot;</code>. Without a place to return to,
+                focus is lost (2.4.3 Focus Order).
+              </Note>
+            }
+          >
+            <CloseFromList />
+          </UseCase>
+          <UseCase
             id="know-why-it-closed"
             title="Know why it closed"
             why="Keep the open state yourself when the page needs to react to it. onOpenChange says why the dialog changed. While open is set, a close is only a request: you decide whether to close it."
@@ -215,6 +238,15 @@ export function DialogPage({
             ]}
           >
             <ControlledDialog />
+          </UseCase>
+          <UseCase
+            id="long-notice-with-a-choice"
+            title="A long notice with a choice at the end"
+            why="By default focus starts on the first control that is not Close. In a notice with text to read, that is a choice below the text. Pass the Title with initialFocusRef, and the dialog starts at its beginning, so the arrow keys scroll the text."
+            code={sources['initial-focus']}
+            propsUsed={[{ part: 'Dialog.Root', prop: 'initialFocusRef' }]}
+          >
+            <InitialFocus />
           </UseCase>
         </>
       }

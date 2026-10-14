@@ -15,6 +15,8 @@ export default function Page() {
         'nights-limit': readExampleSource('date-range-picker/nights-limit.tsx'),
         'booked-days': readExampleSource('date-range-picker/booked-days.tsx'),
         'own-title': readExampleSource('date-range-picker/own-title.tsx'),
+        'three-boxes': readExampleSource('date-range-picker/three-boxes.tsx'),
+        'hall-booking': readExampleSource('date-range-picker/hall-booking.tsx'),
       }}
     />
   )

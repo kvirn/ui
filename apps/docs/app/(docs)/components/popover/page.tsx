@@ -13,6 +13,8 @@ export default function Page() {
       sources={{
         default: readExampleSource('popover/default.tsx'),
         'with-a-form': readExampleSource('popover/with-a-form.tsx'),
+        'focus-in-the-field': readExampleSource('popover/focus-in-the-field.tsx'),
+        'application-rows': readExampleSource('popover/application-rows.tsx'),
         controlled: readExampleSource('popover/controlled.tsx'),
         placement: readExampleSource('popover/placement.tsx'),
       }}

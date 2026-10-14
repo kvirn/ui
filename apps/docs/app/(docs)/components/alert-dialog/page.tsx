@@ -14,6 +14,8 @@ export default function Page() {
         'confirm-delete': readExampleSource('alert-dialog/confirm-delete.tsx'),
         'timeout-warning': readExampleSource('alert-dialog/timeout-warning.tsx'),
         'delete-cases': readExampleSource('alert-dialog/delete-cases.tsx'),
+        'discard-changes': readExampleSource('alert-dialog/discard-changes.tsx'),
+        'failed-delete': readExampleSource('alert-dialog/failed-delete.tsx'),
       }}
     />
   )

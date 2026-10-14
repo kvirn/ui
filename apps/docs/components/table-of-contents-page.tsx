@@ -1,4 +1,5 @@
 import { LinkRoot } from '@kvirn-ui/react'
+import { apiHookPart } from './api-ids.ts'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { CodeBlock } from './code-block.tsx'
@@ -18,6 +19,7 @@ import {
   tableOfContentsRootRows,
   useTableOfContentsHook,
 } from '../content/table-of-contents.api.ts'
+import { CurrentSection } from '../examples/table-of-contents/current-section.tsx'
 import { DefaultTableOfContents } from '../examples/table-of-contents/default.tsx'
 import { NoVisibleTitle } from '../examples/table-of-contents/no-visible-title.tsx'
 import { OwnMarkup } from '../examples/table-of-contents/own-markup.tsx'
@@ -25,7 +27,7 @@ import { TwoLevels } from '../examples/table-of-contents/two-levels.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type TableOfContentsExampleSources = Record<
-  'default' | 'two-levels' | 'own-markup' | 'no-visible-title',
+  'default' | 'two-levels' | 'own-markup' | 'no-visible-title' | 'current-section',
   string
 >
 
@@ -167,6 +169,47 @@ export function TableOfContentsPage({
             propsUsed={[{ part: 'TableOfContents.Root', prop: 'messages' }]}
           >
             <NoVisibleTitle />
+          </UseCase>
+          <UseCase
+            id="current-section"
+            title="A closed list that shows where you are"
+            why={
+              <>
+                On a phone, keep the list closed so it doesn’t push the text down, and show the
+                section the reader is in on the button. Call <code>useTableOfContents</code>{' '}
+                yourself: <code>activeId</code> is the id of the heading being read, and you can
+                show it anywhere. The words on the button change as the reader scrolls and are not a
+                live region, so nothing is announced.
+              </>
+            }
+            code={sources['current-section']}
+            propsUsed={[
+              {
+                part: apiHookPart('useTableOfContents', 'options'),
+                label: 'useTableOfContents (options)',
+                prop: 'labelledBy',
+              },
+              {
+                part: apiHookPart('useTableOfContents', 'result'),
+                label: 'useTableOfContents (result)',
+                prop: 'activeId',
+              },
+              {
+                part: apiHookPart('useTableOfContents', 'result'),
+                label: 'useTableOfContents (result)',
+                prop: 'getLinkProps',
+              },
+            ]}
+            note={
+              <Note kind="reminder">
+                Spread <code>getLinkProps(item)</code> on every link: it gives{' '}
+                <code>href=&quot;#id&quot;</code> and <code>aria-current</code> on the current one.
+                Without <code>aria-current</code>, a screen reader user can’t tell which section is
+                current (4.1.2 Name, Role, Value, level A).
+              </Note>
+            }
+          >
+            <CurrentSection />
           </UseCase>
         </>
       }

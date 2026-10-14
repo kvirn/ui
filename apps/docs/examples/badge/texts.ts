@@ -10,6 +10,14 @@ export interface BadgeTexts {
     variant: 'neutral' | 'primary' | 'info' | 'success' | 'warning' | 'danger'
   }[]
   summary: { case: string; caseValue: string; status: string; statusValue: string }
+  statusCheck: {
+    check: string
+    beingProcessed: string
+    granted: string
+    changed: string
+    same: string
+  }
+  inbox: { link: string; unread: string }
 }
 
 export const useBadgeTexts = defineExampleTexts<BadgeTexts>({
@@ -31,5 +39,13 @@ export const useBadgeTexts = defineExampleTexts<BadgeTexts>({
       status: 'Status',
       statusValue: 'Granted',
     },
+    statusCheck: {
+      check: 'Check the status',
+      beingProcessed: 'Being processed',
+      granted: 'Granted',
+      changed: 'The status changed to Granted.',
+      same: 'The status is still Granted.',
+    },
+    inbox: { link: 'Messages', unread: '3 new' },
   },
 })

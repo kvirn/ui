@@ -5,6 +5,15 @@ export interface AnnouncerTexts {
   expired: { message: string; button: string }
   digits: { message: string; label: string; hint: string }
   search: { label: string; services: string[]; results: (count: number) => string }
+  booking: {
+    open: string
+    title: string
+    monday: string
+    tuesday: string
+    close: string
+    freeTimes: (day: string, count: number) => string
+  }
+  draft: { street: string; description: string; saved: string }
 }
 
 export const useAnnouncerTexts = defineExampleTexts<AnnouncerTexts>({
@@ -31,6 +40,24 @@ export const useAnnouncerTexts = defineExampleTexts<AnnouncerTexts>({
           : count === 1
             ? '1 service found'
             : `${count} services found`,
+    },
+    booking: {
+      open: 'Change your appointment',
+      title: 'Change your appointment',
+      monday: 'Monday',
+      tuesday: 'Tuesday',
+      close: 'Close',
+      freeTimes: (day, count) =>
+        count === 0
+          ? `${day}: no free times`
+          : count === 1
+            ? `${day}: 1 free time`
+            : `${day}: ${count} free times`,
+    },
+    draft: {
+      street: 'Street where the fault is',
+      description: 'What is wrong',
+      saved: 'Draft saved',
     },
   },
 })

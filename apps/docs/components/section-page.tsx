@@ -9,11 +9,16 @@ import { UseCase } from './use-case.tsx'
 import { sectionAttributes, sectionRows, useSectionResult } from '../content/section.api.ts'
 import { Band } from '../examples/section/band.tsx'
 import { DefaultSection } from '../examples/section/default.tsx'
+import { SectionList } from '../examples/section/list.tsx'
 import { SectionNavigation } from '../examples/section/navigation.tsx'
+import { OtherLanguageSection } from '../examples/section/other-language.tsx'
 import { Sidebar } from '../examples/section/sidebar.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type SectionExampleSources = Record<'default' | 'sidebar' | 'navigation' | 'band', string>
+export type SectionExampleSources = Record<
+  'default' | 'sidebar' | 'navigation' | 'band' | 'list' | 'other-language',
+  string
+>
 
 const parts: ApiPart[] = [
   {
@@ -129,6 +134,50 @@ export function SectionPage({
             }
           >
             <Band />
+          </UseCase>
+          <UseCase
+            id="list-of-sections"
+            title="A guide in parts, as a list"
+            why={
+              <>
+                Render each section as an <code>&lt;li&gt;</code> inside a <code>&lt;ul&gt;</code>
+                when a page is a set of short parts that belong together. A screen reader announces
+                it as a list. Give each part its own heading.
+              </>
+            }
+            code={sources['list']}
+            propsUsed={[{ part: 'Section', prop: 'as' }]}
+            note={
+              <Note kind="reminder">
+                Put <code>role=&quot;list&quot;</code> on the <code>&lt;ul&gt;</code>. Safari can
+                stop announcing a list when its markers are hidden (1.3.1 Info and Relationships,
+                A). The contract lists this as still to be checked with VoiceOver.
+              </Note>
+            }
+          >
+            <SectionList />
+          </UseCase>
+          <UseCase
+            id="notice-in-another-language"
+            title="A notice in Swedish on an English page"
+            why={
+              <>
+                Text in another language than the page needs its own language, so a screen reader
+                uses the right voice. Wrap it in a nested <code>KvirnProvider</code> and spread{' '}
+                <code>useLocale().localeProps</code> on the section. The section is also a named
+                region, so a screen reader user can jump to it. “Snöröjning” means snow clearing.
+              </>
+            }
+            code={sources['other-language']}
+            propsUsed={[{ part: 'Section', prop: 'as' }]}
+            note={
+              <Note kind="reminder">
+                Mark each region in another language (3.1.2 Language of Parts, AA). Without it, a
+                screen reader reads the text with the page’s language.
+              </Note>
+            }
+          >
+            <OtherLanguageSection />
           </UseCase>
         </>
       }

@@ -15,6 +15,8 @@ export default function Page() {
         'two-groups': readExampleSource('one-time-code/two-groups.tsx'),
         'checked-as-entered': readExampleSource('one-time-code/checked-as-entered.tsx'),
         'plain-form': readExampleSource('one-time-code/plain-form.tsx'),
+        'new-code': readExampleSource('one-time-code/new-code.tsx'),
+        'refused-characters': readExampleSource('one-time-code/refused-characters.tsx'),
       }}
     />
   )

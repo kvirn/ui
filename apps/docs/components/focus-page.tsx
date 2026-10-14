@@ -13,6 +13,8 @@ import {
   useFocusResultRows,
   useFocusRows,
 } from '../content/focus.api.ts'
+import { HelpPanel } from '../examples/focus/help-panel.tsx'
+import { InertPanel } from '../examples/focus/inert-panel.tsx'
 import { LoopDrawer } from '../examples/focus/loop-drawer.tsx'
 import { RestoreDrawer } from '../examples/focus/restore-drawer.tsx'
 import { WizardStep } from '../examples/focus/wizard-step.tsx'
@@ -20,7 +22,10 @@ import type { Contract } from '../lib/contract-parser.ts'
 
 const useFocusOptions = apiHookPart('useFocus', 'options')
 
-export type FocusExampleSources = Record<'restore-drawer' | 'loop-drawer' | 'wizard-step', string>
+export type FocusExampleSources = Record<
+  'restore-drawer' | 'loop-drawer' | 'inert-panel' | 'help-panel' | 'wizard-step',
+  string
+>
 
 const parts: ApiPart[] = [
   {
@@ -116,6 +121,27 @@ export function FocusPage({
             }
           >
             <LoopDrawer />
+          </UseCase>
+          <UseCase
+            id="inert-panel"
+            title="A side panel that shuts the rest of the page out"
+            why="With contain set to inert, the rest of the page can’t be reached with the keyboard or the pointer while the panel is open, and it is reachable again when the panel closes. Use it for a panel that covers the page, such as notes on a case. It still needs a way out, so Escape calls onEscape."
+            code={sources['inert-panel']}
+            propsUsed={[
+              { part: 'FocusScope', prop: 'contain' },
+              { part: 'FocusScope', prop: 'onEscape' },
+            ]}
+          >
+            <InertPanel />
+          </UseCase>
+          <UseCase
+            id="start-at-the-top"
+            title="A help panel that starts at its top"
+            why="By default focus starts on the first control in the panel. When the panel is mostly text, that control is a button after it, and the text is skipped. With initialFocus set to container, focus starts on the panel and Tab goes on to the first control."
+            code={sources['help-panel']}
+            propsUsed={[{ part: 'FocusScope', prop: 'initialFocus' }]}
+          >
+            <HelpPanel />
           </UseCase>
           <UseCase
             id="wizard-step"

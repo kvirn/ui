@@ -18,9 +18,14 @@ import {
 import { DefaultCodeBlock } from '../examples/code-block/default.tsx'
 import { NamedCopy } from '../examples/code-block/named-copy.tsx'
 import { LongLine } from '../examples/code-block/long-line.tsx'
+import { SeveralBlocks } from '../examples/code-block/several-blocks.tsx'
+import { WithoutPrompt } from '../examples/code-block/without-prompt.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type CodeBlockExampleSources = Record<'default' | 'long-line' | 'named-copy', string>
+export type CodeBlockExampleSources = Record<
+  'default' | 'long-line' | 'named-copy' | 'several-blocks' | 'without-prompt',
+  string
+>
 
 const parts: ApiPart[] = [
   {
@@ -123,6 +128,30 @@ export function CodeBlockPage({
             propsUsed={[{ part: 'CodeBlock.Copy', prop: 'children' }]}
           >
             <NamedCopy />
+          </UseCase>
+          <UseCase
+            id="without-prompt"
+            title="A command copied without its prompt"
+            why="A command is easier to read with the prompt sign in front, but the prompt isn’t part of what to run. Give Copy the text to write, and it copies that instead of what is shown."
+            code={sources['without-prompt']}
+            propsUsed={[{ part: 'CodeBlock.Copy', prop: 'text' }]}
+            note={
+              <Note kind="tip">
+                If the browser refuses to copy, the whole code is selected, prompt included, so the
+                reader can copy it by hand. Use a prompt only where readers expect one.
+              </Note>
+            }
+          >
+            <WithoutPrompt />
+          </UseCase>
+          <UseCase
+            id="several-blocks"
+            title="Several blocks, each saying what was copied"
+            why="With more than one block on a page, “Copied” alone doesn’t say which one. Each block gets its own label, and its own words for the button and the result. A screen reader user hears the result as it is announced."
+            code={sources['several-blocks']}
+            propsUsed={[{ part: 'CodeBlock.Copy', prop: 'messages' }]}
+          >
+            <SeveralBlocks />
           </UseCase>
         </>
       }

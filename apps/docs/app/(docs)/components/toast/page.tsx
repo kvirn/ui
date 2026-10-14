@@ -13,8 +13,10 @@ export default function Page() {
       sources={{
         default: readExampleSource('toast/default.tsx'),
         'with-an-undo': readExampleSource('toast/with-an-undo.tsx'),
-        'update-in-place': readExampleSource('toast/update-in-place.tsx'),
+        'auto-close': readExampleSource('toast/auto-close.tsx'),
         'job-in-progress': readExampleSource('toast/job-in-progress.tsx'),
+        'remove-attachment': readExampleSource('toast/remove-attachment.tsx'),
+        'clear-before-summary': readExampleSource('toast/clear-before-summary.tsx'),
       }}
     />
   )

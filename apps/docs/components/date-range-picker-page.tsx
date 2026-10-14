@@ -17,12 +17,14 @@ import {
 } from '../content/date-range-picker.api.ts'
 import { BookedDays } from '../examples/date-range-picker/booked-days.tsx'
 import { StayDates } from '../examples/date-range-picker/default.tsx'
+import { HallBooking } from '../examples/date-range-picker/hall-booking.tsx'
 import { LimitedStay } from '../examples/date-range-picker/nights-limit.tsx'
 import { TitledStay } from '../examples/date-range-picker/own-title.tsx'
+import { AbsenceDates } from '../examples/date-range-picker/three-boxes.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type DateRangePickerExampleSources = Record<
-  'default' | 'nights-limit' | 'booked-days' | 'own-title',
+  'default' | 'nights-limit' | 'booked-days' | 'own-title' | 'three-boxes' | 'hall-booking',
   string
 >
 
@@ -198,6 +200,49 @@ export function DateRangePickerPage({
             }
           >
             <TitledStay />
+          </UseCase>
+          <UseCase
+            id="three-boxes"
+            title="Dates in separate boxes for day, month and year"
+            why={
+              <>
+                A resident reports the days they were away, which they know from memory. Give each
+                end a <Link href="/components/date-input">DateInput</Link> instead of a masked
+                field, and put the group of each end in its own Fieldset with a legend. Put the one
+                trigger after the end’s boxes. The picker works the same with either.
+              </>
+            }
+            code={sources['three-boxes']}
+          >
+            <AbsenceDates />
+          </UseCase>
+          <UseCase
+            id="hall-booking"
+            title="A booking of at least two days, in a season"
+            why={
+              <>
+                Set <code>minimumDays</code> for the fewest days, counting both ends, and{' '}
+                <code>maximum</code> for the last day that can be chosen. A day that would make the
+                range too short says so in its name (“fewer than 2 days”). Write both limits in the
+                group’s help text.
+              </>
+            }
+            code={sources['hall-booking']}
+            propsUsed={[
+              { part: 'DateRangePicker.Root', prop: 'minimumDays' },
+              { part: 'DateRangePicker.Root', prop: 'maximum' },
+              { part: 'DateRangePicker.Root', prop: 'minimum' },
+            ]}
+            note={
+              <Note kind="reminder">
+                A typed range can still break a limit, and the picker doesn’t check it. Check it
+                when the form is sent, as in{' '}
+                <Link href="#nights-limit">the stay with a longest length</Link> (3.3.1 Error
+                Identification).
+              </Note>
+            }
+          >
+            <HallBooking />
           </UseCase>
         </>
       }

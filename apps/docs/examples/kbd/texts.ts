@@ -8,5 +8,10 @@ export const useKbdTexts = defineExampleTexts({
     save: 'Save the draft',
     undo: 'Undo the last change',
     closeDialog: 'Close the dialog',
+    printApplication: 'Print your application with',
+    onAMac: 'On a Mac, use',
+    // Arabic: "Press" … "to move between the fields." Written once, for the Arabic version of the page.
+    arabicBefore: 'اضغط على',
+    arabicAfter: 'للانتقال بين الحقول.',
   },
 })

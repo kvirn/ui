@@ -7,12 +7,17 @@ import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import { topBarAttributes, topBarRows, useTopBarHook } from '../content/top-bar.api.ts'
+import { ButtonTool } from '../examples/top-bar/button-tool.tsx'
 import { DefaultTopBar } from '../examples/top-bar/default.tsx'
 import { FilledTopBar } from '../examples/top-bar/filled.tsx'
 import { OwnElement } from '../examples/top-bar/own-element.tsx'
+import { PhoneLink } from '../examples/top-bar/phone-link.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type TopBarExampleSources = Record<'default' | 'filled' | 'own-element', string>
+export type TopBarExampleSources = Record<
+  'default' | 'button-tool' | 'phone-link' | 'filled' | 'own-element',
+  string
+>
 
 const parts: ApiPart[] = [
   {
@@ -71,6 +76,35 @@ export function TopBarPage({
       }
       useCases={
         <>
+          <UseCase
+            id="button-tool"
+            title="A tool that does something on the page"
+            why={
+              <>
+                Some tools act on the page and don’t go to another one: print, say. Put a Button in
+                the bar and give it the class <code>kv-button--link</code>. It looks like the links
+                beside it and is read as a button. Tab reaches it after the navigation, in the order
+                you wrote.
+              </>
+            }
+            code={sources['button-tool']}
+            note={
+              <Note kind="reminder">
+                Use a link to go to a page and a button to do something. A button answers Space as
+                well as Enter, a link only Enter (4.1.2 Name, Role, Value, A).
+              </Note>
+            }
+          >
+            <ButtonTool />
+          </UseCase>
+          <UseCase
+            id="phone-link"
+            title="Opening hours and a phone number"
+            why="A bar doesn’t need a navigation. For a single link, such as the phone number of the contact centre, write the link directly in the bar after the text. The theme treats a link that stands on its own as a bar item: at least 24px tall, and underlined only when you point at it."
+            code={sources['phone-link']}
+          >
+            <PhoneLink />
+          </UseCase>
           <UseCase
             id="filled"
             title="A bar with a fill"

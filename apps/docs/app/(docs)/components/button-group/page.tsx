@@ -15,6 +15,8 @@ export default function Page() {
         'card-footer': readExampleSource('button-group/card-footer.tsx'),
         'named-by-heading': readExampleSource('button-group/named-by-heading.tsx'),
         attached: readExampleSource('button-group/attached.tsx'),
+        'filter-strip': readExampleSource('button-group/filter-strip.tsx'),
+        'in-a-toolbar': readExampleSource('button-group/in-a-toolbar.tsx'),
       }}
     />
   )

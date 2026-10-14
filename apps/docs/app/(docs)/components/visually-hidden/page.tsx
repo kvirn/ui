@@ -17,6 +17,8 @@ export default function Page() {
         'button-context': readExampleSource('visually-hidden/button-context.tsx'),
         'hidden-heading': readExampleSource('visually-hidden/hidden-heading.tsx'),
         'icon-status': readExampleSource('visually-hidden/icon-status.tsx'),
+        'actions-column': readExampleSource('visually-hidden/actions-column.tsx'),
+        'landmark-name': readExampleSource('visually-hidden/landmark-name.tsx'),
       }}
     />
   )

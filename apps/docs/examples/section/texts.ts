@@ -17,6 +17,20 @@ export const useSectionTexts = defineExampleTexts({
       cardHeading: 'Your next collection',
       cardText: 'Tuesday at Storgatan 12.',
     },
+    guide: {
+      eligibility: {
+        heading: 'Who can apply',
+        text: 'You live in the permit zone and your car is registered at your address.',
+      },
+      documents: {
+        heading: 'What you need',
+        text: 'Your registration number and a photo of the vehicle registration certificate.',
+      },
+      cost: {
+        heading: 'What it costs',
+        text: 'The permit costs 400 kronor a year. You pay when you apply.',
+      },
+    },
     navigation: {
       heading: 'Your cases',
       overview: 'Overview',
@@ -25,3 +39,10 @@ export const useSectionTexts = defineExampleTexts({
     },
   },
 })
+
+// Swedish text for the notice in another language. It is not in the page's own texts: the
+// provider that sets the language decides which words are shown.
+export const swedishNotice = {
+  heading: 'Snöröjning',
+  text: 'Vi plogar gator och cykelvägar när det har fallit mer än fem centimeter snö.',
+}

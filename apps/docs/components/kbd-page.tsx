@@ -9,10 +9,15 @@ import { UseCase } from './use-case.tsx'
 import { kbdAttributes, kbdRows, useKbdHook } from '../content/kbd.api.ts'
 import { Combination } from '../examples/kbd/combination.tsx'
 import { DefaultKbd } from '../examples/kbd/default.tsx'
+import { OtherScript } from '../examples/kbd/other-script.tsx'
+import { PerSystem } from '../examples/kbd/per-system.tsx'
 import { ShortcutList } from '../examples/kbd/shortcut-list.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type KbdExampleSources = Record<'default' | 'combination' | 'shortcut-list', string>
+export type KbdExampleSources = Record<
+  'default' | 'combination' | 'shortcut-list' | 'per-system' | 'other-script',
+  string
+>
 
 const parts: ApiPart[] = [
   {
@@ -87,6 +92,28 @@ export function KbdPage({ contract, sources }: { contract: Contract; sources: Kb
             }
           >
             <ShortcutList />
+          </UseCase>
+          <UseCase
+            id="per-system"
+            title="A shortcut that differs on a Mac"
+            why="A key has a different name on another system: Ctrl on Windows is Cmd on a Mac. Name the keys your users have, and say it in words, not only in the key."
+            code={sources['per-system']}
+            note={
+              <Note kind="tip">
+                A Swedish Mac prints Retur on the key a Windows keyboard calls Enter. Write the name
+                your users have on their keyboards.
+              </Note>
+            }
+          >
+            <PerSystem />
+          </UseCase>
+          <UseCase
+            id="other-script"
+            title="A key in a text in another script"
+            why="Key names stay as printed on the keyboard, in Latin letters. In a text in Arabic, wrap the key in an element that says it is English, so software that reads the screen aloud says it in the right language."
+            code={sources['other-script']}
+          >
+            <OtherScript />
           </UseCase>
         </>
       }

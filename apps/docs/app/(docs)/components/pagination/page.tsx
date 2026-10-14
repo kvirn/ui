@@ -15,6 +15,8 @@ export default function Page() {
         'news-list': readExampleSource('pagination/news-list.tsx'),
         'first-page': readExampleSource('pagination/first-page.tsx'),
         'own-words': readExampleSource('pagination/own-words.tsx'),
+        'search-results': readExampleSource('pagination/search-results.tsx'),
+        'two-lists': readExampleSource('pagination/two-lists.tsx'),
       }}
     />
   )

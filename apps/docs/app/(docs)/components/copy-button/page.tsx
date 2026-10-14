@@ -15,6 +15,8 @@ export default function Page() {
         'reference-number': readExampleSource('copy-button/reference-number.tsx'),
         several: readExampleSource('copy-button/several.tsx'),
         'own-cue': readExampleSource('copy-button/own-cue.tsx'),
+        'all-numbers': readExampleSource('copy-button/all-numbers.tsx'),
+        'not-ready': readExampleSource('copy-button/not-ready.tsx'),
       }}
     />
   )

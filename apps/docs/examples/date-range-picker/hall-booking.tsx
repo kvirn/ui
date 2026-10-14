@@ -1,0 +1,71 @@
+'use client'
+import {
+  DateRangePicker,
+  Field,
+  Fieldset,
+  TextInput,
+  isoDateToMaskedDate,
+  masks,
+  maskedDateToIsoDate,
+  useLocale,
+} from '@kvirn-ui/react'
+import { useState } from 'react'
+import { useDateRangePickerTexts } from './texts.ts'
+
+export function HallBooking() {
+  const { texts } = useDateRangePickerTexts()
+  const { locale } = useLocale()
+  const [fieldTexts, setFieldTexts] = useState({ start: '', end: '' })
+  const example = masks.date().withLocale(locale).format('2026-10-27')
+  return (
+    <div>
+      <DateRangePicker.Root
+        today="2026-10-14"
+        minimum="2026-10-14"
+        maximum="2026-12-31"
+        minimumDays={2}
+        value={{
+          start: maskedDateToIsoDate(fieldTexts.start, locale),
+          end: maskedDateToIsoDate(fieldTexts.end, locale),
+        }}
+        onValueChange={(range) =>
+          setFieldTexts({
+            start: isoDateToMaskedDate(range.start, locale),
+            end: isoDateToMaskedDate(range.end, locale),
+          })
+        }
+      >
+        <Fieldset.Root group>
+          <Fieldset.Legend>{texts.hallLegend}</Fieldset.Legend>
+          <div className="kv-date-range-row">
+            <Field.Root>
+              <Field.Label>{texts.hallFrom}</Field.Label>
+              <TextInput
+                name="start"
+                mask={masks.date()}
+                className="kv-input--width-10"
+                value={fieldTexts.start}
+                onValueChange={(start) => setFieldTexts((current) => ({ ...current, start }))}
+              />
+              <Field.HelpText>{texts.hint(example)}</Field.HelpText>
+            </Field.Root>
+            <Field.Root>
+              <Field.Label>{texts.hallTo}</Field.Label>
+              <TextInput
+                name="end"
+                mask={masks.date()}
+                className="kv-input--width-10"
+                value={fieldTexts.end}
+                onValueChange={(end) => setFieldTexts((current) => ({ ...current, end }))}
+              />
+              <Field.HelpText>{texts.hint(example)}</Field.HelpText>
+            </Field.Root>
+            <DateRangePicker.Trigger />
+          </div>
+          <Fieldset.HelpText>{texts.hallLimit}</Fieldset.HelpText>
+        </Fieldset.Root>
+        <DateRangePicker.Popup />
+      </DateRangePicker.Root>
+    </div>
+  )
+}

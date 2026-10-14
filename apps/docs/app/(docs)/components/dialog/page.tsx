@@ -14,7 +14,9 @@ export default function Page() {
         default: readExampleSource('dialog/default.tsx'),
         'with-a-form': readExampleSource('dialog/with-a-form.tsx'),
         'many-rows': readExampleSource('dialog/many-rows.tsx'),
+        'close-from-list': readExampleSource('dialog/close-from-list.tsx'),
         controlled: readExampleSource('dialog/controlled.tsx'),
+        'initial-focus': readExampleSource('dialog/initial-focus.tsx'),
       }}
     />
   )

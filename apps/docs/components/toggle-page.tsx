@@ -1,20 +1,23 @@
 import { Link } from '@kvirn-ui/react'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
+import { apiHookPart } from './api-ids.ts'
 import { ComponentPage } from './component-page.tsx'
 import { ContractSectionsView, contractSectionList } from './contract-sections-view.tsx'
 import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import { toggleAttributes, toggleRows, useToggleHook } from '../content/toggle.api.ts'
+import { CompareLimit } from '../examples/toggle/compare-limit.tsx'
 import { DefaultToggle } from '../examples/toggle/default.tsx'
 import { DisabledWithReason } from '../examples/toggle/disabled-with-reason.tsx'
 import { FilterList } from '../examples/toggle/filter-list.tsx'
 import { IconOnly } from '../examples/toggle/icon-only.tsx'
+import { OwnButton } from '../examples/toggle/own-button.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type ToggleExampleSources = Record<
-  'default' | 'filter-list' | 'icon-only' | 'disabled-with-reason',
+  'default' | 'filter-list' | 'icon-only' | 'disabled-with-reason' | 'compare-limit' | 'own-button',
   string
 >
 
@@ -144,6 +147,58 @@ export function TogglePage({
             ]}
           >
             <DisabledWithReason />
+          </UseCase>
+          <UseCase
+            id="compare-limit"
+            title="A choice with a limit"
+            why={
+              <>
+                A parent compares day-care places, and the comparison holds at most three. Because
+                you keep <code>pressed</code>, you decide what a press does: at the limit, leave the
+                state as it is and say why. The hidden school name gives each toggle its own name,
+                and the name stays the same when it is on.
+              </>
+            }
+            code={sources['compare-limit']}
+            propsUsed={[
+              { part: 'Toggle', prop: 'pressed' },
+              { part: 'Toggle', prop: 'onPressedChange' },
+            ]}
+            note={
+              <Note kind="reminder">
+                A press that changes nothing needs a reason in words. Show it and announce it, or a
+                screen reader user hears only that the button is still off (4.1.3 Status Messages).
+              </Note>
+            }
+          >
+            <CompareLimit />
+          </UseCase>
+          <UseCase
+            id="own-button"
+            title="The state read from the hook"
+            why={
+              <>
+                A resident can switch a decision letter to an easy-to-read version. When the effect
+                is a change right next to the button, you need no state of your own:{' '}
+                <code>useToggle</code> keeps it, and you read <code>isPressed</code>. Spread{' '}
+                <code>toggleProps</code> on your own <code>&lt;button&gt;</code>.
+              </>
+            }
+            code={sources['own-button']}
+            propsUsed={[
+              {
+                part: apiHookPart('useToggle', 'result'),
+                label: 'useToggle (result)',
+                prop: 'toggleProps',
+              },
+              {
+                part: apiHookPart('useToggle', 'result'),
+                label: 'useToggle (result)',
+                prop: 'isPressed',
+              },
+            ]}
+          >
+            <OwnButton />
           </UseCase>
         </>
       }

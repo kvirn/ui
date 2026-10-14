@@ -9,13 +9,18 @@ import { Note } from './note.tsx'
 import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import { useRouteFocusRows } from '../content/route-focus.api.ts'
+import { AnnouncedPage } from '../examples/route-focus/announce.tsx'
 import { ChangePage } from '../examples/route-focus/default.tsx'
 import { HashChange } from '../examples/route-focus/hash-change.tsx'
+import { SearchAsYouType } from '../examples/route-focus/search.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 const routeFocusOptions = apiHookPart('useRouteFocus', 'options')
 
-export type RouteFocusExampleSources = Record<'default' | 'hash-change', string>
+export type RouteFocusExampleSources = Record<
+  'default' | 'hash-change' | 'search' | 'announce',
+  string
+>
 
 const nextRecipe = `'use client'
 import { useRouteFocus } from '@kvirn-ui/react'
@@ -118,6 +123,33 @@ export function RouteFocusPage({
             }
           >
             <HashChange />
+          </UseCase>
+          <UseCase
+            id="search-as-you-type"
+            title="A search that changes the address as you type"
+            why="Some pages put the search in the address, so a result can be shared. Every keystroke then changes the key. The hook never takes focus from a text field, so the cursor stays where the visitor is typing."
+            code={sources['search']}
+            propsUsed={[{ part: routeFocusOptions, label: 'useRouteFocus', prop: 'key' }]}
+          >
+            <SearchAsYouType />
+          </UseCase>
+          <UseCase
+            id="announce"
+            title="A router that doesn’t say the new page aloud"
+            why="With announce on, a screen reader user also hears that the page changed, in your own words if you pass messages. Use it only where the router has no announcer of its own. Press “To services” and read the line below."
+            code={sources['announce']}
+            propsUsed={[
+              { part: routeFocusOptions, label: 'useRouteFocus', prop: 'announce' },
+              { part: routeFocusOptions, label: 'useRouteFocus', prop: 'messages' },
+            ]}
+            note={
+              <Note kind="reminder">
+                Give every page a title that names it, and set it before the key changes. The hook
+                says the title but doesn’t set it (2.4.2 Page Titled).
+              </Note>
+            }
+          >
+            <AnnouncedPage />
           </UseCase>
         </>
       }

@@ -14,6 +14,8 @@ export default function Page() {
         default: readExampleSource('kbd/default.tsx'),
         combination: readExampleSource('kbd/combination.tsx'),
         'shortcut-list': readExampleSource('kbd/shortcut-list.tsx'),
+        'per-system': readExampleSource('kbd/per-system.tsx'),
+        'other-script': readExampleSource('kbd/other-script.tsx'),
       }}
     />
   )

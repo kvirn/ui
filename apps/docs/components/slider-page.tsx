@@ -8,11 +8,16 @@ import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import { sliderAttributes, sliderRows, useSliderHook } from '../content/slider.api.ts'
 import { DefaultSlider } from '../examples/slider/default.tsx'
+import { LiveResults } from '../examples/slider/live-results.tsx'
+import { NotAvailable } from '../examples/slider/not-available.tsx'
 import { PlainForm } from '../examples/slider/plain-form.tsx'
 import { WithNumberInput } from '../examples/slider/with-number-input.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type SliderExampleSources = Record<'default' | 'plain-form' | 'with-number-input', string>
+export type SliderExampleSources = Record<
+  'default' | 'plain-form' | 'with-number-input' | 'live-results' | 'not-available',
+  string
+>
 
 const parts: ApiPart[] = [
   {
@@ -110,6 +115,43 @@ export function SliderPage({
             }
           >
             <WithNumberInput />
+          </UseCase>
+          <UseCase
+            id="live-results"
+            title="Recycling points that update as the distance changes"
+            why={
+              <>
+                A list that changes while the thumb moves is a status message. The slider announces
+                only its own value, so say the new count yourself, once, after the person stops.
+              </>
+            }
+            code={sources['live-results']}
+            propsUsed={[
+              { part: 'Slider', prop: 'value' },
+              { part: 'Slider', prop: 'onValueChange' },
+              { part: 'Slider', prop: 'valueText' },
+            ]}
+            note={
+              <Note kind="reminder">
+                Announce the result with the <Link href="/components/announcer">Announcer</Link>,
+                once and after a pause, never on every step (4.1.3 Status Messages, level AA). Don’t
+                move focus or leave the page when the value changes (3.2.2 On Input, level A).
+              </Note>
+            }
+          >
+            <LiveResults />
+          </UseCase>
+          <UseCase
+            id="not-available"
+            title="A distance that is off for now"
+            why="When another choice makes the slider meaningless, disable it and say why in the help text. A disabled Field disables the slider too, and Tab skips it."
+            code={sources['not-available']}
+            propsUsed={[
+              { part: 'Slider', prop: 'disabled' },
+              { part: 'Slider', prop: 'defaultValue' },
+            ]}
+          >
+            <NotAvailable />
           </UseCase>
         </>
       }

@@ -15,6 +15,7 @@ export default function Page() {
         'two-levels': readExampleSource('table-of-contents/two-levels.tsx'),
         'own-markup': readExampleSource('table-of-contents/own-markup.tsx'),
         'no-visible-title': readExampleSource('table-of-contents/no-visible-title.tsx'),
+        'current-section': readExampleSource('table-of-contents/current-section.tsx'),
       }}
     />
   )

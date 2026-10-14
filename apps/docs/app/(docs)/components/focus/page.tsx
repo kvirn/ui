@@ -13,6 +13,8 @@ export default function Page() {
       sources={{
         'restore-drawer': readExampleSource('focus/restore-drawer.tsx'),
         'loop-drawer': readExampleSource('focus/loop-drawer.tsx'),
+        'inert-panel': readExampleSource('focus/inert-panel.tsx'),
+        'help-panel': readExampleSource('focus/help-panel.tsx'),
         'wizard-step': readExampleSource('focus/wizard-step.tsx'),
       }}
     />

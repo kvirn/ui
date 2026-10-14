@@ -17,12 +17,19 @@ import {
 } from '../content/one-time-code.api.ts'
 import { CheckedAsEntered } from '../examples/one-time-code/checked-as-entered.tsx'
 import { SmsCode } from '../examples/one-time-code/default.tsx'
+import { NewCode } from '../examples/one-time-code/new-code.tsx'
 import { PlainForm } from '../examples/one-time-code/plain-form.tsx'
+import { RefusedCharacters } from '../examples/one-time-code/refused-characters.tsx'
 import { TwoGroups } from '../examples/one-time-code/two-groups.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type OneTimeCodeExampleSources = Record<
-  'default' | 'two-groups' | 'checked-as-entered' | 'plain-form',
+  | 'default'
+  | 'two-groups'
+  | 'checked-as-entered'
+  | 'plain-form'
+  | 'new-code'
+  | 'refused-characters',
   string
 >
 
@@ -184,6 +191,54 @@ export function OneTimeCodePage({
             propsUsed={[{ part: 'OneTimeCode.Root', prop: 'onValueChange' }]}
           >
             <PlainForm />
+          </UseCase>
+          <UseCase
+            id="new-code"
+            title="Send a new code without losing the page"
+            why={
+              <>
+                A text message can arrive late or not at all. Put “Send a new code” next to the
+                field as one action that keeps the page and what the user has typed. Say in the
+                description how long a code works, and say aloud that a new one is on its way.
+              </>
+            }
+            code={sources['new-code']}
+            note={
+              <Note kind="reminder">
+                Say how long a code is valid, and never end the session or clear the form when it
+                runs out (2.2.1 Timing Adjustable). Countdowns and “Send a new code” are not part of
+                OneTimeCode: you build them, as here. See{' '}
+                <Link href="#what-you-need-to-do">What you need to do</Link>.
+              </Note>
+            }
+          >
+            <NewCode />
+          </UseCase>
+          <UseCase
+            id="refused-characters"
+            title="Show why a character did not appear"
+            why={
+              <>
+                A letter in a digits code is left out, and a screen reader says so politely. Someone
+                who sees the boxes gets no sign unless you add one. <code>onValueChange</code> lists
+                what was left out in <code>details.rejected</code>, so you can show the same words
+                that <code>messages</code> announces.
+              </>
+            }
+            code={sources['refused-characters']}
+            propsUsed={[
+              { part: 'OneTimeCode.Root', prop: 'onValueChange' },
+              { part: 'OneTimeCode.Root', prop: 'messages' },
+            ]}
+            note={
+              <Note kind="tip">
+                Keep the announcement on. The words you show are plain text, not a live region, so
+                they are not announced a second time. Turn the announcement off with{' '}
+                <code>announceRejections</code> only when you give the message yourself.
+              </Note>
+            }
+          >
+            <RefusedCharacters />
           </UseCase>
         </>
       }

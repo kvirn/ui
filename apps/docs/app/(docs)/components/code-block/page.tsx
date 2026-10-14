@@ -14,6 +14,8 @@ export default function Page() {
         default: readExampleSource('code-block/default.tsx'),
         'named-copy': readExampleSource('code-block/named-copy.tsx'),
         'long-line': readExampleSource('code-block/long-line.tsx'),
+        'several-blocks': readExampleSource('code-block/several-blocks.tsx'),
+        'without-prompt': readExampleSource('code-block/without-prompt.tsx'),
       }}
     />
   )

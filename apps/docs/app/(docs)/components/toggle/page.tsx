@@ -15,6 +15,8 @@ export default function Page() {
         'filter-list': readExampleSource('toggle/filter-list.tsx'),
         'icon-only': readExampleSource('toggle/icon-only.tsx'),
         'disabled-with-reason': readExampleSource('toggle/disabled-with-reason.tsx'),
+        'compare-limit': readExampleSource('toggle/compare-limit.tsx'),
+        'own-button': readExampleSource('toggle/own-button.tsx'),
       }}
     />
   )

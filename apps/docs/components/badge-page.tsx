@@ -7,12 +7,17 @@ import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import { badgeAttributes, badgeRows, useBadgeHook } from '../content/badge.api.ts'
+import { CountInALink } from '../examples/badge/count-in-a-link.tsx'
 import { DefaultBadge } from '../examples/badge/default.tsx'
+import { StatusChanges } from '../examples/badge/status-changes.tsx'
 import { StatusInList } from '../examples/badge/status-in-list.tsx'
 import { WithContext } from '../examples/badge/with-context.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type BadgeExampleSources = Record<'default' | 'status-in-list' | 'with-context', string>
+export type BadgeExampleSources = Record<
+  'default' | 'status-in-list' | 'with-context' | 'status-changes' | 'count-in-a-link',
+  string
+>
 
 const parts: ApiPart[] = [
   {
@@ -78,9 +83,8 @@ export function BadgePage({
             propsUsed={[{ part: 'Badge', prop: 'variant' }]}
             note={
               <Note kind="tip">
-                A change of status after the page has loaded isn’t announced by a Badge. If the user
-                needs to hear it, announce it from your own live region or with{' '}
-                <Link href="/components/announcer">useAnnouncer</Link>.
+                A change of status after the page has loaded isn’t announced by a Badge. See{' '}
+                <Link href="#status-changes">A status that changes while the page is open</Link>.
               </Note>
             }
           >
@@ -94,6 +98,24 @@ export function BadgePage({
             propsUsed={[{ part: 'Badge', prop: 'variant' }]}
           >
             <WithContext />
+          </UseCase>
+          <UseCase
+            id="status-changes"
+            title="A status that changes while the page is open"
+            why="A badge is plain text, so a change in it makes no sound. When the person asks for the status again, change the badge and say the result in words. Announce it, and show the same words on the page."
+            code={sources['status-changes']}
+            propsUsed={[{ part: 'Badge', prop: 'variant' }]}
+          >
+            <StatusChanges />
+          </UseCase>
+          <UseCase
+            id="count-in-a-link"
+            title="A count of new items next to a link"
+            why="A number alone says little, and a badge with no words says nothing to a screen reader. Write the count as words, such as “3 new”. The badge is plain text, so it is read as part of the link."
+            code={sources['count-in-a-link']}
+            propsUsed={[{ part: 'Badge', prop: 'variant' }]}
+          >
+            <CountInALink />
           </UseCase>
         </>
       }

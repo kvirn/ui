@@ -14,6 +14,8 @@ export default function Page() {
         default: readExampleSource('slider/default.tsx'),
         'plain-form': readExampleSource('slider/plain-form.tsx'),
         'with-number-input': readExampleSource('slider/with-number-input.tsx'),
+        'live-results': readExampleSource('slider/live-results.tsx'),
+        'not-available': readExampleSource('slider/not-available.tsx'),
       }}
     />
   )

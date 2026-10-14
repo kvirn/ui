@@ -9,12 +9,17 @@ import { Note } from './note.tsx'
 import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import { stepperAttributes, stepperRows, useStepperHook } from '../content/stepper.api.ts'
+import { ApplicationFlow } from '../examples/stepper/application-flow.tsx'
 import { DefaultStepper } from '../examples/stepper/default.tsx'
+import { OptionsPage } from '../examples/stepper/options-page.tsx'
 import { OwnMarkup } from '../examples/stepper/own-markup.tsx'
 import { QuestionPage } from '../examples/stepper/question-page.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type StepperExampleSources = Record<'default' | 'question-page' | 'own-markup', string>
+export type StepperExampleSources = Record<
+  'default' | 'question-page' | 'application-flow' | 'options-page' | 'own-markup',
+  string
+>
 
 const parts: ApiPart[] = [
   {
@@ -82,6 +87,47 @@ export function StepperPage({
             ]}
           >
             <QuestionPage />
+          </UseCase>
+          <UseCase
+            id="application-flow"
+            title="An application that moves from section to section"
+            why={
+              <>
+                The numbers come from your flow, so the text changes with each step and stays in the
+                same place on every page. Focus moves to the new page’s heading, and the answers are
+                kept when the person goes back. On the last step the example shows a page without a
+                Stepper, as a confirmation should. Here Back is a button, because the example keeps
+                its state on one page. On a real site it is a Back link.
+              </>
+            }
+            code={sources['application-flow']}
+            propsUsed={[
+              { part: 'Stepper', prop: 'current' },
+              { part: 'Stepper', prop: 'total' },
+              { part: 'Stepper', prop: 'name' },
+            ]}
+            note={
+              <Note kind="tip">
+                Moving focus to the heading is the flow’s work, here with{' '}
+                <Link href="/components/route-focus">useRouteFocus</Link>. The Stepper is not a Tab
+                stop and says nothing by itself when the step changes (2.4.3 Focus Order, level A).
+              </Note>
+            }
+          >
+            <ApplicationFlow />
+          </UseCase>
+          <UseCase
+            id="options-page"
+            title="A page with a choice between options"
+            why="When the question is a group of options, the legend is the page’s heading. Put the Stepper straight after the legend, outside it, so it is not read as part of the group’s name."
+            code={sources['options-page']}
+            propsUsed={[
+              { part: 'Stepper', prop: 'current' },
+              { part: 'Stepper', prop: 'total' },
+              { part: 'Stepper', prop: 'name' },
+            ]}
+          >
+            <OptionsPage />
           </UseCase>
           <UseCase
             id="own-markup"

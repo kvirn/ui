@@ -13,6 +13,8 @@ export default function Page() {
       sources={{
         default: readExampleSource('skip-link/default.tsx'),
         'custom-label': readExampleSource('skip-link/custom-label.tsx'),
+        'two-links': readExampleSource('skip-link/two-links.tsx'),
+        'design-system-link': readExampleSource('skip-link/design-system-link.tsx'),
         'own-element': readExampleSource('skip-link/own-element.tsx'),
       }}
     />
