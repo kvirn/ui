@@ -29,6 +29,8 @@ export interface RadioPartProps extends FieldStateAttributes {
   /** From the Field: the control's id. */
   id?: string
   'aria-describedby'?: string
+  /** The id of this option's `RadioGroup.Reveal`, while one is mounted. */
+  'aria-controls'?: string
   disabled?: true
   name?: string
   value?: string
@@ -113,6 +115,7 @@ export function useRadio({
         ? {}
         : { defaultChecked: resolvedDefaultChecked }
       : { checked: resolvedChecked, 'data-state': resolvedChecked ? 'checked' : 'unchecked' }),
+    ...(item?.['aria-controls'] === undefined ? {} : { 'aria-controls': item['aria-controls'] }),
     ...(item?.['data-invalid'] === undefined ? {} : { 'data-invalid': '' }),
     ...(item?.['data-disabled'] === undefined ? {} : { 'data-disabled': '' }),
     ...(disabled ? { disabled: true, 'data-disabled': '' } : {}),

@@ -1,8 +1,8 @@
-import { useCallback, useId } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
-import type { RadioGroupItemProps } from './radio-group-context.ts'
+import type { RadioGroupItemProps, RadioGroupRevealItemProps } from './radio-group-context.ts'
 
-export type { RadioGroupItemProps } from './radio-group-context.ts'
+export type { RadioGroupItemProps, RadioGroupRevealItemProps } from './radio-group-context.ts'
 
 /** The second argument of `onValueChange`. */
 export interface RadioGroupChangeDetails {
@@ -33,6 +33,27 @@ export interface UseRadioGroupResult {
   name: string
   /** The props for the radio with this value: `name`, `checked`, `onChange` and `data-*`. */
   getRadioProps: (value: string) => RadioGroupItemProps
+  /**
+   * The props for the content that belongs to the radio with this value: `id`, `hidden` unless
+   * that radio is checked, and `data-state`. Put it right after the radio's field.
+   */
+  getRevealProps: (value: string) => RadioGroupRevealItemProps
+  /**
+   * Call from an effect when a reveal for this value is mounted: the radio then gets
+   * `aria-controls`. Returns the cleanup.
+   */
+  registerReveal: (value: string) => () => void
+  /**
+   * `true` once, if the user (not your `value`) has just checked this radio: the moment to
+   * announce that a field appeared.
+   */
+  consumeUserChoice: (value: string) => boolean
+  /** Call when the surrounding form resets: an uncontrolled group goes back to `defaultValue`. */
+  resetSelection: () => void
+}
+
+function getRevealId(base: string, value: string): string {
+  return `${base}-reveal-${encodeURIComponent(value)}`
 }
 
 /**
@@ -55,10 +76,23 @@ export function useRadioGroup({
 }: UseRadioGroupOptions = {}): UseRadioGroupResult {
   const generatedName = useId()
   const resolvedName = name ?? generatedName
+  const revealIdBase = useId()
+  // UI state only, to show the reveal of an uncontrolled group; the browser owns the checked state.
+  const [mirroredValue, setMirroredValue] = useState<string | null>(defaultValue ?? null)
+  const [revealValues, setRevealValues] = useState<ReadonlySet<string>>(() => new Set())
+  const userChoice = useRef<string | null>(null)
+  const selectedValue = value === undefined ? mirroredValue : value
+
+  useEffect(() => {
+    userChoice.current = null
+  })
 
   const getRadioProps = useCallback(
     (itemValue: string): RadioGroupItemProps => ({
       name: resolvedName,
+      ...(revealValues.has(itemValue)
+        ? { 'aria-controls': getRevealId(revealIdBase, itemValue) }
+        : {}),
       ...(value === undefined
         ? defaultValue === undefined
           ? {}
@@ -66,13 +100,65 @@ export function useRadioGroup({
         : { checked: value === itemValue }),
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         // A native radio reports only when it becomes checked.
+        userChoice.current = itemValue
+        setMirroredValue(itemValue)
         onValueChange?.(itemValue, { reason: 'input', event })
       },
       ...(invalid ? { 'data-invalid': '' as const } : {}),
       ...(disabled ? { 'data-disabled': '' as const } : {}),
     }),
-    [resolvedName, value, defaultValue, onValueChange, invalid, disabled],
+    [
+      resolvedName,
+      value,
+      defaultValue,
+      onValueChange,
+      invalid,
+      disabled,
+      revealIdBase,
+      revealValues,
+    ],
   )
 
-  return { name: resolvedName, getRadioProps }
+  const getRevealProps = useCallback(
+    (itemValue: string): RadioGroupRevealItemProps => {
+      const isOpen = selectedValue === itemValue
+      return {
+        className: 'kv-radio-group-reveal',
+        id: getRevealId(revealIdBase, itemValue),
+        ...(isOpen ? {} : { hidden: true as const }),
+        'data-state': isOpen ? 'open' : 'closed',
+      }
+    },
+    [revealIdBase, selectedValue],
+  )
+
+  const registerReveal = useCallback((itemValue: string) => {
+    setRevealValues((current) => new Set(current).add(itemValue))
+    return () => {
+      setRevealValues((current) => {
+        const next = new Set(current)
+        next.delete(itemValue)
+        return next
+      })
+    }
+  }, [])
+
+  const consumeUserChoice = useCallback((itemValue: string) => {
+    const chosen = userChoice.current === itemValue
+    userChoice.current = null
+    return chosen
+  }, [])
+
+  const resetSelection = useCallback(() => {
+    setMirroredValue(defaultValue ?? null)
+  }, [defaultValue])
+
+  return {
+    name: resolvedName,
+    getRadioProps,
+    getRevealProps,
+    registerReveal,
+    consumeUserChoice,
+    resetSelection,
+  }
 }

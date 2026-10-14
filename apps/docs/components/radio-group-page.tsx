@@ -14,6 +14,8 @@ import {
   radioGroupLegendAttributes,
   radioGroupLegendRows,
   radioGroupProseAttributes,
+  radioGroupRevealAttributes,
+  radioGroupRevealRows,
   radioGroupRootAttributes,
   radioGroupRootRows,
   radioRows,
@@ -66,6 +68,20 @@ const parts: ApiPart[] = [
     ),
     props: radioRows,
     attributes: radioAttributes,
+  },
+  {
+    name: 'RadioGroup.Reveal',
+    renders: (
+      <>
+        <code>&lt;div&gt;</code> that holds what belongs to one radio, such as an “Other, please
+        specify” field. Put it right after that radio’s <code>Field.Root</code>. It is{' '}
+        <code>hidden</code> until the radio is checked, is never unmounted, and never moves focus.
+        The radio gets <code>aria-controls</code>, and the appearance is announced politely. The
+        typed text is still submitted by a plain form: ignore or clear it on the server.
+      </>
+    ),
+    props: radioGroupRevealRows,
+    attributes: radioGroupRevealAttributes,
   },
   {
     name: 'RadioGroup.Legend',

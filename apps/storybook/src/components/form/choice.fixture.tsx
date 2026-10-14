@@ -47,6 +47,11 @@ export interface ChoiceTexts {
   regionSouth: string
   longSelectLabel: string
   youChose: string
+  sourceLegend: string
+  sourceFriend: string
+  sourceWeb: string
+  sourceOther: string
+  sourceSpecify: string
   send: string
   sent: string
   surface: string
@@ -91,6 +96,11 @@ const textsEn: ChoiceTexts = {
   regionSouth: 'Southern Sweden',
   longSelectLabel: 'Municipality where the housing adaptation grant will be paid out',
   youChose: 'You chose',
+  sourceLegend: 'How did you hear about us?',
+  sourceFriend: 'Through a friend',
+  sourceWeb: 'On the web',
+  sourceOther: 'Other',
+  sourceSpecify: 'Please specify',
   send: 'Send',
   sent: 'Sent',
   surface: 'In a card',
@@ -135,6 +145,11 @@ const textsSv: ChoiceTexts = {
   regionSouth: 'Södra Sverige',
   longSelectLabel: 'Kommun där bostadsanpassningsbidraget ska betalas ut',
   youChose: 'Du valde',
+  sourceLegend: 'Hur hörde du talas om oss?',
+  sourceFriend: 'Via en vän',
+  sourceWeb: 'På webben',
+  sourceOther: 'Annat',
+  sourceSpecify: 'Beskriv vad',
   send: 'Skicka',
   sent: 'Skickat',
   surface: 'I ett kort',
@@ -179,6 +194,11 @@ const textsFi: ChoiceTexts = {
   regionSouth: 'Etelä-Ruotsi',
   longSelectLabel: 'Kunta, jossa asunnonmuutostyöavustus maksetaan',
   youChose: 'Valitsit',
+  sourceLegend: 'Mistä kuulit meistä?',
+  sourceFriend: 'Ystävältä',
+  sourceWeb: 'Verkosta',
+  sourceOther: 'Muu',
+  sourceSpecify: 'Tarkenna',
   send: 'Lähetä',
   sent: 'Lähetetty',
   surface: 'Kortissa',
@@ -223,6 +243,11 @@ const textsNb: ChoiceTexts = {
   regionSouth: 'Sørlandet',
   longSelectLabel: 'Kommunen der tilskuddet til tilpasning av bolig skal utbetales',
   youChose: 'Du valgte',
+  sourceLegend: 'Hvordan hørte du om oss?',
+  sourceFriend: 'Via en venn',
+  sourceWeb: 'På nettet',
+  sourceOther: 'Annet',
+  sourceSpecify: 'Presiser',
   send: 'Send',
   sent: 'Sendt',
   surface: 'I et kort',
@@ -267,6 +292,11 @@ const textsNn: ChoiceTexts = {
   regionSouth: 'Sørlandet',
   longSelectLabel: 'Kommunen der tilskotet til tilpassing av bustad skal utbetalast',
   youChose: 'Du valde',
+  sourceLegend: 'Korleis høyrde du om oss?',
+  sourceFriend: 'Via ein ven',
+  sourceWeb: 'På nettet',
+  sourceOther: 'Anna',
+  sourceSpecify: 'Presiser',
   send: 'Send',
   sent: 'Sendt',
   surface: 'I eit kort',

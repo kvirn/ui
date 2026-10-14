@@ -2,7 +2,7 @@
 
 > **Draft** (Plan 0013). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [radio-group.a11y.md](radio-group.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md), and the decisions are in the forms skill.
 
-**KvirnUI holds no form state; bring your own form logic.** RadioGroup renders the value you give it and reports the radio the user chose through `onValueChange`. It never stores the selection, and it doesn't validate.
+**KvirnUI holds no form state; bring your own form logic.** RadioGroup renders the value you give it and reports the radio the user chose through `onValueChange`. It never stores the selection (the one exception is UI state for a `RadioGroup.Reveal`, below), and it doesn't validate.
 
 A RadioGroup is one question with exactly one answer: "Hur länge behöver du tillståndet?" with 1, 6 or 12 månader. It groups native radios under a legend, with an optional description, help text and error. For several answers that can all be true, use a [CheckboxGroup](../checkbox-group/checkbox-group.md). For a single yes-or-no answer, use a [Checkbox](../checkbox/checkbox.md). For a choice from a long list, use a [Listbox](../listbox/listbox.md).
 
@@ -15,7 +15,7 @@ A RadioGroup is one question with exactly one answer: "Hur länge behöver du ti
 
 ## API
 
-Six parts. Each is also exported on its own (`RadioGroupRoot`, `RadioGroupRadio`, `RadioGroupLegend`, `RadioGroupProse`, `RadioGroupHelpText`, `RadioGroupErrorMessage`), which is the form to import in a React Server Component, because a server component can't dot into a client module. The flat `Radio` still works but is **deprecated**: write `RadioGroup.Radio`. It is removed in 1.0.
+Seven parts. Each is also exported on its own (`RadioGroupRoot`, `RadioGroupRadio`, `RadioGroupReveal`, `RadioGroupLegend`, `RadioGroupProse`, `RadioGroupHelpText`, `RadioGroupErrorMessage`), which is the form to import in a React Server Component, because a server component can't dot into a client module. The flat `Radio` still works but is **deprecated**: write `RadioGroup.Radio`. It is removed in 1.0.
 
 | Part                      | Renders                      | What it is                                                                                                                           |
 | ------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
@@ -61,9 +61,9 @@ Six parts. Each is also exported on its own (`RadioGroupRoot`, `RadioGroupRadio`
 | `data-state`    | On a radio whose state is known from props: `checked` or `unchecked`. An uncontrolled radio has none: style `:checked` for the native state |
 
 - **ARIA it sets:** `aria-describedby` on the fieldset lists every description and help text in DOM order and then the error, only for parts that are rendered. A radio's `aria-describedby` lists its own option help text, followed by your own ids. There is **no `aria-invalid` and no `aria-required`** on the fieldset or the radios.
-- **Classes:** `kv-radio-group kv-fieldset` on the root, `kv-fieldset-legend` on the legend, `kv-radio` on each radio.
+- **Classes:** `kv-radio-group kv-fieldset` on the root, `kv-fieldset-legend` on the legend, `kv-radio` on each radio, `kv-radio-group-reveal` on a reveal.
 - **Dev warnings (once):** a Radio in the group with no `value`; `checked` or `defaultChecked` on a Radio next to the group's (the group wins); two error messages in one group; a Radio in a Field with no `Field.Label`.
-- **Messages.** The optional text and the error prefix are `field.optional` and `field.errorPrefix`, resolved like Field's. Override them per provider, or per instance with `messages`.
+- **Messages.** The optional text and the error prefix are `field.optional` and `field.errorPrefix`, resolved like Field's. The Reveal's announcement is `radioGroup.revealShown`. Override them per provider, or per instance with `messages`.
 
 ## Component
 
@@ -108,6 +108,9 @@ Your part:
 - **Set `invalid` and render a `RadioGroup.ErrorMessage` together,** with text that says what's wrong and how to fix it. Because a radio has no `aria-invalid`, the error message is the only thing that tells a screen-reader user. On submit, move focus to the first radio of the group, since the group never moves focus.
 - **A required group isn't announced as required.** `aria-required` isn't supported on `group` or `radio`, so `required` only removes "(valfritt)" from the legend and sets `data-required`. Say what is required in the legend or the description. The assistive-technology test run decides whether a fallback is needed.
 - **A radio has no focus state of its own** (no `data-focus-visible`). A re-render while a radio has focus makes React write its `name` again, and Chromium then stops treating the group as one Tab stop, so style focus with `:focus-visible`.
+- **An "Other, please specify" field is a `RadioGroup.Reveal`.** Put `<RadioGroup.Reveal value="other">` with a `Field.Root` and a `TextInput` right after the "Other" radio's `Field.Root`. It is `hidden` until that radio is checked, focus stays on the radio (Tab then reaches the field), the radio gets `aria-controls`, and a polite announcement says a field appeared. It is never unmounted, so the typed text survives switching options and a plain form still submits it: ignore or clear it when another option is chosen. An uncontrolled group goes back to `defaultValue` on a form reset.
+- **A Field in a Reveal is its own question.** It keeps its optional marker and required state, and its help text is its own description, not the group's.
+- **When the announcement is silent.** A controlled `value` that your code commits after an await or in a transition shows the field without an announcement: only a radio the user checked announces. Browser form restoration (back navigation) can check a radio before the group's mirrored value knows; the field then follows the next change. Both are known limits.
 - **Browsers differ on Shift+Tab into an unchecked group:** Chrome and Firefox focus the last radio, Safari the first.
 
 ## Hook
@@ -134,6 +137,8 @@ function Duration({
 }
 ```
 
-`useRadioGroup` takes `name`, `value`, `defaultValue`, `onValueChange`, `invalid` and `disabled`, and returns `name` (the one given, else a generated one) and `getRadioProps(value)`, which gives `name`, `checked` or `defaultChecked`, `onChange` and the `data-*` attributes. Pair it with `useFieldset({ group: true })` for the legend, help text and error. It holds no state.
+`useRadioGroup` takes `name`, `value`, `defaultValue`, `onValueChange`, `invalid` and `disabled`, and returns `name` (the one given, else a generated one) and `getRadioProps(value)`, which gives `name`, `checked` or `defaultChecked`, `onChange` and the `data-*` attributes. Pair it with `useFieldset({ group: true })` for the legend, help text and error. It holds no form state, only the UI state that decides which reveal is open (the radio the user chose, from `defaultValue`).
+
+For your own reveal markup: spread `getRevealProps(value)` (`id`, `hidden`, `data-state`) on the element after the radio's field, call `registerReveal(value)` from an effect while it is mounted (the radio then gets `aria-controls`; it returns the cleanup), announce with `useAnnouncer().announce` when `consumeUserChoice(value)` is `true` as the reveal opens (it is `true` once, only when the user checked the radio), and call `resetSelection()` on the form's `reset` event. `RadioGroup.Reveal` does exactly this.
 
 `useRadio({ value, name, disabled, checked, defaultChecked })` returns `inputProps`, `isChecked`, `isInvalid` and `isDisabled`, for your own `<input type="radio">` wired to the nearest Field and RadioGroup. Spread `inputProps` on it.

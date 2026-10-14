@@ -1,5 +1,6 @@
 import type {
   FieldsetLegendProps,
+  RadioGroupRevealProps,
   RadioGroupRootProps,
   RadioProps,
   UseRadioGroupOptions,
@@ -153,6 +154,39 @@ export const radioAttributes: readonly AttributeRow[] = [
   },
 ]
 
+export type RadioGroupRevealDocumentedProps = Pick<
+  Extract<RadioGroupRevealProps, { as?: unknown }>,
+  'value' | 'messages'
+>
+
+export const radioGroupRevealRows = propRows<RadioGroupRevealDocumentedProps>({
+  value: {
+    type: 'string',
+    description:
+      'The value of the radio this content belongs to. It is shown when that radio is checked.',
+  },
+  messages: {
+    type: 'Partial<KvirnMessages["radioGroup"]>',
+    description:
+      'Overrides the announcement ("an input field has appeared below") for this instance.',
+  },
+})
+
+export const radioGroupRevealAttributes: readonly AttributeRow[] = [
+  {
+    name: 'kv-radio-group-reveal',
+    values: 'always',
+    meaning: 'The part class. The default theme styles it.',
+  },
+  {
+    name: 'id',
+    values: 'always',
+    meaning: 'Stable, and the radio’s `aria-controls` points at it.',
+  },
+  { name: 'hidden', values: 'present or absent', meaning: 'Present until its radio is checked.' },
+  { name: 'data-state', values: '`open` or `closed`', meaning: 'Whether its radio is checked.' },
+]
+
 export type RadioGroupLegendDocumentedProps = Pick<FieldsetLegendProps, 'marker'>
 
 export const radioGroupLegendRows = propRows<RadioGroupLegendDocumentedProps>({
@@ -266,7 +300,31 @@ export const useRadioGroupHook: ApiHook = {
       type: '(value: string) => RadioGroupItemProps',
       default: '–',
       description:
-        'The props for the radio with this value: name, checked or defaultChecked, onChange and the data attributes.',
+        'The props for the radio with this value: name, checked or defaultChecked, onChange, aria-controls while a reveal is mounted, and the data attributes.',
+    },
+    getRevealProps: {
+      type: '(value: string) => RadioGroupRevealItemProps',
+      default: '–',
+      description:
+        'The props for the content that belongs to the radio with this value: id, hidden unless that radio is checked, and data-state.',
+    },
+    registerReveal: {
+      type: '(value: string) => () => void',
+      default: '–',
+      description:
+        'Call from an effect while a reveal for this value is mounted, so the radio gets aria-controls. Returns the cleanup.',
+    },
+    consumeUserChoice: {
+      type: '(value: string) => boolean',
+      default: '–',
+      description:
+        'True once when the user, not your value, just checked this radio: the moment to announce that a field appeared.',
+    },
+    resetSelection: {
+      type: '() => void',
+      default: '–',
+      description:
+        'Call when the surrounding form resets: an uncontrolled group goes back to its defaultValue.',
     },
   }),
 }

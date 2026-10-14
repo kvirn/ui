@@ -770,9 +770,14 @@ export {
   RadioGroupLegend,
   RadioGroupProse,
   RadioGroupRadio,
+  RadioGroupReveal,
   RadioGroupRoot,
 } from './radio-group/radio-group.tsx'
-export type { RadioGroupChangeDetails, RadioGroupRootProps } from './radio-group/radio-group.tsx'
+export type {
+  RadioGroupChangeDetails,
+  RadioGroupRevealProps,
+  RadioGroupRootProps,
+} from './radio-group/radio-group.tsx'
 import { Radio as RadioPart } from './radio-group/radio.tsx'
 /** @deprecated Write `RadioGroup.Radio`, or `RadioGroupRadio` in a Server Component. The flat `Radio` is removed in 1.0. */
 export const Radio = RadioPart
@@ -780,6 +785,7 @@ export type { RadioProps } from './radio-group/radio.tsx'
 export { useRadioGroup } from './radio-group/use-radio-group.ts'
 export type {
   RadioGroupItemProps,
+  RadioGroupRevealItemProps,
   UseRadioGroupOptions,
   UseRadioGroupResult,
 } from './radio-group/use-radio-group.ts'

@@ -12,6 +12,8 @@ export interface RadioGroupItemProps {
   checked?: boolean
   /** From the group's `defaultValue`: uncontrolled. */
   defaultChecked?: boolean
+  /** The id of this option's `RadioGroup.Reveal`, while one is mounted. */
+  'aria-controls'?: string
   /** Reports the group's next value. */
   onChange: ChangeEventHandler<HTMLInputElement>
   /** The group is invalid. Styling only: a radio never gets `aria-invalid`. */
@@ -19,8 +21,20 @@ export interface RadioGroupItemProps {
   'data-disabled'?: ''
 }
 
+/** What a RadioGroup puts on one `RadioGroup.Reveal`. */
+export interface RadioGroupRevealItemProps {
+  className: 'kv-radio-group-reveal'
+  id: string
+  hidden?: true
+  'data-state': 'open' | 'closed'
+}
+
 export interface RadioGroupContextValue {
   getRadioProps: (value: string) => RadioGroupItemProps
+  getRevealProps: (value: string) => RadioGroupRevealItemProps
+  registerReveal: (value: string) => () => void
+  consumeUserChoice: (value: string) => boolean
+  resetSelection: () => void
 }
 
 export const RadioGroupContext = createContext<RadioGroupContextValue | null>(null)

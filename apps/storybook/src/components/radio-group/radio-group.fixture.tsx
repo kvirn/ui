@@ -1,4 +1,4 @@
-import { Button, Field, Fieldset, RadioGroup } from '@kvirn-ui/react'
+import { Button, Field, Fieldset, RadioGroup, TextInput } from '@kvirn-ui/react'
 import { useId, useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -191,5 +191,72 @@ export function StandaloneDurationRadios({ locale }: { locale: FormLocale }) {
         </Field.Root>
       </Fieldset.Root>
     </>
+  )
+}
+
+/**
+ * "Other, please specify": a `RadioGroup.Reveal` right after the radio it belongs to. The field is
+ * `hidden` until "Other" is checked, focus stays on the radio, the radio gets `aria-controls`, and
+ * a polite announcement says a field appeared. It is never unmounted, so what was typed is kept
+ * (and sent by a plain form: ignore or clear it when another option is chosen).
+ */
+export function OtherOptionGroup({ locale }: { locale: FormLocale }) {
+  const { text } = choiceTextsFor(locale)
+  const name = `source-${useId()}`
+  return (
+    <div className="kv-story-form">
+      <RadioGroup.Root name={name}>
+        <RadioGroup.Legend>{text.sourceLegend}</RadioGroup.Legend>
+        <Field.Root>
+          <RadioGroup.Radio value="friend" />
+          <Field.Label>{text.sourceFriend}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="web" />
+          <Field.Label>{text.sourceWeb}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="other" />
+          <Field.Label>{text.sourceOther}</Field.Label>
+        </Field.Root>
+        <RadioGroup.Reveal value="other">
+          <Field.Root>
+            <Field.Label>{text.sourceSpecify}</Field.Label>
+            <TextInput name={`${name}-other`} />
+          </Field.Root>
+        </RadioGroup.Reveal>
+      </RadioGroup.Root>
+    </div>
+  )
+}
+
+/** The same question controlled by your form state: the Reveal follows `value`. */
+export function ControlledOtherOptionGroup({ locale }: { locale: FormLocale }) {
+  const { text } = choiceTextsFor(locale)
+  const name = `source-${useId()}`
+  const [value, setValue] = useState<string | null>(null)
+  return (
+    <div className="kv-story-form">
+      <RadioGroup.Root name={name} value={value} onValueChange={setValue}>
+        <RadioGroup.Legend>{text.sourceLegend}</RadioGroup.Legend>
+        <Field.Root>
+          <RadioGroup.Radio value="friend" />
+          <Field.Label>{text.sourceFriend}</Field.Label>
+        </Field.Root>
+        <Field.Root>
+          <RadioGroup.Radio value="other" />
+          <Field.Label>{text.sourceOther}</Field.Label>
+        </Field.Root>
+        <RadioGroup.Reveal value="other">
+          <Field.Root>
+            <Field.Label>{text.sourceSpecify}</Field.Label>
+            <TextInput name={`${name}-other`} />
+          </Field.Root>
+        </RadioGroup.Reveal>
+      </RadioGroup.Root>
+      <p className="kv-story-form-output" data-testid="mirror">
+        {text.youChose}: {value ?? '–'}
+      </p>
+    </div>
   )
 }

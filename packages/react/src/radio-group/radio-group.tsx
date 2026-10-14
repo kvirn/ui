@@ -1,6 +1,10 @@
 'use client'
-import { useMemo } from 'react'
+import { useContext, useEffect, useMemo, useRef } from 'react'
 import type { ReactElement } from 'react'
+import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { useAnnouncer } from '../announcer/use-announcer.ts'
+import { warnOnce } from '../dev/dev-warning.ts'
+import { FieldGroupContext, FieldTextHostContext } from '../field/field-context.ts'
 import type { FieldErrorMessageProps, FieldHelpTextProps } from '../field/field.tsx'
 import {
   FieldsetErrorMessage,
@@ -10,7 +14,13 @@ import {
   FieldsetRoot,
 } from '../fieldset/fieldset.tsx'
 import type { FieldsetLegendProps, FieldsetRootProps } from '../fieldset/fieldset.tsx'
+import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { mergeProps } from '../merge-props/merge-props.ts'
 import type { ProseRootProps } from '../prose/prose.tsx'
+import { useMessages } from '../provider/use-messages.ts'
+import { renderPart } from '../render/render-part.ts'
+import type { AsTag } from '../render/as-prop.ts'
+import { resolveAsTag } from '../render/as-prop.ts'
 import { Radio } from './radio.tsx'
 import type { RadioProps } from './radio.tsx'
 import { RadioGroupContext } from './radio-group-context.ts'
@@ -60,8 +70,20 @@ export function RadioGroupRoot({
 }: RadioGroupRootProps): ReactElement {
   const group = useRadioGroup({ name, value, defaultValue, onValueChange, invalid, disabled })
   const context = useMemo<RadioGroupContextValue>(
-    () => ({ getRadioProps: group.getRadioProps }),
-    [group.getRadioProps],
+    () => ({
+      getRadioProps: group.getRadioProps,
+      getRevealProps: group.getRevealProps,
+      registerReveal: group.registerReveal,
+      consumeUserChoice: group.consumeUserChoice,
+      resetSelection: group.resetSelection,
+    }),
+    [
+      group.getRadioProps,
+      group.getRevealProps,
+      group.registerReveal,
+      group.consumeUserChoice,
+      group.resetSelection,
+    ],
   )
 
   return (
@@ -86,6 +108,103 @@ export function RadioGroupRadio(props: RadioProps): ReactElement {
   return <Radio {...props} />
 }
 RadioGroupRadio.displayName = 'RadioGroup.Radio'
+
+const revealTags = ['div', 'section'] as const
+
+export type RadioGroupRevealProps = AsTag<
+  (typeof revealTags)[number],
+  'div',
+  {
+    /** The `value` of the radio this content belongs to. */
+    value: string
+    /** Overrides the built-in text for this instance. */
+    messages?: Partial<KvirnMessages['radioGroup']> | undefined
+  }
+>
+
+/**
+ * The content that belongs to one radio, such as an "Other, please specify" field: it follows
+ * that radio's `Field.Root` in the DOM, is `hidden` until the radio is checked and is never
+ * unmounted, so what the user typed survives switching options (and is still submitted by a
+ * plain form: ignore or clear it on the server). Focus stays on the radio. The radio gets
+ * `aria-controls`, and a field appearing is announced politely (contract: radio-group.a11y.md).
+ *
+ * @example
+ * <RadioGroup.Reveal value="other">
+ *   <Field.Root>
+ *     <Field.Label>Please specify</Field.Label>
+ *     <TextInput />
+ *   </Field.Root>
+ * </RadioGroup.Reveal>
+ */
+export function RadioGroupReveal({
+  value,
+  messages,
+  as,
+  ref,
+  children,
+  ...otherProps
+}: RadioGroupRevealProps): ReactElement {
+  const group = useContext(RadioGroupContext)
+  const revealMessages = useMessages('radioGroup', messages)
+  const { announce } = useAnnouncer()
+  const elementRef = useRef<HTMLElement | null>(null)
+  const mergedRef = useMergedRef(ref, elementRef)
+  const registerReveal = group?.registerReveal
+  const consumeUserChoice = group?.consumeUserChoice
+  const resetSelection = group?.resetSelection
+  const revealProps = group?.getRevealProps(value)
+  const isOpen = revealProps !== undefined && revealProps.hidden === undefined
+
+  useEffect(() => registerReveal?.(value), [registerReveal, value])
+
+  const inGroup = group !== null
+  useEffect(() => {
+    if (!inGroup) {
+      warnOnce(
+        'radio-group-reveal-outside-group',
+        'A RadioGroup.Reveal is outside a RadioGroup.Root, so it has no radio to follow and is always shown. Put it inside the group, right after its radio.',
+      )
+    }
+  }, [inGroup])
+
+  const wasOpen = useRef(isOpen)
+  useEffect(() => {
+    const justOpened = isOpen && !wasOpen.current
+    wasOpen.current = isOpen
+    if (justOpened && consumeUserChoice?.(value) === true) {
+      announce(revealMessages.revealShown)
+    }
+  }, [isOpen, consumeUserChoice, value, announce, revealMessages.revealShown])
+
+  useEffect(() => {
+    const form = elementRef.current?.closest('form')
+    if (form == null || resetSelection === undefined) {
+      return undefined
+    }
+    form.addEventListener('reset', resetSelection)
+    return () => {
+      form.removeEventListener('reset', resetSelection)
+    }
+  }, [resetSelection])
+
+  return renderPart({
+    as: resolveAsTag({ part: 'RadioGroup.Reveal', as, allowedTags: revealTags }),
+    defaultElement: 'div',
+    // Its fields are the page's own fields, not options of the group: they keep their optional
+    // marker and required state, and their text is not part of the group's description.
+    partProps: {
+      ...mergeProps(otherProps, revealProps ?? {}),
+      children: (
+        <FieldGroupContext.Provider value={false}>
+          <FieldTextHostContext.Provider value={null}>{children}</FieldTextHostContext.Provider>
+        </FieldGroupContext.Provider>
+      ),
+      ref: mergedRef,
+    },
+  })
+}
+RadioGroupReveal.displayName = 'RadioGroup.Reveal'
 
 /** The group's question and its accessible name: the `Fieldset.Legend` under the group's name. */
 export function RadioGroupLegend(props: FieldsetLegendProps): ReactElement {
@@ -115,6 +234,7 @@ RadioGroupErrorMessage.displayName = 'RadioGroup.ErrorMessage'
 export const RadioGroup = {
   Root: RadioGroupRoot,
   Radio: RadioGroupRadio,
+  Reveal: RadioGroupReveal,
   Legend: RadioGroupLegend,
   Prose: RadioGroupProse,
   HelpText: RadioGroupHelpText,

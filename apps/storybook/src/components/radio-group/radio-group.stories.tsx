@@ -1,4 +1,4 @@
-import { Button, Card, Field, RadioGroup } from '@kvirn-ui/react'
+import { Button, Card, Field, RadioGroup, TextInput } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/radio-group/radio-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/radio-group/radio-group.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -11,7 +11,9 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 import {
   ControlledDurationGroup,
   ControlledEmptyDurationGroup,
+  ControlledOtherOptionGroup,
   DurationForm,
+  OtherOptionGroup,
   StandaloneDurationRadios,
 } from './radio-group.fixture.tsx'
 
@@ -24,7 +26,7 @@ import {
 // gets aria-invalid: the group's error is its description.
 
 const meta = {
-  title: 'Components/Choice and overlays/RadioGroup',
+  title: 'Components/Forms/RadioGroup',
   component: RadioGroup.Root,
   // Every option at its default, so the main example starts where an adopter starts.
   args: { invalid: false, required: false, disabled: false },
@@ -564,6 +566,41 @@ export const PlainForm: Story = {
   },
 }
 
+/**
+ * "Other, please specify": a `RadioGroup.Reveal` after the "Other" radio. The field appears in
+ * place when its radio is chosen, focus stays on the radio, and a polite announcement says a field
+ * appeared. Tab then reaches the field; the arrow keys keep moving through the radios.
+ */
+export const OtherOption: Story = {
+  parameters: showSource('radio-group/radio-group.fixture.tsx', 'OtherOptionGroup'),
+  render: (_args, { globals }) => <OtherOptionGroup locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = choiceTextsFor(localeOf(globals))
+    const other = canvas.getByRole('radio', { name: text.sourceOther })
+    const field = () => canvas.queryByRole('textbox', { name: new RegExp(text.sourceSpecify) })
+    await expect(field()).toBeNull()
+    await userEvent.click(other)
+    await expect(field()).toBeVisible()
+  },
+}
+
+/** The same question controlled by your form state: the Reveal follows `value`. */
+export const OtherOptionControlled: Story = {
+  parameters: showSource('radio-group/radio-group.fixture.tsx', 'ControlledOtherOptionGroup'),
+  render: (_args, { globals }) => <ControlledOtherOptionGroup locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = choiceTextsFor(localeOf(globals))
+    await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youChose}: –`)
+    await userEvent.click(canvas.getByRole('radio', { name: text.sourceOther }))
+    await expect(
+      canvas.getByRole('textbox', { name: new RegExp(text.sourceSpecify) }),
+    ).toBeVisible()
+    await expect(canvas.getByTestId('mirror')).toHaveTextContent(`${text.youChose}: other`)
+    await userEvent.click(canvas.getByRole('radio', { name: text.sourceFriend }))
+    await expect(canvas.queryByRole('textbox', { name: new RegExp(text.sourceSpecify) })).toBeNull()
+  },
+}
+
 // Every state of the group in one column: checked, invalid and disabled. The RTL and ForcedColors
 // stories render it, so a reader of either sees the real parts.
 const renderGroupStates: NonNullable<Story['render']> = (_args, { globals, id }) => {
@@ -628,6 +665,23 @@ const renderGroupStates: NonNullable<Story['render']> = (_args, { globals, id })
             <Field.Label>{text.duration12}</Field.Label>
           </Field.Root>
           <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+        <RadioGroup.Root name={`other-${id}`} defaultValue="other">
+          <RadioGroup.Legend>{text.sourceLegend}</RadioGroup.Legend>
+          <Field.Root>
+            <RadioGroup.Radio value="friend" />
+            <Field.Label>{text.sourceFriend}</Field.Label>
+          </Field.Root>
+          <Field.Root>
+            <RadioGroup.Radio value="other" />
+            <Field.Label>{text.sourceOther}</Field.Label>
+          </Field.Root>
+          <RadioGroup.Reveal value="other">
+            <Field.Root>
+              <Field.Label>{text.sourceSpecify}</Field.Label>
+              <TextInput name={`other-text-${id}`} />
+            </Field.Root>
+          </RadioGroup.Reveal>
         </RadioGroup.Root>
       </div>
     </>
