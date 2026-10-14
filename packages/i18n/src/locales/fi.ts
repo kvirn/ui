@@ -1,5 +1,6 @@
 import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
+import { en } from './en.ts'
 
 // fi: copyButton.* is a draft (Plan 0060): a native speaker should review it.
 // stepper.* are drafts for native review (Plan 0083).
@@ -9,6 +10,7 @@ import type { KvirnMessages } from '../types.ts'
 export const fi = {
   link: { newTabNotice: '(avautuu uuteen välilehteen)' },
   field: { optional: '(vapaaehtoinen)', errorPrefix: 'Virhe:' },
+  radioGroup: { revealShown: 'Alle on tullut näkyviin kenttä.' },
   dateInput: {
     day: 'Päivä',
     month: 'Kuukausi',
@@ -434,4 +436,5 @@ export const fi = {
     trigger: 'Valitse päivät',
     title: 'Valitse päivämäärät',
   },
+  map: en.map,
 } satisfies KvirnMessages

@@ -1,12 +1,12 @@
 # DateInput
 
-> **Draft** (Plan 0013, Phase 3). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [date-input.a11y.md](date-input.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md) §6.6, and the decisions are in the forms skill.
+> The accessibility contract is [date-input.a11y.md](date-input.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md) §6.6, and the decisions are in the forms skill.
 
 **KvirnUI holds no form state; bring your own form logic.** DateInput renders what it's given. It keeps no value, never parses the date and doesn't validate it: the value is three strings in your form state, or in the native inputs.
 
-**Prefer one input.** For most dates, ask in one `TextInput` with `masks.date()` (see "One field instead of three" below, and the first story). The user knows the date by heart and types it in one go, there is one Tab stop instead of three, a pasted or autofilled date is reformatted, and a mobile keyboard shows digits. The three boxes below stay fully supported, for when you want separate labelled day, month and year, for screen reader users who prefer them, for a date of birth with `autoComplete="bday"`, and for auto-advance.
+**One field or three boxes.** For a date read off a document, ask in one `TextInput` with `masks.date()` (see "One field instead of three" below, and the first story): there is one Tab stop instead of three, a pasted or autofilled date is reformatted, and a mobile keyboard shows digits. A date the user knows by heart, such as a date of birth with `autoComplete="bday"`, stays three boxes: separate labelled day, month and year, with auto-advance. Both are fully supported.
 
-A DateInput asks for a date in three text boxes: day, month and year, in the order the user's region writes dates in. Use it for a date people know by heart, such as a date of birth or the date on a letter. For a date picked from a calendar near today, add a [DatePicker](../date-picker/date-picker.md) button after either form.
+A DateInput asks for a date in three text boxes: day, month and year, in the order the user's region writes dates in. Use it for a date people know by heart, such as a date of birth. For a date read off a document, use one `TextInput` with `masks.date()` (see "One field instead of three"). For a date picked from a calendar near today, add a [DatePicker](../date-picker/date-picker.md) button after either form.
 
 - Four parts: `DateInput.Root` (a `<div>`, the row of boxes) and `DateInput.Day`, `DateInput.Month` and `DateInput.Year`. Each box is a Field with a visible label and a native text `TextInput`. Each is also exported on its own (`DateInputRoot`, `DateInputDay`, `DateInputMonth`, `DateInputYear`), which is the form to import in a React Server Component, and the hook is `useDateInput`.
 - It goes inside a `Fieldset.Root` (use `group`) whose `Fieldset.Legend` asks the question, then the boxes, a `Fieldset.HelpText` under them with an example, and a `Fieldset.ErrorMessage`. The legend names the group, and the hint and the error describe it. Without a group the Root warns, and it warns when the Fieldset is neither `group` nor `required`: an optional date shows "(valfritt)" only on a `group` legend.
@@ -17,12 +17,12 @@ A DateInput asks for a date in three text boxes: day, month and year, in the ord
 
 ## API
 
-| Part              | Renders                                                                      | Props                                                                                                                                                                     |
-| ----------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DateInput.Root`  | `<div class="kv-date-input">`                                                | `name`, `value`, `defaultValue`, `onValueChange`, `autoComplete`, `required`, `disabled`, `readOnly`, `autoAdvance`, `invalidParts`, `messages`, `ref` and every div prop |
-| `DateInput.Day`   | `<div class="kv-field kv-date-input-day">` with a `<label>` and an `<input>` | `invalid`, `ref` (the input) and every `TextInput` prop except `type`, `value`, `defaultValue`, `onValueChange` and `mask`. Spread on the `<input>`                       |
-| `DateInput.Month` | the same, `kv-date-input-month`                                              | the same                                                                                                                                                                  |
-| `DateInput.Year`  | the same, `kv-date-input-year`                                               | the same                                                                                                                                                                  |
+| Part              | Renders                                                                      | Props                                                                                                                                                                                         |
+| ----------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DateInput.Root`  | `<div class="kv-date-input">`                                                | `name`, `value`, `defaultValue`, `onValueChange`, `autoComplete`, `required`, `disabled`, `readOnly`, `autoAdvance`, `invalidParts`, `messages`, `ref` and every div prop                     |
+| `DateInput.Day`   | `<div class="kv-field kv-date-input-day">` with a `<label>` and an `<input>` | `invalid`, `ref` (the input) and every `TextInput` prop except `type`, `value`, `defaultValue`, `onValueChange`, `mask`, `announceRejections`, `messages` and `part`. Spread on the `<input>` |
+| `DateInput.Month` | the same, `kv-date-input-month`                                              | the same                                                                                                                                                                                      |
+| `DateInput.Year`  | the same, `kv-date-input-year`                                               | the same                                                                                                                                                                                      |
 
 Props the controls can't show:
 
@@ -48,7 +48,7 @@ What the parts do on their own:
 | State attribute      | On                               | When                                                                                 |
 | -------------------- | -------------------------------- | ------------------------------------------------------------------------------------ |
 | `data-invalid`       | the box's field, label and input | The box is `invalid` or in `invalidParts`. The input also gets `aria-invalid="true"` |
-| `data-required`      | the box's field and label        | The Fieldset or the Root is `required`                                               |
+| `data-required`      | the box's field, label and input | The Fieldset or the Root is `required`                                               |
 | `data-disabled`      | the box's field, label and input | The Fieldset or the Root is `disabled`                                               |
 | `data-focus-visible` | the input                        | Keyboard focus (the `TextInput`'s own)                                               |
 

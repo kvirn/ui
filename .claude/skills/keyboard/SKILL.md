@@ -69,6 +69,7 @@ In `<name>.a11y.md`, under `## Keyboard`:
 - The `<name>.a11y.md` Keyboard section is the single source of truth. It is never copied by hand into a story, MDX or JSDoc.
 - A focus scope (`useFocus`, `FocusScope`) with `contain: 'loop'` wraps Tab and Shift+Tab only at its two ends, and every contained scope calls `onEscape` on Escape and gives a way out (2.1.2). `contain` without `onEscape` warns (`focus-scope-no-exit`). Prefer a native `<dialog>` or `inert` to a JS loop.
 - Approved deviations: Dialog and AlertDialog use the native modal `<dialog>`, so Tab leaves to browser UI before wrapping instead of cycling (2026-10-06; `references/key-tables.md`).
+- Approved deviation: Map (maintainer's approval 2026-10-14, Plan 0117, `docs/design/map.md` §7). There is no APG map pattern, and Leaflet's Tab stop per marker is unusable with many markers. The markers in view are one Tab stop (a group), arrows move between them, arrows on the viewport pan, `+`/`=` and `-` zoom, and Escape hides the keyboard hint. Keys are taken only while the viewport has focus, and never with Control or Command (browser zoom, 1.4.4).
 
 ## Common mistakes (reject in review)
 

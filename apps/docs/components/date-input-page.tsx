@@ -17,6 +17,10 @@ import {
 import { BirthDate } from '../examples/date-input/default.tsx'
 import { ControlledDate } from '../examples/date-input/controlled.tsx'
 import { NoAutoAdvance } from '../examples/date-input/no-auto-advance.tsx'
+import { OneFieldDate } from '../examples/date-input/one-field.tsx'
+import { OwnWordingDate } from '../examples/date-input/own-wording.tsx'
+import { ReadOnlyDate } from '../examples/date-input/read-only.tsx'
+import { DateWithPicker } from '../examples/date-input/with-picker.tsx'
 import { VisitDate } from '../examples/date-input/not-a-birthday.tsx'
 import { PaperFormOrder } from '../examples/date-input/paper-form-order.tsx'
 import { PlainForm } from '../examples/date-input/plain-form.tsx'
@@ -30,7 +34,11 @@ export type DateInputExampleSources = Record<
   | 'paper-form-order'
   | 'controlled'
   | 'plain-form'
-  | 'no-auto-advance',
+  | 'no-auto-advance'
+  | 'one-field'
+  | 'own-wording'
+  | 'read-only'
+  | 'with-picker',
   string
 >
 
@@ -43,7 +51,8 @@ const boxPart = (name: 'Day' | 'Month' | 'Year'): ApiPart => ({
       the props of a <code>TextInput</code> except <code>type</code>, <code>value</code>,{' '}
       <code>defaultValue</code>, <code>onValueChange</code>, <code>mask</code>,{' '}
       <code>announceRejections</code>, <code>messages</code> and <code>part</code>: the Root gives
-      it its name, value and autocomplete. The props and <code>ref</code> go to the input.
+      it its name, value, autocomplete and read-only state. The props and <code>ref</code> go to the
+      input.
     </>
   ),
   props: dateInputBoxRows,
@@ -55,8 +64,9 @@ const parts: ApiPart[] = [
     name: 'DateInput.Root',
     renders: (
       <>
-        <code>&lt;div&gt;</code> with no role, then the auto-advance hint. It takes every attribute
-        of a <code>&lt;div&gt;</code> and passes <code>ref</code> to it. Put it inside a{' '}
+        A <code>&lt;div&gt;</code> with no role that holds the boxes. While <code>autoAdvance</code>{' '}
+        is on, a <code>&lt;p&gt;</code> with the hint follows it. It takes every attribute of a{' '}
+        <code>&lt;div&gt;</code> and passes <code>ref</code> to the div. Put it inside a{' '}
         <code>Fieldset.Root</code> with a <code>Fieldset.Legend</code>. Without children it renders
         Day, Month and Year in the locale’s order. The default theme is described on{' '}
         <Link href="/foundation/theming">Theming</Link>.
@@ -80,13 +90,14 @@ export function DateInputPage({
   return (
     <ComponentPage
       title="DateInput"
-      lead="Each box has a visible label, so autofill, dictation and screen readers (software that reads the screen aloud) all work. It never parses or checks the date: that is your form’s job."
+      lead="Each box has its own visible label, and a date of birth can be filled in by the browser. It never reads or checks the date: that is your form’s job."
       status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
-            Use it for a date the user knows by heart or reads off a document, such as a date of
-            birth. Put it in a <code>Fieldset</code> whose legend asks the question.
+            Use it for a date the user knows by heart, such as a date of birth. Put it in a{' '}
+            <code>Fieldset</code> whose legend asks the question. Each part then gets its own
+            autofill token (1.3.5 Identify Input Purpose).
           </li>
           <li>
             Use it in forms for residents and for staff, wherever the date is typed rather than
@@ -95,8 +106,11 @@ export function DateInputPage({
             still works.
           </li>
           <li>
-            For most other dates, one <Link href="/components/text-input">TextInput</Link> with a
-            date mask is shorter: one box and one Tab stop instead of three.
+            For a date people read off a document, or most other dates, one{' '}
+            <Link href="/components/text-input">TextInput</Link> with <code>masks.date()</code> is
+            shorter: one box and one Tab stop instead of three. It only checks the shape, so check
+            the date with <code>checks.date</code>. The calendar button and read-only examples below
+            show it beside the boxes.
           </li>
           <li>
             Not for a time or a month alone: use a{' '}
@@ -158,7 +172,8 @@ export function DateInputPage({
               <>
                 Pass <code>value</code> and <code>onValueChange</code> from your form logic. The
                 Root reports the whole date as the boxes show it: three strings, never padded or
-                parsed. Checking it is your job, for example with <code>checks.date</code>.
+                parsed. Checking it is your job. Write the strings as <code>YYYY-MM-DD</code>, with
+                two digits for day and month, and pass that to <code>checks.date</code>.
               </>
             }
             code={sources['controlled']}
@@ -188,9 +203,93 @@ export function DateInputPage({
             <PlainForm />
           </UseCase>
           <UseCase
+            id="one-field"
+            title="A start date read off a document"
+            why={
+              <>
+                When people copy the date from a letter or a decision, ask in one{' '}
+                <Link href="/components/text-input">TextInput</Link> with <code>masks.date()</code>{' '}
+                instead of three boxes. It has one Tab stop, and a pasted or autofilled date is
+                reformatted. The mask follows the page’s locale, so write the example from the mask
+                itself. The mask checks the shape only: check the date with <code>checks.date</code>
+                .
+              </>
+            }
+            code={sources['one-field']}
+          >
+            <OneFieldDate />
+          </UseCase>
+          <UseCase
+            id="with-picker"
+            title="Booking a time: type the date or pick it"
+            why={
+              <>
+                For a date near today, put <code>DatePicker.Trigger</code> last in the row of boxes.
+                Typing still works. The picker holds no date: give it the date as <code>value</code>{' '}
+                and write the chosen day back, with <code>dateInputValueToIsoDate</code> and{' '}
+                <code>isoDateToDateInputValue</code> for the boxes. The second field is the
+                alternative described under “When to use it”: one <code>TextInput</code> with{' '}
+                <code>masks.date()</code>, bridged with <code>maskedDateToIsoDate</code> and{' '}
+                <code>isoDateToMaskedDate</code>.
+              </>
+            }
+            code={sources['with-picker']}
+            note={
+              <Note kind="tip">
+                Limits, closed days and the popup’s title are on the{' '}
+                <Link href="/components/date-picker">DatePicker</Link> page.
+              </Note>
+            }
+          >
+            <DateWithPicker />
+          </UseCase>
+          <UseCase
+            id="read-only"
+            title="A date a case officer can see but not change"
+            why={
+              <>
+                <code>readOnly</code> is for a staff tool that shows a date the user can’t change
+                here. The boxes stay focusable and selectable, and a form submit still sends them.
+                Say why in the help text. <code>disabled</code> (on the Root or the Fieldset) takes
+                the boxes out of the Tab order and out of the submit, so use it only when nobody
+                needs to read the value. In a resident form, avoid both and show the date as plain
+                text. Turn auto-advance off: nothing can be typed, so its hint would only confuse.
+              </>
+            }
+            code={sources['read-only']}
+            propsUsed={[
+              { part: 'DateInput.Root', prop: 'readOnly' },
+              { part: 'DateInput.Root', prop: 'autoAdvance' },
+            ]}
+          >
+            <ReadOnlyDate />
+          </UseCase>
+          <UseCase
+            id="own-wording"
+            title="Your own wording for one date"
+            why={
+              <>
+                Replace a string for one instance with <code>messages</code>: here the year box says
+                “Year of birth”. The one field takes the mask’s messages the same way, for the line
+                announced when a character is refused. To change a string for the whole service, set
+                it once in the provider instead.
+              </>
+            }
+            code={sources['own-wording']}
+            propsUsed={[{ part: 'DateInput.Root', prop: 'messages' }]}
+          >
+            <OwnWordingDate />
+          </UseCase>
+          <UseCase
             id="paper-form-order"
             title="Matching a paper form"
-            why="The order follows the region. When the service must match a paper form, write Day, Month and Year as children in the order you want, and write the example under the boxes in that order."
+            why={
+              <>
+                The order follows the region. When the service must match a paper form, write Day,
+                Month and Year as children in the order you want, and write the example under the
+                boxes in that order.
+              </>
+            }
             code={sources['paper-form-order']}
           >
             <PaperFormOrder />
@@ -214,15 +313,14 @@ export function DateInputPage({
             'what-you-need-to-do': (
               <Note kind="reminder">
                 Ask the question in the legend and write an example under the boxes, in the order
-                the boxes are in. Without them the three boxes have no shared name and nobody knows
-                the format (1.3.1 Info and Relationships, 3.3.2 Labels or Instructions).
+                the boxes are in. Without them the three boxes have no shared name and the format is
+                unclear (1.3.1 Info and Relationships, 3.3.2 Labels or Instructions).
               </Note>
             ),
             'known-issues': (
               <Note kind="tip">
-                If a screen reader does not read the group’s error when only one box is wrong, list
-                it in your accessibility statement with its workaround. Test it with the screen
-                readers your users have.
+                Anything on this list that your users may meet belongs in your accessibility
+                statement, with its workaround.
               </Note>
             ),
           }}

@@ -4,6 +4,7 @@ import type { KvirnMessages } from '../types.ts'
 export const en = {
   link: { newTabNotice: '(opens in a new tab)' },
   field: { optional: '(optional)', errorPrefix: 'Error:' },
+  radioGroup: { revealShown: 'An input field has appeared below.' },
   dateInput: {
     day: 'Day',
     month: 'Month',
@@ -418,5 +419,40 @@ export const en = {
   dateRangePicker: {
     trigger: 'Choose dates',
     title: 'Choose the dates',
+  },
+  map: {
+    roleDescription: 'map',
+    summary: ({ count }, format) =>
+      `The map shows ${format.plural(count, { one: '1 place', other: `${format.number(count)} places` })}. The same places are in the list.`,
+    keyboardHint: 'Move the map with the arrow keys. Zoom with + and −.',
+    skipToList: 'Skip the map, go to the list of places',
+    controlsLabel: 'Map controls',
+    markersLabel: 'Places in the map view',
+    zoomIn: 'Zoom in',
+    zoomOut: 'Zoom out',
+    zoomLimitIn: "You can't zoom in any further.",
+    zoomLimitOut: "You can't zoom out any further.",
+    reset: 'Whole map',
+    panNorth: 'Move the map north',
+    panSouth: 'Move the map south',
+    panEast: 'Move the map east',
+    panWest: 'Move the map west',
+    placesInView: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 place in the map view.',
+        other: `${format.number(count)} places in the map view.`,
+      }),
+    placesAll: ({ count }, format) =>
+      format.plural(count, { one: '1 place.', other: `${format.number(count)} places.` }),
+    loading: 'Loading the map',
+    tilesFailedTitle: "The map can't be shown right now",
+    tilesFailedBody: 'You can still find every place in the list.',
+    gestureTouch: 'Use two fingers to move the map',
+    gestureWheel: ({ modifier }) => `Hold ${modifier} and scroll to zoom the map`,
+    detailsClose: 'Close',
+    listEmpty: 'There are no places in the map view. Zoom out or move the map.',
+    attributionLabel: 'Map data',
+    baseMapLabel: 'Map type',
+    baseMapChanged: ({ label }) => `Map type: ${label}.`,
   },
 } satisfies KvirnMessages

@@ -18,6 +18,10 @@ export default function Page() {
         controlled: readExampleSource('date-input/controlled.tsx'),
         'plain-form': readExampleSource('date-input/plain-form.tsx'),
         'no-auto-advance': readExampleSource('date-input/no-auto-advance.tsx'),
+        'one-field': readExampleSource('date-input/one-field.tsx'),
+        'own-wording': readExampleSource('date-input/own-wording.tsx'),
+        'read-only': readExampleSource('date-input/read-only.tsx'),
+        'with-picker': readExampleSource('date-input/with-picker.tsx'),
       }}
     />
   )

@@ -110,7 +110,7 @@ The reader is clever and busy, may not code, and may read English as a second la
 ## Real examples
 
 - **Main example:** the component alone, with its defaults.
-- **Use cases:** 2–8, most common first, each a task from a Nordic or EU public service: applying for a permit, booking a time, reporting a fault, a staff list of cases. Not "Example 1" or lorem ipsum.
+- **Use cases:** at least 2, no upper limit, most common first, each a task from a Nordic or EU public service: applying for a permit, booking a time, reporting a fault, a staff list of cases. Not "Example 1" or lorem ipsum.
 - Each has a title that names the task, a description of when and why to use it (one or two plain sentences), the running example and its code. At most one note.
 - A use case shows something the main example doesn't. Two cases that differ by one prop are one case.
 - An example that waits (saving, loading) shows what is happening in words, and the contract's paired part (a Progress for a busy Button). An example with an error or a disabled control shows its error or its reason.

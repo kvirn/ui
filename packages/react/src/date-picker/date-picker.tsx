@@ -51,9 +51,9 @@ function useDatePickerContext(partName: string): UseDatePickerResult | null {
 
 /**
  * Owns the open state of a date picker and the date's range (contract: date-picker.a11y.md). It
- * renders no element: put the typed field (a DateInput or a `masks.date()` TextInput), then
- * `DatePicker.Trigger` and `DatePicker.Popup` inside it, and the Root inside the field's Fieldset
- * so the trigger sits in the row of boxes. It is controlled only: `value` is the field's date as
+ * renders no element: wrap the field's Fieldset in it, and put the typed field (a DateInput or a
+ * `masks.date()` TextInput), `DatePicker.Trigger` and `DatePicker.Popup` inside, so the trigger
+ * sits in the row of boxes. It is controlled only: `value` is the field's date as
  * `YYYY-MM-DD` (`dateInputValueToIsoDate`, `maskedDateToIsoDate`), and `onValueChange` is where
  * you write the chosen day back (`isoDateToDateInputValue`, `isoDateToMaskedDate`).
  *

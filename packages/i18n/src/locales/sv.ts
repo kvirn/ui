@@ -1,10 +1,12 @@
 import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
+import { en } from './en.ts'
 
 // displaySettings.* are drafts (Plan 0099): a native speaker should review them.
 export const sv = {
   link: { newTabNotice: '(öppnas i en ny flik)' },
   field: { optional: '(valfritt)', errorPrefix: 'Fel:' },
+  radioGroup: { revealShown: 'Ett fält har visats nedanför.' },
   dateInput: {
     day: 'Dag',
     month: 'Månad',
@@ -428,4 +430,5 @@ export const sv = {
     trigger: 'Välj datumen',
     title: 'Välj perioden',
   },
+  map: en.map,
 } satisfies KvirnMessages

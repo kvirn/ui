@@ -6154,6 +6154,15 @@
     font-feature-settings: var(--kv-font-body-small-feature-settings);
   }
 
+  /* RadioGroup.Reveal: the content that follows its radio. The bar and the indent tie it to that
+   * radio. A border is repainted in a system colour in forced colours, so the tie survives. No
+   * display is set, so [hidden] hides it, and nothing animates. */
+  .kv-radio-group-reveal {
+    margin-inline-start: var(--kv-space-2);
+    padding-inline-start: var(--kv-space-4);
+    border-inline-start: var(--kv-space-1) solid var(--kv-color-border-control);
+  }
+
   /* The error: label type at a fixed 16px, in danger, with the icon on the first line. The
    * icon sits in the padding, not in a flex row, so a link or emphasis inside the message
    * stays in the running text. */
@@ -12103,15 +12112,6 @@
     }
   }
 
-  /* 16. Display settings ------------------------------------------------------------------------
-   * kv-display-settings-*: the three radio groups in a Card. Inline, a Disclosure panel in flow that
-   * pushes the content down, on the content edge. Floating, a Popover popup in the top layer: the
-   * browser places it, the script sets its position and the popup only gets its look and width. */
-  .kv-display-settings-panel {
-    flex-basis: 100%;
-    padding-inline: 0;
-  }
-
   /* 15a. Map -----------------------------------------------------------------------------------
    * kv-map-*: the viewport (region), the engine surface, markers, controls, hint, status,
    * attribution, the place list and the details card. The map never mirrors: north is up and east
@@ -12448,6 +12448,15 @@
     .kv-map-viewport:focus-visible {
       outline-color: Highlight;
     }
+  }
+
+  /* 16. Display settings ------------------------------------------------------------------------
+   * kv-display-settings-*: the three radio groups in a Card. Inline, a Disclosure panel in flow that
+   * pushes the content down, on the content edge. Floating, a Popover popup in the top layer: the
+   * browser places it, the script sets its position and the popup only gets its look and width. */
+  .kv-display-settings-panel {
+    flex-basis: 100%;
+    padding-inline: 0;
   }
 
   .kv-display-settings-content {

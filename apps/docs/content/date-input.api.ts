@@ -64,7 +64,11 @@ export const dateInputRootRows = propRows<DateInputRootDocumentedProps>({
     default: 'The Fieldset’s',
     description: 'Native disabled on the three boxes.',
   },
-  readOnly: { type: 'boolean', default: '–', description: 'Native readOnly on the three boxes.' },
+  readOnly: {
+    type: 'boolean',
+    default: 'false',
+    description: 'Native readOnly on the three boxes.',
+  },
   autoAdvance: {
     type: 'boolean',
     default: 'true',
@@ -90,7 +94,7 @@ export type DateInputBoxDocumentedProps = Pick<DateInputBoxProps, 'invalid'>
 export const dateInputBoxRows = propRows<DateInputBoxDocumentedProps>({
   invalid: {
     type: 'boolean',
-    default: 'false',
+    default: 'In invalidParts, else false',
     description:
       'This box is wrong: aria-invalid and data-invalid on its input, label and field. The Fieldset’s invalid marks none of the boxes.',
   },
@@ -131,7 +135,17 @@ export const dateInputBoxAttributes: readonly AttributeRow[] = [
   {
     name: 'aria-invalid',
     values: '"true" or absent',
-    meaning: 'On the input when this box is invalid. Not passed directly.',
+    meaning: 'On the input when this box is invalid. Set invalid, not this.',
+  },
+  {
+    name: 'data-required',
+    values: 'present or absent',
+    meaning: 'On the input, its label and its field when the Fieldset or the Root is required.',
+  },
+  {
+    name: 'data-disabled',
+    values: 'present or absent',
+    meaning: 'On the input, its label and its field when the Fieldset or the Root is disabled.',
   },
   {
     name: 'autocomplete',
@@ -209,7 +223,7 @@ export const useDateInputHook: ApiHook = {
       type: '(part) => DateInputInputPartProps',
       default: '–',
       description:
-        'Spread on a box’s input: name, inputMode, spellCheck, autoComplete, value or defaultValue, onChange and the ref the hook needs.',
+        'Spread on a box’s input: name, inputMode, spellCheck, autoComplete, value or defaultValue, readOnly, onChange and the ref the hook needs.',
     },
   }),
 }

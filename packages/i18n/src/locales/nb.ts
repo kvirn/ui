@@ -1,5 +1,6 @@
 import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
+import { en } from './en.ts'
 
 // nb: copyButton.* is a draft (Plan 0060): a native speaker should review it.
 // breadcrumb.* and pagination.* are drafts for a native speaker to review (Plan 0062).
@@ -8,6 +9,7 @@ import type { KvirnMessages } from '../types.ts'
 export const nb = {
   link: { newTabNotice: '(åpnes i en ny fane)' },
   field: { optional: '(valgfritt)', errorPrefix: 'Feil:' },
+  radioGroup: { revealShown: 'Et felt har dukket opp nedenfor.' },
   dateInput: {
     day: 'Dag',
     month: 'Måned',
@@ -428,4 +430,5 @@ export const nb = {
     trigger: 'Velg datoer',
     title: 'Velg datoene',
   },
+  map: en.map,
 } satisfies KvirnMessages

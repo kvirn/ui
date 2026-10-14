@@ -62,6 +62,14 @@ export interface KvirnMessages {
      */
     errorPrefix: TextMessage
   }
+  radioGroup: {
+    /**
+     * Said politely when choosing an option makes a field appear in place, for example `Ett fält
+     * har visats nedanför.` Focus stays on the radio, so this is how a screen reader user learns
+     * there is more to fill in (WCAG 4.1.3).
+     */
+    revealShown: TextMessage
+  }
   dateInput: {
     /** The label of the day box of a `DateInput`, for example `Dag`. Owned by DateInput (Plan 0013). */
     day: TextMessage
@@ -664,6 +672,43 @@ export interface KvirnMessages {
     trigger: TextMessage
     /** The dialog's title. The consumer can replace it with the question: `Choose the dates of your stay`. */
     title: TextMessage
+  }
+  /**
+   * The map (`@kvirn-ui/map`, plan 0117, design spec `docs/design/map.md` §4). Announced sentences
+   * end with their full stop. The map's own name, layer names and place data are the consumer's.
+   */
+  map: {
+    roleDescription: TextMessage
+    /** Read after the name: how many places are drawn. The list holds the same places. */
+    summary: MessageFunction<{ count: number }>
+    keyboardHint: TextMessage
+    skipToList: TextMessage
+    controlsLabel: TextMessage
+    markersLabel: TextMessage
+    zoomIn: TextMessage
+    zoomOut: TextMessage
+    zoomLimitIn: TextMessage
+    zoomLimitOut: TextMessage
+    reset: TextMessage
+    panNorth: TextMessage
+    panSouth: TextMessage
+    panEast: TextMessage
+    panWest: TextMessage
+    placesInView: MessageFunction<{ count: number }>
+    placesAll: MessageFunction<{ count: number }>
+    loading: TextMessage
+    tilesFailedTitle: TextMessage
+    tilesFailedBody: TextMessage
+    gestureTouch: TextMessage
+    /** `modifier` is the key's name, `Ctrl` or `Command`. */
+    gestureWheel: MessageFunction<{ modifier: string }>
+    detailsClose: TextMessage
+    listEmpty: TextMessage
+    attributionLabel: TextMessage
+    /** The legend of the map type switch: `Map type`. */
+    baseMapLabel: TextMessage
+    /** Announced after the visitor switches. `label` is the base map's name, the consumer's. */
+    baseMapChanged: MessageFunction<{ label: string }>
   }
 }
 
