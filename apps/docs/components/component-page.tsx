@@ -64,6 +64,8 @@ export interface ComponentPageProps {
   /** The rest of the lead: its first sentence is the page's `summary` in `site-sections.ts`. */
   lead?: string
   status: ComponentStatus
+  /** The package to install and import from. Default: `@kvirn-ui/react`. */
+  packageName?: string
   /** The `Pattern` fact, such as "APG Tabs". The row is left out when a page gives none. */
   pattern?: string
   /** When, where and when not: the content of the "When to use it" section. */
@@ -165,7 +167,7 @@ function Fact({ term, children }: { term: string; children: ReactNode }) {
  */
 export function ComponentPage(props: ComponentPageProps) {
   const parts = pageParts(props)
-  const { status, pattern } = props
+  const { status, packageName = '@kvirn-ui/react', pattern } = props
   return (
     <DocsPage
       title={props.title}
@@ -174,6 +176,9 @@ export function ComponentPage(props: ComponentPageProps) {
         <>
           <Fact term={text.label}>
             <Badge variant={statusVariants[status]}>{statusLabels[status]}</Badge>
+          </Fact>
+          <Fact term={factText.package}>
+            <code>{packageName}</code>
           </Fact>
           {pattern === undefined ? null : <Fact term={factText.pattern}>{pattern}</Fact>}
         </>

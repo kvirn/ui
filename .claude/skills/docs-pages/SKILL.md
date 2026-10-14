@@ -12,13 +12,13 @@ The template is [references/component-page-template.md](references/component-pag
 
 ## Where each part comes from
 
-| Page part                                            | Source file                                                          | Who may change it                                                        |
-| ---------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Title, description, status, pattern, When to use it  | `apps/docs/components/<name>-page.tsx`                               | docs-writer                                                              |
-| Example and use cases                                | `apps/docs/examples/<name>/*.tsx`, `texts.ts`                        | docs-writer                                                              |
-| Accessibility, Keyboard, Known issues, Announcements | `packages/*/src/<name>/<name>.a11y.md` (the contract)                | docs-writer for wording only; a changed claim goes to component-engineer |
-| API reference                                        | `apps/docs/content/<name>.api.ts`                                    | docs-writer, verified against `<name>.tsx` and `use-<name>.ts`           |
-| Template order, header facts, section titles         | `component-page.tsx`, `contract-sections-view.tsx`, `messages/en.ts` | component-engineer (a template change, not a page change)                |
+| Page part                                                    | Source file                                                          | Who may change it                                                        |
+| ------------------------------------------------------------ | -------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Title, description, status, package, pattern, When to use it | `apps/docs/components/<name>-page.tsx`                               | docs-writer                                                              |
+| Example and use cases                                        | `apps/docs/examples/<name>/*.tsx`, `texts.ts`                        | docs-writer                                                              |
+| Accessibility, Keyboard, Known issues, Announcements         | `packages/*/src/<name>/<name>.a11y.md` (the contract)                | docs-writer for wording only; a changed claim goes to component-engineer |
+| API reference                                                | `apps/docs/content/<name>.api.ts`                                    | docs-writer, verified against `<name>.tsx` and `use-<name>.ts`           |
+| Template order, header facts, section titles                 | `component-page.tsx`, `contract-sections-view.tsx`, `messages/en.ts` | component-engineer (a template change, not a page change)                |
 
 The summary sentence comes from `componentPages` in `site-sections.ts`; status words from `docs/roadmap.md`.
 

@@ -224,6 +224,7 @@ export function RichTextEditorPage({
       title="RichTextEditor"
       lead="Its output is not sanitized: clean it on your server before you store or publish it."
       status="alpha-candidate"
+      packageName="@kvirn-ui/rich-text"
       pattern="APG Toolbar (above a multi-line text)"
       whenToUse={
         <ul>

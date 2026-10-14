@@ -710,6 +710,7 @@ export const messages = {
       next: 'Next page',
     },
     facts: {
+      package: 'Package',
       pattern: 'Pattern',
     },
     search: {

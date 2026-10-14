@@ -64,16 +64,26 @@ describe('component page facts', () => {
   const factsList = () => document.querySelector('dl')!
   const termsOf = () => [...factsList().querySelectorAll('dt')].map((term) => term.textContent)
 
-  test('the facts are Status and, when the page names its pattern, Pattern', async () => {
+  test('the facts are Status, Package and, when the page names its pattern, Pattern', async () => {
     await renderPage({ pattern: 'APG Tabs' })
-    expect(termsOf()).toEqual([messages.docs.status.label, facts.pattern])
+    expect(termsOf()).toEqual([messages.docs.status.label, facts.package, facts.pattern])
     expect(factsList().textContent).toContain(messages.docs.status.alphaCandidate)
     expect(factsList().textContent).toContain('APG Tabs')
   })
 
-  test('a page that gives no pattern has the Status fact alone', async () => {
+  test('a page that gives no pattern has Status and Package', async () => {
     await renderPage()
-    expect(termsOf()).toEqual([messages.docs.status.label])
+    expect(termsOf()).toEqual([messages.docs.status.label, facts.package])
+  })
+
+  test('the package is @kvirn-ui/react by default', async () => {
+    await renderPage()
+    expect(factsList().querySelector('code')?.textContent).toBe('@kvirn-ui/react')
+  })
+
+  test('a page in another package names it', async () => {
+    await renderPage({ packageName: '@kvirn-ui/rich-text' })
+    expect(factsList().querySelector('code')?.textContent).toBe('@kvirn-ui/rich-text')
   })
 
   test('the status sentence follows the facts unless the component is stable', async () => {
