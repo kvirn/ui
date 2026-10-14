@@ -128,10 +128,6 @@ export default function ThemingPage() {
 :root[data-reduce-motion='true'] .kv-table[data-busy] .kv-table-column-header,
 :root[data-reduce-motion='true'] .kv-table[data-busy] .kv-table-head > tr:last-child::after {
   animation: none;
-}
-
-:root[data-reduce-motion='true'] .kv-button[data-busy] > .kv-spinner {
-  animation: kv-spinner-reveal 1ms steps(1, end) 1000ms both;
 }`}
               />
               <p>

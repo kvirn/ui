@@ -70,7 +70,7 @@ export const NoCases: Story = {
   },
 }
 
-/** Fetching the cases: a Progress label, not a spinner alone. It shows after a second. */
+/** Fetching the cases: a Progress label, not a spinner alone. It shows at once. */
 export const Loading: Story = {
   globals: { ...wideGlobals },
   render: () => <MyPages state="loading" />,

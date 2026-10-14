@@ -3,7 +3,7 @@
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-06
 - **Plan:** 0073 (to be written; task split in §10)
-- **Superseded in part (Plan 0080):** D2 ("no spinner, no indeterminate bar") and the motion rules (§6.4, "nothing moves", "busy = cursor only", "no new token") by [loading-indicators.md](loading-indicators.md). The text-first rules, the announcements and the 1000 ms and 10 s timings stand.
+- **Superseded in part (Plan 0080):** D2 ("no spinner, no indeterminate bar") and the motion rules (§6.4, "nothing moves", "busy = cursor only", "no new token") by [loading-indicators.md](loading-indicators.md). The text-first rules, the announcements and the 10 s slow limit stand. The show delay is 0 ms by maintainer choice (a 1000 ms lag read as a missing icon).
 - **Type:** component default styling (`kv-progress`, `kv-empty-state`) + behaviour rules + a page-level pattern table
 - **Aligns with, does not re-specify:** Table `isLoading` / `Table.Empty` (`table.a11y.md`), Combobox `isLoading` / `.Empty` (`combobox.a11y.md`), `FileUpload.Status` and `.Progress` (`file-upload.a11y.md`), Alert and its announcement rules ([alert.md](alert.md) §7.2), Toast ([toast.md](toast.md)), `useRouteFocus`, Dialog's busy question ([dialog.md](dialog.md) Q2, [toast.md](toast.md) Q4: answered in §6.3)
 
@@ -46,11 +46,10 @@
 ## 4. Flow
 
 1. User acts (presses Send, changes a filter, opens a route). Button gets `busy`; `Progress` mounts with its label.
-2. Done in under 1 s: nothing shown, nothing said. The result speaks for itself (§8).
-3. Over 1 s: Label text shown where the result will appear (or beside the busy button); polite announcement once.
-4. Over 10 s: the slow sentence is added to the Label; announced once.
-5. Determinate: the bar fills and the Label shows the percent; no announcements.
-6. Ends: Progress unmounts silently. Success → the result's own announcement or focus move (§8). Failure → `Alert.Danger` near the button with `announce="polite"`, Button `busy` off, focus stays on the button.
+2. Label text shown at once (`delayMilliseconds` can hold it back) where the result will appear (or beside the busy button); polite announcement once.
+3. Over 10 s: the slow sentence is added to the Label; announced once.
+4. Determinate: the bar fills and the Label shows the percent; no announcements.
+5. Ends: Progress unmounts silently. Success → the result's own announcement or focus move (§8). Failure → `Alert.Danger` near the button with `announce="polite"`, Button `busy` off, focus stays on the button.
 
 Unhappy paths: failure (6), offline mid-wait (§8 offline), cancel (the consumer's secondary button, never inside Progress), user navigates away (Progress unmounts, nothing announced), double press (blocked by D4).
 
@@ -85,7 +84,7 @@ Story and docs fixtures (not library keys; consumer copy): `Loading your cases.`
 | Progress.Root      | `kv-progress`          | Block, `gap: --kv-space-2`, no border, no background                                                                                                | Sits on `canvas`, `surface` or `surface-raised` only, never inside an alert's `-subtle` fill (unmeasured pairs) |
 | Progress.Label     | `kv-progress-label`    | `body` role, `text` colour (never `text-muted`: users need it)                                                                                      | Wraps; hyphenates                                                                                               |
 | Progress.Bar       | `kv-progress-bar`      | FileUpload's bar: `block-size: --kv-space-2`, `border-width` `border-control` edge, `surface` track, `primary` value, `radius-sm`, full inline size | Renders only with a numeric `value`                                                                             |
-| Button busy        | `kv-button[data-busy]` | Unchanged look and depth, `cursor: progress`, plus a `kv-spinner` after 1000 ms (Plan 0080). **Not** the dashed disabled edge                       | Busy isn't "unavailable until you fix something"; the text beside it says what's happening                      |
+| Button busy        | `kv-button[data-busy]` | Unchanged look and depth, `cursor: progress`, plus a `kv-spinner` at once (Plan 0080). **Not** the dashed disabled edge                             | Busy isn't "unavailable until you fix something"; the text beside it says what's happening                      |
 | EmptyState         | `kv-empty-state`       | Block, `padding-block: --kv-space-6` (as `--kv-table-empty-padding-block`), start-aligned, no border, no background, no illustration                | Never centred: start alignment holds at 400% and in RTL                                                         |
 | EmptyState title   | `kv-empty-state-title` | On the consumer's `Heading` at the right level; `heading` colour                                                                                    | Level from context, not the class                                                                               |
 | EmptyState body    | `kv-empty-state-body`  | `body`, `text`, line length as Prose (~70 characters)                                                                                               | Instructions, so never muted                                                                                    |
@@ -123,7 +122,7 @@ No new tokens. Every pair is already measured by `theme:check`: `text` on the th
 
 | Part          | Element / role                                  | ARIA / state                                                                                                             |
 | ------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Root          | `<div>`, no role                                | `data-state="busy" \| "slow"`, `data-determinate`. Not rendered before `delayMilliseconds` (default 1000)                |
+| Root          | `<div>`, no role                                | `data-state="busy" \| "slow"`, `data-determinate`. Not rendered before `delayMilliseconds` (default 0)                   |
 | Label         | `<p>` with a `<span id>` holding the label only | none. Never a live region                                                                                                |
 | Bar           | `<progress>` (implicit `progressbar`)           | `aria-labelledby` the label span (not the percent or slow text: the value already says it); `value`, `max` (default 100) |
 | `useProgress` | the same, for your own markup                   | `isShown`, `isSlow`, `rootProps`, `labelProps`, `barProps`                                                               |
@@ -167,7 +166,7 @@ No role, no live region, no strings, no focus. A filter that empties a list anno
 
 | State                              | Show                                                             | Parts                                                         | Focus                                     | Announce                                                                                       |
 | ---------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Loading a page (client route)      | `h1` at once, Progress in place of the content                   | `useRouteFocus`, Progress                                     | `h1` (route focus)                        | Route focus reads the title; Progress after 1 s                                                |
+| Loading a page (client route)      | `h1` at once, Progress in place of the content                   | `useRouteFocus`, Progress                                     | `h1` (route focus)                        | Route focus reads the title; Progress at once                                                  |
 | Loading a region (filter, refresh) | Progress in place of the region, or the component's own state    | Progress; Table `isLoading`; Combobox `isLoading`             | stays                                     | Progress once; then the result count from the component                                        |
 | Busy after an action               | Button `busy` + Progress beside it                               | Button, Progress                                              | stays on the button                       | Progress once; result per alert.md §7.2                                                        |
 | Empty, nothing yet                 | EmptyState: what will appear, how to start, one action           | `kv-empty-state`, Heading, Button/Link                        | –                                         | none (content)                                                                                 |
@@ -206,7 +205,7 @@ Never: a Toast for an error. A job in progress may be a Toast with `busy` (a spi
 ## 11. Open questions for the maintainer
 
 1. ~~Approve D2 (no spinner, no indeterminate bar)~~ (rejected: Plan 0080) and D4 (`busy` = `aria-disabled`, unchanged look plus `cursor: progress`)?
-2. Defaults: 1000 ms show delay and 10 000 ms slow; both options. Agree?
+2. Defaults: 0 ms show delay and 10 000 ms slow; both options. Agree?
 3. Align Combobox `combobox.loading` ("Loading results") with the full-stop rule? A one-string fix, out of this scope.
 4. Where do page-state examples live: a new `Patterns/` Storybook section now, or the Progress and Alert docs pages until S1?
 5. Should FileUpload later reuse `kv-progress-bar` (and drop its hatch)? Not in this plan (rule 10).

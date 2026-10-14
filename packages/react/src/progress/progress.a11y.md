@@ -6,13 +6,13 @@
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `progress.test.tsx` next to this file, and `packages/core/src/progress/progress-timer.test.ts` for the timing. `progress.stories.tsx` in `apps/storybook/src/components/progress/`.
 
-Progress says that something is working and, when known, how far along. It is for a wait the user started (a send, a filter, a route), placed where the result will appear or beside the busy button. It renders nothing for the first second, so a quick wait never flashes. Table, Combobox and FileUpload keep their own loading text.
+Progress says that something is working and, when known, how far along. It is for a wait the user started (a send, a filter, a route), placed where the result will appear or beside the busy button. It renders at once; `delayMilliseconds` holds it back for a wait that is often quick. Table, Combobox and FileUpload keep their own loading text.
 
 ## Roles, states, properties
 
 | Part               | Element / role                | ARIA / state                                                                                                                      | Notes                                                                                                                                                                                                                                                         |
 | ------------------ | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Progress.Root      | `<div>`, no role              | `data-state="busy"` or `"slow"`, `data-determinate` with a value. Never `aria-live`, never `aria-busy`                            | Class `kv-progress`. Not rendered before `delayMilliseconds` (1000). Props: `label`, `value`, `max`, `delayMilliseconds`, `slowAfterMilliseconds`, `announce`, `messages`                                                                                     |
+| Progress.Root      | `<div>`, no role              | `data-state="busy"` or `"slow"`, `data-determinate` with a value. Never `aria-live`, never `aria-busy`                            | Class `kv-progress`. Not rendered before `delayMilliseconds` (default 0). Props: `label`, `value`, `max`, `delayMilliseconds`, `slowAfterMilliseconds`, `announce`, `messages`                                                                                |
 | Progress.Label     | `<p>` holding `<span id>`     | none. Never a live region                                                                                                         | Class `kv-progress-label`. The `<span id>` is the label text only; the percent (`kv-progress-percent`) and the slow sentence (`kv-progress-slow`) are separate spans after it                                                                                 |
 | Progress.Indicator | `<span>`, no role             | `aria-hidden="true"`, not focusable                                                                                               | Class `kv-spinner` (`kv-spinner--sm`, `--lg`), a direct child of the Root before the label. Renders only without a `value`: one indicator per wait. Loops while the wait lasts and shows its still rest shape under reduced motion; the text carries the wait |
 | Progress.Bar       | `<progress>` → `progressbar`  | `value`, `max` (100), `aria-labelledby` the label span, `aria-valuetext` (`progress.valueText`: `Exporting cases, 45%`)           | Class `kv-progress-bar`. Renders only with a numeric `value`: an unknown wait has no bar and no `progressbar` role                                                                                                                                            |
@@ -110,12 +110,12 @@ Both go through the shared Announcer. `announce={false}` opts out (when focus al
 | JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
 | Dragon / Voice Control                   | pending     | pending     | pending |       |
 
-Questions for the screen reader tests: is the label announced once after a second, with no repeat? Does a screen reader read both the bar's name and `aria-valuetext` redundantly ("Exporting cases, progress bar, Exporting cases, 45%")? Does a busy button read as unavailable and keep its place?
+Questions for the screen reader tests: is the label announced once, at once, with no repeat? Does a screen reader read both the bar's name and `aria-valuetext` redundantly ("Exporting cases, progress bar, Exporting cases, 45%")? Does a busy button read as unavailable and keep its place?
 
 ## Known issues
 
 - **`aria-valuetext` repeats the label.** The message `progress.valueText` is `{label}, {percent}`, so a screen reader may read the label twice. Manual AT decides whether the bar should drop it and let the native percent speak.
 - **`aria-valuetext` is built from the Root's `label`,** not from `Progress.Label` children. Keep the same words in both, or the bar's name and its value text differ.
 - **A `label` that changes while waiting is not announced again.** Remount the Root with a `key` when the wait is a new one.
-- **Unmounting within 100 ms after the Announcer was given a message may still speak it:** the Announcer fills its region 100 ms after the call.
+- **Unmounting within 100 ms after the Announcer was given a message may still speak it:** the Announcer fills its region 100 ms after the call. With the default delay of 0 this is every wait shorter than about 100 ms: the label is spoken after the Progress has gone. Set `delayMilliseconds` for a wait that is usually quick.
 - **A slow limit less than 100 ms after the label** replaces the label before it is spoken; the slow sentence is still announced.

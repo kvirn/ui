@@ -506,7 +506,7 @@ export const ThemeOverride: Story = {
 
 /**
  * The action is running: `aria-disabled="true"` and `data-busy`, never native `disabled`, so the
- * look and depth stay, a decorative spinner shows first (after 1000 ms), focus stays and every press is blocked. Pair it
+ * look and depth stay, a decorative spinner shows first (at once), focus stays and every press is blocked. Pair it
  * with a Progress beside it (Components/Progress).
  */
 export const Busy: Story = {

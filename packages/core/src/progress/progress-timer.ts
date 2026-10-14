@@ -13,7 +13,7 @@ export interface ProgressTimerEnv {
 export type ProgressPhase = 'waiting' | 'shown' | 'slow'
 
 export interface ProgressTimerOptions {
-  /** How long a wait stays invisible, so a quick one never flashes. Default 1000. */
+  /** How long a wait stays invisible, before it is shown. Default 0: shown at once. */
   delayMilliseconds?: number | undefined
   /**
    * When, counted from `start`, the wait counts as slow. `false` never. Default 10000. It is
@@ -35,14 +35,14 @@ export interface ProgressTimerActions {
 
 export type ProgressTimer = ComponentStore<ProgressTimerState, ProgressTimerActions>
 
-export const defaultProgressDelayMilliseconds = 1000
+export const defaultProgressDelayMilliseconds = 0
 export const defaultProgressSlowAfterMilliseconds = 10_000
 
 const isUsable = (value: number | undefined): value is number =>
   value !== undefined && Number.isFinite(value) && value >= 0
 
 /**
- * The timing behind Progress: nothing for the first second, then shown, then slow after ten
+ * The timing behind Progress: shown at once, then slow after ten
  * seconds. Pure: the percent is not here, and no strings. `env` is `undefined` while server
  * rendering, when no timer can run and the phase stays `waiting`.
  */

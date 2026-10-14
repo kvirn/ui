@@ -47,7 +47,7 @@ function createFakeEnv() {
 describe('createProgressTimer', () => {
   test('stays waiting inside the show delay, so a quick wait never shows', () => {
     const clock = createFakeEnv()
-    const timer = createProgressTimer(clock.env)
+    const timer = createProgressTimer(clock.env, { delayMilliseconds: 1000 })
     timer.actions.start()
     clock.advance(999)
     expect(timer.getState().phase).toBe('waiting')
@@ -57,13 +57,13 @@ describe('createProgressTimer', () => {
     expect(clock.pendingTimers()).toBe(0)
   })
 
-  test('is shown after 1000 ms and slow after 10000 ms by default', () => {
+  test('is shown at once and slow after 10000 ms by default', () => {
     const clock = createFakeEnv()
     const timer = createProgressTimer(clock.env)
     timer.actions.start()
-    clock.advance(1000)
+    clock.advance(0)
     expect(timer.getState().phase).toBe('shown')
-    clock.advance(8999)
+    clock.advance(9999)
     expect(timer.getState().phase).toBe('shown')
     clock.advance(1)
     expect(timer.getState().phase).toBe('slow')
@@ -103,7 +103,7 @@ describe('createProgressTimer', () => {
 
   test('start again begins a new wait', () => {
     const clock = createFakeEnv()
-    const timer = createProgressTimer(clock.env)
+    const timer = createProgressTimer(clock.env, { delayMilliseconds: 1000 })
     timer.actions.start()
     clock.advance(5000)
     timer.actions.start()
@@ -121,9 +121,9 @@ describe('createProgressTimer', () => {
       slowAfterMilliseconds: -5,
     })
     timer.actions.start()
-    clock.advance(1000)
+    clock.advance(0)
     expect(timer.getState().phase).toBe('shown')
-    clock.advance(9000)
+    clock.advance(10_000)
     expect(timer.getState().phase).toBe('slow')
   })
 

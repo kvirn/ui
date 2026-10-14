@@ -84,7 +84,7 @@ export function progressTextsFor(locale: FormLocale): {
 
 /**
  * The pattern for a long action: the Button is `busy` (focus stays, every press is blocked) and
- * a Progress sits right after it. It is hidden for the first second and announced once. On
+ * a Progress sits right after it. It shows at once and is announced once. On
  * failure the Progress goes, an Alert takes its place and `busy` turns off.
  */
 export function SendApplication({

@@ -21,7 +21,7 @@ export interface UseProgressOptions {
   value?: number | undefined
   /** The value that means done. Default 100. */
   max?: number | undefined
-  /** How long a wait stays invisible, so a quick one never flashes. Default 1000. */
+  /** How long a wait stays invisible, before it is shown. Default 0: shown at once. */
   delayMilliseconds?: number | undefined
   /** When, counted from mounting, the slow sentence is added. `false` never. Default 10000. */
   slowAfterMilliseconds?: number | false | undefined
@@ -78,8 +78,8 @@ export interface UseProgressResult {
 }
 
 /**
- * A wait's behaviour for your own markup (contract: progress.a11y.md): hidden for the first
- * second, shown and announced once, a slow sentence after ten seconds, and a native bar only
+ * A wait's behaviour for your own markup (contract: progress.a11y.md): shown at once
+ * (`delayMilliseconds` holds it back), announced once, a slow sentence after ten seconds, and a native bar only
  * when the value is known. Render nothing while `isShown` is `false`.
  *
  * @example

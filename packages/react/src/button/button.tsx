@@ -95,7 +95,7 @@ export function Button({
 
   return (
     <button {...mergeProps(otherProps, button.buttonProps)} ref={mergedRef}>
-      {/* Decorative and first, so the name stays the visible text (2.5.3). The 1000 ms delay is CSS. */}
+      {/* Decorative and first, so the name stays the visible text (2.5.3). */}
       {button.isBusy ? <span className="kv-spinner" aria-hidden="true" /> : null}
       {children}
     </button>

@@ -49,8 +49,8 @@ function useProgressContext(partName: string): ReturnType<typeof useProgress> | 
 }
 
 /**
- * A wait that is shown only after a second, announced once, with a slow sentence after ten
- * seconds (contract: progress.a11y.md). Renders nothing until it is shown.
+ * A wait that is shown at once (`delayMilliseconds` holds it back), announced once, with a
+ * slow sentence after ten seconds (contract: progress.a11y.md). Renders nothing until it is shown.
  * Put it where the result will appear, or beside the busy button. Needs a `KvirnProvider`
  * to announce.
  *

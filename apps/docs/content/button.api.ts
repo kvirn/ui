@@ -71,7 +71,7 @@ export const buttonAttributes: readonly AttributeRow[] = [
   {
     name: 'data-busy',
     values: 'present or absent',
-    meaning: 'Set while busy and not disabled. The theme shows the spinner after 1000 ms.',
+    meaning: 'Set while busy and not disabled. The theme shows the spinner at once.',
   },
   {
     name: 'data-focus-visible',

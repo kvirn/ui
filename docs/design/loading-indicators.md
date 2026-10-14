@@ -50,17 +50,17 @@ No new string. The indicators are `aria-hidden` and have no name; `progress.load
 
 ## 5. Pick per use
 
-| Use                         | Indicator                                                                                                                                       | Lockup (text first)                                                   |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| Progress, unknown wait      | `kv-spinner` (1.25em) at the inline start of `kv-progress-label`, centred on its first line                                                     | Spinner · label; the slow sentence is added at 10 s                   |
-| Progress, known value       | `kv-progress-bar` (native, 8px): `primary` → `accent` fill with the sheen                                                                       | Label · percent above the bar. No spinner                             |
-| Compact known value         | `kv-spinner` + the percent in text (a table cell, a toast)                                                                                      | Spinner · label · percent                                             |
-| Button busy                 | `kv-spinner` at the button's inline start, `currentColor`, shown after 1000 ms (a CSS visibility step; the spinner then loops); label unchanged | The Progress beside it carries the words, **without** its own spinner |
-| Table busy                  | A thin 4px sweep along the head's lower edge                                                                                                    | Unchanged: "Loading rows."                                            |
-| Toast, job in progress      | `kv-spinner` in the icon slot (`kv-alert-icon kv-spinner`), `--kv-alert-accent`; no auto-dismiss timer                                          | Title + body; replaced by the result toast                            |
-| FileUpload, unknown size    | **`kv-progress-track`** in place of the indeterminate `<progress>` hatch (same plan)                                                            | Unchanged status text ("Laddar upp")                                  |
-| Page loading (client route) | Progress with a spinner, in place of the content, start-aligned under the `h1`                                                                  | As unknown wait; route focus reads the `h1`                           |
-| Fixed media area            | `kv-spinner--lg` centred, label below. The only centred use                                                                                     | –                                                                     |
+| Use                         | Indicator                                                                                                     | Lockup (text first)                                                   |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Progress, unknown wait      | `kv-spinner` (1.25em) at the inline start of `kv-progress-label`, centred on its first line                   | Spinner · label; the slow sentence is added at 10 s                   |
+| Progress, known value       | `kv-progress-bar` (native, 8px): `primary` → `accent` fill with the sheen                                     | Label · percent above the bar. No spinner                             |
+| Compact known value         | `kv-spinner` + the percent in text (a table cell, a toast)                                                    | Spinner · label · percent                                             |
+| Button busy                 | `kv-spinner` at the button's inline start, `currentColor`, shown at once (the spinner loops); label unchanged | The Progress beside it carries the words, **without** its own spinner |
+| Table busy                  | A thin 4px sweep along the head's lower edge                                                                  | Unchanged: "Loading rows."                                            |
+| Toast, job in progress      | `kv-spinner` in the icon slot (`kv-alert-icon kv-spinner`), `--kv-alert-accent`; no auto-dismiss timer        | Title + body; replaced by the result toast                            |
+| FileUpload, unknown size    | **`kv-progress-track`** in place of the indeterminate `<progress>` hatch (same plan)                          | Unchanged status text ("Laddar upp")                                  |
+| Page loading (client route) | Progress with a spinner, in place of the content, start-aligned under the `h1`                                | As unknown wait; route focus reads the `h1`                           |
+| Fixed media area            | `kv-spinner--lg` centred, label below. The only centred use                                                   | –                                                                     |
 
 Never: an indicator alone, two moving indicators for one wait, a skeleton over the user's own answers. Dual-arc, dots, stripes, glow and skeletons don't ship.
 
@@ -87,7 +87,7 @@ Never: an indicator alone, two moving indicators for one wait, a skeleton over t
 | Determinate sheen           | `--kv-progress-sheen` -30 % → 130 %                                                                                                                                                                   | `loop`; the fill eases on a value change over `--kv-duration-fast` | `--kv-easing-standard`                                                                  |
 | Table head line             | `--kv-progress-sweep` -30 % → 130 %; the header hatch is hidden                                                                                                                                       | `loop`                                                             | `--kv-easing-standard`                                                                  |
 
-**The gate in theme.css** is one media query: every loop sits inside `@media (prefers-reduced-motion: no-preference)`. Under `reduce` the rest shape shows. A busy Button's spinner is hidden for its first 1000 ms by a visibility step (not motion, so it holds in every preference). `loop` is `--kv-duration-loop` (1600 ms). Nothing here stops a loop: that is the app's duty (§7.2).
+**The gate in theme.css** is one media query: every loop sits inside `@media (prefers-reduced-motion: no-preference)`. Under `reduce` the rest shape shows. A busy Button's spinner shows at once in every preference. `loop` is `--kv-duration-loop` (1600 ms). Nothing here stops a loop: that is the app's duty (§7.2).
 
 ### 6.3 States
 
@@ -145,7 +145,7 @@ Ratios (WCAG formula, 2026-10-06 palette; light / dark / light-contrast / dark-c
 
 ## Consumer duty for 2.2.2
 
-Set an attribute of your own choosing on `<html>` from your control (here `data-reduce-motion`) and add this once, **after** `theme.css`. It stops every indicator that loops. The busy Button keeps its 1000 ms reveal, which isn't motion.
+Set an attribute of your own choosing on `<html>` from your control (here `data-reduce-motion`) and add this once, **after** `theme.css`. It stops every indicator that loops.
 
 ```css
 :root[data-reduce-motion='true'] .kv-spinner,
@@ -156,10 +156,6 @@ Set an attribute of your own choosing on `<html>` from your control (here `data-
 :root[data-reduce-motion='true'] .kv-table[data-busy] .kv-table-column-header,
 :root[data-reduce-motion='true'] .kv-table[data-busy] .kv-table-head > tr:last-child::after {
   animation: none;
-}
-
-:root[data-reduce-motion='true'] .kv-button[data-busy] > .kv-spinner {
-  animation: kv-spinner-reveal 1ms steps(1, end) 1000ms both;
 }
 ```
 

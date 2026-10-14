@@ -11013,23 +11013,10 @@
    * Moving content over 5 s has a WCAG 2.2.2 duty (Pause, Stop, Hide) that the library can't
    * meet for an app: the app offers its own control and switches the loops off with the rule in
    * docs/design/loading-indicators.md ("Consumer duty for 2.2.2"). */
-  .kv-button[data-busy] > .kv-spinner {
-    animation: kv-spinner-reveal 1ms linear 1000ms both;
-  }
-
   @media (prefers-reduced-motion: no-preference) {
     :where(:root:not([data-kv-motion='reduce'])) {
       .kv-spinner {
         animation: kv-spinner-turn calc(var(--kv-duration-loop) * 1.5) linear infinite;
-      }
-
-      /* In a busy button the spinner shows after the same 1000 ms the announcement waits. A step,
-       * not motion, so the reveal holds in every preference, and the spinner is hidden, not
-       * removed: the label never moves. */
-      .kv-button[data-busy] > .kv-spinner {
-        animation:
-          kv-spinner-turn calc(var(--kv-duration-loop) * 1.5) linear infinite,
-          kv-spinner-reveal 1ms linear 1000ms both;
       }
 
       /* The arc crawls: head and tail each go round once a loop, the tail on a rule-local
@@ -11086,16 +11073,6 @@
 
     to {
       --kv-spinner-tail: 1turn;
-    }
-  }
-
-  @keyframes kv-spinner-reveal {
-    from {
-      visibility: hidden;
-    }
-
-    to {
-      visibility: visible;
     }
   }
 

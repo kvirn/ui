@@ -9,9 +9,8 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { progressTextsFor, SendApplication } from './progress.fixture.tsx'
 
 // Components/Progress: a wait shown as text with a decorative spinner, and a native bar when the
-// value is known, styled by @kvirn-ui/theme/theme.css (design specs docs/design/status-patterns.md and loading-indicators.md). It renders
-// nothing for the first second. The state stories set delayMilliseconds to 0 and announce to
-// false, so they show the state at once and do not speak in the story page; the real timing is
+// value is known, styled by @kvirn-ui/theme/theme.css (design specs docs/design/status-patterns.md and loading-indicators.md).
+// The state stories set announce to false, so they do not speak in the story page; the timing is
 // proved in progress.test.tsx. Progress has no focusable part, so there is no Keyboard story.
 
 const meta = {
@@ -27,7 +26,7 @@ const meta = {
       description: 'Known progress. The bar renders only with a value.',
     },
     max: { control: 'number', description: 'The value that means done. Default 100.' },
-    delayMilliseconds: { control: 'number', description: 'Invisible for this long. Default 1000.' },
+    delayMilliseconds: { control: 'number', description: 'Invisible for this long. Default 0.' },
     slowAfterMilliseconds: {
       control: 'number',
       description: 'When the slow sentence is added. Default 10000.',
@@ -161,7 +160,7 @@ export const LongLabel: Story = {
 
 /**
  * The pattern for a long action: a busy Button (focus stays, every press is blocked) with a
- * Progress right after it. Press the button: nothing shows for the first second, then the label
+ * Progress right after it. Press the button: the label
  * appears and is announced once.
  */
 export const WithBusyButton: Story = {
@@ -175,7 +174,6 @@ export const WithBusyButton: Story = {
     await expect(button).toHaveAttribute('aria-disabled', 'true')
     await expect(button).toHaveAttribute('data-busy')
     await expect(button).toHaveFocus()
-    await expect(canvas.queryByText(text.sending)).toBeNull()
     await expect(await canvas.findByText(text.sending)).toBeVisible()
   },
 }

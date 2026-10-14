@@ -61,8 +61,20 @@ function Sending({ announce }: { announce?: boolean }) {
 }
 
 describe('show delay', () => {
-  test('renders nothing and says nothing inside the first second', async () => {
+  test('renders at once by default', async () => {
     const { container } = await render(<Sending />)
+    await advance(0)
+    expect(container.querySelector('.kv-progress')).not.toBeNull()
+  })
+
+  test('renders nothing and says nothing inside an explicit delay', async () => {
+    const { container } = await render(
+      <KvirnProvider>
+        <Progress.Root label="Sending your application." delayMilliseconds={1000}>
+          <Progress.Label />
+        </Progress.Root>
+      </KvirnProvider>,
+    )
     await advance(999)
     expect(container.querySelector('.kv-progress')).toBeNull()
     await expect.element(politeRegion()).toHaveTextContent('')
@@ -74,7 +86,7 @@ describe('show delay', () => {
       return (
         <KvirnProvider>
           {isWaiting ? (
-            <Progress.Root label="Sending your application.">
+            <Progress.Root label="Sending your application." delayMilliseconds={1000}>
               <Progress.Label />
             </Progress.Root>
           ) : null}
@@ -90,7 +102,7 @@ describe('show delay', () => {
     await expect.element(politeRegion()).toHaveTextContent('')
   })
 
-  test('shows the label after one second, as plain text with no role', async () => {
+  test('shows the label as plain text with no role', async () => {
     const { container } = await render(<Sending />)
     await passShowDelay()
     await expect.element(page.getByText('Sending your application.')).toBeVisible()
@@ -204,11 +216,9 @@ describe('indicator', () => {
 })
 
 describe('announcements', () => {
-  test('announces the label once, politely, after the delay', async () => {
+  test('announces the label once, politely, when it is shown', async () => {
     await render(<Sending />)
-    await advance(900)
-    await expect.element(politeRegion()).toHaveTextContent('')
-    await advance(200)
+    await advance(1100)
     await expect.element(politeRegion()).toHaveTextContent('Sending your application.')
     await expect.element(assertiveRegion()).toHaveTextContent('')
   })
