@@ -25,7 +25,7 @@ A RichTextEditor is the control of a [Field](../../react/src/field/field.a11y.md
 | CharacterCount         | `<p class="kv-field-help-text kv-character-count">` (the shared part)                                                     | in the editable's `aria-describedby`                                                                                                                                           | Counts the text the user can read, one line break between blocks. Announced politely from 80% and when crossed, only while the editor has focus. Never blocks typing                                                                                                                                                                                                                                                                                                                                              |
 | Output (in the text)   | `h2`–`h4`, `ul`, `ol`, `blockquote`, `pre code`, `strong`, `em`, `u`, `s`, `code`, `a href`, `img alt`, `table` with `th` | –                                                                                                                                                                              | The HTML elements, so the structure is read by assistive technology and published as it is. An image can't be added without `alt` (empty only by the decorative choice, 1.1.1)                                                                                                                                                                                                                                                                                                                                    |
 
-**Message keys** (the `richText` namespace, all five locales): `toolbar`, `groupHistory`, `groupTextStyle`, `groupLists`, `groupInsert`, `groupTable`, `undo`, `redo`, `blockType`, `blockParagraph`, `blockHeading2`, `blockHeading3`, `blockHeading4`, `blockQuote`, `blockCode`, `blockMixed`, `bold`, `italic`, `underline`, `strike`, `code`, `bulletList`, `orderedList`, `indent`, `outdent`, `link`, `image`, `table`, `clearFormatting`, `addRowAbove`, `addRowBelow`, `addColumnLeft`, `addColumnRight`, `deleteRow`, `deleteColumn`, `deleteTable`, `headerRow`, `linkAddTitle`, `linkEditTitle`, `linkUrl`, `linkUrlHint`, `linkText`, `linkTextHint`, `linkAdd`, `save`, `linkRemove`, `cancel`, `linkUrlMissing`, `linkUrlInvalid`, `linkTextMissing`, `imageAddTitle`, `imageEditTitle`, `imageUrl`, `imageUrlHint`, `imageAlt`, `imageAltHint`, `imageDecorative`, `imageDecorativeHint`, `imageAdd`, `imageRemove`, `imageUrlMissing`, `imageUrlInvalid`, `imageUrlNotAllowed`, `imageAltMissing`, `linkAdded`, `linkUpdated`, `linkRemoved`, `imageAdded`, `imageUpdated`, `imageRemoved`, `tableInserted`, `rowAdded`, `columnAdded`, `rowDeleted`, `columnDeleted`, `tableDeleted`, `listLevel`, `formattingCleared`, `undone`, `redone`, `formatOn`, `formatOff`, `imagePasteNotSupported`, `imageSourceNotAllowed`. The count's keys are `characterCount.*`. Override per `Root` with `messages` (and `countMessages`), or per provider.
+**Message keys** (the `richText` namespace, all five locales): `toolbar`, `groupHistory`, `groupTextStyle`, `groupLists`, `groupInsert`, `groupTable`, `undo`, `redo`, `blockType`, `blockParagraph`, `blockHeading2`, `blockHeading3`, `blockHeading4`, `blockQuote`, `blockCode`, `blockMixed`, `bold`, `italic`, `underline`, `strike`, `code`, `bulletList`, `orderedList`, `indent`, `outdent`, `link`, `image`, `table`, `clearFormatting`, `addRowAbove`, `addRowBelow`, `addColumnLeft`, `addColumnRight`, `deleteRow`, `deleteColumn`, `deleteTable`, `headerRow`, `linkAddTitle`, `linkEditTitle`, `linkUrl`, `linkUrlHint`, `linkText`, `linkTextHint`, `linkAdd`, `save`, `linkRemove`, `cancel`, `linkUrlMissing`, `linkUrlInvalid`, `linkTextMissing`, `imageAddTitle`, `imageEditTitle`, `imageUrl`, `imageUrlHint`, `imageAlt`, `imageAltHint`, `imageDecorative`, `imageDecorativeHint`, `imageAdd`, `imageRemove`, `imageUrlMissing`, `imageUrlInvalid`, `imageUrlNotAllowed`, `imageAltMissing`, `linkAdded`, `linkUpdated`, `linkRemoved`, `imageAdded`, `imageUpdated`, `imageRemoved`, `tableInserted`, `rowAdded`, `columnAdded`, `rowDeleted`, `columnDeleted`, `tableDeleted`, `listLevel`, `formattingCleared`, `undone`, `redone`, `formatOn`, `formatOff`. The count's keys are `characterCount.*`. Override per `Root` with `messages` (and `countMessages`), or per provider.
 
 ## Keyboard
 
@@ -87,19 +87,18 @@ The toolbar uses a roving tabindex and its arrows wrap ([Toolbar](../../react/sr
 
 ## Announcements
 
-| Event                                                                 | Message key (i18n)                                                  | Politeness |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------- | ---------- |
-| Control/Command+B, I or U in the text                                 | `richText.formatOn`, `richText.formatOff` (with the name)           | polite     |
-| A list item nested or outdented (Tab, Shift+Tab or the buttons)       | `richText.listLevel`                                                | polite     |
-| Link added, changed or removed                                        | `richText.linkAdded`, `linkUpdated`, `linkRemoved`                  | polite     |
-| Image added, changed or removed                                       | `richText.imageAdded`, `imageUpdated`, `imageRemoved`               | polite     |
-| A table inserted (focus moves into it)                                | `richText.tableInserted`                                            | polite     |
-| Row or column added or deleted                                        | `richText.rowAdded`, `columnAdded`, `rowDeleted`, `columnDeleted`   | polite     |
-| Table deleted, with how to undo                                       | `richText.tableDeleted` (with the platform's undo key)              | polite     |
-| Formatting cleared                                                    | `richText.formattingCleared`                                        | polite     |
-| Undo or redo from the buttons (the shortcut is the browser's own)     | `richText.undone`, `richText.redone`                                | polite     |
-| A pasted image ignored, or from outside the allowed sources           | `richText.imagePasteNotSupported`, `richText.imageSourceNotAllowed` | polite     |
-| The count, from 80% of the limit and when crossed, only while focused | `characterCount.remaining`, `characterCount.over`                   | polite     |
+| Event                                                                 | Message key (i18n)                                                | Politeness |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------- |
+| Control/Command+B, I or U in the text                                 | `richText.formatOn`, `richText.formatOff` (with the name)         | polite     |
+| A list item nested or outdented (Tab, Shift+Tab or the buttons)       | `richText.listLevel`                                              | polite     |
+| Link added, changed or removed                                        | `richText.linkAdded`, `linkUpdated`, `linkRemoved`                | polite     |
+| Image added, changed or removed                                       | `richText.imageAdded`, `imageUpdated`, `imageRemoved`             | polite     |
+| A table inserted (focus moves into it)                                | `richText.tableInserted`                                          | polite     |
+| Row or column added or deleted                                        | `richText.rowAdded`, `columnAdded`, `rowDeleted`, `columnDeleted` | polite     |
+| Table deleted, with how to undo                                       | `richText.tableDeleted` (with the platform's undo key)            | polite     |
+| Formatting cleared                                                    | `richText.formattingCleared`                                      | polite     |
+| Undo or redo from the buttons (the shortcut is the browser's own)     | `richText.undone`, `richText.redone`                              | polite     |
+| The count, from 80% of the limit and when crossed, only while focused | `characterCount.remaining`, `characterCount.over`                 | polite     |
 
 Nothing is announced for a toolbar toggle pressed with Enter or Space (`aria-pressed` on the focused button says it) or for a text set from code. The link and image forms' errors are the Field's own error messages in the form. Known limits: no per-message `lang`, and the live regions need the outermost `KvirnProvider`.
 
@@ -120,7 +119,7 @@ Nothing is announced for a toolbar toggle pressed with Enter or Space (`aria-pre
 - Target size: every control is at least 24 × 24 CSS px, 44px by default and 32px in `kv-compact` from 64rem (2.5.8, design spec §6.5.3). Test: `rich-text-editor.stories.tsx › Default`.
 - forced-colors behaviour: the box keeps a `ButtonBorder` edge, a pressed toggle is a `Highlight` fill with `HighlightText`, flat buttons keep a `ButtonText` edge, the gap cursor is `CanvasText`, the selected image and cells are `Highlight`. Test: `rich-text-editor.stories.tsx › ForcedColors`.
 - reduced-motion behaviour: fills fade over `--kv-duration-fast` and the popover over `--kv-duration-medium` only under `no-preference`. The gap cursor stops blinking under `reduce`. Nothing moves the layout: no slide for the Table group, no animated height.
-- Reflow: the toolbar wraps group by group in both label modes, the popover fits the viewport, and long words in the text wrap. Only a wide table scrolls, inside its own wrapper. Test: `rich-text-editor.stories.tsx › LongFinnish` (the reflow sweep checks it).
+- Reflow: the toolbar wraps group by group in both label modes, the popover fits the viewport, and long words in the text wrap. Only a wide table scrolls, inside its own wrapper. Story: `rich-text-editor.stories.tsx › LongFinnish` (not swept: the display-mode sweeps cover Button only).
 - Right to left: logical properties only, the toolbar arrows flip, and the column buttons are named by what the user sees. The text direction is the page's (the provider's `dir`, set on the page with `useLocale().localeProps`): the editor has no `dir` prop and its blocks carry no `dir` attribute. Test: `rich-text-editor.stories.tsx › RTL`.
 - Tiptap injects its own small `<style>` of ProseMirror's structural rules (`injectCSS`). The theme overrides the gap cursor.
 
@@ -130,7 +129,7 @@ Nothing is announced for a toolbar toggle pressed with Enter or Space (`aria-pre
 - 2.1.1 Keyboard. **2.1.2 No Keyboard Trap**: Tab acts only where it can and leaves everywhere else, so the unmodified Tab and Shift+Tab always get out. 2.1.4 Character Key Shortcuts: modifier chords only, no single-key shortcut, typing rules off.
 - 2.4.3 Focus Order, 2.4.4 Link Purpose (the help text for the link text), 2.4.7 Focus Visible, 2.4.11 Focus Not Obscured, AAA 2.4.13 Focus Appearance, not counted toward AA.
 - 2.5.3 Label in Name, 2.5.8 Target Size (Minimum).
-- 3.2.1 On Focus and 3.2.2 On Input: the Table group changes only on the user's own action. 3.3.1 Error Identification, 3.3.2 Labels or Instructions, 3.3.8 Accessible Authentication (paste allowed; the count never blocks).
+- 3.2.1 On Focus and 3.2.2 On Input: the Table group changes only on the user's own action. 3.3.1 Error Identification (except a refused pasted or dropped image: see Known issues), 3.3.2 Labels or Instructions, 3.3.8 Accessible Authentication (paste allowed; the count never blocks).
 - 4.1.2 Name, Role, Value. 4.1.3 Status Messages.
 
 ## AT test record
@@ -154,6 +153,7 @@ The matrix must also check: Alt+F10 against NVDA, JAWS, Narrator and VoiceOver; 
 
 ## Known issues
 
+- **A pasted or dropped image that is refused is dropped silently.** An image file, or an image from outside `imageSources`, is left out of the text with no announcement and no message (3.3.1). Check the text before it is saved. A polite announcement is planned.
 - **Screen reader support for a `contenteditable` varies** across NVDA, JAWS and VoiceOver, and is the plan's biggest risk. Nothing here is claimed until the matrix is run.
 - **A pasted link keeps its `target`** (Tiptap parses any declared attribute). Sanitize the output on the server.
 - **The inactive selection** (while focus is on a toolbar button) is the browser's own highlight. The design asks for a `primary-subtle` one, which needs a decoration: not built.

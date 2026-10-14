@@ -1,0 +1,31 @@
+import { defineExampleTexts } from '../../components/local-example-texts.ts'
+
+export const useRichTextEditorTexts = defineExampleTexts({
+  en: {
+    articleLabel: 'Article text',
+    newsLabel: 'News text',
+    newsDescription: 'The text is published on the municipality’s website.',
+    newsIntro: 'The library opens late on Thursdays.',
+    newsError: 'Write the news text, so that people know what is happening',
+    publish: 'Publish',
+    reset: 'Start again',
+    posted: 'The form sent:',
+    noteLabel: 'Case note',
+    noteHeading: 'Home visit',
+    noteBody: 'The household was visited on the agreed day. No further action is needed.',
+    useStandardNote: 'Use the standard note',
+    saveNote: 'Save note',
+    standardNoteInserted: 'The standard note is in the text.',
+    noteSaved: 'The note is saved.',
+    eventLabel: 'About the event',
+    eventDescription: 'Tell people what happens, when it starts and what they need to bring.',
+    noticeLabel: 'Notice text',
+    noticeIntro: 'The bridge is closed for repairs until 30 November.',
+    summaryLabel: 'Short description',
+    summaryHint: 'This is the text shown in the list of events.',
+    addressLabel: 'Where to send your application',
+    addressLines: ['Norrvik Municipality', 'Housing office', 'Box 120'],
+    lineBreak: 'Line break',
+    lineBreakGroup: 'Layout',
+  },
+})

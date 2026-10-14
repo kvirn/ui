@@ -21,7 +21,10 @@ function findRepositoryRoot(): string {
   return directory
 }
 
-/** `packages/react/src/<name>/<name>.a11y.md`, or the folder's one contract (`provider/`). */
+/**
+ * `packages/react/src/<name>/<name>.a11y.md`, the folder's one contract (`provider/`), or
+ * `packages/rich-text/src/<name>.a11y.md` for a component outside `packages/react`.
+ */
 export function contractPath(name: string, root = findRepositoryRoot()): string {
   const directory = join(root, 'packages/react/src', name)
   const own = join(directory, `${name}.a11y.md`)
@@ -32,6 +35,10 @@ export function contractPath(name: string, root = findRepositoryRoot()): string 
     ? readdirSync(directory).filter((file) => file.endsWith('.a11y.md'))
     : []
   if (contracts.length !== 1) {
+    const richText = join(root, 'packages/rich-text/src', `${name}.a11y.md`)
+    if (existsSync(richText)) {
+      return richText
+    }
     throw new Error(`No accessibility contract for "${name}": expected ${relative(root, own)}.`)
   }
   return join(directory, contracts[0] ?? '')

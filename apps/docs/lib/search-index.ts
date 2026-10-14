@@ -44,6 +44,7 @@ import * as progress from '../content/progress.api.ts'
 import * as prose from '../content/prose.api.ts'
 import * as radioGroup from '../content/radio-group.api.ts'
 import * as readAloud from '../content/read-aloud.api.ts'
+import * as richTextEditor from '../content/rich-text-editor.api.ts'
 import * as routeFocus from '../content/route-focus.api.ts'
 import * as scrollArea from '../content/scroll-area.api.ts'
 import * as section from '../content/section.api.ts'
@@ -112,6 +113,7 @@ const apiModules: Readonly<Record<string, object>> = {
   prose,
   'radio-group': radioGroup,
   'read-aloud': readAloud,
+  'rich-text-editor': richTextEditor,
   'route-focus': routeFocus,
   'scroll-area': scrollArea,
   section,

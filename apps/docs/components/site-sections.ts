@@ -279,6 +279,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'A field for a code sent to the user by text message, email or an authenticator app.',
       ),
       component(
+        'RichTextEditor',
+        'rich-text-editor',
+        'A formatted text box with a toolbar, for text that will be published or sent, such as a news item or a case description in a staff tool.',
+      ),
+      component(
         'Slider',
         'slider',
         'One approximate number in a range, such as a search distance or a volume.',
