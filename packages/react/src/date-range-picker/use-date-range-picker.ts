@@ -112,6 +112,7 @@ export interface DateRangePickerCalendarOptions {
   /** Two months side by side from 64rem; the Calendar picks one below it. */
   visibleMonths: 2
   /** The Calendar says nothing when the end is chosen: the page says it once the dialog has closed. */
+  announceChoice: false
   messages: Partial<KvirnMessages['calendar']>
 }
 
@@ -332,7 +333,8 @@ export function useDateRangePicker({
       weekNumbers,
       today,
       visibleMonths: 2,
-      messages: { ...calendarMessageOverrides, rangeSelected: () => '' },
+      announceChoice: false,
+      messages: { ...calendarMessageOverrides },
     },
     triggerText: pickerMessages.trigger,
     titleText: pickerMessages.title,

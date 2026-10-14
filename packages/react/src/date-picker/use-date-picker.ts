@@ -92,6 +92,7 @@ export interface DatePickerCalendarOptions {
   weekNumbers: boolean | undefined
   today: IsoDate | undefined
   /** The Calendar says nothing when a day is chosen: the page says it once the dialog has closed. */
+  announceChoice: false
   messages: Partial<KvirnMessages['calendar']>
 }
 
@@ -281,7 +282,8 @@ export function useDatePicker({
       weekStart,
       weekNumbers,
       today,
-      messages: { ...calendarMessageOverrides, selected: () => '' },
+      announceChoice: false,
+      messages: { ...calendarMessageOverrides },
     },
     triggerText: pickerMessages.trigger,
     titleText: pickerMessages.title,

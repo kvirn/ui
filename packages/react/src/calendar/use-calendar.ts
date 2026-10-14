@@ -94,6 +94,12 @@ export interface UseCalendarBaseOptions {
    */
   announce?: boolean | undefined
   /**
+   * Announces the press that completes a choice: the chosen day, or the finished range. Set
+   * `false` when something else says it, as a picker does once its dialog has closed. The month
+   * and the steps of a range are still announced. Default `true`.
+   */
+  announceChoice?: boolean | undefined
+  /**
    * The most months shown side by side, `1` or `2`. Two months show only from 64rem wide (the
    * Calendar reads the viewport), one below it and on the server, so it never breaks a 320px
    * screen or 400% zoom. Default `1`.
@@ -333,6 +339,7 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
     weekNumbers = false,
     today: todayOption,
     announce = true,
+    announceChoice = true,
     visibleMonths: visibleMonthsOption = 1,
     messages,
   } = options
@@ -613,13 +620,15 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
         sayText(calendarMessages.rangeChooseEnd({ start: formatters.fullDate(next.start) }))
         return
       case 'completed':
-        sayText(
-          calendarMessages.rangeSelected({
-            start: formatters.fullDate(next.start),
-            end: formatters.fullDate(next.end),
-            length: getLength(next.start, next.end),
-          }),
-        )
+        if (announceChoice) {
+          sayText(
+            calendarMessages.rangeSelected({
+              start: formatters.fullDate(next.start),
+              end: formatters.fullDate(next.end),
+              length: getLength(next.start, next.end),
+            }),
+          )
+        }
         return
       case 'end-set':
         sayText(calendarMessages.rangeEndSelected({ date: formatters.fullDate(next.end) }))
@@ -659,7 +668,9 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
     }
     store.actions.select(date)
     onValueChange?.(date)
-    sayText(calendarMessages.selected({ date: formatters.fullDate(date) }))
+    if (announceChoice) {
+      sayText(calendarMessages.selected({ date: formatters.fullDate(date) }))
+    }
   }
 
   const getStepProps = (

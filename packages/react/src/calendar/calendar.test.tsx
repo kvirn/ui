@@ -505,6 +505,15 @@ describe('announcements', () => {
     await new Promise((resolve) => setTimeout(resolve, 300))
     await expect.element(politeRegion()).toHaveTextContent('')
   })
+
+  test('announceChoice={false} says nothing for the chosen day but still announces the month', async () => {
+    await render(<Example announceChoice={false} />)
+    await button('Nästa månad').click()
+    await expect.element(politeRegion()).toHaveTextContent('november 2026')
+    await day('måndag 16 november 2026').click()
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    await expect.element(politeRegion()).toHaveTextContent('november 2026')
+  })
 })
 
 describe('state', () => {
