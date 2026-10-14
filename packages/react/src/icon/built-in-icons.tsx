@@ -74,6 +74,10 @@ const shapes = {
     'M13.64 18.59c-.54.1-1.08.16-1.64.16-3.75 0-7-2.5-9-6.75.44-.94.94-1.79 1.5-2.55',
     'M4.5 4.5l15 15',
   ],
+  copy: [
+    'M6 8.5h7.5a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7.5a2 2 0 0 1 2-2Z',
+    'M8.5 8.5V6a2 2 0 0 1 2-2H18a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-2.5',
+  ],
 } as const satisfies Readonly<Record<string, readonly string[]>>
 
 /** A name in the built-in set. Every one works with no provider and no registration. */

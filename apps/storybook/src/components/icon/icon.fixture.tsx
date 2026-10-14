@@ -72,6 +72,7 @@ interface IconTexts {
     download: string
     close: string
     search: string
+    copy: string
     menu: string
     removeFile: (fileName: string) => string
     showPassword: string
@@ -95,6 +96,7 @@ const en: IconTexts = {
     download: 'Download the decision as a PDF',
     close: 'Close',
     search: 'Search',
+    copy: 'Copy',
     menu: 'Menu',
     removeFile: (fileName) => `Remove ${fileName}`,
     showPassword: 'Show password',
@@ -123,6 +125,7 @@ const sv: IconTexts = {
     download: 'Ladda ner beslutet som pdf',
     close: 'Stäng',
     search: 'Sök',
+    copy: 'Kopiera',
     menu: 'Meny',
     removeFile: (fileName) => `Ta bort ${fileName}`,
     showPassword: 'Visa lösenord',
@@ -152,6 +155,7 @@ const fi: IconTexts = {
     download: 'Lataa päätös PDF-tiedostona',
     close: 'Sulje',
     search: 'Hae',
+    copy: 'Kopioi',
     menu: 'Valikko',
     removeFile: (fileName) => `Poista tiedosto ${fileName}`,
     showPassword: 'Näytä salasana',
@@ -183,6 +187,7 @@ const nb: IconTexts = {
     download: 'Last ned vedtaket som PDF',
     close: 'Lukk',
     search: 'Søk',
+    copy: 'Kopier',
     menu: 'Meny',
     removeFile: (fileName) => `Fjern ${fileName}`,
     showPassword: 'Vis passord',
@@ -211,6 +216,7 @@ const nn: IconTexts = {
     download: 'Last ned vedtaket som PDF',
     close: 'Lukk',
     search: 'Søk',
+    copy: 'Kopier',
     menu: 'Meny',
     removeFile: (fileName) => `Fjern ${fileName}`,
     showPassword: 'Vis passord',
@@ -412,6 +418,13 @@ function buttonsRow(locale: IconFixtureLocale, className?: string) {
         >
           <Icon name="search" />
         </Button>
+        {/* Shows the icon's size and placement only; the docs site pairs Copy with a Tooltip. */}
+        <Button
+          className={joinClasses('kv-button--icon-only', className)}
+          aria-label={text.button.copy}
+        >
+          <Icon name="copy" />
+        </Button>
       </ButtonGroup>
     </>
   )
@@ -436,6 +449,9 @@ function disabledButtonsRow(locale: IconFixtureLocale) {
         </Button>
         <Button className="kv-button--icon-only" aria-label={text.button.search} disabled>
           <Icon name="search" />
+        </Button>
+        <Button className="kv-button--icon-only" aria-label={text.button.copy} disabled>
+          <Icon name="copy" />
         </Button>
       </ButtonGroup>
     </>

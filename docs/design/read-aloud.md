@@ -172,4 +172,4 @@ Hover, focus-visible, pressed and disabled are the Button's and the select's own
 7. Collapse the user's selection when reading it starts (recommended), so the highlight is visible?
 8. Scroll-follow instant under reduced motion (recommended) instead of off, and stop following after a manual scroll?
 9. Long pages: a later plan for a pause control that stays in reach (not in v1: sticky bars fail at 400% zoom)?
-10. Icons for Listen, Pause, Stop: none exist (24 built-ins, the last slot is held for `sort`). Text only in v1 (recommended); adding three needs the icon cap raised.
+10. Icons for Listen, Pause, Stop: none exist (the 25 built-ins fill the cap). Text only in v1 (recommended); adding three needs the icon cap raised.

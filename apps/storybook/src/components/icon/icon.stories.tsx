@@ -316,6 +316,7 @@ export const InButtons: Story = {
     const closeButtons = canvas.getAllByRole('button', { name: text.button.close })
     await expect(closeButtons).toHaveLength(8)
     await expect(canvas.getAllByRole('button', { name: text.button.search })).toHaveLength(8)
+    await expect(canvas.getAllByRole('button', { name: text.button.copy })).toHaveLength(8)
     for (const button of canvasElement.querySelectorAll('.kv-button--icon-only')) {
       // The name is the button's, and the icon is its only child, hidden from AT.
       await expect(button.children).toHaveLength(1)

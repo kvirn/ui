@@ -77,7 +77,7 @@ async function renderIcon(element: ReactElement, providerProps: KvirnProviderPro
 }
 
 describe('built-in icons', () => {
-  test('the set is the 24 icons of the design spec, in its order', () => {
+  test('the set is the 25 icons of the design spec, in its order', () => {
     expect(builtInIconNames).toEqual([
       'chevron-down',
       'chevron-up',
@@ -103,6 +103,7 @@ describe('built-in icons', () => {
       'language',
       'eye',
       'eye-off',
+      'copy',
     ])
   })
 

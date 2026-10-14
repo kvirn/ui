@@ -27,6 +27,7 @@ const names: BuiltInIconName[] = [
   'language',
   'eye',
   'eye-off',
+  'copy',
 ]
 
 export function BuiltInSet() {

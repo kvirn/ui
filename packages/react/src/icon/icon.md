@@ -48,6 +48,7 @@ The Storybook page **Components/Content/Icon › Built In Set** shows every one 
 | `language`        | Changes the language                      | no                            |
 | `eye`             | Shows a hidden value, such as a password  | no                            |
 | `eye-off`         | Hides a shown value                       | no                            |
+| `copy`            | Copies content to the clipboard           | no                            |
 
 They're original outline drawings in the style of Heroicons, on a 24 grid with a 1.5 stroke. The four status icons differ in shape, not only colour: info a square, success a circle, warning a triangle, error an octagon. The five that say "yes" in the table flip in right-to-left text. KvirnUI's own components use these names, so when you register an icon under the same name, every component uses yours. A plain override keeps the built-in's mirroring.
 
