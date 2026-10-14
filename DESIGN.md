@@ -312,7 +312,7 @@ Radio buttons are always circles and checkboxes always rounded squares, so the s
 
 ### Focus ring
 
-A solid `focus-ring` at `--kv-focus-ring-width` (never below 2px, which 2.4.13 needs), offset by `--kv-focus-ring-offset` (at least 2px, so the adjacent colour is the background), following the element's radius. It is restyled and never removed, and shown only for keyboard focus (`:focus-visible`, `data-focus-visible`). A thinner or glow-style focus is not used.
+A solid `focus-ring` at `--kv-focus-ring-width` (never below 2px, which 2.4.13 needs), offset by `--kv-focus-ring-offset` (at least 2px, so the adjacent colour is the background), following the element's radius. It is restyled and never removed, and shown only for keyboard focus (`:focus-visible`, `data-focus-visible`), except on an invalid text input, where it shows on any focus: the edge is taken by `danger`, so focus needs the ring (form-fields.md §6.8a). A thinner or glow-style focus is not used.
 
 - It meets 2.4.13 (AAA) for focus that starts from the keyboard.
 - Text inputs match `:focus-visible` on a click too, so for them the script decides (`data-focus-visible`, with `:focus-visible` as the fallback before it runs). A click shows a heavy `border-focus` edge instead (1px `Highlight` in forced colours, where a heavy edge alone means invalid). That edge is not claimed against 2.4.13.
@@ -479,15 +479,17 @@ The order is fixed, in the theme, the stories and the docs: a visible **label**,
 
 **The input**
 
-| State                | Look                                                                                                                                                |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Rest                 | Control height, a 1px `border-control` edge, `--kv-radius-md`, `--kv-control-padding-inline`, `body` text in both densities                         |
-| Hover                | The edge darkens to `text`                                                                                                                          |
-| Focus (any)          | A heavy `border-focus` edge (the padding gives the pixel back, so nothing moves). Keyboard focus adds the ring                                      |
-| Invalid              | A heavy `danger` edge with 1px less padding, so the text doesn't move, plus the error message: never colour alone. Keeps its `danger` edge in focus |
-| Disabled / read-only | A dashed edge on `surface` with `text-muted` text / a solid edge on `surface`                                                                       |
+| State                | Look                                                                                                                                                                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Rest                 | Control height, a 1px `border-control` edge, `--kv-radius-md`, `--kv-control-padding-inline`, `body` text in both densities                                                                                                                      |
+| Hover                | The edge darkens to `text`                                                                                                                                                                                                                       |
+| Focus (any)          | A heavy `border-focus` edge (the padding gives the pixel back, so nothing moves). Keyboard focus adds the ring                                                                                                                                   |
+| Invalid              | A heavy `danger` edge with 1px less padding, so the text doesn't move, plus the error message: never colour alone. Keeps its `danger` edge in focus, and shows the ring on any focus, since the edge is taken by `danger` (form-fields.md §6.8a) |
+| Disabled / read-only | A dashed edge on `surface` with `text-muted` text / a solid edge on `surface`                                                                                                                                                                    |
 
 The theme draws these from `data-invalid`, `aria-invalid="true"`, `:disabled` and `[readonly]`, never from `:invalid`.
+
+An answer that can't be changed is text, not a disabled control: "Applicant: Anna Andersson. The applicant can't be changed after the application is sent." Tab skips a disabled control, so its reason is never reached, and inactive text has no contrast floor (1.4.3).
 
 **Width and format**
 
@@ -554,6 +556,7 @@ Spec: [date-picker-and-calendar](docs/design/date-picker-and-calendar.md), appro
 
 - **Day cell:** the control size square (44px, 32px compact), `md` radius, a 4px grid spacing equal to the focus ring's width plus offset so a ring never covers a neighbour. **Below 40rem it is 40px (36px with week numbers):** a recorded exception to the 44px comfortable target (D10), because seven 44px cells and their gaps are 332px, more than a 320px screen holds. 2.5.8 is met; 2.5.5 (AAA) is not at 320px.
 - **States, never colour alone:** selected is a `primary` fill, `on-primary` text and weight 600; today is a 1px inset `border-control` edge and weight 600; unavailable and outside the range are `text-muted` with a strike-through; hover is `primary-subtle`; focus is the 2px ring. Forced colours (edges are borders, since a shadow is dropped): selected `Highlight` plus a 2px `CanvasText` edge, today a 1px `CanvasText` edge, hover a 1px `Highlight` edge, unavailable `GrayText`.
+- **A shared reason for unavailable days** (all closed, all fully booked) is a visible line before the grid that names the reason and the look: "Closed days are struck through and can't be chosen." Never the strike-through alone (1.3.3). A typed field says the same days in words in its help text, with an error when one is typed.
 - **Week numbers** are `body-small` in `text-muted`, only with a Monday start. No new token and no new colour pair.
 - **Range mode (Plan 0087, [date-range](docs/design/date-range.md)):** start and end are the selected look, their corners that face the band squared; days between are a `primary-subtle` band with 1px `primary` edges at block-start and block-end (borders, never a shadow, so forced colours keeps them), bridging the 4px gap but never a row or an empty cell; the preview of a pending end is the same band with dashed edges, the candidate end a dashed edge all round; an impossible end (`selects="end"`) is unavailable. The band alone (about 1.1:1) is never the cue: `aria-selected`, the names and the edges are. Two months sit side by side from 64rem (`space-8` apart), one below. No new token and no new colour pair.
 - **Date picker (Plan 0084):** a modal Dialog (`kv-date-picker-popup`) around the Calendar, opened by a `kv-button` with the `calendar` icon and "Choose date" (`kv-date-picker-trigger`) that is the last item in the `kv-date-input` row, at the block end, wrapping below the boxes at 320px. The popup is `fit-content` wide from 40rem and the Dialog's sheet below it, with `space-2` inline padding so the 40px cells fit. Selecting closes the dialog at once. No new token and no new colour pair.
@@ -648,7 +651,7 @@ For status or metadata, never for interactive elements.
 ### Overlays
 
 - **Popups** (menus, listboxes, popovers): level 3 elevation, `xl` radius, `--kv-space-2` padding, items at least the control height.
-- **Tooltips:** level 3 with the `md` radius, `body` text and `--kv-space-1` by `--kv-space-2` padding (a one-line box with the `xl` radius reads as a pill; decided 2026-10-04). They hold text and keys only, never essential information.
+- **Tooltips:** level 3 with the `md` radius, `body` text and `--kv-space-1` by `--kv-space-2` padding (a one-line box with the `xl` radius reads as a pill; decided 2026-10-04). A tooltip is at most `20rem` wide (and never wider than the viewport less `--kv-space-2` each side), and long text wraps so it grows in height, not width (decided 2026-10-14). They hold text and keys only, never essential information.
 
 #### Stepper
 

@@ -3,25 +3,25 @@
 - **APG pattern:** none needed. A labelled `<nav>` landmark around a nested list of in-page links is plain HTML. It is not a composite widget, not a tree and not the [Disclosure Navigation](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/) pattern: nothing here opens or closes. Never `role="menu"` or `role="tree"`.
 - **Deviations:** none
 - **Native elements used:** `<nav>` (the `navigation` landmark), `<ul>` and `<li>`, and native `<a href="#id">` links. The page's own headings are the targets.
-- **Status:** implemented (Plan 0049). Gates green 2026-10-06, accessibility-reviewer pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Reviewer findings fixed 2026-10-06 (role list), accessibility-reviewer re-review pending. Manual AT is `pending`.
 - **Tests:** `table-of-contents.test.tsx` next to this file, and the pure maths in `packages/core/src/table-of-contents/`. `table-of-contents.stories.tsx` in `apps/storybook/src/components/table-of-contents/`. Design spec: `docs/design/table-of-contents.md`.
 
 TableOfContents lists the headings of a long page as plain links, and marks the one the reader is in. It adds no `tabindex`, no key handling, no live region and no focus movement: the links are native, they are the focusable parts, and the browser owns what following one does. It is not a composite widget, so every link is a Tab stop and the arrow keys do nothing.
 
 ## Roles, states, properties
 
-| Part                 | Element / role                  | ARIA                                                                                                                 | Notes                                                                                                                                                                                                                                                                                                                                                            |
-| -------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TableOfContents.Root | `<nav>` → `navigation` landmark | `aria-label` from `tableOfContents.label`, or the consumer's `aria-labelledby` (a prop, or `labelledBy` on the hook) | `class="kv-table-of-contents"`. Never both names (2.4.1, 2.4.6). A visible heading with `aria-labelledby` is preferred, and it replaces the message. An `aria-label` of your own wins over the message. Empty `items` render nothing, so there is no empty landmark and a title drawn in its function child goes with it. Also exported as `TableOfContentsRoot` |
-| TableOfContents.List | `<ul>` → `list`                 | `role="list"`                                                                                                        | `class="kv-table-of-contents-list"`. A nested level is another list inside an item: a native nested list, so the depth and the count are announced (1.3.1). The explicit `role="list"` keeps the list announced in Safari/VoiceOver, which drops it from a list with `list-style: none` (1.3.1). Also exported as `TableOfContentsList`                          |
-| TableOfContents.Item | `<li>` → `listitem`             | none                                                                                                                 | `class="kv-table-of-contents-item"`. Holds a Link, and optionally a nested List. Also exported as `TableOfContentsItem`                                                                                                                                                                                                                                          |
-| TableOfContents.Link | `<a href="#id">` → `link`       | `aria-current="location"` on the link of the heading being read, and on no other                                     | `class="kv-link"`, `data-current` on the same link and `data-focus-visible` while it has keyboard focus. Always a plain hash link: never `Link.Root`, never the registered router link, and no click handler, so it works before the script has run. The text is the entry's `label`. Also exported as `TableOfContentsLink`                                     |
-| the trail            | the current link's ancestors    | none                                                                                                                 | The headings above the current one in the tree get no attribute: the trail is visual only (a `:has()` rule in the theme), and weight 600 is not colour alone (1.4.1)                                                                                                                                                                                             |
-| List                 | `as`                            | the chosen element's own                                                                                             | One element, chosen with a string: only the List takes `as`. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:TableOfContents.List:<tag>`) and renders the default element. `className` joins, refs pass                                                                                                                         |
-| every part           | attributes                      | passed through                                                                                                       | `id`, `data-*`, `aria-*` reach the element. The part's class is its own: a `className` prop joins it, never replaces it                                                                                                                                                                                                                                          |
-| every part           | never                           | no `role` other than the list's, no `tabindex`, no `aria-hidden`                                                     | No heading, no live region, no `aria-live`, no sticky positioning and no scrolling of its own. `tableOfContents.label` is the only string, and a visible title is the consumer's                                                                                                                                                                                 |
-| Root                 | an entry whose id is on no page | –                                                                                                                    | Dev warning `table-of-contents-missing-heading:<id>`, once per id: the link goes nowhere. The link stays in the list                                                                                                                                                                                                                                             |
-| List, Item, Link     | outside a Root                  | –                                                                                                                    | Dev warning `table-of-contents-<part>-outside-root`, once per part: it renders, but is in no named landmark and nothing is ever marked as current in it                                                                                                                                                                                                          |
+| Part                 | Element / role                  | ARIA                                                                                                                 | Notes                                                                                                                                                                                                                                                                                                                                                                                                     |
+| -------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TableOfContents.Root | `<nav>` → `navigation` landmark | `aria-label` from `tableOfContents.label`, or the consumer's `aria-labelledby` (a prop, or `labelledBy` on the hook) | `class="kv-table-of-contents"`. Never both names (2.4.1 Bypass Blocks, A; 2.4.6 Headings and Labels, AA). A visible heading with `aria-labelledby` is preferred, and it replaces the message. An `aria-label` of your own wins over the message. Empty `items` render nothing, so there is no empty landmark and a title drawn in its function child goes with it. Also exported as `TableOfContentsRoot` |
+| TableOfContents.List | `<ul>` → `list`                 | `role="list"`                                                                                                        | `class="kv-table-of-contents-list"`. A nested level is another list inside an item: a native nested list, so the depth and the count are announced (1.3.1 Info and Relationships, A). The explicit `role="list"` keeps the list announced in Safari/VoiceOver, which drops it from a list with `list-style: none` (1.3.1 Info and Relationships, A). Also exported as `TableOfContentsList`               |
+| TableOfContents.Item | `<li>` → `listitem`             | none                                                                                                                 | `class="kv-table-of-contents-item"`. Holds a Link, and optionally a nested List. Also exported as `TableOfContentsItem`                                                                                                                                                                                                                                                                                   |
+| TableOfContents.Link | `<a href="#id">` → `link`       | `aria-current="location"` on the link of the heading being read, and on no other                                     | `class="kv-link"`, `data-current` on the same link and `data-focus-visible` while it has keyboard focus. Always a plain hash link: never `Link.Root`, never the registered router link, and no click handler, so it works before the script has run. The text is the entry's `label`. Also exported as `TableOfContentsLink`                                                                              |
+| the trail            | the current link's ancestors    | none                                                                                                                 | The headings above the current one in the tree get no attribute: the trail is visual only (the default theme styles it with a CSS rule), and bold text is not colour alone (1.4.1 Use of Color, A)                                                                                                                                                                                                        |
+| List                 | `as`                            | the chosen element's own                                                                                             | One element, chosen with a string: only the List takes `as`. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:TableOfContents.List:<tag>`) and renders the default element. `className` joins, refs pass                                                                                                                                                                  |
+| every part           | attributes                      | passed through                                                                                                       | `id`, `data-*`, `aria-*` reach the element. The part's class is its own: a `className` prop joins it, never replaces it                                                                                                                                                                                                                                                                                   |
+| every part           | never                           | no `role` other than the list's, no `tabindex`, no `aria-hidden`                                                     | No heading, no live region, no `aria-live`, no sticky positioning and no scrolling of its own. `tableOfContents.label` is the only string, and a visible title is the consumer's                                                                                                                                                                                                                          |
+| Root                 | an entry whose id is on no page | –                                                                                                                    | Dev warning `table-of-contents-missing-heading:<id>`, once per id: the link goes nowhere. The link stays in the list                                                                                                                                                                                                                                                                                      |
+| List, Item, Link     | outside a Root                  | –                                                                                                                    | Dev warning `table-of-contents-<part>-outside-root`, once per part: it renders, but is in no named landmark and nothing is ever marked as current in it                                                                                                                                                                                                                                                   |
 
 `useTableOfContents({ items, offset, labelledBy, messages })` gives `rootProps` (the class and the name), `listProps`, `itemProps`, `tree`, `activeId` and `getLinkProps(item)` for your own elements.
 
@@ -30,16 +30,16 @@ TableOfContents lists the headings of a long page as plain links, and marks the 
 - It is the last heading, in document order, above the line: the line is `offset` px plus 20% of the viewport height below `offset` (the top 20% band, as on most docs sites), and a heading counts when its top is at most 1px below it, for sub-pixel layout. Before any heading is that high, it is the first heading that is visible (its top is above the bottom of the viewport). At the end of a page that scrolls, it is the last heading, because a last section shorter than the viewport can never scroll its heading up to the line, unless a heading sits exactly on the line (a jump put it there), which is then current.
 - Nothing is current only while no heading is visible, so a section on screen is never left without a current link.
 - A heading that is `display: none` is skipped: it has no place on the page, so it would read as being above the line. A heading with no element at all warns.
-- It is found in the browser after mount, by an `IntersectionObserver` and passive `scroll` and `resize` listeners that only wake the measuring, at most once per animation frame. On the server, during hydration and where there is no `IntersectionObserver`, the list renders and nothing is current. The effect is keyed by the ids and `offset`, never by the array, and it disconnects on unmount.
+- It is found in the browser after mount, by an `IntersectionObserver` (a browser feature that reports when an element comes into view) and passive `scroll` and `resize` listeners that only wake the measuring, at most once per animation frame. On the server, during hydration and where there is no `IntersectionObserver`, the list renders and nothing is current. The effect is keyed by the ids and `offset`, never by the array, and it disconnects on unmount.
 
 ## Allowed elements
 
-A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+A tag outside the list changes the page's outline or semantics (1.3.1 Info and Relationships, A; 4.1.2 Name, Role, Value, A). `as` is a string, so it works from a Server Component.
 
-| Part             | `as`                 | Why                                                                                     |
-| ---------------- | -------------------- | --------------------------------------------------------------------------------------- |
-| List             | `ul` (default), `ol` | A contents list, optionally numbered; `role="list"` stays                               |
-| Root, Item, Link | none                 | `<nav>` is the landmark (2.4.1), `<li>` and `<a href>` are the structure (1.3.1, 4.1.2) |
+| Part             | `as`                 | Why                                                                                                                                                     |
+| ---------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| List             | `ul` (default), `ol` | A contents list, optionally numbered; `role="list"` stays                                                                                               |
+| Root, Item, Link | none                 | `<nav>` is the landmark (2.4.1 Bypass Blocks, A), `<li>` and `<a href>` are the structure (1.3.1 Info and Relationships, A; 4.1.2 Name, Role, Value, A) |
 
 ## Keyboard
 
@@ -66,7 +66,7 @@ Following a link to a heading is the browser's own fragment navigation (HTML, "s
 - Initial focus: not moved. TableOfContents never moves focus: not on load, not when the current heading changes, not on a click.
 - Trap: no. Tab always leaves the list.
 - Restore to: not applicable. What focus does when a link is followed is the browser's (see above), and Back returns to where the reader was.
-- Never obscured by: it renders no overlay and is never sticky: where it sits is the page's layout. A sticky header the page adds can cover a heading a link scrolls to, and any focused element (Shift+Tab to a link above the viewport), so set `html { scroll-padding-top: <the header's height> }` (technique C43) and the same value as `offset` (2.4.11). A `scroll-margin-top` on the headings is an optional extra for the headings only: a heading never takes focus. A sticky column taller than the viewport scrolls on its own, or isn't sticky.
+- Never obscured by: it renders no overlay and is never sticky: where it sits is the page's layout. A sticky header the page adds can cover a heading a link scrolls to, and any focused element (Shift+Tab to a link above the viewport), so set `html { scroll-padding-top: <the header's height> }` (WCAG technique C43) and the same value as `offset` (2.4.11 Focus Not Obscured (Minimum), AA). A `scroll-margin-top` on the headings is an optional extra for the headings only: a heading never takes focus. A sticky column taller than the viewport scrolls on its own, or isn't sticky.
 
 ## Announcements
 
@@ -74,17 +74,17 @@ Following a link to a heading is the browser's own fragment navigation (HTML, "s
 | ------------------------------------- | ------------------ | ---------- |
 | the current heading changes (scrolls) | none               | –          |
 
-Nothing is announced and nothing is live: there is no live region, because the current heading is state, not an event. A screen reader says "current location" when it reaches that link, and the level of a nested list by its native list semantics. A message for every heading the reader passes would be noise, and nothing here is a status message the reader needs (4.1.3).
+Nothing is announced and nothing is live: there is no live region, because the current heading is state, not an event. A screen reader says "current location" when it reaches that link, and the level of a nested list by its native list semantics. A message for every heading the reader passes would be noise, and nothing here is a status message the reader needs (4.1.3 Status Messages, AA).
 
 ### Message keys
 
-`tableOfContents.label`: the landmark's name when there is no `aria-labelledby`, for example `On this page`, `På den här sidan`, `Tällä sivulla`, `På denne siden` and `På denne sida`. Override it per provider and per instance (`messages={{ label }}`). The text of a visible title is the consumer's own.
+`tableOfContents.label`: the landmark's name when there is no `aria-labelledby`, for example `On this page` (English), `På den här sidan` (Swedish), `Tällä sivulla` (Finnish), `På denne siden` (Norwegian Bokmål) and `På denne sida` (Norwegian Nynorsk). Override it per provider and per instance (`messages={{ label }}`). The text of a visible title is the consumer's own.
 
 ## Consumer responsibilities
 
-- **Name it, and prefer a visible title** (2.4.1, 2.4.6). Render a real heading yourself, normally an `h2` with the words "På den här sidan" (the same as the message, 2.5.3), never muted, and point `aria-labelledby` at its id. TableOfContents renders no title. Two navigations on a page need two names.
+- **Name it, and prefer a visible title** (2.4.1 Bypass Blocks, A; 2.4.6 Headings and Labels, AA). Render a real heading yourself, normally an `h2` with the words "På den här sidan" (On this page), the same words as the message (2.5.3 Label in Name, A), never muted, and point `aria-labelledby` at its id. TableOfContents renders no title. Two navigations on a page need two names.
 - **Unique heading ids, and in the list too.** The id is the link's target (`#id`). A missing one warns in development and the link goes nowhere.
-- **The link text is the heading's text** (2.4.4, 2.4.6), so the list reads as the page's outline. Write headings that say what the section is about ("Avgifter för bygglov", not "Mer information").
+- **The link text is the heading's text** (2.4.4 Link Purpose (In Context), A; 2.4.6 Headings and Labels, AA), so the list reads as the page's outline. Write headings that say what the section is about ("Avgifter för bygglov" (Fees for building permits), not "Mer information" (More information)).
 - **Items in document order, and memoized.** A constant or `useMemo`. The order is the order on the page, not alphabetical.
 - **`offset` equals `scroll-padding-top` on `html`,** which equals any sticky header's height (plus any `scroll-margin-top` you also put on the headings). If they differ, a heading a link scrolls to lands below the line and the one above it stays current.
 - **No `<base href>`.** `#id` links would resolve against it and leave the page.
@@ -95,51 +95,52 @@ Nothing is announced and nothing is live: there is no live region, because the c
 
 ## Visual / modes
 
-Headless: TableOfContents ships no CSS. With `@kvirn-ui/theme/theme.css` (design spec `docs/design/table-of-contents.md`), it uses the navigation item rules:
+Headless: TableOfContents ships no CSS. With the default theme it uses the same rules as the navigation items:
 
-- Focus indicator: the `.kv-link` ring, 2px at 3:1 (2.4.7, 2.4.13). Reviewed by eye in the stories.
-- Target size: every item is at least 24 × 24 CSS px, 44px by default and 32px in compact density (2.5.8). Test: `table-of-contents.stories.tsx › CompactDensity` (play) asserts the 24px threshold.
-- The table of contents is always compact (32px rows, 14px labels). The current heading is underlined at weight 600, with `aria-current`, and no fill, so it is never colour alone (1.4.1). The headings above it, the trail, keep weight 600 and no fill.
-- Contrast: every pair is Navigation's, already in `theme:check` (1.4.3, 1.4.11): `text` on `primary-subtle`, `on-primary` on `primary`, and `primary` on the plain backgrounds.
-- reduced-motion behaviour: the component never scrolls the page. The underline of the current heading changes over 120ms only under `prefers-reduced-motion: no-preference`.
-- RTL: logical properties only. The indent sits at the inline start, on the right.
-- Reflow and text spacing: a vertical list at every width, with `overflow-wrap: anywhere` and nothing fixed. No horizontal scrolling at 320 CSS px with the Finnish fixture (the `LongFinnishText` story, in the dedicated sweep).
+- Focus indicator: the link's focus ring is at least 2px wide with 3:1 contrast (2.4.7 Focus Visible, AA). 2.4.13 Focus Appearance is AAA and is not counted toward AA. Reviewed by eye in the stories.
+- Target size: every item is at least 24 by 24 CSS pixels, in both densities (2.5.8 Target Size (Minimum), AA). A story checks that threshold in the compact density.
+- The table of contents is always compact: small rows and small labels. The current heading is underlined and bold, with `aria-current`, and has no fill, so it is never colour alone (1.4.1 Use of Color, A). The headings above it, the trail, stay bold with no fill.
+- Contrast: the theme draws no fill for it, so the only pair is the text colour on the page's background colours, which the theme already measures (1.4.3 Contrast (Minimum), AA). The underline is the text colour too (1.4.11 Non-text Contrast, AA).
+- Reduced motion: the component never scrolls the page. The underline of the current heading changes over a short time only when the reader has not asked for reduced motion.
+- Right-to-left languages: the indent sits at the start side, which is the right.
+- Reflow and text spacing: a vertical list at every width, with long words allowed to break and nothing of a fixed size. A story checks that there is no sideways scrolling at 320 CSS pixels with long Finnish text.
+- If you restyle it, keep the focus ring, the target size and a mark for the current heading that is not colour alone.
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships: a `<nav>` landmark, native lists and nesting (`table-of-contents.test.tsx › nests the lists from the levels, so the depth is announced`, `› a skipped level nests one step`).
-- 1.4.1 Use of Color: the current heading has an underline and weight, and the trail has weight (default theme).
-- 1.4.3 Contrast (Minimum), 1.4.11 Non-text Contrast: `theme:check` pairs.
-- 1.4.10 Reflow, 1.4.12 Text Spacing: the Finnish fixture at 320px, `overflow-wrap`, no fixed heights.
-- 2.1.1 Keyboard, 2.4.3 Focus Order: native links in DOM order (the Keyboard rows above).
-- 2.4.1 Bypass Blocks: a named landmark of links to the sections (G124), with a dev warning for a link that has no target (`table-of-contents.test.tsx › a missing heading warns once, naming the id, and its link stays`).
-- 2.4.4 Link Purpose (In Context), 2.4.6 Headings and Labels: the link text is the heading's text, and the landmark has a name (`table-of-contents.test.tsx › renders a navigation landmark named by aria-labelledby, with no aria-label`).
-- 2.4.7 Focus Visible, 2.4.13 Focus Appearance: the link ring.
-- 2.4.11 Focus Not Obscured: with `scroll-padding-top` on `html` equal to the sticky header's height, a focused link or a heading reached by a link is never under the header (the consumer's part; the `StickyOffset` story shows it).
-- 2.5.8 Target Size (Minimum): the 24px threshold in the compact story.
-- 3.2.1 On Focus: nothing moves focus and nothing changes context when the current heading changes (`table-of-contents.test.tsx › a change of the current heading moves no focus and fills no live region`).
-- 4.1.2 Name, Role, Value: the landmark's name, `aria-current="location"` on the link (`table-of-contents.test.tsx › scrolling to a heading makes its link the one aria-current="location"`).
+- 1.3.1 Info and Relationships (A): a `<nav>` landmark, native lists and nesting (`table-of-contents.test.tsx › nests the lists from the levels, so the depth is announced`, `› a skipped level nests one step`).
+- 1.4.1 Use of Color (A): the current heading has an underline and weight, and the trail has weight (default theme).
+- 1.4.3 Contrast (Minimum) (AA), 1.4.11 Non-text Contrast (AA): the colours are measured by the theme's automated contrast check.
+- 1.4.10 Reflow (AA): long Finnish text at 320px in a story, with words allowed to break. 1.4.12 Text Spacing (AA): no fixed heights; there is no automated check yet.
+- 2.1.1 Keyboard (A), 2.4.3 Focus Order (A): native links in DOM order (the Keyboard rows above).
+- 2.4.1 Bypass Blocks (A): a named landmark of links to the sections (WCAG technique G64, providing a table of contents), with a dev warning for a link that has no target (`table-of-contents.test.tsx › a missing heading warns once, naming the id, and its link stays`).
+- 2.4.4 Link Purpose (In Context) (A), 2.4.6 Headings and Labels (AA): the link text is the heading's text, and the landmark has a name (`table-of-contents.test.tsx › renders a navigation landmark named by aria-labelledby, with no aria-label`).
+- 2.4.7 Focus Visible (AA): the link ring. 2.4.13 Focus Appearance (AAA) is not counted toward AA.
+- 2.4.11 Focus Not Obscured (Minimum) (AA): with `scroll-padding-top` on `html` equal to the sticky header's height, a focused link or a heading reached by a link is never under the header (the consumer's part; the `StickyOffset` story shows it).
+- 2.5.8 Target Size (Minimum) (AA): the 24px threshold in the compact story.
+- 3.2.1 On Focus (A): nothing moves focus and nothing changes context when the current heading changes (`table-of-contents.test.tsx › a change of the current heading moves no focus and fills no live region`).
+- 4.1.2 Name, Role, Value (A): the landmark's name, `aria-current="location"` on the link (`table-of-contents.test.tsx › scrolling to a heading makes its link the one aria-current="location"`).
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 
-- **Focus after a followed link is the browser's.** A heading isn't focusable, so focus falls back to the viewport (`document.activeElement` is `body`) and the sequential focus starting point moves to the heading. Check in the AT matrix that NVDA, JAWS and VoiceOver put the reading position at the heading, and that the next Tab continues after it, in each browser.
-- **List semantics in Safari.** The default theme draws no list marker, and Safari (VoiceOver) drops the list semantics of such a list, so the lists carry `role="list"`. Check "list, 3 items" and the nested level in VoiceOver + Safari in the manual AT run.
-- **"Mistaken for keyboard focus"** (design spec Q-C1). The underline of the current heading moves while the reader scrolls. The usability test, with the quiet fill and no trail as the fallback, is `pending`.
-- **`IntersectionObserver` does not report the last pixels of a scroll,** so passive `scroll` and `resize` listeners wakes the same measuring. WebKit and mobile Safari behaviour is not automated and is `pending` here.
+- **Focus after a followed link is the browser's.** A heading isn't focusable, so after someone follows a link, focus falls back to the page (`document.activeElement` is `body`) and the browser moves the place Tab continues from to the heading. It is not yet checked that NVDA, JAWS and VoiceOver put the reading position at the heading, and that the next Tab continues after it, in each browser. This is part of the manual testing, which is pending. It is not a conformance failure: following a link moves the place Tab continues from. Workaround: if your own check shows that the reading position doesn't move, give the target headings `tabindex="-1"` (never `0`). The browser then focuses the heading and the theme's focus ring shows on it. Don't set `outline: none` on them.
+- **List semantics in Safari.** The default theme draws no list marker, and Safari (VoiceOver) drops the list semantics of such a list, so the lists carry `role="list"`. It is not yet checked that VoiceOver with Safari says "list, 3 items" and announces the nested level. This is part of the manual testing, which is pending. The workaround is already in place: `role="list"` on every list. If you draw your own markup with the hook, keep `role="list"` on the lists.
+- **People who use a keyboard may mistake the highlighted link for where their keyboard is.** The link to the section you're reading is underlined, and the underline moves as you scroll, so it can look like the focus ring. A usability test is pending. If it confirms this, the highlight becomes a quiet background fill.
+- **`IntersectionObserver` does not report the last pixels of a scroll,** so passive `scroll` and `resize` listeners also wake the same measuring. The behaviour in WebKit and mobile Safari is not automated and is `pending`.

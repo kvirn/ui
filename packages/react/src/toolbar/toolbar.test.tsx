@@ -282,6 +282,26 @@ describe('arrow keys', () => {
     await expect.element(button('Ångra')).toHaveFocus()
   }
 
+  test('a plain control in the toolbar is its own Tab stop and the arrows skip it', async () => {
+    await render(
+      <TextToolbar>
+        <Toolbar.Button style={fixtureButtonStyle}>Ångra</Toolbar.Button>
+        <button type="button" style={fixtureButtonStyle}>
+          Vanlig
+        </button>
+        <Toolbar.Button style={fixtureButtonStyle}>Gör om</Toolbar.Button>
+      </TextToolbar>,
+    )
+    await userEvent.keyboard('{Tab}{Tab}')
+    await expect.element(button('Ångra')).toHaveFocus()
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(button('Gör om')).toHaveFocus()
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.element(button('Ångra')).toHaveFocus()
+    await userEvent.keyboard('{Tab}')
+    await expect.element(button('Vanlig')).toHaveFocus()
+  })
+
   test('ArrowRight and ArrowLeft move across groups, and wrap by default', async () => {
     await render(<TextToolbar />)
     await focusFirst()

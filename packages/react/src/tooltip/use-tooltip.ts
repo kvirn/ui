@@ -158,6 +158,7 @@ export function useTooltip({
     latest.current = { isControlled, onOpenChange }
   })
 
+  // eslint-disable-next-line react/refs -- the machine's callbacks read the refs on events, never in render
   const [machine] = useState(() =>
     createTooltipMachine({
       delay,

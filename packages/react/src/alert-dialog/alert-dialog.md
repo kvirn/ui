@@ -28,4 +28,4 @@ import { AlertDialog } from '@kvirn-ui/react'
 </AlertDialog.Root>
 ```
 
-Root options are Dialog's without `dismissOnOutsidePress`: `open`, `defaultOpen`, `onOpenChange`, `initialFocusRef`, `finalFocusRef`, `messages`.
+Root options are Dialog's without `dismissOnOutsidePress`: `open`, `defaultOpen`, `onOpenChange`, `initialFocusRef`, `finalFocusRef`. There is no `messages`: `AlertDialog.Close` has no default text, so the Close you write names itself.

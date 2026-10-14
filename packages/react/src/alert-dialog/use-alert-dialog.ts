@@ -1,7 +1,10 @@
 import { useModalDialog } from '../dialog/use-dialog.ts'
 import type { UseDialogOptions, UseDialogResult } from '../dialog/use-dialog.ts'
 
-export interface UseAlertDialogOptions extends Omit<UseDialogOptions, 'dismissOnOutsidePress'> {
+export interface UseAlertDialogOptions extends Omit<
+  UseDialogOptions,
+  'dismissOnOutsidePress' | 'messages'
+> {
   /**
    * Where focus goes when it opens. **Set it**: the least destructive action ("Keep draft"), or
    * the primary one when nothing is destroyed ("Stay signed in"). A development warning fires without it.

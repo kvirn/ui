@@ -208,6 +208,30 @@ describe('Stepper', () => {
       expect(warnedWith('so its text joins that name')).toBe(true)
     })
 
+    const stepper = <Stepper current={1} total={2} />
+    const wrappers = {
+      summary: (
+        <details open>
+          <summary>Rubrik {stepper}</summary>
+        </details>
+      ),
+      button: <button type="button">Rubrik {stepper}</button>,
+      a: <a href="/">Rubrik {stepper}</a>,
+      caption: (
+        <table>
+          <caption>Rubrik {stepper}</caption>
+        </table>
+      ),
+    }
+
+    test.each(Object.keys(wrappers) as (keyof typeof wrappers)[])(
+      'warns once inside a %s',
+      async (tag) => {
+        await render(wrappers[tag])
+        expect(warnedWith('so its text joins that name')).toBe(true)
+      },
+    )
+
     test('does not warn directly after the heading', async () => {
       await render(
         <>

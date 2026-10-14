@@ -3,7 +3,7 @@
 - **APG pattern:** none. List is static content, not a widget.
 - **Deviations:** none
 - **Native elements used:** `<ul>` (default) or `<ol>` with `as="ol"`, and `<li>`. `as` is `'ul' | 'ol'` only.
-- **Status:** alpha candidate (Plan 0095). Gates pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `list.test.tsx` next to this file. `list.stories.tsx` in `apps/storybook/src/components/list/`.
 
 List is the native list with a class and a few typed choices, so link lists, related links and footer link groups are one component instead of a `<ul role="list">` repeated per pattern. It adds no text, no behaviour and no `tabindex`. A list of links is a list, not a navigation: the consumer wraps it in a named `nav` when it is one.
@@ -17,6 +17,10 @@ List is the native list with a class and a few typed choices, so link lists, rel
 | List.Root | never                     | no name, `tabindex`, `aria-hidden` | No `aria-label` by default. No heading, handler or live region                                                                                                                                                                                                                                                     |
 
 `kv-list--decimal` is for `as="ol"`: on a `ul` the numbers say nothing about order to assistive technology. `kv-list--bullet` on an `ol` is allowed: the order is still announced.
+
+## Allowed elements
+
+A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `List.Root` takes `ul` (default) or `ol`; another tag warns once (`as-not-allowed`) and falls back to `ul`. `List.Item` is a native `<li>` and has no `as`.
 
 ## Keyboard
 
@@ -60,20 +64,20 @@ Headless: List ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-list` is a gr
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 

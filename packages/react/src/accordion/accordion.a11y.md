@@ -1,9 +1,9 @@
 # Accessibility contract: Accordion (Root, Item, Heading, Trigger, Panel)
 
-- **APG pattern:** [Accordion](https://www.w3.org/WAI/ARIA/apg/patterns/accordion/): a stack of headings whose buttons each show and hide one section. Each item is a [Disclosure](../disclosure/disclosure.a11y.md); the wiring, `hidden` and find-in-page rules are proved there.
-- **Deviations:** none. APG makes the arrow keys, Home and End between headers optional, and Plan 0058 does not adopt them (Decisions in the plan): every trigger is a Tab stop, and the keys are the page's own.
+- **APG pattern:** [Accordion](https://www.w3.org/WAI/ARIA/apg/patterns/accordion/): a stack of headings whose buttons each show and hide one section. Each item is a Disclosure: how its button, its hidden panel and find-in-page work is described on the Disclosure page.
+- **Deviations:** none. APG makes the arrow keys, Home and End between headers optional. This version doesn't use them: every button is a Tab stop, and those keys stay the page's own.
 - **Native elements used:** `<div>` (Root, Item), `<h1>` to `<h6>` (Heading, by `level`), `<button type="button">` (Trigger), `<div>` (Panel).
-- **Status:** alpha candidate (Plan 0058). Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer APPROVE (2026-10-06). Manual AT is `pending`.
 - **Tests:** `accordion.test.tsx` next to this file. `accordion.stories.tsx` in `apps/storybook/src/components/accordion/`.
 
 An Accordion is a list of questions or sections, each a heading with a button, that a reader opens one by one. Items are independent: opening one never closes another. A "show all" button is not part of this version.
@@ -19,14 +19,14 @@ An Accordion is a list of questions or sections, each a heading with a button, t
 | Accordion.Panel   | `<div>`, always rendered, `hidden` while closed                    | `data-open`. With `region`: `role="region"` and `aria-labelledby` the trigger's id | `Disclosure.Panel` with the class `kv-accordion-panel` added. `region` is off by default: APG advises it for about six or fewer                                                                                        |
 | `useAccordion`    | the classes, for your own elements                                 | `rootProps`, `itemProps`, `headingProps`                                           | Pair it with one `useDisclosure()` per item                                                                                                                                                                            |
 
-Rules, tested in `accordion.test.tsx`:
+What the automated tests prove:
 
 - **Heading around the button.** The trigger is the only child of a heading of the consumer's `level`, so the outline is theirs (1.3.1, 2.4.6).
 - **Independent items.** Opening one item changes no other. `defaultOpen` and `open` are per item.
-- **Same wiring as Disclosure.** `aria-controls` resolves to the item's panel, a closed panel is `hidden`, and a disabled item blocks.
+- **Same wiring as a Disclosure.** `aria-controls` points at the item's panel, a closed panel is `hidden`, and a disabled item can't be opened.
 - **Find-in-page.** `hiddenUntilFound` on the Root applies to every item, and an item can set its own.
 - **Region is opt-in.** Without `region` a panel has no role. With it, it is a `region` named by its trigger.
-- **Dev warnings:** as Disclosure (a part outside an Item, a Trigger that is not a `<button>`).
+- **Development warnings,** as for a Disclosure: a part outside an Item, or a Trigger that is not a `<button>`.
 
 ## Allowed elements
 
@@ -62,7 +62,7 @@ The accordion handles no other key. Escape is the page's own.
 - Initial focus: **not moved.** Opening or closing a section never moves focus.
 - Trap: no.
 - Restore to: not needed. Focus stays on the trigger.
-- Never obscured by: the sections are in flow, so a sticky header is the consumer's `scroll-padding` (2.4.11).
+- Never hidden by: the sections are part of the page, so nothing covers the focused button except what your page adds, such as a sticky header. Keep the button in view with `scroll-padding` (2.4.11 Focus Not Obscured (Minimum), AA).
 
 ## Announcements
 
@@ -74,50 +74,59 @@ Accordion has no strings of its own. A screen reader reports the change of `aria
 
 ## Consumer responsibilities
 
-- **Pick the heading `level` that fits the page's outline** (a FAQ under an `h2` uses `3`). It is required: Accordion can't know where it sits.
-- **Name every trigger with the question or section title,** the same open and closed (4.1.2, 2.5.3).
-- **Render each panel right after its heading,** in the same item (2.4.3).
-- **Use `region` only for a few sections.** More than about six open regions crowd a screen reader user's landmark list (APG).
+- **Pick the heading `level` that fits the page's outline** (a FAQ under an `h2` uses `3`). It is required: Accordion can't know where it sits (1.3.1 Info and Relationships, 2.4.6 Headings and Labels).
+- **Name every button with the question or section title,** and keep the same words open and closed (4.1.2 Name, Role, Value; 2.5.3 Label in Name).
+- **Render each panel right after its heading,** in the same item, so the reading order and the focus order match (2.4.3 Focus Order).
+- **Use `region` only for a few sections.** More than about six open regions crowd a screen reader user's list of landmarks (APG).
 - **Keep content that must be seen at once out of an accordion.** Hiding the answer behind a press costs every user a step.
-- A list of items as a `<ul>` is `Accordion.Root as="ul"` (it adds `role="list"`) with `Accordion.Item as="li"`.
-- Everything in `disclosure.a11y.md` and `button.a11y.md` applies.
+- **For a numbered or bulleted list of items,** use `Accordion.Root as="ul"` with `Accordion.Item as="li"`. The root adds `role="list"` itself.
+- Everything the Disclosure and Button pages ask of you applies here too.
 
 ## Visual / modes
 
-- Focus indicator: the 2px ring with the 2px offset on the trigger (2.4.7, 2.4.13), drawn so the neighbouring item doesn't clip it.
-- Target size: the whole row is the trigger, at least 44px high in comfortable density, 32px compact (2.5.8).
-- Colour: `text` on the page, with `border-subtle` hairlines between items (not relied on as the only boundary: the heading and the chevron mark each row). No new colour pair. The open state is the chevron and `aria-expanded`, never colour (1.4.1).
-- forced-colors behaviour: hairlines map to system colours, and the chevron is `currentColor`.
-- reduced-motion behaviour: nothing animates.
-- Reflow: at 320px the question wraps and the chevron stays at the inline end (1.4.10).
-- RTL: the chevron moves to the left, the text starts at the right.
+- Focus indicator: a ring on the button with at least 3:1 contrast against its background (2.4.7 Focus Visible, AA). It is drawn so the neighbouring item doesn't clip it. The default theme is designed to meet 2.4.13 Focus Appearance (AAA) as well.
+- Target size: the whole row is the button, much larger than the 24 by 24 CSS pixel minimum (2.5.8 Target Size (Minimum), AA).
+- Colour: the default theme keeps text at the minimum contrast on the page (1.4.3 Contrast (Minimum), AA), and no new colour pair is added. Thin lines between items are not the only boundary: the heading and the chevron mark each row. Open or closed is shown by the chevron and `aria-expanded`, never by colour alone (1.4.1 Use of Color).
+- Forced colours: the lines use the system's colours, and the chevron follows the text colour.
+- Reduced motion: nothing animates.
+- Reflow: at 320px the question wraps and the chevron stays at the end of the line (1.4.10 Reflow).
+- Right-to-left languages: the chevron moves to the left and the text starts at the right.
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships, 2.4.6 Headings and Labels, 4.1.2 Name, Role, Value: headings, native buttons, `aria-expanded`, `aria-controls`.
-- 1.4.1 Use of Color, 1.4.10 Reflow, 1.4.12 Text Spacing.
-- 2.1.1 Keyboard, 2.1.2 No Keyboard Trap, 2.1.4 Character Key Shortcuts, 2.4.3 Focus Order, 2.4.7 Focus Visible, 2.4.11 Focus Not Obscured, 2.5.8 Target Size (Minimum).
-- 3.2.1 On Focus, 3.2.2 On Input.
+- 1.3.1 Info and Relationships (A): each question is a real heading with a native button inside it.
+- 2.4.6 Headings and Labels (AA): the heading level is yours, so the outline fits the page.
+- 4.1.2 Name, Role, Value (A): native buttons with `aria-expanded` and `aria-controls`.
+- 1.4.1 Use of Color (A): open or closed is a chevron and a state, not colour.
+- 1.4.10 Reflow (AA) and 1.4.12 Text Spacing (AA): the text wraps and nothing is clipped.
+- 2.1.1 Keyboard (A) and 2.1.2 No Keyboard Trap (A): every button is a Tab stop and focus can always leave.
+- 2.1.4 Character Key Shortcuts (A): the accordion adds no single-key shortcuts.
+- 2.4.3 Focus Order (A): the order of the buttons is the order of the page.
+- 2.4.7 Focus Visible (AA) and 2.4.11 Focus Not Obscured (Minimum) (AA): the focus ring shows and isn't clipped by the component.
+- 2.5.8 Target Size (Minimum) (AA): the whole row is the target.
+- 2.5.3 Label in Name (A): the button's name is its visible text, the same open and closed (`accordion.test.tsx › a trigger keeps its name open and closed`). Choosing words that match is yours.
+- 1.4.3 Contrast (Minimum) (AA) and 1.4.11 Non-text Contrast (AA): the text and the chevron use the page's text colour, and the theme adds no new colour pair. The text colours are measured by `theme:check`.
+- 3.2.1 On Focus (A) and 3.2.2 On Input (A): focusing or pressing a button opens its panel and changes nothing else.
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 
-- **No arrow-key navigation between headers.** APG lists it as optional. Every trigger is a Tab stop, so a long FAQ costs more Tab presses. Revisit with the AT matrix.
+- **No arrow-key navigation between headers.** APG lists it as optional. Every button is a Tab stop, so a long FAQ costs a keyboard user more Tab presses. This may change after testing with assistive technology.
 - **No "show all" button and no "only one open" mode** in this version.
-- **`hidden="until-found"` support differs** between browsers (see `disclosure.a11y.md`).
+- **Find-in-page support differs between browsers.** With `hiddenUntilFound`, Chromium browsers reveal a closed answer that matches. A browser without support treats the answer as hidden, so find-in-page misses it and nothing else breaks.

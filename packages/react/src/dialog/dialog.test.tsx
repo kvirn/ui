@@ -413,6 +413,18 @@ describe('keyboard', () => {
     )
   })
 
+  test('what was typed is still there when the dialog is closed with Escape and opened again', async () => {
+    await render(<Example />)
+    await userEvent.click(trigger())
+    await expect.poll(isModal).toBe(true)
+    await userEvent.fill(phoneInput(), '070 123 45 67')
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(isModal).toBe(false)
+    await userEvent.click(trigger())
+    await expect.poll(isModal).toBe(true)
+    await expect.element(phoneInput()).toHaveValue('070 123 45 67')
+  })
+
   test('Escape closes a Popover inside first, then the dialog', async () => {
     await render(
       <Dialog.Root defaultOpen>

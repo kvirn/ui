@@ -1,28 +1,28 @@
 # Accessibility contract: DateRangePicker
 
-- **APG pattern:** [Date Picker Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/) (a modal dialog around a grid), after two typed fields. APG has no range pattern: a range is two ordinary selections. The grid is [calendar.a11y.md](../calendar/calendar.a11y.md) (range mode); the dialog is [dialog.a11y.md](../dialog/dialog.a11y.md); the single-date sibling is [date-picker.a11y.md](../date-picker/date-picker.a11y.md).
-- **Deviations:** none new, and no key is added. From the APG example: no OK and Cancel buttons (the second press closes; Close and Escape cancel); the month is announced by Announcer on a button press; Tab leaves the modal to the browser's own UI before wrapping (the Dialog's approved deviation). Decisions: design spec `docs/design/date-range.md` (D2, D3, D9, D10, D12, D13), approved 2026-10-06, and Plan 0089.
+- **APG pattern:** [Date Picker Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/) (a modal dialog around a grid), after two typed fields. APG has no range pattern: a range is two ordinary selections. The grid is [the Calendar contract](../calendar/calendar.a11y.md) (range mode); the dialog is [the Dialog contract](../dialog/dialog.a11y.md); the single-date sibling is [the DatePicker contract](../date-picker/date-picker.a11y.md).
+- **Deviations:** none new, and no key is added. From the APG example: no OK and Cancel buttons (the second press closes; Close and Escape cancel); the month is announced by Announcer on a button press; Tab leaves the modal to the browser's own UI before wrapping (the Dialog's approved deviation). The maintainer approved these decisions on 2026-10-06.
 - **Native elements used:** `<button type="button">` (trigger and Close), a native `<dialog>` shown with `showModal()`, `<h2>` (title), and the Calendar's `<table role="grid">` (two of them from 64rem).
-- **Status:** alpha candidate (Plan 0089). Accessibility-reviewer pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Reviewer findings fixed, accessibility-reviewer re-review pending. Manual AT is `pending`.
 - **Tests:** `date-range-picker.test.tsx` next to this file. `date-range-picker.stories.tsx` in `apps/storybook/src/components/date-range-picker/`.
 
 DateRangePicker is an **add-on to two typed fields** (a From and a To, each one `masks.date()` TextInput, or each a DateInput): typing always works, and the dialog is the slower path for keyboard and screen reader users. It is a separate component from DatePicker because the Dialog wiring, the draft, the open step, focus return and the post-close announcement are accessibility-critical and identical for everyone. It is controlled only (v1): the fields' range goes in as `value` (`{ start, end }`, ISO strings, `''` for an empty end) and the chosen range comes out once, through `onValueChange`, for the consumer to write into both fields. The one masked field per end is the default composition; the three-box DateInput per end is supported with every feature. There is no `defaultOpen`: a picker never starts open.
 
 ## Roles, states, properties
 
-| Part     | Element / role                              | ARIA                                                                                                                 | Notes                                                                                                                                                                 |
-| -------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Root     | none (renders no element)                   | none                                                                                                                 | Owns the open state, the draft range and the Dialog's context                                                                                                         |
-| Trigger  | `<button type="button">` → button           | name = its visible text `dateRangePicker.trigger`; `aria-haspopup="dialog"`; `aria-expanded` `true`/`false`          | One, after both fields. The calendar icon is decorative (`aria-hidden`). Classes `kv-button kv-date-range-picker-trigger`; `data-open` while open                     |
-| Popup    | native `<dialog>` → dialog                  | `aria-modal="true"` while open; `aria-labelledby` → Title                                                            | Class `kv-dialog kv-date-range-picker-popup`. Top layer; the page behind is inert                                                                                     |
-| Title    | `<h2>` (`tabindex="-1"`)                    | none                                                                                                                 | `dateRangePicker.title`, replaceable with the question. Names the dialog                                                                                              |
-| Close    | `<button>` icon button                      | name = `dialog.close`                                                                                                | The Dialog's own Close                                                                                                                                                |
-| Calendar | `div.kv-calendar` with the Calendar's parts | as [calendar.a11y.md](../calendar/calendar.a11y.md) range mode: `aria-multiselectable`, `aria-selected` on the range | Mounted only while the dialog is open. `visibleMonths` 2 (two grids from 64rem, one below). The step line (`rangeChooseStart`, `rangeChooseEnd`) is in the range hint |
+| Part     | Element / role                              | ARIA                                                                                                                          | Notes                                                                                                                                                                 |
+| -------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Root     | none (renders no element)                   | none                                                                                                                          | Owns the open state, the draft range and the Dialog's context                                                                                                         |
+| Trigger  | `<button type="button">` → button           | name = its visible text `dateRangePicker.trigger`; `aria-haspopup="dialog"`; `aria-expanded` `true`/`false`                   | One, after both fields. The calendar icon is decorative (`aria-hidden`). Classes `kv-button kv-date-range-picker-trigger`; `data-open` while open                     |
+| Popup    | native `<dialog>` → dialog                  | `aria-modal="true"` while open; `aria-labelledby` → Title                                                                     | Class `kv-dialog kv-date-range-picker-popup`. Top layer; the page behind is inert                                                                                     |
+| Title    | `<h2>` (`tabindex="-1"`)                    | none                                                                                                                          | `dateRangePicker.title`, replaceable with the question. Names the dialog                                                                                              |
+| Close    | `<button>` icon button                      | name = `dialog.close`                                                                                                         | The Dialog's own Close                                                                                                                                                |
+| Calendar | `div.kv-calendar` with the Calendar's parts | as in [the Calendar contract](../calendar/calendar.a11y.md), range mode: `aria-multiselectable`, `aria-selected` on the range | Mounted only while the dialog is open. `visibleMonths` 2 (two grids from 64rem, one below). The step line (`rangeChooseStart`, `rangeChooseEnd`) is in the range hint |
 
 Rules, tested in `date-range-picker.test.tsx`:
 
 - **Opens on** the typed start, else the typed end, else today, kept inside `minimum`–`maximum`. The step follows: a start only gives the end step; an end only gives the start step; both give a finished range (a press starts a new one); an end before the start shows as the start alone and is never rewritten. A partial or impossible text counts as no date and gives no error from the picker: the form validates.
-- **Press 1** sets the draft start (fields unchanged, dialog open, "Startdatum … Välj slutdatum." announced in the dialog). **Press 2** on a possible end closes at once, calls `onValueChange` **once** with the finished range, and the consumer writes both fields. A day that can't be the end (before the start, too short, too long, past an unavailable day) becomes the new start and says so (restart, not swap). An unavailable day does nothing.
+- **Press 1** sets the draft start (fields unchanged, dialog open, "Startdatum … Välj slutdatum." (Start date … Choose the end date.) announced in the dialog). **Press 2** on a possible end closes at once, calls `onValueChange` **once** with the finished range, and the consumer writes both fields. A day that can't be the end (before the start, too short, too long, past an unavailable day) becomes the new start and says so (restart, not swap). An unavailable day does nothing.
 - **Escape and Close** drop the draft: both fields stay as they were, `onValueChange` is not called, and the next opening starts from the typed range.
 - **Dev warnings (once):** `date-range-picker-invalid-value` (an end that is not `YYYY-MM-DD`); `date-range-picker-<part>-outside-root`.
 
@@ -67,19 +67,19 @@ A click on a day presses it the same way (`a click on the start and on the end c
 
 - Without a provider `timeZone`, "today" is the UTC date on first paint only. The Calendars mount in the popup on every open, so a popup that opens after mount starts on the browser's date (no switch) and initial focus lands on the cell marked `aria-current="date"`.
 - Initial focus: the day with the Tab stop (the typed start, else the typed end, else today, kept inside the range), through the Dialog's `initialFocusRef`. Not the first month button.
-- Trap: yes, native modal (the page behind is `inert`). Tab leaves to the browser's UI before wrapping (the Dialog's approved deviation), so there is no keyboard trap (2.1.2).
+- Trap: yes, native modal (the page behind is `inert`). Tab leaves to the browser's UI before wrapping (the Dialog's approved deviation), so there is no keyboard trap (2.1.2 No Keyboard Trap (A)).
 - Restore to: the trigger, for the end, Escape and Close alike. If the trigger is gone, the first input in the trigger's nearest `fieldset`, group or field: with two masked fields in one row that is the From field; with a Fieldset per end it is the end's first box (the closer landing spot). Never `body`.
-- Never obscured by: nothing inside is sticky; the sheet scrolls (2.4.11).
+- Never obscured by: nothing inside is sticky; the sheet scrolls (2.4.11 Focus Not Obscured (Minimum) (AA)).
 
 ## Announcements
 
-| Event                     | Message key (i18n)        | Politeness                                                     |
-| ------------------------- | ------------------------- | -------------------------------------------------------------- |
-| The start is pressed      | `calendar.rangeChooseEnd` | polite, in the dialog's own Announcer (the page is inert)      |
-| A day restarts the range  | `calendar.rangeChooseEnd` | polite, in the dialog's own Announcer                          |
-| The end is chosen         | `calendar.rangeSelected`  | polite, on the **page** Announcer, after the dialog has closed |
-| A month button is pressed | `calendar.visibleMonths`  | polite, in the dialog's own Announcer                          |
-| Opening, closing, Escape  | none                      | the focus moves announce them                                  |
+| Event                     | Message key (i18n)        | Politeness                                                                          |
+| ------------------------- | ------------------------- | ----------------------------------------------------------------------------------- |
+| The start is pressed      | `calendar.rangeChooseEnd` | polite, in the dialog's own Announcer (the page behind is inert, so it can't speak) |
+| A day restarts the range  | `calendar.rangeChooseEnd` | polite, in the dialog's own Announcer                                               |
+| The end is chosen         | `calendar.rangeSelected`  | polite, on the **page** Announcer, after the dialog has closed                      |
+| A month button is pressed | `calendar.visibleMonths`  | polite, in the dialog's own Announcer                                               |
+| Opening, closing, Escape  | none                      | the focus moves announce them                                                       |
 
 An inert page drops an announcement, so the completion waits for the dialog to close. The Calendar's own completion announcement and its finished-range step line are switched off inside the picker (`calendarProps.messages.rangeSelected` returns `''`), so it is not said twice; the length comes from `calendar.rangeLength` with the days counted inclusively. Without a provider nothing is announced and the hook warns, as for Calendar.
 
@@ -97,51 +97,54 @@ The phrases are the virtual screen reader's approximation, not NVDA or JAWS word
 
 ## Consumer responsibilities
 
-- **Keep the typed fields.** DateRangePicker never replaces them: typing always works, and each keeps `autocomplete` where it applies (1.3.5) and avoids dragging (2.5.7). Put both in a group `Fieldset` with a legend ("Dates of your stay"), give each its own label and example, and put the error on the To field (`Field.ErrorMessage`, or the Fieldset's).
+- **Keep the typed fields.** DateRangePicker never replaces them: typing always works, and each keeps `autocomplete` where it applies (1.3.5 Identify Input Purpose (AA)) and avoids dragging (2.5.7 Dragging Movements (AA)). Put both in a group `Fieldset` with a legend ("Dates of your stay"), give each its own label and example, and put the error on the To field (`Field.ErrorMessage`, or the Fieldset's).
 - **Bridge both ends.** `value={{ start: maskedDateToIsoDate(from, locale), end: maskedDateToIsoDate(to, locale) }}` (or `dateInputValueToIsoDate` per DateInput) in, and `onValueChange={(range) => …}` out, one `isoDateToMaskedDate` or `isoDateToDateInputValue` per end. Validate the order and the span yourself (the picker never produces a reversed or over-long range, but a typed one can be).
-- **Say the limits.** Pass `minimum`, `maximum`, `minimumDays` and `maximumDays` and put them in the help text too (3.3.2); a booking says nights (14 nights is `maximumDays={15}`).
-- **Name the task.** Replace the title with the question ("Välj datum för vistelsen").
-- **Place the Popup outside a page `<form>`** (the Dialog keeps its content mounted) and the one trigger after both fields.
+- **Say the limits.** Pass `minimum`, `maximum`, `minimumDays` and `maximumDays` and put them in the help text too (3.3.2 Labels or Instructions (A)); a booking says nights (14 nights is `maximumDays={15}`).
+- **Name the task.** Replace the title with the question ("Välj datum för vistelsen", Choose the dates of your stay).
+- **Put the one trigger after both fields.** The Popup can sit in a page `<form>`: none of its buttons submits it (`date-range-picker.test.tsx › a DateRangePicker inside a form submits nothing when its buttons are pressed`).
 - **Not for** a range far from today (type it), nor when many days are unavailable (use radio buttons).
-- Everything in `calendar.a11y.md` and `dialog.a11y.md` applies.
+- Everything in the Calendar and Dialog contracts applies.
 
 ## Visual / modes
 
-- Focus indicator: the trigger and Close are Buttons (the 2px ring with an offset); the grids' is in the Calendar contract.
-- Target size: the trigger is a Button (44px, 32px compact); day cells 44px, 40px below 40rem.
+- Focus indicator: the trigger and Close are Buttons and have the Button's focus ring; the grids' is in the Calendar contract.
+- Target size: the trigger is a Button, and the day cells are larger than the 24 by 24 CSS pixel minimum of 2.5.8 Target Size (Minimum) (AA), also below 40rem.
 - Layout: the fields and the trigger sit in `kv-date-range-row`, which wraps: side by side from 40rem, stacked below, the trigger last (at 320px or 200% text it wraps below the To field). The popup is as wide as its calendar (`fit-content`) from 40rem: two months from 64rem, one below it; a sheet below 40rem.
-- forced-colors behaviour: as the Dialog and the Calendar; the trigger is a Button.
-- reduced-motion behaviour: the Dialog's own open motion only.
+- forced-colors behaviour: in forced colours (the user's own system colours) it behaves as the Dialog and the Calendar do, and the trigger is a Button.
+- reduced-motion behaviour: the picker adds no motion of its own; the Dialog's opening motion is the only motion.
 
 ## WCAG SCs covered
 
-- 2.1.1 Keyboard, 2.1.2 No Keyboard Trap, 2.4.3 Focus Order: every row above; focus lands on the day and returns to the trigger.
-- 1.3.1, 4.1.2: roles, names and states of the trigger, dialog and grids (`roles, names and states`, axe).
-- 3.3.2 Labels or Instructions: the range hint and the fields' help text. 3.3.7 Redundant Entry: the typed range is the starting point. 2.5.7 Dragging Movements: none.
-- 4.1.3 Status Messages: the step and the finished range, the latter after the dialog has closed.
-- 3.1.2 Language of Parts: the Calendar's `lang` when the browser has no data for the locale.
-- 1.4.10, 1.4.12, 2.5.8: `pending` the Plan 0051 sweep; the sheet and 40px cells are in the stories.
+- 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A), 2.4.3 Focus Order (A): every row above; focus lands on the day and returns to the trigger.
+- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): roles, names and states of the trigger, dialog and grids (`roles, names and states`, axe).
+- 3.3.2 Labels or Instructions (A): the range hint and the fields' help text. 3.3.7 Redundant Entry (A): the typed range is the starting point. 2.5.7 Dragging Movements (AA): no dragging is needed.
+- 4.1.3 Status Messages (AA): the step and the finished range, the latter after the dialog has closed.
+- 3.1.2 Language of Parts (AA): the Calendar's `lang` when the browser has no data for the locale.
+- 2.5.3 Label in Name (A): the trigger is named by its visible text (`there is one trigger after both fields: a button named by its visible text…`).
+- 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA): the trigger and Close are Buttons with the Button's ring, the grids' ring is the Calendar's, and nothing inside is sticky. Reviewed in the stories.
+- 1.4.3 Contrast (Minimum) (AA), 1.4.11 Non-text Contrast (AA): the dialog and the grids use the Dialog's and the Calendar's colours, measured by the theme check and axe in the stories (`has no axe violations closed, and open at the start step`).
+- 1.4.10 Reflow (AA), 1.4.12 Text Spacing (AA), 2.5.8 Target Size (Minimum) (AA): not yet checked by an automated sweep; the sheet and the day cells are reviewed in the stories.
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 
-- Whether a screen reader says the finished range after focus lands on the trigger, or drops it, is unproven until the manual matrix runs (design §7.3).
-- `aria-selected` on every day between the ends may be noisy (design Q7): `pending` the manual AT run.
+- Screen reader users: whether a screen reader says the finished range after focus lands on the trigger, or drops it, is unproven until the manual assistive technology tests run.
+- Screen reader users: `aria-selected` on every day between the ends may be noisy. This is also `pending` the manual assistive technology tests.
 - Children you pass to `DateRangePicker.Popup` stay mounted while the dialog is closed (the default Calendar does not).
-- A typed range that is already finished opens with an empty step line (and the grid's `aria-describedby` target is empty): the picker silences the completion by blanking `rangeSelected`, which also blanks the finished-range line. Follow-up: a Calendar option to silence only the completion announcement.
+- Screen reader users: when both fields already hold a finished range, the dialog opens with an empty step line, and the grid's `aria-describedby` points at an empty description. The picker silences the completion message by blanking `rangeSelected`, which also blanks the finished-range line. Follow-up: a Calendar option to silence only the completion announcement.

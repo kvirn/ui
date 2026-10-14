@@ -127,7 +127,7 @@ export function Textarea({
     if (characterCount && maxLength === undefined) {
       warnOnce(
         'textarea-character-count-without-limit',
-        'A Textarea has characterCount but no maxLength, so it has no limit to count against and renders no count. Set maxLength to the limit the form allows: it is the count’s limit and is not written as the native attribute (WCAG 3.3.8).',
+        'A Textarea has characterCount but no maxLength, so it has no limit to count against and renders no count. Set maxLength to the limit the form allows: it is the count’s limit and is not written as the native attribute, so a paste is never cut without a message.',
       )
     }
   }, [characterCount, maxLength])

@@ -158,7 +158,8 @@ export function useListVirtualization(
   const virtualizer = useMemo(
     () =>
       isActive
-        ? createListVirtualizer({
+        ? // eslint-disable-next-line react/refs -- getScrollElement reads the ref once mounted, never in render
+          createListVirtualizer({
             count: 0,
             getScrollElement,
             estimateSize: () => defaultOptionEstimateSize,

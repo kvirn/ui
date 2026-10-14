@@ -2,7 +2,7 @@ import type { MaskInput } from '@kvirn-ui/core'
 import { en } from '@kvirn-ui/i18n/en'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { createRef } from 'react'
+import { createRef, useEffect } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -87,7 +87,7 @@ describe('rendering', () => {
       />,
     )
     const input = page.getByRole('textbox', { name: 'Antal' })
-    expect(ref.current).toBe(input.element())
+    expect(ref).toHaveProperty('current', input.element())
     await expect.element(input).toHaveClass('kv-input--width-2', 'kv-input', 'kv-input--numeric')
     await expect.element(input).toHaveAttribute('name', 'count')
     await expect.element(input).toHaveAttribute('autocomplete', 'off')
@@ -199,12 +199,12 @@ describe('the props become the mask', () => {
   })
 
   test('a form submit sends the value as shown, also for a value you set', async () => {
-    let submitted: FormData | undefined
+    const onSubmit = vi.fn<(submitted: FormData) => void>()
     await render(
       <form
         onSubmit={(event) => {
           event.preventDefault()
-          submitted = new FormData(event.currentTarget)
+          onSubmit(new FormData(event.currentTarget))
         }}
       >
         <NumberInput aria-label="Antal" name="count" />
@@ -214,6 +214,7 @@ describe('the props become the mask', () => {
     )
     await userEvent.type(page.getByRole('textbox', { name: 'Antal' }), '7')
     await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    const submitted = onSubmit.mock.lastCall?.[0]
     expect(submitted?.get('count')).toBe('7')
     expect(submitted?.get('fixed')).toBe('12')
   })
@@ -310,13 +311,20 @@ describe('keys and paste (contract: number-input.a11y.md › Keyboard)', () => {
     expect(shown()).toBe('1 250,50')
   })
 
+  test('a pasted typographic minus sign (U+2212) is read as a minus sign when negatives are allowed', async () => {
+    await render(<NumberInput aria-label="Saldo" allowNegative />)
+    const input = page.getByRole('textbox', { name: 'Saldo' })
+    await userEvent.fill(input, '\u22125')
+    await expect.element(input).toHaveValue('-5')
+  })
+
   test('Enter in a form submits it with the shown value (native)', async () => {
-    let submitted: FormData | undefined
+    const onSubmit = vi.fn<(submitted: FormData) => void>()
     await render(
       <form
         onSubmit={(event) => {
           event.preventDefault()
-          submitted = new FormData(event.currentTarget)
+          onSubmit(new FormData(event.currentTarget))
         }}
       >
         <NumberInput aria-label="Antal" name="count" />
@@ -325,6 +333,7 @@ describe('keys and paste (contract: number-input.a11y.md › Keyboard)', () => {
     )
     await userEvent.type(page.getByRole('textbox', { name: 'Antal' }), '12')
     await userEvent.keyboard('{Enter}')
+    const submitted = onSubmit.mock.lastCall?.[0]
     expect(submitted?.get('count')).toBe('12')
   })
 
@@ -689,9 +698,10 @@ describe('useNumberInput', () => {
   })
 
   test('format and unmask follow the provider’s locale', async () => {
-    let result: UseNumberInputResult | undefined
+    const onResult = vi.fn<(result: UseNumberInputResult) => void>()
     function Probe() {
-      result = useNumberInput({ decimals: 1, grouping: true, allowNegative: true })
+      const result = useNumberInput({ decimals: 1, grouping: true, allowNegative: true })
+      useEffect(() => onResult(result))
       return null
     }
     await render(
@@ -699,6 +709,7 @@ describe('useNumberInput', () => {
         <Probe />
       </KvirnProvider>,
     )
+    const result = onResult.mock.lastCall?.[0]
     expect(plainSpaces(result?.format('-1234.5') ?? '')).toBe('-1 234,5')
     expect(result?.unmask('-1 234,5')).toBe('-1234.5')
   })
@@ -800,17 +811,19 @@ describe('the mask is optional (Plan 0039)', () => {
   })
 
   test('useNumberInput takes mask too, and its mask is undefined only for false', async () => {
-    const seen: Record<string, UseNumberInputResult['mask']> = {}
+    const onMasks = vi.fn<(masks: Record<string, UseNumberInputResult['mask']>) => void>()
     function Probe() {
-      seen['default'] = useNumberInput().mask
-      seen['off'] = useNumberInput({ mask: false }).mask
-      seen['named'] = useNumberInput({ mask: 'digits' }).mask
+      const byDefault = useNumberInput().mask
+      const off = useNumberInput({ mask: false }).mask
+      const named = useNumberInput({ mask: 'digits' }).mask
+      useEffect(() => onMasks({ default: byDefault, off, named }))
       return null
     }
     await render(<Probe />)
-    expect(seen['default']).toBeDefined()
-    expect(seen['off']).toBeUndefined()
-    expect(seen['named']).toBeDefined()
+    const seen = onMasks.mock.lastCall?.[0]
+    expect(seen?.['default']).toBeDefined()
+    expect(seen?.['off']).toBeUndefined()
+    expect(seen?.['named']).toBeDefined()
     expectTypeOf<UseNumberInputOptions['mask']>().toEqualTypeOf<MaskInput | false | undefined>()
   })
 })

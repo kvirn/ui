@@ -712,6 +712,14 @@ describe('types', () => {
     expectTypeOf<{ size: 4 }>().not.toExtend<UseIconOptions>()
   })
 
+  test('tabIndex, onClick, aria-labelledby and aria-describedby are not Icon props', () => {
+    expectTypeOf<'tabIndex'>().not.toExtend<keyof IconProps>()
+    expectTypeOf<'onClick'>().not.toExtend<keyof IconProps>()
+    expectTypeOf<'aria-labelledby'>().not.toExtend<keyof IconProps>()
+    expectTypeOf<'aria-describedby'>().not.toExtend<keyof IconProps>()
+    expectTypeOf<'onFocus'>().toExtend<keyof IconProps>()
+  })
+
   test('Lucide, Heroicons and Phosphor components are icon components', () => {
     expectTypeOf(Trash2).toExtend<IconComponent>()
     expectTypeOf(TrashIcon).toExtend<IconComponent>()

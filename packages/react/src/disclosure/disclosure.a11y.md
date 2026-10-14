@@ -1,9 +1,9 @@
 # Accessibility contract: Disclosure (Root, Trigger, Panel)
 
 - **APG pattern:** [Disclosure](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/): a button that shows and hides one panel of content.
-- **Deviations:** none from the APG keyboard practice. Escape is not handled: APG does not require it for a disclosure, and a panel is not a layer. Decisions (Plan 0058): find-in-page is opt-in (`hiddenUntilFound`), and a panel that is shown from a breakpoint without JavaScript is not supported (see Consumer responsibilities).
+- **Deviations:** none from the APG keyboard practice. Escape is not handled: APG does not require it for a disclosure, and a panel is not a layer. Two decisions: find-in-page is opt-in (`hiddenUntilFound`), and a panel that is shown from a breakpoint without JavaScript is not supported (see Consumer responsibilities).
 - **Native elements used:** `<button type="button">` (Trigger), `<div>` (Panel). Nothing for Root: it renders no element.
-- **Status:** alpha candidate (Plan 0058). Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer APPROVE (2026-10-06). Manual AT is `pending`.
 - **Tests:** `disclosure.test.tsx` next to this file. `disclosure.stories.tsx` in `apps/storybook/src/components/disclosure/`.
 
 A Disclosure is a button that shows and hides a panel of content. It holds the open state, wires the two together, and never moves focus. Accordion is a list of disclosures with headings (`accordion.a11y.md`).
@@ -17,7 +17,7 @@ A Disclosure is a button that shows and hides a panel of content. It holds the o
 | Disclosure.Panel   | `<div>`, always rendered                   | `hidden` while closed (`hidden="until-found"` with `hiddenUntilFound`). `data-open` while open               | Class `kv-disclosure-panel`. No role: the panel is not a landmark, and the trigger names nothing for it                                                     |
 | `useDisclosure`    | the same attributes, for your own elements | `triggerProps`, `panelProps`, `isOpen`, `isDisabled`, `isFocusVisible`, `triggerId`, `panelId`               | Options as the Root. `panelProps.ref` must reach the panel for find-in-page                                                                                 |
 
-Rules, tested in `disclosure.test.tsx`:
+What it does, each rule proved by an automated test:
 
 - **Wiring.** `aria-controls` is the panel's id on every render (the panel is always in the DOM), `aria-expanded` follows the state, and the trigger is a real `<button type="button">`. Ids come from `useId`, so the server and the client agree.
 - **Closed means hidden.** A closed panel is `hidden`, so its content is out of the Tab order and the accessibility tree. An open panel's content follows the trigger in the Tab order.
@@ -53,7 +53,7 @@ The disclosure handles no other key. Escape is the page's own (APG does not requ
 - Initial focus: **not moved.** Opening or closing never moves focus: a keyboard user stays on the trigger, and Tab goes into the panel, which is next in the DOM (render `Disclosure.Panel` right after `Disclosure.Trigger`).
 - Trap: no.
 - Restore to: not needed. Focus is on the trigger when it closes. If the consumer closes the panel from inside it (a "Close" button in the content), they return focus to the trigger themselves.
-- Never obscured by: the panel is in flow, so a sticky header is the consumer's `scroll-padding` (2.4.11).
+- Never obscured by: the panel is in flow, so a sticky header is the consumer's `scroll-padding` (2.4.11 Focus Not Obscured (Minimum)).
 
 ## Announcements
 
@@ -65,48 +65,49 @@ Disclosure has no strings of its own and announces nothing: the change of `aria-
 
 ## Consumer responsibilities
 
-- **Name the trigger with visible text that says what the panel holds** ("Öppettider"), the same open and closed (4.1.2, 2.5.3). Never "Visa mer" for one state and "Visa mindre" for the other: `aria-expanded` carries the state.
-- **Render the Panel right after the Trigger,** in the same parent, so the Tab order matches the visual order (2.4.3).
-- **Keep what the page needs to work out of a closed panel,** and do not hide an error message or the only way to complete a task in one (3.3.1).
-- **A panel shown from a breakpoint, expanded without JavaScript, is not a Disclosure feature.** The trigger's `aria-expanded="false"` would lie while the panel is visible. A navigation menu that is always shown on a wide screen and a button on a narrow one is `NavigationMenu`'s job (roadmap, planned), or the consumer's own CSS: show the panel with an author rule on `.kv-disclosure-panel[hidden]` (`display: block`, and `content-visibility: visible` for `until-found`) and hide the trigger from that width with `display: none`, which also removes it from the accessibility tree. Nothing in the library supports or tests it.
+- **Name the trigger with visible text that says what the panel holds** ("Öppettider", Opening hours), the same open and closed (4.1.2 Name, Role, Value; 2.5.3 Label in Name). Never "Visa mer" (Show more) for one state and "Visa mindre" (Show less) for the other: `aria-expanded` carries the state.
+- **Render the Panel right after the Trigger,** in the same parent, so the Tab order matches the visual order (2.4.3 Focus Order).
+- **Keep what the page needs to work out of a closed panel,** and do not hide an error message or the only way to complete a task in one (3.3.1 Error Identification).
+- **A panel shown from a breakpoint, expanded without JavaScript, is not a Disclosure feature.** The trigger's `aria-expanded="false"` would lie while the panel is visible. A navigation menu that is always shown on a wide screen and a button on a narrow one is not built yet: no menu component does it (the Navigation component covers nested lists and a horizontal bar). Use your own CSS: show the panel with an author rule on `.kv-disclosure-panel[hidden]` (`display: block`, and `content-visibility: visible` for `until-found`) and hide the trigger from that width with `display: none`, which also removes it from the accessibility tree. Nothing in the library supports or tests it.
 - **Server rendering:** a closed panel is `hidden` in the markup, and without JavaScript the trigger does nothing. Content that must be readable without JavaScript is not in a Disclosure, or is `defaultOpen`.
-- Everything in `button.a11y.md` applies to the trigger.
+- Everything the Button page asks of you applies to the trigger too.
 
 ## Visual / modes
 
-- Focus indicator: the trigger shows the 2px ring with the 2px offset (2.4.7, 2.4.13).
-- Target size: the trigger is at least 44px high in comfortable density, 32px compact (2.5.8).
-- Colour: the trigger's text is `text` on the page (4.5:1). The open state is shown by the chevron and `aria-expanded`, never by colour (1.4.1). No new colour pair.
-- forced-colors behaviour: the chevron is `currentColor`, so it follows `ButtonText`/`CanvasText`. The state is the shape of the chevron.
-- reduced-motion behaviour: nothing animates. The panel appears and disappears at once.
-- Reflow: at 320px the trigger's text wraps (`overflow-wrap: anywhere`) and the chevron stays at the inline end (1.4.10).
+- Focus indicator: the trigger shows a focus ring with at least 3:1 contrast against its background (2.4.7 Focus Visible, AA; 2.4.13 Focus Appearance, AAA).
+- Target size: the trigger is larger than the 24 by 24 pixel minimum in both densities (2.5.8 Target Size (Minimum), AA).
+- Colour: the trigger's text has at least 4.5:1 contrast on the page. The open state is shown by the chevron and `aria-expanded`, never by colour (1.4.1 Use of Color, A). It adds no new colour pair.
+- Forced colours: the chevron uses the text colour, so it follows the system's text colour. The state is the shape of the chevron.
+- Reduced motion: nothing animates. The panel appears and disappears at once.
+- Reflow: at 320 pixels wide the trigger's text wraps, even inside a long word, and the chevron stays at the end of the line (1.4.10 Reflow, AA).
 - RTL: the chevron is at the left, the text starts at the right. A chevron pointing up or down needs no mirroring.
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships, 4.1.2 Name, Role, Value: native `<button>`, `aria-expanded`, `aria-controls`.
-- 1.4.1 Use of Color, 1.4.11 Non-text Contrast: the chevron changes shape, and it is `currentColor`.
-- 1.4.10 Reflow, 1.4.12 Text Spacing: wrapping text, no fixed heights.
-- 2.1.1 Keyboard, 2.1.2 No Keyboard Trap, 2.1.4 Character Key Shortcuts: native button keys, Tab leaves, no shortcuts.
-- 2.4.3 Focus Order, 2.4.7 Focus Visible, 2.4.11 Focus Not Obscured, 2.5.8 Target Size (Minimum).
-- 3.2.1 On Focus, 3.2.2 On Input: opening needs a press, and nothing moves focus.
+- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): a native `<button>`, `aria-expanded` and `aria-controls`.
+- 1.4.1 Use of Color (A), 1.4.11 Non-text Contrast (AA): the chevron changes shape, and it uses the text colour.
+- 1.4.10 Reflow (AA), 1.4.12 Text Spacing (AA): wrapping text, no fixed heights.
+- 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A), 2.1.4 Character Key Shortcuts (A): the native button keys, Tab leaves, no shortcuts.
+- 2.4.3 Focus Order (A), 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA), 2.5.8 Target Size (Minimum) (AA).
+- 3.2.1 On Focus (A), 3.2.2 On Input (A): opening needs a press, and nothing moves focus.
+- 2.5.3 Label in Name (A): the trigger's name is its visible text, the same open and closed (`disclosure.test.tsx › the trigger keeps its name open and closed`). Choosing words that match is yours.
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 Also pending, by hand: whether `hidden="until-found"` content is found and revealed by find-in-page in Chrome, Edge and (when supported) Safari and Firefox, and what screen readers announce when it opens.
 

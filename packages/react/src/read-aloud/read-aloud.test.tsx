@@ -255,6 +255,17 @@ describe('keyboard', () => {
     play().element().dispatchEvent(event)
     expect(event.defaultPrevented).toBe(false)
   })
+
+  test('arrow keys on the speed select are not handled or prevented', async () => {
+    await render(<Player fake={createFakeEngine()} />)
+    const event = new KeyboardEvent('keydown', {
+      key: 'ArrowDown',
+      bubbles: true,
+      cancelable: true,
+    })
+    page.getByLabelText('Speed').element().dispatchEvent(event)
+    expect(event.defaultPrevented).toBe(false)
+  })
 })
 
 describe('controls', () => {
@@ -491,6 +502,14 @@ describe('selection trigger', () => {
     await selectWithPointer()
     await expect.poll(triggerElement).not.toBeNull()
     await userEvent.keyboard('{Escape}')
+    await expect.poll(triggerElement).toBeNull()
+  })
+
+  test('is dismissed by Tab, so it never covers the element focus moves to', async () => {
+    await render(<Player fake={createFakeEngine()} />)
+    await selectWithPointer()
+    await expect.poll(triggerElement).not.toBeNull()
+    await userEvent.tab()
     await expect.poll(triggerElement).toBeNull()
   })
 

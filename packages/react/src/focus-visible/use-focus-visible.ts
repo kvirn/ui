@@ -23,8 +23,37 @@ const modifierKeys = new Set(['Alt', 'AltGraph', 'Control', 'Meta', 'Shift'])
 let isPointerBeforeFocus = false
 let isTracking = false
 
-function onPointerDown() {
-  isPointerBeforeFocus = true
+// A screen reader's "click" arrives as a synthesised pointer event with no real pointer behind it
+// (as in React Aria): it is the keyboard's kind of focus, so the ring shows.
+function isAndroid(): boolean {
+  const { userAgentData } = navigator as Navigator & { userAgentData?: { platform?: string } }
+  return userAgentData?.platform === 'Android' || /android/i.test(navigator.userAgent)
+}
+
+function isVirtualPointerDown(event: PointerEvent): boolean {
+  // Some Android devices report a real tap as 0 by 0.
+  if (event.width === 0 && event.height === 0 && !isAndroid()) {
+    return true
+  }
+  return (
+    event.width === 1 &&
+    event.height === 1 &&
+    event.pressure === 0 &&
+    event.detail === 0 &&
+    event.pointerType === 'mouse'
+  )
+}
+
+function isVirtualClick(event: MouseEvent): boolean {
+  // Firefox marks a trusted synthesised click with mozInputSource 0 (unknown).
+  if (event.isTrusted && (event as MouseEvent & { mozInputSource?: number }).mozInputSource === 0) {
+    return true
+  }
+  return event.detail === 0 && !(event as PointerEvent).pointerType
+}
+
+function onPointerDown(event: PointerEvent) {
+  isPointerBeforeFocus = !isVirtualPointerDown(event)
 }
 
 function onKeyDown(event: KeyboardEvent) {
@@ -39,7 +68,11 @@ function clearPointer() {
 }
 
 /** After the click's own focus: a label's, or one a click handler moves. */
-function onClick() {
+function onClick(event: MouseEvent) {
+  if (isVirtualClick(event)) {
+    isPointerBeforeFocus = false
+    return
+  }
   setTimeout(clearPointer)
 }
 

@@ -366,6 +366,7 @@ export function useFileUpload<Result = unknown>(
   const previousItemIds = useRef<readonly string[]>([])
   const announcementHandle = useRef<AnnouncementHandle | null>(null)
 
+  // eslint-disable-next-line react/refs -- the closures read the refs when the store is used, never in render
   const [store] = useState<FileUpload<Result>>(() => {
     const urlApi = () => envRef.current?.window.URL ?? URL
     return createFileUpload<Result>(() => optionsRef.current, {

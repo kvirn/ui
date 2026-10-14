@@ -60,6 +60,17 @@ describe('VisuallyHidden', () => {
     await expect.element(page.getByText('i kronor')).toBeInTheDocument()
   })
 
+  test('hidden text inside a control becomes part of the control’s name', async () => {
+    await render(
+      <button type="button">
+        Ta bort<VisuallyHidden> bilagan Intyg.pdf</VisuallyHidden>
+      </button>,
+    )
+    await expect
+      .element(page.getByRole('button', { name: 'Ta bort bilagan Intyg.pdf', exact: true }))
+      .toBeInTheDocument()
+  })
+
   test('as changes the element: a hidden heading and a div', async () => {
     await render(
       <>

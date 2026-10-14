@@ -9,7 +9,7 @@ export interface UseTopBarOptions {
 }
 
 /** Spread on the bar's element. Only its class: TopBar adds no role, ARIA or state. */
-export interface TopBarRootPartProps {
+export interface TopBarPartProps {
   /**
    * `.kv-top-bar`, and one modifier for a variant. Add a class of your own next to it with
    * `mergeProps`: class names join.
@@ -18,20 +18,20 @@ export interface TopBarRootPartProps {
 }
 
 export interface UseTopBarResult {
-  rootProps: TopBarRootPartProps
+  topBarProps: TopBarPartProps
 }
 
 // The same objects every time, frozen, so nothing a consumer does can change another bar.
 const topBarProps = {
-  none: Object.freeze({ rootProps: Object.freeze({ className: 'kv-top-bar' }) }),
+  none: Object.freeze({ topBarProps: Object.freeze({ className: 'kv-top-bar' }) }),
   primary: Object.freeze({
-    rootProps: Object.freeze({ className: 'kv-top-bar kv-top-bar--primary' }),
+    topBarProps: Object.freeze({ className: 'kv-top-bar kv-top-bar--primary' }),
   }),
   secondary: Object.freeze({
-    rootProps: Object.freeze({ className: 'kv-top-bar kv-top-bar--secondary' }),
+    topBarProps: Object.freeze({ className: 'kv-top-bar kv-top-bar--secondary' }),
   }),
   accent: Object.freeze({
-    rootProps: Object.freeze({ className: 'kv-top-bar kv-top-bar--accent' }),
+    topBarProps: Object.freeze({ className: 'kv-top-bar kv-top-bar--accent' }),
   }),
 } as const satisfies Record<TopBarVariant | 'none', UseTopBarResult>
 
@@ -41,7 +41,7 @@ const topBarProps = {
  *
  * @example
  * const topBar = useTopBar({ variant: 'accent' })
- * <div {...topBar.rootProps}>…</div>
+ * <div {...topBar.topBarProps}>…</div>
  */
 export function useTopBar({ variant }: UseTopBarOptions = {}): UseTopBarResult {
   return topBarProps[variant ?? 'none']

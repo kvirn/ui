@@ -4,7 +4,7 @@
 
 After a client-side navigation a keyboard or screen reader user lands on the new page's title, not on a stale focus position (WCAG 2.4.3, 4.1.3). `useRouteFocus` is a hook only: call it once in the layout, give it the router's location as `key`, and it focuses the page's `h1`.
 
-- It does nothing on the first load, on a hash-only change, when the user is typing in a field, when no target exists (a development warning says so), and on Back or Forward while `history.scrollRestoration` is `'auto'`.
+- It does nothing on the first load, on a hash-only change, when the user is typing in a field, when no target exists (a development warning says so), and on Back or Forward while `history.scrollRestoration` is `'auto'` (focus stays put, but `announce` still speaks).
 - `tabindex="-1"` is added to the heading just before focus and removed on blur, so it adds no Tab stop.
 - `announce` also says "Navigated to {title}" in the shared live region. It is off by default. The text is the `routeFocus.navigated` message.
 - The ring shows under `:focus-visible`, as on any element. Keep `scroll-padding-top` above a sticky header.
@@ -42,7 +42,7 @@ export function PageShell({ children }: { children: React.ReactNode }) {
 
 ## TanStack Router
 
-TanStack Router has no announcer: turn `announce` on, and set `scrollRestoration` on the router so Back and Forward keep the browser's behaviour.
+If your router does not announce route changes, turn `announce` on, and set `scrollRestoration` on the router so Back and Forward keep the browser's behaviour.
 
 ```tsx
 import { useRouteFocus } from '@kvirn-ui/react'

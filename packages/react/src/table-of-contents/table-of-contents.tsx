@@ -222,7 +222,7 @@ TableOfContentsRoot.displayName = 'TableOfContents.Root'
  * in marked `aria-current="location"` (contract: table-of-contents.a11y.md). Give it the `items`
  * (the page's headings, in order, with their ids). It is never sticky, never scrolls by itself, and
  * never moves focus or announces a change. With `@kvirn-ui/theme`, the links are navigation items:
- * the heading being read is a solid fill, and the headings above it the quiet trail.
+ * the heading being read is underlined and bold with no fill, and the headings above it are the bold trail.
  *
  * @example
  * <h2 id="contents-title">På den här sidan</h2>

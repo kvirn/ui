@@ -3,7 +3,7 @@
 - **APG pattern:** [Toolbar](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/) above a multi-line text, with [toggle buttons](https://www.w3.org/WAI/ARIA/apg/patterns/button/), a select-only [Listbox](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-select-only/) and non-modal [dialogs](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) for the link and image forms. The text is a `textbox` with `aria-multiline` (a `contenteditable`). There is no APG pattern for a rich text editor.
 - **Deviations:** two, both approved by the maintainer on 2026-10-04 and recorded in the `keyboard` skill (rule 7 and its editor table). (1) **Shortcuts are on by default**, limited to the platform's text-editing convention. (2) **Tab acts inside the text**: it indents a list item and moves between table cells, only where it can, and leaves the editor everywhere else, as in any field. There is no "Escape, then Tab" way out and no instruction under the box (maintainer, 2026-10-05, Plan 0045): the unmodified Tab always gets out, after as many presses as there are list levels or table cells to pass, and each press moves somewhere (it never stays put), which is what WCAG 2.1.2 asks. Escape in the text is consumed the first time (so a Dialog around the editor stays open).
 - **Native elements used:** a `<div contenteditable role="textbox">` made by Tiptap (ProseMirror), `<button>` for every control, a `<div role="combobox">` for the picker (the Listbox), `<div popover role="dialog">` for the forms (the Popover), `<form>`, `<input>` (TextInput, Checkbox) and `<input type="hidden">` for the posted value.
-- **Status:** alpha candidate (Plan 0036). Gates not yet passed and the manual AT matrix is `pending`: screen reader support for a `contenteditable` varies between NVDA, JAWS and VoiceOver.
+- **Status:** alpha candidate. Gates green, accessibility-reviewer pending. Manual AT is `pending`: screen reader support for a `contenteditable` varies between NVDA, JAWS and VoiceOver.
 - **Tests:** `rich-text-editor.test.tsx`, `rich-text-toolbar.test.tsx`, `link-image-forms.test.tsx` and `kvirn-keymap.test.tsx` under `packages/rich-text/src/`. `rich-text-editor.stories.tsx` in `apps/storybook/src/components/rich-text-editor/`.
 
 A RichTextEditor is the control of a [Field](../../react/src/field/field.a11y.md): the Field's label names the editable text, and its description, the count, its help text and its error describe it. It adds a formatting toolbar, one Tab stop that a keyboard and screen reader user can operate, and posts its value with the form. Its output is **never sanitized**: sanitize it on the server.
@@ -116,7 +116,7 @@ Nothing is announced for a toolbar toggle pressed with Enter or Space (`aria-pre
 
 ## Visual / modes
 
-- Focus indicator: a 2px ring around the whole box when the text has keyboard focus, and on the focused button only when the toolbar has it, 2px offset (2.4.7, 2.4.13). Any focus inside gives the box the 2px `border-focus` edge. A click in the text shows only the edge, as for text inputs.
+- Focus indicator: a 2px ring around the whole box when the text has keyboard focus, and on the focused button only when the toolbar has it, 2px offset (2.4.7; AAA 2.4.13 is not counted toward AA). Any focus inside gives the box the 2px `border-focus` edge. A click in the text shows only the edge, as for text inputs. An invalid editor shows the ring on any focus in the text, keeping its `danger` edge (form-fields.md §6.8a).
 - Target size: every control is at least 24 × 24 CSS px, 44px by default and 32px in `kv-compact` from 64rem (2.5.8, design spec §6.5.3). Test: `rich-text-editor.stories.tsx › Default`.
 - forced-colors behaviour: the box keeps a `ButtonBorder` edge, a pressed toggle is a `Highlight` fill with `HighlightText`, flat buttons keep a `ButtonText` edge, the gap cursor is `CanvasText`, the selected image and cells are `Highlight`. Test: `rich-text-editor.stories.tsx › ForcedColors`.
 - reduced-motion behaviour: fills fade over `--kv-duration-fast` and the popover over `--kv-duration-medium` only under `no-preference`. The gap cursor stops blinking under `reduce`. Nothing moves the layout: no slide for the Table group, no animated height.
@@ -128,27 +128,27 @@ Nothing is announced for a toolbar toggle pressed with Enter or Space (`aria-pre
 
 - 1.1.1 Non-text Content: an image needs a description or the decorative choice. 1.3.1 Info and Relationships: semantic output, named groups. 1.3.2 Meaningful Sequence. 1.4.1 Use of Color and 1.4.11 Non-text Contrast: a pressed toggle is a filled tile. 1.4.3 Contrast. 1.4.10 Reflow. 1.4.12 Text Spacing. 1.4.13 Content on Hover or Focus (the tooltips).
 - 2.1.1 Keyboard. **2.1.2 No Keyboard Trap**: Tab acts only where it can and leaves everywhere else, so the unmodified Tab and Shift+Tab always get out. 2.1.4 Character Key Shortcuts: modifier chords only, no single-key shortcut, typing rules off.
-- 2.4.3 Focus Order, 2.4.4 Link Purpose (the help text for the link text), 2.4.7 Focus Visible, 2.4.11 Focus Not Obscured, 2.4.13 Focus Appearance.
+- 2.4.3 Focus Order, 2.4.4 Link Purpose (the help text for the link text), 2.4.7 Focus Visible, 2.4.11 Focus Not Obscured, AAA 2.4.13 Focus Appearance, not counted toward AA.
 - 2.5.3 Label in Name, 2.5.8 Target Size (Minimum).
 - 3.2.1 On Focus and 3.2.2 On Input: the Table group changes only on the user's own action. 3.3.1 Error Identification, 3.3.2 Labels or Instructions, 3.3.8 Accessible Authentication (paste allowed; the count never blocks).
 - 4.1.2 Name, Role, Value. 4.1.3 Status Messages.
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 The matrix must also check: Alt+F10 against NVDA, JAWS, Narrator and VoiceOver; Tab, Shift+Tab and Escape in the text with NVDA and JAWS in focus mode; AltGr characters on Windows with the Swedish, Finnish and Norwegian layouts; VoiceOver joining text across blocks (a Tiptap known issue); the tooltip's shortcut as a description (does a screen reader say it twice next to `aria-keyshortcuts`); and the `Highlight` fill of a pressed toggle in Windows Contrast Themes.
 

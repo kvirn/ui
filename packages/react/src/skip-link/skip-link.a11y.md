@@ -1,9 +1,9 @@
 # Accessibility contract: SkipLink
 
 - **APG pattern:** none. WCAG technique G1 (a link at the top to skip to the main content) with C7 (hide it until it has focus).
-- **Deviations:** none. Activating the link moves focus, which is the documented exception to "no focus moves": it is the purpose of the control.
+- **Deviations:** none. Activating the link moves focus. That is the purpose of the control, so it is the one allowed exception to "a component moves no focus by itself".
 - **Native elements used:** `<a href="#id">`, never `Link.Root`: a hash on the same page is not a route.
-- **Status:** alpha candidate (Plan 0054). Gates pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `skip-link.test.tsx` next to this file. `skip-link.stories.tsx` in `apps/storybook/src/components/skip-link/`, where `theme.css` is loaded and the visible state is proved.
 
 SkipLink is a native link with a class. It is the first Tab stop in the body, hidden until it has focus, and it moves focus to the main content.
@@ -13,7 +13,7 @@ SkipLink is a native link with a class. It is the first Tab stop in the body, hi
 | Part     | Element / role         | ARIA                | Notes                                                                                                                                                                                                       |
 | -------- | ---------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | SkipLink | `<a href>` → `link`    | none                | `class="kv-skip-link"`. The name is the rendered text, the message `skipLink.label` or your children: text and not `aria-label`, so it is translated and found. `href` is required and is a same-page `#id` |
-| Target   | the consumer's element | none                | Not focusable by itself: the link adds `tabindex="-1"` on activation and removes it on blur. A target that is already focusable (`tabindex` 0 or -1, a control) is left alone                               |
+| Target   | the consumer's element | none                | Not focusable by itself: the link adds `tabindex="-1"` on activation and removes it when focus leaves. A target that is already focusable (`tabindex` 0 or -1, a control) is left alone                     |
 | SkipLink | `as`                   | the component's own | A component that renders an `<a href>` and forwards its ref. It gets the other props, the ref and the part's class (`className` joins, handlers chain, refs merge)                                          |
 
 ## Keyboard
@@ -38,7 +38,7 @@ The visible state is proved in the `Default` story, where the theme is loaded: h
 ## Focus management
 
 - Initial focus: not moved. The link is a Tab stop and nothing else.
-- On activation: `getElementById(target).focus()`. The click handler does not call `preventDefault`, so the native hash scroll, `scroll-padding-top` and, without JavaScript, the jump and the sequential focus starting point still work.
+- On activation: focus moves to the target element. The click handler does not cancel the browser's own jump (`preventDefault` is not called), so the page still scrolls to the target, with the page's `scroll-padding-top`. Without JavaScript the jump still works, and so does the place the browser continues Tab from.
 - A target made focusable has `tabindex="-1"` until it loses focus (`SkipLink target › a target without tabindex gets tabindex -1 until it loses focus, then it is removed`). A target already focusable is left alone (`a target that is already focusable is left alone`, `a target with its own tabindex -1 keeps it after blur`).
 - Trap: no. Restore to: not applicable.
 
@@ -54,40 +54,49 @@ Moving focus to the target reads its name or content. The only string is the lin
 
 - **Put it first in the body,** before the header and any other link, and give the main content the id (`<main id="main">`).
 - **A missing target warns** in development: `skip-link-target-missing:<id>`.
-- **Language.** A custom label is your own string: put it in a nested `KvirnProvider` with `useLocale().localeProps` on your own element if it differs from the page (3.1.2).
-- **Do not hide the target's focus ring.** The target shows the token ring under `:focus-visible` only (the theme's `:where([tabindex='-1']:focus-visible)` rule): no `outline: none` on `[tabindex="-1"]`.
-- **Do not put it in a sticky layer that covers other content** (2.4.11): it stays in the flow.
+- **Language.** A custom label is your own string: put it in a nested `KvirnProvider` with `useLocale().localeProps` on your own element if it differs from the page (3.1.2 Language of Parts, AA).
+- **Do not hide the target's focus ring.** The default theme draws the focus ring on the target, only when focus came from the keyboard (`:focus-visible`): don't set `outline: none` on `[tabindex="-1"]`.
+- **Do not put it in a sticky layer that covers other content** (2.4.11 Focus Not Obscured (Minimum), AA): it stays in the flow.
 
 ## Visual / modes
 
-Headless: no CSS. With `@kvirn-ui/theme/theme.css`, the link is clipped to a 1px box until it has `:focus`, then in flow (`position: static`) with the `link` colour on `canvas` (measured by `theme:check`, 1.4.3), an underline (1.4.1), the token focus ring under `:focus-visible` (2.4.7), space margins and a target of at least 24px (2.5.8). Nothing is hidden with `display: none`. It reflows with the page (1.4.10). Forced colours: `LinkText` on `Canvas` and a `Highlight` ring, with no background reliance.
+Headless: no CSS. With the default theme the link is hidden visually, but not removed from the page, until it has focus. Nothing is hidden with `display: none`, which would also remove it from the Tab order. When it has focus it appears in the normal flow of the page, with:
+
+- link-coloured text that has enough contrast on the page background (1.4.3 Contrast (Minimum), AA), measured by an automated contrast check;
+- an underline, so colour is not the only cue (1.4.1 Use of Color, A);
+- a focus ring with at least 3:1 contrast (2.4.7 Focus Visible, AA);
+- space around it and a target of at least 24 by 24 CSS pixels (2.5.8 Target Size (Minimum), AA).
+
+It reflows with the page (reviewed in the stories, not yet automated (1.4.10 Reflow, AA)). In forced colours (a Windows contrast mode) it uses the system's link and background colours and a highlight-coloured ring, with no reliance on a background fill. If you restyle it, keep the contrast, the underline, the ring and the target size.
 
 ## WCAG SCs covered
 
-- 2.4.1 Bypass Blocks: the link jumps to the main content (`Enter moves focus to the target…`).
-- 2.4.3 Focus Order: first stop; the next Tab continues in the target.
-- 2.4.7 Focus Visible, 2.4.11 Focus Not Obscured: visible and in flow while focused (`Default` story).
-- 2.5.8 Target Size, 1.4.10 Reflow, 1.4.3 and 1.4.11 Contrast: the theme, by `theme:check`.
-- 4.1.2 Name, Role, Value: `link` named by its text (`the name is the default label…`, axe tests).
+- 2.4.1 Bypass Blocks (A): the link jumps to the main content (`Enter moves focus to the target…`).
+- 2.4.3 Focus Order (A): first stop; the next Tab continues in the target.
+- 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA): visible and in flow while focused (`Default` story).
+- 1.4.1 Use of Color (A): the link is underlined, so colour is not the only cue (a theme property, not a test).
+- 3.1.2 Language of Parts (AA): a custom label in another language is marked by the consumer (see Consumer responsibilities).
+- 2.5.8 Target Size (Minimum) (AA), 1.4.10 Reflow (AA), 1.4.3 Contrast (Minimum) (AA) and 1.4.11 Non-text Contrast (AA): the default theme; the contrast is measured by an automated check.
+- 4.1.2 Name, Role, Value (A): `link` named by its text (`the name is the default label…`, axe tests).
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 
-- The `fi`, `nb` and `nn` drafts need a native review.
-- Whether `:focus-visible` matches on the programmatic focus after a keyboard activation in WebKit: not automated, `pending`.
+- The Finnish, Norwegian Bokmål and Norwegian Nynorsk texts are drafts. A native speaker still has to review them.
+- Safari (WebKit): it isn't yet known whether the focus ring shows on the target after someone presses Enter on the link. This is not automated, and the manual check is `pending`. In Safari, Tab only reaches links when "Press Tab to highlight each item" is on (or with Option+Tab), so test with that setting on. Don't hide the ring on `[tabindex="-1"]`.

@@ -564,6 +564,7 @@ function usePreviewUrl(item: FileUploadItemData | undefined): string | undefined
       return undefined
     }
     const url = env.window.URL.createObjectURL(file)
+    // eslint-disable-next-line react/set-state-in-effect -- an object URL exists only after the effect, and render cannot hold it without leaking
     setOwn({ file, url })
     return () => {
       env.window.URL.revokeObjectURL(url)
@@ -749,6 +750,7 @@ export function FileUploadProgress({
   if (itemContext.item.progress === undefined) {
     return <IndeterminateTrack className={otherProps.className} ref={mergedRef} />
   }
+  // eslint-disable-next-line react/refs -- mergedRef is a callback ref, not read in render
   return createElement('progress', {
     ...mergeProps(otherProps, fileUpload.getProgressProps(itemContext.item)),
     ref: mergedRef,

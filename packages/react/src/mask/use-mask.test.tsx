@@ -1,7 +1,7 @@
 import { fi } from '@kvirn-ui/i18n/fi'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -86,9 +86,10 @@ describe('exports and types', () => {
 
 describe('a mask by name (Plan 0039)', () => {
   test('useMask takes a name, and the provider’s country and locale make the mask', async () => {
-    let result: UseMaskResult | undefined
+    const onResult = vi.fn<(result: UseMaskResult) => void>()
     function Probe() {
-      result = useMask({ mask: 'postal-code' })
+      const result = useMask({ mask: 'postal-code' })
+      useEffect(() => onResult(result))
       return null
     }
     await render(
@@ -103,6 +104,7 @@ describe('a mask by name (Plan 0039)', () => {
     )
     await userEvent.type(field(), '12345')
     await expect.element(field()).toHaveValue('123 45')
+    const result = onResult.mock.lastCall?.[0]
     expect(result?.format('00100')).toBe('00100')
     expect(result?.unmask('00100')).toBe('00100')
   })
@@ -147,12 +149,14 @@ describe('a mask by name (Plan 0039)', () => {
   })
 
   test('the result is the same three keys: inputProps, format and unmask', async () => {
-    let result: UseMaskResult | undefined
+    const onResult = vi.fn<(result: UseMaskResult) => void>()
     function Probe() {
-      result = useMask({ mask: 'digits' })
+      const result = useMask({ mask: 'digits' })
+      useEffect(() => onResult(result))
       return null
     }
     await render(<Probe />)
+    const result = onResult.mock.lastCall?.[0]
     expect(Object.keys(result ?? {}).sort()).toEqual(['format', 'inputProps', 'unmask'])
   })
 })

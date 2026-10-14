@@ -3,7 +3,7 @@
 - **APG pattern:** [Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/)
 - **Deviations:** none
 - **Native elements used:** `<button type="button">`. Activation and the Tab stop are the browser's own. The result is announced through the shared live region of `KvirnProvider` (the Announcer) and drawn in a plain `<span>` after the button.
-- **Status:** alpha candidate (Plan 0060). Accessibility-reviewer pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `copy-button.test.tsx` next to this file. `copy-button.stories.tsx` in `apps/storybook/src/components/copy-button/`.
 
 A CopyButton is a [Button](../button/button.a11y.md) that writes a text to the clipboard. Its accessible name is its label, "Copy", and it never changes to "Copied": the result is a status message (4.1.3), not a new name. When the browser refuses (no permission, an insecure context, no Clipboard API), the button announces the failure and selects the text where it is shown, so the user can copy it by hand.
@@ -64,45 +64,44 @@ The label key is `copyButton.label`. Nothing is announced on render. Pressing th
 - When a page has more than one CopyButton, give each a name that says what it copies (`children`: "Copy reference number", or `aria-label` from your translations), and keep the visible words in the name (2.5.3).
 - Wrap the app in `KvirnProvider`: the result is announced through it.
 - Don't copy a secret to the clipboard.
-- Copy needs a secure context (HTTPS or localhost) and a user activation. Elsewhere it fails, and the text is selected instead.
+- Copy needs a secure context (HTTPS or localhost). Where the browser has no Clipboard API or refuses the write, it fails, and the text is selected instead.
 - The theme-less result cue is yours: with `status={false}` or `useCopyButton`, draw words (not colour alone) from `data-status` after the button. Never put it in the name.
 - A text in another language goes in a nested `KvirnProvider` with `useLocale().localeProps` on your own element (3.1.2).
 
 ## Visual / modes
 
-Headless: CopyButton ships no CSS. With `@kvirn-ui/theme/theme.css` it is a Button (`kv-button`): see [button.a11y.md](../button/button.a11y.md). The status (`kv-copy-status`) is 16px `text` with a `text` icon, so no colour carries it (1.4.1) and no new pair is needed.
+Headless: CopyButton ships no CSS. With `@kvirn-ui/theme/theme.css` it is a Button (`kv-button`): see the Button page. The result text (`kv-copy-status`) uses the normal text size and colour with an icon in the same colour, so no colour carries it (1.4.1) and no new colour pair is needed.
 
 - Focus indicator, target size, contrast, forced colours: the Button's.
 - reduced-motion behaviour: no motion.
-- Forced colours: the status words and icon are `CanvasText`. RTL: the status sits at the inline end, and the icons don't mirror.
-- Reflow: no horizontal scrolling at 320 CSS px (1.4.10). The failure text wraps below the button.
+- Forced colours: the result words and icon use the system's text colour. RTL: the status sits at the inline end, and the icons don't mirror.
+- Reflow: No horizontal scrolling at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA). The failure text wraps below the button.
 
 ## WCAG SCs covered
 
-- 4.1.3 Status Messages: `copyButton.copied` and `copyButton.failed` through the live region (`copy-button.test.tsx › announcements`).
-- 1.4.1 Use of Color, 1.3.1 Info and Relationships: the visible status is words plus a decorative icon (`copy-button.test.tsx › visible status`).
-- 3.3.1 Error Identification: the failure text stays until the next press, so a slow reader or a magnifier user still has the instruction (`copy-button.test.tsx › visible status › failed stays past five seconds and is replaced by the next press`).
-- 4.1.2 Name, Role, Value: role `button`, a stable name, `disabled` / `aria-disabled` exposed (`copy-button.test.tsx › name`).
-- 2.1.1 Keyboard, 2.4.3 Focus Order: native button; focus never moves (the Keyboard rows).
-- 2.5.3 Label in Name: the visible text is the name, and the status never replaces it.
-- 3.3.1 Error Identification: a failure says what happened and what to do.
+- 4.1.3 Status Messages (AA): `copyButton.copied` and `copyButton.failed` through the live region (`copy-button.test.tsx › announcements`).
+- 1.4.1 Use of Color (A), 1.3.1 Info and Relationships (A): the visible status is words plus a decorative icon (`copy-button.test.tsx › visible status`).
+- 3.3.1 Error Identification (A): a failure says what happened and what to do, and the failure text stays until the next press, so a slow reader or a magnifier user still has the instruction (`copy-button.test.tsx › visible status › failed stays past five seconds and is replaced by the next press`).
+- 4.1.2 Name, Role, Value (A): role `button`, a stable name, `disabled` / `aria-disabled` exposed (`copy-button.test.tsx › name`).
+- 2.1.1 Keyboard (A), 2.4.3 Focus Order (A): native button; focus never moves (the Keyboard rows).
+- 2.5.3 Label in Name (A): the visible text is the name, and the status never replaces it.
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 

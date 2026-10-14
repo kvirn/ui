@@ -90,7 +90,7 @@ describe('rendering', () => {
       </CheckboxGroup.Root>,
     )
     const root = page.getByTestId('root').element()
-    expect(ref.current).toBe(root)
+    expect(ref).toHaveProperty('current', root)
     expect(container.firstElementChild).toBe(root)
     expect(root.classList.contains('kv-checkbox-group')).toBe(true)
     expect(root.classList.contains('kv-fieldset')).toBe(true)
@@ -377,6 +377,7 @@ describe('useCheckboxGroup', () => {
     const onValueChange = vi.fn<(value: string[], details: CheckboxGroupChangeDetails) => void>()
     function Own() {
       const group = useCheckboxGroup({ name: 'kontakt', value: ['a'], onValueChange })
+      /* eslint-disable react/refs -- the hook's groupRef and getCheckboxProps are spread, never read in render */
       return (
         <fieldset ref={group.groupRef}>
           <legend>Egen</legend>
@@ -384,6 +385,7 @@ describe('useCheckboxGroup', () => {
           <input type="checkbox" aria-label="B" value="b" {...group.getCheckboxProps('b')} />
         </fieldset>
       )
+      /* eslint-enable react/refs */
     }
     await render(<Own />)
     await expect.element(page.getByRole('checkbox', { name: 'A' })).toBeChecked()

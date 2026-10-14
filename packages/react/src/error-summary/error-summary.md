@@ -1,6 +1,6 @@
 # ErrorSummary
 
-> **Draft** (Plan 0063). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [error-summary.a11y.md](error-summary.a11y.md), and the decisions are in [Plan 0063](../../../../docs/plans/0063-summary-list-and-error-summary.md).
+> **Draft** (Plan 0063). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [error-summary.a11y.md](error-summary.a11y.md), and the decisions are in [Plan 0063](../../../../docs/design/plans/0063-summary-list-and-error-summary.md).
 
 The problems of a failed submit, at the top of the form, each a link to its field. Focus moves to the summary once, so the screen reader reads it and a keyboard user starts at the list. It is an [Alert.Danger](../alert/alert.md): the colour, icon and status word agree with every other danger message.
 

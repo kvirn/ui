@@ -3,26 +3,26 @@
 - **APG pattern:** none. Grid is a layout, not a widget, and it is not the ARIA `grid` role.
 - **Deviations:** none
 - **Native elements used:** `<div>` by default. `Grid.Root` takes `ul` or `ol`, and `Grid.Item` takes `li`, `article`, `section`, `nav`, `aside` or `main`, with `as`. The element's own semantics apply.
-- **Status:** alpha candidate (Plan 0108). Gates 1–5 pass (accessibility-reviewer APPROVE, 2026-10-12). Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `grid.test.tsx` next to this file. `grid.stories.tsx` in `apps/storybook/src/components/grid/`.
 
 Grid lays children out on explicit column tracks chosen with classes (`kv-grid--cols-12`, `kv-grid--md-cols-2`, `kv-grid--fit-md`, `kv-grid-item--lg-span-8`). It adds no ARIA, no text, no `tabindex` and no behaviour, and it has no `data-*` state. As a `ul` or `ol` Root it adds `role="list"`, because WebKit and VoiceOver drop the list role under `list-style: none`. Everything a user perceives comes from the consumer's children, which keep their own semantics and focus order.
 
 ## Roles, states, properties
 
-| Part           | Element / role                               | ARIA                                            | Notes                                                                                                                                                                                              |
-| -------------- | -------------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Grid.Root      | internal `<div class="kv-grid-container">`   | none                                            | The query container around the grid element. No role, no ARIA, no attribute beyond its class. This is the one approved exception to "one part, one element" (Plan 0108)                            |
-| Grid.Root      | `<div>` → `generic`, or `<ul>`/`<ol>` → list | `role="list"` on `ul`/`ol` only                 | `class="kv-grid"`. Every prop, the ref and `className` go here. `as="ul"` with `<li>` Items is a list, and its count is announced                                                                  |
-| Grid.Item      | `<div>` → `generic`                          | none. The consumer adds it with the element     | `class="kv-grid-item"`. Optional: any direct child is a cell. Outside a Root it warns once (`grid-item-outside-root`)                                                                              |
-| Grid.Root/Item | `as`                                         | the chosen element's own                        | A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Grid.Root:<tag>`, `as-not-allowed:Grid.Item:<tag>`) and renders the default element. `className` joins, refs pass |
-| both           | never                                        | no `tabindex`, `inert`, `aria-hidden`, `data-*` | No handler, no heading, no live region, no text                                                                                                                                                    |
+| Part           | Element / role                               | ARIA                                            | Notes                                                                                                                                                       |
+| -------------- | -------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Grid.Root      | internal `<div class="kv-grid-container">`   | none                                            | The query container around the grid element. No role, no ARIA, no attribute beyond its class. This is the one approved exception to "one part, one element" |
+| Grid.Root      | `<div>` → `generic`, or `<ul>`/`<ol>` → list | `role="list"` on `ul`/`ol` only                 | `class="kv-grid"`. Every prop, the ref and `className` go here. `as="ul"` with `<li>` Items is a list, and its count is announced                           |
+| Grid.Item      | `<div>` → `generic`                          | none. The consumer adds it with the element     | `class="kv-grid-item"`. Optional: any direct child is a cell. Outside a Root it warns once in development                                                   |
+| Grid.Root/Item | `as`                                         | the chosen element's own                        | A value outside the list is a type error and, in JavaScript, warns once in development and renders the default element. `className` joins, refs pass        |
+| both           | never                                        | no `tabindex`, `inert`, `aria-hidden`, `data-*` | No handler, no heading, no live region, no text                                                                                                             |
 
 `useGrid()` gives the same frozen props objects (only `className`): `containerProps`, `rootProps` and `itemProps`.
 
 ## Allowed elements
 
-A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+A tag outside the list changes the page's outline or meaning (1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A)). `as` is a string, so it works from a Server Component.
 
 | Part      | `as`                                                                | Why                                                                                                                                                                                                                                                           |
 | --------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -46,7 +46,7 @@ Enter, Space, Escape, arrow keys and Home / End are not handled. Children handle
 - Initial focus: not moved.
 - Trap: no.
 - Restore to: not applicable.
-- Never obscured by: Grid renders no overlay and sets no `overflow`, `position: sticky` or fixed height, so a child's focus ring is never clipped (2.4.11, 2.4.13).
+- Never obscured by: Grid renders no overlay and sets no `overflow`, `position: sticky` or fixed height, so a child's focus ring is never clipped (2.4.11 Focus Not Obscured (Minimum) (AA); 2.4.13 Focus Appearance (AAA), not counted toward AA).
 
 ## Announcements
 
@@ -68,11 +68,11 @@ Grid renders no text, so it has no message keys.
 
 ## Consumer responsibilities
 
-- **A list of links or cards is a list.** `as="ul"` or `"ol"` with `<li>` children (`Grid.Item as="li"`), so the count is announced (1.3.1). Grid sets `role="list"` itself; don't write it.
-- **No reordering.** There is no `order-*` and no dense packing (1.3.2, 2.4.3). `start-*`, `end-*` and `row-start-*` place an item on a line: placing a later item before an earlier one makes the visual order differ from the DOM, reading and focus order. Keep line placement in DOM order. (Accessibility trade-off, approved 2026-10-12.)
-- **Start at one track.** A bare `cols-n` (n > 1), `flow-col` without `rows-n`, or `auto-cols-min|max` keeps its tracks at 320px, so the cells squeeze and content overflows or overlaps (1.4.10). Start with `kv-grid--cols-1` or `kv-grid--fit-*` and add columns with a breakpoint form (`kv-grid--md-cols-n`). `fit-*` uses `min(…, 100%)` and never overflows.
+- **A list of links or cards is a list.** `as="ul"` or `"ol"` with `<li>` children (`Grid.Item as="li"`), so the count is announced (1.3.1 Info and Relationships (A)). Grid sets `role="list"` itself; don't write it.
+- **No reordering.** There is no `order-*` and no dense packing (1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A)). `start-*`, `end-*` and `row-start-*` place an item on a line: placing a later item before an earlier one makes the visual order differ from the DOM, reading and focus order. Keep line placement in DOM order. (A maintainer-approved accessibility trade-off.)
+- **Start at one track.** A bare `cols-n` (n > 1), `flow-col` without `rows-n`, or `auto-cols-min|max` keeps its tracks at 320px, so the cells squeeze and content overflows or overlaps (1.4.10 Reflow (AA)). Start with `kv-grid--cols-1` or `kv-grid--fit-*` and add columns with a breakpoint form (`kv-grid--md-cols-n`). `fit-*` uses `min(…, 100%)` and never overflows.
 - **Name the landmarks.** A `nav`, `aside` or `section` Item needs `aria-label` or `aria-labelledby`, in the page's language. A page has one `main`: Grid never renders one by default.
-- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2).
+- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2 Language of Parts (AA)).
 
 ## Visual / modes
 
@@ -81,31 +81,31 @@ Headless: Grid ships no CSS. With `@kvirn-ui/theme/theme.css` (DESIGN.md, Layout
 - Focus indicator, target size, contrast: not applicable. Grid has no colour, no edge and no control of its own.
 - forced-colors behaviour: not applicable, nothing is drawn.
 - reduced-motion behaviour: no motion.
-- Reflow (1.4.10): the Reflow320 story's `expectNoHorizontalOverflow` play function. Text spacing (1.4.12): by reading, with no fixed height, `overflow` or clip; the proof is `pending` the Plan 0051 sweep.
+- Reflow (1.4.10 Reflow (AA)): a 320px story checks that nothing scrolls sideways. Text spacing (1.4.12 Text Spacing (AA)): checked by reading, since Grid sets no fixed height, `overflow` or clip. An automated check is planned, and until then it stays `pending`.
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships, 4.1.2 Name, Role, Value: a div has no role, and a `ul` or `ol` has `role="list"` (`grid.test.tsx › as › adds role="list" to a ul and an ol Root, and no role to a div`).
-- 1.3.2 Meaningful Sequence, 2.4.3 Focus Order: DOM order equals reading and focus order (the keyboard rows).
-- 1.4.10 Reflow: the Reflow320 story's `expectNoHorizontalOverflow` play function. 1.4.12 Text Spacing: by reading (no fixed height, overflow or clip), proof `pending` the Plan 0051 sweep.
+- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): a div has no role, and a `ul` or `ol` has `role="list"` (`grid.test.tsx › as › adds role="list" to a ul and an ol Root, and no role to a div`).
+- 1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A): DOM order equals reading and focus order (the keyboard rows).
+- 1.4.10 Reflow (AA): a 320px story checks that nothing scrolls sideways. 1.4.12 Text Spacing (AA): by reading (no fixed height, overflow or clip), with the automated proof still `pending`.
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 
-- In a shrink-to-fit parent (inline-flex, a float, a flex item with no grow), the wrapper's `container-type: inline-size` gives the grid no inline size, so cells overflow. Put Grid in a block-level parent or give the flex item a size. A consequence of the two-element Root (Plan 0108, decision 5); there is no mitigation.
+- **Grid in a shrink-to-fit parent.** In an inline-flex parent, a float or a flex item with no grow, the grid gets no width, so its cells overflow. Put Grid in a block-level parent, or give the flex item a size. It follows from Grid's two-element Root, and there is no other workaround.

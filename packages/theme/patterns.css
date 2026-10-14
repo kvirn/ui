@@ -270,7 +270,7 @@
   justify-content: space-between;
   gap: var(--kv-space-4) var(--kv-space-8);
   padding-block: var(--kv-space-4);
-  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  box-shadow: var(--kv-shadow-popup);
 }
 
 .kv-site-header--primary .kv-application-logo-name {

@@ -10,7 +10,7 @@ The provider's contract is about what it guarantees for other components (Plan 0
 
 - `lang` and `dir` are available as `useLocale().localeProps` wherever the locale changes (3.1.2). The provider renders no element that can carry `lang`, so the consumer spreads `localeProps` on the element that starts a section in another language, and sets `<html lang dir>` for the page language itself (3.1.1).
 - Every visible and announced component string comes from `messages`, resolved as instance `messages`, then the nearest provider and its ancestors, then built-in `en` (hard rule 4). An empty or whitespace-only override falls through to the next level, so an accessible name is never empty (4.1.2).
-- The attributes are resolved from `prefers-color-scheme` and `prefers-contrast` until the user chooses (without JavaScript the page is the light, standard theme), and the theme never overrides `forced-colors` (1.4.3, 1.4.6, 1.4.11).
+- The attributes are resolved from `prefers-color-scheme` and `prefers-contrast` until the user chooses (without JavaScript the page is the light, standard theme), and the theme never overrides `forced-colors` (1.4.3, 1.4.11; AAA 1.4.6 is not counted toward AA).
 - A theme change moves no focus and announces nothing. The switcher's own control state is the feedback.
 
 ## Roles, states, properties
@@ -74,7 +74,7 @@ The provider has no strings of its own. It resolves every component's keys. Plan
 - A nested provider that changes the language must pass that language's catalog too (`<KvirnProvider locale="fi-FI" messages={fi}>`). Otherwise its strings stay in the parent's language while `lang` says otherwise. A dev warning names both locales.
 - When overriding a message that forms an accessible name, keep it consistent with the visible label (2.5.3 Label in Name).
 - Build the theme switcher from native controls with visible labels (for example radio groups in a `<fieldset>` with a `<legend>`), and don't make the resolved-theme text a live region.
-- Render `KvirnThemeScript` with the response's CSP `nonce` in the server-rendered `<head>`, and put `suppressHydrationWarning` on `<html>`. Pass it the provider's `theme` object, from the server entry (`@kvirn-ui/react/server`) in a Server Component. It runs before first paint, and until it does the theme's own `prefers-*` rules answer for a visitor's OS setting (1.4.3, 1.4.11, 2.3.3).
+- Render `KvirnThemeScript` with the response's CSP `nonce` in the server-rendered `<head>`, and put `suppressHydrationWarning` on `<html>`. Pass it the provider's `theme` object, from the server entry (`@kvirn-ui/react/server`) in a Server Component. It runs before first paint, and until it does the theme's own `prefers-*` rules answer for a visitor's OS setting (1.4.3, 1.4.11; AAA 2.3.3 is not counted toward AA).
 - Set `timeZone` explicitly, the same on the server and in the browser. Without one, instants are shown in UTC and the first one formatted warns in development.
 
 ## Visual / modes
@@ -82,13 +82,13 @@ The provider has no strings of its own. It resolves every component's keys. Plan
 - Focus indicator: the provider renders nothing visible. The fixture relies on the browser's native radio focus ring. The default theme restyles rings in `@kvirn-ui/theme`.
 - Target size: fixture radios are 24 × 24 CSS px, in labels at least 28px tall (2.5.8).
 - forced-colors behaviour: the provider keeps writing the resolved attributes. `@kvirn-ui/theme` must let the OS palette win and never override `forced-colors: active`.
-- reduced-motion behaviour: no motion. A theme change is instant, and `data-kv-motion="reduce"` stops theme transitions and animations like `prefers-reduced-motion` (2.3.3).
-- Reflow: no horizontal scrolling at 320 CSS px for the Swedish, theme-switcher, nested-locale and RTL stories (the reflow sweep, 1.4.10).
+- reduced-motion behaviour: no motion. A theme change is instant, and `data-kv-motion="reduce"` stops theme transitions and animations like `prefers-reduced-motion` (AAA 2.3.3, not counted toward AA).
+- Reflow: No horizontal scrolling at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA), for the Swedish, theme-switcher, nested-locale and RTL stories.
 
 ## WCAG SCs covered
 
-- 1.4.3 Contrast (Minimum), 1.4.6 Contrast (Enhanced), 1.4.11 Non-text Contrast: OS preferences are honoured by default, and high contrast is user-selectable. Contrast values themselves are `@kvirn-ui/theme`'s (`theme:check`).
-- 1.4.10 Reflow: the reflow sweep.
+- 1.4.3 Contrast (Minimum), AAA 1.4.6 Contrast (Enhanced), not counted toward AA, 1.4.11 Non-text Contrast: OS preferences are honoured by default, and high contrast is user-selectable. Contrast values themselves are `@kvirn-ui/theme`'s (`theme:check`).
+- 1.4.10 Reflow: reviewed in the stories, not yet automated.
 - 3.1.1 Language of Page: consumer responsibility (`<html lang dir>`, with `getLocaleProps`), documented in the usage doc's setup.
 - 3.1.2 Language of Parts: `localeProps`, and the dev warning for a nested language change without a catalog (`kvirn-provider.test.tsx › nesting`, `a nested provider inherits unset props and changes only its section`).
 - 3.2.2 On Input: selecting a theme changes presentation only. No context change, no focus move.
@@ -97,20 +97,20 @@ The provider has no strings of its own. It resolves every component's keys. Plan
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 

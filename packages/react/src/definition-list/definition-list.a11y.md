@@ -3,29 +3,29 @@
 - **APG pattern:** none. A native description list (`<dl>`), the same pattern as GOV.UK's [Summary list](https://design-system.service.gov.uk/components/summary-list/).
 - **Deviations:** none.
 - **Native elements used:** `<dl>`, `<div>` row groups, `<dt>`, `<dd>` and `<a>` (the Change link).
-- **Status:** alpha candidate (Plan 0063). Gates pending, accessibility-reviewer pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `definition-list.test.tsx` next to this file. `definition-list.stories.tsx` in `apps/storybook/src/components/definition-list/`.
 
 Rows of a term, a description and optional actions: the answers on a check-your-answers page, a contact card, a case card. It is read-only: a description you can edit is a Field, and the row's action is a link to where it is changed.
 
 ## Roles, states, properties
 
-| Part        | Element / role        | ARIA                                               | Notes                                                                                                                                                                                                                                                                                                                                                                                                 |
-| ----------- | --------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Root        | `<dl>` (no role)      | none                                               | `<div>` rows are allowed inside a `<dl>`, and keep each term with its descriptions                                                                                                                                                                                                                                                                                                                    |
-| Row         | `<div>`, generic      | none                                               | One term and one or more descriptions. Gives its Term an id for the Change link, or follows the Term's own `id`                                                                                                                                                                                                                                                                                       |
-| Term        | `<dt>` → `term`       | none                                               | The label. A consumer `id` is kept and registered with the Row, so the Change link's `aria-labelledby` follows it (`Change link › a Term with its own id keeps it and still names the Change link`). If no element has that id the Change link warns once in development, `definition-list-term-missing:<id>` (`Change link › a Change link whose Term is not in the row warns once in development`). |
-| Description | `<dd>` → `definition` | none                                               | The answer. Wraps, never truncates                                                                                                                                                                                                                                                                                                                                                                    |
-| Actions     | `<dd>` → `definition` | none                                               | Holds links. A second definition of the same term                                                                                                                                                                                                                                                                                                                                                     |
-| Change      | `<a>` → `link`        | `aria-labelledby` = its own id, then the Term's id | Visible text is `definitionList.change` ("Change"). The accessible name is "Change" plus the term, so the purpose is clear out of context (2.4.4) and contains the visible text (2.5.3)                                                                                                                                                                                                               |
+| Part        | Element / role        | ARIA                                               | Notes                                                                                                                                                                                                                                                                                                                                                            |
+| ----------- | --------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Root        | `<dl>` (no role)      | none                                               | `<div>` rows are allowed inside a `<dl>`, and keep each term with its descriptions                                                                                                                                                                                                                                                                               |
+| Row         | `<div>`, generic      | none                                               | One term and one or more descriptions. Gives its Term an id for the Change link, or follows the Term's own `id`                                                                                                                                                                                                                                                  |
+| Term        | `<dt>` → `term`       | none                                               | The label. A consumer `id` is kept and registered with the Row, so the Change link's `aria-labelledby` follows it (`Change link › a Term with its own id keeps it and still names the Change link`). If no element has that id the Change link warns once in development (`Change link › a Change link whose Term is not in the row warns once in development`). |
+| Description | `<dd>` → `definition` | none                                               | The answer. Wraps, never truncates                                                                                                                                                                                                                                                                                                                               |
+| Actions     | `<dd>` → `definition` | none                                               | Holds links. A second definition of the same term                                                                                                                                                                                                                                                                                                                |
+| Change      | `<a>` → `link`        | `aria-labelledby` = its own id, then the Term's id | Visible text is `definitionList.change` ("Change"). The accessible name is "Change" plus the term, so the link's purpose is clear when links are listed on their own (2.4.4 Link Purpose (In Context), A) and the name contains the visible text (2.5.3 Label in Name, A)                                                                                        |
 
 ## Allowed elements
 
-No part takes `as`: a `ul` or `span` instead would drop the term and definition relationship (1.3.1, 4.1.2).
+No part takes `as`: a `ul` or `span` instead would drop the term and definition relationship (1.3.1 Info and Relationships, A; 4.1.2 Name, Role, Value, A).
 
-| Part       | `as` | Why                                                                                                                                                                                                             |
-| ---------- | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| every part | none | The `<dl>`, `<div>`, `<dt>` and `<dd>` are the structure of the term and its definitions (1.3.1), and Change is an `<a href>`. A list or a router link is built from `useDefinitionList` with your own elements |
+| Part       | `as` | Why                                                                                                                                                                                                                                       |
+| ---------- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| every part | none | The `<dl>`, `<div>`, `<dt>` and `<dd>` are the structure of the term and its definitions (1.3.1 Info and Relationships, A), and Change is an `<a href>`. A list or a router link is built from `useDefinitionList` with your own elements |
 
 ## Keyboard
 
@@ -56,42 +56,45 @@ None. It is static content.
 ## Consumer responsibilities
 
 - **Every row has a Term.** The Change link's name is built from it.
-- **A Change link goes to where the answer is changed** (`href`), not `history.back()`, and returns to the page after saving (3.3.7 asks you not to make people re-enter what they gave).
-- **A Description with no answer says so** ("Ej angivet"), never an empty `<dd>`.
+- **A Change link goes to where the answer is changed** (`href`), not `history.back()`, and returns to the page after saving (3.3.7 Redundant Entry, A, asks you not to make people re-enter what they gave).
+- **A Description with no answer says so** ("Ej angivet", Swedish for "Not provided"), never an empty `<dd>`.
 - **Headings** for a list of lists are yours: the component renders none.
 - **Don't put a `Field` inside a row**: it is for display, not for editing.
 
 ## Visual / modes
 
-- Focus indicator: the Link's ring (the theme's `kv-link`).
-- Target size: the Change link is a Link with the theme's 24px minimum target.
-- forced-colors behaviour: the row divider is `CanvasText`-based, links keep the system link colour.
-- reduced-motion behaviour: nothing animates. Below `40rem` the rows stack (term, description, actions) and nothing overflows at 320px.
+- Focus indicator: the same focus ring as every Link (2.4.7 Focus Visible, AA).
+- Target size: the Change link is at least 24 CSS pixels high (2.5.8 Target Size (Minimum), AA).
+- forced-colors behaviour: the row dividers use the system's text colour, and links keep the system's link colour.
+- reduced-motion behaviour: nothing animates.
+- Reflow: on screens narrower than 40rem the rows stack (term, description, actions), and a story checks that nothing scrolls sideways in a narrow column (1.4.10 Reflow, AA).
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships: native `dl`, `dt`, `dd` (`definition list › the list is a description list: a term per row and its descriptions`).
-- 2.4.4 Link Purpose, 2.5.3 Label in Name: `Change link › the name is "Change" plus the term and starts with the visible text`.
-- 2.4.7 Focus Visible: the link ring, from the theme.
-- 1.4.10 Reflow: the stacked layout (`DefinitionList` stories, `Reflow320`).
+- 1.3.1 Info and Relationships (A): native `dl`, `dt`, `dd` (`definition list › the list is a description list: a term per row and its descriptions`).
+- 2.4.4 Link Purpose (In Context) (A), 2.5.3 Label in Name (A): `Change link › the name is "Change" plus the term and starts with the visible text`.
+- 2.4.7 Focus Visible (AA): the link ring, from the theme. No named test checks the ring itself.
+- 2.5.8 Target Size (Minimum) (AA): the Change link is at least 24 CSS pixels high, from the theme. No named test checks it.
+- 3.3.7 Redundant Entry (A): your duty (Consumer responsibilities): the Change link returns to the page after saving. Not tested here.
+- 1.4.10 Reflow (AA): the stacked layout, asserted by `definition-list.stories.tsx › Reflow320` (`expectNoHorizontalOverflow` at 320px).
 - Axe: no violations (`accessibility › no axe violations`).
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 

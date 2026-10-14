@@ -3,7 +3,7 @@
 - **APG pattern:** [Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/), the toggle button (`aria-pressed`)
 - **Deviations:** none
 - **Native elements used:** `<button type="button">`. Activation, the Tab stop and the Enter and Space keys are the browser's own.
-- **Status:** alpha candidate (Plan 0035). Gates pass, accessibility-reviewer APPROVE (2026-10-04). Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `toggle.test.tsx` next to this file. `toggle.stories.tsx` in `apps/storybook/src/components/toggle/`.
 
 A Toggle is a Button that is on or off. Use it for a choice with a direct, visible effect on the page: bold text, "show only unread". It is not for an answer in a form (use a Checkbox or a radio group) or a setting that is saved (use a [Switch](../switch/switch.a11y.md)). It builds on [Button](../button/button.a11y.md): everything Button's contract says about `disabled`, `focusableWhenDisabled` and the missing-name warning holds here.
@@ -57,47 +57,49 @@ Toggle has no strings of its own and announces nothing: the screen reader reads 
 
 ## Consumer responsibilities
 
-- Give the toggle a visible text label, or an `aria-label` from your own translations for an icon-only toggle (4.1.2, 2.5.3). **The name must not change with the state:** "Visa karta", never "Visa karta" and "Dölj karta" (APG).
+- Give the toggle a visible text label, or an `aria-label` from your own translations for an icon-only toggle (4.1.2 Name, Role, Value, A; 2.5.3 Label in Name, A). **The name must not change with the state:** "Visa karta" (Show map) stays "Visa karta" and never becomes "Dölj karta" (Hide map) when it is on (APG).
 - Use a Toggle for a choice with a direct, visible effect. A setting that turns something on or off for good is a [Switch](../switch/switch.a11y.md) (saved at once) or a Checkbox, and an answer in a form is a Checkbox or a radio group.
 - With `pressed`, update it in `onPressedChange`, or the toggle never changes.
-- Style `[data-pressed]` and `[aria-pressed='true']`. The pressed state must never be shown by colour alone (1.4.1): the default theme fills the button and changes the icon or label colour.
+- A toggle that changes a list or a result (a filter) needs a status message with the result count, such as "12 träffar" (Swedish for "12 results"), announced through `useAnnouncer` (4.1.3 Status Messages, AA). The press alone tells a screen reader user only that the button is pressed.
+- Style `[data-pressed]` and `[aria-pressed='true']`. The pressed state must never be shown by colour alone (1.4.1 Use of Color, A): the default theme fills the button and changes the icon or label colour.
 
 ## Visual / modes
 
-- Focus indicator: as Button. The default theme draws the 2px ring (2.4.7, 2.4.13).
-- Target size: as Button, at least 24 × 24 CSS px, 44px by default (2.5.8).
-- Pressed (default theme): a solid `primary` fill with the `on-primary` icon or label, no depth, flat in a toolbar. The fill reaches 3:1 against its surroundings and the icon 4.5:1 or 3:1 on the fill (1.4.1, 1.4.11). `theme:check` measures the pairs.
-- forced-colors behaviour: pressed is a `Highlight` fill with `HighlightText`, a `Highlight` edge, so it differs from an unpressed button without colour alone (`toggle.stories.tsx › ForcedColors`).
+- Focus indicator: as Button. The default theme draws a focus ring that is at least 2px at 3:1 (2.4.7 Focus Visible, AA; 2.4.13 Focus Appearance, AAA).
+- Target size: as Button, at least 24 × 24 CSS px in the default theme (2.5.8 Target Size (Minimum), AA).
+- Pressed (default theme): a solid fill in the primary colour with a light icon or label, flat in a toolbar. The fill reaches 3:1 against its surroundings and the icon 4.5:1 or 3:1 on the fill (1.4.1 Use of Color, A; 1.4.11 Non-text Contrast, AA). The theme's contrast check measures the pairs.
+- forced-colors behaviour: pressed uses the system's highlight colours for its fill, text and edge, so it differs from an unpressed button without colour alone (`toggle.stories.tsx › ForcedColors`).
 - reduced-motion behaviour: the fill changes instantly.
-- Reflow: a long label wraps inside the button, no horizontal scrolling at 320 CSS px (1.4.10).
+- Reflow: a long label wraps inside the button. No horizontal scrolling at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA).
 
 ## WCAG SCs covered
 
-- 1.4.1 Use of Color, 1.4.11 Non-text Contrast: the pressed state is a filled tile and a changed icon or label colour, measured by `theme:check`.
-- 2.1.1 Keyboard: native `<button>`, Enter and Space (keyboard rows above).
-- 2.4.3 Focus Order, 2.4.7 Focus Visible: native Tab order, `data-focus-visible`.
-- 2.5.3 Label in Name: the visible label is the name.
-- 2.5.8 Target Size (Minimum): consumer and default theme.
-- 4.1.2 Name, Role, Value: role `button`, `aria-pressed`, `aria-disabled` exposed (`toggle.test.tsx`).
+- 1.4.1 Use of Color (A), 1.4.11 Non-text Contrast (AA): the pressed state is a filled tile and a changed icon or label colour, measured by the theme's contrast check.
+- 2.1.1 Keyboard (A): native `<button>`, Enter and Space (keyboard rows above).
+- 2.4.3 Focus Order (A), 2.4.7 Focus Visible (AA): native Tab order, `data-focus-visible`.
+- 2.4.13 Focus Appearance (AAA, not counted toward AA): the default theme's focus ring.
+- 2.5.3 Label in Name (A): the visible label is the name.
+- 2.5.8 Target Size (Minimum) (AA): consumer and default theme.
+- 4.1.2 Name, Role, Value (A): role `button`, `aria-pressed`, `aria-disabled` exposed (`toggle.test.tsx`).
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 
 - **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
-- The pressed look in the contrast themes is the same as a primary button at rest (they have no depth there). The context and `aria-pressed` tell them apart (design spec §9, Q16).
+- The pressed look in the contrast themes is the same as a primary button at rest (they have no depth there). The context and `aria-pressed` tell them apart.

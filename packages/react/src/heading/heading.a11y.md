@@ -3,7 +3,7 @@
 - **APG pattern:** none. A heading is not a widget.
 - **Deviations:** none
 - **Native elements used:** `<h1>` to `<h6>`.
-- **Status:** alpha candidate (Plan 0023). Gates pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `heading.test.tsx` next to this file. `heading.stories.tsx` in `apps/storybook/src/components/heading/`.
 
 Heading renders the native heading element named by a required `as`, and an optional `size` sets its look apart from the level. It adds only classes, no role, ARIA, text or behaviour, so what a user perceives is the native heading.
@@ -13,7 +13,7 @@ Heading renders the native heading element named by a required `as`, and an opti
 | Part    | Element / role                 | ARIA                        | Notes                                                                                                                                                                                                                                                                                                                                   |
 | ------- | ------------------------------ | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Heading | `<h1>` to `<h6>` → `heading`   | none (`aria-level` implied) | `as` (`'h1'` to `'h6'`) is required and is the element and the level. `class="kv-heading kv-heading--<size>"`: `size` (`display`, `heading-1` to `heading-6`) is the look only, and defaults to the level's own: `h1` to `h6` look like `heading-1` to `heading-6`. Attributes (`id`, `aria-*`) and the ref reach the element unchanged |
-| Heading | Allowed elements: `h1` to `h6` | none                        | A string, so it works from a Server Component. Anything else is a type error and, in JS, warns once (`as-not-allowed:Heading:<tag>`) and renders `<h2>`. For a `<legend>` or another element use `useHeading` with your own element and keep its semantics (give a non-heading `role="heading"` and `aria-level` yourself)              |
+| Heading | Allowed elements: `h1` to `h6` | none                        | A string, so it works from a Server Component. Anything else is a type error and, in JS, warns once in development and renders `<h2>`. For a `<legend>` or another element use `useHeading` with your own element and keep its semantics (give a non-heading `role="heading"` and `aria-level` yourself)                                |
 | Heading | never                          | no `role`, `tabindex`       | No click handler, no live region. The size never changes the element or the level                                                                                                                                                                                                                                                       |
 
 ## Keyboard
@@ -41,38 +41,38 @@ Heading renders no text, so it has no message keys.
 
 ## Consumer responsibilities
 
-- **Choose the level for the outline, and the size for the look.** One `h1` per page, then no skipped levels (1.3.1, 2.4.6). Heading can't know where it sits, so `as` is required. Never pick a level because of its size: set `size` instead.
-- **Describe the topic or purpose.** Headings and labels are clear and unique among their siblings (2.4.6).
-- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2).
+- **Choose the level for the outline, and the size for the look.** Use one `h1` per page and don't skip levels, so people who move through a page by heading can follow it (1.3.1 Info and Relationships, A; 2.4.6 Headings and Labels, AA). Heading can't know where it sits, so `as` is required. Never pick a level because of its size: set `size` instead.
+- **Describe the topic or purpose.** Headings and labels are clear and differ from the ones next to them (2.4.6 Headings and Labels, AA).
+- **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2 Language of Parts, AA).
 
 ## Visual / modes
 
-Headless: Heading ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-heading` sets the `heading` colour and family (contrast measured by `theme:check`, 1.4.3), and the modifier sets the type role (`display`, `heading-1` to `heading-6`), in prose and outside it. Levels 4 to 6 stay at 1rem (16px) and are told apart by weight and tracking, never by shrinking, and they don't step down on a small screen. Sizes are in rem, so they follow the browser's text size (1.4.4). Margins come from `kv-prose` or the consumer. Target size, focus indicator and motion: not applicable.
+Heading ships no CSS of its own. With the default theme, `kv-heading` sets the heading colour and font family (the theme's contrast check covers it, 1.4.3 Contrast (Minimum), AA), and the size class sets the type role (`display`, `heading-1` to `heading-6`), in running text and outside it. Levels 4 to 6 stay at 1rem and are told apart by weight and letter spacing, never by shrinking, and they don't step down on a small screen. Sizes are in rem, so they follow the browser's text size (1.4.4 Resize Text, AA). Margins come from `kv-prose` or the consumer. Target size, focus indicator and motion: not applicable.
 
-Right to left and forced colours are the `Right to left` and `Forced colors` stories (`Components/Content/Heading`): a heading sets no directional or background styles, so they check that it starts at the inline start and keeps the system text colour (1.4.3, 1.4.11).
+Right to left and forced colours: a heading sets no directional or background styles, so it starts at the start of the line and keeps the system's text colour (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA). The Storybook stories "Right to left" and "Forced colors" check this.
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships: a native heading with the consumer's level (`heading.test.tsx › as %s renders that element`; on the server, `› a heading renders the same element on the server`).
-- 1.4.4 Resize Text: the type roles are in rem.
-- 2.4.6 Headings and Labels: the consumer's text. `as` can't be forgotten.
+- 1.3.1 Info and Relationships (A): a native heading with the consumer's level. One automated test per level, h1 to h6, and one for the server.
+- 1.4.4 Resize Text (AA): the type roles are in rem.
+- 2.4.6 Headings and Labels (AA): the text is the consumer's. `as` can't be forgotten.
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 

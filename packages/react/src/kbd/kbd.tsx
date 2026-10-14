@@ -7,9 +7,9 @@ import type { AsTag } from '../render/as-prop.ts'
 import { renderPart } from '../render/render-part.ts'
 import { useKbd } from './use-kbd.ts'
 
-const kbdTags = ['kbd', 'samp'] as const
+const kbdTags = ['kbd'] as const
 
-/** `as` is `kbd` (default), or `samp` for text a program prints. Its own semantics apply. */
+/** `as` is `kbd`, the only element: program output (`samp`) is not a key and is not drawn as one. */
 export type KbdProps = AsTag<(typeof kbdTags)[number], 'kbd'>
 
 /**

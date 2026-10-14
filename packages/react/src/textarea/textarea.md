@@ -138,7 +138,7 @@ Use a count when the limit is real (a form field with a size in the register, an
 <Textarea name="situation" maxLength={1000} characterCount />
 ```
 
-- **`maxLength` is the count's limit and is not written to the element.** A pasted text of any length is kept whole (3.3.8), and the count says how many characters are over, so the user can shorten it. The native attribute would cut it silently.
+- **`maxLength` is the count's limit and is not written to the element.** A pasted text of any length is kept whole, and the count says how many characters are over, so the user can shorten it. The native attribute would cut it silently.
 - **Over the limit is a warning, not an error.** The count gets `data-over`, weight 600 and the `warning` icon, and the box gets `data-over`. Nothing is `aria-invalid`: your form decides on submit, and writes an error that names the fix ("Beskrivningen kan vara högst 1 000 tecken. Ta bort 12 tecken."). `onValueChange` gets `details.length`, `details.limit` and `details.isOverLimit` to help.
 - **It counts what the user sees:** grapheme clusters (`Intl.Segmenter`), so `å` typed as `a` plus a combining ring, and an emoji, count as one, and a line break counts as one. When your server counts differently (UTF-16 `value.length`, bytes, or `\r\n` as two), pass your rule as `countCharacters={(value) => number}` and **count the same way on both sides**, or a text the user was told fits is refused on submit.
 - **Said politely, when it matters.** The count is read with the box when it gets focus (it is in `aria-describedby`). While typing it is announced through the Announcer, only from 80% of the limit and only when typing pauses (500 ms), and at once when the text crosses the limit, so a screen reader user is never interrupted on every key. Only what the user types is announced: a text set from code (a restored draft) changes the count and says nothing. It needs the `KvirnProvider`: without one the count still shows and nothing is announced.
@@ -162,7 +162,7 @@ Outside a Field, nothing links the count to the box: pass the count an `id` and 
 ### Your part
 
 - **A visible label** in a Field. The placeholder is not the label: put examples in the description or the help text (3.3.2).
-- **`autoComplete`** where a token exists for the question (1.3.5), and never block paste (3.3.8).
+- **`autoComplete`** where a token exists for the question (1.3.5), and never block paste: a user who can't paste has to retype.
 - **Read-only and disabled** are for staff tools. In a resident form, explain on submit instead.
 - **A session that doesn't expire under a long answer** (2.2.1): warn and let the user extend it, and save drafts in staff tools.
 - **The direction** is the page's, from the provider: the Textarea has no `dir` prop and never sets `dir="auto"`. Set the provider's `dir` (or its RTL `locale`) and put `useLocale().localeProps` where the language is set, on `<html>` or a wrapper, and the text starts at the right in a right-to-left page.

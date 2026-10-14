@@ -84,6 +84,15 @@ describe('rendering', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
+  test('a trigger keeps its name open and closed', async () => {
+    await render(<Example />)
+    await userEvent.click(first())
+    expect(expanded('Hur ansöker jag?')).toBe('true')
+    await userEvent.click(first())
+    expect(expanded('Hur ansöker jag?')).toBe('false')
+    expect(first().element().textContent).toBe('Hur ansöker jag?')
+  })
+
   test('the root adds role="list" to a ul and an ol, and no role to a div', async () => {
     await render(
       <>

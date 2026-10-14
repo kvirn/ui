@@ -1,6 +1,6 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { createContext, createElement, useContext, useEffect, useRef } from 'react'
+import { createContext, createElement, useCallback, useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldGroupContext, FieldTextHostContext } from '../field/field-context.ts'
@@ -107,6 +107,7 @@ const DateInputContext = createContext<DateInputContextValue | null>(null)
 function DateInputAutoAdvanceHint({ children }: { children: string }): ReactElement {
   const description = useDescriptionPart<HTMLParagraphElement>(undefined)
   return (
+    // eslint-disable-next-line react/refs -- description.ref is a callback ref from useMergedRef, not read in render
     <p {...description.partProps} className="kv-field-help-text" ref={description.ref}>
       {children}
     </p>
@@ -169,8 +170,15 @@ export function DateInputRoot({
     autoAdvance,
     messages,
   })
-  const elementRef = useRef<HTMLDivElement | null>(null)
-  const mergedRef = useMergedRef(ref, elementRef)
+  const warnWithoutGroup = useCallback((element: HTMLDivElement | null) => {
+    if (element?.closest('fieldset, [role="group"], [role="radiogroup"]') === null) {
+      warnOnce(
+        'date-input-without-group',
+        'A DateInput.Root is not inside a group, so its three boxes have no shared name (WCAG 1.3.1, 3.3.2). Put it in <Fieldset.Root> with a <Fieldset.Legend> that asks the question.',
+      )
+    }
+  }, [])
+  const mergedRef = useMergedRef(ref, warnWithoutGroup)
 
   // The legend carries the optional text, and only a `group` fieldset adds it: otherwise an
   // optional date says so nowhere, because its boxes never do.
@@ -183,15 +191,6 @@ export function DateInputRoot({
       )
     }
   }, [isFieldsetPlain])
-
-  useEffect(() => {
-    if (elementRef.current?.closest('fieldset, [role="group"], [role="radiogroup"]') === null) {
-      warnOnce(
-        'date-input-without-group',
-        'A DateInput.Root is not inside a group, so its three boxes have no shared name (WCAG 1.3.1, 3.3.2). Put it in <Fieldset.Root> with a <Fieldset.Legend> that asks the question.',
-      )
-    }
-  })
 
   const contextValue: DateInputContextValue = {
     getInputProps: dateInput.getInputProps,
@@ -263,7 +262,7 @@ function DateInputBox({
           ownProps,
           inputProps,
           invalidAttributes,
-          isInvalid ? { 'aria-invalid': 'true' } : {},
+          isInvalid ? ({ 'aria-invalid': 'true' } as const) : {},
         ),
         ref: mergedRef,
       })}

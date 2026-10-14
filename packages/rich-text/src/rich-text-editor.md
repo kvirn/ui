@@ -28,15 +28,15 @@ A formatted-text field for text that will be published or sent: a news item, a c
 
 The Root's options are also the hook's (`useRichTextEditor`): `extensions`, `format`, `value`, `defaultValue`, `onValueChange(value, { editor, transaction, isEmpty, length, limit, isOverLimit })`, `name`, `editable`, `disabled`, `readOnly`, `maxLength`, `characterCount`, `countCharacters`, `messages` and `editorOptions` (the rest of Tiptap's `useEditor` options). The Root adds `labels`, `tooltips` and `countMessages`. The hook returns `editor`, `rootProps`, `contentProps`, `hiddenInputProps`, `text`, `isEmpty`, `isFocused`, `isFocusVisible`, `isDisabled`, `isReadOnly`, `isInvalid`, `isRequired`, `isEditable`, `features` and `contentId`.
 
-| State attribute      | On the box when                                       |
-| -------------------- | ----------------------------------------------------- |
-| `data-empty`         | There is nothing to read                              |
-| `data-focused`       | The editable text has focus, however it got it        |
-| `data-focus-visible` | The text has focus from the keyboard (a click is not) |
-| `data-invalid`       | The Field is invalid                                  |
-| `data-required`      | The Field is required                                 |
-| `data-disabled`      | The Field or `disabled` disables it                   |
-| `data-readonly`      | `readOnly`, or `editable={false}`                     |
+| State attribute      | On the box when                                                                                                       |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `data-empty`         | There is nothing to read                                                                                              |
+| `data-focused`       | The editable text has focus, however it got it                                                                        |
+| `data-focus-visible` | The text has focus from the keyboard (a click is not, except in an invalid editor, where the ring shows on any focus) |
+| `data-invalid`       | The Field is invalid                                                                                                  |
+| `data-required`      | The Field is required                                                                                                 |
+| `data-disabled`      | The Field or `disabled` disables it                                                                                   |
+| `data-readonly`      | `readOnly`, or `editable={false}`                                                                                     |
 
 **Classes** (theme): `kv-rich-text`, `kv-rich-text-content` (with `kv-prose`), `kv-toolbar kv-toolbar--attached`, `kv-toolbar--labels`, `kv-rich-text-control-label`, `kv-rich-text-toolbar-name`, `kv-rich-text-popups`, `kv-rich-text-popover`, `kv-rich-text-popover-title` and `kv-rich-text-popover-form`. The editable text is `kv-rich-text-content kv-prose`: exactly the published prose, so what staff see is what readers get, with no copy of its type styles.
 

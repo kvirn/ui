@@ -138,6 +138,29 @@ describe('announce', () => {
     await expect.element(assertiveRegion()).toBeEmptyDOMElement()
   })
 
+  test('announcing never moves focus', async () => {
+    let announce: Announce | undefined
+    await render(
+      <KvirnProvider>
+        <button type="button">Spara</button>
+        <Probe
+          onAnnounce={(next) => {
+            announce = next
+          }}
+        />
+      </KvirnProvider>,
+    )
+    const button = page.getByRole('button', { name: 'Spara' })
+    button.element().focus()
+
+    announce?.('Ändringarna är sparade')
+    announce?.('Sessionen har gått ut', { politeness: 'assertive' })
+
+    await expect.element(politeRegion()).toHaveTextContent('Ändringarna är sparade')
+    await expect.element(assertiveRegion()).toHaveTextContent('Sessionen har gått ut')
+    await expect.element(button).toHaveFocus()
+  })
+
   test('an assertive message goes to the alert region', async () => {
     const { announce } = await renderProbe()
 

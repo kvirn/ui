@@ -3,20 +3,20 @@
 - **APG pattern:** none needed. TextInput is a native `<input>` with a text-like `type`. There is no APG pattern for a text field: the name, description and state come from HTML and `aria-describedby`.
 - **Deviations:** none from APG. `type="number"` and `type="date"` are not accepted by design.
 - **Native elements used:** `<input type="text | email | tel | url | password | search">`. A mask adds no element and no role.
-- **Status:** alpha candidate (Plan 0013, Phase 1). The `mask` prop and `useMask` are Plan 0014, Phase 2: gates pass, accessibility-reviewer pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `text-input.test.tsx` and `../mask/use-mask.test.tsx`. `text-input.stories.tsx` in `apps/storybook/src/components/text-input/`, and `mask.stories.tsx` in `…/mask/`. NumberInput, a TextInput with a number mask built in, has its own contract and stories: [number-input.a11y.md](../number-input/number-input.a11y.md).
 
-TextInput is the text control of a Field (`field.a11y.md`). It is a native input: the browser supplies the role (`textbox`, `searchbox`), the keyboard, selection, paste and autofill. TextInput adds the Field's wiring and the part class.
+TextInput is the text control of a Field (see the Field page). It is a native input: the browser supplies the role (`textbox`, `searchbox`), the keyboard, selection, paste and autofill. TextInput adds the Field's wiring and the part class.
 
 ## Roles, states, properties
 
 | Part      | Element / role                                          | ARIA / state                                                                                                                                                                                         | Notes                                                                                                                                                                                                                                                                                                                                                                                                               |
 | --------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TextInput | `<input>` → `textbox` (`searchbox` for `type="search"`) | From the nearest Field: `id`, `aria-describedby` (description id, then error id), `aria-invalid="true"`, `aria-required="true"`, native `disabled`, `data-invalid`, `data-required`, `data-disabled` | Class `kv-input`. `type` is `text` (the default), `email`, `tel`, `url`, `password` or `search`. Your own `aria-describedby` ids are kept, after the Field's. `data-focused` while it has focus, and `data-focus-visible` only while that focus came from the keyboard (browsers also match `:focus-visible` on a click in a text input). Native `required`, `readOnly`, `disabled` and `aria-invalid` pass through |
-|           | no Field                                                | none added                                                                                                                                                                                           | Needs `aria-label` or `aria-labelledby`, or a `<label>`. Dev warning (4.1.2, 3.3.2)                                                                                                                                                                                                                                                                                                                                 |
+|           | no Field                                                | none added                                                                                                                                                                                           | Needs `aria-label` or `aria-labelledby`, or a `<label>`. Dev warning (4.1.2 Name, Role, Value, A; 3.3.2 Labels or Instructions, A)                                                                                                                                                                                                                                                                                  |
 |           | `type="number"` or `type="date"`                        | –                                                                                                                                                                                                    | Rejected by the type. At runtime: a dev warning says to use NumberInput or DateInput. It still renders what was asked for                                                                                                                                                                                                                                                                                           |
 
-A quantity or an amount is a [NumberInput](../number-input/number-input.a11y.md), not a TextInput. A code with leading zeros (a case number, a postcode) stays a TextInput: `<TextInput mask="digits" />`, or `inputMode="numeric"` with `spellCheck={false}` for a plain one. No `pattern` (the browser's own message would appear in its language), and no key filtering by `TextInput` itself. A mask drops a character it can't take and announces it politely, and paste and autofill still work.
+A quantity or an amount is a [NumberInput](/components/number-input), not a TextInput. A code with leading zeros (a case number, a postcode) stays a TextInput: `<TextInput mask="digits" />`, or `inputMode="numeric"` with `spellCheck={false}` for a plain one. No `pattern` (the browser's own message would appear in its language), and no key filtering by `TextInput` itself. A mask drops a character it can't take and announces it politely, and paste and autofill still work.
 
 `useTextInput` gives the same `inputProps` for your own `<input>`: it reads the nearest Field too.
 
@@ -36,13 +36,13 @@ A `TextInput` with a `mask` (or `useMask` on your own `<input>`) shapes what the
 | Undo                       | Native. Undo can't go back past the last step the mask rewrote (inserted a literal or removed a refused character), because writing the value clears the history before it. The mask writes back only when it changed the value | `use-mask.test.tsx › Control/Command+Z undoes typing that the mask did not rewrite`, `use-mask.test.tsx › Control/Command+Z after a step the mask rewrote leaves a valid value`  |
 
 - **Roles / ARIA:** a native `<input>`, no added role, state or property. Field wiring as above.
-- **Attributes the preset suggests** (your own props win): `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"`. A preset never sets `autocomplete`: the right token depends on the question (1.3.5). RTL: an identifier stays left to right in a right-to-left page (`use-mask.test.tsx › an identifier mask suggests inputMode, spellCheck and dir="ltr"`).
+- **Attributes the preset suggests** (your own props win): `inputMode`, `autoCapitalize`, `spellCheck={false}` and, for identifiers, `dir="ltr"`. A preset never sets `autocomplete`: the right token depends on the question (1.3.5 Identify Input Purpose, AA). RTL: an identifier stays left to right in a right-to-left page (`use-mask.test.tsx › an identifier mask suggests inputMode, spellCheck and dir="ltr"`).
 - **Value and details:** `onValueChange(value, details)` gets the masked value, and `details.unmaskedValue`, `isComplete`, `isWithinRange` (number masks) and `rejected`. A controlled `value` is rendered as given and never rewritten: use `mask.format()` for a stored value.
 - **Composition:** while composing, `onValueChange` reports the raw value without mask details, so a controlled field keeps following what the IME shows. At `compositionend` it reports once more, with the `CompositionEvent` as `details.event`.
 - **Numbers:** the decimal separator is the provider's locale (a comma in sv, fi, nb and nn), whichever separator is typed. The value is never clamped.
 - **Types:** a mask works on `text`, `tel`, `search`, `url` and `password`. On `type="email"` the browser has no selection API, so only `masks.email()` is accepted: another mask warns in development, and the caret goes to the end when the mask rewrites.
-- **Dev warnings:** a masked TextInput in a Field without a description (a `Field.HelpText` or `Field.Prose` in the Field) or an `aria-describedby` of its own (3.3.2: the mask doesn't explain the format), a mask other than `masks.email()` on `type="email"`, a mask name that isn't one (`mask-unknown-name:<name>`: no mask runs), and a country mask by name with no country from the instance, the provider or the locale (`mask-country-unresolved:<name>:<locale>`: it only takes digits). Without a `KvirnProvider`, the first refused character warns once that nothing is announced.
-- **Format in text (3.3.2):** the help text says the format with an example. The mask is never the only explanation.
+- **Dev warnings:** a masked TextInput in a Field without a description (a `Field.HelpText` or `Field.Prose` in the Field) or an `aria-describedby` of its own (3.3.2 Labels or Instructions, A: the mask doesn't explain the format), a mask other than `masks.email()` on `type="email"`, a mask name that isn't one (no mask runs), and a country mask by name with no country from the instance, the provider or the locale (it only takes digits). Without a `KvirnProvider`, the first refused character warns once that nothing is announced.
+- **Format in text (3.3.2 Labels or Instructions, A):** the help text says the format with an example. The mask is never the only explanation.
 
 ## Keyboard
 
@@ -51,7 +51,7 @@ A `TextInput` with a `mask` (or `useMask` on your own `<input>`) shapes what the
 - **Arrows wrap:** n/a
 - **Shortcuts:** none
 
-All native: TextInput handles no keys itself and never calls `preventDefault` on one. A mask doesn't either: it reads the value after the browser's edit and rewrites it only when it must, and never moves focus or auto-advances. The masked rows are in the Keyboard table and in Masked input above. NumberInput's rows, including that ArrowUp and ArrowDown never step a value, are in its own contract. In a Field, the Field.Label, the help text (a `Prose`) and the Field.ErrorMessage are not Tab stops (`field.a11y.md`).
+All native: TextInput handles no keys itself and never calls `preventDefault` on one. A mask doesn't either: it reads the value after the browser's edit and rewrites it only when it must, and never moves focus or auto-advances. The masked rows are in the Keyboard table and in Masked input above. NumberInput's rows, including that ArrowUp and ArrowDown never step a value, are on its own page. In a Field, the Field.Label, the help text (a `Prose`) and the Field.ErrorMessage are not Tab stops (see the Field page).
 
 | Key                                 | Context                    | Action                                                                                                             | Test                                                                                                                                                                                                                                                                                    |
 | ----------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -82,7 +82,7 @@ Copy, cut and undo (Control/Command+C, X and Z) are native too. TextInput adds n
 - Initial focus: not moved. No `autoFocus` by default.
 - Trap: no.
 - Restore to: not applicable.
-- Never obscured by: TextInput renders no overlay. A sticky header needs the consumer's `scroll-padding` (2.4.11).
+- Never obscured by: TextInput renders no overlay. If your page has a sticky header, add `scroll-padding` so it never covers the focused box (2.4.11 Focus Not Obscured (Minimum), AA).
 
 ## Announcements
 
@@ -90,9 +90,9 @@ Copy, cut and undo (Control/Command+C, X and Z) are native too. TextInput adds n
 | ---------------------- | ------------------ | ----------------------------------------------------------------------------------------------------- |
 | Focus enters the input | none               | None live. The name, role, "required", "invalid" and the description (help text, then error) are read |
 
-A TextInput without a mask announces nothing itself. Its texts are the Field's (`field.a11y.md`).
+A TextInput without a mask announces nothing itself. Its texts are the Field's (see the Field page).
 
-A masked TextInput announces a rejection through the shared Announcer (4.1.3): a polite message in the live region that the outermost `KvirnProvider` renders, throttled to one every three seconds per field (the Field's control id). Strings come from i18n in all five locales, and can be overridden per provider and per instance (`messages`). `announceRejections={false}` turns it off, for example when you show your own message.
+A masked TextInput announces a rejection through the shared Announcer (4.1.3 Status Messages, AA): a polite message in the live region that the outermost `KvirnProvider` renders, throttled to one every three seconds per field (the Field's control id). Strings come from i18n in all five locales, and can be overridden per provider and per instance (`messages`). `announceRejections={false}` turns it off, for example when you show your own message.
 
 | Event                                                                                        | Message key (i18n)                                               | Politeness                                           | Test                                                                                                                                                                                           |
 | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -106,57 +106,61 @@ A masked TextInput announces a rejection through the shared Announcer (4.1.3): a
 
 ## Consumer responsibilities
 
-- Put every TextInput in a Field with a Field.Label, or give it `aria-label` or `aria-labelledby` from your translations (4.1.2).
-- Never use the placeholder as the label (3.3.2). Put an example in the help text (a `Field.HelpText` in the Field), not in the box.
-- Set `autoComplete` on every input that asks for the user's own data (`name`, `email`, `tel`, `postal-code`, `bday`): 1.3.5. Never `autocomplete="off"` on a password, and never block paste (3.3.8).
+- Put every TextInput in a Field with a Field.Label, or give it `aria-label` or `aria-labelledby` from your translations (4.1.2 Name, Role, Value, A).
+- Pre-fill a value the user already gave earlier in the same process (3.3.7 Redundant Entry, A): the TextInput takes it as `defaultValue` or `value`.
+- Never use the placeholder as the label (3.3.2 Labels or Instructions, A). Put an example in the help text (a `Field.HelpText` in the Field), not in the box.
+- Set `autoComplete` on every input that asks for the user's own data (`name`, `email`, `tel`, `postal-code`, `bday`): 1.3.5 Identify Input Purpose (AA). Never `autocomplete="off"` on a password, and never block paste (3.3.8 Accessible Authentication (Minimum), AA).
 - Use NumberInput for a quantity or an amount, and a TextInput with a mask (or `inputMode="numeric"` and `spellCheck={false}`) for a code. Don't use `type="number"` or `type="date"`. Validate ranges and formats yourself and say what's wrong in a Field.ErrorMessage.
 - Choose a width class that fits the answer: `kv-input--width-2`, `-4`, `-6`, `-10`, `-20`. Width is a help text, never a limit: no `maxlength` comes from it.
 - Read-only is for staff tools showing a value the user can't change here. Say why in the help text. In a resident form, avoid both read-only and disabled.
-- With a `mask`, put the format and an example in a help text, a `Field.HelpText` in the Field (3.3.2, dev warning): the mask shapes input, it doesn't explain it. A help text is text: keep it short and plain, because its accessible description is only the help text's text content (`field.a11y.md`). Wrap the app in `KvirnProvider` so refused characters are announced (4.1.3).
+- With a `mask`, put the format and an example in a help text, a `Field.HelpText` in the Field (3.3.2 Labels or Instructions, A; a development warning checks it): the mask shapes input, it doesn't explain it. A help text is text: keep it short and plain, because its accessible description is only the help text's text content (see the Field page). Wrap the app in `KvirnProvider` so refused characters are announced (4.1.3 Status Messages, AA).
 - Validate in your form, after submit: the mask never says a value is wrong. Call `checks.personalIdentityNumber`, `checks.organisationNumber` and `checks.iban` and write a specific message from `reason`. Don't clamp numbers to `min` and `max`: show your own help text from `isWithinRange`.
 - Set `autoComplete` on masked fields yourself where a token exists (`postal-code`, `tel`, `email`). `masks.letters()` isn't for names: names have spaces, hyphens and apostrophes.
 - Don't pass an `id` inside a Field: the Field's id wins, so the label stays associated (dev warning). Use `<Field.Root controlId>`.
 
 ## Visual / modes
 
-- Focus indicator: on keyboard focus, a 2px `focus-ring` outline, 2px offset, 3:1 against the adjacent colours (2.4.7, 2.4.13). Before the script runs, `:focus-visible` draws it. A click shows focus as a 2px `border-focus` edge, with no ring, so it changes width as well as colour. The text doesn't move. Focused and invalid keeps the 2px `danger` edge, and keyboard focus adds the ring.
-- Target size: 44px high, 32px in compact from 64rem, at least 51px wide (2.5.8). Value text stays 16px in compact.
-- Boundary: 1px `border-control`, 3:1 on every surface (1.4.11, `theme:check`). Invalid: 2px `danger`, without moving the text.
-- forced-colors behaviour: the input keeps a real border in `ButtonBorder`. Invalid is a 2px `CanvasText` border. Disabled is dashed `GrayText`. Focus turns the edge `Highlight` at 1px (2px alone means invalid there), and keyboard focus draws the `Highlight` ring. A click's transparent outline is painted by the system, so a click shows a ring there too.
-- reduced-motion behaviour: colour transitions only under `no-preference`.
-- Reflow: no fixed widths beyond the width classes, which have `max-inline-size: 100%`. The width classes include the 1.4.12 letter-spacing allowance, so the expected answer stays visible.
+- Focus indicator: on keyboard focus, a ring at least 2px thick, set off from the box, with at least 3:1 contrast against the adjacent colours (2.4.7 Focus Visible, AA; 2.4.13 Focus Appearance, AAA). Before the script runs, the browser's `:focus-visible` draws it. A click shows focus as a thicker edge in the focus colour, with no ring, so it changes width as well as colour. The text doesn't move. An invalid box keeps its thick error edge when it has focus, and the ring shows on any focus, a click included.
+- Target size: at least 24 × 24 CSS px, even for the narrowest width class (2.5.8 Target Size (Minimum), AA). The default theme makes the box taller, and a little lower in compact density from 64rem wide. Typed text keeps the normal body size in compact density. Test: `text-input.stories.tsx › Default`, `› Compact`.
+- Boundary: the edge has at least 3:1 contrast against every surface the default theme uses, checked by its contrast check (1.4.11 Non-text Contrast, AA). Invalid: a thicker edge in the error colour, without moving the text. Disabled: a dashed edge, so state is never shown by colour alone (1.4.1 Use of Color, A).
+- forced-colors behaviour (Windows contrast themes): the box keeps a real border in the system's button-border colour. An invalid box has a thicker border in the system text colour, and a disabled one a dashed border in the disabled-text colour. Focus turns the edge to the highlight colour at normal width (a thick edge alone means invalid there), and keyboard focus draws a highlight ring. The system paints an outline on a click, so a click shows a ring there too.
+- reduced-motion behaviour: colour transitions only when the user allows motion.
+- Reflow: no fixed widths beyond the width classes, which never grow wider than their container (1.4.10 Reflow, AA). The width classes leave room for the extra letter spacing that 1.4.12 Text Spacing (AA) allows, so the expected answer stays visible.
 - RTL: logical properties only.
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships: the label, description and error are programmatically associated (`text-input.test.tsx › in a Field`).
-- 1.3.5 Identify Input Purpose: `autoComplete` passes through (`text-input.test.tsx › passes autoComplete, inputMode and spellCheck for numbers`).
-- 1.4.1, 1.4.3, 1.4.11, 2.4.7, 2.4.13: invalid edge and message, text and edge contrast, the focus ring.
-- 2.1.1 Keyboard: native input.
-- 2.5.3 Label in Name: the visible label is the name.
-- 3.3.2 Labels or Instructions, 3.3.1 Error Identification: through the Field.
-- 3.3.8 Accessible Authentication (Minimum): paste and autofill work, and no cognitive test is added. A mask normalises a pasted value instead of refusing it (`use-mask.test.tsx › %s fills the mask and ends as 19900101-1234`).
-- 3.3.1 and 3.3.4: a mask never auto-fixes or clamps what the user entered, and dropped characters are reported (`text-input.test.tsx › onValueChange gets the masked value and the mask details, once per change`).
-- 3.2.2 On Input: typing never moves focus, and a full mask doesn't advance (`use-mask.test.tsx › Tab and Shift+Tab move through the masked inputs in DOM order`).
-- 4.1.3 Status Messages: a refused character is announced politely through the Announcer (`use-mask.test.tsx › a refused character is announced politely, in the provider language (sv, fi and en)`).
-- 4.1.2 Name, Role, Value: native role, name, `aria-invalid`, `aria-required`, `disabled`.
+- 1.3.1 Info and Relationships (A): the label, description and error are programmatically associated (`text-input.test.tsx › in a Field`).
+- 1.3.5 Identify Input Purpose (AA): `autoComplete` passes through (`text-input.test.tsx › passes autoComplete, inputMode and spellCheck for numbers`).
+- 1.4.1 Use of Color (A), 1.4.3 Contrast (Minimum) (AA), 1.4.11 Non-text Contrast (AA): the invalid edge and message, text contrast and edge contrast.
+- 1.4.10 Reflow (AA): the width classes never grow wider than their container (`text-input.stories.tsx › Widths`).
+- 2.1.1 Keyboard (A): native input.
+- 2.4.7 Focus Visible (AA): the focus ring.
+- 2.4.13 Focus Appearance (AAA): the ring's thickness and contrast. Not counted toward the AA bar.
+- 2.5.3 Label in Name (A): the visible label is the name.
+- 2.5.8 Target Size (Minimum) (AA): the box is at least 24 × 24 CSS px (`text-input.stories.tsx › Default`).
+- 3.2.2 On Input (A): typing never moves focus, and a full mask doesn't advance (`use-mask.test.tsx › Tab and Shift+Tab move through the masked inputs in DOM order`).
+- 3.3.1 Error Identification (A) and 3.3.2 Labels or Instructions (A): through the Field. A mask never auto-fixes or clamps what the user entered, and dropped characters are reported (`text-input.test.tsx › onValueChange gets the masked value and the mask details, once per change`).
+- 3.3.8 Accessible Authentication (Minimum) (AA): paste and autofill work, and no cognitive test is added. A mask normalises a pasted value instead of refusing it (`use-mask.test.tsx › %s fills the mask and ends as 19900101-1234`).
+- 4.1.2 Name, Role, Value (A): native role, name, `aria-invalid`, `aria-required`, `disabled`.
+- 4.1.3 Status Messages (AA): a refused character is announced politely through the Announcer (`use-mask.test.tsx › a refused character is announced politely, in the provider language (sv, fi and en)`).
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 Research questions for the AT run: is a refused character's message read once, after the echo, and not repeated while a key is held? Does the caret stay where the user expects after the mask inserts a literal, with each screen reader? Does Dragon dictate into a masked field without corruption?
 
@@ -164,8 +168,8 @@ Also: does `inputMode="numeric"` bring up the right keyboard with VoiceOver and 
 
 ## Known issues
 
-- **Multi-line text is `Textarea`.** TextInput is a single line (`textarea.a11y.md`).
-- **No prefix or suffix (`kr`, `€`), no show-password button.** Out of scope for this phase (design spec, open question 9). Put the unit in the label or help text.
+- **Multi-line text is `Textarea`.** TextInput is a single line (see the Textarea page).
+- **No prefix or suffix (`kr`, `€`), no show-password button.** Not available yet. Put the unit in the label or help text.
 - **Masks: manual AT is `pending`.** The throttle (three seconds), the clear-then-set message and the caret behaviour need NVDA, VoiceOver, TalkBack and Dragon. Real IMEs, dead keys and dictation are tested by hand; the component test dispatches composition events.
 - **Masks: undo.** When the mask rewrites the value (inserts a literal, removes a refused character), undo can't go back past that step: writing the value clears the browser's history before it. Accepted.
 - **Masks: no provider, no announcement.** `KvirnProvider` is required for announcements.

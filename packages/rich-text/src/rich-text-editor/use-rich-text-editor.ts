@@ -342,6 +342,7 @@ export function useRichTextEditor<Format extends RichTextFormat = 'html'>({
     if (editor === null) {
       return
     }
+    // eslint-disable-next-line react/set-state-in-effect -- the editor is an external system, so its state is taken in an effect
     setSerializedValue(serializeValue(getDocumentValue(editor, format), format))
     setIsEmpty(isDocumentEmpty(editor.state.doc))
     setText(getPlainText(editor))
@@ -368,10 +369,11 @@ export function useRichTextEditor<Format extends RichTextFormat = 'html'>({
       return
     }
     editor.commands.setContent(toContent(value), { emitUpdate: false })
+    // eslint-disable-next-line react/set-state-in-effect -- the editor is an external system, so its state is taken in an effect
     setSerializedValue(serializeValue(getDocumentValue(editor, format), format))
     setIsEmpty(isDocumentEmpty(editor.state.doc))
     setText(getPlainText(editor))
-    // `value` is read only to hand it to the editor: `serializedProp` says when it changed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `value` is read only to hand it to the editor: `serializedProp` says when it changed
   }, [editor, serializedProp, format])
 
   // A form reset goes back to the default value, and tells the owner.
@@ -439,6 +441,7 @@ export function useRichTextEditor<Format extends RichTextFormat = 'html'>({
       }
       latest.current.announce(message)
     }
+    // eslint-disable-next-line react/immutability -- the keymap is the editor's own storage, set here and cleared on cleanup
     keymap.onFocusToolbar = () => latestFocusToolbar.current?.() ?? false
     keymap.onOpenLinkForm = () => latestOpenLinkForm.current?.() ?? false
     keymap.onFormatToggle = (formatName, isOn) => {

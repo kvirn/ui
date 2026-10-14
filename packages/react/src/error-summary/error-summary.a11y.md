@@ -1,9 +1,9 @@
 # Accessibility contract: ErrorSummary
 
 - **APG pattern:** none. It applies the GOV.UK [Error summary](https://design-system.service.gov.uk/components/error-summary/) pattern and WCAG technique [G139](https://www.w3.org/WAI/WCAG22/Techniques/general/G139) (create a mechanism that allows users to jump to errors), with [ARIA22](https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA22)'s alternative (a focus move) in place of a live region.
-- **Deviations:** none. It is not `role="alert"`: the focus move is the announcement (Plan 0063, decision 1).
+- **Deviations:** none. It is not `role="alert"`: the focus move is the announcement.
 - **Native elements used:** `<ul>`, `<li>`, `<a href="#id">`, `<h2>` (from `Alert.Title`; `as` picks `h3` to `h6`), and `<ol>` with `as` on the List.
-- **Status:** alpha candidate (Plan 0063). Gates pending, accessibility-reviewer pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `error-summary.test.tsx` next to this file. `error-summary.stories.tsx` in `apps/storybook/src/components/error-summary/`.
 
 An [Alert.Danger](../alert/alert.a11y.md) at the top of a form, shown after a failed submit, that lists every problem as a link to its field. Focus moves to it once, so the screen reader reads it and a keyboard user starts at the list.
@@ -20,14 +20,14 @@ An [Alert.Danger](../alert/alert.a11y.md) at the top of a form, shown after a fa
 
 ## Allowed elements
 
-A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+A tag outside the list changes the page's outline or semantics (1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A)). `as` is a string, so it works from a Server Component.
 
 | Part       | `as`                                   | Why                                                                                                                          |
 | ---------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | Root       | none                                   | The Root is an `Alert.Danger`, a named group that takes focus                                                                |
 | Title      | `h2` (default), `h3`, `h4`, `h5`, `h6` | The level the page's outline needs. No `h1` (the page's title) and no `p` (the summary needs a heading for the group's name) |
 | List       | `ul` (default), `ol`                   | A list of problems, optionally numbered                                                                                      |
-| Item, Link | none                                   | `<li>` and `<a href="#id">`: the link must stay a link (4.1.2)                                                               |
+| Item, Link | none                                   | `<li>` and `<a href="#id">`: the link must stay a link (4.1.2 Name, Role, Value (A))                                         |
 
 ## Keyboard
 
@@ -52,8 +52,8 @@ The summary is not a widget. Focus is moved to it by script, once per submit; th
 - A link whose control can't take focus (hidden, disabled, not focusable): `focus()` leaves `document.activeElement` elsewhere, so the link does not `preventDefault` and the browser's own hash jump runs. A development warning `error-summary-control-unfocusable:<id>` is shown once per id (`error-summary.test.tsx › links › a link whose control cannot take focus is left to the browser and warns once`). After a native jump to a non-focusable target focus can fall to `body`; point the link at the focusable control.
 - A group of options: link to the first option's id.
 - Trap: no. Restore to: not applicable. After a fix the consumer removes the summary on the next submit; focus then moves to the new one or, with no errors, to where the submit goes.
-- Never obscured by: the summary is scrolled into view by `focus()`. Pair it with `scroll-padding-top` for a sticky header and `scroll-padding-bottom` for the on-screen keyboard (2.4.11).
-- The ring shows under `:focus-visible` (the theme's `:where([tabindex='-1']:focus-visible)` rule).
+- Never obscured by: the summary is scrolled into view by `focus()`. Pair it with `scroll-padding-top` for a sticky header and `scroll-padding-bottom` for the on-screen keyboard (2.4.11 Focus Not Obscured (Minimum) (AA)).
+- The focus ring shows when the browser treats the focus as keyboard focus (`:focus-visible`).
 
 ## Announcements
 
@@ -67,42 +67,46 @@ None through a live region. The focus move makes the screen reader read the grou
 ## Consumer responsibilities
 
 - **Render it only after a failed submit,** at the top of `main`, before the step caption and the form, and pass the submit count as `focusKey` so a second failed submit moves focus again.
-- **Each Link's `controlId` is the id of the control** (`Field.Root controlId`, the `forms` skill) or, for a group, of its first option. Its text is the same words as the field's error, including what to do (3.3.3).
-- **Keep the field's own error** under the control (3.3.1): the summary adds to it.
+- **Each Link's `controlId` is the id of the control** (`Field.Root controlId`) or, for a group, of its first option. Its text is the same words as the field's error, including what to do (3.3.3 Error Suggestion (AA)).
+- **Keep the field's own error** under the control (3.3.1 Error Identification (A)): the summary adds to it.
 - **Update `document.title` with `prefixDocumentTitle`** unless a router owns the title, then do it there with `errorSummary.titlePrefix`.
 - **Remove the summary** when the form has no errors; never show it while the user types.
 
 ## Visual / modes
 
-- Focus indicator: the token ring on the root under `:focus-visible`; links have the Link ring.
-- Target size: the links are inline links in a list with the theme's spacing (24px minimum, 2.5.8).
-- forced-colors behaviour: the Alert's bar is `CanvasText`-based, the status icon and word still say danger.
+- Focus indicator: the summary shows a focus ring when the browser treats the focus as keyboard focus; the links have the usual link ring.
+- Target size: the links sit in a list with the theme's spacing and are at least 24 by 24 CSS pixels (2.5.8 Target Size (Minimum) (AA)).
+- forced-colors behaviour: the Alert's bar uses the system's text colour, and the status icon and word still say danger.
 - reduced-motion behaviour: scrolling is instant, never smooth.
 
 ## WCAG SCs covered
 
-- 3.3.1 Error Identification, 3.3.3 Error Suggestion: each problem is named in text, linked to its field (`links › each link goes to its control id and reads the field error text`).
-- 2.4.3 Focus Order: focus moves to the summary on a failed submit and then to the field (`focus › moves focus to the summary on mount`, `› again when focusKey changes`, `› a link moves focus to the field`).
-- 4.1.3 Status Messages: met by the focus move, with no live region (`announcements › nothing is said in the Announcer`).
-- 1.3.1, 4.1.2: native list and links, a named group. 2.4.2: the prefix on the page title (`document title › prefixes`).
+- 3.3.1 Error Identification (A), 3.3.3 Error Suggestion (AA): each problem is named in text, linked to its field (`links › each link goes to its control id and reads the field error text`).
+- 2.4.3 Focus Order (A): focus moves to the summary on a failed submit and then to the field (`focus › moves focus to the summary on mount`, `› again when focusKey changes`, `› a link moves focus to the field`).
+- 4.1.3 Status Messages (AA): the summary takes focus, so it needs no live region (`announcements › nothing is said in the Announcer`).
+- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): native list and links, a named group. 2.4.2 Page Titled (A): the prefix on the page title (`document title › prefixes`).
+- 2.4.7 Focus Visible (AA): the summary and the links show a focus ring (Visual / modes; reviewed in the stories, no named test).
+- 1.4.1 Use of Color (A): the links are underlined and the Alert's danger word and icon say danger, so colour is not the only cue (theme properties, no named test).
+- 1.4.3 Contrast (Minimum) (AA): the Alert's colour pairs, measured by the theme check and axe (`accessibility › no axe violations with the summary focused`).
+- 2.5.8 Target Size (Minimum) (AA): the links are at least 24 by 24 CSS pixels (Visual / modes; reviewed in the stories, no named test).
 - Axe: no violations with the summary focused (`accessibility › no axe violations with the summary focused`).
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 

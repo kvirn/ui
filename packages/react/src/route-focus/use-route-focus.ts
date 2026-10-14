@@ -28,8 +28,9 @@ export interface UseRouteFocusOptions {
 /**
  * After a client-side navigation, moves focus to the new page's title (2.4.3) so a keyboard or
  * screen reader user starts there. Does nothing on the first load, on a hash-only change, on
- * Back and Forward while the browser restores scroll itself, when no target exists, or while the
- * user is typing in a field. Call it once, in the layout.
+ * Back and Forward while the browser restores scroll itself (it still announces then, when
+ * `announce` is on), when no target exists, or while the user is typing in a field. Call it once,
+ * in the layout.
  */
 export function useRouteFocus(options: UseRouteFocusOptions): void {
   const { key, containerRef, selector = 'h1', announce = false } = options
@@ -70,7 +71,19 @@ export function useRouteFocus(options: UseRouteFocusOptions): void {
     const popped =
       poppedAddress.current === env.window.location.pathname + env.window.location.search
     poppedAddress.current = undefined
+    const sayNavigated = (heading: Element | null | undefined) => {
+      if (!isAvailable) {
+        warnAnnouncerMissing()
+        return
+      }
+      const title = env.document.title.trim() || (heading?.textContent ?? '').trim()
+      say(routeFocusMessages.navigated({ title }))
+    }
+
     if (popped && env.window.history.scrollRestoration === 'auto') {
+      if (announce) {
+        sayNavigated((containerRef?.current ?? env.document).querySelector(selector))
+      }
       return
     }
 
@@ -86,12 +99,7 @@ export function useRouteFocus(options: UseRouteFocusOptions): void {
       return
     }
     if (announce) {
-      if (!isAvailable) {
-        warnAnnouncerMissing()
-        return
-      }
-      const title = env.document.title.trim() || (result.target.textContent ?? '').trim()
-      say(routeFocusMessages.navigated({ title }))
+      sayNavigated(result.target)
     }
   }, [env, key, containerRef, selector, announce, isAvailable, say, routeFocusMessages])
 }

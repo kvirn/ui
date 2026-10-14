@@ -137,7 +137,7 @@ export function BlockFormat(): ReactElement {
       ...(blockquote ? [{ key: 'quote' as const, label: messages.blockQuote }] : []),
       ...(codeBlock ? [{ key: 'code' as const, label: messages.blockCode }] : []),
     ],
-    // The labels and what is offered are the only inputs: `messages` is rebuilt on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- the labels and what is offered are the only inputs: `messages` is rebuilt on every render
     [labelsKey, levelsKey, blockquote, codeBlock],
   )
 

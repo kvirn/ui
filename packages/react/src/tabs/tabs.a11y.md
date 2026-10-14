@@ -1,9 +1,9 @@
 # Accessibility contract: Tabs
 
 - **APG pattern:** [Tabs](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/), with the keyboard practice for a composite widget (one Tab stop, a roving `tabindex`).
-- **Deviations:** two, both approved by the maintainer with Plan 0048, and recorded in `keyboard/references/key-tables.md` and `accessibility/references/apg-patterns.md`. (1) **A panel has `tabindex="0"` by default.** APG sets it only when the panel has no focusable content, and a headless panel cannot know its first content without scanning the DOM. One redundant Tab stop is the lesser evil: no default would strand keyboard users on a panel of scrolling text (2.1.1). A panel that starts with a focusable element passes `tabIndex={-1}`. (2) **A disabled tab stays focusable** (`aria-disabled="true"`, as the `keyboard` skill says for items of a composite), and automatic activation never selects it, so focus and selection can differ. APG is silent on both.
+- **Deviations:** two, both approved by the maintainer and recorded in the project's keyboard and APG notes. (1) **A panel has `tabindex="0"` by default.** APG sets it only when the panel has no focusable content, and a headless panel cannot know its first content without scanning the DOM. One redundant Tab stop is the lesser evil: no default would strand keyboard users on a panel of scrolling text (2.1.1). A panel that starts with a focusable element passes `tabIndex={-1}`. (2) **A disabled tab stays focusable** (`aria-disabled="true"`, as the project's keyboard rules say for items of a composite widget), and automatic activation never selects it, so focus and selection can differ. APG is silent on both.
 - **Native elements used:** `<button type="button">` for a tab, `<div>` for the root, the list and a panel. The roles are explicit: `tablist`, `tab` and `tabpanel`.
-- **Status:** implemented (Plan 0048). Gates green 2026-10-06, accessibility-reviewer pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer APPROVE (2026-10-06). Manual AT is `pending`.
 - **Tests:** `tabs.test.tsx` and `tabs-ids.test.ts` next to this file. `tabs.stories.tsx` in `apps/storybook/src/components/tabs/`.
 
 Tabs show one panel of content at a time, with a list of tabs to switch between them: a keyboard user passes the tab list with one Tab press, moves between the tabs with the arrow keys and reaches the selected panel with the next Tab, and a screen reader user hears "tab, 2 of 3, selected". Tabs change content on the same page. For links to other pages, use [Navigation](../navigation/navigation.a11y.md) (`kv-navigation--horizontal`): a tab never navigates.
@@ -67,7 +67,7 @@ Escape and the typed characters are not handled, and there is no typeahead (APG 
 
 - **Name the list** with `aria-label` from your translations, or `aria-labelledby`, when a page has more than one set of tabs, so a screen reader user can tell them apart.
 - **Keep the labels short**, and in the same register ("Uppgifter", "Historik"). A long label wraps inside its tab and never scrolls the list sideways (1.4.10).
-- **Give every tab a panel and every panel a tab,** with the same `value`, and give `value` or `defaultValue` the value of a tab. Render every `Tabs.Panel`: do not unmount the ones that aren't selected, because the tab's `aria-controls` would point at nothing. For lazy content, use `isSelected` from the panel's `render` state and render the children when it is true.
+- **Give every tab a panel and every panel a tab,** with the same `value`, and give `value` or `defaultValue` the value of a tab. Render every `Tabs.Panel`: do not unmount the ones that aren't selected, because the tab's `aria-controls` would point at nothing. For lazy content, render a panel's children only while its tab is selected, using your own `value`.
 - **Use `activationMode="manual"` only for slow panels.** Otherwise keep the default.
 - **Pass `tabIndex={-1}` to a panel that starts with a focusable element** (a link, a button or a field), so Tab goes straight to it and the panel is not a redundant stop. A panel with only text keeps its `tabindex="0"`.
 - **Use a tab only for content on the same page.** For links to other pages, or a trail through a service, use `Navigation` (`kv-navigation--horizontal`) or a stepper. A tab never changes the URL.
@@ -77,45 +77,45 @@ Escape and the typed characters are not handled, and there is no typeahead (APG 
 
 ## Visual / modes
 
-- Focus indicator: a tab and a panel each show the ring of a link, 2px with a 2px offset (2.4.7, 2.4.13).
-- Target size: a tab is at least 24 × 24 CSS px, 44px high by default and 32px inside `kv-compact` from 64rem (2.5.8, design spec docs/design/tabs.md). Test: `tabs.stories.tsx › Default` and `CompactDensity`.
-- State without colour: the selected tab is weight 600 and a straight 4px bar at its edge, not colour alone (1.4.1, 1.4.11). A disabled tab is dimmed text and `aria-disabled`. Test: `tabs.stories.tsx › DisabledTab`.
-- forced-colors behaviour: the bar is `CanvasText` (it opts out of the forced background), the hairline `CanvasText`, text `ButtonText`, a disabled tab `GrayText` and the ring `Highlight`. Test: `tabs.stories.tsx › ForcedColors`.
+- Focus indicator: a tab and a panel each show the same focus ring as a link: at least 2px thick, set off from the element (2.4.7 Focus Visible, level AA; 2.4.13 Focus Appearance, level AAA).
+- Target size: a tab is at least 24 × 24 CSS px, and taller in the default theme (2.5.8). Test: `tabs.stories.tsx › Default` and `CompactDensity`.
+- State without colour: the selected tab is bold and has a straight bar at its edge, not colour alone (1.4.1, 1.4.11). A disabled tab is dimmed text and `aria-disabled`. Test: `tabs.stories.tsx › DisabledTab`.
+- forced-colors behaviour (Windows contrast themes): the bar, the line under the list and the text use the system's colours, a disabled tab uses the system's disabled-text colour, and the focus ring uses its highlight colour. Test: `tabs.stories.tsx › ForcedColors`.
 - reduced-motion behaviour: nothing animates.
 - Reflow: the list wraps, row by row, and never scrolls sideways. A long label wraps inside its tab. A vertical set stacks below 40rem (1.4.10). Test: `tabs.stories.tsx › LongFinnishText`.
 - Right to left: logical properties only, and the arrows flip (above). The bar of a vertical tab is at the inline end.
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships: `tablist`, `tab` and `tabpanel`, a tab and its panel tied by `aria-controls` and `aria-labelledby`.
-- 1.4.1 Use of Color, 1.4.11 Non-text Contrast: the selected tab is a bar and a weight, and its `primary` bar and the focus ring are held to 3:1 by `theme:check`.
-- 1.4.10 Reflow: the list wraps and never scrolls.
-- 2.1.1 Keyboard, 2.1.2 No Keyboard Trap: every tab and panel reachable, Tab always leaves.
-- 2.4.3 Focus Order, 2.4.7 Focus Visible: one Tab stop, DOM order, the panel next.
-- 2.5.8 Target Size (Minimum).
-- 4.1.2 Name, Role, Value: roles, names, `aria-selected`, `aria-disabled`.
+- 1.3.1 Info and Relationships (A): `tablist`, `tab` and `tabpanel`, a tab and its panel tied by `aria-controls` and `aria-labelledby`.
+- 1.4.1 Use of Color (A), 1.4.11 Non-text Contrast (AA): the selected tab is a bar and a weight, and the default theme's bar and focus ring are held to a 3:1 contrast by `theme:check`.
+- 1.4.10 Reflow (AA): the list wraps and never scrolls sideways.
+- 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A): every tab and panel is reachable, and Tab always leaves.
+- 2.4.3 Focus Order (A), 2.4.7 Focus Visible (AA): one Tab stop, DOM order, the panel next.
+- 2.5.8 Target Size (Minimum) (AA): a tab is at least 24 × 24 CSS px.
+- 4.1.2 Name, Role, Value (A): roles, names, `aria-selected`, `aria-disabled`.
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 
 - **Focus and selection can differ.** A disabled tab takes focus and is not selected in automatic mode, and in manual mode focus moves without selecting. The tab with focus is the Tab stop while focus is in the list, so Tab always leaves the list for the panel.
 - **One redundant Tab stop** on a panel whose first content is focusable, unless the consumer passes `tabIndex={-1}`.
-- **Hidden panels still mount.** Every panel is rendered with `hidden`: a heavy panel should render its children only while `isSelected`.
+- **Hidden panels still mount.** Every panel is rendered with `hidden`: a heavy panel should render its children only while its tab is selected, using your own `value`.
 - **A tab that unmounts while it has focus** leaves no Tab stop in the list until focus moves. Closable tabs are not supported.
 - **Before hydration** the tabs are already right (the selected tab `0`, the others `-1`, every panel rendered), but the arrow keys need JavaScript.

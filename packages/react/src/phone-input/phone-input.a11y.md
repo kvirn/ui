@@ -3,7 +3,7 @@
 - **APG pattern:** none needed. PhoneInput is a native `<input type="tel">`, a `textbox`. The name, description and state come from HTML and `aria-describedby`, as for [TextInput](../text-input/text-input.a11y.md).
 - **Deviations:** none from APG, because no APG pattern is used.
 - **Native elements used:** `<input type="tel">` (`PhoneInput.Number`) with `inputmode="tel"`, `spellcheck="false"`, `dir="ltr"` and `autocomplete="tel"` (`tel-national` next to a country); optionally a native `<select autocomplete="tel-country-code">` (`PhoneInput.Country`) in a `<div>` (`PhoneInput.Root`). No mask by default; `mask="telephone"` or your own mask adds no element and no role.
-- **Status:** draft, from [docs/design/phone-and-address-inputs.md](../../../../docs/design/phone-and-address-inputs.md): gates and accessibility-reviewer pending. Manual AT is `pending`.
+- **Status:** draft, from [docs/design/phone-and-address-inputs.md](../../../../docs/design/phone-and-address-inputs.md). Accessibility-reviewer pending, manual AT is `pending`.
 - **Tests:** `phone-input.test.tsx` next to this file (only what PhoneInput adds), and `../text-input/text-input.test.tsx`, `../field/field.test.tsx` and `../mask/use-mask.test.tsx` for the rest. `phone-input.stories.tsx` in `apps/storybook/src/components/phone-input/`.
 
 PhoneInput is a phone number in a Field (`field.a11y.md`): a TextInput with the attributes a phone number needs, set once (1.3.5). It never formats and never limits what the user writes: the value is their text. It is a native input, so the browser supplies the role, the keyboard, selection, paste and autofill.
@@ -72,7 +72,7 @@ PhoneInput adds no strings of its own and no i18n keys. Dev warnings (English, n
 
 PhoneInput renders the `kv-input` of TextInput with `kv-input--numeric` and `kv-phone-input` (20 characters wide, never wider than its container), so the look, focus indicator, target size, forced colours and reflow are the TextInput contract's.
 
-- Focus indicator: 2px, 3:1 against the adjacent colours (2.4.7, 2.4.13).
+- Focus indicator: 2px, 3:1 against the adjacent colours (2.4.7; AAA 2.4.13 is not counted toward AA).
 - Target size: at least 24px high (2.5.8).
 - forced-colors behaviour: the input keeps a real border, and invalid is not colour alone.
 - reduced-motion behaviour: colour transitions only under `no-preference`.
@@ -90,20 +90,20 @@ PhoneInput renders the `kv-input` of TextInput with `kv-input--numeric` and `kv-
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 Research questions for the AT run: is a number that stays as the user wrote it read the same on returning to the field? Does `inputmode="tel"` bring up the phone keypad with VoiceOver and TalkBack, and does autofill fill the full number including `+46`?
 

@@ -89,8 +89,8 @@ export interface DialogDescriptionPartProps {
 export interface DialogClosePartProps {
   className: 'kv-dialog-close'
   type: 'button'
-  /** The resolved `dialog.close` message, for an icon-only button. */
-  'aria-label': string
+  /** The resolved `dialog.close` message, for an icon-only button. Absent on an alert dialog, whose Close names itself from its text. */
+  'aria-label'?: string | undefined
   ref: RefCallback<HTMLButtonElement>
   onClick: (event: MouseEvent<HTMLButtonElement>) => void
 }
@@ -404,7 +404,7 @@ export function useModalDialog(
     closeProps: {
       className: 'kv-dialog-close',
       type: 'button',
-      'aria-label': closeMessages.close,
+      ...(role === 'dialog' ? { 'aria-label': closeMessages.close } : {}),
       ref: closeRef,
       onClick: (event) => {
         if (!event.defaultPrevented) {

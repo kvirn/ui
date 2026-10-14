@@ -20,7 +20,7 @@ export interface IconComponentProps {
 
 /**
  * Any component that spreads SVG props onto one `<svg>` and forwards its ref: Lucide,
- * Heroicons, Phosphor, Tabler, SVGR output, or your own.
+ * Heroicons, Phosphor, SVGR output, or your own.
  */
 export type IconComponent = ComponentType<IconComponentProps>
 

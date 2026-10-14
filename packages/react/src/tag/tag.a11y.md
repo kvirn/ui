@@ -3,7 +3,7 @@
 - **APG pattern:** none. APG has no chip or tag pattern, so no key is invented. A removable tag is a native `<button>`: the [APG Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/) keys apply (Enter, Space) and nothing else.
 - **Deviations:** none. Delete and Backspace are not taken on a remove button: that is not an APG deviation (APG defines nothing for a chip), see the `keyboard` skill.
 - **Native elements used:** `<ul role="list">` with `<li>` items, `<button type="button">`, `<span>`, `<p>`.
-- **Status:** alpha candidate (Plan 0075). Gates pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending, manual AT is `pending`.
 - **Tests:** `tag.test.tsx` next to this file. `tag.stories.tsx` in `apps/storybook/src/components/tag/`. Design: `docs/design/tag-and-filters.md`.
 
 A tag is a short fact in words, such as an applied filter. A static tag is text in a list item. A removable tag is one button: the whole chip, text and cross, so there is no small cross to hit (2.5.8) and no text that does nothing when pressed. TagGroup holds the focus rule for removal and the removal announcement. It holds no tag state: the consumer keeps the tags and removes one in `onRemove`.
@@ -84,20 +84,20 @@ Headless: no CSS. With `@kvirn-ui/theme/theme.css`, a static `kv-tag` is a `surf
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 

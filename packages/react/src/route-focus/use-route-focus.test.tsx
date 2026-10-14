@@ -1,4 +1,5 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { readAnnouncements } from '@kvirn-ui/testing/read-aloud'
 import { useEffect, useRef, useState } from 'react'
 import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -228,6 +229,45 @@ describe('route focus: with a real history', () => {
     await vi.waitFor(() => expect(window.location.pathname).toBe(startingAddress.split('?')[0]))
     expect(document.activeElement).toBe(document.body)
     await expect.element(heading()).not.toHaveAttribute('tabindex')
+  })
+
+  test('Back under automatic scroll restoration moves no focus, but still announces when announce is on', async () => {
+    window.history.scrollRestoration = 'auto'
+    document.title = 'Startsida'
+    await render(
+      <KvirnProvider>
+        <Router announce />
+      </KvirnProvider>,
+    )
+    await userEvent.click(page.getByRole('link', { name: 'Om oss' }))
+    await expect.element(heading()).toHaveFocus()
+    ;(document.activeElement as HTMLElement).blur()
+    document.title = 'Hem'
+    window.history.back()
+    await vi.waitFor(() => expect(window.location.pathname).toBe(startingAddress.split('?')[0]))
+    await expect.element(page.getByRole('status')).toHaveTextContent('Navigated to Hem')
+    expect(document.activeElement).toBe(document.body)
+  })
+
+  test('Back under automatic scroll restoration reads the navigated message as polite and moves no focus', async () => {
+    window.history.scrollRestoration = 'auto'
+    document.title = 'Hem'
+    const { container } = await render(
+      <KvirnProvider>
+        <Router announce />
+      </KvirnProvider>,
+    )
+    await userEvent.click(page.getByRole('link', { name: 'Om oss' }))
+    await expect.element(heading()).toHaveFocus()
+    await expect.element(page.getByRole('status')).toHaveTextContent('Navigated to Hem')
+    ;(document.activeElement as HTMLElement).blur()
+    document.title = 'Startsida'
+    const announced = await readAnnouncements(container, async () => {
+      window.history.back()
+      await vi.waitFor(() => expect(window.location.pathname).toBe(startingAddress.split('?')[0]))
+    })
+    expect(announced).toEqual(['polite: Navigated to Startsida'])
+    expect(document.activeElement).toBe(document.body)
   })
 
   test('Back under automatic scroll restoration is skipped when the key differs from the address', async () => {

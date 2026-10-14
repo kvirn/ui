@@ -5,6 +5,7 @@ import { CharacterCount, mergeProps } from '@kvirn-ui/react'
 import {
   FieldContext,
   joinIds,
+  useMergedRef,
   useQuietAnnouncer,
   warnAnnouncerMissing,
   warnOnce,
@@ -280,7 +281,12 @@ export function RichTextEditorRoot<Format extends RichTextFormat = 'html'>({
     ],
   )
 
-  const box = <div {...mergeProps(otherProps, { ref }, richText.rootProps)}>{children}</div>
+  const mergedRef = useMergedRef(ref, richText.rootProps.ref)
+  const box = (
+    <div {...mergeProps(otherProps, richText.rootProps)} ref={mergedRef}>
+      {children}
+    </div>
+  )
   return (
     <RichTextEditorContext value={context}>
       {box}

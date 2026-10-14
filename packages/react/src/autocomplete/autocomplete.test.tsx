@@ -176,6 +176,28 @@ describe('rendering', () => {
     await expect.element(input()).toHaveAccessibleDescription('Gatan där du bor.')
   })
 
+  test('a Field that is invalid and required puts aria-invalid, aria-required and the error on the input', async () => {
+    await render(
+      <KvirnProvider>
+        <Field.Root invalid required>
+          <Field.Label>Gatuadress</Field.Label>
+          <Autocomplete.Root items={streets}>
+            <Autocomplete.Input />
+            <Autocomplete.Popup>
+              <Autocomplete.List>
+                {(street: string) => <Autocomplete.Option item={street} />}
+              </Autocomplete.List>
+            </Autocomplete.Popup>
+          </Autocomplete.Root>
+          <Field.ErrorMessage>Ange en gatuadress</Field.ErrorMessage>
+        </Field.Root>
+      </KvirnProvider>,
+    )
+    expect(inputElement().getAttribute('aria-invalid')).toBe('true')
+    expect(inputElement().getAttribute('aria-required')).toBe('true')
+    await expect.element(input()).toHaveAccessibleDescription('Error: Ange en gatuadress')
+  })
+
   test('typing opens the popup with the matching suggestions, and focus stays on the input', async () => {
     const { container } = await render(<Example />)
     await typeText('sto')

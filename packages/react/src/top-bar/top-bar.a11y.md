@@ -3,18 +3,18 @@
 - **APG pattern:** none: a plain `<div>` around your text and a [Navigation](../navigation/navigation.a11y.md).
 - **Deviations:** none
 - **Native elements used:** `<div>`; inside it the elements you write (a `<p>`, a `<nav>`, `<a href>`).
-- **Status:** alpha candidate (plan 0095; a component in `@kvirn-ui/react` since plan 0104). Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `top-bar.test.tsx` next to this file (keys, the hook, the roles, axe in each variant). `top-bar.stories.tsx` in `apps/storybook/src/components/top-bar/`: axe in every story state in every theme, and the theme's own checks that need `theme.css`: every bar item at least 24 × 24 px (`expectTopBarTargetSizes`, 2.5.8) and the band at least 48px tall (`expectTopBarBandHeight`), at every width. The 48px band is a maintainer requirement (DESIGN.md, Site chrome patterns, top bar), a plan requirement and not a WCAG success criterion.
 
 ## Roles, states, properties
 
-| Part                    | Element / role   | ARIA / state | Notes                                                                                                                                                                                               |
-| ----------------------- | ---------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TopBar.Root`           | `<div>`, no role | none         | No landmark of its own: a `Navigation` inside is the landmark, named by its `label`. Test: `top-bar.test.tsx › the root is a plain div with no role, and the Navigation inside it is the landmark`. |
-| `TopBar.Root` `variant` | class only       | none         | `primary`, `secondary` or `accent` adds `kv-top-bar--<variant>`; none adds no class. Tests: `top-bar.test.tsx › variant %s renders the class "%s"`, `› useTopBar`.                                  |
-| children                | yours            | yours        | Laid out at the start and the end in DOM order, so reading and focus order are the visual order (1.3.2, 2.4.3).                                                                                     |
+| Part               | Element / role   | ARIA / state | Notes                                                                                                                                                                                               |
+| ------------------ | ---------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TopBar`           | `<div>`, no role | none         | No landmark of its own: a `Navigation` inside is the landmark, named by its `label`. Test: `top-bar.test.tsx › the root is a plain div with no role, and the Navigation inside it is the landmark`. |
+| `TopBar` `variant` | class only       | none         | `primary`, `secondary` or `accent` adds `kv-top-bar--<variant>`; none adds no class. Tests: `top-bar.test.tsx › variant %s renders the class "%s"`, `› useTopBar`.                                  |
+| children           | yours            | yours        | Laid out at the start and the end in DOM order, so reading and focus order are the visual order (1.3.2, 2.4.3).                                                                                     |
 
-The navigation's own rows (`aria-current` on one link) are the Navigation's. `useTopBar({ variant })` gives the same frozen `rootProps` (only `className`) for your own element.
+The navigation's own rows (`aria-current` on one link) are the Navigation's. `useTopBar({ variant })` gives the same frozen `topBarProps` (only `className`) for your own element.
 
 ## Keyboard
 
@@ -78,15 +78,20 @@ None.
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 

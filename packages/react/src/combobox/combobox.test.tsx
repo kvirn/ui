@@ -922,6 +922,16 @@ describe('keyboard', () => {
 })
 
 describe('pointer', () => {
+  test('data-focused is set on the input when it receives focus and goes when it loses it', async () => {
+    await render(<Example />)
+    await expect.element(input()).not.toHaveAttribute('data-focused')
+    await userEvent.click(input())
+    await expect.element(input()).toHaveFocus()
+    await expect.element(input()).toHaveAttribute('data-focused', '')
+    await userEvent.click(page.getByRole('button', { name: 'Efter' }))
+    await expect.element(input()).not.toHaveAttribute('data-focused')
+  })
+
   test('a click on an option chooses it, closes the popup and keeps focus on the input', async () => {
     const onValueChange =
       vi.fn<(value: string | null, details: ComboboxValueChangeDetails) => void>()

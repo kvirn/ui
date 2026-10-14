@@ -1,9 +1,9 @@
 # Accessibility contract: Progress
 
 - **APG pattern:** none. A progress bar is not a widget and has no keys. The native form, `<progress>` (implicit `progressbar` role), is used only when the value is known.
-- **Deviations:** none. Decisions (Plan 0074 and Plan 0080, specs `docs/design/status-patterns.md` and `docs/design/loading-indicators.md`): the text carries the wait and a decorative spinner (`Progress.Indicator`) may sit beside it; a known value uses the native `<progress>` and no spinner; announced once when shown and once when slow, never per percent or per tick.
+- **Deviations:** none. The text carries the wait, and a decorative spinner (`Progress.Indicator`) may sit beside it. A known value uses the native `<progress>` and no spinner. The wait is announced once when shown and once when slow, never per percent or per tick.
 - **Native elements used:** `<div>`, `<p>` and `<span>` for the text, `<progress>` for a known value.
-- **Status:** alpha candidate (Plan 0074). Accessibility-reviewer pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `progress.test.tsx` next to this file, and `packages/core/src/progress/progress-timer.test.ts` for the timing. `progress.stories.tsx` in `apps/storybook/src/components/progress/`.
 
 Progress says that something is working and, when known, how far along. It is for a wait the user started (a send, a filter, a route), placed where the result will appear or beside the busy button. It renders nothing for the first second, so a quick wait never flashes. Table, Combobox and FileUpload keep their own loading text.
@@ -18,23 +18,23 @@ Progress says that something is working and, when known, how far along. It is fo
 | Progress.Bar       | `<progress>` → `progressbar`  | `value`, `max` (100), `aria-labelledby` the label span, `aria-valuetext` (`progress.valueText`: `Exporting cases, 45%`)           | Class `kv-progress-bar`. Renders only with a numeric `value`: an unknown wait has no bar and no `progressbar` role                                                                                                                                            |
 | `useProgress`      | the same, for your own markup | `isShown`, `isSlow`, `labelId`, `label`, `slowText`, `percent`, `rootProps`, `labelProps`, `barProps` (`undefined` without value) | Render nothing while `isShown` is `false`                                                                                                                                                                                                                     |
 
-Rules, tested in `progress.test.tsx`:
+Rules the tests prove:
 
 - **Show delay.** Nothing is rendered or said inside `delayMilliseconds`. A wait that ends inside it is never shown or announced.
 - **Name.** The bar is named by the label text only (`aria-labelledby` the span). The slow sentence and the percent are not in the name. Without a `label` the message `progress.loading` is used and a development warning asks for a specific one.
 - **No state of its own for the page.** No `aria-busy` from Progress: `aria-busy` belongs on the element whose content is replaced, while it is replaced (Table does this).
 - **The percent is text.** The visible percent follows the label, and the bar's value says it. It is never announced.
 - **One indicator per wait.** `Progress.Indicator` renders only for an unknown value; a known value has the `<progress>` and no spinner. A `<progress>` is never rendered without a value.
-- **Dev warnings (once):** `progress-without-label`; a Label, Bar or Indicator outside a Root; no `KvirnProvider` while announcing.
+- **Development warnings (once each):** a Progress with no `label`, a Label, Bar or Indicator outside a Root, and no `KvirnProvider` while announcing.
 
 ## Allowed elements
 
-A tag outside the list changes the page's outline or semantics (1.3.1, 4.1.2). `as` is a string, so it works from a Server Component.
+A tag outside the list changes the page's outline or semantics (1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A)). `as` is a string, so it works from a Server Component.
 
-| Part                 | `as`                         | Why                                                                                                                                                                                                                                                                            |
-| -------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Label                | `p` (default), `div`, `span` | Plain text with the label span inside. `span` fits beside a busy button. No heading: it names the bar, it is not part of the outline. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Progress.Label:<tag>`) and renders the default element. |
-| Root, Indicator, Bar | none                         | A `<div>`, a decorative `<span>` and a native `<progress>` (4.1.2)                                                                                                                                                                                                             |
+| Part                 | `as`                         | Why                                                                                                                                                                                                                                                           |
+| -------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Label                | `p` (default), `div`, `span` | Plain text with the label span inside. `span` fits beside a busy button. No heading: it names the bar, it is not part of the outline. A value outside the list is a type error and, in JavaScript, warns once in development and renders the default element. |
+| Root, Indicator, Bar | none                         | A `<div>`, a decorative `<span>` and a native `<progress>` (4.1.2 Name, Role, Value (A))                                                                                                                                                                      |
 
 ## Keyboard
 
@@ -63,7 +63,7 @@ Progress has no focusable part and intercepts no key. It is never a Tab stop.
 | Becomes slow (10 s)                               | `progress.slow`                    | polite     | `slow › adds the slow sentence after ten seconds and announces it once`     |
 | Value changes, re-render, unmount                 | nothing                            | –          | `announcements › says nothing more when it re-renders or its value changes` |
 
-Both go through the shared Announcer with the Progress id as the throttle `key`. `announce={false}` opts out (when focus already reads the state, or another part announces it, as a Table with `isLoading`). A Progress inside a Dialog uses the Dialog's own Announcer. Without a `KvirnProvider` nothing is announced and a development warning says why.
+Both go through the shared Announcer. `announce={false}` opts out (when focus already reads the state, or another part announces it, as a Table with `isLoading`). A Progress inside a Dialog uses the Dialog's own Announcer. Without a `KvirnProvider` nothing is announced and a development warning says why.
 
 ## Consumer responsibilities
 
@@ -72,44 +72,45 @@ Both go through the shared Announcer with the Progress id as the throttle `key`.
 - Pair a busy action with `<Button busy>` so a second press is blocked and focus stays.
 - On failure, remove the Progress and show an `Alert.Danger` near the button with `announce="polite"`, and turn `busy` off. Success speaks through the result's own announcement or a focus move.
 - Offer Cancel as a separate button, never inside Progress.
-- Never put a Progress inside an alert's `-subtle` fill, or on a page-wide overlay that hides the user's answers.
-- **WCAG 2.2.2 (Pause, Stop, Hide).** The indicators (spinner, bar sheen, busy Button, job Toast, FileUpload track, Table busy sweep) move for as long as the wait lasts, which can be more than 5 s. `prefers-reduced-motion: reduce` is honoured and shows a still rest shape, but to meet WCAG 2.2.2 the app must also offer its own visible control that stops moving content (the library ships none) and applies the stop CSS. [Moving indicators and WCAG 2.2.2](/foundation/theming#moving-indicators). The text, the percent and the 10 s slow sentence carry the wait.
+- Wrap the app in `KvirnProvider`: the wait is announced through it. Without one nothing is announced and a development warning says why. Pass `announce={false}` only when focus already reads the state or another part announces it (a Table with `isLoading`).
+- Never put a Progress inside an Alert's tinted background, or on a page-wide overlay that hides the user's answers.
+- **2.2.2 Pause, Stop, Hide (A).** The indicators (spinner, bar sheen, busy Button, job Toast, FileUpload track, Table busy sweep) move for as long as the wait lasts, which can be more than 5 s. The theme honours `prefers-reduced-motion: reduce` and shows a still shape, but that setting alone is not a control on the page. An indicator that can keep moving for more than 5 seconds alongside other content needs a visible control on the page that stops or hides it. An indicator that is the only content during a wait where nothing else can be done is exempt. The library ships no such control, so the app offers its own and applies the CSS that stops the indicators. [Moving indicators and WCAG 2.2.2](/foundation/theming#moving-indicators). The text, the percent and the 10 s slow sentence carry the wait.
 
 ## Visual / modes
 
 - Focus indicator: none (nothing is focusable).
-- Colour: text in `text`, never `text-muted`. The bar's edge is `border-control` (3:1) and its value `primary`; the percent is text too (1.4.1).
-- forced-colors behaviour: `CanvasText` text and edge, `Canvas` track, `Highlight` value.
-- reduced-motion behaviour: the spinner shows its still rest shape. The known-value bar shows its plain gradient fill, with no sheen; its fill eases only under `no-preference`.
-- RTL: the native bar fills from the inline start of the page direction; the label wraps, logical properties throughout.
+- Colour: the label and the percent use the full-strength text colour, never the muted one. The percent is text too, so the state never depends on colour (1.4.1 Use of Color, A). The bar's edge has at least 3:1 contrast against its background (1.4.11 Non-text Contrast, AA).
+- Forced colours: the text and the bar's edge use the system's text colour, the track uses the system's background, and the value uses the system's highlight colour.
+- Reduced motion: the spinner shows its still rest shape. The known-value bar shows a plain gradient fill with no moving sheen, and its fill changes smoothly only when motion is allowed.
+- Right-to-left: the native bar fills from the inline start of the page direction, and the label wraps. Spacing uses logical properties throughout.
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships, 4.1.2 Name, Role, Value: native `<progress>` named by the label.
-- 4.1.3 Status Messages: announced through the Announcer once when shown and once when slow.
-- 1.4.1 Use of Color, 1.4.11 Non-text Contrast: the label and the percent carry the state; the bar's edge meets 3:1.
-- 1.4.10 Reflow, 1.4.12 Text Spacing: the label wraps, nothing has a fixed height.
-- 2.2.2 Pause, Stop, Hide: every indicator animation (the spinner, the known-value bar's sheen, the busy Button and Toast spinners, the FileUpload track, the Table busy sweep) loops while the wait lasts and shows the still rest shape under `prefers-reduced-motion: reduce`. The library has no stop control, so to meet 2.2.2 the app offers one (see Consumer responsibilities).
-- 2.4.3 Focus Order: focus is never moved.
+- 1.3.1 Info and Relationships (A) and 4.1.2 Name, Role, Value (A): a known value is a native `<progress>`, named by the label.
+- 4.1.3 Status Messages (AA): the wait is announced through the Announcer once when shown and once when slow.
+- 1.4.1 Use of Color (A) and 1.4.11 Non-text Contrast (AA): the label and the percent carry the state, and the bar's edge has at least 3:1 contrast.
+- 1.4.10 Reflow (AA) and 1.4.12 Text Spacing (AA): the label wraps and has no fixed height.
+- 2.2.2 Pause, Stop, Hide (A): every indicator animation (the spinner, the known-value bar's sheen, the busy Button and Toast spinners, the FileUpload track, the Table busy sweep) loops while the wait lasts and shows the still rest shape under `prefers-reduced-motion: reduce`. The library has no stop control. Where an indicator can keep moving for more than 5 seconds alongside other content, the app offers one (see What you need to do).
+- 2.4.3 Focus Order (A): focus is never moved.
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
-Research questions for the AT run: is the label announced once after a second, with no repeat? Does a screen reader read both the bar's name and `aria-valuetext` redundantly ("Exporting cases, progress bar, Exporting cases, 45%")? Does a busy button read as unavailable and keep its place?
+Questions for the screen reader tests: is the label announced once after a second, with no repeat? Does a screen reader read both the bar's name and `aria-valuetext` redundantly ("Exporting cases, progress bar, Exporting cases, 45%")? Does a busy button read as unavailable and keep its place?
 
 ## Known issues
 
@@ -118,4 +119,3 @@ Research questions for the AT run: is the label announced once after a second, w
 - **A `label` that changes while waiting is not announced again.** Remount the Root with a `key` when the wait is a new one.
 - **Unmounting within 100 ms after the Announcer was given a message may still speak it:** the Announcer fills its region 100 ms after the call.
 - **A slow limit less than 100 ms after the label** replaces the label before it is spoken; the slow sentence is still announced.
-- **No read-aloud table.** `readAloud` exists in `@kvirn-ui/testing`, but the contract template doesn't require a transcript for a component with no focusable part; add one if the reviewer asks.

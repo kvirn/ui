@@ -72,7 +72,7 @@ import { Search } from 'lucide-react'
 <Icon icon={MapPinIcon} size="24" />
 ```
 
-- It takes any component that spreads SVG props onto one `<svg>` and forwards its ref (`IconComponent`): Lucide, Heroicons, Phosphor, Tabler, SVGR output, or your own. A component that doesn't fit is a type error.
+- It takes any component that spreads SVG props onto one `<svg>` and forwards its ref (`IconComponent`): Lucide, Heroicons, Phosphor, SVGR output, or your own. A component that doesn't fit is a type error.
 - Icon passes `width`, `height`, `className` (joined with the component's own), `aria-*` and `role` to it, and they win over the library's own defaults (Lucide's 24px size, Heroicons' `aria-hidden`).
 - `icon` doesn't mirror in right-to-left text by default. Set `mirrorInRtl` on the Icon, or register the icon under a name with `{ component, mirrorInRtl: true }`, which is the better place for a direction.
 - A library draws its own stroke (Lucide's 2). To change it, register a wrapper component of your own that sets it, then use the name.
@@ -126,7 +126,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 <Icon name="delte" /> // type error, and a warning in development
 ```
 
-- An entry is a component, or `{ component, mirrorInRtl }`. `mirrorInRtl: false` turns off the flip a built-in name has (`arrow-forward`), and `mirrorInRtl` on an `<Icon>` wins over the entry. A component must forward its ref and spread SVG props onto one `<svg>`. Lucide, Heroicons, Phosphor, Tabler and SVGR output all do.
+- An entry is a component, or `{ component, mirrorInRtl }`. `mirrorInRtl: false` turns off the flip a built-in name has (`arrow-forward`), and `mirrorInRtl` on an `<Icon>` wins over the entry. A component must forward its ref and spread SVG props onto one `<svg>`. Lucide, Heroicons, Phosphor and SVGR output all do.
 - A nested `KvirnProvider` adds icons and replaces names, over its parent's. `iconDefaults` (`size`) merges field by field.
 - Which value wins, lowest first: the icon's own defaults, the built-in's mirroring for that name, `iconDefaults`, your entry, then the props on `<Icon>`.
 - An unknown name renders an empty `<svg>` at the right size and warns once in development.
@@ -197,7 +197,6 @@ It returns `iconProps`, `component` (`undefined` without a name, or for an unkno
 | Lucide      | Works fully. It follows the text colour and draws its own 2 stroke                |
 | Heroicons   | Works fully. Its own `aria-hidden` is removed when you give a `label`             |
 | Phosphor    | Fill-based. Choose the weight with Phosphor's `weight` in a wrapper you register  |
-| Tabler      | Works fully. It follows the text colour                                           |
 | react-icons | Its own `size` wins over Icon's: size it on the component                         |
 | Iconify     | Use its offline bundles. Its default mode fetches icons from a third-party server |
 | Icon fonts  | Not supported. Use SVG                                                            |

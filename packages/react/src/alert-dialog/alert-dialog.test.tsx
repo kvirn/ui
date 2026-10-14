@@ -235,6 +235,11 @@ describe('rendering and ARIA', () => {
     await userEvent.click(page.getByRole('button', { name: 'Öppna' }))
     await expect.element(page.getByRole('alertdialog', { name: 'Egen titel' })).toBeVisible()
     await expect.element(page.getByRole('alertdialog')).toHaveAccessibleDescription('Egen text')
+    // The hook's closeProps carry no aria-label: the button's own text is its name.
+    await expect.element(page.getByRole('button', { name: 'Stäng', exact: true })).toBeVisible()
+    expect(
+      page.getByRole('button', { name: 'Stäng', exact: true }).element().hasAttribute('aria-label'),
+    ).toBe(false)
   })
 
   test('server rendering with defaultOpen writes a closed <dialog> and touches no window', () => {

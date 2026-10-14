@@ -9,10 +9,10 @@ import { render } from 'vitest-browser-react'
 import { Button } from '../button/button.tsx'
 import { Link } from '../link/link.tsx'
 import { Navigation } from '../navigation/navigation.tsx'
-import { TopBar, TopBarRoot } from './top-bar.tsx'
-import type { TopBarRootProps } from './top-bar.tsx'
+import { TopBar } from './top-bar.tsx'
+import type { TopBarProps } from './top-bar.tsx'
 import { useTopBar } from './use-top-bar.ts'
-import type { TopBarRootPartProps, UseTopBarOptions, UseTopBarResult } from './use-top-bar.ts'
+import type { TopBarPartProps, UseTopBarOptions, UseTopBarResult } from './use-top-bar.ts'
 
 // Contract: top-bar.a11y.md. The 24px target and 48px band checks are measured in the Storybook
 // stories (`expectTopBarTargetSizes`), where the theme is loaded.
@@ -22,7 +22,7 @@ function ReferenceBar({ variant }: UseTopBarOptions) {
     <>
       {/* Unstyled links: a 24px minimum keeps them clear of axe's target-size rule (2.5.8). The real size is measured in the stories, with the theme. */}
       <style>{'a { display: inline-block; min-block-size: 24px; }'}</style>
-      <TopBar.Root variant={variant} data-testid="top-bar">
+      <TopBar variant={variant} data-testid="top-bar">
         <p>
           Kvirnby kommun. <Link.Root href="#senaste">Senaste nytt</Link.Root>
         </p>
@@ -38,7 +38,7 @@ function ReferenceBar({ variant }: UseTopBarOptions) {
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Root>
-      </TopBar.Root>
+      </TopBar>
     </>
   )
 }
@@ -72,18 +72,17 @@ describe('rendering', () => {
   test('forwards its ref and passes attributes through', async () => {
     const ref = createRef<HTMLDivElement>()
     await render(
-      <TopBar.Root ref={ref} id="verktygsfalt" data-testid="top-bar">
+      <TopBar ref={ref} id="verktygsfalt" data-testid="top-bar">
         Text
-      </TopBar.Root>,
+      </TopBar>,
     )
     const bar = page.getByTestId('top-bar')
     expect(ref.current).toBe(bar.element())
     await expect.element(bar).toHaveAttribute('id', 'verktygsfalt')
   })
 
-  test('TopBar.Root and TopBarRoot are one component', () => {
-    expect(TopBar.Root).toBe(TopBarRoot)
-    expect(TopBarRoot.displayName).toBe('TopBar.Root')
+  test('TopBar is a flat single element with its own display name', () => {
+    expect(TopBar.displayName).toBe('TopBar')
   })
 })
 
@@ -106,9 +105,9 @@ describe('variant', () => {
 
   test('a consumer className joins the bar’s class instead of replacing it', async () => {
     await render(
-      <TopBar.Root variant="secondary" className="annat" data-testid="top-bar">
+      <TopBar variant="secondary" className="annat" data-testid="top-bar">
         Text
-      </TopBar.Root>,
+      </TopBar>,
     )
     await expect
       .element(page.getByTestId('top-bar'))
@@ -119,7 +118,7 @@ describe('variant', () => {
 describe('keyboard', () => {
   function KeyboardBar({ onActivate }: { onActivate?: () => void }) {
     return (
-      <TopBar.Root variant="primary">
+      <TopBar variant="primary">
         <p>
           Kvirnby kommun. <Link.Root href="#senaste">Senaste nytt</Link.Root>
         </p>
@@ -138,7 +137,7 @@ describe('keyboard', () => {
         <Button className="kv-button--link" onClick={onActivate}>
           Visningsinställningar
         </Button>
-      </TopBar.Root>
+      </TopBar>
     )
   }
 
@@ -225,15 +224,15 @@ describe('axe', () => {
 
 describe('useTopBar', () => {
   test('maps each variant to its class, and none to the base class', () => {
-    expect(useTopBar().rootProps.className).toBe('kv-top-bar')
-    expect(useTopBar({ variant: undefined }).rootProps.className).toBe('kv-top-bar')
-    expect(useTopBar({ variant: 'primary' }).rootProps.className).toBe(
+    expect(useTopBar().topBarProps.className).toBe('kv-top-bar')
+    expect(useTopBar({ variant: undefined }).topBarProps.className).toBe('kv-top-bar')
+    expect(useTopBar({ variant: 'primary' }).topBarProps.className).toBe(
       'kv-top-bar kv-top-bar--primary',
     )
-    expect(useTopBar({ variant: 'secondary' }).rootProps.className).toBe(
+    expect(useTopBar({ variant: 'secondary' }).topBarProps.className).toBe(
       'kv-top-bar kv-top-bar--secondary',
     )
-    expect(useTopBar({ variant: 'accent' }).rootProps.className).toBe(
+    expect(useTopBar({ variant: 'accent' }).topBarProps.className).toBe(
       'kv-top-bar kv-top-bar--accent',
     )
   })
@@ -242,14 +241,14 @@ describe('useTopBar', () => {
     const result = useTopBar({ variant: 'accent' })
     expect(useTopBar({ variant: 'accent' })).toBe(result)
     expect(Object.isFrozen(result)).toBe(true)
-    expect(Object.isFrozen(result.rootProps)).toBe(true)
+    expect(Object.isFrozen(result.topBarProps)).toBe(true)
   })
 
   test('works on your own element and merges with your props', async () => {
     function OwnBar() {
       const topBar = useTopBar({ variant: 'accent' })
       return (
-        <div {...mergeProps({ className: 'annat', 'data-testid': 'own' }, topBar.rootProps)}>
+        <div {...mergeProps({ className: 'annat', 'data-testid': 'own' }, topBar.topBarProps)}>
           Text
         </div>
       )
@@ -265,7 +264,7 @@ describe('read aloud', () => {
   test('the bar reads in DOM order with no phrase of its own, the navigation by its label, the current tool as the current item, a link-look button as a button', async () => {
     const { container } = await render(
       <main>
-        <TopBar.Root>
+        <TopBar>
           <p>Kvirnby kommun.</p>
           <Navigation.Root label="Verktyg" className="kv-navigation--horizontal">
             <Navigation.List>
@@ -277,7 +276,7 @@ describe('read aloud', () => {
             </Navigation.List>
           </Navigation.Root>
           <Button className="kv-button--link">Visningsinställningar</Button>
-        </TopBar.Root>
+        </TopBar>
       </main>,
     )
     const phrases = await readAloud(container)
@@ -293,7 +292,7 @@ describe('read aloud', () => {
 
 describe('server rendering', () => {
   test('renders to a string without touching the page', () => {
-    expect(renderToString(<TopBar.Root variant="accent">Text</TopBar.Root>)).toBe(
+    expect(renderToString(<TopBar variant="accent">Text</TopBar>)).toBe(
       '<div class="kv-top-bar kv-top-bar--accent">Text</div>',
     )
   })
@@ -304,8 +303,8 @@ describe('types', () => {
     expectTypeOf<UseTopBarOptions['variant']>().toEqualTypeOf<
       'primary' | 'secondary' | 'accent' | undefined
     >()
-    expectTypeOf<UseTopBarResult['rootProps']>().toEqualTypeOf<TopBarRootPartProps>()
-    expectTypeOf<TopBarRootProps>().toHaveProperty('variant')
-    expectTypeOf<TopBarRootProps>().toHaveProperty('className')
+    expectTypeOf<UseTopBarResult['topBarProps']>().toEqualTypeOf<TopBarPartProps>()
+    expectTypeOf<TopBarProps>().toHaveProperty('variant')
+    expectTypeOf<TopBarProps>().toHaveProperty('className')
   })
 })

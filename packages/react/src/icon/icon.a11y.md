@@ -3,19 +3,19 @@
 - **APG pattern:** none. An SVG graphic, decorative or `role="img"` ([SVG-AAM](https://www.w3.org/TR/svg-aam-1.0/), [WAI images tutorial](https://www.w3.org/WAI/tutorials/images/)).
 - **Deviations:** none
 - **Native elements used:** `<svg>`. Icon is never interactive.
-- **Status:** alpha candidate (Plan 0009). Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `icon.test.tsx` next to this file, and the icon-only rows in `button.test.tsx`. `icon.stories.tsx` in `apps/storybook/src/components/icon/`.
 
-An icon is decorative by default: text next to it already says what it means, so it's hidden from assistive technology. With a `label`, it's an image with that name. Icons come from the built-in set, from the app's registry (`KvirnProvider icons`), from a component reference (`icon`, Plan 0044), or from `as` (your own component) and children for one-offs. Every route renders the same attributes: hidden unless there is a `label`, and Icon's `aria-hidden` replaces a library's own. With `as`, the component gets the props as plain props, and Icon's `aria-hidden`, `role` and `aria-label` win over any of the same name: it must spread them on its `<svg>` and take a `ref`. Icon's own options (`size`, `label`) do not reach it under their own names. **Allowed elements:** none to list: `as` is a component that draws an `<svg>`.
+An icon is decorative by default: text next to it already says what it means, so it's hidden from assistive technology. With a `label`, it's an image with that name. Icons come from the built-in set, from the app's registry (`KvirnProvider icons`), from a component reference (`icon`), or from `as` (your own component) and children for one-offs. Every route renders the same attributes: hidden unless there is a `label`, and Icon's `aria-hidden` replaces a library's own. With `as`, the component gets the props as plain props, and Icon's `aria-hidden`, `role` and `aria-label` win over any of the same name: it must spread them on its `<svg>` and take a `ref`. Icon's own options (`size`, `label`) do not reach it under their own names. **Allowed elements:** none to list: `as` is a component that draws an `<svg>`.
 
 ## Roles, states, properties
 
-| Part | Element / role                | ARIA                                                 | Notes                                                                                                                                                                                                     |
-| ---- | ----------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Icon | `<svg>`, no role              | `aria-hidden="true"`                                 | Default: decorative. `class="kv-icon kv-icon--size-20"`, `width` and `height` in rem                                                                                                                      |
-|      | `<svg>` → `img`, with `label` | `role="img"`, `aria-label={label}`, no `aria-hidden` | A library's own `aria-hidden` (Heroicons, Lucide) is removed. `aria-label`, `aria-hidden` and `role` can't be passed directly: `label` sets them                                                          |
-|      | unknown `name`                | `aria-hidden="true"`, empty                          | Sized like the icon, so nothing moves. A dev warning names the missing icon. With a `label` it is still `role="img"` with that name, so a screen-reader user keeps the name and the warning flags the bug |
-|      | `data-mirror-in-rtl`          | none                                                 | State for CSS: whether the icon flips in right-to-left text                                                                                                                                               |
+| Part | Element / role                | ARIA                                                 | Notes                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---- | ----------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Icon | `<svg>`, no role              | `aria-hidden="true"`                                 | Default: decorative. `class="kv-icon kv-icon--size-20"`, `width` and `height` in rem                                                                                                                                                                                                                                                                                                                                          |
+|      | `<svg>` → `img`, with `label` | `role="img"`, `aria-label={label}`, no `aria-hidden` | A library's own `aria-hidden` (Heroicons, Lucide) is removed. `aria-label`, `aria-hidden` and `role` can't be passed directly: `label` sets them. `tabIndex`, `onClick`, `aria-labelledby` and `aria-describedby` are type errors too, because an icon takes no focus, press or description: put them on the control around it (`icon.test.tsx › tabIndex, onClick, aria-labelledby and aria-describedby are not Icon props`) |
+|      | unknown `name`                | `aria-hidden="true"`, empty                          | Sized like the icon, so nothing moves. A dev warning names the missing icon. With a `label` it is still `role="img"` with that name, so a screen-reader user keeps the name and the warning flags the bug                                                                                                                                                                                                                     |
+|      | `data-mirror-in-rtl`          | none                                                 | State for CSS: whether the icon flips in right-to-left text                                                                                                                                                                                                                                                                                                                                                                   |
 
 `useIcon` gives the same `iconProps`, and the component for a name, for your own `<svg>`.
 
@@ -47,48 +47,48 @@ Icon has no strings. A `label` comes from your own translations.
 
 ## Consumer responsibilities
 
-- Give an icon a `label` only when no text next to it says the same thing. An icon with a label next to the same text is read twice.
-- Name an icon-only `Button` with an `aria-label` (or `aria-labelledby`) from your translations, and keep the icon decorative. In development, Button warns when it has no name (`button.test.tsx › icon-only button name`). Use icon-only buttons only for universally known actions: close, search, menu (DESIGN.md). Until Tooltip exists (M2), prefer visible text.
-- Never convey status by an icon's colour alone: the status icons differ in shape, and status always comes with text (1.4.1).
-- Give a meaningful icon (one with a `label`) 3:1 contrast against its background (1.4.11). `currentColor` follows the text colour, which already meets 4.5:1 in the default theme.
+- Give an icon that carries meaning on its own a `label` (1.1.1 Non-text Content, A): a status icon with no text beside it, say. Give it a `label` only when no text next to it says the same thing: an icon with a label next to the same text is read twice. A decorative icon needs none.
+- Name an icon-only `Button` with an `aria-label` (or `aria-labelledby`) from your translations, and keep the icon decorative. In development, Button warns when it has no name. Use icon-only buttons only for universally known actions: close, search, menu. For anything else, prefer visible text.
+- Never convey status by an icon's colour alone: the status icons differ in shape, and status always comes with text (1.4.1 Use of Color, A).
+- Give a meaningful icon (one with a `label`) at least 3:1 contrast against its background (1.4.11 Non-text Contrast, AA). `currentColor` follows the text colour, which already has at least 4.5:1 contrast in the default theme.
 - Set `mirrorInRtl` only on directional icons (arrows, chevrons), never on a tick, a logo or anything with text in it.
 - Register icons that forward their ref and spread SVG props onto one `<svg>`.
 
 ## Visual / modes
 
 - Focus indicator: not applicable. Icon is never focusable.
-- Target size: not applicable. An icon-only button's target is the Button's: the default theme makes `kv-button--icon-only` square and at least `--kv-button-min-block-size` (2.5.8).
-- forced-colors behaviour: icons draw in `currentColor`, which follows the system colour. The default theme turns an explicit `fill`, `stroke` or `color` on `.kv-icon` (set by your own CSS) into `currentColor` in forced-colours mode, so a hard-coded colour can't vanish. Colours on child shapes are kept, so forced-colours contrast for a multi-colour, meaningful SVG is the consumer's job. There is no root `fill` or `stroke` option any more: a one-off SVG sets `fill="currentColor"` on its own shapes, or it draws black in forced colours.
-- reduced-motion behaviour: no motion.
-- Text resize and reflow: icons are rem (`kv-icon--size-<px>` plus `width` and `height` in rem), so they scale with browser zoom and the user's root font size, not with the surrounding text. 1.4.4 holds because text resizes and icons aren't text. The largest icon is 6rem, so 1.4.10 holds at 320px. Tests: `icon.test.tsx › attributes › the default size is '20' (1.25rem)` and the `SizesNextToText` story.
+- Target size: not applicable. An icon-only button's target is the Button's: the default theme makes an icon-only button square and larger than the 24 by 24 pixel minimum (2.5.8 Target Size (Minimum), AA).
+- Forced colours: icons draw in the text colour (`currentColor`), which follows the system colour. The default theme turns an explicit `fill`, `stroke` or `color` on `.kv-icon` (set by your own CSS) into `currentColor` in forced-colours mode, so a hard-coded colour can't vanish. Colours on child shapes are kept, so forced-colours contrast for a multi-colour, meaningful SVG is the consumer's job. Icon has no `fill` or `stroke` option: a one-off SVG sets `fill="currentColor"` on its own shapes, or it draws black in forced colours.
+- Reduced motion: icons do not move.
+- Text resize and reflow: icon sizes are in rem (`width` and `height`, plus a `kv-icon--size-<px>` class), so they scale with browser zoom and the user's root font size, not with the surrounding text. 1.4.4 Resize Text (AA) holds because text resizes and icons aren't text. The largest icon is 6rem, so no horizontal scrolling is expected at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA). An automated test checks that the default size, 20, is 1.25rem.
 
 ## WCAG SCs covered
 
-- 1.1.1 Non-text Content: decorative icons are hidden, meaningful ones have a `label`.
-- 1.3.1 Info and Relationships: no structure from icons.
-- 1.4.1 Use of Color: status icons differ in shape (built-in set, design spec).
-- 1.4.4 Resize Text, 1.4.10 Reflow: rem sizes, at most 6rem.
-- 1.4.11 Non-text Contrast: consumer, with `currentColor` by default.
-- 4.1.2 Name, Role, Value: `role="img"` with a name, or hidden. Button's dev warning for an unnamed icon-only button.
+- 1.1.1 Non-text Content (A): decorative icons are hidden, meaningful ones have a `label`.
+- 1.3.1 Info and Relationships (A): an icon adds no structure.
+- 1.4.1 Use of Color (A): the status icons differ in shape.
+- 1.4.4 Resize Text (AA), 1.4.10 Reflow (AA): rem sizes, at most 6rem.
+- 1.4.11 Non-text Contrast (AA): the adopter's job, with the text colour by default.
+- 4.1.2 Name, Role, Value (A): `role="img"` with a name, or hidden. Button warns in development about an unnamed icon-only button.
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
 ## Known issues
 
-- `var()` in SVG presentation attributes (`fill` and `stroke` on your own shapes) is resolved by the browser engine, not by Icon. No test covers it: it is a browser capability.
+- Whether `var()` works in the `fill` and `stroke` attributes of your own shapes is up to the browser, not Icon. No test covers it.
 - react-icons applies its own `size` after Icon's `width` and `height`. Size react-icons on the element.

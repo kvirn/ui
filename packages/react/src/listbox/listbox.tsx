@@ -499,6 +499,7 @@ export function ListboxOption<TItem = unknown>({
       isDisabled,
       registerPart,
     }),
+    // eslint-disable-next-line react/preserve-manual-memoization -- the deps are the values the memo uses, and none is mutated
     [optionId, label, isActive, isSelected, isDisabled, registerPart],
   )
 

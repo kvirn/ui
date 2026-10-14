@@ -288,6 +288,29 @@ describe('use-focus.test.tsx › focus management', () => {
     await expect.element(byName('Första')).toHaveFocus()
   })
 
+  test('a stop far below the fold is scrolled into view when the scope opens (2.4.11)', async () => {
+    await render(
+      <Drawer>
+        <div style={{ blockSize: 3000 }} />
+        <button type="button">Långt ner</button>
+      </Drawer>,
+    )
+    await openDrawer()
+    // The spacer comes first, so the first stop is the one below it.
+    await expect.element(byName('Långt ner')).toHaveFocus()
+    const { top, bottom } = byName('Långt ner').element().getBoundingClientRect()
+    expect(top).toBeGreaterThanOrEqual(0)
+    expect(bottom).toBeLessThanOrEqual(window.innerHeight)
+  })
+
+  test('focus moving to another element in the scope, or a re-render, never moves focus again (3.2.1)', async () => {
+    const view = await render(<Drawer initialFocus="first" />)
+    await openDrawer()
+    byName('Mellan').element().focus()
+    await view.rerender(<Drawer initialFocus="first" restore />)
+    await expect.element(byName('Mellan')).toHaveFocus()
+  })
+
   test('initialFocus container focuses the scope without leaving a Tab stop', async () => {
     await render(<Drawer initialFocus="container" />)
     await openDrawer()

@@ -135,6 +135,16 @@ describe('rendering', () => {
 })
 
 describe('opening and closing', () => {
+  test('the trigger keeps its name open and closed', async () => {
+    await render(<Example />)
+    await userEvent.click(trigger())
+    expect(triggerElement().getAttribute('aria-expanded')).toBe('true')
+    await expect.element(trigger()).toBeInTheDocument()
+    await userEvent.click(trigger())
+    expect(triggerElement().getAttribute('aria-expanded')).toBe('false')
+    expect(triggerElement().textContent).toBe('Öppettider')
+  })
+
   test('a press on the trigger opens the panel, then closes it', async () => {
     const onOpenChange = vi.fn<(open: boolean, details: DisclosureChangeDetails) => void>()
     await render(<Example onOpenChange={onOpenChange} />)

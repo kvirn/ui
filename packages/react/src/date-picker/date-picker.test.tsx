@@ -154,6 +154,23 @@ describe('roles, names and states', () => {
     expect(document.querySelector('[role="grid"]')).not.toBeNull()
   })
 
+  test('a DatePicker inside a form submits nothing when its buttons are pressed', async () => {
+    const onSubmit = vi.fn((event: { preventDefault: () => void }) => event.preventDefault())
+    await render(
+      <form onSubmit={onSubmit}>
+        <Example />
+      </form>,
+    )
+    await open()
+    await button('Nästa månad').click()
+    await day('tisdag 3 november 2026').click()
+    await expectClosed()
+    await open()
+    await button('Stäng dialogrutan').click()
+    await expectClosed()
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
   test('per-instance messages rename the trigger and the title', async () => {
     await render(
       <KvirnProvider locale="sv" messages={sv}>

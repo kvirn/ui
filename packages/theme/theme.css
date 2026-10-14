@@ -1027,7 +1027,7 @@
   }
 
   /*
-   * <ButtonGroup layout="attached"> (and Toolbar.Group by default): one joined strip, like a
+   * .kv-button-group--attached on a ButtonGroup (and Toolbar.Group by default): one joined strip, like a
    * segmented control. The buttons touch and share a border (one border width of overlap), and
    * only the outer corners are round, by logical property so right-to-left flips them. It never
    * stacks or wraps, so a button may wrap its own label instead of widening the row (1.4.10). A
@@ -1160,7 +1160,7 @@
    * a link and not a button, and it has no disabled state.
    *
    *   <Link.Root href="…" className="kv-link--service">
-   *     <Link.Icon><Icon name="arrow-forward" size={6} /></Link.Icon>Ansök om bygglov
+   *     <Link.Icon><Icon name="arrow-forward" size="24" /></Link.Icon>Ansök om bygglov
    *   </Link.Root>
    */
   .kv-link {
@@ -1986,7 +1986,7 @@
    *   padding: with no fill there is no pill to pad, so its text lines up with the title's.
    * - Always compact: 32px rows with 14px labels, at every width.
    * - The heading being read (aria-current="location") is underlined at weight 600, no fill.
-   *   Nothing is current until the reader has passed the first heading.
+   *   The first visible heading is current until the reader reaches the next one.
    * - The headings above it, its ancestors in the tree, are weight 600 with no fill (the trail),
    *   found with :has() so it needs no prop.
    * - A nested list is indented 16px per level, and a long heading wraps.
@@ -3470,8 +3470,11 @@
    * trigger when there is room and never covering it. Level 3 elevation like every popup:
    * surface-raised, a 1px border-subtle edge and the popup shadow (none in dark). The md radius,
    * not the xl of a panel, because it is one line: a one-line box with 16px corners reads as a pill.
-   * Padding space-1 by space-2, body type. At most 20rem wide (the script reads --kv-popup-width-limit)
-   * and never wider than the viewport less 8px each side; text wraps. Text is never clipped (overflow: visible). In a viewport shorter than the tooltip needs, a long tooltip may overlap its trigger: that is transient, and it is hoverable and dismissable with Escape (1.4.13). It takes
+   * Padding space-1 by space-2, body type. At most 20rem wide (about 40 characters; the script reads
+   * --kv-popup-width-limit and sets it as the inline max-width) and never wider than the viewport
+   * less 8px each side (space-2). Text wraps (white-space: normal, overflow-wrap: anywhere), so a
+   * long tooltip grows in height, not width, which also makes covering its trigger less likely.
+   * 20rem has no measure token; the maintainer approved it on 2026-10-14. Text is never clipped (overflow: visible). In a viewport shorter than the tooltip needs, a long tooltip may overlap its trigger: that is transient, and it is hoverable and dismissable with Escape (1.4.13). It takes
    * pointer events, because it must be hoverable (1.4.13): never pointer-events: none. Closed, it is
    * display: none (the browser's own), so this sets no display.
    *
@@ -3483,13 +3486,14 @@
    * and closing is instant in every setting. Forced colours: Canvas, CanvasText and a CanvasText
    * edge, no shadow. */
   .kv-tooltip {
-    --kv-popup-width-limit: 20rem;
+    --kv-popup-width-limit: min(20rem, calc(100vw - 2 * var(--kv-space-2)));
     box-sizing: border-box;
     margin: 0;
     padding-block: var(--kv-space-1);
     padding-inline: var(--kv-space-2);
     overflow: visible;
-    overflow-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: anywhere;
     hyphens: manual;
     border: var(--kv-border-width) solid var(--kv-color-border-subtle);
     border-radius: var(--kv-radius-md);
@@ -6213,10 +6217,12 @@
    * click in a text input too, so once the script runs ([data-focused]) the hook's
    * [data-focus-visible] decides. Before that, :focus-visible draws it. :where() keeps the
    * specificity, so an input inside a group still draws no ring. An invalid input shows both its
-   * edge and the ring. */
+   * edge and the ring, on any focus: danger takes the edge, so a click needs the ring (Plan 0031,
+   * form-fields.md §6.8a). */
   :is(.kv-input, .kv-textarea):is(
     [data-focus-visible],
-    :focus-visible:where(:not([data-focused]))
+    :focus-visible:where(:not([data-focused])),
+    :where([data-invalid], [aria-invalid='true']):focus
   ) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: var(--kv-focus-ring-offset);
@@ -6438,6 +6444,12 @@
     --kv-input-group-edge: var(--kv-color-text);
   }
 
+  /* A click: a transparent ring, which forced colours paint, as .kv-input has. */
+  .kv-input-group:has(> .kv-input:focus) {
+    outline: var(--kv-focus-ring-width) solid transparent;
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
   /* Any focus in the input, a click included: the box's edge takes border-focus. Not
    * when invalid. */
   .kv-input-group:not([data-invalid], [data-disabled]):has(
@@ -6448,10 +6460,14 @@
   }
 
   /* Keyboard focus in the input: the ring is around the whole box. Before the script runs
-   * ([data-focused] on the input), :focus-visible draws it. */
+   * ([data-focused] on the input), :focus-visible draws it. An invalid box shows it on any focus
+   * (Plan 0031, form-fields.md §6.8a). */
   .kv-input-group:is(
     [data-focus-visible],
-    :has(> .kv-input:focus-visible:where(:not([data-focused])))
+    :has(> .kv-input:focus-visible:where(:not([data-focused]))),
+    :where([data-invalid], :has(> .kv-input:is([data-invalid], [aria-invalid='true']))):has(
+      > .kv-input:focus
+    )
   ) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: var(--kv-focus-ring-offset);
@@ -6729,7 +6745,8 @@
 
     :is(.kv-input, .kv-textarea):is(
       [data-focus-visible],
-      :focus-visible:where(:not([data-focused]))
+      :focus-visible:where(:not([data-focused])),
+      :where([data-invalid], [aria-invalid='true']):focus
     ) {
       outline-color: Highlight;
     }
@@ -6787,7 +6804,10 @@
 
     .kv-input-group:is(
       [data-focus-visible],
-      :has(> .kv-input:focus-visible:where(:not([data-focused])))
+      :has(> .kv-input:focus-visible:where(:not([data-focused]))),
+      :where([data-invalid], :has(> .kv-input:is([data-invalid], [aria-invalid='true']))):has(
+        > .kv-input:focus
+      )
     ) {
       outline-color: Highlight;
     }
@@ -8401,8 +8421,16 @@
     --kv-input-edge-width: var(--kv-control-border-width-invalid);
   }
 
-  .kv-combobox-input:is([data-focus-visible], :focus-visible:where(:not([data-focused]))),
-  .kv-autocomplete-input:is([data-focus-visible], :focus-visible:where(:not([data-focused]))) {
+  .kv-combobox-input:is(
+    [data-focus-visible],
+    :focus-visible:where(:not([data-focused])),
+    :where([data-invalid], [aria-invalid='true']):focus
+  ),
+  .kv-autocomplete-input:is(
+    [data-focus-visible],
+    :focus-visible:where(:not([data-focused])),
+    :where([data-invalid], [aria-invalid='true']):focus
+  ) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: var(--kv-focus-ring-offset);
   }
@@ -8459,6 +8487,13 @@
     --kv-combobox-edge: var(--kv-color-text);
   }
 
+  /* A click: a transparent ring, which forced colours paint, as .kv-input has. */
+  .kv-combobox-control:has(> :is(.kv-combobox-input, .kv-autocomplete-input):focus),
+  .kv-autocomplete-control:has(> :is(.kv-combobox-input, .kv-autocomplete-input):focus) {
+    outline: var(--kv-focus-ring-width) solid transparent;
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
   .kv-combobox-control:not([data-invalid], [data-disabled]):has(
       > :is(.kv-combobox-input, .kv-autocomplete-input):focus
     ),
@@ -8473,13 +8508,15 @@
     [data-focus-visible],
     :has(
       > :is(.kv-combobox-input, .kv-autocomplete-input):focus-visible:where(:not([data-focused]))
-    )
+    ),
+    :where([data-invalid]):has(> :is(.kv-combobox-input, .kv-autocomplete-input):focus)
   ),
   .kv-autocomplete-control:is(
     [data-focus-visible],
     :has(
       > :is(.kv-combobox-input, .kv-autocomplete-input):focus-visible:where(:not([data-focused]))
-    )
+    ),
+    :where([data-invalid]):has(> :is(.kv-combobox-input, .kv-autocomplete-input):focus)
   ) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: var(--kv-focus-ring-offset);
@@ -8666,8 +8703,16 @@
       --kv-input-edge-width: var(--kv-border-width);
     }
 
-    .kv-combobox-input:is([data-focus-visible], :focus-visible:where(:not([data-focused]))),
-    .kv-autocomplete-input:is([data-focus-visible], :focus-visible:where(:not([data-focused]))) {
+    .kv-combobox-input:is(
+      [data-focus-visible],
+      :focus-visible:where(:not([data-focused])),
+      :where([data-invalid], [aria-invalid='true']):focus
+    ),
+    .kv-autocomplete-input:is(
+      [data-focus-visible],
+      :focus-visible:where(:not([data-focused])),
+      :where([data-invalid], [aria-invalid='true']):focus
+    ) {
       outline-color: Highlight;
     }
 
@@ -8717,13 +8762,15 @@
       [data-focus-visible],
       :has(
         > :is(.kv-combobox-input, .kv-autocomplete-input):focus-visible:where(:not([data-focused]))
-      )
+      ),
+      :where([data-invalid]):has(> :is(.kv-combobox-input, .kv-autocomplete-input):focus)
     ),
     .kv-autocomplete-control:is(
       [data-focus-visible],
       :has(
         > :is(.kv-combobox-input, .kv-autocomplete-input):focus-visible:where(:not([data-focused]))
-      )
+      ),
+      :where([data-invalid]):has(> :is(.kv-combobox-input, .kv-autocomplete-input):focus)
     ) {
       outline-color: Highlight;
     }
@@ -8962,8 +9009,8 @@
   }
 
   /* Any focus, a click included: the plain field's edge takes border-focus (drawn, the
-   * active box shows it). Keyboard focus: the ring, around the field or the whole row. As
-   * .kv-input. */
+   * active box shows it). Keyboard focus, or any focus when invalid: the ring, around the field
+   * or the whole row. As .kv-input. */
   .kv-one-time-code-input:focus {
     outline: var(--kv-focus-ring-width) solid transparent;
     outline-offset: var(--kv-focus-ring-offset);
@@ -8979,7 +9026,11 @@
     --kv-input-edge-width: var(--kv-control-border-width-invalid);
   }
 
-  .kv-one-time-code-input:is([data-focus-visible], :focus-visible:where(:not([data-focused]))) {
+  .kv-one-time-code-input:is(
+    [data-focus-visible],
+    :focus-visible:where(:not([data-focused])),
+    :where([data-invalid], [aria-invalid='true']):focus
+  ) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: var(--kv-focus-ring-offset);
   }
@@ -10082,7 +10133,11 @@
       --kv-input-edge-width: var(--kv-border-width);
     }
 
-    .kv-one-time-code-input:is([data-focus-visible], :focus-visible:where(:not([data-focused]))) {
+    .kv-one-time-code-input:is(
+      [data-focus-visible],
+      :focus-visible:where(:not([data-focused])),
+      :where([data-invalid], [aria-invalid='true']):focus
+    ) {
       outline-color: Highlight;
     }
 
@@ -11629,6 +11684,12 @@
     --kv-rich-text-edge: var(--kv-color-text);
   }
 
+  /* A click in the text: a transparent ring, which forced colours paint, as .kv-input has. */
+  .kv-rich-text:has(.kv-rich-text-content:focus) {
+    outline: var(--kv-focus-ring-width) solid transparent;
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
   /* Any focus inside, toolbar and popover forms included: the 2px focus edge. */
   .kv-rich-text:not([data-invalid], [data-disabled]):focus-within {
     --kv-rich-text-edge: var(--kv-color-border-focus);
@@ -11636,10 +11697,12 @@
   }
 
   /* Keyboard focus in the text: the ring is around the whole box. Before the script runs
-   * ([data-focused]), :focus-visible draws it. */
+   * ([data-focused]), :focus-visible draws it. An invalid editor shows it on any focus in the
+   * text (Plan 0031, form-fields.md §6.8a). */
   .kv-rich-text:is(
     [data-focus-visible],
-    :not([data-focused]):has(.kv-rich-text-content:focus-visible)
+    :not([data-focused]):has(.kv-rich-text-content:focus-visible),
+    :where([data-invalid]):has(.kv-rich-text-content:focus)
   ) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: var(--kv-focus-ring-offset);
@@ -11903,7 +11966,8 @@
 
     .kv-rich-text:is(
       [data-focus-visible],
-      :not([data-focused]):has(.kv-rich-text-content:focus-visible)
+      :not([data-focused]):has(.kv-rich-text-content:focus-visible),
+      :where([data-invalid]):has(.kv-rich-text-content:focus)
     ) {
       outline-color: Highlight;
     }

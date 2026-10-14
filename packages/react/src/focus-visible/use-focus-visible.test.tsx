@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vite-plus/test'
+import { describe, expect, test, vi } from 'vite-plus/test'
 import { Button } from '../button/button.tsx'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
@@ -64,6 +64,85 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
     const input = page.getByRole('textbox', { name: 'Namn' })
     ;(input.element() as HTMLInputElement).focus()
     await expect.element(input).toHaveFocus()
+    await expect.element(input).toHaveAttribute('data-focus-visible', '')
+  })
+
+  test('Input: a pointerdown from a real pointer before a script’s focus sets data-focused only', async () => {
+    await render(<TextInput aria-label="Namn" />)
+    const input = page.getByRole('textbox', { name: 'Namn' })
+    document.body.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        pointerType: 'mouse',
+        width: 1,
+        height: 1,
+        pressure: 0.5,
+        detail: 1,
+      }),
+    )
+    ;(input.element() as HTMLInputElement).focus()
+    await expect.element(input).toHaveAttribute('data-focused', '')
+    await expect.element(input).not.toHaveAttribute('data-focus-visible')
+  })
+
+  test('Input: a virtual pointerdown (width and height 0) from a screen reader shows the ring', async () => {
+    await render(<TextInput aria-label="Namn" />)
+    const input = page.getByRole('textbox', { name: 'Namn' })
+    document.body.dispatchEvent(
+      new PointerEvent('pointerdown', { bubbles: true, pointerType: 'mouse', width: 0, height: 0 }),
+    )
+    ;(input.element() as HTMLInputElement).focus()
+    await expect.element(input).toHaveAttribute('data-focus-visible', '')
+  })
+
+  test('Input: a pointerdown of width and height 0 on Android is a real tap, so no ring', async () => {
+    const userAgent = vi
+      .spyOn(navigator, 'userAgent', 'get')
+      .mockReturnValue('Mozilla/5.0 (Linux; Android 14) Chrome/130 Mobile')
+    try {
+      await render(<TextInput aria-label="Namn" />)
+      const input = page.getByRole('textbox', { name: 'Namn' })
+      document.body.dispatchEvent(
+        new PointerEvent('pointerdown', {
+          bubbles: true,
+          pointerType: 'touch',
+          width: 0,
+          height: 0,
+        }),
+      )
+      ;(input.element() as HTMLInputElement).focus()
+      await expect.element(input).toHaveAttribute('data-focused', '')
+      await expect.element(input).not.toHaveAttribute('data-focus-visible')
+    } finally {
+      userAgent.mockRestore()
+    }
+  })
+
+  test('Input: a virtual mouse pointerdown (1 by 1, no pressure, detail 0) shows the ring', async () => {
+    await render(<TextInput aria-label="Namn" />)
+    const input = page.getByRole('textbox', { name: 'Namn' })
+    document.body.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        pointerType: 'mouse',
+        width: 1,
+        height: 1,
+        pressure: 0,
+        detail: 0,
+      }),
+    )
+    ;(input.element() as HTMLInputElement).focus()
+    await expect.element(input).toHaveAttribute('data-focus-visible', '')
+  })
+
+  test('Input: a virtual click (detail 0, no pointerType) shows the ring when the focus follows', async () => {
+    await render(<TextInput aria-label="Namn" />)
+    const input = page.getByRole('textbox', { name: 'Namn' })
+    document.body.dispatchEvent(
+      new PointerEvent('pointerdown', { bubbles: true, pointerType: 'mouse', width: 8, height: 8 }),
+    )
+    document.body.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 0 }))
+    ;(input.element() as HTMLInputElement).focus()
     await expect.element(input).toHaveAttribute('data-focus-visible', '')
   })
 

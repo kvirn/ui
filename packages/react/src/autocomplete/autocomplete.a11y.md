@@ -1,17 +1,17 @@
 # Accessibility contract: Autocomplete (Root, Control, Input, Toggle, Clear, and the popup parts)
 
-- **Scope:** Autocomplete, a text field that suggests (Plan 0022). `Autocomplete.Root` with `Autocomplete.Input` and `Autocomplete.Popup` is the editable combobox for free text. The value is the text, which may match nothing. Autocomplete is built from the same hook, input and popup as Combobox, so its parts are the Combobox's, and the roles, states and keys that are the same are in [combobox.a11y.md](../combobox/combobox.a11y.md). This contract lists what differs, and its own Keyboard table. The popup parts (`Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`) are the Listbox's: [listbox.a11y.md](../listbox/listbox.a11y.md).
+- **Scope:** Autocomplete, a text field that suggests. `Autocomplete.Root` with `Autocomplete.Input` and `Autocomplete.Popup` is the editable combobox for free text. The value is the text, which may match nothing. Autocomplete is built from the same hook, input and popup as Combobox, so its parts are the Combobox's, and the roles, states and keys that are the same are on the Combobox page. This page lists what differs, and has its own Keyboard table. The popup parts (`Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`) are the Listbox's: see the Listbox page.
 - **APG pattern:** [Combobox: Editable Combobox With List Autocomplete](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/) (`aria-autocomplete="list"`, manual selection), with [Listbox](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/) for the popup's content.
-- **Deviations:** none from the APG keyboard practice. The choices (overlays-and-lists skill) are allowed by the pattern: no suggestion is active until an arrow key, arrows don't wrap, Page Up and Page Down move ten, Home, End, ArrowLeft and ArrowRight stay with the text field and return visual focus to it (no suggestion stays active), Tab closes the popup without picking, a second Escape doesn't clear the text, and there is no inline completion. The optional Toggle and Clear are not tab stops, for the reasons in the Combobox contract.
+- **Deviations:** none from the APG keyboard practice. The choices below are allowed by the pattern: no suggestion is active until an arrow key, arrows don't wrap, Page Up and Page Down move ten, Home, End, ArrowLeft and ArrowRight stay with the text field and return visual focus to it (no suggestion stays active), Tab closes the popup without picking, a second Escape doesn't clear the text, and there is no inline completion. The optional Toggle and Clear are not tab stops, for the reasons given on the Combobox page.
 - **Native elements used:** `<input type="text" role="combobox">` (Input), `<div popover="manual">` (Popup), `<div role="listbox">` (List), `<div role="option">`, `<div role="group">`, `<button type="button">` (Toggle, Clear).
-- **Status:** alpha candidate (Plan 0022, Phase 2). Accessibility-reviewer pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `autocomplete.test.tsx` next to this file. `autocomplete.stories.tsx` in `apps/storybook/src/components/autocomplete/`.
 
 An Autocomplete is for a question whose answer is free text, where a list helps but isn't the answer: a street, a search, a place. The user types, suggestions appear, and they can pick one, which fills the field, or keep their own text. Suggestions never block other text: with no suggestion highlighted, Enter is the browser's own, so a form submits what was typed. The value is the text itself: `value`, `defaultValue` and `onValueChange` are yours, or `defaultValue` and `name` for a plain `<form>`, where the input carries the `name`. It is never turned into a key. If the answer must be one of the options, use a Combobox.
 
 ## Roles, states, properties
 
-The parts and their roles are the Combobox's (see its contract): `Autocomplete.Control`, `Input`, `Toggle` and `Clear` render the same elements with the classes `kv-autocomplete-control`, `kv-autocomplete-input`, `kv-autocomplete-toggle` and `kv-autocomplete-clear`. What differs:
+The parts and their roles are the Combobox's (see the Combobox page): `Autocomplete.Control`, `Input`, `Toggle` and `Clear` render the same elements with the classes `kv-autocomplete-control`, `kv-autocomplete-input`, `kv-autocomplete-toggle` and `kv-autocomplete-clear`. What differs:
 
 | Part                | Element / role                             | ARIA / state                                                                                                                                                              | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | ------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -35,7 +35,7 @@ Rules, tested in `autocomplete.test.tsx`:
 - **Filtering** is on the label, anywhere in it, in the provider's locale (`autocomplete.test.tsx › the suggestions are filtered in the provider’s locale: å, ä and ö are not a and o in Swedish`). Your own `filter` replaces it, and `filter={false}` plus `isLoading` serves suggestions that the server has chosen.
 - **No form state.** The text is controlled with `value`, or uncontrolled with `defaultValue` (`autocomplete.test.tsx › controlled: shows the text it is given, and a refused change is pulled back`). With `name` the input carries it, and there is no hidden input (`autocomplete.test.tsx › with a name, the input itself carries the text, and there is no hidden input`).
 - **Server rendering.** The server writes the input with its text, a closed popup and no options (`autocomplete.test.tsx › the server markup has the input with its text, a closed popup and no options`).
-- **Dev warnings:** as the Combobox's.
+- **Development warnings:** as the Combobox's.
 
 ## Keyboard
 
@@ -92,20 +92,20 @@ An option holds any markup. `Autocomplete.OptionIcon`, `OptionText`, `OptionDesc
 ## Focus management
 
 - Initial focus: not moved. Opening never moves DOM focus, and no suggestion is active until ArrowDown or ArrowUp (opening with a key activates the first or last, so the user can see where they are).
-- Trap: no. The popup is not modal and the page behind it is not `inert`. Tab always leaves the input and closes the popup without picking (2.1.2).
+- Trap: no. The popup is not modal and the page behind it is not `inert`. Tab always leaves the input and closes the popup without picking (2.1.2 No Keyboard Trap (A)).
 - Restore to: the input, which never lost focus. Escape, a press on a suggestion, Toggle and Clear keep it there. A press outside leaves focus where the press put it.
-- Never obscured by: the popup is placed under the input (or its Control) and flips above it when there is no room, so it never covers the field (2.4.11). Its height is limited to the room that is left, and it scrolls inside. The active suggestion is scrolled into view when a key moves it.
+- Never obscured by: the popup is placed under the input (or its Control) and flips above it when there is no room, so it never covers the field (2.4.11 Focus Not Obscured (Minimum) (AA)). Its height is limited to the room that is left, and it scrolls inside. The active suggestion is scrolled into view when a key moves it.
 
 ## Virtualization
 
-`virtualize` is off by default. It renders only the suggestions that are scrolled into view, for a flat list of thousands. An Autocomplete suggests as the user types, so the list is often short: virtualize a list that stays long after filtering. The rules are the Combobox's (`combobox.a11y.md › Virtualization`), enforced in one place, `createListVirtualizer` in `@kvirn-ui/core`:
+`virtualize` is off by default. It renders only the suggestions that are scrolled into view, for a flat list of thousands. An Autocomplete suggests as the user types, so the list is often short: virtualize a list that stays long after filtering. The rules are the Combobox's (see Virtualization on the Combobox page):
 
-- **Keep what matters mounted.** The active suggestion is always rendered, even when it is scrolled out of view, so `aria-activedescendant` on the input never points at nothing (4.1.2; `autocomplete-virtual.test.tsx › virtualized: ArrowDown and ArrowUp always leave aria-activedescendant on a suggestion in the page`).
-- **Scroll before you point.** A key that moves the active suggestion scrolls to it, and the suggestion is rendered in the same commit that sets `aria-activedescendant` (2.4.3, 2.4.7; `autocomplete-virtual.test.tsx › virtualized: ArrowUp activates the last suggestion, rendered and in view`). A pointer move doesn't scroll.
-- **Navigate the data, not the DOM.** The arrows and Page Up and Page Down move through the whole list of suggestions (2.1.1; `autocomplete-virtual.test.tsx › virtualized: PageDown and PageUp move ten suggestions that may not be rendered`). Home and End still move the caret.
-- **Expose the full size.** Every rendered suggestion has `aria-setsize` and `aria-posinset`, and the size follows each keystroke (1.3.1; `autocomplete-virtual.test.tsx › typing opens a list of 10 000 suggestions that mounts only a window`, `autocomplete-virtual.test.tsx › virtualized: typing narrows the suggestions, and the size of the set follows`).
+- **Keep what matters mounted.** The active suggestion is always rendered, even when it is scrolled out of view, so `aria-activedescendant` on the input never points at nothing (4.1.2 Name, Role, Value (A); `autocomplete-virtual.test.tsx › virtualized: ArrowDown and ArrowUp always leave aria-activedescendant on a suggestion in the page`).
+- **Scroll before you point.** A key that moves the active suggestion scrolls to it, and the suggestion is rendered in the same commit that sets `aria-activedescendant` (2.4.3 Focus Order (A), 2.4.7 Focus Visible (AA); `autocomplete-virtual.test.tsx › virtualized: ArrowUp activates the last suggestion, rendered and in view`). A pointer move doesn't scroll.
+- **Navigate the data, not the DOM.** The arrows and Page Up and Page Down move through the whole list of suggestions (2.1.1 Keyboard (A); `autocomplete-virtual.test.tsx › virtualized: PageDown and PageUp move ten suggestions that may not be rendered`). Home and End still move the caret.
+- **Expose the full size.** Every rendered suggestion has `aria-setsize` and `aria-posinset`, and the size follows each keystroke (1.3.1 Info and Relationships (A); `autocomplete-virtual.test.tsx › typing opens a list of 10 000 suggestions that mounts only a window`, `autocomplete-virtual.test.tsx › virtualized: typing narrows the suggestions, and the size of the set follows`).
 - **Flat lists only, off by default, inline geometry only.** As in the Combobox: `groups` render in full with a development warning, unrendered suggestions can't be found with find in page or printed, and the list is the scroll element with a sizer inside it.
-- **Screen-reader support varies.** The manual AT run covers it before `beta` and is `pending`.
+- **Screen-reader support varies.** The manual testing with assistive technology covers it before `beta` and is `pending`.
 
 ## Announcements
 
@@ -121,45 +121,49 @@ As the Combobox's: through the shared Announcer, about 500 ms after the last cha
 
 - A `Field.Label` with a visible question, always. A placeholder is not a label. Outside a Field, give the input `aria-label` or `aria-labelledby`.
 - Pass `items` (or `groups`) and a stable `itemToString`. For server suggestions pass `filter={false}`, `isLoading`, and your own debounce and fetch; keep the last result in `items` while the next one loads.
-- Set the right `autoComplete` where the field is for a known purpose (`street-address`, `address-line1`, 1.3.5) and know that the browser's own suggestions then compete with yours: use it only when ours add something.
-- Validate the text yourself. An Autocomplete does not require a suggestion, so don't say "Välj ett alternativ i listan" here; use a Combobox when only an option is valid.
-- Don't submit, navigate or move focus when a suggestion is picked or the text changes (3.2.2).
+- Set the right `autoComplete` where the field is for a known purpose (`street-address`, `address-line1`; 1.3.5 Identify Input Purpose (AA)) and know that the browser's own suggestions then compete with yours: use it only when ours add something.
+- Validate the text yourself. An Autocomplete does not require a suggestion, so don't say "Välj ett alternativ i listan" (Swedish for "Choose an option in the list") here; use a Combobox when only an option is valid.
+- Don't submit, navigate or move focus when a suggestion is picked or the text changes (3.2.2 On Input (A)).
 - Pass `value` and `onValueChange`, or `defaultValue` and `name` for a plain `<form>`.
 - For thousands of suggestions, let the typing narrow them first, and use `virtualize` only for what stays long. Give `Autocomplete.List` a height limit and `overflow-y: auto` (the default theme does), render it with a function child, and don't use `groups`: see Virtualization.
 
 ## Visual / modes
 
-As the Combobox's, including the focus indicator: the 2px `focus-ring` outline on any focus that a pointer didn't move there (`data-focus-visible`, or `:focus-visible` alone before the script runs), and the 2px `border-focus` edge, with no ring, after a click. In forced colours the focused edge is `Highlight` at 1px. The input looks like an Input, and the popup like the Listbox's. The Toggle and Clear have a hit area of at least 44px (24px minimum). The active suggestion has a 4px bar at its inline start and a tinted fill, never colour alone, and becomes `Highlight` in forced colours. Nothing moves under reduced motion. At 320px the input fits its column and the popup is at least as wide and never wider than the viewport. In right-to-left text the chevron and the tick are at the inline end.
+As the Combobox's, including the focus indicator. On keyboard focus, and on any focus that a pointer did not cause, a ring at least 2px thick, set off from the field, with at least 3:1 contrast against the adjacent colours (2.4.7 Focus Visible (AA); 2.4.13 Focus Appearance (AAA)). Before the script runs the browser's own keyboard-focus rule does the same. After a click the field shows a thicker edge in the focus colour and no ring, except that an invalid field shows the ring on any focus, keeping its thick error edge. In forced colours (Windows contrast themes) the focused edge uses the system highlight colour. The input looks like an Input, and the popup like the Listbox's. The Toggle and Clear buttons are at least 24 × 24 CSS px, and larger in the default theme (2.5.8 Target Size (Minimum) (AA)). The active suggestion has a bar at its inline start and a tinted fill, never colour alone (1.4.1 Use of Color (A)), and uses the system highlight colours in forced colours. Nothing moves under reduced motion. At 320px the input fits its column, and the popup is at least as wide as the input and never wider than the viewport (1.4.10 Reflow (AA)). In right-to-left text the chevron and the tick are at the inline end.
 
 ## WCAG SCs covered
 
-- 1.3.1, 4.1.2: the ARIA 1.2 combobox structure and the label. 1.3.5: `autoComplete`.
-- 1.4.1, 1.4.10, 1.4.11, 1.4.13 (not applicable), 2.1.1, 2.1.2, 2.4.3, 2.4.7, 2.4.11, 2.4.13, 2.5.3, 2.5.8, 3.2.1, 3.2.2.
-- 3.3.1, 3.3.2, 3.3.3, 3.3.7: the Field's label, help text and error, and text that is kept.
-- 4.1.3: the result count, "no results" and "loading", polite and debounced.
+- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): the ARIA 1.2 combobox structure and the label. 1.3.5 Identify Input Purpose (AA): `autoComplete`.
+- 1.4.1 Use of Color (A), 1.4.10 Reflow (AA), 1.4.11 Non-text Contrast (AA): the active suggestion's bar, the field's edge and the 320px popup.
+- 1.4.13 Content on Hover or Focus (AA) does not apply: nothing appears on hover or focus alone.
+- 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A), 2.4.3 Focus Order (A), 3.2.1 On Focus (A), 3.2.2 On Input (A): the keys, one Tab stop, and no change of context when suggestions appear or one is picked.
+- 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA), 2.4.13 Focus Appearance (AAA, not counted toward the AA bar): the focus ring, and a popup that never covers the field.
+- 2.5.3 Label in Name (A), 2.5.8 Target Size (Minimum) (AA): the Field's visible label is the name, and the size of Toggle and Clear.
+- 3.3.1 Error Identification (A), 3.3.2 Labels or Instructions (A), 3.3.3 Error Suggestion (AA): the Field's label, help text and error.
+- 4.1.3 Status Messages (AA): the result count, "no results" and "loading", polite and debounced.
 
 ## AT test record
 
-| AT + browser + OS                        | Date    | Tester | Result | Notes |
-| ---------------------------------------- | ------- | ------ | ------ | ----- |
-| **Core (required for beta)**             |         |        |        |       |
-| NVDA + Firefox + Windows                 | pending |        |        |       |
-| VoiceOver + Safari + macOS               | pending |        |        |       |
-| VoiceOver + Safari + iOS                 | pending |        |        |       |
-| TalkBack + Chrome + Android              | pending |        |        |       |
-| Windows Contrast Themes + Edge           | pending |        |        |       |
-| Keyboard only / 400% zoom / 320px reflow | pending |        |        |       |
-| **Release (before 1.0 and each minor)**  |         |        |        |       |
-| JAWS + Chrome + Windows                  | pending |        |        |       |
-| NVDA + Chrome + Windows                  | pending |        |        |       |
-| Narrator + Edge + Windows                | pending |        |        |       |
-| Dragon / Voice Control                   | pending |        |        |       |
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
 
-Research questions for the AT run: is the suggestion count read once, after typing stops, and not over the typed letters? Is a picked suggestion read as the input's new value? Does a screen reader user understand that other text is allowed, or should the help text say so? Does `aria-activedescendant` read each suggestion on VoiceOver (macOS and iOS) and TalkBack?
+Questions for the manual testing with assistive technology: is the suggestion count read once, after typing stops, and not over the typed letters? Is a picked suggestion read as the input's new value? Does a screen reader user understand that other text is allowed, or should the help text say so? Does `aria-activedescendant` read each suggestion on VoiceOver (macOS and iOS) and TalkBack?
 
 ## Known issues
 
-- **`aria-activedescendant` on VoiceOver and TalkBack** has known gaps. There is no native rendering, so the manual AT run must cover iOS and Android before `beta`.
+- **`aria-activedescendant` on VoiceOver and TalkBack** has known gaps. Someone using VoiceOver (Apple's screen reader) or TalkBack (Android's) may not hear the highlighted suggestion read. There is no native rendering, so the manual testing must cover iOS and Android before `beta`.
 - **Filtering after a pick.** After a suggestion is picked the list stays filtered by it until the text changes, so ArrowDown then shows the suggestions that contain that text. Empty the text to see them all.
-- **Virtualization is opt-in and has limits.** See the Combobox contract and the Virtualization section above.
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`. `popover="manual"`, the outside press and Escape must be checked on Safari 17.
+- **Virtualization is opt-in and has limits.** Suggestions that are not drawn can't be found with find in page or printed. See Virtualization above.
+- **WebKit is not automated.** The keyboard tests run in Chromium only. Safari's engine (WebKit) is not tested automatically, and the manual testing with assistive technology is `pending`. `popover="manual"`, the outside press and Escape must be checked on Safari 17.

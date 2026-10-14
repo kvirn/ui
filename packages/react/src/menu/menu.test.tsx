@@ -141,6 +141,24 @@ describe('rendering', () => {
     expect(disabled.hasAttribute('disabled')).toBe(false)
   })
 
+  test('a disabled item points at the reason on the page with aria-describedby', async () => {
+    await render(
+      <>
+        <p id="share-reason">Du kan inte dela ett utkast.</p>
+        <Menu.Root defaultOpen>
+          <Menu.Trigger>Åtgärder</Menu.Trigger>
+          <Menu.Popup>
+            <Menu.Item disabled aria-describedby="share-reason">
+              Dela
+            </Menu.Item>
+          </Menu.Popup>
+        </Menu.Root>
+      </>,
+    )
+    await expect.poll(isShown).toBe(true)
+    await expect.element(item('Dela')).toHaveAccessibleDescription('Du kan inte dela ett utkast.')
+  })
+
   test('checkbox and radio items expose role, aria-checked and groups, with no axe violations', async () => {
     const { container } = await render(
       <Menu.Root defaultOpen>
