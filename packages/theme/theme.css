@@ -5995,12 +5995,16 @@
 
   /* One question with one control. Label, description, control, help text and error sit one gap
    * apart. Its block margin (--kv-field-block-margins) is the space between questions, so a form
-   * needs no Stack around its fields. */
+   * needs no Stack around its fields. A field that is the only element in its parent has none:
+   * there is nothing to space it from. */
   .kv-field {
     display: flex;
     flex-direction: column;
     gap: var(--kv-field-gap);
-    margin-block: var(--kv-field-block-margins);
+    /* :where keeps the specificity at one class, so a pattern's own margin: 0 still wins. */
+    &:where(:not(:only-child)) {
+      margin-block: var(--kv-field-block-margins);
+    }
     /* A field in a grid or flex row can shrink to 320px. */
     min-inline-size: 0;
     color: var(--kv-color-text);
