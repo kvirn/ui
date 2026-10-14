@@ -1,11 +1,10 @@
 'use client'
 import {
+  Alert,
   Button,
   ErrorSummary,
   Field,
-  Heading,
   RadioGroup,
-  Stack,
   TextInput,
   Textarea,
   useAnnouncer,
@@ -31,7 +30,7 @@ export interface ContactFormProps {
 export function ContactForm({ action }: ContactFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialContactState)
   const { announce } = useAnnouncer()
-  const sentHeading = useRef<HTMLHeadingElement>(null)
+  const sentAlert = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (isPending) {
@@ -41,19 +40,16 @@ export function ContactForm({ action }: ContactFormProps) {
 
   useEffect(() => {
     if (state.status === 'sent') {
-      announce(text.sentHeading)
-      sentHeading.current?.focus()
+      sentAlert.current?.focus()
     }
-  }, [state.status, state.attempt, announce])
+  }, [state.status, state.attempt])
 
   if (state.status === 'sent') {
     return (
-      <Stack className="kv-stack--gap-4">
-        <Heading as="h3" ref={sentHeading} tabIndex={-1}>
-          {text.sentHeading}
-        </Heading>
-        <p>{text.sentBody}</p>
-      </Stack>
+      <Alert.Success ref={sentAlert} tabIndex={-1}>
+        <Alert.Title as="p">{text.sentHeading}</Alert.Title>
+        <Alert.Body>{text.sentBody}</Alert.Body>
+      </Alert.Success>
     )
   }
 
@@ -86,7 +82,7 @@ export function ContactForm({ action }: ContactFormProps) {
   }
 
   return (
-    <Stack className="kv-stack--gap-8">
+    <>
       {entries.length > 0 ? (
         <ErrorSummary.Root focusKey={state.attempt} prefixDocumentTitle>
           <ErrorSummary.Title />
@@ -100,71 +96,69 @@ export function ContactForm({ action }: ContactFormProps) {
         </ErrorSummary.Root>
       ) : null}
       <form noValidate action={formAction} onSubmit={guardDoubleSend}>
-        <Stack className="kv-stack--gap-8">
-          <Field.Root controlId="contact-name" invalid={state.errors.name !== undefined} required>
-            <Field.Label>{text.nameLabel}</Field.Label>
-            <TextInput
-              name="name"
-              autoComplete="name"
-              maxLength={maxNameLength}
-              defaultValue={state.values.name}
-            />
-            <Field.ErrorMessage>{state.errors.name}</Field.ErrorMessage>
-          </Field.Root>
-          <Field.Root controlId="contact-email" invalid={state.errors.email !== undefined} required>
-            <Field.Label>{text.emailLabel}</Field.Label>
-            <TextInput
-              name="email"
-              type="email"
-              autoComplete="email"
-              defaultValue={state.values.email}
-            />
-            <Field.HelpText>{text.emailHelp}</Field.HelpText>
-            <Field.ErrorMessage>{state.errors.email}</Field.ErrorMessage>
-          </Field.Root>
-          <RadioGroup.Root
-            key={state.attempt}
-            name="reason"
-            required
-            invalid={state.errors.reason !== undefined}
-            defaultValue={state.values.reason === '' ? undefined : state.values.reason}
-          >
-            <RadioGroup.Legend>{text.reasonLegend}</RadioGroup.Legend>
-            {reasons.map((reason, index) => (
-              <Field.Root key={reason} {...(index === 0 ? { controlId: 'contact-reason' } : {})}>
-                <RadioGroup.Radio value={reason} />
-                <Field.Label>{homeMessages.contact[reason].heading}</Field.Label>
-              </Field.Root>
-            ))}
-            <RadioGroup.ErrorMessage>{state.errors.reason}</RadioGroup.ErrorMessage>
-          </RadioGroup.Root>
-          <Field.Root
-            controlId="contact-message"
-            invalid={state.errors.message !== undefined}
-            required
-          >
-            <Field.Label>{text.messageLabel}</Field.Label>
-            <Textarea
-              name="message"
-              characterCount
-              maxLength={maxMessageLength}
-              defaultValue={state.values.message}
-            />
-            <Field.ErrorMessage>{state.errors.message}</Field.ErrorMessage>
-          </Field.Root>
-          <div aria-hidden="true" className="kv-visually-hidden">
-            <label>
-              {text.honeypotLabel}
-              <input type="text" name="website" tabIndex={-1} autoComplete="off" />
-            </label>
-          </div>
-          <div>
-            <Button id="contact-send" type="submit" className="kv-button--primary">
-              {text.send}
-            </Button>
-          </div>
-        </Stack>
+        <Field.Root controlId="contact-name" invalid={state.errors.name !== undefined} required>
+          <Field.Label>{text.nameLabel}</Field.Label>
+          <TextInput
+            name="name"
+            autoComplete="name"
+            maxLength={maxNameLength}
+            defaultValue={state.values.name}
+          />
+          <Field.ErrorMessage>{state.errors.name}</Field.ErrorMessage>
+        </Field.Root>
+        <Field.Root controlId="contact-email" invalid={state.errors.email !== undefined} required>
+          <Field.Label>{text.emailLabel}</Field.Label>
+          <TextInput
+            name="email"
+            type="email"
+            autoComplete="email"
+            defaultValue={state.values.email}
+          />
+          <Field.HelpText>{text.emailHelp}</Field.HelpText>
+          <Field.ErrorMessage>{state.errors.email}</Field.ErrorMessage>
+        </Field.Root>
+        <RadioGroup.Root
+          key={state.attempt}
+          name="reason"
+          required
+          invalid={state.errors.reason !== undefined}
+          defaultValue={state.values.reason === '' ? reasons[0] : state.values.reason}
+        >
+          <RadioGroup.Legend>{text.reasonLegend}</RadioGroup.Legend>
+          {reasons.map((reason, index) => (
+            <Field.Root key={reason} {...(index === 0 ? { controlId: 'contact-reason' } : {})}>
+              <RadioGroup.Radio value={reason} />
+              <Field.Label>{homeMessages.contact[reason].heading}</Field.Label>
+            </Field.Root>
+          ))}
+          <RadioGroup.ErrorMessage>{state.errors.reason}</RadioGroup.ErrorMessage>
+        </RadioGroup.Root>
+        <Field.Root
+          controlId="contact-message"
+          invalid={state.errors.message !== undefined}
+          required
+        >
+          <Field.Label>{text.messageLabel}</Field.Label>
+          <Textarea
+            name="message"
+            characterCount
+            maxLength={maxMessageLength}
+            defaultValue={state.values.message}
+          />
+          <Field.ErrorMessage>{state.errors.message}</Field.ErrorMessage>
+        </Field.Root>
+        <div aria-hidden="true" className="kv-visually-hidden">
+          <label>
+            {text.honeypotLabel}
+            <input type="text" name="website" tabIndex={-1} autoComplete="off" />
+          </label>
+        </div>
+        <div>
+          <Button id="contact-send" type="submit" className="kv-button--primary">
+            {text.send}
+          </Button>
+        </div>
       </form>
-    </Stack>
+    </>
   )
 }

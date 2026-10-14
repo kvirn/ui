@@ -9,8 +9,10 @@ import type { ContactState } from '../app/(docs)/contact/contact-state.ts'
 import { messages } from '../messages/en.ts'
 import { ContactForm } from './contact-form.tsx'
 
-// Contract: docs/design/plans/0112-docs-contact-form.md §Accessibility contract. The server action
-// is stood in for by a fake that returns the state the real one would; its own rules are proved in
+// Contract: every control is labelled, errors are text tied by aria-describedby and an ErrorSummary
+// that takes focus (3.3.1, 3.3.3), answers survive an error (3.3.7), autocomplete on name and
+// email (1.3.5), no CAPTCHA (3.3.8), the result takes focus (4.1.3). The server action is stood in
+// for by a fake that returns the state the real one would; its own rules are proved in
 // actions.test.ts.
 const text = messages.docs.contactPage.form
 const address = 'magnus@vike.se'
@@ -74,6 +76,12 @@ describe('Contact form', () => {
     await expect.element(page.getByRole('textbox', { name: /Your message/ })).toHaveFocus()
     await userEvent.tab()
     await expect.element(page.getByRole('button', { name: text.send })).toHaveFocus()
+  })
+
+  test('the first reason is selected before the visitor chooses', async () => {
+    await renderForm(answer({}, {}))
+    const radios = [...document.querySelectorAll<HTMLInputElement>('input[type="radio"]')]
+    expect(radios.filter((radio) => radio.checked)).toEqual([radios[0]])
   })
 
   test('Shift+Tab from the send button goes back to the message', async () => {
@@ -156,21 +164,14 @@ describe('Contact form', () => {
     await expect.element(page.getByText(text.tooMany)).toBeVisible()
   })
 
-  test('success replaces the form with a heading that takes focus and the reassurance', async () => {
+  test('success replaces the form with an alert that takes focus and says it is sent', async () => {
     await renderForm(answer({}, { status: 'sent', values: initialContactState.values }))
     await submit()
-    const heading = page.getByRole('heading', { name: text.sentHeading })
-    await expect.element(heading).toHaveFocus()
-    await expect.element(page.getByText(text.sentBody)).toBeVisible()
+    const alert = document.querySelector<HTMLElement>('.kv-alert')
+    expect(alert?.textContent).toContain(text.sentHeading)
+    expect(alert?.textContent).toContain(text.sentBody)
+    expect(document.activeElement).toBe(alert)
     expect(page.getByRole('button', { name: text.send }).elements()).toHaveLength(0)
-  })
-
-  test('success is announced in the polite status region', async () => {
-    await renderForm(answer({}, { status: 'sent', values: initialContactState.values }))
-    await submit()
-    await vi.waitFor(() => {
-      expect(document.querySelector('output')?.textContent).toBe(text.sentHeading)
-    })
   })
 
   test('no axe violations in the empty, error, failed and sent states', async () => {
