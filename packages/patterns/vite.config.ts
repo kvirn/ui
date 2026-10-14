@@ -4,8 +4,9 @@ import { packPreset } from '../../tooling/vite-preset/pack.ts'
 export default defineConfig({
   pack: {
     ...packPreset,
-    // `fixtures` is its own entry so an adopter's bundle takes the sample content only when it imports it.
-    entry: ['src/index.ts', 'src/fixtures/index.ts'],
+    // `fixtures` and `content-types` are their own entries so an adopter's bundle takes the sample
+    // content and the example pages only when it imports them.
+    entry: ['src/index.ts', 'src/fixtures/index.ts', 'src/content-types/index.ts'],
     deps: { neverBundle: ['react', /^@kvirn-ui\//] },
     // Bundling drops module-level directives, so the whole entry is marked for React Server
     // Components, as @kvirn-ui/react does: a pattern composes client components and hooks.

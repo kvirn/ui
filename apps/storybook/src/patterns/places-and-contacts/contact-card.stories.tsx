@@ -1,9 +1,10 @@
 import { en } from '@kvirn-ui/i18n/en'
 import { Address, Card, Heading, KvirnProvider, Link, DefinitionList } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect } from 'storybook/test'
+import { expect, userEvent } from 'storybook/test'
 import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
 import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns-story-support.tsx'
+import contract from '../../../../../packages/patterns/src/places-and-contacts/contact-card/contact-card.a11y.md?raw'
 
 // Patterns/Places and contacts/Contact card (docs/design/storybook-patterns.md sections 3 and 6).
 // Story-only: a card with a heading and a definition list is shipped parts, so it has no pattern.
@@ -19,6 +20,7 @@ const meta = {
   title: 'Patterns/Places and contacts/Contact card',
   globals: { locale: 'en' },
   parameters: {
+    a11yContract: contract,
     docs: { description: { component: description } },
     viewport: { options: chromeViewports },
   },
@@ -108,6 +110,75 @@ export const PhoneOnly: Story = {
   },
 }
 
+/** E-mail only: no phone row is drawn. */
+export const EmailOnly: Story = {
+  render: () => (
+    <KvirnProvider locale="en" messages={en}>
+      <div lang="en">
+        <Card.Root>
+          <Card.Body className="kv-prose">
+            <Heading as="h3" size="heading-3">
+              Questions about building permits
+            </Heading>
+            <DefinitionList.Root>
+              <DefinitionList.Row>
+                <DefinitionList.Term>Email</DefinitionList.Term>
+                <DefinitionList.Description>
+                  <Link.Root href="mailto:permits@kvirnby.example">
+                    permits@kvirnby.example
+                  </Link.Root>
+                </DefinitionList.Description>
+              </DefinitionList.Row>
+            </DefinitionList.Root>
+          </Card.Body>
+        </Card.Root>
+      </div>
+    </KvirnProvider>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getAllByRole('link')).toHaveLength(1)
+    await expect(canvas.queryByText('Phone')).toBeNull()
+  },
+}
+
+/** Phone lines closed: said in words in the phone row, with the e-mail as the way to reach the unit. */
+export const PhoneLinesClosed: Story = {
+  render: () => (
+    <KvirnProvider locale="en" messages={en}>
+      <div lang="en">
+        <Card.Root>
+          <Card.Body className="kv-prose">
+            <Heading as="h2" size="heading-3">
+              Contact us
+            </Heading>
+            <p>Preschool office</p>
+            <DefinitionList.Root>
+              <DefinitionList.Row>
+                <DefinitionList.Term>Phone</DefinitionList.Term>
+                <DefinitionList.Description>
+                  The phone lines are closed today. They open again tomorrow at 9.00.
+                </DefinitionList.Description>
+              </DefinitionList.Row>
+              <DefinitionList.Row>
+                <DefinitionList.Term>Email</DefinitionList.Term>
+                <DefinitionList.Description>
+                  <Link.Root href="mailto:preschool@kvirnby.example">
+                    preschool@kvirnby.example
+                  </Link.Root>
+                </DefinitionList.Description>
+              </DefinitionList.Row>
+            </DefinitionList.Root>
+          </Card.Body>
+        </Card.Root>
+      </div>
+    </KvirnProvider>
+  ),
+  play: async ({ canvas }) => {
+    await expect(canvas.getByText(/phone lines are closed today/)).toBeVisible()
+    await expect(canvas.getAllByRole('link')).toHaveLength(1)
+  },
+}
+
 /** 320px: the rows stack; nothing scrolls sideways. */
 export const Narrow: Story = {
   ...Default,
@@ -121,6 +192,17 @@ export const Narrow: Story = {
 export const Wide: Story = {
   ...Default,
   globals: { ...wideGlobals },
+}
+
+/** Try the keys: Tab visits the phone link, then the email link. */
+export const Keyboard: Story = {
+  ...Default,
+  play: async ({ canvas }) => {
+    await userEvent.tab()
+    await expect(canvas.getByRole('link', { name: '08-123 45 67' })).toHaveFocus()
+    await userEvent.tab()
+    await expect(canvas.getByRole('link', { name: 'preschool@kvirnby.example' })).toHaveFocus()
+  },
 }
 
 /** Right to left: the rows start at the right. */

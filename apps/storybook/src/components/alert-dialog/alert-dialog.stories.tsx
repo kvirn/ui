@@ -42,7 +42,6 @@ const meta = {
       description:
         'A ref to where focus goes on close. Default: the trigger, else what had focus before it opened. Pass it for one opened by a timer.',
     },
-    messages: { control: false, description: 'Overrides for the dialog `messages`.' },
     children: { control: false, description: 'The Trigger and the Popup.' },
   },
   args: { defaultOpen: false, onOpenChange: fn() },

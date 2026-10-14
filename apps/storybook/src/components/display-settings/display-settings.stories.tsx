@@ -1,13 +1,4 @@
-import {
-  AlertBody,
-  AlertInfo,
-  AlertTitle,
-  Button,
-  Card,
-  DisplaySettings,
-  Heading,
-  Popover,
-} from '@kvirn-ui/react'
+import { Alert, Button, Card, DisplaySettings, Heading, Popover } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/react/src/display-settings/display-settings.a11y.md?raw'
@@ -105,12 +96,12 @@ export const WithNotes: Story = {
         Less motion turns off the fades and transitions on this site. Nothing moves unless you start
         it.
       </p>
-      <AlertInfo>
-        <AlertTitle as="p">Privacy</AlertTitle>
-        <AlertBody>
+      <Alert.Info>
+        <Alert.Title as="p">Privacy</Alert.Title>
+        <Alert.Body>
           <p>We save your choice in this browser only. We don't use cookies or send it anywhere.</p>
-        </AlertBody>
-      </AlertInfo>
+        </Alert.Body>
+      </Alert.Info>
     </DisplaySettings.Inline>
   ),
 }

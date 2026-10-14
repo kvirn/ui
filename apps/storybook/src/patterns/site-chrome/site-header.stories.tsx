@@ -77,7 +77,7 @@ export const Default: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <TopBar.Root>
+          <TopBar>
             <p>
               A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
             </p>
@@ -93,7 +93,7 @@ export const Default: Story = {
                 </Navigation.Item>
               </Navigation.List>
             </Navigation.Root>
-          </TopBar.Root>
+          </TopBar>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start" current="page">
               <ApplicationLogo.Logo src={kvirnbyMark} />
@@ -164,7 +164,7 @@ export const Primary: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root variant="primary">
-          <TopBar.Root>
+          <TopBar>
             <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
             <div className="kv-story-top-end">
               <Navigation.Root label="Tools" className="kv-navigation--horizontal">
@@ -181,7 +181,7 @@ export const Primary: Story = {
               </Navigation.Root>
               <DisplaySettings.Compact className="kv-button--link" />
             </div>
-          </TopBar.Root>
+          </TopBar>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start">
               <ApplicationLogo.Logo src={kvirnbyMark} />
@@ -246,7 +246,7 @@ export const PrimaryMenuOpen: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root variant="primary">
-          <TopBar.Root>
+          <TopBar>
             <p>
               A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
             </p>
@@ -262,7 +262,7 @@ export const PrimaryMenuOpen: Story = {
                 </Navigation.Item>
               </Navigation.List>
             </Navigation.Root>
-          </TopBar.Root>
+          </TopBar>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start">
               <ApplicationLogo.Logo src={kvirnbyMark} />
@@ -332,7 +332,7 @@ export const PrimaryMastheadMenu: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root variant="primary">
-          <TopBar.Root>
+          <TopBar>
             <p>
               A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
             </p>
@@ -348,7 +348,7 @@ export const PrimaryMastheadMenu: Story = {
                 </Navigation.Item>
               </Navigation.List>
             </Navigation.Root>
-          </TopBar.Root>
+          </TopBar>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start">
               <ApplicationLogo.Logo src={kvirnbyMark} />
@@ -429,7 +429,7 @@ export const PrimaryMastheadMenuOpen: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root variant="primary">
-          <TopBar.Root>
+          <TopBar>
             <p>
               A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
             </p>
@@ -445,7 +445,7 @@ export const PrimaryMastheadMenuOpen: Story = {
                 </Navigation.Item>
               </Navigation.List>
             </Navigation.Root>
-          </TopBar.Root>
+          </TopBar>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start">
               <ApplicationLogo.Logo src={kvirnbyMark} />
@@ -526,7 +526,7 @@ export const PrimaryMastheadMenuNarrow: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root variant="primary">
-          <TopBar.Root>
+          <TopBar>
             <p>
               A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
             </p>
@@ -542,7 +542,7 @@ export const PrimaryMastheadMenuNarrow: Story = {
                 </Navigation.Item>
               </Navigation.List>
             </Navigation.Root>
-          </TopBar.Root>
+          </TopBar>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start">
               <ApplicationLogo.Logo src={kvirnbyMark} />
@@ -797,12 +797,12 @@ export const WithTopBar: Story = {
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
         <SiteHeader.Root>
-          <TopBar.Root>
+          <TopBar>
             <p>
               This is a reference website for KvirnUI.{' '}
               <Link.Root href="#about">Read more</Link.Root>
             </p>
-          </TopBar.Root>
+          </TopBar>
           <SiteHeader.Masthead>
             <ApplicationLogo.Root href="#start">
               <ApplicationLogo.Logo src={kvirnbyMark} />

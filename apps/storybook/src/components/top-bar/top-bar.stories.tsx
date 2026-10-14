@@ -25,9 +25,9 @@ Put it first in the Site header, or full width at the top of a page. With no \`v
 
 | Part | Element | Props |
 | ---- | ------- | ----- |
-| \`TopBar.Root\` | \`<div>\` | The \`<div>\` props. \`variant\`: none (default, no fill), \`primary\`, \`secondary\` or \`accent\`, a fill with its on-colour. Children: your text, then your \`Navigation\` |
+| \`TopBar\` | \`<div>\` | The \`<div>\` props. \`variant\`: none (default, no fill), \`primary\`, \`secondary\` or \`accent\`, a fill with its on-colour. Children: your text, then your \`Navigation\` |
 
-The component has no strings of its own. The part is also a flat export (\`TopBarRoot\`), and \`useTopBar({ variant })\` gives its class for your own element.
+The component has no strings of its own. \`useTopBar({ variant })\` gives its class for your own element.
 
 ## Parts and gaps
 
@@ -36,7 +36,7 @@ Parts used: none; you write \`Navigation\` and \`Link\` inside it. No gap.
 
 const meta = {
   title: 'Components/Navigation/Top bar',
-  component: TopBar.Root,
+  component: TopBar,
   args: { variant: undefined },
   globals: { locale: 'en' },
   argTypes: {
@@ -52,7 +52,7 @@ const meta = {
     docs: { description: { component: description } },
     viewport: { options: chromeViewports },
   },
-} satisfies Meta<typeof TopBar.Root>
+} satisfies Meta<typeof TopBar>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -60,7 +60,7 @@ type Story = StoryObj<typeof meta>
 /** Text at the start, the tools at the end. */
 export const Default: Story = {
   render: (args) => (
-    <TopBar.Root {...args}>
+    <TopBar {...args}>
       <p>
         A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
       </p>
@@ -76,7 +76,7 @@ export const Default: Story = {
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>
-    </TopBar.Root>
+    </TopBar>
   ),
   play: async ({ canvas, canvasElement }) => {
     await expectTopBarTargetSizes(canvasElement)
@@ -94,7 +94,7 @@ export const Primary: Story = {
   globals: { ...wideGlobals },
   parameters: { layout: 'fullscreen' },
   render: () => (
-    <TopBar.Root variant="primary">
+    <TopBar variant="primary">
       <p>
         A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
       </p>
@@ -110,7 +110,7 @@ export const Primary: Story = {
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>
-    </TopBar.Root>
+    </TopBar>
   ),
   play: async ({ canvasElement }) => {
     await expectTopBarTargetSizes(canvasElement)
@@ -123,7 +123,7 @@ export const Secondary: Story = {
   globals: { ...wideGlobals },
   parameters: { layout: 'fullscreen' },
   render: () => (
-    <TopBar.Root variant="secondary">
+    <TopBar variant="secondary">
       <p>
         A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
       </p>
@@ -139,7 +139,7 @@ export const Secondary: Story = {
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>
-    </TopBar.Root>
+    </TopBar>
   ),
   play: async ({ canvasElement }) => {
     await expectTopBarTargetSizes(canvasElement)
@@ -152,7 +152,7 @@ export const Accent: Story = {
   globals: { ...wideGlobals },
   parameters: { layout: 'fullscreen' },
   render: () => (
-    <TopBar.Root variant="accent">
+    <TopBar variant="accent">
       <p>
         A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
       </p>
@@ -168,7 +168,7 @@ export const Accent: Story = {
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>
-    </TopBar.Root>
+    </TopBar>
   ),
   play: async ({ canvasElement }) => {
     await expectTopBarTargetSizes(canvasElement)
@@ -192,7 +192,7 @@ export const Narrow: Story = {
   argTypes: { variant: { control: false } },
   globals: { ...narrowGlobals },
   render: () => (
-    <TopBar.Root>
+    <TopBar>
       <p>
         A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
       </p>
@@ -208,7 +208,7 @@ export const Narrow: Story = {
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>
-    </TopBar.Root>
+    </TopBar>
   ),
   play: async ({ canvas, canvasElement }) => {
     await expectTopBarTargetSizes(canvasElement)
@@ -223,7 +223,7 @@ export const OnPrimaryBand: Story = {
   parameters: { layout: 'fullscreen' },
   render: () => (
     <SiteHeader.Root variant="primary">
-      <TopBar.Root>
+      <TopBar>
         <p>
           A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
         </p>
@@ -239,7 +239,7 @@ export const OnPrimaryBand: Story = {
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Root>
-      </TopBar.Root>
+      </TopBar>
     </SiteHeader.Root>
   ),
   play: async ({ canvasElement }) => {
@@ -256,7 +256,7 @@ export const DisplaySettingsLinkLook: Story = {
   globals: { ...wideGlobals },
   parameters: { layout: 'fullscreen' },
   render: () => (
-    <TopBar.Root variant="primary">
+    <TopBar variant="primary">
       <p>
         A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
       </p>
@@ -270,7 +270,7 @@ export const DisplaySettingsLinkLook: Story = {
         </Navigation.Root>
         <DisplaySettings.Compact className="kv-button--link" />
       </div>
-    </TopBar.Root>
+    </TopBar>
   ),
   play: async ({ canvas, canvasElement }) => {
     await expectTopBarTargetSizes(canvasElement)
@@ -285,7 +285,7 @@ export const DisplaySettingsLinkLook: Story = {
 export const Keyboard: Story = {
   argTypes: { variant: { control: false } },
   render: () => (
-    <TopBar.Root>
+    <TopBar>
       <p>
         A KvirnUI reference site. <Link.Root href="#releases">Latest: Pre-alpha</Link.Root>
       </p>
@@ -299,7 +299,7 @@ export const Keyboard: Story = {
         </Navigation.List>
       </Navigation.Root>
       <DisplaySettings.Compact className="kv-button--link" />
-    </TopBar.Root>
+    </TopBar>
   ),
   play: async ({ canvasElement, canvas }) => {
     await expectTopBarTargetSizes(canvasElement)

@@ -3,7 +3,7 @@ import { Heading } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
 import { chromeViewports, wideGlobals } from '../patterns/patterns-story-support.tsx'
-import { expectPageOutline } from './kvirnby-chrome.tsx'
+import { expectPageOutline } from './page-outline.ts'
 import { withShell } from './shell.tsx'
 // Content types/Shell: the one frame every content-type story sits in. Story-only.
 
