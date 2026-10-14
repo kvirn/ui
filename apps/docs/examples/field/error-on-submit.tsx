@@ -1,5 +1,5 @@
 'use client'
-import { Button, Field, Stack, TextInput } from '@kvirn-ui/react'
+import { Button, Field, TextInput } from '@kvirn-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { useFieldTexts } from './texts.ts'
 
@@ -16,9 +16,7 @@ export function ErrorOnSubmit() {
   }, [focusRequest])
 
   return (
-    <Stack
-      className="kv-stack--gap-8"
-      as="form"
+    <form
       noValidate
       onSubmit={(event) => {
         event.preventDefault()
@@ -38,6 +36,6 @@ export function ErrorOnSubmit() {
       <Button type="submit" className="kv-button--primary">
         {texts.send}
       </Button>
-    </Stack>
+    </form>
   )
 }

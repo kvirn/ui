@@ -5971,7 +5971,8 @@
    * Only logical properties are used, so right to left works. In forced colours the edge is
    * a system colour and an invalid input keeps its 2px width, so the width carries the state.
    *
-   * Site-wide defaults, on :root or on a container: --kv-field-gap (8px, and 4px compact) and
+   * Site-wide defaults, on :root or on a container: --kv-field-gap (8px, and 4px compact),
+   * --kv-field-block-margins (24px, and 16px compact) and
    * --kv-input-padding-inline (12px). --kv-control-border-width-invalid (2px) is shared by the
    * controls that show an invalid state. Compact density (section 5) gives inputs the
    * 32px minimum height and labels 14px, but input text, descriptions and errors stay 16px, and
@@ -5979,6 +5980,7 @@
    */
   :root {
     --kv-field-gap: var(--kv-space-2);
+    --kv-field-block-margins: var(--kv-space-6);
     --kv-input-padding-inline: var(--kv-space-3);
     --kv-control-border-width-invalid: 2px;
   }
@@ -5987,15 +5989,18 @@
   @media (width >= 64rem) {
     .kv-compact {
       --kv-field-gap: var(--kv-space-1);
+      --kv-field-block-margins: var(--kv-space-4);
     }
   }
 
   /* One question with one control. Label, description, control, help text and error sit one gap
-   * apart. No margin of its own: the space between questions is the form's. */
+   * apart. Its block margin (--kv-field-block-margins) is the space between questions, so a form
+   * needs no Stack around its fields. */
   .kv-field {
     display: flex;
     flex-direction: column;
     gap: var(--kv-field-gap);
+    margin-block: var(--kv-field-block-margins);
     /* A field in a grid or flex row can shrink to 320px. */
     min-inline-size: 0;
     color: var(--kv-color-text);

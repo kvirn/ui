@@ -126,21 +126,19 @@ export function ReferenceSearchResults({ locale }: { locale: ReferenceLocale }) 
           <Heading as="h1">{text.heading}</Heading>
           <search aria-label={text.searchLabel}>
             <form action={`/reference/${locale}/search`} method="get">
-              <Stack className="kv-stack--gap-4">
-                <Field.Root>
-                  <Field.Label marker="none">{text.queryLabel}</Field.Label>
-                  <TextInput
-                    key={query}
-                    type="search"
-                    name="q"
-                    defaultValue={query}
-                    autoComplete="off"
-                  />
-                </Field.Root>
-                <div>
-                  <Button type="submit">{text.submit}</Button>
-                </div>
-              </Stack>
+              <Field.Root>
+                <Field.Label marker="none">{text.queryLabel}</Field.Label>
+                <TextInput
+                  key={query}
+                  type="search"
+                  name="q"
+                  defaultValue={query}
+                  autoComplete="off"
+                />
+              </Field.Root>
+              <div>
+                <Button type="submit">{text.submit}</Button>
+              </div>
             </form>
           </search>
           {isEmpty ? <p>{text.prompt}</p> : null}

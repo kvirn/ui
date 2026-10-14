@@ -32,9 +32,7 @@ export function FailedSubmit() {
           </ErrorSummary.List>
         </ErrorSummary.Root>
       ) : null}
-      <Stack
-        className="kv-stack--gap-8"
-        as="form"
+      <form
         noValidate
         onSubmit={(event) => {
           event.preventDefault()
@@ -58,7 +56,7 @@ export function FailedSubmit() {
         <Button type="submit" className="kv-button--primary">
           {texts.send}
         </Button>
-      </Stack>
+      </form>
       <output>{isSent ? texts.sent : null}</output>
     </Stack>
   )

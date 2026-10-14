@@ -81,54 +81,52 @@ export function FeedbackForm({ locale }: { locale: ReferenceLocale }) {
           ) : null}
           <Heading as="h1">{text.heading}</Heading>
           <form noValidate onSubmit={send}>
-            <Stack className="kv-stack--gap-8">
-              <Field.Root controlId="feedback-page" invalid={errors.page !== undefined} required>
-                <Field.Label>{text.pageLabel}</Field.Label>
-                <TextInput
-                  name="page"
-                  type="url"
-                  autoComplete="off"
-                  value={page}
-                  onValueChange={setPage}
-                />
-                <Field.HelpText>{text.pageHelp}</Field.HelpText>
-                <Field.ErrorMessage>{errors.page}</Field.ErrorMessage>
-              </Field.Root>
-              <Field.Root
-                controlId="feedback-problem"
-                invalid={errors.problem !== undefined}
-                required
-              >
-                <Field.Label>{text.problemLabel}</Field.Label>
-                <Textarea
-                  name="problem"
-                  maxLength={1000}
-                  characterCount
-                  value={problem}
-                  onValueChange={setProblem}
-                />
-                <Field.ErrorMessage>{errors.problem}</Field.ErrorMessage>
-              </Field.Root>
-              <Field.Root controlId="feedback-email" invalid={errors.email !== undefined}>
-                <Field.Label>{text.emailLabel}</Field.Label>
-                <Field.Prose>
-                  <p>{text.emailHelp}</p>
-                </Field.Prose>
-                <TextInput
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onValueChange={setEmail}
-                />
-                <Field.ErrorMessage>{errors.email}</Field.ErrorMessage>
-              </Field.Root>
-              <div>
-                <Button type="submit" className="kv-button--primary">
-                  {text.send}
-                </Button>
-              </div>
-            </Stack>
+            <Field.Root controlId="feedback-page" invalid={errors.page !== undefined} required>
+              <Field.Label>{text.pageLabel}</Field.Label>
+              <TextInput
+                name="page"
+                type="url"
+                autoComplete="off"
+                value={page}
+                onValueChange={setPage}
+              />
+              <Field.HelpText>{text.pageHelp}</Field.HelpText>
+              <Field.ErrorMessage>{errors.page}</Field.ErrorMessage>
+            </Field.Root>
+            <Field.Root
+              controlId="feedback-problem"
+              invalid={errors.problem !== undefined}
+              required
+            >
+              <Field.Label>{text.problemLabel}</Field.Label>
+              <Textarea
+                name="problem"
+                maxLength={1000}
+                characterCount
+                value={problem}
+                onValueChange={setProblem}
+              />
+              <Field.ErrorMessage>{errors.problem}</Field.ErrorMessage>
+            </Field.Root>
+            <Field.Root controlId="feedback-email" invalid={errors.email !== undefined}>
+              <Field.Label>{text.emailLabel}</Field.Label>
+              <Field.Prose>
+                <p>{text.emailHelp}</p>
+              </Field.Prose>
+              <TextInput
+                name="email"
+                type="email"
+                autoComplete="email"
+                value={email}
+                onValueChange={setEmail}
+              />
+              <Field.ErrorMessage>{errors.email}</Field.ErrorMessage>
+            </Field.Root>
+            <div>
+              <Button type="submit" className="kv-button--primary">
+                {text.send}
+              </Button>
+            </div>
           </form>
         </Stack>
       </PageFrame.Main>

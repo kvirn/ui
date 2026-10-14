@@ -711,6 +711,12 @@
   min-inline-size: 0;
 }
 
+/* Doubled: patterns.css is imported before theme.css's rules in the same layer, so .kv-field
+ * (its block margin) would otherwise come later and win. */
+.kv-site-search-field.kv-site-search-field {
+  margin-block: 0;
+}
+
 .kv-button-group.kv-button-group--attached > .kv-site-search-field .kv-input {
   border-start-end-radius: 0;
   border-end-end-radius: 0;

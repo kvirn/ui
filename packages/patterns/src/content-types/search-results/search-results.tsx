@@ -135,15 +135,13 @@ export function SearchResults({ state = 'results' }: SearchResultsProps) {
         <Heading as="h1">Search</Heading>
         <search aria-label="Find a page">
           <form action="#search" method="get">
-            <Stack className="kv-stack--gap-4">
-              <Field.Root>
-                <Field.Label marker="none">Search for</Field.Label>
-                <TextInput type="search" name="q" defaultValue={query} autoComplete="off" />
-              </Field.Root>
-              <div>
-                <Button type="submit">Search</Button>
-              </div>
-            </Stack>
+            <Field.Root>
+              <Field.Label marker="none">Search for</Field.Label>
+              <TextInput type="search" name="q" defaultValue={query} autoComplete="off" />
+            </Field.Root>
+            <div>
+              <Button type="submit">Search</Button>
+            </div>
           </form>
         </search>
 

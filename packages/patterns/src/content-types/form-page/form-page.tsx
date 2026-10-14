@@ -183,60 +183,54 @@ export function FormPage({ state = 'empty', failNextSend = false }: FormPageProp
           ) : null}
           <Heading as="h1">Report an accessibility problem</Heading>
           <form noValidate onSubmit={send}>
-            <Stack className="kv-stack--gap-8">
-              <Field.Root
-                controlId="form-page-address"
-                invalid={errors.page !== undefined}
-                required
-              >
-                <Field.Label>Which page has the problem?</Field.Label>
-                <TextInput
-                  name="page"
-                  type="url"
-                  autoComplete="off"
-                  value={page}
-                  onValueChange={setPage}
-                />
-                <Field.HelpText>
-                  We filled in the page you came from. Change it if needed.
-                </Field.HelpText>
-                <Field.ErrorMessage>{errors.page}</Field.ErrorMessage>
-              </Field.Root>
-              <Field.Root
-                controlId="form-page-problem"
-                invalid={errors.problem !== undefined}
-                required
-              >
-                <Field.Label>What is wrong?</Field.Label>
-                <Textarea
-                  name="problem"
-                  maxLength={limit}
-                  characterCount
-                  value={problem}
-                  onValueChange={setProblem}
-                />
-                <Field.ErrorMessage>{errors.problem}</Field.ErrorMessage>
-              </Field.Root>
-              <Field.Root controlId="form-page-email" invalid={errors.email !== undefined}>
-                <Field.Label>Your email address</Field.Label>
-                <Field.Prose>
-                  <p>Only if you want a reply. We use it for nothing else.</p>
-                </Field.Prose>
-                <TextInput
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onValueChange={setEmail}
-                />
-                <Field.ErrorMessage>{errors.email}</Field.ErrorMessage>
-              </Field.Root>
-              <div>
-                <Button type="submit" className="kv-button--primary">
-                  Send
-                </Button>
-              </div>
-            </Stack>
+            <Field.Root controlId="form-page-address" invalid={errors.page !== undefined} required>
+              <Field.Label>Which page has the problem?</Field.Label>
+              <TextInput
+                name="page"
+                type="url"
+                autoComplete="off"
+                value={page}
+                onValueChange={setPage}
+              />
+              <Field.HelpText>
+                We filled in the page you came from. Change it if needed.
+              </Field.HelpText>
+              <Field.ErrorMessage>{errors.page}</Field.ErrorMessage>
+            </Field.Root>
+            <Field.Root
+              controlId="form-page-problem"
+              invalid={errors.problem !== undefined}
+              required
+            >
+              <Field.Label>What is wrong?</Field.Label>
+              <Textarea
+                name="problem"
+                maxLength={limit}
+                characterCount
+                value={problem}
+                onValueChange={setProblem}
+              />
+              <Field.ErrorMessage>{errors.problem}</Field.ErrorMessage>
+            </Field.Root>
+            <Field.Root controlId="form-page-email" invalid={errors.email !== undefined}>
+              <Field.Label>Your email address</Field.Label>
+              <Field.Prose>
+                <p>Only if you want a reply. We use it for nothing else.</p>
+              </Field.Prose>
+              <TextInput
+                name="email"
+                type="email"
+                autoComplete="email"
+                value={email}
+                onValueChange={setEmail}
+              />
+              <Field.ErrorMessage>{errors.email}</Field.ErrorMessage>
+            </Field.Root>
+            <div>
+              <Button type="submit" className="kv-button--primary">
+                Send
+              </Button>
+            </div>
           </form>
         </Stack>
       </PageFrame.Main>
