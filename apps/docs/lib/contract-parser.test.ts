@@ -16,7 +16,7 @@ const contractsIn = (directory: string): string[] =>
 // page-tools has an Announcements table with a column set the parser doesn't know yet.
 const knownUnparsed = ['page-tools.a11y.md']
 
-const contractFiles = ['react', 'rich-text', 'patterns']
+const contractFiles = ['react', 'rich-text', 'patterns', 'map']
   .flatMap((name) => contractsIn(join(repositoryRoot, 'packages', name, 'src')))
   .filter((path) => !knownUnparsed.some((name) => path.endsWith(`/${name}`)))
 

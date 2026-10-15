@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
       '../../pnpm-workspace.yaml',
       '../../packages/react/src/**/*.a11y.md',
       '../../packages/rich-text/src/**/*.a11y.md',
+      '../../packages/map/src/**/*.a11y.md',
     ],
   },
 }

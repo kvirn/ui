@@ -34,6 +34,7 @@ import * as inputGroup from '../content/input-group.api.ts'
 import * as kbd from '../content/kbd.api.ts'
 import * as link from '../content/link.api.ts'
 import * as listbox from '../content/listbox.api.ts'
+import * as map from '../content/map.api.ts'
 import * as menu from '../content/menu.api.ts'
 import * as navigation from '../content/navigation.api.ts'
 import * as numberInput from '../content/number-input.api.ts'
@@ -103,6 +104,7 @@ const apiModules: Readonly<Record<string, object>> = {
   kbd,
   link,
   listbox,
+  map,
   menu,
   navigation,
   'number-input': numberInput,

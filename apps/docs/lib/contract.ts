@@ -21,9 +21,12 @@ function findRepositoryRoot(): string {
   return directory
 }
 
+/** Packages other than `packages/react` whose components have a page: `packages/<name>/src/<component>.a11y.md`. */
+const otherPackages = ['rich-text', 'map'] as const
+
 /**
  * `packages/react/src/<name>/<name>.a11y.md`, the folder's one contract (`provider/`), or
- * `packages/rich-text/src/<name>.a11y.md` for a component outside `packages/react`.
+ * `packages/<package>/src/<name>.a11y.md` for a component outside `packages/react`.
  */
 export function contractPath(name: string, root = findRepositoryRoot()): string {
   const directory = join(root, 'packages/react/src', name)
@@ -35,9 +38,11 @@ export function contractPath(name: string, root = findRepositoryRoot()): string 
     ? readdirSync(directory).filter((file) => file.endsWith('.a11y.md'))
     : []
   if (contracts.length !== 1) {
-    const richText = join(root, 'packages/rich-text/src', `${name}.a11y.md`)
-    if (existsSync(richText)) {
-      return richText
+    for (const packageName of otherPackages) {
+      const outside = join(root, 'packages', packageName, 'src', `${name}.a11y.md`)
+      if (existsSync(outside)) {
+        return outside
+      }
     }
     throw new Error(`No accessibility contract for "${name}": expected ${relative(root, own)}.`)
   }

@@ -380,6 +380,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'FocusScope and useFocus move focus into your own drawer or wizard step, can hold it there, and return it when the scope ends.',
       ),
       component(
+        'Map',
+        'map',
+        'Places on a map and the same places as a list, with the keyboard and a button for every gesture.',
+      ),
+      component(
         'ReadAloud',
         'read-aloud',
         'A player that reads a region of the page aloud, one sentence at a time, with the browser’s own speech.',
