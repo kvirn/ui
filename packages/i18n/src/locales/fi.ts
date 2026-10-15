@@ -1,6 +1,5 @@
 import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
-import { en } from './en.ts'
 
 // fi: copyButton.* is a draft (Plan 0060): a native speaker should review it.
 // stepper.* are drafts for native review (Plan 0083).
@@ -439,7 +438,51 @@ export const fi = {
     title: 'Valitse päivämäärät',
   },
   map: {
-    ...en.map,
+    roleDescription: 'kartta',
+    summary: ({ count }, format) =>
+      `Kartalla näkyy ${format.plural(count, { one: '1 paikka', other: `${format.number(count)} paikkaa` })}. Samat paikat ovat luettelossa.`,
+    keyboardHint: 'Siirrä karttaa nuolinäppäimillä. Zoomaa + ja − -näppäimillä.',
+    skipToList: 'Ohita kartta ja siirry paikkaluetteloon',
+    controlsLabel: 'Karttatoiminnot',
+    markersLabel: 'Paikat karttanäkymässä',
+    zoomIn: 'Lähennä',
+    zoomOut: 'Loitonna',
+    zoomLimitIn: 'Et voi lähentää enempää.',
+    zoomLimitOut: 'Et voi loitontaa enempää.',
+    reset: 'Koko kartta',
+    panNorth: 'Siirrä karttaa pohjoiseen',
+    panSouth: 'Siirrä karttaa etelään',
+    panEast: 'Siirrä karttaa itään',
+    panWest: 'Siirrä karttaa länteen',
+    placesInView: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 paikka karttanäkymässä.',
+        other: `${format.number(count)} paikkaa karttanäkymässä.`,
+      }),
+    placesAll: ({ count }, format) =>
+      format.plural(count, { one: '1 paikka.', other: `${format.number(count)} paikkaa.` }),
+    loading: 'Karttaa ladataan',
+    tilesFailedTitle: 'Karttaa ei voi näyttää juuri nyt',
+    tilesFailedBody: 'Löydät silti kaikki paikat luettelosta.',
+    gestureTouch: 'Siirrä karttaa kahdella sormella',
+    gestureWheel: ({ modifier }) => `Pidä ${modifier} painettuna ja vieritä zoomataksesi karttaa`,
+    detailsClose: 'Sulje',
+    listEmpty: 'Karttanäkymässä ei ole paikkoja. Loitonna tai siirrä karttaa.',
+    indexing: 'Paikkoja ladataan',
+    attributionLabel: 'Karttatiedot',
+    baseMapLabel: 'Karttatyyppi',
+    baseMapChanged: ({ label }) => `Karttatyyppi: ${label}.`,
+    clusterLabel: ({ count }, format) =>
+      format.plural(count, { one: '1 paikka', other: `${format.number(count)} paikkaa` }),
+    clusterLayerLabel: ({ count, layer }, format) =>
+      `${layer}: ${format.plural(count, { one: '1 paikka', other: `${format.number(count)} paikkaa` })}`,
+    clusterTitle: ({ count }, format) =>
+      format.plural(count, { one: '1 paikka', other: `${format.number(count)} paikkaa` }),
+    clusterLayerTitle: ({ count, layer }, format) =>
+      `${layer}: ${format.plural(count, { one: '1 paikka', other: `${format.number(count)} paikkaa` })}`,
+    clusterClose: 'Sulje',
+    layersLegend: 'Näytä kartalla',
+    layerCountValue: ({ count }, format) => format.number(count),
     layersHiddenValue: ({ count }, format) => `${format.number(count)} piilotettu`,
   },
 } satisfies KvirnMessages

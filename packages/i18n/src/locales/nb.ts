@@ -1,6 +1,5 @@
 import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
-import { en } from './en.ts'
 
 // nb: copyButton.* is a draft (Plan 0060): a native speaker should review it.
 // breadcrumb.* and pagination.* are drafts for a native speaker to review (Plan 0062).
@@ -433,7 +432,51 @@ export const nb = {
     title: 'Velg datoene',
   },
   map: {
-    ...en.map,
+    roleDescription: 'kart',
+    summary: ({ count }, format) =>
+      `Kartet viser ${format.plural(count, { one: '1 sted', other: `${format.number(count)} steder` })}. De samme stedene står i listen.`,
+    keyboardHint: 'Flytt kartet med piltastene. Zoom med + og −.',
+    skipToList: 'Hopp over kartet og gå til listen over steder',
+    controlsLabel: 'Kartkontroller',
+    markersLabel: 'Steder i kartvisningen',
+    zoomIn: 'Zoom inn',
+    zoomOut: 'Zoom ut',
+    zoomLimitIn: 'Du kan ikke zoome lenger inn.',
+    zoomLimitOut: 'Du kan ikke zoome lenger ut.',
+    reset: 'Hele kartet',
+    panNorth: 'Flytt kartet nordover',
+    panSouth: 'Flytt kartet sørover',
+    panEast: 'Flytt kartet østover',
+    panWest: 'Flytt kartet vestover',
+    placesInView: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 sted i kartvisningen.',
+        other: `${format.number(count)} steder i kartvisningen.`,
+      }),
+    placesAll: ({ count }, format) =>
+      format.plural(count, { one: '1 sted.', other: `${format.number(count)} steder.` }),
+    loading: 'Laster kartet',
+    tilesFailedTitle: 'Kartet kan ikke vises akkurat nå',
+    tilesFailedBody: 'Du finner fortsatt alle stedene i listen.',
+    gestureTouch: 'Bruk to fingre for å flytte kartet',
+    gestureWheel: ({ modifier }) => `Hold inne ${modifier} og scroll for å zoome kartet`,
+    detailsClose: 'Lukk',
+    listEmpty: 'Det er ingen steder i kartvisningen. Zoom ut eller flytt kartet.',
+    indexing: 'Laster stedene',
+    attributionLabel: 'Kartdata',
+    baseMapLabel: 'Karttype',
+    baseMapChanged: ({ label }) => `Karttype: ${label}.`,
+    clusterLabel: ({ count }, format) =>
+      format.plural(count, { one: '1 sted', other: `${format.number(count)} steder` }),
+    clusterLayerLabel: ({ count, layer }, format) =>
+      `${layer}: ${format.plural(count, { one: '1 sted', other: `${format.number(count)} steder` })}`,
+    clusterTitle: ({ count }, format) =>
+      format.plural(count, { one: '1 sted', other: `${format.number(count)} steder` }),
+    clusterLayerTitle: ({ count, layer }, format) =>
+      `${layer}: ${format.plural(count, { one: '1 sted', other: `${format.number(count)} steder` })}`,
+    clusterClose: 'Lukk',
+    layersLegend: 'Vis på kartet',
+    layerCountValue: ({ count }, format) => format.number(count),
     layersHiddenValue: ({ count }, format) => `${format.number(count)} skjult`,
   },
 } satisfies KvirnMessages

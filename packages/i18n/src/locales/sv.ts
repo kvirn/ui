@@ -1,6 +1,5 @@
 import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
-import { en } from './en.ts'
 
 // displaySettings.* are drafts (Plan 0099): a native speaker should review them.
 export const sv = {
@@ -433,7 +432,51 @@ export const sv = {
     title: 'Välj perioden',
   },
   map: {
-    ...en.map,
+    roleDescription: 'karta',
+    summary: ({ count }, format) =>
+      `Kartan visar ${format.plural(count, { one: '1 plats', other: `${format.number(count)} platser` })}. Samma platser finns i listan.`,
+    keyboardHint: 'Flytta kartan med piltangenterna. Zooma med + och −.',
+    skipToList: 'Hoppa över kartan och gå till listan med platser',
+    controlsLabel: 'Kartkontroller',
+    markersLabel: 'Platser i kartvyn',
+    zoomIn: 'Zooma in',
+    zoomOut: 'Zooma ut',
+    zoomLimitIn: 'Du kan inte zooma in mer.',
+    zoomLimitOut: 'Du kan inte zooma ut mer.',
+    reset: 'Hela kartan',
+    panNorth: 'Flytta kartan norrut',
+    panSouth: 'Flytta kartan söderut',
+    panEast: 'Flytta kartan österut',
+    panWest: 'Flytta kartan västerut',
+    placesInView: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 plats i kartvyn.',
+        other: `${format.number(count)} platser i kartvyn.`,
+      }),
+    placesAll: ({ count }, format) =>
+      format.plural(count, { one: '1 plats.', other: `${format.number(count)} platser.` }),
+    loading: 'Kartan laddas',
+    tilesFailedTitle: 'Kartan kan inte visas just nu',
+    tilesFailedBody: 'Du hittar fortfarande alla platser i listan.',
+    gestureTouch: 'Använd två fingrar för att flytta kartan',
+    gestureWheel: ({ modifier }) => `Håll ner ${modifier} och scrolla för att zooma kartan`,
+    detailsClose: 'Stäng',
+    listEmpty: 'Det finns inga platser i kartvyn. Zooma ut eller flytta kartan.',
+    indexing: 'Platserna laddas',
+    attributionLabel: 'Kartdata',
+    baseMapLabel: 'Karttyp',
+    baseMapChanged: ({ label }) => `Karttyp: ${label}.`,
+    clusterLabel: ({ count }, format) =>
+      format.plural(count, { one: '1 plats', other: `${format.number(count)} platser` }),
+    clusterLayerLabel: ({ count, layer }, format) =>
+      `${layer}: ${format.plural(count, { one: '1 plats', other: `${format.number(count)} platser` })}`,
+    clusterTitle: ({ count }, format) =>
+      format.plural(count, { one: '1 plats', other: `${format.number(count)} platser` }),
+    clusterLayerTitle: ({ count, layer }, format) =>
+      `${layer}: ${format.plural(count, { one: '1 plats', other: `${format.number(count)} platser` })}`,
+    clusterClose: 'Stäng',
+    layersLegend: 'Visa på kartan',
+    layerCountValue: ({ count }, format) => format.number(count),
     layersHiddenValue: ({ count }, format) => `${format.number(count)} dolda`,
   },
 } satisfies KvirnMessages

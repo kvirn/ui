@@ -1,6 +1,5 @@
 import { formatFileSize } from '../format-file-size.ts'
 import type { KvirnMessages } from '../types.ts'
-import { en } from './en.ts'
 
 // nn: copyButton.* is a draft (Plan 0060): a native speaker should review it.
 // breadcrumb.* and pagination.* are drafts for a native speaker to review (Plan 0062).
@@ -433,7 +432,51 @@ export const nn = {
     title: 'Vel datoane',
   },
   map: {
-    ...en.map,
-    layersHiddenValue: ({ count }, format) => `${format.number(count)} gøymde`,
+    roleDescription: 'kart',
+    summary: ({ count }, format) =>
+      `Kartet viser ${format.plural(count, { one: '1 stad', other: `${format.number(count)} stader` })}. Dei same stadene står i lista.`,
+    keyboardHint: 'Flytt kartet med piltastane. Zoom med + og −.',
+    skipToList: 'Hopp over kartet og gå til lista over stader',
+    controlsLabel: 'Kartkontrollar',
+    markersLabel: 'Stader i kartvisinga',
+    zoomIn: 'Zoom inn',
+    zoomOut: 'Zoom ut',
+    zoomLimitIn: 'Du kan ikkje zoome lenger inn.',
+    zoomLimitOut: 'Du kan ikkje zoome lenger ut.',
+    reset: 'Heile kartet',
+    panNorth: 'Flytt kartet nordover',
+    panSouth: 'Flytt kartet sørover',
+    panEast: 'Flytt kartet austover',
+    panWest: 'Flytt kartet vestover',
+    placesInView: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 stad i kartvisinga.',
+        other: `${format.number(count)} stader i kartvisinga.`,
+      }),
+    placesAll: ({ count }, format) =>
+      format.plural(count, { one: '1 stad.', other: `${format.number(count)} stader.` }),
+    loading: 'Lastar kartet',
+    tilesFailedTitle: 'Kartet kan ikkje visast akkurat no',
+    tilesFailedBody: 'Du finn framleis alle stadene i lista.',
+    gestureTouch: 'Bruk to fingrar for å flytte kartet',
+    gestureWheel: ({ modifier }) => `Hald inne ${modifier} og scroll for å zoome kartet`,
+    detailsClose: 'Lukk',
+    listEmpty: 'Det er ingen stader i kartvisinga. Zoom ut eller flytt kartet.',
+    indexing: 'Lastar stadene',
+    attributionLabel: 'Kartdata',
+    baseMapLabel: 'Karttype',
+    baseMapChanged: ({ label }) => `Karttype: ${label}.`,
+    clusterLabel: ({ count }, format) =>
+      format.plural(count, { one: '1 stad', other: `${format.number(count)} stader` }),
+    clusterLayerLabel: ({ count, layer }, format) =>
+      `${layer}: ${format.plural(count, { one: '1 stad', other: `${format.number(count)} stader` })}`,
+    clusterTitle: ({ count }, format) =>
+      format.plural(count, { one: '1 stad', other: `${format.number(count)} stader` }),
+    clusterLayerTitle: ({ count, layer }, format) =>
+      `${layer}: ${format.plural(count, { one: '1 stad', other: `${format.number(count)} stader` })}`,
+    clusterClose: 'Lukk',
+    layersLegend: 'Vis på kartet',
+    layerCountValue: ({ count }, format) => format.number(count),
+    layersHiddenValue: ({ count }, format) => `${format.number(count)} skjult`,
   },
 } satisfies KvirnMessages
