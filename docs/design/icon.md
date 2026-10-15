@@ -116,7 +116,7 @@ Names describe meaning, not shape. Directional names use `back`/`forward` (inlin
 | `mail`, `phone`   | Contact details are text and links. Pure decoration that apps can register                                                                                                                                                     |
 | `home`            | The logo is the home link, and breadcrumbs use text. A home icon in a breadcrumb would be icon-only navigation                                                                                                                 |
 
-`copy` (2026-10-14) took the last slot under the 25 cap, which had been held for a table sort indicator (`sort`). A 26th icon needs the cap raised: open question 4.
+`copy` (2026-10-14) took the last slot under the 25 cap, which had been held for a table sort indicator (`sort`). A 26th icon needs the cap raised: open question 4. Package icons (the Map's `mapIcons`, with the marker pin, and the rich text editor's `richTextIconNames`) are outside the cap.
 
 ### 4.2 Registry behaviour that affects users
 

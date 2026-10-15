@@ -42,7 +42,7 @@ export type {
   DefaultControlName,
   DefaultControlsProps,
 } from './rich-text-editor/default-controls.tsx'
-export { ToolbarIcon } from './rich-text-editor/icons.tsx'
+export { richTextIconNames, ToolbarIcon } from './rich-text-editor/icons.tsx'
 export type { RichTextIconName, ToolbarIconProps } from './rich-text-editor/icons.tsx'
 export { ImageControl } from './rich-text-editor/image-control.tsx'
 export { LinkControl } from './rich-text-editor/link-control.tsx'

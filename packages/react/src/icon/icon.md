@@ -60,6 +60,8 @@ import { Button, Icon } from '@kvirn-ui/react'
 <Button><Icon name="add" />Lägg till</Button>
 ```
 
+The 25 cap is for this set only. The Map (`mapIcons` in `@kvirn-ui/map`, with the default marker pin) and the rich text editor (`richTextIconNames` in `@kvirn-ui/rich-text`) draw their own icons in the same style, outside the cap. The docs Icon page shows all three sets.
+
 ## A library icon: `icon`
 
 Pass the component, not an element. It needs no registration. A component can't cross from a server component to a client one, so use `icon` in a client component, and `name` (a string) in a server component.

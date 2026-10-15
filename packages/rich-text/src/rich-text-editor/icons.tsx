@@ -44,6 +44,9 @@ const shapes = {
 /** The built-in editor icons by name. */
 export type RichTextIconName = keyof typeof shapes
 
+/** The names of the built-in editor icons, derived from the drawings. */
+export const richTextIconNames = Object.freeze(Object.keys(shapes) as RichTextIconName[])
+
 /** The icons that point in a direction: they flip in right-to-left text. */
 const mirroredInRtl = new Set<RichTextIconName>([
   'undo',

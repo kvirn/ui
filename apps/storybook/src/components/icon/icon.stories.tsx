@@ -4,7 +4,9 @@ import { nb } from '@kvirn-ui/i18n/nb'
 import { nn } from '@kvirn-ui/i18n/nn'
 import { sv } from '@kvirn-ui/i18n/sv'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { mapIcons } from '@kvirn-ui/map'
 import { Button, ButtonGroup, Icon, KvirnProvider, Link, useFormat } from '@kvirn-ui/react'
+import { richTextIconNames, ToolbarIcon } from '@kvirn-ui/rich-text'
 import contract from '../../../../../packages/react/src/icon/icon.a11y.md?raw'
 import guide from '../../../../../packages/react/src/icon/icon.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -183,6 +185,72 @@ export const BuiltInSet: Story = {
         await expect(icon).toHaveAttribute('aria-hidden', 'true')
         await expect(icon.hasAttribute('data-mirror-in-rtl')).toBe(isMirroredIcon(name))
       }
+    }
+    await expect(canvas.queryByRole('img')).toBeNull()
+  },
+}
+
+const mapIconNames = Object.keys(mapIcons) as (keyof typeof mapIcons)[]
+
+/** Every icon the Map draws, read from `mapIcons`: the default marker pin and the control arrows. */
+export const MapSet: Story = {
+  render: () => (
+    <ul className="kv-story-icon-gallery">
+      {mapIconNames.map((name) => (
+        <li key={name} className="kv-story-icon-cell" data-testid={iconNamed(`map-${name}`)}>
+          <span className="kv-story-icon-row">
+            <Icon icon={mapIcons[name]} size="16" />
+            <Icon icon={mapIcons[name]} size="20" />
+            <Icon icon={mapIcons[name]} size="24" />
+          </span>
+          <code>{name}</code>
+        </li>
+      ))}
+    </ul>
+  ),
+  play: async ({ canvas }) => {
+    const cells = within(canvas.getByRole('list')).getAllByRole('listitem')
+    await expect(cells).toHaveLength(mapIconNames.length)
+    for (const [index, cell] of cells.entries()) {
+      const name = mapIconNames[index]
+      if (name === undefined) {
+        continue
+      }
+      await expect(within(cell).getByText(name)).toBeVisible()
+      const icons = cell.querySelectorAll('svg')
+      await expect(icons).toHaveLength(3)
+      for (const icon of icons) {
+        await expect(icon).toHaveAttribute('aria-hidden', 'true')
+      }
+    }
+    await expect(canvas.queryByRole('img')).toBeNull()
+  },
+}
+
+/** Every icon the rich text editor draws, read from `richTextIconNames`, so none is missing. */
+export const RichTextSet: Story = {
+  render: () => (
+    <ul className="kv-story-icon-gallery">
+      {richTextIconNames.map((name) => (
+        <li key={name} className="kv-story-icon-cell" data-testid={iconNamed(`rich-text-${name}`)}>
+          <span className="kv-story-icon-row">
+            <ToolbarIcon name={name} />
+          </span>
+          <code>{name}</code>
+        </li>
+      ))}
+    </ul>
+  ),
+  play: async ({ canvas }) => {
+    const cells = within(canvas.getByRole('list')).getAllByRole('listitem')
+    await expect(cells).toHaveLength(richTextIconNames.length)
+    for (const [index, cell] of cells.entries()) {
+      const name = richTextIconNames[index]
+      if (name === undefined) {
+        continue
+      }
+      await expect(within(cell).getByText(name)).toBeVisible()
+      await expect(cell.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
     }
     await expect(canvas.queryByRole('img')).toBeNull()
   },

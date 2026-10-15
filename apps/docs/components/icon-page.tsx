@@ -9,9 +9,11 @@ import { UseCase } from './use-case.tsx'
 import { iconAttributes, iconRows, useIconHook } from '../content/icon.api.ts'
 import { BuiltInSet } from '../examples/icon/built-in-set.tsx'
 import { DefaultIcon } from '../examples/icon/default.tsx'
+import { MapSet } from '../examples/icon/map-set.tsx'
 import { MirrorInRtl } from '../examples/icon/mirror-in-rtl.tsx'
 import { OneOffDrawing } from '../examples/icon/one-off-drawing.tsx'
 import { OwnComponent } from '../examples/icon/own-component.tsx'
+import { RichTextSet } from '../examples/icon/rich-text-set.tsx'
 import { Sizes } from '../examples/icon/sizes.tsx'
 import { WithLabel } from '../examples/icon/with-label.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
@@ -19,6 +21,8 @@ import type { Contract } from '../lib/contract-parser.ts'
 export type IconExampleSources = Record<
   | 'default'
   | 'built-in-set'
+  | 'map-set'
+  | 'rich-text-set'
   | 'with-label'
   | 'sizes'
   | 'own-component'
@@ -98,6 +102,36 @@ export function IconPage({
             propsUsed={[{ part: 'Icon', prop: 'name' }]}
           >
             <BuiltInSet />
+          </UseCase>
+          <UseCase
+            id="map-set"
+            title="The Map’s icons"
+            why={
+              <>
+                The map package draws its own icons: the default marker pin and the control arrows.
+                Pass one with <code>icon</code>, or register them with <code>defineIcons</code>.
+                They come from <code>mapIcons</code> in <code>@kvirn-ui/map</code>, and they are not
+                part of the built-in set.
+              </>
+            }
+            code={sources['map-set']}
+            propsUsed={[{ part: 'Icon', prop: 'icon' }]}
+          >
+            <MapSet />
+          </UseCase>
+          <UseCase
+            id="rich-text-set"
+            title="The rich text editor’s icons"
+            why={
+              <>
+                The editor draws its toolbar icons with <code>RichTextEditor.Icon</code>, from the
+                names in <code>richTextIconNames</code> in <code>@kvirn-ui/rich-text</code>. They
+                are not part of the built-in set.
+              </>
+            }
+            code={sources['rich-text-set']}
+          >
+            <RichTextSet />
           </UseCase>
           <UseCase
             id="meaningful-icon"

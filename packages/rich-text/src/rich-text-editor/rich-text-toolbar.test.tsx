@@ -8,6 +8,7 @@ import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { defaultExtensions } from '../extensions/default-extensions.ts'
+import { richTextIconNames, ToolbarIcon } from './icons.tsx'
 import { RichTextEditor } from './rich-text-editor.tsx'
 import type { RichTextEditorRootProps } from './rich-text-editor.tsx'
 
@@ -667,5 +668,16 @@ describe('the toolbar keys', () => {
     expect(textbox().element().querySelectorAll('table')).toHaveLength(0)
     await expect.element(textbox()).toHaveFocus()
     await expect.element(status()).toHaveTextContent('Tabellen är borttagen. Ångra med Ctrl+Z.')
+  })
+})
+
+describe('richTextIconNames', () => {
+  test('lists exactly the icons ToolbarIcon draws, frozen', async () => {
+    expect(Object.isFrozen(richTextIconNames)).toBe(true)
+    expect(richTextIconNames).toContain('bold')
+    for (const name of richTextIconNames) {
+      const { container } = await render(<ToolbarIcon name={name} />)
+      expect(container.querySelectorAll('svg path').length).toBeGreaterThan(0)
+    }
   })
 })
