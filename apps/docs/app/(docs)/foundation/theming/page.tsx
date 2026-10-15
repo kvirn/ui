@@ -18,8 +18,11 @@ export default function ThemingPage() {
           content: (
             <>
               <p>
-                Import <code>@kvirn-ui/theme/theme.css</code> once. Every component is then styled.
-                A Button is secondary by default. Add{' '}
+                Import <code>@kvirn-ui/theme/theme.css</code> once. Every component of{' '}
+                <code>@kvirn-ui/react</code> is then styled. The map and the rich text editor have
+                their own opt-in files, <code>@kvirn-ui/theme/map.css</code> and{' '}
+                <code>@kvirn-ui/theme/rich-text.css</code>, so a site without them does not pay for
+                them. A Button is secondary by default. Add{' '}
                 <code>className=&quot;kv-button--primary&quot;</code> for the one main action on the
                 page, or <code>className=&quot;kv-button--danger&quot;</code> for an action that
                 deletes something. Put <code>class=&quot;kv-compact&quot;</code> on a container for

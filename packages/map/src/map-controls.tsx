@@ -3,6 +3,7 @@ import type { IconComponent, IconName } from '@kvirn-ui/react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { joinClassNames } from './class-names.ts'
 import { useMapContext } from './map-context.ts'
+import { useMapOverlayRef } from './map-overlay.tsx'
 import {
   ArrowDownIcon,
   ArrowLeftIcon,
@@ -42,12 +43,14 @@ function ControlButton({
   )
 }
 
-/** Zoom, Reset and the pan cross: every pointer gesture as a single-pointer button (WCAG 2.5.7). */
+/** Zoom, the pan disc and Reset: every pointer gesture as a single-pointer button (WCAG 2.5.7). */
 export function MapControls({
   className,
+  ref,
   ...otherProps
 }: Omit<ComponentPropsWithRef<'div'>, 'children'>): ReactElement {
   const map = useMapContext('Controls')
+  const overlayRef = useMapOverlayRef(ref)
   const { messages } = map
   const groupProps = {
     className: joinClassNames('kv-map-controls', className),
@@ -55,22 +58,21 @@ export function MapControls({
     'aria-label': messages.controlsLabel,
   }
   return (
-    <div {...otherProps} {...groupProps}>
-      <ControlButton
-        label={messages.zoomIn}
-        icon="add"
-        disabled={!map.canZoomIn}
-        onPress={map.zoomIn}
-      />
-      <ControlButton
-        label={messages.zoomOut}
-        icon={RemoveIcon}
-        disabled={!map.canZoomOut}
-        onPress={map.zoomOut}
-      />
-      <button type="button" className="kv-button" onClick={map.reset}>
-        {messages.reset}
-      </button>
+    <div {...otherProps} {...groupProps} ref={overlayRef}>
+      <div className="kv-map-zoom">
+        <ControlButton
+          label={messages.zoomIn}
+          icon="add"
+          disabled={!map.canZoomIn}
+          onPress={map.zoomIn}
+        />
+        <ControlButton
+          label={messages.zoomOut}
+          icon={RemoveIcon}
+          disabled={!map.canZoomOut}
+          onPress={map.zoomOut}
+        />
+      </div>
       <div className="kv-map-pan">
         <ControlButton
           label={messages.panNorth}
@@ -97,6 +99,9 @@ export function MapControls({
           onPress={() => map.pan('south')}
         />
       </div>
+      <button type="button" className="kv-button kv-map-reset" onClick={map.reset}>
+        {messages.reset}
+      </button>
     </div>
   )
 }

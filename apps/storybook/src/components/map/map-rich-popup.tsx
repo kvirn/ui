@@ -180,13 +180,13 @@ function VenueActions(): ReactElement | null {
   return (
     <div className="story-rich-popup-actions">
       <a
-        className="kv-button kv-button--primary kv-button--compact"
+        className="kv-button kv-button--primary"
         href={`https://www.openstreetmap.org/directions?to=${latitude}%2C${longitude}`}
       >
         <Icon name="arrow-forward" size="16" />
         Directions
       </a>
-      <a className="kv-button kv-button--compact" href={venue.data.website}>
+      <a className="kv-button" href={venue.data.website}>
         Website
       </a>
     </div>
@@ -217,14 +217,14 @@ export function RichPopupDemo({ offline = false, ...mapProps }: MapDemoProps): R
           <VenueBadge onImage />
         </div>
         <div className="kv-map-details-content">
-          <div className="kv-map-details-header">
-            <Map.DetailsTitle />
-            <Map.DetailsClose />
-          </div>
+          <Map.DetailsTitle />
+          <Map.DetailsClose />
           <VenueFacts />
           <Map.DetailsBody />
           <VenueFacilities />
           <Map.DetailsAddress />
+        </div>
+        <div className="kv-map-details-footer">
           <VenueActions />
         </div>
       </Map.Details>

@@ -1,0 +1,1480 @@
+/*
+ * Map classes: @kvirn-ui/theme/map.css, an opt-in file next to theme.css.
+ *
+ * Import it after theme.css wherever a map from @kvirn-ui/map renders: a site without maps does not
+ * pay for them. It uses theme.css's tokens, so it needs theme.css, and puts its rules in
+ * `@layer kv`, which theme.css's layer order statement declares.
+ */
+
+@layer kv {
+  /* 15a. Map -----------------------------------------------------------------------------------
+   * kv-map-*: the viewport (region), the engine surface, markers, controls, hint, status,
+   * attribution, the place list and the details card. The map never mirrors: north is up and east
+   * is right, so everything placed over it uses physical offsets for the coordinate and the pan
+   * cross. Overlays at the inline end follow the page's direction.
+   *
+   * The halo rule: anything drawn on imagery has a 2px canvas edge and then a 1px text edge. The two
+   * swap per theme, so one is always light and one dark, which keeps an edge of at least 3:1 on any
+   * tile (WCAG 1.4.11). The block size is --kv-map-block-size, a site default. */
+  /* The root is the container the narrow layout queries, so a map in a narrow column behaves like a phone. */
+  .kv-map {
+    container-type: inline-size;
+  }
+
+  .kv-map-viewport {
+    --kv-map-halo:
+      0 0 0 var(--kv-border-width) var(--kv-color-canvas),
+      0 0 0 calc(var(--kv-border-width) + 1px) var(--kv-color-text);
+    position: relative;
+    box-sizing: border-box;
+    block-size: var(--kv-map-block-size, clamp(15rem, 60vh, 40rem));
+    overflow: hidden;
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-lg);
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text);
+  }
+
+  .kv-map-viewport:focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  /* The engine's own sheet is unlayered and sets position: relative on this element, so it
+     fills the viewport by size, not by inset. */
+  .kv-map-engine {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .kv-map-markers {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .kv-map-marker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    inline-size: var(--kv-control-min-block-size);
+    block-size: var(--kv-control-min-block-size);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--kv-color-on-primary);
+    cursor: pointer;
+    pointer-events: auto;
+    transform: translate(calc(var(--kv-map-x, 0px) - 50%), calc(var(--kv-map-y, 0px) - 50%));
+  }
+
+  .kv-map-marker::before {
+    content: '';
+    position: absolute;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    border-radius: var(--kv-radius-full);
+    background-color: var(--kv-color-primary);
+    box-shadow: var(--kv-map-halo, 0 0 0 2px var(--kv-color-canvas));
+  }
+
+  .kv-map-marker > :not(.kv-map-marker-label) {
+    position: relative;
+    inline-size: 1rem;
+    block-size: 1rem;
+  }
+
+  /* A visible name under the mark. It is inside the button, which is already named: decoration. */
+  .kv-map-marker-label {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-start: 50%;
+    inline-size: max-content;
+    max-inline-size: 12rem;
+    padding: var(--kv-space-1) var(--kv-space-2);
+    border: var(--kv-border-width) solid var(--kv-color-text);
+    border-radius: var(--kv-radius-sm);
+    background-color: var(--kv-color-surface-raised);
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-small-size);
+    line-height: var(--kv-font-body-small-line-height);
+    translate: -50% 0;
+    pointer-events: none;
+  }
+
+  .kv-map-marker-label:dir(rtl) {
+    translate: 50% 0;
+  }
+
+  .kv-map-marker:hover::before {
+    background-color: var(--kv-color-primary-hover);
+  }
+
+  .kv-map-marker:focus-visible {
+    outline: none;
+  }
+
+  .kv-map-marker:focus-visible::before {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-map-marker[data-highlighted]::before {
+    box-shadow:
+      0 0 0 2px var(--kv-color-canvas),
+      0 0 0 4px var(--kv-color-text);
+  }
+
+  .kv-map-marker[aria-expanded='true'] {
+    z-index: 1;
+  }
+
+  .kv-map-marker[aria-expanded='true']::before {
+    inline-size: 2rem;
+    block-size: 2rem;
+    background-color: var(--kv-color-primary-hover);
+    box-shadow:
+      0 0 0 2px var(--kv-color-canvas),
+      0 0 0 4px var(--kv-color-text);
+  }
+
+  /* A cluster: a plate wider than a place's disc, with the count in tabular figures, so the shape
+   * and the number tell it from a place (WCAG 1.4.1). Pressing it opens the cluster popup. */
+  .kv-map-cluster {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    min-inline-size: var(--kv-control-min-block-size);
+    block-size: var(--kv-control-min-block-size);
+    margin: 0;
+    padding-inline: var(--kv-space-2);
+    border: 2px solid var(--kv-color-text);
+    border-radius: var(--kv-radius-full);
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-map-halo, 0 0 0 2px var(--kv-color-canvas));
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-label-size);
+    font-weight: var(--kv-font-label-weight);
+    line-height: var(--kv-font-label-line-height);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    pointer-events: auto;
+    transform: translate(calc(var(--kv-map-x, 0px) - 50%), calc(var(--kv-map-y, 0px) - 50%));
+  }
+
+  .kv-map-cluster:hover {
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  .kv-map-cluster:focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-map-cluster[aria-expanded='true'] {
+    z-index: 1;
+    background-color: var(--kv-color-primary-subtle);
+    box-shadow:
+      0 0 0 2px var(--kv-color-canvas),
+      0 0 0 4px var(--kv-color-text);
+  }
+
+  .kv-map-hint,
+  .kv-map-status,
+  .kv-map-controls,
+  .kv-map-attribution {
+    position: absolute;
+    z-index: 1;
+    box-sizing: border-box;
+    margin: 0;
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-surface-raised);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  .kv-map-hint {
+    inset-block-start: var(--kv-space-2);
+    inset-inline-start: var(--kv-space-2);
+    max-inline-size: min(20rem, calc(100% - 2 * var(--kv-space-2)));
+    padding-block: var(--kv-space-2);
+    padding-inline: var(--kv-space-3);
+    box-shadow: var(--kv-shadow-popup);
+  }
+
+  /* The keyboard hint shows while the viewport has focus, and stays readable to assistive
+   * technology (aria-describedby) before and after: the same clip rule as kv-visually-hidden. */
+  .kv-map-viewport:not(:focus) > .kv-map-hint:not(.kv-map-hint--gesture),
+  .kv-map-hint[data-dismissed]:not(.kv-map-hint--gesture) {
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .kv-map-hint--gesture {
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .kv-map-status {
+    inset-block-start: var(--kv-space-4);
+    inset-inline-start: var(--kv-space-4);
+    max-inline-size: min(40rem, calc(100% - 2 * var(--kv-space-4)));
+    padding: var(--kv-space-3);
+    text-align: start;
+  }
+
+  .kv-map-status > p {
+    margin-block: var(--kv-space-1) 0;
+  }
+
+  .kv-map-status .kv-spinner {
+    margin-inline-end: var(--kv-space-2);
+  }
+
+  /* Three floating surfaces, no panel: the zoom pill, the pan disc and the Whole map pill, centred on
+   * one stack at the inline end. The buttons inside are bare cells (a hover fill only), and their
+   * focus ring is drawn inset so no surface ever clips it. */
+  .kv-map-controls {
+    --kv-map-control-surface:
+      0 0 0 var(--kv-border-width) var(--kv-color-border-subtle), var(--kv-shadow-popup);
+    inset-block-start: var(--kv-space-2);
+    inset-inline-end: var(--kv-space-2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--kv-space-2);
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .kv-map-zoom,
+  .kv-map-pan,
+  .kv-map-controls > .kv-button.kv-map-reset {
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-map-control-surface);
+  }
+
+  .kv-map-zoom {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--kv-radius-md);
+  }
+
+  .kv-map-controls .kv-button {
+    min-block-size: var(--kv-control-min-block-size);
+    border: 0;
+    background-color: transparent;
+    box-shadow: none;
+    color: var(--kv-color-text);
+  }
+
+  .kv-map-zoom > .kv-button {
+    inline-size: var(--kv-control-min-block-size);
+    block-size: var(--kv-control-min-block-size);
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .kv-map-zoom > .kv-button:first-child {
+    border-start-start-radius: var(--kv-radius-md);
+    border-start-end-radius: var(--kv-radius-md);
+  }
+
+  .kv-map-zoom > .kv-button:last-child {
+    border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-end-start-radius: var(--kv-radius-md);
+    border-end-end-radius: var(--kv-radius-md);
+  }
+
+  .kv-map-controls > .kv-button.kv-map-reset {
+    padding-inline: var(--kv-space-4);
+    border-radius: var(--kv-radius-full);
+    font-size: var(--kv-font-label-size);
+    font-weight: 600;
+  }
+
+  /* A disc with the four arrows at north, east, south and west. East stays east in RTL. */
+  .kv-map-pan {
+    --kv-map-pan-arm: var(--kv-control-min-block-size);
+    position: relative;
+    inline-size: 7.5rem;
+    block-size: 7.5rem;
+    border-radius: var(--kv-radius-full);
+    direction: ltr;
+  }
+
+  .kv-map-pan > .kv-button {
+    position: absolute;
+    inline-size: var(--kv-map-pan-arm);
+    block-size: var(--kv-map-pan-arm);
+    padding: 0;
+    border-radius: var(--kv-radius-full);
+  }
+
+  .kv-map-pan-north,
+  .kv-map-pan-south {
+    inset-inline-start: calc(50% - var(--kv-map-pan-arm) / 2);
+  }
+
+  .kv-map-pan-west,
+  .kv-map-pan-east {
+    inset-block-start: calc(50% - var(--kv-map-pan-arm) / 2);
+  }
+
+  .kv-map-pan-north {
+    inset-block-start: 0;
+  }
+
+  .kv-map-pan-south {
+    inset-block-end: 0;
+  }
+
+  .kv-map-pan-west {
+    inset-inline-start: 0;
+  }
+
+  .kv-map-pan-east {
+    inset-inline-end: 0;
+  }
+
+  .kv-map-controls .kv-button:not([aria-disabled='true']):hover {
+    background-color: var(--kv-color-surface);
+  }
+
+  .kv-map-controls .kv-button:not([aria-disabled='true']):active {
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  /* The zoom limit: a muted icon. */
+  .kv-map-controls .kv-button[aria-disabled='true'] {
+    color: var(--kv-color-text-muted);
+  }
+
+  .kv-map-controls .kv-button:focus-visible {
+    outline-offset: calc(-1 * var(--kv-focus-ring-width));
+  }
+
+  .kv-map-attribution {
+    inset-block-end: var(--kv-space-2);
+    inset-inline-end: var(--kv-space-2);
+    max-inline-size: 60%;
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-2);
+    border-radius: var(--kv-radius-sm);
+    box-shadow: var(--kv-shadow-popup);
+    font-size: var(--kv-font-body-small-size, var(--kv-font-body-size));
+  }
+
+  .kv-map-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* A long list renders only the rows in view, so it scrolls in a room of its own. */
+  .kv-map-list-scroll[data-virtualized],
+  .kv-map-cluster-places-scroll[data-virtualized] {
+    overflow-y: auto;
+  }
+
+  .kv-map-list-scroll[data-virtualized] {
+    max-block-size: 32rem;
+  }
+
+  .kv-map-cluster-places-scroll[data-virtualized] {
+    max-block-size: 16rem;
+  }
+
+  .kv-map-list-heading {
+    margin-block: var(--kv-space-4) var(--kv-space-2);
+    color: var(--kv-color-heading);
+    font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
+    font-size: var(--kv-font-heading-4-size);
+    font-weight: var(--kv-font-heading-4-weight);
+    line-height: var(--kv-font-heading-4-line-height);
+    letter-spacing: var(--kv-font-heading-4-letter-spacing);
+    font-feature-settings: var(--kv-font-heading-4-feature-settings);
+  }
+
+  /* A row: swatch, content, aside. The trigger's ::after covers the row, so the whole row is the
+   * target and the facts in it stay non-interactive. */
+  .kv-map-list-item {
+    --kv-map-list-focus-inset: calc(-1 * (var(--kv-focus-ring-width) + 2px));
+
+    position: relative;
+    display: grid;
+    grid-template-columns: [content-start] minmax(0, 1fr) [content-end aside-start] auto [aside-end];
+    gap: var(--kv-space-1) var(--kv-space-3);
+    padding: var(--kv-space-3);
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  .kv-map-list-item:has(> .kv-map-list-swatch) {
+    grid-template-columns:
+      [swatch-start] 1.5rem [swatch-end content-start] minmax(0, 1fr)
+      [content-end aside-start] auto [aside-end];
+  }
+
+  .kv-map-list-item > * {
+    grid-column: content-start / content-end;
+  }
+
+  .kv-map-list-item > .kv-map-list-swatch {
+    grid-column: swatch-start / swatch-end;
+    grid-row: 1;
+  }
+
+  .kv-map-list-item > .kv-map-list-aside {
+    grid-column: aside-start / aside-end;
+    grid-row: 1;
+    font-size: var(--kv-font-body-small-size);
+    line-height: var(--kv-font-body-small-line-height);
+    color: var(--kv-color-text-muted);
+  }
+
+  .kv-map-list-address {
+    font-size: var(--kv-font-body-small-size);
+    line-height: var(--kv-font-body-small-line-height);
+    color: var(--kv-color-text-muted);
+  }
+
+  .kv-map-list-item:hover {
+    background-color: var(--kv-color-surface);
+  }
+
+  .kv-map-list-item[data-highlighted] {
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  .kv-map-list-item[data-highlighted]::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: var(--kv-indicator-width);
+    background-color: var(--kv-color-primary);
+  }
+
+  .kv-map-list-trigger {
+    min-block-size: 1.5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--kv-color-text);
+    font: inherit;
+    font-weight: 600;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .kv-map-list-trigger::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .kv-map-list-trigger:focus-visible {
+    outline: none;
+  }
+
+  .kv-map-list-trigger:focus-visible::after {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-map-list-focus-inset);
+  }
+
+  .kv-map-list-heading:focus-visible,
+  .kv-map-details-title:focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  /* Show on the map: stacked chips in a card. The checkbox is clipped but stays focusable and the
+   * label is the chip. A plus when off and a check when on, so the state is a shape, not only a
+   * colour. The state slot is always there, so toggling never resizes the chip. */
+  .kv-map-layers {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--kv-space-2);
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .kv-map-layers .kv-fieldset-legend {
+    float: inline-start;
+    inline-size: 100%;
+    margin-block: 0 var(--kv-space-1);
+    padding: 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-label-size);
+    font-weight: 600;
+  }
+
+  .kv-map-layers > .kv-field {
+    position: relative;
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .kv-map-layers .kv-checkbox {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    opacity: 0;
+  }
+
+  .kv-map-layers .kv-field > .kv-field-label {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--kv-space-2);
+    inline-size: 100%;
+    min-block-size: var(--kv-control-min-block-size);
+    padding-block: 0;
+    padding-inline: calc(var(--kv-space-2) + 1rem + var(--kv-space-2)) var(--kv-space-3);
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-surface-raised);
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-label-size);
+    font-weight: 500;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .kv-map-layers .kv-field > .kv-field-label::before,
+  .kv-map-layers .kv-field > .kv-field-label::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: var(--kv-space-2);
+    inset-block-start: 50%;
+    inline-size: 1rem;
+    block-size: 1rem;
+    translate: 0 -50%;
+    background-color: var(--kv-color-text-muted);
+  }
+
+  .kv-map-layers .kv-field > .kv-field-label::before {
+    clip-path: polygon(
+      43% 10%,
+      57% 10%,
+      57% 43%,
+      90% 43%,
+      90% 57%,
+      57% 57%,
+      57% 90%,
+      43% 90%,
+      43% 57%,
+      10% 57%,
+      10% 43%,
+      43% 43%
+    );
+  }
+
+  .kv-map-layers .kv-field > .kv-field-label::after {
+    background-color: currentColor;
+    clip-path: polygon(
+      21.15% 47.6%,
+      40.06% 66.51%,
+      78.34% 20.03%,
+      90.41% 29.97%,
+      41.19% 89.74%,
+      10.1% 58.65%
+    );
+    opacity: 0;
+  }
+
+  .kv-map-layer-name {
+    min-inline-size: 0;
+  }
+
+  .kv-map-layer-count {
+    margin-inline-start: auto;
+    padding-inline-start: var(--kv-space-2);
+    border-inline-start: var(--kv-border-width) solid currentColor;
+    color: var(--kv-color-text-muted);
+    font-size: var(--kv-font-body-small-size);
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kv-map-layers > .kv-field > .kv-field-label + .kv-field-help-text {
+    margin: var(--kv-space-1) 0 0;
+    padding-inline: var(--kv-space-2);
+    font-size: var(--kv-font-body-small-size);
+    color: var(--kv-color-text-muted);
+  }
+
+  .kv-map-layers .kv-field:hover > .kv-field-label {
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  .kv-map-layers .kv-field:has(> .kv-checkbox:active) > .kv-field-label {
+    border-color: var(--kv-color-primary);
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  .kv-map-layers .kv-field:has(> .kv-checkbox:checked) > .kv-field-label {
+    border-color: var(--kv-color-primary);
+    background-color: var(--kv-color-primary);
+    color: var(--kv-color-on-primary);
+  }
+
+  .kv-map-layers .kv-field:has(> .kv-checkbox:checked) > .kv-field-label::before {
+    opacity: 0;
+  }
+
+  .kv-map-layers .kv-field:has(> .kv-checkbox:checked) > .kv-field-label::after {
+    opacity: 1;
+  }
+
+  .kv-map-layers .kv-field:has(> .kv-checkbox:checked):hover > .kv-field-label,
+  .kv-map-layers .kv-field:has(> .kv-checkbox:checked:active) > .kv-field-label {
+    border-color: var(--kv-color-primary-hover);
+    background-color: var(--kv-color-primary-hover);
+  }
+
+  .kv-map-layers .kv-field:has(> .kv-checkbox:checked) .kv-map-layer-swatch {
+    border-color: var(--kv-color-on-primary);
+    background-color: var(--kv-color-on-primary);
+    color: var(--kv-color-primary);
+  }
+
+  .kv-map-layers .kv-field:has(> .kv-checkbox:checked) .kv-map-layer-count {
+    color: var(--kv-color-on-primary);
+  }
+
+  .kv-map-layers .kv-field:has(> .kv-checkbox:focus-visible) > .kv-field-label {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* Map type: a thumbnail button that opens a popover of preview tiles (native radios). */
+  .kv-map-base-maps {
+    margin: 0;
+  }
+
+  .kv-map-base-maps-trigger {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: var(--kv-space-2);
+    inline-size: 100%;
+    min-block-size: var(--kv-control-min-block-size);
+    margin: 0;
+    padding-block: 0;
+    padding-inline: var(--kv-space-2) var(--kv-space-3);
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-surface-raised);
+    color: var(--kv-color-text);
+    font: inherit;
+    font-size: var(--kv-font-label-size);
+    font-weight: 500;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .kv-map-base-maps-trigger > .kv-map-base-map-preview {
+    flex: none;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+  }
+
+  .kv-map-base-maps-chevron {
+    display: inline-grid;
+    place-items: center;
+  }
+
+  .kv-map-base-maps-trigger:hover {
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  .kv-map-base-maps-trigger[aria-expanded='true'] {
+    border-color: var(--kv-color-primary);
+    background-color: var(--kv-color-primary-subtle);
+  }
+
+  .kv-map-base-maps-trigger:focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .kv-map-base-maps-popup {
+    box-sizing: border-box;
+    inline-size: min(19rem, calc(100vw - 2 * var(--kv-space-2)));
+    max-inline-size: none;
+    padding: var(--kv-space-3);
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-shadow-popup);
+    color: var(--kv-color-text);
+  }
+
+  .kv-map-base-maps-popup .kv-fieldset-legend {
+    margin-block-end: var(--kv-space-2);
+    padding: 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-label-size);
+    font-weight: 600;
+  }
+
+  .kv-map-base-maps-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--kv-space-2);
+  }
+
+  .kv-map-base-maps-options > .kv-field {
+    position: relative;
+    display: block;
+    margin: 0;
+  }
+
+  .kv-map-base-maps-options .kv-radio {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    opacity: 0;
+  }
+
+  .kv-map-base-maps-options .kv-radio:checked::before {
+    content: none;
+  }
+
+  .kv-map-base-maps-options .kv-field > .kv-field-label {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--kv-space-1);
+    inline-size: 100%;
+    min-block-size: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-small-size);
+    font-weight: 600;
+    text-align: center;
+    hyphens: auto;
+  }
+
+  /* The preview of an option or of the current base map: your `icon`, else the art below. */
+  .kv-map-base-map-preview {
+    display: block;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-sm);
+  }
+
+  .kv-map-base-map-preview > * {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .kv-map-base-maps-options .kv-map-base-map-preview {
+    inline-size: 100%;
+    aspect-ratio: 4 / 3;
+  }
+
+  .kv-map-base-maps-options .kv-field:hover .kv-map-base-map-preview {
+    border-color: var(--kv-color-border-control);
+  }
+
+  .kv-map-base-maps-options .kv-field:has(> .kv-radio:checked) .kv-map-base-map-preview {
+    box-shadow: 0 0 0 2px var(--kv-color-primary);
+  }
+
+  .kv-map-base-maps-options .kv-field > .kv-field-label::before,
+  .kv-map-base-maps-options .kv-field > .kv-field-label::after {
+    content: none;
+    position: absolute;
+    inset-block-start: var(--kv-space-1);
+    inset-inline-end: var(--kv-space-1);
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+  }
+
+  .kv-map-base-maps-options .kv-field:has(> .kv-radio:checked) > .kv-field-label::before {
+    content: '';
+    border-radius: var(--kv-radius-full);
+    background-color: var(--kv-color-primary);
+  }
+
+  .kv-map-base-maps-options .kv-field:has(> .kv-radio:checked) > .kv-field-label::after {
+    content: '';
+    background-color: var(--kv-color-on-primary);
+    clip-path: polygon(26% 52%, 37% 41%, 45% 49%, 66% 28%, 77% 39%, 45% 71%);
+  }
+
+  .kv-map-base-maps-options .kv-field:has(> .kv-radio:focus-visible) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* The preview when there is no `icon`: one neutral placeholder drawn from tokens. */
+  .kv-map-base-map-art {
+    background:
+      linear-gradient(
+        135deg,
+        transparent calc(50% - 1px),
+        var(--kv-color-border-subtle) calc(50% - 1px) calc(50% + 1px),
+        transparent calc(50% + 1px)
+      ),
+      var(--kv-color-surface);
+  }
+
+  /* The swatch before a layer's label or a list row: the marker's look, 1.5rem, decorative. */
+  .kv-map-layer-swatch,
+  .kv-map-list-swatch {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    box-sizing: border-box;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    border-radius: var(--kv-radius-full);
+    background-color: var(--kv-color-primary);
+    color: var(--kv-color-on-primary);
+  }
+
+  .kv-map-layer-swatch > *,
+  .kv-map-list-swatch > * {
+    inline-size: 1rem;
+    block-size: 1rem;
+  }
+
+  /* An unchecked layer keeps its row: the swatch echoes the checkbox, which carries the state. */
+  .kv-map-layers .kv-field:has(> .kv-checkbox:not(:checked)) .kv-map-layer-swatch {
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    background-color: var(--kv-color-surface);
+    color: var(--kv-color-text-muted);
+  }
+
+  /* The details popup. It is portalled into the slot right after the markers, so its tab order
+   * follows them. The map never mirrors, so the position is physical: left and top. The popup
+   * never covers its marker: it sits on one side and scrolls inside the room it has. */
+  .kv-map-popup-slot {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .kv-map-popup {
+    position: absolute;
+    left: var(--kv-map-popup-x, 0);
+    top: var(--kv-map-popup-y, 0);
+    box-sizing: border-box;
+    inline-size: min(var(--kv-map-popup-inline-size, 22rem), calc(100% - 2 * var(--kv-space-2)));
+    pointer-events: auto;
+  }
+
+  .kv-map-popup > .kv-map-details,
+  .kv-map-popup > .kv-map-cluster-popup {
+    /* A <dialog open> is absolutely positioned by the browser: put it back in the popup's flow. */
+    position: static;
+    inset: auto;
+    inline-size: auto;
+    block-size: auto;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    max-block-size: var(--kv-map-popup-max-block-size, none);
+    overflow: auto;
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-map-popup-radius, var(--kv-radius-md));
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-shadow-popup);
+    color: var(--kv-color-text);
+    /* A focused link never scrolls under Close (2.4.11). */
+    scroll-padding-block-start: calc(var(--kv-control-min-block-size) + 2 * var(--kv-space-2));
+    scroll-padding-block-end: calc(var(--kv-control-min-block-size) + 2 * var(--kv-space-2) + 1px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .kv-map-popup-caret {
+    position: absolute;
+    left: var(--kv-map-caret-x, 1rem);
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
+    background-color: var(--kv-color-surface-raised);
+    pointer-events: none;
+  }
+
+  .kv-map-popup[data-side='top'] > .kv-map-popup-caret {
+    top: calc(100% - 0.375rem);
+    transform: translateX(-50%) rotate(45deg);
+    border-inline-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  .kv-map-popup[data-side='bottom'] > .kv-map-popup-caret {
+    bottom: calc(100% - 0.375rem);
+    transform: translateX(-50%) rotate(45deg);
+    border-inline-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  /* The hero, capped so the sticky footer always shows. With no measured max height the calc is
+   * invalid and the cap is just 9rem. */
+  .kv-map-details-image {
+    display: block;
+    flex: none;
+    inline-size: 100%;
+    aspect-ratio: 2 / 1;
+    max-block-size: min(9rem, calc(var(--kv-map-popup-max-block-size) * 0.3));
+    object-fit: cover;
+    border-start-start-radius: calc(
+      var(--kv-map-popup-radius, var(--kv-radius-md)) - var(--kv-border-width)
+    );
+    border-start-end-radius: calc(
+      var(--kv-map-popup-radius, var(--kv-radius-md)) - var(--kv-border-width)
+    );
+  }
+
+  .kv-map-details-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--kv-space-1);
+    padding: var(--kv-space-3) var(--kv-space-4);
+  }
+
+  /* Optional actions under the content: put a kv-button-group in it. It sticks to the bottom of the
+   * scrolling dialog, so the actions always show. */
+  .kv-map-details-footer {
+    position: sticky;
+    inset-block-end: 0;
+    margin-block-start: auto;
+    padding: var(--kv-space-2) var(--kv-space-4);
+    border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    background-color: var(--kv-color-surface-raised);
+  }
+
+  /* The focus ring (the title takes focus on open) hugs the words: it never spans the frame or runs
+   * under Close. With no image the title also stops short of Close. */
+  .kv-map-details-title {
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    margin: 0;
+    min-inline-size: 0;
+    border-radius: var(--kv-radius-sm);
+    font-size: var(--kv-font-heading-4-size);
+    font-weight: var(--kv-font-heading-4-weight);
+    line-height: var(--kv-font-heading-4-line-height);
+    letter-spacing: var(--kv-font-heading-4-letter-spacing);
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
+
+  :is(.kv-map-details, .kv-map-cluster-popup):not(:has(> .kv-map-details-image))
+    .kv-map-details-title {
+    max-inline-size: calc(
+      100% - var(--kv-button-min-block-size, var(--kv-control-min-block-size)) - var(--kv-space-2)
+    );
+  }
+
+  /* Pinned at the top inline end of the frame. Its containing block is .kv-map-popup, outside the
+   * scroller, so it stays put while the content scrolls; the frame measures the scrollbar so Close
+   * never covers it. DOM order stays title, then Close. */
+  .kv-map-details-close {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: var(--kv-space-2);
+    inset-inline-end: calc(var(--kv-space-2) + var(--kv-map-popup-scrollbar-size, 0px));
+  }
+
+  /* Over an image nothing can be measured: the halo of every control on imagery. */
+  .kv-map-details:has(> .kv-map-details-image) .kv-map-details-close {
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-map-halo);
+  }
+
+  .kv-map-details-body,
+  .kv-map-details-address {
+    margin: 0;
+    font-size: var(--kv-font-body-size);
+    line-height: var(--kv-font-body-line-height);
+    color: var(--kv-color-text);
+  }
+
+  .kv-map-details-address {
+    font-style: normal;
+    font-size: var(--kv-font-body-small-size);
+    line-height: var(--kv-font-body-small-line-height);
+    color: var(--kv-color-text-muted);
+  }
+
+  .kv-map-cluster-places {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .kv-map-cluster-place {
+    position: relative;
+    display: grid;
+    gap: var(--kv-space-1);
+    padding: var(--kv-space-2) var(--kv-space-3);
+    border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  .kv-map-cluster-place:hover {
+    background-color: var(--kv-color-surface);
+  }
+
+  .kv-map-cluster-place-trigger {
+    min-block-size: 1.5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--kv-color-text);
+    font: inherit;
+    font-weight: 600;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .kv-map-cluster-place-trigger::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .kv-map-cluster-place-trigger:focus-visible {
+    outline: none;
+  }
+
+  .kv-map-cluster-place-trigger:focus-visible::after {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: calc(-1 * (var(--kv-focus-ring-width) + 2px));
+  }
+
+  .kv-map-cluster-place-address {
+    font-size: var(--kv-font-body-small-size);
+    line-height: var(--kv-font-body-small-line-height);
+    color: var(--kv-color-text-muted);
+  }
+
+  /* Above 40rem of the map's own width the chrome floats on the canvas: the layers card at the
+   * inline start, Map type at the bottom inline start, the controls at the inline end and the
+   * attribution at the bottom inline end. Each registers as an overlay, so a marker reached by
+   * keyboard is panned clear of it (2.4.11). */
+  @container (min-width: 40rem) {
+    .kv-map-viewport > :is(.kv-map-layers, .kv-map-base-maps) {
+      position: absolute;
+      z-index: 1;
+      box-sizing: border-box;
+      border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+      border-radius: var(--kv-radius-md);
+      background-color: var(--kv-color-surface-raised);
+      box-shadow: var(--kv-shadow-popup);
+    }
+
+    .kv-map-viewport > .kv-map-layers {
+      inset-block-start: var(--kv-space-2);
+      inset-inline-start: var(--kv-space-2);
+      max-inline-size: calc(100% - 12rem);
+      padding: var(--kv-space-2) var(--kv-space-3);
+    }
+
+    .kv-map-viewport > .kv-map-base-maps {
+      inset-block-end: var(--kv-space-2);
+      inset-inline-start: var(--kv-space-2);
+    }
+
+    /* The keyboard hint sits at the bottom centre, clear of the layers card. */
+    .kv-map-hint:not(.kv-map-hint--gesture) {
+      inset-block: auto var(--kv-space-2);
+      inset-inline: 0;
+      margin-inline: auto;
+      inline-size: fit-content;
+      max-inline-size: min(20rem, calc(100% - 24rem));
+    }
+
+    /* The card is one 44px row: a 3 x 2.25rem preview beside the label. */
+    .kv-map-base-maps-trigger {
+      inline-size: auto;
+      padding-inline: var(--kv-space-1) var(--kv-space-3);
+      border: 0;
+      border-radius: var(--kv-radius-md);
+      background: none;
+      font-size: var(--kv-font-body-small-size);
+      font-weight: 600;
+    }
+
+    .kv-map-base-maps-trigger:hover {
+      background-color: var(--kv-color-surface);
+    }
+
+    .kv-map-base-maps-trigger[aria-expanded='true'] {
+      background-color: var(--kv-color-primary-subtle);
+    }
+
+    .kv-map-base-maps-trigger > .kv-map-base-map-preview {
+      inline-size: 3rem;
+      block-size: 2.25rem;
+    }
+
+    .kv-map-base-maps-chevron {
+      display: none;
+    }
+  }
+
+  /* Below 40rem the layers and Map type move to a bar above the map, and the controls and the
+   * attribution to rows under it: the buttons are the single-pointer alternative to a two-finger
+   * pan (2.5.7), so they never clip on the fixed-height canvas. The engine, markers and popup keep
+   * the middle row. */
+  @container (width < 40rem) {
+    .kv-map-viewport {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto auto var(--kv-map-block-size, clamp(15rem, 60vh, 40rem)) auto auto;
+      block-size: auto;
+    }
+
+    .kv-map-viewport
+      > :is(.kv-map-engine, .kv-map-markers, .kv-map-popup-slot, .kv-map-hint, .kv-map-status) {
+      grid-row: 3;
+      grid-column: 1;
+    }
+
+    .kv-map-viewport
+      > :is(.kv-map-layers, .kv-map-base-maps, .kv-map-controls, .kv-map-attribution) {
+      position: static;
+      grid-column: 1;
+      margin: 0;
+    }
+
+    .kv-map-viewport > .kv-map-layers {
+      grid-row: 1;
+      padding: var(--kv-space-3) var(--kv-space-3) var(--kv-space-2);
+    }
+
+    .kv-map-viewport > .kv-map-base-maps {
+      grid-row: 2;
+      padding: 0 var(--kv-space-3) var(--kv-space-3);
+    }
+
+    .kv-map-viewport > .kv-map-controls {
+      grid-row: 4;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      padding: var(--kv-space-3);
+    }
+
+    .kv-map-viewport > .kv-map-attribution {
+      grid-row: 5;
+      max-inline-size: none;
+      padding: 0 var(--kv-space-3) var(--kv-space-3);
+      border: 0;
+      background: none;
+      box-shadow: none;
+      color: var(--kv-color-text-muted);
+    }
+
+    .kv-map-zoom {
+      flex-direction: row;
+    }
+
+    .kv-map-zoom > .kv-button:first-child {
+      border-start-start-radius: var(--kv-radius-md);
+      border-start-end-radius: 0;
+      border-end-start-radius: var(--kv-radius-md);
+    }
+
+    .kv-map-zoom > .kv-button:last-child {
+      border-block-start: 0;
+      border-inline-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+      border-start-start-radius: 0;
+      border-start-end-radius: var(--kv-radius-md);
+      border-end-start-radius: 0;
+      border-end-end-radius: var(--kv-radius-md);
+    }
+  }
+
+  /* Motion: colour, background, border, shadow and opacity only, never on exit. */
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-kv-motion='reduce']) {
+      .kv-map-layers .kv-field > .kv-field-label {
+        transition:
+          background-color var(--kv-duration-fast) var(--kv-easing-standard),
+          border-color var(--kv-duration-fast) var(--kv-easing-standard),
+          color var(--kv-duration-fast) var(--kv-easing-standard);
+      }
+
+      .kv-map-layers .kv-field > .kv-field-label::before,
+      .kv-map-layers .kv-field > .kv-field-label::after {
+        transition: opacity var(--kv-duration-fast) var(--kv-easing-standard);
+      }
+
+      .kv-map-controls .kv-button {
+        transition: background-color var(--kv-duration-fast) var(--kv-easing-standard);
+      }
+    }
+  }
+
+  @media (forced-colors: active) {
+    .kv-map-viewport,
+    .kv-map-hint,
+    .kv-map-status,
+    .kv-map-attribution {
+      border-color: CanvasText;
+      background-color: Canvas;
+      box-shadow: none;
+      color: CanvasText;
+    }
+
+    .kv-map-zoom,
+    .kv-map-pan,
+    .kv-map-controls > .kv-button.kv-map-reset {
+      border: var(--kv-border-width) solid CanvasText;
+      background-color: Canvas;
+      box-shadow: none;
+    }
+
+    .kv-map-zoom > .kv-button:last-child {
+      border-color: CanvasText;
+    }
+
+    .kv-map-controls .kv-button[aria-disabled='true'] {
+      color: GrayText;
+    }
+
+    .kv-map-marker {
+      forced-color-adjust: none;
+      color: CanvasText;
+    }
+
+    .kv-map-marker::before {
+      border: 2px solid CanvasText;
+      background-color: Canvas;
+      box-shadow: none;
+    }
+
+    .kv-map-cluster {
+      forced-color-adjust: none;
+      border-color: CanvasText;
+      background-color: Canvas;
+      box-shadow: none;
+      color: CanvasText;
+    }
+
+    .kv-map-cluster[aria-expanded='true'] {
+      background-color: Highlight;
+      box-shadow: 0 0 0 2px CanvasText;
+      color: HighlightText;
+    }
+
+    .kv-map-cluster:focus-visible {
+      outline-color: Highlight;
+    }
+
+    .kv-map-cluster-place-trigger {
+      color: LinkText;
+    }
+
+    .kv-map-marker[aria-expanded='true']::before {
+      border-color: CanvasText;
+      background-color: Highlight;
+      box-shadow: 0 0 0 2px CanvasText;
+    }
+
+    .kv-map-marker[aria-expanded='true'] {
+      color: HighlightText;
+    }
+
+    .kv-map-marker-label {
+      border-color: CanvasText;
+      background-color: Canvas;
+      color: CanvasText;
+    }
+
+    .kv-map-marker:focus-visible::before {
+      outline-color: Highlight;
+    }
+
+    .kv-map-viewport:focus-visible {
+      outline-color: Highlight;
+    }
+
+    .kv-map-popup > .kv-map-details,
+    .kv-map-popup > .kv-map-cluster-popup,
+    .kv-map-popup-caret {
+      border-color: CanvasText;
+      background-color: Canvas;
+      box-shadow: none;
+      color: CanvasText;
+    }
+
+    .kv-map-details-close {
+      border: 2px solid ButtonText;
+      background-color: ButtonFace;
+      box-shadow: none;
+      color: ButtonText;
+    }
+
+    .kv-map-viewport > :is(.kv-map-layers, .kv-map-base-maps) {
+      border-color: CanvasText;
+      box-shadow: none;
+    }
+
+    .kv-map-base-maps-popup,
+    .kv-map-base-maps-trigger,
+    .kv-map-layers .kv-field > .kv-field-label {
+      border-color: CanvasText;
+    }
+
+    .kv-map-base-map-preview {
+      border-color: CanvasText;
+      background: Canvas;
+    }
+
+    .kv-map-base-map-preview > * {
+      background: Canvas;
+    }
+
+    .kv-map-layers .kv-field > .kv-field-label::before,
+    .kv-map-layers .kv-field > .kv-field-label::after {
+      forced-color-adjust: none;
+      background-color: CanvasText;
+    }
+
+    .kv-map-layers .kv-field:has(> .kv-checkbox:checked) > .kv-field-label {
+      forced-color-adjust: none;
+      border-color: Highlight;
+      background-color: Highlight;
+      color: HighlightText;
+    }
+
+    .kv-map-layers .kv-field:has(> .kv-checkbox:checked) > .kv-field-label::after {
+      background-color: HighlightText;
+    }
+
+    .kv-map-layers .kv-field:has(> .kv-checkbox:checked) .kv-map-layer-swatch {
+      border-color: HighlightText;
+      background-color: Highlight;
+      color: HighlightText;
+    }
+
+    .kv-map-layers .kv-field:has(> .kv-checkbox:checked) .kv-map-layer-count {
+      color: HighlightText;
+    }
+
+    .kv-map-base-maps-options .kv-field:has(> .kv-radio:checked) .kv-map-base-map-preview {
+      box-shadow: none;
+      outline: 2px solid Highlight;
+    }
+
+    .kv-map-base-maps-options .kv-field:has(> .kv-radio:checked) > .kv-field-label::before {
+      forced-color-adjust: none;
+      background-color: Highlight;
+    }
+
+    .kv-map-base-maps-options .kv-field:has(> .kv-radio:checked) > .kv-field-label::after {
+      forced-color-adjust: none;
+      background-color: HighlightText;
+    }
+
+    .kv-map-base-maps-options .kv-field:has(> .kv-radio:focus-visible),
+    .kv-map-base-maps-trigger:focus-visible,
+    .kv-map-layers .kv-field:has(> .kv-checkbox:focus-visible) > .kv-field-label,
+    .kv-map-list-trigger:focus-visible::after,
+    .kv-map-cluster-place-trigger:focus-visible::after {
+      outline-color: Highlight;
+    }
+
+    .kv-map-layer-swatch,
+    .kv-map-list-swatch {
+      forced-color-adjust: none;
+      border: var(--kv-border-width) solid CanvasText;
+      background-color: Canvas;
+      color: CanvasText;
+    }
+
+    .kv-map-layers .kv-field:has(> .kv-checkbox:not(:checked)) .kv-map-layer-swatch {
+      border-color: CanvasText;
+      background-color: Canvas;
+      color: CanvasText;
+    }
+
+    .kv-map-layer-count,
+    .kv-map-list-address,
+    .kv-map-list-aside,
+    .kv-map-details-address,
+    .kv-map-cluster-place-address {
+      color: CanvasText;
+    }
+
+    .kv-map-list-item,
+    .kv-map-cluster-place {
+      border-color: CanvasText;
+    }
+
+    .kv-map-list-item[data-highlighted] {
+      border-inline-start: var(--kv-indicator-width) solid Highlight;
+    }
+
+    .kv-map-list-item[data-highlighted]::before {
+      content: none;
+    }
+
+    .kv-map-details-footer {
+      border-color: CanvasText;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-map-popup > .kv-map-details,
+      .kv-map-popup > .kv-map-cluster-popup {
+        animation: kv-soft-fade-in var(--kv-duration-fast) var(--kv-easing-standard);
+      }
+    }
+  }
+}

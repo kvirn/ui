@@ -78,6 +78,6 @@ export const fuelStations = generate('fuel', 'fuel', 1187)
 export const hotels = generate('hotels', 'hotel', 2291)
 
 export const demoLayers: MapLayer[] = [
-  { id: 'fuel', label: 'Fuel stations', description: 'Petrol, diesel and charging stops.' },
-  { id: 'hotels', label: 'Hotels', description: 'Places to stay in and around the city.' },
+  { id: 'fuel', label: 'Fuel stations' },
+  { id: 'hotels', label: 'Hotels' },
 ]

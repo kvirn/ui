@@ -272,7 +272,7 @@ export default defineConfig({
           name: 'browser',
           maxWorkers,
           include: [
-            'packages/{react,testing,rich-text}/src/**/*.test.{ts,tsx}',
+            'packages/{react,testing,rich-text,map}/src/**/*.test.{ts,tsx}',
             'packages/patterns/src/**/*.test.tsx',
             'apps/docs/**/*.test.tsx',
           ],

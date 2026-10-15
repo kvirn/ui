@@ -18,6 +18,7 @@ import {
 import { MapLayers } from './map-layers.tsx'
 import { MapList } from './map-list.tsx'
 import { MapCluster, MapMarker, MapMarkers } from './map-markers.tsx'
+import { MapOverlay } from './map-overlay.tsx'
 import { MapRoot } from './map-root.tsx'
 import { MapSkip } from './map-skip.tsx'
 import { MapViewport } from './map-viewport.tsx'
@@ -70,6 +71,8 @@ export type {
   MapMarkerState,
   MapMarkersProps,
 } from './map-markers.tsx'
+export { MapOverlay } from './map-overlay.tsx'
+export type { MapOverlayProps } from './map-overlay.tsx'
 export { MapRoot } from './map-root.tsx'
 export type { MapRootProps } from './map-root.tsx'
 export { MapSkip } from './map-skip.tsx'
@@ -85,6 +88,7 @@ export const Map = {
   Marker: MapMarker,
   Cluster: MapCluster,
   Controls: MapControls,
+  Overlay: MapOverlay,
   Attribution: MapAttribution,
   BaseMapSwitch: MapBaseMapSwitch,
   Layers: MapLayers,

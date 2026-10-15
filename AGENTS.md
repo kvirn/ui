@@ -103,6 +103,6 @@ No decision records: git history is the record of why. A decision changes the fa
 ## Maintainer preferences
 
 - Colours are named by role (primary, secondary, accent, surface, neutral), never by hue, so a brand can swap a scale without a refactor.
-- Fewer ceremonies: one import styles everything, and removing it unstyles everything. Classes are for parts and choices, `data-*` is only state.
+- Fewer ceremonies: one import styles everything in `@kvirn-ui/react`, and removing it unstyles everything. The map and the rich text editor have their own opt-in CSS file in `packages/theme`. Classes are for parts and choices, `data-*` is only state.
 - The default theme is a rebrandable default, not a brand. Every value that fails AA is adjusted and the look is kept.
 - Tokens are a budget: a tight brief in, a short report out, and no agent reads what the brief already says.

@@ -107,10 +107,10 @@ export function ManyPlacesDemo({
           markerClassName={(place) => `story-marker--${place.layer}`}
           clusterClassName={(cluster) => `story-cluster--${cluster.layer}`}
         />
+        <Map.Layers />
         <Map.Controls />
         <Map.Attribution />
       </Map.Viewport>
-      <Map.Layers />
       {showList ? <Map.List /> : null}
       <Map.Details />
       <Map.ClusterPopup />

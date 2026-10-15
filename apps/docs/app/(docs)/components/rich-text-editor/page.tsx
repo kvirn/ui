@@ -1,3 +1,4 @@
+import '@kvirn-ui/theme/rich-text.css'
 import type { Metadata } from 'next'
 import { RichTextEditorPage } from '../../../../components/rich-text-editor-page.tsx'
 import { readContract } from '../../../../lib/contract.ts'

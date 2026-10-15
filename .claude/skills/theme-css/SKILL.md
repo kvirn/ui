@@ -17,6 +17,7 @@ Load `accessibility` together with this skill when you change colour, focus, mot
 ## Files and layers
 
 - `theme.css` is opt-in. `KvirnProvider` never loads CSS. The docs site and Storybook import `theme.css` the way an adopter does. Removing the import unstyles every component.
+- CSS for a package outside `@kvirn-ui/react` lives in its own opt-in file in `packages/theme`, wrapped in `@layer kv { … }` and not imported by `theme.css`: `@kvirn-ui/theme/map.css` and `@kvirn-ui/theme/rich-text.css`. A site without maps or an editor does not pay for them (maintainer, 2026-10-15). A new such file is added to `files` and `exports` in `package.json` and to the raw-colour lint's list (`tooling/raw-colours/find-raw-colours.ts`); `theme:check` reads declared pairs, not these files. `theme.css`'s section index points at it.
 - `reset.css` (`@kvirn-ui/theme/reset.css`) is separate and optional. `theme.css` does not import it, and the theme works with or without it.
 - Everything is inside a cascade layer, so unlayered consumer CSS always wins whatever its specificity.
   - `theme.css` uses `@layer kv`. `reset.css` uses `@layer kv-reset`.
@@ -64,7 +65,7 @@ A new or changed token needs the maintainer's approval, with DESIGN.md updated i
 - `kv-<name>`: a context the consumer sets on a container (`kv-compact`, `kv-button-group`, `kv-prose`, `kv-not-prose`, `kv-scroll-region`).
 - `data-*` is state only (`data-disabled`, `data-invalid`, `data-focus-visible`, `data-current`, `data-open`, `data-active`, `data-selected`). The component sets it, the consumer never does.
 - Part, modifier and state names are public API: renaming one is a breaking change.
-- One import styles everything. Never require a consumer to add a class or a prop for the default look. Choices (primary, danger, compact, a gap, a marker, a layout) are classes. A component may take `variant`, `size` or `orientation` and map it to one; no other presentation prop, no inline `style`, no `data-*` for a choice (AGENTS.md rule 14).
+- One import styles everything in `@kvirn-ui/react` (the map and the rich text editor have their own opt-in file, above). Never require a consumer to add a class or a prop for the default look. Choices (primary, danger, compact, a gap, a marker, a layout) are classes. A component may take `variant`, `size` or `orientation` and map it to one; no other presentation prop, no inline `style`, no `data-*` for a choice (AGENTS.md rule 14).
 - The base button is the secondary look. `kv-button--primary` is the one main action, `kv-button--danger` a destructive one.
 
 ## Rules every section follows

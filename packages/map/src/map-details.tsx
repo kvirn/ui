@@ -231,10 +231,8 @@ export function MapDetails<Data = unknown>({
             <>
               <MapDetailsImage />
               <div className="kv-map-details-content">
-                <div className="kv-map-details-header">
-                  <MapDetailsTitle />
-                  <MapDetailsClose />
-                </div>
+                <MapDetailsTitle />
+                <MapDetailsClose />
                 <MapDetailsBody />
                 <MapDetailsAddress />
               </div>

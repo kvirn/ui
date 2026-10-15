@@ -70,6 +70,7 @@ export function MapPopup({
   const [storedLayout, setLayout] = useState<PopupLayout | null>(null)
   const sectionElement = useRef<HTMLElement | null>(null)
   const mergedRef = useMergedRef(consumerRef, sectionElement)
+  const [scrollbarSize, setScrollbarSize] = useState(0)
 
   const layout: PopupLayout =
     storedLayout?.anchorId === anchorId
@@ -136,6 +137,23 @@ export function MapPopup({
     placeRef.current()
     // The anchor moves with the camera and the viewport resizes with the bounds: nothing else changes the placement.
   }, [anchorId, viewportId, view, bounds, handle])
+  // The dialog is the scroller: Close sits outside it, so it needs to know how wide the scrollbar is.
+  useLayoutEffect(() => {
+    const element = sectionElement.current
+    if (!element) {
+      return
+    }
+    const measure = () => {
+      const style = getComputedStyle(element)
+      const borders =
+        parseFloat(style.borderInlineStartWidth) + parseFloat(style.borderInlineEndWidth)
+      setScrollbarSize(Math.max(0, element.offsetWidth - element.clientWidth - borders))
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
   // The camera moves every frame, the view in the store only now and then: the popup follows the frame.
   useMapFrame(handle, () => placeRef.current())
 
@@ -155,6 +173,7 @@ export function MapPopup({
     '--kv-map-popup-x': `${layout.x}px`,
     '--kv-map-popup-y': `${layout.y}px`,
     '--kv-map-caret-x': `${layout.caretX}px`,
+    '--kv-map-popup-scrollbar-size': `${scrollbarSize}px`,
     '--kv-map-popup-max-block-size': layout.maxBlockSize > 0 ? `${layout.maxBlockSize}px` : 'none',
   } as CSSProperties
   return createPortal(

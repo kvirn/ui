@@ -465,6 +465,6 @@ export const en = {
       `${layer}: ${format.plural(count, { one: '1 place', other: `${format.number(count)} places` })}`,
     clusterClose: 'Close',
     layersLegend: 'Show on the map',
-    layerCount: ({ label, count }, format) => `${label} (${format.number(count)})`,
+    layerCountValue: ({ count }, format) => format.number(count),
   },
 } satisfies KvirnMessages

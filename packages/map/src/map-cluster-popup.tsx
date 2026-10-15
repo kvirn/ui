@@ -253,10 +253,8 @@ export function MapClusterPopup<Data = unknown>({
             children
           ) : (
             <div className="kv-map-details-content">
-              <div className="kv-map-details-header">
-                <MapClusterPopupTitle />
-                <MapClusterPopupClose />
-              </div>
+              <MapClusterPopupTitle />
+              <MapClusterPopupClose />
               <MapClusterPopupPlaces />
             </div>
           )}

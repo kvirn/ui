@@ -58,7 +58,8 @@
     "maplibre-gl": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "vite-plus": "catalog:"
+    "vite-plus": "catalog:",
+    "vitest-browser-react": "catalog:"
   },
   "peerDependencies": {
     "maplibre-gl": "^6.14.0",

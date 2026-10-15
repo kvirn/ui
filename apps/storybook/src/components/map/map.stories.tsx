@@ -36,7 +36,7 @@ const meta = {
     baseMap: 'standard',
     defaultBaseMap: 'standard',
     showBaseMapSwitch: true,
-    showList: false,
+    showList: true,
     onBaseMapChange: fn(),
     initialView,
     places,
@@ -57,7 +57,7 @@ const meta = {
     showList: {
       control: 'boolean',
       description:
-        'Story only, not a prop: whether the page renders `Map.List`. Default off here. Without it you must give another way to reach every place: the list is the map for screen reader and keyboard users (see OwnList).',
+        'Story only, not a prop: whether the page renders `Map.List`. Default on here. Without it you must give another way to reach every place: the list is the map for screen reader and keyboard users (see OwnList).',
     },
     offline: { table: { disable: true } },
     provider: {
@@ -114,7 +114,7 @@ const meta = {
     cluster: {
       control: 'boolean',
       description:
-        'Group places that would overlap into clusters: pressing one opens `Map.ClusterPopup` with its places. Default on, radius 48 CSS pixels; pass `{ radius }` to change it, `false` to turn it off.',
+        'Group places that would overlap into clusters: pressing one opens `Map.ClusterPopup` with its places. Default on, radius 64 CSS pixels; pass `{ radius }` to change it, `false` to turn it off.',
     },
     messages: {
       control: 'object',

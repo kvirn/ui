@@ -10,6 +10,9 @@ import type { ReactNode } from 'react'
 import '../../docs/fonts/ibm-plex/ibm-plex.css'
 // The default theme, as an adopter imports it.
 import '@kvirn-ui/theme/theme.css'
+// Opt-in classes for the map and the rich text editor, as an adopter imports them after theme.css.
+import '@kvirn-ui/theme/map.css'
+import '@kvirn-ui/theme/rich-text.css'
 import './preview.css'
 import {
   expectNoClippedTextWithSpacing,

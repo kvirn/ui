@@ -720,8 +720,8 @@ export interface KvirnMessages {
     clusterClose: TextMessage
     /** The legend of the layer checkboxes: `Show on the map`. */
     layersLegend: TextMessage
-    /** A layer checkbox's label: `Hotels (100)`. `label` is the consumer's layer label. */
-    layerCount: MessageFunction<{ label: string; count: number }>
+    /** The count after a layer's name in its checkbox label, which reads `Hotels 100`. */
+    layerCountValue: MessageFunction<{ count: number }>
   }
 }
 

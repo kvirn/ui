@@ -9,7 +9,7 @@ const PLACE_ZOOM = 12
 const DEFAULT_MOVE_MILLISECONDS = 240
 
 /** The view animates only under no-preference and while the app has not chosen reduced motion (DESIGN.md, Map view motion). */
-function readMoveAnimation(): { animate: boolean; duration: number } {
+export function readMoveAnimation(): { animate: boolean; duration: number } {
   const allowed =
     window.matchMedia('(prefers-reduced-motion: no-preference)').matches &&
     document.documentElement.dataset.kvMotion !== 'reduce'

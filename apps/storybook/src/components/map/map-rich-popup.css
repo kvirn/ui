@@ -4,10 +4,6 @@
   --kv-map-block-size: 38rem;
 }
 
-.story-rich-popup .kv-map-details-image {
-  aspect-ratio: 2 / 1;
-}
-
 .story-rich-popup-media {
   position: relative;
 }
@@ -45,5 +41,4 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--kv-space-2);
-  margin-block-start: var(--kv-space-2);
 }

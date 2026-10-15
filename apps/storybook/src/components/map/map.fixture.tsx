@@ -79,7 +79,7 @@ function createIcon(paths: readonly string[]): IconComponent {
   }
 }
 
-const layerIcons: Record<string, IconComponent> = {
+export const layerIcons: Record<string, IconComponent> = {
   fuel: createIcon([
     'M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16',
     'M3 21h14',
@@ -134,6 +134,10 @@ const baseMapDefinitions = [
     background: '#e6dfc8',
   },
 ]
+
+export const baseMapPreview = (baseMap: { id: string }) => (
+  <span className={`story-base-map-art--${baseMap.id}`} />
+)
 
 export const baseMapIds = baseMapDefinitions.map((definition) => definition.id)
 
@@ -218,9 +222,9 @@ function OwnList() {
 function BaseMapSelect() {
   return (
     <Map.BaseMapSwitch>
-      {({ baseMaps, baseMap, setBaseMap }) => (
+      {({ baseMaps, baseMap, setBaseMap, label }) => (
         <Field.Root>
-          <Field.Label>Map type</Field.Label>
+          <Field.Label>{label}</Field.Label>
           <Listbox.Root
             native="always"
             items={baseMaps}
@@ -256,11 +260,11 @@ export function MapDemo({
         >
           {(place) => <Icon icon={layerIcons[place.layer ?? 'fuel']!} size="16" />}
         </Map.Markers>
+        <Map.Layers icon={(layer) => <Icon icon={layerIcons[layer.id]!} size="16" />} />
+        {showBaseMapSwitch ? <Map.BaseMapSwitch icon={baseMapPreview} /> : null}
         <Map.Controls />
         <Map.Attribution />
       </Map.Viewport>
-      <Map.Layers icon={(layer) => <Icon icon={layerIcons[layer.id]!} size="16" />} />
-      {showBaseMapSwitch ? <Map.BaseMapSwitch /> : null}
       {showList ? <Map.List /> : null}
       <Map.Details />
       <Map.ClusterPopup />
@@ -303,10 +307,10 @@ export function CustomMarkersDemo({ offline = false, ...mapProps }: MapDemoProps
             </>
           )}
         </Map.Markers>
+        <Map.Layers icon={(layer) => <Icon icon={layerIcons[layer.id]!} size="16" />} />
         <Map.Controls />
         <Map.Attribution />
       </Map.Viewport>
-      <Map.Layers icon={(layer) => <Icon icon={layerIcons[layer.id]!} size="16" />} />
       <Map.List />
       <Map.Details />
       <Map.ClusterPopup />
@@ -363,10 +367,8 @@ export function CustomPopupDemo({ offline = false, ...mapProps }: MapDemoProps) 
       <Map.Details>
         <div className="kv-map-details-content">
           <Map.DetailsAddress className="story-popup-address" />
-          <div className="kv-map-details-header">
-            <Map.DetailsTitle as="h2" className="story-popup-title" />
-            <Map.DetailsClose />
-          </div>
+          <Map.DetailsTitle as="h2" className="story-popup-title" />
+          <Map.DetailsClose />
           <Map.DetailsBody />
           <Map.DetailsImage className="story-popup-image" />
         </div>

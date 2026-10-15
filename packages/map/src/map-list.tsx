@@ -14,7 +14,14 @@ export interface MapListProps<Data = unknown> extends Omit<
   ComponentPropsWithRef<'div'>,
   'children'
 > {
-  /** Extra facts under a place's name: address, distance. */
+  /** A decorative swatch before each row, such as the place's marker icon. It is not read. */
+  icon?: ((place: MapPlace<Data>) => ReactNode) | undefined
+  /** A class on each row, such as the one the place's marker has. */
+  rowClassName?: ((place: MapPlace<Data>) => string | undefined) | undefined
+  /**
+   * Extra facts under a place's name: address, distance. Keep them non-interactive: the whole row
+   * is the button. A node with `kv-map-list-aside` sits at the row's inline end.
+   */
   children?: ((place: MapPlace<Data>) => ReactNode) | undefined
 }
 
@@ -23,6 +30,8 @@ export interface MapListProps<Data = unknown> extends Omit<
  * screen reader user's equivalent of the map and is hidden while a place's details are open.
  */
 export function MapList<Data = unknown>({
+  icon,
+  rowClassName,
   children,
   className,
   ...otherProps
@@ -51,7 +60,12 @@ export function MapList<Data = unknown>({
       {map.placesInViewCount === 0 ? (
         <p>{messages.listEmpty}</p>
       ) : (
-        <MapListRows anchorId={anchorId} setAnchorId={setAnchorId}>
+        <MapListRows
+          anchorId={anchorId}
+          setAnchorId={setAnchorId}
+          icon={icon}
+          rowClassName={rowClassName}
+        >
           {children}
         </MapListRows>
       )}
@@ -64,10 +78,18 @@ interface MapListRowsProps<Data> {
   /** The row the user is on or came from: it stays rendered and is scrolled to when the list returns. */
   anchorId: string | null
   setAnchorId: (placeId: string) => void
+  icon: MapListProps<Data>['icon']
+  rowClassName: MapListProps<Data>['rowClassName']
   children: ((place: MapPlace<Data>) => ReactNode) | undefined
 }
 
-function MapListRows<Data>({ anchorId, setAnchorId, children }: MapListRowsProps<Data>) {
+function MapListRows<Data>({
+  anchorId,
+  setAnchorId,
+  icon,
+  rowClassName,
+  children,
+}: MapListRowsProps<Data>) {
   const map = useMapContext<Data>('List')
   const { getPlaceInView, getPlaceInViewKey, getPlaceInViewPosition, placesInViewCount } = map
   const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(null)
@@ -107,7 +129,7 @@ function MapListRows<Data>({ anchorId, setAnchorId, children }: MapListRowsProps
           return (
             <li
               key={row.key}
-              className="kv-map-list-item"
+              className={joinClassNames('kv-map-list-item', rowClassName?.(place))}
               data-highlighted={map.highlightedPlaceId === place.id ? '' : undefined}
               {...{
                 onFocus: () => setAnchorId(place.id),
@@ -116,6 +138,11 @@ function MapListRows<Data>({ anchorId, setAnchorId, children }: MapListRowsProps
               }}
               {...virtual.getRowProps(row)}
             >
+              {icon ? (
+                <span className="kv-map-list-swatch" aria-hidden="true">
+                  {icon(place)}
+                </span>
+              ) : null}
               <button
                 id={map.rowId(place.id)}
                 type="button"

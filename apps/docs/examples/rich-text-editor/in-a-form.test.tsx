@@ -1,4 +1,5 @@
 import '@kvirn-ui/theme/theme.css'
+import '@kvirn-ui/theme/rich-text.css'
 import { KvirnProvider } from '@kvirn-ui/react'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { describe, expect, test } from 'vite-plus/test'

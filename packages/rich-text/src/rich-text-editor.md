@@ -10,7 +10,7 @@ A formatted-text field for text that will be published or sent: a news item, a c
 - **Keyboard.** Shortcuts are on, limited to the platform's text-editing convention. Tab nests a list item (Shift+Tab outdents it) and moves to the next table cell, but only where it can. Anywhere else Tab leaves the editor for the next focusable element, as in any field: there is nothing to press first. See the Keyboard section.
 - **The output is never sanitized.** Tiptap's schema drops unknown tags and attributes, but that is not a security boundary. Always sanitize the HTML or JSON on the server before you store or publish it. A pasted link can carry a `target`: strip it.
 - **No collaboration, comments, AI or upload.** Nothing from `@tiptap-pro` or Tiptap Cloud is used, because those call third-party servers. An image is inserted from an address with a description.
-- Headless: the parts render `kv-rich-text`, `kv-rich-text-content` and the toolbar and popover classes below. With `@kvirn-ui/theme/theme.css` imported it is styled.
+- Headless: the parts render `kv-rich-text`, `kv-rich-text-content` and the toolbar and popover classes below. Import `@kvirn-ui/theme/theme.css` and then `@kvirn-ui/theme/rich-text.css` (opt-in, so a site without the editor does not pay for its CSS) and it is styled.
 
 ## API
 

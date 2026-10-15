@@ -62,3 +62,59 @@
     border-color: CanvasText;
   }
 }
+
+/* The demo's base map previews, passed as `icon`: token-drawn, decorative. */
+.story-base-map-art--standard {
+  background:
+    linear-gradient(
+      0deg,
+      transparent calc(42% - 1px),
+      var(--kv-color-border-subtle) calc(42% - 1px) 42%,
+      var(--kv-color-canvas) 42% calc(42% + 3px),
+      var(--kv-color-border-subtle) calc(42% + 3px) calc(42% + 4px),
+      transparent calc(42% + 4px)
+    ),
+    linear-gradient(
+      160deg,
+      transparent calc(50% - 2px),
+      var(--kv-color-canvas) calc(50% - 2px) 50%,
+      transparent 50%
+    ),
+    radial-gradient(circle at 22% 30%, var(--kv-color-success-subtle) 0 18%, transparent 19%),
+    radial-gradient(ellipse 70% 50% at 90% 105%, var(--kv-color-primary-subtle) 0 98%, transparent),
+    var(--kv-color-surface);
+}
+
+.story-base-map-art--satellite {
+  background:
+    linear-gradient(
+      160deg,
+      transparent 49%,
+      color-mix(in srgb, var(--kv-color-canvas) 55%, transparent) 49% 52%,
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse 80% 40% at 50% 110%,
+      color-mix(in srgb, var(--kv-color-primary) 45%, var(--kv-color-text)) 0 98%,
+      transparent
+    ),
+    conic-gradient(
+      from 15deg at 38% 62%,
+      color-mix(in srgb, var(--kv-color-success) 55%, var(--kv-color-text)),
+      color-mix(in srgb, var(--kv-color-success) 35%, var(--kv-color-text)),
+      color-mix(in srgb, var(--kv-color-warning) 30%, var(--kv-color-text)),
+      color-mix(in srgb, var(--kv-color-success) 45%, var(--kv-color-text)),
+      color-mix(in srgb, var(--kv-color-success) 55%, var(--kv-color-text))
+    );
+}
+
+.story-base-map-art--terrain {
+  background:
+    repeating-radial-gradient(
+      circle at 70% 35%,
+      transparent 0 0.3rem,
+      color-mix(in srgb, var(--kv-color-success) 40%, transparent) 0.3rem calc(0.3rem + 1px)
+    ),
+    radial-gradient(ellipse at 70% 35%, var(--kv-color-warning-subtle) 0 30%, transparent 31%),
+    var(--kv-color-success-subtle);
+}

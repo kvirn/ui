@@ -31,6 +31,7 @@ import {
 } from 'react'
 import { useMapCamera } from './use-map-camera.ts'
 import type { MapGestureHint, MapPanDirection, MapStatus } from './use-map-camera.ts'
+import { useMapClearance } from './use-map-clearance.ts'
 import { useMapPopup } from './use-map-popup.ts'
 import { useMapPlaces } from './use-map-places.ts'
 import type { MapIndexer } from './use-map-places.ts'
@@ -38,8 +39,8 @@ import type { MapIndexer } from './use-map-places.ts'
 export type { MapGestureHint, MapIndexer, MapPanDirection, MapStatus }
 
 const ADDRESS_ZOOM = 15
-// One 44px target plus a gap, so markers never overlap (WCAG 2.5.8).
-const DEFAULT_CLUSTER_RADIUS = 48
+// A cluster centre drifts toward its members, so a radius of 64 keeps two centres about 44px (one target) apart (WCAG 2.5.8).
+const DEFAULT_CLUSTER_RADIUS = 64
 // More buttons than this in view is a page that struggles, whatever the engine.
 const MAX_COMFORTABLE_MARKERS = 2000
 const noLayers: readonly MapLayer[] = []
@@ -79,7 +80,7 @@ export interface UseMapOptions<Data = unknown> {
   defaultHiddenLayers?: readonly string[] | undefined
   /** Called with the next hidden ids when a user toggles a layer. */
   onHiddenLayersChange?: ((ids: readonly string[]) => void) | undefined
-  /** Group nearby places into clusters so markers never overlap. Default on, radius 48 CSS pixels; `false` turns it off. */
+  /** Group nearby places into clusters so markers of a layer never overlap. Default on, radius 64 CSS pixels; `false` turns it off. */
   cluster?: boolean | { radius?: number | undefined } | undefined
   /** Per-instance message overrides. */
   messages?: Partial<KvirnMessages['map']> | undefined
@@ -174,6 +175,10 @@ export interface UseMapResult<Data = unknown> {
   setHighlightedPlaceId: (placeId: string | null) => void
   setActiveMarkerId: (placeId: string | null) => void
   dismissKeyboardHint: () => void
+  /** Registers an element floating over the map; returns the function that unregisters it. */
+  registerOverlay: (element: HTMLElement) => () => void
+  /** For a focused marker: after the frame, pans the map just enough to clear it of the overlays. Keyboard focus only. */
+  keepClear: (element: HTMLElement) => void
   /** For the viewport: the next settled view is announced, as the user pressed a key or button. */
   announceNextSettle: () => void
 }
@@ -315,12 +320,19 @@ export function useMap<Data = unknown>({
     ids,
   })
 
+  const clearance = useMapClearance({
+    handle: camera.handle,
+    viewportId: ids.viewport,
+    moveTo,
+  })
+
   return {
     label,
     view: state.view,
     bounds: state.bounds,
     ...camera,
     ...popup,
+    ...clearance,
     places: places ?? noPlaces,
     indexing,
     visibleCount,

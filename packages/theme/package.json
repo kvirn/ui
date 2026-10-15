@@ -8,8 +8,10 @@
   "files": [
     "dist",
     "grid.css",
+    "map.css",
     "patterns.css",
     "reset.css",
+    "rich-text.css",
     "theme.css",
     "LICENSING.md"
   ],
@@ -31,7 +33,9 @@
         "default": "./dist/index.cjs"
       }
     },
+    "./map.css": "./map.css",
     "./reset.css": "./reset.css",
+    "./rich-text.css": "./rich-text.css",
     "./theme.css": "./theme.css",
     "./package.json": "./package.json"
   },

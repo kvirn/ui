@@ -16,6 +16,7 @@ export function MapMarker<Data = unknown>({
   children,
   className,
   onClick,
+  onFocus,
   'aria-label': ariaLabel,
   ...otherProps
 }: MapMarkerProps<Data>) {
@@ -47,7 +48,11 @@ export function MapMarker<Data = unknown>({
       }}
       onMouseEnter={() => map.setHighlightedPlaceId(place.id)}
       onMouseLeave={() => map.setHighlightedPlaceId(null)}
-      onFocus={() => map.setActiveMarkerId(place.id)}
+      onFocus={(event) => {
+        onFocus?.(event)
+        map.setActiveMarkerId(place.id)
+        map.keepClear(event.currentTarget)
+      }}
     >
       {children}
     </button>
@@ -70,6 +75,7 @@ export function MapCluster<Data = unknown>({
   children,
   className,
   onClick,
+  onFocus,
   'aria-label': ariaLabel,
   ...otherProps
 }: MapClusterProps<Data>) {
@@ -103,7 +109,11 @@ export function MapCluster<Data = unknown>({
         onClick?.(event)
         map.openCluster(cluster.id, markerId)
       }}
-      onFocus={() => map.setActiveMarkerId(cluster.id)}
+      onFocus={(event) => {
+        onFocus?.(event)
+        map.setActiveMarkerId(cluster.id)
+        map.keepClear(event.currentTarget)
+      }}
     >
       {children ?? <span className="kv-map-cluster-count">{count}</span>}
     </button>
