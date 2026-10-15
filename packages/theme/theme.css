@@ -67,6 +67,7 @@
  *   6. Button
  *  6a. Toggle         kv-toggle: a button that is on or off. kv-toolbar and its groups
  *   7. Link, service link and Navigation
+ *  7e. Quick exit       kv-quick-exit: a sticky row with one filled link that leaves the page
  *  7d. Top bar          kv-top-bar: a slim bar, its children at the start and the end
  *  7a. Tabs             kv-tabs: a list of tabs, and the panel each one shows
  *  7b. Table of contents  kv-table-of-contents: a page's headings, styled as navigation items
@@ -1497,6 +1498,155 @@
       border-inline-end: var(--kv-border-width) solid LinkText;
       background-color: Canvas;
       color: LinkText;
+    }
+  }
+
+  /* 7e. Quick exit --------------------------------------------------------------------------------
+   * kv-quick-exit: the row, a direct child of body above the header. kv-quick-exit-link: the one
+   * filled secondary link, flat because it navigates. The row is sticky only at 30rem of height or
+   * more: at 400% zoom a sticky row would take a quarter of the view. */
+  .kv-quick-exit {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--kv-space-2);
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-4);
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    background-color: var(--kv-color-canvas);
+  }
+
+  .kv-quick-exit[hidden] {
+    display: none;
+  }
+
+  .kv-quick-exit-link {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 2.75rem;
+    max-inline-size: 100%;
+    padding-block: var(--kv-space-1);
+    padding-inline: var(--kv-space-4);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-secondary);
+    color: var(--kv-color-on-secondary);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-label-size);
+    font-weight: 600;
+    line-height: var(--kv-font-label-line-height);
+    text-align: center;
+    text-decoration-line: none;
+    overflow-wrap: break-word;
+  }
+
+  .kv-quick-exit-hint {
+    margin: 0;
+    min-inline-size: 0;
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-small-size);
+    font-weight: var(--kv-font-body-small-weight);
+    line-height: var(--kv-font-body-small-line-height);
+    text-align: start;
+    text-decoration-line: none;
+    cursor: default;
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
+
+  .kv-quick-exit-link:is(:hover, :active) {
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+  }
+
+  .kv-quick-exit-link:is(:focus-visible, [data-focus-visible]) {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  /* Full width as a 44px bar below 40rem, auto width at the inline end from it. */
+  @media (width < 40rem) {
+    .kv-quick-exit-link {
+      inline-size: 100%;
+    }
+  }
+
+  @media (width >= 40rem) {
+    .kv-quick-exit {
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--kv-space-3);
+      padding-inline: var(--kv-space-6);
+    }
+
+    .kv-quick-exit-link {
+      flex: none;
+    }
+
+    .kv-quick-exit-hint {
+      flex: 0 1 auto;
+      max-inline-size: 24rem;
+    }
+  }
+
+  @media (width >= 64rem) {
+    .kv-quick-exit {
+      padding-inline: var(--kv-space-10);
+    }
+  }
+
+  /* Row height (link, block padding, hairline) plus space-4, so a focused element is never under it (2.4.11). */
+  @media (min-height: 30rem) {
+    .kv-quick-exit {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 1;
+    }
+
+    html:has(.kv-quick-exit) {
+      scroll-padding-block-start: calc(
+        2.75rem + 2 * var(--kv-space-1) + var(--kv-border-width) + var(--kv-space-4)
+      );
+    }
+
+    /* Below 40rem the hint sits under the link, up to three lines of it. */
+    @media (width < 40rem) {
+      html:has(.kv-quick-exit) {
+        scroll-padding-block-start: calc(
+          2.75rem + var(--kv-space-2) + 3 * var(--kv-font-body-small-size) *
+            var(--kv-font-body-small-line-height) + 2 * var(--kv-space-1) + var(--kv-border-width) +
+            var(--kv-space-4)
+        );
+      }
+    }
+  }
+
+  @media print {
+    .kv-quick-exit {
+      display: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .kv-quick-exit {
+      border-block-end-color: CanvasText;
+    }
+
+    .kv-quick-exit-hint {
+      color: CanvasText;
+    }
+
+    .kv-quick-exit-link {
+      border: var(--kv-border-width) solid LinkText;
+      background-color: Canvas;
+      color: LinkText;
+    }
+
+    .kv-quick-exit-link:is(:focus-visible, [data-focus-visible]) {
+      outline-color: Highlight;
     }
   }
 

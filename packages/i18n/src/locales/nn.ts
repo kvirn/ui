@@ -5,6 +5,7 @@ import type { KvirnMessages } from '../types.ts'
 // breadcrumb.* and pagination.* are drafts for a native speaker to review (Plan 0062).
 // Draft: errorSummary and definitionList (Plan 0063) need a native speaker's review.
 // displaySettings.* are drafts (Plan 0099): a native speaker should review them.
+// nn: quickExit.* is a draft (Plan 0122): a native speaker should review it.
 export const nn = {
   link: { newTabNotice: '(blir opna i ei ny fane)' },
   field: { optional: '(valfritt)', errorPrefix: 'Feil:' },
@@ -309,6 +310,15 @@ export const nn = {
     label: 'Kopier',
     copied: 'Kopiert',
     failed: 'Kunne ikkje kopiere. Marker teksten og kopier han sjølv.',
+  },
+  quickExit: {
+    label: 'Forlat sida',
+    hint: 'Eller trykk Skift 3 gonger.',
+    shortcutRemaining: ({ remaining }, format) =>
+      format.plural(remaining, {
+        one: 'Trykk Skift 1 gong til for å forlate sida',
+        other: `Trykk Skift ${format.number(remaining)} gonger til for å forlate sida`,
+      }),
   },
   readAloud: {
     label: 'Lytt til teksten',

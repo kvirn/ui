@@ -86,6 +86,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
       ),
       component('Link', 'link', 'A link that goes to another page or place.'),
       component(
+        'QuickExit',
+        'quick-exit',
+        'A link that takes a person off a sensitive page in one action and on to a neutral site you choose.',
+      ),
+      component(
         'Toolbar',
         'toolbar',
         'A row of related controls with one Tab stop and the arrow keys between them, so a keyboard user passes a long row of formatting buttons with a single Tab.',

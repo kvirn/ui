@@ -13,3 +13,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | #                          | Title                                                  | Status      |
 | -------------------------- | ------------------------------------------------------ | ----------- |
 | [0088](0088-read-aloud.md) | ReadAloud (text to speech player and selection reader) | In progress |
+| [0122](0122-quick-exit.md) | QuickExit (leave a sensitive page in one action)       | In progress |

@@ -301,6 +301,15 @@ export const en = {
     copied: 'Copied',
     failed: 'Could not copy. Select the text and copy it yourself.',
   },
+  quickExit: {
+    label: 'Leave this page',
+    hint: 'Or press Shift 3 times.',
+    shortcutRemaining: ({ remaining }, format) =>
+      format.plural(remaining, {
+        one: 'Press Shift 1 more time to leave this page',
+        other: `Press Shift ${format.number(remaining)} more times to leave this page`,
+      }),
+  },
   readAloud: {
     label: 'Listen to this text',
     play: 'Listen',

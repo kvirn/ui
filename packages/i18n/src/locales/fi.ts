@@ -6,6 +6,7 @@ import type { KvirnMessages } from '../types.ts'
 // breadcrumb.* and pagination.* are drafts for a native speaker to review (Plan 0062).
 // Draft: errorSummary and definitionList (Plan 0063) need a native speaker's review.
 // displaySettings.* are drafts (Plan 0099): a native speaker should review them.
+// fi: quickExit.* is a draft (Plan 0122): a native speaker should review it.
 export const fi = {
   link: { newTabNotice: '(avautuu uuteen välilehteen)' },
   field: { optional: '(vapaaehtoinen)', errorPrefix: 'Virhe:' },
@@ -315,6 +316,15 @@ export const fi = {
     label: 'Kopioi',
     copied: 'Kopioitu',
     failed: 'Kopiointi epäonnistui. Valitse teksti ja kopioi se itse.',
+  },
+  quickExit: {
+    label: 'Poistu sivulta',
+    hint: 'Tai paina vaihtonäppäintä 3 kertaa.',
+    shortcutRemaining: ({ remaining }, format) =>
+      format.plural(remaining, {
+        one: 'Paina vaihtonäppäintä vielä kerran poistuaksesi sivulta',
+        other: `Paina vaihtonäppäintä vielä ${format.number(remaining)} kertaa poistuaksesi sivulta`,
+      }),
   },
   readAloud: {
     label: 'Kuuntele teksti',

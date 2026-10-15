@@ -515,6 +515,14 @@ export interface KvirnMessages {
     /** Announced (assertive) when the browser refused. The component also selects the text. */
     failed: TextMessage
   }
+  quickExit: {
+    /** The visible text and the accessible name of the link, unless `children` replace it (Plan 0122). */
+    label: TextMessage
+    /** The visible sentence that tells sighted keyboard users about Shift ×3. `QuickExit.Hint` shows it, and the link is described by it. */
+    hint: TextMessage
+    /** Announced (polite) on Shift press 1 and 2: how many more presses leave the page. */
+    shortcutRemaining: MessageFunction<{ remaining: number }>
+  }
   readAloud: {
     /** The accessible name of the player group. Owned by ReadAloud (Plan 0088). */
     label: TextMessage

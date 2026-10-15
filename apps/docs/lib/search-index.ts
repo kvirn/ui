@@ -43,6 +43,7 @@ import * as pagination from '../content/pagination.api.ts'
 import * as popover from '../content/popover.api.ts'
 import * as progress from '../content/progress.api.ts'
 import * as prose from '../content/prose.api.ts'
+import * as quickExit from '../content/quick-exit.api.ts'
 import * as radioGroup from '../content/radio-group.api.ts'
 import * as readAloud from '../content/read-aloud.api.ts'
 import * as richTextEditor from '../content/rich-text-editor.api.ts'
@@ -113,6 +114,7 @@ const apiModules: Readonly<Record<string, object>> = {
   popover,
   progress,
   prose,
+  'quick-exit': quickExit,
   'radio-group': radioGroup,
   'read-aloud': readAloud,
   'rich-text-editor': richTextEditor,

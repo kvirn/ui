@@ -384,6 +384,7 @@ Each word means one thing, in this file, the docs, Storybook, specs and code com
 
 - Links look like links (`link`, underlined on hover) and buttons look like buttons. Never swap the two, with one exception: the link look of a button (`kv-button--link`, [Buttons](#buttons)) in a row of links, where a chevron or the state says it acts in place. Hover adds a thicker underline and uses `link-hover`.
 - **The service link** (`kv-link--service`) is the one link per view that starts an e-service: a `link` label with a `primary` edge and, with a `Link.Icon` first, a `primary` block holding an `on-primary` icon (`link-service`, `link-service-icon`). It is flat, because depth means "press me" and this navigates. It is a link, never a button, and has no disabled state: an unavailable e-service is text, not a dimmed link.
+- **The quick-exit link** (`kv-quick-exit-link`) is the other named exception: a link filled `secondary` with `on-secondary` text, the one filled link besides the service link's icon block. It sits alone in a sticky row above the header and takes a person off the page in one press. The fill makes it findable at a glance without competing with the page's primary action or alarming like `danger`, and a person who may be watched needs it to be the one thing they can complete the task with. It is flat, underlined on hover, and has no disabled or busy state.
 
 #### Skip link and visually hidden text
 

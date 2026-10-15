@@ -310,6 +310,15 @@ export const sv = {
     copied: 'Kopierat',
     failed: 'Det gick inte att kopiera. Markera texten och kopiera den själv.',
   },
+  quickExit: {
+    label: 'Lämna sidan',
+    hint: 'Eller tryck på Skift 3 gånger.',
+    shortcutRemaining: ({ remaining }, format) =>
+      format.plural(remaining, {
+        one: 'Tryck på Skift 1 gång till för att lämna sidan',
+        other: `Tryck på Skift ${format.number(remaining)} gånger till för att lämna sidan`,
+      }),
+  },
   readAloud: {
     label: 'Lyssna på texten',
     play: 'Lyssna',

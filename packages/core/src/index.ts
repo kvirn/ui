@@ -497,3 +497,9 @@ export type {
   MapSize,
   MapView,
 } from './map/types.ts'
+export { createShiftSequence } from './quick-exit/shift-sequence.ts'
+export type {
+  ShiftSequence,
+  ShiftSequenceOptions,
+  ShiftSequenceResult,
+} from './quick-exit/shift-sequence.ts'

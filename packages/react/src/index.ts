@@ -226,6 +226,21 @@ export { Address } from './address/address.tsx'
 export type { AddressProps } from './address/address.tsx'
 export { Kbd } from './kbd/kbd.tsx'
 export type { KbdProps } from './kbd/kbd.tsx'
+export { QuickExit, QuickExitHint, QuickExitLink, QuickExitRoot } from './quick-exit/quick-exit.tsx'
+export type {
+  QuickExitHintProps,
+  QuickExitLinkProps,
+  QuickExitRootProps,
+} from './quick-exit/quick-exit.tsx'
+export { useQuickExit } from './quick-exit/use-quick-exit.ts'
+export type {
+  QuickExitHintPartProps,
+  QuickExitLinkPartProps,
+  QuickExitRootPartProps,
+  QuickExitState,
+  UseQuickExitOptions,
+  UseQuickExitResult,
+} from './quick-exit/use-quick-exit.ts'
 export { useKbd } from './kbd/use-kbd.ts'
 export type { KbdPartProps, UseKbdResult } from './kbd/use-kbd.ts'
 export {
