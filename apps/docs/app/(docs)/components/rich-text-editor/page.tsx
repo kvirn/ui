@@ -16,6 +16,7 @@ export default function Page() {
         'in-a-form': readExampleSource('rich-text-editor/in-a-form.tsx'),
         controlled: readExampleSource('rich-text-editor/controlled.tsx'),
         'small-toolbar': readExampleSource('rich-text-editor/small-toolbar.tsx'),
+        'compact-toolbar': readExampleSource('rich-text-editor/compact-toolbar.tsx'),
         'character-count': readExampleSource('rich-text-editor/character-count.tsx'),
         'without-tables-and-images': readExampleSource(
           'rich-text-editor/without-tables-and-images.tsx',

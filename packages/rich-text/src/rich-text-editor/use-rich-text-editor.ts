@@ -17,6 +17,7 @@ import { useEditor } from '@tiptap/react'
 import { useContext, useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { FocusEvent, RefCallback } from 'react'
 import { defaultExtensions } from '../extensions/default-extensions.ts'
+import type { ImagePasteGuardStorage } from '../extensions/image-paste-guard.ts'
 import type { FormatShortcutName, KvirnKeymapStorage } from '../extensions/kvirn-keymap.ts'
 import {
   getDocumentValue,
@@ -457,6 +458,28 @@ export function useRichTextEditor<Format extends RichTextFormat = 'html'>({
       keymap.onOpenLinkForm = undefined
       keymap.onFormatToggle = undefined
       keymap.onListLevelChange = undefined
+    }
+  }, [editor])
+
+  // A refused pasted or dropped image is announced: the text would otherwise lose it silently.
+  useEffect(() => {
+    const guard: ImagePasteGuardStorage | undefined = editor?.storage.imagePasteGuard
+    if (guard === undefined) {
+      return undefined
+    }
+    // eslint-disable-next-line react/immutability -- the guard is the editor's own storage, set here and cleared on cleanup
+    guard.onRefused = (reason) => {
+      if (!latest.current.isAvailable) {
+        warnAnnouncerMissing()
+        return
+      }
+      const { messages: current } = latest.current
+      latest.current.announce(
+        reason === 'file' ? current.imagePasteNotSupported : current.imageSourceNotAllowed,
+      )
+    }
+    return () => {
+      guard.onRefused = undefined
     }
   }, [editor])
 

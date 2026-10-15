@@ -3,13 +3,14 @@ import { RichTextEditor } from '@kvirn-ui/rich-text'
 import contract from '../../../../../packages/rich-text/src/rich-text-editor.a11y.md?raw'
 import guide from '../../../../../packages/rich-text/src/rich-text-editor.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, fn, userEvent, waitFor } from 'storybook/test'
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, withFormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   BidirectionalEditor,
   ControlledJsonEditor,
+  CompactEditor,
   CountedEditor,
   DisabledEditor,
   editorTextsFor,
@@ -204,6 +205,28 @@ export const Keyboard: Story = {
 }
 
 /**
+ * An image file pasted into the text is refused, and a polite announcement says so (3.3.1, 4.1.3).
+ * The play function pastes one; the message is the locale's own.
+ */
+export const RefusedImagePaste: Story = {
+  parameters: showSource('rich-text-editor/rich-text-editor.fixture.tsx', 'KeyboardEditor'),
+  render: (_args, { globals }) => <KeyboardEditor locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = editorTextsFor(localeOf(globals))
+    const box = await canvas.findByRole('textbox', { name: text.label })
+    const data = new DataTransfer()
+    data.items.add(new File(['x'], 'bild.png', { type: 'image/png' }))
+    box.dispatchEvent(
+      new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }),
+    )
+    await waitFor(async () => {
+      const [announcement] = within(document.body).getAllByRole('status')
+      await expect(announcement).not.toBeEmptyDOMElement()
+    })
+  },
+}
+
+/**
  * In a plain `<form>`: the hidden input posts the HTML under `name`, empty is `""` and never
  * `<p></p>`, and the reset button goes back to the default value. Submit shows what the form posts.
  */
@@ -300,6 +323,104 @@ export const IconAndText: Story = {
   play: async ({ canvas }) => {
     const toolbar = await canvas.findByRole('toolbar')
     await expect(toolbar).toHaveClass('kv-toolbar--labels')
+  },
+}
+
+/**
+ * The compact toolbar, opt-in: Bold, Italic and the two lists on the bar, then "More", a menu with
+ * every other control once, in the default order. It is one row on a phone. The play function opens
+ * the menu: the Table group is in it while the document has a table.
+ */
+export const Compact: Story = {
+  parameters: showSource('rich-text-editor/rich-text-editor.fixture.tsx', 'CompactEditor'),
+  render: (_args, { globals }) => <CompactEditor locale={localeOf(globals)} />,
+  play: async ({ canvas, globals }) => {
+    const { text } = editorTextsFor(localeOf(globals))
+    await canvas.findByRole('textbox', { name: text.label })
+    const toolbar = await canvas.findByRole('toolbar')
+    // "More" is the last control of the bar, the menu's trigger.
+    const trigger = within(toolbar).getAllByRole('button').at(-1) as HTMLElement
+    await expect(trigger).toHaveAttribute('aria-haspopup', 'menu')
+    await expectMinimumTargetSize(trigger)
+    await userEvent.click(trigger)
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    await expect(await canvas.findByRole('menu')).toBeInTheDocument()
+  },
+}
+
+/**
+ * The compact toolbar in a 320px column, with the menu open: the bar is one row and the open menu
+ * stays inside the viewport and scrolls inside itself. Nothing scrolls sideways (1.4.10).
+ */
+export const CompactNarrow: Story = {
+  globals: { locale: 'fi' },
+  parameters: showSource('rich-text-editor/rich-text-editor.fixture.tsx', 'CompactEditor'),
+  render: (_args, { globals }) => (
+    <div className="kv-story-narrow" data-testid="narrow">
+      <CompactEditor locale={localeOf(globals)} />
+    </div>
+  ),
+  play: async ({ canvas, canvasElement }) => {
+    const toolbar = await canvas.findByRole('toolbar')
+    const trigger = within(toolbar).getAllByRole('button').at(-1) as HTMLElement
+    await userEvent.click(trigger)
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    const narrow = canvasElement.querySelector<HTMLElement>('[data-testid="narrow"]')
+    if (narrow !== null) {
+      await expectNoHorizontalOverflow(narrow)
+    }
+  },
+}
+
+/** The compact toolbar with the names visible (`labels="icon-and-text"`): the bar buttons show their names, "More" always does. */
+export const CompactIconAndText: Story = {
+  parameters: showSource('rich-text-editor/rich-text-editor.fixture.tsx', 'CompactEditor'),
+  render: (_args, { globals }) => (
+    <CompactEditor locale={localeOf(globals)} labels="icon-and-text" content="plain" />
+  ),
+}
+
+/** The compact toolbar while the editor is disabled: "More" is natively disabled and out of the Tab order. */
+export const CompactDisabled: Story = {
+  parameters: showSource('rich-text-editor/rich-text-editor.fixture.tsx', 'CompactEditor'),
+  render: (_args, { globals }) => (
+    <CompactEditor locale={localeOf(globals)} disabled content="plain" />
+  ),
+}
+
+/**
+ * The compact toolbar in right-to-left text: "More" is at the inline end (the left), the toolbar
+ * arrows flip, the chevron does not.
+ */
+export const CompactRTL: Story = {
+  globals: { dir: 'rtl', locale: 'en' },
+  parameters: showSource('rich-text-editor/rich-text-editor.fixture.tsx', 'CompactEditor'),
+  render: (_args, { globals }) => <CompactEditor locale={localeOf(globals)} content="arabic" />,
+}
+
+/** The compact toolbar in forced colours: the "More" button keeps its edge, and the open menu is Canvas with a CanvasText edge. */
+export const CompactForcedColors: Story = {
+  globals: { forcedColors: 'active' },
+  parameters: showSource('rich-text-editor/rich-text-editor.fixture.tsx', 'CompactEditor'),
+  render: (_args, { globals }) => <CompactEditor locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    const toolbar = await canvas.findByRole('toolbar')
+    await userEvent.click(within(toolbar).getAllByRole('button').at(-1) as HTMLElement)
+  },
+}
+
+/**
+ * The compact toolbar in the Keyboard story's page: a button before and after the editor. Try the
+ * keys: Tab to the toolbar, End to "More", Enter or ArrowDown to open the menu, the arrows and a
+ * typed letter in it, Escape to close it onto "More", and Escape again to the text.
+ */
+export const CompactKeyboard: Story = {
+  parameters: showSource('rich-text-editor/rich-text-editor.fixture.tsx', 'CompactEditor'),
+  render: (_args, { globals }) => <CompactEditor locale={localeOf(globals)} withKeys />,
+  play: async ({ canvas, globals }) => {
+    const { text } = editorTextsFor(localeOf(globals))
+    await canvas.findByRole('textbox', { name: text.label })
+    await expect(canvas.getByRole('toolbar')).toBeVisible()
   },
 }
 

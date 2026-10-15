@@ -53,7 +53,7 @@ interface LinkFormProps {
   onClose: (reason: 'apply' | 'remove') => void
 }
 
-function LinkForm({ editor, onClose }: LinkFormProps): ReactElement {
+export function LinkForm({ editor, onClose }: LinkFormProps): ReactElement {
   const { messageOverrides, announce } = useRichTextEditorContext('RichTextEditor.LinkControl')
   const messages = useMessages('richText', messageOverrides)
   // Read once, when the form opens: the selection is the text the link will be made from.

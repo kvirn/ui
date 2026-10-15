@@ -217,7 +217,8 @@ export const toolbarRows = propRows<RichTextEditorToolbarDocumentedProps>({
   children: {
     type: 'ReactNode',
     default: '<RichTextEditor.DefaultControls />',
-    description: 'Your own groups and controls. Without any, the toolbar holds the default ones.',
+    description:
+      'Your own groups and controls, or <RichTextEditor.CompactControls /> for one row on a phone. Without any, the toolbar holds the default ones.',
   },
 })
 
@@ -238,6 +239,11 @@ export const toolbarAttributes: readonly AttributeRow[] = [
     meaning: 'The visually hidden first part of the toolbar’s name.',
   },
   {
+    name: 'kv-rich-text-more',
+    values: 'on the "More" button of CompactControls',
+    meaning: 'The part class of the menu button, next to kv-button. The menu is the Menu’s own.',
+  },
+  {
     name: 'kv-rich-text-popups',
     values: 'always, after the toolbar',
     meaning: 'The place the link and image forms open in, next to the toolbar.',
@@ -254,6 +260,7 @@ export type RichTextEditorDefaultControlsDocumentedProps = Pick<
   'include' | 'exclude'
 >
 
+/** `CompactControls` takes the same `include` and `exclude` as `DefaultControls`. */
 export const defaultControlsRows = propRows<RichTextEditorDefaultControlsDocumentedProps>({
   include: {
     type: 'readonly DefaultControlName[]',
@@ -454,7 +461,7 @@ export const defaultExtensionsRows = propRows<DefaultExtensionsOptions>({
     type: 'readonly string[]',
     default: 'the page’s own origin',
     description:
-      'The origins images may come from, such as https://bilder.example.se, or ["*"] for any http or https address. The page’s own origin and relative addresses are always allowed. An address outside the list is refused in the form and dropped, without a message, from stored or pasted content.',
+      'The origins images may come from, such as https://bilder.example.se, or ["*"] for any http or https address. The page’s own origin and relative addresses are always allowed. An address outside the list is refused in the form, and in pasted or dropped content with a polite announcement. In stored content or a value set from code it is dropped without a message.',
   },
   inputRules: {
     type: 'boolean',

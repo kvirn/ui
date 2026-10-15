@@ -16,7 +16,7 @@ import { useEditorSelector } from './use-editor-selector.ts'
 /** One kind of block the picker offers: normal text, a heading level, a quote or a code block. */
 export type BlockKey = 'paragraph' | 'quote' | 'code' | `heading-${number}`
 
-interface BlockOption {
+export interface BlockOption {
   key: BlockKey
   label: string
 }
@@ -88,19 +88,10 @@ export function applyBlockKey(editor: Editor, key: BlockKey): void {
   chain.run()
 }
 
-/**
- * The block type picker: a Listbox (`native="never"`, so it stays a toolbar item on touch screens)
- * for Normal text, the configured heading levels, Quote and Code block. It shows the type at the
- * caret, or "Several types" when the selection spans more than one, and choosing an option applies
- * it and puts focus back in the text. Its name, "Texttyp", is its `aria-label` and its tooltip.
- */
-export function BlockFormat(): ReactElement {
-  const context = useRichTextEditorContext('RichTextEditor.BlockFormat')
-  const { editor, features, focusText, messageOverrides, state } = context
+/** What the block type picker and the compact toolbar's text type group offer, in order. */
+export function useBlockOptions(): BlockOption[] {
+  const { features, messageOverrides } = useRichTextEditorContext('RichTextEditor.BlockFormat')
   const messages = useMessages('richText', messageOverrides)
-  const { tooltips } = useToolbarSettings()
-  const blockKey = useEditorSelector<BlockKey | 'mixed'>(editor, getBlockKey, 'paragraph')
-
   const headingLabels: Record<number, string | undefined> = {
     2: messages.blockHeading2,
     3: messages.blockHeading3,
@@ -140,6 +131,23 @@ export function BlockFormat(): ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- the labels and what is offered are the only inputs: `messages` is rebuilt on every render
     [labelsKey, levelsKey, blockquote, codeBlock],
   )
+  return options
+}
+
+/**
+ * The block type picker: a Listbox (`native="never"`, so it stays a toolbar item on touch screens)
+ * for Normal text, the configured heading levels, Quote and Code block. It shows the type at the
+ * caret, or "Several types" when the selection spans more than one, and choosing an option applies
+ * it and puts focus back in the text. Its name, "Texttyp", is its `aria-label` and its tooltip.
+ */
+export function BlockFormat(): ReactElement {
+  const context = useRichTextEditorContext('RichTextEditor.BlockFormat')
+  const { editor, focusText, messageOverrides, state } = context
+  const messages = useMessages('richText', messageOverrides)
+  const { tooltips } = useToolbarSettings()
+  const blockKey = useEditorSelector<BlockKey | 'mixed'>(editor, getBlockKey, 'paragraph')
+
+  const options = useBlockOptions()
 
   const isDisabled = state.isDisabled || editor === null
   // A disabled picker is not a toolbar item: a Listbox is never natively disabled, so as an item it

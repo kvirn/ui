@@ -25,6 +25,7 @@ import {
   useRichTextEditorHook,
 } from '../content/rich-text-editor.api.ts'
 import { CountedSummary } from '../examples/rich-text-editor/character-count.tsx'
+import { CompactToolbar } from '../examples/rich-text-editor/compact-toolbar.tsx'
 import { ControlledCaseNote } from '../examples/rich-text-editor/controlled.tsx'
 import { DefaultRichTextEditor } from '../examples/rich-text-editor/default.tsx'
 import { InAForm } from '../examples/rich-text-editor/in-a-form.tsx'
@@ -38,6 +39,7 @@ export type RichTextEditorExampleSources = Record<
   | 'in-a-form'
   | 'controlled'
   | 'small-toolbar'
+  | 'compact-toolbar'
   | 'character-count'
   | 'without-tables-and-images'
   | 'own-toolbar',
@@ -59,6 +61,12 @@ const helperRows = {
     default: '–',
     description:
       'Whether an image address may be used: relative, or https or http from the page’s own origin or an origin you list. It reads the page’s address when it is called, never when it is imported.',
+  },
+  ImagePasteGuard: {
+    type: 'Extension<ImagePasteGuardOptions, ImagePasteGuardStorage>',
+    default: 'in defaultExtensions()',
+    description:
+      'The extension that says so when a pasted or dropped image is refused: a file or data: image, or an address that is not allowed (RefusedImageReason: "file" or "source"). It takes the same options as imageSources and allowBase64 and does nothing in a text that cannot be edited. The Root sets storage.onRefused, so you only list it in your own extension array when you leave defaultExtensions() out.',
   },
   isDocumentEmpty: {
     type: '(document: Node) => boolean',
@@ -113,9 +121,10 @@ const parts: ApiPart[] = [
     renders: (
       <>
         A <code>toolbar</code> (the <Link href="/components/toolbar">Toolbar</Link>) attached to the
-        top of the box, with one Tab stop and the arrow keys between its controls. It wraps group by
-        group on a narrow screen. It is not rendered while the editor is read-only. It also takes
-        the props of <code>Toolbar.Root</code>. Also exported as <code>RichTextEditorToolbar</code>.
+        top of the box, with one Tab stop and the arrow keys between its controls. With the default
+        controls it wraps group by group on a narrow screen, and with <code>CompactControls</code>{' '}
+        it stays one row. It is not rendered while the editor is read-only. It also takes the props
+        of <code>Toolbar.Root</code>. Also exported as <code>RichTextEditorToolbar</code>.
       </>
     ),
     props: toolbarRows,
@@ -128,6 +137,20 @@ const parts: ApiPart[] = [
         The default groups, in this order: undo and redo, the text type, text style, lists, link,
         image and table, clear formatting, and the table group while the text has a table. A control
         the extensions don’t provide is left out.
+      </>
+    ),
+    props: defaultControlsRows,
+  },
+  {
+    name: 'RichTextEditor.CompactControls',
+    renders: (
+      <>
+        The same controls on one row, for a phone. Bold, Italic, Bulleted list and Numbered list
+        stay on the bar, followed by a <code>&quot;More&quot;</code> menu button that holds every
+        other control once, in the default order: Underline, Strikethrough and Code as checkboxes,
+        the text types as options, Link and Image opening their forms under the button. The split is
+        fixed, so the arrow keys reach the same controls at every width. With one control left over
+        it stays on the bar, and with none there is no menu.
       </>
     ),
     props: defaultControlsRows,
@@ -329,11 +352,37 @@ export function RichTextEditorPage({
               <Note kind="tip">
                 Touch screens have no tooltips, so show the names. A full toolbar that wraps is
                 about 200 pixels tall at a width of 320 pixels, and a short one leaves more room for
-                the text.
+                the text. For one row on a phone, see the compact toolbar below.
               </Note>
             }
           >
             <SmallToolbar />
+          </UseCase>
+          <UseCase
+            id="compact-toolbar"
+            title="One row of controls on a phone"
+            why={
+              <>
+                A resident writes a short description on a phone, with the keyboard open. The full
+                toolbar wraps to several rows and leaves little room for the text.{' '}
+                <code>CompactControls</code> keeps Bold, Italic and the lists on one row, and puts
+                the rest behind a visible “More”.
+              </>
+            }
+            code={sources['compact-toolbar']}
+            propsUsed={[
+              { part: 'RichTextEditor.CompactControls', prop: 'include' },
+              { part: 'RichTextEditor.CompactControls', prop: 'exclude' },
+            ]}
+            note={
+              <Note kind="tip">
+                Every control is still there, in “More”, in the same order as the full toolbar. The
+                button shows a word and not only an icon, because a touch screen has no tooltip. A
+                text field is the simpler choice when formatting is not part of the task.
+              </Note>
+            }
+          >
+            <CompactToolbar />
           </UseCase>
           <UseCase
             id="character-limit"
@@ -490,6 +539,15 @@ export function RichTextEditorPage({
                   {
                     key: 'imageUrlNotAllowed',
                     meaning: 'The error when the image’s address is outside the allowed sources.',
+                  },
+                  {
+                    key: 'imagePasteNotSupported',
+                    meaning: 'Announced when an image file or a data image is pasted or dropped.',
+                  },
+                  {
+                    key: 'imageSourceNotAllowed',
+                    meaning:
+                      'Announced when a pasted image comes from an address outside the allowed sources.',
                   },
                   { key: 'linkAdded', meaning: 'Announced when a link is added.' },
                   {

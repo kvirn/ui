@@ -1,6 +1,7 @@
 import { Field, KvirnProvider } from '@kvirn-ui/react'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'
 import { Mark } from '@tiptap/core'
 import type { ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
@@ -668,6 +669,434 @@ describe('the toolbar keys', () => {
     expect(textbox().element().querySelectorAll('table')).toHaveLength(0)
     await expect.element(textbox()).toHaveFocus()
     await expect.element(status()).toHaveTextContent('Tabellen är borttagen. Ångra med Ctrl+Z.')
+  })
+})
+
+const compactToolbar = (props: Parameters<typeof RichTextEditor.CompactControls>[0] = {}) => (
+  <RichTextEditor.Toolbar>
+    <RichTextEditor.CompactControls {...props} />
+  </RichTextEditor.Toolbar>
+)
+
+const more = () => page.getByRole('button', { name: 'Mer', exact: true })
+const moreMenu = () => page.getByRole('menu', { name: 'Mer' })
+const menuItem = (name: string) => page.getByRole('menuitem', { name, exact: true })
+const checkboxItem = (name: string) => page.getByRole('menuitemcheckbox', { name, exact: true })
+const radioItem = (name: string) => page.getByRole('menuitemradio', { name, exact: true })
+
+/** The names of the bar's controls, in order: the menu's items are not on the bar. */
+function barNames(): string[] {
+  return [...toolbar().element().querySelectorAll<HTMLElement>('button, [role="combobox"]')]
+    .filter((control) => control.closest('[role="menu"]') === null)
+    .map((control) => control.getAttribute('aria-label') ?? control.textContent?.trim() ?? '')
+}
+
+/** The names of the menu's items, in order, whether or not it is open. */
+function menuNames(): string[] {
+  return [
+    ...toolbar().element().querySelectorAll<HTMLElement>('[role="menu"] [role^="menuitem"]'),
+  ].map(
+    (item) =>
+      item.querySelector(':scope > span')?.textContent?.trim() ?? item.textContent?.trim() ?? '',
+  )
+}
+
+async function focusMore() {
+  await userEvent.click(textbox())
+  await userEvent.keyboard('{Alt>}{F10}{/Alt}{End}')
+  await expect.element(more()).toHaveFocus()
+}
+
+describe('the compact toolbar', () => {
+  test('CompactControls shows Bold, Italic and the two lists, then "More", and every other control once, in the menu, in the default order', async () => {
+    const { container } = await render(<Editor toolbar={compactToolbar()} />)
+    await vi.waitFor(() =>
+      expect(barNames()).toEqual(['Fetstil', 'Kursiv', 'Punktlista', 'Numrerad lista', 'Mer']),
+    )
+    expect(menuNames()).toEqual([
+      'Ångra',
+      'Gör om',
+      'Vanlig text',
+      'Rubrik 2',
+      'Rubrik 3',
+      'Citat',
+      'Kodblock',
+      'Understrykning',
+      'Genomstrykning',
+      'Kod',
+      'Öka indrag',
+      'Minska indrag',
+      'Lägg till länk',
+      'Lägg till bild',
+      'Infoga tabell',
+      'Ta bort formatering',
+    ])
+    await expect.element(more()).toHaveAttribute('aria-haspopup', 'menu')
+    await expect.element(more()).toHaveAttribute('aria-expanded', 'false')
+    await expectNoA11yViolations(container)
+  })
+
+  test('with one control left over it is on the bar and there is no "More"', async () => {
+    await render(
+      <Editor
+        toolbar={compactToolbar({
+          include: ['bold', 'italic', 'bulletList', 'orderedList', 'underline'],
+        })}
+      />,
+    )
+    await vi.waitFor(() =>
+      expect(barNames()).toEqual([
+        'Fetstil',
+        'Kursiv',
+        'Understrykning',
+        'Punktlista',
+        'Numrerad lista',
+      ]),
+    )
+    expect(page.getByRole('menu').elements()).toHaveLength(0)
+    await expect.element(more()).not.toBeInTheDocument()
+  })
+
+  test('include and exclude choose the controls of the compact toolbar', async () => {
+    await render(
+      <Editor toolbar={compactToolbar({ exclude: ['bold', 'table', 'image', 'link'] })} />,
+    )
+    await vi.waitFor(() =>
+      expect(barNames()).toEqual(['Kursiv', 'Punktlista', 'Numrerad lista', 'Mer']),
+    )
+    expect(menuNames()).not.toContain('Infoga tabell')
+    expect(menuNames()).not.toContain('Lägg till länk')
+    expect(menuNames()).toContain('Understrykning')
+  })
+
+  test('"More" is the last toolbar item, reached by ArrowRight and End, and the arrows wrap', async () => {
+    await render(<Editor toolbar={compactToolbar()} />)
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Alt>}{F10}{/Alt}')
+    await expect.element(button('Fetstil')).toHaveFocus()
+    await userEvent.keyboard('{ArrowRight}{ArrowRight}{ArrowRight}{ArrowRight}')
+    await expect.element(more()).toHaveFocus()
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(button('Fetstil')).toHaveFocus()
+    await userEvent.keyboard('{End}')
+    await expect.element(more()).toHaveFocus()
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.element(button('Numrerad lista')).toHaveFocus()
+  })
+
+  test('right to left: ArrowLeft goes from Numbered list to "More"', async () => {
+    await render(
+      <div dir="rtl">
+        <Editor toolbar={compactToolbar()} />
+      </div>,
+    )
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Alt>}{F10}{/Alt}{End}{Home}')
+    await expect.element(button('Fetstil')).toHaveFocus()
+    await userEvent.keyboard('{ArrowLeft}{ArrowLeft}{ArrowLeft}')
+    await expect.element(button('Numrerad lista')).toHaveFocus()
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.element(more()).toHaveFocus()
+  })
+
+  test('Enter, Space and ArrowDown on "More" open the menu on its first item, and ArrowUp on its last', async () => {
+    await render(<Editor toolbar={compactToolbar()} />)
+    await focusMore()
+    await userEvent.keyboard('{Enter}')
+    await expect.element(moreMenu()).toBeVisible()
+    await expect.element(menuItem('Ångra')).toHaveFocus()
+    await userEvent.keyboard('{Escape}')
+    await expect.element(more()).toHaveFocus()
+    await userEvent.keyboard(' ')
+    await expect.element(menuItem('Ångra')).toHaveFocus()
+    await userEvent.keyboard('{Escape}')
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(menuItem('Ångra')).toHaveFocus()
+    await userEvent.keyboard('{Escape}')
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.element(menuItem('Ta bort formatering')).toHaveFocus()
+  })
+
+  test('ArrowDown, ArrowUp, Home, End and typeahead move in the "More" menu', async () => {
+    await render(<Editor toolbar={compactToolbar()} />)
+    await focusMore()
+    await userEvent.keyboard('{ArrowDown}')
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(menuItem('Gör om')).toHaveFocus()
+    await userEvent.keyboard('{ArrowUp}{ArrowUp}')
+    await expect.element(menuItem('Ta bort formatering')).toHaveFocus()
+    await userEvent.keyboard('{Home}')
+    await expect.element(menuItem('Ångra')).toHaveFocus()
+    await userEvent.keyboard('{End}')
+    await expect.element(menuItem('Ta bort formatering')).toHaveFocus()
+    await userEvent.keyboard('k')
+    await expect.element(radioItem('Kodblock')).toHaveFocus()
+  })
+
+  test('Enter on a command item runs it, closes the menu, keeps focus on "More", and announces it', async () => {
+    await render(
+      <Editor
+        toolbar={compactToolbar()}
+        defaultValue="<ul><li><p>Ett</p></li><li><p>Två</p></li></ul>"
+      />,
+    )
+    await userEvent.click(textbox().getByText('Två', { exact: true }))
+    await userEvent.keyboard('{End}{Alt>}{F10}{/Alt}{End}')
+    await userEvent.keyboard('{Enter}')
+    menuItem('Öka indrag').element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(textbox().element().querySelectorAll('ul ul li')).toHaveLength(1)
+    await expect.element(moreMenu()).not.toBeInTheDocument()
+    await expect.element(more()).toHaveFocus()
+    await expect.element(status()).toHaveTextContent('Nivå 2')
+  })
+
+  test('Enter on Underline toggles it, closes the menu and announces "Understrykning på"', async () => {
+    await render(<Editor toolbar={compactToolbar()} defaultValue="<p>Text</p>" />)
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Control>}a{/Control}')
+    await userEvent.keyboard('{Alt>}{F10}{/Alt}{End}{Enter}')
+    await expect.element(checkboxItem('Understrykning')).toHaveAttribute('aria-checked', 'false')
+    checkboxItem('Understrykning').element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(textbox().element().innerHTML).toContain('<u>Text</u>')
+    await expect.element(moreMenu()).not.toBeInTheDocument()
+    await expect.element(more()).toHaveFocus()
+    await expect.element(status()).toHaveTextContent('Understrykning på')
+  })
+
+  test('choosing a text type in the menu applies it and puts focus back in the text', async () => {
+    await render(<Editor toolbar={compactToolbar()} defaultValue="<p>Text</p>" />)
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Alt>}{F10}{/Alt}{End}{Enter}')
+    radioItem('Rubrik 2').element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(textbox().element().querySelectorAll('h2')).toHaveLength(1)
+    await vi.waitFor(() => expect(document.activeElement).toBe(textbox().element()))
+  })
+
+  test('an unavailable item is focusable, read as unavailable, and Enter does nothing', async () => {
+    await render(<Editor toolbar={compactToolbar()} defaultValue="<p>Text</p>" />)
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Alt>}{F10}{/Alt}{End}{Enter}')
+    await expect.element(menuItem('Ångra')).toHaveFocus()
+    await expect.element(menuItem('Ångra')).toHaveAttribute('aria-disabled', 'true')
+    await userEvent.keyboard('{Enter}')
+    await expect.element(moreMenu()).toBeVisible()
+    await expect.element(menuItem('Ångra')).toHaveFocus()
+  })
+
+  test('"Add link" in the menu opens the link form with focus in "Web address", and Escape puts focus in the text', async () => {
+    await render(<Editor toolbar={compactToolbar()} defaultValue="<p>Ansök här</p>" />)
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Control>}a{/Control}{Alt>}{F10}{/Alt}{End}{Enter}')
+    menuItem('Lägg till länk').element().focus()
+    await expect.element(menuItem('Lägg till länk')).toHaveAttribute('aria-haspopup', 'dialog')
+    await userEvent.keyboard('{Enter}')
+    await expect.element(page.getByRole('dialog', { name: 'Lägg till länk' })).toBeVisible()
+    await expect.element(page.getByRole('textbox', { name: 'Webbadress' })).toHaveFocus()
+    await userEvent.keyboard('{Escape}')
+    await expect.element(textbox()).toHaveFocus()
+  })
+
+  test('"Insert table" moves focus into the new table, and the Table group is in the menu, unavailable outside a table', async () => {
+    await render(<Editor toolbar={compactToolbar()} defaultValue="<p>Text</p>" />)
+    expect(menuNames()).not.toContain('Lägg till rad nedanför')
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Alt>}{F10}{/Alt}{End}{Enter}')
+    menuItem('Infoga tabell').element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(textbox().element().querySelectorAll('table')).toHaveLength(1)
+    await expect.element(textbox()).toHaveFocus()
+    await expect.element(status()).toHaveTextContent('Tabell med 3 kolumner och 3 rader tillagd.')
+    expect(menuNames()).toContain('Lägg till rad nedanför')
+    expect(menuNames()).toContain('Rubrikrad')
+    expect(barNames()).toEqual(['Fetstil', 'Kursiv', 'Punktlista', 'Numrerad lista', 'Mer'])
+  })
+
+  test('Escape in the menu closes it and focus goes to "More"; a second Escape goes to the text', async () => {
+    await render(<Editor toolbar={compactToolbar()} />)
+    await focusMore()
+    await userEvent.keyboard('{Enter}')
+    await expect.element(moreMenu()).toBeVisible()
+    await userEvent.keyboard('{Escape}')
+    await expect.element(moreMenu()).not.toBeInTheDocument()
+    await expect.element(more()).toHaveFocus()
+    await userEvent.keyboard('{Escape}')
+    await expect.element(textbox()).toHaveFocus()
+  })
+
+  test('Tab in the menu closes it and moves to the text; Shift+Tab closes it onto "More"', async () => {
+    await render(<Editor toolbar={compactToolbar()} />)
+    await focusMore()
+    await userEvent.keyboard('{Enter}')
+    await userEvent.keyboard('{Tab}')
+    await expect.element(textbox()).toHaveFocus()
+    await expect.element(more()).toHaveAttribute('aria-expanded', 'false')
+    await userEvent.keyboard('{Alt>}{F10}{/Alt}')
+    await expect.element(more()).toHaveFocus()
+    await userEvent.keyboard('{Enter}')
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect.element(more()).toHaveFocus()
+    await expect.element(more()).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  test('Mod-k opens the link form in the compact toolbar too', async () => {
+    await render(<Editor toolbar={compactToolbar()} defaultValue="<p>Text</p>" />)
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Control>}a{/Control}{Control>}k{/Control}')
+    await expect.element(page.getByRole('dialog', { name: 'Lägg till länk' })).toBeVisible()
+    await expect.element(page.getByRole('textbox', { name: 'Webbadress' })).toHaveFocus()
+  })
+
+  test('a pointer press on a menu item puts focus back in the text at the selection, and the next letters get the format', async () => {
+    await render(<Editor toolbar={compactToolbar()} defaultValue="<p>Text</p>" />)
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{End}')
+    await userEvent.click(more())
+    await userEvent.click(checkboxItem('Understrykning'))
+    await vi.waitFor(() => expect(document.activeElement).toBe(textbox().element()))
+    await userEvent.keyboard('abc')
+    expect(textbox().element().innerHTML).toContain('<u>abc</u>')
+  })
+
+  test('disabled with the editor: "More" is natively disabled and out of the Tab order', async () => {
+    await render(<Editor toolbar={compactToolbar()} disabled />)
+    await expect.element(more()).toBeDisabled()
+    expect(more().element().getAttribute('tabindex')).not.toBe('0')
+  })
+
+  test('the menu’s items follow the caret: checked text styles and the current text type', async () => {
+    await render(
+      <Editor
+        toolbar={compactToolbar()}
+        defaultValue="<h2>Rubrik</h2><p>Vanlig <u>understruken</u></p>"
+      />,
+    )
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Control>}{Home}{/Control}')
+    await userEvent.click(more())
+    await expect.element(radioItem('Rubrik 2')).toHaveAttribute('aria-checked', 'true')
+    await expect.element(radioItem('Vanlig text')).toHaveAttribute('aria-checked', 'false')
+    await expect.element(checkboxItem('Understrykning')).toHaveAttribute('aria-checked', 'false')
+    await userEvent.keyboard('{Escape}{Escape}')
+    await userEvent.keyboard('{Control>}{End}{/Control}{ArrowLeft}')
+    await userEvent.click(more())
+    await expect.element(radioItem('Vanlig text')).toHaveAttribute('aria-checked', 'true')
+    await expect.element(checkboxItem('Understrykning')).toHaveAttribute('aria-checked', 'true')
+  })
+  test('the text types are one group named "Texttyp" once, with no dangling label and no warning', async () => {
+    await render(<Editor toolbar={compactToolbar()} defaultValue="<p>Text</p>" />)
+    await userEvent.click(more())
+    await expect.element(page.getByRole('group', { name: 'Texttyp' })).toBeVisible()
+    expect(page.getByRole('group', { name: 'Texttyp' }).elements()).toHaveLength(1)
+    const group = page.getByRole('group', { name: 'Texttyp' }).element()
+    const labelId = group.getAttribute('aria-labelledby') ?? ''
+    expect(document.getElementById(labelId)?.textContent).toBe('Texttyp')
+    expect(kvirnWarnings()).toEqual([])
+  })
+
+  test('Space on a menu item runs it as Enter does', async () => {
+    await render(<Editor toolbar={compactToolbar()} defaultValue="<p>Text</p>" />)
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Control>}a{/Control}{Alt>}{F10}{/Alt}{End}{Enter}')
+    checkboxItem('Genomstrykning').element().focus()
+    await userEvent.keyboard(' ')
+    expect(textbox().element().innerHTML).toContain('<s>Text</s>')
+    await expect.element(more()).toHaveFocus()
+  })
+
+  test('Underline off is announced "Understrykning av"', async () => {
+    const { container } = await render(
+      <Editor toolbar={compactToolbar()} defaultValue="<p><u>Text</u></p>" />,
+    )
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Control>}a{/Control}{Alt>}{F10}{/Alt}{End}{Enter}')
+    await expect.element(checkboxItem('Understrykning')).toHaveAttribute('aria-checked', 'true')
+    checkboxItem('Understrykning').element().focus()
+    const announcements = await readAnnouncements(container, () => userEvent.keyboard('{Enter}'))
+    expect(announcements).toEqual(['polite: Understrykning av'])
+    expect(textbox().element().innerHTML).not.toContain('<u>')
+  })
+
+  test('"Add image" in the menu opens the image form under "More", with focus inside it', async () => {
+    await render(<Editor toolbar={compactToolbar()} defaultValue="<p>Text</p>" />)
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Alt>}{F10}{/Alt}{End}{Enter}')
+    menuItem('Lägg till bild').element().focus()
+    await expect.element(menuItem('Lägg till bild')).toHaveAttribute('aria-haspopup', 'dialog')
+    await userEvent.keyboard('{Enter}')
+    const dialog = page.getByRole('dialog', { name: 'Lägg till bild' })
+    await expect.element(dialog).toBeVisible()
+    await vi.waitFor(() => expect(dialog.element().contains(document.activeElement)).toBe(true))
+  })
+
+  test('a pointer press on Underline announces "Understrykning på"', async () => {
+    const { container } = await render(
+      <Editor toolbar={compactToolbar()} defaultValue="<p>Text</p>" />,
+    )
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Control>}a{/Control}')
+    await userEvent.click(more())
+    const announcements = await readAnnouncements(container, () =>
+      userEvent.click(checkboxItem('Understrykning')),
+    )
+    expect(announcements).toEqual(['polite: Understrykning på'])
+  })
+
+  test('an item with a shortcut shows its keys, hidden from assistive technology, and keeps its name and typeahead', async () => {
+    await render(<Editor toolbar={compactToolbar()} defaultValue="<p>Text</p>" />)
+    await userEvent.click(more())
+    for (const [item, keys] of [
+      [menuItem('Ångra'), 'Ctrl+Z'],
+      [menuItem('Lägg till länk'), 'Ctrl+K'],
+      [checkboxItem('Understrykning'), 'Ctrl+U'],
+    ] as const) {
+      const hint = item.element().querySelector('[aria-hidden="true"]')
+      expect(hint?.textContent).toBe(keys)
+      expect(item.element().getAttribute('aria-keyshortcuts')).not.toBeNull()
+    }
+    expect(menuItem('Ångra').element().getAttribute('data-text-value')).toBe('Ångra')
+  })
+
+  test('read aloud: "More" is a collapsed menu button, then an expanded one with the menu, its groups and their states', async () => {
+    const { container } = await render(
+      <Editor toolbar={compactToolbar()} defaultValue="<p><u>Text</u></p>" />,
+    )
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Control>}a{/Control}')
+    const collapsed = await readAloud(container)
+    expect(collapsed).toContain('button, Mer, 1 control, not expanded, has popup menu')
+    await userEvent.click(more())
+    const expanded = await readAloud(container)
+    expect(expanded).toContain('button, Mer, 1 control, expanded, has popup menu')
+    expect(expanded).toContain('menu, Mer, orientated vertically')
+    expect(expanded).toContain('group, Texttyp')
+    expect(expanded).toContain('group, Textstil')
+    expect(expanded).toContain('menuitemradio, Vanlig text, checked, position 1, set size 5')
+    expect(expanded).toContain('menuitemradio, Rubrik 2, not checked, position 2, set size 5')
+    expect(expanded).toContain(
+      'menuitemcheckbox, Understrykning, checked, key shortcuts Control+U, position 1, set size 3',
+    )
+    expect(expanded).toContain(
+      'menuitem, Ångra, disabled, key shortcuts Control+Z, position 1, set size 2',
+    )
+    expect(expanded).toContain(
+      'menuitem, Lägg till länk, has popup dialog, key shortcuts Control+K, position 1, set size 3',
+    )
+  })
+
+  test('read aloud: Underline on from the keyboard is "Understrykning på", once', async () => {
+    const { container } = await render(
+      <Editor toolbar={compactToolbar()} defaultValue="<p>Text</p>" />,
+    )
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Control>}a{/Control}{Alt>}{F10}{/Alt}{End}{Enter}')
+    checkboxItem('Understrykning').element().focus()
+    const announcements = await readAnnouncements(container, () => userEvent.keyboard('{Enter}'), {
+      settle: 500,
+    })
+    expect(announcements).toEqual(['polite: Understrykning på'])
   })
 })
 

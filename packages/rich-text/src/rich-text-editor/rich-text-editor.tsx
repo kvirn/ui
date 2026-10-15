@@ -26,6 +26,7 @@ import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import type { RichTextFormat } from '../value/document-value.ts'
 import { BlockFormat } from './block-format.tsx'
 import { CommandButton, CommandToggle } from './command-controls.tsx'
+import { CompactControls } from './compact-controls.tsx'
 import { DefaultControls } from './default-controls.tsx'
 import { ToolbarIcon } from './icons.tsx'
 import { ImageControl } from './image-control.tsx'
@@ -352,6 +353,7 @@ export const RichTextEditor = {
   Root: RichTextEditorRoot,
   Toolbar: RichTextEditorToolbar,
   DefaultControls,
+  CompactControls,
   Group: RichTextEditorGroup,
   CommandButton,
   CommandToggle,

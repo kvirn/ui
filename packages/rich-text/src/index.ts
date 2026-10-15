@@ -4,6 +4,12 @@
 // peers: this package never bundles them, so the app owns one copy of each.
 export { defaultExtensions, isAllowedLinkAddress } from './extensions/default-extensions.ts'
 export type { DefaultExtensionsOptions } from './extensions/default-extensions.ts'
+export { ImagePasteGuard } from './extensions/image-paste-guard.ts'
+export type {
+  ImagePasteGuardOptions,
+  ImagePasteGuardStorage,
+  RefusedImageReason,
+} from './extensions/image-paste-guard.ts'
 export { isAllowedImageSource } from './extensions/image-sources.ts'
 export type { ImageSourceOptions } from './extensions/image-sources.ts'
 export {
@@ -37,6 +43,7 @@ export type {
   CommandControlOptions,
   CommandToggleProps,
 } from './rich-text-editor/command-controls.tsx'
+export { CompactControls } from './rich-text-editor/compact-controls.tsx'
 export { DefaultControls } from './rich-text-editor/default-controls.tsx'
 export type {
   DefaultControlName,

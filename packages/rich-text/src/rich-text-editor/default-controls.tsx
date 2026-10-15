@@ -47,7 +47,7 @@ export interface DefaultControlsProps {
 }
 
 /** Whether the extensions provide what a control acts on: no bold mark, no Bold button. */
-function isProvided(name: DefaultControlName, features: RichTextFeatures): boolean {
+export function isProvided(name: DefaultControlName, features: RichTextFeatures): boolean {
   switch (name) {
     case 'undo':
     case 'redo':
@@ -78,7 +78,7 @@ function isProvided(name: DefaultControlName, features: RichTextFeatures): boole
 }
 
 /** Whether there is anything the Clear formatting button would remove at the selection. */
-function hasFormatting(editor: Editor): boolean {
+export function hasFormatting(editor: Editor): boolean {
   const { selection, doc } = editor.state
   if ((editor.state.storedMarks?.length ?? 0) > 0) {
     return true

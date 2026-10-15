@@ -19,7 +19,7 @@ export interface RichTextEditorToolbarProps extends Omit<
   labels?: RichTextLabels | undefined
   /** Whether icon-only controls get a tooltip, for this toolbar. Default: the Root's `tooltips`. */
   tooltips?: boolean | undefined
-  /** Your controls. Without any, the toolbar is `<RichTextEditor.DefaultControls />`. */
+  /** Your controls. Without any, the toolbar is `<RichTextEditor.DefaultControls />`; `<RichTextEditor.CompactControls />` is the one-row preset. */
   children?: ReactNode
 }
 
@@ -44,7 +44,8 @@ function focusToolbarStop(toolbar: HTMLElement | null): boolean {
  *   `aria-keyshortcuts="Alt+F10"`.
  * - **Alt+F10** (Option+F10) in the text moves focus to it, and **Escape** in it moves focus back
  *   to the text, at the selection, unless a popup or tooltip is open and takes the Escape first.
- * - **Wraps** group by group: nothing is hidden behind a "More" button.
+ * - **Wraps** group by group: with `DefaultControls` nothing is hidden behind a "More" button. The
+ *   opt-in `CompactControls` keeps one row instead, with a fixed "More" menu for the rest.
  * - A pointer press on a control keeps focus in the text. After a keyboard command focus stays on
  *   the control, so several formats can be set in a row.
  * - Not rendered while the editor is read-only, where there is nothing to format. While it is
@@ -121,6 +122,10 @@ export function RichTextEditorToolbar({
     // toolbar, but in its React tree) arrives here too: it is the popover's, not the toolbar's.
     const target = event.target
     if (!(target instanceof Node) || !(toolbarElement.current?.contains(target) ?? false)) {
+      return
+    }
+    // A key in the "More" menu (rendered inside the toolbar) is the menu's: its Escape closes it.
+    if (target instanceof Element && target.closest('[role="menu"]') !== null) {
       return
     }
     // A control that has its popup open (the picker) closes it first, and a tooltip takes the

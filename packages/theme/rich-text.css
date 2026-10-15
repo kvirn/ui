@@ -13,7 +13,8 @@
    * with labels="icon-and-text") above the editable text (<RichTextEditor.Content>: the
    * contenteditable gets kv-rich-text-content kv-prose). Under the box comes the count
    * (kv-character-count), which is a help text and has no style of its own here. Link and Image forms open in
-   * kv-rich-text-popover, rendered after the toolbar in kv-rich-text-popups.
+   * kv-rich-text-popover, rendered after the toolbar in kv-rich-text-popups. The opt-in compact
+   * toolbar's "More" button is kv-button kv-rich-text-more, and its menu is the Menu's kv-menu-*.
    * State is data-*: data-focused, data-focus-visible, data-invalid, data-required, data-disabled,
    * data-readonly and data-empty. Design spec: docs/design/rich-text-editor.md §6.5 to §6.9.
    *
@@ -117,7 +118,12 @@
   .kv-toolbar.kv-toolbar--attached {
     margin-block-start: calc(-1 * var(--kv-rich-text-inset));
     margin-inline: calc(-1 * var(--kv-rich-text-inset));
+
+    /* The inset the margin covers comes back as padding, so the buttons and the text below stay
+     * where they are when the edge goes from 1px to 2px on focus. */
     padding: var(--kv-space-1);
+    padding-block-start: calc(var(--kv-space-1) + var(--kv-rich-text-inset));
+    padding-inline: calc(var(--kv-space-1) + var(--kv-rich-text-inset));
     border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
     border-start-start-radius: calc(var(--kv-radius-md) - var(--kv-rich-text-edge-width));
     border-start-end-radius: calc(var(--kv-radius-md) - var(--kv-rich-text-edge-width));
@@ -173,6 +179,23 @@
 
   .kv-rich-text-control-label {
     overflow-wrap: anywhere;
+  }
+
+  /* A menu item's shortcut keys, at the inline end of the compact toolbar's menu. They take the
+   * item's own colour, so they keep the item's measured pair in every state. */
+  .kv-rich-text-menu-shortcut {
+    margin-inline-start: auto;
+    padding-inline-start: var(--kv-space-3);
+  }
+
+  /* The compact toolbar's "More" button: a word and a chevron, so it is wider than an icon button
+   * and narrower than a labelled one. It is always visible text, in every label mode. */
+  .kv-toolbar--attached .kv-rich-text-more {
+    inline-size: auto;
+    padding-inline: var(--kv-space-2);
+    gap: var(--kv-space-1);
+    font-size: var(--kv-font-label-size);
+    font-weight: var(--kv-font-label-weight);
   }
 
   /* The block type picker in the toolbar: flat, like the buttons, never a boxed field. Its width

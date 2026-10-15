@@ -58,7 +58,7 @@ interface ImageFormProps {
   onClose: () => void
 }
 
-function ImageForm({ editor, onClose }: ImageFormProps): ReactElement {
+export function ImageForm({ editor, onClose }: ImageFormProps): ReactElement {
   const { messageOverrides, announce } = useRichTextEditorContext('RichTextEditor.ImageControl')
   const messages = useMessages('richText', messageOverrides)
   const [image] = useState(() => readImageState(editor))

@@ -5,6 +5,7 @@ import { TableKit } from '@tiptap/extension-table'
 import type { TableKitOptions } from '@tiptap/extension-table'
 import StarterKit from '@tiptap/starter-kit'
 import type { StarterKitOptions } from '@tiptap/starter-kit'
+import { ImagePasteGuard } from './image-paste-guard.ts'
 import { isAllowedImageSource } from './image-sources.ts'
 import type { ImageSourceOptions } from './image-sources.ts'
 import { KvirnKeymap } from './kvirn-keymap.ts'
@@ -173,6 +174,14 @@ export function defaultExtensions({
             },
           }
         },
+      }),
+    )
+  }
+  if (image !== false) {
+    extensions.push(
+      ImagePasteGuard.configure({
+        sources: imageSources,
+        allowBase64: image?.allowBase64 ?? false,
       }),
     )
   }

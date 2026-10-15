@@ -1,5 +1,6 @@
 import { Field, KvirnProvider } from '@kvirn-ui/react'
 import { sv } from '@kvirn-ui/i18n/sv'
+import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import type { JSONContent } from '@tiptap/core'
 import { EditorContent } from '@tiptap/react'
@@ -427,6 +428,145 @@ describe('announcements', () => {
     await userEvent.click(textbox('Text'))
     await userEvent.keyboard('{Control>}{End}{/Control}{Tab}')
     await expect.element(status()).toHaveTextContent('Nivå 2')
+  })
+})
+
+describe('a refused pasted or dropped image', () => {
+  function renderEditor(defaultValue = '<p>Text</p>') {
+    return render(
+      inSwedish(
+        <RichTextEditor.Root defaultValue={defaultValue}>
+          <RichTextEditor.Content aria-label="Text" />
+        </RichTextEditor.Root>,
+      ),
+    )
+  }
+
+  function transfer(parts: { html?: string; file?: File }) {
+    const data = new DataTransfer()
+    if (parts.html !== undefined) data.setData('text/html', parts.html)
+    if (parts.file !== undefined) data.items.add(parts.file)
+    return data
+  }
+
+  const imageFile = () => new File(['x'], 'bild.png', { type: 'image/png' })
+
+  function paste(data: DataTransfer) {
+    textbox('Text')
+      .element()
+      .dispatchEvent(
+        new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }),
+      )
+  }
+
+  function drop(data: DataTransfer) {
+    textbox('Text')
+      .element()
+      .dispatchEvent(new DragEvent('drop', { dataTransfer: data, bubbles: true, cancelable: true }))
+  }
+
+  const notPasted = 'Bilder kan inte klistras in. Använd knappen Bild.'
+
+  test('an image file on paste is announced politely, and nothing is inserted', async () => {
+    await renderEditor()
+    await userEvent.click(textbox('Text'))
+    paste(transfer({ file: imageFile() }))
+    await expect.element(status()).toHaveTextContent(notPasted)
+    expect(document.querySelector('.kv-rich-text-content img')).toBeNull()
+  })
+
+  test('an image from an address that is not allowed, on paste, is announced', async () => {
+    await renderEditor()
+    await userEvent.click(textbox('Text'))
+    paste(transfer({ html: '<p>Hej</p><img src="https://example.com/a.png" alt="a">' }))
+    await vi.waitFor(() => {
+      expect(status().element().textContent).toMatch(/^Den inklistrade bilden lades inte till/)
+    })
+    expect(document.querySelector('.kv-rich-text-content img')).toBeNull()
+  })
+
+  test('an image file on drop is announced', async () => {
+    await renderEditor()
+    drop(transfer({ file: imageFile() }))
+    await expect.element(status()).toHaveTextContent(notPasted)
+  })
+
+  test('one paste with several images is announced once', async () => {
+    const { container } = await renderEditor()
+    await userEvent.click(textbox('Text'))
+    const announcements = await readAnnouncements(
+      container,
+      () =>
+        paste(
+          transfer({
+            html: '<img src="https://example.com/a.png"><img src="https://example.com/b.png"><img src="https://example.com/c.png">',
+            file: imageFile(),
+          }),
+        ),
+      { settle: 700 },
+    )
+    expect(announcements).toEqual([
+      'polite: Den inklistrade bilden lades inte till, eftersom den kommer från en adress som inte är tillåten.',
+    ])
+  })
+
+  test('a refused pasted image is read aloud as a polite status, and the text stays a textbox', async () => {
+    const { container } = await renderEditor()
+    await userEvent.click(textbox('Text'))
+    const announcements = await readAnnouncements(container, () =>
+      paste(transfer({ file: imageFile() })),
+    )
+    expect(announcements).toEqual([`polite: ${notPasted}`])
+    expect(await readAloud(container)).toEqual(
+      expect.arrayContaining([expect.stringContaining('textbox, Text')]),
+    )
+  })
+
+  test('a drop on a disabled or read-only editor is silent', async () => {
+    for (const props of [{ disabled: true }, { readOnly: true }]) {
+      const { unmount } = await render(
+        inSwedish(
+          <RichTextEditor.Root defaultValue="<p>Text</p>" {...props}>
+            <RichTextEditor.Content aria-label="Text" />
+          </RichTextEditor.Root>,
+        ),
+      )
+      await expect.element(textbox('Text')).toBeInTheDocument()
+      drop(transfer({ file: imageFile() }))
+      await new Promise((resolve) => setTimeout(resolve, 400))
+      await expect.element(status()).toBeEmptyDOMElement()
+      await unmount()
+    }
+  })
+
+  test('a stored text with a refused image is silent', async () => {
+    await renderEditor('<p>Text</p><img src="https://example.com/a.png">')
+    await expect.element(textbox('Text')).toBeInTheDocument()
+    await new Promise((resolve) => setTimeout(resolve, 700))
+    await expect.element(status()).toBeEmptyDOMElement()
+  })
+
+  test('a text set from code with a refused image is silent', async () => {
+    function Controlled() {
+      const [value, setValue] = useState('<p>Text</p>')
+      return inSwedish(
+        <>
+          <button
+            type="button"
+            onClick={() => setValue('<p>Ny</p><img src="https://example.com/a.png">')}
+          >
+            Sätt
+          </button>
+          <RichTextEditor.Root value={value} onValueChange={setValue}>
+            <RichTextEditor.Content aria-label="Text" />
+          </RichTextEditor.Root>
+        </>,
+      )
+    }
+    await render(<Controlled />)
+    await userEvent.click(page.getByRole('button', { name: 'Sätt' }))
+    await new Promise((resolve) => setTimeout(resolve, 700))
+    await expect.element(status()).toBeEmptyDOMElement()
   })
 })
 

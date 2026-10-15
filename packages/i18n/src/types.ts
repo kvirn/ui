@@ -329,6 +329,8 @@ export interface KvirnMessages {
     groupLists: TextMessage
     groupInsert: TextMessage
     groupTable: TextMessage
+    /** The compact toolbar's overflow menu: the visible word on its button, and the menu's name. */
+    more: TextMessage
     undo: TextMessage
     redo: TextMessage
     /** The block type picker's name. Its visible text is the current value. */
@@ -355,6 +357,8 @@ export interface KvirnMessages {
     link: TextMessage
     image: TextMessage
     table: TextMessage
+    /** The Table item in the compact toolbar's menu, where "Table" alone is a bare noun. */
+    insertTable: TextMessage
     clearFormatting: TextMessage
     addRowAbove: TextMessage
     addRowBelow: TextMessage

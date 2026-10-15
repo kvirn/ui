@@ -460,6 +460,58 @@ export function BidirectionalEditor({ locale }: { locale: FormLocale }) {
   )
 }
 
+/**
+ * The compact toolbar (`RichTextEditor.CompactControls`): Bold, Italic and the lists on the bar,
+ * everything else in the "More" menu. With `withKeys` it is the Keyboard story's page: a button
+ * before and after, so Tab and Shift+Tab have somewhere to go.
+ */
+export function CompactEditor({
+  locale,
+  labels,
+  disabled = false,
+  withKeys = false,
+  content,
+}: {
+  locale: FormLocale
+  labels?: 'icon' | 'icon-and-text'
+  disabled?: boolean
+  withKeys?: boolean
+  content?: 'plain' | 'arabic'
+}) {
+  const { text } = editorTextsFor(locale)
+  const value =
+    content === 'plain'
+      ? `<p>${text.intro}</p>`
+      : content === 'arabic'
+        ? `<p>${text.intro}</p><p>${arabicParagraph}</p>`
+        : contentFor(text)
+  const editor = (
+    <Field.Root required disabled={disabled}>
+      <Field.Label>{text.label}</Field.Label>
+      <RichTextEditor.Root name="news" labels={labels} defaultValue={value}>
+        <RichTextEditor.Toolbar>
+          <RichTextEditor.CompactControls />
+        </RichTextEditor.Toolbar>
+        <RichTextEditor.Content />
+      </RichTextEditor.Root>
+    </Field.Root>
+  )
+  if (!withKeys) {
+    return editor
+  }
+  return (
+    <form className="kv-story-form" noValidate onSubmit={(event) => event.preventDefault()}>
+      <button type="button" className="kv-button">
+        {text.before}
+      </button>
+      {editor}
+      <button type="button" className="kv-button">
+        {text.after}
+      </button>
+    </form>
+  )
+}
+
 /** A count of the characters left, with `characterCount` and `maxLength`: it never blocks typing. */
 export function CountedEditor({ locale }: { locale: FormLocale }) {
   const { text } = editorTextsFor(locale)
