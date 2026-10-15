@@ -1,4 +1,6 @@
 import '@kvirn-ui/theme/map.css'
+import 'maplibre-gl/dist/maplibre-gl.css'
+import './map-own.css'
 import type { Metadata } from 'next'
 import { MapPage } from '../../../../components/map-page.tsx'
 import { readContract } from '../../../../lib/contract.ts'
@@ -17,6 +19,7 @@ export default function Page() {
         layers: readExampleSource('map/layers.tsx'),
         clusters: readExampleSource('map/clusters.tsx'),
         'own-list': readExampleSource('map/own-list.tsx'),
+        'make-it-your-own': readExampleSource('map/make-it-your-own.tsx'),
       }}
     />
   )

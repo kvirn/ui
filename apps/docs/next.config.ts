@@ -1,6 +1,6 @@
 import type { NextConfig } from 'next'
 
-// No third-party requests from the docs site (AGENTS.md, hard rule 7): no remote fonts, images or analytics.
+// No third-party requests from the docs site (AGENTS.md, hard rule 7): no remote fonts, images or analytics. The one opt-in is the Map examples, which ask OpenStreetMap for tiles after a button press.
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: { unoptimized: true },

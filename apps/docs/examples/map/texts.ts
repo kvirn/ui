@@ -1,7 +1,7 @@
 import type { MapLayer, MapPlace } from '@kvirn-ui/map'
 import { defineExampleTexts } from '../../components/local-example-texts.ts'
 
-// The pictures are inline SVG data, so the page requests nothing from a server.
+// The place pictures are inline SVG data. The map pictures (tiles) load only after the visitor opts in.
 const houseDrawing = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 160"><rect width="320" height="160" fill="#dbeadf"/><path d="M110 140V70l50-35 50 35v70z" fill="#f2c94c"/><rect x="148" y="95" width="24" height="45" fill="#3f6b57"/></svg>`
 const houseImage = `data:image/svg+xml;utf8,${encodeURIComponent(houseDrawing)}`
 
@@ -78,7 +78,7 @@ const preschools: MapPlace[] = [
 
 const layers: MapLayer[] = [
   { id: 'recycling', label: 'Recycling stations' },
-  { id: 'hazardous', label: 'Hazardous waste', description: 'Paint, batteries, chemicals' },
+  { id: 'hazardous', label: 'Hazardous waste' },
   { id: 'reuse', label: 'Reuse shops' },
 ]
 
@@ -208,8 +208,121 @@ const pollingStations: MapPlace[] = [
   },
 ]
 
+const familyLayers: MapLayer[] = [
+  { id: 'playgrounds', label: 'Playgrounds' },
+  { id: 'libraries', label: 'Libraries' },
+  { id: 'pools', label: 'Swimming halls' },
+]
+
+const familyPlaces: MapPlace[] = [
+  {
+    id: 'swing-park',
+    name: 'Ekparken playground',
+    address: 'Parkvägen 2',
+    layer: 'playgrounds',
+    position: { longitude: 18.0641, latitude: 59.3302 },
+  },
+  {
+    id: 'castle',
+    name: 'Slottsbacken playground',
+    address: 'Backgatan 6',
+    layer: 'playgrounds',
+    position: { longitude: 18.0661, latitude: 59.3311 },
+  },
+  {
+    id: 'sandy',
+    name: 'Strandlekparken',
+    address: 'Strandvägen 14',
+    layer: 'playgrounds',
+    position: { longitude: 18.0872, latitude: 59.3283 },
+  },
+  {
+    id: 'lagom',
+    name: 'Lagom adventure park',
+    address: 'Skogsstigen 3',
+    layer: 'playgrounds',
+    position: { longitude: 18.0562, latitude: 59.3363 },
+  },
+  {
+    id: 'central-library',
+    name: 'Central library',
+    address: 'Stora torget 1',
+    layer: 'libraries',
+    position: { longitude: 18.0702, latitude: 59.3293 },
+  },
+  {
+    id: 'child-library',
+    name: 'Barnens bibliotek',
+    address: 'Torggatan 5',
+    layer: 'libraries',
+    position: { longitude: 18.0711, latitude: 59.3297 },
+  },
+  {
+    id: 'east-library',
+    name: 'East branch library',
+    address: 'Östra vägen 20',
+    layer: 'libraries',
+    position: { longitude: 18.0866, latitude: 59.3349 },
+  },
+  {
+    id: 'west-library',
+    name: 'West branch library',
+    address: 'Västra gatan 8',
+    layer: 'libraries',
+    position: { longitude: 18.0517, latitude: 59.3301 },
+  },
+  {
+    id: 'pool',
+    name: 'Simhallen swimming hall',
+    address: 'Badvägen 1',
+    layer: 'pools',
+    position: { longitude: 18.0777, latitude: 59.3255 },
+  },
+  {
+    id: 'wave',
+    name: 'Vågen family pool',
+    address: 'Hamnplan 4',
+    layer: 'pools',
+    position: { longitude: 18.0735, latitude: 59.3239 },
+  },
+  {
+    id: 'outdoor',
+    name: 'Lido outdoor pool',
+    address: 'Strandvägen 40',
+    layer: 'pools',
+    position: { longitude: 18.0911, latitude: 59.3319 },
+  },
+  {
+    id: 'baby',
+    name: 'Babysim at Simhallen',
+    address: 'Badvägen 1',
+    layer: 'pools',
+    position: { longitude: 18.0781, latitude: 59.3253 },
+  },
+]
+
+const familyHours: Readonly<Record<string, string>> = {
+  'swing-park': 'Open all day, every day',
+  castle: 'Open all day, every day',
+  sandy: 'Open all day, every day',
+  lagom: 'Open all day, every day',
+  'central-library': 'Mon to Fri 10:00 to 19:00, Sat 10:00 to 15:00',
+  'child-library': 'Mon to Fri 10:00 to 19:00, Sat 10:00 to 15:00',
+  'east-library': 'Mon to Fri 10:00 to 19:00, Sat 10:00 to 15:00',
+  'west-library': 'Mon to Fri 10:00 to 19:00, Sat 10:00 to 15:00',
+  pool: 'Mon to Fri 6:30 to 20:00, Sat to Sun 9:00 to 16:00',
+  wave: 'Mon to Fri 6:30 to 20:00, Sat to Sun 9:00 to 16:00',
+  outdoor: 'Mon to Fri 6:30 to 20:00, Sat to Sun 9:00 to 16:00',
+  baby: 'Mon to Fri 6:30 to 20:00, Sat to Sun 9:00 to 16:00',
+}
+
 export const useMapTexts = defineExampleTexts({
   en: {
+    picturesTitle: 'Map pictures on this page',
+    loadPictures: 'Load map pictures',
+    loadPicturesNote:
+      'The maps on this page start as a plain background and request nothing. Press the button to load their pictures for every map on the page. Your IP address is then sent to OpenStreetMap’s tile servers.',
+    picturesLoaded: 'The maps on this page now show OpenStreetMap pictures.',
     stationsLabel: 'Map of recycling stations',
     stations,
     preschoolsLabel: 'Map of preschools',
@@ -225,6 +338,12 @@ export const useMapTexts = defineExampleTexts({
     wastePlaces,
     pollingLabel: 'Map of polling stations',
     pollingStations,
+    familyLabel: 'Map of places for children and families',
+    familyLayers,
+    familyPlaces,
+    familyHours,
+    openingHours: 'Opening hours',
+    directions: 'Get directions',
     ownListHeading: (shown: number, total: number) =>
       `${shown} of ${total} recycling stations in the map view`,
   },

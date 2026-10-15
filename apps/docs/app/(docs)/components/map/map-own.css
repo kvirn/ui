@@ -1,0 +1,22 @@
+/* The "Make it your own" map example: the consumer's classes on top of the Map parts. Tokens only. */
+.family-marker--playgrounds::before {
+  background-color: var(--kv-color-primary);
+}
+
+.family-marker--libraries::before {
+  background-color: var(--kv-color-accent);
+}
+
+.family-marker--pools::before {
+  background-color: var(--kv-color-success);
+}
+
+.family-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kv-space-1);
+}
+
+.family-details > p {
+  margin: 0 0 var(--kv-space-2);
+}

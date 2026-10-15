@@ -1,9 +1,7 @@
 'use client'
-import { Map, useMapState, createMemoryProvider } from '@kvirn-ui/map'
-import { Icon } from '@kvirn-ui/react'
+import { Map, useMapState } from '@kvirn-ui/map'
 import { useMapTexts } from './texts.ts'
-
-const provider = createMemoryProvider({ size: { width: 640, height: 400 } })
+import { DocsMap } from './use-docs-provider.tsx'
 
 const initialView = { center: { longitude: 18.07, latitude: 59.33 }, zoom: 13 }
 const headingId = 'station-list-heading'
@@ -42,20 +40,24 @@ function StationList() {
 export function OwnListMap() {
   const { texts } = useMapTexts()
   return (
-    <Map.Root
-      provider={provider}
-      label={texts.stationsLabel}
-      places={texts.stations}
-      initialView={initialView}
-      cluster={false}
-    >
-      <Map.Skip href={`#${headingId}`} />
-      <Map.Viewport>
-        <Map.Markers>{() => <Icon name="info" size="16" />}</Map.Markers>
-        <Map.Controls />
-      </Map.Viewport>
-      <StationList />
-      <Map.Details />
-    </Map.Root>
+    <DocsMap>
+      {(provider) => (
+        <Map.Root
+          provider={provider}
+          label={texts.stationsLabel}
+          places={texts.stations}
+          initialView={initialView}
+          cluster={false}
+        >
+          <Map.Skip href={`#${headingId}`} />
+          <Map.Viewport>
+            <Map.Markers />
+            <Map.Controls />
+          </Map.Viewport>
+          <StationList />
+          <Map.Details />
+        </Map.Root>
+      )}
+    </DocsMap>
   )
 }

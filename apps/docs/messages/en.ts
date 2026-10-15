@@ -628,7 +628,7 @@ export const messages = {
       },
       doesNot: {
         label: 'What this site does not do',
-        body: 'It sets no cookies. It has no analytics. Your browser makes no requests to other companies. The fonts are served from this site.',
+        body: 'It sets no cookies. It has no analytics. Your browser makes no requests to other companies, except when you press the button on the Map page that loads map pictures (see Map pictures). The fonts are served from this site.',
       },
       device: {
         label: 'What is stored on your device',
@@ -650,6 +650,10 @@ export const messages = {
         legalBasis: 'Our legal basis is legitimate interest (GDPR Article 6(1)(f)): answering you.',
         link: 'Resend privacy policy',
         linkHref: 'https://resend.com/legal/privacy-policy',
+      },
+      maps: {
+        label: 'Map pictures',
+        body: 'The examples on the Map page show a plain background and make no request. When you press “Load map pictures”, your browser asks the OpenStreetMap tile servers (tile.openstreetmap.org, run by the OpenStreetMap Foundation) for the map pictures. They receive your IP address, your browser details and the area you view. Nothing is requested before you press the button, and we receive nothing from it.',
       },
       email: {
         label: 'When you email us or use the contact form',

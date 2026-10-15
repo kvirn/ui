@@ -242,7 +242,12 @@ export const baseMapSwitchRows = propRows<Pick<MapBaseMapSwitchProps, 'icon' | '
   },
 })
 
-export const layersRows = propRows<Pick<MapLayersProps, 'icon' | 'layerClassName' | 'children'>>({
+export const layersRows = propRows<
+  Pick<
+    MapLayersProps,
+    'icon' | 'layerClassName' | 'children' | 'collapsible' | 'defaultOpen' | 'open' | 'onOpenChange'
+  >
+>({
   icon: {
     type: '(layer) => ReactNode',
     default: '–',
@@ -258,6 +263,28 @@ export const layersRows = propRows<Pick<MapLayersProps, 'icon' | 'layerClassName
     type: '({ layers, hiddenLayerIds, setLayerHidden, counts }) => ReactNode',
     default: '–',
     description: 'Replaces the checkboxes, for example with a switch per layer.',
+  },
+  collapsible: {
+    type: 'boolean',
+    default: 'true',
+    description:
+      'Lets the visitor collapse the card behind its title. `false` keeps it always open, with no button.',
+  },
+  defaultOpen: {
+    type: 'boolean',
+    default: 'true',
+    description:
+      'Whether the layers start shown. Set `false` for a long list of layers, so the card does not cover the map.',
+  },
+  open: {
+    type: 'boolean',
+    default: '–',
+    description: 'Controlled: whether the layers are shown. Pair it with `onOpenChange`.',
+  },
+  onOpenChange: {
+    type: '(open: boolean) => void',
+    default: '–',
+    description: 'Called when the visitor opens or closes the card, with the new state.',
   },
 })
 

@@ -23,6 +23,7 @@
     "@tiptap/pm": "catalog:",
     "@tiptap/react": "catalog:",
     "@tiptap/starter-kit": "catalog:",
+    "maplibre-gl": "catalog:",
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"

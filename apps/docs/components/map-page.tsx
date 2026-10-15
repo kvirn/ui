@@ -35,15 +35,17 @@ import {
   useMapStateHook,
   viewportAttributes,
 } from '../content/map.api.ts'
+import { FamilyMap } from '../examples/map/make-it-your-own.tsx'
 import { OwnListMap } from '../examples/map/own-list.tsx'
 import { PollingStationMap } from '../examples/map/clusters.tsx'
 import { RecyclingMap } from '../examples/map/default.tsx'
 import { WasteMap } from '../examples/map/layers.tsx'
+import { MapPicturesAlert } from '../examples/map/use-docs-provider.tsx'
 import { PreschoolMap } from '../examples/map/preschools.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type MapExampleSources = Record<
-  'default' | 'preschools' | 'layers' | 'clusters' | 'own-list',
+  'default' | 'preschools' | 'layers' | 'clusters' | 'own-list' | 'make-it-your-own',
   string
 >
 
@@ -203,9 +205,10 @@ const parts: ApiPart[] = [
     name: 'Map.Layers',
     renders: (
       <>
-        A <code>&lt;fieldset&gt;</code> with the legend “Show on the map” and one native checkbox
-        per layer, named with its count: “Hotels 100”. A layer’s <code>description</code> is the
-        checkbox’s help text. It renders nothing without layers.
+        A card titled “Show on the map” that collapses behind a button, and one native checkbox per
+        layer, named with its count: “Hotels 100”. While collapsed, the button says how many layers
+        are hidden. A layer’s <code>description</code> is the checkbox’s help text. It renders
+        nothing without layers.
       </>
     ),
     props: layersRows,
@@ -346,36 +349,39 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
       packageName="@kvirn-ui/map"
       pattern="None: there is no APG pattern for a map. The markers use the Toolbar’s arrow keys."
       whenToUse={
-        <ul>
-          <li>
-            Use it when the question is where a place is: the nearest preschool, the recycling
-            stations in a district, the polling station for an address. The same places are always
-            in a list, so nobody has to use the map to reach one.
-          </li>
-          <li>
-            Not for a single address: write it as text, with a link to a map service. Not for a long
-            list with no question about where: use a list or a{' '}
-            <Link href="/components/table">Table</Link>.
-          </li>
-          <li>
-            Tiles (the map pictures) are your choice. The library names no tile server, and it has
-            no default. A visitor’s browser asks your tile host for each picture, so the host sees
-            the visitor’s IP address: name it in your privacy notice. A provider is the code that
-            draws the map, such as MapLibre. Nothing is requested until a <code>Map.Root</code> with
-            a provider is on the page.
-          </li>
-          <li>
-            There is no address search yet. A visitor finds a place by the markers, the list and the
-            layers. Address search is planned, over a geocoding service (it turns a typed address
-            into a position) that you would choose.
-          </li>
-          <li>
-            It is its own package, <code>@kvirn-ui/map</code>. Its styles are an opt-in import,{' '}
-            <code>@kvirn-ui/theme/map.css</code>, after <code>theme.css</code>, so a site without
-            maps does not pay for them. MapLibre is an optional peer. The install lines are in the{' '}
-            <Link href="#api">API reference</Link>.
-          </li>
-        </ul>
+        <>
+          <MapPicturesAlert />
+          <ul>
+            <li>
+              Use it when the question is where a place is: the nearest preschool, the recycling
+              stations in a district, the polling station for an address. The same places are always
+              in a list, so nobody has to use the map to reach one.
+            </li>
+            <li>
+              Not for a single address: write it as text, with a link to a map service. Not for a
+              long list with no question about where: use a list or a{' '}
+              <Link href="/components/table">Table</Link>.
+            </li>
+            <li>
+              Tiles (the map pictures) are your choice. The library names no tile server, and it has
+              no default. A visitor’s browser asks your tile host for each picture, so the host sees
+              the visitor’s IP address: name it in your privacy notice. A provider is the code that
+              draws the map, such as MapLibre. Nothing is requested until a <code>Map.Root</code>{' '}
+              with a provider is on the page.
+            </li>
+            <li>
+              There is no address search yet. A visitor finds a place by the markers, the list and
+              the layers. Address search is planned, over a geocoding service (it turns a typed
+              address into a position) that you would choose.
+            </li>
+            <li>
+              It is its own package, <code>@kvirn-ui/map</code>. Its styles are an opt-in import,{' '}
+              <code>@kvirn-ui/theme/map.css</code>, after <code>theme.css</code>, so a site without
+              maps does not pay for them. MapLibre is an optional peer. The install lines are in the{' '}
+              <Link href="#api">API reference</Link>.
+            </li>
+          </ul>
+        </>
       }
       example={
         <>
@@ -383,10 +389,11 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
             <RecyclingMap />
           </ExampleFrame>
           <p>
-            The examples on this page draw no map picture. They use a provider that draws nothing
-            and sends nothing, so this page makes no request to a map server. Move the map with the
-            arrow keys or the buttons, press a marker or a name in the list, and watch the list
-            follow the view.
+            The examples on this page start as a plain background and make no request to a map
+            server. Press “Load map pictures” and your browser asks OpenStreetMap’s tile servers for
+            the pictures, so your IP address reaches them. Move the map with the mouse, the arrow
+            keys or the buttons, press a marker or a name in the list, and watch the list follow the
+            view.
           </p>
         </>
       }
@@ -426,20 +433,21 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
                 A resident wants the hazardous waste depot, not the recycling stations. Layers let
                 them show or hide each kind. Each layer’s checkbox says how many places it holds.
                 Hiding a layer takes its markers and rows away and announces the new count, and
-                focus stays on the checkbox.
+                focus stays on the checkbox. The card starts open; set{' '}
+                <code>defaultOpen={'{false}'}</code> for a long list of layers, so it does not cover
+                the map.
               </>
             }
             code={sources['layers']}
             propsUsed={[
               { part: 'Map.Root', prop: 'layers' },
               { part: 'MapPlace', prop: 'layer' },
-              { part: 'MapLayer', prop: 'description' },
-              { part: 'Map.Layers', prop: 'icon' },
             ]}
             note={
               <Note kind="reminder">
-                Do not tell the layers apart by colour alone. Give each an icon or a shape, on the
-                marker, in the checkbox and in the list, as this example does (1.4.1 Use of Color).
+                Every layer has a name in the checkbox and in the list, so colour is never the only
+                difference (1.4.1 Use of Color). If you give layers their own marker pictures, give
+                each an icon or a shape too, not only another colour.
               </Note>
             }
           >
@@ -493,6 +501,39 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
             }
           >
             <OwnListMap />
+          </UseCase>
+          <UseCase
+            id="make-it-your-own"
+            title="Make it your own"
+            why={
+              <>
+                A municipality shows its places for children and families: playgrounds, libraries
+                and swimming halls. A resident sees a different shape and colour for each kind, the
+                library names on the map, a popup with opening hours and a link for directions, and
+                switches that say how many places each kind holds. You write the markup; names,
+                focus, announcements and keyboard come from the parts, so they keep working.
+              </>
+            }
+            code={sources['make-it-your-own']}
+            propsUsed={[
+              { part: 'Map.Markers', prop: 'children' },
+              { part: 'Map.Markers', prop: 'markerClassName' },
+              { part: 'Map.Layers', prop: 'children' },
+              { part: 'Map.Details', prop: 'children' },
+              { part: 'Map.ClusterPopupPlaces', prop: 'renderPlace' },
+            ]}
+            note={
+              <Note kind="reminder">
+                A custom popup must keep <code>titleProps</code> on its title and a Close button, so
+                focus and the dialog’s name still work. Wrap a whole template, in the details or the
+                cluster popup, in <code>kv-map-details-content</code> to get the popup’s padding. A
+                custom switch must name each layer and call <code>setLayerHidden</code>. A custom
+                marker is decoration: its name comes from <code>label</code>, and the shape, not
+                only the colour, tells the layers apart (1.4.1 Use of Color).
+              </Note>
+            }
+          >
+            <FamilyMap />
           </UseCase>
         </>
       }
@@ -656,7 +697,12 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
                     key: 'clusterClose',
                     meaning: 'The first part of a cluster popup’s Close name.',
                   },
-                  { key: 'layersLegend', meaning: 'The legend of the layer checkboxes.' },
+                  { key: 'layersLegend', meaning: 'The title of the layers card and its button.' },
+                  {
+                    key: 'layersHiddenValue',
+                    meaning: 'After the title while the card is collapsed and layers are hidden.',
+                    values: { count: 3 },
+                  },
                   {
                     key: 'layerCountValue',
                     meaning: 'The count after a layer’s name in its checkbox.',
