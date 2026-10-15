@@ -1,7 +1,7 @@
 # Design spec: Map
 
 - **Status:** Accepted
-- **Plan:** [0117](plans/0117-map-and-address-search.md), [0118](plans/0118-map-layers-and-clusters.md), [0119](plans/0119-map-performance.md), [0120](plans/0120-map-chrome.md)
+- **Plan:** [0117](plans/0117-map-and-address-search.md), [0120](plans/0120-map-chrome.md)
 - **Type:** component default styling and flow (`@kvirn-ui/map`; CSS in `@kvirn-ui/theme/map.css`)
 - **Contract:** [map.a11y.md](../../packages/map/src/map.a11y.md). API: [map.md](../../packages/map/src/map.md). The code is the truth; this file describes what ships.
 

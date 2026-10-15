@@ -2,7 +2,7 @@
 
 - **Status:** In progress (asked by the maintainer 2026-10-15)
 - **Owner:** lead / component-engineer
-- **Related:** [design spec](../map.md), [plan 0118](0118-map-layers-and-clusters.md)
+- **Related:** [design spec](../map.md)
 
 ## Goal
 
