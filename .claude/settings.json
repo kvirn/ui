@@ -1,5 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "agent": "lead",
+  "outputStyle": "Concise",
   "permissions": {
     "allow": [
       "Bash(vp check*)",
