@@ -14,6 +14,8 @@ import {
   initialView,
   layeredArgs,
   MapDemo,
+  MapEverythingDemo,
+  MapLayeredDemo,
   MapRenderFunctionPopupDemo,
   MapOwnListDemo,
   MapSelectSwitchDemo,
@@ -25,8 +27,9 @@ import type { ManyPlacesDemoProps } from './map-many.fixture.tsx'
 import { RichPopupDemo } from './map-rich-popup.tsx'
 
 // Components/Map: the viewport, markers, controls and place list (contract: map.a11y.md). Default
-// and CustomBaseMapSwitch load real OpenStreetMap, Esri and OpenTopoMap tiles, so they are tagged
-// `!test`. Offline, Keyboard and OwnList use a plain background style and make no network call.
+// is the plain map, like the docs site; each customization has its own story and Everything has
+// them all. Default and CustomBaseMapSwitch load real OpenStreetMap, Esri and OpenTopoMap tiles,
+// so they are tagged `!test`. The other stories use a plain background style: no network call.
 
 const meta = {
   title: 'Components/Map',
@@ -168,38 +171,6 @@ function renderMap(args: MapDemoProps) {
   )
 }
 
-/**
- * The main example: MapLibre with real tiles (OpenStreetMap, Esri satellite, OpenTopoMap), every
- * option a control. The radios and the `baseMap` control stay in step. It calls those third
- * parties, so it is not run in tests: Offline covers the same component.
- */
-export const Default: Story = { render: renderMap, args: layeredArgs, tags: ['!test'] }
-
-/** The same map on a plain background style with no tile source: no network, markers on flat colour. */
-export const Offline: Story = { render: renderMap, args: { ...layeredArgs, offline: true } }
-
-/**
- * Focus the map and try the keys in the Keyboard table: arrows pan, plus and minus zoom, Tab
- * enters the markers, and Enter opens a place's details.
- */
-export const Keyboard: Story = { render: renderMap, args: { ...layeredArgs, offline: true } }
-
-/** `Map.Layers` with `defaultOpen={false}` and a layer hidden: the title row shows "1 hidden". */
-export const LayersCollapsed: Story = {
-  render: renderMap,
-  args: {
-    ...layeredArgs,
-    offline: true,
-    layersDefaultOpen: false,
-    defaultHiddenLayers: ['hotels'],
-    // The 44px title row sits over the top-left corner, so the view starts clear of the stations there.
-    initialView: {
-      ...initialView,
-      center: { ...initialView.center, latitude: initialView.center.latitude + 0.0149 },
-    },
-  },
-}
-
 function renderWith(Demo: typeof MapDemo) {
   return function render(args: MapDemoProps) {
     const [, updateArgs] = useArgs<MapDemoProps>()
@@ -215,6 +186,48 @@ function renderWith(Demo: typeof MapDemo) {
       />
     )
   }
+}
+
+/**
+ * The plain map, as on the docs site: default markers, controls, attribution, the list and the
+ * details, with real tiles (OpenStreetMap, Esri satellite, OpenTopoMap). Every option is a
+ * control. It calls those third parties, so it is not run in tests: Offline covers the same map.
+ * The stories below add one customization each, and Everything adds them all.
+ */
+export const Default: Story = { render: renderMap, tags: ['!test'] }
+
+/** The same plain map on a background style with no tile source: no network, markers on flat colour. */
+export const Offline: Story = { render: renderMap, args: { offline: true } }
+
+/**
+ * Focus the map and try the keys in the Keyboard table: arrows pan, plus and minus zoom, Tab
+ * enters the markers, and Enter opens a place's details.
+ */
+export const Keyboard: Story = { render: renderMap, args: { offline: true } }
+
+/**
+ * Layers with icons (`Map.Layers` `icon`), clusters per layer and a pin per layer on the default
+ * parts: 100 fuel stations and 100 hotels.
+ */
+export const LayersAndClusters: Story = {
+  render: renderWith(MapLayeredDemo),
+  args: { ...layeredArgs, offline: true },
+}
+
+/** `Map.Layers` with `defaultOpen={false}` and a layer hidden: the title row shows "1 hidden". */
+export const LayersCollapsed: Story = {
+  render: renderWith(MapLayeredDemo),
+  args: {
+    ...layeredArgs,
+    offline: true,
+    layersDefaultOpen: false,
+    defaultHiddenLayers: ['hotels'],
+    // The 44px title row sits over the top-left corner, so the view starts clear of the stations there.
+    initialView: {
+      ...initialView,
+      center: { ...initialView.center, latitude: initialView.center.latitude + 0.0149 },
+    },
+  },
 }
 
 /** No `Map.List`: a list of your own, built from `useMapState`, with `Map.Skip href` pointing at it. */
@@ -254,6 +267,26 @@ export const CustomMarkers: Story = {
   render: renderWith(CustomMarkersDemo),
   args: { ...layeredArgs, offline: true },
   parameters: showSource('map/map.fixture.tsx', 'CustomMarkersDemo'),
+}
+
+/**
+ * Every customization on one map, offline: layers with icons and a collapsed Layers card with a
+ * hidden layer, cluster and marker render functions with their classes and labels, a custom
+ * popup, a select for the map type, the page's own list with `Map.Skip href`, own classes and a
+ * `messages` override ("Closer" and "Farther"). Show code is the real demo.
+ */
+export const Everything: Story = {
+  render: renderWith(MapEverythingDemo),
+  args: {
+    ...layeredArgs,
+    offline: true,
+    // The collapsed Layers title row sits over the top-left corner, so the view starts clear of the stations there.
+    initialView: {
+      ...initialView,
+      center: { ...initialView.center, latitude: initialView.center.latitude + 0.0149 },
+    },
+  },
+  parameters: showSource('map/map.fixture.tsx', 'MapEverythingDemo'),
 }
 
 type ManyStory = StoryObj<ManyPlacesDemoProps>

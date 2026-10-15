@@ -246,6 +246,7 @@ function BaseMapSelect() {
   )
 }
 
+/** The plain map, like the docs default: default markers, controls, attribution, list and details. */
 export function MapDemo({
   offline = false,
   showBaseMapSwitch = true,
@@ -255,6 +256,33 @@ export function MapDemo({
 }: MapDemoProps) {
   const provider = useProvider(offline)
   // A new provider, start or camera is a new engine: remount the map rather than swap one under it.
+  const key = `${offline}|${mapProps.defaultBaseMap}|${JSON.stringify(mapProps.defaultHiddenLayers)}|${JSON.stringify(mapProps.initialView)}`
+  return (
+    <Map.Root key={key} provider={provider} {...mapProps}>
+      <Map.Skip />
+      <Map.Viewport>
+        <Map.Layers defaultOpen={layersDefaultOpen} />
+        {showBaseMapSwitch ? <Map.BaseMapSwitch /> : null}
+        <Map.Markers />
+        <Map.Controls />
+        <Map.Attribution />
+      </Map.Viewport>
+      {showList ? <Map.List /> : null}
+      <Map.Details />
+      <Map.ClusterPopup />
+    </Map.Root>
+  )
+}
+
+/** Layers with icons, clusters per layer and a pin per layer, on the default parts. */
+export function MapLayeredDemo({
+  offline = false,
+  showBaseMapSwitch = true,
+  showList = false,
+  layersDefaultOpen = true,
+  ...mapProps
+}: MapDemoProps) {
+  const provider = useProvider(offline)
   const key = `${offline}|${mapProps.defaultBaseMap}|${JSON.stringify(mapProps.defaultHiddenLayers)}|${JSON.stringify(mapProps.initialView)}`
   return (
     <Map.Root key={key} provider={provider} {...mapProps}>
@@ -283,6 +311,34 @@ export function MapDemo({
 
 const clusterSize = (count: number) => (count < 5 ? 'small' : count < 10 ? 'medium' : 'large')
 
+function CustomLayerMarkers() {
+  return (
+    <Map.Markers
+      label={(place, layer) => `${place.name}, ${layer?.label ?? ''}`}
+      markerClassName={(place) => `story-pin story-pin--${place.layer}`}
+      clusterLabel={(cluster, layer) => `${layer?.label ?? ''}, ${cluster.count} places`}
+      clusterClassName={(cluster) =>
+        `story-ring story-ring--${cluster.layer} story-ring--${clusterSize(cluster.count)}`
+      }
+      cluster={(cluster) => (
+        <>
+          <Icon icon={layerIcons[cluster.layer ?? 'fuel']!} size="16" />
+          <span className="story-ring-count">{cluster.count}</span>
+        </>
+      )}
+    >
+      {(place, state) => (
+        <>
+          <Icon icon={layerIcons[place.layer ?? 'fuel']!} size="16" />
+          {state.highlighted && !state.selected ? (
+            <span className="kv-map-marker-label">{place.name}</span>
+          ) : null}
+        </>
+      )}
+    </Map.Markers>
+  )
+}
+
 /**
  * A pin per layer and a ring per cluster, both drawn inside the default buttons: the content is
  * decorative, the buttons are named by `label` and `clusterLabel`, and the classes only restyle.
@@ -293,29 +349,7 @@ export function CustomMarkersDemo({ offline = false, ...mapProps }: MapDemoProps
     <Map.Root provider={provider} {...mapProps}>
       <Map.Skip />
       <Map.Viewport>
-        <Map.Markers
-          label={(place, layer) => `${place.name}, ${layer?.label ?? ''}`}
-          markerClassName={(place) => `story-pin story-pin--${place.layer}`}
-          clusterLabel={(cluster, layer) => `${layer?.label ?? ''}, ${cluster.count} places`}
-          clusterClassName={(cluster) =>
-            `story-ring story-ring--${cluster.layer} story-ring--${clusterSize(cluster.count)}`
-          }
-          cluster={(cluster) => (
-            <>
-              <Icon icon={layerIcons[cluster.layer ?? 'fuel']!} size="16" />
-              <span className="story-ring-count">{cluster.count}</span>
-            </>
-          )}
-        >
-          {(place, state) => (
-            <>
-              <Icon icon={layerIcons[place.layer ?? 'fuel']!} size="16" />
-              {state.highlighted && !state.selected ? (
-                <span className="kv-map-marker-label">{place.name}</span>
-              ) : null}
-            </>
-          )}
-        </Map.Markers>
+        <CustomLayerMarkers />
         <Map.Layers icon={(layer) => <Icon icon={layerIcons[layer.id]!} size="16" />} />
         <Map.Controls />
         <Map.Attribution />
@@ -408,6 +442,55 @@ export function MapRenderFunctionPopupDemo({ offline = false, ...mapProps }: Map
           </div>
         )}
       </Map.Details>
+    </Map.Root>
+  )
+}
+
+/**
+ * Every customization at once, offline: layers with icons and a collapsed Layers card with a
+ * hidden layer, clusters with a cluster render function and `clusterClassName`, own markers per
+ * layer (`markerClassName`, `label`, `clusterLabel`), `Map.Details` with children and own classes,
+ * a base map switch as a Field and a select, the page's own list with `Map.Skip href`, own classes
+ * on the root and parts, and a per-instance `messages` override.
+ */
+export function MapEverythingDemo({
+  offline = true,
+  layersDefaultOpen = false,
+  showBaseMapSwitch: _showBaseMapSwitch,
+  showList: _showList,
+  ...mapProps
+}: MapDemoProps) {
+  const provider = useProvider(offline)
+  return (
+    <Map.Root
+      provider={provider}
+      {...mapProps}
+      defaultHiddenLayers={['hotels']}
+      messages={{ ...mapProps.messages, zoomIn: 'Closer', zoomOut: 'Farther' }}
+      className="story-everything-map"
+    >
+      <Map.Skip href={`#${ownListHeadingId}`} />
+      <Map.Viewport>
+        <CustomLayerMarkers />
+        <Map.Layers
+          defaultOpen={layersDefaultOpen}
+          icon={(layer) => <Icon icon={layerIcons[layer.id]!} size="16" />}
+        />
+        <Map.Controls />
+        <Map.Attribution />
+      </Map.Viewport>
+      <BaseMapSelect />
+      <OwnList />
+      <Map.Details>
+        <div className="kv-map-details-content">
+          <Map.DetailsAddress className="story-popup-address" />
+          <Map.DetailsTitle as="h2" className="story-popup-title" />
+          <Map.DetailsClose />
+          <Map.DetailsBody />
+          <Map.DetailsImage className="story-popup-image" />
+        </div>
+      </Map.Details>
+      <Map.ClusterPopup />
     </Map.Root>
   )
 }
