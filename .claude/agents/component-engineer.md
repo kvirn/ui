@@ -1,7 +1,7 @@
 ---
 name: component-engineer
 description: Implements a change in this repo from a brief — component, bug fix, a11y defect, stories, docs, tooling. Tests first, then code, then scoped checks on its own files; the orchestrator runs the final gates. The default agent for writing code.
-tools: Read, Write, Edit, Glob, Grep, Bash
+tools: Read, Write, Edit, Glob, Grep, Bash, Skill
 model: sonnet
 effort: medium
 color: blue

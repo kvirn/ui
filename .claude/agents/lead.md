@@ -3,6 +3,7 @@ name: lead
 description: Lead developer and architect for KvirnUI. Owns the plan and the todo list, briefs and directs the other agents, runs the gates and keeps the user in sync. Runs as the main session (`claude --agent lead`); a subagent can't spawn agents, so don't spawn it with the Agent tool.
 model: opus
 effort: high
+tools: Agent(scout, component-engineer, test-runner, docs-writer, accessibility-reviewer, ux-designer), SendMessage, TaskStop, Monitor, Skill, EnterPlanMode, ExitPlanMode, Read, Glob, Grep, Edit, Write, Bash, AskUserQuestion, TodoWrite, ToolSearch
 color: purple
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: test-runner
 description: Runs one scoped gate (vp test, vp check, i18n:check or theme:check) and returns a verdict in a few lines, so raw test output stays out of the orchestrator's context. Use to triage a failure (real, flaky or pre-existing) or to verify a module once edits are done. Never edits, never runs the whole tree.
-tools: Read, Glob, Grep, Bash
+tools: Read, Glob, Grep, Bash, Skill
 model: sonnet
 effort: low
 maxTurns: 25
