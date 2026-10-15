@@ -105,6 +105,12 @@ The reader is clever and busy, may not code, and may read English as a second la
 - Code words (`aria-describedby`, prop names) belong in code formatting and in the API and use-case code. In "When to use it" and "What it does for you", write the effect, not the attribute.
 - A WCAG criterion is its number, its name and one sentence on what it means for people: "1.4.3 Contrast (Minimum): text is dark enough on its background to read."
 - Cut what doesn't help a decision. No marketing, no "simply", "just", "easy".
+- **Technical is fine; hard to follow is not.** Keep the precise term (`aria-live`, focus trap, roving tabindex) where it is the right word, and say what it means in plain words next to it. Never swap a correct term for a vague one.
+- Everyday words over formal ones: "use" not "utilise", "so that" not "in order to", "needs" not "necessitates", "about" not "approximately". No idioms or metaphors ("out of the box", "under the hood", "first-class", "a11y"): a translation tool or a second-language reader gets them wrong.
+- One word for one thing across the page. Don't alternate "dialog", "modal" and "popup" unless they are different things.
+- Put the subject and verb early. Avoid long noun chains ("the form field error message association") and stacked negatives. Prefer a list or a numbered step to a sentence with three "and"s.
+- Say who does what: "You give the dialog a title" beats "A title must be provided".
+- **Read-aloud test** before you finish a section: if you stumble, or a sentence needs a second read, split it or reword it. Headings say what the section answers ("When should I use this?"), not what it is called internally.
 - Words: DESIGN.md "Words we use" wins.
 
 ## Real examples
