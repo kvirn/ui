@@ -118,7 +118,7 @@ The toolbar uses a roving tabindex and its arrows wrap ([Toolbar](../../react/sr
 
 Nothing is announced for a toolbar toggle pressed with Enter or Space (`aria-pressed` on the focused button says it) or for a text set from code or stored content (a refused image there is dropped without a message). The link and image forms' errors are the Field's own error messages in the form. Known limits: no per-message `lang`, and the live regions need the outermost `KvirnProvider`.
 
-## Read aloud
+### Read aloud
 
 | State or action                         | Expected phrase(s) as read aloud                                                                                                          | Live region politeness | Test                                                                                                                                                                                                       |
 | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
