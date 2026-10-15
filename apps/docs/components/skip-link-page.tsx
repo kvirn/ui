@@ -52,13 +52,17 @@ export function SkipLinkPage({
         <ul>
           <li>
             Use one on every page that has a header or a menu before the main content. People who
-            use a keyboard can then skip it instead of tabbing through it on every page.
+            use a keyboard can then jump past it, instead of pressing Tab through it on every page.
           </li>
           <li>Put it first in the page, before the header and any other link.</li>
-          <li>Give the main content an id, and point the link at it with a same-page address.</li>
           <li>
-            Not for a link to another page or a route: use a{' '}
-            <Link href="/components/link">Link</Link>. For text only screen readers get, use{' '}
+            Give the main content an id, such as <code>main</code>, and set the link’s{' '}
+            <code>href</code> to <code>#main</code>. A <code>#</code> address points to an element
+            on the same page.
+          </li>
+          <li>
+            Not for a link to another page: use a <Link href="/components/link">Link</Link>. Not for
+            text that only screen readers (software that reads the screen aloud) should get: use{' '}
             <Link href="/components/visually-hidden">VisuallyHidden</Link>.
           </li>
         </ul>
@@ -82,8 +86,9 @@ export function SkipLinkPage({
             note={
               <Note kind="reminder">
                 A label of your own is not translated for you. When it is in another language than
-                the page, put it in an element with <code>lang</code> (3.1.2 Language of Parts,
-                level AA). See <Link href="#what-you-need-to-do">What you need to do</Link>.
+                the page, mark the language so screen readers pronounce it correctly (3.1.2 Language
+                of Parts, level AA). See{' '}
+                <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >
@@ -107,8 +112,9 @@ export function SkipLinkPage({
             why={
               <>
                 Your project already has a link component with its own class or markup. Pass it with{' '}
-                <code>as</code>. It gets the other props, the <code>ref</code> and the{' '}
-                <code>kv-skip-link</code> class, so the link still hides until it has focus.
+                <code>as</code>. SkipLink gives it the other props, the <code>ref</code> (a way to
+                reach the underlying element) and the <code>kv-skip-link</code> class, so the link
+                still hides until it has focus.
               </>
             }
             code={sources['design-system-link']}
@@ -118,8 +124,8 @@ export function SkipLinkPage({
             ]}
             note={
               <Note kind="tip">
-                The component must render an <code>&lt;a href&gt;</code> and pass on its ref. Don’t
-                use a router link for a same-page address: it isn’t a route.
+                Your component must render an <code>&lt;a href&gt;</code> and pass on its ref. Don’t
+                use <code>Link.Root</code> here: a same-page address is not a route.
               </Note>
             }
           >
@@ -145,8 +151,8 @@ export function SkipLinkPage({
             ]}
             note={
               <Note kind="tip">
-                The link doesn’t cancel the browser’s own jump. The jump still works before the
-                scripts have loaded.
+                The link doesn’t stop the browser’s own jump to the target. So the jump still works
+                without JavaScript.
               </Note>
             }
           >
@@ -168,9 +174,10 @@ export function SkipLinkPage({
             ),
             focus: (
               <Note kind="reminder">
-                Keep the focus ring on the target. If your styles remove the outline from elements
-                with <code>tabindex=&quot;-1&quot;</code>, someone using a keyboard can’t see where
-                the link took them (2.4.7 Focus Visible, level AA).
+                Keep the focus ring on the target. When the target can’t take focus yet, the link
+                adds <code>tabindex=&quot;-1&quot;</code> to it so focus can move there. If your
+                styles remove the outline from such elements, someone using a keyboard can’t see
+                where the link took them (2.4.7 Focus Visible, level AA).
               </Note>
             ),
           }}

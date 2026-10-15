@@ -1,7 +1,7 @@
 # Accessibility contract: SkipLink
 
 - **APG pattern:** none. WCAG technique G1 (a link at the top to skip to the main content) with C7 (hide it until it has focus).
-- **Deviations:** none. Activating the link moves focus. That is the purpose of the control, so it is the one allowed exception to "a component moves no focus by itself".
+- **Deviations:** none. Activating the link moves focus to the target. That is what the link is for.
 - **Native elements used:** `<a href="#id">`, never `Link.Root`: a hash on the same page is not a route.
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `skip-link.test.tsx` next to this file. `skip-link.stories.tsx` in `apps/storybook/src/components/skip-link/`, where `theme.css` is loaded and the visible state is proved.
@@ -54,7 +54,7 @@ Moving focus to the target reads its name or content. The only string is the lin
 
 - **Put it first in the body,** before the header and any other link, and give the main content the id (`<main id="main">`).
 - **A missing target warns** in development: `skip-link-target-missing:<id>`.
-- **Language.** A custom label is your own string: put it in a nested `KvirnProvider` with `useLocale().localeProps` on your own element if it differs from the page (3.1.2 Language of Parts, AA).
+- **Language.** A custom label is your own text. When it is in another language than the page, mark it: put it in a nested `KvirnProvider` and spread `useLocale().localeProps` on your own element (3.1.2 Language of Parts, AA).
 - **Do not hide the target's focus ring.** The default theme draws the focus ring on the target, only when focus came from the keyboard (`:focus-visible`): don't set `outline: none` on `[tabindex="-1"]`.
 - **Do not put it in a sticky layer that covers other content** (2.4.11 Focus Not Obscured (Minimum), AA): it stays in the flow.
 

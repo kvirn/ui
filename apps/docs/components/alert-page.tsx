@@ -46,10 +46,10 @@ const parts: ApiPart[] = [
     name: 'Alert.Root',
     renders: (
       <>
-        {renderedElement} It is the plain root: <code>kv-alert</code> only, with no status class,
-        icon or status word, for your own design. You add a status word first in the Title and an
-        icon with its own shape, and both agree with your colour. Also exported as{' '}
-        <code>AlertRoot</code>.
+        {renderedElement} The plain root, for your own design: it has only the <code>kv-alert</code>{' '}
+        class, with no status class, icon or status word. You add a status word at the start of the
+        Title and an icon with a shape of its own. Both must agree with your colour. Also exported
+        as <code>AlertRoot</code>.
       </>
     ),
     props: rootRows,
@@ -61,9 +61,10 @@ const parts: ApiPart[] = [
       <>
         {renderedElement} <code>Alert.Info</code>, <code>Alert.Success</code>,{' '}
         <code>Alert.Warning</code> and <code>Alert.Danger</code> take the same props. Each adds its
-        status class, its icon and the status word that starts the Title, from one table, so the
-        colour, the icon and the word can’t disagree. Also exported as <code>AlertInfo</code> and so
-        on. The default theme is described on <Link href="/foundation/theming">Theming</Link>.
+        status class, its icon and the status word that starts the Title, all from one place in the
+        code, so the colour, the icon and the word can’t disagree. Also exported as{' '}
+        <code>AlertInfo</code> and so on. The default theme is described on{' '}
+        <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: readyMadeRootRows,
@@ -105,10 +106,10 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;button type=&quot;button&quot;&gt;</code> with the role <code>button</code>, named
-        by <code>alert.close</code>. Optional, and last in the root. It was added after the
-        independent accessibility review and hasn’t had a review of its own. It owns no open or
-        closed state. It takes every attribute of a <code>&lt;button&gt;</code> except{' '}
-        <code>type</code> and <code>aria-disabled</code>.
+        by <code>alert.close</code>. Optional, and last in the root. It was added after the first
+        version of Alert. It owns no open or closed state: you remove the alert yourself. It takes
+        every attribute of a <code>&lt;button&gt;</code> except <code>type</code> and{' '}
+        <code>aria-disabled</code>.
       </>
     ),
     props: closeRows,
@@ -126,7 +127,7 @@ export function AlertPage({
   return (
     <ComponentPage
       title="Alert"
-      lead="It shows its status with an icon, a word and a colour, and it speaks only when you ask it to. The close button was added after the independent accessibility review and hasn’t had a review of its own."
+      lead="It shows its status with an icon, a word and a colour. A screen reader (software that reads the screen aloud) says it only when you ask for that. The close button was added later than the rest of Alert."
       status="alpha"
       whenToUse={
         <ul>
@@ -135,21 +136,22 @@ export function AlertPage({
             a saved draft, a failed send.
           </li>
           <li>
-            Choose the status by the component: <code>Alert.Info</code>, <code>Alert.Success</code>,{' '}
-            <code>Alert.Warning</code> or <code>Alert.Danger</code>. Write the outcome in the user’s
-            words, not only the status.
+            Choose the status by choosing the component: <code>Alert.Info</code>,{' '}
+            <code>Alert.Success</code>, <code>Alert.Warning</code> or <code>Alert.Danger</code>.
+            Write the outcome in the user’s words, not only the status.
           </li>
           <li>
-            Put it in the content, near what it is about. One that is there when the page loads
-            needs nothing more: it is read in the page’s order. Use <code>announce</code> only on
-            one that appears after the user did something.
+            Put it in the content, near what it is about. An alert that is already there when the
+            page loads needs nothing more: a screen reader reads it in its place on the page. Use{' '}
+            <code>announce</code> only for an alert that appears after the user did something. It
+            makes the screen reader read the text aloud.
           </li>
           <li>
             Not for a message that interrupts and needs an answer: use an{' '}
             <Link href="/components/alert-dialog">AlertDialog</Link>. Not for a short message in the
             corner after something worked: use a <Link href="/components/toast">Toast</Link>. Not
             for a field’s error: that belongs to the <Link href="/components/field">Field</Link>.
-            Not for ordinary text: use a <Link href="/components/prose">Prose</Link>.
+            Not for ordinary text: use <Link href="/components/prose">Prose</Link>.
           </li>
         </ul>
       }
@@ -163,14 +165,21 @@ export function AlertPage({
           <UseCase
             id="statuses"
             title="Four statuses"
-            why="Each status has its own component, with an icon, a word and a colour that always agree. A short, one-sentence alert uses a paragraph as its Title."
+            why={
+              <>
+                Each status has its own component. Its icon, word and colour always agree, so the
+                status never depends on colour alone. For a one-sentence alert, show the Title as a
+                paragraph with <code>as=&quot;p&quot;</code> instead of a heading.
+              </>
+            }
             code={sources['statuses']}
             propsUsed={[{ part: 'Alert.Title', prop: 'as' }]}
             note={
               <Note kind="reminder">
                 The Title is an <code>h2</code> by default. Set <code>as</code> so it sits one level
-                below the heading of the part of the page it is in, and never skip a level (1.3.1
-                Info and Relationships, 2.4.6 Headings and Labels).
+                below the heading of the part of the page it is in, and never skip a level. Headings
+                give the page its outline (1.3.1 Info and Relationships, level A; 2.4.6 Headings and
+                Labels, level AA).
               </Note>
             }
           >
@@ -179,7 +188,14 @@ export function AlertPage({
           <UseCase
             id="with-actions"
             title="With something to do"
-            why="When the user can act on the message, put up to two verbs in Actions: Links to go somewhere, Buttons to do something. They are reached with Tab and aren’t announced."
+            why={
+              <>
+                When the user can act on the message, put at most two actions in{' '}
+                <code>Alert.Actions</code>. Start each with a verb, such as “Try again”. Use a Link
+                to go somewhere and a Button to do something. People reach them with the Tab key,
+                and they are not part of the announced text.
+              </>
+            }
             code={sources['with-actions']}
           >
             <WithActions />
@@ -187,13 +203,21 @@ export function AlertPage({
           <UseCase
             id="announced-after-an-action"
             title="Heard after an action"
-            why="An alert present at load is read in the page’s order. One inserted after the user pressed something is silent unless you ask: announce polite, and focus stays on the button."
+            why={
+              <>
+                An alert that is there when the page loads is read in its place on the page. One
+                that appears after the user pressed a button is silent unless you ask. Set{' '}
+                <code>announce=&quot;polite&quot;</code> so a screen reader reads the text aloud.
+                Focus stays on the button.
+              </>
+            }
             code={sources['announced']}
             propsUsed={[{ part: readyMadeRootName, prop: 'announce' }]}
             note={
               <Note kind="tip">
-                Use <code>assertive</code> only for an <code>Alert.Danger</code> the user must act
-                on right now. On Info or Success it gives a development warning.
+                Use <code>assertive</code> (the screen reader says it at once, even if it must
+                interrupt) only for an <code>Alert.Danger</code> the user must act on right now. On
+                Info or Success it gives a development warning.
               </Note>
             }
           >
@@ -202,13 +226,23 @@ export function AlertPage({
           <UseCase
             id="dismissible"
             title="One the user can close"
-            why="Add Alert.Close to a message the user can safely be done with, such as a tip or a saved confirmation. Not to an error or a warning they still have to act on. The alert holds no open or closed state: remove it yourself and move focus first, because the button that had focus is gone with it."
+            why={
+              <>
+                Add <code>Alert.Close</code> only to a message the user can safely dismiss, such as
+                a tip or a saved confirmation. Don’t add it to an error or a warning they still have
+                to act on. The alert doesn’t remember whether it is shown: you remove it yourself.
+                Move focus to another place first, because the close button has focus and disappears
+                with the alert.
+              </>
+            }
             code={sources['dismissible']}
             propsUsed={[{ part: 'Alert.Close', prop: 'onClick' }]}
             note={
               <Note kind="reminder">
                 Move focus to a sensible place in the same handler, such as the heading of that part
-                of the page. See <Link href="#what-you-need-to-do">What you need to do</Link>.
+                of the page. An element that had focus and is removed sends focus to the page, so
+                the user loses their place (2.4.3 Focus Order, level A). See{' '}
+                <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >
@@ -225,12 +259,12 @@ export function AlertPage({
                 <Note kind="reminder">
                   When an alert’s text is in another language than the page, set{' '}
                   <code>messages</code> on that alert, so the status word and the text agree (3.1.2
-                  Language of Parts).
+                  Language of Parts, level AA).
                 </Note>
               ),
               'known-issues': (
                 <Note kind="tip">
-                  Manual testing with screen readers hasn’t confirmed that the announcement is heard
+                  Nobody has yet tested with real screen readers whether the announcement is heard
                   in time. If you use <code>announce</code>, listen to it with the screen readers
                   your users have.
                 </Note>
@@ -238,8 +272,8 @@ export function AlertPage({
             }}
           />
           <p>
-            The text announced is the Alert’s own visible text, so you change the Title and Body,
-            and the status word with the keys in Strings.
+            The announced text is the alert’s own visible text. To change it, change the Title and
+            the Body. To change the status word, use the keys in Strings.
           </p>
         </>
       }
