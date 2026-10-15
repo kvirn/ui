@@ -430,5 +430,8 @@ export const sv = {
     trigger: 'Välj datumen',
     title: 'Välj perioden',
   },
-  map: en.map,
+  map: {
+    ...en.map,
+    layersHiddenValue: ({ count }, format) => `${format.number(count)} dolda`,
+  },
 } satisfies KvirnMessages

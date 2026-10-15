@@ -1,9 +1,11 @@
 import type { MapCluster as MapClusterData, MapLayer, MapPlace } from '@kvirn-ui/core'
+import { Icon } from '@kvirn-ui/react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { ComponentPropsWithRef, CSSProperties, KeyboardEvent, ReactNode } from 'react'
 import { joinClassNames } from './class-names.ts'
 import { hasModifier } from './has-modifier.ts'
 import { useMapContext } from './map-context.ts'
+import { MarkerIcon } from './map-icons.tsx'
 import { useMapFrame } from './use-map-frame.ts'
 
 export interface MapMarkerProps<Data = unknown> extends ComponentPropsWithRef<'button'> {
@@ -54,7 +56,7 @@ export function MapMarker<Data = unknown>({
         map.keepClear(event.currentTarget)
       }}
     >
-      {children}
+      {children === undefined ? <Icon icon={MarkerIcon} className="kv-map-marker-pin" /> : children}
     </button>
   )
 }
@@ -139,7 +141,7 @@ export interface MapMarkersProps<Data = unknown> extends Omit<
   'children'
 > {
   /**
-   * The marker's content for a place: a 16px icon, an image or text. It sits inside the one
+   * The marker's content for a place: a 16px icon, an image or text. Default: a map pin. It sits inside the one
    * native button, so it is not read: the button is named from `label`.
    */
   children?: ((place: MapPlace<Data>, state: MapMarkerState) => ReactNode) | undefined

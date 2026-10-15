@@ -430,5 +430,8 @@ export const nb = {
     trigger: 'Velg datoer',
     title: 'Velg datoene',
   },
-  map: en.map,
+  map: {
+    ...en.map,
+    layersHiddenValue: ({ count }, format) => `${format.number(count)} skjult`,
+  },
 } satisfies KvirnMessages

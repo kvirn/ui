@@ -1,7 +1,7 @@
 import type { IconComponent, IconComponentProps } from '@kvirn-ui/react'
 import type { ReactElement } from 'react'
 
-// The built-in icon set is capped, so the map keeps its own four, drawn like the built-ins
+// The built-in icon set is capped, so the map keeps its own, drawn like the built-ins
 // (24 grid, 1.5 stroke, round caps and joins) and passed to Icon with `icon`.
 function createMapIcon(paths: readonly string[]): IconComponent {
   return function MapIcon({ ref, ...svgProps }: IconComponentProps): ReactElement {
@@ -37,3 +37,33 @@ export const LocateIcon = createMapIcon([
 ])
 export const ArrowLeftIcon = createMapIcon(['M19.5 12h-15', 'M11 5.5 4.5 12l6.5 6.5'])
 export const ArrowRightIcon = createMapIcon(['M4.5 12h15', 'M13 5.5l6.5 6.5-6.5 6.5'])
+// The one filled icon: a solid teardrop whose tip is the bottom edge, so a marker can sit with the
+// tip on its coordinate. The hole shows what is under it.
+export const MarkerIcon: IconComponent = function MarkerIcon({
+  ref,
+  ...svgProps
+}: IconComponentProps): ReactElement {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      fillRule="evenodd"
+      {...svgProps}
+      ref={ref}
+    >
+      <path d="M12 24C9 21 4.5 15.5 4.5 9.5a7.5 7.5 0 0 1 15 0C19.5 15.5 15 21 12 24ZM12 6.4a3.1 3.1 0 1 0 0 6.2 3.1 3.1 0 0 0 0-6.2Z" />
+    </svg>
+  )
+}
+
+/** The Map's own icons by name, for `KvirnProvider icons` or `<Icon icon>`. */
+export const mapIcons = Object.freeze({
+  marker: MarkerIcon,
+  locate: LocateIcon,
+  remove: RemoveIcon,
+  'arrow-north': ArrowUpIcon,
+  'arrow-south': ArrowDownIcon,
+  'arrow-west': ArrowLeftIcon,
+  'arrow-east': ArrowRightIcon,
+} satisfies Record<string, IconComponent>)

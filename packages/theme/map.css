@@ -144,6 +144,47 @@
       0 0 0 4px var(--kv-color-text);
   }
 
+  /* The default marker is a solid pin, not a disc: the tip is the coordinate and the 44px button
+   * stands above it. A marker with its own children keeps the disc. */
+  .kv-map-marker:has(> .kv-map-marker-pin) {
+    place-items: end center;
+    color: var(--kv-color-primary);
+    transform: translate(calc(var(--kv-map-x, 0px) - 50%), calc(var(--kv-map-y, 0px) - 100%));
+  }
+
+  .kv-map-marker:has(> .kv-map-marker-pin)::before {
+    content: none;
+  }
+
+  .kv-map-marker > .kv-map-marker-pin {
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    fill: currentColor;
+    stroke: var(--kv-color-canvas);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+    paint-order: stroke;
+    transform-origin: bottom center;
+  }
+
+  .kv-map-marker:has(> .kv-map-marker-pin):hover {
+    color: var(--kv-color-primary-hover);
+  }
+
+  .kv-map-marker:has(> .kv-map-marker-pin):focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  .kv-map-marker[data-highlighted] > .kv-map-marker-pin,
+  .kv-map-marker[aria-expanded='true'] > .kv-map-marker-pin {
+    stroke: var(--kv-color-text);
+  }
+
+  .kv-map-marker[aria-expanded='true'] > .kv-map-marker-pin {
+    scale: 1.25;
+  }
+
   /* A cluster: a plate wider than a place's disc, with the count in tabular figures, so the shape
    * and the number tell it from a place (WCAG 1.4.1). Pressing it opens the cluster popup. */
   .kv-map-cluster {
@@ -511,9 +552,8 @@
     outline-offset: var(--kv-focus-ring-offset);
   }
 
-  /* Show on the map: stacked chips in a card. The checkbox is clipped but stays focusable and the
-   * label is the chip. A plus when off and a check when on, so the state is a shape, not only a
-   * colour. The state slot is always there, so toggling never resizes the chip. */
+  /* Show on the map: the fieldset floats in a card. Each layer is a normal checkbox and label, the
+   * count after the name. */
   .kv-map-layers {
     display: flex;
     flex-direction: column;
@@ -535,86 +575,51 @@
     font-weight: 600;
   }
 
-  .kv-map-layers > .kv-field {
-    position: relative;
-    display: block;
+  .kv-map-layers > .kv-field,
+  .kv-map-layers-group > .kv-field {
     margin: 0;
-    padding: 0;
-    border: 0;
-    background: none;
   }
 
-  .kv-map-layers .kv-checkbox {
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    margin: 0;
-    overflow: hidden;
-    clip-path: inset(50%);
-    opacity: 0;
+  /* The collapsible card: the trigger is the title row, with the hidden count and the chevron at
+   * the inline end. It keeps the disclosure's focus ring and forced-colors rules. */
+  .kv-map-layers .kv-map-layers-trigger {
+    display: flex;
+    justify-content: space-between;
+    inline-size: 100%;
+    min-block-size: 0;
+    padding: 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-label-size);
+    font-weight: 600;
+  }
+
+  .kv-map-layers-title {
+    margin-inline-end: auto;
+  }
+
+  .kv-map-layers-hidden {
+    color: var(--kv-color-text-muted);
+    font-size: var(--kv-font-body-small-size);
+    font-weight: 400;
+  }
+
+  .kv-map-layers-panel {
+    padding: 0;
+  }
+
+  .kv-map-layers .kv-map-layers-group {
+    gap: var(--kv-space-2);
+    margin-block-start: var(--kv-space-1);
+  }
+
+  .kv-map-layers .kv-map-layers-group > .kv-field + .kv-field {
+    margin-block-start: 0;
   }
 
   .kv-map-layers .kv-field > .kv-field-label {
-    position: relative;
-    box-sizing: border-box;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
     gap: var(--kv-space-2);
-    inline-size: 100%;
-    min-block-size: var(--kv-control-min-block-size);
-    padding-block: 0;
-    padding-inline: calc(var(--kv-space-2) + 1rem + var(--kv-space-2)) var(--kv-space-3);
-    border: var(--kv-border-width) solid var(--kv-color-border-control);
-    border-radius: var(--kv-radius-md);
-    background-color: var(--kv-color-surface-raised);
-    color: var(--kv-color-text);
-    font-size: var(--kv-font-label-size);
-    font-weight: 500;
-    text-align: start;
-    cursor: pointer;
-  }
-
-  .kv-map-layers .kv-field > .kv-field-label::before,
-  .kv-map-layers .kv-field > .kv-field-label::after {
-    content: '';
-    position: absolute;
-    inset-inline-start: var(--kv-space-2);
-    inset-block-start: 50%;
-    inline-size: 1rem;
-    block-size: 1rem;
-    translate: 0 -50%;
-    background-color: var(--kv-color-text-muted);
-  }
-
-  .kv-map-layers .kv-field > .kv-field-label::before {
-    clip-path: polygon(
-      43% 10%,
-      57% 10%,
-      57% 43%,
-      90% 43%,
-      90% 57%,
-      57% 57%,
-      57% 90%,
-      43% 90%,
-      43% 57%,
-      10% 57%,
-      10% 43%,
-      43% 43%
-    );
-  }
-
-  .kv-map-layers .kv-field > .kv-field-label::after {
-    background-color: currentColor;
-    clip-path: polygon(
-      21.15% 47.6%,
-      40.06% 66.51%,
-      78.34% 20.03%,
-      90.41% 29.97%,
-      41.19% 89.74%,
-      10.1% 58.65%
-    );
-    opacity: 0;
   }
 
   .kv-map-layer-name {
@@ -622,64 +627,10 @@
   }
 
   .kv-map-layer-count {
-    margin-inline-start: auto;
-    padding-inline-start: var(--kv-space-2);
-    border-inline-start: var(--kv-border-width) solid currentColor;
     color: var(--kv-color-text-muted);
     font-size: var(--kv-font-body-small-size);
     font-weight: 400;
     font-variant-numeric: tabular-nums;
-  }
-
-  .kv-map-layers > .kv-field > .kv-field-label + .kv-field-help-text {
-    margin: var(--kv-space-1) 0 0;
-    padding-inline: var(--kv-space-2);
-    font-size: var(--kv-font-body-small-size);
-    color: var(--kv-color-text-muted);
-  }
-
-  .kv-map-layers .kv-field:hover > .kv-field-label {
-    background-color: var(--kv-color-primary-subtle);
-  }
-
-  .kv-map-layers .kv-field:has(> .kv-checkbox:active) > .kv-field-label {
-    border-color: var(--kv-color-primary);
-    background-color: var(--kv-color-primary-subtle);
-  }
-
-  .kv-map-layers .kv-field:has(> .kv-checkbox:checked) > .kv-field-label {
-    border-color: var(--kv-color-primary);
-    background-color: var(--kv-color-primary);
-    color: var(--kv-color-on-primary);
-  }
-
-  .kv-map-layers .kv-field:has(> .kv-checkbox:checked) > .kv-field-label::before {
-    opacity: 0;
-  }
-
-  .kv-map-layers .kv-field:has(> .kv-checkbox:checked) > .kv-field-label::after {
-    opacity: 1;
-  }
-
-  .kv-map-layers .kv-field:has(> .kv-checkbox:checked):hover > .kv-field-label,
-  .kv-map-layers .kv-field:has(> .kv-checkbox:checked:active) > .kv-field-label {
-    border-color: var(--kv-color-primary-hover);
-    background-color: var(--kv-color-primary-hover);
-  }
-
-  .kv-map-layers .kv-field:has(> .kv-checkbox:checked) .kv-map-layer-swatch {
-    border-color: var(--kv-color-on-primary);
-    background-color: var(--kv-color-on-primary);
-    color: var(--kv-color-primary);
-  }
-
-  .kv-map-layers .kv-field:has(> .kv-checkbox:checked) .kv-map-layer-count {
-    color: var(--kv-color-on-primary);
-  }
-
-  .kv-map-layers .kv-field:has(> .kv-checkbox:focus-visible) > .kv-field-label {
-    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
-    outline-offset: 2px;
   }
 
   /* Map type: a thumbnail button that opens a popover of preview tiles (native radios). */
@@ -886,13 +837,6 @@
     block-size: 1rem;
   }
 
-  /* An unchecked layer keeps its row: the swatch echoes the checkbox, which carries the state. */
-  .kv-map-layers .kv-field:has(> .kv-checkbox:not(:checked)) .kv-map-layer-swatch {
-    border: var(--kv-border-width) solid var(--kv-color-border-control);
-    background-color: var(--kv-color-surface);
-    color: var(--kv-color-text-muted);
-  }
-
   /* The details popup. It is portalled into the slot right after the markers, so its tab order
    * follows them. The map never mirrors, so the position is physical: left and top. The popup
    * never covers its marker: it sits on one side and scrolls inside the room it has. */
@@ -1064,6 +1008,28 @@
 
   .kv-map-cluster-place:hover {
     background-color: var(--kv-color-surface);
+  }
+
+  /* The cluster popup is a header band, then rows to the edges: the title is as tall as Close and
+   * centred beside it, so the first divider sits clear under both. */
+  .kv-map-cluster-popup .kv-map-details-content {
+    gap: 0;
+    padding-block: var(--kv-space-2) 0;
+  }
+
+  .kv-map-cluster-popup .kv-map-details-title {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--kv-button-min-block-size, var(--kv-control-min-block-size));
+  }
+
+  .kv-map-cluster-popup .kv-map-cluster-places-scroll {
+    margin-inline: calc(-1 * var(--kv-space-4));
+    margin-block-start: var(--kv-space-2);
+  }
+
+  .kv-map-cluster-popup .kv-map-cluster-place {
+    padding-inline: var(--kv-space-4);
   }
 
   .kv-map-cluster-place-trigger {
@@ -1241,18 +1207,6 @@
   /* Motion: colour, background, border, shadow and opacity only, never on exit. */
   @media (prefers-reduced-motion: no-preference) {
     :root:not([data-kv-motion='reduce']) {
-      .kv-map-layers .kv-field > .kv-field-label {
-        transition:
-          background-color var(--kv-duration-fast) var(--kv-easing-standard),
-          border-color var(--kv-duration-fast) var(--kv-easing-standard),
-          color var(--kv-duration-fast) var(--kv-easing-standard);
-      }
-
-      .kv-map-layers .kv-field > .kv-field-label::before,
-      .kv-map-layers .kv-field > .kv-field-label::after {
-        transition: opacity var(--kv-duration-fast) var(--kv-easing-standard);
-      }
-
       .kv-map-controls .kv-button {
         transition: background-color var(--kv-duration-fast) var(--kv-easing-standard);
       }
@@ -1329,6 +1283,20 @@
       color: HighlightText;
     }
 
+    .kv-map-marker > .kv-map-marker-pin {
+      fill: CanvasText;
+      stroke: Canvas;
+    }
+
+    .kv-map-marker[aria-expanded='true'] > .kv-map-marker-pin {
+      fill: Highlight;
+      stroke: CanvasText;
+    }
+
+    .kv-map-marker:has(> .kv-map-marker-pin):focus-visible {
+      outline-color: Highlight;
+    }
+
     .kv-map-marker-label {
       border-color: CanvasText;
       background-color: Canvas;
@@ -1365,8 +1333,7 @@
     }
 
     .kv-map-base-maps-popup,
-    .kv-map-base-maps-trigger,
-    .kv-map-layers .kv-field > .kv-field-label {
+    .kv-map-base-maps-trigger {
       border-color: CanvasText;
     }
 
@@ -1377,33 +1344,6 @@
 
     .kv-map-base-map-preview > * {
       background: Canvas;
-    }
-
-    .kv-map-layers .kv-field > .kv-field-label::before,
-    .kv-map-layers .kv-field > .kv-field-label::after {
-      forced-color-adjust: none;
-      background-color: CanvasText;
-    }
-
-    .kv-map-layers .kv-field:has(> .kv-checkbox:checked) > .kv-field-label {
-      forced-color-adjust: none;
-      border-color: Highlight;
-      background-color: Highlight;
-      color: HighlightText;
-    }
-
-    .kv-map-layers .kv-field:has(> .kv-checkbox:checked) > .kv-field-label::after {
-      background-color: HighlightText;
-    }
-
-    .kv-map-layers .kv-field:has(> .kv-checkbox:checked) .kv-map-layer-swatch {
-      border-color: HighlightText;
-      background-color: Highlight;
-      color: HighlightText;
-    }
-
-    .kv-map-layers .kv-field:has(> .kv-checkbox:checked) .kv-map-layer-count {
-      color: HighlightText;
     }
 
     .kv-map-base-maps-options .kv-field:has(> .kv-radio:checked) .kv-map-base-map-preview {
@@ -1423,7 +1363,6 @@
 
     .kv-map-base-maps-options .kv-field:has(> .kv-radio:focus-visible),
     .kv-map-base-maps-trigger:focus-visible,
-    .kv-map-layers .kv-field:has(> .kv-checkbox:focus-visible) > .kv-field-label,
     .kv-map-list-trigger:focus-visible::after,
     .kv-map-cluster-place-trigger:focus-visible::after {
       outline-color: Highlight;
@@ -1433,12 +1372,6 @@
     .kv-map-list-swatch {
       forced-color-adjust: none;
       border: var(--kv-border-width) solid CanvasText;
-      background-color: Canvas;
-      color: CanvasText;
-    }
-
-    .kv-map-layers .kv-field:has(> .kv-checkbox:not(:checked)) .kv-map-layer-swatch {
-      border-color: CanvasText;
       background-color: Canvas;
       color: CanvasText;
     }

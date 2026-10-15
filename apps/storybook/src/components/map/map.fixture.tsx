@@ -184,6 +184,8 @@ export type MapDemoProps = Omit<MapRootProps, 'provider' | 'children'> & {
   showBaseMapSwitch?: boolean
   /** Story only: whether the page renders `Map.List`. Composition, not a prop of the map. */
   showList?: boolean
+  /** Story only: `Map.Layers` `defaultOpen`. Composition, not a prop of the map. */
+  layersDefaultOpen?: boolean
 }
 
 const ownListHeadingId = 'own-list-heading'
@@ -245,6 +247,7 @@ export function MapDemo({
   offline = false,
   showBaseMapSwitch = true,
   showList = false,
+  layersDefaultOpen = true,
   ...mapProps
 }: MapDemoProps) {
   const provider = useProvider(offline)
@@ -260,7 +263,10 @@ export function MapDemo({
         >
           {(place) => <Icon icon={layerIcons[place.layer ?? 'fuel']!} size="16" />}
         </Map.Markers>
-        <Map.Layers icon={(layer) => <Icon icon={layerIcons[layer.id]!} size="16" />} />
+        <Map.Layers
+          defaultOpen={layersDefaultOpen}
+          icon={(layer) => <Icon icon={layerIcons[layer.id]!} size="16" />}
+        />
         {showBaseMapSwitch ? <Map.BaseMapSwitch icon={baseMapPreview} /> : null}
         <Map.Controls />
         <Map.Attribution />

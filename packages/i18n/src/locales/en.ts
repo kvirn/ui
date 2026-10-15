@@ -466,5 +466,6 @@ export const en = {
     clusterClose: 'Close',
     layersLegend: 'Show on the map',
     layerCountValue: ({ count }, format) => format.number(count),
+    layersHiddenValue: ({ count }, format) => `${format.number(count)} hidden`,
   },
 } satisfies KvirnMessages

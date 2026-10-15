@@ -722,6 +722,8 @@ export interface KvirnMessages {
     layersLegend: TextMessage
     /** The count after a layer's name in its checkbox label, which reads `Hotels 100`. */
     layerCountValue: MessageFunction<{ count: number }>
+    /** Beside the layers title while the card is collapsed and layers are hidden: `3 hidden`. */
+    layersHiddenValue: MessageFunction<{ count: number }>
   }
 }
 

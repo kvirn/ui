@@ -436,5 +436,8 @@ export const fi = {
     trigger: 'Valitse päivät',
     title: 'Valitse päivämäärät',
   },
-  map: en.map,
+  map: {
+    ...en.map,
+    layersHiddenValue: ({ count }, format) => `${format.number(count)} piilotettu`,
+  },
 } satisfies KvirnMessages

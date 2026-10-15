@@ -1,7 +1,9 @@
 import { describe, expect, test, vi } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
+import type { ComponentProps } from 'react'
 import { Map } from './map.tsx'
+import { mapIcons } from './map-icons.tsx'
 import { createMemoryProvider } from './memory-provider.ts'
 import type { MapPlace } from './index.ts'
 
@@ -61,6 +63,24 @@ function CaseMap({
           {chrome === 'controls' ? (
             <Map.Controls data-testid="controls" style={leftColumn} />
           ) : null}
+        </Map.Viewport>
+      </Map.Root>
+    </>
+  )
+}
+
+function MarkerContentMap({ children }: { children?: () => null | string }) {
+  return (
+    <>
+      <style>{fixtureStyle}</style>
+      <Map.Root
+        provider={createMemoryProvider()}
+        label="Karta"
+        places={[placeAtPixelsEast(0)]}
+        initialView={{ center: centre, zoom }}
+      >
+        <Map.Viewport className="fixture-viewport">
+          <Map.Markers>{children}</Map.Markers>
         </Map.Viewport>
       </Map.Root>
     </>
@@ -169,13 +189,80 @@ describe('Map chrome', () => {
     expect(order[6]).toBe('Whole map')
   })
 
-  test('a layer chip toggles with Space', async () => {
+  test('a layer checkbox toggles with Space', async () => {
     await render(<ChromeMap />)
     const chip = page.getByRole('checkbox', { name: /Tankställen/ })
     await expect.element(chip).toBeChecked()
     chip.element().focus()
     await userEvent.keyboard(' ')
     await expect.element(chip).not.toBeChecked()
+  })
+
+  const renderLayers = (layersProps: ComponentProps<typeof Map.Layers> = {}) =>
+    render(
+      <Map.Root
+        provider={createMemoryProvider()}
+        label="Karta"
+        places={[placeAtPixelsEast(600)]}
+        layers={[
+          { id: 'a', label: 'Tankställen' },
+          { id: 'b', label: 'Laddstationer' },
+        ]}
+        defaultHiddenLayers={['a']}
+        initialView={{ center: centre, zoom }}
+      >
+        <Map.Viewport className="fixture-viewport">
+          <Map.Layers {...layersProps} />
+        </Map.Viewport>
+      </Map.Root>,
+    )
+
+  test('Enter and Space on the layers button collapse and open the layers', async () => {
+    await renderLayers()
+    const trigger = page.getByRole('button', { name: /Show on the map/ })
+    await expect.element(trigger).toHaveAttribute('aria-expanded', 'true')
+    trigger.element().focus()
+    await userEvent.keyboard('{Enter}')
+    await expect.element(trigger).toHaveAttribute('aria-expanded', 'false')
+    await userEvent.keyboard(' ')
+    await expect.element(trigger).toHaveAttribute('aria-expanded', 'true')
+  })
+
+  test('defaultOpen false starts with the layer checkboxes out of the Tab order and not exposed', async () => {
+    await renderLayers({ defaultOpen: false })
+    await expect
+      .element(page.getByRole('button', { name: /Show on the map/ }))
+      .toHaveAttribute('aria-expanded', 'false')
+    expect(page.getByRole('checkbox').elements()).toHaveLength(0)
+    page
+      .getByRole('button', { name: /Show on the map/ })
+      .element()
+      .focus()
+    await userEvent.tab()
+    expect(document.activeElement?.getAttribute('type')).not.toBe('checkbox')
+  })
+
+  test('open and onOpenChange control the layers card', async () => {
+    const changes: boolean[] = []
+    await renderLayers({ open: true, onOpenChange: (next) => changes.push(next) })
+    const trigger = page.getByRole('button', { name: /Show on the map/ })
+    await userEvent.click(trigger)
+    await expect.poll(() => changes).toEqual([false])
+    await expect.element(trigger).toHaveAttribute('aria-expanded', 'true')
+  })
+
+  test('a collapsed layers card with one layer hidden shows "1 hidden"', async () => {
+    await renderLayers({ defaultOpen: false })
+    await expect
+      .element(page.getByRole('button', { name: 'Show on the map 1 hidden' }))
+      .toBeVisible()
+  })
+
+  test('collapsible false renders the layers with no button', async () => {
+    await renderLayers({ collapsible: false })
+    expect(page.getByRole('button', { name: /Show on the map/ }).elements()).toHaveLength(0)
+    await expect.element(page.getByRole('group', { name: 'Show on the map' })).toBeVisible()
+    expect(page.getByRole('checkbox').elements()).toHaveLength(2)
   })
 
   test('Map type opens from its button, an arrow key changes the map, Escape returns focus', async () => {
@@ -243,5 +330,39 @@ describe('Map with the memory provider', () => {
     await renderList('h4')
     await expect.element(page.getByRole('heading', { level: 4 })).toBeVisible()
     expect(document.querySelector('h2')).toBeNull()
+  })
+})
+
+describe('Map marker content', () => {
+  test('a marker with no children shows a decorative pin and keeps the place name', async () => {
+    await render(<MarkerContentMap />)
+    await expect.element(marker()).toBeVisible()
+    const icon = marker().element().querySelector('svg')
+    expect(icon).not.toBeNull()
+    expect(icon?.getAttribute('aria-hidden')).toBe('true')
+  })
+
+  test('children replace the default pin, also when they render nothing', async () => {
+    const { unmount } = await render(<MarkerContentMap>{() => 'B'}</MarkerContentMap>)
+    await expect.element(marker()).toBeVisible()
+    expect(marker().element().querySelector('svg')).toBeNull()
+    expect(marker().element().textContent).toBe('B')
+    await unmount()
+    await render(<MarkerContentMap>{() => null}</MarkerContentMap>)
+    await expect.element(marker()).toBeVisible()
+    expect(marker().element().querySelector('svg')).toBeNull()
+  })
+
+  test('mapIcons lists the marker and the control icons, frozen', () => {
+    expect(Object.keys(mapIcons)).toEqual([
+      'marker',
+      'locate',
+      'remove',
+      'arrow-north',
+      'arrow-south',
+      'arrow-west',
+      'arrow-east',
+    ])
+    expect(Object.isFrozen(mapIcons)).toBe(true)
   })
 })

@@ -184,6 +184,17 @@ export const Offline: Story = { render: renderMap, args: { ...layeredArgs, offli
  */
 export const Keyboard: Story = { render: renderMap, args: { ...layeredArgs, offline: true } }
 
+/** `Map.Layers` with `defaultOpen={false}` and a layer hidden: the title row shows "1 hidden". */
+export const LayersCollapsed: Story = {
+  render: renderMap,
+  args: {
+    ...layeredArgs,
+    offline: true,
+    layersDefaultOpen: false,
+    defaultHiddenLayers: ['hotels'],
+  },
+}
+
 function renderWith(Demo: typeof MapDemo) {
   return function render(args: MapDemoProps) {
     const [, updateArgs] = useArgs<MapDemoProps>()
