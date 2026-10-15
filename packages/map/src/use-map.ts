@@ -29,6 +29,7 @@ import {
   useState,
   useSyncExternalStore,
 } from 'react'
+import type { ReactNode } from 'react'
 import { useMapCamera } from './use-map-camera.ts'
 import type { MapGestureHint, MapPanDirection, MapStatus } from './use-map-camera.ts'
 import { useMapClearance } from './use-map-clearance.ts'
@@ -43,9 +44,15 @@ const ADDRESS_ZOOM = 15
 const DEFAULT_CLUSTER_RADIUS = 64
 // More buttons than this in view is a page that struggles, whatever the engine.
 const MAX_COMFORTABLE_MARKERS = 2000
-const noLayers: readonly MapLayer[] = []
+const noLayers: readonly MapIconLayer[] = []
 const noPlaces: readonly MapPlace<never>[] = []
 const noHiddenLayers: readonly string[] = []
+
+/** A layer with the icon its markers and its layer row share: a cluster of the layer draws it before the count. */
+export interface MapIconLayer extends MapLayer {
+  /** Decorative: the cluster's name still carries the layer. A 16px `Icon` is the usual content. */
+  icon?: ReactNode
+}
 
 export interface UseMapOptions<Data = unknown> {
   /** The engine adapter, for example `maplibre({ style })` from `@kvirn-ui/map/maplibre`. Keep it stable. */
@@ -73,7 +80,7 @@ export interface UseMapOptions<Data = unknown> {
   /** Called with the id when a user picks a map type. */
   onBaseMapChange?: ((id: string) => void) | undefined
   /** The layers the places belong to, by `place.layer`. Keep the array stable. */
-  layers?: readonly MapLayer[] | undefined
+  layers?: readonly MapIconLayer[] | undefined
   /** The ids of the hidden layers. Set it to control which layers show; without it the map keeps its own. */
   hiddenLayers?: readonly string[] | undefined
   /** The layers to start hidden when `hiddenLayers` isn't set. */
@@ -122,7 +129,7 @@ export interface UseMapResult<Data = unknown> {
   /** The places in view. Builds all of them: for a short list only, prefer `getPlaceInView`. */
   readonly placesInView: MapPlace<Data>[]
   /** The layers you gave, so a part can name a cluster's layer. */
-  layers: readonly MapLayer[]
+  layers: readonly MapIconLayer[]
   hiddenLayerIds: readonly string[]
   /** The clusters and places drawn as markers: those inside the bounds, on a visible layer. */
   markersInView: MapMarkerItem<Data>[]

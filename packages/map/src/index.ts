@@ -62,6 +62,7 @@ export type {
   MapIndexer,
   MapPanDirection,
   MapStatus,
+  MapIconLayer,
   UseMapOptions,
   UseMapResult,
 } from './use-map.ts'

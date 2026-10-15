@@ -311,7 +311,7 @@ Small and consistent.
 | `--kv-radius-xl`   | Popups and dialogs                               |
 | `--kv-radius-full` | Pills and avatars                                |
 
-Radio buttons are always circles and checkboxes always rounded squares, so the shape tells them apart. The named exceptions are the map's, both native controls: Map type (`kv-map-base-maps`) shows its radios as preview tiles in a popover, the checked tile with a 2px `primary` ring and a `primary` disc with a check at its corner, and Show on the map (`kv-map-layers`) shows its checkboxes as chips, a plus when off and a check on a `primary` fill when on (approved 2026-10-15).
+Radio buttons are always circles and checkboxes always rounded squares, so the shape tells them apart. The one named exception is the map's native control Map type (`kv-map-base-maps`): it shows its radios as preview tiles in a popover, the checked tile with a 2px `primary` ring and a `primary` disc with a check at its corner (approved 2026-10-15).
 
 ### Lines
 

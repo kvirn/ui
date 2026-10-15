@@ -192,6 +192,11 @@ export const LayersCollapsed: Story = {
     offline: true,
     layersDefaultOpen: false,
     defaultHiddenLayers: ['hotels'],
+    // The 44px title row sits over the top-left corner, so the view starts clear of the stations there.
+    initialView: {
+      ...initialView,
+      center: { ...initialView.center, latitude: initialView.center.latitude + 0.0149 },
+    },
   },
 }
 

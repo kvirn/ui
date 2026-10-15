@@ -1,7 +1,7 @@
 # Design spec: Map
 
 - **Status:** Accepted
-- **Plan:** [0117](plans/0117-map-and-address-search.md), [0120](plans/0120-map-chrome.md)
+- **Plan:** [0117](plans/0117-map-and-address-search.md)
 - **Type:** component default styling and flow (`@kvirn-ui/map`; CSS in `@kvirn-ui/theme/map.css`)
 - **Contract:** [map.a11y.md](../../packages/map/src/map.a11y.md). API: [map.md](../../packages/map/src/map.md). The code is the truth; this file describes what ships.
 
@@ -36,10 +36,10 @@ flowchart TD
 
 The root is a container (`container-type: inline-size`), so a map in a narrow column behaves like a phone. The breakpoint is **40rem of the map's own width**, not the page's.
 
-| Width    | Layout                                                                                                                                                                                                                                                                                                                                        |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| >= 40rem | The chrome floats on the canvas, `space-2` from the edge: Layers top inline start, Map type bottom inline start, Controls top inline end, Attribution bottom inline end. The keyboard hint sits at the bottom centre, clear of the Layers card. The list is under the map.                                                                    |
-| < 40rem  | A grid: Layers row, Map type row, the map (`--kv-map-block-size`, default `clamp(15rem, 60vh, 40rem)`), the Controls as a wrapping row of buttons, the Attribution row. Nothing clips at 320px or 400% zoom, and the buttons stay the single-pointer alternative to two-finger pan (2.5.7). Markers, popup, hint and status keep the map row. |
+| Width    | Layout                                                                                                                                                                                                                                                                                                                                                                           |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| >= 40rem | The chrome floats on the canvas, `space-2` from the edge: Layers top inline start, Map type bottom inline start, Controls top inline end, Attribution bottom inline end. The keyboard hint sits at the bottom centre, clear of the Layers card. The list is under the map.                                                                                                       |
+| < 40rem  | A grid: Layers row (a 44px title row while collapsed), Map type row, the map (`--kv-map-block-size`, default `clamp(15rem, 60vh, 40rem)`), the Controls as a wrapping row of buttons, the Attribution row. Nothing clips at 320px or 400% zoom, and the buttons stay the single-pointer alternative to two-finger pan (2.5.7). Markers, popup, hint and status keep the map row. |
 
 Every floating part is a `Map.Overlay` (Layers, Map type, Controls and Attribution register themselves), so a marker reached by keyboard is panned clear of it (2.4.11). The map never mirrors: north is up, east is right, so positions over the canvas are physical. Chrome at the inline end follows the page's direction.
 
@@ -49,16 +49,15 @@ All floating surfaces share one recipe: `surface-raised`, 1px `border-subtle`, `
 
 ### Layers (Show on the map)
 
-A card of stacked chips, one native checkbox each (visually clipped, still focusable; the label is the chip). The legend (`map.layersLegend`) is the card's title.
+A collapsible card: a Disclosure trigger titled `map.layersLegend` is the card's one 44px title row, then the layers as plain native checkboxes with their name and count. `collapsible` (default on) and `defaultOpen` choose whether it can fold and starts open. While collapsed the row shows "N hidden" (`map.layersHiddenValue`) when a layer is off, so a hidden layer is never silent.
 
-| State         | Look                                                                                                                                                                                                        |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Layout        | `[state 1rem] [swatch 1.5rem] [name] [count]`, gap `space-2`, `min-block-size` 44px, `radius-md`, 1px `border-control`, name `label` type. The state slot is always there, so toggling never resizes a chip |
-| Unchecked     | `surface-raised`, a **plus** in `text-muted`; swatch on `surface` with a `border-control` edge                                                                                                              |
-| Checked       | `primary` fill and edge, `on-primary` text, a **check**; swatch inverted; the count after a 1px divider. Plus versus check is the shape cue (1.4.1)                                                         |
-| Hover, active | Unchecked `primary-subtle`; checked `primary-hover` (darker, never lighter). No depth                                                                                                                       |
-| Focus-visible | 2px `focus-ring` at a 2px offset                                                                                                                                                                            |
-| Name          | "Hotels 100": `kv-map-layer-name` and `kv-map-layer-count` (`map.layerCountValue`); `description` is the help text                                                                                          |
+| State         | Look                                                                                                                                                     |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Layout        | Trigger row (title, hidden count, chevron at the inline end), then one `kv-field` row per layer: checkbox, optional swatch, name, count, `space-2` apart |
+| Checkbox      | The library's native checkbox, a rounded square (no exception to the shape rule); the state is the check, never colour alone                             |
+| Swatch        | The layer's `icon` (or `Map.Layers` `icon`), decorative, so a row matches its markers                                                                    |
+| Focus-visible | The Disclosure and the checkbox keep their own 2px `focus-ring`                                                                                          |
+| Name          | "Hotels 100": `kv-map-layer-name` and `kv-map-layer-count` (`map.layerCountValue`); `description` is the help text                                       |
 
 ### Map type
 
@@ -69,12 +68,12 @@ A card of stacked chips, one native checkbox each (visually clipped, still focus
 
 ### Controls
 
-Three floating surfaces in one centred stack, no panel: the **zoom pill** (plus above minus; side by side below 40rem), the **pan disc** (four arrows at north, east, south and west with a centre dot; east stays east in RTL) and the **Whole map** pill. Buttons are bare cells with a hover fill; their focus ring is drawn inset so no surface clips it. DOM and Tab order equal the visual order: zoom in, zoom out, pan north, west, east, south, Whole map. A zoom limit shows a muted icon with `aria-disabled`.
+Three floating surfaces in one centred stack, no panel: the **zoom pill** (plus above minus, at every width), the **pan disc** (four arrows at north, east, south and west with a centre dot; east stays east in RTL) and the **Whole map** pill. Buttons are bare cells with a hover fill; their focus ring is drawn inset so no surface clips it. DOM and Tab order equal the visual order: zoom in, zoom out, pan north, west, east, south, Whole map. A zoom limit shows a muted icon with `aria-disabled`.
 
 ### Markers and clusters
 
-- **Marker:** one native button, 44px target, with a 1.5rem `primary` disc and a 1rem icon (`on-primary`) inside. The disc carries the halo. Selected and `data-highlighted` change the disc's edge and add a shadow; neither is colour alone. `kv-map-marker-label` draws a visible name as a chip under the mark.
-- **Cluster:** a plate wider than a disc, `surface-raised`, 2px `text` edge, the count in tabular figures, 44px minimum. Shape and number tell it from a place (1.4.1). `aria-expanded` while its popup is open.
+- **Marker:** one native button, 44px target. The default content is a teardrop pin in `primary` with a `canvas` edge, its tip on the place. When the consumer gives children the marker is a 1.5rem `primary` disc with a 1rem icon (`on-primary`). The halo carries either. Selected and `data-highlighted` change the edge and add a shadow; neither is colour alone. `kv-map-marker-label` draws a visible name as a chip under the mark.
+- **Cluster:** a plate wider than a disc, `surface-raised`, 2px `text` edge, the count in tabular figures, 44px minimum. When its layer has an `icon`, the icon is drawn before the count (decorative; the name still carries the layer), so layers differ by shape as well as by colour (1.4.1). A `cluster` render function replaces it. `aria-expanded` while its popup is open.
 - Position comes from `--kv-map-x` and `--kv-map-y`, which the library sets; consumer CSS leaves them alone. Layers cluster separately, so markers of different layers can still touch; a same-layer cluster centre stays about 44px or more from the next (radius 64).
 
 ### List
@@ -102,9 +101,9 @@ Bottom inline end, `body-small`, `surface-raised` (never translucent: text stays
 - **Tokens:** semantic tokens only (`primary`, `on-primary`, `surface-raised`, `border-subtle`, `border-control`, `text-muted`, `focus-ring`, `radius-*`, `space-*`, `shadow-popup`). No new colour pair; no raw colour.
 - **Custom properties:** `--kv-map-block-size`, `--kv-map-popup-inline-size`, `--kv-map-popup-radius` are the consumer's. The library sets `--kv-map-x`, `--kv-map-y`, `--kv-map-popup-x`, `--kv-map-popup-y`, `--kv-map-popup-max-block-size`, `--kv-map-caret-x` and `--kv-map-popup-scrollbar-size`.
 - **State:** `data-status` (viewport), `data-highlighted`, `data-selected`, `aria-expanded`, `data-virtualized`, `data-dismissed`, `data-gesture`. No variation classes.
-- **Forced colours:** viewport, hint, status, attribution and control surfaces are `Canvas` with a `CanvasText` edge; markers use system colours (`forced-color-adjust: none`) with a shape that differs for selected; a checked chip or tile is `Highlight` with `HighlightText` plus its check shape; disabled is `GrayText`.
+- **Forced colours:** viewport, hint, status, attribution and control surfaces are `Canvas` with a `CanvasText` edge; markers use system colours (`forced-color-adjust: none`) with a shape that differs for selected; a checked tile is `Highlight` with `HighlightText` plus its check shape; disabled is `GrayText`.
 - **RTL:** logical properties for chrome; the map and the pan disc are physical. The viewport arrows never flip; the marker arrows flip.
-- **Motion:** only under `prefers-reduced-motion: no-preference` and `:root:not([data-kv-motion='reduce'])`. Colour, background, border, shadow and opacity transition over `--kv-duration-fast`; a chip's plus and check cross-fade by opacity. Nothing moves, scales or runs on exit. Under reduced motion the camera jumps instead of easing.
+- **Motion:** only under `prefers-reduced-motion: no-preference` and `:root:not([data-kv-motion='reduce'])`. Colour, background, border, shadow and opacity transition over `--kv-duration-fast`; a tile's check cross-fades by opacity. Nothing moves, scales or runs on exit. Under reduced motion the camera jumps instead of easing.
 
 ## 5. Accessibility model
 
@@ -130,5 +129,5 @@ Rules for custom looks: marker content is decoration, so the name comes from `la
 - AddressSearch (an Autocomplete over a `GeocoderProvider`) is not built; plan 0117 keeps it.
 - Layer loading and error states, GeoJSON sources, and Leaflet and Google adapters are later plans.
 - The AT matrix rows for the map have no human check yet.
-- Usability testing of the chip layout and the pan disc is `pending`.
+- Usability testing of the layers card and the pan disc is `pending`.
 - Vector tiles are advised over raster (raster labels do not follow text size, 1.4.4); whether the docs should require them is open.

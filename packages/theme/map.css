@@ -59,6 +59,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
     display: grid;
     place-items: center;
     box-sizing: border-box;
@@ -189,10 +190,13 @@
    * and the number tell it from a place (WCAG 1.4.1). Pressing it opens the cluster popup. */
   .kv-map-cluster {
     position: absolute;
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
     top: 0;
     left: 0;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--kv-space-1);
     box-sizing: border-box;
     min-inline-size: var(--kv-control-min-block-size);
     block-size: var(--kv-control-min-block-size);
@@ -586,7 +590,7 @@
     display: flex;
     justify-content: space-between;
     inline-size: 100%;
-    min-block-size: 0;
+    min-block-size: var(--kv-control-min-block-size);
     padding: 0;
     color: var(--kv-color-text);
     font-size: var(--kv-font-label-size);
@@ -605,6 +609,12 @@
 
   .kv-map-layers-panel {
     padding: 0;
+  }
+
+  @container (min-width: 40rem) {
+    .kv-map-layers-panel {
+      padding-block-end: var(--kv-space-2);
+    }
   }
 
   .kv-map-layers .kv-map-layers-group {
@@ -1087,6 +1097,11 @@
       padding: var(--kv-space-2) var(--kv-space-3);
     }
 
+    /* The trigger is the 44px title row, so a collapsed card is that row alone. */
+    .kv-map-viewport > .kv-map-layers:has(.kv-map-layers-trigger) {
+      padding-block: 0;
+    }
+
     .kv-map-viewport > .kv-map-base-maps {
       inset-block-end: var(--kv-space-2);
       inset-inline-start: var(--kv-space-2);
@@ -1144,8 +1159,14 @@
 
     .kv-map-viewport
       > :is(.kv-map-engine, .kv-map-markers, .kv-map-popup-slot, .kv-map-hint, .kv-map-status) {
-      grid-row: 3;
+      grid-row: 3 / 4;
       grid-column: 1;
+    }
+
+    /* An absolutely positioned grid child with an auto end line runs to the container's padding
+     * edge, so the layers are clipped to the map row. */
+    .kv-map-viewport > .kv-map-markers {
+      overflow: clip;
     }
 
     .kv-map-viewport
@@ -1182,25 +1203,6 @@
       background: none;
       box-shadow: none;
       color: var(--kv-color-text-muted);
-    }
-
-    .kv-map-zoom {
-      flex-direction: row;
-    }
-
-    .kv-map-zoom > .kv-button:first-child {
-      border-start-start-radius: var(--kv-radius-md);
-      border-start-end-radius: 0;
-      border-end-start-radius: var(--kv-radius-md);
-    }
-
-    .kv-map-zoom > .kv-button:last-child {
-      border-block-start: 0;
-      border-inline-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
-      border-start-start-radius: 0;
-      border-start-end-radius: var(--kv-radius-md);
-      border-end-start-radius: 0;
-      border-end-end-radius: var(--kv-radius-md);
     }
   }
 

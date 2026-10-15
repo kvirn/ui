@@ -74,9 +74,9 @@ export function MapLayers({
               onCheckedChange={(checked) => map.setLayerHidden(layer.id, !checked)}
             />
             <Field.Label>
-              {icon ? (
+              {icon || layer.icon ? (
                 <span className="kv-map-layer-swatch" aria-hidden="true">
-                  {icon(layer)}
+                  {icon ? icon(layer) : layer.icon}
                 </span>
               ) : null}
               <span className="kv-map-layer-name">{layer.label}</span>{' '}

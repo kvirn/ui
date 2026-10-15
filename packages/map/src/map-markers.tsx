@@ -87,7 +87,8 @@ export function MapCluster<Data = unknown>({
     return null
   }
   const { count } = cluster
-  const layerLabel = map.layers.find((layer) => layer.id === cluster.layer)?.label
+  const layer = map.layers.find((candidate) => candidate.id === cluster.layer)
+  const layerLabel = layer?.label
   const name =
     layerLabel === undefined
       ? map.messages.clusterLabel({ count })
@@ -117,7 +118,16 @@ export function MapCluster<Data = unknown>({
         map.keepClear(event.currentTarget)
       }}
     >
-      {children ?? <span className="kv-map-cluster-count">{count}</span>}
+      {children ?? (
+        <>
+          {layer?.icon ? (
+            <span className="kv-map-cluster-icon" aria-hidden="true">
+              {layer.icon}
+            </span>
+          ) : null}
+          <span className="kv-map-cluster-count">{count}</span>
+        </>
+      )}
     </button>
   )
 }

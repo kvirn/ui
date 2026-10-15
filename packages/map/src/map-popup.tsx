@@ -93,7 +93,10 @@ export function MapPopup({
       const origin = originElement.getBoundingClientRect()
       const originLeft = origin.left + originElement.clientLeft
       const originTop = origin.top + originElement.clientTop
-      const viewportRect = viewportElement.getBoundingClientRect()
+      // The map row, not the viewport: below 40rem the controls sit in the same grid and the popup must not cover them.
+      const roomElement =
+        viewportElement.querySelector(':scope > .kv-map-engine') ?? viewportElement
+      const roomRect = roomElement.getBoundingClientRect()
       // The marker's content can be taller than its 44px box (a pin): the popup clears all of it.
       const bounds = unionRect([anchorElement, ...anchorElement.children])
       const anchor = {
@@ -106,10 +109,10 @@ export function MapPopup({
         anchor,
         size,
         {
-          x: viewportRect.left + viewportElement.clientLeft - originLeft,
-          y: viewportRect.top + viewportElement.clientTop - originTop,
-          width: viewportElement.clientWidth,
-          height: viewportElement.clientHeight,
+          x: roomRect.left + roomElement.clientLeft - originLeft,
+          y: roomRect.top + roomElement.clientTop - originTop,
+          width: roomElement.clientWidth,
+          height: roomElement.clientHeight,
         },
         { placement: 'top', offset: POPUP_OFFSET, padding: POPUP_EDGE },
       )

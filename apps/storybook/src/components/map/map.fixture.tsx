@@ -98,7 +98,10 @@ export const layerIcons: Record<string, IconComponent> = {
 export const layeredArgs = {
   label: 'Map of fuel stations and hotels',
   places: [...fuelStations, ...hotels],
-  layers: demoLayers,
+  layers: demoLayers.map((layer) => ({
+    ...layer,
+    icon: <Icon icon={layerIcons[layer.id]!} size="16" />,
+  })),
 }
 
 export const initialView: MapView = { center: { longitude: 18.02, latitude: 59.322 }, zoom: 11 }
@@ -257,17 +260,17 @@ export function MapDemo({
     <Map.Root key={key} provider={provider} {...mapProps}>
       <Map.Skip />
       <Map.Viewport>
+        <Map.Layers
+          defaultOpen={layersDefaultOpen}
+          icon={(layer) => <Icon icon={layerIcons[layer.id]!} size="16" />}
+        />
+        {showBaseMapSwitch ? <Map.BaseMapSwitch icon={baseMapPreview} /> : null}
         <Map.Markers
           markerClassName={(place) => `story-marker--${place.layer}`}
           clusterClassName={(cluster) => `story-cluster--${cluster.layer}`}
         >
           {(place) => <Icon icon={layerIcons[place.layer ?? 'fuel']!} size="16" />}
         </Map.Markers>
-        <Map.Layers
-          defaultOpen={layersDefaultOpen}
-          icon={(layer) => <Icon icon={layerIcons[layer.id]!} size="16" />}
-        />
-        {showBaseMapSwitch ? <Map.BaseMapSwitch icon={baseMapPreview} /> : null}
         <Map.Controls />
         <Map.Attribution />
       </Map.Viewport>

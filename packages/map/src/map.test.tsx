@@ -2,6 +2,7 @@ import { describe, expect, test, vi } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import type { ComponentProps } from 'react'
+import { Icon } from '@kvirn-ui/react'
 import { Map } from './map.tsx'
 import { mapIcons } from './map-icons.tsx'
 import { createMemoryProvider } from './memory-provider.ts'
@@ -16,6 +17,9 @@ const degreesPerPixel = 360 / (512 * 2 ** zoom)
 
 const fixtureStyle = `
   .fixture-viewport { position: relative; inline-size: 800px; block-size: 600px; }
+  .kv-map-popup-slot { position: absolute; inset: 0; pointer-events: none; }
+  .kv-map-popup { position: absolute; left: var(--kv-map-popup-x, 0); top: var(--kv-map-popup-y, 0); inline-size: 300px; }
+  .kv-map-popup > dialog { position: static; inline-size: auto; max-block-size: var(--kv-map-popup-max-block-size, none); overflow: auto; }
   .kv-map-marker { position: absolute; inset-inline-start: var(--kv-map-x); inset-block-start: var(--kv-map-y); inline-size: 24px; block-size: 24px; }
 `
 const leftColumn = {
@@ -278,6 +282,132 @@ describe('Map chrome', () => {
     await userEvent.keyboard('{Escape}')
     await expect.element(trigger).toHaveAttribute('aria-expanded', 'false')
     await expect.element(trigger).toHaveFocus()
+  })
+})
+
+describe('Map popup room', () => {
+  test('the details popup stays inside the map row when the viewport has more rows below it', async () => {
+    const rowHeight = 300
+    const latitudeOffset = 90 * degreesPerPixel * Math.cos((centre.latitude * Math.PI) / 180)
+    await render(
+      <>
+        <style>{fixtureStyle}</style>
+        <Map.Root
+          provider={createMemoryProvider({ size: { width: 800, height: rowHeight } })}
+          label="Karta"
+          places={[
+            {
+              id: 'forskola',
+              name: 'Förskolan Björken',
+              description: 'Lång beskrivning. '.repeat(120),
+              position: { ...centre, latitude: centre.latitude + latitudeOffset },
+            },
+          ]}
+          initialView={{ center: centre, zoom }}
+        >
+          <Map.Viewport className="fixture-viewport">
+            <Map.Markers />
+            <Map.Details />
+          </Map.Viewport>
+        </Map.Root>
+      </>,
+    )
+    await expect.element(marker()).toBeVisible()
+    const engine = document.querySelector('.kv-map-engine') as HTMLElement
+    engine.style.cssText = `position:absolute;inset-block-start:0;inset-inline:0;block-size:${rowHeight}px`
+    await userEvent.click(marker())
+    await expect.element(page.getByRole('dialog')).toBeVisible()
+    const room = engine.getBoundingClientRect()
+    await expect
+      .poll(() => {
+        const popup = document.querySelector('.kv-map-popup')?.getBoundingClientRect()
+        return popup !== undefined && popup.bottom <= room.bottom + 1 && popup.top >= room.top - 1
+      })
+      .toBe(true)
+  })
+})
+
+describe('Map cluster layer cue', () => {
+  const layerIcon = <Icon icon={mapIcons.marker} size="16" data-testid="layer-icon" />
+  const closePlaces: MapPlace[] = [0, 1].map((index) => ({
+    ...placeAtPixelsEast(index),
+    id: `place-${index}`,
+    name: `Plats ${index}`,
+    layer: 'hotels',
+  }))
+  const renderClusters = (cluster?: () => string, icon: boolean = true) =>
+    render(
+      <>
+        <style>{fixtureStyle}</style>
+        <Map.Root
+          provider={createMemoryProvider()}
+          label="Karta"
+          places={closePlaces}
+          layers={[{ id: 'hotels', label: 'Hotell', ...(icon ? { icon: layerIcon } : {}) }]}
+          initialView={{ center: centre, zoom }}
+        >
+          <Map.Viewport className="fixture-viewport">
+            <Map.Markers cluster={cluster} />
+          </Map.Viewport>
+        </Map.Root>
+      </>,
+    )
+  const clusterButton = () => page.getByRole('button', { name: /Hotell/ })
+
+  test('a cluster of a layer with an icon draws it before the count, hidden from the name', async () => {
+    await renderClusters()
+    await expect.element(clusterButton()).toBeVisible()
+    const button = clusterButton().element()
+    const iconWrapper = button.querySelector('.kv-map-cluster-icon')
+    expect(iconWrapper?.getAttribute('aria-hidden')).toBe('true')
+    expect(iconWrapper?.nextElementSibling?.textContent).toBe('2')
+    expect(button.getAttribute('aria-label')).toBe('Hotell: 2 places')
+  })
+
+  test('a layer without an icon keeps the count alone', async () => {
+    await renderClusters(undefined, false)
+    await expect.element(clusterButton()).toBeVisible()
+    expect(clusterButton().element().querySelector('.kv-map-cluster-icon')).toBeNull()
+  })
+
+  test('the cluster render function replaces the default icon', async () => {
+    await renderClusters(() => 'X')
+    await expect.element(clusterButton()).toBeVisible()
+    expect(clusterButton().element().textContent).toBe('X')
+  })
+})
+
+describe('Map layer swatch', () => {
+  const renderLayers = (layersIcon?: () => string) =>
+    render(
+      <Map.Root
+        provider={createMemoryProvider()}
+        label="Karta"
+        places={[placeAtPixelsEast(0)]}
+        layers={[{ id: 'a', label: 'Tankställen', icon: <span>L</span> }]}
+        initialView={{ center: centre, zoom }}
+      >
+        <Map.Viewport className="fixture-viewport">
+          <Map.Layers icon={layersIcon} />
+        </Map.Viewport>
+      </Map.Root>,
+    )
+
+  test("a layer's icon is the decorative swatch when Map.Layers has no icon prop", async () => {
+    await renderLayers()
+    const swatch = page
+      .getByRole('checkbox', { name: /Tankställen/ })
+      .element()
+      .closest('.kv-field')
+    const wrapper = swatch?.querySelector('.kv-map-layer-swatch')
+    expect(wrapper?.getAttribute('aria-hidden')).toBe('true')
+    expect(wrapper?.textContent).toBe('L')
+  })
+
+  test('the icon prop of Map.Layers wins over the layer icon', async () => {
+    await renderLayers(() => 'P')
+    await expect.element(page.getByRole('checkbox', { name: /Tankställen/ })).toBeVisible()
+    expect(document.querySelector('.kv-map-layer-swatch')?.textContent).toBe('P')
   })
 })
 
