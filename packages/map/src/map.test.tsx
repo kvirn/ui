@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vite-plus/test'
+import { describe, expect, test, vi } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { Map } from './map.tsx'
@@ -191,5 +191,57 @@ describe('Map chrome', () => {
     await userEvent.keyboard('{Escape}')
     await expect.element(trigger).toHaveAttribute('aria-expanded', 'false')
     await expect.element(trigger).toHaveFocus()
+  })
+})
+
+describe('Map with the memory provider', () => {
+  const place = placeAtPixelsEast(0)
+  const renderList = (headingLevel?: 'h2' | 'h3' | 'h4' | 'h5' | 'h6') =>
+    render(
+      <Map.Root
+        provider={createMemoryProvider()}
+        label="Karta"
+        places={[place]}
+        initialView={{ center: centre, zoom }}
+      >
+        <Map.Skip />
+        <Map.Viewport className="fixture-viewport" />
+        <Map.List headingLevel={headingLevel} />
+        <Map.Details />
+      </Map.Root>,
+    )
+
+  test('the viewport reaches ready, so it stops saying the map is loading', async () => {
+    await render(
+      <Map.Root
+        provider={createMemoryProvider()}
+        label="Karta"
+        initialView={{ center: centre, zoom }}
+      >
+        <Map.Viewport data-testid="viewport" className="fixture-viewport" />
+      </Map.Root>,
+    )
+    await expect.element(page.getByTestId('viewport')).toHaveAttribute('data-status', 'ready')
+  })
+
+  test('opening a place from the list logs no warning', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    await renderList()
+    await page.getByRole('button', { name: place.name }).click()
+    await expect.element(page.getByRole('dialog')).toBeVisible()
+    await expect
+      .element(page.getByRole('link', { name: /list|details|places/i }))
+      .toHaveAttribute('href', expect.stringContaining('-details-title'))
+    expect(warn).not.toHaveBeenCalled()
+    warn.mockRestore()
+  })
+
+  test('the list heading is an h2 by default and takes the level headingLevel sets', async () => {
+    const screen = await renderList()
+    await expect.element(page.getByRole('heading', { level: 2 })).toBeVisible()
+    await screen.unmount()
+    await renderList('h4')
+    await expect.element(page.getByRole('heading', { level: 4 })).toBeVisible()
+    expect(document.querySelector('h2')).toBeNull()
   })
 })

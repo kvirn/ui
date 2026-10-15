@@ -23,6 +23,8 @@ export interface MapListProps<Data = unknown> extends Omit<
    * is the button. A node with `kv-map-list-aside` sits at the row's inline end.
    */
   children?: ((place: MapPlace<Data>) => ReactNode) | undefined
+  /** The heading's level, so the list fits the page's outline. Default `h2`. */
+  headingLevel?: 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | undefined
 }
 
 /**
@@ -33,6 +35,7 @@ export function MapList<Data = unknown>({
   icon,
   rowClassName,
   children,
+  headingLevel: Heading = 'h2',
   className,
   ...otherProps
 }: MapListProps<Data>): ReactElement | null {
@@ -54,9 +57,9 @@ export function MapList<Data = unknown>({
       : messages.placesInView({ count: map.placesInViewCount })
   return (
     <div {...otherProps} className={joinClassNames('kv-map-list-region', className)}>
-      <h2 id={map.ids.listHeading} tabIndex={-1} className="kv-map-list-heading">
+      <Heading id={map.ids.listHeading} tabIndex={-1} className="kv-map-list-heading">
         {withoutFullStop(heading)}
-      </h2>
+      </Heading>
       {map.placesInViewCount === 0 ? (
         <p>{messages.listEmpty}</p>
       ) : (

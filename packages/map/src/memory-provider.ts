@@ -88,6 +88,10 @@ export function createMemoryProvider(options: CreateMemoryProviderOptions = {}):
       }
 
       signal?.addEventListener('abort', handle.destroy, { once: true })
+      // Asynchronous, like an engine, so a listener added right after `mount` still hears it.
+      queueMicrotask(() => {
+        if (!signal?.aborted) emit('tilesloaded', undefined)
+      })
       lastHandle = handle
       return handle
     },

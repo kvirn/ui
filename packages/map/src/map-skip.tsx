@@ -17,8 +17,9 @@ export interface MapSkipProps {
 export function MapSkip({ children, href }: MapSkipProps): ReactElement | null {
   const map = useMapContext('Skip')
   const presence = useContext(MapListPresenceContext)
+  // The details title exists only once the popup is ready; until then the viewport is the target.
   const target = map.selectedPlace
-    ? `#${map.ids.detailsTitle}`
+    ? `#${map.isPopupReady ? map.ids.detailsTitle : map.ids.viewport}`
     : presence?.hasList
       ? `#${map.ids.listHeading}`
       : href
