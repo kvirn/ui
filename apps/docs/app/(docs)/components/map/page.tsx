@@ -20,6 +20,7 @@ export default function Page() {
         clusters: readExampleSource('map/clusters.tsx'),
         'own-list': readExampleSource('map/own-list.tsx'),
         'make-it-your-own': readExampleSource('map/make-it-your-own.tsx'),
+        'map-types': readExampleSource('map/map-types.tsx'),
       }}
     />
   )

@@ -19,6 +19,7 @@ export function RecyclingMap() {
           <Map.Skip />
           <Map.Viewport>
             <Map.Markers />
+            <Map.BaseMapSwitch />
             <Map.Controls />
           </Map.Viewport>
           <Map.List headingLevel="h3" />

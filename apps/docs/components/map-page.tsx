@@ -1,7 +1,7 @@
 import { Link } from '@kvirn-ui/react'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
-import { apiHookPart } from './api-ids.ts'
+import { apiHookPart, apiPartId } from './api-ids.ts'
 import { CodeBlock } from './code-block.tsx'
 import { ComponentPage } from './component-page.tsx'
 import { ContractSectionsView, contractSectionList } from './contract-sections-view.tsx'
@@ -35,6 +35,7 @@ import {
   useMapStateHook,
   viewportAttributes,
 } from '../content/map.api.ts'
+import { MapTypesMap } from '../examples/map/map-types.tsx'
 import { FamilyMap } from '../examples/map/make-it-your-own.tsx'
 import { OwnListMap } from '../examples/map/own-list.tsx'
 import { PollingStationMap } from '../examples/map/clusters.tsx'
@@ -45,7 +46,7 @@ import { PreschoolMap } from '../examples/map/preschools.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type MapExampleSources = Record<
-  'default' | 'preschools' | 'layers' | 'clusters' | 'own-list' | 'make-it-your-own',
+  'default' | 'preschools' | 'layers' | 'clusters' | 'own-list' | 'make-it-your-own' | 'map-types',
   string
 >
 
@@ -391,9 +392,10 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
           <p>
             The examples on this page start as a plain background and make no request to a map
             server. Press “Load map pictures” and your browser asks OpenStreetMap’s tile servers for
-            the pictures, so your IP address reaches them. Move the map with the mouse, the arrow
-            keys or the buttons, press a marker or a name in the list, and watch the list follow the
-            view.
+            the pictures, so your IP address reaches them. If you then choose the Satellite or
+            Terrain map type, your IP address and the area you view go to Esri or OpenTopoMap
+            instead. Move the map with the mouse, the arrow keys or the buttons, press a marker or a
+            name in the list, and watch the list follow the view.
           </p>
         </>
       }
@@ -501,6 +503,35 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
             }
           >
             <OwnListMap />
+          </UseCase>
+          <UseCase
+            id="map-types"
+            title="Letting people choose the map type"
+            why={
+              <>
+                Some residents read a street map more easily than a plain one, or the other way
+                round. Give the map two or more map types and add <code>Map.BaseMapSwitch</code>: a
+                button that opens a small choice with a preview of each. The choice is announced,
+                and the places, the list and the keyboard work the same on every map type. With
+                fewer than two map types the switch renders nothing. See{' '}
+                <Link href={`#${apiPartId('Map.BaseMapSwitch')}`}>Map.BaseMapSwitch</Link> in the
+                API.
+              </>
+            }
+            code={sources['map-types']}
+            propsUsed={[
+              { part: 'Map.BaseMapSwitch', prop: 'children' },
+              { part: 'Map.BaseMapSwitch', prop: 'icon' },
+            ]}
+            note={
+              <Note kind="reminder">
+                Give each map type a clear label and its own attribution. The label names the choice
+                for a screen reader, and the attribution must change with the map type (1.1.1
+                Non-text Content).
+              </Note>
+            }
+          >
+            <MapTypesMap />
           </UseCase>
           <UseCase
             id="make-it-your-own"

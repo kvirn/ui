@@ -71,6 +71,7 @@ export function FamilyMap() {
                 ))
               }
             </Map.Layers>
+            <Map.BaseMapSwitch />
             <Map.Controls />
           </Map.Viewport>
           <Map.List headingLevel="h4" />
