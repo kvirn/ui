@@ -253,6 +253,7 @@ export const messages = {
       searchButton: 'Search',
     },
     skipLinks: { navigation: 'Skip to site navigation' },
+    backToTop: 'Back to top',
     /** Text in `**double asterisks**` is a menu or button name, shown in bold. */
     accessibility: {
       lead: 'Choose how this site looks, and find the keys and browser settings that make it easier to read and use.',

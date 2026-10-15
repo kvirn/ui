@@ -4,6 +4,7 @@ import { Badge, Link, Navigation, SkipLink, TopBar, useRouteFocus } from '@kvirn
 import { useEffect, useRef, useState } from 'react'
 import type { ReactNode, RefObject } from 'react'
 import { messages } from '../messages/en.ts'
+import { BackToTop } from './back-to-top.tsx'
 import { DocsDisclosure } from './docs-disclosure.tsx'
 import { DocsShellContext } from './docs-page.tsx'
 import { SiteFooter } from './site-footer.tsx'
@@ -88,7 +89,9 @@ const topBarTools = siteTools.filter((tool) => tool.id !== 'github')
 /**
  * The docs site shell (docs-shell-mega-menu.md §5): two skip links, the primary Site header from
  * `@kvirn-ui/patterns` (a TopBar with Latest and Tools, and a masthead with the mark and name, the
- * Site menu with its mega panels, and the search), main and the footer. Nothing is sticky (2.4.11).
+ * Site menu with its mega panels, and the search), main and the footer. The header is not sticky;
+ * the contents list (from 64rem) and the Back to top button are. The root's `scroll-padding` keeps
+ * focus clear of the button, and the contents list ends above it (2.4.11).
  * `pathname` comes from the router, so the shell itself doesn't depend on Next.js. The `landing`
  * layout has no article: its page brings its own bands inside `main`. In the `article` layout a
  * page renders `DocsPage`, which lays out the intro band, the Get started sidebar and the pager
@@ -190,6 +193,7 @@ export function SiteShell({
           <DocsShellContext.Provider value={shellParts}>{children}</DocsShellContext.Provider>
         </main>
       )}
+      {layout === 'article' ? <BackToTop mainRef={mainRef} /> : null}
       <SiteFooter sections={menuSections} activeSection={activeSection} pathname={pathname} />
     </>
   )

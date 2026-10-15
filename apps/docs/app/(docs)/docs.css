@@ -19,6 +19,27 @@
   --kv-table-cell-font-size-default: 0.875rem;
 
   scroll-padding-block-start: var(--kv-space-4);
+  /* The fixed Back to top button (2.4.11): its 44px height plus its offset, with room to spare. */
+  --docs-back-to-top-room: calc(var(--kv-space-4) + var(--kv-space-12));
+  scroll-padding-block-end: var(--docs-back-to-top-room);
+}
+
+.docs-back-to-top {
+  position: fixed;
+  inset-block-end: var(--kv-space-4);
+  inset-inline-end: var(--kv-space-4);
+  min-block-size: 2.75rem;
+  z-index: 1;
+}
+
+.docs-back-to-top[hidden] {
+  display: none;
+}
+
+@media print {
+  .docs-back-to-top {
+    display: none;
+  }
 }
 
 /* Interim until the page base ships in theme.css (G2). */
@@ -107,7 +128,8 @@ body {
  * Layout: the intro band is full width. Below it a Container and a Grid (DocsPage): one column,
  * the sidebar beside the article from the grid's 48rem and the contents beside it from 64rem.
  * Nothing is sticky (2.4.11) except the contents column, which sits beside the article and never
- * over it.
+ * over it, and the fixed Back to top button, whose room the root's scroll-padding and the contents'
+ * max-block-size both keep clear.
  */
 .docs-main {
   min-inline-size: 0;
@@ -485,7 +507,7 @@ body {
   .docs-contents {
     position: sticky;
     inset-block-start: var(--kv-space-6);
-    max-block-size: calc(100dvh - var(--kv-space-12));
+    max-block-size: calc(100dvh - var(--kv-space-6) - var(--docs-back-to-top-room));
     overflow-y: auto;
     /* Room for the links' focus ring, which the scroll box would clip, without moving the text. */
     margin: calc(-1 * var(--docs-ring-room));

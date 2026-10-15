@@ -393,3 +393,24 @@ describe('Docs site footer', () => {
     await expectNoA11yViolations(container)
   })
 })
+
+describe('Docs site Back to top', () => {
+  const backToTop = () =>
+    page.getByRole('button', { name: text.backToTop, includeHidden: true }).query()
+
+  test('is in the article layout', async () => {
+    await renderShell()
+    expect(backToTop()).not.toBeNull()
+  })
+
+  test('is not in the landing layout', async () => {
+    await render(
+      <KvirnProvider locale="en">
+        <SiteShell pathname="/" layout="landing">
+          <p>The landing.</p>
+        </SiteShell>
+      </KvirnProvider>,
+    )
+    expect(backToTop()).toBeNull()
+  })
+})
