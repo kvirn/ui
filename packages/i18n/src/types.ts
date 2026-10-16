@@ -737,6 +737,157 @@ export interface KvirnMessages {
     /** Beside the layers title while the card is collapsed and layers are hidden: `3 hidden`. */
     layersHiddenValue: MessageFunction<{ count: number }>
   }
+  /** The accessible name of an icon that stands alone, by catalogue `label` (`icons.<key>`). Icons beside visible text have none (Plan 0124). */
+  icons: {
+    /** Always shown with words: the status that needs the user to act. */
+    attention: TextMessage
+    blocked: TextMessage
+    error: TextMessage
+    help: TextMessage
+    inProgress: TextMessage
+    info: TextMessage
+    new: TextMessage
+    /** Waiting, not started yet (an hourglass). */
+    pending: TextMessage
+    spinner: TextMessage
+    /** The status "done", not a celebration. */
+    success: TextMessage
+    warning: TextMessage
+    lock: TextMessage
+    menu: TextMessage
+    unlock: TextMessage
+    chartBar: TextMessage
+    chartLine: TextMessage
+    chartPie: TextMessage
+    database: TextMessage
+    table: TextMessage
+    archive: TextMessage
+    attachment: TextMessage
+    certificate: TextMessage
+    document: TextMessage
+    documentCheck: TextMessage
+    folder: TextMessage
+    form: TextMessage
+    image: TextMessage
+    signature: TextMessage
+    chat: TextMessage
+    mail: TextMessage
+    mobile: TextMessage
+    news: TextMessage
+    notification: TextMessage
+    notificationOff: TextMessage
+    phone: TextMessage
+    videoCall: TextMessage
+    account: TextMessage
+    family: TextMessage
+    idCard: TextMessage
+    key: TextMessage
+    people: TextMessage
+    person: TextMessage
+    verified: TextMessage
+    calendar: TextMessage
+    calendarCheck: TextMessage
+    clock: TextMessage
+    history: TextMessage
+    repeat: TextMessage
+    /** A time limit or a deadline. */
+    timer: TextMessage
+    building: TextMessage
+    cityHall: TextMessage
+    home: TextMessage
+    map: TextMessage
+    /** A place on a map. */
+    pin: TextMessage
+    benefit: TextMessage
+    invoice: TextMessage
+    payment: TextMessage
+    receipt: TextMessage
+    book: TextMessage
+    care: TextMessage
+    education: TextMessage
+    health: TextMessage
+    job: TextMessage
+    meal: TextMessage
+    medication: TextMessage
+    vaccination: TextMessage
+    bike: TextMessage
+    bus: TextMessage
+    car: TextMessage
+    energy: TextMessage
+    ferry: TextMessage
+    recycle: TextMessage
+    repair: TextMessage
+    roadworks: TextMessage
+    snow: TextMessage
+    train: TextMessage
+    /** Parks and nature, a municipal service area. */
+    tree: TextMessage
+    /** Travel on foot, as a mode of transport. */
+    walk: TextMessage
+    waste: TextMessage
+    water: TextMessage
+    emergency: TextMessage
+    fire: TextMessage
+    law: TextMessage
+    privacy: TextMessage
+    /** Security or protection in general. */
+    shield: TextMessage
+    accessibility: TextMessage
+    captions: TextMessage
+    keyboard: TextMessage
+    language: TextMessage
+    /** Acting on someone's behalf. */
+    delegation: TextMessage
+    changeOfAddress: TextMessage
+    ticket: TextMessage
+    liveDepartures: TextMessage
+    detour: TextMessage
+    lostProperty: TextMessage
+    calculator: TextMessage
+    association: TextMessage
+    bookFacility: TextMessage
+    credentialsWallet: TextMessage
+    healthRecord: TextMessage
+    interpreter: TextMessage
+    /** A council or committee meeting. */
+    councilMeeting: TextMessage
+    serviceDesk: TextMessage
+    marriage: TextMessage
+    cemetery: TextMessage
+    bulkyWaste: TextMessage
+    foodWaste: TextMessage
+    streetLight: TextMessage
+    noise: TextMessage
+    transitStop: TextMessage
+    sportsPitch: TextMessage
+    sportsHall: TextMessage
+    swimmingPool: TextMessage
+    playground: TextMessage
+    outdoorGym: TextMessage
+    trail: TextMessage
+    harbour: TextMessage
+    music: TextMessage
+    museum: TextMessage
+    exam: TextMessage
+    timetable: TextMessage
+    research: TextMessage
+    refund: TextMessage
+    sickLeave: TextMessage
+    business: TextMessage
+    school: TextMessage
+    preschool: TextMessage
+    university: TextMessage
+    ambulance: TextMessage
+    police: TextMessage
+    firetruck: TextMessage
+    tram: TextMessage
+    subway: TextMessage
+    government: TextMessage
+    wheelchair: TextMessage
+    cash: TextMessage
+    wallet: TextMessage
+    theatre: TextMessage
+  }
 }
 
 /** Any subset of namespaces and keys, for provider and `defineMessages` overrides. */
