@@ -12,7 +12,8 @@ import type { UseIconOptions } from './use-icon.ts'
 /**
  * The accessible name comes from `label` only, so `aria-label`, `aria-hidden` and `role` are
  * left out, and so are `color`, `fill`, `stroke` and `strokeWidth`: an icon draws with
- * `currentColor`, so colour it with a class or `style` on a wrapper. An icon takes no focus, press
+ * `currentColor`, so colour it with `variant` (a theme colour) or a class of your own, and set the
+ * stroke with a class (`kv-icon--stroke-1`, `-1-5` or `-2`). An icon takes no focus, press
  * or description, so `tabIndex`, `onClick`, `aria-labelledby` and `aria-describedby` are left out too:
  * put them on the control around it. Icon's own options replace the SVG attributes of the same name.
  */
@@ -102,13 +103,14 @@ export function Icon({
   icon: iconComponent,
   size,
   label,
+  variant,
   mirrorInRtl,
   as,
   children,
   ref,
   ...otherProps
 }: IconProps): ReactElement {
-  const icon = useIcon({ name, size, label, mirrorInRtl })
+  const icon = useIcon({ name, size, label, variant, mirrorInRtl })
   const elementRef = useMergedRef(ref, null)
 
   const sources = [

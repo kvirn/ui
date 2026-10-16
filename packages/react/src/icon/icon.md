@@ -12,9 +12,9 @@ Icon's `size` and `label` replace the library component's own in every route tha
 
 - **Decorative by default** (`aria-hidden="true"`). Give it a `label` from your translations when no text next to it says the same thing, and it becomes an image with that name.
 - **`size` is the pixel size, as a string.** `<Icon size="20" />` (the default) is 20px at the default root font size: the theme turns it into `1.25rem` with the class `kv-icon--size-20`, so it follows the user's root font size and not the text around it. The sizes are `'12'`, `'14'`, `'16'`, `'20'`, `'24'`, `'28'`, `'32'`, `'40'`, `'48'`, `'56'`, `'64'`, `'80'` and `'96'`. A number or a CSS length (`'48px'`) is a type error: another size is a class you add (`<Icon className="my-icon" />`).
-- **Colour is the text colour** (`currentColor`), so an icon in a primary Button is white without extra CSS. Icon has no colour or stroke props: set `color` with a class or `style` on a wrapper element of your own, and the icon follows. The built-in set draws a 1.5 stroke.
+- **Colour is the text colour** (`currentColor`) unless you pass a `variant`, so an icon in a primary Button is white without extra CSS. `variant` is `'primary'`, `'secondary'`, `'accent'`, `'muted'`, `'info'`, `'success'`, `'warning'` or `'danger'` and adds `kv-icon--<variant>`; an unknown value warns once and adds nothing. It decorates: a status icon always comes with the status in words, and the variant never changes the icon's name. Icon has no colour or stroke props. The built-in set draws a 1.5 stroke; the classes `kv-icon--stroke-1`, `kv-icon--stroke-1-5` and `kv-icon--stroke-2` set another one (a meaningful icon is at least `'20'`, and `'24'` with `stroke-1`). Any other colour is a class of your own.
 - **Attributes, never inline `style`,** so icons work under a strict Content-Security-Policy, and your CSS can still override them.
-- Headless: no CSS. The `<svg>` gets `class="kv-icon kv-icon--size-20"` (the size class), `width` and `height` in rem, and `data-mirror-in-rtl` for a directional icon.
+- Headless: no CSS. The `<svg>` gets `class="kv-icon kv-icon--size-20"` (the size class, and `kv-icon--<variant>` with a variant), `width` and `height` in rem, and `data-mirror-in-rtl` for a directional icon.
 
 ## Built-in icons
 
@@ -137,17 +137,33 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 ## Props
 
-| Prop          | Type                                                         | Default                          |
-| ------------- | ------------------------------------------------------------ | -------------------------------- |
-| `name`        | `IconName`: a built-in or registered name                    | –                                |
-| `icon`        | `IconComponent`: a Lucide, Heroicons or other icon component | –                                |
-| `size`        | `IconSize`: a pixel string, `'12'` to `'96'`                 | `iconDefaults.size`, else `'20'` |
-| `label`       | `string`                                                     | none: decorative                 |
-| `mirrorInRtl` | `boolean`                                                    | the entry's, else `false`        |
-| `as`          | a component that draws the icon, for a one-off icon          | –                                |
-| `children`    | your own shapes, with Icon as the `<svg>`                    | –                                |
+| Prop          | Type                                                         | Default                                    |
+| ------------- | ------------------------------------------------------------ | ------------------------------------------ |
+| `name`        | `IconName`: a built-in or registered name                    | –                                          |
+| `icon`        | `IconComponent`: a Lucide, Heroicons or other icon component | –                                          |
+| `size`        | `IconSize`: a pixel string, `'12'` to `'96'`                 | `iconDefaults.size`, else `'20'`           |
+| `variant`     | `IconVariant`: the colour class, see Colour above            | none (`currentColor`); no provider default |
+| `label`       | `string`                                                     | none: decorative                           |
+| `mirrorInRtl` | `boolean`                                                    | the entry's, else `false`                  |
+| `as`          | a component that draws the icon, for a one-off icon          | –                                          |
+| `children`    | your own shapes, with Icon as the `<svg>`                    | –                                          |
 
 `name`, `icon`, `as` and `children` are exclusive: the types forbid two, and in development, two together warn once. Other SVG attributes, such as `className` or `viewBox`, pass through. `aria-label`, `aria-hidden` and `role` can't be passed: `label` sets them.
+
+## Labels for library icons
+
+An icon from `@kvirn-ui/icons` that stands alone, such as a status or a place, has a translated label in the `icons` messages. `Icon` never reads it by itself, because most icons sit beside text that already names them. Ask for it with `useIconLabel`, which takes the kebab-case name and returns the label, or `undefined` for an icon that has none (it then stays decorative).
+
+```tsx
+import { Icon, useIconLabel } from '@kvirn-ui/react'
+
+<Icon name="city-hall" size="24" label={useIconLabel('city-hall')} />
+
+// One instance: pass messages as the second argument. A provider's `messages={{ icons: { cityHall } }}` changes every one.
+<Icon name="city-hall" size="24" label={useIconLabel('city-hall', { cityHall: 'Town hall' })} />
+```
+
+Use a size of 20 or larger for an icon with a label. Only names with a label key compile (`IconLabelName`).
 
 ## With Button
 

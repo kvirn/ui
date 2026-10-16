@@ -20,7 +20,13 @@ import type { IconProps } from './icon.tsx'
 import { defineIcons } from './icon-registry.ts'
 import type { IconComponent, IconName, IconNameOf, IconsOf } from './icon-registry.ts'
 import { useIcon } from './use-icon.ts'
-import type { IconPartProps, IconSize, UseIconOptions, UseIconResult } from './use-icon.ts'
+import type {
+  IconPartProps,
+  IconSize,
+  IconVariant,
+  UseIconOptions,
+  UseIconResult,
+} from './use-icon.ts'
 
 // Contract: icon.a11y.md. Plan 0009.
 
@@ -334,6 +340,52 @@ describe('attributes', () => {
   test('the size is never a data attribute (data-* is state, not a choice)', async () => {
     const svg = await renderIcon(<RegisteredIcon name="lucide-trash" size="24" />)
     expect(svg.hasAttribute('data-size')).toBe(false)
+  })
+
+  test.each([
+    'primary',
+    'secondary',
+    'accent',
+    'muted',
+    'info',
+    'success',
+    'warning',
+    'danger',
+  ] as const satisfies readonly IconVariant[])(
+    'variant="%s" adds the class kv-icon--%s',
+    async (variant) => {
+      const svg = await renderIcon(<RegisteredIcon name="lucide-trash" variant={variant} />)
+      expect(svg.classList.contains(`kv-icon--${variant}`)).toBe(true)
+      expect(svg.hasAttribute('data-variant')).toBe(false)
+    },
+  )
+
+  test('without a variant, no variant class is added', async () => {
+    const svg = await renderIcon(<RegisteredIcon name="lucide-trash" />)
+    expect(svg.getAttribute('class')).not.toMatch(/kv-icon--(?!size-)/)
+  })
+
+  test.each([['red'], ['toString'], ['']] as const)(
+    'variant=%j is outside IconVariant: it warns once and adds no class',
+    async (variant) => {
+      const svg = await renderIcon(
+        <>
+          <RegisteredIcon name="lucide-trash" variant={variant as never} />
+          <RegisteredIcon name="lucide-trash" variant={variant as never} />
+        </>,
+      )
+      expect(svg.getAttribute('class')).not.toMatch(/kv-icon--(?!size-)/)
+      expect(consoleWarn).toHaveBeenCalledTimes(1)
+      expect(consoleWarn.mock.calls[0]?.[0]).toContain('variant')
+    },
+  )
+
+  test('a variant never changes the decorative hiding or the label', async () => {
+    const decorative = await renderIcon(<RegisteredIcon name="lucide-trash" variant="success" />)
+    expect(decorative.getAttribute('aria-hidden')).toBe('true')
+    expect(decorative.hasAttribute('role')).toBe(false)
+    await renderIcon(<RegisteredIcon name="lucide-trash" variant="success" label="Done" />)
+    await expect.element(page.getByRole('img', { name: 'Done' })).not.toHaveAttribute('aria-hidden')
   })
 
   test('values are attributes, never inline style (strict CSP)', async () => {
@@ -752,6 +804,9 @@ describe('types', () => {
   })
 
   test('the part props', () => {
-    expectTypeOf<IconPartProps['className']>().toEqualTypeOf<`kv-icon kv-icon--size-${IconSize}`>()
+    expectTypeOf<IconPartProps['className']>().toEqualTypeOf<
+      | `kv-icon kv-icon--size-${IconSize}`
+      | `kv-icon kv-icon--size-${IconSize} kv-icon--${IconVariant}`
+    >()
   })
 })

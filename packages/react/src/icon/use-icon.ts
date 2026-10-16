@@ -24,6 +24,20 @@ export type IconSize =
   | '80'
   | '96'
 
+/**
+ * A colour from the theme, picked by the class `kv-icon--<variant>`. Without one the icon keeps
+ * the text colour around it (`currentColor`). It decorates: words carry the meaning.
+ */
+export type IconVariant =
+  | 'primary'
+  | 'secondary'
+  | 'accent'
+  | 'muted'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'danger'
+
 /** Defaults for every Icon below a `KvirnProvider`. Instance props win. */
 export interface IconDefaults {
   /** Default `'20'` (1.25rem). */
@@ -40,6 +54,11 @@ export interface UseIconOptions extends IconDefaults {
    */
   label?: string | undefined
   /**
+   * The icon's colour, from the theme. Default: none, so the icon follows the text colour. It never
+   * changes the icon's name or role, and it never replaces words (1.4.1).
+   */
+  variant?: IconVariant | undefined
+  /**
    * Flip the icon in right-to-left text. Default: the registry entry's, else the built-in icon's
    * of the same name, else `false`.
    */
@@ -49,7 +68,9 @@ export interface UseIconOptions extends IconDefaults {
 /** Spread on the root `<svg>`, or pass to an icon component. Attributes only, never `style`. */
 export interface IconPartProps {
   /** The part's class, for `@kvirn-ui/theme` and your own CSS. */
-  className: `kv-icon kv-icon--size-${IconSize}`
+  className:
+    | `kv-icon kv-icon--size-${IconSize}`
+    | `kv-icon kv-icon--size-${IconSize} kv-icon--${IconVariant}`
   /** The size in rem, so an icon without the theme is still sized. */
   width: string
   height: string
@@ -85,6 +106,16 @@ const iconSizes: readonly string[] = [
   '80',
   '96',
 ] satisfies IconSize[]
+const iconVariants: readonly string[] = [
+  'primary',
+  'secondary',
+  'accent',
+  'muted',
+  'info',
+  'success',
+  'warning',
+  'danger',
+] satisfies IconVariant[]
 
 /**
  * An icon's props, and the component for its name (contract: icon.a11y.md). The
@@ -95,7 +126,13 @@ const iconSizes: readonly string[] = [
  * const CloseIcon = icon.component
  * <CloseIcon {...icon.iconProps} />
  */
-export function useIcon({ name, size, label, mirrorInRtl }: UseIconOptions = {}): UseIconResult {
+export function useIcon({
+  name,
+  size,
+  label,
+  variant,
+  mirrorInRtl,
+}: UseIconOptions = {}): UseIconResult {
   const { icons, iconDefaults } = useContext(KvirnConfigContext)
   // Own properties only: `name="constructor"` must not find `Object.prototype.constructor`.
   const appEntry = name !== undefined && Object.hasOwn(icons, name) ? icons[name] : undefined
@@ -126,13 +163,26 @@ export function useIcon({ name, size, label, mirrorInRtl }: UseIconOptions = {})
       `<Icon size={${JSON.stringify(requestedSize)}}> isn't one of the sizes ${iconSizes.join(', ')}, so it renders at ${defaultSize}. size is the pixel size as a string, and another size is a class you add.`,
     )
   }
+  // A JS consumer, or a cast, can pass a variant the theme has no class for.
+  const resolvedVariant =
+    variant !== undefined && iconVariants.includes(variant) ? variant : undefined
+
+  if (variant !== undefined && resolvedVariant === undefined) {
+    warnOnce(
+      `unknown-icon-variant:${String(variant)}`,
+      `<Icon variant={${JSON.stringify(variant)}}> isn't one of the variants ${iconVariants.join(', ')}, so it adds no colour class. Leave variant out for the text colour, and a colour of your own is a class you add.`,
+    )
+  }
   const isMirroredInRtl = mirrorInRtl ?? entryMirrorInRtl ?? false
   const isDecorative = label === undefined
 
   const iconProps = useMemo<IconPartProps>(() => {
     const length = `${Number(resolvedSize) / pixelsPerRem}rem`
     return {
-      className: `kv-icon kv-icon--size-${resolvedSize}`,
+      className:
+        resolvedVariant === undefined
+          ? `kv-icon kv-icon--size-${resolvedSize}`
+          : `kv-icon kv-icon--size-${resolvedSize} kv-icon--${resolvedVariant}`,
       width: length,
       height: length,
       ...(isMirroredInRtl ? { 'data-mirror-in-rtl': '' } : {}),
@@ -140,7 +190,7 @@ export function useIcon({ name, size, label, mirrorInRtl }: UseIconOptions = {})
       'aria-hidden': isDecorative ? 'true' : undefined,
       ...(isDecorative ? {} : { role: 'img', 'aria-label': label }),
     }
-  }, [resolvedSize, isMirroredInRtl, isDecorative, label])
+  }, [resolvedSize, resolvedVariant, isMirroredInRtl, isDecorative, label])
 
   return { iconProps, component: entry?.component, isDecorative }
 }

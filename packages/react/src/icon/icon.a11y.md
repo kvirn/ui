@@ -43,14 +43,15 @@ An icon that does something belongs inside a `Button` or `Link`, which is the fo
 | ----- | ------------------ | ---------- |
 | none  | none               | –          |
 
-Icon has no strings. A `label` comes from your own translations.
+Icon has no strings of its own. A `label` comes from your own translations, or for a library icon that stands alone from `useIconLabel(name)`: the `icons.<name>` message, overridable per provider and per instance (`messages` argument). It returns `undefined` for an icon without a label key, which stays decorative. A label is never applied silently: `Icon` does not read it by itself (`use-icon-label.test.tsx`).
 
 ## Consumer responsibilities
 
 - Give an icon that carries meaning on its own a `label` (1.1.1 Non-text Content, A): a status icon with no text beside it, say. Give it a `label` only when no text next to it says the same thing: an icon with a label next to the same text is read twice. A decorative icon needs none.
 - Name an icon-only `Button` with an `aria-label` (or `aria-labelledby`) from your translations, and keep the icon decorative. In development, Button warns when it has no name. Use icon-only buttons only for universally known actions: close, search, menu, copy (copy always with a Tooltip). For anything else, prefer visible text.
+- A `variant` (`primary`, `secondary`, `accent`, `muted`, `info`, `success`, `warning`, `danger`) only decorates and never replaces words, and never changes the name, role or state. Give a meaningful or status icon at least `'20'`, and `'24'` with `kv-icon--stroke-1`. Forced colours drop the variant.
 - Never convey status by an icon's colour alone: the status icons differ in shape, and status always comes with text (1.4.1 Use of Color, A).
-- Give a meaningful icon (one with a `label`) at least 3:1 contrast against its background (1.4.11 Non-text Contrast, AA). `currentColor` follows the text colour, which already has at least 4.5:1 contrast in the default theme.
+- Give a meaningful icon (one with a `label`) at least 3:1 contrast against its background (1.4.11 Non-text Contrast, AA). `currentColor` follows the text colour, which already has at least 4.5:1 contrast in the default theme, and every variant is measured at 3:1 or more on canvas, surface and surface-raised in all four themes (`iconVariantPairs`).
 - Set `mirrorInRtl` only on directional icons (arrows, chevrons), never on a tick, a logo or anything with text in it.
 - Register icons that forward their ref and spread SVG props onto one `<svg>`.
 

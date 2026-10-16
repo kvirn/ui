@@ -603,10 +603,13 @@ export type {
 export { Icon } from './icon/icon.tsx'
 export type { IconProps } from './icon/icon.tsx'
 export { useIcon } from './icon/use-icon.ts'
+export { useIconLabel } from './icon/use-icon-label.ts'
+export type { IconLabelName } from './icon/use-icon-label.ts'
 export type {
   IconDefaults,
   IconPartProps,
   IconSize,
+  IconVariant,
   UseIconOptions,
   UseIconResult,
 } from './icon/use-icon.ts'
