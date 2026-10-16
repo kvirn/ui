@@ -257,7 +257,7 @@ Per breakpoint: icons don't change size with the viewport, only with the root fo
 
 ### 6.2 Theme rules (`theme.css`, `@layer kv`)
 
-The theme never sets an icon's size, stroke, fill or colour. The only exception is forced colours, where it forces the inherited colour so an icon can't disappear.
+The theme sets an icon's size with `kv-icon--size-<px>`, its colour only with `kv-icon--<variant>` and its stroke only with `kv-icon--stroke-<n>` (the consumer's choice; [icon-variant-and-stroke.md](icon-variant-and-stroke.md), Plan 0127), and never its fill. The other exception is forced colours, where it forces the inherited colour so an icon can't disappear. The variant and stroke rules sit before the forced-colours block, so `color: inherit` wins by order.
 
 **`.kv-icon`**
 
@@ -330,17 +330,20 @@ The theme never sets an icon's size, stroke, fill or colour. The only exception 
 
 An icon is `currentColor` by default, so it matches its text. With a colour, use semantic tokens only:
 
-| Token                                       | Use for an icon                                                    | 3:1 against its background (1.4.11)                                                         |
-| ------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| inherited (`text`)                          | The default, everywhere                                            | ≥ 4.5:1 on every surface and `-subtle` background (text pairs in `theme:check`)             |
-| `text-muted`                                | A decorative icon next to metadata                                 | ≥ 4.5:1 on canvas, surfaces, `primary-subtle` and the status backgrounds                    |
-| `danger`, `success`, `warning`              | Status icons, always with the status in words                      | ≥ 4.5:1 on canvas, surfaces and their own `-subtle` background (text pairs)                 |
-| `primary`                                   | Selected or current indicators only (a check in a selected option) | ≥ 3:1 on canvas, surfaces and `primary-subtle` (non-text pairs, lowest 3.75:1 dark)         |
-| `on-primary`, `on-danger`                   | Inherited inside filled buttons. Never set by hand                 | ≥ 4.70:1                                                                                    |
-| Never: `border-subtle`, `secondary`, `link` | –                                                                  | A hairline fails 3:1. `link` means "this is a link". `secondary` is the button edge's token |
+| Token                          | Use for an icon                                                                         | 3:1 against its background (1.4.11)                                                 |
+| ------------------------------ | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| inherited (`text`)             | The default, everywhere                                                                 | ≥ 4.5:1 on every surface and `-subtle` background (text pairs in `theme:check`)     |
+| `text-muted`                   | A decorative icon next to metadata                                                      | ≥ 4.5:1 on canvas, surfaces, `primary-subtle` and the status backgrounds            |
+| `danger`, `success`, `warning` | Status icons, always with the status in words                                           | ≥ 4.5:1 on canvas, surfaces and their own `-subtle` background (text pairs)         |
+| `primary`                      | Selected or current indicators only (a check in a selected option)                      | ≥ 3:1 on canvas, surfaces and `primary-subtle` (non-text pairs, lowest 3.75:1 dark) |
+| `on-primary`, `on-danger`      | Inherited inside filled buttons. Never set by hand                                      | ≥ 4.70:1                                                                            |
+| `secondary`, `accent`          | `variant="secondary"` or `"accent"`, a role colour. Decorative or meaningful at `'20'`+ | ≥ 3:1 on canvas, surfaces and `primary-subtle` (non-text pairs)                     |
+| Never: `border-subtle`, `link` | –                                                                                       | A hairline fails 3:1. `link` means "this is a link"                                 |
+
+`variant` picks one of `primary`, `secondary`, `accent`, `muted`, `info`, `success`, `warning` or `danger` (class `kv-icon--<variant>`, `color` only, so a two-tone logo keeps its child colours). `muted` is `text-muted`, and `info` is `primary` in its own class so a future info token remaps it alone. Variants are for the three plain surfaces: inside an alert or on a filled button the part colours its own icon. There is no provider default and no `color` prop. Stroke is a class: `kv-icon--stroke-1` (at `'24'` and up for a meaningful icon, 0.83px at `'20'` falls below 3:1), `kv-icon--stroke-1-5` (brings a registered set drawn at another width to 1.5) and `kv-icon--stroke-2` (`'20'` and up; at `'16'` and below it fills the globe in). Forced colours drop the variant; stroke stays.
 
 - `info` takes the inherited text colour until the Alert spec gives info a colour (open question 5).
-- **No new tokens and no new colour pairs.** Every pair above is already in `contrast-requirements.ts`.
+- **No new tokens.** Every pair above is already in `contrast-requirements.ts`, and the group `iconVariantPairs` keeps the eight variants at 3:1 on canvas, surface and surface-raised in all four themes.
 
 ### 6.4 States
 
@@ -357,14 +360,16 @@ Icon has no states of its own. It inherits `color` from its parent:
 ### 6.5 Modes
 
 - **Dark and contrast themes:** only the tokens change. Icons follow `currentColor`.
-- **Forced colours:** §6.2. Status icons differ in shape. An icon-only button keeps the Button's `ButtonText` border, so the target stays visible.
+- **Forced colours:** §6.2. Variants collapse to the parent's system colour. Status icons differ in shape. An icon-only button keeps the Button's `ButtonText` border, so the target stays visible.
 - **RTL:** icons 3–7 mirror. DOM order gives start and end positions in a Button. Chevrons in Pagination and Calendar point the right way.
-- **Motion:** none. A component that rotates an icon (Accordion) animates it only under `prefers-reduced-motion: no-preference`, in its own spec.
+- **Motion:** none, with one stated exception: the library icon `spinner` (not built in) crawls when the consumer adds the class `kv-animate-spinner`, under `prefers-reduced-motion: no-preference` only; otherwise, and without `theme.css`, it is a still ¾ arc ([loading-indicators.md](loading-indicators.md) §6.2, Plan 0126). For it the theme sets only `animation`, `rotate`, `stroke-dasharray` and `stroke-dashoffset` on `.kv-icon.kv-animate-spinner > path[pathLength='100']`, never `stroke`, `stroke-width`, `fill` or `color`: those come from the consumer's `variant` and stroke classes like any icon. No other icon animates itself. A component that rotates an icon (Accordion) animates it only under `prefers-reduced-motion: no-preference`, in its own spec.
 - **320px, 400% zoom, 1.4.12:** rem sizes scale with the root font size. No fixed pixel sizes in the theme. Text spacing widens the gap in running text, and nothing is clipped.
 
 ### 6.6 Stories (`Components/Icon`)
 
 Every story runs axe. Strings come from the fixture (§4.3).
+
+The drawn set's stories are `Icons/Library` (Plan 0127): `Default`, `AllIcons`, one story per category and `Rtl` read the `variant` and `stroke` controls (no `color`); `Variants` shows each variant with its name as text at stroke 1, 1.5 and 2; `LoadingSpinner` (and `LoadingSpinnerRtl`) shows the `spinner` icon animated, at rest, in context and with a long label. The CSS spinner's variant and stroke are the `SpinnerVariants` story in Progress. The table below is the original plan for the built-in set; its Colours row is the `Variants` story.
 
 | Story                              | Shows                                                                                                                                                                                                                                                                                                                                                                                            |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -445,7 +450,7 @@ Draft input for `packages/react/src/icon/icon.a11y.md` and a new row in `button.
 ## 8. Validation
 
 - [x] Self-review against `.claude/skills/design/references/review-checklist.md`. No open blockers. No hard-coded strings: icon names are code, and every story string has a fixture key. No colour-only status. Targets are 44px and 24px+. There are no tooltips holding essential information (Tooltip is M2, and icon-only use is limited to close and search until then).
-- [x] Contrast: no new colour or pair. Every icon colour in §6.3 is an existing pair in `contrast-requirements.ts`.
+- [x] Contrast: no new colour. Every icon colour in §6.3 is an existing pair in `contrast-requirements.ts`, plus the group `iconVariantPairs`.
 - [ ] Design review of the drawn set against §6.1, from a screenshot of "Built-in set" and "Stroke widths" at 16, 20 and 24px in light and dark: `pending` (after implementation).
 - [x] Usability test plan written. Result: `pending`.
 
