@@ -103,7 +103,12 @@ function shapeText([tag, attributes], indent) {
   const entries = Object.entries(attributes).map(([key, value]) => `${key}: ${quote(value)}`)
   const inline = `[${quote(tag)}, { ${entries.join(', ')} }]`
   if (indent.length + inline.length + 1 <= printWidth) return inline
-  return `[\n${indent}  ${quote(tag)},\n${indent}  { ${entries.join(', ')} },\n${indent}]`
+  const object = `${indent}  { ${entries.join(', ')} },`
+  const objectText =
+    object.length <= printWidth
+      ? object
+      : `${indent}  {\n${entries.map((entry) => `${indent}    ${entry},`).join('\n')}\n${indent}  },`
+  return `[\n${indent}  ${quote(tag)},\n${objectText}\n${indent}]`
 }
 
 function callText(shapes, indent, prefix, suffix) {

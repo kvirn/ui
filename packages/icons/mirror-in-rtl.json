@@ -1,1 +1,16 @@
-["chevron-forward", "chevron-back", "arrow-forward", "arrow-back", "external"]
+[
+  "chevron-forward",
+  "chevron-back",
+  "arrow-forward",
+  "arrow-back",
+  "external",
+  "quote",
+  "bullet-list",
+  "numbered-list",
+  "indent",
+  "outdent",
+  "align-start",
+  "align-end",
+  "undo",
+  "redo"
+]
