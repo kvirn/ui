@@ -24,13 +24,13 @@ import {
   ResidentEditor,
 } from './rich-text-editor.fixture.tsx'
 
-// Components/Form/Rich text editor: a formatted-text field on Tiptap (design spec
+// Rich text editor/Rich text editor: a formatted-text field on Tiptap (design spec
 // docs/design/rich-text-editor.md, Plan 0036), styled by @kvirn-ui/theme/theme.css. It lives in a
 // Field, which names, describes and validates it like any control. The output is never
 // sanitized: a real app sanitizes it on the server.
 
 const meta = {
-  title: 'Components/Forms/Rich text editor',
+  title: 'Rich text editor/Rich text editor',
   component: RichTextEditor.Root,
   // Every option at its default, so the main example starts where an adopter starts.
   args: {

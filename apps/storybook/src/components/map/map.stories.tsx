@@ -32,7 +32,7 @@ import { RichPopupDemo } from './map-rich-popup.tsx'
 // so they are tagged `!test`. The other stories use a plain background style: no network call.
 
 const meta = {
-  title: 'Map',
+  title: 'Map/Map',
   component: Map.Root,
   args: {
     label: 'Map of preschools',

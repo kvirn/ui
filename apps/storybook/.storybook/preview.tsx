@@ -277,6 +277,7 @@ const preview: Preview = {
           'Patterns',
           'Icons',
           'Map',
+          'Rich text editor',
           'Content types',
           '*',
         ],

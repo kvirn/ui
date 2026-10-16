@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { textsFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
 
-// Fixtures for Components/Form/Rich text editor. Each exported function is one example, written to
+// Fixtures for Rich text editor/Rich text editor. Each exported function is one example, written to
 // be read: the stories show its source as "Show code" (`showSource`). The texts are fixture text
 // in the resident's or case worker's language, so they are plain strings here, where an app would
 // take them from its translations. The library's own strings (the toolbar's names, the forms)
