@@ -5929,13 +5929,21 @@
 
   /* 10. Icon ---------------------------------------------------------------------------------
    * <Icon name="close" /> renders <svg class="kv-icon kv-icon--size-20">, sized by that class and
-   * by width and height attributes in rem, and coloured by attributes. This section never sets an
-   * icon's stroke, fill or colour: CSS beats attributes, so a prop would lose. Only forced colours
-   * do, so an icon can't disappear. Design spec: docs/design/icon.md.
+   * by width and height attributes in rem, and drawn in currentColor at stroke 1.5. This section
+   * sets an icon's colour and stroke only through the variant and stroke classes below (the
+   * consumer's choice), and in forced colours, so an icon can't disappear. It never sets fill.
+   * Design spec: docs/design/icon.md, docs/design/icon-variant-and-stroke.md.
    *
    *   kv-icon--size-<px>     size="<px>" in rem, so it follows the root font size and not the text.
    *                          Another size is a class the consumer adds.
+   *   kv-icon--<variant>     variant="<name>": primary secondary accent muted info success warning
+   *                          danger. Sets color only, so currentColor follows. Decorates: words
+   *                          carry the meaning.
+   *   kv-icon--stroke-<n>    stroke-width on the root svg: 1, 1-5 or 2. 1.5 is the drawing's own.
    *   data-mirror-in-rtl     a directional icon, flipped in right-to-left text
+   *   kv-animate-spinner     the consumer adds it to <Icon name="spinner"> and the arc crawls
+   *                          under no-preference. It targets the library drawing: a path with
+   *                          pathLength="100".
    *
    * In a flex row (a Button, kv-button-group), the row's gap separates icon and text. In
    * running text, a normal space does, and it grows with 1.4.12 word spacing.
@@ -6030,6 +6038,114 @@
   /* scale, not transform, so it combines with a component's own rotate. */
   .kv-icon[data-mirror-in-rtl]:dir(rtl) {
     scale: -1 1;
+  }
+
+  @property --kv-icon-spinner-head {
+    syntax: '<number>';
+    inherits: false;
+    initial-value: 75;
+  }
+
+  @property --kv-icon-spinner-tail {
+    syntax: '<number>';
+    inherits: false;
+    initial-value: 0;
+  }
+
+  /* Under no-preference the spinner icon crawls; otherwise it stays the still three-quarter arc
+   * its attributes draw. The path carries pathLength="100", so head and tail are percentages of
+   * the circle: the dash is head - tail long and starts at the tail. The svg turns once per
+   * 2400 ms. Same timings as the kv-spinner loop (Loading indicators). Only animation, rotate and the
+   * dash properties are set here, never stroke, stroke-width, fill or colour. */
+  @media (prefers-reduced-motion: no-preference) {
+    :where(:root:not([data-kv-motion='reduce'])) {
+      .kv-icon.kv-animate-spinner {
+        animation: kv-icon-spinner-turn calc(var(--kv-duration-loop) * 1.5) linear infinite;
+      }
+
+      .kv-icon.kv-animate-spinner > path[pathLength='100'] {
+        stroke-dasharray: calc(max(0, var(--kv-icon-spinner-head) - var(--kv-icon-spinner-tail)))
+          calc(100 - max(0, var(--kv-icon-spinner-head) - var(--kv-icon-spinner-tail)));
+        stroke-dashoffset: calc(var(--kv-icon-spinner-tail) * -1);
+        animation:
+          kv-icon-spinner-head var(--kv-duration-loop) var(--kv-easing-standard) infinite,
+          kv-icon-spinner-tail var(--kv-duration-loop) cubic-bezier(0.6, 0, 0.4, 1) infinite;
+      }
+    }
+  }
+
+  @keyframes kv-icon-spinner-turn {
+    to {
+      rotate: 1turn;
+    }
+  }
+
+  @keyframes kv-icon-spinner-head {
+    from {
+      --kv-icon-spinner-head: 10;
+    }
+
+    to {
+      --kv-icon-spinner-head: 110;
+    }
+  }
+
+  @keyframes kv-icon-spinner-tail {
+    from {
+      --kv-icon-spinner-tail: 0;
+    }
+
+    to {
+      --kv-icon-spinner-tail: 100;
+    }
+  }
+
+  .kv-icon--primary {
+    color: var(--kv-color-primary);
+  }
+
+  .kv-icon--secondary {
+    color: var(--kv-color-secondary);
+  }
+
+  .kv-icon--accent {
+    color: var(--kv-color-accent);
+  }
+
+  .kv-icon--muted {
+    color: var(--kv-color-text-muted);
+  }
+
+  /* Its own class so a future info token remaps it alone. */
+  .kv-icon--info {
+    color: var(--kv-color-primary);
+  }
+
+  .kv-icon--success {
+    color: var(--kv-color-success);
+  }
+
+  .kv-icon--warning {
+    color: var(--kv-color-warning);
+  }
+
+  .kv-icon--danger {
+    color: var(--kv-color-danger);
+  }
+
+  /* The library's drawings carry stroke-width="1.5" on the root and none on a child, so a CSS
+   * width on the root beats the attribute and the shapes inherit it. -1-5 brings a registered set
+   * drawn at another width back to the library's. */
+  .kv-icon--stroke-1 {
+    stroke-width: 1;
+  }
+
+  .kv-icon--stroke-1-5 {
+    stroke-width: 1.5;
+  }
+
+  .kv-icon--stroke-2 {
+    stroke-width: 2;
   }
 
   /* SVG keeps an explicit colour in forced colours (preserve-parent-color), so a hex colour
@@ -11068,7 +11184,8 @@
    * it is three quarters, never a full circle (that is the success icon's shape). */
   .kv-spinner {
     --kv-spinner-size: 1.25em;
-    --kv-spinner-stroke: 2px;
+    --kv-spinner-stroke-units: 1.5;
+    --kv-spinner-stroke: max(1px, var(--kv-spinner-size) * var(--kv-spinner-stroke-units) / 24);
     --kv-spinner-color: var(--kv-color-primary);
 
     position: relative;
@@ -11086,7 +11203,7 @@
     position: absolute;
     inset: 0;
     box-sizing: border-box;
-    border: var(--kv-spinner-stroke) solid var(--kv-spinner-color);
+    border: var(--kv-spinner-stroke) solid var(--kv-spinner-variant-color, var(--kv-spinner-color));
     border-radius: var(--kv-radius-full);
     mask-image: conic-gradient(
       from var(--kv-spinner-tail, 0turn),
@@ -11101,7 +11218,47 @@
 
   .kv-spinner--lg {
     --kv-spinner-size: var(--kv-space-12);
-    --kv-spinner-stroke: var(--kv-indicator-width);
+  }
+
+  .kv-spinner--stroke-1 {
+    --kv-spinner-stroke-units: 1;
+  }
+
+  .kv-spinner--stroke-2 {
+    --kv-spinner-stroke-units: 2;
+  }
+
+  /* A variant is only there when the consumer adds it, and then it wins over the context colours. */
+  .kv-spinner--primary {
+    --kv-spinner-variant-color: var(--kv-color-primary);
+  }
+
+  .kv-spinner--secondary {
+    --kv-spinner-variant-color: var(--kv-color-secondary);
+  }
+
+  .kv-spinner--accent {
+    --kv-spinner-variant-color: var(--kv-color-accent);
+  }
+
+  .kv-spinner--muted {
+    --kv-spinner-variant-color: var(--kv-color-text-muted);
+  }
+
+  .kv-spinner--info {
+    --kv-spinner-variant-color: var(--kv-color-primary);
+  }
+
+  .kv-spinner--success {
+    --kv-spinner-variant-color: var(--kv-color-success);
+  }
+
+  .kv-spinner--warning {
+    --kv-spinner-variant-color: var(--kv-color-warning);
+  }
+
+  .kv-spinner--danger {
+    --kv-spinner-variant-color: var(--kv-color-danger);
   }
 
   /* In a button the arc is the label's colour, so it has the label's contrast on every fill. */
@@ -11404,6 +11561,10 @@
 
     .kv-button .kv-spinner {
       --kv-spinner-color: ButtonText;
+    }
+
+    .kv-spinner::before {
+      border-color: var(--kv-spinner-color);
     }
   }
 

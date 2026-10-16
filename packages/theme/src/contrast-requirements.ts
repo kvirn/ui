@@ -140,22 +140,34 @@ const nonTextPairs: readonly ColorPair[] = [
   ...statusBackgrounds.map((background): ColorPair => ['primary', background]),
 ]
 
+/**
+ * The Icon variants (docs/design/icon-variant-and-stroke.md §5) on the three plain surfaces. Each
+ * is also required below for another reason; this group keeps the variants measured if that
+ * reason goes. `muted` is `text-muted`, and `info` is `primary`. `requirementsFor` reports an identical
+ * requirement once.
+ */
+const iconVariantPairs: readonly ColorPair[] = (
+  ['primary', 'secondary', 'accent', 'text-muted', 'success', 'warning', 'danger'] as const
+).flatMap((foreground) => plainBackgrounds.map((background): ColorPair => [foreground, background]))
+
 const isContrastTheme = (themeName: ThemeName) =>
   themeName === 'light-contrast' || themeName === 'dark-contrast'
 
 function requirementsFor(themeName: ThemeName): ContrastRequirement[] {
   const textMinimum: ContrastMinimum = isContrastTheme(themeName) ? 7 : 4.5
-  return [
+  const requirements: ContrastRequirement[] = [
     ...textPairs.map(([foreground, background]) => ({
       foreground,
       background,
       minimum: textMinimum,
     })),
-    ...nonTextPairs.map(([foreground, background]): ContrastRequirement => ({
-      foreground,
-      background,
-      minimum: 3,
-    })),
+    ...[...nonTextPairs, ...iconVariantPairs].map(
+      ([foreground, background]): ContrastRequirement => ({
+        foreground,
+        background,
+        minimum: 3,
+      }),
+    ),
     // A link is underlined on hover only, so at rest its colour is told apart from the body text
     // around it by 3:1 (1.4.1). The contrast themes can't have that and 7:1 on the canvas, so they
     // keep the underline at rest.
@@ -163,6 +175,11 @@ function requirementsFor(themeName: ThemeName): ContrastRequirement[] {
       ? []
       : [{ foreground: 'link', background: 'text', minimum: 3 } satisfies ContrastRequirement]),
   ]
+  const seen = new Set<string>()
+  return requirements.filter(({ foreground, background, minimum }) => {
+    const key = `${foreground}|${background}|${minimum}`
+    return !seen.has(key) && seen.add(key)
+  })
 }
 
 export const contrastRequirements: Record<ThemeName, ContrastRequirement[]> = {
