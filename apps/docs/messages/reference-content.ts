@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the reference site is bilingual (sv and en), so this file holds its Swedish and English copy.
 import type { ReferenceLocale } from './reference.ts'
 
 const en = {

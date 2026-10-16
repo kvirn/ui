@@ -122,8 +122,8 @@ export function QuickExitPage({
   return (
     <ComponentPage
       title="QuickExit"
-      lead="It swaps this page for that site, so the Back button doesn’t lead straight back to it. It doesn’t clear the browser history."
-      status="in-progress"
+      lead="It swaps this page for a site you choose, so the Back button doesn’t lead straight back to it. It doesn’t clear the browser history."
+      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
@@ -132,10 +132,10 @@ export function QuickExitPage({
             Put it on every page of that service, near the top.
           </li>
           <li>
-            It swaps this page for the site you choose, so the Back button doesn’t lead straight
-            back to it. It doesn’t clear the browser history, the browser’s saved copies of pages or
-            other open tabs, and the visit can still be found in the history. Say so in your own
-            text, and never promise that a visit leaves no trace.
+            What it does not do: it doesn’t clear the browser history, the browser’s saved copies of
+            pages or other open tabs. The visit can still be found in the history, and pages the
+            person opened earlier in the same tab are still behind the Back button. Say so in your
+            own text, and never promise that a visit leaves no trace.
           </li>
           <li>
             Choose a neutral site that says nothing about what the person was reading, such as a
@@ -161,9 +161,9 @@ export function QuickExitPage({
             <code>navigate</code> only shows where the visitor would go, so nothing leaves this
             site. <code>useDemoLeave</code> is a helper for this page: on your site, leave{' '}
             <code>navigate</code> out and the page is replaced. The Shift shortcut starts off here,
-            so this page stays quiet for people who use a screen reader. Tick the box to turn it on:
-            the sentence <code>QuickExit.Hint</code> then appears next to the link, so people who
-            see the page learn about the shortcut.
+            so this page stays quiet for people who use a screen reader. Tick the box to turn it on.
+            The sentence from <code>QuickExit.Hint</code> then appears next to the link, so people
+            who see the page learn about the shortcut.
           </p>
           <ExampleFrame headingId="example" code={sources['default']}>
             <DefaultQuickExit />
@@ -243,8 +243,9 @@ export function QuickExitPage({
               </p>
               <CodeBlock code={endSessionCode} language="ts" />
               <p>
-                The link then leaves in the same tab like any other: a click, Ctrl or Cmd click, a
-                middle click and Shift three times all replace this page. The example below uses{' '}
+                The link leaves in the same tab: a click, a Ctrl or Cmd click and a middle click all
+                replace this page, and so does Shift three times when the shortcut is on. The
+                example below has the shortcut off and uses{' '}
                 <Link href={`#${apiRowId('QuickExit.Link', 'href')}`}>
                   <code>href</code>
                 </Link>{' '}
@@ -296,12 +297,11 @@ export function QuickExitPage({
               <CodeBlock code={prefetchLinkCode} language="html" />
               <CodeBlock code={speculationRulesCode} language="html" />
               <p>
-                Speculation rules are supported by Chromium-based browsers such as Chrome and Edge.
-                Safari has them behind a flag and Firefox does not have them yet. A browser that
-                doesn’t know them ignores the script, and the exit still works, only without the
-                head start. A <code>&quot;prerender&quot;</code> rule has the same shape, but it
-                also runs the page’s JavaScript in the background, so use it only for a plain static
-                page.
+                Browsers differ in what they support: Chromium-based browsers such as Chrome and
+                Edge support speculation rules. A browser that doesn’t know them ignores the script,
+                and the exit still works, only without the head start. A{' '}
+                <code>&quot;prerender&quot;</code> rule has the same shape, but it also runs the
+                page’s JavaScript in the background, so use it only for a plain static page.
               </p>
               <p>
                 The most dependable choice is a service worker that stores the neutral page itself,
@@ -337,11 +337,11 @@ export function QuickExitPage({
             why={
               <>
                 NVDA, a screen reader for Windows, uses the Shift key to pause speech. Three presses
-                of Shift within five seconds would then leave the page. In browse mode, the screen
-                reader may also pass on a lone Shift when someone jumps back through headings. This
-                has not been checked on real screen readers yet. If many of your readers use a
-                screen reader, turn the shortcut off. The link stays, and keyboard and pointer users
-                still reach it.
+                of Shift, each less than five seconds after the last, would then leave the page. In
+                browse mode, the screen reader may also pass on a lone Shift when someone jumps back
+                through headings. This has not been checked on real screen readers yet. If many of
+                your readers use a screen reader, turn the shortcut off. The link stays, and
+                keyboard and pointer users still reach it.
               </>
             }
             code={sources['no-shortcut']}
@@ -393,10 +393,10 @@ export function QuickExitPage({
             ),
             keyboard: (
               <Note kind="tip">
-                Three presses of Shift within five seconds leave the page, and any other key in
-                between starts the count again. A Shift counts when it is released, and only if
-                nothing else was pressed while it was down, so Shift+Tab or a capital letter in a
-                form is not a press.
+                Three presses of Shift leave the page, as long as no more than five seconds pass
+                between two presses. Any other key in between starts the count again. A Shift counts
+                when it is released, and only if nothing else was pressed while it was down, so
+                Shift+Tab or a capital letter in a form is not a press.
               </Note>
             ),
             'known-issues': (
@@ -450,8 +450,8 @@ export function QuickExitPage({
               ]}
             >
               <p>
-                The Finnish, Norwegian Bokmål and Norwegian Nynorsk texts are drafts. They wait for
-                a native speaker to review them.
+                The Finnish texts and both sets of Norwegian texts are drafts. They wait for a
+                native speaker to review them.
               </p>
             </StringsBlock>
           }

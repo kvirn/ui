@@ -293,7 +293,7 @@ export function AutocompletePage({
           <UseCase
             id="server-suggestions"
             title="Suggestions from your server"
-            why="When the suggestions live on a server, turn the filter off, pass isLoading while you fetch and keep the last result in items. You write the debounce and the fetch."
+            why="When the suggestions live on a server, turn the filter off, pass isLoading while you fetch and keep the last result in items. You write the fetch, and a short pause so it starts only when typing stops."
             code={sources['server-suggestions']}
             propsUsed={[
               { part: 'Autocomplete.Root', prop: 'filter' },
@@ -346,7 +346,7 @@ export function AutocompletePage({
           <UseCase
             id="long-list"
             title="Thousands of suggestions"
-            why="Let the typing narrow the list first. If it stays long, virtualize renders only the suggestions in view plus the active one, and each says how many there are and where it is."
+            why="Let the typing narrow the list first. If it stays long, virtualize renders only the suggestions in view plus the active one. Each tells a screen reader how many suggestions there are and its place in the list."
             code={sources['long-list']}
             propsUsed={[{ part: 'Autocomplete.Root', prop: 'virtualize' }]}
           >

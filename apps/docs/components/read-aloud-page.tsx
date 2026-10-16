@@ -157,9 +157,15 @@ export function ReadAloudPage({
             with disabilities use, such as a screen reader).
           </li>
           <li>
+            Listen reads the whole text, or only the text the reader has selected. Pause and Stop
+            control it, and Previous and Next move one sentence. To select with the keyboard, use
+            Shift and the arrow keys, then press Listen.
+          </li>
+          <li>
             By default it uses only voices stored on the user&rsquo;s device, so the text is not
             sent anywhere. A device may have no voice for a language, or none at all, and the player
-            then says so.
+            then says so. In a browser that can&rsquo;t read text aloud, the player shows only a
+            status text, not buttons that cannot work.
           </li>
           <li>
             It is not for announcing a change in the page. Use the{' '}
@@ -175,22 +181,6 @@ export function ReadAloudPage({
       useCases={
         <>
           <UseCase
-            id="read-an-article"
-            title="Let residents listen to a guidance page"
-            why="Listen reads the whole article. Pause and Stop control it, and Previous and Next move one sentence. Select text first and Listen reads only the selection. In a browser without speech, the player shows only a status text instead of buttons that cannot work."
-            code={sources['default']}
-            propsUsed={[{ part: 'ReadAloud.Root', prop: 'contentRef' }]}
-            note={
-              <Note kind="tip">
-                Select text with the pointer and a “Listen to selected text” button appears next to
-                it. With the keyboard, select with Shift and the arrow keys, then press Listen. The
-                Status shows the sentence position either way.
-              </Note>
-            }
-          >
-            <Player />
-          </UseCase>
-          <UseCase
             id="small-player"
             title="A short notice with a simple player"
             why="Every part is optional. For a short text, leave out Speed, Voice, Previous and Next. Mark text that must not be read, such as a reference number, with data-kv-read-aloud-skip."
@@ -202,7 +192,7 @@ export function ReadAloudPage({
           <UseCase
             id="language-of-the-text"
             title="Text in another language than the page"
-            why="The text below is Swedish: the building permit paragraph from the first example. Each sentence is read with a voice for its own language, never a voice of another one. If the device has no voice for it, reading stops, the Status names the language and the player says so once."
+            why="The article below is in Swedish, and its element is marked as Swedish with the lang attribute. It says the same as the first paragraph of the main example: how to apply for a building permit. The player reads each sentence with a voice for that sentence’s own language, and never with a voice for another language. If the device has no voice for it, reading stops, the Status names the language and a screen reader announces it. The tests use a fake speech engine, so what you hear depends on the voices on your device."
             code={sources['swedish-content']}
             propsUsed={[{ part: 'ReadAloud.Root', prop: 'contentRef' }]}
             note={
@@ -264,12 +254,6 @@ export function ReadAloudPage({
           contract={contract}
           linkToStrings
           notes={{
-            'what-you-need-to-do': (
-              <Note kind="tip">
-                With <code>allowRemoteVoices</code> on, the browser may send the text to the voice’s
-                provider. Leave it off on pages with personal data.
-              </Note>
-            ),
             'visual-and-modes': (
               <Note kind="tip">
                 The default theme styles the player but not the sentence highlight yet. The sentence

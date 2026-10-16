@@ -111,10 +111,10 @@ const parts: ApiPart[] = [
     name: 'Combobox.Clear',
     renders: (
       <>
-        {element('button type="button" tabindex="-1"')} that empties the text and, with one choice,
-        the value, named “Clear” (<code>combobox.clear</code>). It renders only while there is
-        something to clear, and it is the only thing that empties the text. With{' '}
-        <code>multiple</code> it empties the typed text only.
+        {element('button type="button" tabindex="-1"')} named “Clear” (<code>combobox.clear</code>).
+        With one choice it empties the text and the value. With <code>multiple</code> it empties the
+        typed text only, and the chosen values stay. It renders only while there is something to
+        clear.
       </>
     ),
     attributes: field.clear,
@@ -134,9 +134,10 @@ const parts: ApiPart[] = [
     name: 'Combobox.Value',
     renders: (
       <>
-        {element('li')} with the value’s text and a remove {element('button')} named “Remove …” (
-        <code>combobox.removeValue</code>). The remove button is a normal tab stop. Removing a value
-        moves focus to the next remove button, else the previous, else the input.
+        {element('li')} with one {element('button')} that holds the value’s text and a cross. It is
+        named “Remove …” (<code>combobox.removeValue</code>), and pressing it removes the value. The
+        button is a normal tab stop. Removing a value moves focus to the next remove button, else
+        the previous, else the input.
       </>
     ),
     props: valueRows,
@@ -312,9 +313,9 @@ export function ComboboxPage({
               <>
                 When the list lives on a server, turn the filter off with <code>filter</code>, pass{' '}
                 <code>isLoading</code> while you fetch and keep the last result in{' '}
-                <code>items</code>. You write the fetch and the wait before it starts. The list
-                shows “Loading results” and a screen reader (software that reads the screen aloud)
-                says it.
+                <code>items</code>. You write the fetch, and a short pause so it starts only when
+                typing stops. The list shows “Loading results” and a screen reader (software that
+                reads the screen aloud) says it.
               </>
             }
             code={sources['server-results']}
@@ -333,7 +334,7 @@ export function ComboboxPage({
               <>
                 The default filter matches what was typed anywhere in the text, in the provider’s
                 language. Pass a function to <code>filter</code> to change the rule, here to match
-                only the start. It runs on the next keystroke.
+                only the start. A new function applies from the next keystroke.
               </>
             }
             code={sources['own-filter']}
@@ -407,9 +408,9 @@ export function ComboboxPage({
             why={
               <>
                 Let people filter first. If the list stays long after that, <code>virtualize</code>{' '}
-                renders only the options in view plus the active and the chosen one, and each option
-                says how many there are and where it is. Options that are not drawn can’t be found
-                with find in page or printed.
+                renders only the options in view plus the active and the chosen one. Each option
+                tells a screen reader how many options there are and its place in the list. Options
+                that are not drawn can’t be found with find in page or printed.
               </>
             }
             code={sources['long-list']}
@@ -420,7 +421,27 @@ export function ComboboxPage({
         </>
       }
       contract={
-        <ContractSectionsView contract={contract} messageNamespace="combobox" linkToStrings />
+        <ContractSectionsView
+          contract={contract}
+          messageNamespace="combobox"
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Give the input a visible <code>Field.Label</code>. A placeholder is not a label: it
+                disappears when the user types (3.3.2 Labels or Instructions; 4.1.2 Name, Role,
+                Value).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                Anything on this list that affects your service belongs in your accessibility
+                statement, with the workaround. Public-sector sites in the EU must publish one (the
+                Web Accessibility Directive).
+              </Note>
+            ),
+          }}
+        />
       }
       contractSections={contractSectionList(contract)}
       api={

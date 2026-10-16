@@ -52,7 +52,7 @@ export const useDialogTexts = defineExampleTexts({
     keepOpen: 'Keep the case open',
     showCasesAgain: 'Show the cases again',
     cases: [
-      { number: '2026-0142', subject: 'Broken streetlight on Parkvägen' },
+      { number: '2026-0142', subject: 'Broken streetlight on Parkgatan' },
       { number: '2026-0155', subject: 'Overflowing bin at the bus stop' },
       { number: '2026-0161', subject: 'Pothole outside the library' },
     ],

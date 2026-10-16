@@ -143,6 +143,11 @@ export const toolbarGroupAttributes: readonly AttributeRow[] = [
     values: 'always',
     meaning: 'The part class. The default theme draws a hairline between groups.',
   },
+  {
+    name: 'kv-button-group--attached',
+    values: 'always',
+    meaning: 'Added next to your own class. The buttons touch and share borders.',
+  },
 ]
 
 export const toolbarButtonAttributes: readonly AttributeRow[] = [

@@ -128,8 +128,8 @@ export function SectionPage({
             propsUsed={[{ part: 'Section', prop: 'className' }]}
             note={
               <Note kind="tip">
-                A card on a section is fine. A section inside a card isn’t, and a section inside a
-                section is only for switching between the surface and canvas looks.
+                A section inside a section is only for switching between the surface and canvas
+                looks.
               </Note>
             }
           >
@@ -151,7 +151,7 @@ export function SectionPage({
               <Note kind="reminder">
                 Put <code>role=&quot;list&quot;</code> on the <code>&lt;ul&gt;</code>. Safari can
                 stop announcing a list when its markers are hidden (1.3.1 Info and Relationships,
-                A). The contract lists this as still to be checked with VoiceOver.
+                A). We have not checked this with VoiceOver yet.
               </Note>
             }
           >
@@ -162,10 +162,12 @@ export function SectionPage({
             title="A notice in Swedish on an English page"
             why={
               <>
-                Text in another language than the page needs its own language, so a screen reader
-                uses the right voice. Wrap it in a nested <code>KvirnProvider</code> and spread{' '}
-                <code>useLocale().localeProps</code> on the section. The section is also a named
-                region, so a screen reader user can jump to it. “Snöröjning” means snow clearing.
+                Text in a different language from the page needs its own language setting, so a
+                screen reader uses the right voice. Wrap it in a nested <code>KvirnProvider</code>{' '}
+                and spread <code>useLocale().localeProps</code> on the section. The section is also
+                a named region, so a screen reader user can jump to it. In English, the notice says:
+                “Snow clearing. We plough streets and cycle paths when more than five centimetres of
+                snow has fallen.”
               </>
             }
             code={sources['other-language']}

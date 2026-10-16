@@ -97,8 +97,7 @@ export function StackPage({
             why={
               <>
                 Render the stack as a <code>ul</code> with <code>li</code> children and a screen
-                reader (software that reads the screen aloud) announces a list with its number of
-                items.
+                reader (software that reads the screen aloud) announces it as a list.
               </>
             }
             code={sources['list']}

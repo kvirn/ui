@@ -1,5 +1,6 @@
+// kv-lang-ok-file: the reference site is bilingual (sv and en), so this file holds its Swedish and English copy.
 // Strings of the reference municipality site (docs/design/municipality-reference-site.md §7):
-// Kvirnby kommun, a fictional municipality, in Swedish and English. The sv file is typed by the en
+// Kvirnby Municipality, a fictional municipality, in Swedish and English. The sv file is typed by the en
 // shape, so a missing key is a type error. Visible copy only: strings a shipped component owns
 // come from @kvirn-ui/i18n.
 
@@ -331,7 +332,7 @@ export const referenceDocsMessages = {
   meta: { title: 'Reference site', how: 'How it’s built' },
   index: {
     heading: 'Reference site',
-    lead: 'Kvirnby kommun is a fictional municipality site built only from @kvirn-ui/* and theme.css, the way an adopter builds theirs. Each page links to how it is built.',
+    lead: 'Kvirnby Municipality is a fictional municipality site built only from @kvirn-ui/* and theme.css, the way an adopter builds theirs. Each page links to how it is built.',
     notice:
       'No service on the reference site is real and nothing you enter is sent. It is an example, not a municipality’s site.',
     pagesHeading: 'Pages',

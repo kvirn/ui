@@ -324,7 +324,7 @@ const parts: ApiPart[] = [
       <>
         nothing: <code>createMemoryProvider(options)</code> returns a provider with no engine. It
         keeps the camera, draws nothing and sends nothing, so it suits tests and pages with no
-        picture. The examples on this page use it. These are its options.
+        picture. These are its options.
       </>
     ),
     props: memoryProviderRows,
@@ -390,12 +390,10 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
             <RecyclingMap />
           </ExampleFrame>
           <p>
-            The examples on this page start as a plain background and make no request to a map
-            server. Press “Load map pictures” and your browser asks OpenStreetMap’s tile servers for
-            the pictures, so your IP address reaches them. If you then choose the Satellite or
-            Terrain map type, your IP address and the area you view go to Esri or OpenTopoMap
-            instead. Move the map with the mouse, the arrow keys or the buttons, press a marker or a
-            name in the list, and watch the list follow the view.
+            The examples on this page start as a plain background and ask no map server for
+            anything. The “Map pictures on this page” box says where your IP address goes if you
+            press “Load map pictures”. Move the map with the mouse, the arrow keys or the buttons,
+            press a marker or a name in the list, and watch the list follow the view.
           </p>
         </>
       }
@@ -742,7 +740,8 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
                 ]}
               >
                 <p>
-                  The map’s texts are English in every language for now. Your map’s{' '}
+                  The map’s texts exist in all five languages. A native speaker has not reviewed the
+                  Swedish, Finnish and Norwegian ones yet (see Known issues). Your map’s{' '}
                   <code>label</code>, your layer names and your place data are yours, so write them
                   in the page’s language.
                 </p>

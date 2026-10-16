@@ -28,6 +28,7 @@ export const comboboxRootRows = propRows<Omit<ComboboxRootProps<unknown>, 'child
     type: '((item: TItem, query: string) => boolean) | false',
     default: 'Matches the query anywhere in the text',
     description:
+      // kv-lang-ok: the Swedish letters å, ä and ö are the example of locale-aware matching
       'Replaces the default filter, which uses the provider’s locale (å, ä and ö are not a and o in Swedish). false turns filtering off, for results your server has already filtered: pass isLoading while it works.',
   },
   isLoading: {

@@ -1,19 +1,19 @@
 // Plain strings, so the item is its own text and no `itemToString` is needed.
 export const streets: readonly string[] = [
-  'Almvägen',
-  'Björkvägen',
+  'Almgatan',
+  'Bokgatan',
   'Drottninggatan',
   'Fabriksgatan',
   'Hamngatan',
-  'Järnvägsgatan',
   'Kungsgatan',
   'Kyrkogatan',
+  'Norra Hamngatan',
+  'Nya Hamngatan',
   'Skolgatan',
-  'Storgatan',
+  'Stationsgatan',
   'Stora Torget',
-  'Västra Hamngatan',
-  'Älvgatan',
-  'Östra Hamngatan',
+  'Storgatan',
+  'Vasagatan',
 ]
 
 export interface Street {
@@ -24,10 +24,10 @@ export interface Street {
 export const streetsWithDistrict: readonly Street[] = [
   { name: 'Storgatan', district: 'Centrum' },
   { name: 'Kungsgatan', district: 'Norrmalm' },
-  { name: 'Järnvägsgatan', district: 'Station' },
+  { name: 'Stationsgatan', district: 'Station' },
 ]
 
-/** 5 000 addresses, "Alvikvägen 1" to "Österbovägen 250". */
+/** 5 000 addresses, "Alvikgatan 1" to "Zebogatan 250". */
 const stems = [
   'Alvik',
   'Backa',
@@ -36,21 +36,21 @@ const stems = [
   'Falla',
   'Hamra',
   'Idre',
-  'Järna',
-  'Kalvö',
+  'Jorby',
+  'Kalby',
   'Lunda',
   'Mora',
   'Nyby',
   'Orsa',
-  'Rösta',
+  'Rosby',
   'Sunne',
   'Tuna',
   'Vik',
-  'Åsa',
-  'Älvsby',
-  'Österbo',
+  'Wiby',
+  'Yngby',
+  'Zebo',
 ]
 
 export const addresses: readonly string[] = stems.flatMap((stem) =>
-  Array.from({ length: 250 }, (_, number) => `${stem}vägen ${number + 1}`),
+  Array.from({ length: 250 }, (_, number) => `${stem}gatan ${number + 1}`),
 )

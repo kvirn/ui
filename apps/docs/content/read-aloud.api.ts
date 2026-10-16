@@ -39,7 +39,8 @@ export const useReadAloudRows = propRows<UseReadAloudOptions>({
   messages: {
     type: "Partial<KvirnMessages['readAloud']>",
     default: '–',
-    description: 'Overrides the readAloud messages for this player, such as { play: "Lyssna" }.',
+    description:
+      'Overrides the readAloud messages for this player, such as { play: "Listen to the notice" }.',
   },
   onStatusChange: {
     type: "(status: 'idle' | 'playing' | 'paused' | 'unsupported') => void",

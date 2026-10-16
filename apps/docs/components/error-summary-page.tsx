@@ -119,8 +119,9 @@ export function ErrorSummaryPage({
             several fields, or a long one.
           </li>
           <li>
-            Show it at the top of the page, only while there are errors. Pass the submit count as{' '}
-            <code>focusKey</code>, so a second failed submit moves focus again.
+            Show it at the top of the main content, above the form, and only while there are errors.
+            Pass the submit count as <code>focusKey</code>, so a second failed submit moves focus
+            again.
           </li>
           <li>
             Write each link as the field’s own error, with what to do: “Enter your email address”,
@@ -243,10 +244,11 @@ export function ErrorSummaryPage({
           notes={{
             'what-it-does-for-you': (
               <Note kind="tip">
-                The summary has no live region on purpose: the focus move is the announcement, and
-                adding <code>role=&quot;alert&quot;</code> would read it twice. A screen reader
-                usually says only the name of a focused group, so whether it also reads the list is
-                not yet checked with a real screen reader.
+                The summary has no live region (a part of the page that a screen reader reads aloud
+                when it changes) on purpose: the focus move is the announcement, and adding{' '}
+                <code>role=&quot;alert&quot;</code> would read it twice. A screen reader usually
+                says only the name of a focused group, so whether it also reads the list is not yet
+                checked with a real screen reader.
               </Note>
             ),
             focus: (

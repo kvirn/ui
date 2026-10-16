@@ -35,14 +35,14 @@ export const useButtonGroupTexts = defineExampleTexts({
       },
       {
         id: 'noise',
-        text: 'Noise complaint, Skolvägen 7',
+        text: 'Noise complaint, Skolgatan 7',
         isMine: true,
         isOverdue: true,
         needsReply: false,
       },
       {
         id: 'homecare',
-        text: 'Home care application, Björkvägen 2',
+        text: 'Home care application, Bokgatan 2',
         isMine: false,
         isOverdue: false,
         needsReply: true,

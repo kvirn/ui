@@ -1,3 +1,4 @@
+// kv-lang-ok-file: this page is about locales, so its code samples show Swedish message text.
 import { localeCodes } from '@kvirn-ui/i18n'
 import {
   Heading,
@@ -30,10 +31,11 @@ const adjustCatalog = `import { defineMessages } from '@kvirn-ui/i18n'
 import { sv } from '@kvirn-ui/i18n/sv'
 
 const messages = defineMessages(sv, {
-  link: { newTabNotice: '(öppnas i nytt fönster)' },
+  link: { newTabNotice: '(öppnas i nytt fönster)' }, // Swedish for "(opens in a new window)"
 })`
 
 const nestedOverride = `<KvirnProvider locale="sv-SE" messages={messages}>
+  {/* Swedish for "(external service, new tab)" */}
   <KvirnProvider messages={{ link: { newTabNotice: '(extern tjänst, ny flik)' } }}>
     {/* only this section */}
   </KvirnProvider>
@@ -44,6 +46,7 @@ const ownI18n = `const messages = defineMessages(sv, {
 })`
 
 const withParameters = `resultCount: ({ count }, format) =>
+  // Swedish for "1 result" and "<count> results"
   format.plural(count, { one: '1 träff', other: \`\${format.number(count)} träffar\` })`
 
 const localeProps = `const { localeProps } = useLocale() // { lang: 'fi-FI', dir: 'ltr' }
@@ -73,7 +76,7 @@ const formatMethods = [
   },
   {
     method: 'format.list(items, options?)',
-    formats: 'Intl.ListFormat: "sv, fi och en", or { type: "disjunction" } for "or".',
+    formats: 'Intl.ListFormat: "sv, fi and en", or { type: "disjunction" } for "or".',
   },
   {
     method: 'format.plural(count, forms)',
@@ -98,8 +101,10 @@ export function LocalesPage({
           content: (
             <>
               <p>
-                All five are first-class, and English is built in as the fallback. Import the
-                catalog you need from its own path and only the catalogs you import are bundled.
+                English is built in and is the fallback. Import the catalog you need from its own
+                path, and only the catalogs you import are bundled. Some Swedish, Finnish and
+                Norwegian texts are drafts that a native speaker has not reviewed yet. A component
+                page lists this under Known issues when it applies to that component.
               </p>
               <TableScrollRegion aria-labelledby="languages">
                 <TableRoot className="kv-table--card kv-table--striped" aria-labelledby="languages">
@@ -156,7 +161,7 @@ export function LocalesPage({
               <ol>
                 <li>
                   The children of a text part, such as{' '}
-                  <code>{'<Link.NewTabNotice>(nytt fönster)</Link.NewTabNotice>'}</code>.
+                  <code>{'<Link.NewTabNotice>(new window)</Link.NewTabNotice>'}</code>.
                 </li>
                 <li>
                   The component&apos;s own <code>messages</code> prop (per instance).

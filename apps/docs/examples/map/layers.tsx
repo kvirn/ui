@@ -19,9 +19,10 @@ export function WasteMap() {
         >
           <Map.Skip />
           <Map.Viewport>
-            <Map.Markers />
             <Map.Layers />
+            <Map.Markers />
             <Map.Controls />
+            <Map.Attribution />
           </Map.Viewport>
           <Map.List headingLevel="h4" />
           <Map.Details />

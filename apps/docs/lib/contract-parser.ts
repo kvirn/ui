@@ -158,7 +158,11 @@ const slug = (value: string) =>
 
 function tableCells(line: string): string[] {
   const inner = line.trim().replace(/^\|/, '').replace(/\|$/, '')
-  return inner.split(/(?<!\\)\|/).map((cell) => cell.trim().replaceAll(String.raw`\|`, '|'))
+  return inner
+    .split(/(?<!\\)\|/)
+    .map((cell) => cell.trim())
+    .filter((cell) => !/^<!--.*-->$/.test(cell))
+    .map((cell) => cell.replaceAll(String.raw`\|`, '|'))
 }
 
 const isSeparatorRow = (cells: string[]) => cells.every((cell) => /^:?-+:?$/.test(cell))

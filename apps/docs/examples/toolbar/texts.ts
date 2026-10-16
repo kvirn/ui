@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale translations of the example text, shown when the docs language is changed.
 import { defineExampleTexts } from '../../components/local-example-texts.ts'
 
 export const useToolbarTexts = defineExampleTexts({

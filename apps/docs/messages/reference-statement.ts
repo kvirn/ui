@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the reference site is bilingual (sv and en), so this file holds its Swedish and English copy.
 // Strings of the reference site's accessibility statement (P17) and feedback form (P18, R5).
 // The sv object is typed by the en shape, so a missing key is a type error. Kvirnby is fictional.
 // The statement never states a conformance status: the fill-in box is the adopter's to write.

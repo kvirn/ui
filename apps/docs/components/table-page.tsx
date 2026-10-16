@@ -238,7 +238,7 @@ export function TablePage({
   return (
     <ComponentPage
       title="Table"
-      lead="A screen reader (software that reads the screen aloud) reads each cell together with its row and column headers. A table can also sort, select and expand rows, and show long lists, and it is still a table."
+      lead="A screen reader (software that reads the screen aloud) reads each cell together with its row and column headers. A table can also sort, select and expand rows and show long lists, and it stays a real table."
       status="alpha-candidate"
       pattern="APG Table"
       whenToUse={
@@ -252,8 +252,9 @@ export function TablePage({
             checkbox or button says which row it belongs to.
           </li>
           <li>
-            For long data, paginate or filter first. Virtualize last: rows that are not rendered
-            cannot be found with find in page, are not printed and are out of reach of browse mode.
+            For long data, split it into pages or add a filter first. Virtualize (draw only the rows
+            near the scroll position) last: rows that are not drawn cannot be found with find in
+            page, are not printed and are out of reach of a screen reader’s browse mode.
           </li>
           <li>
             Not for layout, or for a list of cards. A table that turns into blocks on a small screen
@@ -275,7 +276,8 @@ export function TablePage({
           <UseCase
             id="sortable"
             title="A table the user can sort"
-            why="Put the sort in the column header, so a user can order cases by name or amount. Sorting one column at a time is announced, and the order follows the language, so å, ä and ö come after z."
+            // kv-lang-ok: the letters å, ä and ö are the point of the Swedish sort order
+            why="Put the sort in the column header, so a user can order cases by name or amount. Sorting one column at a time is announced. The order follows the language you set. This example sorts in Swedish, so å, ä and ö come after z."
             code={sources['sortable']}
             propsUsed={[
               { ...optionsOf, prop: 'features' },
@@ -288,8 +290,9 @@ export function TablePage({
             ]}
             note={
               <Note kind="tip">
-                The default TanStack sort compares code points and puts å, ä and ö in the wrong
-                place. Use <code>createLocaleSortFn(locale)</code>, as here.
+                {/* kv-lang-ok: the letters å, ä and ö are the point of the Swedish sort order */}
+                The default TanStack sort compares character codes. In Swedish it puts å, ä and ö in
+                the wrong place. Use <code>createLocaleSortFn(locale)</code>, as here.
               </Note>
             }
           >
@@ -298,6 +301,7 @@ export function TablePage({
           <UseCase
             id="selectable"
             title="Rows the user can select"
+            // kv-lang-ok: the row names Åsa Öberg and Anna Svensson are the example's sample data
             why="Put a checkbox in the first cell for bulk actions. Each checkbox is named by its row, so “Select Anna Svensson” is different from “Select Åsa Öberg”, and the header checkbox selects them all."
             code={sources['selectable']}
             propsUsed={[
@@ -317,7 +321,7 @@ export function TablePage({
           <UseCase
             id="expandable"
             title="Details under a row"
-            why="Show the rest of a case under its row without leaving the table. The button says “Details” and names its row, and the detail is the next row, spanning every column. The expand column needs a header with the same text, visually hidden."
+            why="Show the rest of a case under its row without leaving the table. The button says “Details” and names its row, and the detail is the next row, spanning every column."
             code={sources['expandable']}
             propsUsed={[
               { part: 'Table.ExpandButton', prop: 'row' },
@@ -344,14 +348,14 @@ export function TablePage({
           </UseCase>
           <UseCase
             id="long-data"
-            title="Thousands of rows"
+            title="A table with 2,000 rows"
             why="When the user needs the whole list and cannot page through it, render only the rows near the scroll position. The table still says how big it is, and the row that has focus stays in the page."
             code={sources['large']}
             propsUsed={[{ ...optionsOf, prop: 'virtualize' }]}
             note={
               <Note kind="recipe">
-                Prefer one table per page of data, with a status such as “Rows 21–40 of 312”, or a
-                filter. If you virtualize, give the scroll region a height and a way to search.
+                Prefer pages with a status such as “Rows 21–40 of 312”, or a filter. If you
+                virtualize, give the scroll region a height and a way to search.
               </Note>
             }
           >
@@ -365,18 +369,17 @@ export function TablePage({
           notes={{
             'what-you-need-to-do': (
               <Note kind="reminder">
-                Give every table a caption that says what the data is. A screen reader lists the
-                tables on a page by name, and without a name they are hard to tell apart (1.3.1 Info
-                and Relationships). A development warning says so.
+                Give every table a caption that says what the data is. Without a name, a screen
+                reader user can’t tell the tables on a page apart (1.3.1 Info and Relationships). A
+                development warning says so.
               </Note>
             ),
             'visual-and-modes': (
               <Note kind="reminder">
-                While <code>isLoading</code> is on, the table head shows a bar that keeps moving. An
-                indicator that can keep moving for more than 5 seconds alongside other content needs
-                a visible control on the page that stops or hides it (2.2.2 Pause, Stop, Hide). An
-                indicator that is the only content during a wait where nothing else can be done is
-                exempt. The reduced motion setting alone is not that control. See{' '}
+                While <code>isLoading</code> is on, the table head shows a bar that keeps moving. If
+                it can move for more than 5 seconds next to other content, the page needs a visible
+                control that stops or hides it (2.2.2 Pause, Stop, Hide). The reduced motion setting
+                alone is not that control. See{' '}
                 <Link href="/foundation/theming#moving-indicators">
                   Moving indicators and WCAG 2.2.2
                 </Link>

@@ -59,8 +59,8 @@ export function ButtonGroupPage({
             footer of a card.
           </li>
           <li>
-            Put the main button first, as the Card footer and dialogs do, and keep one main button
-            per page. Keyboard order then follows the order people see.
+            Put the main button first and keep one main button on the screen. People using a
+            keyboard then reach the main next step first.
           </li>
           <li>
             Name the group when the buttons need a context their own labels don’t give. In a{' '}
@@ -73,8 +73,12 @@ export function ButtonGroupPage({
             <Link href="/components/toggle">Toggle</Link>.
           </li>
           <li>
-            Not for one Tab stop with the arrow keys: use a{' '}
-            <Link href="/components/toolbar">Toolbar</Link>. Not for a list of links to pages: use{' '}
+            Each button is its own Tab stop (a place where the Tab key stops). If the row should be
+            one Tab stop, with the arrow keys moving between the buttons, use a{' '}
+            <Link href="/components/toolbar">Toolbar</Link>.
+          </li>
+          <li>
+            Not for a list of links to pages: use{' '}
             <Link href="/components/navigation">Navigation</Link>.
           </li>
         </ul>
@@ -91,12 +95,6 @@ export function ButtonGroupPage({
             title="The actions in a card footer"
             why="The buttons’ own labels say enough, so this group needs no name. Without a name it is a plain div, and a screen reader hears nothing extra."
             code={sources['card-footer']}
-            note={
-              <Note kind="tip">
-                Each button is its own Tab stop. If the buttons must be one Tab stop that people
-                move through with the arrow keys, use a Toolbar instead.
-              </Note>
-            }
           >
             <CardFooter />
           </UseCase>
@@ -106,25 +104,25 @@ export function ButtonGroupPage({
             why={
               <>
                 When the buttons need the context of the card, point <code>aria-labelledby</code> at
-                its visible heading. A screen reader then says the heading and “group” as focus
-                enters the group.
+                the <code>id</code> of its visible heading. A screen reader then says the heading
+                and “group” as focus enters the group.
               </>
             }
             code={sources['named-by-heading']}
-            note={
-              <Note kind="reminder">
-                Name every group in a Toolbar. Without a name, a screen reader user hears no group
-                as focus moves between them (1.3.1 Info and Relationships, 4.1.2 Name, Role, Value).
-                In development, a warning tells you when it is missing.
-              </Note>
-            }
           >
             <NamedByHeading />
           </UseCase>
           <UseCase
             id="attached"
             title="Two related actions joined in a strip"
-            why="A staff member edits a decision letter and needs undo and redo side by side. Add the class kv-button-group--attached and the buttons touch and share borders. Each button is still its own Tab stop. The name tells a screen reader user what the pair is for."
+            why={
+              <>
+                A staff member edits a decision letter and needs undo and redo side by side. Add the
+                class <code>kv-button-group--attached</code> and the buttons touch and share
+                borders. Each button is still its own Tab stop. The name tells a screen reader user
+                what the pair is for.
+              </>
+            }
             code={sources['attached']}
             propsUsed={[{ part: 'ButtonGroup', prop: 'className' }]}
           >
@@ -138,7 +136,7 @@ export function ButtonGroupPage({
                 A caseworker narrows a list with filters that can be on together. The group holds no
                 state: each <Link href="/components/toggle">Toggle</Link> is on or off for itself,
                 and a screen reader says which are pressed. The name says what the strip does, and
-                the count under it says what changed.
+                the count under it tells everyone how many cases match.
               </>
             }
             code={sources['filter-strip']}
@@ -159,9 +157,10 @@ export function ButtonGroupPage({
             }
             code={sources['in-a-toolbar']}
             note={
-              <Note kind="tip">
-                A toolbar with fewer than three controls warns in development: with two buttons, use
-                a plain ButtonGroup so each stays easy to find.
+              <Note kind="reminder">
+                Name every group in a Toolbar. Without a name, a screen reader user hears no group
+                as focus moves between them (1.3.1 Info and Relationships, 4.1.2 Name, Role, Value).
+                In development, a warning tells you when a name is missing.
               </Note>
             }
           >

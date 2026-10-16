@@ -20,7 +20,7 @@ const messagesRow = {
   type: "Partial<KvirnMessages['errorSummary']>",
   default: '–',
   description:
-    'Per-instance override of the title and of the page title prefix, such as { title: "Rätta felen" }.',
+    'Per-instance override of the title and of the page title prefix, such as { title: "Fix the errors" }.',
 }
 
 export const rootRows = propRows<
@@ -45,7 +45,7 @@ export const rootRows = propRows<
     type: 'boolean',
     default: 'false',
     description:
-      'Puts the text errorSummary.titlePrefix (“Error:”) before document.title while the summary is shown, and restores the title when it is removed. Leave it off if your router owns the title.',
+      'Puts the text errorSummary.titlePrefix (“Error:”) before the page title (document.title) while the summary is shown, and restores the title when it is removed. Leave it off if your router owns the title.',
   },
   messages: messagesRow,
   ref: refRow,

@@ -46,7 +46,7 @@ export function SkipLinkPage({
   return (
     <ComponentPage
       title="SkipLink"
-      lead="The default theme keeps it out of sight until it has focus, so it doesn’t change how the page looks for people who use a mouse."
+      lead="A link at the top of the page that takes people using a keyboard straight to the main content. The default theme keeps it out of sight until it has focus, so the page looks the same to people who use a mouse."
       status="alpha-candidate"
       whenToUse={
         <ul>
@@ -151,8 +151,8 @@ export function SkipLinkPage({
             ]}
             note={
               <Note kind="tip">
-                The link doesn’t stop the browser’s own jump to the target. So the jump still works
-                without JavaScript.
+                The link does not cancel the browser’s own jump to the target, so the jump also
+                works without JavaScript.
               </Note>
             }
           >

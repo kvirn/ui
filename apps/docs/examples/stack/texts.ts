@@ -17,7 +17,7 @@ export const useStackTexts = defineExampleTexts<StackTexts>({
     },
     gaps: {
       label: 'Gap',
-      related: ['Visiting address', 'Kvirnvägen 1', 'Kvirnby'],
+      related: ['Visiting address', 'Kvirn Street 1', 'Kvirnby'],
     },
     list: {
       label: 'Services',

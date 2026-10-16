@@ -20,6 +20,7 @@ export function PreschoolMap() {
           <Map.Viewport>
             <Map.Markers />
             <Map.Controls />
+            <Map.Attribution />
           </Map.Viewport>
           <Map.List headingLevel="h4">
             {(place) => <span className="kv-map-list-aside">{texts.hours[place.id]}</span>}

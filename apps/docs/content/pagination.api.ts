@@ -190,7 +190,7 @@ export const usePaginationHook: ApiHook = {
     messages: {
       type: "Partial<KvirnMessages['pagination']>",
       default: '–',
-      description: 'Per-instance message overrides: { next: "Nästa" }.',
+      description: 'Per-instance message overrides: { next: "Next results" }.',
     },
   }),
   result: propRows<UsePaginationResult>({

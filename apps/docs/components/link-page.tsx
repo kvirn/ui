@@ -112,9 +112,9 @@ export function LinkPage({
             why={
               <>
                 Opening a new tab takes people somewhere they may not expect, so say so in the
-                link’s name. <code>Link.NewTabNotice</code> adds that text inside the link,
-                translated. Link also adds <code>noopener noreferrer</code> to <code>rel</code> for
-                you.
+                link’s name. Put <code>Link.NewTabNotice</code> inside the link: it adds that text,
+                translated to the page’s language. Link also adds <code>noopener noreferrer</code>{' '}
+                to <code>rel</code> for you.
               </>
             }
             code={sources['new-tab']}
@@ -178,16 +178,17 @@ export function LinkPage({
                 People decide before they tap, and some pay for their data by the megabyte. Put the
                 file type and size in the link text itself, in brackets. Don’t leave them to a{' '}
                 <code>title</code>, an icon alone or text beside the link. Offer a web page version
-                where you can.
+                where you can. <code>as=&quot;a&quot;</code> makes this a plain{' '}
+                <code>&lt;a&gt;</code>, so a router never handles the file.
               </>
             }
             code={sources['file']}
             propsUsed={[{ part: 'Link.Root', prop: 'as' }]}
             note={
               <Note kind="tip">
-                Write the size with <code>useFormat</code>, so the number follows the page’s
-                language. Swedish uses a decimal comma, for example “2,5 MB”. Both come from the
-                example’s texts, which exist in all five languages.
+                Write the size with <code>useFormat</code>, so the number and unit follow the page’s
+                language: “2.5 MB” in English, “2,5 MB” in Swedish, “2,5 Mt” in Finnish. The
+                example’s own text exists in all five languages.
               </Note>
             }
           >
@@ -217,9 +218,10 @@ export function LinkPage({
               <Note kind="reminder">
                 A link that says only “click here” or “read more” fails 2.4.4 Link Purpose (In
                 Context) unless the paragraph, list item or table cell around it says where it goes.
-                If you show or override the new-tab notice, keep its visible words in the link’s
-                name: don’t hide it with <code>display: none</code> or <code>aria-hidden</code>{' '}
-                (2.5.3 Label in Name).
+                Keep the new-tab notice in the link’s name. To hide it from sight, use a
+                visually-hidden style (it hides text from sight but not from screen readers), not{' '}
+                <code>display: none</code> or <code>aria-hidden</code>. If you change its words,
+                keep them the same as any visible text (2.5.3 Label in Name).
               </Note>
             ),
           }}

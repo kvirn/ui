@@ -535,6 +535,7 @@ export const messages = {
       languages: {
         sv: 'Svenska',
         fi: 'Suomi',
+        // kv-lang-ok: a language is named in its own language
         nb: 'Norsk bokmål',
         nn: 'Norsk nynorsk',
         en: 'English',

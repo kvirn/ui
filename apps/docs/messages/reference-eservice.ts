@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the reference site is bilingual (sv and en), so this file holds its Swedish and English copy.
 // Strings of the reference site's e-service pages: the parking permit's start page (P4) and sign-in (P5).
 // The sv object is typed by the en shape, so a missing key is a type error. Kvirnby is fictional.
 import type { ReferenceLocale } from './reference.ts'

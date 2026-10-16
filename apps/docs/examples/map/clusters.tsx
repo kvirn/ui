@@ -20,6 +20,7 @@ export function PollingStationMap() {
           <Map.Viewport>
             <Map.Markers />
             <Map.Controls />
+            <Map.Attribution />
           </Map.Viewport>
           <Map.List headingLevel="h4" />
           <Map.Details />

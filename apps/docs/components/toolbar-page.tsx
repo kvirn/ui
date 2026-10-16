@@ -51,9 +51,10 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;div&gt;</code> with the role <code>group</code> once it has a name. It is a{' '}
-        <Link href="/components/button-group">ButtonGroup</Link>, takes every attribute of a{' '}
-        <code>&lt;div&gt;</code> except <code>role</code>, and passes <code>ref</code> to it. In a
-        toolbar it needs <code>aria-label</code> or <code>aria-labelledby</code>.
+        <Link href="/components/button-group">ButtonGroup</Link> that is always attached: its
+        buttons join into one strip. It takes every attribute of a <code>&lt;div&gt;</code> except{' '}
+        <code>role</code>, and passes <code>ref</code> to it. In a toolbar it needs{' '}
+        <code>aria-label</code> or <code>aria-labelledby</code>.
       </>
     ),
     attributes: toolbarGroupAttributes,
@@ -114,8 +115,8 @@ export function ToolbarPage({
         <ul>
           <li>
             Use a toolbar for three or more related controls, such as the formatting buttons above a
-            text editor. Someone using the keyboard presses Tab once to get in, then the arrow keys
-            to move between the controls.
+            text editor. It is one Tab stop (a place where the Tab key stops): someone using a
+            keyboard presses Tab once to get in, then the arrow keys to move between the controls.
           </li>
           <li>
             Name the toolbar and each group, so a screen reader (software that reads the screen
@@ -140,12 +141,12 @@ export function ToolbarPage({
         <>
           <UseCase
             id="toggles"
-            title="Toggles that change what the user sees"
+            title="Toggles that change a text’s style"
             why={
               <>
-                A style such as bold is on or off. Use a <code>Toolbar.Toggle</code>: the toolbar
-                says which are on (<code>aria-pressed</code>) and the name never changes. Point the
-                toolbar at the element it changes with <code>aria-controls</code>.
+                A style such as bold is on or off. Use a <code>Toolbar.Toggle</code>: a screen
+                reader says which are on (<code>aria-pressed</code>) and the name never changes.
+                Point the toolbar at the element it changes with <code>aria-controls</code>.
               </>
             }
             code={sources['toggles']}
@@ -159,7 +160,14 @@ export function ToolbarPage({
           <UseCase
             id="unavailable-command"
             title="A command that isn’t available now"
-            why="Redo has nothing to redo yet. The button stays in the arrow-key order and a screen reader says it is unavailable, so users can find it. Pressing it does nothing. Say why in text next to the toolbar."
+            why={
+              <>
+                Redo has nothing to redo yet. The button stays in the arrow-key order and a screen
+                reader says it is unavailable, so users can find it. Pressing it does nothing. Say
+                why in text next to the toolbar, and link it to the button with{' '}
+                <code>aria-describedby</code>, as the example does.
+              </>
+            }
             code={sources['unavailable']}
             propsUsed={[{ part: 'Toolbar.Button', prop: 'disabled' }]}
             note={

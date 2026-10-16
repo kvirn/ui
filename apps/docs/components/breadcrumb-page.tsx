@@ -161,7 +161,7 @@ export function BreadcrumbPage({
           <UseCase
             id="own-label"
             title="Your own name for the trail"
-            why="The trail is named “You are here” by default, in five languages. Give it another name with label when your service uses other words, or when the page has another navigation with that name. A screen reader lists landmarks by name, so two with the same name can’t be told apart."
+            why="In English the trail is named “You are here” by default. Give it another name with label when your service uses other words, or when the page has another navigation with that name. A screen reader lists landmarks by name, so two with the same name can’t be told apart."
             code={sources['own-label']}
             propsUsed={[{ part: 'Breadcrumb.Root', prop: 'label' }]}
             note={
@@ -204,17 +204,19 @@ export function BreadcrumbPage({
             title="A trail in Swedish"
             why={
               <>
-                The trail takes its name from the provider’s language: “Du är här” in Swedish, “Olet
-                tässä” in Finnish. Give the provider the locale and its messages, and write no{' '}
-                <code>label</code>. Here a nested provider keeps the rest of this page in English. A
-                site that is in Swedish throughout sets the locale once, on the provider at the top.
+                The trail takes its name from the provider’s language: a Swedish provider gives it a
+                Swedish name, and a Finnish provider a Finnish one. Give the provider the locale and
+                its messages, and write no <code>label</code>. Here a nested provider keeps the rest
+                of this page in English. The names of the levels are your own text, so this example
+                writes them in Swedish too. A site that is in Swedish throughout sets the locale
+                once, on the provider at the top.
               </>
             }
             code={sources['other-language']}
             note={
               <Note kind="tip">
-                The name exists in all five languages. The Finnish, Norwegian Bokmål and Nynorsk
-                names are drafts: ask a native speaker to check them before you publish.
+                The name exists in all five languages. The Finnish version and both Norwegian
+                versions are drafts: ask a native speaker to check them before you publish.
               </Note>
             }
           >

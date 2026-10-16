@@ -143,7 +143,7 @@ export function PaginationPage({
   return (
     <ComponentPage
       title="Pagination"
-      lead="Every page is a link to its own address, so Back, sharing and opening in a new tab work. The current page has a filled shape and bold text as well as its colour."
+      lead="Every page is a link to its own address, so Back, sharing and opening in a new tab work. The current page has a filled shape and heavier text as well as its colour."
       status="alpha-candidate"
       whenToUse={
         <ul>
@@ -157,8 +157,8 @@ export function PaginationPage({
           </li>
           <li>
             You decide which numbers to show: keep the first and last page and those next to the
-            current one, with an ellipsis for each gap. Leave out Previous on the first page and
-            Next on the last, never disable them.
+            current one, with an ellipsis (“…”) for each gap. Leave out Previous on the first page
+            and Next on the last, never disable them.
           </li>
           <li>
             On a screen narrower than 40rem the theme shows only Previous, the current page, the
@@ -214,7 +214,7 @@ export function PaginationPage({
           <UseCase
             id="search-results"
             title="Search results that keep the search"
-            why="The library draws the links you give it and doesn’t count pages, so work the numbers out from the current page and the total: the first and last page, the one before and after the current page, and an ellipsis where two or more pages are left out. Build every address from the search the visitor made, so Back, a copied link and a new tab open the same results."
+            why="The library draws the links you give it and doesn’t count pages, so calculate the numbers from the current page and the total: the first and last page, the one before and after the current page, and an ellipsis where two or more pages are left out. Build every address from the search the visitor made, so Back, a copied link and a new tab open the same results."
             code={sources['search-results']}
             propsUsed={[
               { part: 'Pagination.Link', prop: 'page' },
@@ -249,7 +249,7 @@ export function PaginationPage({
           <UseCase
             id="own-words"
             title="Your own words for the controls"
-            why="Previous, Next and the status come from the library’s messages in five languages. To use other words, pass children, or override the message with messages on the part or on the provider. Say where the link leads, such as “Previous results”, and not just “Back” (2.4.4 Link Purpose, A)."
+            why="Previous, Next and the status come from the library’s messages in five languages. To use other words, pass children, or override the message with messages on the part or on the provider. Say where the link leads, such as “Previous results”, and not just “Back” (2.4.4 Link Purpose (In Context), A)."
             code={sources['own-words']}
             propsUsed={[
               { part: 'Pagination.Previous', prop: 'children' },

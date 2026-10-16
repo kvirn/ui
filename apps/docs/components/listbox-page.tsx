@@ -190,8 +190,8 @@ const parts: ApiPart[] = [
     name: 'Listbox.GroupLabel',
     renders: (
       <>
-        {element('div')} with the group’s visible name. A screen reader reads it on entering the
-        group.
+        {element('div')} with the group’s visible name. The group’s <code>aria-labelledby</code>{' '}
+        points at it.
       </>
     ),
     attributes: groupLabelAttributes,
@@ -239,9 +239,10 @@ export function ListboxPage({
             list.
           </li>
           <li>
-            On a touch device the default, <code>native=&quot;auto&quot;</code>, shows the browser’s
-            own select. The examples set <code>native=&quot;never&quot;</code> so you see the popup
-            everywhere. See <Link href="#native-select">The browser’s own select</Link>.
+            For one choice on a touch device, the default <code>native=&quot;auto&quot;</code> shows
+            the browser’s own select. The examples set <code>native=&quot;never&quot;</code> so you
+            see the popup everywhere. See{' '}
+            <Link href="#native-select">The browser’s own select</Link>.
           </li>
           <li>
             Not for actions: use a <Link href="/components/button">Button</Link> for something that
@@ -259,7 +260,7 @@ export function ListboxPage({
           <UseCase
             id="groups"
             title="Options in groups"
-            why="Use groups when the options fall into a few named sets that help people find one, such as regions. Each group is named by its label, so a screen reader says which group an option is in."
+            why="Use groups when the options fall into a few named sets that help people find one, such as regions. Each group has a visible label, and the same label names the group for a screen reader."
             code={sources['groups']}
             propsUsed={[{ part: 'Listbox.Root', prop: 'groups' }]}
           >
@@ -359,12 +360,13 @@ export function ListboxPage({
             title="Choices in another language"
             why={
               <>
-                Name each language in its own language, so people find theirs: Svenska, Suomi,
-                English. A screen reader reads text in the voice of the page’s language unless the
-                text says otherwise (3.1.2 Language of Parts), so give <code>itemToLang</code> the
-                code of each item. It sets <code>lang</code> on each native option, each popup
-                option and the chosen text in the trigger. Combobox and Autocomplete don’t support
-                it yet: their value is an input, which has one <code>lang</code> for the whole text.
+                Name each language in its own language, so people find theirs: Svenska (Swedish),
+                Suomi (Finnish), English. A screen reader reads text in the voice of the page’s
+                language unless the text says otherwise (3.1.2 Language of Parts), so give{' '}
+                <code>itemToLang</code> the code of each item. It sets <code>lang</code> on each
+                native option, each popup option and the chosen text in the trigger. Combobox and
+                Autocomplete don’t support it yet: their value is an input, which has one{' '}
+                <code>lang</code> for the whole text.
               </>
             }
             code={sources['language-switcher']}
@@ -375,8 +377,8 @@ export function ListboxPage({
             note={
               <Note kind="tip">
                 This chooses a setting in a form. To switch the language of the page itself, use
-                links: a select that changes the page when you choose breaks 3.2.2 On Input. In a
-                form for residents, three to five options usually work better as{' '}
+                links: a select that changes the page as soon as you choose can fail 3.2.2 On Input.
+                In a form for residents, a few options usually work better as{' '}
                 <Link href="/components/radio-group">radio buttons</Link>.
               </Note>
             }
@@ -386,7 +388,7 @@ export function ListboxPage({
           <UseCase
             id="long-list"
             title="A list of thousands"
-            why="Filter or split a long list first. If it stays long, virtualize renders only the options in view plus the active and the chosen one, and each option still says how many there are and where it is. Unrendered options can’t be found with find in page or printed."
+            why="Filter or split a long list first. If it stays long, virtualize renders only the options in view plus the active and the chosen one. Each option still tells a screen reader how many options there are and its place in the list. Unrendered options can’t be found with find in page or printed."
             code={sources['long-list']}
             propsUsed={[{ part: 'Listbox.Root', prop: 'virtualize' }]}
           >
@@ -405,6 +407,13 @@ export function ListboxPage({
                 Give every Listbox a visible label, in a Field. A placeholder is not a label: it
                 disappears once something is chosen, and without a name a screen reader says only
                 “combobox” (3.3.2 Labels or Instructions, 4.1.2 Name, Role, Value).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                Anything on this list that affects your service belongs in your accessibility
+                statement, with the workaround. Public-sector sites in the EU must publish one (the
+                Web Accessibility Directive).
               </Note>
             ),
           }}

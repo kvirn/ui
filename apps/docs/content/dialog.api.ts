@@ -128,7 +128,8 @@ export const dialogPopupAttributes: readonly AttributeRow[] = [
   {
     name: 'role',
     values: '"dialog"',
-    meaning: 'A modal dialog, shown with showModal(). The page behind it is inert.',
+    meaning:
+      'A modal dialog, shown with showModal(). The page behind it is inert: the keyboard, the pointer and screen readers can’t reach it.',
   },
   {
     name: 'aria-modal',

@@ -1,7 +1,7 @@
 'use client'
 import { ReadAloud } from '@kvirn-ui/react'
 import { useRef } from 'react'
-import { swedishArticle } from './texts.ts'
+import { swedishArticle } from './swedish-article.ts'
 
 export function SwedishContent() {
   const articleRef = useRef<HTMLElement>(null)

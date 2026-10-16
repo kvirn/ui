@@ -15,7 +15,7 @@ export const useSectionTexts = defineExampleTexts({
       heading: 'Waste collection',
       text: 'Food waste and residual waste are collected every other week.',
       cardHeading: 'Your next collection',
-      cardText: 'Tuesday at Storgatan 12.',
+      cardText: 'Tuesday at Main Street 12.',
     },
     guide: {
       eligibility: {
@@ -43,6 +43,8 @@ export const useSectionTexts = defineExampleTexts({
 // Swedish text for the notice in another language. It is not in the page's own texts: the
 // provider that sets the language decides which words are shown.
 export const swedishNotice = {
+  // kv-lang-ok: the notice is in Swedish on purpose, to show a page part in another language (3.1.2)
   heading: 'Snöröjning',
+  // kv-lang-ok: the notice is in Swedish on purpose, to show a page part in another language (3.1.2)
   text: 'Vi plogar gator och cykelvägar när det har fallit mer än fem centimeter snö.',
 }

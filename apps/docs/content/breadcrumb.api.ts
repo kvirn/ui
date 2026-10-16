@@ -103,7 +103,7 @@ export const useBreadcrumbHook: ApiHook = {
     messages: {
       type: "Partial<KvirnMessages['breadcrumb']>",
       default: '–',
-      description: 'Per-instance message overrides: { label: "Du är här" }.',
+      description: 'Per-instance message overrides: { label: "Where you are" }.',
     },
   }),
   result: propRows<UseBreadcrumbResult>({
@@ -131,7 +131,7 @@ export const useBreadcrumbHook: ApiHook = {
       type: 'BreadcrumbSeparatorPartProps',
       default: '–',
       description:
-        'Spread on a <span> you render in each item but the first for your own separator: the class and aria-hidden="true".',
+        'Spread on a <span> you render inside an item for your own separator: the class and aria-hidden="true". The default theme hides the separator in the first item.',
     },
     label: {
       type: 'string',

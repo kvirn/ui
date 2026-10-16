@@ -13,12 +13,13 @@ export const skipLinkRows = propRows<SkipLinkDocumentedProps>({
   children: {
     type: 'ReactNode',
     default: 'the message skipLink.label',
-    description: 'Your own label. It replaces the message, so write it in the provider’s language.',
+    description:
+      'Your own label. It replaces the message, so you set its language: mark it if it differs from the page.',
   },
   messages: {
     type: "Partial<KvirnMessages['skipLink']>",
     default: '–',
-    description: 'Overrides the message for this link: { label: "Hoppa till innehållet" }.',
+    description: 'Overrides the message for this link: { label: "Jump to the content" }.',
   },
   as: {
     type: 'ElementType',

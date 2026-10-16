@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the reference site is bilingual (sv and en), so this file holds its Swedish and English copy.
 // Strings and the static search index of the reference site's search results page (P15, R9).
 // The sv object is typed by the en shape, so a missing key is a type error. Kvirnby is fictional.
 // The index is searched in the browser: nothing typed is sent anywhere (rule 7). Filter words, counts

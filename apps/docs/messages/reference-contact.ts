@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the reference site is bilingual (sv and en), so this file holds its Swedish and English copy.
 // Strings of the reference site's contact page (P16) and the Hillside preschool unit page (R4).
 // The sv object is typed by the en shape, so a missing key is a type error. Kvirnby is fictional.
 import type { ReferenceLocale } from './reference.ts'

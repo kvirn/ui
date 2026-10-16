@@ -1,3 +1,4 @@
+// kv-lang-ok-file: Swedish example text, used when the example runs under a Swedish provider (the 'A trail in Swedish' use case).
 import { defineExampleTexts } from '../../components/local-example-texts.ts'
 
 // Every example is its own landmark on the page, and the site's own trail above the title is

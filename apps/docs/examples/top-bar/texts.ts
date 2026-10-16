@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale translations of the example text, shown when the docs language is changed.
 import { defineExampleTexts } from '../../components/local-example-texts.ts'
 
 // Every example is its own page region, so each Navigation has its own name: two navigations with

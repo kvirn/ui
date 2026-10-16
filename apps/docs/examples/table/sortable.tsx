@@ -14,7 +14,7 @@ import { cases } from './cases.ts'
 import type { CaseRecord } from './cases.ts'
 import { useTableTexts } from './texts.ts'
 
-// The names are Swedish, so å, ä and ö sort after z.
+// The names are Swedish, so the extra Swedish letters sort after z.
 const features = tableFeatures({
   rowSortingFeature,
   sortedRowModel: createSortedRowModel(),

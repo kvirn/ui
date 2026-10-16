@@ -18,6 +18,7 @@ export const cases: CaseRecord[] = [
   },
   {
     id: 'c2',
+    // kv-lang-ok: Swedish names, so the sort demo shows where å, ä and ö come
     name: 'Åsa Öberg',
     caseNumber: 'BN 2026-0157',
     amount: 1850,
@@ -42,6 +43,7 @@ export const cases: CaseRecord[] = [
   },
   {
     id: 'c5',
+    // kv-lang-ok: Swedish names, so the sort demo shows where å, ä and ö come
     name: 'Ärlig Holm',
     caseNumber: 'BN 2026-0188',
     amount: 7300,

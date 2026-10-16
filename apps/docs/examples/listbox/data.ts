@@ -4,6 +4,7 @@ export interface Municipality {
   county: string
 }
 
+// kv-lang-ok-file: Swedish municipality and county names are proper nouns and keep å, ä and ö. Language names are shown in their own language.
 // Proper nouns, so the same in every language. The items are module constants: a Listbox
 // compares items by identity, so a list built in render must be memoized.
 export const municipalities: readonly Municipality[] = [
@@ -54,22 +55,22 @@ const stems = [
   'Falla',
   'Hamra',
   'Idre',
-  'Järna',
-  'Kalvö',
+  'Jorby',
+  'Kalby',
   'Lunda',
   'Mora',
   'Nyby',
   'Orsa',
-  'Rösta',
+  'Rosby',
   'Sunne',
   'Tuna',
   'Vik',
-  'Åsa',
-  'Älvsby',
-  'Österbo',
+  'Wiby',
+  'Yngby',
+  'Zebo',
 ]
 
-/** 5 000 places, "Alvik 1" to "Österbo 250": long enough that rendering all of them would be slow. */
+/** 5 000 places, "Alvik 1" to "Zebo 250": long enough that rendering all of them would be slow. */
 export const places: readonly Place[] = stems.flatMap((stem, stemIndex) =>
   Array.from({ length: 250 }, (_, number) => ({
     code: `place-${stemIndex * 250 + number + 1}`,

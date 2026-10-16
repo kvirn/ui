@@ -53,6 +53,7 @@ export function OwnListMap() {
           <Map.Viewport>
             <Map.Markers />
             <Map.Controls />
+            <Map.Attribution />
           </Map.Viewport>
           <StationList />
           <Map.Details />

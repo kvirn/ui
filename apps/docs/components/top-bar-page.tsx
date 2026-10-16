@@ -46,7 +46,6 @@ export function TopBarPage({
   return (
     <ComponentPage
       title="TopBar"
-      lead="A slim bar with a line of text at the start and a navigation at the end."
       status="alpha-candidate"
       whenToUse={
         <ul>
@@ -108,7 +107,7 @@ export function TopBarPage({
           <UseCase
             id="filled"
             title="A bar with a fill"
-            why="Set variant to primary, secondary or accent to fill the bar across the full width. Its text, links, focus ring and the current tool take the fill’s on-colour, and the theme keeps the contrast at the required level, also in the contrast themes. A link in a sentence stays underlined."
+            why="Set variant to primary, secondary or accent to fill the bar across the full width. Its text, links, focus ring and the current tool take the fill’s on-colour. The theme’s contrast check covers each fill: 4.5:1 for text, and 7:1 in the contrast themes. A link in a sentence stays underlined."
             code={sources['filled']}
             propsUsed={[{ part: 'TopBar', prop: 'variant' }]}
             note={

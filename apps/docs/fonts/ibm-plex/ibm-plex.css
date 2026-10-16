@@ -7,7 +7,7 @@
  * or re-subset file couldn't keep the name.
  *
  * Two subsets per weight, one family name, split by unicode-range:
- * Latin1 has å ä ö æ ø, and Pi arrows, check marks and spaces. Weights: Sans 400, 500 and 600, Serif 500 and 600. No italics: the browser
+ * Latin1 has the Nordic letters, and Pi arrows, check marks and spaces. Weights: Sans 400, 500 and 600, Serif 500 and 600. No italics: the browser
  * slants the roman, as it did with Inter. Shared by the docs site and Storybook.
  */
 @font-face {

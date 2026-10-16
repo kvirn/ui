@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the reference site is bilingual (sv and en), so this file holds its Swedish and English copy.
 // Strings of the reference start page (P1) and topic pages (P2). Menu labels and routes come from
 // `referenceMessages[locale].chrome.topics`, so only the copy the menu does not hold is here.
 

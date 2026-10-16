@@ -47,7 +47,9 @@ describe('searchEntries', () => {
   })
 
   test('case and diacritics are ignored', () => {
+    // kv-lang-ok: Swedish text, because the test is about folding å, ä and ö
     const entries = [entry('Knapp', 'Knappen.', 'Vid återställ går fokus till fältet.')]
+    // kv-lang-ok: the same Swedish text, in capitals
     expect(searchEntries(entries, 'ÅTERSTÄLL')).toHaveLength(1)
     expect(searchEntries(entries, 'aterstall')).toHaveLength(1)
   })

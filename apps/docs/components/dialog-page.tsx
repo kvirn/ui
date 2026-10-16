@@ -63,9 +63,10 @@ const parts: ApiPart[] = [
     name: 'Dialog.Popup',
     renders: (
       <>
-        <code>&lt;dialog&gt;</code> shown with <code>showModal()</code>, so it is in the top layer
-        and needs no portal or <code>z-index</code>. Its children stay in the page while it is
-        closed, hidden and out of reach, so what was typed is kept.
+        <code>&lt;dialog&gt;</code> shown with <code>showModal()</code>. The browser puts it in the
+        top layer, above all other content, so it needs no portal or <code>z-index</code>. Its
+        children stay in the page while it is closed, hidden and out of reach, so what was typed is
+        kept.
       </>
     ),
     attributes: dialogPopupAttributes,

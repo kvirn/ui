@@ -38,6 +38,22 @@ export function FamilyMap() {
         >
           <Map.Skip />
           <Map.Viewport>
+            <Map.Layers>
+              {({ layers, hiddenLayerIds, setLayerHidden, counts }) =>
+                layers.map((layer) => (
+                  <Field.Root key={layer.id}>
+                    <Switch
+                      checked={!hiddenLayerIds.includes(layer.id)}
+                      onCheckedChange={(checked) => setLayerHidden(layer.id, !checked)}
+                    />
+                    <Field.Label marker="none">
+                      {layer.label} ({counts[layer.id] ?? 0})
+                    </Field.Label>
+                  </Field.Root>
+                ))
+              }
+            </Map.Layers>
+            <Map.BaseMapSwitch />
             <Map.Markers
               label={(place, layer) => `${place.name}, ${layer?.label}`}
               markerClassName={(place) => `family-marker family-marker--${place.layer}`}
@@ -56,23 +72,8 @@ export function FamilyMap() {
                 </>
               )}
             </Map.Markers>
-            <Map.Layers>
-              {({ layers, hiddenLayerIds, setLayerHidden, counts }) =>
-                layers.map((layer) => (
-                  <Field.Root key={layer.id}>
-                    <Switch
-                      checked={!hiddenLayerIds.includes(layer.id)}
-                      onCheckedChange={(checked) => setLayerHidden(layer.id, !checked)}
-                    />
-                    <Field.Label marker="none">
-                      {layer.label} ({counts[layer.id] ?? 0})
-                    </Field.Label>
-                  </Field.Root>
-                ))
-              }
-            </Map.Layers>
-            <Map.BaseMapSwitch />
             <Map.Controls />
+            <Map.Attribution />
           </Map.Viewport>
           <Map.List headingLevel="h4" />
           <Map.Details>
