@@ -129,6 +129,40 @@ export const Slow: Story = {
   },
 }
 
+/** The spinner's colour and line weight are classes: `kv-spinner--<variant>` and `kv-spinner--stroke-1|2`. The words stay. */
+export const SpinnerVariants: Story = {
+  render: (_args, { globals }) => {
+    const { text } = progressTextsFor(localeOf(globals))
+    return (
+      <div className="kv-story-form">
+        <Progress.Root label={text.sending} delayMilliseconds={0} announce={false}>
+          <Progress.Indicator className="kv-spinner--success kv-spinner--stroke-1" />
+          <Progress.Label />
+        </Progress.Root>
+        <Progress.Root label={text.sending} delayMilliseconds={0} announce={false}>
+          <Progress.Indicator className="kv-spinner--danger kv-spinner--stroke-2" />
+          <Progress.Label />
+        </Progress.Root>
+      </div>
+    )
+  },
+  play: async ({ canvas, canvasElement, globals }) => {
+    const { text } = progressTextsFor(localeOf(globals))
+    await expect(await canvas.findAllByText(text.sending)).toHaveLength(2)
+    for (const label of canvas.getAllByText(text.sending)) {
+      await expect(label).toBeVisible()
+    }
+    const spinners = canvasElement.querySelectorAll('.kv-spinner')
+    await expect(spinners).toHaveLength(2)
+    await expect(spinners[0]).toHaveClass('kv-spinner--success', 'kv-spinner--stroke-1')
+    await expect(spinners[1]).toHaveClass('kv-spinner--danger', 'kv-spinner--stroke-2')
+    for (const spinner of spinners) {
+      await expect(spinner).toHaveAttribute('aria-hidden', 'true')
+    }
+    await expect(canvas.queryByRole('progressbar')).toBeNull()
+  },
+}
+
 /** A long label wraps over lines and is never truncated. */
 export const LongLabel: Story = {
   globals: { locale: 'fi' },
