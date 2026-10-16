@@ -12,5 +12,14 @@
   "align-start",
   "align-end",
   "undo",
-  "redo"
+  "redo",
+  "change-of-address",
+  "sign-in",
+  "sign-out",
+  "delegation",
+  "send",
+  "first",
+  "last",
+  "quick-exit",
+  "translate"
 ]

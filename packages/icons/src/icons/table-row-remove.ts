@@ -3,8 +3,8 @@ import { createIcon } from '../create-icon.ts'
 import type { IconRegistryEntry } from '@kvirn-ui/react'
 
 export const tableRowRemove: IconRegistryEntry = createIcon([
-  ['path', { d: 'M10 19h-5a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6' }],
-  ['path', { d: 'M3 9h18' }],
-  ['path', { d: 'M3 14h7' }],
+  ['path', { d: 'M9 18h-4a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7' }],
+  ['path', { d: 'M3 8h18' }],
+  ['path', { d: 'M3 13h9.5' }],
   ['path', { d: 'M12.5 16.5h8' }],
 ])

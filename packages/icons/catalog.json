@@ -76,6 +76,11 @@
       "description": "Security, privacy, emergencies, law and elections."
     },
     {
+      "id": "leisure-culture",
+      "title": "Leisure, culture and community",
+      "description": "Clubs, bookings, sports places, trails and culture that a municipality runs or funds."
+    },
+    {
       "id": "access-language",
       "title": "Language and access",
       "description": "Language, accessibility, display settings, reading aloud and captions."
@@ -148,8 +153,7 @@
       "aliases": ["hide-all", "fold"],
       "tags": ["collapse all", "close all", "hide sections", "accordion", "fold"],
       "meaning": "Close every section at once: two chevrons pointing towards each other.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -159,8 +163,7 @@
       "aliases": ["show-all", "unfold"],
       "tags": ["expand all", "open all", "show all sections", "accordion", "unfold"],
       "meaning": "Open every section at once: two chevrons pointing away from each other.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -180,8 +183,7 @@
       "aliases": ["first-page"],
       "tags": ["first", "first page", "beginning", "start", "pagination"],
       "meaning": "Go to the first page or item: a chevron pointing back against a bar.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": true,
       "label": null
     },
@@ -191,19 +193,17 @@
       "aliases": ["last-page"],
       "tags": ["last", "last page", "end", "pagination"],
       "meaning": "Go to the last page or item: a chevron pointing forward against a bar.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": true,
       "label": null
     },
     {
       "name": "refresh",
       "category": "direction",
-      "aliases": ["reload"],
+      "aliases": ["reload", "update"],
       "tags": ["refresh", "reload", "update", "try again", "renew"],
       "meaning": "Load again or try again: a circular arrow.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -245,7 +245,7 @@
       "meaning": "Copy to the clipboard: two equal sheets, one in front of the other.",
       "status": "drawn",
       "mirrorInRtl": false,
-      "label": "icons.copy"
+      "label": null
     },
     {
       "name": "cut",
@@ -275,7 +275,7 @@
       "meaning": "Save a file to the device: an arrow going down into an open tray.",
       "status": "drawn",
       "mirrorInRtl": false,
-      "label": "icons.download"
+      "label": null
     },
     {
       "name": "edit",
@@ -283,8 +283,7 @@
       "aliases": ["pencil", "change", "modify"],
       "tags": ["edit", "change", "modify", "write", "pencil", "update"],
       "meaning": "Change something: a pencil at 45 degrees, tip down.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -304,8 +303,7 @@
       "aliases": ["printer"],
       "tags": ["print", "printer", "paper copy", "hard copy"],
       "meaning": "Print: a printer with a sheet coming out of it.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -334,10 +332,10 @@
       "category": "actions",
       "aliases": ["magnifier", "find"],
       "tags": ["search", "find", "look up", "magnifying glass", "query"],
-      "meaning": "Search: a magnifying glass, its handle to the lower inline end.",
+      "meaning": "Search: a magnifying glass, its handle to the lower right.",
       "status": "drawn",
       "mirrorInRtl": false,
-      "label": "icons.search"
+      "label": null
     },
     {
       "name": "share",
@@ -345,8 +343,7 @@
       "aliases": [],
       "tags": ["share", "send link", "pass on", "social"],
       "meaning": "Share with others: three small rings joined in a V by two lines.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -368,7 +365,7 @@
       "meaning": "Send a file from the device: an arrow rising out of an open tray.",
       "status": "drawn",
       "mirrorInRtl": false,
-      "label": "icons.upload"
+      "label": null
     },
     {
       "name": "attention",
@@ -376,8 +373,7 @@
       "aliases": ["action-needed", "important"],
       "tags": ["attention", "action needed", "important", "to do", "notice"],
       "meaning": "Needs your action: an exclamation mark, glyph only with no container, always with words.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.attention"
     },
@@ -387,8 +383,7 @@
       "aliases": ["not-allowed", "no-entry"],
       "tags": ["blocked", "not allowed", "stopped", "no entry", "prohibited", "on hold"],
       "meaning": "Blocked or not allowed: a barrier, a bar on two posts, glyph only with no container, always with words.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.blocked"
     },
@@ -408,8 +403,7 @@
       "aliases": ["support", "lifebuoy"],
       "tags": ["help", "support", "assistance", "guidance", "get help"],
       "meaning": "Help and support: a lifebuoy ring with four bands, never a question mark; glyph only with no container (the ring is the object), always with words.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.help"
     },
@@ -419,10 +413,19 @@
       "aliases": ["ongoing", "processing"],
       "tags": ["in progress", "ongoing", "processing", "being handled", "started", "under review"],
       "meaning": "Being handled now: an open three-quarter arc with no arrowhead, glyph only with no container, always with words.",
-      "status": "planned",
-      "priority": 1,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.inProgress"
+    },
+    {
+      "name": "spinner",
+      "category": "status",
+      "aliases": ["loading", "busy"],
+      "tags": ["loading", "busy", "waiting", "spinner", "in progress", "working"],
+      "meaning": "A three-quarter arc that crawls when the class kv-animate-spinner is added; glyph only, always with words.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.spinner"
     },
     {
       "name": "info",
@@ -440,8 +443,7 @@
       "aliases": ["sparkle"],
       "tags": ["new", "recent", "latest", "fresh", "added"],
       "meaning": "New or recently added: a four-pointed sparkle, glyph only with no container, always with words.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.new"
     },
@@ -451,8 +453,7 @@
       "aliases": ["waiting", "hourglass", "queued"],
       "tags": ["pending", "waiting", "queued", "not started", "awaiting"],
       "meaning": "Waiting, not started yet: an hourglass, glyph only with no container, always with words.",
-      "status": "planned",
-      "priority": 1,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.pending"
     },
@@ -542,8 +543,7 @@
       "aliases": ["locked", "padlock"],
       "tags": ["lock", "locked", "secure", "protected", "padlock", "read only"],
       "meaning": "Locked or secure: a closed padlock.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.lock"
     },
@@ -583,8 +583,7 @@
       "aliases": [],
       "tags": ["pause", "hold", "media", "read aloud", "audio"],
       "meaning": "Pause playback: two upright bars.",
-      "status": "planned",
-      "priority": 1,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -594,8 +593,7 @@
       "aliases": ["resume"],
       "tags": ["play", "start", "resume", "media", "audio", "video"],
       "meaning": "Start or resume playback: a triangle pointing right, which follows the media, not the script.",
-      "status": "planned",
-      "priority": 1,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -625,8 +623,7 @@
       "aliases": [],
       "tags": ["stop", "end", "media", "audio"],
       "meaning": "Stop playback: a rounded square.",
-      "status": "planned",
-      "priority": 1,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -636,15 +633,14 @@
       "aliases": ["unlocked"],
       "tags": ["unlock", "unlocked", "open", "editable"],
       "meaning": "Unlocked: a padlock with its shackle open.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.unlock"
     },
     {
       "name": "view-grid",
       "category": "interface",
-      "aliases": ["grid-view", "tiles"],
+      "aliases": ["grid-view", "tiles", "grid"],
       "tags": ["grid", "tiles", "cards view", "gallery", "layout"],
       "meaning": "Show as a grid: four rounded tiles, two by two.",
       "status": "drawn",
@@ -694,7 +690,7 @@
     {
       "name": "bullet-list",
       "category": "text-editing",
-      "aliases": ["unordered-list", "list-view"],
+      "aliases": ["unordered-list", "list-view", "list"],
       "tags": ["bullet list", "bullets", "unordered list", "list", "list view"],
       "meaning": "A bulleted list: three large dots at the inline start, each with a text line.",
       "status": "drawn",
@@ -866,9 +862,8 @@
       "category": "tables-data",
       "aliases": ["bar-chart", "statistics"],
       "tags": ["bar chart", "statistics", "figures", "compare", "graph"],
-      "meaning": "Figures compared: three upright bars of different heights on a baseline.",
-      "status": "planned",
-      "priority": 2,
+      "meaning": "Comparing amounts: three bars of different heights sharing a baseline, not in rising order.",
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.chartBar"
     },
@@ -878,8 +873,7 @@
       "aliases": ["line-chart"],
       "tags": ["line chart", "trend", "over time", "graph", "statistics"],
       "meaning": "A change over time: a line with two bends above a baseline.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.chartLine"
     },
@@ -888,9 +882,8 @@
       "category": "tables-data",
       "aliases": ["pie-chart"],
       "tags": ["pie chart", "proportion", "parts of a whole", "budget", "percentage"],
-      "meaning": "Parts of a whole: a circle cut into slices by two radii.",
-      "status": "planned",
-      "priority": 3,
+      "meaning": "Parts of a whole: a circle with one slice pulled out.",
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.chartPie"
     },
@@ -899,9 +892,8 @@
       "category": "tables-data",
       "aliases": ["open-data", "dataset"],
       "tags": ["data", "open data", "dataset", "database", "records"],
-      "meaning": "A store of data: a cylinder with two bands.",
-      "status": "planned",
-      "priority": 3,
+      "meaning": "A store of data: a cylinder in two sections.",
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.database"
     },
@@ -981,8 +973,7 @@
       "aliases": ["records"],
       "tags": ["archive", "records", "stored", "old cases", "box"],
       "meaning": "Stored for keeping: a box with a lid and a label slot.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.archive"
     },
@@ -1001,9 +992,8 @@
       "category": "documents",
       "aliases": ["permit", "licence", "diploma"],
       "tags": ["certificate", "permit", "licence", "diploma", "proof", "qualification"],
-      "meaning": "Proof or permission granted: a page with a round seal and a ribbon.",
-      "status": "planned",
-      "priority": 2,
+      "meaning": "Proof or permission granted: a page with a round seal and a notched ribbon.",
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.certificate"
     },
@@ -1023,8 +1013,7 @@
       "aliases": ["document-approved", "document-done"],
       "tags": ["approved", "completed document", "checked", "confirmed", "done"],
       "meaning": "A completed or approved document: the document with a check mark.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.documentCheck"
     },
@@ -1034,8 +1023,7 @@
       "aliases": ["case", "case-file"],
       "tags": ["folder", "case", "case file", "collection", "files"],
       "meaning": "A case or a collection of files: a folder with a tab.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.folder"
     },
@@ -1044,9 +1032,8 @@
       "category": "documents",
       "aliases": ["application"],
       "tags": ["form", "application", "fill in", "e-service", "apply"],
-      "meaning": "A form to fill in, or an application: a page with two input boxes.",
-      "status": "planned",
-      "priority": 2,
+      "meaning": "A form to fill in, or an application: a page with one input field.",
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.form"
     },
@@ -1065,31 +1052,28 @@
       "category": "documents",
       "aliases": ["e-signature", "sign-document"],
       "tags": ["signature", "sign", "e-signature", "sign document", "autograph"],
-      "meaning": "Sign something: a pen above a written line.",
-      "status": "planned",
-      "priority": 2,
+      "meaning": "Sign a document: a page with a scribble above a signing line.",
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.signature"
     },
     {
       "name": "chat",
       "category": "communication",
-      "aliases": ["conversation", "comment", "feedback"],
+      "aliases": ["conversation", "comment", "feedback", "commenting"],
       "tags": ["chat", "conversation", "comment", "feedback", "talk", "message"],
       "meaning": "A conversation or feedback: a speech bubble.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.chat"
     },
     {
       "name": "mail",
       "category": "communication",
-      "aliases": ["email", "envelope", "message", "inbox"],
+      "aliases": ["email", "envelope", "message", "inbox", "accept-place", "offer"],
       "tags": ["email", "mail", "message", "inbox", "letter", "envelope"],
       "meaning": "Email or a message: an envelope.",
-      "status": "planned",
-      "priority": 1,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.mail"
     },
@@ -1099,8 +1083,7 @@
       "aliases": ["smartphone", "mobile-phone", "sms"],
       "tags": ["mobile", "smartphone", "text message", "sms", "code by text"],
       "meaning": "A mobile phone or a text message: an upright phone with a speaker line.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.mobile"
     },
@@ -1110,8 +1093,7 @@
       "aliases": ["newspaper", "announcement", "press-release"],
       "tags": ["news", "newspaper", "announcement", "press release", "article"],
       "meaning": "News and announcements: a folded newspaper.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.news"
     },
@@ -1121,8 +1103,7 @@
       "aliases": ["bell", "notifications"],
       "tags": ["notifications", "bell", "alerts", "reminder", "updates"],
       "meaning": "Notifications: a bell.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.notification"
     },
@@ -1132,8 +1113,7 @@
       "aliases": ["bell-off", "mute-notifications"],
       "tags": ["notifications off", "mute", "silence", "bell off", "unsubscribe"],
       "meaning": "Notifications off: the bell with a slash.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.notificationOff"
     },
@@ -1143,8 +1123,7 @@
       "aliases": ["call", "telephone"],
       "tags": ["phone", "call", "telephone", "ring", "contact"],
       "meaning": "Call by phone: a telephone handset.",
-      "status": "planned",
-      "priority": 1,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.phone"
     },
@@ -1152,10 +1131,9 @@
       "name": "send",
       "category": "communication",
       "aliases": ["paper-plane", "send-message"],
-      "tags": ["send", "submit", "paper plane", "send message", "post"],
-      "meaning": "Send a message: a paper plane flying to the inline end.",
-      "status": "planned",
-      "priority": 2,
+      "tags": ["send", "submit", "paper plane", "send message"],
+      "meaning": "Send: a paper plane.",
+      "status": "drawn",
       "mirrorInRtl": true,
       "label": null
     },
@@ -1165,8 +1143,7 @@
       "aliases": ["video-meeting", "video-visit"],
       "tags": ["video call", "video meeting", "remote appointment", "camera", "online meeting"],
       "meaning": "A video call or a remote appointment: a video camera.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.videoCall"
     },
@@ -1176,8 +1153,7 @@
       "aliases": ["profile", "my-pages", "user-account"],
       "tags": ["account", "profile", "my pages", "signed in", "user"],
       "meaning": "Your own account: a head and shoulders inside a circle.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.account"
     },
@@ -1187,8 +1163,7 @@
       "aliases": ["guardian", "household"],
       "tags": ["family", "guardian", "household", "parent", "children"],
       "meaning": "A family or a household: a larger and a smaller figure side by side.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.family"
     },
@@ -1198,8 +1173,7 @@
       "aliases": ["identity-card", "identification", "e-id"],
       "tags": ["identity", "id card", "identification", "e-id", "prove who you are"],
       "meaning": "Identification: a card with a portrait and two lines.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.idCard"
     },
@@ -1209,19 +1183,17 @@
       "aliases": ["password", "access"],
       "tags": ["key", "password", "access", "credentials"],
       "meaning": "Access or a password: a key.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.key"
     },
     {
       "name": "people",
       "category": "people",
-      "aliases": ["group", "persons"],
+      "aliases": ["group", "persons", "users"],
       "tags": ["people", "group", "team", "residents", "persons"],
       "meaning": "A group of people: two head-and-shoulders figures, one behind the other.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.people"
     },
@@ -1231,8 +1203,7 @@
       "aliases": ["user", "individual"],
       "tags": ["person", "user", "individual", "resident", "applicant"],
       "meaning": "One person: a head and shoulders, no gender or age.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.person"
     },
@@ -1242,8 +1213,7 @@
       "aliases": ["invite", "user-add"],
       "tags": ["add person", "invite", "add member", "new user"],
       "meaning": "Add a person: the person with a small plus.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -1253,8 +1223,7 @@
       "aliases": ["log-in", "login"],
       "tags": ["sign in", "log in", "login", "enter", "authenticate"],
       "meaning": "Sign in: an arrow entering a door frame towards the inline end.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": true,
       "label": null
     },
@@ -1264,8 +1233,7 @@
       "aliases": ["log-out", "logout"],
       "tags": ["sign out", "log out", "logout", "leave", "exit"],
       "meaning": "Sign out: an arrow leaving a door frame towards the inline end.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": true,
       "label": null
     },
@@ -1275,8 +1243,7 @@
       "aliases": ["shield-check", "identity-verified"],
       "tags": ["verified", "trusted", "authenticated", "secure", "confirmed identity"],
       "meaning": "Verified or trusted: a shield with a check mark.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.verified"
     },
@@ -1296,8 +1263,7 @@
       "aliases": ["add-to-calendar", "add-event"],
       "tags": ["add to calendar", "save date", "add event", "reminder"],
       "meaning": "Add to a calendar: the calendar with a small plus.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -1307,8 +1273,7 @@
       "aliases": ["appointment", "booked"],
       "tags": ["appointment", "booked", "booking confirmed", "reserved", "date set"],
       "meaning": "A booked appointment or a confirmed date: the calendar with a check mark.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.calendarCheck"
     },
@@ -1318,8 +1283,7 @@
       "aliases": ["time", "opening-hours"],
       "tags": ["time", "clock", "opening hours", "hours", "when"],
       "meaning": "A time of day or opening hours: a clock face with two hands.",
-      "status": "planned",
-      "priority": 1,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.clock"
     },
@@ -1329,8 +1293,7 @@
       "aliases": ["version-history", "log"],
       "tags": ["history", "earlier versions", "log", "past", "previous"],
       "meaning": "What happened before: a clock face with an arrow turning back around it.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.history"
     },
@@ -1340,8 +1303,7 @@
       "aliases": ["recurring"],
       "tags": ["repeat", "recurring", "every week", "regular", "again"],
       "meaning": "Happens again on a schedule: two arrows chasing each other in a loop.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.repeat"
     },
@@ -1351,8 +1313,7 @@
       "aliases": ["stopwatch", "time-limit", "deadline"],
       "tags": ["timer", "time limit", "deadline", "session", "countdown", "stopwatch"],
       "meaning": "A time limit or a deadline: a stopwatch.",
-      "status": "planned",
-      "priority": 1,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.timer"
     },
@@ -1412,8 +1373,7 @@
       "aliases": ["office", "workplace", "organisation"],
       "tags": ["building", "office", "workplace", "company", "organisation"],
       "meaning": "An office building or an organisation: a block with rows of windows.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.building"
     },
@@ -1422,9 +1382,8 @@
       "category": "maps-places",
       "aliases": ["town-hall", "municipality", "municipal-office"],
       "tags": ["city hall", "town hall", "municipality", "council", "public office"],
-      "meaning": "The municipality's office: a building with a pediment and columns.",
-      "status": "planned",
-      "priority": 2,
+      "meaning": "The municipality's office: a building with a plain roof, a small tower and a door.",
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.cityHall"
     },
@@ -1454,8 +1413,7 @@
       "aliases": ["house"],
       "tags": ["home", "house", "residence", "where you live", "dwelling"],
       "meaning": "A home, where someone lives: a house with a pitched roof and a door.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.home"
     },
@@ -1545,8 +1503,7 @@
       "aliases": ["allowance", "grant", "support-payment"],
       "tags": ["benefit", "allowance", "grant", "financial aid", "pension"],
       "meaning": "Money paid out to you: an open hand under a coin.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.benefit"
     },
@@ -1556,19 +1513,17 @@
       "aliases": ["bill"],
       "tags": ["invoice", "bill", "amount due", "fee", "pay"],
       "meaning": "A bill to pay: a page with text lines and a total rule.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.invoice"
     },
     {
       "name": "payment",
       "category": "money",
-      "aliases": ["pay", "bank-card", "card", "wallet"],
+      "aliases": ["pay", "bank-card", "card"],
       "tags": ["payment", "pay", "card", "bank card", "checkout", "wallet"],
       "meaning": "Pay: a bank card with a stripe.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.payment"
     },
@@ -1578,8 +1533,7 @@
       "aliases": ["proof-of-payment"],
       "tags": ["receipt", "proof of payment", "paid", "slip"],
       "meaning": "Proof of payment: a slip with a zigzag bottom edge.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.receipt"
     },
@@ -1589,8 +1543,7 @@
       "aliases": ["library", "reading"],
       "tags": ["book", "library", "reading", "borrow", "loan"],
       "meaning": "Reading or the library: a closed book.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.book"
     },
@@ -1600,19 +1553,17 @@
       "aliases": ["social-care", "home-care", "elderly-care"],
       "tags": ["care", "social care", "home care", "elderly care", "support"],
       "meaning": "Social care: a heart held in an open hand.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.care"
     },
     {
       "name": "education",
       "category": "care-education",
-      "aliases": ["school", "training", "graduation"],
-      "tags": ["education", "school", "study", "training", "graduation"],
-      "meaning": "Education and schools: a graduation cap.",
-      "status": "planned",
-      "priority": 2,
+      "aliases": ["training", "learning"],
+      "tags": ["education", "learning", "training", "book", "course"],
+      "meaning": "Education and learning: an open book.",
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.education"
     },
@@ -1622,8 +1573,7 @@
       "aliases": ["health-care", "stethoscope"],
       "tags": ["health", "health care", "doctor", "medical", "clinic"],
       "meaning": "Health care: a stethoscope.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.health"
     },
@@ -1633,8 +1583,7 @@
       "aliases": ["work", "employment", "briefcase"],
       "tags": ["job", "work", "employment", "career", "vacancy"],
       "meaning": "Work and jobs: a briefcase.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.job"
     },
@@ -1644,8 +1593,7 @@
       "aliases": ["food", "school-meals", "lunch"],
       "tags": ["meal", "food", "lunch", "school meals", "dining"],
       "meaning": "Meals and food: a fork and a knife side by side.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.meal"
     },
@@ -1655,8 +1603,7 @@
       "aliases": ["medicine", "pill", "prescription"],
       "tags": ["medication", "medicine", "pill", "prescription", "pharmacy"],
       "meaning": "Medicine: a capsule split across its middle.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.medication"
     },
@@ -1666,8 +1613,7 @@
       "aliases": ["vaccine", "syringe"],
       "tags": ["vaccination", "vaccine", "injection", "jab", "immunisation"],
       "meaning": "A vaccination: a syringe.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.vaccination"
     },
@@ -1677,8 +1623,7 @@
       "aliases": ["bicycle", "cycling"],
       "tags": ["bike", "bicycle", "cycling", "cycle path"],
       "meaning": "A bicycle seen from the side.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.bike"
     },
@@ -1688,8 +1633,7 @@
       "aliases": ["public-transport", "coach"],
       "tags": ["bus", "public transport", "coach", "bus stop"],
       "meaning": "A bus seen from the front.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.bus"
     },
@@ -1699,8 +1643,7 @@
       "aliases": ["vehicle"],
       "tags": ["car", "vehicle", "drive", "driving", "traffic"],
       "meaning": "A car seen from the front.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.car"
     },
@@ -1710,8 +1653,7 @@
       "aliases": ["electricity", "power"],
       "tags": ["energy", "electricity", "power", "outage", "lightning"],
       "meaning": "Electricity and energy: a lightning bolt.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.energy"
     },
@@ -1721,8 +1663,7 @@
       "aliases": ["boat"],
       "tags": ["ferry", "boat", "sea", "crossing", "archipelago"],
       "meaning": "A ferry on the water.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.ferry"
     },
@@ -1732,8 +1673,7 @@
       "aliases": ["recycling", "sorting"],
       "tags": ["recycling", "recycle", "sorting", "reuse", "waste sorting"],
       "meaning": "Recycling: three arrows chasing each other around a triangle.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.recycle"
     },
@@ -1743,8 +1683,7 @@
       "aliases": ["fault-report", "maintenance", "wrench"],
       "tags": ["repair", "fault report", "maintenance", "fix", "broken", "report a problem"],
       "meaning": "Repair, or report a fault: a wrench.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.repair"
     },
@@ -1754,8 +1693,7 @@
       "aliases": ["traffic-cone", "construction"],
       "tags": ["roadworks", "construction", "road closed", "detour", "cone"],
       "meaning": "Roadworks: a traffic cone.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.roadworks"
     },
@@ -1765,19 +1703,17 @@
       "aliases": ["snow-clearing", "winter"],
       "tags": ["snow", "winter", "snow clearing", "ploughing", "gritting"],
       "meaning": "Snow and snow clearing: a six-armed snowflake.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.snow"
     },
     {
       "name": "train",
       "category": "mobility-environment",
-      "aliases": ["rail", "tram", "metro"],
-      "tags": ["train", "rail", "tram", "metro", "station"],
+      "aliases": ["rail"],
+      "tags": ["train", "rail", "station"],
       "meaning": "A train seen from the front.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.train"
     },
@@ -1787,8 +1723,7 @@
       "aliases": ["park", "nature"],
       "tags": ["tree", "park", "nature", "green space", "forest"],
       "meaning": "Parks and nature: a tree.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.tree"
     },
@@ -1798,19 +1733,17 @@
       "aliases": ["walking", "pedestrian"],
       "tags": ["walk", "walking", "pedestrian", "on foot"],
       "meaning": "On foot: a walking figure.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.walk"
     },
     {
       "name": "waste",
       "category": "mobility-environment",
-      "aliases": ["rubbish", "garbage", "waste-collection"],
+      "aliases": ["rubbish", "garbage", "waste-collection", "litter", "overflowing-bin"],
       "tags": ["waste", "rubbish", "garbage", "bin collection", "emptying"],
       "meaning": "Waste collection: a wheeled bin with a lid.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.waste"
     },
@@ -1820,8 +1753,7 @@
       "aliases": ["tap", "water-supply"],
       "tags": ["water", "tap", "water supply", "drinking water", "sewage"],
       "meaning": "Water and the water supply: a tap with a drop.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.water"
     },
@@ -1831,8 +1763,7 @@
       "aliases": ["alarm", "siren"],
       "tags": ["emergency", "alarm", "siren", "urgent", "crisis"],
       "meaning": "An emergency or an alarm: a beacon light with rays.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.emergency"
     },
@@ -1842,8 +1773,7 @@
       "aliases": ["flame", "fire-safety"],
       "tags": ["fire", "flame", "fire safety", "fire ban", "burning"],
       "meaning": "Fire: a flame.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.fire"
     },
@@ -1853,8 +1783,7 @@
       "aliases": ["rights", "court", "justice"],
       "tags": ["law", "rights", "court", "justice", "legal", "regulation"],
       "meaning": "Law and rights: a pair of balance scales.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.law"
     },
@@ -1864,8 +1793,7 @@
       "aliases": ["personal-data", "data-protection", "gdpr"],
       "tags": ["privacy", "personal data", "data protection", "gdpr", "cookies"],
       "meaning": "Personal data protection: a shield with a head and shoulders inside.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.privacy"
     },
@@ -1875,9 +1803,8 @@
       "aliases": ["leave-quickly", "exit-site"],
       "tags": ["quick exit", "leave quickly", "hide page", "safety", "escape"],
       "meaning": "Leave this site quickly: a figure running out through a doorway.",
-      "status": "planned",
-      "priority": 2,
-      "mirrorInRtl": false,
+      "status": "drawn",
+      "mirrorInRtl": true,
       "label": null
     },
     {
@@ -1886,21 +1813,9 @@
       "aliases": ["security", "protection"],
       "tags": ["security", "protection", "safe", "secure", "defence"],
       "meaning": "Security or protection: a shield.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.shield"
-    },
-    {
-      "name": "vote",
-      "category": "safety-civic",
-      "aliases": ["election", "ballot"],
-      "tags": ["vote", "election", "ballot", "democracy", "polling"],
-      "meaning": "Voting: a ballot going through the slot of a box.",
-      "status": "planned",
-      "priority": 2,
-      "mirrorInRtl": false,
-      "label": "icons.vote"
     },
     {
       "name": "accessibility",
@@ -1913,9 +1828,8 @@
         "disability",
         "accessibility statement"
       ],
-      "meaning": "Accessibility: the standard figure with open arms inside a circle.",
-      "status": "planned",
-      "priority": 2,
+      "meaning": "Accessibility: an open-armed figure inside a circle; our own geometry, not the UN logo and never a wheelchair.",
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.accessibility"
     },
@@ -1925,8 +1839,7 @@
       "aliases": ["subtitles"],
       "tags": ["captions", "subtitles", "closed captions", "deaf", "hard of hearing"],
       "meaning": "Captions: a frame with two short text lines at its foot.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.captions"
     },
@@ -1936,8 +1849,7 @@
       "aliases": ["high-contrast"],
       "tags": ["contrast", "high contrast", "display settings", "dark", "colours"],
       "meaning": "Contrast and display settings: a circle with its right half drawn as diagonal stripes, outline only, no fill.",
-      "status": "planned",
-      "priority": 1,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -1947,8 +1859,7 @@
       "aliases": ["moon", "night-mode"],
       "tags": ["dark mode", "dark theme", "night", "moon"],
       "meaning": "Dark mode: a half-moon disc, a circle with an inner arc, not a crescent.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -1958,8 +1869,7 @@
       "aliases": ["keyboard-shortcuts"],
       "tags": ["keyboard", "shortcuts", "keys", "typing"],
       "meaning": "A keyboard and its shortcuts: a keyboard seen from above.",
-      "status": "planned",
-      "priority": 3,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.keyboard"
     },
@@ -1979,8 +1889,7 @@
       "aliases": ["sun", "day-mode"],
       "tags": ["light mode", "light theme", "day", "sun"],
       "meaning": "Light mode: a sun.",
-      "status": "planned",
-      "priority": 2,
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     },
@@ -1989,31 +1898,768 @@
       "category": "access-language",
       "aliases": ["listen", "speech", "text-to-speech"],
       "tags": ["read aloud", "listen", "speech", "text to speech", "audio"],
-      "meaning": "Listen to the page read aloud: a speaker with sound waves.",
-      "status": "planned",
-      "priority": 1,
+      "meaning": "Listen to this page: text lines with sound arcs.",
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
-    },
-    {
-      "name": "sign-language",
-      "category": "access-language",
-      "aliases": [],
-      "tags": ["sign language", "signing", "deaf", "interpreter"],
-      "meaning": "Content in sign language: two hands signing, drawn only if it meets the detail budget and the no-gestures rule at 20px, else cut.",
-      "status": "planned",
-      "priority": 2,
-      "mirrorInRtl": false,
-      "label": "icons.signLanguage"
     },
     {
       "name": "text-size",
       "category": "access-language",
       "aliases": ["font-size"],
       "tags": ["text size", "font size", "larger text", "zoom text", "readability"],
-      "meaning": "Text size: stepped bars rising in height, no letters.",
-      "status": "planned",
-      "priority": 2,
+      "meaning": "Change the text size: a small and a large outlined box of the same proportion.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "delegation",
+      "category": "people",
+      "aliases": ["mandate", "power-of-attorney"],
+      "tags": ["delegation", "mandate", "power of attorney"],
+      "meaning": "Acting on someone's behalf: an arrow towards the inline end above two small figures.",
+      "status": "drawn",
+      "mirrorInRtl": true,
+      "label": "icons.delegation"
+    },
+    {
+      "name": "change-of-address",
+      "category": "maps-places",
+      "aliases": ["moving-house", "move"],
+      "tags": ["change of address", "moving house", "move"],
+      "meaning": "Report a move: two houses under an arrow pointing to the inline end.",
+      "status": "drawn",
+      "mirrorInRtl": true,
+      "label": "icons.changeOfAddress"
+    },
+    {
+      "name": "ticket",
+      "category": "mobility-environment",
+      "aliases": ["travel-card", "season-pass", "pass"],
+      "tags": ["ticket", "travel card", "season pass", "pass"],
+      "meaning": "A ticket or travel pass: a notched ticket, no price glyph.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.ticket"
+    },
+    {
+      "name": "live-departures",
+      "category": "mobility-environment",
+      "aliases": ["departures", "timetable-live"],
+      "tags": ["live departures", "departures", "timetable live"],
+      "meaning": "Next departures in real time: list rows with a signal arc.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.liveDepartures"
+    },
+    {
+      "name": "detour",
+      "category": "mobility-environment",
+      "aliases": ["diversion", "reroute"],
+      "tags": ["detour", "diversion", "reroute"],
+      "meaning": "Service or street diverted: a line broken in the middle, an arch over the break and an arrowhead at the end.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.detour"
+    },
+    {
+      "name": "lost-property",
+      "category": "mobility-environment",
+      "aliases": ["lost-and-found", "found-items"],
+      "tags": ["lost property", "lost and found", "found items"],
+      "meaning": "Lost and found: a bag or umbrella with a magnifier; no suitcase.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.lostProperty"
+    },
+    {
+      "name": "calculator",
+      "category": "money",
+      "aliases": ["fee-calculator"],
+      "tags": ["calculator", "fee calculator"],
+      "meaning": "Work out a fee, merit value or repayment: dot grid under a screen bar, no numeral keys.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.calculator"
+    },
+    {
+      "name": "association",
+      "category": "people",
+      "aliases": ["club", "society"],
+      "tags": ["association", "club", "society"],
+      "meaning": "A non-profit membership club: three figures in a triangle.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.association"
+    },
+    {
+      "name": "book-facility",
+      "category": "time",
+      "aliases": ["facility-booking", "room-booking", "season-booking"],
+      "tags": ["book facility", "facility booking", "room booking", "season booking"],
+      "meaning": "Book a hall, pitch or room: a calendar with a door or key.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.bookFacility"
+    },
+    {
+      "name": "credentials-wallet",
+      "category": "people",
+      "aliases": ["digital-wallet", "eudi"],
+      "tags": ["credentials wallet", "digital wallet", "eudi"],
+      "meaning": "Digital wallet for credentials (EU Digital Identity Wallet, Kivra ID): a phone with a card inside.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.credentialsWallet"
+    },
+    {
+      "name": "health-record",
+      "category": "care-education",
+      "aliases": ["patient-record"],
+      "tags": ["health record", "patient record", "results"],
+      "meaning": "Your health record and results: a page with a pulse line.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.healthRecord"
+    },
+    {
+      "name": "interpreter",
+      "category": "access-language",
+      "aliases": [],
+      "tags": ["interpreter", "translate"],
+      "meaning": "Book a spoken-language interpreter: two speech bubbles with a two-way arrow, no glyphs.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.interpreter"
+    },
+    {
+      "name": "council-meeting",
+      "category": "safety-civic",
+      "aliases": ["committee", "council"],
+      "tags": ["council meeting", "committee", "council"],
+      "meaning": "Council or committee meeting: people around a table, or a semicircle of seats.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.councilMeeting"
+    },
+    {
+      "name": "service-desk",
+      "category": "people",
+      "aliases": ["service-point", "front-desk"],
+      "tags": ["service desk", "service point", "front desk"],
+      "meaning": "A citizen service counter: a figure behind a straight counter.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.serviceDesk"
+    },
+    {
+      "name": "marriage",
+      "category": "people",
+      "aliases": ["wedding"],
+      "tags": ["marriage", "wedding"],
+      "meaning": "A civil wedding or partnership: two crossing rings.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.marriage"
+    },
+    {
+      "name": "cemetery",
+      "category": "maps-places",
+      "aliases": ["graveyard", "burial"],
+      "tags": ["cemetery", "graveyard", "burial"],
+      "meaning": "Burial ground: a plain headstone with two inscription dashes on a ground line; no religious emblem.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.cemetery"
+    },
+    {
+      "name": "bulky-waste",
+      "category": "mobility-environment",
+      "aliases": ["large-waste"],
+      "tags": ["bulky waste", "large waste"],
+      "meaning": "Large items such as furniture: a sofa.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.bulkyWaste"
+    },
+    {
+      "name": "food-waste",
+      "category": "mobility-environment",
+      "aliases": ["bio-waste", "organic-waste"],
+      "tags": ["food waste", "bio waste", "organic waste"],
+      "meaning": "Kitchen and bio waste: an apple core with a leaf-curled stem.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.foodWaste"
+    },
+    {
+      "name": "street-light",
+      "category": "mobility-environment",
+      "aliases": ["lighting"],
+      "tags": ["street light", "street lamp", "lighting"],
+      "meaning": "Street lighting: a lamp post with an arm and a closed lamp head.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.streetLight"
+    },
+    {
+      "name": "noise",
+      "category": "mobility-environment",
+      "aliases": ["noise-complaint"],
+      "tags": ["noise", "noise complaint"],
+      "meaning": "Noise, or a noise complaint: five vertical bars of uneven height.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.noise"
+    },
+    {
+      "name": "transit-stop",
+      "category": "mobility-environment",
+      "aliases": ["bus-stop", "station"],
+      "tags": ["transit stop", "bus stop", "station"],
+      "meaning": "A stop or station: a sign plate on a pole with a foot line; no number or letter.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.transitStop"
+    },
+    {
+      "name": "sports-pitch",
+      "category": "leisure-culture",
+      "aliases": ["pitch", "field", "sports-field"],
+      "tags": ["sports pitch", "pitch", "field", "sports field"],
+      "meaning": "Marked outdoor pitch from above: rectangle, centre line, circle.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.sportsPitch"
+    },
+    {
+      "name": "sports-hall",
+      "category": "leisure-culture",
+      "aliases": ["hall", "gym-hall"],
+      "tags": ["sports hall", "hall", "gym hall"],
+      "meaning": "Indoor hall for booking: an arched hall with court lines, no ball.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.sportsHall"
+    },
+    {
+      "name": "swimming-pool",
+      "category": "leisure-culture",
+      "aliases": ["pool", "swimming-hall", "swimming-lanes"],
+      "tags": ["swimming pool", "pool", "swimming hall", "swimming lanes"],
+      "meaning": "A swimming pool or hall: a pool ladder over water.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.swimmingPool"
+    },
+    {
+      "name": "playground",
+      "category": "leisure-culture",
+      "aliases": ["play-area"],
+      "tags": ["playground", "play area"],
+      "meaning": "A playground: a slide.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.playground"
+    },
+    {
+      "name": "outdoor-gym",
+      "category": "leisure-culture",
+      "aliases": ["calisthenics"],
+      "tags": ["outdoor gym", "calisthenics"],
+      "meaning": "Free outdoor training equipment: a pull-up frame with two rings.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.outdoorGym"
+    },
+    {
+      "name": "trail",
+      "category": "leisure-culture",
+      "aliases": ["hiking-trail", "route-marked"],
+      "tags": ["trail", "hiking trail", "route marked"],
+      "meaning": "Marked foot or exercise route: dotted path past waypoints.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.trail"
+    },
+    {
+      "name": "harbour",
+      "category": "leisure-culture",
+      "aliases": ["guest-harbour", "berth", "marina"],
+      "tags": ["harbour", "guest harbour", "berth", "marina"],
+      "meaning": "Guest harbour or boat berth: a small boat at a quay.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.harbour"
+    },
+    {
+      "name": "music",
+      "category": "leisure-culture",
+      "aliases": ["concert", "choir"],
+      "tags": ["music", "concert", "choir"],
+      "meaning": "Music: one note (not a pair, which reads as audio).",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.music"
+    },
+    {
+      "name": "museum",
+      "category": "leisure-culture",
+      "aliases": ["gallery"],
+      "tags": ["museum", "gallery"],
+      "meaning": "A museum: a vase on a plinth.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.museum"
+    },
+    {
+      "name": "exam",
+      "category": "care-education",
+      "aliases": ["test"],
+      "tags": ["exam", "test"],
+      "meaning": "Take or book an exam: a sheet with two answer boxes and a pencil; no marks.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.exam"
+    },
+    {
+      "name": "timetable",
+      "category": "time",
+      "aliases": ["schedule-week", "lesson-plan"],
+      "tags": ["timetable", "schedule week", "lesson plan"],
+      "meaning": "Weekly lesson or lecture schedule: a week grid with blocks.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.timetable"
+    },
+    {
+      "name": "research",
+      "category": "care-education",
+      "aliases": ["science", "lab"],
+      "tags": ["research", "science", "lab"],
+      "meaning": "Research and doctoral studies: a microscope with a stage and a curved arm.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.research"
+    },
+    {
+      "name": "refund",
+      "category": "money",
+      "aliases": ["repayment"],
+      "tags": ["refund", "repayment"],
+      "meaning": "Money paid back, such as a tax refund: a plain coin with a U-turn arrow.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.refund"
+    },
+    {
+      "name": "sick-leave",
+      "category": "care-education",
+      "aliases": ["sick-pay"],
+      "tags": ["sick leave", "sick pay"],
+      "meaning": "Absence through illness (sjukpenning): a thermometer.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.sickLeave"
+    },
+    {
+      "name": "business",
+      "category": "care-education",
+      "aliases": ["company", "enterprise"],
+      "tags": ["business", "company", "enterprise"],
+      "meaning": "Start or run a business: a shopfront with an awning.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.business"
+    },
+    {
+      "name": "school",
+      "category": "care-education",
+      "aliases": ["school-building"],
+      "tags": ["school", "school building"],
+      "meaning": "A school as a place: a building with two low wings, a central gable with a round clock and a door; not a graduation cap.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.school"
+    },
+    {
+      "name": "preschool",
+      "category": "care-education",
+      "aliases": ["kindergarten", "nursery"],
+      "tags": ["preschool", "kindergarten", "nursery"],
+      "meaning": "Preschool and early childhood education: the house with a small slide inside.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.preschool"
+    },
+    {
+      "name": "university",
+      "category": "care-education",
+      "aliases": ["college", "higher-education", "graduation"],
+      "tags": ["university", "college", "higher education", "graduation", "degree"],
+      "meaning": "Higher education: a graduation cap.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.university"
+    },
+    {
+      "name": "ambulance",
+      "category": "safety-civic",
+      "aliases": ["emergency-vehicle"],
+      "tags": ["ambulance", "emergency", "medical", "vehicle", "paramedic"],
+      "meaning": "An ambulance: a box van seen from the side with a roof beacon and a pulse band along the side; no cross.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.ambulance"
+    },
+    {
+      "name": "police",
+      "category": "safety-civic",
+      "aliases": ["police-car", "patrol"],
+      "tags": ["police", "patrol", "law enforcement", "vehicle"],
+      "meaning": "The police: a patrol car seen from the side with a roof light bar; no badge, star, insignia or text.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.police"
+    },
+    {
+      "name": "firetruck",
+      "category": "safety-civic",
+      "aliases": ["fire-engine", "fire-brigade"],
+      "tags": ["fire truck", "fire engine", "rescue", "vehicle", "ladder"],
+      "meaning": "The fire brigade: a fire engine seen from the side with a ladder.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.firetruck"
+    },
+    {
+      "name": "tram",
+      "category": "mobility-environment",
+      "aliases": ["light-rail", "streetcar"],
+      "tags": ["tram", "light rail", "streetcar", "public transport"],
+      "meaning": "A tram: a tram seen from the front with its overhead wire.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.tram"
+    },
+    {
+      "name": "subway",
+      "category": "mobility-environment",
+      "aliases": ["metro", "underground"],
+      "tags": ["subway", "metro", "underground", "tunnel", "public transport"],
+      "meaning": "An underground railway: a train in a tunnel mouth; no letter signs.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.subway"
+    },
+    {
+      "name": "government",
+      "category": "maps-places",
+      "aliases": ["state", "ministry", "national-government"],
+      "tags": ["government", "state", "ministry", "national", "agency"],
+      "meaning": "The state, as opposed to the municipality: a building with a pediment and columns.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.government"
+    },
+    {
+      "name": "wheelchair",
+      "category": "access-language",
+      "aliases": ["wheelchair-access", "mobility-aid"],
+      "tags": ["wheelchair", "accessible", "mobility", "access"],
+      "meaning": "A wheelchair as an object, not a person in it: a big wheel, a back with a push handle, a seat, a footrest and a small front wheel.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.wheelchair"
+    },
+    {
+      "name": "gender-male",
+      "category": "people",
+      "aliases": ["male"],
+      "tags": ["male", "man", "gender"],
+      "meaning": "Male: the standard circle with an arrow out to the upper right.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "gender-female",
+      "category": "people",
+      "aliases": ["female"],
+      "tags": ["female", "woman", "gender"],
+      "meaning": "Female: the standard circle with a cross below it.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "gender-non-binary",
+      "category": "people",
+      "aliases": ["non-binary", "nonbinary"],
+      "tags": ["non-binary", "gender", "neutral", "nonbinary"],
+      "meaning": "Non-binary: a ring with a stem up to the centre of a small cross made of two 45 degree strokes.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "gender-fluid",
+      "category": "people",
+      "aliases": ["genderfluid"],
+      "tags": ["gender fluid", "gender", "fluid", "genderfluid"],
+      "meaning": "Gender fluid: a circle with a male arrow and a female cross joined.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "tag",
+      "category": "communication",
+      "aliases": ["tagging", "label", "mention"],
+      "tags": ["tag", "tagging", "label", "mention", "price tag"],
+      "meaning": "A tag or label attached to something: a tag with a hole.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "hashtag",
+      "category": "communication",
+      "aliases": ["topic", "hash"],
+      "tags": ["hashtag", "topic", "hash", "social"],
+      "meaning": "A hashtag topic: two vertical and two horizontal strokes crossing.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "direct-message",
+      "category": "communication",
+      "aliases": ["dm", "private-message"],
+      "tags": ["direct message", "dm", "private", "message", "chat"],
+      "meaning": "A private message to one person: a speech bubble with a single figure.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "pin-remove",
+      "category": "maps-places",
+      "aliases": ["place-remove", "remove-place"],
+      "tags": ["pin remove", "remove place", "delete point", "map"],
+      "meaning": "Remove a place or point: the pin with the badge minus.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "cash",
+      "category": "money",
+      "aliases": ["money", "banknote"],
+      "tags": ["cash", "money", "banknote", "notes"],
+      "meaning": "Cash: a banknote with a ring in the middle; no currency symbol or numeral.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.cash"
+    },
+    {
+      "name": "wallet",
+      "category": "money",
+      "aliases": [],
+      "tags": ["wallet", "money", "billfold", "pay"],
+      "meaning": "A wallet: a folded billfold with a clasp; not a card.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.wallet"
+    },
+    {
+      "name": "theatre",
+      "category": "leisure-culture",
+      "aliases": ["theater", "stage", "performance"],
+      "tags": ["theatre", "theater", "stage", "curtain", "performance"],
+      "meaning": "A theatre or stage: a stage with a scalloped pelmet, tied-back curtains and a floor line.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.theatre"
+    },
+    {
+      "name": "translate",
+      "category": "access-language",
+      "aliases": ["translator", "translation"],
+      "tags": ["translate", "translator", "translation", "language"],
+      "meaning": "Translate text from one language to another: two overlapping panels with a one-way arrow beneath, from the back panel to the front one; no glyphs.",
+      "status": "drawn",
+      "mirrorInRtl": true,
+      "label": null
+    },
+    {
+      "name": "view-columns",
+      "category": "interface",
+      "aliases": ["columns", "column-view"],
+      "tags": ["columns", "column view", "layout", "panels"],
+      "meaning": "Show as columns: a frame divided by vertical rules.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "skip-next",
+      "category": "interface",
+      "aliases": ["next-track", "media-next"],
+      "tags": ["skip next", "next", "next track", "media"],
+      "meaning": "Skip to the next item in media: a play triangle against a bar.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "skip-previous",
+      "category": "interface",
+      "aliases": ["previous-track", "media-previous"],
+      "tags": ["skip previous", "previous", "previous track", "media"],
+      "meaning": "Back to the previous item in media: a play triangle against a bar, the mirror of skip-next.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "person-remove",
+      "category": "people",
+      "aliases": ["user-remove", "remove-user"],
+      "tags": ["person remove", "remove user", "delete user", "account"],
+      "meaning": "Remove a person: the person with the badge minus.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "calendar-remove",
+      "category": "time",
+      "aliases": ["calendar-delete", "cancel-booking"],
+      "tags": ["calendar remove", "cancel", "cancel booking", "date"],
+      "meaning": "Remove a date or cancel a booking: the calendar with the badge minus.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "document-add",
+      "category": "documents",
+      "aliases": ["file-add", "new-document"],
+      "tags": ["document add", "new document", "add file", "create"],
+      "meaning": "Add a document: the document with the badge plus; no text line.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "document-remove",
+      "category": "documents",
+      "aliases": ["file-remove", "document-delete"],
+      "tags": ["document remove", "remove file", "delete document"],
+      "meaning": "Remove a document: the document with the badge minus; no text line.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "folder-add",
+      "category": "documents",
+      "aliases": ["new-folder", "case-add"],
+      "tags": ["folder add", "new folder", "new case", "create case"],
+      "meaning": "Add a folder or open a case: the folder with the badge plus.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "folder-remove",
+      "category": "documents",
+      "aliases": ["folder-delete", "case-remove"],
+      "tags": ["folder remove", "delete folder", "close case"],
+      "meaning": "Remove a folder or case: the folder with the badge minus.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "mail-add",
+      "category": "communication",
+      "aliases": ["subscribe", "email-add"],
+      "tags": ["mail add", "subscribe", "email add", "newsletter"],
+      "meaning": "Subscribe by email: the envelope with the badge plus.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "mail-remove",
+      "category": "communication",
+      "aliases": ["unsubscribe", "email-remove"],
+      "tags": ["mail remove", "unsubscribe", "email remove"],
+      "meaning": "Unsubscribe from email: the envelope with the badge minus.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "mail-off",
+      "category": "communication",
+      "aliases": ["email-off", "mute-email"],
+      "tags": ["mail off", "email off", "no email", "mute"],
+      "meaning": "Email is off or unavailable: the envelope with the kit slash.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "video-call-off",
+      "category": "communication",
+      "aliases": ["camera-off", "video-off"],
+      "tags": ["video call off", "camera off", "video off", "no video"],
+      "meaning": "Video is off: the video camera with the kit slash.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "mobile-off",
+      "category": "communication",
+      "aliases": ["mobile-off-line", "device-off"],
+      "tags": ["mobile off", "phone off", "no signal", "offline device"],
+      "meaning": "The mobile phone is off or unavailable: the phone with the kit slash.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "image-add",
+      "category": "documents",
+      "aliases": ["photo-add", "add-image"],
+      "tags": ["image add", "add photo", "add picture", "upload image"],
+      "meaning": "Add an image: the image frame with its peak and the badge plus; no sun.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "image-remove",
+      "category": "documents",
+      "aliases": ["photo-remove", "remove-image"],
+      "tags": ["image remove", "remove photo", "delete picture"],
+      "meaning": "Remove an image: the image frame with its peak and the badge minus; no sun.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "attachment-remove",
+      "category": "documents",
+      "aliases": ["detach", "remove-attachment"],
+      "tags": ["attachment remove", "detach", "remove attachment", "paperclip"],
+      "meaning": "Remove an attachment: the paper clip with the badge minus.",
+      "status": "drawn",
       "mirrorInRtl": false,
       "label": null
     }

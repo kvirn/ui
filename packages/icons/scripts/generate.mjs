@@ -13,13 +13,14 @@ const rootAttributes = {
   'stroke-linejoin': 'round',
 }
 const allowedShapes = {
-  path: ['d'],
+  path: ['d', 'pathLength', 'stroke-dasharray'],
   line: ['x1', 'y1', 'x2', 'y2'],
   polyline: ['points'],
   circle: ['cx', 'cy', 'r'],
   ellipse: ['cx', 'cy', 'rx', 'ry'],
   rect: ['x', 'y', 'width', 'height', 'rx', 'ry'],
 }
+const reactProperties = { 'stroke-dasharray': 'strokeDasharray' }
 const reservedWords = new Set(['delete', 'new', 'default', 'import', 'export', 'switch', 'return'])
 const kebabName = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/
 
@@ -100,7 +101,9 @@ const quote = (text) => `'${text.replaceAll('\\', '\\\\').replaceAll("'", "\\'")
 const printWidth = 100
 
 function shapeText([tag, attributes], indent) {
-  const entries = Object.entries(attributes).map(([key, value]) => `${key}: ${quote(value)}`)
+  const entries = Object.entries(attributes).map(
+    ([key, value]) => `${reactProperties[key] ?? key}: ${quote(value)}`,
+  )
   const inline = `[${quote(tag)}, { ${entries.join(', ')} }]`
   if (indent.length + inline.length + 1 <= printWidth) return inline
   const object = `${indent}  { ${entries.join(', ')} },`
