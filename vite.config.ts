@@ -259,7 +259,7 @@ export default defineConfig({
           maxWorkers,
           environment: 'node',
           include: [
-            'packages/{core,i18n,theme,patterns}/src/**/*.test.ts',
+            'packages/{core,i18n,theme,patterns,icons}/src/**/*.test.ts',
             'tooling/**/*.test.ts',
             'apps/docs/**/*.test.ts',
           ],

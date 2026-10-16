@@ -393,6 +393,9 @@ importers:
       '@kvirn-ui/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@kvirn-ui/icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
       '@kvirn-ui/map':
         specifier: workspace:*
         version: link:../../packages/map
@@ -481,6 +484,21 @@ importers:
 
   packages/i18n:
     devDependencies:
+      vite-plus:
+        specifier: 'catalog:'
+        version: 1.0.0(@types/node@24.19.1)(@vitest/browser-playwright@5.0.1)(@vitest/ui@5.0.1)(esbuild@0.28.2)(typescript@7.0.2)(yaml@2.9.1)
+
+  packages/icons:
+    devDependencies:
+      '@kvirn-ui/react':
+        specifier: workspace:*
+        version: link:../react
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.3.0
+      react:
+        specifier: 'catalog:'
+        version: 19.3.0
       vite-plus:
         specifier: 'catalog:'
         version: 1.0.0(@types/node@24.19.1)(@vitest/browser-playwright@5.0.1)(@vitest/ui@5.0.1)(esbuild@0.28.2)(typescript@7.0.2)(yaml@2.9.1)

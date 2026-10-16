@@ -10,6 +10,7 @@
   "devDependencies": {
     "@heroicons/react": "catalog:",
     "@kvirn-ui/core": "workspace:*",
+    "@kvirn-ui/icons": "workspace:*",
     "@kvirn-ui/i18n": "workspace:*",
     "@kvirn-ui/map": "workspace:*",
     "@kvirn-ui/patterns": "workspace:*",
