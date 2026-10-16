@@ -308,6 +308,9 @@ importers:
       '@kvirn-ui/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@kvirn-ui/icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
       '@kvirn-ui/map':
         specifier: workspace:*
         version: link:../../packages/map

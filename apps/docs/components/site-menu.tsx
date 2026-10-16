@@ -1,6 +1,7 @@
 import { MainMenu } from '@kvirn-ui/patterns'
 import { Navigation } from '@kvirn-ui/react'
 import { messages } from '../messages/en.ts'
+import { OwnPackageMark, OwnPackageNote } from './own-package-badge.tsx'
 import { pageCurrent, sectionCurrent } from './site-sections.ts'
 import type { SiteGroup, SiteSection } from './site-sections.ts'
 
@@ -22,6 +23,7 @@ function MenuGroup({ group, pathname }: { group: SiteGroup; pathname: string }) 
             current={pageCurrent(pathname, page.href)}
           >
             {page.label}
+            <OwnPackageMark page={page} />
           </MainMenu.Link>
         ))}
       </Navigation.List>
@@ -46,6 +48,7 @@ function SectionGroup({ section, pathname }: { section: SiteSection; pathname: s
               current={pageCurrent(pathname, page.href)}
             >
               {page.label}
+              <OwnPackageMark page={page} />
             </MainMenu.Link>
           ))}
         </Navigation.List>
@@ -100,6 +103,7 @@ export function SiteMenu({
                   .map((child) => (
                     <SectionGroup key={child.id} section={child} pathname={pathname} />
                   ))}
+                <OwnPackageNote inList pages={section.groups.flatMap((group) => group.pages)} />
               </MainMenu.TopicPanel>
             </MainMenu.Topic>
           ),

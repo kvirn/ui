@@ -1,11 +1,13 @@
 import { CardRoot, GridRoot, Heading, Link } from '@kvirn-ui/react'
 import { Fragment } from 'react'
 import type { ReactNode } from 'react'
+import { OwnPackageBadge } from '../own-package-badge.tsx'
 
 export interface GalleryItem {
   href: string
   label: string
   summary: string
+  ownPackage?: string | undefined
   /** A decorative picture inside the link. Without it the card has no picture and no empty box. */
   preview?: ReactNode | undefined
 }
@@ -29,7 +31,10 @@ export function GalleryCards({ items }: { items: readonly GalleryItem[] }) {
                   {item.preview}
                 </span>
               )}
-              <span>{item.label}</span>
+              <span>
+                {item.label}
+                <OwnPackageBadge page={item} />
+              </span>
             </Link>
           </Heading>
           <p>{item.summary}</p>

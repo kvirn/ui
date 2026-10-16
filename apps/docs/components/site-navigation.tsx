@@ -1,5 +1,6 @@
 'use client'
 import { Link, Navigation, Section } from '@kvirn-ui/react'
+import { OwnPackageMark, OwnPackageNote } from './own-package-badge.tsx'
 import type { SiteGroup, SitePage, SiteSection } from './site-sections.ts'
 
 function PageItem({ page, pathname }: { page: SitePage; pathname: string }) {
@@ -7,6 +8,7 @@ function PageItem({ page, pathname }: { page: SitePage; pathname: string }) {
     <Navigation.Item>
       <Link href={page.href} current={page.href === pathname ? 'page' : undefined}>
         {page.label}
+        <OwnPackageMark page={page} />
       </Link>
     </Navigation.Item>
   )
@@ -78,6 +80,7 @@ export function SiteNavigation({
                 <PageGroup key={group.label} group={group} pathname={pathname} />
               ))}
         </Navigation.List>
+        <OwnPackageNote pages={section.groups?.flatMap((group) => group.pages) ?? section.pages} />
       </Navigation.Root>
     </Section>
   )

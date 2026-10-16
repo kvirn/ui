@@ -544,6 +544,10 @@ body {
     margin-block-end: var(--kv-space-6);
   }
 
+  .docs-menu-columns .kv-mega-menu-list > .docs-own-package-note {
+    column-span: all;
+  }
+
   .docs-menu-columns .kv-mega-menu-group {
     break-inside: avoid;
     margin-block-end: var(--kv-space-6);
@@ -604,4 +608,32 @@ body {
   .docs-pager a {
     border-color: LinkText;
   }
+}
+
+.docs-own-package-note {
+  margin: 0;
+  font-size: var(--kv-font-body-small-size);
+}
+
+.docs-icon-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: var(--kv-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.docs-icon-item {
+  display: flex;
+  align-items: start;
+  gap: var(--kv-space-3);
+  margin: 0;
+  padding: var(--kv-space-3);
+  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-md);
+}
+
+.docs-icon-item p {
+  margin: 0;
 }

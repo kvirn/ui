@@ -8,6 +8,8 @@ const contentTypeGroupText = text.contentTypeGroups
 export interface SitePage {
   href: string
   label: string
+  /** The npm name of the separate package the component lives in, when it isn't `@kvirn-ui/react`. */
+  ownPackage?: string
 }
 
 /** A page that a gallery card can show: the one-line job, written once and also the page's lead. */
@@ -54,10 +56,16 @@ export interface SiteTool {
   opensInNewTab?: boolean
 }
 
-const component = (label: string, slug: string, summary: string): SummarisedPage => ({
+const component = (
+  label: string,
+  slug: string,
+  summary: string,
+  ownPackage?: string,
+): SummarisedPage => ({
   href: `/components/${slug}`,
   label,
   summary,
+  ...(ownPackage === undefined ? {} : { ownPackage }),
 })
 
 /**
@@ -137,6 +145,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'A heading with its element as a required prop and its look as an optional one.',
       ),
       component('Icon', 'icon', 'A small drawing that supports the text next to it.'),
+      component(
+        'Icons',
+        'icons',
+        'Every icon in the library, with its name, other names and meaning, and a search.',
+      ),
       component('Kbd', 'kbd', 'A key name in running text, drawn as a key.'),
       component(
         'Progress',
@@ -308,6 +321,7 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'RichTextEditor',
         'rich-text-editor',
         'A formatted text box with a toolbar, for text that will be published or sent, such as a news item or a case description in a staff tool.',
+        '@kvirn-ui/rich-text',
       ),
       component(
         'Slider',
@@ -388,6 +402,7 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'Map',
         'map',
         'Places on a map and the same places as a list, with the keyboard and a button for every gesture.',
+        '@kvirn-ui/map',
       ),
       component(
         'ReadAloud',
