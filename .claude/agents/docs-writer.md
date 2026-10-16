@@ -37,7 +37,7 @@ Follow the `docs-pages` skill and its template (`references/component-page-templ
 - **Contracts:** you may change the wording of a `.a11y.md` section to make it plain, never what it claims, and never the Keyboard table's keys or the Message keys. A claim that is wrong in the contract or the code is a finding for component-engineer, not an edit.
 - **Template:** if the page can't follow the template because `ComponentPage` or `contract-sections-view.tsx` renders a different order or header, report it once as a template finding. Don't edit those files, `messages/en.ts` or `site-navigation.tsx`.
 - Never claim legal compliance, an AT row as passed without both its agent and human check recorded, or a status the roadmap doesn't give. Show `agent-verified` and `pending` rows as they are.
-- No new dependency, no tests in `apps/docs`, no changes outside the components you were given.
+- No new dependency, no tests of any kind in `apps/docs` (no page, shell, example, lib or action tests), no changes outside the components you were given.
 
 ## Report
 

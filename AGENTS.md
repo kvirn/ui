@@ -55,7 +55,7 @@ While working, pass your files. The whole tree runs once, at the end.
 
 ## Tests
 
-Vitest is the only runner: `node` for core, `browser` (Chromium, real key events) for components, and four `storybook*` projects that run every story in every theme. Each contract row, ARIA state and announcement is proved once, in the cheapest layer (`testing` skill). **Keyboard rows are tested in `<name>.test.tsx`.** Patterns (`packages/patterns`) have no unit tests: they are components composed, so WCAG is proved by axe in every story state in every theme and by their contract. There is no e2e layer.
+Vitest is the only runner: `node` for core, `browser` (Chromium, real key events) for components, and four `storybook*` projects that run every story in every theme. Each contract row, ARIA state and announcement is proved once, in the cheapest layer (`testing` skill). **Keyboard rows are tested in `<name>.test.tsx`.** Patterns (`packages/patterns`) have no unit tests: they are components composed, so WCAG is proved by axe in every story state in every theme and by their contract. There is no e2e layer. **`apps/docs` has no tests of any kind** (no page, shell, navigation, example, lib or action tests): the library's components are tested in their packages and in Storybook, and the docs site only presents them.
 
 ## Quality gates
 

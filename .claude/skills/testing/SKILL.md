@@ -47,7 +47,9 @@ The look is reviewed by eye in Storybook, never by test. When a test you meet br
 | Component | `packages/react/src/<name>/<name>.test.tsx`               | Vitest browser mode (Playwright provider)                                                                               | Rendering, ARIA, props, **axe**, **every keyboard-table row** (incl. Shift+Tab, RTL arrows), focus |
 | Stories   | `apps/storybook/src/components/<name>/<name>.stories.tsx` | `vp test run` (Storybook `addon-vitest`, a11y addon: axe violations fail), once per theme in four `storybook*` projects | Every visual state, plus play functions, in every theme                                            |
 
-Vitest projects (root `vite.config.ts`): `node` (core, i18n, theme, tooling), `browser` (react, testing and the docs-site components, in Chromium) and the four `storybook*` projects. Stories live in the Storybook app, not the package. They import components the way an adopter does (`@kvirn-ui/react`). A fixture that the package's own tests also use stays in the package, and the story imports it by relative source path. It's never exported.
+**Where tests are allowed:** `packages/*/src`, `tooling/` and Storybook stories. Not in `apps/docs`: never add a test for a docs page, the site shell, navigation, an example or a docs helper. Test the library component it shows.
+
+Vitest projects (root `vite.config.ts`): `node` (core, i18n, theme, tooling), `browser` (react, testing, rich-text, map and patterns, in Chromium) and the four `storybook*` projects. Stories live in the Storybook app, not the package. They import components the way an adopter does (`@kvirn-ui/react`). A fixture that the package's own tests also use stays in the package, and the story imports it by relative source path. It's never exported.
 
 ## TDD loop
 

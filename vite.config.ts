@@ -261,7 +261,6 @@ export default defineConfig({
           include: [
             'packages/{core,i18n,theme,patterns,icons}/src/**/*.test.ts',
             'tooling/**/*.test.ts',
-            'apps/docs/**/*.test.ts',
           ],
         },
       },
@@ -274,7 +273,6 @@ export default defineConfig({
           include: [
             'packages/{react,testing,rich-text,map}/src/**/*.test.{ts,tsx}',
             'packages/patterns/src/**/*.test.tsx',
-            'apps/docs/**/*.test.tsx',
           ],
           browser: {
             enabled: true,
