@@ -117,7 +117,7 @@ export function HeadingPage({
           <UseCase
             id="in-running-text"
             title="Headings in running text"
-            why="Inside a block of running text (Prose) the headings get their margins from the Prose. In the default theme the levels h4 to h6 keep one size and differ by weight and letter spacing, not by getting smaller."
+            why="Inside a block of running text (Prose) the headings get their margins from the Prose. In the default theme the levels h4 to h6 differ by size first, then by weight and letter spacing, and they do not get smaller on a small screen."
             code={sources['in-prose']}
             propsUsed={[{ part: 'Heading', prop: 'as' }]}
           >

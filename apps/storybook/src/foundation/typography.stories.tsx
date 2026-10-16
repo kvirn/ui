@@ -424,10 +424,10 @@ function TypeRolesPage({ locale }: { locale: FixtureLocale }): ReactNode {
               ? 'This locale has no translated fixture yet, so they are in English.'
               : null}{' '}
             <code>lead</code> is only for the lead paragraph of large prose. Below 40rem{' '}
-            <code>display</code>, <code>heading-1</code>, <code>heading-2</code> and{' '}
-            <code>lead</code> step down; <code>heading-3</code> to <code>heading-6</code> and the
-            body roles never do. The Heading levels story shows <code>h1</code> to <code>h6</code>{' '}
-            together.
+            <code>display</code>, <code>heading-1</code>, <code>heading-2</code>,{' '}
+            <code>heading-3</code> and <code>lead</code> step down; <code>heading-4</code> to{' '}
+            <code>heading-6</code> and the body roles never do. The Heading levels story shows{' '}
+            <code>h1</code> to <code>h6</code> together.
           </p>
           <TypeRolesTable locale={locale} roles={roles} />
         </div>
@@ -448,10 +448,11 @@ function HeadingLevelsPage({ locale }: { locale: FixtureLocale }): ReactNode {
         <p>
           Prose styles <code>h1</code> to <code>h6</code> with the type roles <code>heading-1</code>{' '}
           to <code>heading-6</code>, and the Heading component does the same through its level. The
-          values are in the Type roles table. <code>heading-4</code> to <code>heading-6</code> stay
-          at 16px, because essential content is never smaller. They are told apart by weight and
-          tracking, so stop at <code>h3</code> in text a resident reads where you can, and never
-          pick a level for its look: set the type role with <code>size</code> instead.
+          values are in the Type roles table. <code>heading-4</code> to <code>heading-6</code>{' '}
+          differ by size first (20px, 16px and 14px), then by weight and tracking, and never step
+          down on a small screen. <code>heading-6</code> is smaller than the body text, so stop at{' '}
+          <code>h3</code> in text a resident reads where you can, and never pick a level for its
+          look: set the type role with <code>size</code> instead.
         </p>
         <article className="kv-prose">
           <h1>{text.title}</h1>

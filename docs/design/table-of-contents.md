@@ -186,7 +186,7 @@ The component isn't sticky and has no layout of its own: placement is the page's
 ### 6.5 The title
 
 - **It's a real heading the consumer renders,** at the outline's level, normally `h2`, with the same words as the label: "On this page".
-  - **Beside an article** (a side column), use the `heading-4` look: `<Heading as="h2" className="kv-heading--heading-4">`, which is 16px, weight 600, serif and `text`. Then it doesn't compete with the article's own `h2` headings.
+  - **Beside an article** (a side column), use the `heading-4` look: `<Heading as="h2" className="kv-heading--heading-4">`, which is 20px, weight 600, serif and `text`. Then it doesn't compete with the article's own `h2` headings.
   - **Above the article,** its level's own look is fine, as with the docs site's 18px "On this page".
 - **It's never muted.** It's a heading, not a label (docs-site.md line 456).
 - **Spacing:** `space-2` (8px) below it, before the list. `kv-heading` sets no margin, so that's the consumer's.

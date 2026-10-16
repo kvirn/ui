@@ -314,40 +314,39 @@
      * its l a tail and its 1 a flag and a foot. A brand font that can't sets its own
      * (Inter: 'cv05', 'cv08'). Plex figures are tabular already, and 'tnum' stays for fonts
      * that aren't. */
-    --kv-font-display-size: 2.5rem;
+    --kv-font-display-size: 3rem;
     --kv-font-display-weight: 600;
     --kv-font-display-line-height: 1.2;
     --kv-font-display-letter-spacing: -0.01em;
     --kv-font-display-feature-settings: normal;
-    --kv-font-heading-1-size: 1.75rem;
+    --kv-font-heading-1-size: 2.25rem;
     --kv-font-heading-1-weight: 600;
     --kv-font-heading-1-line-height: 1.2;
     --kv-font-heading-1-letter-spacing: 0em;
     --kv-font-heading-1-feature-settings: normal;
-    --kv-font-heading-2-size: 1.375rem;
+    --kv-font-heading-2-size: 1.875rem;
     --kv-font-heading-2-weight: 500;
     --kv-font-heading-2-line-height: 1.25;
     --kv-font-heading-2-letter-spacing: 0em;
     --kv-font-heading-2-feature-settings: normal;
-    --kv-font-heading-3-size: 1.125rem;
+    --kv-font-heading-3-size: 1.5rem;
     --kv-font-heading-3-weight: 600;
-    --kv-font-heading-3-line-height: 1.4;
+    --kv-font-heading-3-line-height: 1.3;
     --kv-font-heading-3-letter-spacing: 0em;
     --kv-font-heading-3-feature-settings: normal;
-    /* heading-4 to heading-6 stay at the body size (16px): essential content is never smaller,
-     * so they are told apart by weight, line height and tracking, not by shrinking. They never
-     * step down on a small screen. Resident-facing text stops at h3 where it can. */
-    --kv-font-heading-4-size: 1rem;
+    /* heading-4 to heading-6 never step down on a small screen. heading-4 is 20px, heading-5
+     * the body size (16px) and heading-6 14px, the smallest size any heading takes. */
+    --kv-font-heading-4-size: 1.25rem;
     --kv-font-heading-4-weight: 600;
     --kv-font-heading-4-line-height: 1.4;
     --kv-font-heading-4-letter-spacing: 0em;
     --kv-font-heading-4-feature-settings: normal;
     --kv-font-heading-5-size: 1rem;
     --kv-font-heading-5-weight: 500;
-    --kv-font-heading-5-line-height: 1.5;
+    --kv-font-heading-5-line-height: 1.4;
     --kv-font-heading-5-letter-spacing: 0em;
     --kv-font-heading-5-feature-settings: normal;
-    --kv-font-heading-6-size: 1rem;
+    --kv-font-heading-6-size: 0.875rem;
     --kv-font-heading-6-weight: 500;
     --kv-font-heading-6-line-height: 1.5;
     --kv-font-heading-6-letter-spacing: 0.03em;
@@ -462,14 +461,15 @@
   }
 
   /* Below 40rem the large roles step down, so a long word or a heading fits a phone:
-   * display 32px with no tracking, heading-1 24px, heading-2 20px and lead 18px. Body text and
-   * heading-3 to heading-6 never change. In rem, so they still grow with the browser's text size (1.4.4). */
+   * display 36px with no tracking, heading-1 30px, heading-2 26px, heading-3 22px and lead 18px.
+   * Body text and heading-4 to heading-6 never change. In rem, so they still grow with the browser's text size (1.4.4). */
   @media (width < 40rem) {
     :root {
-      --kv-font-display-size: 2rem;
+      --kv-font-display-size: 2.25rem;
       --kv-font-display-letter-spacing: 0em;
-      --kv-font-heading-1-size: 1.5rem;
-      --kv-font-heading-2-size: 1.25rem;
+      --kv-font-heading-1-size: 1.875rem;
+      --kv-font-heading-2-size: 1.625rem;
+      --kv-font-heading-3-size: 1.375rem;
       --kv-font-lead-size: 1.125rem;
     }
   }
@@ -2914,7 +2914,7 @@
       }
 
       &:where(h1) {
-        margin-block: 0 var(--kv-space-6);
+        margin-block: 0 var(--kv-space-8);
         font-size: var(--kv-font-heading-1-size);
         font-weight: var(--kv-font-heading-1-weight);
         line-height: var(--kv-font-heading-1-line-height);
@@ -2940,11 +2940,11 @@
         line-height: var(--kv-font-heading-3-line-height);
         letter-spacing: var(--kv-font-heading-3-letter-spacing);
         font-feature-settings: var(--kv-font-heading-3-feature-settings);
+        text-wrap: balance;
       }
 
       /* h4 to h6 have their own roles and keep them in every prose size, as h1 to h3 do. They
-       * stay at 1rem, so they are told apart by weight and tracking. In the large sizes they are
-       * smaller than the body text, so resident content stops at h3. */
+       * differ by size, weight and tracking. */
       &:where(h4) {
         margin-block: var(--kv-space-6) var(--kv-space-2);
         font-size: var(--kv-font-heading-4-size);
@@ -2955,7 +2955,7 @@
       }
 
       &:where(h5) {
-        margin-block: var(--kv-space-6) var(--kv-space-2);
+        margin-block: var(--kv-space-5) var(--kv-space-2);
         font-size: var(--kv-font-heading-5-size);
         font-weight: var(--kv-font-heading-5-weight);
         line-height: var(--kv-font-heading-5-line-height);
@@ -2964,7 +2964,7 @@
       }
 
       &:where(h6) {
-        margin-block: var(--kv-space-6) var(--kv-space-2);
+        margin-block: var(--kv-space-5) var(--kv-space-2);
         font-size: var(--kv-font-heading-6-size);
         font-weight: var(--kv-font-heading-6-weight);
         line-height: var(--kv-font-heading-6-line-height);
@@ -3437,7 +3437,7 @@
   .kv-steps > li::marker {
     color: var(--kv-color-heading);
     font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
-    font-size: var(--kv-font-heading-3-size);
+    font-size: var(--kv-font-body-large-size);
     font-weight: 600;
     font-feature-settings: var(--kv-font-numeric-feature-settings);
   }
@@ -3450,7 +3450,7 @@
   }
 
   /* 8a. Heading ------------------------------------------------------------------------------
-   * <Heading level={2}> renders <h2 class="kv-heading kv-heading--heading-2">: the level is the
+   * <Heading as="h2"> renders <h2 class="kv-heading kv-heading--heading-2">: the level is the
    * page's outline, and the modifier is the look. Choose the look apart from the level with
    * kv-heading--display or --heading-1 to --heading-6, the type roles of the same names (a
    * card's title can be an h3 set as heading-2, and a page's h1 can be display). The Heading
@@ -3508,6 +3508,7 @@
     line-height: var(--kv-font-heading-3-line-height);
     letter-spacing: var(--kv-font-heading-3-letter-spacing);
     font-feature-settings: var(--kv-font-heading-3-feature-settings);
+    text-wrap: balance;
   }
 
   :where(.kv-heading--heading-4) {
@@ -3865,7 +3866,7 @@
     margin: 0;
     color: var(--kv-color-heading);
     font-family: var(--kv-font-family-heading, var(--kv-font-family-sans));
-    font-size: var(--kv-font-heading-4-size);
+    font-size: var(--kv-font-body-size);
     font-weight: var(--kv-font-heading-4-weight);
     line-height: var(--kv-font-heading-4-line-height);
     letter-spacing: var(--kv-font-heading-4-letter-spacing);
@@ -5593,11 +5594,11 @@
     margin: 0;
     color: var(--kv-color-heading);
     font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
-    font-size: var(--kv-font-heading-2-size);
-    font-weight: var(--kv-font-heading-2-weight);
-    line-height: var(--kv-font-heading-2-line-height);
-    letter-spacing: var(--kv-font-heading-2-letter-spacing);
-    font-feature-settings: var(--kv-font-heading-2-feature-settings);
+    font-size: var(--kv-font-heading-3-size);
+    font-weight: var(--kv-font-heading-3-weight);
+    line-height: var(--kv-font-heading-3-line-height);
+    letter-spacing: var(--kv-font-heading-3-letter-spacing);
+    font-feature-settings: var(--kv-font-heading-3-feature-settings);
   }
 
   .kv-dialog-title:is(:focus-visible, [data-focus-visible]) {
@@ -5655,7 +5656,7 @@
     min-inline-size: var(--kv-control-min-block-size);
     min-block-size: var(--kv-control-min-block-size);
     margin-block: calc(
-      (var(--kv-font-heading-2-size) * var(--kv-font-heading-2-line-height) -
+      (var(--kv-font-heading-3-size) * var(--kv-font-heading-3-line-height) -
           var(--kv-control-min-block-size)) /
         2
     );

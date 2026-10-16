@@ -55,17 +55,17 @@ The maintainer has decided (2026-10-01): IBM Plex Sans for body text, labels and
 
 ### 3.3 Role tokens
 
-Sizes and weights stay as they are. Changed values are in **bold**.
+Sizes are the desktop sizes (plan 0125); below 40rem display, heading-1, heading-2 and heading-3 step down and heading-4 to heading-6 never do. Changed values are in **bold**.
 
 | Role          | Family | Size     | Weight | Line height        | Letter spacing           | Feature settings                  |
 | ------------- | ------ | -------- | ------ | ------------------ | ------------------------ | --------------------------------- |
-| display       | serif  | 2.5rem   | 600    | **1.2** (was 1.15) | **−0.01em** (was −0.025) | normal                            |
-| heading-1     | serif  | 1.75rem  | 600    | 1.2                | **0em** (was −0.021)     | normal                            |
-| heading-2     | serif  | 1.375rem | 500    | 1.25               | **0em** (was −0.018)     | normal                            |
-| heading-3     | serif  | 1.125rem | 600    | 1.4                | 0em                      | normal                            |
-| heading-4     | serif  | 1rem     | 600    | 1.4                | 0em                      | normal                            |
-| heading-5     | serif  | 1rem     | 500    | 1.5                | 0em                      | normal                            |
-| heading-6     | serif  | 1rem     | 500    | 1.5                | 0.03em                   | normal                            |
+| display       | serif  | 3rem     | 600    | **1.2** (was 1.15) | **−0.01em** (was −0.025) | normal                            |
+| heading-1     | serif  | 2.25rem  | 600    | 1.2                | **0em** (was −0.021)     | normal                            |
+| heading-2     | serif  | 1.875rem | 500    | 1.25               | **0em** (was −0.018)     | normal                            |
+| heading-3     | serif  | 1.5rem   | 600    | 1.3                | 0em                      | normal                            |
+| heading-4     | serif  | 1.25rem  | 600    | 1.4                | 0em                      | normal                            |
+| heading-5     | serif  | 1rem     | 500    | 1.4                | 0em                      | normal                            |
+| heading-6     | serif  | 0.875rem | 500    | 1.5                | 0.03em                   | normal                            |
 | lead          | sans   | 1.25rem  | 400    | 1.5                | 0em                      | **normal** (was cv05, cv08)       |
 | body-large    | sans   | 1.125rem | 400    | 1.6                | 0em                      | **normal**                        |
 | body          | sans   | 1rem     | 400    | 1.5                | 0em                      | **normal**                        |
@@ -75,7 +75,7 @@ Sizes and weights stay as they are. Changed values are in **bold**.
 | numeric       | sans   | 1rem     | 400    | 1.5                | 0em                      | **'tnum'** (was tnum, cv05, cv08) |
 | code          | mono   | 0.875rem | 400    | 1.6                | 0em                      | normal                            |
 
-- **Weights in use:** Sans 400 (text), 500 (labels), 600 (`strong`, the current navigation item, and the adopter `--kv-button-font-weight` example). Serif 500 (heading-2) and 600 (the others). Nothing asks for 700, so no bold is synthesised. Italics are synthesised in both families, as with Inter today.
+- **Weights in use:** Sans 400 (text), 500 (labels), 600 (`strong`, the current navigation item, and the adopter `--kv-button-font-weight` example). Serif 500 (heading-2, heading-5, heading-6) and 600 (the others). Nothing asks for 700, so no bold is synthesised. Italics are synthesised in both families, as with Inter today.
 - **Tracking.** Inter's negative tracking was tuned for a tight grotesque. In a serif it pushes the serifs together. In the _measured_ render, −0.025em at 40px crowded "bostadsbidrag", while −0.01em kept the serifs apart and still closed up the display size. From 28px down, 0 reads best, and that matches IBM's own use of Plex.
 - **Display line height 1.15 → 1.2.** _Measured_ in Plex Serif SemiBold: the top of Å is at 0.994em and the bottom of g, j and y is at −0.212em, 1.206em together. At 1.15, a wrapped display heading's Å ring cuts 0.056em (about 2px) into the descender above it. At 1.2 that's 0.006em, and the ring doesn't visibly touch. 1.2 × 40px is 48px, which is on the 4px grid (46px wasn't). heading-1 is already 1.2. No other line height changes. <!-- kv-lang-ok: the Nordic and Sámi letters are the subject of the font coverage -->
 - **No size change for the smaller x-height.** Plex Sans's x-height is 0.516em, against Inter's 0.546em (8.3px against 8.7px at 16px). Matching it would take 16.9px, an off-scale size that would change control heights, the measure and every layout. The next step up (18px, `body-large`) is already the default for long resident-facing text. The 16px floor protects users' own settings, and rem keeps zoom working (1.4.4). Plex Sans is also narrower (_measured_: lowercase averages 0.505em at 400, against Inter's 0.536em), so it adds no wrapping risk. We keep the sizes and test the assumption (§8).
@@ -136,11 +136,11 @@ Open question 7 (line 479): "Capital-height alignment assumes IBM Plex's metrics
 >
 > - **Families.** Body text and controls (prose, buttons, labels, navigation, tables and captions) use `--kv-font-family-body`, which falls back to `--kv-font-family-sans`. Headings (prose `h1`–`h6` and the `display` role) use `--kv-font-family-heading`, which falls back to `--kv-font-family-serif`. The theme sets neither override. A link keeps the font around it, and code stays `--kv-font-family-mono`. The serif is only for real headings: anything users operate or scan as data stays sans, and hierarchy never depends on the family alone.
 > - **Why IBM Plex.** Plex Sans's capitals sit in the middle of the line box, and its vertical metrics are the same on every OS (`hhea` = `win`, 1025/275), so button labels look centred on Windows, macOS and Linux. It tells l, I and 1 apart without features, and it covers every Northern Sámi letter. Plex Serif shares its metrics and gives headings a distinct, calm voice. Both are SIL OFL 1.1, with "Plex" a Reserved Font Name: use IBM's files unmodified, and never subset or rename them.
-> - **Weights.** Sans 400 (text), 500 (labels and controls) and 600 (`strong`, the current item). Serif 500 (`heading-2`) and 600 (the other headings). Upright only: italics are synthesised. Nothing uses 700.
+> - **Weights.** Sans 400 (text), 500 (labels and controls) and 600 (`strong`, the current item). Serif 500 (`heading-2`, `heading-5`, `heading-6`) and 600 (the other headings). Upright only: italics are synthesised. Nothing uses 700.
 > - **System stacks.** `--kv-font-family-system` is `system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif`, and `--kv-font-family-sans` is `'IBM Plex Sans'` in front of it. `--kv-font-family-system-serif` is `ui-serif, Cambria, 'Noto Serif', Georgia, serif`, and `--kv-font-family-serif` is `'IBM Plex Serif'` in front of it. End a brand stack with the matching system stack, and check the Glyphs story in Foundation/Typography.
 > - **Loading.** The theme never loads a font (GDPR, AGENTS.md hard rule 7). The docs site and Storybook self-host IBM's split woff2 files (Latin1, Latin2, Pi). Adopters either self-host the same files, from [IBM Plex's GitHub releases](https://github.com/IBM/plex/releases) or copied from `apps/docs/fonts/ibm-plex/` with `OFL.txt`, or rely on the system fallback. The `@ibm/plex-sans` and `@ibm/plex-serif` npm packages send IBM telemetry from a `postinstall` script. Don't install them as dependencies: fetch them with `npm pack`, or set `IBM_TELEMETRY_DISABLED=true` if you must install them. A replacement brand font must cover the Sámi letters as well as å ä ö æ ø. <!-- kv-lang-ok: the Nordic and Sámi letters are the subject of the font coverage -->
 > - **Disambiguation.** No feature settings are needed: Plex's `I` has serifs, its `l` a tail and its `1` a flag and a foot. Don't turn on the slashed zero (`zero`, `ss03`), which reads as Ø in Danish and Norwegian. Set codes where O and 0 matter in `code` (mono), or add `'ss04'` (the dotted zero). A brand font that needs features for l, I and 1 sets them in the `--kv-font-*-feature-settings` tokens (Inter: `'cv05', 'cv08'`). <!-- kv-lang-ok: the Nordic and Sámi letters are the subject of the font coverage -->
-> - **Headings.** Weight 600 (500 for `heading-2`). `display` has −0.01em tracking and line height 1.2, so the ring on Å clears the descenders above it. Below 40px there is no tracking: negative tracking crowds the serifs, and it reverses under the 1.4.12 overrides anyway. <!-- kv-lang-ok: the Nordic and Sámi letters are the subject of the font coverage -->
+> - **Headings.** Weight 600 (500 for `heading-2`, `heading-5` and `heading-6`). `display` has −0.01em tracking and line height 1.2, so the ring on Å clears the descenders above it. Below 40px there is no tracking: negative tracking crowds the serifs, and it reverses under the 1.4.12 overrides anyway. <!-- kv-lang-ok: the Nordic and Sámi letters are the subject of the font coverage -->
 > - **One family, or keep Inter.** For a single family, set `--kv-font-family-heading: var(--kv-font-family-sans)`. To keep Inter, set both family tokens and the body feature settings.
 
 Lines 319–325 and 327–330 (numbers, scale, measure, sentence case, text spacing, rem) are unchanged.

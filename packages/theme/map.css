@@ -457,7 +457,7 @@
     margin-block: var(--kv-space-4) var(--kv-space-2);
     color: var(--kv-color-heading);
     font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
-    font-size: var(--kv-font-heading-4-size);
+    font-size: var(--kv-font-body-size);
     font-weight: var(--kv-font-heading-4-weight);
     line-height: var(--kv-font-heading-4-line-height);
     letter-spacing: var(--kv-font-heading-4-letter-spacing);
@@ -956,7 +956,7 @@
     margin: 0;
     min-inline-size: 0;
     border-radius: var(--kv-radius-sm);
-    font-size: var(--kv-font-heading-4-size);
+    font-size: var(--kv-font-body-size);
     font-weight: var(--kv-font-heading-4-weight);
     line-height: var(--kv-font-heading-4-line-height);
     letter-spacing: var(--kv-font-heading-4-letter-spacing);

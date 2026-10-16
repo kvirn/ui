@@ -17,3 +17,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0122](0122-quick-exit.md)         | QuickExit (leave a sensitive page in one action)       | In progress |
 | [0123](0123-english-only-prose.md) | English-only prose, examples and fixtures              | Done        |
 | [0124](0124-icon-library.md)       | Icon library (`@kvirn-ui/icons`, 150+ outline icons)   | In progress |
+| [0125](0125-heading-scale.md)      | Wider heading scale (h1–h6)                            | Done        |

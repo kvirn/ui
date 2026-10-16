@@ -274,7 +274,7 @@
 }
 
 .kv-site-header--primary .kv-application-logo-name {
-  font-size: var(--kv-font-heading-2-size);
+  font-size: 1.375rem;
   line-height: var(--kv-font-heading-2-line-height);
 }
 
@@ -424,7 +424,7 @@
   }
 
   .kv-site-header--primary .kv-application-logo-name {
-    font-size: var(--kv-font-heading-1-size);
+    font-size: 1.75rem;
     line-height: var(--kv-font-heading-1-line-height);
   }
 }
@@ -677,7 +677,7 @@
 
 .kv-application-logo-name {
   grid-column: -2;
-  font-size: var(--kv-font-heading-4-size);
+  font-size: var(--kv-font-body-size);
   font-weight: 600;
   line-height: var(--kv-font-heading-4-line-height);
 }
