@@ -52,14 +52,14 @@ function Trail(props: BreadcrumbRootProps) {
             <Breadcrumb.Link href="/">Start</Breadcrumb.Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Breadcrumb.Link href="/barn">Barn och utbildning</Breadcrumb.Link>
+            <Breadcrumb.Link href="/children">Children and education</Breadcrumb.Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Breadcrumb.Current>Förskola</Breadcrumb.Current>
+            <Breadcrumb.Current>Preschool</Breadcrumb.Current>
           </Breadcrumb.Item>
         </Breadcrumb.List>
       </Breadcrumb.Root>
-      <button type="button">Efter</button>
+      <button type="button">After</button>
     </>
   )
 }
@@ -70,9 +70,9 @@ describe('Breadcrumb keyboard', () => {
     await userEvent.tab()
     await expect.element(page.getByRole('link', { name: 'Start' })).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('link', { name: 'Barn och utbildning' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Children and education' })).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('Shift+Tab moves to the previous link', async () => {
@@ -85,7 +85,7 @@ describe('Breadcrumb keyboard', () => {
 
   test('Enter follows a link through the registered router link, without a page load', async () => {
     function Pathname() {
-      return <p>Nuvarande sida: {useMockPathname()}</p>
+      return <p>Current page: {useMockPathname()}</p>
     }
     await render(
       <KvirnProvider linkComponent={mockRouterLinkComponent}>
@@ -98,8 +98,8 @@ describe('Breadcrumb keyboard', () => {
     await userEvent.tab()
     await userEvent.tab()
     await userEvent.keyboard('{Enter}')
-    await expect.element(page.getByText('Nuvarande sida: /barn')).toBeVisible()
-    await expect.element(page.getByRole('link', { name: 'Barn och utbildning' })).toHaveFocus()
+    await expect.element(page.getByText('Current page: /children')).toBeVisible()
+    await expect.element(page.getByRole('link', { name: 'Children and education' })).toHaveFocus()
   })
 
   test('Space is not handled', async () => {
@@ -130,14 +130,14 @@ describe('Breadcrumb', () => {
     expect([...list.children].map((item) => item.tagName)).toEqual(['LI', 'LI', 'LI'])
     expect([...list.children].map((item) => item.textContent)).toEqual([
       'Start',
-      'Barn och utbildning',
-      'Förskola',
+      'Children and education',
+      'Preschool',
     ])
   })
 
   test('the last item is the current page: text with aria-current="page", not a link', async () => {
     await render(<Trail />)
-    const current = page.getByText('Förskola')
+    const current = page.getByText('Preschool')
     await expect.element(current).toHaveAttribute('aria-current', 'page')
     expect(current.element().tagName).toBe('SPAN')
     expect(current.element().closest('a')).toBeNull()
@@ -151,9 +151,9 @@ describe('Breadcrumb', () => {
 
   test('the links are native anchors with an href', async () => {
     await render(<Trail />)
-    const link = page.getByRole('link', { name: 'Barn och utbildning' }).element()
+    const link = page.getByRole('link', { name: 'Children and education' }).element()
     expect(link.tagName).toBe('A')
-    expect(link.getAttribute('href')).toBe('/barn')
+    expect(link.getAttribute('href')).toBe('/children')
   })
 
   test('Breadcrumb.Link renders the provider’s registered router link', async () => {
@@ -170,19 +170,19 @@ describe('Breadcrumb', () => {
   })
 
   test('label replaces the message', async () => {
-    await render(<Trail label="Brödsmulor" />)
-    await expect.element(page.getByRole('navigation', { name: 'Brödsmulor' })).toBeVisible()
+    await render(<Trail label="Breadcrumbs" />)
+    await expect.element(page.getByRole('navigation', { name: 'Breadcrumbs' })).toBeVisible()
   })
 
   test('messages override the name per instance', async () => {
-    await render(<Trail messages={{ label: 'Din plats' }} />)
-    await expect.element(page.getByRole('navigation', { name: 'Din plats' })).toBeVisible()
+    await render(<Trail messages={{ label: 'Your location' }} />)
+    await expect.element(page.getByRole('navigation', { name: 'Your location' })).toBeVisible()
   })
 
   test.each([
-    ['sv', sv, 'Du är här'],
+    ['sv', sv, 'Du är här'], // kv-lang-ok: the catalog string
     ['en', en, 'You are here'],
-    ['fi', fi, 'Olet tässä'],
+    ['fi', fi, 'Olet tässä'], // kv-lang-ok: the catalog string
     ['nb', nb, 'Du er her'],
     ['nn', nn, 'Du er her'],
   ] as const)('the %s catalog names the landmark', async (locale, messages, name) => {
@@ -204,7 +204,7 @@ describe('Breadcrumb', () => {
             </Breadcrumb.Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Breadcrumb.Current data-testid="current">Förskola</Breadcrumb.Current>
+            <Breadcrumb.Current data-testid="current">Preschool</Breadcrumb.Current>
           </Breadcrumb.Item>
         </Breadcrumb.List>
       </Breadcrumb.Root>,
@@ -232,8 +232,8 @@ describe('Breadcrumb', () => {
     await render(
       <Breadcrumb.Root ref={rootRef} id="smulor" className="min" data-testid="root">
         <Breadcrumb.List>
-          <Breadcrumb.Item data-own="ja" className="eget" data-testid="item">
-            <Breadcrumb.Current ref={currentRef}>Förskola</Breadcrumb.Current>
+          <Breadcrumb.Item data-own="yes" className="own-class" data-testid="item">
+            <Breadcrumb.Current ref={currentRef}>Preschool</Breadcrumb.Current>
           </Breadcrumb.Item>
         </Breadcrumb.List>
       </Breadcrumb.Root>,
@@ -242,10 +242,10 @@ describe('Breadcrumb', () => {
     await expect.element(root).toHaveAttribute('id', 'smulor')
     await expect.element(root).toHaveClass('kv-breadcrumb', 'min')
     expect(rootRef.current).toBe(root.element())
-    expect(currentRef.current).toBe(page.getByText('Förskola').element())
+    expect(currentRef.current).toBe(page.getByText('Preschool').element())
     const item = page.getByTestId('item')
-    await expect.element(item).toHaveAttribute('data-own', 'ja')
-    await expect.element(item).toHaveClass('kv-breadcrumb-item', 'eget')
+    await expect.element(item).toHaveAttribute('data-own', 'yes')
+    await expect.element(item).toHaveClass('kv-breadcrumb-item', 'own-class')
   })
 
   test('a Breadcrumb.Link keeps the ref and joins className', async () => {
@@ -289,7 +289,7 @@ describe('Breadcrumb', () => {
       expect(separator.parentElement?.tagName).toBe('LI')
     }
     await expect.element(page.getByRole('link', { name: 'Start' })).toBeVisible()
-    await expect.element(page.getByRole('link', { name: 'Barn och utbildning' })).toBeVisible()
+    await expect.element(page.getByRole('link', { name: 'Children and education' })).toBeVisible()
   })
 
   test('without a separator no separator element is rendered', async () => {

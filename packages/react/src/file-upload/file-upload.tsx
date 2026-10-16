@@ -145,7 +145,7 @@ function useItem(part: string) {
  *
  * @example
  * <Field.Root>
- *   <Field.Label>Bilagor</Field.Label>
+ *   <Field.Label>Attachments</Field.Label>
  *   <FileUpload.Root accept=".pdf,image/jpeg" multiple maxFiles={5} maxFileSize={10_000_000}>
  *     <FileUpload.Limits />
  *     <FileUpload.DropZone>

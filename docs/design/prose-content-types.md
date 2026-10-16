@@ -1,4 +1,4 @@
-# Design spec: Prose content types: figure, inset text ("Viktigt") and steps ("Så här går det till")
+# Design spec: Prose content types: figure, inset text ("Important") and steps ("How it works")
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-06
@@ -31,7 +31,7 @@
 
 ## 3. Flow
 
-Reading, not a task flow: h1 → lead → content → inset (if any) → h2 "Så här går det till" → steps → figure → contact.
+Reading, not a task flow: h1 → lead → content → inset (if any) → h2 "How it works" → steps → figure → contact.
 
 Unhappy paths, and what the design does:
 
@@ -49,15 +49,15 @@ Unhappy paths, and what the design does:
 
 The classes ship **no strings**, so `packages/i18n` gets no key. The words are the editor's. Storybook fixture fields (added to `articleFor` in `apps/storybook/src/foundation/foundations.fixture.tsx`, all six fixture locales):
 
-| Fixture field                     | en                                                                                    | sv                                                                                | longest fi                                                                          |
-| --------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `inset.lead`                      | Important:                                                                            | Viktigt:                                                                          | Tärkeää:                                                                            |
-| `inset.text`                      | Apply by 30 April. We can't process applications that arrive later.                   | Ansök senast den 30 april. Ansökningar som kommer in senare kan vi inte behandla. | Hae viimeistään 30. huhtikuuta. Myöhemmin saapuneita hakemuksia emme voi käsitellä. |
-| `steps.heading`                   | How it works                                                                          | Så här går det till                                                               | Näin hakeminen etenee                                                               |
-| `steps.items[0..3]` (h3 + p each) | Apply in the e-service · We check your application · You get a decision · Pay the fee | Ansök i e-tjänsten · Vi går igenom ansökan · Du får ett beslut · Betala avgiften  | Hae sähköisessä asiointipalvelussa · …                                              |
-| `figure.longDescription`          | text paragraph after the figure (see §7.1)                                            |                                                                                   |                                                                                     |
+| Fixture field                     | en                                                                                    | sv                                                                                | longest fi                                                                                                                                                             |
+| --------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `inset.lead`                      | Important:                                                                            | Viktigt:                                                                          | Tärkeää: <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                                            |
+| `inset.text`                      | Apply by 30 April. We can't process applications that arrive later.                   | Ansök senast den 30 april. Ansökningar som kommer in senare kan vi inte behandla. | Hae viimeistään 30. huhtikuuta. Myöhemmin saapuneita hakemuksia emme voi käsitellä. <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `steps.heading`                   | How it works                                                                          | Så här går det till                                                               | Näin hakeminen etenee <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                               |
+| `steps.items[0..3]` (h3 + p each) | Apply in the e-service · We check your application · You get a decision · Pay the fee | Ansök i e-tjänsten · Vi går igenom ansökan · Du får ett beslut · Betala avgiften  | Hae sähköisessä asiointipalvelussa · … <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                              |
+| `figure.longDescription`          | text paragraph after the figure (see §7.1)                                            |                                                                                   |                                                                                                                                                                        |
 
-Writing rules for the docs page: the inset starts with a word that says why it's set apart ("Viktigt:", "Tänk på:", "Bra att veta:"), or a heading that states the point ("Ansök senast 30 april"), never a bare "Viktigt" heading (heading lists fill up with identical entries). Step headings start with a verb and don't repeat the number.
+Writing rules for the docs page: the inset starts with a word that says why it's set apart ("Important:", "Remember:", "Good to know:"), or a heading that states the point ("Apply by 30 April"), never a bare "Important" heading (heading lists fill up with identical entries). Step headings start with a verb and don't repeat the number.
 
 ## 5. Structure
 
@@ -67,7 +67,7 @@ Same at 320px, 40rem and 64rem (one column, 70ch measure); only the inset's inli
 [main] article.kv-prose
   h1 · p.kv-lead
   div.kv-inset        → p "Viktigt: …"              (no role, no landmark)
-  h2 "Så här går det till"
+  h2 "How it works"
   ol.kv-steps         → li (h3 + p) × n             (native list, n items)
   figure              → img[alt] · figcaption (credit, source)
   p                   → long description, if the image is complex
@@ -112,7 +112,7 @@ No CSS change. `figcaption` stays `body-small`, `text-muted`, metadata (credit, 
 | reports the state of something (saved, failed, service down)                     | an Alert, announced only when it appears after an action                      |
 | is a quotation                                                                   | `blockquote` (bar, no fill)                                                   |
 
-The brief's example "Ansök senast 30 april, annars behandlas ansökan inte" sits on the line: it's a lost-rights deadline, so the guidance points to `Alert.Warning`. "Ta med legitimation till mötet" is an inset.
+The brief's example "Apply by 30 April, or your application will not be processed" sits on the line: it's a lost-rights deadline, so the guidance points to `Alert.Warning`. "Bring identification to the meeting" is an inset.
 
 ### 6.4 Steps (`kv-steps`)
 
@@ -126,14 +126,14 @@ The brief's example "Ansök senast 30 april, annars behandlas ansökan inte" sit
 | Nested lists in a step   | unchanged prose rules (`lower-alpha`, normal markers)                                                                                                                                |
 | `ol.kv-steps[type]`      | keeps its type, like prose                                                                                                                                                           |
 
-When to use: `kv-steps` for a process of about 3–8 steps where steps take time or happen apart ("vi skickar ett beslut"), each step often a heading plus text. A plain prose `ol` for short instructions of one line each. Either every step has a heading or none.
+When to use: `kv-steps` for a process of about 3–8 steps where steps take time or happen apart ("we send a decision"), each step often a heading plus text. A plain prose `ol` for short instructions of one line each. Either every step has a heading or none.
 
 **Steps vs Stepper (Plan 0053, narrowed).** They share no markup, class, token or string.
 
 |         | `kv-steps` (this spec)                   | Stepper / step indicator                                             |
 | ------- | ---------------------------------------- | -------------------------------------------------------------------- |
 | Is      | content describing a whole process       | the user's position in a multi-page form                             |
-| Element | `ol` of all steps                        | a line of text under the question `h1`: "Steg 2 av 5" + section name |
+| Element | `ol` of all steps                        | a line of text under the question `h1`: "Step 2 of 5" + section name |
 | State   | none; no current step, no `aria-current` | the current step only                                                |
 | Where   | inside prose, on guidance pages          | e-service question pages, never in prose                             |
 | Strings | editor's                                 | `stepper.status`, `stepper.statusWithName` (i18n)                    |
@@ -177,7 +177,7 @@ No focusable part is added, so no Tab stops, no keys and no `Keyboard` story. Ro
 | Image                                 | `alt`                                                   | `figcaption`         | Elsewhere                                                                                                     |
 | ------------------------------------- | ------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------- |
 | Informative photo                     | what it shows that matters here, ≤ about 150 characters | credit, source, date | –                                                                                                             |
-| Map, chart, plan                      | short: what and where ("Karta över zon B")              | source               | the facts in body text or a table right after the figure (addresses, figures). Not only in `title` or a hover |
+| Map, chart, plan                      | short: what and where ("Map of zone B")                 | source               | the facts in body text or a table right after the figure (addresses, figures). Not only in `title` or a hover |
 | Image of text (poster, opening hours) | avoid; if unavoidable, all the text                     | –                    | the text in HTML (1.4.5)                                                                                      |
 | Decorative                            | `alt=""`, and no `figure` or caption                    | –                    | –                                                                                                             |
 | Linked image                          | the link's destination                                  | –                    | –                                                                                                             |

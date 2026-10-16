@@ -21,7 +21,7 @@ export type VisuallyHiddenProps = AsTag<(typeof visuallyHiddenTags)[number], 'sp
  * focused control must be visible (2.4.7). For a bypass link, use SkipLink.
  *
  * @example
- * <p>Sökträffar<VisuallyHidden>, 3 resultat</VisuallyHidden></p>
+ * <p>Search results<VisuallyHidden>, 3 results</VisuallyHidden></p>
  *
  * @example
  * <VisuallyHidden as="h2">Meny</VisuallyHidden>

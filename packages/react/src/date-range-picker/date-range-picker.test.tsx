@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the tests run in sv because month and weekday names, announcements and the built-in labels are locale behaviour
 import { masks } from '@kvirn-ui/core'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
@@ -77,27 +78,27 @@ function Example({
         }}
       >
         <Fieldset.Root group>
-          <Fieldset.Legend>Datum för vistelsen</Fieldset.Legend>
+          <Fieldset.Legend>Dates of the stay</Fieldset.Legend>
           <div className="kv-date-range-row">
             <Field.Root>
-              <Field.Label>Från</Field.Label>
+              <Field.Label>From</Field.Label>
               <TextInput
                 name="start"
                 mask={masks.date()}
                 value={texts.start}
                 onValueChange={(start) => setTexts((current) => ({ ...current, start }))}
               />
-              <Field.HelpText>Till exempel 2026-10-27</Field.HelpText>
+              <Field.HelpText>For example 2026-10-27</Field.HelpText>
             </Field.Root>
             <Field.Root>
-              <Field.Label>Till</Field.Label>
+              <Field.Label>To</Field.Label>
               <TextInput
                 name="end"
                 mask={masks.date()}
                 value={texts.end}
                 onValueChange={(end) => setTexts((current) => ({ ...current, end }))}
               />
-              <Field.HelpText>Till exempel 2026-10-27</Field.HelpText>
+              <Field.HelpText>For example 2026-10-27</Field.HelpText>
             </Field.Root>
             {hasTrigger ? <DateRangePicker.Trigger /> : null}
           </div>
@@ -118,8 +119,8 @@ const politeRegion = () => page.getByRole('status')
 const dialogRegion = () => page.getByRole('dialog').getByRole('status')
 const dialogText = () => dialog().element().textContent
 const fieldValues = () => ({
-  start: (field('Från').element() as HTMLInputElement).value,
-  end: (field('Till').element() as HTMLInputElement).value,
+  start: (field('From').element() as HTMLInputElement).value,
+  end: (field('To').element() as HTMLInputElement).value,
 })
 
 const expectClosed = async () =>
@@ -197,7 +198,7 @@ describe('roles, names and states', () => {
         <DateRangePicker.Root today="2026-10-14">
           <DateRangePicker.Trigger />
           <DateRangePicker.Popup>
-            <DateRangePicker.Title>Välj datum för vistelsen</DateRangePicker.Title>
+            <DateRangePicker.Title>Choose the dates of your stay</DateRangePicker.Title>
             <DateRangePicker.Calendar />
           </DateRangePicker.Popup>
         </DateRangePicker.Root>
@@ -205,7 +206,7 @@ describe('roles, names and states', () => {
     )
     await trigger().click()
     await expect
-      .element(page.getByRole('dialog', { name: 'Välj datum för vistelsen' }))
+      .element(page.getByRole('dialog', { name: 'Choose the dates of your stay' }))
       .toBeVisible()
   })
 
@@ -228,15 +229,15 @@ describe('roles, names and states', () => {
       <KvirnProvider locale="sv" messages={sv}>
         <DateRangePicker.Root
           today="2026-10-14"
-          messages={{ trigger: 'Öppna kalender', title: 'Kalender' }}
+          messages={{ trigger: 'Open calendar', title: 'Calendar' }}
         >
           <DateRangePicker.Trigger />
           <DateRangePicker.Popup />
         </DateRangePicker.Root>
       </KvirnProvider>,
     )
-    await page.getByRole('button', { name: 'Öppna kalender' }).click()
-    await expect.element(page.getByRole('dialog', { name: 'Kalender' })).toBeVisible()
+    await page.getByRole('button', { name: 'Open calendar' }).click()
+    await expect.element(page.getByRole('dialog', { name: 'Calendar' })).toBeVisible()
   })
 
   test('has no axe violations closed, and open at the start step', async () => {
@@ -261,9 +262,9 @@ describe('roles, names and states', () => {
 describe('keyboard', () => {
   test('Tab moves from the From field to the To field and on to the trigger', async () => {
     await render(<Example />)
-    field('Från').element().focus()
+    field('From').element().focus()
     await userEvent.tab()
-    await expect.element(field('Till')).toHaveFocus()
+    await expect.element(field('To')).toHaveFocus()
     await userEvent.tab()
     await expect.element(trigger()).toHaveFocus()
   })
@@ -272,9 +273,9 @@ describe('keyboard', () => {
     await render(<Example />)
     trigger().element().focus()
     await userEvent.tab({ shift: true })
-    await expect.element(field('Till')).toHaveFocus()
+    await expect.element(field('To')).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect.element(field('Från')).toHaveFocus()
+    await expect.element(field('From')).toHaveFocus()
   })
 
   test('Enter on the trigger opens the dialog with focus on today when both fields are empty', async () => {
@@ -442,14 +443,14 @@ describe('keyboard', () => {
       <Example
         onValueChange={onValueChange}
         isDateUnavailable={(date) => date === '2026-10-15'}
-        getDateDescription={(date) => (date === '2026-10-15' ? 'Stängt' : undefined)}
+        getDateDescription={(date) => (date === '2026-10-15' ? 'Closed' : undefined)}
       />,
     )
     await open()
     await userEvent.keyboard('{ArrowRight}{Enter}')
     await expect.element(dialog()).toBeVisible()
     expect(onValueChange).not.toHaveBeenCalled()
-    await expect.element(day('torsdag 15 oktober 2026, Stängt')).toHaveFocus()
+    await expect.element(day('torsdag 15 oktober 2026, Closed')).toHaveFocus()
   })
 
   test('Escape after the first press discards the half-chosen range: both fields stay as they were and focus returns to the trigger', async () => {
@@ -498,7 +499,7 @@ describe('keyboard', () => {
     startsWith('fredag 23 oktober 2026').element().focus()
     await userEvent.keyboard('{Enter}')
     await expectClosed()
-    await expect.element(field('Från')).toHaveFocus()
+    await expect.element(field('From')).toHaveFocus()
   })
 
   test('a key with Control, Alt or Meta on the trigger does not open the dialog', async () => {
@@ -592,8 +593,8 @@ describe('read aloud', () => {
     expect(triggerPhrase).toContain('button')
     expect(triggerPhrase).toContain('not expanded')
     const indexOf = (text: string) => phrases.findIndex((phrase) => phrase.includes(text))
-    expect(indexOf('textbox, Från')).toBeLessThan(indexOf('textbox, Till'))
-    expect(indexOf('textbox, Till')).toBeLessThan(indexOf('Välj datumen'))
+    expect(indexOf('textbox, From')).toBeLessThan(indexOf('textbox, To'))
+    expect(indexOf('textbox, To')).toBeLessThan(indexOf('Välj datumen'))
   })
 
   test('reads the open dialog by its title, then both grids and the typed range as selected', async () => {
@@ -713,7 +714,7 @@ describe('the three-box alternative', () => {
           }}
         >
           <Fieldset.Root group>
-            <Fieldset.Legend>Datum för vistelsen</Fieldset.Legend>
+            <Fieldset.Legend>Dates of the stay</Fieldset.Legend>
             <Fieldset.Root group>
               <Fieldset.Legend>Startdatum</Fieldset.Legend>
               <DateInput.Root name="start" value={start} onValueChange={setStart}>

@@ -35,8 +35,8 @@ const square =
 const venues: MapPlace<Venue>[] = [
   {
     id: 'strand',
-    name: 'Strandkajen Hotel',
-    address: 'Strandvägen 7, 114 56 Stockholm',
+    name: 'Quayside Hotel',
+    address: 'Strand Road 7, 114 56 Stockholm',
     description:
       'Rooms over the water on the city’s grandest boulevard, a short walk from the Royal Dramatic Theatre and the ferries to the archipelago.',
     image: illustration(
@@ -56,8 +56,8 @@ const venues: MapPlace<Venue>[] = [
   },
   {
     id: 'malaren',
-    name: 'Mälarstrand Café',
-    address: 'Norr Mälarstrand 64, 112 35 Stockholm',
+    name: 'Lakeshore Café',
+    address: 'North Lakeshore 64, 112 35 Stockholm',
     description:
       'Cinnamon buns baked every morning and a terrace on the lake shore. Prams and wheelchairs fit through the side door.',
     image: illustration(
@@ -77,8 +77,8 @@ const venues: MapPlace<Venue>[] = [
   },
   {
     id: 'torget',
-    name: 'Torgets Saluhall',
-    address: 'Medborgarplatsen 3, 118 72 Stockholm',
+    name: 'Market Hall',
+    address: 'Citizens Square 3, 118 72 Stockholm',
     description: 'A food hall with twenty stalls, from smoked fish to Ethiopian coffee.',
     image: illustration(
       ['#f3c98b', '#fbecd0'],
@@ -97,8 +97,8 @@ const venues: MapPlace<Venue>[] = [
   },
   {
     id: 'kiosk',
-    name: 'Kioskens Glass',
-    address: 'Rålambshovsparken, 112 59 Stockholm',
+    name: 'Kiosk Ice Cream',
+    address: 'Ralambshov Park, 112 59 Stockholm',
     position: { longitude: 18.017, latitude: 59.329 },
     data: {
       category: 'Ice cream',

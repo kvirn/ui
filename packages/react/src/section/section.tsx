@@ -38,8 +38,8 @@ SectionRoot.displayName = 'Section'
  * `kv-section--padding-none|sm|md|lg`. A Section is one element, so it is written `<Section>`.
  *
  * @example
- * <Section as="aside" aria-labelledby="kontakt" className="kv-section--padding-lg kv-prose">
- *   <h2 id="kontakt">Kontakta oss</h2>
+ * <Section as="aside" aria-labelledby="contact" className="kv-section--padding-lg kv-prose">
+ *   <h2 id="contact">Contact us</h2>
  *   <p>Vi svarar vardagar 9–16.</p>
  * </Section>
  */

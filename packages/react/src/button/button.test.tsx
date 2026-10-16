@@ -36,15 +36,15 @@ function SubmitForm({
 }) {
   return (
     <form
-      aria-label="Ansökan"
+      aria-label="Application"
       onSubmit={(event) => {
         event.preventDefault()
         onSubmit(event)
       }}
     >
       <label>
-        Namn
-        <input name="namn" />
+        Name
+        <input name="name" />
       </label>
       {children}
     </form>
@@ -53,8 +53,8 @@ function SubmitForm({
 
 describe('rendering', () => {
   test('renders a native button with type="button" by default', async () => {
-    const { container } = await render(<Button>Spara</Button>)
-    const button = page.getByRole('button', { name: 'Spara' })
+    const { container } = await render(<Button>Save</Button>)
+    const button = page.getByRole('button', { name: 'Save' })
     await expect.element(button).toHaveAttribute('type', 'button')
     await expect.element(button).not.toHaveAttribute('data-disabled')
     await expect.element(button).not.toHaveAttribute('aria-disabled')
@@ -63,24 +63,24 @@ describe('rendering', () => {
 
   test('passes other button props through', async () => {
     await render(
-      <Button name="atgard" value="spara" title="Spara">
-        Spara
+      <Button name="action" value="save" title="Save">
+        Save
       </Button>,
     )
-    const button = page.getByRole('button', { name: 'Spara' })
-    await expect.element(button).toHaveAttribute('name', 'atgard')
-    await expect.element(button).toHaveAttribute('value', 'spara')
+    const button = page.getByRole('button', { name: 'Save' })
+    await expect.element(button).toHaveAttribute('name', 'action')
+    await expect.element(button).toHaveAttribute('value', 'save')
   })
 
   test('marks its part with class="kv-button" and joins a consumer class', async () => {
     await render(
       <>
-        <Button>Spara</Button>
-        <Button className="kv-button--primary">Skicka</Button>
+        <Button>Save</Button>
+        <Button className="kv-button--primary">Send</Button>
       </>,
     )
-    const secondary = page.getByRole('button', { name: 'Spara' })
-    const primary = page.getByRole('button', { name: 'Skicka' })
+    const secondary = page.getByRole('button', { name: 'Save' })
+    const primary = page.getByRole('button', { name: 'Send' })
     expect(secondary.element().className).toBe('kv-button')
     await expect.element(secondary).not.toHaveAttribute('data-kv')
     await expect.element(primary).toHaveClass('kv-button', 'kv-button--primary')
@@ -88,14 +88,14 @@ describe('rendering', () => {
 
   test('forwards its ref to the button', async () => {
     const ref = createRef<HTMLButtonElement>()
-    await render(<Button ref={ref}>Spara</Button>)
-    expect(ref.current).toBe(page.getByRole('button', { name: 'Spara' }).element())
+    await render(<Button ref={ref}>Save</Button>)
+    expect(ref.current).toBe(page.getByRole('button', { name: 'Save' }).element())
   })
 
   test('Enter and Space activate the button and keep focus on it', async () => {
     const onClick = vi.fn<() => void>()
-    await render(<Button onClick={onClick}>Spara</Button>)
-    const button = page.getByRole('button', { name: 'Spara' })
+    await render(<Button onClick={onClick}>Save</Button>)
+    const button = page.getByRole('button', { name: 'Save' })
     await userEvent.keyboard('{Tab}')
     await expect.element(button).toHaveFocus()
     await userEvent.keyboard('{Enter}')
@@ -111,10 +111,10 @@ describe('forms', () => {
     const onClick = vi.fn<() => void>()
     await render(
       <SubmitForm onSubmit={onSubmit}>
-        <Button onClick={onClick}>Rensa</Button>
+        <Button onClick={onClick}>Clear</Button>
       </SubmitForm>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Rensa' }))
+    await userEvent.click(page.getByRole('button', { name: 'Clear' }))
     expect(onClick).toHaveBeenCalledTimes(1)
     expect(onSubmit).not.toHaveBeenCalled()
   })
@@ -123,10 +123,10 @@ describe('forms', () => {
     const onSubmit = vi.fn<() => void>()
     const { container } = await render(
       <SubmitForm onSubmit={onSubmit}>
-        <Button type="submit">Skicka ansökan</Button>
+        <Button type="submit">Submit application</Button>
       </SubmitForm>,
     )
-    const button = page.getByRole('button', { name: 'Skicka ansökan' })
+    const button = page.getByRole('button', { name: 'Submit application' })
     await expect.element(button).toHaveAttribute('type', 'submit')
     await userEvent.click(button)
     expect(onSubmit).toHaveBeenCalledTimes(1)
@@ -136,30 +136,30 @@ describe('forms', () => {
 
 describe('keyboard', () => {
   test('Tab moves focus to the button', async () => {
-    await render(<Button>Spara</Button>)
+    await render(<Button>Save</Button>)
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Spara' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Save' })).toHaveFocus()
   })
 
   test('Shift+Tab moves focus off the button', async () => {
     await render(
       <>
-        <Button>Spara</Button>
-        <Button>Avbryt</Button>
+        <Button>Save</Button>
+        <Button>Cancel</Button>
       </>,
     )
     await userEvent.keyboard('{Tab}{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Avbryt' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Cancel' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Spara' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Save' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Spara' })).not.toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Save' })).not.toHaveFocus()
   })
 
   test('Space activates the button on key up', async () => {
     const onClick = vi.fn<() => void>()
-    await render(<Button onClick={onClick}>Spara</Button>)
-    const button = page.getByRole('button', { name: 'Spara' })
+    await render(<Button onClick={onClick}>Save</Button>)
+    const button = page.getByRole('button', { name: 'Save' })
     await userEvent.keyboard('{Tab}')
     await userEvent.keyboard('{Space>}')
     expect(onClick).not.toHaveBeenCalled()
@@ -172,11 +172,11 @@ describe('keyboard', () => {
     const onSubmit = vi.fn<() => void>()
     await render(
       <SubmitForm onSubmit={onSubmit}>
-        <Button type="submit">Skicka ansökan</Button>
+        <Button type="submit">Submit application</Button>
       </SubmitForm>,
     )
-    const button = page.getByRole('button', { name: 'Skicka ansökan' })
-    await userEvent.click(page.getByRole('textbox', { name: 'Namn' }))
+    const button = page.getByRole('button', { name: 'Submit application' })
+    await userEvent.click(page.getByRole('textbox', { name: 'Name' }))
     await userEvent.keyboard('{Tab}')
     await expect.element(button).toHaveFocus()
     await userEvent.keyboard('{Enter}')
@@ -189,11 +189,11 @@ describe('keyboard', () => {
     const onClick = vi.fn<() => void>()
     await render(
       <SubmitForm onSubmit={onSubmit}>
-        <Button onClick={onClick}>Börja om</Button>
+        <Button onClick={onClick}>Start over</Button>
       </SubmitForm>,
     )
-    const button = page.getByRole('button', { name: 'Börja om' })
-    await userEvent.click(page.getByRole('textbox', { name: 'Namn' }))
+    const button = page.getByRole('button', { name: 'Start over' })
+    await userEvent.click(page.getByRole('textbox', { name: 'Name' }))
     await userEvent.keyboard('{Tab}')
     await expect.element(button).toHaveFocus()
     await userEvent.keyboard('{Enter}')
@@ -207,16 +207,16 @@ describe('disabled', () => {
   test('is natively disabled, marked with data-disabled and skipped by Tab', async () => {
     const { container } = await render(
       <>
-        <Button disabled>Skicka</Button>
-        <Button>Avbryt</Button>
+        <Button disabled>Send</Button>
+        <Button>Cancel</Button>
       </>,
     )
-    const disabledButton = page.getByRole('button', { name: 'Skicka' })
+    const disabledButton = page.getByRole('button', { name: 'Send' })
     await expect.element(disabledButton).toBeDisabled()
     await expect.element(disabledButton).toHaveAttribute('data-disabled', '')
     await expect.element(disabledButton).not.toHaveAttribute('aria-disabled')
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Avbryt' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Cancel' })).toHaveFocus()
     await expectNoA11yViolations(container)
   })
 
@@ -224,10 +224,10 @@ describe('disabled', () => {
     const onClick = vi.fn<() => void>()
     await render(
       <Button disabled onClick={onClick}>
-        Skicka
+        Send
       </Button>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }), { force: true })
+    await userEvent.click(page.getByRole('button', { name: 'Send' }), { force: true })
     expect(onClick).not.toHaveBeenCalled()
   })
 })
@@ -236,10 +236,10 @@ describe('focusable when disabled', () => {
   test('uses aria-disabled instead of disabled and stays in the Tab order', async () => {
     const { container } = await render(
       <Button disabled focusableWhenDisabled>
-        Skicka
+        Send
       </Button>,
     )
-    const button = page.getByRole('button', { name: 'Skicka' })
+    const button = page.getByRole('button', { name: 'Send' })
     await expect.element(button).toHaveAttribute('aria-disabled', 'true')
     await expect.element(button).not.toHaveAttribute('disabled')
     await expect.element(button).toHaveAttribute('data-disabled', '')
@@ -253,10 +253,10 @@ describe('focusable when disabled', () => {
     const onClick = vi.fn<() => void>()
     await render(
       <Button disabled focusableWhenDisabled onClick={onClick}>
-        Skicka
+        Send
       </Button>,
     )
-    const button = page.getByRole('button', { name: 'Skicka' })
+    const button = page.getByRole('button', { name: 'Send' })
     await userEvent.click(button, { force: true })
     await userEvent.keyboard('{Enter}')
     await userEvent.keyboard(' ')
@@ -269,11 +269,11 @@ describe('focusable when disabled', () => {
     await render(
       <SubmitForm onSubmit={onSubmit}>
         <Button type="submit" disabled focusableWhenDisabled>
-          Skicka ansökan
+          Submit application
         </Button>
       </SubmitForm>,
     )
-    const button = page.getByRole('button', { name: 'Skicka ansökan' })
+    const button = page.getByRole('button', { name: 'Submit application' })
     await userEvent.click(button, { force: true })
     await userEvent.keyboard('{Enter}')
     await userEvent.keyboard(' ')
@@ -285,11 +285,11 @@ describe('focusable when disabled', () => {
     await render(
       <SubmitForm onSubmit={onSubmit}>
         <Button type="submit" disabled focusableWhenDisabled>
-          Skicka ansökan
+          Submit application
         </Button>
       </SubmitForm>,
     )
-    await userEvent.click(page.getByRole('textbox', { name: 'Namn' }))
+    await userEvent.click(page.getByRole('textbox', { name: 'Name' }))
     await userEvent.keyboard('Anna{Enter}')
     expect(onSubmit).not.toHaveBeenCalled()
   })
@@ -301,7 +301,7 @@ describe('focusable when disabled', () => {
       return (
         <>
           <Button disabled={isDisabled} focusableWhenDisabled onClick={onClick}>
-            Skicka
+            Send
           </Button>
           <Button onClick={() => setIsDisabled(false)}>Aktivera</Button>
         </>
@@ -309,7 +309,7 @@ describe('focusable when disabled', () => {
     }
     await render(<Toggling />)
     await userEvent.click(page.getByRole('button', { name: 'Aktivera' }))
-    const button = page.getByRole('button', { name: 'Skicka' })
+    const button = page.getByRole('button', { name: 'Send' })
     await expect.element(button).not.toHaveAttribute('aria-disabled')
     await expect.element(button).not.toHaveAttribute('data-disabled')
     await userEvent.click(button)
@@ -319,8 +319,8 @@ describe('focusable when disabled', () => {
 
 describe('busy', () => {
   test('is aria-disabled with data-busy, never native disabled, and keeps its name', async () => {
-    const { container } = await render(<Button busy>Skicka ansökan</Button>)
-    const button = page.getByRole('button', { name: 'Skicka ansökan' })
+    const { container } = await render(<Button busy>Submit application</Button>)
+    const button = page.getByRole('button', { name: 'Submit application' })
     await expect.element(button).toHaveAttribute('aria-disabled', 'true')
     await expect.element(button).toHaveAttribute('data-busy', '')
     await expect.element(button).not.toHaveAttribute('disabled')
@@ -329,30 +329,30 @@ describe('busy', () => {
   })
 
   test('renders a decorative spinner as the first child only while busy, and the name stays the text', async () => {
-    const { container, rerender } = await render(<Button busy>Skicka ansökan</Button>)
+    const { container, rerender } = await render(<Button busy>Submit application</Button>)
     const spinner = container.querySelector('.kv-button[data-busy] > .kv-spinner:first-child')
     expect(spinner?.getAttribute('aria-hidden')).toBe('true')
     await expect
-      .element(page.getByRole('button', { name: 'Skicka ansökan', exact: true }))
+      .element(page.getByRole('button', { name: 'Submit application', exact: true }))
       .toBeVisible()
-    await rerender(<Button>Skicka ansökan</Button>)
+    await rerender(<Button>Submit application</Button>)
     expect(container.querySelector('.kv-spinner')).toBeNull()
   })
 
   test('Tab lands on a busy button', async () => {
-    await render(<Button busy>Skicka ansökan</Button>)
+    await render(<Button busy>Submit application</Button>)
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Skicka ansökan' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Submit application' })).toHaveFocus()
   })
 
   test('click, Enter and Space call no handler, and focus stays', async () => {
     const onClick = vi.fn<() => void>()
     await render(
       <Button busy onClick={onClick}>
-        Skicka ansökan
+        Submit application
       </Button>,
     )
-    const button = page.getByRole('button', { name: 'Skicka ansökan' })
+    const button = page.getByRole('button', { name: 'Submit application' })
     await userEvent.click(button, { force: true })
     await userEvent.keyboard('{Enter}')
     await userEvent.keyboard(' ')
@@ -365,12 +365,12 @@ describe('busy', () => {
     await render(
       <SubmitForm onSubmit={onSubmit}>
         <Button type="submit" busy>
-          Skicka ansökan
+          Submit application
         </Button>
       </SubmitForm>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Skicka ansökan' }), { force: true })
-    await userEvent.click(page.getByRole('textbox', { name: 'Namn' }))
+    await userEvent.click(page.getByRole('button', { name: 'Submit application' }), { force: true })
+    await userEvent.click(page.getByRole('textbox', { name: 'Name' }))
     await userEvent.keyboard('Anna{Enter}')
     expect(onSubmit).not.toHaveBeenCalled()
   })
@@ -388,12 +388,12 @@ describe('busy', () => {
             setTimeout(() => setIsBusy(false), 300)
           }}
         >
-          Skicka ansökan
+          Submit application
         </Button>
       )
     }
     await render(<Sending />)
-    const button = page.getByRole('button', { name: 'Skicka ansökan' })
+    const button = page.getByRole('button', { name: 'Submit application' })
     await userEvent.keyboard('{Tab}')
     await userEvent.keyboard('{Enter}')
     await expect.element(button).toHaveAttribute('data-busy', '')
@@ -407,10 +407,10 @@ describe('busy', () => {
   test('disabled wins: a busy disabled button is natively disabled and has no data-busy', async () => {
     await render(
       <Button busy disabled>
-        Skicka ansökan
+        Submit application
       </Button>,
     )
-    const button = page.getByRole('button', { name: 'Skicka ansökan' })
+    const button = page.getByRole('button', { name: 'Submit application' })
     await expect.element(button).toHaveAttribute('disabled')
     await expect.element(button).not.toHaveAttribute('data-busy')
   })
@@ -422,15 +422,15 @@ describe('busy', () => {
       return (
         <>
           <Button busy={isBusy} onClick={onClick}>
-            Skicka
+            Send
           </Button>
-          <Button onClick={() => setIsBusy(false)}>Klart</Button>
+          <Button onClick={() => setIsBusy(false)}>Done</Button>
         </>
       )
     }
     await render(<Finishing />)
-    await userEvent.click(page.getByRole('button', { name: 'Klart' }))
-    const button = page.getByRole('button', { name: 'Skicka' })
+    await userEvent.click(page.getByRole('button', { name: 'Done' }))
+    const button = page.getByRole('button', { name: 'Send' })
     await expect.element(button).not.toHaveAttribute('aria-disabled')
     await expect.element(button).not.toHaveAttribute('data-busy')
     await userEvent.click(button)
@@ -442,11 +442,11 @@ describe('focus visible', () => {
   test('sets data-focus-visible on keyboard focus and removes it on blur', async () => {
     await render(
       <>
-        <Button>Spara</Button>
-        <Button>Avbryt</Button>
+        <Button>Save</Button>
+        <Button>Cancel</Button>
       </>,
     )
-    const button = page.getByRole('button', { name: 'Spara' })
+    const button = page.getByRole('button', { name: 'Save' })
     await userEvent.keyboard('{Tab}')
     await expect.element(button).toHaveAttribute('data-focus-visible', '')
     await userEvent.keyboard('{Tab}')
@@ -454,8 +454,8 @@ describe('focus visible', () => {
   })
 
   test('does not set data-focus-visible on pointer focus', async () => {
-    await render(<Button>Spara</Button>)
-    const button = page.getByRole('button', { name: 'Spara' })
+    await render(<Button>Save</Button>)
+    const button = page.getByRole('button', { name: 'Save' })
     await userEvent.click(button)
     await expect.element(button).toHaveFocus()
     await expect.element(button).not.toHaveAttribute('data-focus-visible')
@@ -480,23 +480,23 @@ describe('icon-only button name (Plan 0009)', () => {
   })
 
   const namedButtons: ReadonlyArray<readonly [string, () => ReactElement]> = [
-    ['aria-label', () => <Button aria-label="Stäng">{<CloseIcon />}</Button>],
+    ['aria-label', () => <Button aria-label="Close">{<CloseIcon />}</Button>],
     [
       'aria-labelledby',
       () => (
         <>
-          <span id="close-label">Stäng</span>
+          <span id="close-label">Close</span>
           <Button aria-labelledby="close-label">{<CloseIcon />}</Button>
         </>
       ),
     ],
-    ['title', () => <Button title="Stäng">{<CloseIcon />}</Button>],
+    ['title', () => <Button title="Close">{<CloseIcon />}</Button>],
     [
       'visible text',
       () => (
         <Button>
           <CloseIcon />
-          Stäng
+          Close
         </Button>
       ),
     ],
@@ -505,7 +505,7 @@ describe('icon-only button name (Plan 0009)', () => {
       () => (
         <Button>
           <CloseIcon />
-          <span className="kv-visually-hidden">Stäng</span>
+          <span className="kv-visually-hidden">Close</span>
         </Button>
       ),
     ],
@@ -513,7 +513,7 @@ describe('icon-only button name (Plan 0009)', () => {
       'a labelled Icon',
       () => (
         <Button>
-          <Icon name="close" label="Stäng" />
+          <Icon name="close" label="Close" />
         </Button>
       ),
     ],
@@ -523,7 +523,7 @@ describe('icon-only button name (Plan 0009)', () => {
     'does not warn when the name comes from %s',
     async (_source, renderButton) => {
       await render(renderButton())
-      await expect.element(page.getByRole('button', { name: 'Stäng' })).toBeVisible()
+      await expect.element(page.getByRole('button', { name: 'Close' })).toBeVisible()
       expect(consoleWarn).not.toHaveBeenCalled()
     },
   )
@@ -534,10 +534,10 @@ describe('handlers on a focusable disabled button', () => {
     const onClick = vi.fn<() => void>()
     await render(
       <Button disabled focusableWhenDisabled onClick={onClick}>
-        Skicka
+        Send
       </Button>,
     )
-    const button = page.getByRole('button', { name: 'Skicka' })
+    const button = page.getByRole('button', { name: 'Send' })
     await userEvent.click(button, { force: true })
     await userEvent.keyboard('{Enter}')
     await userEvent.keyboard(' ')
@@ -551,16 +551,16 @@ describe('handlers on a focusable disabled button', () => {
     await render(
       <SubmitForm onSubmit={onSubmit}>
         <Button type="submit" disabled focusableWhenDisabled onClick={onClick}>
-          Skicka ansökan
+          Submit application
         </Button>
       </SubmitForm>,
     )
-    const button = page.getByRole('button', { name: 'Skicka ansökan' })
+    const button = page.getByRole('button', { name: 'Submit application' })
     await expect.element(button).toHaveAttribute('type', 'submit')
     await userEvent.click(button, { force: true })
     await userEvent.keyboard('{Enter}')
     await userEvent.keyboard(' ')
-    await userEvent.click(page.getByRole('textbox', { name: 'Namn' }))
+    await userEvent.click(page.getByRole('textbox', { name: 'Name' }))
     await userEvent.keyboard('Anna{Enter}')
     expect(onClick).not.toHaveBeenCalled()
     expect(onSubmit).not.toHaveBeenCalled()
@@ -571,17 +571,17 @@ describe('useButton', () => {
   function HookButton(options: UseButtonOptions & { children: ReactNode }) {
     const { children, ...buttonOptions } = options
     const button = useButton(buttonOptions)
-    return <button {...mergeProps(button.buttonProps, { className: 'egen' })}>{children}</button>
+    return <button {...mergeProps(button.buttonProps, { className: 'own' })}>{children}</button>
   }
 
   test('gives spreadable buttonProps with the same behaviour', async () => {
     const onClick = vi.fn<() => void>()
     const { container } = await render(
       <HookButton disabled focusableWhenDisabled onClick={onClick}>
-        Skicka
+        Send
       </HookButton>,
     )
-    const button = page.getByRole('button', { name: 'Skicka' })
+    const button = page.getByRole('button', { name: 'Send' })
     await expect.element(button).toHaveAttribute('type', 'button')
     await expect.element(button).toHaveAttribute('aria-disabled', 'true')
     await userEvent.click(button, { force: true })
@@ -591,8 +591,8 @@ describe('useButton', () => {
 
   test('calls onClick when enabled', async () => {
     const onClick = vi.fn<() => void>()
-    await render(<HookButton onClick={onClick}>Spara</HookButton>)
-    await userEvent.click(page.getByRole('button', { name: 'Spara' }))
+    await render(<HookButton onClick={onClick}>Save</HookButton>)
+    await userEvent.click(page.getByRole('button', { name: 'Save' }))
     expect(onClick).toHaveBeenCalledTimes(1)
   })
 })
@@ -601,11 +601,11 @@ describe('server rendering', () => {
   test('renders to a string without touching the page', () => {
     const html = renderToString(
       <Button type="submit" disabled focusableWhenDisabled>
-        Skicka
+        Send
       </Button>,
     )
     expect(html).toBe(
-      '<button class="kv-button" type="submit" aria-disabled="true" data-disabled="">Skicka</button>',
+      '<button class="kv-button" type="submit" aria-disabled="true" data-disabled="">Send</button>',
     )
   })
 })

@@ -157,8 +157,8 @@ describe('names and roles', () => {
   })
 
   test('a per-instance message overrides the play name', async () => {
-    await render(<Player fake={createFakeEngine()} messages={{ play: 'Lyssna nu' }} />)
-    await expect.element(page.getByRole('button', { name: 'Lyssna nu' })).toBeVisible()
+    await render(<Player fake={createFakeEngine()} messages={{ play: 'Listen now' }} />)
+    await expect.element(page.getByRole('button', { name: 'Listen now' })).toBeVisible()
   })
 
   test('the status shows the sentence position while reading', async () => {
@@ -1010,7 +1010,7 @@ describe('developer warnings', () => {
 })
 
 describe('languages inside the content', () => {
-  const swedishParagraph = { lang: 'sv', text: 'Svensk mening.' }
+  const swedishParagraph = { lang: 'sv', text: 'Swedish sentence.' }
   const swedishNoVoiceMessage =
     'This device has no voice for Swedish. You can add one in the device’s speech settings.'
 
@@ -1024,7 +1024,7 @@ describe('languages inside the content', () => {
     expect(fake.spoken.map(({ text, language, voiceURI }) => [text, language, voiceURI])).toEqual([
       ['First sentence.', 'en', 'en-one'],
       ['Second sentence.', 'en', 'en-one'],
-      ['Svensk mening.', 'sv', 'sv-one'],
+      ['Swedish sentence.', 'sv', 'sv-one'],
     ])
   })
 
@@ -1053,7 +1053,7 @@ describe('languages inside the content', () => {
     await expect.element(listenToSelection()).toBeVisible()
     await userEvent.click(listenToSelection())
     expect(fake.spoken[0]).toMatchObject({
-      text: 'Svensk mening.',
+      text: 'Swedish sentence.',
       language: 'sv',
       voiceURI: 'sv-one',
     })

@@ -12,7 +12,7 @@ function Control({ disabled }: { disabled?: boolean }) {
     useFieldControl({ disabled })
   return (
     <>
-      <input aria-label="Namn" {...controlProps} />
+      <input aria-label="Name" {...controlProps} />
       <output aria-label="state">
         {JSON.stringify({ isInvalid, isRequired, isDisabled, isFocused, isFocusVisible })}
       </output>
@@ -29,12 +29,12 @@ describe('field state', () => {
   test('a Field gives the control its id, description and aria attributes', async () => {
     await render(
       <Field.Root invalid required>
-        <Field.Label>Namn</Field.Label>
-        <Field.HelpText>Som i passet</Field.HelpText>
+        <Field.Label>Name</Field.Label>
+        <Field.HelpText>As in the passport</Field.HelpText>
         <Control />
       </Field.Root>,
     )
-    const input = page.getByRole('textbox', { name: 'Namn' })
+    const input = page.getByRole('textbox', { name: 'Name' })
     await expect.element(input).toHaveAttribute('aria-invalid', 'true')
     await expect.element(input).toHaveAttribute('aria-required', 'true')
     await expect.element(input).toHaveAttribute('data-invalid', '')
@@ -92,14 +92,14 @@ describe('focus', () => {
     await render(
       <>
         <Control />
-        <button type="button">Skicka</button>
+        <button type="button">Send</button>
       </>,
     )
     const input = page.getByRole('textbox')
     await userEvent.click(input)
     await expect.element(input).toHaveAttribute('data-focused', '')
     expect(readState()).toMatchObject({ isFocused: true })
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Send' }))
     await expect.element(input).not.toHaveAttribute('data-focused')
     expect(readState()).toMatchObject({ isFocused: false })
   })
@@ -108,7 +108,7 @@ describe('focus', () => {
     await render(
       <>
         <Control />
-        <button type="button">Skicka</button>
+        <button type="button">Send</button>
       </>,
     )
     const input = page.getByRole('textbox')

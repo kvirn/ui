@@ -12,7 +12,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 const command = 'pnpm add @kvirn-ui/react @kvirn-ui/theme'
 const longLine =
-  'curl --request POST https://api.exempelkommun.example/e-tjanster/parkeringstillstand/ansokningar --header "Content-Type: application/json" --data @ansokan.json'
+  'curl --request POST https://api.examplemunicipality.example/e-services/parking-permits/applications --header "Content-Type: application/json" --data @application.json'
 
 function stubClipboard(clipboard: Pick<Clipboard, 'writeText'> | undefined) {
   Object.defineProperty(navigator, 'clipboard', { value: clipboard, configurable: true })
@@ -24,6 +24,7 @@ function stubClipboard(clipboard: Pick<Clipboard, 'writeText'> | undefined) {
 const meta = {
   title: 'Components/Content/CodeBlock',
   component: CodeBlock.Root,
+  globals: { locale: 'en' },
   decorators: [withCopyMessages],
   parameters: {
     a11yContract: contract,
@@ -39,14 +40,14 @@ export const Default: Story = {
   beforeEach: () => stubClipboard({ writeText: async () => {} }),
   render: (args) => (
     <CodeBlock.Root {...args}>
-      <CodeBlock.Label>Installera</CodeBlock.Label>
+      <CodeBlock.Label>Install</CodeBlock.Label>
       <CodeBlock.Code>{command}</CodeBlock.Code>
       <CodeBlock.Copy />
     </CodeBlock.Root>
   ),
   play: async ({ canvas, userEvent }) => {
-    await expect(canvas.getByRole('group', { name: 'Installera' })).toBeVisible()
-    const copy = canvas.getByRole('button', { name: 'Kopiera' })
+    await expect(canvas.getByRole('group', { name: 'Install' })).toBeVisible()
+    const copy = canvas.getByRole('button', { name: 'Copy' })
     await userEvent.click(copy)
     await waitFor(() => expect(copy).toHaveAttribute('data-status', 'copied'))
   },
@@ -70,18 +71,16 @@ export const Failed: Story = {
   beforeEach: () => stubClipboard(undefined),
   render: (args) => (
     <CodeBlock.Root {...args}>
-      <CodeBlock.Label>Installera</CodeBlock.Label>
+      <CodeBlock.Label>Install</CodeBlock.Label>
       <CodeBlock.Code>{command}</CodeBlock.Code>
       <CodeBlock.Copy />
     </CodeBlock.Root>
   ),
   play: async ({ canvas, userEvent }) => {
-    const copy = canvas.getByRole('button', { name: 'Kopiera' })
+    const copy = canvas.getByRole('button', { name: 'Copy' })
     await userEvent.click(copy)
     await waitFor(() => expect(copy).toHaveAttribute('data-status', 'failed'))
-    await expect(
-      canvas.getByText(/Det gick inte att kopiera/, { selector: '.kv-copy-status' }),
-    ).toBeVisible()
+    await expect(canvas.getByText(/Could not copy/, { selector: '.kv-copy-status' })).toBeVisible()
     await expect(window.getSelection()?.toString()).toBe(command)
   },
 }
@@ -91,7 +90,7 @@ export const Narrow: Story = {
   render: (args) => (
     <div className="kv-story-narrow" data-testid="narrow">
       <CodeBlock.Root {...args}>
-        <CodeBlock.Label>Skicka ansökan</CodeBlock.Label>
+        <CodeBlock.Label>Send application</CodeBlock.Label>
         <CodeBlock.Code>{longLine}</CodeBlock.Code>
         <CodeBlock.Copy />
       </CodeBlock.Root>
@@ -108,18 +107,16 @@ export const NarrowFailed: Story = {
   render: (args) => (
     <div className="kv-story-narrow" data-testid="narrow">
       <CodeBlock.Root {...args}>
-        <CodeBlock.Label>Installera</CodeBlock.Label>
+        <CodeBlock.Label>Install</CodeBlock.Label>
         <CodeBlock.Code>{command}</CodeBlock.Code>
         <CodeBlock.Copy />
       </CodeBlock.Root>
     </div>
   ),
   play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Kopiera' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Copy' }))
     await waitFor(() =>
-      expect(
-        canvas.getByText(/Det gick inte att kopiera/, { selector: '.kv-copy-status' }),
-      ).toBeVisible(),
+      expect(canvas.getByText(/Could not copy/, { selector: '.kv-copy-status' })).toBeVisible(),
     )
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
@@ -129,9 +126,9 @@ export const NarrowFailed: Story = {
 export const InProse: Story = {
   render: (args) => (
     <div className="kv-prose">
-      <p>Installera paketen:</p>
+      <p>Install the packages:</p>
       <CodeBlock.Root {...args}>
-        <CodeBlock.Label>Installera</CodeBlock.Label>
+        <CodeBlock.Label>Install</CodeBlock.Label>
         <CodeBlock.Code>
           <code>{command}</code>
         </CodeBlock.Code>
@@ -146,13 +143,13 @@ export const Keyboard: Story = {
   beforeEach: () => stubClipboard({ writeText: async () => {} }),
   render: (args) => (
     <CodeBlock.Root {...args}>
-      <CodeBlock.Label>Installera</CodeBlock.Label>
+      <CodeBlock.Label>Install</CodeBlock.Label>
       <CodeBlock.Code>{command}</CodeBlock.Code>
       <CodeBlock.Copy />
     </CodeBlock.Root>
   ),
   play: async ({ canvas, userEvent }) => {
-    const copy = canvas.getByRole('button', { name: 'Kopiera' })
+    const copy = canvas.getByRole('button', { name: 'Copy' })
     await userEvent.tab()
     await expect(copy).toHaveFocus()
     await userEvent.keyboard('{Enter}')
@@ -186,7 +183,7 @@ export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   render: (args) => (
     <CodeBlock.Root {...args}>
-      <CodeBlock.Label>Installera</CodeBlock.Label>
+      <CodeBlock.Label>Install</CodeBlock.Label>
       <CodeBlock.Code>{command}</CodeBlock.Code>
       <CodeBlock.Copy />
     </CodeBlock.Root>

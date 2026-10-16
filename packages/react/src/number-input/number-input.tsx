@@ -71,9 +71,9 @@ function hasNameSource(input: HTMLInputElement): boolean {
  *
  * @example
  * <Field.Root required>
- *   <Field.Label>Hur mycket hyra betalar du per månad?</Field.Label>
+ *   <Field.Label>How much rent do you pay per month?</Field.Label>
  *   <NumberInput name="rent" decimals={2} grouping min={0} className="kv-input--width-10" />
- *   <Field.HelpText>I kronor, till exempel 1 250,50.</Field.HelpText>
+ *   <Field.HelpText>In kronor, for example 1 250,50.</Field.HelpText>
  * </Field.Root>
  */
 export function NumberInput({

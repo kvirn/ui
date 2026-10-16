@@ -179,7 +179,7 @@ function renderTree(nodes: readonly TableOfContentsNode[]): ReactElement {
 /**
  * The landmark: one `<nav class="kv-table-of-contents">` around the nested list of a page's
  * headings, drawn from `items` (contract: table-of-contents.a11y.md). It names itself with the
- * message `tableOfContents.label` ("På den här sidan"), or with your own visible title through
+ * message `tableOfContents.label` ("On this page"), or with your own visible title through
  * `aria-labelledby`, which is preferred, and never both. Empty `items` render nothing, so there
  * is no empty landmark.
  */
@@ -225,14 +225,14 @@ TableOfContentsRoot.displayName = 'TableOfContents.Root'
  * the heading being read is underlined and bold with no fill, and the headings above it are the bold trail.
  *
  * @example
- * <h2 id="contents-title">På den här sidan</h2>
+ * <h2 id="contents-title">On this page</h2>
  * <TableOfContents.Root
  *   aria-labelledby="contents-title"
  *   offset={64}
  *   items={[
- *     { id: 'avgift', label: 'Avgift', level: 2 },
- *     { id: 'avgift-bostad', label: 'Bostäder', level: 3 },
- *     { id: 'ansok', label: 'Så ansöker du', level: 2 },
+ *     { id: 'fee', label: 'Fee', level: 2 },
+ *     { id: 'fee-housing', label: 'Housing', level: 3 },
+ *     { id: 'apply', label: 'How to apply', level: 2 },
  *   ]}
  * />
  */

@@ -287,7 +287,9 @@ describe('messages and children', () => {
         <DisplaySettings.Inline defaultOpen />
       </KvirnProvider>,
     )
+    // kv-lang-ok: the sv catalog labels
     await expect.element(page.getByRole('button', { name: 'Visningsinställningar' })).toBeVisible()
+    // kv-lang-ok: the sv catalog labels
     await expect.element(page.getByRole('group', { name: 'Färgschema' })).toBeVisible()
   })
 

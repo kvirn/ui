@@ -130,30 +130,30 @@ Icon and the built-ins render no text, and have no `<title>` or i18n keys. A lab
 
 **Story fixture strings** go in `apps/storybook/src/components/icon/icon.fixture.tsx`, in all six locales. Agents write `fi`, `nb` and `nn`; `se` falls back to `en` with `lang="en"`.
 
-| Key                   | en                                      | sv                                 | longest: fi (draft)                      | Used as                                               |
-| --------------------- | --------------------------------------- | ---------------------------------- | ---------------------------------------- | ----------------------------------------------------- |
-| `button.addChild`     | Add another child                       | Lägg till ett barn till            | Lisää toinen lapsi                       | Button, `add` at start                                |
-| `button.continue`     | Continue                                | Fortsätt                           | Jatka                                    | Primary, `arrow-forward` at end                       |
-| `button.download`     | Download the decision as a PDF          | Ladda ner beslutet som pdf         | Lataa päätös PDF-tiedostona              | Button, `download`, wraps at 320px                    |
-| `button.close`        | Close                                   | Stäng                              | Sulje                                    | Icon-only `aria-label`                                |
-| `button.search`       | Search                                  | Sök                                | Hae                                      | Icon-only `aria-label`                                |
-| `button.menu`         | Menu                                    | Meny                               | Valikko                                  | Visible text with `menu`                              |
-| `button.removeFile`   | Remove {fileName}                       | Ta bort {fileName}                 | Poista tiedosto {fileName}               | Button, `delete` at start                             |
-| `button.showPassword` | Show password                           | Visa lösenord                      | Näytä salasana                           | Button, `eye` at start                                |
-| `button.hidePassword` | Hide password                           | Dölj lösenord                      | Piilota salasana                         | Button, `eye-off` at start                            |
-| `status.errorWord`    | Error                                   | Fel                                | Virhe                                    | Visible status word                                   |
-| `status.error`        | Enter the date in the format {example}. | Ange datumet i formatet {example}. | Anna päivämäärä muodossa {example}.      | Status line                                           |
-| `status.warningWord`  | Warning                                 | Varning                            | Varoitus                                 | Visible status word                                   |
-| `status.warning`      | Your session ends in 5 minutes.         | Din session avslutas om 5 minuter. | Istuntosi päättyy 5 minuutin kuluttua.   | Status line                                           |
-| `status.successWord`  | Done                                    | Klart                              | Valmis                                   | Visible status word                                   |
-| `status.success`      | Your application has been sent.         | Din ansökan har skickats.          | Hakemuksesi on lähetetty.                | Status line                                           |
-| `status.infoWord`     | Good to know                            | Bra att veta                       | Hyvä tietää                              | Visible status word                                   |
-| `status.info`         | We answer within 2 working days.        | Vi svarar inom 2 arbetsdagar.      | Vastaamme kahden arkipäivän kuluessa.    | Status line                                           |
-| `text.collection`     | Your next collection is on {date}.      | Nästa tömning är {date}.           | Seuraava tyhjennys on {date}.            | Running text, `calendar`                              |
-| `text.guide`          | Read the guide                          | Läs guiden                         | Lue ohje                                 | Link text, then `link.newTabNotice`, then `external`  |
-| `label.logo`          | Exempelby municipality                  | Exempelby kommun                   | Exempelbyn kunta                         | `label` on a meaningful icon                          |
-| `language.current`    | Svenska                                 | Svenska                            | Svenska                                  | Language switcher text (the name in its own language) |
-| `gallery.mirrors`     | Mirrors in RTL                          | Speglas vid RTL                    | Peilataan oikealta vasemmalle -suunnassa | Gallery cell note                                     |
+| Key                   | en                                      | sv                                 | longest: fi (draft)                      | Used as                                                                                                                                 |
+| --------------------- | --------------------------------------- | ---------------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `button.addChild`     | Add another child                       | Lägg till ett barn till            | Lisää toinen lapsi                       | Button, `add` at start <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                               |
+| `button.continue`     | Continue                                | Fortsätt                           | Jatka                                    | Primary, `arrow-forward` at end <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                      |
+| `button.download`     | Download the decision as a PDF          | Ladda ner beslutet som pdf         | Lataa päätös PDF-tiedostona              | Button, `download`, wraps at 320px <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                   |
+| `button.close`        | Close                                   | Stäng                              | Sulje                                    | Icon-only `aria-label` <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                               |
+| `button.search`       | Search                                  | Sök                                | Hae                                      | Icon-only `aria-label` <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                               |
+| `button.menu`         | Menu                                    | Meny                               | Valikko                                  | Visible text with `menu`                                                                                                                |
+| `button.removeFile`   | Remove {fileName}                       | Ta bort {fileName}                 | Poista tiedosto {fileName}               | Button, `delete` at start                                                                                                               | <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `button.showPassword` | Show password                           | Visa lösenord                      | Näytä salasana                           | Button, `eye` at start <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                               |
+| `button.hidePassword` | Hide password                           | Dölj lösenord                      | Piilota salasana                         | Button, `eye-off` at start <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                           |
+| `status.errorWord`    | Error                                   | Fel                                | Virhe                                    | Visible status word                                                                                                                     |
+| `status.error`        | Enter the date in the format {example}. | Ange datumet i formatet {example}. | Anna päivämäärä muodossa {example}.      | Status line <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                          |
+| `status.warningWord`  | Warning                                 | Varning                            | Varoitus                                 | Visible status word                                                                                                                     |
+| `status.warning`      | Your session ends in 5 minutes.         | Din session avslutas om 5 minuter. | Istuntosi päättyy 5 minuutin kuluttua.   | Status line <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                          |
+| `status.successWord`  | Done                                    | Klart                              | Valmis                                   | Visible status word                                                                                                                     |
+| `status.success`      | Your application has been sent.         | Din ansökan har skickats.          | Hakemuksesi on lähetetty.                | Status line <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                          |
+| `status.infoWord`     | Good to know                            | Bra att veta                       | Hyvä tietää                              | Visible status word <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                  |
+| `status.info`         | We answer within 2 working days.        | Vi svarar inom 2 arbetsdagar.      | Vastaamme kahden arkipäivän kuluessa.    | Status line <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                          |
+| `text.collection`     | Your next collection is on {date}.      | Nästa tömning är {date}.           | Seuraava tyhjennys on {date}.            | Running text, `calendar` <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                             |
+| `text.guide`          | Read the guide                          | Läs guiden                         | Lue ohje                                 | Link text, then `link.newTabNotice`, then `external` <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `label.logo`          | Exempelby municipality                  | Exempelby kommun                   | Exempelbyn kunta                         | `label` on a meaningful icon                                                                                                            |
+| `language.current`    | Svenska                                 | Svenska                            | Svenska                                  | Language switcher text (the name in its own language)                                                                                   |
+| `gallery.mirrors`     | Mirrors in RTL                          | Speglas vid RTL                    | Peilataan oikealta vasemmalle -suunnassa | Gallery cell note <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                    |
 
 `{example}` is formatted with `Intl` for the locale (`31.12.2026` in fi, `2026-12-31` in sv). Icon names in the gallery are code (`<code>`), not translated.
 
@@ -204,13 +204,14 @@ Per breakpoint: icons don't change size with the viewport, only with the root fo
 
 **Keylines** (stroke centrelines, outer painted size in brackets). The circle is largest because it covers the least area, and the triangle uses the full width because its area is the smallest. That gives equal optical weight.
 
-| Keyline  | Centrelines                                                                                      | Outer       | Used by                   |
-| -------- | ------------------------------------------------------------------------------------------------ | ----------- | ------------------------- |
-| Circle   | Centre 12,12, r 9                                                                                | 19.5        | `success`, `language`     |
-| Square   | 4–20 on both axes, radius 2                                                                      | 17.5        | `info`, `calendar` (body) |
-| Octagon  | Vertices (8.5,3.5) (15.5,3.5) (20.5,8.5) (20.5,15.5) (15.5,20.5) (8.5,20.5) (3.5,15.5) (3.5,8.5) | 18.5        | `error`                   |
-| Triangle | Apex 12,3.25. Base y 20.25, from x 2.75 to 21.25                                                 | 20 × 18.5   | `warning`                 |
-| Portrait | x 5.5–18.5, y 3–21, radius 2                                                                     | 14.5 × 19.5 | `document`                |
+| Keyline   | Centrelines                                                                                      | Outer       | Used by                   |
+| --------- | ------------------------------------------------------------------------------------------------ | ----------- | ------------------------- |
+| Circle    | Centre 12,12, r 9                                                                                | 19.5        | `success`, `language`     |
+| Square    | 4–20 on both axes, radius 2                                                                      | 17.5        | `info`, `calendar` (body) |
+| Octagon   | Vertices (8.5,3.5) (15.5,3.5) (20.5,8.5) (20.5,15.5) (15.5,20.5) (8.5,20.5) (3.5,15.5) (3.5,8.5) | 18.5        | `error`                   |
+| Triangle  | Apex 12,3.25. Base y 20.25, from x 2.75 to 21.25                                                 | 20 × 18.5   | `warning`                 |
+| Portrait  | x 5.5–18.5, y 3–21, radius 2                                                                     | 14.5 × 19.5 | `document`                |
+| Landscape | x 3–21, y 5–19, radius 2                                                                         | 19.5 × 15.5 | `image`, `chart`, cards   |
 
 **Gaps** (the acceptance test at 16px, where 1 unit is 0.67px):
 

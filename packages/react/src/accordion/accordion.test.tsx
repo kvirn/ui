@@ -35,38 +35,38 @@ interface ExampleProps {
 function Example({ firstItem, firstPanel, ...rootProps }: ExampleProps) {
   return (
     <>
-      <button type="button">Före</button>
+      <button type="button">Before</button>
       <Accordion.Root {...rootProps}>
         <Accordion.Item {...firstItem}>
           <Accordion.Heading level={3}>
-            <Accordion.Trigger>Hur ansöker jag?</Accordion.Trigger>
+            <Accordion.Trigger>How do I apply?</Accordion.Trigger>
           </Accordion.Heading>
           <Accordion.Panel {...firstPanel}>
-            <a href="/ansok">Ansök här</a>
+            <a href="/apply">Apply here</a>
           </Accordion.Panel>
         </Accordion.Item>
         <Accordion.Item>
           <Accordion.Heading level={3}>
             <Accordion.Trigger>Vad kostar det?</Accordion.Trigger>
           </Accordion.Heading>
-          <Accordion.Panel>Det är gratis.</Accordion.Panel>
+          <Accordion.Panel>It is free.</Accordion.Panel>
         </Accordion.Item>
         <Accordion.Item>
           <Accordion.Heading level={3}>
-            <Accordion.Trigger>Hur länge tar det?</Accordion.Trigger>
+            <Accordion.Trigger>How long does it take?</Accordion.Trigger>
           </Accordion.Heading>
-          <Accordion.Panel>Två veckor.</Accordion.Panel>
+          <Accordion.Panel>Two weeks.</Accordion.Panel>
         </Accordion.Item>
       </Accordion.Root>
-      <button type="button">Efter</button>
+      <button type="button">After</button>
     </>
   )
 }
 
 const trigger = (name: string) => page.getByRole('button', { name, exact: true })
-const first = () => trigger('Hur ansöker jag?')
+const first = () => trigger('How do I apply?')
 const second = () => trigger('Vad kostar det?')
-const third = () => trigger('Hur länge tar det?')
+const third = () => trigger('How long does it take?')
 const expanded = (name: string) => trigger(name).element().getAttribute('aria-expanded')
 
 describe('rendering', () => {
@@ -87,10 +87,10 @@ describe('rendering', () => {
   test('a trigger keeps its name open and closed', async () => {
     await render(<Example />)
     await userEvent.click(first())
-    expect(expanded('Hur ansöker jag?')).toBe('true')
+    expect(expanded('How do I apply?')).toBe('true')
     await userEvent.click(first())
-    expect(expanded('Hur ansöker jag?')).toBe('false')
-    expect(first().element().textContent).toBe('Hur ansöker jag?')
+    expect(expanded('How do I apply?')).toBe('false')
+    expect(first().element().textContent).toBe('How do I apply?')
   })
 
   test('the root adds role="list" to a ul and an ol, and no role to a div', async () => {
@@ -122,14 +122,14 @@ describe('rendering', () => {
         </Accordion.Item>
         <Accordion.Item>
           <Accordion.Heading level={4}>
-            <Accordion.Trigger>Två</Accordion.Trigger>
+            <Accordion.Trigger>Two</Accordion.Trigger>
           </Accordion.Heading>
           <Accordion.Panel>Text</Accordion.Panel>
         </Accordion.Item>
       </Accordion.Root>,
     )
     expect(container.querySelector('h2 > button')?.textContent).toBe('En')
-    expect(container.querySelector('h4 > button')?.textContent).toBe('Två')
+    expect(container.querySelector('h4 > button')?.textContent).toBe('Two')
   })
 
   test('each trigger controls its own panel, closed by default', async () => {
@@ -147,16 +147,16 @@ describe('rendering', () => {
   test('items are independent: opening one leaves the others as they are', async () => {
     const { container } = await render(<Example firstItem={{ defaultOpen: true }} />)
     await userEvent.click(second())
-    expect(expanded('Hur ansöker jag?')).toBe('true')
+    expect(expanded('How do I apply?')).toBe('true')
     expect(expanded('Vad kostar det?')).toBe('true')
-    expect(expanded('Hur länge tar det?')).toBe('false')
+    expect(expanded('How long does it take?')).toBe('false')
     expect(container.querySelectorAll('.kv-accordion-item[data-open]')).toHaveLength(2)
     await expectNoA11yViolations(container)
   })
 
   test('region is opt-in: the panel is a region named by its trigger', async () => {
     await render(<Example firstItem={{ defaultOpen: true }} firstPanel={{ region: true }} />)
-    await expect.element(page.getByRole('region', { name: 'Hur ansöker jag?' })).toBeVisible()
+    await expect.element(page.getByRole('region', { name: 'How do I apply?' })).toBeVisible()
     expect(page.getByRole('region').elements()).toHaveLength(1)
   })
 
@@ -170,13 +170,13 @@ describe('rendering', () => {
     ])
     panels[1]?.dispatchEvent(new Event('beforematch', { bubbles: true }))
     await expect.poll(() => expanded('Vad kostar det?')).toBe('true')
-    expect(expanded('Hur länge tar det?')).toBe('false')
+    expect(expanded('How long does it take?')).toBe('false')
   })
 
   test('a disabled item blocks, and the others still work', async () => {
     await render(<Example firstItem={{ disabled: true, focusableWhenDisabled: true }} />)
     await userEvent.click(first(), { force: true })
-    expect(expanded('Hur ansöker jag?')).toBe('false')
+    expect(expanded('How do I apply?')).toBe('false')
     await userEvent.click(second())
     expect(expanded('Vad kostar det?')).toBe('true')
   })
@@ -192,7 +192,7 @@ describe('rendering', () => {
         <Accordion.Item ref={itemRef} className="egen">
           <Accordion.Heading level={3} ref={headingRef} className="egen">
             <Accordion.Trigger ref={triggerRef} className="egen" data-egen="trigger">
-              Fråga
+              Question
             </Accordion.Trigger>
           </Accordion.Heading>
           <Accordion.Panel ref={panelRef} className="egen">
@@ -214,7 +214,7 @@ describe('rendering', () => {
       <Accordion.Root as="ul">
         <Accordion.Item as="li">
           <Accordion.Heading level={3}>
-            <Accordion.Trigger>Fråga</Accordion.Trigger>
+            <Accordion.Trigger>Question</Accordion.Trigger>
           </Accordion.Heading>
           <Accordion.Panel>Svar</Accordion.Panel>
         </Accordion.Item>
@@ -229,14 +229,14 @@ describe('rendering', () => {
       <Accordion.Root as="ol">
         <Accordion.Item as="li" defaultOpen>
           <Accordion.Heading level={3}>
-            <Accordion.Trigger>Fråga</Accordion.Trigger>
+            <Accordion.Trigger>Question</Accordion.Trigger>
           </Accordion.Heading>
           <Accordion.Panel>Svar</Accordion.Panel>
         </Accordion.Item>
       </Accordion.Root>,
     )
     expect(container.querySelector('ol.kv-accordion > li.kv-accordion-item')).not.toBeNull()
-    await expect.element(trigger('Fråga')).toHaveAttribute('aria-expanded', 'true')
+    await expect.element(trigger('Question')).toHaveAttribute('aria-expanded', 'true')
     expect(container.querySelector('li.kv-accordion-item')?.hasAttribute('data-open')).toBe(true)
   })
 
@@ -247,7 +247,7 @@ describe('rendering', () => {
       <Accordion.Root as={notAllowedRoot}>
         <Accordion.Item as={notAllowedItem}>
           <Accordion.Heading level={3}>
-            <Accordion.Trigger>Fråga</Accordion.Trigger>
+            <Accordion.Trigger>Question</Accordion.Trigger>
           </Accordion.Heading>
           <Accordion.Panel>Svar</Accordion.Panel>
         </Accordion.Item>
@@ -270,7 +270,7 @@ describe('rendering', () => {
       return (
         <div {...accordion.itemProps}>
           <h3 {...accordion.headingProps}>
-            <button {...disclosure.triggerProps}>Fråga</button>
+            <button {...disclosure.triggerProps}>Question</button>
           </h3>
           <div {...disclosure.panelProps}>Svar</div>
         </div>
@@ -278,8 +278,8 @@ describe('rendering', () => {
     }
     const { container } = await render(<Own />)
     expect(container.querySelector('.kv-accordion-item .kv-accordion-heading')).not.toBeNull()
-    await userEvent.click(trigger('Fråga'))
-    expect(expanded('Fråga')).toBe('true')
+    await userEvent.click(trigger('Question'))
+    expect(expanded('Question')).toBe('true')
   })
 
   test('server rendering writes the headings, the wiring and hidden panels', () => {
@@ -293,7 +293,7 @@ describe('rendering', () => {
 describe('keyboard', () => {
   test('Tab visits every trigger in order, and Shift+Tab goes back', async () => {
     await render(<Example />)
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     await userEvent.tab()
     await expect.element(first()).toHaveFocus()
     await userEvent.tab()
@@ -301,7 +301,7 @@ describe('keyboard', () => {
     await userEvent.tab()
     await expect.element(third()).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     await userEvent.tab({ shift: true })
     await userEvent.tab({ shift: true })
     await expect.element(second()).toHaveFocus()
@@ -318,15 +318,15 @@ describe('keyboard', () => {
     await userEvent.keyboard(' ')
     expect(expanded('Vad kostar det?')).toBe('false')
     await expect.element(second()).toHaveFocus()
-    expect(expanded('Hur ansöker jag?')).toBe('false')
-    expect(expanded('Hur länge tar det?')).toBe('false')
+    expect(expanded('How do I apply?')).toBe('false')
+    expect(expanded('How long does it take?')).toBe('false')
   })
 
   test('Tab goes through an open section before the next trigger', async () => {
     await render(<Example firstItem={{ defaultOpen: true }} />)
     first().element().focus()
     await userEvent.tab()
-    await expect.element(page.getByRole('link', { name: 'Ansök här' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Apply here' })).toHaveFocus()
     await userEvent.tab()
     await expect.element(second()).toHaveFocus()
   })
@@ -350,9 +350,9 @@ describe('keyboard', () => {
     await render(
       <Accordion.Root>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Lös fråga</Accordion.Trigger>
+          <Accordion.Trigger>Loose question</Accordion.Trigger>
         </Accordion.Heading>
-        <Accordion.Panel>Löst svar</Accordion.Panel>
+        <Accordion.Panel>Loose answer</Accordion.Panel>
       </Accordion.Root>,
     )
     const messages = consoleWarn.mock.calls.map(([message]) => String(message))

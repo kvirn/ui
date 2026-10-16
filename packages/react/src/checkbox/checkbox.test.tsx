@@ -34,8 +34,8 @@ afterEach(() => {
 
 describe('rendering', () => {
   test('renders a native <input type="checkbox">, outside a Field', async () => {
-    const { container } = await render(<Checkbox aria-label="Godkänn" />)
-    const checkbox = page.getByRole('checkbox', { name: 'Godkänn' })
+    const { container } = await render(<Checkbox aria-label="Approve" />)
+    const checkbox = page.getByRole('checkbox', { name: 'Approve' })
     await expect.element(checkbox).toHaveAttribute('type', 'checkbox')
     await expect.element(checkbox).toHaveAttribute('data-state', 'unchecked')
     await expect.element(checkbox).not.toHaveAttribute('id')
@@ -53,21 +53,21 @@ describe('rendering', () => {
     await render(
       <Checkbox
         ref={ref}
-        aria-label="Godkänn"
-        className="egen"
+        aria-label="Approve"
+        className="own"
         name="terms"
         value="yes"
-        form="ansokan"
-        data-egen=""
+        form="application"
+        data-own=""
       />,
     )
-    const checkbox = page.getByRole('checkbox', { name: 'Godkänn' })
+    const checkbox = page.getByRole('checkbox', { name: 'Approve' })
     expect(ref.current).toBe(checkbox.element())
-    await expect.element(checkbox).toHaveClass('egen', 'kv-checkbox')
+    await expect.element(checkbox).toHaveClass('own', 'kv-checkbox')
     await expect.element(checkbox).toHaveAttribute('name', 'terms')
     await expect.element(checkbox).toHaveAttribute('value', 'yes')
-    await expect.element(checkbox).toHaveAttribute('form', 'ansokan')
-    await expect.element(checkbox).toHaveAttribute('data-egen', '')
+    await expect.element(checkbox).toHaveAttribute('form', 'application')
+    await expect.element(checkbox).toHaveAttribute('data-own', '')
   })
 })
 
@@ -77,14 +77,14 @@ describe('in a Field', () => {
       <Field.Root required>
         <Checkbox name="contact" />
         <Field.Label>E-post</Field.Label>
-        <Field.HelpText>Vi mejlar beslutet.</Field.HelpText>
+        <Field.HelpText>We email the decision.</Field.HelpText>
       </Field.Root>,
     )
     const checkbox = page.getByRole('checkbox', { name: 'E-post' })
     const id = checkbox.element().id
     expect(id).not.toBe('')
     expect(container.querySelector('label')?.getAttribute('for')).toBe(id)
-    await expect.element(checkbox).toHaveAccessibleDescription('Vi mejlar beslutet.')
+    await expect.element(checkbox).toHaveAccessibleDescription('We email the decision.')
     await expect.element(checkbox).toHaveAttribute('aria-required', 'true')
     expect((checkbox.element() as HTMLInputElement).required).toBe(false)
     await expectNoA11yViolations(container)
@@ -96,36 +96,38 @@ describe('in a Field', () => {
       <>
         <Field.Root>
           <Checkbox />
-          <Field.Label>Nyhetsbrev</Field.Label>
+          <Field.Label>Newsletter</Field.Label>
         </Field.Root>
         <Field.Root>
           <Checkbox />
-          <Field.Label marker="none">Villkor</Field.Label>
+          <Field.Label marker="none">Terms</Field.Label>
         </Field.Root>
       </>,
     )
     await expect
-      .element(page.getByRole('checkbox', { name: 'Nyhetsbrev (optional)' }))
+      .element(page.getByRole('checkbox', { name: 'Newsletter (optional)' }))
       .toBeVisible()
-    await expect.element(page.getByRole('checkbox', { name: 'Villkor', exact: true })).toBeVisible()
+    await expect.element(page.getByRole('checkbox', { name: 'Terms', exact: true })).toBeVisible()
   })
 
   test('an invalid Field gives the standalone checkbox aria-invalid and the error in its description', async () => {
     const { container } = await render(
       <Field.Root invalid required>
         <Checkbox />
-        <Field.Label>Jag intygar att uppgifterna är korrekta</Field.Label>
-        <Field.Prose>Du kan inte skicka utan intyget.</Field.Prose>
-        <Field.ErrorMessage>Bekräfta att uppgifterna är korrekta</Field.ErrorMessage>
+        <Field.Label>I confirm that the information is correct</Field.Label>
+        <Field.Prose>You cannot send without the confirmation.</Field.Prose>
+        <Field.ErrorMessage>Confirm that the information is correct</Field.ErrorMessage>
       </Field.Root>,
     )
-    const checkbox = page.getByRole('checkbox', { name: 'Jag intygar att uppgifterna är korrekta' })
+    const checkbox = page.getByRole('checkbox', {
+      name: 'I confirm that the information is correct',
+    })
     await expect.element(checkbox).toHaveAttribute('aria-invalid', 'true')
     await expect.element(checkbox).toHaveAttribute('data-invalid', '')
     await expect
       .element(checkbox)
       .toHaveAccessibleDescription(
-        'Du kan inte skicka utan intyget. Error: Bekräfta att uppgifterna är korrekta',
+        'You cannot send without the confirmation. Error: Confirm that the information is correct',
       )
     await expectNoA11yViolations(container)
   })
@@ -135,16 +137,16 @@ describe('in a Field', () => {
       <>
         <Field.Root disabled>
           <Checkbox />
-          <Field.Label marker="none">Ett</Field.Label>
+          <Field.Label marker="none">One</Field.Label>
         </Field.Root>
         <Field.Root>
           <Checkbox disabled />
-          <Field.Label marker="none">Två</Field.Label>
+          <Field.Label marker="none">Two</Field.Label>
         </Field.Root>
       </>,
     )
-    await expect.element(page.getByRole('checkbox', { name: 'Ett' })).toBeDisabled()
-    const second = page.getByRole('checkbox', { name: 'Två' })
+    await expect.element(page.getByRole('checkbox', { name: 'One' })).toBeDisabled()
+    const second = page.getByRole('checkbox', { name: 'Two' })
     await expect.element(second).toBeDisabled()
     await expect.element(second).toHaveAttribute('data-disabled', '')
   })
@@ -152,17 +154,17 @@ describe('in a Field', () => {
   test('keeps your own aria-describedby ids, after the Field’s', async () => {
     await render(
       <>
-        <p id="extra">Mer information.</p>
+        <p id="extra">More information.</p>
         <Field.Root required>
           <Checkbox aria-describedby="extra" />
-          <Field.Label>Villkor</Field.Label>
-          <Field.Prose>Läs villkoren.</Field.Prose>
+          <Field.Label>Terms</Field.Label>
+          <Field.Prose>Read the terms.</Field.Prose>
         </Field.Root>
       </>,
     )
     await expect
-      .element(page.getByRole('checkbox', { name: 'Villkor' }))
-      .toHaveAccessibleDescription('Läs villkoren. Mer information.')
+      .element(page.getByRole('checkbox', { name: 'Terms' }))
+      .toHaveAccessibleDescription('Read the terms. More information.')
   })
 
   test('the accessible name and description follow the locale', async () => {
@@ -170,13 +172,14 @@ describe('in a Field', () => {
       <KvirnProvider locale="sv-SE" messages={sv}>
         <Field.Root invalid>
           <Checkbox />
-          <Field.Label>Nyhetsbrev</Field.Label>
-          <Field.ErrorMessage>Välj ett alternativ</Field.ErrorMessage>
+          <Field.Label>Newsletter</Field.Label>
+          <Field.ErrorMessage>Choose an option</Field.ErrorMessage>
         </Field.Root>
       </KvirnProvider>,
     )
-    const checkbox = page.getByRole('checkbox', { name: 'Nyhetsbrev (valfritt)' })
-    await expect.element(checkbox).toHaveAccessibleDescription('Fel: Välj ett alternativ')
+    // kv-lang-ok: the sv catalog strings for the optional marker and the error prefix
+    const checkbox = page.getByRole('checkbox', { name: 'Newsletter (valfritt)' })
+    await expect.element(checkbox).toHaveAccessibleDescription('Fel: Choose an option')
   })
 })
 
@@ -186,13 +189,13 @@ describe('checked', () => {
     const onChange = vi.fn<(event: React.ChangeEvent<HTMLInputElement>) => void>()
     await render(
       <Checkbox
-        aria-label="Godkänn"
+        aria-label="Approve"
         defaultChecked
         onCheckedChange={onCheckedChange}
         onChange={onChange}
       />,
     )
-    const checkbox = page.getByRole('checkbox', { name: 'Godkänn' })
+    const checkbox = page.getByRole('checkbox', { name: 'Approve' })
     await expect.element(checkbox).toBeChecked()
     await userEvent.click(checkbox)
     await expect.element(checkbox).not.toBeChecked()
@@ -208,26 +211,26 @@ describe('checked', () => {
       const [checked, setChecked] = useState(false)
       return (
         <>
-          <Checkbox aria-label="Godkänn" checked={checked} onCheckedChange={setChecked} />
-          <output>{checked ? 'ja' : 'nej'}</output>
+          <Checkbox aria-label="Approve" checked={checked} onCheckedChange={setChecked} />
+          <output>{checked ? 'yes' : 'no'}</output>
         </>
       )
     }
     await render(<Controlled />)
-    const checkbox = page.getByRole('checkbox', { name: 'Godkänn' })
+    const checkbox = page.getByRole('checkbox', { name: 'Approve' })
     await expect.element(checkbox).not.toBeChecked()
     await userEvent.click(checkbox)
     await expect.element(checkbox).toBeChecked()
     await expect.element(checkbox).toHaveAttribute('data-state', 'checked')
-    await expect.element(page.getByRole('status')).toHaveTextContent('ja')
+    await expect.element(page.getByRole('status')).toHaveTextContent('yes')
   })
 
   test('a controlled checkbox stays as it is when the parent does not update checked', async () => {
     const onCheckedChange = vi.fn<(checked: boolean, details: CheckboxChangeDetails) => void>()
     await render(
-      <Checkbox aria-label="Godkänn" checked={false} onCheckedChange={onCheckedChange} />,
+      <Checkbox aria-label="Approve" checked={false} onCheckedChange={onCheckedChange} />,
     )
-    const checkbox = page.getByRole('checkbox', { name: 'Godkänn' })
+    const checkbox = page.getByRole('checkbox', { name: 'Approve' })
     await userEvent.click(checkbox)
     expect(onCheckedChange).toHaveBeenCalledWith(true, expect.objectContaining({ reason: 'input' }))
     await expect.element(checkbox).not.toBeChecked()
@@ -238,24 +241,24 @@ describe('checked', () => {
     let submitted: FormData | undefined
     await render(
       <form
-        aria-label="Ansökan"
+        aria-label="Application"
         onSubmit={(event) => {
           event.preventDefault()
           submitted = new FormData(event.currentTarget)
         }}
       >
         <Field.Root required>
-          <Checkbox name="declaration" value="intygat" />
-          <Field.Label marker="none">Jag intygar</Field.Label>
+          <Checkbox name="declaration" value="confirmed" />
+          <Field.Label marker="none">I confirm</Field.Label>
         </Field.Root>
-        <button type="submit">Skicka</button>
+        <button type="submit">Send</button>
       </form>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Send' }))
     expect(submitted?.has('declaration')).toBe(false)
-    await userEvent.click(page.getByRole('checkbox', { name: 'Jag intygar' }))
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
-    expect(submitted?.get('declaration')).toBe('intygat')
+    await userEvent.click(page.getByRole('checkbox', { name: 'I confirm' }))
+    await userEvent.click(page.getByRole('button', { name: 'Send' }))
+    expect(submitted?.get('declaration')).toBe('confirmed')
   })
 
   test('a form library’s spread props and ref reach the native input', async () => {
@@ -275,10 +278,10 @@ describe('checked', () => {
     await render(
       <Field.Root required>
         <Checkbox {...register('declaration')} />
-        <Field.Label marker="none">Jag intygar</Field.Label>
+        <Field.Label marker="none">I confirm</Field.Label>
       </Field.Root>,
     )
-    const checkbox = page.getByRole('checkbox', { name: 'Jag intygar' })
+    const checkbox = page.getByRole('checkbox', { name: 'I confirm' })
     expect(registered.element).toBe(checkbox.element())
     await userEvent.click(checkbox)
     await userEvent.click(checkbox)
@@ -291,10 +294,10 @@ describe('indeterminate', () => {
     const { container } = await render(
       <Field.Root required>
         <Checkbox indeterminate />
-        <Field.Label>Välj alla rader</Field.Label>
+        <Field.Label>Select all rows</Field.Label>
       </Field.Root>,
     )
-    const checkbox = page.getByRole('checkbox', { name: 'Välj alla rader' })
+    const checkbox = page.getByRole('checkbox', { name: 'Select all rows' })
     expect((checkbox.element() as HTMLInputElement).indeterminate).toBe(true)
     await expect.element(checkbox).toBePartiallyChecked()
     await expect.element(checkbox).toHaveAttribute('data-state', 'indeterminate')
@@ -307,17 +310,17 @@ describe('indeterminate', () => {
       const [indeterminate, setIndeterminate] = useState(true)
       return (
         <>
-          <Checkbox aria-label="Alla" indeterminate={indeterminate} />
+          <Checkbox aria-label="All" indeterminate={indeterminate} />
           <button type="button" onClick={() => setIndeterminate(false)}>
-            Rensa
+            Clear
           </button>
         </>
       )
     }
     await render(<Toggle />)
-    const checkbox = page.getByRole('checkbox', { name: 'Alla' })
+    const checkbox = page.getByRole('checkbox', { name: 'All' })
     await expect.element(checkbox).toBePartiallyChecked()
-    await userEvent.click(page.getByRole('button', { name: 'Rensa' }))
+    await userEvent.click(page.getByRole('button', { name: 'Clear' }))
     expect((checkbox.element() as HTMLInputElement).indeterminate).toBe(false)
     await expect.element(checkbox).not.toBePartiallyChecked()
     await expect.element(checkbox).toHaveAttribute('data-state', 'unchecked')
@@ -329,7 +332,7 @@ describe('indeterminate', () => {
       const [checked, setChecked] = useState(false)
       return (
         <Checkbox
-          aria-label="Alla"
+          aria-label="All"
           checked={checked}
           indeterminate={indeterminate}
           onCheckedChange={(next) => {
@@ -340,7 +343,7 @@ describe('indeterminate', () => {
       )
     }
     await render(<SelectAll />)
-    const checkbox = page.getByRole('checkbox', { name: 'Alla' })
+    const checkbox = page.getByRole('checkbox', { name: 'All' })
     await userEvent.click(checkbox)
     await expect.element(checkbox).toBeChecked()
     await expect.element(checkbox).toHaveAttribute('data-state', 'checked')
@@ -350,14 +353,9 @@ describe('indeterminate', () => {
   test('the prop wins over the browser: without a new prop the box stays indeterminate after a click', async () => {
     const onCheckedChange = vi.fn<(checked: boolean, details: CheckboxChangeDetails) => void>()
     await render(
-      <Checkbox
-        aria-label="Alla"
-        indeterminate
-        checked={false}
-        onCheckedChange={onCheckedChange}
-      />,
+      <Checkbox aria-label="All" indeterminate checked={false} onCheckedChange={onCheckedChange} />,
     )
-    const checkbox = page.getByRole('checkbox', { name: 'Alla' })
+    const checkbox = page.getByRole('checkbox', { name: 'All' })
     await userEvent.click(checkbox)
     expect(onCheckedChange).toHaveBeenCalledWith(true, expect.objectContaining({ reason: 'input' }))
     expect((checkbox.element() as HTMLInputElement).indeterminate).toBe(true)
@@ -366,13 +364,13 @@ describe('indeterminate', () => {
 
   test('server markup is complete except for the DOM property: unchecked, with the id and description', () => {
     const markup = renderToString(
-      <Field.Root controlId="fält">
+      <Field.Root controlId="field">
         <Checkbox indeterminate />
-        <Field.Label>Alla</Field.Label>
+        <Field.Label>All</Field.Label>
       </Field.Root>,
     )
     expect(markup).toContain('type="checkbox"')
-    expect(markup).toContain('id="fält"')
+    expect(markup).toContain('id="field"')
     expect(markup).toContain('data-state="indeterminate"')
     expect(markup).not.toContain('checked=""')
   })
@@ -380,8 +378,8 @@ describe('indeterminate', () => {
 
 describe('data-state', () => {
   test('data-state follows the native state', async () => {
-    await render(<Checkbox aria-label="Godkänn" />)
-    const checkbox = page.getByRole('checkbox', { name: 'Godkänn' })
+    await render(<Checkbox aria-label="Approve" />)
+    const checkbox = page.getByRole('checkbox', { name: 'Approve' })
     await expect.element(checkbox).toHaveAttribute('data-state', 'unchecked')
     await userEvent.click(checkbox)
     await expect.element(checkbox).toHaveAttribute('data-state', 'checked')
@@ -390,9 +388,9 @@ describe('data-state', () => {
   })
 
   test('defaultChecked starts as checked', async () => {
-    await render(<Checkbox aria-label="Godkänn" defaultChecked />)
+    await render(<Checkbox aria-label="Approve" defaultChecked />)
     await expect
-      .element(page.getByRole('checkbox', { name: 'Godkänn' }))
+      .element(page.getByRole('checkbox', { name: 'Approve' }))
       .toHaveAttribute('data-state', 'checked')
   })
 })
@@ -416,14 +414,14 @@ describe('dev warnings', () => {
 
   test('an id inside a Field is ignored with a dev warning: the label stays associated', async () => {
     await render(
-      <Field.Root controlId="fältet">
-        <Checkbox id="annat" />
-        <Field.Label marker="none">Villkor</Field.Label>
+      <Field.Root controlId="the-field">
+        <Checkbox id="other" />
+        <Field.Label marker="none">Terms</Field.Label>
       </Field.Root>,
     )
     await expect
-      .element(page.getByRole('checkbox', { name: 'Villkor' }))
-      .toHaveAttribute('id', 'fältet')
+      .element(page.getByRole('checkbox', { name: 'Terms' }))
+      .toHaveAttribute('id', 'the-field')
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('controlId')
   })
@@ -433,10 +431,10 @@ describe('useCheckbox', () => {
   test('spreads the same props on your own input, with a ref that sets indeterminate', async () => {
     function Own() {
       const checkbox = useCheckbox({ indeterminate: true })
-      return <input aria-label="Egen" {...checkbox.inputProps} />
+      return <input aria-label="Own" {...checkbox.inputProps} />
     }
     await render(<Own />)
-    const input = page.getByRole('checkbox', { name: 'Egen' })
+    const input = page.getByRole('checkbox', { name: 'Own' })
     expect((input.element() as HTMLInputElement).indeterminate).toBe(true)
   })
 })
@@ -446,17 +444,17 @@ describe('keyboard', () => {
     const [all, setAll] = useState<'some' | 'all' | 'none'>('some')
     return (
       <form>
-        <button type="button">Före</button>
-        <Checkbox aria-label="Nyhetsbrev" />
+        <button type="button">Before</button>
+        <Checkbox aria-label="Newsletter" />
         <Checkbox
-          aria-label="Alla"
+          aria-label="All"
           checked={all === 'all'}
           indeterminate={all === 'some'}
           onCheckedChange={(checked) => setAll(checked ? 'all' : 'none')}
         />
-        <Checkbox aria-label="Ärende" disabled />
-        <Checkbox aria-label="Intyg" />
-        <button type="button">Skicka</button>
+        <Checkbox aria-label="Case" disabled />
+        <Checkbox aria-label="Confirmation" />
+        <button type="button">Send</button>
       </form>
     )
   }
@@ -472,39 +470,39 @@ describe('keyboard', () => {
 
   test('Tab moves to each checkbox, one stop each', async () => {
     await render(<Form />)
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     await userEvent.tab()
-    await expect.element(page.getByRole('checkbox', { name: 'Nyhetsbrev' })).toHaveFocus()
+    await expect.element(page.getByRole('checkbox', { name: 'Newsletter' })).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('checkbox', { name: 'Alla' })).toHaveFocus()
+    await expect.element(page.getByRole('checkbox', { name: 'All' })).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('checkbox', { name: 'Intyg' })).toHaveFocus()
+    await expect.element(page.getByRole('checkbox', { name: 'Confirmation' })).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Skicka' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Send' })).toHaveFocus()
   })
 
   test('Shift+Tab moves to the previous checkbox', async () => {
     await render(<Form />)
-    page.getByRole('checkbox', { name: 'Intyg' }).element().focus()
+    page.getByRole('checkbox', { name: 'Confirmation' }).element().focus()
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('checkbox', { name: 'Alla' })).toHaveFocus()
+    await expect.element(page.getByRole('checkbox', { name: 'All' })).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('checkbox', { name: 'Nyhetsbrev' })).toHaveFocus()
+    await expect.element(page.getByRole('checkbox', { name: 'Newsletter' })).toHaveFocus()
   })
 
   test('Tab skips a disabled checkbox', async () => {
     await render(<Form />)
-    const disabled = page.getByRole('checkbox', { name: 'Ärende' })
+    const disabled = page.getByRole('checkbox', { name: 'Case' })
     await expect.element(disabled).toBeDisabled()
-    page.getByRole('checkbox', { name: 'Alla' }).element().focus()
+    page.getByRole('checkbox', { name: 'All' }).element().focus()
     await userEvent.tab()
     await expect.element(disabled).not.toHaveFocus()
-    await expect.element(page.getByRole('checkbox', { name: 'Intyg' })).toHaveFocus()
+    await expect.element(page.getByRole('checkbox', { name: 'Confirmation' })).toHaveFocus()
   })
 
   test('Space toggles the checkbox', async () => {
     await render(<Form />)
-    const checkbox = page.getByRole('checkbox', { name: 'Nyhetsbrev' })
+    const checkbox = page.getByRole('checkbox', { name: 'Newsletter' })
     checkbox.element().focus()
     const prevented = recordPreventedKeys()
     await userEvent.keyboard(' ')
@@ -520,7 +518,7 @@ describe('keyboard', () => {
 
   test('Space on an indeterminate checkbox checks it', async () => {
     await render(<Form />)
-    const checkbox = page.getByRole('checkbox', { name: 'Alla' })
+    const checkbox = page.getByRole('checkbox', { name: 'All' })
     await expect.element(checkbox).toHaveAttribute('data-state', 'indeterminate')
     expect((checkbox.element() as HTMLInputElement).indeterminate).toBe(true)
     checkbox.element().focus()
@@ -532,7 +530,7 @@ describe('keyboard', () => {
 
   test('Enter does not toggle the checkbox and is not intercepted', async () => {
     await render(<Form />)
-    const checkbox = page.getByRole('checkbox', { name: 'Nyhetsbrev' })
+    const checkbox = page.getByRole('checkbox', { name: 'Newsletter' })
     checkbox.element().focus()
     const prevented = recordPreventedKeys()
     await userEvent.keyboard('{Enter}')
@@ -546,11 +544,11 @@ describe('keyboard', () => {
     await render(
       <Field.Root>
         <Checkbox />
-        <Field.Label marker="none">Jag intygar</Field.Label>
+        <Field.Label marker="none">I confirm</Field.Label>
       </Field.Root>,
     )
-    const checkbox = page.getByRole('checkbox', { name: /Jag intygar/ })
-    await userEvent.click(page.getByText('Jag intygar'))
+    const checkbox = page.getByRole('checkbox', { name: /I confirm/ })
+    await userEvent.click(page.getByText('I confirm'))
     await expect.element(checkbox).toBeChecked()
     await expect.element(checkbox).toHaveFocus()
   })

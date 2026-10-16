@@ -144,7 +144,7 @@ The checker is a small CSS reader (`read-theme.ts`). It resolves `var()`, `@laye
 
 - The theme loads no font. `--kv-font-family-sans` starts with `'IBM Plex Sans'` then `--kv-font-family-system`. `--kv-font-family-serif` starts with `'IBM Plex Serif'` then `--kv-font-family-system-serif`. Headings read `var(--kv-font-family-heading, var(--kv-font-family-serif))`, text reads `var(--kv-font-family-body, var(--kv-font-family-sans))`. Both overrides are adopter-only.
 - The docs site and Storybook self-host IBM Plex from `apps/docs/fonts/ibm-plex/ibm-plex.css`, imported by the docs layout and the Storybook preview. No third-party font request.
-  - Plain `@font-face` CSS, not `next/font/local`. One family name per typeface, split into Latin1 and Pi by `unicode-range`. Latin1 covers å ä ö æ ø.
+  - Plain `@font-face` CSS, not `next/font/local`. One family name per typeface, split into Latin1 and Pi by `unicode-range`. Latin1 covers å ä ö æ ø. <!-- kv-lang-ok: letters are the subject of the font coverage rule -->
   - Sans 400, 500, 600 and Serif 500, 600, upright only, woff2.
   - Use IBM's own files, unmodified (the licence reserves the name "Plex"; the licence file sits beside them). Fetch them with `npm pack`. Never add the IBM packages as dependencies, because their `postinstall` sends telemetry.
 - Every Nordic letter must come from the font, not from a fallback.

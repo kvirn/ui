@@ -32,7 +32,7 @@ const leftColumn = {
 
 const placeAtPixelsEast = (pixels: number): MapPlace => ({
   id: 'forskola',
-  name: 'Förskolan Björken',
+  name: 'Birch Preschool',
   position: { ...centre, longitude: centre.longitude + pixels * degreesPerPixel },
 })
 
@@ -50,7 +50,7 @@ function CaseMap({
       <style>{fixtureStyle}</style>
       <Map.Root
         provider={provider}
-        label="Karta"
+        label="Map"
         places={[place]}
         initialView={{ center: centre, zoom }}
       >
@@ -59,7 +59,7 @@ function CaseMap({
           {chrome === 'overlay' ? (
             <Map.Overlay data-testid="overlay" style={leftColumn}>
               <label>
-                Sök
+                Search
                 <input />
               </label>
             </Map.Overlay>
@@ -79,7 +79,7 @@ function MarkerContentMap({ children }: { children?: () => null | string }) {
       <style>{fixtureStyle}</style>
       <Map.Root
         provider={createMemoryProvider()}
-        label="Karta"
+        label="Map"
         places={[placeAtPixelsEast(0)]}
         initialView={{ center: centre, zoom }}
       >
@@ -91,7 +91,7 @@ function MarkerContentMap({ children }: { children?: () => null | string }) {
   )
 }
 
-const marker = () => page.getByRole('button', { name: 'Förskolan Björken' })
+const marker = () => page.getByRole('button', { name: 'Birch Preschool' })
 
 async function tabToMarker() {
   await expect.element(marker()).toBeVisible()
@@ -150,9 +150,9 @@ function ChromeMap({ onBaseMapChange }: { onBaseMapChange?: (id: string) => void
   return (
     <Map.Root
       provider={createMemoryProvider({ baseMaps })}
-      label="Karta"
+      label="Map"
       places={[placeAtPixelsEast(600)]}
-      layers={[{ id: 'a', label: 'Tankställen' }]}
+      layers={[{ id: 'a', label: 'Fuel stops' }]}
       initialView={{ center: centre, zoom }}
       {...(onBaseMapChange ? { onBaseMapChange } : {})}
     >
@@ -170,7 +170,7 @@ describe('Map chrome', () => {
     await render(
       <Map.Root
         provider={createMemoryProvider()}
-        label="Karta"
+        label="Map"
         initialView={{ center: centre, zoom }}
       >
         <Map.Viewport className="fixture-viewport">
@@ -195,7 +195,7 @@ describe('Map chrome', () => {
 
   test('a layer checkbox toggles with Space', async () => {
     await render(<ChromeMap />)
-    const chip = page.getByRole('checkbox', { name: /Tankställen/ })
+    const chip = page.getByRole('checkbox', { name: /Fuel stops/ })
     await expect.element(chip).toBeChecked()
     chip.element().focus()
     await userEvent.keyboard(' ')
@@ -206,10 +206,10 @@ describe('Map chrome', () => {
     render(
       <Map.Root
         provider={createMemoryProvider()}
-        label="Karta"
+        label="Map"
         places={[placeAtPixelsEast(600)]}
         layers={[
-          { id: 'a', label: 'Tankställen' },
+          { id: 'a', label: 'Fuel stops' },
           { id: 'b', label: 'Laddstationer' },
         ]}
         defaultHiddenLayers={['a']}
@@ -294,12 +294,12 @@ describe('Map popup room', () => {
         <style>{fixtureStyle}</style>
         <Map.Root
           provider={createMemoryProvider({ size: { width: 800, height: rowHeight } })}
-          label="Karta"
+          label="Map"
           places={[
             {
               id: 'forskola',
-              name: 'Förskolan Björken',
-              description: 'Lång beskrivning. '.repeat(120),
+              name: 'Birch Preschool',
+              description: 'Long description. '.repeat(120),
               position: { ...centre, latitude: centre.latitude + latitudeOffset },
             },
           ]}
@@ -332,7 +332,7 @@ describe('Map cluster layer cue', () => {
   const closePlaces: MapPlace[] = [0, 1].map((index) => ({
     ...placeAtPixelsEast(index),
     id: `place-${index}`,
-    name: `Plats ${index}`,
+    name: `Place ${index}`,
     layer: 'hotels',
   }))
   const renderClusters = (cluster?: () => string, icon: boolean = true) =>
@@ -341,7 +341,7 @@ describe('Map cluster layer cue', () => {
         <style>{fixtureStyle}</style>
         <Map.Root
           provider={createMemoryProvider()}
-          label="Karta"
+          label="Map"
           places={closePlaces}
           layers={[{ id: 'hotels', label: 'Hotell', ...(icon ? { icon: layerIcon } : {}) }]}
           initialView={{ center: centre, zoom }}
@@ -382,9 +382,9 @@ describe('Map layer swatch', () => {
     render(
       <Map.Root
         provider={createMemoryProvider()}
-        label="Karta"
+        label="Map"
         places={[placeAtPixelsEast(0)]}
-        layers={[{ id: 'a', label: 'Tankställen', icon: <span>L</span> }]}
+        layers={[{ id: 'a', label: 'Fuel stops', icon: <span>L</span> }]}
         initialView={{ center: centre, zoom }}
       >
         <Map.Viewport className="fixture-viewport">
@@ -396,7 +396,7 @@ describe('Map layer swatch', () => {
   test("a layer's icon is the decorative swatch when Map.Layers has no icon prop", async () => {
     await renderLayers()
     const swatch = page
-      .getByRole('checkbox', { name: /Tankställen/ })
+      .getByRole('checkbox', { name: /Fuel stops/ })
       .element()
       .closest('.kv-field')
     const wrapper = swatch?.querySelector('.kv-map-layer-swatch')
@@ -406,7 +406,7 @@ describe('Map layer swatch', () => {
 
   test('the icon prop of Map.Layers wins over the layer icon', async () => {
     await renderLayers(() => 'P')
-    await expect.element(page.getByRole('checkbox', { name: /Tankställen/ })).toBeVisible()
+    await expect.element(page.getByRole('checkbox', { name: /Fuel stops/ })).toBeVisible()
     expect(document.querySelector('.kv-map-layer-swatch')?.textContent).toBe('P')
   })
 })
@@ -417,7 +417,7 @@ describe('Map with the memory provider', () => {
     render(
       <Map.Root
         provider={createMemoryProvider()}
-        label="Karta"
+        label="Map"
         places={[place]}
         initialView={{ center: centre, zoom }}
       >
@@ -432,7 +432,7 @@ describe('Map with the memory provider', () => {
     await render(
       <Map.Root
         provider={createMemoryProvider()}
-        label="Karta"
+        label="Map"
         initialView={{ center: centre, zoom }}
       >
         <Map.Viewport data-testid="viewport" className="fixture-viewport" />

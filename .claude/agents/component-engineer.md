@@ -30,6 +30,7 @@ A brief with the goal, the plan path (`docs/design/plans/NNNN-*.md`) or the bug 
 - Code reads like the file next to it: same naming, idiom and comment density. No new pattern where an existing one fits.
 - A comment says _why_, only where the code can't. No narration (`// loop over the options`), no restated types, no step markers, no JSDoc on internals, no commented-out code. A test's name is its documentation: nothing above `it`.
 - Full names, never abbreviations (`disclosure`, not `d`). Inferred types where possible; export `UseXOptions`, `UseXResult` and `XPartProps`.
+- Authored text is English; any other language needs a `kv-lang-ok: <reason>` marker (AGENTS.md Conventions).
 - Stay in the brief. Anything else is one line under `Out of scope`, not a fix.
 
 ## Rules

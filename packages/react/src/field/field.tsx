@@ -63,12 +63,12 @@ export function OptionalMarker({ text }: { text: string | undefined }): ReactNod
  *
  * @example
  * <Field.Root invalid={errors.phone !== undefined}>
- *   <Field.Label>Telefonnummer</Field.Label>
+ *   <Field.Label>Phone number</Field.Label>
  *   <Field.Prose>
- *     <p>Vi ringer bara om något är fel.</p>
+ *     <p>We only call if something is wrong.</p>
  *   </Field.Prose>
  *   <TextInput name="phone" autoComplete="tel" />
- *   <Field.HelpText>Till exempel 070-123 45 67</Field.HelpText>
+ *   <Field.HelpText>For example 070-123 45 67</Field.HelpText>
  *   <Field.ErrorMessage>{errors.phone}</Field.ErrorMessage>
  * </Field.Root>
  */
@@ -139,7 +139,7 @@ FieldRoot.displayName = 'Field.Root'
 
 /**
  * The field's visible label, a `<label for>` that names the control. Adds the `field.optional`
- * text, for example `(valfritt)`, when the field isn't required.
+ * text, for example `(optional)`, when the field isn't required.
  */
 export function FieldLabel({
   marker,
@@ -179,7 +179,7 @@ FieldLabel.displayName = 'Field.Label'
 
 /**
  * The error message: says what's wrong and how to fix it. Renders only while its Field or
- * Fieldset is invalid, starts with the `field.errorPrefix` text ("Fel:") and the error icon, and
+ * Fieldset is invalid, starts with the `field.errorPrefix` text ("Error:") and the error icon, and
  * is part of the control's accessible description. Not a live region.
  */
 export function FieldErrorMessage({
@@ -304,10 +304,10 @@ export const ErrorMessage = FieldErrorMessage
  *
  * @example
  * <Field.Root required>
- *   <Field.Label>E-postadress</Field.Label>
- *   <Field.Prose><p>Vi skickar beslutet hit.</p></Field.Prose>
+ *   <Field.Label>Email address</Field.Label>
+ *   <Field.Prose><p>Vi sends decision hit.</p></Field.Prose>
  *   <TextInput name="email" type="email" autoComplete="email" />
- *   <Field.HelpText>Till exempel namn@exempel.se</Field.HelpText>
+ *   <Field.HelpText>For example name@example.se</Field.HelpText>
  * </Field.Root>
  */
 export const Field = Object.assign(FieldRoot, {

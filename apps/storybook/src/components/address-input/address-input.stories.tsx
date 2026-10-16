@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the Sweden, Finland and Norway stories show per-country locale text drafts
 import { AddressInput, ErrorSummary, Field, Fieldset } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/address-input/address-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/address-input/address-input.md?raw'

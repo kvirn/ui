@@ -74,7 +74,7 @@ const meta = {
     countCharacters: {
       control: false,
       description:
-        'With `characterCount`: your own counting, `(value) => number`, such as your server’s. Default: the characters the user sees (`å` and an emoji are one). Count the same way on both sides.',
+        'With `characterCount`: your own counting, `(value) => number`, such as your server’s. Default: the characters the user sees (`é` and an emoji are one). Count the same way on both sides.',
     },
     messages: {
       control: 'object',
@@ -124,7 +124,7 @@ const meta = {
     },
     ref: { control: false, description: 'A ref to the `<textarea>`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [
     (Story) => (
       <div className="kv-story-form">
@@ -188,10 +188,10 @@ export const Typing: Story = {
   play: async ({ canvas, args, globals }) => {
     const { text } = textareaTextsFor(localeOf(globals))
     const box = canvas.getByRole('textbox', { name: text.label })
-    await userEvent.type(box, 'Hej')
-    await expect(box).toHaveValue('Hej')
+    await userEvent.type(box, 'Hey')
+    await expect(box).toHaveValue('Hey')
     await expect(args.onValueChange).toHaveBeenLastCalledWith(
-      'Hej',
+      'Hey',
       expect.objectContaining({ reason: 'input' }),
     )
   },
@@ -224,7 +224,7 @@ export const Invalid: Story = {
 
 /** Disabled: a dashed edge on the surface colour, and no resize handle. Say why on submit instead, where you can. */
 export const Disabled: Story = {
-  args: { disabled: true, defaultValue: 'Jag har fått ett brev om mitt bostadsbidrag.' },
+  args: { disabled: true, defaultValue: 'I have received a letter about my housing grant.' },
   play: async ({ canvas, globals }) => {
     const { text } = textareaTextsFor(localeOf(globals))
     await expect(canvas.getByRole('textbox', { name: text.label })).toBeDisabled()
@@ -233,7 +233,7 @@ export const Disabled: Story = {
 
 /** Read-only is for staff tools: a solid edge on the surface colour, and still focusable. */
 export const ReadOnly: Story = {
-  args: { readOnly: true, defaultValue: 'Jag har fått ett brev om mitt bostadsbidrag.' },
+  args: { readOnly: true, defaultValue: 'I have received a letter about my housing grant.' },
   play: async ({ canvas, globals }) => {
     const { text } = textareaTextsFor(localeOf(globals))
     const box = canvas.getByRole('textbox', { name: text.label })
@@ -255,8 +255,8 @@ export const Controlled: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = textareaTextsFor(localeOf(globals))
     const box = canvas.getByRole('textbox', { name: text.label })
-    await userEvent.type(box, 'Hej')
-    await expect(box).toHaveValue('Hej')
+    await userEvent.type(box, 'Hey')
+    await expect(box).toHaveValue('Hey')
   },
 }
 
@@ -273,7 +273,7 @@ export const CharacterCount: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = textareaTextsFor(localeOf(globals))
     const box = canvas.getByRole('textbox', { name: text.label })
-    await userEvent.type(box, 'Hej')
+    await userEvent.type(box, 'Hey')
     // 3 of 200 typed: the count says 197 are left, in whichever language the toolbar says.
     await expect(box).toHaveAccessibleDescription(/197/)
     await expect(box).not.toHaveAttribute('maxlength')

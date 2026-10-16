@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale fixture text sets (sv, fi, nb, nn), picked by the locale toolbar
 import { Button, Field, FileUpload, useFileUpload } from '@kvirn-ui/react'
 import type { FileUploadRootProps } from '@kvirn-ui/react'
 import type { FormLocale } from '../form/form.fixture.tsx'

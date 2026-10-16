@@ -1,3 +1,4 @@
+// kv-lang-ok-file: Reflow320 is the long Finnish compound hard case under locale fi
 import { Breadcrumb, Icon } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/breadcrumb/breadcrumb.a11y.md?raw'
 import guide from '../../../../../packages/react/src/breadcrumb/breadcrumb.md?raw'
@@ -9,7 +10,7 @@ import { withLocale } from './breadcrumb.fixture.tsx'
 
 // Components/Breadcrumb: the headless Breadcrumb, styled by @kvirn-ui/theme/theme.css (brief B4 in
 // docs/design/municipality-reference-site.md). The landmark's name is the library's own string and
-// follows the locale toolbar: `Du är här` in sv. The links go nowhere (#), so a play function
+// follows the locale toolbar: `You are here` in en. The links go nowhere (#), so a play function
 // that presses Enter stays on the page.
 
 const meta = {
@@ -29,7 +30,7 @@ const meta = {
     label: {
       control: 'text',
       description:
-        'The trail’s accessible name, set as `aria-label`. Replaces the message `breadcrumb.label` (`Du är här`).',
+        'The trail’s accessible name, set as `aria-label`. Replaces the message `breadcrumb.label` (`You are here`).',
     },
   },
   args: {
@@ -39,16 +40,16 @@ const meta = {
           <Breadcrumb.Link href="#start">Start</Breadcrumb.Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Breadcrumb.Link href="#barn">Barn och utbildning</Breadcrumb.Link>
+          <Breadcrumb.Link href="#children">Children and education</Breadcrumb.Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Breadcrumb.Current>Förskola</Breadcrumb.Current>
+          <Breadcrumb.Current>Preschool</Breadcrumb.Current>
         </Breadcrumb.Item>
       </Breadcrumb.List>
     ),
   },
   decorators: [withLocale],
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
@@ -61,9 +62,9 @@ type Story = StoryObj<typeof meta>
 /** Start, a level up and the current page as text. The separators are drawn by the theme and never read. */
 export const Default: Story = {
   play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'Du är här' })
+    const navigation = canvas.getByRole('navigation', { name: 'You are here' })
     await expect(navigation).toBeVisible()
-    await expect(canvas.getByText('Förskola')).toHaveAttribute('aria-current', 'page')
+    await expect(canvas.getByText('Preschool')).toHaveAttribute('aria-current', 'page')
     await expect(canvas.getAllByRole('link')).toHaveLength(2)
     for (const link of canvas.getAllByRole('link')) {
       await expectMinimumTargetSize(link)
@@ -75,7 +76,7 @@ export const Default: Story = {
 export const Slash: Story = {
   args: { variant: 'slash' },
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('navigation', { name: 'Du är här' })).toHaveClass(
+    await expect(canvas.getByRole('navigation', { name: 'You are here' })).toHaveClass(
       'kv-breadcrumb--slash',
     )
     await expect(canvas.getAllByRole('link')).toHaveLength(2)
@@ -101,7 +102,7 @@ export const Keyboard: Story = {
     await userEvent.tab()
     await expect(canvas.getByRole('link', { name: 'Start' })).toHaveFocus()
     await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Barn och utbildning' })).toHaveFocus()
+    await expect(canvas.getByRole('link', { name: 'Children and education' })).toHaveFocus()
     await userEvent.tab({ shift: true })
     await expect(canvas.getByRole('link', { name: 'Start' })).toHaveFocus()
   },
@@ -109,9 +110,9 @@ export const Keyboard: Story = {
 
 /** Your own name for the landmark. A custom string is yours to translate. */
 export const CustomLabel: Story = {
-  args: { label: 'Sökväg' },
+  args: { label: 'Trail' },
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('navigation', { name: 'Sökväg' })).toBeVisible()
+    await expect(canvas.getByRole('navigation', { name: 'Trail' })).toBeVisible()
   },
 }
 
@@ -124,18 +125,20 @@ export const LongTrail: Story = {
           <Breadcrumb.Link href="#start">Start</Breadcrumb.Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Breadcrumb.Link href="#bygga">Bygga, bo och miljö</Breadcrumb.Link>
+          <Breadcrumb.Link href="#building">Building, housing and environment</Breadcrumb.Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Breadcrumb.Link href="#bygglov">Bygglov och anmälan</Breadcrumb.Link>
+          <Breadcrumb.Link href="#permits">Building permits and notifications</Breadcrumb.Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Breadcrumb.Link href="#attefall">
-            Attefallshus och andra mindre byggnader
+          <Breadcrumb.Link href="#garden-houses">
+            Garden houses and other small buildings
           </Breadcrumb.Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Breadcrumb.Current>Ansök om bygglov för ett komplementbostadshus</Breadcrumb.Current>
+          <Breadcrumb.Current>
+            Apply for a building permit for a secondary dwelling
+          </Breadcrumb.Current>
         </Breadcrumb.Item>
       </Breadcrumb.List>
     ),

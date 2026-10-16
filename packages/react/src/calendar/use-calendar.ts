@@ -105,7 +105,7 @@ export interface UseCalendarBaseOptions {
    * screen or 400% zoom. Default `1`.
    */
   visibleMonths?: 1 | 2 | undefined
-  /** Per-instance message overrides: `{ previousMonth: 'Förra månaden' }`. */
+  /** Per-instance message overrides: `{ previousMonth: 'Last month' }`. */
   messages?: Partial<KvirnMessages['calendar']> | undefined
 }
 
@@ -238,9 +238,9 @@ export interface CalendarDayPartProps {
 
 export interface CalendarWeekday {
   weekday: IsoWeekday
-  /** `mån`: visible, hidden from assistive technology. */
+  /** `Mon`: visible, hidden from assistive technology. */
   short: string
-  /** `måndag`: visually hidden, read by assistive technology. */
+  /** `Monday`: visually hidden, read by assistive technology. */
   long: string
 }
 

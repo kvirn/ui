@@ -16,7 +16,7 @@ function Page({ title }: { title: string }) {
     <Card.Root>
       <Card.Body>
         <Heading as="h2">{title}</Heading>
-        <p>Innehållet i behållaren följer ordningen i DOM, och inget blir bredare än skärmen.</p>
+        <p>The content follows the DOM order, and nothing gets wider than the screen.</p>
       </Card.Body>
     </Card.Root>
   )
@@ -46,12 +46,12 @@ export const Default: Story = {}
 
 /** `size="reading"`: prose and lists of results, `45rem`, at inline start. */
 export const Reading: Story = {
-  args: { size: 'reading', children: <Page title="Sophämtning" /> },
+  args: { size: 'reading', children: <Page title="Waste collection" /> },
 }
 
 /** `size="form"`: one form, `40rem`, at inline start. */
 export const Form: Story = {
-  args: { size: 'form', children: <Page title="Anmäl flytt" /> },
+  args: { size: 'form', children: <Page title="Report a move" /> },
 }
 
 /** `as` picks the element and names it: a `section` labelled by its heading. */
@@ -59,18 +59,19 @@ export const AsRegion: Story = {
   render: (args) => (
     <Container {...args} as="section" aria-labelledby="container-region-title">
       <Heading as="h2" id="container-region-title">
-        Aktuellt
+        News
       </Heading>
     </Container>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('region', { name: 'Aktuellt' })).toBeVisible()
+    await expect(canvas.getByRole('region', { name: 'News' })).toBeVisible()
   },
 }
 
 /** A 320px column with a long Finnish word: the container never scrolls sideways (1.4.10). */
 export const Reflow320: Story = {
   args: {
+    // kv-lang-ok: long Finnish compound hard case under locale fi
     children: <Page title="Jätehuoltomaksunpalautuspäätöksentarkistuslomake" />,
   },
   decorators: [(Story) => <div className="kv-story-narrow">{<Story />}</div>],

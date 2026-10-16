@@ -439,8 +439,8 @@ export function useModalDialog(
  *
  * @example
  * const dialog = useDialog()
- * <button {...dialog.triggerProps}>Ändra</button>
- * <dialog {...dialog.popupProps} aria-label="Ändra telefonnummer">…</dialog>
+ * <button {...dialog.triggerProps}>Change</button>
+ * <dialog {...dialog.popupProps} aria-label="Change phone number">…</dialog>
  */
 export function useDialog(options: UseDialogOptions = {}): UseDialogResult {
   return useModalDialog(options, 'dialog')

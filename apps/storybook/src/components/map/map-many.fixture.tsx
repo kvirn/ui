@@ -28,9 +28,16 @@ const cities = [
   [10.4, 63.43, 1],
 ] as const
 const totalShare = cities.reduce((sum, [, , share]) => sum + share, 0)
-const streets = ['Storgatan', 'Kyrkogatan', 'Industrivägen', 'Hamngatan', 'Skolgatan', 'Parkvägen']
-const hotelNames = ['Hotell Nord', 'Stadshotellet', 'Fjord Inn', 'Hotell Linné', 'Pensionat Vik']
-const stationNames = ['Mack', 'Tank', 'Pump', 'Laddstopp', 'Bensin']
+const streets = [
+  'Main Street',
+  'Church Street',
+  'Industry Road',
+  'Harbour Street',
+  'School Street',
+  'Park Road',
+]
+const hotelNames = ['Hotel Nord', 'City Hotel', 'Fjord Inn', 'Hotel Linne', 'Guesthouse Vik']
+const stationNames = ['Mack', 'Tank', 'Pump', 'Charge stop', 'Petrol']
 
 function mulberry32(seed: number) {
   let state = seed

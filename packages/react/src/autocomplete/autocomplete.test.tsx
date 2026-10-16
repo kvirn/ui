@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the fixture holds Swedish street names because the filter tests prove å, ä and ö handling
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useState } from 'react'
@@ -73,13 +74,13 @@ function Example({
 }: ExampleProps) {
   return (
     <KvirnProvider locale={swedish ? 'sv-SE' : 'en'} messages={swedish ? sv : undefined}>
-      <p>Text utanför</p>
+      <p>Text outside</p>
       <button type="button" style={fixtureButtonStyle}>
-        Före
+        Before
       </button>
       <Field.Root required>
         <Field.Label>Gatuadress</Field.Label>
-        <Field.Prose>Gatan där du bor.</Field.Prose>
+        <Field.Prose>The street where you live.</Field.Prose>
         <Autocomplete.Root items={items} {...rootProps}>
           {withButtons ? (
             <Autocomplete.Control>
@@ -173,7 +174,7 @@ describe('rendering', () => {
     const label = document.querySelector('label')
     expect(inputElement().id).toBe(label?.getAttribute('for'))
     await expect.element(input()).toHaveAccessibleName('Gatuadress')
-    await expect.element(input()).toHaveAccessibleDescription('Gatan där du bor.')
+    await expect.element(input()).toHaveAccessibleDescription('The street where you live.')
   })
 
   test('a Field that is invalid and required puts aria-invalid, aria-required and the error on the input', async () => {
@@ -189,13 +190,13 @@ describe('rendering', () => {
               </Autocomplete.List>
             </Autocomplete.Popup>
           </Autocomplete.Root>
-          <Field.ErrorMessage>Ange en gatuadress</Field.ErrorMessage>
+          <Field.ErrorMessage>Enter a street address</Field.ErrorMessage>
         </Field.Root>
       </KvirnProvider>,
     )
     expect(inputElement().getAttribute('aria-invalid')).toBe('true')
     expect(inputElement().getAttribute('aria-required')).toBe('true')
-    await expect.element(input()).toHaveAccessibleDescription('Error: Ange en gatuadress')
+    await expect.element(input()).toHaveAccessibleDescription('Error: Enter a street address')
   })
 
   test('typing opens the popup with the matching suggestions, and focus stays on the input', async () => {
@@ -363,7 +364,7 @@ describe('the value is the text', () => {
     let submitted: FormData | undefined
     await render(
       <form
-        aria-label="Ansökan"
+        aria-label="Application"
         onSubmit={(event) => {
           event.preventDefault()
           submitted = new FormData(event.currentTarget)
@@ -371,7 +372,7 @@ describe('the value is the text', () => {
       >
         <Example name="street" />
         <button type="submit" style={fixtureButtonStyle}>
-          Skicka
+          Send
         </button>
       </form>,
     )
@@ -548,16 +549,16 @@ describe('keyboard', () => {
     await render(<Example />)
     await typeText('s')
     await expect.poll(isShown).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Före' }))
+    await userEvent.click(page.getByRole('button', { name: 'Before' }))
     await expect.poll(isShown).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 })
 
 describe('keyboard rows', () => {
   test('Tab moves to the input, one stop', async () => {
     await render(<Example withButtons />)
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     await userEvent.keyboard('{Tab}')
     await expect.element(input()).toHaveFocus()
     expect(inputElement().hasAttribute('tabindex')).toBe(false)
@@ -569,13 +570,13 @@ describe('keyboard rows', () => {
     await render(<Example />)
     inputElement().focus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('Tab skips a disabled input', async () => {
     await render(<Example disabled />)
     expect(inputElement().disabled).toBe(true)
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
     expect(isShown()).toBe(false)
@@ -645,7 +646,7 @@ describe('keyboard rows', () => {
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     await expect.poll(isShown).toBe(false)
     expect(inputElement().value).toBe('')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('a disabled suggestion can be reached and cannot be picked', async () => {
@@ -705,14 +706,14 @@ describe('suggestions', () => {
       return (
         <>
           <button type="button" style={fixtureButtonStyle} onClick={() => setItems(streets)}>
-            Hämta
+            Fetch
           </button>
           <Example items={items} filter={false} />
         </>
       )
     }
     await render(<Fetched />)
-    await userEvent.click(page.getByRole('button', { name: 'Hämta' }))
+    await userEvent.click(page.getByRole('button', { name: 'Fetch' }))
     await typeText('s')
     await expect.poll(() => optionNames().length).toBe(6)
   })

@@ -19,7 +19,7 @@ interface CharacterCountOwnProps {
   limit: number
   /**
    * Counts a text your own way, such as the way your server does, so both agree. Default: the
-   * characters the user sees (grapheme clusters, so `å` and an emoji are one each, and a line
+   * characters the user sees (grapheme clusters, so a decomposed letter and an emoji are one each, and a line
    * break is one).
    */
   countCharacters?: ((value: string) => number) | undefined
@@ -47,7 +47,7 @@ export type CharacterCountProps = AsTag<
 >
 
 /**
- * How much room is left in a box with a limit: "Du har 120 tecken kvar." It is a help text
+ * How much room is left in a box with a limit: "You have 120 characters remaining." It is a help text
  * (`<p class="kv-field-help-text kv-character-count">`) that goes directly under the control. In a
  * Field it describes the control, so a screen reader reads it on focus, and it is announced
  * through the Announcer from 80% of the limit when typing pauses, and when the limit is crossed.
@@ -59,7 +59,7 @@ export type CharacterCountProps = AsTag<
  *
  * @example
  * <Field.Root>
- *   <Field.Label>Beskriv din situation</Field.Label>
+ *   <Field.Label>Describe your situation</Field.Label>
  *   <TextInput value={value} onValueChange={setValue} />
  *   <CharacterCount value={value} limit={1000} />
  * </Field.Root>

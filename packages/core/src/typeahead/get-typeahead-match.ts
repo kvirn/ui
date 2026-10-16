@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the docs name the letters kept distinct in sv
 import { startsWithText } from '../filter/filter-items.ts'
 import type { FilterLocale } from '../filter/filter-items.ts'
 

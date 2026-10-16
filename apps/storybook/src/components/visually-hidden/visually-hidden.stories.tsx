@@ -12,7 +12,7 @@ import { usageGuide } from '../../docs-source.ts'
 const meta = {
   title: 'Components/Content/VisuallyHidden',
   component: VisuallyHidden,
-  args: { children: ', 3 resultat' },
+  args: { children: ', 3 results' },
   argTypes: { as: { control: false } },
   parameters: {
     a11yContract: contract,
@@ -27,12 +27,12 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: (args) => (
     <p>
-      Sökträffar
+      Search results
       <VisuallyHidden {...args} />
     </p>
   ),
   play: async ({ canvas }) => {
-    const hidden = canvas.getByText(', 3 resultat')
+    const hidden = canvas.getByText(', 3 results')
     await expect(hidden).toBeInTheDocument()
     await expect(hidden.getBoundingClientRect().width).toBeLessThanOrEqual(1)
   },
@@ -41,13 +41,13 @@ export const Default: Story = {
 /** A heading nobody sees, for a landmark's structure: `as` changes the element. */
 export const AsHeading: Story = {
   render: () => (
-    <nav aria-label="Huvudmeny">
-      <VisuallyHidden as="h2">Meny</VisuallyHidden>
-      <a href="/">Startsidan</a>
+    <nav aria-label="Main menu">
+      <VisuallyHidden as="h2">Menu</VisuallyHidden>
+      <a href="/">Home page</a>
     </nav>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('heading', { level: 2, name: 'Meny' })).toBeInTheDocument()
+    await expect(canvas.getByRole('heading', { level: 2, name: 'Menu' })).toBeInTheDocument()
   },
 }
 
@@ -70,7 +70,7 @@ export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   render: (args) => (
     <p>
-      Sökträffar
+      Search results
       <VisuallyHidden {...args} />
     </p>
   ),

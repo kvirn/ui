@@ -132,9 +132,9 @@ const bareInputProps: Partial<DateInputInputPartProps> = Object.freeze({
  *
  * @example
  * <Fieldset.Root group required invalid={error !== undefined}>
- *   <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+ *   <Fieldset.Legend>Date of birth</Fieldset.Legend>
  *   <DateInput.Root name="birth" autoComplete="bday" invalidParts={error?.parts} />
- *   <Fieldset.HelpText>Till exempel 1990 3 27</Fieldset.HelpText>
+ *   <Fieldset.HelpText>For example 1990 3 27</Fieldset.HelpText>
  *   <Fieldset.ErrorMessage>{error?.message}</Fieldset.ErrorMessage>
  * </Fieldset.Root>
  */

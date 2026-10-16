@@ -47,9 +47,9 @@ function hasNameSource(input: HTMLInputElement): boolean {
  *
  * @example
  * <Field.Root>
- *   <Field.Label>Kod från sms:et</Field.Label>
+ *   <Field.Label>Code from the text message</Field.Label>
  *   <Field.Prose>
- *     <p>Koden har 8 tecken i två grupper om 4.</p>
+ *     <p>The code has 8 characters in two groups of 4.</p>
  *   </Field.Prose>
  *   <OneTimeCode.Root pattern="&&&&-&&&&" onComplete={(value, unmaskedValue) => verify(unmaskedValue)}>
  *     <OneTimeCode.Input name="code" />
@@ -134,7 +134,7 @@ export function OneTimeCodeInput({
     if (!hasNameSource(element)) {
       warnOnce(
         'one-time-code-without-label',
-        'A OneTimeCode.Input has no accessible name (WCAG 1.3.1, 4.1.2). Put it in a Field with a Field.Label that says where the code is, such as "Kod från sms:et".',
+        'A OneTimeCode.Input has no accessible name (WCAG 1.3.1, 4.1.2). Put it in a Field with a Field.Label that says where the code is, such as "Code from the text message".',
       )
     }
     const row = element.closest('.kv-one-time-code')

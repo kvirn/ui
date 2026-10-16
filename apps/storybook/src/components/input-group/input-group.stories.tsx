@@ -12,7 +12,7 @@ import { SearchBoxWithClear, SearchBoxWithIconOnlyClear } from './input-group.fi
 // inside its box (design spec docs/design/form-fields.md §6.13). InputGroup.Root is
 // the box: it draws the edge, the invalid and disabled state and the focus ring. InputGroup.Addon
 // is a short unit or a decorative icon: `aria-hidden`, never focusable, so the label always
-// carries the meaning ("Månadshyra i kronor", never "Månadshyra" plus a "kr" Addon). A real
+// carries the meaning ("Monthly rent in kronor", never "Monthly rent" plus a "kr" Addon). A real
 // Button (clear, show password) goes directly in the Root, never in an Addon: it keeps its own
 // name and Tab stop.
 //
@@ -44,7 +44,7 @@ const meta = {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [
     (Story) => (
       <div className="kv-story-form">
@@ -603,6 +603,7 @@ export const LongFinnishLabel: Story = {
   },
   play: async ({ canvas }) => {
     await expect(
+      // kv-lang-ok: Finnish locale story: a long label
       canvas.getByRole('textbox', { name: /Haettavan asunnonmuutostyöavustuksen/ }),
     ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))

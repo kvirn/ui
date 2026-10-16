@@ -39,7 +39,7 @@ export interface SliderProps extends Omit<
  *
  * @example
  * <Field.Root>
- *   <Field.Label>Avstånd i kilometer</Field.Label>
+ *   <Field.Label>Distance in kilometres</Field.Label>
  *   <Slider name="distance" max={50} step={5} valueText={(km) => `${km} km`} />
  * </Field.Root>
  */

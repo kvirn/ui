@@ -1,3 +1,4 @@
+// kv-lang-ok-file: long Finnish compound words prove wrapping without truncation
 export interface TopTask {
   readonly label: string
   readonly href: string

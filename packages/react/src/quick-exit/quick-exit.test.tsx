@@ -1,4 +1,3 @@
-import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
@@ -311,42 +310,40 @@ describe('default navigation', () => {
 })
 
 describe('read aloud', () => {
-  const swedish = (
-    <KvirnProvider locale="sv" messages={sv}>
+  const english = (
+    <KvirnProvider locale="en">
       <QuickExit.Root navigate={navigate}>
         <QuickExit.Link href={destination} />
         <QuickExit.Hint />
       </QuickExit.Root>
-      <button type="button">Efter</button>
+      <button type="button">After</button>
     </KvirnProvider>
   )
 
   test('idle reads the link by its name and the hint', async () => {
-    const { container } = await render(swedish)
-    expect(await readAloud(container)).toContain(
-      'link, Lämna sidan, Eller tryck på Skift 3 gånger.',
-    )
+    const { container } = await render(english)
+    expect(await readAloud(container)).toContain('link, Leave this page, Or press Shift 3 times.')
   })
 
   test('Shift once says two more presses', async () => {
-    const { container } = await render(swedish)
+    const { container } = await render(english)
     const announcements = await readAnnouncements(container, async () => {
       await userEvent.keyboard('{Shift}')
     })
-    expect(announcements).toEqual(['polite: Tryck på Skift 2 gånger till för att lämna sidan'])
+    expect(announcements).toEqual(['polite: Press Shift 2 more times to leave this page'])
   })
 
   test('Shift twice says one more press', async () => {
-    const { container } = await render(swedish)
+    const { container } = await render(english)
     await userEvent.keyboard('{Shift}')
     const announcements = await readAnnouncements(container, async () => {
       await userEvent.keyboard('{Shift}')
     })
-    expect(announcements).toEqual(['polite: Tryck på Skift 1 gång till för att lämna sidan'])
+    expect(announcements).toEqual(['polite: Press Shift 1 more time to leave this page'])
   })
 
   test('Shift+Tab is silent and is not counted', async () => {
-    const { container } = await render(swedish)
+    const { container } = await render(english)
     await userEvent.tab()
     await expect(
       readAnnouncements(

@@ -8,7 +8,7 @@ import { useMessages } from '../provider/use-messages.ts'
 export interface UseSkipLinkOptions {
   /** A same-page address, `#main`: the id of the element the link jumps to. */
   href: string
-  /** Per-instance message overrides: `{ label: 'Hoppa till innehållet' }`. */
+  /** Per-instance message overrides: `{ label: 'Jump to the content' }`. */
   messages?: Partial<KvirnMessages['skipLink']> | undefined
 }
 

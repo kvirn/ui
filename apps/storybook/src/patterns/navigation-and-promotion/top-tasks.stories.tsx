@@ -34,6 +34,7 @@ function TopTasks({ tasks, lang }: { tasks: readonly TopTask[]; lang?: string })
   return (
     <section aria-labelledby="top-tasks-heading" lang={lang}>
       <Heading as="h2" size="heading-3" id="top-tasks-heading">
+        {/* kv-lang-ok: a Finnish passage that sets lang (3.1.2) */}
         {lang === 'fi' ? 'Yleisimmät asiat' : 'Top tasks'}
       </Heading>
       <Grid.Root as="ul" className="kv-grid--fit-sm kv-grid--gap-4">

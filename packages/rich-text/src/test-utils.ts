@@ -18,11 +18,11 @@ export function mountEditor(extensions: Extensions, content: string): EditorFixt
   const container = document.createElement('div')
   const before = document.createElement('button')
   before.type = 'button'
-  before.textContent = 'Före'
+  before.textContent = 'Before'
   const host = document.createElement('div')
   const after = document.createElement('button')
   after.type = 'button'
-  after.textContent = 'Efter'
+  after.textContent = 'After'
   container.append(before, host, after)
   document.body.append(container)
   const editor = new Editor({ element: host, extensions, content })

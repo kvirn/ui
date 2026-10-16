@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
 import { Button, Icon, Kbd, Popover, Toolbar, Tooltip } from '@kvirn-ui/react'
 import type { TooltipRootProps } from '@kvirn-ui/react'
 import type { ComponentPropsWithRef, CSSProperties } from 'react'
@@ -58,11 +59,11 @@ const popoverStyle: CSSProperties = {
 export function SearchButton(props: Omit<TooltipRootProps, 'children'>) {
   return (
     <Tooltip.Root {...props}>
-      <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Sök">
+      <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Search">
         <Icon name="search" />
       </Tooltip.Trigger>
       <Tooltip.Popup>
-        <Tooltip.Name>Sök</Tooltip.Name>
+        <Tooltip.Name>Search</Tooltip.Name>
       </Tooltip.Popup>
     </Tooltip.Root>
   )
@@ -70,7 +71,7 @@ export function SearchButton(props: Omit<TooltipRootProps, 'children'>) {
 
 /**
  * A name and a shortcut. The name is hidden from assistive technology and the shortcut is the
- * button's description, so a screen reader says "Fetstil, växlingsknapp, inte nedtryckt, Ctrl+B".
+ * button's description, so a screen reader says "Bold, toggle button, not pressed, Ctrl+B".
  * The button keeps its own `aria-keyshortcuts`. Key names aren't translated, and `Kbd` draws them.
  */
 export function BoldToggle(props: Omit<TooltipRootProps, 'children'>) {
@@ -79,13 +80,13 @@ export function BoldToggle(props: Omit<TooltipRootProps, 'children'>) {
       <Tooltip.Trigger
         as={Toolbar.Toggle}
         className="kv-button--icon-only"
-        aria-label="Fetstil"
+        aria-label="Bold"
         aria-keyshortcuts="Control+B"
       >
         <strong aria-hidden="true">B</strong>
       </Tooltip.Trigger>
       <Tooltip.Popup>
-        <Tooltip.Name>Fetstil</Tooltip.Name>
+        <Tooltip.Name>Bold</Tooltip.Name>
         <Tooltip.Shortcut>
           <Kbd>
             <Kbd>Ctrl</Kbd>+<Kbd>B</Kbd>
@@ -103,10 +104,10 @@ export function BoldToggle(props: Omit<TooltipRootProps, 'children'>) {
 export function PrintButton(props: Omit<TooltipRootProps, 'children'>) {
   return (
     <Tooltip.Root {...props}>
-      <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Skriv ut">
+      <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Print">
         <Icon name="document" />
       </Tooltip.Trigger>
-      <Tooltip.Popup>Öppnar en utskriftsvy i ett nytt fönster</Tooltip.Popup>
+      <Tooltip.Popup>Opens a print view in a new window</Tooltip.Popup>
     </Tooltip.Root>
   )
 }
@@ -124,19 +125,19 @@ function PopoverToolbarItem(props: ComponentPropsWithRef<'button'>) {
  */
 export function TextToolbar() {
   return (
-    <Toolbar.Root aria-label="Formatering">
-      <Toolbar.Group aria-label="Historik">
+    <Toolbar.Root aria-label="Formatting">
+      <Toolbar.Group aria-label="History">
         <Tooltip.Root>
           <Tooltip.Trigger
             as={Toolbar.Button}
             className="kv-button--icon-only"
-            aria-label="Ångra"
+            aria-label="Undo"
             aria-keyshortcuts="Control+Z"
           >
             <Icon name="arrow-back" />
           </Tooltip.Trigger>
           <Tooltip.Popup>
-            <Tooltip.Name>Ångra</Tooltip.Name>
+            <Tooltip.Name>Undo</Tooltip.Name>
             <Tooltip.Shortcut>
               <Kbd>
                 <Kbd>Ctrl</Kbd>+<Kbd>Z</Kbd>
@@ -149,13 +150,13 @@ export function TextToolbar() {
             as={Toolbar.Button}
             disabled
             className="kv-button--icon-only"
-            aria-label="Gör om"
+            aria-label="Redo"
             aria-keyshortcuts="Control+Y"
           >
             <Icon name="arrow-forward" />
           </Tooltip.Trigger>
           <Tooltip.Popup>
-            <Tooltip.Name>Gör om</Tooltip.Name>
+            <Tooltip.Name>Redo</Tooltip.Name>
             <Tooltip.Shortcut>
               <Kbd>
                 <Kbd>Ctrl</Kbd>+<Kbd>Y</Kbd>
@@ -164,18 +165,18 @@ export function TextToolbar() {
           </Tooltip.Popup>
         </Tooltip.Root>
       </Toolbar.Group>
-      <Toolbar.Group aria-label="Textstil">
+      <Toolbar.Group aria-label="Text style">
         <Tooltip.Root>
           <Tooltip.Trigger
             as={Toolbar.Toggle}
             className="kv-button--icon-only"
-            aria-label="Fetstil"
+            aria-label="Bold"
             aria-keyshortcuts="Control+B"
           >
             <strong aria-hidden="true">B</strong>
           </Tooltip.Trigger>
           <Tooltip.Popup>
-            <Tooltip.Name>Fetstil</Tooltip.Name>
+            <Tooltip.Name>Bold</Tooltip.Name>
             <Tooltip.Shortcut>
               <Kbd>
                 <Kbd>Ctrl</Kbd>+<Kbd>B</Kbd>
@@ -187,13 +188,13 @@ export function TextToolbar() {
           <Tooltip.Trigger
             as={Toolbar.Toggle}
             className="kv-button--icon-only"
-            aria-label="Kursiv"
+            aria-label="Italic"
             aria-keyshortcuts="Control+I"
           >
             <em aria-hidden="true">I</em>
           </Tooltip.Trigger>
           <Tooltip.Popup>
-            <Tooltip.Name>Kursiv</Tooltip.Name>
+            <Tooltip.Name>Italic</Tooltip.Name>
             <Tooltip.Shortcut>
               <Kbd>
                 <Kbd>Ctrl</Kbd>+<Kbd>I</Kbd>
@@ -329,14 +330,14 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
 export function TooltipInAPopover() {
   return (
     <Popover.Root>
-      <Popover.Trigger className="kv-button">Fler åtgärder</Popover.Trigger>
-      <Popover.Popup aria-label="Fler åtgärder" style={popoverStyle}>
+      <Popover.Trigger className="kv-button">More actions</Popover.Trigger>
+      <Popover.Popup aria-label="More actions" style={popoverStyle}>
         <Tooltip.Root>
-          <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Kopiera">
+          <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Copy">
             <Icon name="document" />
           </Tooltip.Trigger>
           <Tooltip.Popup>
-            <Tooltip.Name>Kopiera</Tooltip.Name>
+            <Tooltip.Name>Copy</Tooltip.Name>
             <Tooltip.Shortcut>
               <Kbd>
                 <Kbd>Ctrl</Kbd>+<Kbd>C</Kbd>
@@ -378,13 +379,13 @@ export function TooltipAtTheTop(props: Omit<TooltipRootProps, 'children'>) {
       <Tooltip.Trigger
         as={Button}
         className="kv-button--icon-only"
-        aria-label="Sök"
+        aria-label="Search"
         style={{ position: 'fixed', insetBlockStart: 8, insetInlineStart: 8 }}
       >
         <Icon name="search" />
       </Tooltip.Trigger>
       <Tooltip.Popup>
-        <Tooltip.Name>Sök</Tooltip.Name>
+        <Tooltip.Name>Search</Tooltip.Name>
       </Tooltip.Popup>
     </Tooltip.Root>
   )

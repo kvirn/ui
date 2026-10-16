@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the tests run in sv-SE, fi and nb because the box order, labels and hint are locale behaviour
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
@@ -72,10 +73,10 @@ interface BirthProps extends DateInputRootProps {
 function Birth({ fieldset, ...dateProps }: BirthProps) {
   return (
     <Fieldset.Root group required {...fieldset}>
-      <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+      <Fieldset.Legend>Date of birth</Fieldset.Legend>
       <DateInput.Root {...dateProps} />
-      <Fieldset.HelpText>Till exempel 2007 3 27</Fieldset.HelpText>
-      <Fieldset.ErrorMessage>Ange ditt födelsedatum</Fieldset.ErrorMessage>
+      <Fieldset.HelpText>For example 2007 3 27</Fieldset.HelpText>
+      <Fieldset.ErrorMessage>Enter your date of birth</Fieldset.ErrorMessage>
     </Fieldset.Root>
   )
 }
@@ -88,9 +89,9 @@ describe('rendering', () => {
   test('the group is named by its legend and each box by its label', async () => {
     const { container } = await render(inLocale('sv-SE', sv, <Birth />))
     await expect
-      .element(page.getByRole('group', { name: 'Födelsedatum', exact: true }))
+      .element(page.getByRole('group', { name: 'Date of birth', exact: true }))
       .toBeVisible()
-    // Names without "(valfritt)": a box is a part of one question, never optional on its own.
+    // Names without "(optional)": a box is a part of one question, never optional on its own.
     expect(page.getByRole('textbox').elements()).toHaveLength(3)
     await expect.element(day()).toBeVisible()
     await expect.element(month()).toBeVisible()
@@ -120,7 +121,7 @@ describe('rendering', () => {
         'sv-SE',
         sv,
         <Fieldset.Root group>
-          <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+          <Fieldset.Legend>Date of birth</Fieldset.Legend>
           <DateInput.Root ref={rootRef} className="egen" data-testid="row">
             <DateInput.Day ref={dayRef} className="egen-dag" data-egen="" />
             <DateInput.Month data-egen="false" />
@@ -154,7 +155,7 @@ describe('rendering', () => {
         'sv-SE',
         sv,
         <Fieldset.Root group>
-          <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+          <Fieldset.Legend>Date of birth</Fieldset.Legend>
           <DateInput.Root onValueChange={onValueChange}>
             <DateInput.Day
               className="egen-dag"
@@ -193,8 +194,8 @@ describe('the group’s description', () => {
     )
     // The auto-advance hint comes first: it sits right under the boxes, before the consumer's.
     await expect
-      .element(page.getByRole('group', { name: 'Födelsedatum', exact: true }))
-      .toHaveAccessibleDescription(`${svHint} Till exempel 2007 3 27 Fel: Ange ditt födelsedatum`)
+      .element(page.getByRole('group', { name: 'Date of birth', exact: true }))
+      .toHaveAccessibleDescription(`${svHint} For example 2007 3 27 Fel: Enter your date of birth`)
     // The boxes are described by their labels only.
     for (const box of [day(), month(), year()]) {
       await expect.element(box).not.toHaveAttribute('aria-describedby')
@@ -206,8 +207,8 @@ describe('the group’s description', () => {
   test('the hint is visible, and autoAdvance={false} takes it out of the description', async () => {
     const { container } = await render(inLocale('sv-SE', sv, <Birth autoAdvance={false} />))
     await expect
-      .element(page.getByRole('group', { name: 'Födelsedatum', exact: true }))
-      .toHaveAccessibleDescription('Till exempel 2007 3 27')
+      .element(page.getByRole('group', { name: 'Date of birth', exact: true }))
+      .toHaveAccessibleDescription('For example 2007 3 27')
     expect(page.getByText(svHint).elements()).toHaveLength(0)
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
@@ -393,7 +394,7 @@ describe('auto-advance', () => {
         'sv-SE',
         sv,
         <Fieldset.Root group>
-          <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+          <Fieldset.Legend>Date of birth</Fieldset.Legend>
           <DateInput.Root>
             <DateInput.Day />
             <DateInput.Month />
@@ -517,7 +518,7 @@ describe('auto-advance', () => {
         'sv-SE',
         sv,
         <Fieldset.Root group>
-          <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+          <Fieldset.Legend>Date of birth</Fieldset.Legend>
           <DateInput.Root>
             <DateInput.Year />
             <DateInput.Month disabled />
@@ -570,11 +571,11 @@ describe('keyboard', () => {
     <>
       <button type="button">Tillbaka</button>
       {children}
-      <button type="button">Skicka</button>
+      <button type="button">Send</button>
     </>
   )
   const before = () => page.getByRole('button', { name: 'Tillbaka' })
-  const after = () => page.getByRole('button', { name: 'Skicka' })
+  const after = () => page.getByRole('button', { name: 'Send' })
 
   test('Tab enters the date at the first box of the field order', async () => {
     const swedish = await render(
@@ -679,7 +680,7 @@ describe('keyboard', () => {
         sv,
         <form onSubmit={onSubmit}>
           <Birth />
-          <button type="submit">Skicka</button>
+          <button type="submit">Send</button>
         </form>,
       ),
     )
@@ -709,13 +710,13 @@ describe('invalid', () => {
         'sv-SE',
         sv,
         <Fieldset.Root group invalid>
-          <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+          <Fieldset.Legend>Date of birth</Fieldset.Legend>
           <DateInput.Root>
             <DateInput.Year invalid />
             <DateInput.Month />
             <DateInput.Day />
           </DateInput.Root>
-          <Fieldset.ErrorMessage>Födelsedatumet måste innehålla ett år</Fieldset.ErrorMessage>
+          <Fieldset.ErrorMessage>The date of birth must include a year</Fieldset.ErrorMessage>
         </Fieldset.Root>,
       ),
     )
@@ -749,34 +750,34 @@ describe('name, value and autocomplete', () => {
         'sv-SE',
         sv,
         <form
-          aria-label="Ansökan"
+          aria-label="Application"
           onSubmit={(event) => {
             event.preventDefault()
             submitted = new FormData(event.currentTarget)
           }}
         >
           <Fieldset.Root group>
-            <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+            <Fieldset.Legend>Date of birth</Fieldset.Legend>
             <DateInput.Root name="birth">
               <DateInput.Day />
-              <DateInput.Month name="mån" />
+              <DateInput.Month name="mon" />
               <DateInput.Year />
             </DateInput.Root>
           </Fieldset.Root>
-          <button type="submit">Skicka</button>
+          <button type="submit">Send</button>
         </form>,
       ),
     )
     await expect.element(day()).toHaveAttribute('name', 'birth-day')
-    await expect.element(month()).toHaveAttribute('name', 'mån')
+    await expect.element(month()).toHaveAttribute('name', 'mon')
     await expect.element(year()).toHaveAttribute('name', 'birth-year')
     await userEvent.type(day(), '27')
     await userEvent.type(month(), '3')
     await userEvent.type(year(), '2007')
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Send' }))
     expect(Object.fromEntries(submitted?.entries() ?? [])).toEqual({
       'birth-day': '27',
-      mån: '3',
+      mon: '3',
       'birth-year': '2007',
     })
   })
@@ -960,7 +961,7 @@ describe('dev warnings', () => {
   test('warns when the Fieldset is neither group nor required, and not when it is either', async () => {
     await render(
       <Fieldset.Root>
-        <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+        <Fieldset.Legend>Date of birth</Fieldset.Legend>
         <DateInput.Root />
       </Fieldset.Root>,
     )
@@ -976,7 +977,7 @@ describe('dev warnings', () => {
           <DateInput.Root />
         </Fieldset.Root>
         <Fieldset.Root required>
-          <Fieldset.Legend>Två</Fieldset.Legend>
+          <Fieldset.Legend>Two</Fieldset.Legend>
           <DateInput.Root />
         </Fieldset.Root>
       </>,
@@ -984,23 +985,23 @@ describe('dev warnings', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  test('an optional date carries “(valfritt)” on its legend, never on a box', async () => {
+  test('an optional date carries “(optional)” on its legend, never on a box', async () => {
     const { container } = await render(
       inLocale('sv-SE', sv, <Birth fieldset={{ required: false }} />),
     )
     await expect
-      .element(page.getByRole('group', { name: 'Födelsedatum (valfritt)', exact: true }))
+      .element(page.getByRole('group', { name: 'Date of birth (valfritt)', exact: true }))
       .toBeVisible()
     expect(boxOrder(container)).toEqual(['År', 'Månad', 'Dag'])
   })
 
-  test('a Fieldset that is neither group nor required still keeps “(valfritt)” off the boxes', async () => {
+  test('a Fieldset that is neither group nor required still keeps “(optional)” off the boxes', async () => {
     await render(
       inLocale(
         'sv-SE',
         sv,
         <Fieldset.Root>
-          <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+          <Fieldset.Legend>Date of birth</Fieldset.Legend>
           <DateInput.Root />
         </Fieldset.Root>,
       ),
@@ -1016,7 +1017,7 @@ describe('dev warnings', () => {
   test('a native fieldset of your own counts as a group', async () => {
     await render(
       <fieldset>
-        <legend>Födelsedatum</legend>
+        <legend>Date of birth</legend>
         <DateInput.Root />
       </fieldset>,
     )

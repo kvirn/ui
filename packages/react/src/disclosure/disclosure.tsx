@@ -54,8 +54,8 @@ function warnOutsideRoot(owner: 'Disclosure' | 'Accordion', part: string): void 
  *
  * @example
  * <Disclosure.Root>
- *   <Disclosure.Trigger>Öppettider</Disclosure.Trigger>
- *   <Disclosure.Panel>Måndag till fredag 10–19.</Disclosure.Panel>
+ *   <Disclosure.Trigger>Opening hours</Disclosure.Trigger>
+ *   <Disclosure.Panel>Monday to Friday 10–19.</Disclosure.Panel>
  * </Disclosure.Root>
  */
 export function DisclosureRoot({ children, ...options }: DisclosureRootProps): ReactElement {

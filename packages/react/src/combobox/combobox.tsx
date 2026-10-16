@@ -121,12 +121,12 @@ export function ComboboxProviders<TItem>({
  * and `onValueChange`, or uncontrolled with `defaultValue`. The text is `inputValue` and
  * `onInputValueChange`. With `name`, hidden inputs put the value in a plain `<form>`.
  *
- * Text that matches no option stays in the input and the value is `null`: say "Välj ett
- * alternativ i listan" in your own validation. The text is never cleared silently.
+ * Text that matches no option stays in the input and the value is `null`: say "Choose an
+ * option in the list" in your own validation. The text is never cleared silently.
  *
  * @example
  * <Field.Root>
- *   <Field.Label>Kommun</Field.Label>
+ *   <Field.Label>Municipality</Field.Label>
  *   <Combobox.Root items={municipalities} itemToString={(municipality) => municipality.name}
  *     itemToKey={(municipality) => municipality.code} name="municipality">
  *     <Combobox.Input />
@@ -231,8 +231,8 @@ ComboboxInput.displayName = 'Combobox.Input'
 export type ComboboxToggleProps = ComponentPropsWithRef<'button'>
 
 /**
- * An optional button that opens and closes the popup, named by `combobox.showOptions` ("Visa
- * alternativ"). It is **not a tab stop** (`tabindex="-1"`): the keyboard has ArrowDown and
+ * An optional button that opens and closes the popup, named by `combobox.showOptions` ("Show
+ * options"). It is **not a tab stop** (`tabindex="-1"`): the keyboard has ArrowDown and
  * Alt+ArrowDown on the input, and pressing it never takes focus from the input. Put it after the
  * input, in a `Combobox.Control`. No children: the default theme draws a chevron.
  */
@@ -262,7 +262,7 @@ ComboboxToggle.displayName = 'Combobox.Toggle'
 export type ComboboxClearProps = ComponentPropsWithRef<'button'>
 
 /**
- * An optional button that empties the text and the value, named by `combobox.clear` ("Rensa"). It
+ * An optional button that empties the text and the value, named by `combobox.clear` ("Clear"). It
  * is the only thing that empties the text: nothing clears it silently. It shows only while
  * there is text or a chosen value, is **not a tab stop** (select the text and delete it, or
  * remove the values one by one), and focus stays on, or returns to, the input.
@@ -370,7 +370,7 @@ export interface ComboboxValueProps<TItem = unknown> extends Omit<
 
 /**
  * One chosen value: an `<li>` holding one `<button>` that is the whole chip, its text and a cross,
- * named by `combobox.removeValue` ("Ta bort Stockholm"), as `Tag.Remove` is. Removing a value moves focus to the next remove
+ * named by `combobox.removeValue` ("Remove Stockholm"), as `Tag.Remove` is. Removing a value moves focus to the next remove
  * button, else the previous, else the input. The remove button is a normal tab stop and is
  * operated with Enter or Space. Backspace in the empty input does not remove a value.
  */

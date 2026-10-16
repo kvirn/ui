@@ -32,7 +32,7 @@ describe('rendering', () => {
   test('renders a container div with only its class around the grid element with the children', async () => {
     const { container } = await render(
       <Grid.Root data-testid="grid">
-        <Grid.Item data-testid="item">Innehåll</Grid.Item>
+        <Grid.Item data-testid="item">Content</Grid.Item>
       </Grid.Root>,
     )
     const grid = page.getByTestId('grid').element()
@@ -55,7 +55,7 @@ describe('rendering', () => {
         ref={ref}
         id="innehall"
         aria-describedby="hjalp"
-        title="Otsikko"
+        title="Title"
         data-testid="grid"
       />,
     )
@@ -63,7 +63,7 @@ describe('rendering', () => {
     expect(ref.current).toBe(grid.element())
     await expect.element(grid).toHaveAttribute('id', 'innehall')
     await expect.element(grid).toHaveAttribute('aria-describedby', 'hjalp')
-    await expect.element(grid).toHaveAttribute('title', 'Otsikko')
+    await expect.element(grid).toHaveAttribute('title', 'Title')
     expect((container.firstElementChild as HTMLElement).getAttributeNames()).toEqual(['class'])
   })
 
@@ -180,8 +180,8 @@ describe('as', () => {
   test('an Item outside a Root warns once', async () => {
     await render(
       <>
-        <Grid.Item>Ett</Grid.Item>
-        <Grid.Item>Två</Grid.Item>
+        <Grid.Item>One</Grid.Item>
+        <Grid.Item>Two</Grid.Item>
       </>,
     )
     expect(warnings().filter((message) => message.includes('Grid.Item is outside'))).toHaveLength(1)
@@ -190,7 +190,7 @@ describe('as', () => {
   test('an Item inside a Root does not warn', async () => {
     await render(
       <Grid.Root>
-        <Grid.Item>Ett</Grid.Item>
+        <Grid.Item>One</Grid.Item>
       </Grid.Root>,
     )
     expect(warnings()).toEqual([])
@@ -207,10 +207,10 @@ describe('keyboard', () => {
     return (
       <Grid.Root>
         <Grid.Item>
-          <Link.Root href="#forst">Första</Link.Root>
+          <Link.Root href="#first">First</Link.Root>
         </Grid.Item>
         <Grid.Item>
-          <Button>Andra</Button>
+          <Button>Second</Button>
         </Grid.Item>
         <Grid.Item>
           <Link.Root href="#tredje">Tredje</Link.Root>
@@ -222,9 +222,9 @@ describe('keyboard', () => {
   test('is not a Tab stop and keeps the children in DOM order', async () => {
     await render(<Controls />)
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('link', { name: 'Första' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'First' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Andra' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Second' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('link', { name: 'Tredje' })).toHaveFocus()
   })
@@ -233,9 +233,9 @@ describe('keyboard', () => {
     await render(<Controls />)
     page.getByRole('link', { name: 'Tredje' }).element().focus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Andra' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Second' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('link', { name: 'Första' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'First' })).toHaveFocus()
   })
 })
 
@@ -283,8 +283,8 @@ describe('accessibility', () => {
             <h1>Kvirnby kommun</h1>
             <p>Vi svarar vardagar 9–16.</p>
           </Grid.Item>
-          <Grid.Item as="section" aria-label="Kontakt" className="kv-grid-item--lg-span-4">
-            <Link.Root href="#kontakt">Kontakta oss</Link.Root>
+          <Grid.Item as="section" aria-label="Contact" className="kv-grid-item--lg-span-4">
+            <Link.Root href="#contact">Contact us</Link.Root>
           </Grid.Item>
         </Grid.Root>
       </main>,
@@ -298,32 +298,34 @@ describe('read aloud', () => {
   test('a div Root reads only its children in DOM order', async () => {
     const { container } = await render(
       <Grid.Root>
-        <Grid.Item>Första</Grid.Item>
-        <Grid.Item>Andra</Grid.Item>
+        <Grid.Item>First</Grid.Item>
+        <Grid.Item>Second</Grid.Item>
       </Grid.Root>,
     )
-    expect(await readAloud(container)).toEqual(['Första', 'Andra'])
+    expect(await readAloud(container)).toEqual(['First', 'Second'])
   })
 
   test('a ul Root with li Items reads as a list with its items', async () => {
     const { container } = await render(
       <Grid.Root as="ul">
-        <Grid.Item as="li">Sophämtning</Grid.Item>
-        <Grid.Item as="li">Vinterväghållning</Grid.Item>
+        <Grid.Item as="li">Waste collection</Grid.Item>
+        <Grid.Item as="li">Winter road maintenance</Grid.Item>
       </Grid.Root>,
     )
     const phrases = await readAloud(container)
     expect(phrases[0]).toMatch(/^list/)
     expect(phrases.filter((phrase) => phrase.startsWith('listitem'))).toHaveLength(2)
-    expect(phrases).toContain('Sophämtning')
-    expect(phrases.indexOf('Sophämtning')).toBeLessThan(phrases.indexOf('Vinterväghållning'))
+    expect(phrases).toContain('Waste collection')
+    expect(phrases.indexOf('Waste collection')).toBeLessThan(
+      phrases.indexOf('Winter road maintenance'),
+    )
     expect(phrases.at(-1)).toBe('end of list')
   })
 
   test('a main Item reads as main', async () => {
     const { container } = await render(
       <Grid.Root>
-        <Grid.Item as="main">Innehåll</Grid.Item>
+        <Grid.Item as="main">Content</Grid.Item>
       </Grid.Root>,
     )
     expect(await readAloud(container)).toContain('main')
@@ -332,22 +334,22 @@ describe('read aloud', () => {
   test('a named nav Item reads as a navigation', async () => {
     const { container } = await render(
       <Grid.Root>
-        <Grid.Item as="nav" aria-label="I det här avsnittet">
-          <Link.Root href="#a">Ett</Link.Root>
+        <Grid.Item as="nav" aria-label="In this section">
+          <Link.Root href="#a">One</Link.Root>
         </Grid.Item>
       </Grid.Root>,
     )
-    expect(await readAloud(container)).toContain('navigation, I det här avsnittet')
+    expect(await readAloud(container)).toContain('navigation, In this section')
   })
 
   test('a named section Item reads as a region', async () => {
     const { container } = await render(
       <Grid.Root>
-        <Grid.Item as="section" aria-label="Kontakt">
+        <Grid.Item as="section" aria-label="Contact">
           Ring oss
         </Grid.Item>
       </Grid.Root>,
     )
-    expect(await readAloud(container)).toContain('region, Kontakt')
+    expect(await readAloud(container)).toContain('region, Contact')
   })
 })

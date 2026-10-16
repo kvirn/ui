@@ -46,12 +46,12 @@ function surfaceClassName(parameters: Record<string, unknown>, className: string
 const meta = {
   title: 'Components/Navigation/Navigation',
   component: Navigation.Root,
-  args: { label: 'Huvudmeny' },
+  args: { label: 'Main menu' },
   argTypes: {
     label: {
       control: 'text',
       description:
-        'The navigation’s accessible name, set as `aria-label`: `Huvudmeny`. Required, or give `aria-labelledby` instead. A dev warning fires without a name, and when two navigations share one.',
+        'The navigation’s accessible name, set as `aria-label`: `Main menu`. Required, or give `aria-labelledby` instead. A dev warning fires without a name, and when two navigations share one.',
     },
     className: {
       control: 'select',
@@ -66,7 +66,7 @@ const meta = {
     },
     ref: { control: false, description: 'The rendered `<nav>`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
   decorators: [
     (Story, { args, parameters }) => (
@@ -87,7 +87,7 @@ type Story = StoryObj<typeof meta>
  * The main example: every part, two levels and the current page, as a vertical list. A
  * `Navigation.List` inside a `Navigation.Item` is the second level, and `current="page"` on the
  * Link marks the current page: the only link with `aria-current`, never an ancestor. The theme
- * draws the page as a solid fill and the ancestor Bygga och bo as the trail. Pick
+ * draws the page as a solid fill and the ancestor Building and living as the trail. Pick
  * `kv-navigation--horizontal` or `kv-compact` in the className control.
  */
 export const Default: Story = {
@@ -98,32 +98,32 @@ export const Default: Story = {
           <Link.Root href="#start">Start</Link.Root>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#bygga-och-bo">Bygga och bo</Link.Root>
+          <Link.Root href="#bygga-och-bo">Building and living</Link.Root>
           <Navigation.List>
             <Navigation.Item>
-              <Link.Root href="#bygglov" current="page">
-                Bygglov
+              <Link.Root href="#building-permits" current="page">
+                Building permits
               </Link.Root>
             </Navigation.Item>
             <Navigation.Item>
-              <Link.Root href="#bygga-om">Bygga om</Link.Root>
+              <Link.Root href="#bygga-om">Renovating</Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#om-oss">Om oss</Link.Root>
+          <Link.Root href="#om-oss">About us</Link.Root>
         </Navigation.Item>
       </Navigation.List>
     </Navigation.Root>
   ),
   play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'Huvudmeny' })
+    const navigation = canvas.getByRole('navigation', { name: 'Main menu' })
     await expect(within(navigation).getAllByRole('list')).toHaveLength(2)
-    const current = within(navigation).getByRole('link', { name: 'Bygglov' })
+    const current = within(navigation).getByRole('link', { name: 'Building permits' })
     await expect(current).toHaveAttribute('aria-current', 'page')
     await expect(current).toHaveAttribute('data-current', '')
     // The ancestor is the trail, which is only drawn: it has no aria-current.
-    for (const name of ['Start', 'Bygga och bo', 'Bygga om', 'Om oss']) {
+    for (const name of ['Start', 'Building and living', 'Renovating', 'About us']) {
       const link = within(navigation).getByRole('link', { name })
       await expect(link).not.toHaveAttribute('aria-current')
       await expect(link).not.toHaveAttribute('data-current')
@@ -141,7 +141,7 @@ export const Keyboard: Story = {
   render: ({ label }) => (
     <>
       <p>
-        <Link.Root href="#innehall">Hoppa till innehållet</Link.Root>
+        <Link.Root href="#innehall">Skip to content</Link.Root>
       </p>
       <Navigation.Root label={label}>
         <Navigation.List>
@@ -149,24 +149,24 @@ export const Keyboard: Story = {
             <Link.Root href="#start">Start</Link.Root>
           </Navigation.Item>
           <Navigation.Item>
-            <Link.Root href="#bygga-och-bo">Bygga och bo</Link.Root>
+            <Link.Root href="#bygga-och-bo">Building and living</Link.Root>
             <Navigation.List>
               <Navigation.Item>
-                <Link.Root href="#bygglov">Bygglov</Link.Root>
+                <Link.Root href="#building-permits">Building permits</Link.Root>
               </Navigation.Item>
             </Navigation.List>
           </Navigation.Item>
           <Navigation.Item>
-            <Link.Root href="#om-oss">Om oss</Link.Root>
+            <Link.Root href="#om-oss">About us</Link.Root>
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>
       <p>
-        <Link.Root href="#kontakt">Kontakta oss</Link.Root>
+        <Link.Root href="#contact">Contact us</Link.Root>
       </p>
-      <h2 id="innehall">Innehåll</h2>
-      <h2 id="om-oss">Om oss</h2>
-      <h2 id="kontakt">Kontakt</h2>
+      <h2 id="innehall">Content</h2>
+      <h2 id="om-oss">About us</h2>
+      <h2 id="contact">Contact</h2>
     </>
   ),
 }
@@ -185,17 +185,16 @@ export const Horizontal: Story = {
   },
   render: () => <HorizontalNavigation />,
   play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'Huvudmeny' })
+    const navigation = canvas.getByRole('navigation', { name: 'Main menu' })
     const links = within(navigation).getAllByRole('link')
     await expect(links).toHaveLength(5)
     // 2.5.8: every link in the row is at least 24 × 24 CSS px.
     for (const link of links) {
       await expectMinimumTargetSize(link)
     }
-    await expect(within(navigation).getByRole('link', { name: 'Bygga och bo' })).toHaveAttribute(
-      'aria-current',
-      'page',
-    )
+    await expect(
+      within(navigation).getByRole('link', { name: 'Building and living' }),
+    ).toHaveAttribute('aria-current', 'page')
   },
 }
 
@@ -210,14 +209,15 @@ export const ActiveTrail: Story = {
   parameters: showSource('navigation/navigation.fixture.tsx', 'StaffNavigation'),
   render: () => <StaffNavigation />,
   play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'Handläggning' })
+    const navigation = canvas.getByRole('navigation', { name: 'Case handling' })
     // Exactly one current link, and it is the page.
     await expect(navigation.querySelectorAll('[aria-current]')).toHaveLength(1)
-    await expect(
-      within(navigation).getByRole('link', { name: 'Under handläggning' }),
-    ).toHaveAttribute('aria-current', 'page')
+    await expect(within(navigation).getByRole('link', { name: 'In progress' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    )
     // None of its ancestors has it.
-    for (const name of ['Ärenden', 'Bygglov']) {
+    for (const name of ['Cases', 'Building permits']) {
       await expect(within(navigation).getByRole('link', { name })).not.toHaveAttribute(
         'aria-current',
       )
@@ -229,43 +229,42 @@ export const ActiveTrail: Story = {
  * Collapse a group with `hidden`, never by unmounting it: its links leave the Tab sequence and
  * the accessibility tree, they stay in the DOM, and the default theme keeps the group collapsed.
  * The toggle that opens a group is yours. The page is inside the first collapsed group, so the
- * deepest item shown, Bygga och bo, carries `current`: a link inside a hidden group never does.
+ * deepest item shown, Building and living, carries `current`: a link inside a hidden group never does.
  */
 export const CollapsedGroups: Story = {
   parameters: showSource('navigation/navigation.fixture.tsx', 'CollapsedNavigation'),
   render: () => <CollapsedNavigation />,
   play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'Huvudmeny' })
+    const navigation = canvas.getByRole('navigation', { name: 'Main menu' })
     // Both groups are still in the DOM, and hidden: no one can reach their links.
     await expect(navigation.querySelectorAll('.kv-navigation-list[hidden] a')).toHaveLength(4)
     await expect(
-      within(navigation).queryByRole('link', { name: 'Bygglov' }),
+      within(navigation).queryByRole('link', { name: 'Building permits' }),
     ).not.toBeInTheDocument()
     // One current link, the deepest item shown.
     await expect(navigation.querySelectorAll('[aria-current]')).toHaveLength(1)
-    await expect(within(navigation).getByRole('link', { name: 'Bygga och bo' })).toHaveAttribute(
-      'aria-current',
-      'true',
-    )
+    await expect(
+      within(navigation).getByRole('link', { name: 'Building and living' }),
+    ).toHaveAttribute('aria-current', 'true')
   },
 }
 
 /**
  * Group links under a `Navigation.Label` in the item that holds the list: the label names that
- * list for a screen reader ("Komponenter, list, 3 items"). It is plain text in `text-muted`, not a
+ * list for a screen reader ("Components, list, 3 items"). It is plain text in `text-muted`, not a
  * heading and not a link, so it is no Tab stop and can't be mistaken for a link.
  */
 export const GroupLabels: Story = {
   parameters: showSource('navigation/navigation.fixture.tsx', 'GroupedNavigation'),
   render: () => <GroupedNavigation />,
   play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'Dokumentation' })
-    const components = within(navigation).getByRole('list', { name: 'Komponenter' })
+    const navigation = canvas.getByRole('navigation', { name: 'Documentation' })
+    const components = within(navigation).getByRole('list', { name: 'Components' })
     await expect(within(components).getAllByRole('link')).toHaveLength(3)
-    await expect(within(navigation).getByRole('list', { name: 'Grunder' })).toBeVisible()
+    await expect(within(navigation).getByRole('list', { name: 'Foundations' })).toBeVisible()
     await expect(within(navigation).queryByRole('heading')).not.toBeInTheDocument()
     await expect(
-      within(navigation).queryByRole('link', { name: 'Komponenter' }),
+      within(navigation).queryByRole('link', { name: 'Components' }),
     ).not.toBeInTheDocument()
     await expect(navigation.querySelectorAll('.kv-navigation-label[tabindex]')).toHaveLength(0)
   },
@@ -282,12 +281,15 @@ export const LongFinnishGroupLabel: Story = {
   ],
   render: () => (
     <InLanguage locale="fi" messages={fi}>
+      {/* kv-lang-ok: Finnish locale story: the long-word hard case and the Finnish built-in strings */}
       <Navigation.Root label="Päävalikko">
         <Navigation.List>
           <Navigation.Item>
+            {/* kv-lang-ok: Finnish locale story: the long-word hard case and the Finnish built-in strings */}
             <Navigation.Label>Rakentaminen, ympäristö ja kiinteistöasiat</Navigation.Label>
             <Navigation.List>
               <Navigation.Item>
+                {/* kv-lang-ok: Finnish locale story: the long-word hard case and the Finnish built-in strings */}
                 <Link.Root href="#rakennuslupa">Rakennus- ja toimenpidelupahakemukset</Link.Root>
               </Navigation.Item>
             </Navigation.List>
@@ -298,6 +300,7 @@ export const LongFinnishGroupLabel: Story = {
   ),
   play: async ({ canvas }) => {
     await expect(
+      // kv-lang-ok: Finnish locale story: the long-word hard case and the Finnish built-in strings
       canvas.getByRole('list', { name: 'Rakentaminen, ympäristö ja kiinteistöasiat' }),
     ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
@@ -328,14 +331,13 @@ export const PageNotInTheMenu: Story = {
   parameters: showSource('navigation/navigation.fixture.tsx', 'UnlistedPageNavigation'),
   render: () => <UnlistedPageNavigation />,
   play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'Huvudmeny' })
+    const navigation = canvas.getByRole('navigation', { name: 'Main menu' })
     await expect(navigation.querySelectorAll('[aria-current]')).toHaveLength(1)
-    await expect(within(navigation).getByRole('link', { name: 'Bygglov' })).toHaveAttribute(
-      'aria-current',
-      'true',
-    )
     await expect(
-      within(navigation).getByRole('link', { name: 'Bygga och bo' }),
+      within(navigation).getByRole('link', { name: 'Building permits' }),
+    ).toHaveAttribute('aria-current', 'true')
+    await expect(
+      within(navigation).getByRole('link', { name: 'Building and living' }),
     ).not.toHaveAttribute('aria-current')
   },
 }
@@ -348,23 +350,23 @@ export const LabelledByHeading: Story = {
   args: { label: undefined },
   render: () => (
     <>
-      <h2 id="avsnitt">I det här avsnittet</h2>
+      <h2 id="avsnitt">In this section</h2>
       <Navigation.Root aria-labelledby="avsnitt">
         <Navigation.List>
           <Navigation.Item>
-            <Link.Root href="#bygglov" current="page">
-              Bygglov
+            <Link.Root href="#building-permits" current="page">
+              Building permits
             </Link.Root>
           </Navigation.Item>
           <Navigation.Item>
-            <Link.Root href="#bygga-om">Bygga om</Link.Root>
+            <Link.Root href="#bygga-om">Renovating</Link.Root>
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>
     </>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('navigation', { name: 'I det här avsnittet' })).toBeVisible()
+    await expect(canvas.getByRole('navigation', { name: 'In this section' })).toBeVisible()
   },
 }
 
@@ -379,23 +381,23 @@ export const TwoNavigations: Story = {
   ],
   render: () => (
     <>
-      <Navigation.Root label="Huvudmeny">
+      <Navigation.Root label="Main menu">
         <Navigation.List>
           <Navigation.Item>
             <Link.Root href="#start">Start</Link.Root>
           </Navigation.Item>
           <Navigation.Item>
-            <Link.Root href="#bygga-och-bo">Bygga och bo</Link.Root>
+            <Link.Root href="#bygga-och-bo">Building and living</Link.Root>
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>
-      <Navigation.Root label="Sidfot">
+      <Navigation.Root label="Footer">
         <Navigation.List>
           <Navigation.Item>
-            <Link.Root href="#kontakt">Kontakt</Link.Root>
+            <Link.Root href="#contact">Contact</Link.Root>
           </Navigation.Item>
           <Navigation.Item>
-            <Link.Root href="#tillganglighet">Tillgänglighetsredogörelse</Link.Root>
+            <Link.Root href="#tillganglighet">Accessibility statement</Link.Root>
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>
@@ -403,8 +405,8 @@ export const TwoNavigations: Story = {
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getAllByRole('navigation')).toHaveLength(2)
-    await expect(canvas.getByRole('navigation', { name: 'Huvudmeny' })).toBeVisible()
-    await expect(canvas.getByRole('navigation', { name: 'Sidfot' })).toBeVisible()
+    await expect(canvas.getByRole('navigation', { name: 'Main menu' })).toBeVisible()
+    await expect(canvas.getByRole('navigation', { name: 'Footer' })).toBeVisible()
   },
 }
 
@@ -420,8 +422,8 @@ export const WithServiceLink: Story = {
           <Link.Root href="#start">Start</Link.Root>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#bygglov" current="page">
-            Bygglov
+          <Link.Root href="#building-permits" current="page">
+            Building permits
           </Link.Root>
         </Navigation.Item>
         <Navigation.Item>
@@ -429,14 +431,14 @@ export const WithServiceLink: Story = {
             <Link.Icon>
               <Icon name="arrow-forward" size="24" />
             </Link.Icon>
-            Ansök om bygglov
+            Apply for a building permit
           </Link.Root>
         </Navigation.Item>
       </Navigation.List>
     </Navigation.Root>
   ),
   play: async ({ canvas }) => {
-    const service = canvas.getByRole('link', { name: 'Ansök om bygglov' })
+    const service = canvas.getByRole('link', { name: 'Apply for a building permit' })
     await expect(service).toHaveClass('kv-link--service')
     await expectMinimumTargetSize(service)
   },
@@ -454,31 +456,31 @@ export const CompactDensity: Story = {
         <Navigation.List>
           <Navigation.Item>
             <Link.Root href="#arenden" current="page">
-              Ärenden
+              Cases
             </Link.Root>
           </Navigation.Item>
           <Navigation.Item>
-            <Link.Root href="#kunder">Kunder</Link.Root>
+            <Link.Root href="#kunder">Customers</Link.Root>
             <Navigation.List>
               <Navigation.Item>
-                <Link.Root href="#nya-kunder">Nya kunder</Link.Root>
+                <Link.Root href="#nya-kunder">New customers</Link.Root>
               </Navigation.Item>
             </Navigation.List>
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>
-      <Navigation.Root label="Verktyg" className="kv-compact kv-navigation--horizontal">
+      <Navigation.Root label="Tools" className="kv-compact kv-navigation--horizontal">
         <Navigation.List>
           <Navigation.Item>
-            <Link.Root href="#sok">Sök</Link.Root>
+            <Link.Root href="#sok">Search</Link.Root>
           </Navigation.Item>
           <Navigation.Item>
             <Link.Root href="#rapporter" current>
-              Rapporter
+              Reports
             </Link.Root>
           </Navigation.Item>
           <Navigation.Item>
-            <Link.Root href="#installningar">Inställningar</Link.Root>
+            <Link.Root href="#installningar">Settings</Link.Root>
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>
@@ -490,11 +492,11 @@ export const CompactDensity: Story = {
     for (const link of links) {
       await expectMinimumTargetSize(link)
     }
-    await expect(canvas.getByRole('link', { name: 'Ärenden' })).toHaveAttribute(
+    await expect(canvas.getByRole('link', { name: 'Cases' })).toHaveAttribute(
       'aria-current',
       'page',
     )
-    await expect(canvas.getByRole('link', { name: 'Rapporter' })).toHaveAttribute(
+    await expect(canvas.getByRole('link', { name: 'Reports' })).toHaveAttribute(
       'aria-current',
       'true',
     )
@@ -503,6 +505,7 @@ export const CompactDensity: Story = {
 
 /** A long Finnish label wraps inside a narrow column instead of overflowing (1.4.10). */
 export const LongFinnishText: Story = {
+  // kv-lang-ok: Finnish locale story: the long-word hard case and the Finnish built-in strings
   args: { label: 'Päävalikko' },
   decorators: [
     (Story) => (
@@ -516,13 +519,16 @@ export const LongFinnishText: Story = {
       <Navigation.Root label={label}>
         <Navigation.List>
           <Navigation.Item>
+            {/* kv-lang-ok: Finnish locale story text under locale fi */}
             <Link.Root href="#alku">Alku</Link.Root>
           </Navigation.Item>
           <Navigation.Item>
+            {/* kv-lang-ok: Finnish locale story: the long-word hard case and the Finnish built-in strings */}
             <Link.Root href="#rakentaminen">Rakentaminen ja asuminen</Link.Root>
             <Navigation.List>
               <Navigation.Item>
                 <Link.Root href="#rakennuslupa" current="page">
+                  {/* kv-lang-ok: Finnish locale story: the long-word hard case and the Finnish built-in strings */}
                   Rakennus- ja toimenpidelupahakemuksen liitteet
                 </Link.Root>
               </Navigation.Item>
@@ -533,6 +539,7 @@ export const LongFinnishText: Story = {
     </InLanguage>
   ),
   play: async ({ canvas }) => {
+    // kv-lang-ok: Finnish locale story: the long-word hard case and the Finnish built-in strings
     await expect(canvas.getByRole('navigation', { name: 'Päävalikko' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
@@ -558,6 +565,7 @@ export const HorizontalLongFinnishText: Story = {
   ],
   render: () => <FinnishHorizontalNavigation />,
   play: async ({ canvas }) => {
+    // kv-lang-ok: Finnish locale story: the long-word hard case and the Finnish built-in strings
     await expect(canvas.getByRole('navigation', { name: 'Päävalikko' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
     for (const link of canvas.getAllByRole('link')) {
@@ -577,26 +585,26 @@ export const FocusVisible: Story = {
       <Navigation.List>
         <Navigation.Item>
           <Link.Root href="#oversikt" current="page">
-            Översikt
+            Overview
           </Link.Root>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#ansok">Ansök</Link.Root>
+          <Link.Root href="#ansok">Apply</Link.Root>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#kontakta-oss">Kontakta oss</Link.Root>
+          <Link.Root href="#contact-us">Contact us</Link.Root>
         </Navigation.Item>
       </Navigation.List>
     </Navigation.Root>
   ),
   play: async ({ canvas, userEvent }) => {
-    const current = canvas.getByRole('link', { name: 'Översikt' })
+    const current = canvas.getByRole('link', { name: 'Overview' })
     await userEvent.tab()
     await expect(current).toHaveFocus()
     await waitFor(() => expect(current).toHaveAttribute('data-focus-visible'))
     // Focus Visible (2.4.7): a focused link shows an indicator.
     await expect(getComputedStyle(current).outlineStyle).not.toBe('none')
-    const next = canvas.getByRole('link', { name: 'Ansök' })
+    const next = canvas.getByRole('link', { name: 'Apply' })
     await userEvent.tab()
     await expect(next).toHaveFocus()
     await expect(getComputedStyle(next).outlineStyle).not.toBe('none')
@@ -657,5 +665,5 @@ export const ForcedColors: Story = {
     ...showSource('navigation/navigation.fixture.tsx', 'NavigationOrientations'),
     surface: 'both',
   },
-  render: () => <NavigationOrientations locale="sv" />,
+  render: () => <NavigationOrientations locale="en" />,
 }

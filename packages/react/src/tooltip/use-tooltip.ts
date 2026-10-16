@@ -119,9 +119,9 @@ export interface UseTooltipResult {
  *
  * @example
  * const tooltip = useTooltip({ description: 'shortcut' })
- * <button {...tooltip.triggerProps} aria-label="Fetstil"><Icon name="bold" /></button>
+ * <button {...tooltip.triggerProps} aria-label="Bold"><Icon name="bold" /></button>
  * <div {...tooltip.popupProps}>
- *   <span {...tooltip.nameProps}>Fetstil</span> <span {...tooltip.shortcutProps}>Ctrl+B</span>
+ *   <span {...tooltip.nameProps}>Bold</span> <span {...tooltip.shortcutProps}>Ctrl+B</span>
  * </div>
  */
 export function useTooltip({

@@ -313,7 +313,7 @@ export const AsGroup: Story = {
  * added after the group's description.
  */
 export const RequiredGroup: Story = {
-  args: { group: true, required: true, id: 'kontakt-grupp' },
+  args: { group: true, required: true, id: 'contact-group' },
   render: (args, { globals }) => {
     const locale = localeOf(globals)
     const { text } = textsFor(locale)
@@ -321,7 +321,7 @@ export const RequiredGroup: Story = {
     return (
       <>
         <>
-          <Fieldset.Root {...args} aria-describedby="kontakt-grupp-integritet">
+          <Fieldset.Root {...args} aria-describedby="contact-group-privacy">
             <Fieldset.Legend>{gap.groupLegend}</Fieldset.Legend>
             <Fieldset.Prose>
               <p>{gap.groupHint}</p>
@@ -341,7 +341,7 @@ export const RequiredGroup: Story = {
             </Field.Root>
           </Fieldset.Root>
           <div className="kv-prose">
-            <p id="kontakt-grupp-integritet">{gap.groupNote}</p>
+            <p id="contact-group-privacy">{gap.groupNote}</p>
           </div>
         </>
       </>
@@ -492,6 +492,7 @@ export const LongFinnish: Story = {
     )
   },
   play: async ({ canvas }) => {
+    // kv-lang-ok: asserts the Finnish legend hard case
     await expect(canvas.getByRole('group', { name: 'Missä asut?' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },

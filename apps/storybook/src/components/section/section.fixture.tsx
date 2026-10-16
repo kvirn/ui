@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
 import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { Button, Card, Field, Fieldset, Link, Section, TextInput, useFormat } from '@kvirn-ui/react'

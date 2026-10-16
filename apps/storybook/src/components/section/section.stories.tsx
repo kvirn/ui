@@ -64,7 +64,7 @@ const meta = {
         'Another element: `section`, `aside`, `nav`, `footer`, `header`, `article` or `li`.',
     },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [withSectionLocale],
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof Section>
@@ -84,13 +84,13 @@ export const Default: Story = {
   render: (args) => (
     <Section {...args}>
       <Prose>
-        <h2>Kontakta oss</h2>
-        <p>Vi svarar vardagar 9–16.</p>
+        <h2>Contact us</h2>
+        <p>We answer on weekdays 9 to 16.</p>
       </Prose>
     </Section>
   ),
   play: async ({ canvas }) => {
-    const heading = canvas.getByRole('heading', { level: 2, name: 'Kontakta oss' })
+    const heading = canvas.getByRole('heading', { level: 2, name: 'Contact us' })
     await expect(heading.closest('.kv-section')).not.toBeNull()
     await expect(canvas.queryByRole('complementary')).toBeNull()
     await expect(canvas.queryByRole('region')).toBeNull()
@@ -112,12 +112,11 @@ export const SidebarTextBlock: Story = {
   ],
   render: (_args, { globals }) => <ContactSection locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    const region = canvas.getByRole('complementary', { name: 'Kontakta oss' })
+    const region = canvas.getByRole('complementary', { name: 'Contact us' })
     await expect(within(region).getByRole('heading', { level: 2 })).toBeVisible()
-    await expect(within(region).getByRole('link', { name: 'Mejla kundcenter' })).toHaveAttribute(
-      'href',
-      'mailto:kundcenter@kvirnby.example',
-    )
+    await expect(
+      within(region).getByRole('link', { name: 'Email the customer centre' }),
+    ).toHaveAttribute('href', 'mailto:kundcenter@kvirnby.example')
   },
 }
 
@@ -325,7 +324,7 @@ export const CardOrSection: Story = {
     await expect(within(users).getAllByRole('button')).toHaveLength(2)
     const news = canvas.getByTestId('news-card')
     await expect(within(news).getAllByRole('link')).toHaveLength(1)
-    await expect(canvas.getByRole('group', { name: 'Kontaktuppgifter' })).toBeVisible()
+    await expect(canvas.getByRole('group', { name: 'Contact details' })).toBeVisible()
   },
 }
 
@@ -391,8 +390,10 @@ export const RenderedAsLandmarks: Story = {
   ],
   render: (_args, { globals }) => <RenderedSections locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('region', { name: 'Sophämtning vid Storgatan 12' })).toBeVisible()
-    await expect(canvas.getByRole('navigation', { name: 'Nyheter' })).toBeVisible()
+    await expect(
+      canvas.getByRole('region', { name: 'Waste collection at Storgatan 12' }),
+    ).toBeVisible()
+    await expect(canvas.getByRole('navigation', { name: 'News' })).toBeVisible()
     // The list of Sections: two plain items, no landmark.
     const lists = canvas.getAllByRole('list')
     await expect(
@@ -446,8 +447,10 @@ export const LongFinnishText: Story = {
   ),
   play: async ({ canvas }) => {
     await expect(
+      // kv-lang-ok: Finnish locale story
       canvas.getByRole('button', { name: 'Keskeytä jäteastioiden tyhjennykset' }),
     ).toBeVisible()
+    // kv-lang-ok: Finnish locale story
     await expect(canvas.getByRole('complementary', { name: 'Ota yhteyttä' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },

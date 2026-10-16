@@ -58,7 +58,7 @@ No new string. The indicators are `aria-hidden` and have no name; `progress.load
 | Button busy                 | `kv-spinner` at the button's inline start, `currentColor`, shown at once (the spinner loops); label unchanged | The Progress beside it carries the words, **without** its own spinner |
 | Table busy                  | A thin 4px sweep along the head's lower edge                                                                  | Unchanged: "Loading rows."                                            |
 | Toast, job in progress      | `kv-spinner` in the icon slot (`kv-alert-icon kv-spinner`), `--kv-alert-accent`; no auto-dismiss timer        | Title + body; replaced by the result toast                            |
-| FileUpload, unknown size    | **`kv-progress-track`** in place of the indeterminate `<progress>` hatch (same plan)                          | Unchanged status text ("Laddar upp")                                  |
+| FileUpload, unknown size    | **`kv-progress-track`** in place of the indeterminate `<progress>` hatch (same plan)                          | Unchanged status text ("Uploading")                                   |
 | Page loading (client route) | Progress with a spinner, in place of the content, start-aligned under the `h1`                                | As unknown wait; route focus reads the `h1`                           |
 | Fixed media area            | `kv-spinner--lg` centred, label below. The only centred use                                                   | –                                                                     |
 

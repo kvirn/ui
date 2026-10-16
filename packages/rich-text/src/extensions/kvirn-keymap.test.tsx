@@ -21,15 +21,15 @@ afterEach(() => {
   fixture = undefined
 })
 
-const list = '<ul><li><p>Ett</p></li><li><p>Två</p></li></ul>'
-const nestedList = '<ul><li><p>Ett</p><ul><li><p>Två</p></li></ul></li></ul>'
+const list = '<ul><li><p>One</p></li><li><p>Two</p></li></ul>'
+const nestedList = '<ul><li><p>One</p><ul><li><p>Two</p></li></ul></li></ul>'
 const table =
   '<table><tbody><tr><th><p>A1</p></th><th><p>B1</p></th></tr><tr><td><p>A2</p></td><td><p>B2</p></td></tr></tbody></table>'
 
 describe('Tab and Shift+Tab in a list item', () => {
   test('Tab nests an item that has an item above it, and focus stays in the text', async () => {
     const { editor } = create(list)
-    placeCaret(editor, 'Två')
+    placeCaret(editor, 'Two')
     await userEvent.keyboard('{Tab}')
     expect(editor.view.dom.querySelectorAll('ul ul li')).toHaveLength(1)
     expect(document.activeElement).toBe(editor.view.dom)
@@ -37,7 +37,7 @@ describe('Tab and Shift+Tab in a list item', () => {
 
   test('Tab on the first item of a list leaves the editor, and nests nothing', async () => {
     const { editor, after } = create(list)
-    placeCaret(editor, 'Ett')
+    placeCaret(editor, 'One')
     await userEvent.keyboard('{Tab}')
     expect(document.activeElement).toBe(after)
     expect(editor.view.dom.querySelectorAll('ul ul')).toHaveLength(0)
@@ -45,7 +45,7 @@ describe('Tab and Shift+Tab in a list item', () => {
 
   test('Shift+Tab outdents a nested item one level, and focus stays in the text', async () => {
     const { editor } = create(nestedList)
-    placeCaret(editor, 'Två')
+    placeCaret(editor, 'Two')
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     expect(editor.view.dom.querySelectorAll('ul ul')).toHaveLength(0)
     expect(editor.view.dom.querySelectorAll('li')).toHaveLength(2)
@@ -53,8 +53,8 @@ describe('Tab and Shift+Tab in a list item', () => {
   })
 
   test('Shift+Tab in a top-level item leaves backwards, and never lifts it out of its list', async () => {
-    const { editor, before } = create('<p>Före</p><ul><li><p>Ett</p></li></ul>')
-    placeCaret(editor, 'Ett')
+    const { editor, before } = create('<p>Before</p><ul><li><p>One</p></li></ul>')
+    placeCaret(editor, 'One')
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     expect(document.activeElement).toBe(before)
     expect(editor.view.dom.querySelectorAll('ul > li')).toHaveLength(1)
@@ -64,15 +64,15 @@ describe('Tab and Shift+Tab in a list item', () => {
     const { editor } = create(list)
     const levels: number[] = []
     editor.storage.kvirnKeymap.onListLevelChange = (level) => levels.push(level)
-    placeCaret(editor, 'Två')
+    placeCaret(editor, 'Two')
     await userEvent.keyboard('{Tab}')
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     expect(levels).toEqual([2, 1])
   })
 
   test('Tab at the start of a paragraph after a list leaves, and pulls nothing into the list', async () => {
-    const { editor, after } = create('<ul><li><p>Ett</p></li></ul><p>Efter</p>')
-    placeCaret(editor, 'Efter', 'start')
+    const { editor, after } = create('<ul><li><p>One</p></li></ul><p>After</p>')
+    placeCaret(editor, 'After', 'start')
     await userEvent.keyboard('{Tab}')
     expect(document.activeElement).toBe(after)
     expect(editor.view.dom.querySelectorAll('li p')).toHaveLength(1)
@@ -114,9 +114,9 @@ describe('Tab and Shift+Tab in a table', () => {
 
   test('a list in a cell: the list rule wins where the item can nest, and the cell rule where it cannot', async () => {
     const { editor } = create(
-      '<table><tbody><tr><td><ul><li><p>Ett</p></li><li><p>Två</p></li></ul></td><td><p>B1</p></td></tr></tbody></table>',
+      '<table><tbody><tr><td><ul><li><p>One</p></li><li><p>Two</p></li></ul></td><td><p>B1</p></td></tr></tbody></table>',
     )
-    placeCaret(editor, 'Två')
+    placeCaret(editor, 'Two')
     await userEvent.keyboard('{Tab}')
     expect(editor.view.dom.querySelectorAll('td ul ul li')).toHaveLength(1)
     // Nothing is left to nest the item under: the cell rule moves to the next cell.
@@ -128,12 +128,12 @@ describe('Tab and Shift+Tab in a table', () => {
 describe('Tab and Shift+Tab outside lists and tables', () => {
   test('Tab leaves forwards, and Shift+Tab leaves backwards', async () => {
     const { editor, before, after } = create(
-      '<p>Ett stycke</p><blockquote><p>Citat</p></blockquote>',
+      '<p>One paragraph</p><blockquote><p>Quote</p></blockquote>',
     )
-    placeCaret(editor, 'Ett stycke')
+    placeCaret(editor, 'One paragraph')
     await userEvent.keyboard('{Tab}')
     expect(document.activeElement).toBe(after)
-    placeCaret(editor, 'Citat')
+    placeCaret(editor, 'Quote')
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     expect(document.activeElement).toBe(before)
   })
@@ -142,7 +142,7 @@ describe('Tab and Shift+Tab outside lists and tables', () => {
 describe('Escape', () => {
   test('Escape is not a way out: Tab after it still nests a list item', async () => {
     const { editor } = create(list)
-    placeCaret(editor, 'Två')
+    placeCaret(editor, 'Two')
     await userEvent.keyboard('{Escape}{Tab}')
     expect(editor.view.dom.querySelectorAll('ul ul li')).toHaveLength(1)
     expect(document.activeElement).toBe(editor.view.dom)
@@ -156,7 +156,7 @@ describe('Escape', () => {
         escapes()
       }
     })
-    placeCaret(editor, 'Två')
+    placeCaret(editor, 'Two')
     await userEvent.keyboard('{Escape}')
     expect(escapes).not.toHaveBeenCalled()
     await userEvent.keyboard('{Escape}')
@@ -165,7 +165,7 @@ describe('Escape', () => {
 
   test('clicking in the text starts over: the next Escape is consumed again', async () => {
     const { editor } = create(list)
-    placeCaret(editor, 'Två')
+    placeCaret(editor, 'Two')
     await userEvent.keyboard('{Escape}')
     expect(editor.storage.kvirnKeymap.isEscapeConsumed).toBe(true)
     editor.view.dom.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
@@ -313,17 +313,17 @@ describe('AltGr', () => {
 
 describe('the keys the text leaves to the browser and Tiptap', () => {
   test('the arrow keys, Home and End move the caret in the text', async () => {
-    const { editor } = create('<p>Biblioteket har öppet på torsdagar.</p>')
-    placeCaret(editor, 'Biblioteket')
+    const { editor } = create('<p>Library is open on Thursdays.</p>')
+    placeCaret(editor, 'Library')
     await userEvent.keyboard('{Home}{ArrowRight}{ArrowRight}{ArrowRight}X')
-    expect(editor.view.dom.textContent).toContain('BibXlioteket')
+    expect(editor.view.dom.textContent).toContain('LibXrary')
     await userEvent.keyboard('{End}Y')
-    expect(editor.view.dom.textContent).toContain('torsdagar.Y')
+    expect(editor.view.dom.textContent).toContain('Thursdays.Y')
   })
 
   test('Enter starts a new paragraph and Shift+Enter a line break', async () => {
-    const { editor } = create('<p>Välkommen in.</p>')
-    placeCaret(editor, 'Välkommen in.')
+    const { editor } = create('<p>Welcome in.</p>')
+    placeCaret(editor, 'Welcome in.')
     await userEvent.keyboard('{Enter}Ny{Shift>}{Enter}{/Shift}Rad')
     expect(editor.view.dom.querySelectorAll(':scope > p')).toHaveLength(2)
     expect(editor.view.dom.querySelectorAll('p br:not(.ProseMirror-trailingBreak)')).toHaveLength(1)

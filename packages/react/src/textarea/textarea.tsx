@@ -37,14 +37,14 @@ export interface TextareaProps extends Omit<
   /**
    * Shows how many characters are left under the box, with `maxLength` as the limit. The limit
    * is then **not** written as the native `maxlength`, so a pasted text is never cut: the user
-   * sees "N tecken för mycket" and shortens it. Over the limit is a warning (`data-over`), never
+   * sees "N characters too many" and shortens it. Over the limit is a warning (`data-over`), never
    * an error: your form decides on submit. `onValueChange` details then get `length`, `limit`
    * and `isOverLimit`. Needs `maxLength` and a `KvirnProvider` for the announcement.
    */
   characterCount?: boolean | undefined
   /**
    * With `characterCount`: counts a text your own way, such as the way your server does. Default:
-   * the characters the user sees (`å` as `a` plus a combining ring, or an emoji, is one).
+   * the characters the user sees (a letter typed as a base letter plus a combining accent, or an emoji, is one).
    */
   countCharacters?: ((value: string) => number) | undefined
   /** With `characterCount`: per-instance overrides for the count's texts. */
@@ -61,7 +61,7 @@ export interface TextareaProps extends Omit<
  *
  * @example
  * <Field.Root required>
- *   <Field.Label>Beskriv din situation</Field.Label>
+ *   <Field.Label>Describe your situation</Field.Label>
  *   <Textarea name="situation" maxLength={1000} characterCount />
  * </Field.Root>
  */

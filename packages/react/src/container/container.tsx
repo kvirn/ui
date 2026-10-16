@@ -19,7 +19,7 @@ export type ContainerProps = AsTag<(typeof containerTags)[number], 'div', UseCon
  *
  * @example
  * <Container as="main" id="main" size="reading">
- *   <h1>Sophämtning</h1>
+ *   <h1>Waste collection</h1>
  * </Container>
  */
 export function Container({ as, size, ...otherProps }: ContainerProps): ReactElement {

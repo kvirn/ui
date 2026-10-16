@@ -38,12 +38,12 @@ const meta = {
           <img src={binsImage} alt="" width={640} height={240} />
         </Card.Header>
         <Card.Body className="kv-prose">
-          <h2>Sophämtning</h2>
-          <p>Nästa hämtning är på tisdag. Ställ ut kärlet senast klockan 06.</p>
+          <h2>Waste collection</h2>
+          <p>The next collection is on Tuesday. Put the bin out by 06:00.</p>
         </Card.Body>
         <Card.Footer className="kv-button-group">
-          <Button className="kv-button--primary">Beställ extra tömning</Button>
-          <Button>Pausa hämtningen</Button>
+          <Button className="kv-button--primary">Order an extra collection</Button>
+          <Button>Pause collection</Button>
         </Card.Footer>
       </>
     ),
@@ -59,7 +59,7 @@ const meta = {
       description: 'Another element for the Root: `li`, `article`, `figure` or `section`.',
     },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [withCardLocale],
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof Card.Root>
@@ -95,8 +95,10 @@ export const ServiceCard: Story = {
   play: async ({ canvas }) => {
     const card = canvas.getByTestId('service-card')
     await expect(within(card).getByRole('heading', { level: 2 })).toBeVisible()
-    await expect(within(card).getByRole('button', { name: 'Beställ extra tömning' })).toBeVisible()
-    await expect(within(card).getByRole('button', { name: 'Pausa hämtningen' })).toBeVisible()
+    await expect(
+      within(card).getByRole('button', { name: 'Order an extra collection' }),
+    ).toBeVisible()
+    await expect(within(card).getByRole('button', { name: 'Pause collection' })).toBeVisible()
   },
 }
 
@@ -136,8 +138,10 @@ export const AsArticle: Story = {
   ],
   render: (_args, { globals }) => <ArticleCardExample locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    const article = canvas.getByRole('article', { name: 'Nya öppettider på återvinningscentralen' })
-    await expect(within(article).getByRole('button', { name: 'Pausa hämtningen' })).toBeVisible()
+    const article = canvas.getByRole('article', {
+      name: 'New opening hours at the recycling centre',
+    })
+    await expect(within(article).getByRole('button', { name: 'Pause collection' })).toBeVisible()
   },
 }
 
@@ -415,6 +419,7 @@ export const LongFinnishText: Story = {
   render: () => <ServiceCardExample locale="fi" />,
   play: async ({ canvas }) => {
     await expect(
+      // kv-lang-ok: asserts the Finnish long-label hard case under locale fi
       canvas.getByRole('button', { name: 'Keskeytä jäteastioiden tyhjennykset' }),
     ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))

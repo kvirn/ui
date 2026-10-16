@@ -9,6 +9,7 @@ import { withShell } from './shell.tsx'
 // Content types/Easy-to-read page: a whole page in the site chrome (docs/design/storybook-patterns-t5.md S14).
 // The page is a component in `@kvirn-ui/patterns/content-types`; the source panel shows its module text, which an adopter copies.
 
+// kv-lang-ok: the national names of easy-to-read language
 const description = `A page in easy-to-read language (lättläst, selkokieli, lettlest) at the reading width and in large text (\`kv-prose kv-prose--large\`): short sentences, one idea in each, \`h2\` headings written as questions and lists for steps. Nothing is hidden or dense, so there is no Accordion, Table or contents list. The text is an English example: easy-to-read text is written in the resident language and tested with people from the target group, which a component cannot do for you.
 
 **Page contract.** One \`banner\`, one \`main\`, one \`contentinfo\`; one \`h1\` and no skipped heading level; the skip link is first and targets \`main\`; nothing is sticky, so reading, focus and visual order agree. Designed and tested to meet WCAG 2.2 AA.

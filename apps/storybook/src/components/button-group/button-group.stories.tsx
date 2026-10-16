@@ -1,3 +1,4 @@
+// kv-lang-ok-file: LongFinnishLabels is the long Finnish name hard case under locale fi
 import { Button, ButtonGroup, Card, Toggle } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/button-group/button-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/button-group/button-group.md?raw'
@@ -15,7 +16,7 @@ const meta = {
   title: 'Components/Actions/ButtonGroup',
   component: ButtonGroup,
   // Every option at its default, so the main example starts where an adopter starts.
-  args: { 'aria-label': 'Ärendet' },
+  args: { 'aria-label': 'Application' },
   // Every prop in button-group.tsx. Any other `<div>` prop passes through.
   argTypes: {
     'aria-label': {
@@ -36,7 +37,7 @@ const meta = {
     children: { control: false, description: 'The buttons, in the order they are used.' },
     ref: { control: false, description: 'A ref to the `<div>`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
@@ -53,12 +54,12 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: (args) => (
     <ButtonGroup {...args}>
-      <Button className="kv-button--primary">Skicka</Button>
-      <Button>Spara utkast</Button>
+      <Button className="kv-button--primary">Send</Button>
+      <Button>Save draft</Button>
     </ButtonGroup>
   ),
   play: async ({ canvas }) => {
-    const group = canvas.getByRole('group', { name: 'Ärendet' })
+    const group = canvas.getByRole('group', { name: 'Application' })
     await expect(group).not.toHaveAttribute('tabindex')
     await expect(canvas.getAllByRole('button')).toHaveLength(2)
   },
@@ -73,13 +74,13 @@ export const InACardFooter: Story = {
   render: () => (
     <Card.Root>
       <Card.Body className="kv-prose">
-        <h2>Sophämtning</h2>
-        <p>Nästa hämtning är på tisdag. Ställ ut kärlet senast klockan 06.</p>
+        <h2>Waste collection</h2>
+        <p>The next collection is on Tuesday. Put the bin out by 06:00.</p>
       </Card.Body>
       <Card.Footer>
         <ButtonGroup>
-          <Button className="kv-button--primary">Beställ extra tömning</Button>
-          <Button>Pausa hämtningen</Button>
+          <Button className="kv-button--primary">Order an extra emptying</Button>
+          <Button>Pause collection</Button>
         </ButtonGroup>
       </Card.Footer>
     </Card.Root>
@@ -124,18 +125,18 @@ export const RTL: Story = {
  * the filled segment. Only the look changes: the role, the name and the Tab stops are the same.
  */
 export const Attached: Story = {
-  args: { 'aria-label': 'Textstil', className: 'kv-button-group--attached' },
+  args: { 'aria-label': 'Text style', className: 'kv-button-group--attached' },
   render: (args) => (
     <ButtonGroup {...args}>
-      <Toggle defaultPressed>Fet</Toggle>
-      <Toggle>Kursiv</Toggle>
-      <Toggle>Understruken</Toggle>
+      <Toggle defaultPressed>Bold</Toggle>
+      <Toggle>Italic</Toggle>
+      <Toggle>Underline</Toggle>
     </ButtonGroup>
   ),
   play: async ({ canvas }) => {
-    const group = canvas.getByRole('group', { name: 'Textstil' })
+    const group = canvas.getByRole('group', { name: 'Text style' })
     await expect(group).toHaveClass('kv-button-group--attached')
-    await expect(canvas.getByRole('button', { name: 'Fet' })).toHaveAttribute(
+    await expect(canvas.getByRole('button', { name: 'Bold' })).toHaveAttribute(
       'aria-pressed',
       'true',
     )
@@ -158,32 +159,32 @@ export const AttachedRTL: Story = {
 /** Attached in forced colours: every button keeps its `ButtonText` edge, and the pressed one is a `Highlight` fill. */
 export const AttachedForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  args: { 'aria-label': 'Textstil', className: 'kv-button-group--attached' },
+  args: { 'aria-label': 'Text style', className: 'kv-button-group--attached' },
   render: (args) => (
     <ButtonGroup {...args}>
-      <Toggle defaultPressed>Fet</Toggle>
-      <Toggle>Kursiv</Toggle>
-      <Toggle>Understruken</Toggle>
+      <Toggle defaultPressed>Bold</Toggle>
+      <Toggle>Italic</Toggle>
+      <Toggle>Underline</Toggle>
     </ButtonGroup>
   ),
 }
 
 /** Two pressed toggles in a row keep a divider between them, so they read as two segments. */
 export const AttachedTwoPressed: Story = {
-  args: { 'aria-label': 'Textstil', className: 'kv-button-group--attached' },
+  args: { 'aria-label': 'Text style', className: 'kv-button-group--attached' },
   render: (args) => (
     <ButtonGroup {...args}>
-      <Toggle defaultPressed>Fet</Toggle>
-      <Toggle defaultPressed>Kursiv</Toggle>
-      <Toggle>Understruken</Toggle>
+      <Toggle defaultPressed>Bold</Toggle>
+      <Toggle defaultPressed>Italic</Toggle>
+      <Toggle>Underline</Toggle>
     </ButtonGroup>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: 'Fet' })).toHaveAttribute(
+    await expect(canvas.getByRole('button', { name: 'Bold' })).toHaveAttribute(
       'aria-pressed',
       'true',
     )
-    await expect(canvas.getByRole('button', { name: 'Kursiv' })).toHaveAttribute(
+    await expect(canvas.getByRole('button', { name: 'Italic' })).toHaveAttribute(
       'aria-pressed',
       'true',
     )
@@ -192,16 +193,16 @@ export const AttachedTwoPressed: Story = {
 
 /** A keyboard-focused button next to a pressed one: its ring sits on a page-colour halo, not on the pressed fill. */
 export const AttachedFocusNextToPressed: Story = {
-  args: { 'aria-label': 'Textstil', className: 'kv-button-group--attached' },
+  args: { 'aria-label': 'Text style', className: 'kv-button-group--attached' },
   render: (args) => (
     <ButtonGroup {...args}>
-      <Toggle defaultPressed>Fet</Toggle>
-      <Toggle>Kursiv</Toggle>
+      <Toggle defaultPressed>Bold</Toggle>
+      <Toggle>Italic</Toggle>
     </ButtonGroup>
   ),
   play: async ({ canvas, userEvent }) => {
     await userEvent.tab()
     await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'Kursiv' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'Italic' })).toHaveFocus()
   },
 }

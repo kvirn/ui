@@ -53,7 +53,7 @@ const levelSizes: Record<HeadingLevel, HeadingSize> = {
  *
  * @example
  * const heading = useHeading({ level: 3, size: 'heading-2' })
- * <h3 {...heading.rootProps}>Sophämtning</h3>
+ * <h3 {...heading.rootProps}>Waste collection</h3>
  */
 export function useHeading({ level, size }: UseHeadingOptions): UseHeadingResult {
   const appliedSize = size ?? levelSizes[level]

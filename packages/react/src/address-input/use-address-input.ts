@@ -89,7 +89,7 @@ function isMaskCountry(country: string | undefined): country is MaskCountry {
  * @example
  * const address = useAddressInput({ country: 'SE' })
  * <Fieldset.Root>
- *   <Fieldset.Legend>Din adress</Fieldset.Legend>
+ *   <Fieldset.Legend>Your address</Fieldset.Legend>
  *   <div {...address.rootProps}>
  *     <Field.Root>
  *       <Field.Label>Postnummer</Field.Label>

@@ -75,11 +75,11 @@ function useOutsideRootWarning(isOutside: boolean, part: string): void {
  *
  * @example
  * <Dialog.Root>
- *   <Dialog.Trigger>Ändra telefonnummer</Dialog.Trigger>
+ *   <Dialog.Trigger>Change phone number</Dialog.Trigger>
  *   <Dialog.Popup>
- *     <Dialog.Title>Ändra telefonnummer</Dialog.Title>
- *     <Dialog.Description>Vi skickar en kod med sms.</Dialog.Description>
- *     <Dialog.Close>Avbryt</Dialog.Close>
+ *     <Dialog.Title>Change phone number</Dialog.Title>
+ *     <Dialog.Description>We send a code by text message.</Dialog.Description>
+ *     <Dialog.Close>Cancel</Dialog.Close>
  *   </Dialog.Popup>
  * </Dialog.Root>
  */
@@ -228,7 +228,7 @@ DialogActions.displayName = 'Dialog.Actions'
 
 /**
  * A `<button>` that closes the dialog (reason `'close-press'`). With no children it is an icon
- * button named by `dialog.close` ("Stäng dialogrutan"); with children, they are its visible name.
+ * button named by `dialog.close` ("Close dialog"); with children, they are its visible name.
  * Put it after the Title in the DOM. Focus goes back to where it was before.
  */
 export function DialogClose<Component extends ElementType = 'button'>(

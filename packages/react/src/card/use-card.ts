@@ -37,7 +37,7 @@ const cardProps: UseCardResult = Object.freeze({
  * const card = useCard()
  * <section {...card.rootProps} aria-labelledby={headingId}>
  *   <div {...card.bodyProps}>
- *     <h2 id={headingId}>Kontakta oss</h2>
+ *     <h2 id={headingId}>Contact us</h2>
  *   </div>
  * </section>
  */

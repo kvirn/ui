@@ -35,8 +35,8 @@ afterEach(() => {
 
 describe('rendering', () => {
   test('renders a native <input type="range"> with the value text, outside a Field', async () => {
-    const { container } = await render(<Slider aria-label="Volym" defaultValue={30} />)
-    const control = page.getByRole('slider', { name: 'Volym' })
+    const { container } = await render(<Slider aria-label="Volume" defaultValue={30} />)
+    const control = page.getByRole('slider', { name: 'Volume' })
     await expect.element(control).toHaveAttribute('type', 'range')
     await expect.element(control).toHaveAttribute('min', '0')
     await expect.element(control).toHaveAttribute('max', '100')
@@ -56,24 +56,24 @@ describe('rendering', () => {
     await render(
       <Slider
         ref={ref}
-        aria-label="Volym"
-        className="egen"
-        name="volym"
-        form="inställningar"
-        data-egen=""
+        aria-label="Volume"
+        className="own"
+        name="volume"
+        form="settings"
+        data-own=""
       />,
     )
-    const control = page.getByRole('slider', { name: 'Volym' })
+    const control = page.getByRole('slider', { name: 'Volume' })
     expect(ref.current).toBe(control.element())
-    await expect.element(control).toHaveClass('egen', 'kv-slider')
-    await expect.element(control).toHaveAttribute('name', 'volym')
-    await expect.element(control).toHaveAttribute('form', 'inställningar')
-    await expect.element(control).toHaveAttribute('data-egen', '')
+    await expect.element(control).toHaveClass('own', 'kv-slider')
+    await expect.element(control).toHaveAttribute('name', 'volume')
+    await expect.element(control).toHaveAttribute('form', 'settings')
+    await expect.element(control).toHaveAttribute('data-own', '')
   })
 
   test('min, max and step reach the native input, and the start value is halfway', async () => {
-    await render(<Slider aria-label="Avstånd" min={0} max={50} step={5} />)
-    const control = page.getByRole('slider', { name: 'Avstånd' })
+    await render(<Slider aria-label="Distance" min={0} max={50} step={5} />)
+    const control = page.getByRole('slider', { name: 'Distance' })
     await expect.element(control).toHaveAttribute('max', '50')
     await expect.element(control).toHaveAttribute('step', '5')
     expect((control.element() as HTMLInputElement).value).toBe('25')
@@ -85,13 +85,13 @@ describe('aria-valuetext', () => {
   test('valueText sets aria-valuetext, and it follows each change', async () => {
     await render(
       <Slider
-        aria-label="Avstånd"
+        aria-label="Distance"
         defaultValue={10}
         step={5}
         valueText={(value) => `${value} km`}
       />,
     )
-    const control = page.getByRole('slider', { name: 'Avstånd' })
+    const control = page.getByRole('slider', { name: 'Distance' })
     await expect.element(control).toHaveAttribute('aria-valuetext', '10 km')
     control.element().focus()
     await userEvent.keyboard('{ArrowRight}')
@@ -101,11 +101,11 @@ describe('aria-valuetext', () => {
   test('the default text is the number formatted in the provider’s locale', async () => {
     await render(
       <KvirnProvider locale="sv-SE" messages={sv}>
-        <Slider aria-label="Mått" min={0} max={2} step={0.5} defaultValue={1.5} />
+        <Slider aria-label="Size" min={0} max={2} step={0.5} defaultValue={1.5} />
       </KvirnProvider>,
     )
     await expect
-      .element(page.getByRole('slider', { name: 'Mått' }))
+      .element(page.getByRole('slider', { name: 'Size' }))
       .toHaveAttribute('aria-valuetext', '1,5')
   })
 
@@ -115,10 +115,10 @@ describe('aria-valuetext', () => {
       return (
         <>
           <Slider
-            aria-label="Volym"
+            aria-label="Volume"
             value={value}
             onValueChange={setValue}
-            valueText={(percent) => `${percent} procent`}
+            valueText={(percent) => `${percent} percent`}
           />
           <button type="button" onClick={() => setValue(90)}>
             Max
@@ -127,10 +127,10 @@ describe('aria-valuetext', () => {
       )
     }
     await render(<Controlled />)
-    const control = page.getByRole('slider', { name: 'Volym' })
-    await expect.element(control).toHaveAttribute('aria-valuetext', '40 procent')
+    const control = page.getByRole('slider', { name: 'Volume' })
+    await expect.element(control).toHaveAttribute('aria-valuetext', '40 percent')
     await userEvent.click(page.getByRole('button', { name: 'Max' }))
-    await expect.element(control).toHaveAttribute('aria-valuetext', '90 procent')
+    await expect.element(control).toHaveAttribute('aria-valuetext', '90 percent')
   })
 })
 
@@ -138,16 +138,16 @@ describe('in a Field', () => {
   test('the Field’s label is the name, and the description is the help text', async () => {
     const { container } = await render(
       <Field.Root>
-        <Field.Label marker="none">Volym</Field.Label>
-        <Slider name="volym" />
-        <Field.HelpText>Från tyst till högst.</Field.HelpText>
+        <Field.Label marker="none">Volume</Field.Label>
+        <Slider name="volume" />
+        <Field.HelpText>From quiet to loud.</Field.HelpText>
       </Field.Root>,
     )
-    const control = page.getByRole('slider', { name: 'Volym' })
+    const control = page.getByRole('slider', { name: 'Volume' })
     const id = control.element().id
     expect(id).not.toBe('')
     expect(container.querySelector('label')?.getAttribute('for')).toBe(id)
-    await expect.element(control).toHaveAccessibleDescription('Från tyst till högst.')
+    await expect.element(control).toHaveAccessibleDescription('From quiet to loud.')
     await expect.element(control).not.toHaveAttribute('aria-required')
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
@@ -156,18 +156,18 @@ describe('in a Field', () => {
   test('an invalid Field gives aria-invalid and the error in the description', async () => {
     const { container } = await render(
       <Field.Root invalid>
-        <Field.Label marker="none">Volym</Field.Label>
+        <Field.Label marker="none">Volume</Field.Label>
         <Slider />
-        <Field.HelpText>Från tyst till högst.</Field.HelpText>
-        <Field.ErrorMessage>Välj ett lägre värde</Field.ErrorMessage>
+        <Field.HelpText>From quiet to loud.</Field.HelpText>
+        <Field.ErrorMessage>Choose a lower value</Field.ErrorMessage>
       </Field.Root>,
     )
-    const control = page.getByRole('slider', { name: 'Volym' })
+    const control = page.getByRole('slider', { name: 'Volume' })
     await expect.element(control).toHaveAttribute('aria-invalid', 'true')
     await expect.element(control).toHaveAttribute('data-invalid', '')
     await expect
       .element(control)
-      .toHaveAccessibleDescription('Från tyst till högst. Error: Välj ett lägre värde')
+      .toHaveAccessibleDescription('From quiet to loud. Error: Choose a lower value')
     await expectNoA11yViolations(container)
   })
 
@@ -175,17 +175,17 @@ describe('in a Field', () => {
     await render(
       <>
         <Field.Root disabled>
-          <Field.Label marker="none">Ett</Field.Label>
+          <Field.Label marker="none">One</Field.Label>
           <Slider />
         </Field.Root>
         <Field.Root>
-          <Field.Label marker="none">Två</Field.Label>
+          <Field.Label marker="none">Two</Field.Label>
           <Slider disabled />
         </Field.Root>
       </>,
     )
-    await expect.element(page.getByRole('slider', { name: 'Ett' })).toBeDisabled()
-    const second = page.getByRole('slider', { name: 'Två' })
+    await expect.element(page.getByRole('slider', { name: 'One' })).toBeDisabled()
+    const second = page.getByRole('slider', { name: 'Two' })
     await expect.element(second).toBeDisabled()
     await expect.element(second).toHaveAttribute('data-disabled', '')
   })
@@ -193,11 +193,11 @@ describe('in a Field', () => {
   test('a required Field gives no aria-required or data-required: a range has no required state', async () => {
     await render(
       <Field.Root required>
-        <Field.Label>Volym</Field.Label>
+        <Field.Label>Volume</Field.Label>
         <Slider />
       </Field.Root>,
     )
-    const control = page.getByRole('slider', { name: /Volym/ })
+    const control = page.getByRole('slider', { name: /Volume/ })
     await expect.element(control).not.toHaveAttribute('aria-required')
     await expect.element(control).not.toHaveAttribute('data-required')
   })
@@ -205,17 +205,17 @@ describe('in a Field', () => {
   test('keeps your own aria-describedby ids, after the Field’s', async () => {
     await render(
       <>
-        <p id="extra">Mer information.</p>
+        <p id="extra">More information.</p>
         <Field.Root>
-          <Field.Label marker="none">Volym</Field.Label>
+          <Field.Label marker="none">Volume</Field.Label>
           <Slider aria-describedby="extra" />
-          <Field.HelpText>Från tyst till högst.</Field.HelpText>
+          <Field.HelpText>From quiet to loud.</Field.HelpText>
         </Field.Root>
       </>,
     )
     await expect
-      .element(page.getByRole('slider', { name: 'Volym' }))
-      .toHaveAccessibleDescription('Från tyst till högst. Mer information.')
+      .element(page.getByRole('slider', { name: 'Volume' }))
+      .toHaveAccessibleDescription('From quiet to loud. More information.')
   })
 
   test('a Slider beside a NumberInput with aria-labelledby does not claim the Field', async () => {
@@ -224,11 +224,11 @@ describe('in a Field', () => {
       return (
         <Field.Root invalid>
           <Field.Label marker="none">
-            <span id="avstånd-etikett">Avstånd i kilometer</span>
+            <span id="distance-label">Distance in kilometres</span>
           </Field.Label>
           <Slider
-            aria-labelledby="avstånd-etikett"
-            aria-describedby="avstånd-hjälp"
+            aria-labelledby="distance-label"
+            aria-describedby="distance-help"
             value={value}
             onValueChange={setValue}
             valueText={(km) => `${km} km`}
@@ -238,22 +238,22 @@ describe('in a Field', () => {
             onChange={(event) => setValue(Number(event.currentTarget.value))}
           />
           <Field.HelpText>
-            <span id="avstånd-hjälp">Från 0 till 100 km.</span>
+            <span id="distance-help">From 0 to 100 km.</span>
           </Field.HelpText>
-          <Field.ErrorMessage>Ange ett lägre avstånd</Field.ErrorMessage>
+          <Field.ErrorMessage>Enter a shorter distance</Field.ErrorMessage>
         </Field.Root>
       )
     }
     await render(<Paired />)
     const slider = page.getByRole('slider')
-    await expect.element(slider).toHaveAccessibleName('Avstånd i kilometer')
+    await expect.element(slider).toHaveAccessibleName('Distance in kilometres')
     await expect.element(slider).not.toHaveAttribute('id')
     await expect.element(slider).not.toHaveAttribute('aria-invalid')
     await expect.element(slider).not.toHaveAttribute('data-invalid')
-    await expect.element(slider).toHaveAccessibleDescription('Från 0 till 100 km.')
+    await expect.element(slider).toHaveAccessibleDescription('From 0 to 100 km.')
     const numberBox = page.getByRole('textbox')
     await expect.element(numberBox).toHaveAttribute('aria-invalid', 'true')
-    await userEvent.click(page.getByText('Avstånd i kilometer'))
+    await userEvent.click(page.getByText('Distance in kilometres'))
     await expect.element(numberBox).toHaveFocus()
     slider.element().focus()
     await userEvent.keyboard('{ArrowRight}')
@@ -265,15 +265,15 @@ describe('in a Field', () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">
-          <span id="namn">Avstånd</span>
+          <span id="name">Distance</span>
         </Field.Label>
-        <Slider id="egen" aria-labelledby="namn" />
+        <Slider id="own" aria-labelledby="name" />
         <NumberInput />
       </Field.Root>,
     )
     await expect
-      .element(page.getByRole('slider', { name: 'Avstånd' }))
-      .toHaveAttribute('id', 'egen')
+      .element(page.getByRole('slider', { name: 'Distance' }))
+      .toHaveAttribute('id', 'own')
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
@@ -284,13 +284,13 @@ describe('value', () => {
     const onChange = vi.fn<(event: React.ChangeEvent<HTMLInputElement>) => void>()
     await render(
       <Slider
-        aria-label="Volym"
+        aria-label="Volume"
         defaultValue={20}
         onValueChange={onValueChange}
         onChange={onChange}
       />,
     )
-    const control = page.getByRole('slider', { name: 'Volym' })
+    const control = page.getByRole('slider', { name: 'Volume' })
     expect((control.element() as HTMLInputElement).value).toBe('20')
     control.element().focus()
     await userEvent.keyboard('{ArrowRight}')
@@ -307,13 +307,13 @@ describe('value', () => {
       const [value, setValue] = useState(10)
       return (
         <>
-          <Slider aria-label="Volym" value={value} onValueChange={setValue} />
+          <Slider aria-label="Volume" value={value} onValueChange={setValue} />
           <output>{value}</output>
         </>
       )
     }
     await render(<Controlled />)
-    const control = page.getByRole('slider', { name: 'Volym' })
+    const control = page.getByRole('slider', { name: 'Volume' })
     control.element().focus()
     await userEvent.keyboard('{End}')
     expect((control.element() as HTMLInputElement).value).toBe('100')
@@ -322,8 +322,8 @@ describe('value', () => {
 
   test('a controlled slider stays as it is when the parent does not update value', async () => {
     const onValueChange = vi.fn<(value: number, details: SliderChangeDetails) => void>()
-    await render(<Slider aria-label="Volym" value={30} onValueChange={onValueChange} />)
-    const control = page.getByRole('slider', { name: 'Volym' })
+    await render(<Slider aria-label="Volume" value={30} onValueChange={onValueChange} />)
+    const control = page.getByRole('slider', { name: 'Volume' })
     control.element().focus()
     await userEvent.keyboard('{ArrowRight}')
     expect(onValueChange).toHaveBeenCalledWith(31, expect.objectContaining({ reason: 'input' }))
@@ -335,28 +335,28 @@ describe('value', () => {
     let submitted: FormData | undefined
     await render(
       <form
-        aria-label="Sök"
+        aria-label="Search"
         onSubmit={(event) => {
           event.preventDefault()
           submitted = new FormData(event.currentTarget)
         }}
       >
         <Field.Root>
-          <Field.Label marker="none">Avstånd</Field.Label>
+          <Field.Label marker="none">Distance</Field.Label>
           <Slider name="distance" defaultValue={20} step={5} />
         </Field.Root>
-        <button type="submit">Sök</button>
-        <button type="reset">Återställ</button>
+        <button type="submit">Search</button>
+        <button type="reset">Reset</button>
       </form>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Sök' }))
+    await userEvent.click(page.getByRole('button', { name: 'Search' }))
     expect(submitted?.get('distance')).toBe('20')
-    const control = page.getByRole('slider', { name: 'Avstånd' })
+    const control = page.getByRole('slider', { name: 'Distance' })
     control.element().focus()
     await userEvent.keyboard('{ArrowRight}')
-    await userEvent.click(page.getByRole('button', { name: 'Sök' }))
+    await userEvent.click(page.getByRole('button', { name: 'Search' }))
     expect(submitted?.get('distance')).toBe('25')
-    await userEvent.click(page.getByRole('button', { name: 'Återställ' }))
+    await userEvent.click(page.getByRole('button', { name: 'Reset' }))
     expect((control.element() as HTMLInputElement).value).toBe('20')
     await expect.element(control).toHaveAttribute('aria-valuetext', '20')
   })
@@ -377,11 +377,11 @@ describe('value', () => {
     })
     await render(
       <Field.Root>
-        <Field.Label marker="none">Volym</Field.Label>
-        <Slider {...register('volym')} defaultValue={10} />
+        <Field.Label marker="none">Volume</Field.Label>
+        <Slider {...register('volume')} defaultValue={10} />
       </Field.Root>,
     )
-    const control = page.getByRole('slider', { name: 'Volym' })
+    const control = page.getByRole('slider', { name: 'Volume' })
     expect(registered.element).toBe(control.element())
     control.element().focus()
     await userEvent.keyboard('{ArrowRight}{ArrowRight}')
@@ -408,9 +408,9 @@ describe('dev warnings', () => {
     resetDevWarnings()
     await render(
       <>
-        <span id="namn">Volym</span>
-        <Slider aria-label="Ljud" />
-        <Slider aria-labelledby="namn" />
+        <span id="name">Volume</span>
+        <Slider aria-label="Sound" />
+        <Slider aria-labelledby="name" />
       </>,
     )
     expect(consoleWarn).not.toHaveBeenCalled()
@@ -418,26 +418,26 @@ describe('dev warnings', () => {
 
   test('an id inside a Field is ignored with a dev warning: the label stays associated', async () => {
     await render(
-      <Field.Root controlId="fältet">
-        <Field.Label marker="none">Volym</Field.Label>
-        <Slider id="annat" />
+      <Field.Root controlId="the-field">
+        <Field.Label marker="none">Volume</Field.Label>
+        <Slider id="other" />
       </Field.Root>,
     )
     await expect
-      .element(page.getByRole('slider', { name: 'Volym' }))
-      .toHaveAttribute('id', 'fältet')
+      .element(page.getByRole('slider', { name: 'Volume' }))
+      .toHaveAttribute('id', 'the-field')
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('controlId')
   })
 
   test('slider-min-max: min at or above max warns once', async () => {
-    await render(<Slider aria-label="Volym" min={10} max={10} />)
+    await render(<Slider aria-label="Volume" min={10} max={10} />)
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('min must be lower than max')
   })
 
   test('slider-value-out-of-range: a value outside the range warns once', async () => {
-    await render(<Slider aria-label="Volym" min={0} max={50} defaultValue={80} />)
+    await render(<Slider aria-label="Volume" min={0} max={50} defaultValue={80} />)
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('outside min=0 and max=50')
   })
@@ -446,17 +446,17 @@ describe('dev warnings', () => {
 describe('useSlider', () => {
   test('spreads the same props on your own input', async () => {
     function Own() {
-      const control = useSlider({ defaultValue: 30, name: 'volym', valueText: (v) => `${v} %` })
+      const control = useSlider({ defaultValue: 30, name: 'volume', valueText: (v) => `${v} %` })
       return (
         <>
-          <input aria-label="Egen" {...control.inputProps} />
+          <input aria-label="Own" {...control.inputProps} />
           <output>{control.valueText}</output>
         </>
       )
     }
     await render(<Own />)
-    const input = page.getByRole('slider', { name: 'Egen' })
-    await expect.element(input).toHaveAttribute('name', 'volym')
+    const input = page.getByRole('slider', { name: 'Own' })
+    await expect.element(input).toHaveAttribute('name', 'volume')
     await expect.element(input).toHaveClass('kv-slider')
     await expect.element(input).toHaveAttribute('aria-valuetext', '30 %')
     input.element().focus()
@@ -468,14 +468,14 @@ describe('useSlider', () => {
 describe('server rendering', () => {
   test('server markup is complete: the type, the id, the value text', () => {
     const markup = renderToString(
-      <Field.Root controlId="fält">
-        <Field.Label marker="none">Volym</Field.Label>
-        <Slider defaultValue={30} valueText={(value) => `${value} procent`} />
+      <Field.Root controlId="field">
+        <Field.Label marker="none">Volume</Field.Label>
+        <Slider defaultValue={30} valueText={(value) => `${value} percent`} />
       </Field.Root>,
     )
     expect(markup).toContain('type="range"')
-    expect(markup).toContain('id="fält"')
-    expect(markup).toContain('aria-valuetext="30 procent"')
+    expect(markup).toContain('id="field"')
+    expect(markup).toContain('aria-valuetext="30 percent"')
     expect(markup).toContain('value="30"')
   })
 })
@@ -484,11 +484,11 @@ describe('keyboard', () => {
   function Form() {
     return (
       <form>
-        <button type="button">Före</button>
-        <Slider aria-label="Ett" />
-        <Slider aria-label="Två" disabled />
+        <button type="button">Before</button>
+        <Slider aria-label="One" />
+        <Slider aria-label="Two" disabled />
         <Slider aria-label="Tre" />
-        <button type="button">Skicka</button>
+        <button type="button">Send</button>
       </form>
     )
   }
@@ -507,100 +507,100 @@ describe('keyboard', () => {
 
   test('Tab moves to the slider, one stop', async () => {
     await render(<Form />)
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     await userEvent.tab()
-    await expect.element(page.getByRole('slider', { name: 'Ett' })).toHaveFocus()
+    await expect.element(page.getByRole('slider', { name: 'One' })).toHaveFocus()
     await userEvent.tab()
     await expect.element(page.getByRole('slider', { name: 'Tre' })).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Skicka' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Send' })).toHaveFocus()
   })
 
   test('Shift+Tab moves to the previous focusable element', async () => {
     await render(<Form />)
-    page.getByRole('button', { name: 'Skicka' }).element().focus()
+    page.getByRole('button', { name: 'Send' }).element().focus()
     await userEvent.tab({ shift: true })
     await expect.element(page.getByRole('slider', { name: 'Tre' })).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('slider', { name: 'Ett' })).toHaveFocus()
+    await expect.element(page.getByRole('slider', { name: 'One' })).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('Tab skips a disabled slider', async () => {
     await render(<Form />)
-    const disabled = page.getByRole('slider', { name: 'Två' })
+    const disabled = page.getByRole('slider', { name: 'Two' })
     await expect.element(disabled).toBeDisabled()
-    page.getByRole('slider', { name: 'Ett' }).element().focus()
+    page.getByRole('slider', { name: 'One' }).element().focus()
     await userEvent.tab()
     await expect.element(disabled).not.toHaveFocus()
     await expect.element(page.getByRole('slider', { name: 'Tre' })).toHaveFocus()
   })
 
   test('ArrowRight and ArrowUp increase by one step', async () => {
-    await render(<Slider aria-label="Ett" defaultValue={50} step={5} />)
-    page.getByRole('slider', { name: 'Ett' }).element().focus()
+    await render(<Slider aria-label="One" defaultValue={50} step={5} />)
+    page.getByRole('slider', { name: 'One' }).element().focus()
     const prevented = recordPreventedKeys()
     await userEvent.keyboard('{ArrowRight}')
-    expect(valueOf('Ett')).toBe(55)
+    expect(valueOf('One')).toBe(55)
     await userEvent.keyboard('{ArrowUp}')
-    expect(valueOf('Ett')).toBe(60)
+    expect(valueOf('One')).toBe(60)
     prevented.stop()
     expect(prevented.keys).toEqual([])
   })
 
   test('ArrowLeft and ArrowDown decrease by one step', async () => {
-    await render(<Slider aria-label="Ett" defaultValue={50} step={5} />)
-    page.getByRole('slider', { name: 'Ett' }).element().focus()
+    await render(<Slider aria-label="One" defaultValue={50} step={5} />)
+    page.getByRole('slider', { name: 'One' }).element().focus()
     await userEvent.keyboard('{ArrowLeft}')
-    expect(valueOf('Ett')).toBe(45)
+    expect(valueOf('One')).toBe(45)
     await userEvent.keyboard('{ArrowDown}')
-    expect(valueOf('Ett')).toBe(40)
+    expect(valueOf('One')).toBe(40)
   })
 
   test('Home sets the minimum', async () => {
-    await render(<Slider aria-label="Ett" defaultValue={50} min={10} max={90} />)
-    page.getByRole('slider', { name: 'Ett' }).element().focus()
+    await render(<Slider aria-label="One" defaultValue={50} min={10} max={90} />)
+    page.getByRole('slider', { name: 'One' }).element().focus()
     await userEvent.keyboard('{Home}')
-    expect(valueOf('Ett')).toBe(10)
+    expect(valueOf('One')).toBe(10)
   })
 
   test('End sets the maximum', async () => {
-    await render(<Slider aria-label="Ett" defaultValue={50} min={10} max={90} />)
-    page.getByRole('slider', { name: 'Ett' }).element().focus()
+    await render(<Slider aria-label="One" defaultValue={50} min={10} max={90} />)
+    page.getByRole('slider', { name: 'One' }).element().focus()
     await userEvent.keyboard('{End}')
-    expect(valueOf('Ett')).toBe(90)
+    expect(valueOf('One')).toBe(90)
   })
 
   test('PageUp and PageDown move by a larger step', async () => {
-    await render(<Slider aria-label="Ett" defaultValue={50} />)
-    page.getByRole('slider', { name: 'Ett' }).element().focus()
+    await render(<Slider aria-label="One" defaultValue={50} />)
+    page.getByRole('slider', { name: 'One' }).element().focus()
     await userEvent.keyboard('{PageUp}')
-    expect(valueOf('Ett')).toBeGreaterThan(51)
+    expect(valueOf('One')).toBeGreaterThan(51)
     await userEvent.keyboard('{PageDown}{PageDown}')
-    expect(valueOf('Ett')).toBeLessThan(49)
+    expect(valueOf('One')).toBeLessThan(49)
   })
 
   test('in a right-to-left page the arrows are reversed', async () => {
     await render(
       <div dir="rtl">
-        <Slider aria-label="Ett" defaultValue={50} />
+        <Slider aria-label="One" defaultValue={50} />
       </div>,
     )
-    page.getByRole('slider', { name: 'Ett' }).element().focus()
+    page.getByRole('slider', { name: 'One' }).element().focus()
     await userEvent.keyboard('{ArrowLeft}')
-    expect(valueOf('Ett')).toBe(51)
+    expect(valueOf('One')).toBe(51)
     await userEvent.keyboard('{ArrowRight}{ArrowRight}')
-    expect(valueOf('Ett')).toBe(49)
+    expect(valueOf('One')).toBe(49)
   })
 
   test('the arrows stop at the minimum and the maximum', async () => {
-    await render(<Slider aria-label="Ett" defaultValue={0} />)
-    page.getByRole('slider', { name: 'Ett' }).element().focus()
+    await render(<Slider aria-label="One" defaultValue={0} />)
+    page.getByRole('slider', { name: 'One' }).element().focus()
     await userEvent.keyboard('{ArrowLeft}')
-    expect(valueOf('Ett')).toBe(0)
+    expect(valueOf('One')).toBe(0)
     await userEvent.keyboard('{End}{ArrowRight}')
-    expect(valueOf('Ett')).toBe(100)
+    expect(valueOf('One')).toBe(100)
   })
 })
 

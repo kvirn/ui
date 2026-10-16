@@ -35,9 +35,9 @@ const accordionProps: UseAccordionResult = Object.freeze({
  * const disclosure = useDisclosure()
  * <div {...accordion.itemProps}>
  *   <h3 {...accordion.headingProps}>
- *     <button {...disclosure.triggerProps}>Hur ansöker jag?</button>
+ *     <button {...disclosure.triggerProps}>How do I apply?</button>
  *   </h3>
- *   <div {...disclosure.panelProps}>Du ansöker på Mina sidor.</div>
+ *   <div {...disclosure.panelProps}>You apply on My pages.</div>
  * </div>
  */
 export function useAccordion(): UseAccordionResult {

@@ -27,7 +27,7 @@ export interface TooltipRootProps extends Omit<UseTooltipOptions, 'description'>
 
 /**
  * `as` is the control that the tooltip belongs to: `as={Button}`, `as={Toolbar.Toggle}`. Its
- * props are plain props of the trigger (`<Tooltip.Trigger as={Button} aria-label="Hjälp">`). It must
+ * props are plain props of the trigger (`<Tooltip.Trigger as={Button} aria-label="Help">`). It must
  * be focusable, spread its props on a DOM node and have a name of its own. Without `as` it is a
  * `<button type="button">`. A `aria-describedby` of yours is joined with the tooltip's.
  */
@@ -75,11 +75,11 @@ function useRegisteredPart(part: TooltipPart, context: TooltipContextValue | nul
  *
  * @example
  * <Tooltip.Root>
- *   <Tooltip.Trigger as={Toolbar.Toggle} aria-label="Fetstil" aria-keyshortcuts="Control+B">
+ *   <Tooltip.Trigger as={Toolbar.Toggle} aria-label="Bold" aria-keyshortcuts="Control+B">
  *     <Icon name="bold" />
  *   </Tooltip.Trigger>
  *   <Tooltip.Popup>
- *     <Tooltip.Name>Fetstil</Tooltip.Name>
+ *     <Tooltip.Name>Bold</Tooltip.Name>
  *     <Tooltip.Shortcut>Ctrl+B</Tooltip.Shortcut>
  *   </Tooltip.Popup>
  * </Tooltip.Root>
@@ -282,7 +282,7 @@ TooltipName.displayName = 'Tooltip.Name'
 
 /**
  * The part of the tooltip that adds information, such as the shortcut. It is the trigger's
- * `aria-describedby`, so a screen reader reads it after the trigger's name ("Fetstil, knapp, Ctrl+B").
+ * `aria-describedby`, so a screen reader reads it after the trigger's name ("Bold, knapp, Ctrl+B").
  * Put `Kbd` in it for keys.
  */
 export function TooltipShortcut({ as, ref, ...otherProps }: TooltipShortcutProps): ReactElement {

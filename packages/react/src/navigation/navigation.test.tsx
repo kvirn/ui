@@ -50,7 +50,7 @@ function warnings(): string[] {
 /** The design spec's example, in Swedish: two levels, with the current page nested. */
 function MainMenu() {
   return (
-    <Navigation.Root label="Huvudmeny">
+    <Navigation.Root label="Main menu">
       {/* Unstyled links: a 24px minimum keeps them clear of axe's target-size rule (2.5.8). */}
       <style>{'a { display: inline-block; min-block-size: 24px; }'}</style>
       <Navigation.List>
@@ -58,17 +58,17 @@ function MainMenu() {
           <Link.Root href="#start">Start</Link.Root>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#bygga">Bygga och bo</Link.Root>
+          <Link.Root href="#building">Building and living</Link.Root>
           <Navigation.List>
             <Navigation.Item>
-              <Link.Root href="#bygglov" current="page">
-                Bygglov
+              <Link.Root href="#building-permit" current="page">
+                Building permit
               </Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#om-oss">Om oss</Link.Root>
+          <Link.Root href="#om-oss">About us</Link.Root>
         </Navigation.Item>
       </Navigation.List>
     </Navigation.Root>
@@ -78,9 +78,9 @@ function MainMenu() {
 describe('rendering', () => {
   test('renders a named navigation landmark with a list of list items', async () => {
     const { container } = await render(<MainMenu />)
-    const navigation = page.getByRole('navigation', { name: 'Huvudmeny' })
+    const navigation = page.getByRole('navigation', { name: 'Main menu' })
     await expect.element(navigation).toBeVisible()
-    await expect.element(navigation).toHaveAttribute('aria-label', 'Huvudmeny')
+    await expect.element(navigation).toHaveAttribute('aria-label', 'Main menu')
     expect(navigation.element().tagName).toBe('NAV')
     expect(page.getByRole('list').all()).toHaveLength(2)
     expect(page.getByRole('listitem').all()).toHaveLength(4)
@@ -94,12 +94,12 @@ describe('rendering', () => {
     expect(outer?.element().parentElement?.tagName).toBe('NAV')
     expect(nested?.element().parentElement?.tagName).toBe('LI')
     expect(outer?.element().contains(nested?.element() ?? null)).toBe(true)
-    await expect.element(page.getByRole('link', { name: 'Bygglov' })).toBeVisible()
+    await expect.element(page.getByRole('link', { name: 'Building permit' })).toBeVisible()
   })
 
   test('marks its parts with kv-navigation, kv-navigation-list and kv-navigation-item', async () => {
     await render(
-      <Navigation.Root label="Huvudmeny" data-testid="root">
+      <Navigation.Root label="Main menu" data-testid="root">
         <Navigation.List data-testid="list">
           <Navigation.Item data-testid="item">
             <Link.Root href="#start">Start</Link.Root>
@@ -116,9 +116,9 @@ describe('rendering', () => {
   test('current on a Link is the only current page: aria-current="page"', async () => {
     await render(<MainMenu />)
     await expect
-      .element(page.getByRole('link', { name: 'Bygglov' }))
+      .element(page.getByRole('link', { name: 'Building permit' }))
       .toHaveAttribute('aria-current', 'page')
-    for (const name of ['Start', 'Bygga och bo', 'Om oss']) {
+    for (const name of ['Start', 'Building and living', 'About us']) {
       await expect.element(page.getByRole('link', { name })).not.toHaveAttribute('aria-current')
     }
   })
@@ -126,8 +126,8 @@ describe('rendering', () => {
   test('aria-labelledby names it instead of label, without a warning', async () => {
     const { container } = await render(
       <>
-        <h2 id="avsnitt">I det här avsnittet</h2>
-        <Navigation.Root aria-labelledby="avsnitt">
+        <h2 id="section">In this section</h2>
+        <Navigation.Root aria-labelledby="section">
           <Navigation.List>
             <Navigation.Item>
               <Link.Root href="#start">Start</Link.Root>
@@ -136,7 +136,7 @@ describe('rendering', () => {
         </Navigation.Root>
       </>,
     )
-    const navigation = page.getByRole('navigation', { name: 'I det här avsnittet' })
+    const navigation = page.getByRole('navigation', { name: 'In this section' })
     await expect.element(navigation).toBeVisible()
     await expect.element(navigation).not.toHaveAttribute('aria-label')
     await expectNoA11yViolations(container)
@@ -150,13 +150,13 @@ describe('rendering', () => {
     await render(
       <Navigation.Root
         ref={rootRef}
-        label="Huvudmeny"
+        label="Main menu"
         id="huvudmeny"
         className="min-meny"
         data-testid="root"
       >
-        <Navigation.List ref={listRef} className="min-lista" data-testid="list">
-          <Navigation.Item ref={itemRef} data-own="ja" className="eget" data-testid="item">
+        <Navigation.List ref={listRef} className="my-list" data-testid="list">
+          <Navigation.Item ref={itemRef} data-own="yes" className="own-class" data-testid="item">
             <Link.Root href="#start">Start</Link.Root>
           </Navigation.Item>
         </Navigation.List>
@@ -169,13 +169,13 @@ describe('rendering', () => {
     expect(listRef.current).toBe(page.getByTestId('list').element())
     const item = page.getByTestId('item')
     expect(itemRef.current).toBe(item.element())
-    await expect.element(item).toHaveAttribute('data-own', 'ja')
-    await expect.element(item).toHaveClass('kv-navigation-item', 'eget')
+    await expect.element(item).toHaveAttribute('data-own', 'yes')
+    await expect.element(item).toHaveClass('kv-navigation-item', 'own-class')
   })
 
   test('Navigation.List as="ol" renders an ordered list and keeps the class', async () => {
     await render(
-      <Navigation.Root label="Steg">
+      <Navigation.Root label="Steps">
         <Navigation.List as="ol" data-testid="list">
           <Navigation.Item>
             <Link.Root href="#start">Start</Link.Root>
@@ -191,7 +191,7 @@ describe('rendering', () => {
   test('an element outside the list warns once and falls back to the default', async () => {
     const notAllowed = 'div' as NavigationListProps['as']
     await render(
-      <Navigation.Root label="Steg">
+      <Navigation.Root label="Steps">
         <Navigation.List as={notAllowed} data-testid="list">
           <Navigation.Item>
             <Link.Root href="#start">Start</Link.Root>
@@ -227,7 +227,7 @@ describe('keyboard', () => {
         <a href="#before">Before the menu</a>
         <MainMenu />
         <a href="#after">After the menu</a>
-        <h2 id="om-oss">Om oss</h2>
+        <h2 id="om-oss">About us</h2>
       </>
     )
   }
@@ -235,7 +235,7 @@ describe('keyboard', () => {
   test('Tab moves through the links in DOM order, nested ones included', async () => {
     await render(<MenuWithLinksAround />)
     link('Before the menu').element().focus()
-    for (const name of ['Start', 'Bygga och bo', 'Bygglov', 'Om oss']) {
+    for (const name of ['Start', 'Building and living', 'Building permit', 'About us']) {
       await userEvent.tab()
       await expect.element(link(name)).toHaveFocus()
     }
@@ -245,31 +245,31 @@ describe('keyboard', () => {
 
   test('Tab skips a collapsed group', async () => {
     await render(
-      <Navigation.Root label="Huvudmeny">
+      <Navigation.Root label="Main menu">
         <Navigation.List>
           <Navigation.Item>
             <Link.Root href="#start">Start</Link.Root>
           </Navigation.Item>
           <Navigation.Item>
-            <Link.Root href="#bygga">Bygga och bo</Link.Root>
+            <Link.Root href="#building">Building and living</Link.Root>
             <Navigation.List hidden>
               <Navigation.Item>
-                <Link.Root href="#bygglov">Bygglov</Link.Root>
+                <Link.Root href="#building-permit">Building permit</Link.Root>
               </Navigation.Item>
             </Navigation.List>
           </Navigation.Item>
           <Navigation.Item>
-            <Link.Root href="#om-oss">Om oss</Link.Root>
+            <Link.Root href="#om-oss">About us</Link.Root>
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>,
     )
     link('Start').element().focus()
     await userEvent.tab()
-    await expect.element(link('Bygga och bo')).toHaveFocus()
+    await expect.element(link('Building and living')).toHaveFocus()
     await userEvent.tab()
-    await expect.element(link('Om oss')).toHaveFocus()
-    const collapsed = page.getByRole('link', { name: 'Bygglov', includeHidden: true })
+    await expect.element(link('About us')).toHaveFocus()
+    const collapsed = page.getByRole('link', { name: 'Building permit', includeHidden: true })
     expect(collapsed.all()).toHaveLength(1)
     await expect.element(collapsed).not.toBeVisible()
   })
@@ -277,7 +277,13 @@ describe('keyboard', () => {
   test('Shift+Tab moves back through the links, then out of the navigation', async () => {
     await render(<MenuWithLinksAround />)
     link('After the menu').element().focus()
-    for (const name of ['Om oss', 'Bygglov', 'Bygga och bo', 'Start', 'Before the menu']) {
+    for (const name of [
+      'About us',
+      'Building permit',
+      'Building and living',
+      'Start',
+      'Before the menu',
+    ]) {
       await userEvent.tab({ shift: true })
       await expect.element(link(name)).toHaveFocus()
     }
@@ -285,7 +291,7 @@ describe('keyboard', () => {
 
   test('Enter follows the link', async () => {
     await render(<MenuWithLinksAround />)
-    link('Om oss').element().focus()
+    link('About us').element().focus()
     await userEvent.keyboard('{Enter}')
     try {
       await expect.poll(() => window.location.hash).toBe('#om-oss')
@@ -338,7 +344,7 @@ describe('development warnings', () => {
         <Navigation.Root>
           <Navigation.List>
             <Navigation.Item>
-              <Link.Root href="#om">Om oss</Link.Root>
+              <Link.Root href="#om">About us</Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Root>
@@ -372,23 +378,23 @@ describe('development warnings', () => {
   test('warns when two navigation landmarks share a name', async () => {
     await render(
       <>
-        <Navigation.Root label="Huvudmeny">
+        <Navigation.Root label="Main menu">
           <Navigation.List>
             <Navigation.Item>
               <Link.Root href="#start">Start</Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Root>
-        <Navigation.Root label="Huvudmeny">
+        <Navigation.Root label="Main menu">
           <Navigation.List>
             <Navigation.Item>
-              <Link.Root href="#om">Om oss</Link.Root>
+              <Link.Root href="#om">About us</Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Root>
       </>,
     )
-    const matching = warnings().filter((text) => text.includes('Huvudmeny'))
+    const matching = warnings().filter((text) => text.includes('Main menu'))
     expect(matching).toHaveLength(1)
     expect(matching[0]).toContain('2.4.1')
   })
@@ -397,12 +403,12 @@ describe('development warnings', () => {
     await render(
       <>
         <nav aria-label="Sidfot">
-          <a href="#kontakt">Kontakt</a>
+          <a href="#contact">Contact</a>
         </nav>
         <Navigation.Root label="Sidfot">
           <Navigation.List>
             <Navigation.Item>
-              <Link.Root href="#om">Om oss</Link.Root>
+              <Link.Root href="#om">About us</Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Root>
@@ -414,17 +420,17 @@ describe('development warnings', () => {
   test('navigations with different names do not warn', async () => {
     await render(
       <>
-        <Navigation.Root label="Huvudmeny">
+        <Navigation.Root label="Main menu">
           <Navigation.List>
             <Navigation.Item>
               <Link.Root href="#start">Start</Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Root>
-        <Navigation.Root label="I det här avsnittet">
+        <Navigation.Root label="In this section">
           <Navigation.List>
             <Navigation.Item>
-              <Link.Root href="#bygglov">Bygglov</Link.Root>
+              <Link.Root href="#building-permit">Building permit</Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Root>
@@ -437,20 +443,20 @@ describe('development warnings', () => {
   // aria-current as the current page, so an ancestor marked too would look like the page.
   test('warns once, naming the navigation, when more than one link is current', async () => {
     await render(
-      <Navigation.Root label="Huvudmeny">
+      <Navigation.Root label="Main menu">
         <Navigation.List>
           <Navigation.Item>
-            <Link.Root href="#bygga" current="page">
-              Bygga och bo
+            <Link.Root href="#building" current="page">
+              Building and living
             </Link.Root>
             <Navigation.List>
               <Navigation.Item>
-                <Link.Root href="#bygglov" current="page">
-                  Bygglov
+                <Link.Root href="#building-permit" current="page">
+                  Building permit
                 </Link.Root>
               </Navigation.Item>
               <Navigation.Item>
-                <Link.Root href="#bygga-om" current>
+                <Link.Root href="#building-om" current>
                   Bygga om
                 </Link.Root>
               </Navigation.Item>
@@ -461,22 +467,22 @@ describe('development warnings', () => {
     )
     const matching = warnings().filter((text) => text.includes('marked current'))
     expect(matching).toHaveLength(1)
-    expect(matching[0]).toContain('"Huvudmeny"')
+    expect(matching[0]).toContain('"Main menu"')
     expect(matching[0]).toContain('4.1.2')
   })
 
   test('a current link inside a hidden group counts too', async () => {
     await render(
-      <Navigation.Root label="Huvudmeny">
+      <Navigation.Root label="Main menu">
         <Navigation.List>
           <Navigation.Item>
-            <Link.Root href="#bygga" current>
-              Bygga och bo
+            <Link.Root href="#building" current>
+              Building and living
             </Link.Root>
             <Navigation.List hidden>
               <Navigation.Item>
-                <Link.Root href="#bygglov" current="page">
-                  Bygglov
+                <Link.Root href="#building-permit" current="page">
+                  Building permit
                 </Link.Root>
               </Navigation.Item>
             </Navigation.List>
@@ -489,7 +495,7 @@ describe('development warnings', () => {
 
   test('one current link does not warn, and aria-current="false" is not current', async () => {
     await render(
-      <Navigation.Root label="Huvudmeny">
+      <Navigation.Root label="Main menu">
         <Navigation.List>
           <Navigation.Item>
             <a href="#start" aria-current="false">
@@ -497,13 +503,13 @@ describe('development warnings', () => {
             </a>
           </Navigation.Item>
           <Navigation.Item>
-            <Link.Root href="#bygglov" current="page">
-              Bygglov
+            <Link.Root href="#building-permit" current="page">
+              Building permit
             </Link.Root>
           </Navigation.Item>
           <Navigation.Item>
             <Link.Root href="#om-oss" current={false}>
-              Om oss
+              About us
             </Link.Root>
           </Navigation.Item>
         </Navigation.List>
@@ -515,20 +521,20 @@ describe('development warnings', () => {
   test('two navigations with one current link each do not warn', async () => {
     await render(
       <>
-        <Navigation.Root label="Huvudmeny">
+        <Navigation.Root label="Main menu">
           <Navigation.List>
             <Navigation.Item>
-              <Link.Root href="#bygga" current="page">
-                Bygga och bo
+              <Link.Root href="#building" current="page">
+                Building and living
               </Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Root>
-        <Navigation.Root label="I det här avsnittet">
+        <Navigation.Root label="In this section">
           <Navigation.List>
             <Navigation.Item>
-              <Link.Root href="#bygglov" current="page">
-                Bygglov
+              <Link.Root href="#building-permit" current="page">
+                Building permit
               </Link.Root>
             </Navigation.Item>
           </Navigation.List>
@@ -549,7 +555,7 @@ describe('development warnings', () => {
           </Navigation.Item>
           <Navigation.Item>
             <Link.Root href="#om-oss" current="page">
-              Om oss
+              About us
             </Link.Root>
           </Navigation.Item>
         </Navigation.List>
@@ -563,17 +569,17 @@ describe('development warnings', () => {
 describe('Navigation.Label', () => {
   function GroupedMenu({ listProps = {} }: { listProps?: Record<string, string> }) {
     return (
-      <Navigation.Root label="Dokumentation">
+      <Navigation.Root label="Documentation">
         <style>{'a { display: inline-block; min-block-size: 24px; }'}</style>
         <Navigation.List>
           <Navigation.Item>
             <Navigation.Label>Komponenter</Navigation.Label>
             <Navigation.List {...listProps}>
               <Navigation.Item>
-                <Link.Root href="#knapp">Knapp</Link.Root>
+                <Link.Root href="#button">Button</Link.Root>
               </Navigation.Item>
               <Navigation.Item>
-                <Link.Root href="#lank">Länk</Link.Root>
+                <Link.Root href="#link">Link</Link.Root>
               </Navigation.Item>
             </Navigation.List>
           </Navigation.Item>
@@ -581,7 +587,7 @@ describe('Navigation.Label', () => {
             <Navigation.Label>Grunder</Navigation.Label>
             <Navigation.List>
               <Navigation.Item>
-                <Link.Root href="#farger">Färger</Link.Root>
+                <Link.Root href="#colours">Colours</Link.Root>
               </Navigation.Item>
             </Navigation.List>
           </Navigation.Item>
@@ -626,10 +632,10 @@ describe('Navigation.Label', () => {
     await render(
       <>
         <GroupedMenu listProps={{ 'aria-labelledby': 'own-name' }} />
-        <span id="own-name">Eget namn</span>
+        <span id="own-name">Own name</span>
       </>,
     )
-    await expect.element(page.getByRole('list', { name: 'Eget namn' })).toBeInTheDocument()
+    await expect.element(page.getByRole('list', { name: 'Own name' })).toBeInTheDocument()
   })
 
   test('a list with its own aria-label keeps it', async () => {
@@ -644,17 +650,17 @@ describe('Navigation.Label', () => {
 
   test('the label is no Tab stop: Tab goes from link to link past it', async () => {
     await render(<GroupedMenu />)
-    page.getByRole('link', { name: 'Knapp' }).element().focus()
+    page.getByRole('link', { name: 'Button' }).element().focus()
     await userEvent.tab()
-    await expect.element(page.getByRole('link', { name: 'Länk' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Link' })).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('link', { name: 'Färger' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Colours' })).toHaveFocus()
   })
 
   test('keeps the id, a class and the ref of your own, and renders another element with as', async () => {
     const ref = createRef<HTMLElement>()
     await render(
-      <Navigation.Root label="Dokumentation">
+      <Navigation.Root label="Documentation">
         <Navigation.List>
           <Navigation.Item>
             <Navigation.Label ref={ref} id="own-label" className="own" as="p">
@@ -677,7 +683,7 @@ describe('Navigation.Label', () => {
 
   test('an explicit id={undefined} on the label still names the nested list', async () => {
     await render(
-      <Navigation.Root label="Dokumentation">
+      <Navigation.Root label="Documentation">
         <Navigation.List>
           <Navigation.Item>
             <Navigation.Label id={undefined}>Komponenter</Navigation.Label>
@@ -695,7 +701,7 @@ describe('Navigation.Label', () => {
 
   test('warns once when a label is in an item with no nested list', async () => {
     await render(
-      <Navigation.Root label="Dokumentation">
+      <Navigation.Root label="Documentation">
         <Navigation.List>
           <Navigation.Item>
             <Navigation.Label>Ensam</Navigation.Label>
@@ -710,7 +716,7 @@ describe('Navigation.Label', () => {
 
   test('warns when a label is outside a Navigation.Item', async () => {
     await render(
-      <Navigation.Root label="Dokumentation">
+      <Navigation.Root label="Documentation">
         <Navigation.Label>Vilsen</Navigation.Label>
       </Navigation.Root>,
     )
@@ -726,7 +732,7 @@ describe('Navigation.Label', () => {
 
   test('server rendering gives the label its id; the list is named once it hydrates', () => {
     const html = renderToString(
-      <Navigation.Root label="Dokumentation">
+      <Navigation.Root label="Documentation">
         <Navigation.List>
           <Navigation.Item>
             <Navigation.Label>Komponenter</Navigation.Label>
@@ -754,8 +760,8 @@ describe('useNavigation', () => {
   }
 
   test('gives spreadable props for your own elements, with the name from label', async () => {
-    await render(<OwnNavigation label="Huvudmeny" />)
-    const navigation = page.getByRole('navigation', { name: 'Huvudmeny' })
+    await render(<OwnNavigation label="Main menu" />)
+    const navigation = page.getByRole('navigation', { name: 'Main menu' })
     expect(navigation.element()).toBe(page.getByTestId('root').element())
     expect(page.getByTestId('root').element().className).toBe('kv-navigation')
     expect(page.getByTestId('list').element().className).toBe('kv-navigation-list')
@@ -780,7 +786,7 @@ describe('useNavigation', () => {
 describe('server rendering', () => {
   test('renders the landmark and its list to a string without touching the page', () => {
     const html = renderToString(
-      <Navigation.Root label="Huvudmeny">
+      <Navigation.Root label="Main menu">
         <Navigation.List>
           <Navigation.Item>
             <Link.Root href="#start" current="page">
@@ -791,7 +797,7 @@ describe('server rendering', () => {
       </Navigation.Root>,
     )
     expect(html).toBe(
-      '<nav class="kv-navigation" aria-label="Huvudmeny"><ul class="kv-navigation-list" role="list"><li class="kv-navigation-item"><a href="#start" class="kv-link" aria-current="page" data-current="">Start</a></li></ul></nav>',
+      '<nav class="kv-navigation" aria-label="Main menu"><ul class="kv-navigation-list" role="list"><li class="kv-navigation-item"><a href="#start" class="kv-link" aria-current="page" data-current="">Start</a></li></ul></nav>',
     )
   })
 })

@@ -82,7 +82,7 @@ function RichListbox({
         {...rootProps}
       >
         <Listbox.Trigger>
-          <Listbox.Value placeholder="Välj land" />
+          <Listbox.Value placeholder="Choose a country" />
         </Listbox.Trigger>
         <Listbox.Popup>
           <Listbox.List style={{ maxBlockSize: '12rem', overflowY: 'auto' }}>
@@ -101,7 +101,7 @@ function RichListbox({
                 )}
                 {withIndicator ? (
                   <Listbox.OptionIndicator>
-                    <span>Vald</span>
+                    <span>Chosen</span>
                   </Listbox.OptionIndicator>
                 ) : null}
               </Listbox.Option>
@@ -121,7 +121,7 @@ const optionElement = (name: string) => option(name).element()
 describe('Listbox rich options: name and description', () => {
   test('OptionText is the option’s accessible name, so the second line is not part of it', async () => {
     const { container } = await render(<RichListbox />)
-    // The name is the text alone, and the flag and the "Vald" mark are out of it.
+    // The name is the text alone, and the flag and the "Chosen" mark are out of it.
     await expect.element(option('Sverige')).toBeInTheDocument()
     const element = optionElement('Sverige')
     const text = element.querySelector('.kv-listbox-option-text')
@@ -179,7 +179,7 @@ describe('Listbox rich options: name and description', () => {
           <Listbox.Popup>
             <Listbox.List>
               {(country: Country) => (
-                <Listbox.Option item={country} aria-label="Eget namn" aria-describedby="extra">
+                <Listbox.Option item={country} aria-label="Own name" aria-describedby="extra">
                   <Listbox.OptionText>{country.name}</Listbox.OptionText>
                   <Listbox.OptionDescription>{country.capital}</Listbox.OptionDescription>
                 </Listbox.Option>
@@ -191,7 +191,7 @@ describe('Listbox rich options: name and description', () => {
     )
     const element = page.getByRole('option').first().element()
     expect(element.hasAttribute('aria-labelledby')).toBe(false)
-    expect(element.getAttribute('aria-label')).toBe('Eget namn')
+    expect(element.getAttribute('aria-label')).toBe('Own name')
     expect(element.getAttribute('aria-describedby')?.split(' ')).toContain('extra')
     expect(element.getAttribute('aria-describedby')?.split(' ')).toHaveLength(2)
   })
@@ -235,7 +235,7 @@ describe('Listbox rich options: decorative parts', () => {
     await render(<RichListbox defaultValue="se" />)
     const chosen = optionElement('Sverige').querySelector('.kv-listbox-option-indicator')
     const other = optionElement('Finland').querySelector('.kv-listbox-option-indicator')
-    expect(chosen?.textContent).toBe('Vald')
+    expect(chosen?.textContent).toBe('Chosen')
     expect(chosen?.hasAttribute('data-selected')).toBe(true)
     // The place is kept, so the options line up, and nothing shows.
     expect(other).not.toBeNull()
@@ -636,7 +636,7 @@ describe('Listbox rich options: any markup', () => {
           defaultOpen
         >
           <Listbox.Trigger>
-            <Listbox.Value placeholder="Välj land" />
+            <Listbox.Value placeholder="Choose a country" />
           </Listbox.Trigger>
           <Listbox.Popup>
             <Listbox.List>

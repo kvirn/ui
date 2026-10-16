@@ -18,8 +18,8 @@ function sampleImage(background: string, shape: string, alt: string) {
 export const places: MapPlace[] = [
   {
     id: 'kungsholmen',
-    name: 'Kungsholmens förskola',
-    address: 'Fleminggatan 14',
+    name: 'Kungsholmen Preschool',
+    address: 'Fleming Street 14',
     description: 'A preschool with four groups and a garden facing the water.',
     image: sampleImage(
       '#b9d4c7',
@@ -30,27 +30,27 @@ export const places: MapPlace[] = [
   },
   {
     id: 'sodermalm',
-    name: 'Södermalms förskola',
-    address: 'Götgatan 50',
+    name: 'Sodermalm Preschool',
+    address: 'Gote Street 50',
     description: 'Open 7:00 to 17:30. Call ahead to book a visit.',
     image: sampleImage('#d8c9e3', '<circle cx="160" cy="90" r="50" fill="#6a4a85"/>', ''),
     position: { longitude: 18.073, latitude: 59.314 },
   },
   {
     id: 'vasastan',
-    name: 'Vasastans förskola',
-    address: 'Odengatan 32',
+    name: 'Vasastan Preschool',
+    address: 'Oden Street 32',
     position: { longitude: 18.047, latitude: 59.343 },
   },
   {
     id: 'hagersten',
-    name: 'Hägerstens förskola',
-    address: 'Hägerstensvägen 90',
+    name: 'Hagersten Preschool',
+    address: 'Hagersten Road 90',
     position: { longitude: 17.96, latitude: 59.296 },
   },
   {
     id: 'bromma',
-    name: 'Brommas förskola',
+    name: 'Bromma Preschool',
     address: 'Brommaplan 3',
     description: 'A small unit for children aged one to three.',
     position: { longitude: 17.94, latitude: 59.338 },

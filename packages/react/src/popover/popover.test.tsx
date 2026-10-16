@@ -45,22 +45,22 @@ function Example(rootProps: PopoverRootProps) {
   return (
     <>
       {/* Above the trigger, so the popup (placed under it) never covers the text a test presses. */}
-      <p>Text utanför</p>
-      <button type="button">Före</button>
+      <p>Text outside</p>
+      <button type="button">Before</button>
       <Popover.Root {...rootProps}>
-        <Popover.Trigger>Hjälp</Popover.Trigger>
-        <Popover.Popup aria-label="Hjälp om tjänsten">
-          <p>Tjänsten drivs av kommunen.</p>
-          <Popover.Close>Stäng</Popover.Close>
+        <Popover.Trigger>Help</Popover.Trigger>
+        <Popover.Popup aria-label="Help about the service">
+          <p>The service is run by the municipality.</p>
+          <Popover.Close>Close</Popover.Close>
         </Popover.Popup>
       </Popover.Root>
-      <button type="button">Efter</button>
+      <button type="button">After</button>
     </>
   )
 }
 
-const trigger = () => page.getByRole('button', { name: 'Hjälp', exact: true })
-const closeButton = () => page.getByRole('button', { name: 'Stäng', exact: true })
+const trigger = () => page.getByRole('button', { name: 'Help', exact: true })
+const closeButton = () => page.getByRole('button', { name: 'Close', exact: true })
 const popupElement = () => document.querySelector<HTMLElement>('.kv-popover-popup')
 const isShown = () => popupElement()?.matches(':popover-open') === true
 const triggerElement = () => trigger().element()
@@ -92,7 +92,7 @@ describe('rendering', () => {
     expect(triggerElement().getAttribute('aria-expanded')).toBe('true')
     expect(triggerElement().hasAttribute('data-open')).toBe(true)
     expect(popupElement()?.hasAttribute('data-open')).toBe(true)
-    await expect.element(page.getByRole('dialog', { name: 'Hjälp om tjänsten' })).toBeVisible()
+    await expect.element(page.getByRole('dialog', { name: 'Help about the service' })).toBeVisible()
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -109,12 +109,12 @@ describe('rendering', () => {
     const closeRef = createRef<HTMLButtonElement>()
     await render(
       <Popover.Root defaultOpen>
-        <Popover.Trigger ref={triggerRef} className="egen" data-egen="trigger">
-          Hjälp
+        <Popover.Trigger ref={triggerRef} className="own" data-own="trigger">
+          Help
         </Popover.Trigger>
-        <Popover.Popup ref={popupRef} className="egen" aria-label="Hjälp" data-egen="popup">
-          <Popover.Close ref={closeRef} className="egen">
-            Stäng
+        <Popover.Popup ref={popupRef} className="own" aria-label="Help" data-own="popup">
+          <Popover.Close ref={closeRef} className="own">
+            Close
           </Popover.Close>
         </Popover.Popup>
       </Popover.Root>,
@@ -122,11 +122,11 @@ describe('rendering', () => {
     expect(triggerRef.current).toBe(triggerElement())
     expect(popupRef.current).toBe(popupElement())
     expect(closeRef.current).toBe(closeButton().element())
-    expect(triggerRef.current?.className).toBe('egen kv-popover-trigger')
-    expect(popupRef.current?.className).toBe('egen kv-popover-popup')
-    expect(closeRef.current?.className).toBe('egen kv-popover-close')
-    expect(triggerRef.current?.getAttribute('data-egen')).toBe('trigger')
-    expect(popupRef.current?.getAttribute('data-egen')).toBe('popup')
+    expect(triggerRef.current?.className).toBe('own kv-popover-trigger')
+    expect(popupRef.current?.className).toBe('own kv-popover-popup')
+    expect(closeRef.current?.className).toBe('own kv-popover-close')
+    expect(triggerRef.current?.getAttribute('data-own')).toBe('trigger')
+    expect(popupRef.current?.getAttribute('data-own')).toBe('popup')
     // The part's own ref still reaches the hook: the popup was placed next to the trigger.
     await expect.poll(() => popupRef.current?.style.position).toBe('fixed')
   })
@@ -134,18 +134,18 @@ describe('rendering', () => {
   test('as={Button} on the trigger and the close keeps their wiring and merges the Button’s props', async () => {
     await render(
       <Popover.Root defaultOpen>
-        <Popover.Trigger as={Button} data-egen="trigger">
-          Hjälp
+        <Popover.Trigger as={Button} data-own="trigger">
+          Help
         </Popover.Trigger>
-        <Popover.Popup aria-label="Hjälp">
-          <Popover.Close as={Button} data-egen="close">
-            Stäng
+        <Popover.Popup aria-label="Help">
+          <Popover.Close as={Button} data-own="close">
+            Close
           </Popover.Close>
         </Popover.Popup>
       </Popover.Root>,
     )
     const customTrigger = trigger().element()
-    expect(customTrigger.getAttribute('data-egen')).toBe('trigger')
+    expect(customTrigger.getAttribute('data-own')).toBe('trigger')
     expect(customTrigger.getAttribute('aria-expanded')).toBe('true')
     expect(customTrigger.getAttribute('aria-haspopup')).toBe('dialog')
     expect(customTrigger.className).toContain('kv-popover-trigger')
@@ -158,8 +158,8 @@ describe('rendering', () => {
   test('as="section" on the popup keeps the dialog role and the class', async () => {
     await render(
       <Popover.Root>
-        <Popover.Trigger>Hjälp</Popover.Trigger>
-        <Popover.Popup as="section" aria-label="Hjälp">
+        <Popover.Trigger>Help</Popover.Trigger>
+        <Popover.Popup as="section" aria-label="Help">
           Text
         </Popover.Popup>
       </Popover.Root>,
@@ -175,8 +175,8 @@ describe('rendering', () => {
     const notAllowed = 'form' as PopoverPopupProps['as']
     await render(
       <Popover.Root>
-        <Popover.Trigger>Hjälp</Popover.Trigger>
-        <Popover.Popup as={notAllowed} aria-label="Hjälp">
+        <Popover.Trigger>Help</Popover.Trigger>
+        <Popover.Popup as={notAllowed} aria-label="Help">
           Text
         </Popover.Popup>
       </Popover.Root>,
@@ -191,9 +191,9 @@ describe('rendering', () => {
       const popover = usePopover()
       return (
         <>
-          <button {...popover.triggerProps}>Hjälp</button>
-          <div {...popover.popupProps} aria-label="Hjälp om tjänsten">
-            <button {...popover.closeProps}>Stäng</button>
+          <button {...popover.triggerProps}>Help</button>
+          <div {...popover.popupProps} aria-label="Help about the service">
+            <button {...popover.closeProps}>Close</button>
           </div>
         </>
       )
@@ -254,18 +254,18 @@ describe('opening and closing', () => {
 
   test('Tab focuses the trigger, and is one stop', async () => {
     await render(<Example />)
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     await userEvent.tab()
     await expect.element(trigger()).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('Shift+Tab leaves the trigger backwards', async () => {
     await render(<Example />)
     triggerElement().focus()
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('Enter and Space on Close close the popup and return focus to the trigger', async () => {
@@ -349,7 +349,7 @@ describe('opening and closing', () => {
       <>
         <Example />
         <div style={{ blockSize: '3000px' }}>
-          <p style={{ marginBlockStart: '2000px' }}>Långt ner</p>
+          <p style={{ marginBlockStart: '2000px' }}>Far down</p>
         </div>
       </>,
     )
@@ -359,7 +359,7 @@ describe('opening and closing', () => {
     const focus = vi.spyOn(triggerElement(), 'focus')
     window.scrollTo(0, 1500)
     await expect.poll(() => window.scrollY).toBe(1500)
-    await userEvent.click(page.getByText('Långt ner'))
+    await userEvent.click(page.getByText('Far down'))
     await expect.poll(isShown).toBe(false)
     expect(window.scrollY).toBe(1500)
     expect(focus).toHaveBeenLastCalledWith({ preventScroll: true })
@@ -397,7 +397,7 @@ describe('opening and closing', () => {
     await render(<Example onOpenChange={onOpenChange} />)
     await userEvent.click(trigger())
     await expect.poll(isShown).toBe(true)
-    await userEvent.click(page.getByText('Text utanför'))
+    await userEvent.click(page.getByText('Text outside'))
     await expect.poll(isShown).toBe(false)
     expect(onOpenChange).toHaveBeenCalledTimes(2)
     expect(onOpenChange).toHaveBeenLastCalledWith(
@@ -410,9 +410,9 @@ describe('opening and closing', () => {
     await render(<Example />)
     await userEvent.click(trigger())
     await expect.poll(isShown).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Efter' }))
+    await userEvent.click(page.getByRole('button', { name: 'After' }))
     await expect.poll(isShown).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('a press inside the popup does not close it', async () => {
@@ -420,7 +420,7 @@ describe('opening and closing', () => {
     await render(<Example onOpenChange={onOpenChange} />)
     await userEvent.click(trigger())
     await expect.poll(isShown).toBe(true)
-    await userEvent.click(page.getByText('Tjänsten drivs av kommunen.'))
+    await userEvent.click(page.getByText('The service is run by the municipality.'))
     await new Promise((resolve) => setTimeout(resolve, 100))
     expect(isShown()).toBe(true)
     expect(onOpenChange).toHaveBeenCalledTimes(1)
@@ -460,7 +460,7 @@ describe('opening and closing', () => {
     await userEvent.tab()
     await expect.element(closeButton()).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     // The popup stays open: Tab is never a dismissal.
     expect(isShown()).toBe(true)
     await userEvent.tab({ shift: true })
@@ -497,7 +497,7 @@ describe('controlled', () => {
       return (
         <>
           <button type="button" onClick={() => setOpen((current) => !current)}>
-            Växla
+            Toggle
           </button>
           <Example open={open} onOpenChange={setOpen} />
           <output data-testid="open">{String(open)}</output>
@@ -505,7 +505,7 @@ describe('controlled', () => {
       )
     }
     await render(<Controlled />)
-    await userEvent.click(page.getByRole('button', { name: 'Växla' }))
+    await userEvent.click(page.getByRole('button', { name: 'Toggle' }))
     await expect.poll(isShown).toBe(true)
     expect(triggerElement().getAttribute('aria-expanded')).toBe('true')
     await userEvent.keyboard('{Escape}')
@@ -521,12 +521,12 @@ describe('layers', () => {
   function Nested() {
     return (
       <Popover.Root>
-        <Popover.Trigger>Yttre</Popover.Trigger>
-        <Popover.Popup aria-label="Yttre ruta" className="outer">
+        <Popover.Trigger>Outer</Popover.Trigger>
+        <Popover.Popup aria-label="Outer box" className="outer">
           <Popover.Root>
-            <Popover.Trigger>Inre</Popover.Trigger>
-            <Popover.Popup aria-label="Inre ruta" className="inner">
-              Inre text
+            <Popover.Trigger>Inner</Popover.Trigger>
+            <Popover.Popup aria-label="Inner box" className="inner">
+              Inner text
             </Popover.Popup>
           </Popover.Root>
         </Popover.Popup>
@@ -538,28 +538,28 @@ describe('layers', () => {
 
   test('Escape closes the innermost popup only, then the next', async () => {
     await render(<Nested />)
-    await userEvent.click(page.getByRole('button', { name: 'Yttre' }))
+    await userEvent.click(page.getByRole('button', { name: 'Outer' }))
     await expect.poll(() => shown('outer')).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Inre' }))
+    await userEvent.click(page.getByRole('button', { name: 'Inner' }))
     await expect.poll(() => shown('inner')).toBe(true)
     expect(shown('outer')).toBe(true)
 
     await userEvent.keyboard('{Escape}')
     await expect.poll(() => shown('inner')).toBe(false)
     expect(shown('outer')).toBe(true)
-    await expect.element(page.getByRole('button', { name: 'Inre' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Inner' })).toHaveFocus()
 
     await userEvent.keyboard('{Escape}')
     await expect.poll(() => shown('outer')).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Yttre' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Outer' })).toHaveFocus()
   })
 
   test('a press inside the inner popup keeps both open', async () => {
     await render(<Nested />)
-    await userEvent.click(page.getByRole('button', { name: 'Yttre' }))
-    await userEvent.click(page.getByRole('button', { name: 'Inre' }))
+    await userEvent.click(page.getByRole('button', { name: 'Outer' }))
+    await userEvent.click(page.getByRole('button', { name: 'Inner' }))
     await expect.poll(() => shown('inner')).toBe(true)
-    await userEvent.click(page.getByText('Inre text'))
+    await userEvent.click(page.getByText('Inner text'))
     await new Promise((resolve) => setTimeout(resolve, 100))
     expect(shown('inner')).toBe(true)
     expect(shown('outer')).toBe(true)
@@ -587,8 +587,8 @@ describe('placement', () => {
   test('it flips above the trigger when there is no room below', async () => {
     await render(
       <Popover.Root defaultOpen>
-        <Popover.Trigger style={{ position: 'fixed', bottom: 0, left: 16 }}>Hjälp</Popover.Trigger>
-        <Popover.Popup aria-label="Hjälp om tjänsten">Text</Popover.Popup>
+        <Popover.Trigger style={{ position: 'fixed', bottom: 0, left: 16 }}>Help</Popover.Trigger>
+        <Popover.Popup aria-label="Help about the service">Text</Popover.Popup>
       </Popover.Root>,
     )
     await expect.poll(() => popupElement()?.getAttribute('data-placement')).toBe('top-start')
@@ -598,8 +598,8 @@ describe('placement', () => {
     await render(
       <div style={{ padding: '120px 16px' }}>
         <Popover.Root defaultOpen placement="end-start">
-          <Popover.Trigger>Hjälp</Popover.Trigger>
-          <Popover.Popup aria-label="Hjälp om tjänsten">Text</Popover.Popup>
+          <Popover.Trigger>Help</Popover.Trigger>
+          <Popover.Popup aria-label="Help about the service">Text</Popover.Popup>
         </Popover.Root>
       </div>,
     )
@@ -609,8 +609,8 @@ describe('placement', () => {
   test('matchAnchorWidth ties the popup width to the trigger width', async () => {
     await render(
       <Popover.Root defaultOpen matchAnchorWidth>
-        <Popover.Trigger style={{ width: 220 }}>Hjälp</Popover.Trigger>
-        <Popover.Popup aria-label="Hjälp om tjänsten">Text</Popover.Popup>
+        <Popover.Trigger style={{ width: 220 }}>Help</Popover.Trigger>
+        <Popover.Popup aria-label="Help about the service">Text</Popover.Popup>
       </Popover.Root>,
     )
     await expect.poll(() => popupElement()?.style.width).toBe('var(--kv-popup-width)')
@@ -642,8 +642,8 @@ describe('placement', () => {
       }, [])
       return (
         <Popover.Root defaultOpen matchAnchorWidth>
-          <Popover.Trigger style={{ width }}>Hjälp</Popover.Trigger>
-          <Popover.Popup aria-label="Hjälp om tjänsten">Text</Popover.Popup>
+          <Popover.Trigger style={{ width }}>Help</Popover.Trigger>
+          <Popover.Popup aria-label="Help about the service">Text</Popover.Popup>
         </Popover.Root>
       )
     }
@@ -682,7 +682,7 @@ describe('development warnings', () => {
   test('a Popup with no accessible name', async () => {
     await render(
       <Popover.Root>
-        <Popover.Trigger>Hjälp</Popover.Trigger>
+        <Popover.Trigger>Help</Popover.Trigger>
         <Popover.Popup>Text</Popover.Popup>
       </Popover.Root>,
     )
@@ -694,9 +694,9 @@ describe('development warnings', () => {
   test('the parts outside a Root', async () => {
     await render(
       <>
-        <PopoverTrigger>Hjälp</PopoverTrigger>
-        <PopoverPopup aria-label="Hjälp">Text</PopoverPopup>
-        <PopoverClose>Stäng</PopoverClose>
+        <PopoverTrigger>Help</PopoverTrigger>
+        <PopoverPopup aria-label="Help">Text</PopoverPopup>
+        <PopoverClose>Close</PopoverClose>
       </>,
     )
     const text = messages().join('\n')
@@ -712,31 +712,31 @@ describe('in a Toolbar (Plan 0036)', () => {
   // Toolbar part in it would register as an item of a toolbar it isn't in.
   test('the popup is outside the toolbar: its form does not register as items or warn', async () => {
     await render(
-      <Toolbar.Root aria-label="Formatering">
-        <Toolbar.Button>Ett</Toolbar.Button>
-        <Toolbar.Button>Två</Toolbar.Button>
+      <Toolbar.Root aria-label="Formatting">
+        <Toolbar.Button>One</Toolbar.Button>
+        <Toolbar.Button>Two</Toolbar.Button>
         <Popover.Root defaultOpen>
-          <Toolbar.Item as={Popover.Trigger}>Länk</Toolbar.Item>
-          <Popover.Popup aria-label="Lägg till länk">
+          <Toolbar.Item as={Popover.Trigger}>Link</Toolbar.Item>
+          <Popover.Popup aria-label="Add link">
             <ButtonGroup>
-              <Button>Spara</Button>
-              <Popover.Close>Avbryt</Popover.Close>
+              <Button>Save</Button>
+              <Popover.Close>Cancel</Popover.Close>
             </ButtonGroup>
-            <Toolbar.Button>Utanför</Toolbar.Button>
+            <Toolbar.Button>Outside</Toolbar.Button>
           </Popover.Popup>
         </Popover.Root>
       </Toolbar.Root>,
     )
-    await expect.element(page.getByRole('button', { name: 'Spara' })).toBeVisible()
+    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible()
     const messages = consoleWarn.mock.calls.map(([message]) => String(message))
     // The unnamed ButtonGroup is no toolbar group, so it has nothing to warn about.
     expect(messages.some((message) => message.includes('<ButtonGroup> in a <Toolbar>'))).toBe(false)
     // The Toolbar.Button in the popup is outside any toolbar, and says so.
     expect(messages.some((message) => message.includes('Toolbar.Button is outside'))).toBe(true)
     // Arrow keys in the popup never move the toolbar's focus.
-    await userEvent.click(page.getByRole('button', { name: 'Spara' }))
+    await userEvent.click(page.getByRole('button', { name: 'Save' }))
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(page.getByRole('button', { name: 'Spara' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Save' })).toHaveFocus()
   })
 })
 

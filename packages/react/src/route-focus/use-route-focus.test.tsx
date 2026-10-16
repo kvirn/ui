@@ -49,13 +49,13 @@ function Probe({ routeKey, hasContainer = true, hasTarget = true, ...options }: 
     <>
       <header>
         <a href="#start">Hem</a>
-        <a href="#end">Kontakt</a>
+        <a href="#end">Contact</a>
       </header>
       <main ref={containerRef}>
-        {hasTarget ? <h1>Sidans rubrik</h1> : <p>Ingen rubrik</p>}
-        <input aria-label="Sök" />
+        {hasTarget ? <h1>Page heading</h1> : <p>No heading</p>}
+        <input aria-label="Search" />
         <textarea aria-label="Meddelande" />
-        <a href="#inside">Första länken</a>
+        <a href="#inside">First link</a>
       </main>
     </>
   )
@@ -90,19 +90,19 @@ function Router({
     <>
       <header>
         <a href="/om" onClick={go('/om')}>
-          Om oss
+          About us
         </a>
         <a href="#avsnitt" onClick={go('#avsnitt')}>
-          Till avsnittet
+          To the section
         </a>
         <a href="?q=a" onClick={go('?q=a')}>
-          Sök
+          Search
         </a>
-        <a href="#kontakt">Kontakt</a>
+        <a href="#contact">Contact</a>
       </header>
       <main ref={containerRef}>
-        <h1>Sidans rubrik</h1>
-        <a href="#forst">Första länken</a>
+        <h1>Page heading</h1>
+        <a href="#first">First link</a>
       </main>
       <PopstateFollower onPopstate={() => setAddress(currentAddress())} />
     </>
@@ -134,7 +134,7 @@ describe('route focus: when it moves', () => {
   test('an h1 that already has a tabindex keeps it after blur', async () => {
     function Own({ routeKey }: { routeKey: string }) {
       useRouteFocus({ key: routeKey })
-      return <h1 tabIndex={-1}>Rubrik</h1>
+      return <h1 tabIndex={-1}>Heading</h1>
     }
     const view = await render(<Own routeKey="/a" />)
     await view.rerender(<Own routeKey="/b" />)
@@ -149,7 +149,7 @@ describe('route focus: when it moves', () => {
       return (
         <>
           <h1>Webbplats</h1>
-          <h2 data-page-title="">Sidan</h2>
+          <h2 data-page-title="">Page</h2>
         </>
       )
     }
@@ -166,7 +166,7 @@ describe('route focus: when it moves', () => {
 
   test('typing in a text field skips the move', async () => {
     const view = await render(<Probe routeKey="/a" />)
-    const field = page.getByRole('textbox', { name: 'Sök' })
+    const field = page.getByRole('textbox', { name: 'Search' })
     await userEvent.click(field)
     await view.rerender(<Probe routeKey="/b" />)
     await expect.element(field).toHaveFocus()
@@ -192,7 +192,7 @@ describe('route focus: when it moves', () => {
 
   test('the server render runs no effect and adds no tabindex', () => {
     const html = renderToString(<Probe routeKey="/a" />)
-    expect(html).toContain('<h1>Sidans rubrik</h1>')
+    expect(html).toContain('<h1>Page heading</h1>')
     expect(html).not.toContain('tabindex')
     expect(document.activeElement).toBe(document.body)
   })
@@ -201,19 +201,19 @@ describe('route focus: when it moves', () => {
 describe('route focus: with a real history', () => {
   test('a pushed path moves focus to the title', async () => {
     await render(<Router />)
-    await userEvent.click(page.getByRole('link', { name: 'Om oss' }))
+    await userEvent.click(page.getByRole('link', { name: 'About us' }))
     await expect.element(heading()).toHaveFocus()
   })
 
   test('the key is built from path and search: a changed search moves focus', async () => {
     await render(<Router />)
-    await userEvent.click(page.getByRole('link', { name: 'Sök' }))
+    await userEvent.click(page.getByRole('link', { name: 'Search' }))
     await expect.element(heading()).toHaveFocus()
   })
 
   test('a hash-only change is skipped, and focus stays on the link', async () => {
     await render(<Router />)
-    const link = page.getByRole('link', { name: 'Till avsnittet' })
+    const link = page.getByRole('link', { name: 'To the section' })
     await userEvent.click(link)
     await expect.element(link).toHaveFocus()
     await expect.element(heading()).not.toHaveAttribute('tabindex')
@@ -222,7 +222,7 @@ describe('route focus: with a real history', () => {
   test('popstate under automatic scroll restoration is skipped', async () => {
     window.history.scrollRestoration = 'auto'
     await render(<Router />)
-    await userEvent.click(page.getByRole('link', { name: 'Om oss' }))
+    await userEvent.click(page.getByRole('link', { name: 'About us' }))
     await expect.element(heading()).toHaveFocus()
     ;(document.activeElement as HTMLElement).blur()
     window.history.back()
@@ -239,7 +239,7 @@ describe('route focus: with a real history', () => {
         <Router announce />
       </KvirnProvider>,
     )
-    await userEvent.click(page.getByRole('link', { name: 'Om oss' }))
+    await userEvent.click(page.getByRole('link', { name: 'About us' }))
     await expect.element(heading()).toHaveFocus()
     ;(document.activeElement as HTMLElement).blur()
     document.title = 'Hem'
@@ -257,7 +257,7 @@ describe('route focus: with a real history', () => {
         <Router announce />
       </KvirnProvider>,
     )
-    await userEvent.click(page.getByRole('link', { name: 'Om oss' }))
+    await userEvent.click(page.getByRole('link', { name: 'About us' }))
     await expect.element(heading()).toHaveFocus()
     await expect.element(page.getByRole('status')).toHaveTextContent('Navigated to Hem')
     ;(document.activeElement as HTMLElement).blur()
@@ -273,7 +273,7 @@ describe('route focus: with a real history', () => {
   test('Back under automatic scroll restoration is skipped when the key differs from the address', async () => {
     window.history.scrollRestoration = 'auto'
     await render(<Router keyOf={(address) => `/page${address.length}`} />)
-    await userEvent.click(page.getByRole('link', { name: 'Om oss' }))
+    await userEvent.click(page.getByRole('link', { name: 'About us' }))
     await expect.element(heading()).toHaveFocus()
     ;(document.activeElement as HTMLElement).blur()
     window.history.back()
@@ -284,28 +284,28 @@ describe('route focus: with a real history', () => {
   test('a hash link, then a pushed path, still focuses the title', async () => {
     window.history.scrollRestoration = 'auto'
     await render(<Router />)
-    await userEvent.click(page.getByRole('link', { name: 'Kontakt' }))
-    await userEvent.click(page.getByRole('link', { name: 'Om oss' }))
+    await userEvent.click(page.getByRole('link', { name: 'Contact' }))
+    await userEvent.click(page.getByRole('link', { name: 'About us' }))
     await expect.element(heading()).toHaveFocus()
   })
 
   test('a hash link, then a pushed path, still announces', async () => {
     window.history.scrollRestoration = 'auto'
-    document.title = 'Om oss'
+    document.title = 'About us'
     await render(
       <KvirnProvider>
         <Router announce />
       </KvirnProvider>,
     )
-    await userEvent.click(page.getByRole('link', { name: 'Kontakt' }))
-    await userEvent.click(page.getByRole('link', { name: 'Om oss' }))
-    await expect.element(page.getByRole('status')).toHaveTextContent('Navigated to Om oss')
+    await userEvent.click(page.getByRole('link', { name: 'Contact' }))
+    await userEvent.click(page.getByRole('link', { name: 'About us' }))
+    await expect.element(page.getByRole('status')).toHaveTextContent('Navigated to About us')
   })
 
   test('popstate under manual scroll restoration moves focus to the title', async () => {
     window.history.scrollRestoration = 'manual'
     await render(<Router />)
-    await userEvent.click(page.getByRole('link', { name: 'Om oss' }))
+    await userEvent.click(page.getByRole('link', { name: 'About us' }))
     ;(document.activeElement as HTMLElement).blur()
     window.history.back()
     await expect.element(heading()).toHaveFocus()
@@ -315,18 +315,18 @@ describe('route focus: with a real history', () => {
 describe('keyboard', () => {
   test('Tab after a navigation continues after the title', async () => {
     await render(<Router />)
-    await userEvent.click(page.getByRole('link', { name: 'Om oss' }))
+    await userEvent.click(page.getByRole('link', { name: 'About us' }))
     await expect.element(heading()).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('link', { name: 'Första länken' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'First link' })).toHaveFocus()
   })
 
   test('Shift+Tab after a navigation goes back to the stop before the title', async () => {
     await render(<Router />)
-    await userEvent.click(page.getByRole('link', { name: 'Om oss' }))
+    await userEvent.click(page.getByRole('link', { name: 'About us' }))
     await expect.element(heading()).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('link', { name: 'Kontakt' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Contact' })).toHaveFocus()
   })
 
   test('the title is not a control and handles no keys', async () => {
@@ -345,7 +345,7 @@ describe('keyboard', () => {
 
 describe('announce', () => {
   test('off by default: nothing is said in the live region', async () => {
-    document.title = 'Om oss'
+    document.title = 'About us'
     const view = await render(
       <KvirnProvider>
         <Probe routeKey="/a" />
@@ -361,7 +361,7 @@ describe('announce', () => {
   })
 
   test('on: says the navigated message with the document title', async () => {
-    document.title = 'Om oss'
+    document.title = 'About us'
     const view = await render(
       <KvirnProvider>
         <Probe routeKey="/a" announce />
@@ -372,7 +372,7 @@ describe('announce', () => {
         <Probe routeKey="/b" announce />
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('status')).toHaveTextContent('Navigated to Om oss')
+    await expect.element(page.getByRole('status')).toHaveTextContent('Navigated to About us')
   })
 
   test('on without a document title: uses the heading text', async () => {
@@ -387,12 +387,12 @@ describe('announce', () => {
         <Probe routeKey="/b" announce />
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('status')).toHaveTextContent('Navigated to Sidans rubrik')
+    await expect.element(page.getByRole('status')).toHaveTextContent('Navigated to Page heading')
   })
 
   test('the message can be overridden per instance', async () => {
-    document.title = 'Om oss'
-    const messages = { navigated: ({ title }: { title: string }) => `Nu på ${title}` }
+    document.title = 'About us'
+    const messages = { navigated: ({ title }: { title: string }) => `Now on ${title}` }
     const view = await render(
       <KvirnProvider>
         <Probe routeKey="/a" announce messages={messages} />
@@ -403,7 +403,7 @@ describe('announce', () => {
         <Probe routeKey="/b" announce messages={messages} />
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('status')).toHaveTextContent('Nu på Om oss')
+    await expect.element(page.getByRole('status')).toHaveTextContent('Now on About us')
   })
 })
 

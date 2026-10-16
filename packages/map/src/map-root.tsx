@@ -15,7 +15,7 @@ export interface MapRootProps<Data = unknown>
  * `Map.Viewport` and, beside it, `Map.List` and `Map.Details` inside.
  *
  * @example
- * <Map.Root provider={provider} label="Karta över förskolor" places={places} initialView={view}>
+ * <Map.Root provider={provider} label="Map of preschools" places={places} initialView={view}>
  *   <Map.Skip />
  *   <Map.Viewport><Map.Markers /><Map.Controls /></Map.Viewport>
  *   <Map.List /><Map.Details />

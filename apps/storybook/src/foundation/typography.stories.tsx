@@ -139,6 +139,7 @@ const fontFamilyTokens: readonly FontFamilyToken[] = [
   },
   {
     property: '--kv-font-family-system',
+    // kv-lang-ok: the font must cover the Nordic letters
     use: 'The system fallback stack. It covers å ä ö æ ø',
   },
   {
@@ -308,6 +309,7 @@ function FontFamilyTable({ families }: { families: FontFamilyValues | undefined 
   )
 }
 
+// kv-lang-ok: the font must cover the Nordic letters
 const glyphs = 'Å Ä Ö Æ Ø'
 const lookAlikes = 'Il1 0O'
 

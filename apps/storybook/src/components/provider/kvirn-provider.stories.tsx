@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the provider stories demonstrate locale and message catalogs (sv, fi), so their texts are Swedish and Finnish
 import {
   colorSchemeAttribute,
   contrastAttribute,

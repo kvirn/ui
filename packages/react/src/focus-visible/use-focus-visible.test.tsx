@@ -14,12 +14,12 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
   test('Input: a click sets data-focused only, Tab adds data-focus-visible', async () => {
     await render(
       <>
-        <TextInput aria-label="Ett" />
-        <TextInput aria-label="Två" />
+        <TextInput aria-label="One" />
+        <TextInput aria-label="Two" />
       </>,
     )
-    const first = page.getByRole('textbox', { name: 'Ett' })
-    const second = page.getByRole('textbox', { name: 'Två' })
+    const first = page.getByRole('textbox', { name: 'One' })
+    const second = page.getByRole('textbox', { name: 'Two' })
     await userEvent.click(first)
     await expect.element(first).toHaveFocus()
     await expect.element(first).toHaveAttribute('data-focused', '')
@@ -35,18 +35,18 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
     await render(
       <>
         <button type="button" onClick={() => target?.focus()}>
-          Ändra
+          Change
         </button>
         <TextInput
-          aria-label="Namn"
+          aria-label="Name"
           ref={(element) => {
             target = element
           }}
         />
       </>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Ändra' }))
-    const input = page.getByRole('textbox', { name: 'Namn' })
+    await userEvent.click(page.getByRole('button', { name: 'Change' }))
+    const input = page.getByRole('textbox', { name: 'Name' })
     await expect.element(input).toHaveFocus()
     await expect.element(input).toHaveAttribute('data-focus-visible', '')
   })
@@ -54,22 +54,22 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
   test('Input: a later focus after a click on page text shows the ring', async () => {
     await render(
       <>
-        <p>Fyll i ditt namn.</p>
-        <TextInput aria-label="Namn" />
+        <p>Fill in your name.</p>
+        <TextInput aria-label="Name" />
       </>,
     )
-    await userEvent.click(page.getByText('Fyll i ditt namn.'))
+    await userEvent.click(page.getByText('Fill in your name.'))
     // A screen reader or a script moves focus later, with no pointer before it.
     await new Promise((resolve) => setTimeout(resolve, 0))
-    const input = page.getByRole('textbox', { name: 'Namn' })
+    const input = page.getByRole('textbox', { name: 'Name' })
     ;(input.element() as HTMLInputElement).focus()
     await expect.element(input).toHaveFocus()
     await expect.element(input).toHaveAttribute('data-focus-visible', '')
   })
 
   test('Input: a pointerdown from a real pointer before a script’s focus sets data-focused only', async () => {
-    await render(<TextInput aria-label="Namn" />)
-    const input = page.getByRole('textbox', { name: 'Namn' })
+    await render(<TextInput aria-label="Name" />)
+    const input = page.getByRole('textbox', { name: 'Name' })
     document.body.dispatchEvent(
       new PointerEvent('pointerdown', {
         bubbles: true,
@@ -86,8 +86,8 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
   })
 
   test('Input: a virtual pointerdown (width and height 0) from a screen reader shows the ring', async () => {
-    await render(<TextInput aria-label="Namn" />)
-    const input = page.getByRole('textbox', { name: 'Namn' })
+    await render(<TextInput aria-label="Name" />)
+    const input = page.getByRole('textbox', { name: 'Name' })
     document.body.dispatchEvent(
       new PointerEvent('pointerdown', { bubbles: true, pointerType: 'mouse', width: 0, height: 0 }),
     )
@@ -100,8 +100,8 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
       .spyOn(navigator, 'userAgent', 'get')
       .mockReturnValue('Mozilla/5.0 (Linux; Android 14) Chrome/130 Mobile')
     try {
-      await render(<TextInput aria-label="Namn" />)
-      const input = page.getByRole('textbox', { name: 'Namn' })
+      await render(<TextInput aria-label="Name" />)
+      const input = page.getByRole('textbox', { name: 'Name' })
       document.body.dispatchEvent(
         new PointerEvent('pointerdown', {
           bubbles: true,
@@ -119,8 +119,8 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
   })
 
   test('Input: a virtual mouse pointerdown (1 by 1, no pressure, detail 0) shows the ring', async () => {
-    await render(<TextInput aria-label="Namn" />)
-    const input = page.getByRole('textbox', { name: 'Namn' })
+    await render(<TextInput aria-label="Name" />)
+    const input = page.getByRole('textbox', { name: 'Name' })
     document.body.dispatchEvent(
       new PointerEvent('pointerdown', {
         bubbles: true,
@@ -136,8 +136,8 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
   })
 
   test('Input: a virtual click (detail 0, no pointerType) shows the ring when the focus follows', async () => {
-    await render(<TextInput aria-label="Namn" />)
-    const input = page.getByRole('textbox', { name: 'Namn' })
+    await render(<TextInput aria-label="Name" />)
+    const input = page.getByRole('textbox', { name: 'Name' })
     document.body.dispatchEvent(
       new PointerEvent('pointerdown', { bubbles: true, pointerType: 'mouse', width: 8, height: 8 }),
     )
@@ -149,28 +149,28 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
   test('Button: follows the browser, so a click shows no ring and Tab does', async () => {
     await render(
       <>
-        <Button>Ett</Button>
-        <Button>Två</Button>
+        <Button>One</Button>
+        <Button>Two</Button>
       </>,
     )
-    const first = page.getByRole('button', { name: 'Ett' })
+    const first = page.getByRole('button', { name: 'One' })
     await userEvent.click(first)
     await expect.element(first).not.toHaveAttribute('data-focus-visible')
     await userEvent.keyboard('{Tab}')
     await expect
-      .element(page.getByRole('button', { name: 'Två' }))
+      .element(page.getByRole('button', { name: 'Two' }))
       .toHaveAttribute('data-focus-visible', '')
   })
 
   test('Input: a click on the Field label is a click too', async () => {
     await render(
       <Field.Root>
-        <Field.Label marker="none">Namn</Field.Label>
+        <Field.Label marker="none">Name</Field.Label>
         <TextInput />
       </Field.Root>,
     )
-    await userEvent.click(page.getByText('Namn', { exact: true }))
-    const input = page.getByRole('textbox', { name: 'Namn' })
+    await userEvent.click(page.getByText('Name', { exact: true }))
+    const input = page.getByRole('textbox', { name: 'Name' })
     await expect.element(input).toHaveFocus()
     await expect.element(input).toHaveAttribute('data-focused', '')
     await expect.element(input).not.toHaveAttribute('data-focus-visible')
@@ -179,9 +179,9 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
   test('InputGroup: a click in the input leaves the Root without data-focus-visible', async () => {
     await render(
       <>
-        <button type="button">Före</button>
+        <button type="button">Before</button>
         <InputGroup.Root data-testid="root">
-          <TextInput aria-label="Månadshyra i kronor" />
+          <TextInput aria-label="Monthly rent in kronor" />
           <InputGroup.Addon>kr</InputGroup.Addon>
         </InputGroup.Root>
       </>,
@@ -200,7 +200,7 @@ describe('focus from a click and from the keyboard, in text inputs', () => {
   test('OneTimeCode: a click sets data-focused only, Tab adds data-focus-visible', async () => {
     await render(
       <>
-        <button type="button">Före</button>
+        <button type="button">Before</button>
         <OneTimeCode.Root pattern="&&&&">
           <OneTimeCode.Input aria-label="Kod" />
           {[0, 1, 2, 3].map((index) => (

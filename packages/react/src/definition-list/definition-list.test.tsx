@@ -54,28 +54,28 @@ function Answers() {
     <>
       {/* Unstyled links: a 24px minimum keeps them clear of axe's target-size rule (2.5.8). */}
       <style>{'a { display: inline-block; min-block-size: 24px; }'}</style>
-      <a href="/forra">Föregående</a>
+      <a href="/previous">Previous</a>
       <DefinitionList.Root aria-label="Dina svar">
         <DefinitionList.Row>
-          <DefinitionList.Term>Namn</DefinitionList.Term>
+          <DefinitionList.Term>Name</DefinitionList.Term>
           <DefinitionList.Description>Anna Svensson</DefinitionList.Description>
           <DefinitionList.Actions>
-            <DefinitionList.Change href="/steg/1" />
+            <DefinitionList.Change href="/step/1" />
           </DefinitionList.Actions>
         </DefinitionList.Row>
         <DefinitionList.Row>
-          <DefinitionList.Term>Adress</DefinitionList.Term>
+          <DefinitionList.Term>Address</DefinitionList.Term>
           <DefinitionList.Description>Storgatan 12</DefinitionList.Description>
           <DefinitionList.Actions>
-            <DefinitionList.Change href="/steg/2" />
+            <DefinitionList.Change href="/step/2" />
           </DefinitionList.Actions>
         </DefinitionList.Row>
         <DefinitionList.Row>
-          <DefinitionList.Term>Telefon</DefinitionList.Term>
+          <DefinitionList.Term>Phone</DefinitionList.Term>
           <DefinitionList.Description>070-000 00 00</DefinitionList.Description>
         </DefinitionList.Row>
       </DefinitionList.Root>
-      <a href="/nasta">Nästa</a>
+      <a href="/next">Next</a>
     </>
   )
 }
@@ -93,7 +93,7 @@ describe('definition list', () => {
     expect(rows[0]!.children[0]!.className).toBe('kv-definition-list-term')
     expect(rows[0]!.children[1]!.className).toBe('kv-definition-list-description')
     expect(rows[0]!.children[2]!.className).toBe('kv-definition-list-actions')
-    await expect.element(page.getByRole('term').first()).toHaveTextContent('Namn')
+    await expect.element(page.getByRole('term').first()).toHaveTextContent('Name')
     await expect.element(page.getByRole('definition').first()).toHaveTextContent('Anna Svensson')
   })
 
@@ -117,7 +117,7 @@ describe('definition list', () => {
       <DefinitionListRoot ref={rootRef} className="egen" data-testid="root">
         <DefinitionListRow ref={rowRef} className="egen">
           <DefinitionListTerm ref={termRef} className="egen">
-            Namn
+            Name
           </DefinitionListTerm>
           <DefinitionListDescription ref={valueRef} className="egen">
             Anna
@@ -164,25 +164,25 @@ describe('definition list', () => {
     const html = renderToString(
       <DefinitionList.Root>
         <DefinitionList.Row>
-          <DefinitionList.Term id="namn-nyckel">Namn</DefinitionList.Term>
+          <DefinitionList.Term id="name-key">Name</DefinitionList.Term>
           <DefinitionList.Actions>
-            <DefinitionList.Change href="/steg/1" />
+            <DefinitionList.Change href="/step/1" />
           </DefinitionList.Actions>
         </DefinitionList.Row>
       </DefinitionList.Root>,
     )
-    expect(html).toContain('id="namn-nyckel"')
-    expect(html).not.toMatch(/aria-labelledby="[^"]* namn-nyckel"/)
+    expect(html).toContain('id="name-key"')
+    expect(html).not.toMatch(/aria-labelledby="[^"]* name-key"/)
   })
 })
 
 describe('Change link', () => {
   test('the name is "Change" plus the term and starts with the visible text', async () => {
     await render(<Answers />)
-    const link = page.getByRole('link', { name: 'Change Namn' })
-    await expect.element(link).toHaveAttribute('href', '/steg/1')
+    const link = page.getByRole('link', { name: 'Change Name' })
+    await expect.element(link).toHaveAttribute('href', '/step/1')
     expect(link.element().textContent).toBe('Change')
-    expect(page.getByRole('link', { name: 'Change Adress' }).element().textContent).toBe('Change')
+    expect(page.getByRole('link', { name: 'Change Address' }).element().textContent).toBe('Change')
   })
 
   test('the name is read from the term of its own row', async () => {
@@ -198,42 +198,42 @@ describe('Change link', () => {
   })
 
   test.each([
-    ['sv', sv, 'Ändra'],
+    ['sv', sv, 'Ändra'], // kv-lang-ok: the sv catalog word
     ['en', en, 'Change'],
-    ['fi', fi, 'Muuta'],
-    ['nb', nb, 'Endre'],
-    ['nn', nn, 'Endre'],
+    ['fi', fi, 'Muuta'], // kv-lang-ok: the fi catalog word
+    ['nb', nb, 'Endre'], // kv-lang-ok: the nb catalog word
+    ['nn', nn, 'Endre'], // kv-lang-ok: the nn catalog word
   ] as const)('the %s catalog gives the visible word', async (locale, messages, word) => {
     await render(
       <KvirnProvider locale={locale} messages={messages}>
         <DefinitionList.Root>
           <DefinitionList.Row>
-            <DefinitionList.Term>Namn</DefinitionList.Term>
+            <DefinitionList.Term>Name</DefinitionList.Term>
             <DefinitionList.Description>Anna</DefinitionList.Description>
             <DefinitionList.Actions>
-              <DefinitionList.Change href="/steg/1" />
+              <DefinitionList.Change href="/step/1" />
             </DefinitionList.Actions>
           </DefinitionList.Row>
         </DefinitionList.Root>
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('link', { name: `${word} Namn` })).toBeInTheDocument()
+    await expect.element(page.getByRole('link', { name: `${word} Name` })).toBeInTheDocument()
   })
 
   test('messages override the word per instance, and children replace it', async () => {
     await render(
       <DefinitionList.Root>
         <DefinitionList.Row>
-          <DefinitionList.Term>Namn</DefinitionList.Term>
+          <DefinitionList.Term>Name</DefinitionList.Term>
           <DefinitionList.Actions>
-            <DefinitionList.Change href="/a" messages={{ change: 'Redigera' }} />
-            <DefinitionList.Change href="/b">Lägg till</DefinitionList.Change>
+            <DefinitionList.Change href="/a" messages={{ change: 'Edit' }} />
+            <DefinitionList.Change href="/b">Add</DefinitionList.Change>
           </DefinitionList.Actions>
         </DefinitionList.Row>
       </DefinitionList.Root>,
     )
-    await expect.element(page.getByRole('link', { name: 'Redigera Namn' })).toBeInTheDocument()
-    await expect.element(page.getByRole('link', { name: 'Lägg till Namn' })).toBeInTheDocument()
+    await expect.element(page.getByRole('link', { name: 'Edit Name' })).toBeInTheDocument()
+    await expect.element(page.getByRole('link', { name: 'Add Name' })).toBeInTheDocument()
   })
 
   test('outside a row it keeps its own text and warns once in development', async () => {
@@ -246,16 +246,16 @@ describe('Change link', () => {
     await render(
       <DefinitionList.Root>
         <DefinitionList.Row>
-          <DefinitionList.Term id="namn-nyckel">Namn</DefinitionList.Term>
+          <DefinitionList.Term id="name-key">Name</DefinitionList.Term>
           <DefinitionList.Description>Anna</DefinitionList.Description>
           <DefinitionList.Actions>
-            <DefinitionList.Change href="/steg/1" />
+            <DefinitionList.Change href="/step/1" />
           </DefinitionList.Actions>
         </DefinitionList.Row>
       </DefinitionList.Root>,
     )
-    expect(document.querySelector('dt')?.id).toBe('namn-nyckel')
-    await expect.element(page.getByRole('link', { name: 'Change Namn' })).toBeInTheDocument()
+    expect(document.querySelector('dt')?.id).toBe('name-key')
+    await expect.element(page.getByRole('link', { name: 'Change Name' })).toBeInTheDocument()
     expect(warnings()).toEqual([])
   })
 
@@ -265,7 +265,7 @@ describe('Change link', () => {
         <DefinitionList.Row>
           <DefinitionList.Description>Anna</DefinitionList.Description>
           <DefinitionList.Actions>
-            <DefinitionList.Change href="/steg/1" />
+            <DefinitionList.Change href="/step/1" />
           </DefinitionList.Actions>
         </DefinitionList.Row>
       </DefinitionList.Root>
@@ -286,7 +286,7 @@ describe('Change link', () => {
     await render(
       <DefinitionList.Root>
         <DefinitionList.Row>
-          <DefinitionList.Term>Namn</DefinitionList.Term>
+          <DefinitionList.Term>Name</DefinitionList.Term>
           <DefinitionList.Change className="egen" href="/c" data-testid="change" />
         </DefinitionList.Row>
       </DefinitionList.Root>,
@@ -301,29 +301,33 @@ describe('keyboard', () => {
   test('Tab moves through the Change links in row order', async () => {
     await render(<Answers />)
     await userEvent.tab()
-    expect(document.activeElement).toBe(page.getByRole('link', { name: 'Föregående' }).element())
+    expect(document.activeElement).toBe(page.getByRole('link', { name: 'Previous' }).element())
     await userEvent.tab()
-    expect(document.activeElement).toBe(page.getByRole('link', { name: 'Change Namn' }).element())
+    expect(document.activeElement).toBe(page.getByRole('link', { name: 'Change Name' }).element())
     await userEvent.tab()
-    expect(document.activeElement).toBe(page.getByRole('link', { name: 'Change Adress' }).element())
+    expect(document.activeElement).toBe(
+      page.getByRole('link', { name: 'Change Address' }).element(),
+    )
     await userEvent.tab()
-    expect(document.activeElement).toBe(page.getByRole('link', { name: 'Nästa' }).element())
+    expect(document.activeElement).toBe(page.getByRole('link', { name: 'Next' }).element())
   })
 
   test('Shift+Tab moves back through the Change links', async () => {
     await render(<Answers />)
-    page.getByRole('link', { name: 'Nästa' }).element().focus()
+    page.getByRole('link', { name: 'Next' }).element().focus()
     await userEvent.tab({ shift: true })
-    expect(document.activeElement).toBe(page.getByRole('link', { name: 'Change Adress' }).element())
+    expect(document.activeElement).toBe(
+      page.getByRole('link', { name: 'Change Address' }).element(),
+    )
     await userEvent.tab({ shift: true })
-    expect(document.activeElement).toBe(page.getByRole('link', { name: 'Change Namn' }).element())
+    expect(document.activeElement).toBe(page.getByRole('link', { name: 'Change Name' }).element())
     await userEvent.tab({ shift: true })
-    expect(document.activeElement).toBe(page.getByRole('link', { name: 'Föregående' }).element())
+    expect(document.activeElement).toBe(page.getByRole('link', { name: 'Previous' }).element())
   })
 
   test('Enter on a Change link follows it', async () => {
     await render(<Answers />)
-    const link = page.getByRole('link', { name: 'Change Namn' }).element()
+    const link = page.getByRole('link', { name: 'Change Name' }).element()
     const click = vi.fn<(event: Event) => void>((event) => event.preventDefault())
     link.addEventListener('click', click)
     link.focus()
@@ -374,7 +378,7 @@ describe('accessibility', () => {
     const { container } = await render(<Answers />)
     await userEvent.tab()
     await userEvent.tab()
-    await expect.element(page.getByRole('link', { name: 'Change Namn' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Change Name' })).toHaveFocus()
     await expectNoA11yViolations(container)
   })
 })

@@ -30,7 +30,7 @@ import {
 const meta = {
   title: 'Components/Forms/OneTimeCode',
   component: OneTimeCode.Root,
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   // Every option at its default, so the main example starts where an adopter starts. Not `action`
   // for `onValueChange`: it serializes the React event in the second argument on every keystroke,
   // which lags the canvas (see logChange).

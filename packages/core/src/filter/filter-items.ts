@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the docs name the letters whose collation the module relies on
 /**
  * Locale-aware text matching for Listbox, Combobox and Autocomplete.
  *

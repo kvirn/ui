@@ -400,7 +400,7 @@ describe('types', () => {
   type Municipality = { id: string; name: string }
 
   test('a generic TItem flows through the Combobox and Autocomplete wrappers', () => {
-    const municipality: Municipality = { id: 'sk', name: 'Skellefteå' }
+    const municipality: Municipality = { id: 'sk', name: 'Northville' }
     // `item` fixes TItem, so the item prop of the shared Listbox part carries the same type.
     const comboboxOption = <api.Combobox.Option item={municipality} />
     const autocompleteOption = <api.Autocomplete.Option item={municipality} />

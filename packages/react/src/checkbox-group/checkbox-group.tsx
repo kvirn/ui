@@ -42,16 +42,16 @@ export interface CheckboxGroupRootProps extends Omit<FieldsetRootProps, 'group'>
  *
  * @example
  * <CheckboxGroup.Root name="contact" value={contact} onValueChange={setContact}>
- *   <CheckboxGroup.Legend>Hur vill du bli kontaktad?</CheckboxGroup.Legend>
+ *   <CheckboxGroup.Legend>How do you want to be contacted?</CheckboxGroup.Legend>
  *   <CheckboxGroup.Prose>
- *     <p>Välj alla som passar. Vi kontaktar dig bara om beslutet.</p>
+ *     <p>Select all that apply. We only contact you about the decision.</p>
  *   </CheckboxGroup.Prose>
  *   <Field.Root>
  *     <Checkbox value="email" />
- *     <Field.Label>E-post</Field.Label>
- *     <Field.HelpText>Beslutet kommer inom en vecka.</Field.HelpText>
+ *     <Field.Label>Email</Field.Label>
+ *     <Field.HelpText>The decision comes within a week.</Field.HelpText>
  *   </Field.Root>
- *   <CheckboxGroup.HelpText>Du kan ändra dig senare under Mina sidor.</CheckboxGroup.HelpText>
+ *   <CheckboxGroup.HelpText>You can change your mind later under My pages.</CheckboxGroup.HelpText>
  * </CheckboxGroup.Root>
  */
 export function CheckboxGroupRoot({

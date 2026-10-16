@@ -1,3 +1,4 @@
+// kv-lang-ok-file: letter-mask samples need å, ä and ö
 import { describe, expect, expectTypeOf, it } from 'vite-plus/test'
 import { masks } from './masks.ts'
 import type { MaskCountry } from './masks.ts'

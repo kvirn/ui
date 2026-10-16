@@ -38,7 +38,7 @@ const meta = {
     messages: { control: false, description: 'Per-instance `loading`, `slow` and `valueText`.' },
   },
   args: { delayMilliseconds: 0, announce: false },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   render: (args, { globals }) => {
     const { text } = progressTextsFor(localeOf(globals))
     return (

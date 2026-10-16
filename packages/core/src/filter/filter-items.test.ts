@@ -1,3 +1,4 @@
+// kv-lang-ok-file: å, ä and ö matching is the behaviour under test
 import { describe, expect, test } from 'vite-plus/test'
 import { filterItems, matchesText, startsWithText } from './filter-items.ts'
 

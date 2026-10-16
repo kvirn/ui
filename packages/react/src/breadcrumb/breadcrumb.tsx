@@ -36,11 +36,11 @@ export interface BreadcrumbRootProps extends BreadcrumbPartComponentProps {
    */
   separator?: ReactNode
   /**
-   * The trail's accessible name, from your translations: `Du är här`. Replaces the message
+   * The trail's accessible name, from your translations: `You are here`. Replaces the message
    * `breadcrumb.label`, set as `aria-label`.
    */
   label?: string | undefined
-  /** Per-instance message overrides: `{ label: 'Du är här' }`. */
+  /** Per-instance message overrides: `{ label: 'You are here' }`. */
   messages?: Partial<KvirnMessages['breadcrumb']> | undefined
 }
 export type BreadcrumbListProps = BreadcrumbPartComponentProps
@@ -165,8 +165,8 @@ BreadcrumbLink.displayName = 'Breadcrumb.Link'
  * <Breadcrumb.Root>
  *   <Breadcrumb.List>
  *     <Breadcrumb.Item><Breadcrumb.Link href="/">Start</Breadcrumb.Link></Breadcrumb.Item>
- *     <Breadcrumb.Item><Breadcrumb.Link href="/barn">Barn och utbildning</Breadcrumb.Link></Breadcrumb.Item>
- *     <Breadcrumb.Item><Breadcrumb.Current>Förskola</Breadcrumb.Current></Breadcrumb.Item>
+ *     <Breadcrumb.Item><Breadcrumb.Link href="/children">Children and education</Breadcrumb.Link></Breadcrumb.Item>
+ *     <Breadcrumb.Item><Breadcrumb.Current>Preschool</Breadcrumb.Current></Breadcrumb.Item>
  *   </Breadcrumb.List>
  * </Breadcrumb.Root>
  */

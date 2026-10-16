@@ -43,37 +43,37 @@ function Example({
 }: DialogRootProps & { withDescription?: boolean }) {
   return (
     <>
-      <button type="button">Före</button>
+      <button type="button">Before</button>
       <Dialog.Root {...rootProps}>
-        <Dialog.Trigger>Ändra</Dialog.Trigger>
+        <Dialog.Trigger>Change</Dialog.Trigger>
         <Dialog.Popup>
-          <Dialog.Title>Ändra telefonnummer</Dialog.Title>
+          <Dialog.Title>Change phone number</Dialog.Title>
           <Dialog.Close />
-          {withDescription ? <Dialog.Description>Vi skickar en kod.</Dialog.Description> : null}
+          {withDescription ? <Dialog.Description>We send a code.</Dialog.Description> : null}
           <Dialog.Body>
             <label>
-              Telefon <input type="tel" />
+              Phone <input type="tel" />
             </label>
           </Dialog.Body>
           <Dialog.Actions>
             <button type="button" style={spaced}>
-              Spara
+              Save
             </button>
             <button type="button" style={spaced}>
-              Ångra
+              Undo
             </button>
           </Dialog.Actions>
         </Dialog.Popup>
       </Dialog.Root>
-      <button type="button">Efter</button>
+      <button type="button">After</button>
     </>
   )
 }
 
-const trigger = () => page.getByRole('button', { name: 'Ändra', exact: true })
+const trigger = () => page.getByRole('button', { name: 'Change', exact: true })
 const closeButton = () => page.getByRole('button', { name: 'Close dialog', exact: true })
-const saveButton = () => page.getByRole('button', { name: 'Spara', exact: true })
-const phoneInput = () => page.getByRole('textbox', { name: 'Telefon' })
+const saveButton = () => page.getByRole('button', { name: 'Save', exact: true })
+const phoneInput = () => page.getByRole('textbox', { name: 'Phone' })
 const popupElement = () => document.querySelector<HTMLDialogElement>('dialog.kv-dialog')
 const triggerElement = () => document.querySelector<HTMLButtonElement>('.kv-dialog-trigger')
 const isModal = () => popupElement()?.matches(':modal') === true
@@ -100,7 +100,7 @@ function Controlled(props: Partial<DialogRootProps> & { refuse?: boolean }) {
   return (
     <>
       <button type="button" onClick={() => setOpen(true)}>
-        Öppna
+        Open
       </button>
       <Example
         {...rootProps}
@@ -123,7 +123,7 @@ describe('rendering and ARIA', () => {
     const popup = popupElement()
     expect(popup?.tagName).toBe('DIALOG')
     expect(popup?.open).toBe(false)
-    expect(popup?.textContent).toContain('Ändra telefonnummer')
+    expect(popup?.textContent).toContain('Change phone number')
     const field = popup?.querySelector('input')
     expect(field?.checkVisibility()).toBe(false)
     expect(field?.getClientRects().length).toBe(0)
@@ -148,7 +148,7 @@ describe('rendering and ARIA', () => {
     expect(popup?.getAttribute('aria-modal')).toBe('true')
     expect(popup?.hasAttribute('data-open')).toBe(true)
     expect(triggerElement()?.hasAttribute('data-open')).toBe(true)
-    await expect.element(page.getByRole('dialog', { name: 'Ändra telefonnummer' })).toBeVisible()
+    await expect.element(page.getByRole('dialog', { name: 'Change phone number' })).toBeVisible()
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -183,7 +183,7 @@ describe('rendering and ARIA', () => {
       <Dialog.Root defaultOpen>
         <Dialog.Popup aria-label="Test">
           <Dialog.Close />
-          <Dialog.Close>Stäng</Dialog.Close>
+          <Dialog.Close>Close</Dialog.Close>
           <Dialog.Close messages={{ close: 'Avsluta' }} />
         </Dialog.Popup>
       </Dialog.Root>,
@@ -192,7 +192,7 @@ describe('rendering and ARIA', () => {
     const buttons = [...document.querySelectorAll('.kv-dialog-close')]
     expect(buttons[0]?.getAttribute('aria-label')).toBe('Close dialog')
     expect(buttons[1]?.hasAttribute('aria-label')).toBe(false)
-    expect(buttons[1]?.textContent).toBe('Stäng')
+    expect(buttons[1]?.textContent).toBe('Close')
     expect(buttons[2]?.getAttribute('aria-label')).toBe('Avsluta')
   })
 
@@ -200,14 +200,14 @@ describe('rendering and ARIA', () => {
     const { container } = await render(
       <Dialog.Root defaultOpen>
         <Dialog.Popup>
-          <Dialog.Title>Villkor</Dialog.Title>
+          <Dialog.Title>Terms</Dialog.Title>
           <Dialog.Body>
             {Array.from({ length: 80 }, (_, index) => (
-              <p key={index}>Stycke {index + 1}: en lång text som får dialogrutan att scrolla.</p>
+              <p key={index}>Paragraph {index + 1}: a long text that makes the dialog scroll.</p>
             ))}
           </Dialog.Body>
           <Dialog.Actions>
-            <button type="button">Godkänn</button>
+            <button type="button">Approve</button>
           </Dialog.Actions>
         </Dialog.Popup>
       </Dialog.Root>,
@@ -234,12 +234,12 @@ describe('rendering and ARIA', () => {
     const titleRef = createRef<HTMLHeadingElement>()
     await render(
       <Dialog.Root defaultOpen>
-        <Dialog.Trigger ref={triggerRef} className="egen" data-egen="trigger">
-          Ändra
+        <Dialog.Trigger ref={triggerRef} className="own" data-own="trigger">
+          Change
         </Dialog.Trigger>
-        <Dialog.Popup ref={popupRef} className="egen" data-egen="popup">
-          <Dialog.Title ref={titleRef} className="egen">
-            Titel
+        <Dialog.Popup ref={popupRef} className="own" data-own="popup">
+          <Dialog.Title ref={titleRef} className="own">
+            Title
           </Dialog.Title>
         </Dialog.Popup>
       </Dialog.Root>,
@@ -247,10 +247,10 @@ describe('rendering and ARIA', () => {
     expect(triggerRef.current).toBe(triggerElement())
     expect(popupRef.current).toBe(popupElement())
     expect(titleRef.current?.tagName).toBe('H2')
-    expect(triggerRef.current?.className).toBe('egen kv-dialog-trigger')
-    expect(popupRef.current?.className).toBe('egen kv-dialog')
-    expect(titleRef.current?.className).toBe('egen kv-dialog-title')
-    expect(popupRef.current?.getAttribute('data-egen')).toBe('popup')
+    expect(triggerRef.current?.className).toBe('own kv-dialog-trigger')
+    expect(popupRef.current?.className).toBe('own kv-dialog')
+    expect(titleRef.current?.className).toBe('own kv-dialog-title')
+    expect(popupRef.current?.getAttribute('data-own')).toBe('popup')
     await expect.poll(isModal).toBe(true)
   })
 
@@ -259,17 +259,17 @@ describe('rendering and ARIA', () => {
     await render(
       <Dialog.Root defaultOpen>
         <Dialog.Popup>
-          <Dialog.Title as="h3">Titel</Dialog.Title>
-          <Dialog.Description as="div">Beskrivning</Dialog.Description>
-          <Dialog.Body as="section" aria-label="Innehåll">
+          <Dialog.Title as="h3">Title</Dialog.Title>
+          <Dialog.Description as="div">Description</Dialog.Description>
+          <Dialog.Body as="section" aria-label="Contents">
             Text
           </Dialog.Body>
-          <Dialog.Actions as={notAllowed}>Knappar</Dialog.Actions>
+          <Dialog.Actions as={notAllowed}>Buttons</Dialog.Actions>
         </Dialog.Popup>
       </Dialog.Root>,
     )
     expect(document.querySelector('h3.kv-dialog-title')).not.toBeNull()
-    expect(page.getByText('Beskrivning').element().tagName).toBe('DIV')
+    expect(page.getByText('Description').element().tagName).toBe('DIV')
     expect(document.querySelector('section.kv-dialog-body')).not.toBeNull()
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('Dialog.Actions as="span"')
@@ -278,13 +278,13 @@ describe('rendering and ARIA', () => {
   test('Dialog.Close as={Button} closes the dialog and keeps its name and merged props', async () => {
     await render(
       <Dialog.Root defaultOpen>
-        <Dialog.Popup aria-label="Ändra">
-          <Dialog.Close as={Button} data-egen="close" />
+        <Dialog.Popup aria-label="Change">
+          <Dialog.Close as={Button} data-own="close" />
         </Dialog.Popup>
       </Dialog.Root>,
     )
     const close = page.getByRole('button', { name: 'Close dialog' })
-    await expect.element(close).toHaveAttribute('data-egen', 'close')
+    await expect.element(close).toHaveAttribute('data-own', 'close')
     await userEvent.click(close)
     await expect.poll(isModal).toBe(false)
   })
@@ -296,13 +296,13 @@ describe('rendering and ARIA', () => {
       useEffect(() => registerTitle(), [registerTitle])
       return (
         <>
-          <button {...dialog.triggerProps}>Ändra</button>
+          <button {...dialog.triggerProps}>Change</button>
           <dialog {...dialog.popupProps}>
             {dialog.isOpen ? (
               <>
-                <h2 {...dialog.titleProps}>Egen titel</h2>
+                <h2 {...dialog.titleProps}>Own title</h2>
                 <button {...dialog.closeProps} aria-label={undefined}>
-                  Stäng
+                  Close
                 </button>
               </>
             ) : null}
@@ -313,8 +313,8 @@ describe('rendering and ARIA', () => {
     await render(<Own />)
     await userEvent.click(trigger())
     await expect.poll(isModal).toBe(true)
-    await expect.element(page.getByRole('dialog', { name: 'Egen titel' })).toBeVisible()
-    await userEvent.click(page.getByRole('button', { name: 'Stäng' }))
+    await expect.element(page.getByRole('dialog', { name: 'Own title' })).toBeVisible()
+    await userEvent.click(page.getByRole('button', { name: 'Close' }))
     await expect.poll(isModal).toBe(false)
     await expect.element(trigger()).toHaveFocus()
   })
@@ -323,7 +323,7 @@ describe('rendering and ARIA', () => {
     const html = renderToString(<Example defaultOpen />)
     expect(html).toContain('<dialog')
     expect(html).not.toMatch(/<dialog[^>]*\sopen/)
-    expect(html).toContain('Ändra telefonnummer')
+    expect(html).toContain('Change phone number')
   })
 
   test('defaultOpen shows the dialog modally after the first render', async () => {
@@ -336,11 +336,11 @@ describe('keyboard', () => {
   test('Tab focuses the trigger, and is one stop', async () => {
     await render(<Example />)
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     await userEvent.tab()
     await expect.element(trigger()).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('Shift+Tab leaves the trigger backwards', async () => {
@@ -349,7 +349,7 @@ describe('keyboard', () => {
     await userEvent.tab()
     await expect.element(trigger()).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('Enter and Space on the trigger open the dialog', async () => {
@@ -372,7 +372,7 @@ describe('keyboard', () => {
     await userEvent.tab()
     await expect.element(saveButton()).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Ångra', exact: true })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Undo', exact: true })).toHaveFocus()
     await userEvent.tab({ shift: true })
     await userEvent.tab({ shift: true })
     await expect.element(phoneInput()).toHaveFocus()
@@ -429,11 +429,11 @@ describe('keyboard', () => {
     await render(
       <Dialog.Root defaultOpen>
         <Dialog.Popup>
-          <Dialog.Title>Titel</Dialog.Title>
+          <Dialog.Title>Title</Dialog.Title>
           <Popover.Root>
-            <Popover.Trigger>Hjälp</Popover.Trigger>
-            <Popover.Popup aria-label="Hjälp" className="inner-popover">
-              <button type="button">Inuti</button>
+            <Popover.Trigger>Help</Popover.Trigger>
+            <Popover.Popup aria-label="Help" className="inner-popover">
+              <button type="button">Inside</button>
             </Popover.Popup>
           </Popover.Root>
         </Dialog.Popup>
@@ -442,7 +442,7 @@ describe('keyboard', () => {
     await expect.poll(isModal).toBe(true)
     const popoverShown = () =>
       document.querySelector('.inner-popover')?.matches(':popover-open') === true
-    await userEvent.click(page.getByRole('button', { name: 'Hjälp' }))
+    await userEvent.click(page.getByRole('button', { name: 'Help' }))
     await expect.poll(popoverShown).toBe(true)
     await userEvent.keyboard('{Escape}')
     await expect.poll(popoverShown).toBe(false)
@@ -455,12 +455,12 @@ describe('keyboard', () => {
     await render(
       <Dialog.Root defaultOpen>
         <Dialog.Popup className="outer">
-          <Dialog.Title>Yttre</Dialog.Title>
+          <Dialog.Title>Outer</Dialog.Title>
           <Dialog.Root>
-            <Dialog.Trigger>Öppna inre</Dialog.Trigger>
+            <Dialog.Trigger>Open inner</Dialog.Trigger>
             <Dialog.Popup className="inner">
-              <Dialog.Title>Inre</Dialog.Title>
-              <button type="button">Inuti</button>
+              <Dialog.Title>Inner</Dialog.Title>
+              <button type="button">Inside</button>
             </Dialog.Popup>
           </Dialog.Root>
         </Dialog.Popup>
@@ -469,12 +469,12 @@ describe('keyboard', () => {
     const isModalByClass = (name: string) =>
       document.querySelector(`.${name}`)?.matches(':modal') === true
     await expect.poll(() => isModalByClass('outer')).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Öppna inre' }))
+    await userEvent.click(page.getByRole('button', { name: 'Open inner' }))
     await expect.poll(() => isModalByClass('inner')).toBe(true)
     await userEvent.keyboard('{Escape}')
     await expect.poll(() => isModalByClass('inner')).toBe(false)
     expect(isModalByClass('outer')).toBe(true)
-    await expect.element(page.getByRole('button', { name: 'Öppna inre' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Open inner' })).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await expect.poll(() => isModalByClass('outer')).toBe(false)
   })
@@ -518,7 +518,7 @@ describe('keyboard', () => {
     await render(
       <Dialog.Root defaultOpen onOpenChange={onOpenChange}>
         <Dialog.Popup>
-          <Dialog.Title>Skicka</Dialog.Title>
+          <Dialog.Title>Send</Dialog.Title>
           <form
             onSubmit={(event) => {
               event.preventDefault()
@@ -526,15 +526,15 @@ describe('keyboard', () => {
             }}
           >
             <label>
-              Namn <input type="text" />
+              Name <input type="text" />
             </label>
-            <button type="submit">Skicka</button>
+            <button type="submit">Send</button>
           </form>
         </Dialog.Popup>
       </Dialog.Root>,
     )
     await expect.poll(isModal).toBe(true)
-    await expect.element(page.getByRole('textbox', { name: 'Namn' })).toHaveFocus()
+    await expect.element(page.getByRole('textbox', { name: 'Name' })).toHaveFocus()
     await userEvent.keyboard('{Enter}')
     expect(onSubmit).toHaveBeenCalledTimes(1)
     expect(onOpenChange).not.toHaveBeenCalled()
@@ -583,7 +583,7 @@ describe('keyboard', () => {
     const onOpenChange = vi.fn<() => void>()
     await render(<Example defaultOpen dismissOnOutsidePress onOpenChange={onOpenChange} />)
     await expect.poll(isModal).toBe(true)
-    await userEvent.click(page.getByText('Vi skickar en kod.'))
+    await userEvent.click(page.getByText('We send a code.'))
     await userEvent.click(saveButton())
     await new Promise((resolve) => setTimeout(resolve, 50))
     expect(isModal()).toBe(true)
@@ -598,16 +598,16 @@ describe('focus', () => {
       return (
         <Dialog.Root defaultOpen initialFocusRef={ref}>
           <Dialog.Popup aria-label="Test">
-            <input aria-label="Först" />
+            <input aria-label="First" />
             <button ref={ref} type="button">
-              Mål
+              Target
             </button>
           </Dialog.Popup>
         </Dialog.Root>
       )
     }
     await render(<WithInitialFocus />)
-    await expect.element(page.getByRole('button', { name: 'Mål' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Target' })).toHaveFocus()
   })
 
   test('opening moves focus to the first tabbable that is not Close', async () => {
@@ -619,49 +619,49 @@ describe('focus', () => {
     await render(
       <Dialog.Root defaultOpen>
         <Dialog.Popup>
-          <Dialog.Title>Ändra</Dialog.Title>
+          <Dialog.Title>Change</Dialog.Title>
           <Dialog.Close />
-          <Dialog.Close>Avbryt</Dialog.Close>
+          <Dialog.Close>Cancel</Dialog.Close>
           <label>
-            Namn <input type="text" />
+            Name <input type="text" />
           </label>
         </Dialog.Popup>
       </Dialog.Root>,
     )
-    await expect.element(page.getByRole('textbox', { name: 'Namn' })).toHaveFocus()
+    await expect.element(page.getByRole('textbox', { name: 'Name' })).toHaveFocus()
   })
 
   test('with only Close buttons, initial focus goes to the title', async () => {
     await render(
       <Dialog.Root defaultOpen>
         <Dialog.Popup>
-          <Dialog.Title>Läs det här</Dialog.Title>
+          <Dialog.Title>Read this</Dialog.Title>
           <Dialog.Close />
-          <Dialog.Close>Avbryt</Dialog.Close>
+          <Dialog.Close>Cancel</Dialog.Close>
         </Dialog.Popup>
       </Dialog.Root>,
     )
-    await expect.poll(() => document.activeElement?.textContent).toBe('Läs det här')
+    await expect.poll(() => document.activeElement?.textContent).toBe('Read this')
   })
 
   test('with nothing tabbable but Close, opening moves focus to the title', async () => {
     await render(
       <Dialog.Root defaultOpen>
         <Dialog.Popup>
-          <Dialog.Title>Läs det här</Dialog.Title>
+          <Dialog.Title>Read this</Dialog.Title>
           <Dialog.Close />
-          <Dialog.Body>Bara text.</Dialog.Body>
+          <Dialog.Body>Only text.</Dialog.Body>
         </Dialog.Popup>
       </Dialog.Root>,
     )
-    await expect.poll(() => document.activeElement?.textContent).toBe('Läs det här')
+    await expect.poll(() => document.activeElement?.textContent).toBe('Read this')
   })
 
   test('closing returns focus to the trigger', async () => {
     await render(<Example />)
     await userEvent.click(trigger())
     await expect.poll(isModal).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Ångra' }))
+    await userEvent.click(page.getByRole('button', { name: 'Undo' }))
     await userEvent.keyboard('{Escape}')
     await expect.poll(isModal).toBe(false)
     await expect.element(trigger()).toHaveFocus()
@@ -673,22 +673,22 @@ describe('focus', () => {
       return (
         <>
           <button type="button" onClick={() => setOpen(true)}>
-            Öppna
+            Open
           </button>
           <Dialog.Root open={open} onOpenChange={setOpen}>
-            <Dialog.Popup aria-label="Utan knapp">
-              <Dialog.Close>Stäng</Dialog.Close>
+            <Dialog.Popup aria-label="Without knapp">
+              <Dialog.Close>Close</Dialog.Close>
             </Dialog.Popup>
           </Dialog.Root>
         </>
       )
     }
     await render(<NoTrigger />)
-    await userEvent.click(page.getByRole('button', { name: 'Öppna' }))
+    await userEvent.click(page.getByRole('button', { name: 'Open' }))
     await expect.poll(isModal).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Stäng' }))
+    await userEvent.click(page.getByRole('button', { name: 'Close' }))
     await expect.poll(isModal).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Öppna' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Open' })).toHaveFocus()
     expect(warnings()).not.toContain('dialog-return-focus-lost')
   })
 
@@ -698,7 +698,7 @@ describe('focus', () => {
       return (
         <>
           <button ref={ref} type="button">
-            Slutmål
+            Final target
           </button>
           <Example finalFocusRef={ref} />
         </>
@@ -709,7 +709,7 @@ describe('focus', () => {
     await expect.poll(isModal).toBe(true)
     await userEvent.keyboard('{Escape}')
     await expect.poll(isModal).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Slutmål' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Final target' })).toHaveFocus()
   })
 
   test('a native close (<form method="dialog">) still returns focus to finalFocusRef', async () => {
@@ -718,13 +718,13 @@ describe('focus', () => {
       return (
         <>
           <button ref={ref} type="button">
-            Slutmål
+            Final target
           </button>
           <Dialog.Root finalFocusRef={ref}>
-            <Dialog.Trigger>Ändra</Dialog.Trigger>
+            <Dialog.Trigger>Change</Dialog.Trigger>
             <Dialog.Popup aria-label="Test">
               <form method="dialog">
-                <button type="submit">Klar</button>
+                <button type="submit">Ready</button>
               </form>
             </Dialog.Popup>
           </Dialog.Root>
@@ -734,9 +734,9 @@ describe('focus', () => {
     await render(<NativeClose />)
     await userEvent.click(trigger())
     await expect.poll(isModal).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Klar' }))
+    await userEvent.click(page.getByRole('button', { name: 'Ready' }))
     await expect.poll(isModal).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Slutmål' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Final target' })).toHaveFocus()
   })
 
   test('a trigger that has left the document falls back to the element focused before opening', async () => {
@@ -746,39 +746,39 @@ describe('focus', () => {
       return (
         <>
           <button type="button" onClick={() => setOpen(true)}>
-            Före
+            Before
           </button>
           <Dialog.Root open={open} onOpenChange={setOpen}>
-            {showTrigger ? <Dialog.Trigger>Ändra</Dialog.Trigger> : null}
+            {showTrigger ? <Dialog.Trigger>Change</Dialog.Trigger> : null}
             <Dialog.Popup aria-label="Test">
               <button type="button" onClick={() => setShowTrigger(false)}>
-                Ta bort knappen
+                Delete button
               </button>
-              <Dialog.Close>Stäng</Dialog.Close>
+              <Dialog.Close>Close</Dialog.Close>
             </Dialog.Popup>
           </Dialog.Root>
         </>
       )
     }
     await render(<TriggerGoes />)
-    await userEvent.click(page.getByRole('button', { name: 'Före' }))
+    await userEvent.click(page.getByRole('button', { name: 'Before' }))
     await expect.poll(isModal).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Ta bort knappen' }))
-    await userEvent.click(page.getByRole('button', { name: 'Stäng' }))
+    await userEvent.click(page.getByRole('button', { name: 'Delete button' }))
+    await userEvent.click(page.getByRole('button', { name: 'Close' }))
     await expect.poll(isModal).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('with nowhere to return to, a development warning names the problem and focus never goes to a hidden element', async () => {
     await render(
       <Dialog.Root defaultOpen>
-        <Dialog.Popup aria-label="Ensam">
-          <Dialog.Close>Stäng</Dialog.Close>
+        <Dialog.Popup aria-label="Alone">
+          <Dialog.Close>Close</Dialog.Close>
         </Dialog.Popup>
       </Dialog.Root>,
     )
     await expect.poll(isModal).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Stäng' }))
+    await userEvent.click(page.getByRole('button', { name: 'Close' }))
     await expect.poll(isModal).toBe(false)
     await expect.poll(warnings).toContain('nothing could take focus back')
   })
@@ -797,12 +797,12 @@ describe('focus', () => {
       return (
         <>
           <button ref={elsewhere} type="button">
-            Annan plats
+            Other place
           </button>
           <Dialog.Root open={open} onOpenChange={setOpen}>
-            <Dialog.Trigger>Ändra</Dialog.Trigger>
+            <Dialog.Trigger>Change</Dialog.Trigger>
             <Dialog.Popup aria-label="Test">
-              <Dialog.Close>Stäng</Dialog.Close>
+              <Dialog.Close>Close</Dialog.Close>
             </Dialog.Popup>
           </Dialog.Root>
         </>
@@ -811,9 +811,9 @@ describe('focus', () => {
     await render(<MovesFocus />)
     await userEvent.click(trigger())
     await expect.poll(isModal).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Stäng' }))
+    await userEvent.click(page.getByRole('button', { name: 'Close' }))
     await expect.poll(isModal).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Annan plats' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Other place' })).toHaveFocus()
   })
 })
 
@@ -830,14 +830,14 @@ describe('layers', () => {
       }, [])
       return (
         <Dialog.Root open={outerOpen} onOpenChange={setOuterOpen}>
-          <Dialog.Trigger>Yttre</Dialog.Trigger>
+          <Dialog.Trigger>Outer</Dialog.Trigger>
           <Dialog.Popup className="outer">
-            <Dialog.Title>Yttre</Dialog.Title>
-            <button type="button">Yttre knapp</button>
+            <Dialog.Title>Outer</Dialog.Title>
+            <button type="button">Outer knapp</button>
             <Dialog.Root open={innerOpen} onOpenChange={setInnerOpen}>
               <Dialog.Popup className="inner">
-                <Dialog.Title>Inre</Dialog.Title>
-                <button type="button">Inre knapp</button>
+                <Dialog.Title>Inner</Dialog.Title>
+                <button type="button">Inner knapp</button>
               </Dialog.Popup>
             </Dialog.Root>
           </Dialog.Popup>
@@ -847,7 +847,7 @@ describe('layers', () => {
     const modalByClass = (name: string) =>
       document.querySelector(`.${name}`)?.matches(':modal') === true
     await render(<Nested />)
-    await userEvent.click(page.getByRole('button', { name: 'Yttre', exact: true }))
+    await userEvent.click(page.getByRole('button', { name: 'Outer', exact: true }))
     await expect.poll(() => modalByClass('outer')).toBe(true)
     controls.openInner()
     await expect.poll(() => modalByClass('inner')).toBe(true)
@@ -872,20 +872,20 @@ describe('layers', () => {
   test('a sibling dialog inside the outer Root but outside its Popup opens while the outer is closed', async () => {
     await render(
       <Dialog.Root>
-        <Dialog.Trigger>Yttre</Dialog.Trigger>
+        <Dialog.Trigger>Outer</Dialog.Trigger>
         <Dialog.Root>
-          <Dialog.Trigger>Syskon</Dialog.Trigger>
+          <Dialog.Trigger>Sibling</Dialog.Trigger>
           <Dialog.Popup className="sibling">
-            <Dialog.Title>Syskon</Dialog.Title>
-            <button type="button">Inuti</button>
+            <Dialog.Title>Sibling</Dialog.Title>
+            <button type="button">Inside</button>
           </Dialog.Popup>
         </Dialog.Root>
         <Dialog.Popup className="outer">
-          <Dialog.Title>Yttre</Dialog.Title>
+          <Dialog.Title>Outer</Dialog.Title>
         </Dialog.Popup>
       </Dialog.Root>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Syskon' }))
+    await userEvent.click(page.getByRole('button', { name: 'Sibling' }))
     await expect
       .poll(() => document.querySelector('.sibling')?.matches(':modal') === true)
       .toBe(true)
@@ -905,26 +905,26 @@ describe('layers', () => {
         }, [])
         return (
           <>
-            <button type="button">Före</button>
+            <button type="button">Before</button>
             <Dialog.Root open={open} onOpenChange={setOpen}>
-              <Dialog.Trigger>Yttre</Dialog.Trigger>
+              <Dialog.Trigger>Outer</Dialog.Trigger>
               <Dialog.Popup className="outer">
-                <Dialog.Title>Yttre</Dialog.Title>
+                <Dialog.Title>Outer</Dialog.Title>
                 {kind === 'dialog' ? (
                   <Dialog.Root>
-                    <Dialog.Trigger>Inre</Dialog.Trigger>
+                    <Dialog.Trigger>Inner</Dialog.Trigger>
                     <Dialog.Popup>
-                      <Dialog.Title>Inre</Dialog.Title>
-                      <button type="button">Inuti</button>
+                      <Dialog.Title>Inner</Dialog.Title>
+                      <button type="button">Inside</button>
                     </Dialog.Popup>
                   </Dialog.Root>
                 ) : (
                   <AlertDialog.Root>
-                    <AlertDialog.Trigger>Inre</AlertDialog.Trigger>
+                    <AlertDialog.Trigger>Inner</AlertDialog.Trigger>
                     <AlertDialog.Popup>
-                      <AlertDialog.Title>Inre</AlertDialog.Title>
+                      <AlertDialog.Title>Inner</AlertDialog.Title>
                       <AlertDialog.Description>Text</AlertDialog.Description>
-                      <button type="button">Inuti</button>
+                      <button type="button">Inside</button>
                     </AlertDialog.Popup>
                   </AlertDialog.Root>
                 )}
@@ -934,15 +934,15 @@ describe('layers', () => {
         )
       }
       await render(<Nested />)
-      await userEvent.click(page.getByRole('button', { name: 'Yttre', exact: true }))
+      await userEvent.click(page.getByRole('button', { name: 'Outer', exact: true }))
       await expect.poll(isModal).toBe(true)
-      await userEvent.click(page.getByRole('button', { name: 'Inre', exact: true }))
+      await userEvent.click(page.getByRole('button', { name: 'Inner', exact: true }))
       await expect.poll(() => document.querySelectorAll('dialog:modal').length).toBe(2)
       controls.closeOuter()
       await expect.poll(() => document.querySelectorAll('dialog:modal').length).toBe(0)
       await expect.poll(isScrollLocked).toBe(false)
-      await expect.element(page.getByRole('button', { name: 'Yttre', exact: true })).toHaveFocus()
-      const before = page.getByRole('button', { name: 'Före' }).element() as HTMLElement
+      await expect.element(page.getByRole('button', { name: 'Outer', exact: true })).toHaveFocus()
+      const before = page.getByRole('button', { name: 'Before' }).element() as HTMLElement
       before.focus()
       expect(document.activeElement).toBe(before)
       expect(warnings()).not.toContain('nothing could take focus back')
@@ -955,10 +955,10 @@ describe('layers', () => {
         <Popover.Trigger>Mer</Popover.Trigger>
         <Popover.Popup aria-label="Mer" className="outer-popover">
           <Dialog.Root>
-            <Dialog.Trigger>Öppna dialog</Dialog.Trigger>
+            <Dialog.Trigger>Open dialog</Dialog.Trigger>
             <Dialog.Popup>
-              <Dialog.Title>Från popover</Dialog.Title>
-              <button type="button">Inuti</button>
+              <Dialog.Title>From popover</Dialog.Title>
+              <button type="button">Inside</button>
             </Dialog.Popup>
           </Dialog.Root>
         </Popover.Popup>
@@ -968,12 +968,12 @@ describe('layers', () => {
       document.querySelector('.outer-popover')?.matches(':popover-open') === true
     await userEvent.click(page.getByRole('button', { name: 'Mer' }))
     await expect.poll(popoverShown).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Öppna dialog' }))
+    await userEvent.click(page.getByRole('button', { name: 'Open dialog' }))
     await expect.poll(isModal).toBe(true)
     await userEvent.keyboard('{Escape}')
     await expect.poll(isModal).toBe(false)
     expect(popoverShown()).toBe(true)
-    await expect.element(page.getByRole('button', { name: 'Öppna dialog' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Open dialog' })).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await expect.poll(popoverShown).toBe(false)
   })
@@ -986,13 +986,13 @@ describe('layers', () => {
           <Popover.Trigger>Mer</Popover.Trigger>
           <Popover.Popup aria-label="Mer">
             <button type="button" onClick={() => setDialogOpen(true)}>
-              Öppna dialog
+              Open dialog
             </button>
             <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
               <Dialog.Popup>
-                <Dialog.Title>Säker?</Dialog.Title>
+                <Dialog.Title>Sure?</Dialog.Title>
                 <button type="button" onClick={() => setDialogOpen(false)}>
-                  Avbryt
+                  Cancel
                 </button>
               </Dialog.Popup>
             </Dialog.Root>
@@ -1001,22 +1001,22 @@ describe('layers', () => {
       )
     }
     await render(<InPopover />)
-    await userEvent.click(page.getByRole('button', { name: 'Öppna dialog' }))
-    await expect.element(page.getByRole('dialog', { name: 'Säker?' })).toBeVisible()
-    await userEvent.click(page.getByRole('button', { name: 'Avbryt' }))
+    await userEvent.click(page.getByRole('button', { name: 'Open dialog' }))
+    await expect.element(page.getByRole('dialog', { name: 'Sure?' })).toBeVisible()
+    await userEvent.click(page.getByRole('button', { name: 'Cancel' }))
     await expect.poll(() => document.querySelector('dialog')?.open).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Öppna dialog' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Open dialog' })).toHaveFocus()
   })
 
   test('nested dialogs have no axe violations', async () => {
     const { container } = await render(
       <Dialog.Root defaultOpen>
         <Dialog.Popup>
-          <Dialog.Title>Yttre</Dialog.Title>
+          <Dialog.Title>Outer</Dialog.Title>
           <Dialog.Root defaultOpen>
             <Dialog.Popup>
-              <Dialog.Title>Inre</Dialog.Title>
-              <button type="button">Inuti</button>
+              <Dialog.Title>Inner</Dialog.Title>
+              <button type="button">Inside</button>
             </Dialog.Popup>
           </Dialog.Root>
         </Dialog.Popup>
@@ -1067,7 +1067,7 @@ describe('state', () => {
   test('a controlled owner that refuses keeps the dialog open after Escape', async () => {
     const onOpenChange = vi.fn<(open: boolean, details: DialogChangeDetails) => void>()
     await render(<Controlled refuse onOpenChange={onOpenChange} />)
-    await userEvent.click(page.getByRole('button', { name: 'Öppna' }))
+    await userEvent.click(page.getByRole('button', { name: 'Open' }))
     await expect.poll(isModal).toBe(true)
     await userEvent.keyboard('{Escape}')
     await expect.poll(() => onOpenChange.mock.calls.length).toBeGreaterThan(0)
@@ -1082,7 +1082,7 @@ describe('state', () => {
   test('a native close that a controlled owner refuses shows the dialog again', async () => {
     const onOpenChange = vi.fn<(open: boolean, details: DialogChangeDetails) => void>()
     await render(<Controlled refuse onOpenChange={onOpenChange} />)
-    await userEvent.click(page.getByRole('button', { name: 'Öppna' }))
+    await userEvent.click(page.getByRole('button', { name: 'Open' }))
     await expect.poll(isModal).toBe(true)
     popupElement()?.close()
     await expect.poll(() => onOpenChange.mock.calls.at(-1)?.[1].reason).toBe('native-close')
@@ -1091,7 +1091,7 @@ describe('state', () => {
 
   test('a native close that the owner accepts closes the state too', async () => {
     await render(<Controlled />)
-    await userEvent.click(page.getByRole('button', { name: 'Öppna' }))
+    await userEvent.click(page.getByRole('button', { name: 'Open' }))
     await expect.poll(isModal).toBe(true)
     popupElement()?.close()
     await expect.element(page.getByTestId('open')).toHaveTextContent('false')
@@ -1111,7 +1111,7 @@ describe('state', () => {
 
   test('an owner that opens and closes it from state is followed in both directions', async () => {
     await render(<Controlled />)
-    await userEvent.click(page.getByRole('button', { name: 'Öppna' }))
+    await userEvent.click(page.getByRole('button', { name: 'Open' }))
     await expect.poll(isModal).toBe(true)
     await userEvent.keyboard('{Escape}')
     await expect.poll(isModal).toBe(false)
@@ -1133,19 +1133,19 @@ describe('scroll lock', () => {
     await render(
       <Dialog.Root defaultOpen>
         <Dialog.Popup className="outer">
-          <Dialog.Title>Yttre</Dialog.Title>
+          <Dialog.Title>Outer</Dialog.Title>
           <Dialog.Root>
-            <Dialog.Trigger>Öppna inre</Dialog.Trigger>
+            <Dialog.Trigger>Open inner</Dialog.Trigger>
             <Dialog.Popup>
-              <Dialog.Title>Inre</Dialog.Title>
-              <button type="button">Inuti</button>
+              <Dialog.Title>Inner</Dialog.Title>
+              <button type="button">Inside</button>
             </Dialog.Popup>
           </Dialog.Root>
         </Dialog.Popup>
       </Dialog.Root>,
     )
     await expect.poll(isScrollLocked).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Öppna inre' }))
+    await userEvent.click(page.getByRole('button', { name: 'Open inner' }))
     await expect.poll(() => document.querySelectorAll('dialog:modal').length).toBe(2)
     await userEvent.keyboard('{Escape}')
     await expect.poll(() => document.querySelectorAll('dialog:modal').length).toBe(1)
@@ -1173,8 +1173,8 @@ describe('announcements', () => {
   function Announces() {
     const { announce } = useAnnouncer()
     return (
-      <button type="button" onClick={() => announce('3 resultat')}>
-        Sök
+      <button type="button" onClick={() => announce('3 result')}>
+        Search
       </button>
     )
   }
@@ -1182,8 +1182,8 @@ describe('announcements', () => {
   test('a component inside announces in the dialog’s own live region, which exists only while open', async () => {
     await render(
       <Dialog.Root>
-        <Dialog.Trigger>Ändra</Dialog.Trigger>
-        <Dialog.Popup aria-label="Sök">
+        <Dialog.Trigger>Change</Dialog.Trigger>
+        <Dialog.Popup aria-label="Search">
           <Announces />
         </Dialog.Popup>
       </Dialog.Root>,
@@ -1191,10 +1191,10 @@ describe('announcements', () => {
     expect(popupElement()?.querySelector('[aria-live]')).toBeNull()
     await userEvent.click(trigger())
     await expect.poll(isModal).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Sök' }))
+    await userEvent.click(page.getByRole('button', { name: 'Search' }))
     await expect
       .poll(() => popupElement()?.querySelector('[aria-live="polite"]')?.textContent)
-      .toBe('3 resultat')
+      .toBe('3 result')
     expect(popupElement()?.querySelector('[role="alert"]')).not.toBeNull()
     expect(warnings()).not.toContain('announcer-without-provider')
   })
@@ -1205,25 +1205,25 @@ describe('announcements are cleared on close', () => {
     function Announces() {
       const { announce } = useAnnouncer()
       return (
-        <button type="button" onClick={() => announce('3 resultat')}>
-          Sök
+        <button type="button" onClick={() => announce('3 result')}>
+          Search
         </button>
       )
     }
     await render(
       <Dialog.Root>
-        <Dialog.Trigger>Ändra</Dialog.Trigger>
-        <Dialog.Popup aria-label="Sök">
+        <Dialog.Trigger>Change</Dialog.Trigger>
+        <Dialog.Popup aria-label="Search">
           <Announces />
         </Dialog.Popup>
       </Dialog.Root>,
     )
     await userEvent.click(trigger())
     await expect.poll(isModal).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Sök' }))
+    await userEvent.click(page.getByRole('button', { name: 'Search' }))
     await expect
       .poll(() => popupElement()?.querySelector('[aria-live="polite"]')?.textContent)
-      .toBe('3 resultat')
+      .toBe('3 result')
     await userEvent.keyboard('{Escape}')
     await expect.poll(isModal).toBe(false)
     await userEvent.click(trigger())
@@ -1237,7 +1237,7 @@ describe('development warnings', () => {
     const { unmount } = await render(
       <Dialog.Root defaultOpen>
         <Dialog.Popup>
-          <p>Utan namn</p>
+          <p>Without name</p>
         </Dialog.Popup>
       </Dialog.Root>,
     )
@@ -1248,11 +1248,11 @@ describe('development warnings', () => {
     await render(
       <>
         <Dialog.Root defaultOpen>
-          <Dialog.Popup aria-label="Namn" />
+          <Dialog.Popup aria-label="Name" />
         </Dialog.Root>
         <Dialog.Root defaultOpen>
           <Dialog.Popup>
-            <Dialog.Title>Titel</Dialog.Title>
+            <Dialog.Title>Title</Dialog.Title>
           </Dialog.Popup>
         </Dialog.Root>
       </>,
@@ -1264,8 +1264,8 @@ describe('development warnings', () => {
   test('a popup named by the consumer’s aria-labelledby does not warn', async () => {
     await render(
       <Dialog.Root defaultOpen>
-        <Dialog.Popup aria-labelledby="egen-rubrik">
-          <h2 id="egen-rubrik">Egen rubrik</h2>
+        <Dialog.Popup aria-labelledby="own-heading">
+          <h2 id="own-heading">Own heading</h2>
         </Dialog.Popup>
       </Dialog.Root>,
     )
@@ -1277,7 +1277,7 @@ describe('development warnings', () => {
     await render(
       <Dialog.Root>
         <Dialog.Popup>
-          <p>Utan namn</p>
+          <p>Without name</p>
         </Dialog.Popup>
       </Dialog.Root>,
     )
@@ -1288,8 +1288,8 @@ describe('development warnings', () => {
   test('a part outside a Dialog.Root warns', async () => {
     await render(
       <>
-        <Dialog.Trigger>Ändra</Dialog.Trigger>
-        <Dialog.Close>Stäng</Dialog.Close>
+        <Dialog.Trigger>Change</Dialog.Trigger>
+        <Dialog.Close>Close</Dialog.Close>
       </>,
     )
     await expect.poll(warnings).toContain('Dialog.Trigger is outside a Dialog.Root')

@@ -8,7 +8,7 @@
 
 ## 1. Brief
 
-- **Users:** residents reading keyboard help in guidance ("Du kan flytta mellan fälten i formuläret med Tab"), and staff reading shortcut help in tools.
+- **Users:** residents reading keyboard help in guidance ("You can move between the fields in the form with Tab"), and staff reading shortcut help in tools.
 - **Hardest-case user:** a resident with low vision at 200% text size, reading in their second language. They must see that "Tab" is the name of a key, not a word in the sentence, and must not mistake it for a button they can press on the screen.
 - **Job:** when I read an instruction that names a key, I want to recognise the key at a glance, so I can find it on my keyboard and carry on with the form.
 - **Trigger for this revision:** the maintainer found the current default look "a bit ugly". This spec turns that into concrete findings and a replacement.
@@ -174,8 +174,8 @@ There is now one rule, so a change goes in one place. Things to check during the
 
 - **Participants:** 6. At least 1 screen magnifier user at 200% or more, 1 screen reader user, 2 with low digital confidence, 2 reading Swedish or Finnish as a second language.
 - **Tasks:**
-  1. Read "Du kan flytta mellan fälten i formuläret med Tab" and move to the next field.
-  2. Read "Kopiera med Ctrl + C" and copy a reference number.
+  1. Read "You can move between the fields in the form with Tab" and move to the next field.
+  2. Read "Copy with Ctrl + C" and copy a reference number.
   3. Answer: "Is there anything on this page you can click?" with a key in view.
 - **What we measure:** whether they identify the key correctly the first time, any attempt to click a key, and how sure they say they are (old look vs new look, in counterbalanced order).
 

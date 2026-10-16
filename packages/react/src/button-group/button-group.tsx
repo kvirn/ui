@@ -23,9 +23,9 @@ export type ButtonGroupProps = Omit<ComponentPropsWithRef<'div'>, 'role'>
  * the arrow keys, put the buttons in a `Toolbar`. **A group in a Toolbar needs a name.**
  *
  * @example
- * <ButtonGroup aria-label="Ärendet">
- *   <Button>Spara utkast</Button>
- *   <Button className="kv-button--primary">Skicka</Button>
+ * <ButtonGroup aria-label="The case">
+ *   <Button>Save draft</Button>
+ *   <Button className="kv-button--primary">Send</Button>
  * </ButtonGroup>
  */
 export function ButtonGroup({ ref, ...otherProps }: ButtonGroupProps): ReactElement {

@@ -6,7 +6,7 @@
 
 ## 1. Brief
 
-- **Users:** both, mostly staff. A resident meets a toast rarely ("Länken har kopierats"); a staff user dozens of times a day ("Ändringarna är sparade").
+- **Users:** both, mostly staff. A resident meets a toast rarely ("Link copied"); a staff user dozens of times a day ("Your changes are saved").
 - **Hardest case:** a low-vision staff user with a screen magnifier at 400% (320 × ~200 CSS px in view) and speech on, who saves a setting and is looking at the switch, not at the corner where the toast appears. Then: an NVDA user who must reach an Undo; a resident with a cognitive disability reading Swedish as a second language; a Windows Contrast Themes user.
 - **Job:** _When I've done something that worked, I want a quiet sign that it worked, without losing my place, so I can carry on._
 - **Constraints:** no APG pattern; the Announcer (polite `<output>`); Alert tokens and status words only; six locales; no new colour.
@@ -19,13 +19,13 @@
 
 **Yes, narrowly, as a secondary channel.** Never the only place a result lives, never an error to fix, never a required action. Scottish Government advises against toasts (they "might disappear before the user notices"); GOV.UK, Designsystemet and Aksel ship none. We agree for residents: **the default answer is an inline status or an Alert.** We ship Toast so staff tools get one that obeys these rules, and the docs page opens with the decision table below.
 
-| What happened                                                                | Use                                                                                                 | Not a toast because            |
-| ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------ |
-| A setting saved, a link copied, a draft auto-saved, a background export done | **Toast** (Success or Info), plus the result in place (the switch's state, CopyButton's "Kopierat") | –                              |
-| An error the user must fix, a failed submit                                  | `Field.ErrorMessage` + error summary                                                                | 2.2.1, 3.3.1: it must stay     |
-| The outcome of a submit, a deadline, an outage                               | `Alert` in the content, or a confirmation page                                                      | It's needed to finish the task |
-| A decision the user must make (timeout, delete)                              | `AlertDialog`                                                                                       | Needs a response and focus     |
-| A state already visible at the control (Switch, Toggle)                      | Nothing (`switch.md` §3)                                                                            | Repeats what's in view         |
+| What happened                                                                | Use                                                                                               | Not a toast because            |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------ |
+| A setting saved, a link copied, a draft auto-saved, a background export done | **Toast** (Success or Info), plus the result in place (the switch's state, CopyButton's "Copied") | –                              |
+| An error the user must fix, a failed submit                                  | `Field.ErrorMessage` + error summary                                                              | 2.2.1, 3.3.1: it must stay     |
+| The outcome of a submit, a deadline, an outage                               | `Alert` in the content, or a confirmation page                                                    | It's needed to finish the task |
+| A decision the user must make (timeout, delete)                              | `AlertDialog`                                                                                     | Needs a response and focus     |
+| A state already visible at the control (Switch, Toggle)                      | Nothing (`switch.md` §3)                                                                          | Repeats what's in view         |
 
 ## 2. Prior art
 
@@ -47,7 +47,7 @@ flowchart TD
   q -->|Undo, Open, or Warning/Danger| p[Persistent toast: polite announcement]
   t -->|hover, focus inside, tab hidden| s[Timer paused] --> t
   t -->|time up| g[Removed; nothing announced]
-  p -->|Undo| u[Action runs; toast replaced by timed 'Återställt'; focus to the restored item]
+  p -->|Undo| u[Action runs; toast replaced by timed 'Restored'; focus to the restored item]
   p & t -->|Close or Escape| c[Removed; focus per §7]
 ```
 
@@ -61,24 +61,24 @@ flowchart TD
 
 Component keys (all six locales). Status words and the close name **reuse** `alert.*Prefix` and `alert.close` (one translation, overridable per provider and instance).
 
-| Key                                             | en                  | sv                | fi (longest)       |
-| ----------------------------------------------- | ------------------- | ----------------- | ------------------ |
-| `toast.regionLabel` (new)                       | Notifications       | Meddelanden       | Ilmoitukset        |
-| `alert.successPrefix` … `dangerPrefix` (reused) | Success: / Error: … | Klart: / Fel: …   | Valmis: / Virhe: … |
-| `alert.close` (reused)                          | Close message       | Stäng meddelandet | Sulje ilmoitus     |
+| Key                                             | en                  | sv                | fi (longest)                                                                                      |
+| ----------------------------------------------- | ------------------- | ----------------- | ------------------------------------------------------------------------------------------------- |
+| `toast.regionLabel` (new)                       | Notifications       | Meddelanden       | Ilmoitukset                                                                                       | <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `alert.successPrefix` … `dangerPrefix` (reused) | Success: / Error: … | Klart: / Fel: …   | Valmis: / Virhe: …                                                                                | <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `alert.close` (reused)                          | Close message       | Stäng meddelandet | Sulje ilmoitus <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
 
 Example strings (app keys, not the component's):
 
-| Key                       | Status           | en                                                        | sv                                                            | fi                                                                      |
-| ------------------------- | ---------------- | --------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| `settings.saved`          | Success          | Notification settings saved.                              | Aviseringsinställningarna är sparade.                         | Ilmoitusasetukset on tallennettu.                                       |
-| `link.copied`             | Success          | Link copied.                                              | Länken har kopierats.                                         | Linkki on kopioitu.                                                     |
-| `draft.deleted` / `.undo` | Success + action | Draft deleted. / Undo                                     | Utkastet har tagits bort. / Ångra                             | Luonnos on poistettu. / Kumoa                                           |
-| `report.ready` / `.open`  | Info + action    | Your report is ready. / Open report                       | Din rapport är klar. / Öppna rapporten                        | Raporttisi on valmis. / Avaa raportti                                   |
-| `sync.offline`            | Warning          | You're offline. Changes are kept on this device.          | Du är offline. Ändringarna sparas på den här enheten.         | Olet offline-tilassa. Muutokset säilyvät tällä laitteella.              |
-| `list.refreshFailed`      | Danger           | We couldn't update the list. We'll try again in a minute. | Vi kunde inte uppdatera listan. Vi försöker igen om en minut. | Emme voineet päivittää luetteloa. Yritämme uudelleen minuutin kuluttua. |
+| Key                       | Status           | en                                                        | sv                                                            | fi                                                                                                                                                         |
+| ------------------------- | ---------------- | --------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `settings.saved`          | Success          | Notification settings saved.                              | Aviseringsinställningarna är sparade.                         | Ilmoitusasetukset on tallennettu. <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                       |
+| `link.copied`             | Success          | Link copied.                                              | Länken har kopierats.                                         | Linkki on kopioitu. <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                     |
+| `draft.deleted` / `.undo` | Success + action | Draft deleted. / Undo                                     | Utkastet har tagits bort. / Ångra                             | Luonnos on poistettu. / Kumoa <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                           |
+| `report.ready` / `.open`  | Info + action    | Your report is ready. / Open report                       | Din rapport är klar. / Öppna rapporten                        | Raporttisi on valmis. / Avaa raportti <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                   |
+| `sync.offline`            | Warning          | You're offline. Changes are kept on this device.          | Du är offline. Ändringarna sparas på den här enheten.         | Olet offline-tilassa. Muutokset säilyvät tällä laitteella. <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->              |
+| `list.refreshFailed`      | Danger           | We couldn't update the list. We'll try again in a minute. | Vi kunde inte uppdatera listan. Vi försöker igen om en minut. | Emme voineet päivittää luetteloa. Yritämme uudelleen minuutin kuluttua. <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
 
-**Rules:** one sentence, ≤ 80 characters where possible; past tense or perfect ("är sparade", "har kopierats"), naming the thing; no title + body, no headings; no "OK", "Stäng" as an action, no "Lyckades!", no exclamation marks; at most **one** action, a verb ("Ångra", "Öppna rapporten"); a Danger toast says what we'll do, never what the user must fix. `{n}` and dates via `Intl`.
+**Rules:** one sentence, ≤ 80 characters where possible; past tense or perfect ("is saved", "has been copied"), naming the thing; no title + body, no headings; no "OK", "Close" as an action, no "Success!", no exclamation marks; at most **one** action, a verb ("Undo", "Open report"); a Danger toast says what we'll do, never what the user must fix. `{n}` and dates via `Intl`.
 
 ## 5. Structure
 
@@ -86,8 +86,8 @@ Example strings (app keys, not the component's):
 <section class="kv-toast-region" aria-label={toast.regionLabel} popover="manual" [hidden when empty]>
   <ul role="list">                                   oldest first = reading order = visual order
     <li><div class="kv-alert kv-alert--success kv-toast">
-          [icon]  <p class="kv-alert-title">[Klart:] Utkastet har tagits bort.</p>   [×]
-                  <div class="kv-alert-actions">[Ångra]</div>
+          [icon]  <p class="kv-alert-title">[Success:] The draft has been deleted.</p>   [×]
+                  <div class="kv-alert-actions">[Undo]</div>
 ```
 
 | Viewport               | Placement and limits                                                                                                                                                    |
@@ -119,7 +119,7 @@ Example strings (app keys, not the component's):
 | Any with an action (Undo, Open)          | **None**          | 1       | yes   | polite   |
 | `Toast.Warning`, `Toast.Danger`          | **None**          | 0–1     | yes   | polite   |
 
-**Timer:** `autoDismiss` milliseconds, exact, with no minimum floor (maintainer-approved 2.2.1 trade-off). Counts only while shown, the page visible, the window focused, the pointer not over the region and focus not inside it. Resumes with the remaining time, at least 5 s. A timed toast shows a ring in its status colour around Close, draining clockwise over the time left, frozen while paused, stepped in quarters under reduced motion, never mirrored in RTL ([toast-timer-ring.md](toast-timer-ring.md), variant A; decorative, `aria-hidden`, nothing announced). A toast with an action or no timer has no ring. **2.2.1:** `autoDismiss` is `false` or a number; services expose it as a user setting ("Låt meddelanden stå kvar tills jag stänger dem"). Swipe-to-dismiss: none.
+**Timer:** `autoDismiss` milliseconds, exact, with no minimum floor (maintainer-approved 2.2.1 trade-off). Counts only while shown, the page visible, the window focused, the pointer not over the region and focus not inside it. Resumes with the remaining time, at least 5 s. A timed toast shows a ring in its status colour around Close, draining clockwise over the time left, frozen while paused, stepped in quarters under reduced motion, never mirrored in RTL ([toast-timer-ring.md](toast-timer-ring.md), variant A; decorative, `aria-hidden`, nothing announced). A toast with an action or no timer has no ring. **2.2.1:** `autoDismiss` is `false` or a number; services expose it as a user setting ("Keep messages until I close them"). Swipe-to-dismiss: none.
 
 | Part   | Default              | Hover                   | Focus-visible                | Active  | Disabled | Paused           |
 | ------ | -------------------- | ----------------------- | ---------------------------- | ------- | -------- | ---------------- |
@@ -148,7 +148,7 @@ Draft input for `toast.a11y.md`.
 
 - **Roles:** the region is a `section` named by `toast.regionLabel` (a `region` landmark, rendered only with toasts in it); a `ul role="list"`; each toast a generic `div` with **no** `role`, `aria-live` or `aria-atomic` (as Alert). Icon decorative; status word first in the text.
 - **Announcement (4.1.3):** on **show**, once, through `useAnnouncer()` **polite** (`<output>`, role `status`), text = status word + message (the action is not read; it's a control). **Never assertive**: anything that needs it isn't a toast. Never duplicated: the toast takes no focus, and the region is not a live region. Removal announces nothing.
-- **Focus:** never moves on show (no magnifier pan, no lost place, 3.2.2). Action and Close get `aria-describedby` → the message, so on focus they read "Ångra, knapp, Utkastet har tagits bort".
+- **Focus:** never moves on show (no magnifier pan, no lost place, 3.2.2). Action and Close get `aria-describedby` → the message, so on focus they read "Undo, button, Draft deleted".
 - **Tab stops:** in DOM order, per toast: [Action] → [Close]. The region sits at the end of the provider's DOM, after the page.
 - **Keys:** Tab / Shift+Tab move; Enter / Space press; **Escape** with focus inside a toast closes it. No other key (a jump-to-region hotkey is Q1).
 - **Focus on close:** the next toast's first control → the previous toast's → the element focused before entering the region → the consumer's fallback (`h1`, `tabIndex={-1}`). Never `body`. After Undo: the restored item.

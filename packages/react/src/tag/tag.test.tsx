@@ -32,9 +32,9 @@ function Filters({
   const [tags, setTags] = useState(initial)
   return (
     <KvirnProvider>
-      <button type="button">Före</button>
+      <button type="button">Before</button>
       <TagGroup.Root {...groupProps}>
-        <TagGroup.Label>Valda filter</TagGroup.Label>
+        <TagGroup.Label>Selected filters</TagGroup.Label>
         <TagGroup.List>
           {tags.map((tag) => (
             <Tag.Root key={tag}>
@@ -52,7 +52,7 @@ function Filters({
             </Tag.Root>
           ))}
         </TagGroup.List>
-        <TagGroup.Empty>Inga filter valda</TagGroup.Empty>
+        <TagGroup.Empty>No filters selected</TagGroup.Empty>
         <TagGroup.ClearAll onClear={() => (refuse ? undefined : setTags([]))} />
       </TagGroup.Root>
     </KvirnProvider>
@@ -61,21 +61,21 @@ function Filters({
 
 const removeButton = (name: string) => page.getByRole('button', { name: `Remove ${name}` })
 const clearAll = () => page.getByRole('button', { name: 'Clear all filters' })
-const label = () => page.getByText('Valda filter')
+const label = () => page.getByText('Selected filters')
 const politeRegion = () => page.getByRole('status')
 
 describe('Tag and TagGroup roles and names', () => {
   test('the list is named by the label and is not rendered while empty', async () => {
     await render(<Filters initial={['Barn']} />)
-    await expect.element(page.getByRole('list', { name: 'Valda filter' })).toBeVisible()
+    await expect.element(page.getByRole('list', { name: 'Selected filters' })).toBeVisible()
     await removeButton('Barn').click()
     expect(page.getByRole('list').elements()).toHaveLength(0)
-    await expect.element(page.getByText('Inga filter valda')).toBeVisible()
+    await expect.element(page.getByText('No filters selected')).toBeVisible()
   })
 
   test("the remove button's name contains its visible text", async () => {
-    await render(<Filters initial={['År: 2025']} />)
-    const button = removeButton('År: 2025').element()
+    await render(<Filters initial={['Year: 2025']} />)
+    const button = removeButton('Year: 2025').element()
     expect(button.tagName).toBe('BUTTON')
     expect(button.getAttribute('type')).toBe('button')
     expect(button.getAttribute('aria-label')).toContain(button.textContent)
@@ -96,7 +96,7 @@ describe('Tag and TagGroup roles and names', () => {
         </TagGroup.Root>
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('button', { name: 'Ta bort Stockholm' })).toBeVisible()
+    await expect.element(page.getByRole('button', { name: 'Ta bort Stockholm' })).toBeVisible() // kv-lang-ok: the sv catalog string
   })
 
   test('a static tag is text in a list item, with no button and no tabindex', async () => {
@@ -118,7 +118,7 @@ describe('Tag and TagGroup roles and names', () => {
   test('warns in development when the children are not a string and there is no label', async () => {
     await render(
       <TagGroup.Root>
-        <TagGroup.Label>Valda</TagGroup.Label>
+        <TagGroup.Label>Selected</TagGroup.Label>
         <TagGroup.List>
           <Tag.Root>
             <Tag.Remove onRemove={() => {}}>
@@ -160,7 +160,7 @@ describe('Tag and TagGroup roles and names', () => {
 describe('Tag keyboard', () => {
   test('Tab reaches every remove button in order, then Clear all', async () => {
     await render(<Filters />)
-    await page.getByRole('button', { name: 'Före' }).click()
+    await page.getByRole('button', { name: 'Before' }).click()
     for (const name of ['Remove Barn', 'Remove Kultur', 'Remove 2025', 'Clear all filters']) {
       await userEvent.tab()
       expect(document.activeElement).toBe(page.getByRole('button', { name }).element())
@@ -205,12 +205,12 @@ describe('Tag keyboard', () => {
     await render(
       <Filters
         initial={['Barn']}
-        focusFallback={() => page.getByRole('button', { name: 'Före' }).element() as HTMLElement}
+        focusFallback={() => page.getByRole('button', { name: 'Before' }).element() as HTMLElement}
       />,
     )
     removeButton('Barn').element().focus()
     await userEvent.keyboard('{Enter}')
-    expect(document.activeElement).toBe(page.getByRole('button', { name: 'Före' }).element())
+    expect(document.activeElement).toBe(page.getByRole('button', { name: 'Before' }).element())
   })
 
   test('a focusFallback that cannot take focus falls back to the label and warns', async () => {
@@ -251,7 +251,7 @@ describe('Tag keyboard', () => {
       return (
         <KvirnProvider>
           <TagGroup.Root>
-            <TagGroup.Label>Valda filter</TagGroup.Label>
+            <TagGroup.Label>Selected filters</TagGroup.Label>
             <TagGroup.List>
               {tags.map((tag) => (
                 <Tag.Root key={tag}>
@@ -306,6 +306,6 @@ test('has no axe violations with tags, and with none', async () => {
   await expect.element(removeButton('Barn')).toBeVisible()
   await expectNoA11yViolations(container)
   await clearAll().click()
-  await expect.element(page.getByText('Inga filter valda')).toBeVisible()
+  await expect.element(page.getByText('No filters selected')).toBeVisible()
   await expectNoA11yViolations(container)
 })

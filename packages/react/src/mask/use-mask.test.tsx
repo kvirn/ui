@@ -33,7 +33,7 @@ function MaskedInput({
   options,
   ownProps = {},
   reports,
-  label = 'Fält',
+  label = 'Field',
 }: {
   options: UseMaskOptions
   ownProps?: Record<string, unknown>
@@ -59,7 +59,7 @@ function setNativeValue(element: HTMLInputElement, value: string): void {
   }
 }
 
-const field = () => page.getByRole('textbox', { name: 'Fält' })
+const field = () => page.getByRole('textbox', { name: 'Field' })
 const lastReport = (reports: Report[]): Report => {
   const report = reports.at(-1)
   if (report === undefined) {
@@ -112,17 +112,17 @@ describe('a mask by name (Plan 0039)', () => {
   test('useMask takes { pattern } and a RegExp', async () => {
     await render(
       <KvirnProvider locale="sv" messages={sv}>
-        <MaskedInput options={{ mask: { pattern: 'aa-9999' } }} label="Ärende" />
+        <MaskedInput options={{ mask: { pattern: 'aa-9999' } }} label="Case" />
         <MaskedInput
           options={{ mask: /^\d{0,2}$/, announceRejections: false }}
-          label="Två siffror"
+          label="Two digits"
         />
       </KvirnProvider>,
     )
-    await userEvent.type(page.getByRole('textbox', { name: 'Ärende' }), 'ab1234')
-    await expect.element(page.getByRole('textbox', { name: 'Ärende' })).toHaveValue('ab-1234')
-    await userEvent.type(page.getByRole('textbox', { name: 'Två siffror' }), '1x23')
-    await expect.element(page.getByRole('textbox', { name: 'Två siffror' })).toHaveValue('12')
+    await userEvent.type(page.getByRole('textbox', { name: 'Case' }), 'ab1234')
+    await expect.element(page.getByRole('textbox', { name: 'Case' })).toHaveValue('ab-1234')
+    await userEvent.type(page.getByRole('textbox', { name: 'Two digits' }), '1x23')
+    await expect.element(page.getByRole('textbox', { name: 'Two digits' })).toHaveValue('12')
   })
 
   test('an unknown name (a typo, or "number") warns once and runs no mask', async () => {
@@ -335,7 +335,7 @@ describe('write-back (5.7) and controlled values', () => {
         mask: masks.personalIdentityNumber({ country: 'SE' }),
         onValueChange: setValue,
       })
-      return <input aria-label="Fält" {...mask.inputProps} value={value} />
+      return <input aria-label="Field" {...mask.inputProps} value={value} />
     }
     await render(<Controlled />)
     await expect.element(field()).toHaveValue('19900101 1234')
@@ -352,7 +352,7 @@ describe('write-back (5.7) and controlled values', () => {
           setValue(next)
         },
       })
-      return <input aria-label="Fält" {...mask.inputProps} value={value} />
+      return <input aria-label="Field" {...mask.inputProps} value={value} />
     }
     await render(<Controlled />)
     await userEvent.type(field(), '199001011234')
@@ -544,6 +544,7 @@ describe('announcing rejections', () => {
       </KvirnProvider>,
     )
     await userEvent.type(field(), 'a')
+    // kv-lang-ok: the sv catalog string for a refused character
     await expect.element(status()).toHaveTextContent('Här kan du bara skriva siffror.')
     await swedish.unmount()
 
@@ -553,6 +554,7 @@ describe('announcing rejections', () => {
       </KvirnProvider>,
     )
     await userEvent.type(field(), 'a')
+    // kv-lang-ok: the fi catalog string for a refused character
     await expect.element(status()).toHaveTextContent('Tähän voi kirjoittaa vain numeroita.')
     await finnish.unmount()
 
@@ -586,13 +588,13 @@ describe('announcing rejections', () => {
 
   test('a full mask says so, with the number of characters', async () => {
     await render(
-      <KvirnProvider locale="sv" messages={sv}>
+      <KvirnProvider>
         <MaskedInput options={{ mask: masks.digits({ length: 3 }) }} />
       </KvirnProvider>,
     )
     await userEvent.type(field(), '1234')
     await expect.element(field()).toHaveValue('123')
-    await expect.element(status()).toHaveTextContent('Du har skrivit alla 3 tecken.')
+    await expect.element(status()).toHaveTextContent('You’ve entered all 3 characters.')
   })
 
   test('holding a key announces once: the rest is throttled per field', async () => {
@@ -621,8 +623,8 @@ describe('announcing rejections', () => {
   test('two fields have their own throttle', async () => {
     await render(
       <KvirnProvider>
-        <MaskedInput label="Första" options={{ mask: masks.digits() }} />
-        <MaskedInput label="Andra" options={{ mask: masks.letters() }} />
+        <MaskedInput label="First" options={{ mask: masks.digits() }} />
+        <MaskedInput label="Second" options={{ mask: masks.letters() }} />
       </KvirnProvider>,
     )
     const seen: string[] = []
@@ -634,9 +636,9 @@ describe('announcing rejections', () => {
     })
     observer.observe(status().element(), { childList: true, characterData: true, subtree: true })
 
-    await userEvent.type(page.getByRole('textbox', { name: 'Första' }), 'a')
+    await userEvent.type(page.getByRole('textbox', { name: 'First' }), 'a')
     await expect.element(status()).toHaveTextContent('Only digits can be entered here.')
-    await userEvent.type(page.getByRole('textbox', { name: 'Andra' }), '1')
+    await userEvent.type(page.getByRole('textbox', { name: 'Second' }), '1')
     await expect.element(status()).toHaveTextContent('Only letters can be entered here.')
     observer.disconnect()
 
@@ -662,17 +664,17 @@ describe('announcing rejections', () => {
 
   test('per-instance messages win over the provider’s', async () => {
     await render(
-      <KvirnProvider locale="sv" messages={sv}>
+      <KvirnProvider>
         <MaskedInput
           options={{
             mask: masks.digits(),
-            messages: { characterNotAllowed: () => 'Endast siffror, tack.' },
+            messages: { characterNotAllowed: () => 'Digits only, please.' },
           }}
         />
       </KvirnProvider>,
     )
     await userEvent.type(field(), 'a')
-    await expect.element(status()).toHaveTextContent('Endast siffror, tack.')
+    await expect.element(status()).toHaveTextContent('Digits only, please.')
   })
 
   test('nothing is announced for accepted input', async () => {
@@ -732,7 +734,7 @@ describe('keyboard', () => {
       <form>
         <MaskedInput label="Personnummer" options={{ mask: masks.digits({ length: 2 }) }} />
         <MaskedInput label="Postnummer" options={{ mask: masks.postalCode({ country: 'SE' }) }} />
-        <button type="submit">Skicka</button>
+        <button type="submit">Submit</button>
       </form>,
     )
     const first = page.getByRole('textbox', { name: 'Personnummer' })
@@ -743,7 +745,7 @@ describe('keyboard', () => {
     await userEvent.tab()
     await expect.element(second).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Skicka' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Submit' })).toHaveFocus()
     await userEvent.tab({ shift: true })
     await expect.element(second).toHaveFocus()
     await userEvent.tab({ shift: true })
@@ -850,7 +852,7 @@ describe('keyboard', () => {
           ownProps={{ name: 'postalCode' }}
           options={{ mask: masks.postalCode({ country: 'SE' }) }}
         />
-        <button type="submit">Skicka</button>
+        <button type="submit">Submit</button>
       </form>,
     )
     await userEvent.type(field(), '12345')

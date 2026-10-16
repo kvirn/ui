@@ -1,4 +1,4 @@
-import { sv } from '@kvirn-ui/i18n/sv'
+import { en } from '@kvirn-ui/i18n/en'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'
 import { createRef, useState } from 'react'
@@ -49,16 +49,12 @@ function expectNoDanglingReferences(container: Element) {
   }
 }
 
-const sweden = (children: ReactNode) => (
-  <KvirnProvider locale="sv-SE" messages={sv}>
-    {children}
-  </KvirnProvider>
-)
+const english = (children: ReactNode) => <KvirnProvider locale="en">{children}</KvirnProvider>
 
 const options = [
-  ['1', '1 månad'],
-  ['6', '6 månader'],
-  ['12', '12 månader'],
+  ['1', '1 month'],
+  ['6', '6 months'],
+  ['12', '12 months'],
 ] as const
 
 interface DurationProps extends Omit<RadioGroupRootProps, 'children'> {
@@ -70,18 +66,18 @@ interface DurationProps extends Omit<RadioGroupRootProps, 'children'> {
 function Duration({ disabledOption, optionHelpText = false, ...rootProps }: DurationProps) {
   return (
     <RadioGroup.Root {...rootProps}>
-      <Fieldset.Legend>Hur länge behöver du tillståndet?</Fieldset.Legend>
-      <RadioGroup.Prose>Välj ett alternativ.</RadioGroup.Prose>
+      <Fieldset.Legend>How long do you need the permit?</Fieldset.Legend>
+      <RadioGroup.Prose>Choose one option.</RadioGroup.Prose>
       {options.map(([value, label]) => (
         <Field.Root key={value}>
           <RadioGroup.Radio value={value} disabled={value === disabledOption} />
           <Field.Label>{label}</Field.Label>
           {optionHelpText && value === '12' ? (
-            <Field.HelpText>Lägst pris per månad.</Field.HelpText>
+            <Field.HelpText>Lowest price per month.</Field.HelpText>
           ) : null}
         </Field.Root>
       ))}
-      <Fieldset.ErrorMessage>Välj hur länge du behöver tillståndet</Fieldset.ErrorMessage>
+      <Fieldset.ErrorMessage>Choose how long you need the permit</Fieldset.ErrorMessage>
     </RadioGroup.Root>
   )
 }
@@ -90,8 +86,8 @@ describe('rendering', () => {
   test('renders a group with its part classes, a <legend> first, and forwards ref and props', async () => {
     const ref = createRef<HTMLFieldSetElement>()
     const { container } = await render(
-      <RadioGroup.Root ref={ref} className="egen" data-testid="root">
-        <Fieldset.Legend data-testid="legend">Språk</Fieldset.Legend>
+      <RadioGroup.Root ref={ref} className="own" data-testid="root">
+        <Fieldset.Legend data-testid="legend">Language</Fieldset.Legend>
       </RadioGroup.Root>,
     )
     const root = page.getByTestId('root').element()
@@ -99,7 +95,7 @@ describe('rendering', () => {
     expect(container.firstElementChild).toBe(root)
     expect(root.classList.contains('kv-radio-group')).toBe(true)
     expect(root.classList.contains('kv-fieldset')).toBe(true)
-    expect(root.classList.contains('egen')).toBe(true)
+    expect(root.classList.contains('own')).toBe(true)
     expect(root.hasAttribute('name')).toBe(false)
     expect(root.firstElementChild).toBe(page.getByTestId('legend').element())
   })
@@ -107,40 +103,38 @@ describe('rendering', () => {
   test('a Radio is a native <input type="radio"> with its class, no ARIA role', async () => {
     const ref = createRef<HTMLInputElement>()
     await render(
-      <RadioGroup.Root aria-label="Språk" name="language">
+      <RadioGroup.Root aria-label="Language" name="language">
         <Field.Root>
-          <RadioGroup.Radio ref={ref} value="sv" className="egen" data-egen="" />
-          <Field.Label>Svenska</Field.Label>
+          <RadioGroup.Radio ref={ref} value="sv" className="own" data-own="" />
+          <Field.Label>Swedish</Field.Label>
         </Field.Root>
       </RadioGroup.Root>,
     )
-    const radio = page.getByRole('radio', { name: 'Svenska' })
+    const radio = page.getByRole('radio', { name: 'Swedish' })
     expect(ref.current).toBe(radio.element())
     await expect.element(radio).toHaveAttribute('type', 'radio')
-    await expect.element(radio).toHaveClass('egen', 'kv-radio')
+    await expect.element(radio).toHaveClass('own', 'kv-radio')
     await expect.element(radio).toHaveAttribute('value', 'sv')
-    await expect.element(radio).toHaveAttribute('data-egen', '')
+    await expect.element(radio).toHaveAttribute('data-own', '')
     await expect.element(radio).not.toHaveAttribute('role')
     await expect.element(radio).not.toHaveAttribute('aria-checked')
   })
 
   test('the group is named by its legend and described by its help text and error', async () => {
-    const { container } = await render(sweden(<Duration invalid />))
-    const group = page.getByRole('group', { name: 'Hur länge behöver du tillståndet? (valfritt)' })
+    const { container } = await render(english(<Duration invalid />))
+    const group = page.getByRole('group', { name: 'How long do you need the permit? (optional)' })
     await expect
       .element(group)
-      .toHaveAccessibleDescription(
-        'Välj ett alternativ. Fel: Välj hur länge du behöver tillståndet',
-      )
+      .toHaveAccessibleDescription('Choose one option. Error: Choose how long you need the permit')
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
   test('a required group has no optional marker and carries data-required', async () => {
-    await render(sweden(<Duration required />))
+    await render(english(<Duration required />))
     const group = page.getByRole('group', {
-      name: 'Hur länge behöver du tillståndet?',
+      name: 'How long do you need the permit?',
       exact: true,
     })
     await expect.element(group).toHaveAttribute('data-required', '')
@@ -148,23 +142,23 @@ describe('rendering', () => {
   })
 
   test('an option’s own help text is in that radio’s description', async () => {
-    await render(sweden(<Duration optionHelpText />))
+    await render(english(<Duration optionHelpText />))
     await expect
-      .element(page.getByRole('radio', { name: '12 månader' }))
-      .toHaveAccessibleDescription('Lägst pris per månad.')
+      .element(page.getByRole('radio', { name: '12 months' }))
+      .toHaveAccessibleDescription('Lowest price per month.')
   })
 
   test('an option help text is a Field.HelpText in that option’s Field, outside its label, and has no axe violations', async () => {
-    const { container } = await render(sweden(<Duration optionHelpText />))
-    const helpText = page.getByText('Lägst pris per månad.').element()
+    const { container } = await render(english(<Duration optionHelpText />))
+    const helpText = page.getByText('Lowest price per month.').element()
     expect(helpText.id).not.toBe('')
     // It is a sibling of the label, not inside it, so it isn't part of the radio's name or target.
     expect(helpText.closest('label')).toBeNull()
-    await expect.element(page.getByRole('radio', { name: '12 månader', exact: true })).toBeVisible()
+    await expect.element(page.getByRole('radio', { name: '12 months', exact: true })).toBeVisible()
     // The group's description is its own help text, not the option's.
     await expect
-      .element(page.getByRole('group', { name: 'Hur länge behöver du tillståndet? (valfritt)' }))
-      .toHaveAccessibleDescription('Välj ett alternativ.')
+      .element(page.getByRole('group', { name: 'How long do you need the permit? (optional)' }))
+      .toHaveAccessibleDescription('Choose one option.')
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
@@ -175,13 +169,13 @@ describe('name', () => {
   test('every radio gets the group’s name, generated when missing', async () => {
     await render(
       <>
-        <RadioGroup.Root aria-label="Ett" name="eget">
+        <RadioGroup.Root aria-label="One" name="eget">
           <Field.Root>
             <RadioGroup.Radio value="a" />
             <Field.Label>A</Field.Label>
           </Field.Root>
         </RadioGroup.Root>
-        <RadioGroup.Root aria-label="Två">
+        <RadioGroup.Root aria-label="Two">
           <Field.Root>
             <RadioGroup.Radio value="b" />
             <Field.Label>B</Field.Label>
@@ -221,20 +215,20 @@ describe('value', () => {
         </>
       )
     }
-    await render(sweden(<Controlled />))
-    await expect.element(page.getByRole('radio', { name: '6 månader' })).toBeChecked()
-    await userEvent.click(page.getByRole('radio', { name: '12 månader' }))
+    await render(english(<Controlled />))
+    await expect.element(page.getByRole('radio', { name: '6 months' })).toBeChecked()
+    await userEvent.click(page.getByRole('radio', { name: '12 months' }))
     expect(onValueChange.mock.calls.at(-1)?.[0]).toBe('12')
     expect(onValueChange.mock.calls.at(-1)?.[1].reason).toBe('input')
     expect(onValueChange.mock.calls.at(-1)?.[1].event.type).toBe('change')
-    await expect.element(page.getByRole('radio', { name: '12 månader' })).toBeChecked()
-    await expect.element(page.getByRole('radio', { name: '6 månader' })).not.toBeChecked()
+    await expect.element(page.getByRole('radio', { name: '12 months' })).toBeChecked()
+    await expect.element(page.getByRole('radio', { name: '6 months' })).not.toBeChecked()
     await expect.element(page.getByTestId('value')).toHaveTextContent('12')
   })
 
   test('value={null} is controlled with nothing selected', async () => {
     await render(
-      sweden(
+      english(
         <Duration
           name="duration"
           value={null}
@@ -245,41 +239,41 @@ describe('value', () => {
     for (const [, label] of options) {
       await expect.element(page.getByRole('radio', { name: label })).not.toBeChecked()
     }
-    await userEvent.click(page.getByRole('radio', { name: '1 månad' }))
+    await userEvent.click(page.getByRole('radio', { name: '1 month' }))
     // The parent did not update value, so nothing is checked.
-    await expect.element(page.getByRole('radio', { name: '1 månad' })).not.toBeChecked()
+    await expect.element(page.getByRole('radio', { name: '1 month' })).not.toBeChecked()
   })
 
   test('uncontrolled: defaultValue and the form submit', async () => {
     const onValueChange = vi.fn<(value: string, details: RadioGroupChangeDetails) => void>()
     let submitted: FormData | undefined
     await render(
-      sweden(
+      english(
         <form
-          aria-label="Ansökan"
+          aria-label="Application"
           onSubmit={(event) => {
             event.preventDefault()
             submitted = new FormData(event.currentTarget)
           }}
         >
           <Duration name="duration" defaultValue="6" onValueChange={onValueChange} />
-          <button type="submit">Skicka</button>
+          <button type="submit">Submit</button>
         </form>,
       ),
     )
-    await expect.element(page.getByRole('radio', { name: '6 månader' })).toBeChecked()
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await expect.element(page.getByRole('radio', { name: '6 months' })).toBeChecked()
+    await userEvent.click(page.getByRole('button', { name: 'Submit' }))
     expect(submitted?.get('duration')).toBe('6')
-    await userEvent.click(page.getByRole('radio', { name: '1 månad' }))
+    await userEvent.click(page.getByRole('radio', { name: '1 month' }))
     expect(onValueChange.mock.calls.at(-1)?.[0]).toBe('1')
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Submit' }))
     expect(submitted?.get('duration')).toBe('1')
-    await expect.element(page.getByRole('radio', { name: '6 månader' })).not.toBeChecked()
+    await expect.element(page.getByRole('radio', { name: '6 months' })).not.toBeChecked()
   })
 
   test('a Radio in a group without a value warns once', async () => {
     await render(
-      <RadioGroup.Root aria-label="Språk">
+      <RadioGroup.Root aria-label="Language">
         <Field.Root>
           <RadioGroup.Radio />
           <Field.Label>A</Field.Label>
@@ -293,8 +287,8 @@ describe('value', () => {
     await render(
       <>
         <RadioGroup.Root
-          aria-label="Ett"
-          name="ett"
+          aria-label="One"
+          name="one"
           value="a"
           onValueChange={vi.fn<(value: string, details: RadioGroupChangeDetails) => void>()}
         >
@@ -307,7 +301,7 @@ describe('value', () => {
             <Field.Label>B</Field.Label>
           </Field.Root>
         </RadioGroup.Root>
-        <RadioGroup.Root aria-label="Två" name="två" defaultValue="c">
+        <RadioGroup.Root aria-label="Two" name="two" defaultValue="c">
           <Field.Root>
             <RadioGroup.Radio value="c" />
             <Field.Label>C</Field.Label>
@@ -327,7 +321,7 @@ describe('value', () => {
 
 describe('state', () => {
   test('invalid styles every radio and sets no aria-invalid', async () => {
-    await render(sweden(<Duration invalid />))
+    await render(english(<Duration invalid />))
     for (const [, label] of options) {
       const radio = page.getByRole('radio', { name: label })
       await expect.element(radio).toHaveAttribute('data-invalid', '')
@@ -337,28 +331,28 @@ describe('state', () => {
 
   test('an invalid or required Field around a Radio never puts aria-invalid or aria-required on it', async () => {
     await render(
-      <RadioGroup.Root aria-label="Språk" name="language">
+      <RadioGroup.Root aria-label="Language" name="language">
         <Field.Root invalid required>
           <RadioGroup.Radio value="sv" />
-          <Field.Label>Svenska</Field.Label>
-          <Field.ErrorMessage>Fel</Field.ErrorMessage>
+          <Field.Label>Swedish</Field.Label>
+          <Field.ErrorMessage>Invalid</Field.ErrorMessage>
         </Field.Root>
       </RadioGroup.Root>,
     )
-    const radio = page.getByRole('radio', { name: 'Svenska' })
+    const radio = page.getByRole('radio', { name: 'Swedish' })
     await expect.element(radio).not.toHaveAttribute('aria-invalid')
     await expect.element(radio).not.toHaveAttribute('aria-required')
     await expect.element(radio).toHaveAttribute('data-invalid', '')
   })
 
   test('a disabled radio is natively disabled', async () => {
-    await render(sweden(<Duration disabledOption="6" />))
-    await expect.element(page.getByRole('radio', { name: '6 månader' })).toBeDisabled()
-    await expect.element(page.getByRole('radio', { name: '1 månad' })).not.toBeDisabled()
+    await render(english(<Duration disabledOption="6" />))
+    await expect.element(page.getByRole('radio', { name: '6 months' })).toBeDisabled()
+    await expect.element(page.getByRole('radio', { name: '1 month' })).not.toBeDisabled()
   })
 
   test('disabled disables every radio natively', async () => {
-    await render(sweden(<Duration disabled />))
+    await render(english(<Duration disabled />))
     expect((page.getByRole('group').element() as HTMLFieldSetElement).disabled).toBe(true)
     for (const [, label] of options) {
       await expect.element(page.getByRole('radio', { name: label })).toBeDisabled()
@@ -370,40 +364,40 @@ describe('useRadioGroup and useRadio', () => {
   test('give the props for your own radios', async () => {
     const onValueChange = vi.fn<(value: string, details: RadioGroupChangeDetails) => void>()
     function Own() {
-      const group = useRadioGroup({ name: 'språk', value: 'sv', onValueChange })
+      const group = useRadioGroup({ name: 'language', value: 'sv', onValueChange })
       return (
         <fieldset>
-          <legend>Egen</legend>
-          <input type="radio" aria-label="Svenska" value="sv" {...group.getRadioProps('sv')} />
-          <input type="radio" aria-label="Finska" value="fi" {...group.getRadioProps('fi')} />
+          <legend>Own</legend>
+          <input type="radio" aria-label="Swedish" value="sv" {...group.getRadioProps('sv')} />
+          <input type="radio" aria-label="Finnish" value="fi" {...group.getRadioProps('fi')} />
         </fieldset>
       )
     }
     await render(<Own />)
-    await expect.element(page.getByRole('radio', { name: 'Svenska' })).toBeChecked()
+    await expect.element(page.getByRole('radio', { name: 'Swedish' })).toBeChecked()
     await expect
-      .element(page.getByRole('radio', { name: 'Finska' }))
-      .toHaveAttribute('name', 'språk')
-    await userEvent.click(page.getByRole('radio', { name: 'Finska' }))
+      .element(page.getByRole('radio', { name: 'Finnish' }))
+      .toHaveAttribute('name', 'language')
+    await userEvent.click(page.getByRole('radio', { name: 'Finnish' }))
     expect(onValueChange.mock.calls.at(-1)?.[0]).toBe('fi')
   })
 
   test('useRadio spreads the part props on your own input', async () => {
     function Own() {
       const radio = useRadio({ value: 'sv' })
-      return <input aria-label="Egen" {...radio.inputProps} />
+      return <input aria-label="Own" {...radio.inputProps} />
     }
     await render(<Own />)
-    await expect.element(page.getByRole('radio', { name: 'Egen' })).toBeVisible()
+    await expect.element(page.getByRole('radio', { name: 'Own' })).toBeVisible()
   })
 
   test('server markup carries the name, checked and data-state', () => {
     const markup = renderToString(
       <RadioGroup.Root name="duration" value="6" onValueChange={() => {}}>
-        <Fieldset.Legend>Tid</Fieldset.Legend>
+        <Fieldset.Legend>Time</Fieldset.Legend>
         <Field.Root controlId="sex">
           <RadioGroup.Radio value="6" />
-          <Field.Label>6 månader</Field.Label>
+          <Field.Label>6 months</Field.Label>
         </Field.Root>
       </RadioGroup.Root>,
     )
@@ -423,50 +417,52 @@ describe('the group’s own part names', () => {
     expect(RadioGroup.ErrorMessage.displayName).toBe('RadioGroup.ErrorMessage')
     await render(
       <RadioGroup.Root name="language" invalid>
-        <RadioGroup.Legend>Språk</RadioGroup.Legend>
+        <RadioGroup.Legend>Language</RadioGroup.Legend>
         <RadioGroup.Prose>
-          <p>Välj ett.</p>
+          <p>Choose one.</p>
         </RadioGroup.Prose>
-        <RadioGroup.ErrorMessage>Välj språk</RadioGroup.ErrorMessage>
+        <RadioGroup.ErrorMessage>Choose a language</RadioGroup.ErrorMessage>
         <Field.Root>
           <Radio value="sv" />
-          <Field.Label>Svenska</Field.Label>
+          <Field.Label>Swedish</Field.Label>
         </Field.Root>
       </RadioGroup.Root>,
     )
-    const group = page.getByRole('group', { name: 'Språk (optional)' })
-    await expect.element(group).toHaveAccessibleDescription('Välj ett. Error: Välj språk')
+    const group = page.getByRole('group', { name: 'Language (optional)' })
+    await expect.element(group).toHaveAccessibleDescription('Choose one. Error: Choose a language')
     await expect
-      .element(page.getByRole('radio', { name: 'Svenska' }))
+      .element(page.getByRole('radio', { name: 'Swedish' }))
       .toHaveAttribute('name', 'language')
   })
 
   test('RadioGroup.HelpText is the group’s help text: after the description, before the error', async () => {
     await render(
       <RadioGroup.Root name="language" invalid>
-        <RadioGroup.Legend>Språk</RadioGroup.Legend>
+        <RadioGroup.Legend>Language</RadioGroup.Legend>
         <RadioGroup.Prose>
-          <p>Välj ett.</p>
+          <p>Choose one.</p>
         </RadioGroup.Prose>
         <Field.Root>
           <RadioGroup.Radio value="sv" />
-          <Field.Label>Svenska</Field.Label>
+          <Field.Label>Swedish</Field.Label>
         </Field.Root>
-        <RadioGroup.HelpText data-testid="helpText">Du kan byta senare.</RadioGroup.HelpText>
-        <RadioGroup.ErrorMessage>Välj språk</RadioGroup.ErrorMessage>
+        <RadioGroup.HelpText data-testid="helpText">You can change this later.</RadioGroup.HelpText>
+        <RadioGroup.ErrorMessage>Choose a language</RadioGroup.ErrorMessage>
       </RadioGroup.Root>,
     )
-    const group = page.getByRole('group', { name: 'Språk (optional)' })
+    const group = page.getByRole('group', { name: 'Language (optional)' })
     await expect
       .element(group)
-      .toHaveAccessibleDescription('Välj ett. Du kan byta senare. Error: Välj språk')
+      .toHaveAccessibleDescription(
+        'Choose one. You can change this later. Error: Choose a language',
+      )
   })
 })
 
 describe('keyboard', () => {
   const radio = (name: string) => page.getByRole('radio', { name, exact: true })
   const before = () => page.getByRole('button', { name: 'Tillbaka' })
-  const after = () => page.getByRole('button', { name: 'Skicka' })
+  const after = () => page.getByRole('button', { name: 'Submit' })
   const checkedValue = () =>
     document.querySelector<HTMLInputElement>('.kv-radio:checked')?.value ?? null
 
@@ -480,11 +476,11 @@ describe('keyboard', () => {
   }
 
   const surrounded = (group: ReactNode) =>
-    sweden(
+    english(
       <>
         <button type="button">Tillbaka</button>
         {group}
-        <button type="button">Skicka</button>
+        <button type="button">Submit</button>
       </>,
     )
 
@@ -492,7 +488,7 @@ describe('keyboard', () => {
     await render(surrounded(<Duration name="duration" />))
     before().element().focus()
     await userEvent.tab()
-    await expect.element(radio('1 månad')).toHaveFocus()
+    await expect.element(radio('1 month')).toHaveFocus()
     expect(checkedValue()).toBeNull()
   })
 
@@ -500,7 +496,7 @@ describe('keyboard', () => {
     await render(surrounded(<Duration name="duration" defaultValue="6" />))
     before().element().focus()
     await userEvent.tab()
-    await expect.element(radio('6 månader')).toHaveFocus()
+    await expect.element(radio('6 months')).toHaveFocus()
   })
 
   test('Tab leaves the group after one stop', async () => {
@@ -508,7 +504,7 @@ describe('keyboard', () => {
     before().element().focus()
     await userEvent.tab()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(radio('12 månader')).toHaveFocus()
+    await expect.element(radio('12 months')).toHaveFocus()
     await userEvent.tab()
     await expect.element(after()).toHaveFocus()
   })
@@ -519,10 +515,10 @@ describe('keyboard', () => {
       return <Duration name="duration" value={value} onValueChange={setValue} />
     }
     await render(surrounded(<Controlled />))
-    radio('12 månader').element().focus()
+    radio('12 months').element().focus()
     await userEvent.keyboard('{ArrowUp}')
-    await expect.element(radio('6 månader')).toHaveFocus()
-    await expect.element(radio('6 månader')).toBeChecked()
+    await expect.element(radio('6 months')).toHaveFocus()
+    await expect.element(radio('6 months')).toBeChecked()
     await userEvent.tab()
     await expect.element(after()).toHaveFocus()
   })
@@ -531,35 +527,35 @@ describe('keyboard', () => {
     await render(surrounded(<Duration name="duration" />))
     after().element().focus()
     await userEvent.tab({ shift: true })
-    await expect.element(radio('12 månader')).toHaveFocus()
+    await expect.element(radio('12 months')).toHaveFocus()
     expect(checkedValue()).toBeNull()
   })
 
   test('Shift+Tab leaves the group after one stop', async () => {
     await render(surrounded(<Duration name="duration" />))
-    radio('1 månad').element().focus()
+    radio('1 month').element().focus()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(radio('6 månader')).toBeChecked()
+    await expect.element(radio('6 months')).toBeChecked()
     await userEvent.tab({ shift: true })
     await expect.element(before()).toHaveFocus()
     after().element().focus()
     await userEvent.tab({ shift: true })
-    await expect.element(radio('6 månader')).toHaveFocus()
+    await expect.element(radio('6 months')).toHaveFocus()
   })
 
   test('ArrowDown and ArrowRight move to the next radio and check it, wrapping', async () => {
     await render(surrounded(<Duration name="duration" />))
-    radio('1 månad').element().focus()
+    radio('1 month').element().focus()
     const prevented = recordPreventedKeys()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(radio('6 månader')).toHaveFocus()
-    await expect.element(radio('6 månader')).toBeChecked()
+    await expect.element(radio('6 months')).toHaveFocus()
+    await expect.element(radio('6 months')).toBeChecked()
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(radio('12 månader')).toHaveFocus()
-    await expect.element(radio('12 månader')).toBeChecked()
+    await expect.element(radio('12 months')).toHaveFocus()
+    await expect.element(radio('12 months')).toBeChecked()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(radio('1 månad')).toHaveFocus()
-    await expect.element(radio('1 månad')).toBeChecked()
+    await expect.element(radio('1 month')).toHaveFocus()
+    await expect.element(radio('1 month')).toBeChecked()
     expect(checkedValue()).toBe('1')
     prevented.stop()
     expect(prevented.keys).toEqual([])
@@ -567,60 +563,60 @@ describe('keyboard', () => {
 
   test('ArrowUp and ArrowLeft move to the previous radio and check it, wrapping', async () => {
     await render(surrounded(<Duration name="duration" />))
-    radio('1 månad').element().focus()
+    radio('1 month').element().focus()
     await userEvent.keyboard('{ArrowUp}')
-    await expect.element(radio('12 månader')).toHaveFocus()
-    await expect.element(radio('12 månader')).toBeChecked()
+    await expect.element(radio('12 months')).toHaveFocus()
+    await expect.element(radio('12 months')).toBeChecked()
     await userEvent.keyboard('{ArrowLeft}')
-    await expect.element(radio('6 månader')).toHaveFocus()
-    await expect.element(radio('6 månader')).toBeChecked()
+    await expect.element(radio('6 months')).toHaveFocus()
+    await expect.element(radio('6 months')).toBeChecked()
     await userEvent.keyboard('{ArrowUp}')
-    await expect.element(radio('1 månad')).toHaveFocus()
+    await expect.element(radio('1 month')).toHaveFocus()
     expect(checkedValue()).toBe('1')
   })
 
   test('right to left: ArrowLeft moves to the next radio and ArrowRight to the previous', async () => {
     await render(
-      sweden(
+      english(
         <div dir="rtl">
           <Duration name="duration" />
         </div>,
       ),
     )
-    radio('1 månad').element().focus()
+    radio('1 month').element().focus()
     await userEvent.keyboard('{ArrowLeft}')
-    await expect.element(radio('6 månader')).toHaveFocus()
-    await expect.element(radio('6 månader')).toBeChecked()
+    await expect.element(radio('6 months')).toHaveFocus()
+    await expect.element(radio('6 months')).toBeChecked()
     await userEvent.keyboard('{ArrowLeft}')
-    await expect.element(radio('12 månader')).toHaveFocus()
+    await expect.element(radio('12 months')).toHaveFocus()
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(radio('6 månader')).toHaveFocus()
+    await expect.element(radio('6 months')).toHaveFocus()
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(radio('1 månad')).toHaveFocus()
-    await expect.element(radio('1 månad')).toBeChecked()
+    await expect.element(radio('1 month')).toHaveFocus()
+    await expect.element(radio('1 month')).toBeChecked()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(radio('6 månader')).toHaveFocus()
+    await expect.element(radio('6 months')).toHaveFocus()
   })
 
   test('Arrow keys skip a disabled radio', async () => {
     await render(surrounded(<Duration name="duration" disabledOption="6" />))
-    await expect.element(radio('6 månader')).toBeDisabled()
+    await expect.element(radio('6 months')).toBeDisabled()
     before().element().focus()
     await userEvent.tab()
-    await expect.element(radio('1 månad')).toHaveFocus()
+    await expect.element(radio('1 month')).toHaveFocus()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(radio('12 månader')).toHaveFocus()
-    await expect.element(radio('12 månader')).toBeChecked()
+    await expect.element(radio('12 months')).toHaveFocus()
+    await expect.element(radio('12 months')).toBeChecked()
     await userEvent.keyboard('{ArrowUp}')
-    await expect.element(radio('1 månad')).toHaveFocus()
-    await expect.element(radio('6 månader')).not.toBeChecked()
+    await expect.element(radio('1 month')).toHaveFocus()
+    await expect.element(radio('6 months')).not.toBeChecked()
   })
 
   test('Space checks the focused radio', async () => {
     await render(surrounded(<Duration name="duration" />))
     before().element().focus()
     await userEvent.tab()
-    const first = radio('1 månad')
+    const first = radio('1 month')
     await expect.element(first).toHaveFocus()
     await expect.element(first).not.toBeChecked()
     const prevented = recordPreventedKeys()
@@ -635,9 +631,9 @@ describe('keyboard', () => {
 
   test('clicking the label text selects the radio', async () => {
     await render(surrounded(<Duration name="duration" />))
-    await userEvent.click(page.getByText('6 månader'))
-    await expect.element(radio('6 månader')).toBeChecked()
-    await expect.element(radio('6 månader')).toHaveFocus()
+    await userEvent.click(page.getByText('6 months'))
+    await expect.element(radio('6 months')).toBeChecked()
+    await expect.element(radio('6 months')).toHaveFocus()
   })
 })
 
@@ -649,18 +645,18 @@ describe('reveal', () => {
   function OtherQuestion(props: Omit<RadioGroupRootProps, 'children'>) {
     return (
       <RadioGroup.Root name="source" {...props}>
-        <Fieldset.Legend>Hur hörde du om oss?</Fieldset.Legend>
+        <Fieldset.Legend>How did you hear about us?</Fieldset.Legend>
         <Field.Root>
           <RadioGroup.Radio value="friend" />
-          <Field.Label>Via en vän</Field.Label>
+          <Field.Label>Through a friend</Field.Label>
         </Field.Root>
         <Field.Root>
           <RadioGroup.Radio value="other" />
-          <Field.Label>Annat</Field.Label>
+          <Field.Label>Other</Field.Label>
         </Field.Root>
         <RadioGroup.Reveal value="other">
           <Field.Root>
-            <Field.Label>Beskriv</Field.Label>
+            <Field.Label>Describe</Field.Label>
             <TextInput name="other-text" />
           </Field.Root>
         </RadioGroup.Reveal>
@@ -669,82 +665,82 @@ describe('reveal', () => {
   }
 
   test('the reveal is hidden until its radio is checked', async () => {
-    await render(sweden(<OtherQuestion />))
+    await render(english(<OtherQuestion />))
     expect(reveal()?.hidden).toBe(true)
-    await userEvent.click(radio('Annat'))
+    await userEvent.click(radio('Other'))
     expect(reveal()?.hidden).toBe(false)
   })
 
   test('checking another radio hides the reveal again and keeps what was typed', async () => {
-    await render(sweden(<OtherQuestion />))
-    await userEvent.click(radio('Annat'))
-    await userEvent.type(page.getByRole('textbox', { name: /Beskriv/ }), 'Radio')
-    await userEvent.click(radio('Via en vän'))
+    await render(english(<OtherQuestion />))
+    await userEvent.click(radio('Other'))
+    await userEvent.type(page.getByRole('textbox', { name: /Describe/ }), 'Radio')
+    await userEvent.click(radio('Through a friend'))
     expect(reveal()?.hidden).toBe(true)
-    await userEvent.click(radio('Annat'))
-    await expect.element(page.getByRole('textbox', { name: /Beskriv/ })).toHaveValue('Radio')
+    await userEvent.click(radio('Other'))
+    await expect.element(page.getByRole('textbox', { name: /Describe/ })).toHaveValue('Radio')
   })
 
   test('focus stays on the radio when the field appears', async () => {
-    await render(sweden(<OtherQuestion />))
-    await userEvent.click(radio('Annat'))
-    await expect.element(radio('Annat')).toHaveFocus()
+    await render(english(<OtherQuestion />))
+    await userEvent.click(radio('Other'))
+    await expect.element(radio('Other')).toHaveFocus()
   })
 
   test('the reveal follows its radio’s field in DOM order', async () => {
-    await render(sweden(<OtherQuestion />))
-    const radioField = radio('Annat').element().closest('.kv-field')
+    await render(english(<OtherQuestion />))
+    const radioField = radio('Other').element().closest('.kv-field')
     expect(radioField?.nextElementSibling).toBe(reveal())
   })
 
   test('the radio points at the reveal with aria-controls, the others do not', async () => {
-    await render(sweden(<OtherQuestion />))
-    expect(radio('Annat').element().getAttribute('aria-controls')).toBe(reveal()?.id)
+    await render(english(<OtherQuestion />))
+    expect(radio('Other').element().getAttribute('aria-controls')).toBe(reveal()?.id)
     expect(reveal()?.id).not.toBe('')
-    expect(radio('Via en vän').element().hasAttribute('aria-controls')).toBe(false)
+    expect(radio('Through a friend').element().hasAttribute('aria-controls')).toBe(false)
   })
 
   const settle = () => new Promise((resolve) => setTimeout(resolve, 400))
-  const shown = `polite: ${sv.radioGroup.revealShown}`
+  const shown = `polite: ${en.radioGroup.revealShown}`
 
   test('it is announced politely, exactly once, when the user checks the radio', async () => {
-    const { container } = await render(sweden(<OtherQuestion />))
+    const { container } = await render(english(<OtherQuestion />))
     const announcements = await readAnnouncements(container, async () => {
-      await userEvent.click(radio('Annat'))
+      await userEvent.click(radio('Other'))
     })
     expect(announcements).toEqual([shown])
   })
 
   test('it is announced again when the user returns to the radio within three seconds', async () => {
-    const { container } = await render(sweden(<OtherQuestion />))
-    await userEvent.click(radio('Annat'))
+    const { container } = await render(english(<OtherQuestion />))
+    await userEvent.click(radio('Other'))
     await settle()
-    await userEvent.click(radio('Via en vän'))
+    await userEvent.click(radio('Through a friend'))
     const announcements = await readAnnouncements(container, async () => {
-      await userEvent.click(radio('Annat'))
+      await userEvent.click(radio('Other'))
     })
     expect(announcements).toEqual([shown])
   })
 
   test('a second group is announced within three seconds of the first', async () => {
     const { container } = await render(
-      sweden(
+      english(
         <>
           <OtherQuestion name="first" />
           <OtherQuestion name="second" />
         </>,
       ),
     )
-    await userEvent.click(page.getByRole('radio', { name: 'Annat' }).first())
+    await userEvent.click(page.getByRole('radio', { name: 'Other' }).first())
     await settle()
     const announcements = await readAnnouncements(container, async () => {
-      await userEvent.click(page.getByRole('radio', { name: 'Annat' }).nth(1))
+      await userEvent.click(page.getByRole('radio', { name: 'Other' }).nth(1))
     })
     expect(announcements).toEqual([shown])
   })
 
   test('it is not announced on mount with a checked radio', async () => {
-    await render(sweden(<OtherQuestion defaultValue="other" />))
+    await render(english(<OtherQuestion defaultValue="other" />))
     await settle()
     expect(reveal()?.hidden).toBe(false)
     expect(politeText()).toBe('')
@@ -756,22 +752,22 @@ describe('reveal', () => {
       return (
         <>
           <button type="button" onClick={() => setValue('other')}>
-            Sätt
+            Set
           </button>
           <OtherQuestion value={value} onValueChange={setValue} />
         </>
       )
     }
-    await render(sweden(<Outside />))
-    await userEvent.click(page.getByRole('button', { name: 'Sätt' }))
+    await render(english(<Outside />))
+    await userEvent.click(page.getByRole('button', { name: 'Set' }))
     await settle()
     expect(reveal()?.hidden).toBe(false)
     expect(politeText()).toBe('')
   })
 
   test('it is not announced when the reveal is hidden', async () => {
-    await render(sweden(<OtherQuestion defaultValue="other" />))
-    await userEvent.click(radio('Via en vän'))
+    await render(english(<OtherQuestion defaultValue="other" />))
+    await userEvent.click(radio('Through a friend'))
     await settle()
     expect(reveal()?.hidden).toBe(true)
     expect(politeText()).toBe('')
@@ -779,20 +775,20 @@ describe('reveal', () => {
 
   test('it is not announced when a form reset hides it', async () => {
     await render(
-      sweden(
+      english(
         <form>
           <OtherQuestion defaultValue="friend" />
-          <button type="reset">Rensa</button>
+          <button type="reset">Reset</button>
         </form>,
       ),
     )
-    await userEvent.click(radio('Annat'))
+    await userEvent.click(radio('Other'))
     await settle()
     await expect(
       readAnnouncements(
         document.body,
         async () => {
-          await userEvent.click(page.getByRole('button', { name: 'Rensa' }))
+          await userEvent.click(page.getByRole('button', { name: 'Reset' }))
         },
         { timeout: 600 },
       ),
@@ -804,38 +800,38 @@ describe('reveal', () => {
 
   test('a required Field in the reveal is required', async () => {
     await render(
-      sweden(
+      english(
         <RadioGroup.Root name="source" defaultValue="other">
           <Field.Root>
             <RadioGroup.Radio value="other" />
-            <Field.Label>Annat</Field.Label>
+            <Field.Label>Other</Field.Label>
           </Field.Root>
           <RadioGroup.Reveal value="other">
             <Field.Root required>
-              <Field.Label>Beskriv</Field.Label>
+              <Field.Label>Describe</Field.Label>
               <TextInput />
             </Field.Root>
           </RadioGroup.Reveal>
         </RadioGroup.Root>,
       ),
     )
-    await expect.element(page.getByRole('textbox', { name: /Beskriv/ })).toBeRequired()
+    await expect.element(page.getByRole('textbox', { name: /Describe/ })).toBeRequired()
   })
 
   test('a help text in the reveal is not in the group’s description', async () => {
     await render(
-      sweden(
+      english(
         <RadioGroup.Root name="source" defaultValue="other">
-          <RadioGroup.Legend>Hur?</RadioGroup.Legend>
+          <RadioGroup.Legend>How?</RadioGroup.Legend>
           <Field.Root>
             <RadioGroup.Radio value="other" />
-            <Field.Label>Annat</Field.Label>
+            <Field.Label>Other</Field.Label>
           </Field.Root>
           <RadioGroup.Reveal value="other">
             <Field.Root>
-              <Field.Label>Beskriv</Field.Label>
+              <Field.Label>Describe</Field.Label>
               <TextInput />
-              <Field.HelpText>Några ord</Field.HelpText>
+              <Field.HelpText>A few words</Field.HelpText>
             </Field.Root>
           </RadioGroup.Reveal>
         </RadioGroup.Root>,
@@ -844,26 +840,26 @@ describe('reveal', () => {
     const group = page.getByRole('group').element()
     expect(group.getAttribute('aria-describedby') ?? '').toBe('')
     await expect
-      .element(page.getByRole('textbox', { name: /Beskriv/ }))
-      .toHaveAccessibleDescription('Några ord')
+      .element(page.getByRole('textbox', { name: /Describe/ }))
+      .toHaveAccessibleDescription('A few words')
   })
 
   describe('read aloud', () => {
-    const controlling = 'radio, Annat, not checked, 1 control, position 2, set size 2'
-    const field = 'textbox, Beskriv (valfritt)'
+    const controlling = 'radio, Other, not checked, 1 control, position 2, set size 2'
+    const field = 'textbox, Describe (optional)'
 
     test('entering the group reads the radios, the controlling one with its control, and no field', async () => {
-      const { container } = await render(sweden(<OtherQuestion />))
+      const { container } = await render(english(<OtherQuestion />))
       const phrases = await readAloud(container)
-      expect(phrases).toContain('group, Hur hörde du om oss? (valfritt)')
-      expect(phrases).toContain('radio, Via en vän, not checked, position 1, set size 2')
+      expect(phrases).toContain('group, How did you hear about us? (optional)')
+      expect(phrases).toContain('radio, Through a friend, not checked, position 1, set size 2')
       expect(phrases).toContain(controlling)
       expect(phrases).not.toContain(field)
     })
 
     test('after checking Other the field is read straight after its radio', async () => {
-      const { container } = await render(sweden(<OtherQuestion />))
-      await userEvent.click(radio('Annat'))
+      const { container } = await render(english(<OtherQuestion />))
+      await userEvent.click(radio('Other'))
       await settle()
       const phrases = await readAloud(container)
       expect(phrases.indexOf(field)).toBeGreaterThan(phrases.indexOf(controlling))
@@ -871,31 +867,31 @@ describe('reveal', () => {
     })
 
     test('the field reads its label and optional marker as a textbox', async () => {
-      const { container } = await render(sweden(<OtherQuestion defaultValue="other" />))
+      const { container } = await render(english(<OtherQuestion defaultValue="other" />))
       const phrases = await readAloud(container)
-      expect(phrases).toContain('radio, Annat, checked, 1 control, position 2, set size 2')
+      expect(phrases).toContain('radio, Other, checked, 1 control, position 2, set size 2')
       expect(phrases).toContain(field)
     })
 
     test('checking another option removes the field from the reading order', async () => {
-      const { container } = await render(sweden(<OtherQuestion defaultValue="other" />))
-      await userEvent.click(radio('Via en vän'))
+      const { container } = await render(english(<OtherQuestion defaultValue="other" />))
+      await userEvent.click(radio('Through a friend'))
       const phrases = await readAloud(container)
       expect(phrases).not.toContain(field)
-      expect(phrases).not.toContain('Beskriv')
+      expect(phrases).not.toContain('Describe')
     })
 
     test('a form reset removes the field from the reading order', async () => {
       const { container } = await render(
-        sweden(
+        english(
           <form>
             <OtherQuestion />
-            <button type="reset">Rensa</button>
+            <button type="reset">Reset</button>
           </form>,
         ),
       )
-      await userEvent.click(radio('Annat'))
-      await userEvent.click(page.getByRole('button', { name: 'Rensa' }))
+      await userEvent.click(radio('Other'))
+      await userEvent.click(page.getByRole('button', { name: 'Reset' }))
       await vi.waitFor(() => {
         expect(reveal()?.hidden).toBe(true)
       })
@@ -905,9 +901,9 @@ describe('reveal', () => {
 
   test('a Reveal outside a RadioGroup warns once', async () => {
     await render(
-      sweden(
+      english(
         <RadioGroup.Reveal value="other">
-          <p>Mer</p>
+          <p>More</p>
         </RadioGroup.Reveal>,
       ),
     )
@@ -916,67 +912,67 @@ describe('reveal', () => {
 
   test('the message can be overridden per instance', async () => {
     await render(
-      sweden(
+      english(
         <RadioGroup.Root name="source">
           <Field.Root>
             <RadioGroup.Radio value="other" />
-            <Field.Label>Annat</Field.Label>
+            <Field.Label>Other</Field.Label>
           </Field.Root>
-          <RadioGroup.Reveal value="other" messages={{ revealShown: 'Skriv mer nedan' }}>
-            <p>Mer</p>
+          <RadioGroup.Reveal value="other" messages={{ revealShown: 'Write more below' }}>
+            <p>More</p>
           </RadioGroup.Reveal>
         </RadioGroup.Root>,
       ),
     )
-    await userEvent.click(radio('Annat'))
+    await userEvent.click(radio('Other'))
     await vi.waitFor(() => {
-      expect(politeText()).toBe('Skriv mer nedan')
+      expect(politeText()).toBe('Write more below')
     })
   })
 
   test('ArrowDown moves from the radio to the next radio, not into the revealed field', async () => {
-    await render(sweden(<OtherQuestion defaultValue="friend" />))
-    radio('Via en vän').element().focus()
+    await render(english(<OtherQuestion defaultValue="friend" />))
+    radio('Through a friend').element().focus()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(radio('Annat')).toHaveFocus()
+    await expect.element(radio('Other')).toHaveFocus()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(radio('Via en vän')).toHaveFocus()
+    await expect.element(radio('Through a friend')).toHaveFocus()
   })
 
   test('Tab from the checked radio reaches the revealed field', async () => {
-    await render(sweden(<OtherQuestion defaultValue="other" />))
-    radio('Annat').element().focus()
+    await render(english(<OtherQuestion defaultValue="other" />))
+    radio('Other').element().focus()
     await userEvent.tab()
-    await expect.element(page.getByRole('textbox', { name: /Beskriv/ })).toHaveFocus()
+    await expect.element(page.getByRole('textbox', { name: /Describe/ })).toHaveFocus()
   })
 
   test('ArrowUp moves from the second radio back to the first, past the revealed field', async () => {
-    await render(sweden(<OtherQuestion defaultValue="other" />))
-    radio('Annat').element().focus()
+    await render(english(<OtherQuestion defaultValue="other" />))
+    radio('Other').element().focus()
     await userEvent.keyboard('{ArrowUp}')
-    await expect.element(radio('Via en vän')).toHaveFocus()
+    await expect.element(radio('Through a friend')).toHaveFocus()
   })
 
   test('Tab from the revealed field continues after the group', async () => {
     await render(
-      sweden(
+      english(
         <>
           <OtherQuestion defaultValue="other" />
-          <button type="button">Skicka</button>
+          <button type="button">Submit</button>
         </>,
       ),
     )
-    radio('Annat').element().focus()
+    radio('Other').element().focus()
     await userEvent.tab()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Skicka' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Submit' })).toHaveFocus()
   })
 
   test('Shift+Tab from the revealed field returns to the radio', async () => {
-    await render(sweden(<OtherQuestion defaultValue="other" />))
-    await userEvent.click(page.getByRole('textbox', { name: /Beskriv/ }))
+    await render(english(<OtherQuestion defaultValue="other" />))
+    await userEvent.click(page.getByRole('textbox', { name: /Describe/ }))
     await userEvent.tab({ shift: true })
-    await expect.element(radio('Annat')).toHaveFocus()
+    await expect.element(radio('Other')).toHaveFocus()
   })
 })
 

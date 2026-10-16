@@ -32,11 +32,11 @@ export interface TagGroupRootProps extends HTMLAttributes<HTMLDivElement>, UseTa
  *
  * @example
  * <TagGroup.Root>
- *   <TagGroup.Label>Valda filter</TagGroup.Label>
+ *   <TagGroup.Label>Selected filters</TagGroup.Label>
  *   <TagGroup.List>
- *     <Tag.Root><Tag.Remove onRemove={() => remove('2025')}>År: 2025</Tag.Remove></Tag.Root>
+ *     <Tag.Root><Tag.Remove onRemove={() => remove('2025')}>Year: 2025</Tag.Remove></Tag.Root>
  *   </TagGroup.List>
- *   <TagGroup.Empty>Inga filter valda</TagGroup.Empty>
+ *   <TagGroup.Empty>No filters selected</TagGroup.Empty>
  * </TagGroup.Root>
  */
 export function TagGroupRoot({

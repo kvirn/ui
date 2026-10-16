@@ -1,5 +1,4 @@
 import { themeStorageKey } from '@kvirn-ui/core'
-import { sv } from '@kvirn-ui/i18n/sv'
 import { hydrateRoot } from 'react-dom/client'
 import type { Root } from 'react-dom/client'
 import { renderToString } from 'react-dom/server'
@@ -21,7 +20,7 @@ afterEach(() => {
 test('server render and hydration match, then the stored theme applies', async () => {
   localStorage.setItem(themeStorageKey, JSON.stringify({ colorScheme: 'dark' }))
   const app = (
-    <KvirnProvider locale="sv-SE" messages={sv} timeZone="Europe/Stockholm">
+    <KvirnProvider locale="en" timeZone="Europe/Stockholm">
       <KvirnThemeScript nonce="r4nd0m" />
       <main>
         <ProviderFixture />
@@ -35,7 +34,7 @@ test('server render and hydration match, then the stored theme applies', async (
   container.innerHTML = serverHtml
   document.body.append(container)
   // The server knows nothing about the visitor: defaults, and no env.
-  expect(container.textContent).toContain('Används nu: Ljust, Normal kontrast')
+  expect(container.textContent).toContain('In use: Light, Standard contrast')
 
   const recoverableErrors: unknown[] = []
   const consoleError = vi.spyOn(console, 'error')
@@ -45,10 +44,8 @@ test('server render and hydration match, then the stored theme applies', async (
     },
   })
 
-  await expect.element(page.getByRole('radio', { name: 'Mörkt' })).toBeChecked()
-  await expect
-    .element(page.getByText('Används nu: Mörkt, Normal kontrast, Full rörelse'))
-    .toBeVisible()
+  await expect.element(page.getByRole('radio', { name: 'Dark' })).toBeChecked()
+  await expect.element(page.getByText('In use: Dark, Standard contrast, Full motion')).toBeVisible()
   expect(recoverableErrors).toEqual([])
   expect(consoleError).not.toHaveBeenCalled()
   consoleError.mockRestore()
@@ -56,13 +53,13 @@ test('server render and hydration match, then the stored theme applies', async (
 
 test('renderToString without an env gives the defaults and both live regions, no toast region', () => {
   const html = renderToString(
-    <KvirnProvider locale="sv-SE" messages={sv} timeZone="Europe/Stockholm">
+    <KvirnProvider locale="en" timeZone="Europe/Stockholm">
       <ThemeSwitcherFixture />
     </KvirnProvider>,
   )
   const template = document.createElement('template')
   template.innerHTML = html
-  expect(template.content.textContent).toContain('Används nu: Ljust, Normal kontrast, Full rörelse')
+  expect(template.content.textContent).toContain('In use: Light, Standard contrast, Full motion')
   expect(template.content.querySelector('output[aria-live="polite"]')).not.toBeNull()
   expect(template.content.querySelector('[role="alert"][aria-live="assertive"]')).not.toBeNull()
   expect(template.content.querySelectorAll('[aria-live]')).toHaveLength(2)

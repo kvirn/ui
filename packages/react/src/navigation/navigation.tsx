@@ -35,7 +35,7 @@ interface NavigationPartComponentProps extends HTMLAttributes<HTMLElement> {
 
 export interface NavigationRootProps extends NavigationPartComponentProps {
   /**
-   * The navigation's accessible name, from your translations: `Huvudmeny`. Set as
+   * The navigation's accessible name, from your translations: `Main menu`. Set as
    * `aria-label`. Give a name, or `aria-labelledby` pointing at a visible heading (preferred
    * where one exists): a screen reader user picks a landmark by its name (WCAG 2.4.1, 2.4.6).
    * Two navigations on a page need two names. A dev warning fires without one.
@@ -118,7 +118,7 @@ export function NavigationRoot({ label, ref, ...otherProps }: NavigationRootProp
         if (other !== element && landmarkName(other) === name) {
           warnOnce(
             `navigation-duplicate-name:${name}`,
-            `Two navigation landmarks are both named "${name}", so a screen reader user can't tell them apart in the landmarks list. Give each its own name, for example "Huvudmeny" and "I det här avsnittet" (WCAG 2.4.1, 2.4.6).`,
+            `Two navigation landmarks are both named "${name}", so a screen reader user can't tell them apart in the landmarks list. Give each its own name, for example "Main menu" and "In this section" (WCAG 2.4.1, 2.4.6).`,
           )
           break
         }
@@ -259,15 +259,15 @@ NavigationLabel.displayName = 'Navigation.Label'
  * navigation items: the current page is a solid fill, and its ancestors are a quiet bold trail.
  *
  * @example
- * <Navigation.Root label="Huvudmeny">
+ * <Navigation.Root label="Main menu">
  *   <Navigation.List>
  *     <Navigation.Item>
  *       <Link.Root href="/start" current="page">Start</Link.Root>
  *     </Navigation.Item>
  *     <Navigation.Item>
- *       <Link.Root href="/bygga">Bygga och bo</Link.Root>
+ *       <Link.Root href="/building">Building and living</Link.Root>
  *       <Navigation.List>
- *         <Navigation.Item><Link.Root href="/bygglov">Bygglov</Link.Root></Navigation.Item>
+ *         <Navigation.Item><Link.Root href="/building-permit">Building permit</Link.Root></Navigation.Item>
  *       </Navigation.List>
  *     </Navigation.Item>
  *   </Navigation.List>

@@ -6,13 +6,13 @@ import { escapeTabValue, getPanelId, getTabId } from './tabs-ids.ts'
 
 describe('escapeTabValue', () => {
   test('keeps letters, digits and hyphens as they are', () => {
-    expect(escapeTabValue('uppgifter')).toBe('uppgifter')
-    expect(escapeTabValue('steg-2')).toBe('steg-2')
+    expect(escapeTabValue('details')).toBe('details')
+    expect(escapeTabValue('step-2')).toBe('step-2')
     expect(escapeTabValue('')).toBe('')
   })
 
   test('escapes a space, so an IDREF never holds one', () => {
-    expect(escapeTabValue('Bygga och bo')).toBe('Bygga_20_och_20_bo')
+    expect(escapeTabValue('Build and live')).toBe('Build_20_and_20_live')
   })
 
   test('escapes punctuation by its hex code point', () => {
@@ -21,6 +21,7 @@ describe('escapeTabValue', () => {
   })
 
   test('escapes letters outside ASCII, and characters outside the basic plane as one code point', () => {
+    // kv-lang-ok: a letter outside ASCII is the point of the test
     expect(escapeTabValue('Åre')).toBe('_c5_re')
     expect(escapeTabValue('😀')).toBe('_1f600_')
   })
@@ -32,7 +33,8 @@ describe('escapeTabValue', () => {
   })
 
   test('only gives characters that are safe in an id', () => {
-    for (const value of ['Bygga och bo', "a:b'c", 'a b\tc\nd', 'Åre 😀', '_', '<>&"']) {
+    // kv-lang-ok: a letter outside ASCII is the point of the test
+    for (const value of ['Build and live', "a:b'c", 'a b\tc\nd', 'Åre 😀', '_', '<>&"']) {
       expect(escapeTabValue(value)).toMatch(/^[A-Za-z0-9_-]*$/)
     }
   })
@@ -49,7 +51,7 @@ describe('escapeTabValue', () => {
       ' a b',
       'a:b',
       'a_3a_b',
-      'å',
+      'å', // kv-lang-ok: a letter outside ASCII is the point of the test
       '',
     ]
     const escaped = values.map((value) => escapeTabValue(value))
@@ -59,8 +61,8 @@ describe('escapeTabValue', () => {
 
 describe('getTabId and getPanelId', () => {
   test('join the root id, the part and the escaped value', () => {
-    expect(getTabId('root', 'Bygga och bo')).toBe('root-tab-Bygga_20_och_20_bo')
-    expect(getPanelId('root', 'Bygga och bo')).toBe('root-panel-Bygga_20_och_20_bo')
+    expect(getTabId('root', 'Build and live')).toBe('root-tab-Build_20_and_20_live')
+    expect(getPanelId('root', 'Build and live')).toBe('root-panel-Build_20_and_20_live')
   })
 
   test('a tab and its panel never share an id, and one value always gives the same ids', () => {

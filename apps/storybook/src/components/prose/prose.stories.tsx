@@ -34,10 +34,10 @@ const meta = {
   args: {
     children: (
       <>
-        <h2>Kontakta oss</h2>
-        <p>Vi svarar vardagar 9–16.</p>
+        <h2>Contact us</h2>
+        <p>We answer on weekdays 9 to 16.</p>
         <p>
-          <Link.Root href="#epost">Mejla kundcenter</Link.Root>
+          <Link.Root href="#epost">Email the customer centre</Link.Root>
         </p>
       </>
     ),
@@ -61,7 +61,7 @@ type Story = StoryObj<typeof meta>
 /** A heading, a paragraph and a link: a `<div>`, so it adds no landmark. */
 export const Default: Story = {
   play: async ({ canvas }) => {
-    const heading = canvas.getByRole('heading', { level: 2, name: 'Kontakta oss' })
+    const heading = canvas.getByRole('heading', { level: 2, name: 'Contact us' })
     await expect(heading.closest('.kv-prose')).not.toBeNull()
     await expect(canvas.queryByRole('article')).toBeNull()
   },
@@ -138,13 +138,14 @@ export const Sizes: Story = {
       {sizes.map(({ modifier, label }) => (
         <Prose key={label} className={modifier}>
           <h2>{label}</h2>
-          <p className="kv-lead">Vi svarar vardagar 9–16.</p>
+          <p className="kv-lead">We answer on weekdays 9 to 16.</p>
           <p>
-            Skicka in ansökan senast den 1 mars. Du får beslut inom <strong>fyra veckor</strong>.
+            Send in the application by 1 March. You get a decision within{' '}
+            <strong>four weeks</strong>.
           </p>
           <ul>
-            <li>Personbevis</li>
-            <li>Kopia av hyresavtal</li>
+            <li>Proof of identity</li>
+            <li>Copy of the lease</li>
           </ul>
         </Prose>
       ))}
@@ -178,8 +179,8 @@ export const FullWidthAndRoles: Story = {
       style={{ ['--kv-prose-color-links' as string]: 'var(--kv-color-text)' }}
     >
       <p>
-        <Link.Root href="#epost">Mejla kundcenter</Link.Root>, or a link in prose:{' '}
-        <a href="#epost">Mejla kundcenter</a>
+        <Link.Root href="#epost">Email the customer centre</Link.Root>, or a link in prose:{' '}
+        <a href="#epost">Email the customer centre</a>
       </p>
     </Prose>
   ),

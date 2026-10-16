@@ -68,9 +68,9 @@ const AccordionContext = createContext<{ hiddenUntilFound: boolean }>({ hiddenUn
  * <Accordion.Root>
  *   <Accordion.Item>
  *     <Accordion.Heading level={3}>
- *       <Accordion.Trigger>Hur ansöker jag?</Accordion.Trigger>
+ *       <Accordion.Trigger>How do I apply?</Accordion.Trigger>
  *     </Accordion.Heading>
- *     <Accordion.Panel>Du ansöker på Mina sidor.</Accordion.Panel>
+ *     <Accordion.Panel>You apply on My pages.</Accordion.Panel>
  *   </Accordion.Item>
  * </Accordion.Root>
  */

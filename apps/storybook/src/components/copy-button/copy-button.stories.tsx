@@ -26,6 +26,7 @@ const meta = {
   title: 'Components/Actions/CopyButton',
   component: CopyButton,
   args: { text: referenceNumber },
+  globals: { locale: 'en' },
   decorators: [withCopyMessages],
   argTypes: { textRef: { control: false } },
   parameters: {
@@ -41,12 +42,12 @@ function ReferenceNumber(props: Partial<React.ComponentProps<typeof CopyButton>>
   const numberRef = useRef<HTMLSpanElement>(null)
   return (
     <p>
-      Ditt ärendenummer är{' '}
+      Your case number is{' '}
       <span ref={numberRef} data-testid="number">
         {referenceNumber}
       </span>{' '}
       <CopyButton text={referenceNumber} textRef={numberRef} {...props}>
-        Kopiera ärendenumret
+        Copy the case number
       </CopyButton>
     </p>
   )
@@ -57,15 +58,15 @@ export const Default: Story = {
   beforeEach: () => stubClipboard({ writeText: async () => {} }),
   render: () => <ReferenceNumber />,
   play: async ({ canvas, userEvent }) => {
-    const button = canvas.getByRole('button', { name: 'Kopiera ärendenumret' })
+    const button = canvas.getByRole('button', { name: 'Copy the case number' })
     await expect(button).toHaveAttribute('type', 'button')
     await expectMinimumTargetSize(button)
     await userEvent.click(button)
     await waitFor(() => expect(button).toHaveAttribute('data-status', 'copied'))
     await waitFor(() =>
-      expect(canvas.getByText('Kopierat', { selector: '.kv-copy-status' })).toBeVisible(),
+      expect(canvas.getByText('Copied', { selector: '.kv-copy-status' })).toBeVisible(),
     )
-    await expect(canvas.getByRole('button', { name: 'Kopiera ärendenumret' })).toBe(button)
+    await expect(canvas.getByRole('button', { name: 'Copy the case number' })).toBe(button)
   },
 }
 
@@ -73,7 +74,7 @@ export const Default: Story = {
 export const DefaultLabel: Story = {
   render: (args) => <CopyButton {...args} />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: 'Kopiera' })).toBeVisible()
+    await expect(canvas.getByRole('button', { name: 'Copy' })).toBeVisible()
   },
 }
 
@@ -82,12 +83,10 @@ export const Failed: Story = {
   beforeEach: () => stubClipboard(undefined),
   render: () => <ReferenceNumber />,
   play: async ({ canvas, userEvent }) => {
-    const button = canvas.getByRole('button', { name: 'Kopiera ärendenumret' })
+    const button = canvas.getByRole('button', { name: 'Copy the case number' })
     await userEvent.click(button)
     await waitFor(() => expect(button).toHaveAttribute('data-status', 'failed'))
-    await expect(
-      canvas.getByText(/Det gick inte att kopiera/, { selector: '.kv-copy-status' }),
-    ).toBeVisible()
+    await expect(canvas.getByText(/Could not copy/, { selector: '.kv-copy-status' })).toBeVisible()
     await expect(window.getSelection()?.toString()).toBe(referenceNumber)
   },
 }
@@ -97,16 +96,16 @@ export const Disabled: Story = {
   render: () => (
     <p>
       <CopyButton text={referenceNumber} disabled>
-        Kopiera
+        Copy
       </CopyButton>{' '}
       <CopyButton text={referenceNumber} disabled focusableWhenDisabled>
-        Kopiera (fokuserbar)
+        Copy (focusable)
       </CopyButton>
     </p>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: /^Kopiera$/ })).toBeDisabled()
-    await expect(canvas.getByRole('button', { name: 'Kopiera (fokuserbar)' })).toHaveAttribute(
+    await expect(canvas.getByRole('button', { name: /^Copy$/ })).toBeDisabled()
+    await expect(canvas.getByRole('button', { name: 'Copy (focusable)' })).toHaveAttribute(
       'aria-disabled',
       'true',
     )
@@ -118,7 +117,7 @@ export const Keyboard: Story = {
   beforeEach: () => stubClipboard({ writeText: async () => {} }),
   render: () => <ReferenceNumber />,
   play: async ({ canvas, userEvent }) => {
-    const button = canvas.getByRole('button', { name: 'Kopiera ärendenumret' })
+    const button = canvas.getByRole('button', { name: 'Copy the case number' })
     await userEvent.tab()
     await expect(button).toHaveFocus()
     await userEvent.keyboard('{Enter}')
@@ -149,9 +148,9 @@ export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   render: () => (
     <p>
-      <CopyButton text={referenceNumber}>Kopiera</CopyButton>{' '}
+      <CopyButton text={referenceNumber}>Copy</CopyButton>{' '}
       <CopyButton text={referenceNumber} disabled focusableWhenDisabled>
-        Kopiera (fokuserbar)
+        Copy (focusable)
       </CopyButton>
     </p>
   ),
@@ -163,6 +162,7 @@ export const Narrow: Story = {
   render: () => (
     <div className="kv-story-narrow" data-testid="narrow">
       <CopyButton text={referenceNumber}>
+        {/* kv-lang-ok: long Finnish label hard case under locale fi */}
         Kopioi rakennuslupahakemuksen numero leikepöydälle
       </CopyButton>
     </div>
@@ -181,11 +181,9 @@ export const NarrowFailed: Story = {
     </div>
   ),
   play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Kopiera ärendenumret' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Copy the case number' }))
     await waitFor(() =>
-      expect(
-        canvas.getByText(/Det gick inte att kopiera/, { selector: '.kv-copy-status' }),
-      ).toBeVisible(),
+      expect(canvas.getByText(/Could not copy/, { selector: '.kv-copy-status' })).toBeVisible(),
     )
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
@@ -196,9 +194,9 @@ export const WithoutStatus: Story = {
   beforeEach: () => stubClipboard({ writeText: async () => {} }),
   render: () => <ReferenceNumber status={false} />,
   play: async ({ canvas, userEvent }) => {
-    const button = canvas.getByRole('button', { name: 'Kopiera ärendenumret' })
+    const button = canvas.getByRole('button', { name: 'Copy the case number' })
     await userEvent.click(button)
     await waitFor(() => expect(button).toHaveAttribute('data-status', 'copied'))
-    await expect(canvas.queryByText('Kopierat', { selector: '.kv-copy-status' })).toBeNull()
+    await expect(canvas.queryByText('Copied', { selector: '.kv-copy-status' })).toBeNull()
   },
 }

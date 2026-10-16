@@ -1,3 +1,4 @@
+import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
@@ -36,9 +37,9 @@ afterEach(() => {
 
 describe('rendering', () => {
   test('renders a native <a href> without a provider', async () => {
-    const { container } = await render(<Link.Root href="#ansok">Ansök</Link.Root>)
-    const link = page.getByRole('link', { name: 'Ansök' })
-    await expect.element(link).toHaveAttribute('href', '#ansok')
+    const { container } = await render(<Link.Root href="#apply">Apply</Link.Root>)
+    const link = page.getByRole('link', { name: 'Apply' })
+    await expect.element(link).toHaveAttribute('href', '#apply')
     await expect.element(link).not.toHaveAttribute('aria-current')
     await expect.element(link).not.toHaveAttribute('data-current')
     await expect.element(link).not.toHaveAttribute('rel')
@@ -64,13 +65,13 @@ describe('rendering', () => {
   test('forwards its ref, className and other anchor props', async () => {
     const ref = createRef<HTMLAnchorElement>()
     await render(
-      <Link.Root ref={ref} href="/fil.pdf" download className="lank" title="Hämta">
-        Blankett
+      <Link.Root ref={ref} href="/file.pdf" download className="download-link" title="Download">
+        Form
       </Link.Root>,
     )
-    const link = page.getByRole('link', { name: 'Blankett' })
+    const link = page.getByRole('link', { name: 'Form' })
     expect(ref.current).toBe(link.element())
-    await expect.element(link).toHaveClass('lank', 'kv-link')
+    await expect.element(link).toHaveClass('download-link', 'kv-link')
     await expect.element(link).toHaveAttribute('download', '')
   })
 
@@ -90,11 +91,11 @@ describe('rendering', () => {
       event.preventDefault(),
     )
     await render(
-      <Link.Root href="#ansok" onClick={onClick}>
-        Ansök
+      <Link.Root href="#apply" onClick={onClick}>
+        Apply
       </Link.Root>,
     )
-    const link = page.getByRole('link', { name: 'Ansök' })
+    const link = page.getByRole('link', { name: 'Apply' })
     await userEvent.keyboard('{Tab}')
     await expect.element(link).toHaveFocus()
     await userEvent.keyboard(' ')
@@ -108,14 +109,14 @@ describe('rendering', () => {
 describe('current', () => {
   test('current="page" sets aria-current and data-current', async () => {
     const { container } = await render(
-      <nav aria-label="Huvudmeny">
+      <nav aria-label="Main menu">
         <Link.Root href="#start">Start</Link.Root>
-        <Link.Root href="#ansok" current="page">
-          Ansök
+        <Link.Root href="#apply" current="page">
+          Apply
         </Link.Root>
       </nav>,
     )
-    const current = page.getByRole('link', { name: 'Ansök' })
+    const current = page.getByRole('link', { name: 'Apply' })
     await expect.element(current).toHaveAttribute('aria-current', 'page')
     await expect.element(current).toHaveAttribute('data-current', '')
     await expect
@@ -132,22 +133,22 @@ describe('current', () => {
     [true, 'true'],
   ] as const)('current=%s sets aria-current="%s"', async (current, ariaCurrent) => {
     await render(
-      <Link.Root href="#steg" current={current}>
-        Steg 2
+      <Link.Root href="#step" current={current}>
+        Step 2
       </Link.Root>,
     )
-    const link = page.getByRole('link', { name: 'Steg 2' })
+    const link = page.getByRole('link', { name: 'Step 2' })
     await expect.element(link).toHaveAttribute('aria-current', ariaCurrent)
     await expect.element(link).toHaveAttribute('data-current', '')
   })
 
   test('current={false} sets nothing', async () => {
     await render(
-      <Link.Root href="#steg" current={false}>
-        Steg 2
+      <Link.Root href="#step" current={false}>
+        Step 2
       </Link.Root>,
     )
-    const link = page.getByRole('link', { name: 'Steg 2' })
+    const link = page.getByRole('link', { name: 'Step 2' })
     await expect.element(link).not.toHaveAttribute('aria-current')
     await expect.element(link).not.toHaveAttribute('data-current')
   })
@@ -181,11 +182,11 @@ describe('new tab', () => {
   test('leaves rel alone without target="_blank"', async () => {
     await render(
       <Link.Root href="/om" rel="help">
-        Om tjänsten
+        About the service
       </Link.Root>,
     )
     await expect
-      .element(page.getByRole('link', { name: 'Om tjänsten' }))
+      .element(page.getByRole('link', { name: 'About the service' }))
       .toHaveAttribute('rel', 'help')
   })
 
@@ -223,9 +224,11 @@ describe('new-tab notice resolution', () => {
       </KvirnProvider>,
     )
     await expect
+      // kv-lang-ok: the sv catalog string
       .element(page.getByRole('link', { name: 'Digg (öppnas i en ny flik)' }))
       .toBeVisible()
     await expect
+      // kv-lang-ok: the fi catalog string
       .element(page.getByRole('link', { name: 'Suomi.fi (avautuu uuteen välilehteen)' }))
       .toBeVisible()
     expect(consoleWarn).not.toHaveBeenCalled()
@@ -233,8 +236,8 @@ describe('new-tab notice resolution', () => {
 
   test('a provider override beats the catalog', async () => {
     await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
-        <KvirnProvider messages={{ link: { newTabNotice: '(extern tjänst, ny flik)' } }}>
+      <KvirnProvider locale="en" messages={en}>
+        <KvirnProvider messages={{ link: { newTabNotice: '(external service, new tab)' } }}>
           <Link.Root href="https://www.digg.se/" target="_blank">
             Digg <Link.NewTabNotice />
           </Link.Root>
@@ -242,50 +245,50 @@ describe('new-tab notice resolution', () => {
       </KvirnProvider>,
     )
     await expect
-      .element(page.getByRole('link', { name: 'Digg (extern tjänst, ny flik)' }))
+      .element(page.getByRole('link', { name: 'Digg (external service, new tab)' }))
       .toBeVisible()
   })
 
   test('the instance messages prop beats the provider', async () => {
     await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <Link.Root
           href="https://www.digg.se/"
           target="_blank"
-          messages={{ newTabNotice: '(nytt fönster)' }}
+          messages={{ newTabNotice: '(new window)' }}
         >
           Digg <Link.NewTabNotice />
         </Link.Root>
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('link', { name: 'Digg (nytt fönster)' })).toBeVisible()
+    await expect.element(page.getByRole('link', { name: 'Digg (new window)' })).toBeVisible()
   })
 
   test('children beat every message', async () => {
     await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <Link.Root
           href="https://www.digg.se/"
           target="_blank"
-          messages={{ newTabNotice: '(nytt fönster)' }}
+          messages={{ newTabNotice: '(new window)' }}
         >
-          Digg <Link.NewTabNotice>(extern länk)</Link.NewTabNotice>
+          Digg <Link.NewTabNotice>(external link)</Link.NewTabNotice>
         </Link.Root>
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('link', { name: 'Digg (extern länk)' })).toBeVisible()
+    await expect.element(page.getByRole('link', { name: 'Digg (external link)' })).toBeVisible()
   })
 
   test('an empty instance override falls through to the provider and warns once', async () => {
     await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <Link.Root href="https://www.digg.se/" target="_blank" messages={{ newTabNotice: ' ' }}>
           Digg <Link.NewTabNotice />
         </Link.Root>
       </KvirnProvider>,
     )
     await expect
-      .element(page.getByRole('link', { name: 'Digg (öppnas i en ny flik)' }))
+      .element(page.getByRole('link', { name: 'Digg (opens in a new tab)' }))
       .toBeVisible()
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('link.newTabNotice')
@@ -300,46 +303,46 @@ describe('new-tab notice resolution', () => {
     await render(
       <>
         <Link.NewTabNotice />
-        <Link.NewTabNotice as="em">(extern länk)</Link.NewTabNotice>
+        <Link.NewTabNotice as="em">(external link)</Link.NewTabNotice>
       </>,
     )
     const notice = page.getByText('(opens in a new tab)')
     await expect.element(notice).toBeVisible()
-    expect(page.getByText('(extern länk)').element().tagName).toBe('EM')
+    expect(page.getByText('(external link)').element().tagName).toBe('EM')
   })
 
   test('as keeps the notice’s class and joins your own', async () => {
     await render(
-      <Link.NewTabNotice as="em" className="egen">
-        (extern länk)
+      <Link.NewTabNotice as="em" className="own">
+        (external link)
       </Link.NewTabNotice>,
     )
     await expect
-      .element(page.getByText('(extern länk)'))
-      .toHaveClass('kv-link-new-tab-notice', 'egen')
+      .element(page.getByText('(external link)'))
+      .toHaveClass('kv-link-new-tab-notice', 'own')
   })
 })
 
 describe('keyboard', () => {
   test('Tab moves focus to the link', async () => {
-    await render(<Link.Root href="#ansok">Ansök</Link.Root>)
+    await render(<Link.Root href="#apply">Apply</Link.Root>)
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('link', { name: 'Ansök' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Apply' })).toHaveFocus()
   })
 
   test('Shift+Tab moves focus off the link', async () => {
     await render(
       <>
-        <Link.Root href="#ansok">Ansök</Link.Root>
-        <Link.Root href="#kontakt">Kontakta oss</Link.Root>
+        <Link.Root href="#apply">Apply</Link.Root>
+        <Link.Root href="#contact">Contact oss</Link.Root>
       </>,
     )
     await userEvent.keyboard('{Tab}{Tab}')
-    await expect.element(page.getByRole('link', { name: 'Kontakta oss' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Contact oss' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('link', { name: 'Ansök' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Apply' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('link', { name: 'Ansök' })).not.toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Apply' })).not.toHaveFocus()
   })
 
   test('Enter on a new-tab link does not intercept the browser’s own handling', async () => {
@@ -367,23 +370,23 @@ describe('keyboard', () => {
 
 describe('router link', () => {
   function CurrentPathname() {
-    return <p>Nuvarande sida: {useMockPathname()}</p>
+    return <p>Current page: {useMockPathname()}</p>
   }
 
   test('renders the provider’s registered link component and navigates through it', async () => {
     const { container } = await render(
       <KvirnProvider linkComponent={mockRouterLinkComponent}>
         <MockRouterProvider initialPathname="/start">
-          <Link.Root href="/ansok">Ansök</Link.Root>
+          <Link.Root href="/apply">Apply</Link.Root>
           <CurrentPathname />
         </MockRouterProvider>
       </KvirnProvider>,
     )
-    const link = page.getByRole('link', { name: 'Ansök' })
+    const link = page.getByRole('link', { name: 'Apply' })
     await expect.element(link).toHaveAttribute('data-router-link', '')
-    await expect.element(link).toHaveAttribute('href', '/ansok')
+    await expect.element(link).toHaveAttribute('href', '/apply')
     await userEvent.click(link)
-    await expect.element(page.getByText('Nuvarande sida: /ansok')).toBeVisible()
+    await expect.element(page.getByText('Current page: /apply')).toBeVisible()
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -394,16 +397,16 @@ describe('router link', () => {
     await render(
       <KvirnProvider linkComponent={mockRouterLinkComponent}>
         <MockRouterProvider initialPathname="/start">
-          <Link.Root href="/ansok">Ansök</Link.Root>
+          <Link.Root href="/apply">Apply</Link.Root>
           <CurrentPathname />
         </MockRouterProvider>
       </KvirnProvider>,
     )
-    const link = page.getByRole('link', { name: 'Ansök' })
+    const link = page.getByRole('link', { name: 'Apply' })
     await userEvent.keyboard('{Tab}')
     await expect.element(link).toHaveFocus()
     await userEvent.keyboard('{Enter}')
-    await expect.element(page.getByText('Nuvarande sida: /ansok')).toBeVisible()
+    await expect.element(page.getByText('Current page: /apply')).toBeVisible()
     await expect.element(link).toHaveFocus()
     expect(Reflect.get(window, 'kvirnPageMarker')).toBe(pageMarker)
     Reflect.deleteProperty(window, 'kvirnPageMarker')
@@ -413,11 +416,11 @@ describe('router link', () => {
     await render(
       <KvirnProvider linkComponent={mockRouterLinkComponent}>
         <Link.Root as="a" href="#fil" download>
-          Blankett
+          Form
         </Link.Root>
       </KvirnProvider>,
     )
-    const link = page.getByRole('link', { name: 'Blankett' })
+    const link = page.getByRole('link', { name: 'Form' })
     await expect.element(link).not.toHaveAttribute('data-router-link')
     await expect.element(link).toHaveAttribute('href', '#fil')
     await expect.element(link).toHaveAttribute('download', '')
@@ -434,10 +437,10 @@ describe('router link', () => {
     }
     await render(
       <Link.Root as={DesignSystemLink} ref={ref} href="#fil" className="fran-link" current="page">
-        Blankett
+        Form
       </Link.Root>,
     )
-    const link = page.getByRole('link', { name: 'Blankett' })
+    const link = page.getByRole('link', { name: 'Form' })
     await expect.element(link).toHaveAttribute('data-design-system', '')
     await expect.element(link).toHaveClass('kv-link', 'fran-link')
     await expect.element(link).toHaveAttribute('aria-current', 'page')
@@ -471,21 +474,21 @@ describe('router link', () => {
   test('warns in development when the link component does not render an <a> with its ref', async () => {
     await render(
       <KvirnProvider linkComponent={brokenLinkComponent}>
-        <Link.Root href="/ansok">Ansök</Link.Root>
+        <Link.Root href="/apply">Apply</Link.Root>
       </KvirnProvider>,
     )
-    await expect.element(page.getByText('Ansök')).toBeVisible()
+    await expect.element(page.getByText('Apply')).toBeVisible()
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('forward its ref')
   })
 
   test('warns in development when as resolves to something other than an <a>', async () => {
     await render(
-      <Link.Root href="/ansok" as="span">
-        Ansök
+      <Link.Root href="/apply" as="span">
+        Apply
       </Link.Root>,
     )
-    await expect.element(page.getByText('Ansök')).toBeVisible()
+    await expect.element(page.getByText('Apply')).toBeVisible()
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('<span>')
   })
@@ -495,11 +498,11 @@ describe('focus visible', () => {
   test('sets data-focus-visible on keyboard focus only', async () => {
     await render(
       <>
-        <Link.Root href="#ett">Ett</Link.Root>
-        <Link.Root href="#tva">Två</Link.Root>
+        <Link.Root href="#one">One</Link.Root>
+        <Link.Root href="#two">Two</Link.Root>
       </>,
     )
-    const first = page.getByRole('link', { name: 'Ett' })
+    const first = page.getByRole('link', { name: 'One' })
     await userEvent.keyboard('{Tab}')
     await expect.element(first).toHaveAttribute('data-focus-visible', '')
     await userEvent.keyboard('{Tab}')
@@ -520,11 +523,11 @@ describe('useLink', () => {
 
   test('gives spreadable linkProps and the resolved notice for your own <a>', async () => {
     const { container } = await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <HookLink href="https://www.digg.se/" target="_blank" current="page" label="Digg" />
       </KvirnProvider>,
     )
-    const link = page.getByRole('link', { name: 'Digg (öppnas i en ny flik)' })
+    const link = page.getByRole('link', { name: 'Digg (opens in a new tab)' })
     await expect.element(link).toHaveAttribute('rel', 'noopener noreferrer')
     await expect.element(link).toHaveAttribute('target', '_blank')
     await expect.element(link).toHaveAttribute('aria-current', 'page')
@@ -553,7 +556,7 @@ describe('Link.Icon', () => {
             <path d="M4 12h16" />
           </svg>
         </Link.Icon>
-        Ansök om bygglov <Link.NewTabNotice />
+        Apply for a building permit <Link.NewTabNotice />
       </Link.Root>,
     )
     const icon = page.getByTestId('icon')
@@ -562,7 +565,7 @@ describe('Link.Icon', () => {
     expect(icon.element().className).toBe('kv-link-icon')
     // Visible label = name (2.5.3): the icon adds nothing to it.
     await expect
-      .element(page.getByRole('link', { name: 'Ansök om bygglov (opens in a new tab)' }))
+      .element(page.getByRole('link', { name: 'Apply for a building permit (opens in a new tab)' }))
       .toBeVisible()
     await expect.element(page.getByRole('link')).toHaveClass('kv-link', 'kv-link--service')
     await expectNoA11yViolations(container)
@@ -572,24 +575,24 @@ describe('Link.Icon', () => {
   test('works in a plain link, and takes span props, a ref and as', async () => {
     const ref = createRef<HTMLSpanElement>()
     await render(
-      <Link.Root href="#ansok">
+      <Link.Root href="#apply">
         <Link.Icon ref={ref} className="min-ikon" data-testid="icon">
           →
         </Link.Icon>
-        Ansök
+        Apply
       </Link.Root>,
     )
     const icon = page.getByTestId('icon')
     expect(ref.current).toBe(icon.element())
     await expect.element(icon).toHaveClass('kv-link-icon', 'min-ikon')
-    await expect.element(page.getByRole('link', { name: 'Ansök' })).toBeVisible()
+    await expect.element(page.getByRole('link', { name: 'Apply' })).toBeVisible()
   })
 
   test('as="i" keeps the decoration: aria-hidden and the class', async () => {
     await render(
-      <Link.Root href="#ansok">
+      <Link.Root href="#apply">
         <Link.Icon as="i">→</Link.Icon>
-        Ansök
+        Apply
       </Link.Root>,
     )
     const icon = page.getByText('→')
@@ -601,9 +604,9 @@ describe('Link.Icon', () => {
   test('a tag outside the list warns once and falls back to the default element', async () => {
     const notAllowed = 'div' as LinkIconProps['as']
     await render(
-      <Link.Root href="#ansok">
+      <Link.Root href="#apply">
         <Link.Icon as={notAllowed}>→</Link.Icon>
-        Ansök
+        Apply
       </Link.Root>,
     )
     expect(page.getByText('→').element().tagName).toBe('SPAN')
@@ -621,7 +624,7 @@ describe('Link.Icon', () => {
 describe('server rendering', () => {
   test('renders the link and its notice to a string without touching the page', () => {
     const html = renderToString(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <Link.Root href="https://www.digg.se/" target="_blank" current="page">
           Digg <Link.NewTabNotice />
         </Link.Root>
@@ -630,7 +633,7 @@ describe('server rendering', () => {
     // The provider adds its two empty live regions after the link.
     const link = html.slice(0, html.indexOf('</a>') + '</a>'.length)
     expect(link).toBe(
-      '<a href="https://www.digg.se/" class="kv-link" target="_blank" rel="noopener noreferrer" aria-current="page" data-current="">Digg <span class="kv-link-new-tab-notice">(öppnas i en ny flik)</span></a>',
+      '<a href="https://www.digg.se/" class="kv-link" target="_blank" rel="noopener noreferrer" aria-current="page" data-current="">Digg <span class="kv-link-new-tab-notice">(opens in a new tab)</span></a>',
     )
   })
 })
@@ -644,12 +647,12 @@ describe('names', () => {
     expect(LinkNewTabNotice.displayName).toBe('Link.NewTabNotice')
     // The callable root is deprecated but keeps working.
     await render(
-      <Link href="#ansok" target="_blank">
-        Ansök <LinkNewTabNotice />
+      <Link href="#apply" target="_blank">
+        Apply <LinkNewTabNotice />
       </Link>,
     )
     await expect
-      .element(page.getByRole('link', { name: 'Ansök (opens in a new tab)' }))
+      .element(page.getByRole('link', { name: 'Apply (opens in a new tab)' }))
       .toHaveAttribute('rel', 'noopener noreferrer')
   })
 })

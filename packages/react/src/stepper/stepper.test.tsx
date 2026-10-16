@@ -57,10 +57,10 @@ describe('Stepper', () => {
 
   test.each([
     ['en', en, 'Step 2 of 5', 'Step 2 of 5: Name'],
-    ['sv', sv, 'Steg 2 av 5', 'Steg 2 av 5: Name'],
-    ['nb', nb, 'Steg 2 av 5', 'Steg 2 av 5: Name'],
-    ['nn', nn, 'Steg 2 av 5', 'Steg 2 av 5: Name'],
-    ['fi', fi, 'Vaihe 2/5', 'Vaihe 2/5: Name'],
+    ['sv', sv, 'Steg 2 av 5', 'Steg 2 av 5: Name'], // kv-lang-ok: the sv catalog strings
+    ['nb', nb, 'Steg 2 av 5', 'Steg 2 av 5: Name'], // kv-lang-ok: the nb catalog strings
+    ['nn', nn, 'Steg 2 av 5', 'Steg 2 av 5: Name'], // kv-lang-ok: the nn catalog strings
+    ['fi', fi, 'Vaihe 2/5', 'Vaihe 2/5: Name'], // kv-lang-ok: the fi catalog strings
   ] as const)(
     'the %s catalog has both messages with the placeholders',
     async (locale, messages, status, statusWithName) => {
@@ -82,6 +82,7 @@ describe('Stepper', () => {
       </KvirnProvider>,
     )
     expect(page.getByTestId('stepper').element().textContent).toBe(
+      // kv-lang-ok: the sv catalog string, with the locale number format
       `Steg 2 av ${new Intl.NumberFormat('sv').format(1000)}`,
     )
   })
@@ -136,7 +137,7 @@ describe('Stepper', () => {
 
   test('useStepper gives the text, the element and the class', async () => {
     function Own() {
-      const stepper = useStepper({ current: 3, total: 4, name: 'Adress' })
+      const stepper = useStepper({ current: 3, total: 4, name: 'Address' })
       return (
         <p {...stepper.rootProps} data-testid="own" data-element={stepper.element}>
           {stepper.text}
@@ -145,7 +146,7 @@ describe('Stepper', () => {
     }
     await render(<Own />)
     const element = page.getByTestId('own').element()
-    expect(element.textContent).toBe('Step 3 of 4: Adress')
+    expect(element.textContent).toBe('Step 3 of 4: Address')
     expect(element.dataset.element).toBe('p')
   })
 
@@ -202,7 +203,7 @@ describe('Stepper', () => {
       const Tag = tag
       await render(
         <Tag>
-          Rubrik <Stepper current={1} total={2} />
+          Heading <Stepper current={1} total={2} />
         </Tag>,
       )
       expect(warnedWith('so its text joins that name')).toBe(true)
@@ -212,14 +213,14 @@ describe('Stepper', () => {
     const wrappers = {
       summary: (
         <details open>
-          <summary>Rubrik {stepper}</summary>
+          <summary>Heading {stepper}</summary>
         </details>
       ),
-      button: <button type="button">Rubrik {stepper}</button>,
-      a: <a href="/">Rubrik {stepper}</a>,
+      button: <button type="button">Heading {stepper}</button>,
+      a: <a href="/">Heading {stepper}</a>,
       caption: (
         <table>
-          <caption>Rubrik {stepper}</caption>
+          <caption>Heading {stepper}</caption>
         </table>
       ),
     }
@@ -235,7 +236,7 @@ describe('Stepper', () => {
     test('does not warn directly after the heading', async () => {
       await render(
         <>
-          <h1>Rubrik</h1>
+          <h1>Heading</h1>
           <Stepper current={1} total={2} />
         </>,
       )
@@ -247,9 +248,9 @@ describe('Stepper', () => {
     function Around() {
       return (
         <KvirnProvider>
-          <Button>Tillbaka</Button>
+          <Button>Back</Button>
           <Stepper current={2} total={5} />
-          <input aria-label="Fält" />
+          <input aria-label="Field" />
         </KvirnProvider>
       )
     }
@@ -257,16 +258,16 @@ describe('Stepper', () => {
     test('Tab passes over it', async () => {
       await render(<Around />)
       await userEvent.keyboard('{Tab}')
-      await expect.element(page.getByRole('button', { name: 'Tillbaka' })).toHaveFocus()
+      await expect.element(page.getByRole('button', { name: 'Back' })).toHaveFocus()
       await userEvent.keyboard('{Tab}')
-      await expect.element(page.getByRole('textbox', { name: 'Fält' })).toHaveFocus()
+      await expect.element(page.getByRole('textbox', { name: 'Field' })).toHaveFocus()
     })
 
     test('Shift+Tab passes over it', async () => {
       await render(<Around />)
-      page.getByRole('textbox', { name: 'Fält' }).element().focus()
+      page.getByRole('textbox', { name: 'Field' }).element().focus()
       await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-      await expect.element(page.getByRole('button', { name: 'Tillbaka' })).toHaveFocus()
+      await expect.element(page.getByRole('button', { name: 'Back' })).toHaveFocus()
     })
   })
 

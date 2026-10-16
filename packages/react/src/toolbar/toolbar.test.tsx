@@ -47,24 +47,24 @@ function TextToolbar({
   return (
     <>
       <button type="button" style={fixtureButtonStyle}>
-        Före
+        Before
       </button>
-      <Toolbar.Root aria-label="Formatering" orientation={orientation} loop={loop}>
+      <Toolbar.Root aria-label="Formatting" orientation={orientation} loop={loop}>
         {children ?? (
           <>
-            <Toolbar.Group aria-label="Ångra">
-              <Toolbar.Button style={fixtureButtonStyle}>Ångra</Toolbar.Button>
-              <Toolbar.Button style={fixtureButtonStyle}>Gör om</Toolbar.Button>
+            <Toolbar.Group aria-label="Undo">
+              <Toolbar.Button style={fixtureButtonStyle}>Undo</Toolbar.Button>
+              <Toolbar.Button style={fixtureButtonStyle}>Redo</Toolbar.Button>
             </Toolbar.Group>
-            <Toolbar.Group aria-label="Textstil">
-              <Toolbar.Toggle style={fixtureButtonStyle}>Fet</Toolbar.Toggle>
-              <Toolbar.Toggle style={fixtureButtonStyle}>Kursiv</Toolbar.Toggle>
+            <Toolbar.Group aria-label="Text style">
+              <Toolbar.Toggle style={fixtureButtonStyle}>Bold</Toolbar.Toggle>
+              <Toolbar.Toggle style={fixtureButtonStyle}>Italic</Toolbar.Toggle>
             </Toolbar.Group>
           </>
         )}
       </Toolbar.Root>
       <button type="button" style={fixtureButtonStyle}>
-        Efter
+        After
       </button>
     </>
   )
@@ -73,11 +73,11 @@ function TextToolbar({
 describe('rendering', () => {
   test('is a div with role="toolbar", its name and the part class, and no aria-orientation when horizontal', async () => {
     const { container } = await render(<TextToolbar />)
-    const toolbar = page.getByRole('toolbar', { name: 'Formatering' })
+    const toolbar = page.getByRole('toolbar', { name: 'Formatting' })
     expect(toolbar.element().tagName).toBe('DIV')
     await expect.element(toolbar).toHaveClass('kv-toolbar')
     await expect.element(toolbar).not.toHaveAttribute('aria-orientation')
-    await expect.element(page.getByRole('group', { name: 'Textstil' })).toBeVisible()
+    await expect.element(page.getByRole('group', { name: 'Text style' })).toBeVisible()
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -85,7 +85,7 @@ describe('rendering', () => {
   test('vertical sets aria-orientation="vertical"', async () => {
     await render(<TextToolbar orientation="vertical" />)
     await expect
-      .element(page.getByRole('toolbar', { name: 'Formatering' }))
+      .element(page.getByRole('toolbar', { name: 'Formatting' }))
       .toHaveAttribute('aria-orientation', 'vertical')
   })
 
@@ -95,7 +95,7 @@ describe('rendering', () => {
       <>
         <Toolbar.Root
           ref={ref}
-          aria-label="Åtgärder"
+          aria-label="Actions"
           className="egen"
           aria-controls="redigerare"
           data-egen=""
@@ -111,7 +111,7 @@ describe('rendering', () => {
         </Toolbar.Root>
       </>,
     )
-    const toolbar = page.getByRole('toolbar', { name: 'Åtgärder' })
+    const toolbar = page.getByRole('toolbar', { name: 'Actions' })
     expect(ref.current).toBe(toolbar.element())
     await expect.element(toolbar).toHaveClass('kv-toolbar', 'egen')
     await expect.element(toolbar).toHaveAttribute('aria-controls', 'redigerare')
@@ -126,76 +126,76 @@ describe('rendering', () => {
     const onClick = vi.fn<() => void>()
     await render(
       <TextToolbar>
-        <Toolbar.Button onClick={onClick}>Ångra</Toolbar.Button>
-        <Toolbar.Toggle>Fet</Toolbar.Toggle>
-        <Toolbar.Toggle defaultPressed>Kursiv</Toolbar.Toggle>
+        <Toolbar.Button onClick={onClick}>Undo</Toolbar.Button>
+        <Toolbar.Toggle>Bold</Toolbar.Toggle>
+        <Toolbar.Toggle defaultPressed>Italic</Toolbar.Toggle>
       </TextToolbar>,
     )
-    await expect.element(button('Ångra')).toHaveAttribute('type', 'button')
-    await expect.element(button('Fet')).toHaveAttribute('aria-pressed', 'false')
-    await expect.element(button('Kursiv')).toHaveAttribute('aria-pressed', 'true')
-    await userEvent.click(button('Ångra'))
+    await expect.element(button('Undo')).toHaveAttribute('type', 'button')
+    await expect.element(button('Bold')).toHaveAttribute('aria-pressed', 'false')
+    await expect.element(button('Italic')).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.click(button('Undo'))
     expect(onClick).toHaveBeenCalledTimes(1)
-    await userEvent.click(button('Fet'))
-    await expect.element(button('Fet')).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.click(button('Bold'))
+    await expect.element(button('Bold')).toHaveAttribute('aria-pressed', 'true')
   })
 
   test('Toolbar.Item is a button by default, and takes the roving props', async () => {
     await render(
       <TextToolbar>
-        <Toolbar.Item>Länk</Toolbar.Item>
-        <Toolbar.Item>Bild</Toolbar.Item>
-        <Toolbar.Item>Tabell</Toolbar.Item>
+        <Toolbar.Item>Link</Toolbar.Item>
+        <Toolbar.Item>Image</Toolbar.Item>
+        <Toolbar.Item>Table</Toolbar.Item>
       </TextToolbar>,
     )
-    await expect.element(button('Länk')).toHaveAttribute('type', 'button')
-    await expect.element(button('Länk')).toHaveAttribute('tabindex', '0')
-    await expect.element(button('Bild')).toHaveAttribute('tabindex', '-1')
+    await expect.element(button('Link')).toHaveAttribute('type', 'button')
+    await expect.element(button('Link')).toHaveAttribute('tabindex', '0')
+    await expect.element(button('Image')).toHaveAttribute('tabindex', '-1')
   })
 })
 
 describe('roving tabindex', () => {
   test('exactly one item has tabindex 0, the first, and all others -1', async () => {
     await render(<TextToolbar />)
-    expect(tabIndexOf('Ångra')).toBe('0')
-    expect(tabIndexOf('Gör om')).toBe('-1')
-    expect(tabIndexOf('Fet')).toBe('-1')
-    expect(tabIndexOf('Kursiv')).toBe('-1')
+    expect(tabIndexOf('Undo')).toBe('0')
+    expect(tabIndexOf('Redo')).toBe('-1')
+    expect(tabIndexOf('Bold')).toBe('-1')
+    expect(tabIndexOf('Italic')).toBe('-1')
     expect(tabStops()).toBe(1)
   })
 
   test('Tab enters at the first control the first time, and leaves the toolbar with the next Tab', async () => {
     await render(<TextToolbar />)
     await userEvent.keyboard('{Tab}')
-    await expect.element(button('Före')).toHaveFocus()
+    await expect.element(button('Before')).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(button('Efter')).toHaveFocus()
+    await expect.element(button('After')).toHaveFocus()
   })
 
   test('Tab enters at the control that last had focus, from before and from after', async () => {
     await render(<TextToolbar />)
     await userEvent.keyboard('{Tab}{Tab}')
     await userEvent.keyboard('{ArrowRight}{ArrowRight}')
-    await expect.element(button('Fet')).toHaveFocus()
+    await expect.element(button('Bold')).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(button('Efter')).toHaveFocus()
+    await expect.element(button('After')).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(button('Fet')).toHaveFocus()
+    await expect.element(button('Bold')).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(button('Före')).toHaveFocus()
+    await expect.element(button('Before')).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(button('Fet')).toHaveFocus()
-    expect(tabIndexOf('Fet')).toBe('0')
+    await expect.element(button('Bold')).toHaveFocus()
+    expect(tabIndexOf('Bold')).toBe('0')
     expect(tabStops()).toBe(1)
   })
 
   test('a control focused by a pointer becomes the Tab stop', async () => {
     await render(<TextToolbar />)
-    await userEvent.click(button('Kursiv'))
-    expect(tabIndexOf('Kursiv')).toBe('0')
-    expect(tabIndexOf('Ångra')).toBe('-1')
+    await userEvent.click(button('Italic'))
+    expect(tabIndexOf('Italic')).toBe('0')
+    expect(tabIndexOf('Undo')).toBe('-1')
   })
 
   test('when the active item unmounts, the next item takes over', async () => {
@@ -203,20 +203,20 @@ describe('roving tabindex', () => {
       const [isShown, setIsShown] = useState(true)
       return (
         <TextToolbar>
-          <Toolbar.Button>Ångra</Toolbar.Button>
-          {isShown ? <Toolbar.Button>Gör om</Toolbar.Button> : null}
-          <Toolbar.Button>Fet</Toolbar.Button>
-          <Toolbar.Button onClick={() => setIsShown(false)}>Ta bort</Toolbar.Button>
+          <Toolbar.Button>Undo</Toolbar.Button>
+          {isShown ? <Toolbar.Button>Redo</Toolbar.Button> : null}
+          <Toolbar.Button>Bold</Toolbar.Button>
+          <Toolbar.Button onClick={() => setIsShown(false)}>Remove</Toolbar.Button>
         </TextToolbar>
       )
     }
     await render(<Removable />)
-    // Make "Gör om" the Tab stop, then remove it from a control that is not the Tab stop.
-    await userEvent.click(button('Gör om'))
-    expect(tabIndexOf('Gör om')).toBe('0')
-    ;(button('Ta bort').element() as HTMLElement).click()
-    await expect.element(button('Gör om')).not.toBeInTheDocument()
-    expect(tabIndexOf('Fet')).toBe('0')
+    // Make "Redo" the Tab stop, then remove it from a control that is not the Tab stop.
+    await userEvent.click(button('Redo'))
+    expect(tabIndexOf('Redo')).toBe('0')
+    ;(button('Remove').element() as HTMLElement).click()
+    await expect.element(button('Redo')).not.toBeInTheDocument()
+    expect(tabIndexOf('Bold')).toBe('0')
     expect(tabStops()).toBe(1)
   })
 
@@ -225,18 +225,18 @@ describe('roving tabindex', () => {
       const [isShown, setIsShown] = useState(true)
       return (
         <TextToolbar>
-          <Toolbar.Button onClick={() => setIsShown(false)}>Ta bort</Toolbar.Button>
-          <Toolbar.Button>Fet</Toolbar.Button>
-          {isShown ? <Toolbar.Button>Kursiv</Toolbar.Button> : null}
+          <Toolbar.Button onClick={() => setIsShown(false)}>Remove</Toolbar.Button>
+          <Toolbar.Button>Bold</Toolbar.Button>
+          {isShown ? <Toolbar.Button>Italic</Toolbar.Button> : null}
         </TextToolbar>
       )
     }
     await render(<Removable />)
-    await userEvent.click(button('Kursiv'))
-    expect(tabIndexOf('Kursiv')).toBe('0')
-    ;(button('Ta bort').element() as HTMLElement).click()
-    await expect.element(button('Kursiv')).not.toBeInTheDocument()
-    expect(tabIndexOf('Fet')).toBe('0')
+    await userEvent.click(button('Italic'))
+    expect(tabIndexOf('Italic')).toBe('0')
+    ;(button('Remove').element() as HTMLElement).click()
+    await expect.element(button('Italic')).not.toBeInTheDocument()
+    expect(tabIndexOf('Bold')).toBe('0')
     expect(tabStops()).toBe(1)
   })
 
@@ -245,8 +245,8 @@ describe('roving tabindex', () => {
       const [isShown, setIsShown] = useState(false)
       return (
         <TextToolbar>
-          <Toolbar.Button onClick={() => setIsShown(true)}>Lägg till</Toolbar.Button>
-          {isShown ? <Toolbar.Button>Nytt</Toolbar.Button> : null}
+          <Toolbar.Button onClick={() => setIsShown(true)}>Add</Toolbar.Button>
+          {isShown ? <Toolbar.Button>New</Toolbar.Button> : null}
           <Toolbar.Button>Sist</Toolbar.Button>
         </TextToolbar>
       )
@@ -254,9 +254,9 @@ describe('roving tabindex', () => {
     await render(<Growing />)
     await userEvent.keyboard('{Tab}{Tab}')
     await userEvent.keyboard('{Enter}')
-    await expect.element(button('Nytt')).toBeVisible()
+    await expect.element(button('New')).toBeVisible()
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(button('Nytt')).toHaveFocus()
+    await expect.element(button('New')).toHaveFocus()
     await userEvent.keyboard('{ArrowRight}')
     await expect.element(button('Sist')).toHaveFocus()
   })
@@ -265,13 +265,13 @@ describe('roving tabindex', () => {
     const seen: Array<HTMLButtonElement | null> = []
     await render(
       <TextToolbar>
-        <Toolbar.Button ref={(element) => void seen.push(element)}>Ångra</Toolbar.Button>
-        <Toolbar.Button>Gör om</Toolbar.Button>
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button ref={(element) => void seen.push(element)}>Undo</Toolbar.Button>
+        <Toolbar.Button>Redo</Toolbar.Button>
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
-    await expect.element(button('Gör om')).toHaveFocus()
+    await expect.element(button('Redo')).toHaveFocus()
     expect(seen.filter((element) => element !== null).length).toBeLessThan(10)
   })
 })
@@ -279,82 +279,82 @@ describe('roving tabindex', () => {
 describe('arrow keys', () => {
   async function focusFirst() {
     await userEvent.keyboard('{Tab}{Tab}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
   }
 
   test('a plain control in the toolbar is its own Tab stop and the arrows skip it', async () => {
     await render(
       <TextToolbar>
-        <Toolbar.Button style={fixtureButtonStyle}>Ångra</Toolbar.Button>
+        <Toolbar.Button style={fixtureButtonStyle}>Undo</Toolbar.Button>
         <button type="button" style={fixtureButtonStyle}>
-          Vanlig
+          Plain
         </button>
-        <Toolbar.Button style={fixtureButtonStyle}>Gör om</Toolbar.Button>
+        <Toolbar.Button style={fixtureButtonStyle}>Redo</Toolbar.Button>
       </TextToolbar>,
     )
     await userEvent.keyboard('{Tab}{Tab}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(button('Gör om')).toHaveFocus()
+    await expect.element(button('Redo')).toHaveFocus()
     await userEvent.keyboard('{ArrowLeft}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(button('Vanlig')).toHaveFocus()
+    await expect.element(button('Plain')).toHaveFocus()
   })
 
   test('ArrowRight and ArrowLeft move across groups, and wrap by default', async () => {
     await render(<TextToolbar />)
     await focusFirst()
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(button('Gör om')).toHaveFocus()
+    await expect.element(button('Redo')).toHaveFocus()
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(button('Fet')).toHaveFocus()
+    await expect.element(button('Bold')).toHaveFocus()
     await userEvent.keyboard('{ArrowRight}{ArrowRight}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
     await userEvent.keyboard('{ArrowLeft}')
-    await expect.element(button('Kursiv')).toHaveFocus()
+    await expect.element(button('Italic')).toHaveFocus()
     await userEvent.keyboard('{ArrowLeft}')
-    await expect.element(button('Fet')).toHaveFocus()
+    await expect.element(button('Bold')).toHaveFocus()
     expect(tabStops()).toBe(1)
-    expect(tabIndexOf('Fet')).toBe('0')
+    expect(tabIndexOf('Bold')).toBe('0')
   })
 
   test('Home and End go to the first and the last control', async () => {
     await render(<TextToolbar />)
     await focusFirst()
     await userEvent.keyboard('{End}')
-    await expect.element(button('Kursiv')).toHaveFocus()
+    await expect.element(button('Italic')).toHaveFocus()
     await userEvent.keyboard('{Home}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
   })
 
   test('loop={false} stops at the ends', async () => {
     await render(<TextToolbar loop={false} />)
     await focusFirst()
     await userEvent.keyboard('{ArrowLeft}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
     await userEvent.keyboard('{End}{ArrowRight}')
-    await expect.element(button('Kursiv')).toHaveFocus()
+    await expect.element(button('Italic')).toHaveFocus()
   })
 
   test('vertical: ArrowDown and ArrowUp move and wrap, and ArrowRight does nothing', async () => {
     await render(<TextToolbar orientation="vertical" />)
     await focusFirst()
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(button('Gör om')).toHaveFocus()
+    await expect.element(button('Redo')).toHaveFocus()
     await userEvent.keyboard('{ArrowUp}{ArrowUp}')
-    await expect.element(button('Kursiv')).toHaveFocus()
+    await expect.element(button('Italic')).toHaveFocus()
   })
 
   test('horizontal: ArrowDown and ArrowUp do nothing', async () => {
     await render(<TextToolbar />)
     await focusFirst()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
     await userEvent.keyboard('{ArrowUp}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
   })
 
   test('right to left: the arrows flip, read from the toolbar’s direction', async () => {
@@ -365,11 +365,11 @@ describe('arrow keys', () => {
     )
     await focusFirst()
     await userEvent.keyboard('{ArrowLeft}')
-    await expect.element(button('Gör om')).toHaveFocus()
+    await expect.element(button('Redo')).toHaveFocus()
     await userEvent.keyboard('{ArrowRight}{ArrowRight}')
-    await expect.element(button('Kursiv')).toHaveFocus()
+    await expect.element(button('Italic')).toHaveFocus()
     await userEvent.keyboard('{Home}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
   })
 
   test('keys with Control, Alt, Meta or Shift are left alone', async () => {
@@ -379,27 +379,27 @@ describe('arrow keys', () => {
     await userEvent.keyboard('{Alt>}{ArrowRight}{/Alt}')
     await userEvent.keyboard('{Shift>}{ArrowRight}{/Shift}')
     await userEvent.keyboard('{Control>}{End}{/Control}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
   })
 
   test('Enter and Space activate a button and a toggle, and focus stays', async () => {
     const onClick = vi.fn<() => void>()
     await render(
       <TextToolbar>
-        <Toolbar.Button onClick={onClick}>Ångra</Toolbar.Button>
-        <Toolbar.Toggle>Fet</Toolbar.Toggle>
-        <Toolbar.Toggle>Kursiv</Toolbar.Toggle>
+        <Toolbar.Button onClick={onClick}>Undo</Toolbar.Button>
+        <Toolbar.Toggle>Bold</Toolbar.Toggle>
+        <Toolbar.Toggle>Italic</Toolbar.Toggle>
       </TextToolbar>,
     )
     await userEvent.keyboard('{Tab}{Tab}{Enter}')
     await userEvent.keyboard(' ')
     expect(onClick).toHaveBeenCalledTimes(2)
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
     await userEvent.keyboard('{ArrowRight}{Enter}')
-    await expect.element(button('Fet')).toHaveAttribute('aria-pressed', 'true')
+    await expect.element(button('Bold')).toHaveAttribute('aria-pressed', 'true')
     await userEvent.keyboard(' ')
-    await expect.element(button('Fet')).toHaveAttribute('aria-pressed', 'false')
-    await expect.element(button('Fet')).toHaveFocus()
+    await expect.element(button('Bold')).toHaveAttribute('aria-pressed', 'false')
+    await expect.element(button('Bold')).toHaveFocus()
   })
 })
 
@@ -407,24 +407,24 @@ describe('keys the item owns', () => {
   test('a key an item already handled (defaultPrevented) is not taken again', async () => {
     await render(
       <TextToolbar>
-        <Toolbar.Button onKeyDown={(event) => event.preventDefault()}>Ångra</Toolbar.Button>
-        <Toolbar.Button>Gör om</Toolbar.Button>
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button onKeyDown={(event) => event.preventDefault()}>Undo</Toolbar.Button>
+        <Toolbar.Button>Redo</Toolbar.Button>
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
   })
 
   test('events from a text field in the toolbar are left alone', async () => {
     await render(
       <TextToolbar>
-        <Toolbar.Button>Ångra</Toolbar.Button>
-        <Toolbar.Item as="input" type="text" aria-label="Sök i texten" defaultValue="abc" />
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button>Undo</Toolbar.Button>
+        <Toolbar.Item as="input" type="text" aria-label="Search in the text" defaultValue="abc" />
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
-    const input = page.getByRole('textbox', { name: 'Sök i texten' })
+    const input = page.getByRole('textbox', { name: 'Search in the text' })
     await userEvent.click(input)
     await expect.element(input).toHaveFocus()
     await userEvent.keyboard('{ArrowLeft}{Home}{End}{ArrowRight}')
@@ -434,11 +434,11 @@ describe('keys the item owns', () => {
   test('events from a contenteditable element in the toolbar are left alone', async () => {
     await render(
       <TextToolbar>
-        <Toolbar.Button>Ångra</Toolbar.Button>
+        <Toolbar.Button>Undo</Toolbar.Button>
         <Toolbar.Item as="div" contentEditable suppressContentEditableWarning>
           abc
         </Toolbar.Item>
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
     const note = page.getByText('abc')
@@ -449,58 +449,58 @@ describe('keys the item owns', () => {
   })
 
   test('a Listbox.Trigger as an item has the roving tabindex, not its own', async () => {
-    const types = ['Vanlig text', 'Rubrik 2']
+    const types = ['Plain text', 'Heading 2']
     await render(
       <TextToolbar>
-        <Toolbar.Button>Ångra</Toolbar.Button>
+        <Toolbar.Button>Undo</Toolbar.Button>
         <Listbox.Root
           items={types}
           itemToString={(type) => type}
           itemToKey={(type) => type}
           native="never"
         >
-          <Toolbar.Item as={Listbox.Trigger} aria-label="Texttyp" />
+          <Toolbar.Item as={Listbox.Trigger} aria-label="Text type" />
           <Listbox.Popup>
             <Listbox.List>{(type: string) => <Listbox.Option item={type} />}</Listbox.List>
           </Listbox.Popup>
         </Listbox.Root>
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
-    const trigger = page.getByRole('combobox', { name: 'Texttyp' })
+    const trigger = page.getByRole('combobox', { name: 'Text type' })
     await expect.element(trigger).toHaveAttribute('tabindex', '-1')
     expect(tabStops()).toBe(1)
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
     await expect.element(trigger).toHaveFocus()
     await expect.element(trigger).toHaveAttribute('tabindex', '0')
-    expect(tabIndexOf('Ångra')).toBe('-1')
+    expect(tabIndexOf('Undo')).toBe('-1')
     expect(tabStops()).toBe(1)
     await userEvent.keyboard('{Tab}')
-    await expect.element(button('Efter')).toHaveFocus()
+    await expect.element(button('After')).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     await expect.element(trigger).toHaveFocus()
   })
 
   test('a Listbox.Trigger keeps its own keys, and Left and Right still move on', async () => {
-    const types = ['Vanlig text', 'Rubrik 2']
+    const types = ['Plain text', 'Heading 2']
     await render(
       <TextToolbar>
-        <Toolbar.Button>Ångra</Toolbar.Button>
+        <Toolbar.Button>Undo</Toolbar.Button>
         <Listbox.Root
           items={types}
           itemToString={(type) => type}
           itemToKey={(type) => type}
           native="never"
         >
-          <Toolbar.Item as={Listbox.Trigger} aria-label="Texttyp" />
+          <Toolbar.Item as={Listbox.Trigger} aria-label="Text type" />
           <Listbox.Popup>
             <Listbox.List>{(type: string) => <Listbox.Option item={type} />}</Listbox.List>
           </Listbox.Popup>
         </Listbox.Root>
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
-    const trigger = page.getByRole('combobox', { name: 'Texttyp' })
+    const trigger = page.getByRole('combobox', { name: 'Text type' })
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
     await expect.element(trigger).toHaveFocus()
     await userEvent.keyboard('{ArrowDown}')
@@ -514,42 +514,42 @@ describe('keys the item owns', () => {
     await expect.element(trigger).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(button('Fet')).toHaveFocus()
+    await expect.element(button('Bold')).toHaveFocus()
     await userEvent.keyboard('{ArrowLeft}{ArrowLeft}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
   })
 
   test('a Popover.Trigger as an item works, and keys inside its popup never move the toolbar', async () => {
     await render(
       <TextToolbar>
-        <Toolbar.Button>Ångra</Toolbar.Button>
+        <Toolbar.Button>Undo</Toolbar.Button>
         <Popover.Root>
-          <Toolbar.Item as={Popover.Trigger}>Länk</Toolbar.Item>
-          <Popover.Popup aria-label="Lägg till länk">
+          <Toolbar.Item as={Popover.Trigger}>Link</Toolbar.Item>
+          <Popover.Popup aria-label="Add link">
             <label>
-              Webbadress
+              Web address
               <input type="url" />
             </label>
-            <Popover.Close>Avbryt</Popover.Close>
+            <Popover.Close>Cancel</Popover.Close>
           </Popover.Popup>
         </Popover.Root>
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
-    await expect.element(button('Länk')).toHaveAttribute('tabindex', '-1')
+    await expect.element(button('Link')).toHaveAttribute('tabindex', '-1')
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
-    await expect.element(button('Länk')).toHaveFocus()
+    await expect.element(button('Link')).toHaveFocus()
     await userEvent.keyboard('{Enter}')
-    await expect.element(button('Länk')).toHaveAttribute('aria-expanded', 'true')
+    await expect.element(button('Link')).toHaveAttribute('aria-expanded', 'true')
     // Tab goes into the popup, which follows the trigger. Its keys are not the toolbar's.
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('textbox', { name: 'Webbadress' })).toHaveFocus()
+    await expect.element(page.getByRole('textbox', { name: 'Web address' })).toHaveFocus()
     await userEvent.keyboard('{ArrowRight}{Home}{End}')
-    await expect.element(page.getByRole('textbox', { name: 'Webbadress' })).toHaveFocus()
+    await expect.element(page.getByRole('textbox', { name: 'Web address' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(button('Avbryt')).toHaveFocus()
+    await expect.element(button('Cancel')).toHaveFocus()
     await userEvent.keyboard('{ArrowRight}{ArrowLeft}{Home}')
-    await expect.element(button('Avbryt')).toHaveFocus()
+    await expect.element(button('Cancel')).toHaveFocus()
     expect(tabStops()).toBe(1)
   })
 })
@@ -559,14 +559,14 @@ describe('disabled controls', () => {
     const onClick = vi.fn<() => void>()
     const { container } = await render(
       <TextToolbar>
-        <Toolbar.Button>Ångra</Toolbar.Button>
+        <Toolbar.Button>Undo</Toolbar.Button>
         <Toolbar.Button disabled onClick={onClick}>
-          Gör om
+          Redo
         </Toolbar.Button>
-        <Toolbar.Toggle disabled>Fet</Toolbar.Toggle>
+        <Toolbar.Toggle disabled>Bold</Toolbar.Toggle>
       </TextToolbar>,
     )
-    const redo = button('Gör om')
+    const redo = button('Redo')
     await expect.element(redo).toHaveAttribute('aria-disabled', 'true')
     await expect.element(redo).not.toHaveAttribute('disabled')
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
@@ -576,46 +576,46 @@ describe('disabled controls', () => {
     await userEvent.click(redo, { force: true })
     expect(onClick).not.toHaveBeenCalled()
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(button('Fet')).toHaveFocus()
+    await expect.element(button('Bold')).toHaveFocus()
     await userEvent.keyboard('{Enter}')
-    await expect.element(button('Fet')).toHaveAttribute('aria-pressed', 'false')
+    await expect.element(button('Bold')).toHaveAttribute('aria-pressed', 'false')
     await expectNoA11yViolations(container)
   })
 
   test('a natively disabled control (focusableWhenDisabled={false}) is skipped by the arrows', async () => {
     await render(
       <TextToolbar>
-        <Toolbar.Button>Ångra</Toolbar.Button>
+        <Toolbar.Button>Undo</Toolbar.Button>
         <Toolbar.Button disabled focusableWhenDisabled={false}>
-          Gör om
+          Redo
         </Toolbar.Button>
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
-    await expect.element(button('Fet')).toHaveFocus()
+    await expect.element(button('Bold')).toHaveFocus()
     await userEvent.keyboard('{ArrowLeft}')
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
   })
 
   test('the Tab stop skips a natively disabled first control', async () => {
     await render(
       <TextToolbar>
         <Toolbar.Button disabled focusableWhenDisabled={false}>
-          Ångra
+          Undo
         </Toolbar.Button>
-        <Toolbar.Button>Gör om</Toolbar.Button>
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button>Redo</Toolbar.Button>
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
-    expect(tabIndexOf('Ångra')).toBe('-1')
-    expect(tabIndexOf('Gör om')).toBe('0')
+    expect(tabIndexOf('Undo')).toBe('-1')
+    expect(tabIndexOf('Redo')).toBe('0')
     expect(tabStops()).toBe(1)
     // Tab reaches the toolbar, at the first control that can take focus, and leaves it.
     await userEvent.keyboard('{Tab}{Tab}')
-    await expect.element(button('Gör om')).toHaveFocus()
+    await expect.element(button('Redo')).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(button('Efter')).toHaveFocus()
+    await expect.element(button('After')).toHaveFocus()
   })
 
   test('the Tab stop follows a control that is enabled and disabled again, and is none when every control is disabled', async () => {
@@ -624,17 +624,17 @@ describe('disabled controls', () => {
       return (
         <>
           <button type="button" onClick={() => setIsDisabled((value) => !value)}>
-            Växla
+            Toggle
           </button>
           <Toolbar.Root aria-label="Redigerare">
             <Toolbar.Button disabled={isDisabled} focusableWhenDisabled={false}>
-              Ångra
+              Undo
             </Toolbar.Button>
             <Toolbar.Button disabled={isDisabled} focusableWhenDisabled={false}>
-              Gör om
+              Redo
             </Toolbar.Button>
             <Toolbar.Toggle disabled={isDisabled} focusableWhenDisabled={false}>
-              Fet
+              Bold
             </Toolbar.Toggle>
           </Toolbar.Root>
         </>
@@ -643,10 +643,10 @@ describe('disabled controls', () => {
     await render(<Switchable />)
     // A disabled editor leaves the Tab order.
     expect(tabStops()).toBe(0)
-    await userEvent.click(button('Växla'))
+    await userEvent.click(button('Toggle'))
     await expect.poll(tabStops).toBe(1)
-    expect(tabIndexOf('Ångra')).toBe('0')
-    await userEvent.click(button('Växla'))
+    expect(tabIndexOf('Undo')).toBe('0')
+    await userEvent.click(button('Toggle'))
     await expect.poll(tabStops).toBe(0)
   })
 
@@ -654,14 +654,14 @@ describe('disabled controls', () => {
     const onClick = vi.fn<() => void>()
     const { container } = await render(
       <TextToolbar>
-        <Toolbar.Button style={fixtureButtonStyle}>Ångra</Toolbar.Button>
+        <Toolbar.Button style={fixtureButtonStyle}>Undo</Toolbar.Button>
         <Toolbar.Item disabled onClick={onClick} style={fixtureButtonStyle}>
-          Länk
+          Link
         </Toolbar.Item>
-        <Toolbar.Item style={fixtureButtonStyle}>Bild</Toolbar.Item>
+        <Toolbar.Item style={fixtureButtonStyle}>Image</Toolbar.Item>
       </TextToolbar>,
     )
-    const link = button('Länk')
+    const link = button('Link')
     await expect.element(link).toHaveAttribute('aria-disabled', 'true')
     await expect.element(link).not.toHaveAttribute('disabled')
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
@@ -671,68 +671,68 @@ describe('disabled controls', () => {
     await userEvent.click(link, { force: true })
     expect(onClick).not.toHaveBeenCalled()
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(button('Bild')).toHaveFocus()
+    await expect.element(button('Image')).toHaveFocus()
     await expectNoA11yViolations(container)
   })
 
   test('a disabled Toolbar.Item that renders a Popover.Trigger does not open', async () => {
     await render(
       <TextToolbar>
-        <Toolbar.Button>Ångra</Toolbar.Button>
+        <Toolbar.Button>Undo</Toolbar.Button>
         <Popover.Root>
           <Toolbar.Item disabled as={Popover.Trigger}>
-            Länk
+            Link
           </Toolbar.Item>
-          <Popover.Popup aria-label="Lägg till länk">
-            <Popover.Close>Avbryt</Popover.Close>
+          <Popover.Popup aria-label="Add link">
+            <Popover.Close>Cancel</Popover.Close>
           </Popover.Popup>
         </Popover.Root>
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
-    await expect.element(button('Länk')).toHaveFocus()
+    await expect.element(button('Link')).toHaveFocus()
     await userEvent.keyboard('{Enter}')
     await userEvent.keyboard(' ')
-    await expect.element(button('Länk')).toHaveAttribute('aria-expanded', 'false')
+    await expect.element(button('Link')).toHaveAttribute('aria-expanded', 'false')
   })
 
   test('a Toolbar.Item with focusableWhenDisabled={false} is natively disabled and skipped', async () => {
     await render(
       <TextToolbar>
-        <Toolbar.Button>Ångra</Toolbar.Button>
+        <Toolbar.Button>Undo</Toolbar.Button>
         <Toolbar.Item disabled focusableWhenDisabled={false}>
-          Länk
+          Link
         </Toolbar.Item>
-        <Toolbar.Item>Bild</Toolbar.Item>
+        <Toolbar.Item>Image</Toolbar.Item>
       </TextToolbar>,
     )
-    await expect.element(button('Länk')).toHaveAttribute('disabled')
+    await expect.element(button('Link')).toHaveAttribute('disabled')
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
-    await expect.element(button('Bild')).toHaveFocus()
+    await expect.element(button('Image')).toHaveFocus()
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
   test('a Listbox disabled on its Root stays reachable by the arrows, is aria-disabled, and does not open', async () => {
     await render(
       <TextToolbar>
-        <Toolbar.Button>Ångra</Toolbar.Button>
+        <Toolbar.Button>Undo</Toolbar.Button>
         <Listbox.Root
-          items={['Vanlig text', 'Rubrik 2']}
+          items={['Plain text', 'Heading 2']}
           itemToString={(type) => type}
           itemToKey={(type) => type}
           native="never"
           disabled
         >
-          <Toolbar.Item as={Listbox.Trigger} aria-label="Texttyp" />
+          <Toolbar.Item as={Listbox.Trigger} aria-label="Text type" />
           <Listbox.Popup>
             <Listbox.List>{(type: string) => <Listbox.Option item={type} />}</Listbox.List>
           </Listbox.Popup>
         </Listbox.Root>
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
-    const trigger = page.getByRole('combobox', { name: 'Texttyp' })
+    const trigger = page.getByRole('combobox', { name: 'Text type' })
     await expect.element(trigger).toHaveAttribute('aria-disabled', 'true')
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
     await expect.element(trigger).toHaveFocus()
@@ -742,7 +742,7 @@ describe('disabled controls', () => {
     ;(trigger.element() as HTMLElement).click()
     await expect.element(trigger).toHaveAttribute('aria-expanded', 'false')
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(button('Fet')).toHaveFocus()
+    await expect.element(button('Bold')).toHaveFocus()
   })
 
   test('focus moves to the new Tab stop when the focused control becomes disabled', async () => {
@@ -750,27 +750,27 @@ describe('disabled controls', () => {
       const [isDone, setIsDone] = useState(false)
       return (
         <TextToolbar>
-          <Toolbar.Button>Ångra</Toolbar.Button>
+          <Toolbar.Button>Undo</Toolbar.Button>
           <Toolbar.Button
             disabled={isDone}
             focusableWhenDisabled={false}
             onClick={() => setIsDone(true)}
           >
-            Spara
+            Save
           </Toolbar.Button>
-          <Toolbar.Button>Fet</Toolbar.Button>
+          <Toolbar.Button>Bold</Toolbar.Button>
         </TextToolbar>
       )
     }
     await render(<SelfDisabling />)
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
-    await expect.element(button('Spara')).toHaveFocus()
+    await expect.element(button('Save')).toHaveFocus()
     await userEvent.keyboard('{Enter}')
-    await expect.element(button('Spara')).toBeDisabled()
+    await expect.element(button('Save')).toBeDisabled()
     // Focus is not lost to the page: it moved to the next control that can take it.
-    await expect.element(button('Fet')).toHaveFocus()
-    expect(tabIndexOf('Fet')).toBe('0')
-    expect(tabIndexOf('Spara')).toBe('-1')
+    await expect.element(button('Bold')).toHaveFocus()
+    expect(tabIndexOf('Bold')).toBe('0')
+    expect(tabIndexOf('Save')).toBe('-1')
     expect(tabStops()).toBe(1)
   })
 })
@@ -792,12 +792,12 @@ describe('development warnings', () => {
 
   test('a toolbar with fewer than three controls', async () => {
     await render(
-      <Toolbar.Root aria-label="Åtgärder">
+      <Toolbar.Root aria-label="Actions">
         <Toolbar.Button>A</Toolbar.Button>
         <Toolbar.Button>B</Toolbar.Button>
       </Toolbar.Root>,
     )
-    await expect.element(page.getByRole('toolbar', { name: 'Åtgärder' })).toBeVisible()
+    await expect.element(page.getByRole('toolbar', { name: 'Actions' })).toBeVisible()
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('three')
   })
@@ -811,9 +811,9 @@ describe('development warnings', () => {
   test('Toolbar.Item rendering an element that is not focusable by itself', async () => {
     await render(
       <TextToolbar>
-        <Toolbar.Button>Ångra</Toolbar.Button>
+        <Toolbar.Button>Undo</Toolbar.Button>
         <Toolbar.Item as="span">Text</Toolbar.Item>
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
     await expect.element(page.getByText('Text')).toBeVisible()
@@ -828,14 +828,14 @@ describe('development warnings', () => {
     }
     await render(
       <TextToolbar>
-        <Toolbar.Button>Ångra</Toolbar.Button>
-        <Toolbar.Item as={AlwaysDisabledButton} aria-label="Länk">
-          Länk
+        <Toolbar.Button>Undo</Toolbar.Button>
+        <Toolbar.Item as={AlwaysDisabledButton} aria-label="Link">
+          Link
         </Toolbar.Item>
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
-    await expect.element(page.getByText('Länk')).toBeVisible()
+    await expect.element(page.getByText('Link')).toBeVisible()
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('natively disabled')
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('Toolbar.Item')
@@ -844,21 +844,21 @@ describe('development warnings', () => {
   test('a Listbox that renders natively inside a Toolbar warns that its item is gone', async () => {
     await render(
       <TextToolbar>
-        <Toolbar.Button>Ångra</Toolbar.Button>
+        <Toolbar.Button>Undo</Toolbar.Button>
         <Listbox.Root
-          items={['Vanlig text', 'Rubrik 2']}
+          items={['Plain text', 'Heading 2']}
           itemToString={(type) => type}
           itemToKey={(type) => type}
           native="always"
         >
-          <Toolbar.Item as={Listbox.Trigger} aria-label="Texttyp" />
+          <Toolbar.Item as={Listbox.Trigger} aria-label="Text type" />
         </Listbox.Root>
-        <Toolbar.Button>Fet</Toolbar.Button>
+        <Toolbar.Button>Bold</Toolbar.Button>
       </TextToolbar>,
     )
     await expect.element(page.getByRole('toolbar')).toBeVisible()
     // The select replaces the children: there is no Toolbar.Item and no combobox.
-    expect(page.getByRole('combobox', { name: 'Texttyp' }).elements()).toHaveLength(0)
+    expect(page.getByRole('combobox', { name: 'Text type' }).elements()).toHaveLength(0)
     const warnings = consoleWarn.mock.calls.map((call) => String(call[0]))
     const warning = warnings.find((text) => text.includes('Toolbar'))
     expect(warning).toContain('native="never"')
@@ -868,7 +868,7 @@ describe('development warnings', () => {
     await render(
       <>
         <Toolbar.Button>Ensam</Toolbar.Button>
-        <Toolbar.Toggle>Fet</Toolbar.Toggle>
+        <Toolbar.Toggle>Bold</Toolbar.Toggle>
       </>,
     )
     await expect.element(button('Ensam')).toBeVisible()
@@ -893,13 +893,13 @@ describe('the toolbar element', () => {
           </button>
           <Toolbar.Root aria-label="Redigerare" as={isSection ? 'section' : 'div'}>
             <Toolbar.Button disabled={isDisabled} focusableWhenDisabled={false}>
-              Ångra
+              Undo
             </Toolbar.Button>
             <Toolbar.Button disabled={isDisabled} focusableWhenDisabled={false}>
-              Gör om
+              Redo
             </Toolbar.Button>
             <Toolbar.Button disabled={isDisabled} focusableWhenDisabled={false}>
-              Fet
+              Bold
             </Toolbar.Button>
           </Toolbar.Root>
         </>
@@ -920,13 +920,13 @@ describe('useToolbar', () => {
     return (
       // Unstyled buttons: the gaps keep them apart for axe's target-size rule (2.5.8).
       <div style={{ display: 'flex', gap: '1.5rem' }}>
-        <button type="button">Före</button>
+        <button type="button">Before</button>
         <div
           {...toolbar.toolbarProps}
-          aria-label="Åtgärder"
+          aria-label="Actions"
           style={{ display: 'flex', gap: '1.5rem' }}
         >
-          {['Ett', 'Två', 'Tre'].map((name) => (
+          {['One', 'Two', 'Three'].map((name) => (
             <button type="button" key={name} {...toolbar.getItemProps(name)}>
               {name}
             </button>
@@ -938,14 +938,14 @@ describe('useToolbar', () => {
 
   test('gives spreadable props: one Tab stop, the arrows and Home and End', async () => {
     const { container } = await render(<HookToolbar />)
-    expect(tabIndexOf('Ett')).toBe('0')
-    expect(tabIndexOf('Två')).toBe('-1')
+    expect(tabIndexOf('One')).toBe('0')
+    expect(tabIndexOf('Two')).toBe('-1')
     await userEvent.keyboard('{Tab}{Tab}{ArrowRight}')
-    await expect.element(button('Två')).toHaveFocus()
+    await expect.element(button('Two')).toHaveFocus()
     await userEvent.keyboard('{End}')
-    await expect.element(button('Tre')).toHaveFocus()
+    await expect.element(button('Three')).toHaveFocus()
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(button('Ett')).toHaveFocus()
+    await expect.element(button('One')).toHaveFocus()
     await expectNoA11yViolations(container)
   })
 })
@@ -953,9 +953,9 @@ describe('useToolbar', () => {
 describe('server rendering', () => {
   test('renders to a string without touching the page', () => {
     const html = renderToString(
-      <Toolbar.Root aria-label="Formatering">
-        <Toolbar.Button>Ångra</Toolbar.Button>
-        <Toolbar.Toggle>Fet</Toolbar.Toggle>
+      <Toolbar.Root aria-label="Formatting">
+        <Toolbar.Button>Undo</Toolbar.Button>
+        <Toolbar.Toggle>Bold</Toolbar.Toggle>
       </Toolbar.Root>,
     )
     expect(html).toContain('role="toolbar"')
@@ -965,9 +965,9 @@ describe('server rendering', () => {
 
   test('before the items register, every item is an ordinary Tab stop', () => {
     const html = renderToString(
-      <Toolbar.Root aria-label="Formatering">
-        <Toolbar.Button>Ångra</Toolbar.Button>
-        <Toolbar.Toggle>Fet</Toolbar.Toggle>
+      <Toolbar.Root aria-label="Formatting">
+        <Toolbar.Button>Undo</Toolbar.Button>
+        <Toolbar.Toggle>Bold</Toolbar.Toggle>
       </Toolbar.Root>,
     )
     expect(html).not.toContain('tabindex="-1"')

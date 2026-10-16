@@ -61,8 +61,8 @@ const statuses = [
     className: 'kv-alert--info',
     iconName: 'info',
     word: 'Information:',
-    svWord: 'Information:',
-    fiWord: 'Tiedoksi:',
+    svWord: 'Information:', // kv-lang-ok: the catalog status word
+    fiWord: 'Tiedoksi:', // kv-lang-ok: the catalog status word
     messageKey: 'infoPrefix',
   },
   {
@@ -71,8 +71,8 @@ const statuses = [
     className: 'kv-alert--success',
     iconName: 'success',
     word: 'Success:',
-    svWord: 'Klart:',
-    fiWord: 'Valmis:',
+    svWord: 'Klart:', // kv-lang-ok: the catalog status word
+    fiWord: 'Valmis:', // kv-lang-ok: the catalog status word
     messageKey: 'successPrefix',
   },
   {
@@ -81,8 +81,8 @@ const statuses = [
     className: 'kv-alert--warning',
     iconName: 'warning',
     word: 'Warning:',
-    svWord: 'Varning:',
-    fiWord: 'Varoitus:',
+    svWord: 'Varning:', // kv-lang-ok: the catalog status word
+    fiWord: 'Varoitus:', // kv-lang-ok: the catalog status word
     messageKey: 'warningPrefix',
   },
   {
@@ -91,8 +91,8 @@ const statuses = [
     className: 'kv-alert--danger',
     iconName: 'error',
     word: 'Error:',
-    svWord: 'Fel:',
-    fiWord: 'Virhe:',
+    svWord: 'Fel:', // kv-lang-ok: the catalog status word
+    fiWord: 'Virhe:', // kv-lang-ok: the catalog status word
     messageKey: 'dangerPrefix',
   },
 ] as const
@@ -123,14 +123,14 @@ describe('rendering', () => {
   test('Alert.Root renders one element with the kv-alert class and no status class, icon or word', async () => {
     const { container } = await render(
       <Alert.Root data-testid="alert">
-        <Alert.Title>Observera</Alert.Title>
+        <Alert.Title>Notice</Alert.Title>
       </Alert.Root>,
     )
     const root = page.getByTestId('alert').element()
     expect(root.className).toBe('kv-alert')
     expect(root.querySelector('svg')).toBeNull()
     expect(root.querySelector('.kv-alert-status')).toBeNull()
-    expect(page.getByRole('heading', { level: 2 }).element().textContent).toBe('Observera')
+    expect(page.getByRole('heading', { level: 2 }).element().textContent).toBe('Notice')
     expect(container.children).toHaveLength(1)
   })
 
@@ -258,7 +258,7 @@ describe('rendering', () => {
   test('the Title can be any heading level, or a paragraph, with as', async () => {
     await render(
       <main>
-        <h2>Mina sidor</h2>
+        <h2>My pages</h2>
         <Alert.Success>
           <Alert.Title as="h3" data-testid="level-3">
             Saved
@@ -311,7 +311,7 @@ describe('rendering', () => {
   test('passes attributes through: id and title on the consumer’s element', async () => {
     await render(
       <Alert.Info data-testid="alert" id="deadline" title="Info">
-        <Alert.Title id="deadline-title">Sista dag</Alert.Title>
+        <Alert.Title id="deadline-title">Last day</Alert.Title>
       </Alert.Info>,
     )
     const root = page.getByTestId('alert')
@@ -322,33 +322,33 @@ describe('rendering', () => {
 
   test('keeps its own class: a consumer className joins it instead of replacing it', async () => {
     await render(
-      <Alert.Danger data-testid="alert" className="mitt-meddelande">
-        <Alert.Title className="min-rubrik">Title</Alert.Title>
+      <Alert.Danger data-testid="alert" className="my-message">
+        <Alert.Title className="my-heading">Title</Alert.Title>
         <Alert.Body className="min-text">Body</Alert.Body>
-        <Alert.Actions className="mina-knappar">
+        <Alert.Actions className="my-buttons">
           <a href="#next">Next</a>
         </Alert.Actions>
       </Alert.Danger>,
     )
     await expect
       .element(page.getByTestId('alert'))
-      .toHaveClass('kv-alert', 'kv-alert--danger', 'mitt-meddelande')
-    await expect.element(page.getByRole('heading')).toHaveClass('kv-alert-title', 'min-rubrik')
+      .toHaveClass('kv-alert', 'kv-alert--danger', 'my-message')
+    await expect.element(page.getByRole('heading')).toHaveClass('kv-alert-title', 'my-heading')
     expect(classesOf(document.querySelector('.kv-alert-body'))).toContain('min-text')
-    expect(classesOf(document.querySelector('.kv-alert-actions'))).toContain('mina-knappar')
+    expect(classesOf(document.querySelector('.kv-alert-actions'))).toContain('my-buttons')
   })
 
   test.each(statuses)(
     'Alert.$variant keeps its class and icon when as is a landmark element and className is added',
     async ({ Root, className }) => {
       await render(
-        <Root as="section" className="annat" aria-labelledby="t" data-testid="alert">
+        <Root as="section" className="other" aria-labelledby="t" data-testid="alert">
           <Alert.Title id="t">Title</Alert.Title>
         </Root>,
       )
       const root = page.getByTestId('alert').element()
       expect(root.tagName).toBe('SECTION')
-      expect(classesOf(root)).toEqual(expect.arrayContaining(['kv-alert', className, 'annat']))
+      expect(classesOf(root)).toEqual(expect.arrayContaining(['kv-alert', className, 'other']))
       expect(root.querySelector('svg')).not.toBeNull()
       expect(root.querySelector('.kv-alert-status')).not.toBeNull()
     },
@@ -390,7 +390,7 @@ describe('rendering', () => {
   test.each(statuses)('Alert.$variant has no axe violations', async ({ Root }) => {
     const { container } = await render(
       <main>
-        <h1>Mina sidor</h1>
+        <h1>My pages</h1>
         <Root>
           <Alert.Title>Your parking permit expires on 12 November 2026</Alert.Title>
           <Alert.Body>
@@ -409,11 +409,11 @@ describe('rendering', () => {
   test('the plain Root with its own icon and word has no axe violations', async () => {
     const { container } = await render(
       <main>
-        <h1>Mina sidor</h1>
+        <h1>My pages</h1>
         <Alert.Root className="my-notice">
           <Icon name="info" className="kv-alert-icon" />
           <Alert.Title>
-            <span className="kv-alert-status">Observera:</span> Kontoret är stängt på fredag
+            <span className="kv-alert-status">Notice:</span> The office is closed on Friday
           </Alert.Title>
         </Alert.Root>
       </main>,
@@ -470,21 +470,21 @@ describe('the status word (i18n)', () => {
       const swedish = await render(
         <KvirnProvider locale="sv-SE" messages={sv}>
           <Root>
-            <Alert.Title>Rubrik</Alert.Title>
+            <Alert.Title>Heading</Alert.Title>
           </Root>
         </KvirnProvider>,
       )
-      await expect.element(page.getByRole('heading')).toHaveTextContent(`${svWord} Rubrik`)
+      await expect.element(page.getByRole('heading')).toHaveTextContent(`${svWord} Heading`)
       await swedish.unmount()
 
       await render(
         <KvirnProvider locale="fi-FI" messages={fi}>
           <Root>
-            <Alert.Title>Otsikko</Alert.Title>
+            <Alert.Title>Heading</Alert.Title>
           </Root>
         </KvirnProvider>,
       )
-      await expect.element(page.getByRole('heading')).toHaveTextContent(`${fiWord} Otsikko`)
+      await expect.element(page.getByRole('heading')).toHaveTextContent(`${fiWord} Heading`)
     },
   )
 
@@ -500,31 +500,31 @@ describe('the status word (i18n)', () => {
 
   test('a per-instance message overrides the word, and the provider’s comes next', async () => {
     await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
-        <KvirnProvider messages={{ alert: { dangerPrefix: 'Viktigt:' } }}>
+      <KvirnProvider locale="en" messages={en}>
+        <KvirnProvider messages={{ alert: { dangerPrefix: 'Important:' } }}>
           <Alert.Danger>
-            <Alert.Title>Vi kunde inte skicka</Alert.Title>
+            <Alert.Title>We could not send</Alert.Title>
           </Alert.Danger>
           <Alert.Warning>
-            <Alert.Title>Förnya</Alert.Title>
+            <Alert.Title>Renew</Alert.Title>
           </Alert.Warning>
-          <Alert.Danger messages={{ dangerPrefix: 'Stopp:' }}>
-            <Alert.Title>Inte sparat</Alert.Title>
+          <Alert.Danger messages={{ dangerPrefix: 'Stop:' }}>
+            <Alert.Title>Not saved</Alert.Title>
           </Alert.Danger>
         </KvirnProvider>
       </KvirnProvider>,
     )
     const headings = page.getByRole('heading').elements()
     expect(headings.map((heading) => heading.textContent)).toEqual([
-      'Viktigt: Vi kunde inte skicka',
-      'Varning: Förnya',
-      'Stopp: Inte sparat',
+      'Important: We could not send',
+      'Warning: Renew',
+      'Stop: Not saved',
     ])
   })
 
   test('each ready-made root reads only its own key', async () => {
     await render(
-      <Alert.Warning messages={{ dangerPrefix: 'Viktigt:', infoPrefix: 'Notis:' }}>
+      <Alert.Warning messages={{ dangerPrefix: 'Important:', infoPrefix: 'Notice:' }}>
         <Alert.Title>Title</Alert.Title>
       </Alert.Warning>,
     )
@@ -533,38 +533,38 @@ describe('the status word (i18n)', () => {
 
   test('an override changes the word, never the status class or the icon', async () => {
     await render(
-      <Alert.Danger messages={{ dangerPrefix: 'Viktigt:' }} data-testid="alert">
+      <Alert.Danger messages={{ dangerPrefix: 'Important:' }} data-testid="alert">
         <Alert.Title>Title</Alert.Title>
       </Alert.Danger>,
     )
     const root = page.getByTestId('alert').element()
     expect(classesOf(root)).toContain('kv-alert--danger')
     expect(root.querySelector('.kv-alert-icon')).not.toBeNull()
-    await expect.element(page.getByRole('heading')).toHaveTextContent('Viktigt: Title')
+    await expect.element(page.getByRole('heading')).toHaveTextContent('Important: Title')
   })
 
   test('an empty or whitespace-only override falls through and warns', async () => {
     await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <Alert.Danger messages={{ dangerPrefix: ' ' }}>
-          <Alert.Title>Rubrik</Alert.Title>
+          <Alert.Title>Heading</Alert.Title>
         </Alert.Danger>
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('heading')).toHaveTextContent('Fel: Rubrik')
+    await expect.element(page.getByRole('heading')).toHaveTextContent('Error: Heading')
     expect(warnings()).toHaveLength(1)
     expect(warnings()[0]).toContain('alert.dangerPrefix')
   })
 
   test('the plain Root uses none of the four keys', async () => {
     await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <Alert.Root>
-          <Alert.Title>Observera</Alert.Title>
+          <Alert.Title>Notice</Alert.Title>
         </Alert.Root>
       </KvirnProvider>,
     )
-    expect(page.getByRole('heading').element().textContent).toBe('Observera')
+    expect(page.getByRole('heading').element().textContent).toBe('Notice')
   })
 })
 
@@ -583,7 +583,7 @@ describe('announce', () => {
 
   test('a root with announce="polite" puts its Title and Body text in the polite region once', async () => {
     const view = await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <main />
       </KvirnProvider>,
     )
@@ -591,16 +591,16 @@ describe('announce', () => {
     const { seen, stop } = watch(politeRegion)
 
     await view.rerender(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <main>
           <Alert.Success announce="polite">
-            <Alert.Title as="p">Dina ändringar är sparade</Alert.Title>
+            <Alert.Title as="p">Your changes are saved</Alert.Title>
             <Alert.Body>
-              <p>Du får ett beslut inom 4 veckor.</p>
-              <p>Du behöver inte göra något mer.</p>
+              <p>You will get a decision within 4 weeks.</p>
+              <p>You do not need to do anything more.</p>
             </Alert.Body>
             <Alert.Actions>
-              <a href="#next">Gå vidare</a>
+              <a href="#next">Continue</a>
             </Alert.Actions>
           </Alert.Success>
         </main>
@@ -610,14 +610,14 @@ describe('announce', () => {
     await expect
       .element(politeRegion())
       .toHaveTextContent(
-        'Klart: Dina ändringar är sparade Du får ett beslut inom 4 veckor. Du behöver inte göra något mer.',
+        'Success: Your changes are saved You will get a decision within 4 weeks. You do not need to do anything more.',
       )
     await expect.element(assertiveRegion()).toBeEmptyDOMElement()
     await settle()
     stop()
     // Actions aren't announced, and the text is set once.
     expect(seen.filter((text) => text !== '')).toHaveLength(1)
-    expect(politeRegion().element().textContent).not.toContain('Gå vidare')
+    expect(politeRegion().element().textContent).not.toContain('Continue')
   })
 
   test('announce="assertive" goes to the alert region', async () => {
@@ -646,11 +646,11 @@ describe('announce', () => {
   })
 
   test.each([
-    ['Root', Alert.Root, 'Observera Kontoret är stängt'],
-    ['Info', Alert.Info, 'Information: Observera Kontoret är stängt'],
-    ['Success', Alert.Success, 'Success: Observera Kontoret är stängt'],
-    ['Warning', Alert.Warning, 'Warning: Observera Kontoret är stängt'],
-    ['Danger', Alert.Danger, 'Error: Observera Kontoret är stängt'],
+    ['Root', Alert.Root, 'Notice The office is closed'],
+    ['Info', Alert.Info, 'Information: Notice The office is closed'],
+    ['Success', Alert.Success, 'Success: Notice The office is closed'],
+    ['Warning', Alert.Warning, 'Warning: Notice The office is closed'],
+    ['Danger', Alert.Danger, 'Error: Notice The office is closed'],
   ] as const)(
     'Alert.%s takes announce and announces its visible text',
     async (_name, Root, expected) => {
@@ -664,8 +664,8 @@ describe('announce', () => {
         <KvirnProvider>
           <main>
             <Root announce="polite">
-              <Alert.Title>Observera</Alert.Title>
-              <Alert.Body>Kontoret är stängt</Alert.Body>
+              <Alert.Title>Notice</Alert.Title>
+              <Alert.Body>The office is closed</Alert.Body>
             </Root>
           </main>
         </KvirnProvider>,
@@ -950,11 +950,11 @@ describe('useAlert', () => {
               <span {...alert.statusProps} />{' '}
             </>
           )}
-          Din ansökan
+          Your application
         </h2>
         <div {...alert.bodyProps}>Text</div>
         <div {...alert.actionsProps}>
-          <a href="#next">Nästa</a>
+          <a href="#next">Next</a>
         </div>
       </div>
     )
@@ -1003,16 +1003,16 @@ describe('useAlert', () => {
       )
       expect(classesOf(root.querySelector('svg'))).toContain('kv-alert-icon')
       expect(root.querySelector('.kv-alert-status')?.textContent).toBe(word)
-      expect(page.getByRole('heading').element().textContent).toBe(`${word} Din ansökan`)
+      expect(page.getByRole('heading').element().textContent).toBe(`${word} Your application`)
       expect(warnings()).toEqual([])
     },
   )
 
   test('the hook’s `messages` and the provider’s change the word', async () => {
     await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <HookAlert options={{ variant: 'warning' }} />
-        <HookAlert options={{ variant: 'warning', messages: { warningPrefix: 'Obs:' } }} />
+        <HookAlert options={{ variant: 'warning', messages: { warningPrefix: 'Note:' } }} />
       </KvirnProvider>,
     )
     expect(
@@ -1020,7 +1020,7 @@ describe('useAlert', () => {
         .getByRole('heading')
         .elements()
         .map((heading) => heading.textContent),
-    ).toEqual(['Varning: Din ansökan', 'Obs: Din ansökan'])
+    ).toEqual(['Warning: Your application', 'Note: Your application'])
   })
 
   test('the hook announces too, with the Title and Body it is attached to', async () => {
@@ -1037,7 +1037,7 @@ describe('useAlert', () => {
         </main>
       </KvirnProvider>,
     )
-    await expect.element(politeRegion()).toHaveTextContent('Error: Din ansökan Text')
+    await expect.element(politeRegion()).toHaveTextContent('Error: Your application Text')
   })
 
   test('closeProps give a named button of its own: the class, the type and the resolved name', async () => {
@@ -1046,11 +1046,11 @@ describe('useAlert', () => {
       return <button {...alert.closeProps} data-testid="close" />
     }
     await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <Probe />
       </KvirnProvider>,
     )
-    const button = page.getByRole('button', { name: 'Stäng meddelandet' })
+    const button = page.getByRole('button', { name: 'Close message' })
     await expect.element(button).toHaveAttribute('type', 'button')
     expect(button.element().className).toBe('kv-alert-close')
   })
@@ -1135,8 +1135,8 @@ describe('Alert.Close', () => {
   })
 
   test.each([
-    ['sv-SE', sv, 'Stäng meddelandet'],
-    ['fi-FI', fi, 'Sulje ilmoitus'],
+    ['sv-SE', sv, 'Stäng meddelandet'], // kv-lang-ok: the sv catalog string
+    ['fi-FI', fi, 'Sulje ilmoitus'], // kv-lang-ok: the fi catalog string
     ['en', en, 'Close message'],
   ] as const)('its name follows the locale (%s)', async (locale, messages, name) => {
     await render(
@@ -1158,19 +1158,19 @@ describe('Alert.Close', () => {
 
   test('the name can be overridden per provider, per alert and per button, the closest first', async () => {
     await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
-        <KvirnProvider messages={{ alert: { close: 'Dölj' } }}>
+      <KvirnProvider locale="en" messages={en}>
+        <KvirnProvider messages={{ alert: { close: 'Hide' } }}>
           <Alert.Info>
             <Alert.Title>Provider</Alert.Title>
             <Alert.Close />
           </Alert.Info>
-          <Alert.Info messages={{ close: 'Göm' }}>
+          <Alert.Info messages={{ close: 'Conceal' }}>
             <Alert.Title>Alert</Alert.Title>
             <Alert.Close />
           </Alert.Info>
-          <Alert.Info messages={{ close: 'Göm' }}>
+          <Alert.Info messages={{ close: 'Conceal' }}>
             <Alert.Title>Button</Alert.Title>
-            <Alert.Close messages={{ close: 'Avfärda' }} />
+            <Alert.Close messages={{ close: 'Dismiss' }} />
           </Alert.Info>
         </KvirnProvider>
       </KvirnProvider>,
@@ -1180,19 +1180,19 @@ describe('Alert.Close', () => {
         .getByRole('button')
         .elements()
         .map((button) => button.getAttribute('aria-label')),
-    ).toEqual(['Dölj', 'Göm', 'Avfärda'])
+    ).toEqual(['Hide', 'Conceal', 'Dismiss'])
   })
 
   test('an empty override falls through to the locale text and warns', async () => {
     await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <Alert.Info>
           <Alert.Title>Title</Alert.Title>
           <Alert.Close messages={{ close: ' ' }} />
         </Alert.Info>
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('button', { name: 'Stäng meddelandet' })).toBeVisible()
+    await expect.element(page.getByRole('button', { name: 'Close message' })).toBeVisible()
     expect(warnings().some((message) => message.includes('alert.close'))).toBe(true)
   })
 
@@ -1200,16 +1200,16 @@ describe('Alert.Close', () => {
     await render(
       <Alert.Info>
         <Alert.Title>Title</Alert.Title>
-        <Alert.Close aria-label="Stäng rutan" />
-        <Alert.Close>Dölj</Alert.Close>
+        <Alert.Close aria-label="Close the box" />
+        <Alert.Close>Hide</Alert.Close>
         <Alert.Close>{null}</Alert.Close>
         <Alert.Close>{false}</Alert.Close>
       </Alert.Info>,
     )
     // Children that render nothing leave the icon and the name in place (4.1.2).
     expect(page.getByRole('button', { name: 'Close message' }).elements()).toHaveLength(2)
-    await expect.element(page.getByRole('button', { name: 'Stäng rutan' })).toBeVisible()
-    const labelled = page.getByRole('button', { name: 'Dölj' })
+    await expect.element(page.getByRole('button', { name: 'Close the box' })).toBeVisible()
+    const labelled = page.getByRole('button', { name: 'Hide' })
     await expect.element(labelled).toBeVisible()
     await expect.element(labelled).not.toHaveAttribute('aria-label')
     expect(labelled.element().querySelector('svg')).toBeNull()
@@ -1233,15 +1233,13 @@ describe('Alert.Close', () => {
     await render(
       <KvirnProvider>
         <Alert.Success announce="polite">
-          <Alert.Title>Sparat</Alert.Title>
-          <Alert.Body>Dina ändringar är sparade</Alert.Body>
+          <Alert.Title>Saved</Alert.Title>
+          <Alert.Body>Your changes are saved</Alert.Body>
           <Alert.Close />
         </Alert.Success>
       </KvirnProvider>,
     )
-    await expect
-      .element(politeRegion())
-      .toHaveTextContent('Success: Sparat Dina ändringar är sparade')
+    await expect.element(politeRegion()).toHaveTextContent('Success: Saved Your changes are saved')
     await expect.element(politeRegion()).not.toHaveTextContent('Close message')
     await expect.element(assertiveRegion()).toBeEmptyDOMElement()
   })
@@ -1296,7 +1294,7 @@ describe('Alert.Close', () => {
     async ({ Root }) => {
       const { container } = await render(
         <main>
-          <h1>Mina sidor</h1>
+          <h1>My pages</h1>
           <Root>
             <Alert.Title>Your parking permit expires on 12 November 2026</Alert.Title>
             <Alert.Body>
@@ -1317,7 +1315,7 @@ describe('Alert.Close', () => {
   test('renders to a string on the server', () => {
     const html = renderToString(
       <Alert.Info>
-        <Alert.Title>Din ansökan</Alert.Title>
+        <Alert.Title>Your application</Alert.Title>
         <Alert.Close />
       </Alert.Info>,
     )
@@ -1334,8 +1332,8 @@ describe('keyboard', () => {
         <Alert.Info data-testid="alert">
           <Alert.Title>Title</Alert.Title>
           <Alert.Actions>
-            <a href="#forny">Förnya parkeringstillstånd</a>
-            <button type="button">Försök igen</button>
+            <a href="#renew">Renew parking permit</a>
+            <button type="button">Try again</button>
           </Alert.Actions>
         </Alert.Info>
       </>,
@@ -1343,11 +1341,9 @@ describe('keyboard', () => {
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect
-      .element(page.getByRole('link', { name: 'Förnya parkeringstillstånd' }))
-      .toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Renew parking permit' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Försök igen' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Try again' })).toHaveFocus()
     expect(page.getByTestId('alert').element().contains(document.activeElement)).toBe(true)
     expect(document.activeElement).not.toBe(page.getByTestId('alert').element())
   })
@@ -1357,13 +1353,13 @@ describe('keyboard', () => {
       <Alert.Info>
         <Alert.Title>Title</Alert.Title>
         <Alert.Actions>
-          <a href="#drift">Se driftinformation</a>
+          <a href="#status">See service status</a>
         </Alert.Actions>
         <Alert.Close />
       </Alert.Info>,
     )
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('link', { name: 'Se driftinformation' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'See service status' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('button', { name: 'Close message' })).toHaveFocus()
   })
@@ -1373,14 +1369,14 @@ describe('keyboard', () => {
       <Alert.Info>
         <Alert.Title>Title</Alert.Title>
         <Alert.Actions>
-          <a href="#drift">Se driftinformation</a>
+          <a href="#status">See service status</a>
         </Alert.Actions>
         <Alert.Close />
       </Alert.Info>,
     )
     page.getByRole('button', { name: 'Close message' }).element().focus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('link', { name: 'Se driftinformation' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'See service status' })).toHaveFocus()
   })
 
   test('Shift+Tab reaches the alert’s action', async () => {
@@ -1389,15 +1385,15 @@ describe('keyboard', () => {
         <Alert.Danger>
           <Alert.Title>Title</Alert.Title>
           <Alert.Actions>
-            <button type="button">Försök igen</button>
+            <button type="button">Try again</button>
           </Alert.Actions>
         </Alert.Danger>
-        <button type="button">Skicka ansökan</button>
+        <button type="button">Send application</button>
       </>,
     )
-    page.getByRole('button', { name: 'Skicka ansökan' }).element().focus()
+    page.getByRole('button', { name: 'Send application' }).element().focus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Försök igen' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Try again' })).toHaveFocus()
   })
 
   function DismissibleAlert() {
@@ -1406,7 +1402,7 @@ describe('keyboard', () => {
     return (
       <>
         <h2 ref={headingRef} tabIndex={-1} data-testid="heading">
-          Ansökan
+          Application
         </h2>
         {isOpen ? (
           <Alert.Info data-testid="alert">
@@ -1419,7 +1415,7 @@ describe('keyboard', () => {
             />
           </Alert.Info>
         ) : null}
-        <button type="button">Visa meddelandet igen</button>
+        <button type="button">Show message again</button>
       </>
     )
   }
@@ -1435,7 +1431,7 @@ describe('keyboard', () => {
     expect(page.getByTestId('alert').elements()).toHaveLength(0)
     await expect.element(page.getByTestId('heading')).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Visa meddelandet igen' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Show message again' })).toHaveFocus()
   })
 
   test('Space on the close button dismisses the alert and moves focus to the heading', async () => {
@@ -1443,7 +1439,7 @@ describe('keyboard', () => {
     expect(page.getByTestId('alert').elements()).toHaveLength(0)
     await expect.element(page.getByTestId('heading')).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Visa meddelandet igen' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Show message again' })).toHaveFocus()
   })
 
   test('Enter on a button inside the alert keeps focus on it', async () => {
@@ -1453,15 +1449,15 @@ describe('keyboard', () => {
         <Alert.Title>Title</Alert.Title>
         <Alert.Actions>
           <button type="button" onClick={onClick}>
-            Försök igen
+            Try again
           </button>
         </Alert.Actions>
       </Alert.Danger>,
     )
-    page.getByRole('button', { name: 'Försök igen' }).element().focus()
+    page.getByRole('button', { name: 'Try again' }).element().focus()
     await userEvent.keyboard('{Enter}')
     expect(onClick).toHaveBeenCalledOnce()
-    await expect.element(page.getByRole('button', { name: 'Försök igen' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Try again' })).toHaveFocus()
   })
 
   test('Tab from a focused alert goes to its first action', async () => {
@@ -1469,19 +1465,17 @@ describe('keyboard', () => {
       <Alert.Info data-testid="alert" tabIndex={-1}>
         <Alert.Title>Title</Alert.Title>
         <Alert.Actions>
-          <button type="button">Försök igen</button>
-          <a href="#forny">Förnya parkeringstillstånd</a>
+          <button type="button">Try again</button>
+          <a href="#renew">Renew parking permit</a>
         </Alert.Actions>
       </Alert.Info>,
     )
     page.getByTestId('alert').element().focus()
     await expect.element(page.getByTestId('alert')).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Försök igen' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Try again' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect
-      .element(page.getByRole('link', { name: 'Förnya parkeringstillstånd' }))
-      .toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Renew parking permit' })).toHaveFocus()
   })
 })
 
@@ -1489,13 +1483,13 @@ describe('server rendering', () => {
   test('renders every part to a string without touching the page', () => {
     const html = renderToString(
       <Alert.Warning className="mitt">
-        <Alert.Title>Din ansökan</Alert.Title>
+        <Alert.Title>Your application</Alert.Title>
         <Alert.Body>Text</Alert.Body>
         <Alert.Actions />
       </Alert.Warning>,
     ).replaceAll('<!-- -->', '')
     expect(html).toContain('Warning:')
-    expect(html).toContain('Din ansökan')
+    expect(html).toContain('Your application')
     expect(html).toContain('>Text<')
     expect(html).toContain('aria-hidden="true"')
   })
@@ -1503,10 +1497,10 @@ describe('server rendering', () => {
   test('renders the plain Root to a string with no icon and no word', () => {
     const html = renderToString(
       <Alert.Root>
-        <Alert.Title>Observera</Alert.Title>
+        <Alert.Title>Notice</Alert.Title>
       </Alert.Root>,
     )
-    expect(html).toContain('Observera')
+    expect(html).toContain('Notice')
     expect(html).not.toContain('<svg')
     expect(html).not.toContain('aria-hidden')
   })

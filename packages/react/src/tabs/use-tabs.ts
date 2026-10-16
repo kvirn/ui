@@ -394,14 +394,14 @@ export function useTabsState({
  * - **Name the list** with `aria-label` or `aria-labelledby` when a page has more than one.
  *
  * @example
- * const tabs = useTabs({ defaultValue: 'uppgifter' })
+ * const tabs = useTabs({ defaultValue: 'details' })
  * <div {...tabs.rootProps}>
- *   <div {...tabs.listProps} aria-label="Ärendet">
- *     <button {...tabs.getTabProps('uppgifter')}>Uppgifter</button>
- *     <button {...tabs.getTabProps('historik')}>Historik</button>
+ *   <div {...tabs.listProps} aria-label="The case">
+ *     <button {...tabs.getTabProps('details')}>Details</button>
+ *     <button {...tabs.getTabProps('history')}>History</button>
  *   </div>
- *   <div {...tabs.getPanelProps('uppgifter')}>…</div>
- *   <div {...tabs.getPanelProps('historik')}>…</div>
+ *   <div {...tabs.getPanelProps('details')}>…</div>
+ *   <div {...tabs.getPanelProps('history')}>…</div>
  * </div>
  */
 export function useTabs(options: UseTabsOptions): UseTabsResult {

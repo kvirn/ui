@@ -1,3 +1,4 @@
+// kv-lang-ok-file: real Norwegian register names and a source title
 import { describe, expect, it } from 'vite-plus/test'
 import { checks } from './checks.ts'
 

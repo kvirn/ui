@@ -39,7 +39,7 @@ const badges = Object.fromEntries(
  *
  * @example
  * const badge = useBadge({ variant: 'success' })
- * <span {...badge.rootProps}>Beviljad</span>
+ * <span {...badge.rootProps}>Granted</span>
  */
 export function useBadge({ variant = 'neutral' }: UseBadgeOptions = {}): UseBadgeResult {
   return badges[variant]

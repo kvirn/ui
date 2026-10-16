@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the language runs are proven with English text and a Swedish (sv) utterance language taken from the voice
 import { describe, expect, test } from 'vite-plus/test'
 import { createReadAloud } from './create-read-aloud.ts'
 import type {
@@ -55,7 +56,7 @@ function createFakeEngine({ supported = true, voices = [swedishVoice, finnishVoi
   }
 }
 
-const text = 'Första meningen. Andra meningen. Tredje meningen.'
+const text = 'First sentence. Second sentence. Third sentence.'
 
 function start(options: Parameters<typeof createFakeEngine>[0] = {}) {
   const fake = createFakeEngine(options)
@@ -73,7 +74,7 @@ describe('createReadAloud', () => {
   test('play speaks the first chunk synchronously', () => {
     const { fake, readAloud, state } = start()
     readAloud.actions.play({ text, source: 'selection' })
-    expect(fake.texts()).toEqual(['Första meningen.'])
+    expect(fake.texts()).toEqual(['First sentence.'])
     expect(fake.last().utterance).toMatchObject({ language: 'sv', voiceURI: 'sv-1', rate: 1 })
     expect(state()).toMatchObject({ status: 'playing', index: 0, source: 'selection', error: null })
     expect(state().chunks).toHaveLength(3)
@@ -83,7 +84,7 @@ describe('createReadAloud', () => {
     const { fake, readAloud, state } = start()
     readAloud.actions.play({ text, source: 'content' })
     fake.last().handlers.onEnd()
-    expect(fake.texts()).toEqual(['Första meningen.', 'Andra meningen.'])
+    expect(fake.texts()).toEqual(['First sentence.', 'Second sentence.'])
     expect(state().index).toBe(1)
   })
 
@@ -105,7 +106,7 @@ describe('createReadAloud', () => {
     expect(fake.cancelCount()).toBeGreaterThan(cancelsBefore)
     expect(state()).toMatchObject({ status: 'paused', index: 1 })
     readAloud.actions.resume()
-    expect(fake.texts().at(-1)).toBe('Andra meningen.')
+    expect(fake.texts().at(-1)).toBe('Second sentence.')
     expect(state().status).toBe('playing')
   })
 
@@ -133,9 +134,9 @@ describe('createReadAloud', () => {
     const { fake, readAloud, state } = start()
     readAloud.actions.play({ text, source: 'content' })
     readAloud.actions.next()
-    expect(fake.texts().at(-1)).toBe('Andra meningen.')
+    expect(fake.texts().at(-1)).toBe('Second sentence.')
     readAloud.actions.previous()
-    expect(fake.texts().at(-1)).toBe('Första meningen.')
+    expect(fake.texts().at(-1)).toBe('First sentence.')
     expect(state().index).toBe(0)
   })
 
@@ -163,7 +164,7 @@ describe('createReadAloud', () => {
     readAloud.actions.play({ text, source: 'content' })
     readAloud.actions.setRate(1.5)
     expect(fake.spoken).toHaveLength(2)
-    expect(fake.last().utterance).toMatchObject({ text: 'Första meningen.', rate: 1.5 })
+    expect(fake.last().utterance).toMatchObject({ text: 'First sentence.', rate: 1.5 })
     expect(state().rate).toBe(1.5)
   })
 

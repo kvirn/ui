@@ -50,12 +50,12 @@ const meta = {
     'aria-labelledby': {
       control: 'text',
       description:
-        'The id of a visible heading that names the landmark (LabelledByHeading). Preferred over the message, and it replaces it: the landmark has one name, never both. Without it the landmark is named by `tableOfContents.label` (“På den här sidan”), in the locale of the toolbar.',
+        'The id of a visible heading that names the landmark (LabelledByHeading). Preferred over the message, and it replaces it: the landmark has one name, never both. Without it the landmark is named by `tableOfContents.label` (“On this page”), in the locale of the toolbar.',
     },
     messages: {
       control: 'object',
       description:
-        'Per-instance message overrides: `{ label: "Innehåll" }`. An `aria-label` of your own wins over the message.',
+        'Per-instance message overrides: `{ label: "Contents" }`. An `aria-label` of your own wins over the message.',
     },
     className: {
       control: 'select',
@@ -70,7 +70,7 @@ const meta = {
     },
     ref: { control: false, description: 'The rendered `<nav>`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [withContentsPage, withContentsLocale],
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof TableOfContents.Root>
@@ -122,13 +122,13 @@ export const Default: Story = {
   decorators: [withContentsColumns],
   render: renderPage,
   play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'På den här sidan' })
+    const navigation = canvas.getByRole('navigation', { name: 'On this page' })
     await expect(within(navigation).getAllByRole('list')).toHaveLength(2)
     await expect(within(navigation).getAllByRole('link')).toHaveLength(5)
     // The first heading is on screen, so it is current before any scrolling.
     await expect(navigation.querySelectorAll('[aria-current]')).toHaveLength(1)
     await expect(
-      within(navigation).getByRole('link', { name: 'Vem behöver bygglov?' }),
+      within(navigation).getByRole('link', { name: 'Who needs a building permit?' }),
     ).toHaveAttribute('aria-current', 'location')
   },
 }
@@ -144,47 +144,49 @@ export const Keyboard: Story = {
   render: () => (
     <>
       <p>
-        <Link.Root href="#keyboard-vem-behover-bygglov">Hoppa till första avsnittet</Link.Root>
+        <Link.Root href="#keyboard-who-needs-a-permit">Skip to the first section</Link.Root>
       </p>
       <TableOfContents.Root items={sampleItems('keyboard')} />
       <p>
-        <Link.Root href="#keyboard-kontakt">Kontakta oss</Link.Root>
+        <Link.Root href="#keyboard-contact">Contact us</Link.Root>
       </p>
       <section>
-        <Heading as="h2" id="keyboard-vem-behover-bygglov">
-          Vem behöver bygglov?
+        <Heading as="h2" id="keyboard-who-needs-a-permit">
+          Who needs a building permit?
         </Heading>
-        <p>{paragraphOf('Vem behöver bygglov?')}</p>
+        <p>{paragraphOf('Who needs a building permit?')}</p>
       </section>
       <section>
-        <Heading as="h2" id="keyboard-sa-ansoker-du">
-          Så ansöker du
+        <Heading as="h2" id="keyboard-how-to-apply">
+          How to apply
         </Heading>
-        <p>{paragraphOf('Så ansöker du')}</p>
-        <Heading as="h3" id="keyboard-ritningar">
-          Ritningar
+        <p>{paragraphOf('How to apply')}</p>
+        <Heading as="h3" id="keyboard-drawings">
+          Drawings
         </Heading>
-        <p>{paragraphOf('Ritningar')}</p>
-        <Heading as="h3" id="keyboard-avgifter">
-          Avgifter
+        <p>{paragraphOf('Drawings')}</p>
+        <Heading as="h3" id="keyboard-fees">
+          Fees
         </Heading>
         <p>
-          {paragraphOf('Avgifter')}{' '}
-          <Link.Root href="#keyboard-vem-behover-bygglov">Läs om vem som behöver bygglov</Link.Root>
+          {paragraphOf('Fees')}{' '}
+          <Link.Root href="#keyboard-who-needs-a-permit">
+            Read about who needs a building permit
+          </Link.Root>
           .
         </p>
       </section>
       <section>
-        <Heading as="h2" id="keyboard-efter-beslutet">
-          Efter beslutet
+        <Heading as="h2" id="keyboard-after-the-decision">
+          After the decision
         </Heading>
-        <p>{paragraphOf('Efter beslutet')}</p>
+        <p>{paragraphOf('After the decision')}</p>
       </section>
       <section>
-        <Heading as="h2" id="keyboard-kontakt">
-          Kontakt
+        <Heading as="h2" id="keyboard-contact">
+          Contact
         </Heading>
-        <p>Frågor om ditt ärende ställer du till byggnadsnämnden.</p>
+        <p>Send questions about your case to the building board.</p>
       </section>
     </>
   ),
@@ -202,7 +204,7 @@ export const LabelledByHeading: Story = {
     <>
       <div>
         <Heading as="h2" size="heading-4" id="labelled-by-heading-title">
-          På den här sidan
+          On this page
         </Heading>
         <TableOfContents.Root {...args} aria-labelledby="labelled-by-heading-title" />
       </div>
@@ -219,16 +221,16 @@ export const LabelledByHeading: Story = {
     </>
   ),
   play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'På den här sidan' })
+    const navigation = canvas.getByRole('navigation', { name: 'On this page' })
     await expect(navigation).toHaveAttribute('aria-labelledby', 'labelled-by-heading-title')
     await expect(navigation).not.toHaveAttribute('aria-label')
   },
 }
 
 /**
- * Three levels, and a skipped one: “Buller” is an `h4` right under an `h2`, and nests one step.
+ * Three levels, and a skipped one: “Noise” is an `h4` right under an `h2`, and nests one step.
  * The indent is 16px a level, so the level shows without colour. The page opens scrolled to
- * “Ritningar”: it is the current heading, and its parents, “Bygglov” and “Bygga och bo”, are the
+ * “Drawings”: it is the current heading, and its parents, “Building permits” and “Building and living”, are the
  * trail. Resident pages list `h2` and `h3`, and `h4` at most.
  */
 export const Levels: Story = {
@@ -237,7 +239,7 @@ export const Levels: Story = {
   render: renderPage,
   play: async ({ canvas, canvasElement }) => {
     await expect(within(canvas.getByRole('navigation')).getAllByRole('list')).toHaveLength(4)
-    await scrollToHeading(canvasElement, 'Ritningar')
+    await scrollToHeading(canvasElement, 'Drawings')
     await expect(canvasElement.querySelectorAll('[aria-current]')).toHaveLength(1)
   },
 }
@@ -253,7 +255,7 @@ export const StickyOffset: Story = {
   decorators: [withStickyHeader],
   render: renderPage,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('navigation', { name: 'På den här sidan' })).toBeVisible()
+    await expect(canvas.getByRole('navigation', { name: 'On this page' })).toBeVisible()
   },
 }
 
@@ -266,7 +268,7 @@ export const CustomRender: Story = {
   parameters: showSource('table-of-contents/table-of-contents.fixture.tsx', 'ContentsWithOwnList'),
   render: () => <ContentsWithOwnList />,
   play: async ({ canvas }) => {
-    const navigation = canvas.getByRole('navigation', { name: 'På den här sidan' })
+    const navigation = canvas.getByRole('navigation', { name: 'On this page' })
     // Only the top level: the function drew its own list.
     await expect(within(navigation).getAllByRole('link')).toHaveLength(3)
   },
@@ -274,7 +276,7 @@ export const CustomRender: Story = {
 
 /**
  * `kv-compact` for manuals and staff tools: 32px rows, never under 24 × 24 (2.5.8). The page opens
- * scrolled to “Avgifter”.
+ * scrolled to “Fees”.
  */
 export const CompactDensity: Story = {
   args: { className: 'kv-compact', items: sampleItems('compact-density') },
@@ -286,7 +288,7 @@ export const CompactDensity: Story = {
     for (const link of links) {
       await expectMinimumTargetSize(link)
     }
-    await scrollToHeading(canvasElement, 'Avgifter')
+    await scrollToHeading(canvasElement, 'Fees')
   },
 }
 
@@ -300,9 +302,11 @@ export const LongFinnishText: Story = {
   decorators: [withNarrowColumn],
   render: renderPage,
   play: async ({ canvas, canvasElement }) => {
+    // kv-lang-ok: Finnish locale story
     await expect(canvas.getByRole('navigation', { name: 'Tällä sivulla' })).toBeVisible()
     await scrollToHeading(
       canvasElement,
+      // kv-lang-ok: Finnish locale story
       'Rakennus- ja toimenpidelupahakemuksen käsittelyaika ja maksut',
     )
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
@@ -325,7 +329,7 @@ export const RTL: Story = {
 }
 
 /**
- * The marker for forced colours, with “Avgifter” as the current heading. In real emulation the
+ * The marker for forced colours, with “Fees” as the current heading. In real emulation the
  * the current link keeps its underline in `LinkText`, and the trail keeps its weight.
  */
 export const ForcedColors: Story = {
@@ -334,6 +338,6 @@ export const ForcedColors: Story = {
   decorators: [withContentsColumns],
   render: renderPage,
   play: async ({ canvasElement }) => {
-    await scrollToHeading(canvasElement, 'Avgifter')
+    await scrollToHeading(canvasElement, 'Fees')
   },
 }

@@ -21,7 +21,7 @@ export interface ErrorSummaryRootProps extends HTMLAttributes<HTMLElement> {
   focusKey?: string | number | undefined
   /** Never moves focus to the summary: for a static preview only. Off by default. */
   disableAutoFocus?: boolean | undefined
-  /** Puts "Fel:" before the page title while the summary is shown. Off by default. */
+  /** Puts "Error:" before the page title while the summary is shown. Off by default. */
   prefixDocumentTitle?: boolean | undefined
   /** Per-instance overrides: the title and the page title prefix. */
   messages?: Partial<KvirnMessages['errorSummary']> | undefined

@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale fixture text sets (sv, fi), picked by the locale toolbar
 import { AlertDialog, Button, useFormat } from '@kvirn-ui/react'
 import type { AlertDialogRootProps } from '@kvirn-ui/react'
 import { useEffect, useRef, useState } from 'react'

@@ -30,7 +30,7 @@ Every component's Docs page has these seven parts, in this order. The page layou
 
 ### 3. Main example: every option exposed
 
-- The first exported story is `Default`, and Storybook shows it as the main example. It renders the component the way most adopters will, with real Swedish text.
+- The first exported story is `Default`, and Storybook shows it as the main example. It renders the component the way most adopters will, with real English text.
 - **Read `<name>.tsx` and its hook before you write it.** Every prop the component and its parts accept gets an entry in `meta.argTypes` with a `control` and a one-line `description` (what it does, the default, which class or attribute it sets). That includes the theme's modifier classes (as a `select` on `className`), boolean props, enums (`inline-radio`), and strings. Props a control can't drive (a component `as`, refs, handlers) get `control: false` and a description, and handlers get `fn()` in `args`.
 - `meta.args` holds the default value of every option, so the controls start at what an adopter gets with no props.
 - A compound component (`X.Root` with parts): `meta.component` is `X.Root`, and `Default` has a `render` that composes every part, and maps args to the parts' props (`args.disabled` to the Trigger, for instance). Name these args after the prop they set, and list in `## API` which part takes each one.
@@ -80,7 +80,7 @@ const meta = {
   title: 'Components/Content/Example',
   component: Example,
   // 3. Every option at its default, so the main example starts where an adopter starts.
-  args: { children: 'Spara', disabled: false, onChange: fn() },
+  args: { children: 'Save', disabled: false, onChange: fn() },
   // 3–4. Every prop in example.tsx, with a control and what it does.
   argTypes: {
     className: {
@@ -95,7 +95,7 @@ const meta = {
       description: 'The element. Only the allowed tags.',
     },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
@@ -161,11 +161,11 @@ Notes in prose: choices, pitfalls, combinations. Code blocks here are for packag
 
 ## Stories fill gaps
 
-- Add a story only if it shows something the others don't: a state, a composition, a hard case (long Finnish text at 320px, RTL, forced colours), a way to build your own. Don't add one to have one.
+- Add a story only if it shows something the others don't: a state, a composition, a hard case (a long Finnish string at 320px, a marked exception; RTL, forced colours), a way to build your own. Don't add one to have one.
 - One-line JSDoc per story says what it shows and when to use it.
 - Every state gets axe in the four theme projects, the component test covers the keyboard rows, and the display-mode sweep covers reflow and forced colours (testing skill).
-- Strings in the story are real: a sentence a resident would read, in sv by default, with the locale toolbar switching them.
-- Text that falls back to English renders inside the fixture-language helper (a nested `KvirnProvider locale="en"`), never `lang` on a part.
+- Strings in the story are real: a sentence a resident would read, in `en` by default, with the locale toolbar switching them.
+- Text in another language than the story's locale (a marked case) renders inside the fixture-language helper (a nested `KvirnProvider` with that locale), never `lang` on a part.
 
 ## Foundation pages
 

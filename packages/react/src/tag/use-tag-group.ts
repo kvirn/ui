@@ -61,7 +61,7 @@ type PendingFocus = {
  *
  * @example
  * const group = useTagGroup()
- * <span id={group.labelId} ref={group.labelRef}>Valda filter</span>
+ * <span id={group.labelId} ref={group.labelRef}>Selected filters</span>
  * <ul ref={group.listRef} aria-labelledby={group.labelId}>…</ul>
  */
 export function useTagGroup({

@@ -36,7 +36,7 @@ const meta = {
     },
     ref: { control: false, description: 'A ref to the `<label>`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [
     (Story) => (
       <div className="kv-story-form">
@@ -167,6 +167,7 @@ export const LongFinnish: Story = {
   },
   play: async ({ canvas }) => {
     await expect(
+      // kv-lang-ok: Finnish locale story: a long label
       canvas.getByRole('textbox', { name: /Asunnonmuutostyöavustushakemuksen/ }),
     ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))

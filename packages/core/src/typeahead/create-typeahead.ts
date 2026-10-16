@@ -31,8 +31,8 @@ export interface Typeahead {
  * DOM and no `window` at import time.
  *
  * @example
- * const typeahead = createTypeahead({ env, locale: 'sv' })
- * typeahead.type('s', ['Dela', 'Skriv ut'], 0) // 1
+ * const typeahead = createTypeahead({ env, locale: 'en' })
+ * typeahead.type('s', ['Open', 'Save'], 0) // 1
  */
 export function createTypeahead({
   env,

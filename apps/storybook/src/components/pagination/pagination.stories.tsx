@@ -21,11 +21,11 @@ const meta = {
     label: {
       control: 'text',
       description:
-        'The landmark’s accessible name, set as `aria-label`. Replaces the message `pagination.label` (`Sidor`).',
+        'The landmark’s accessible name, set as `aria-label`. Replaces the message `pagination.label` (`Pages`).',
     },
   },
   decorators: [withLocale],
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
@@ -42,7 +42,7 @@ function Item({ children }: { children: ReactNode }) {
 function pageLink(page: number, current = false) {
   return (
     <Item key={page}>
-      <Pagination.Link page={page} href={`#sida-${page}`} current={current} />
+      <Pagination.Link page={page} href={`#page-${page}`} current={current} />
     </Item>
   )
 }
@@ -53,7 +53,7 @@ export const Default: Story = {
     children: (
       <Pagination.List>
         <Item>
-          <Pagination.Previous href="#sida-4" />
+          <Pagination.Previous href="#page-4" />
         </Item>
         {pageLink(1)}
         <Item>
@@ -70,14 +70,14 @@ export const Default: Story = {
           <Pagination.Status page={5} total={9} />
         </Item>
         <Item>
-          <Pagination.Next href="#sida-6" />
+          <Pagination.Next href="#page-6" />
         </Item>
       </Pagination.List>
     ),
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('navigation', { name: 'Sidor' })).toBeVisible()
-    await expect(canvas.getByRole('link', { name: 'Sida 5' })).toHaveAttribute(
+    await expect(canvas.getByRole('navigation', { name: 'Pages' })).toBeVisible()
+    await expect(canvas.getByRole('link', { name: 'Page 5' })).toHaveAttribute(
       'aria-current',
       'page',
     )
@@ -104,14 +104,14 @@ export const FirstPage: Story = {
           <Pagination.Status page={1} total={9} />
         </Item>
         <Item>
-          <Pagination.Next href="#sida-2" />
+          <Pagination.Next href="#page-2" />
         </Item>
       </Pagination.List>
     ),
   },
   play: async ({ canvas }) => {
-    await expect(canvas.queryByRole('link', { name: 'Föregående sida' })).toBeNull()
-    await expect(canvas.getByRole('link', { name: 'Nästa sida' })).toBeVisible()
+    await expect(canvas.queryByRole('link', { name: 'Previous page' })).toBeNull()
+    await expect(canvas.getByRole('link', { name: 'Next page' })).toBeVisible()
   },
 }
 
@@ -121,7 +121,7 @@ export const LastPage: Story = {
     children: (
       <Pagination.List>
         <Item>
-          <Pagination.Previous href="#sida-8" />
+          <Pagination.Previous href="#page-8" />
         </Item>
         {pageLink(1)}
         <Item>
@@ -137,8 +137,8 @@ export const LastPage: Story = {
     ),
   },
   play: async ({ canvas }) => {
-    await expect(canvas.queryByRole('link', { name: 'Nästa sida' })).toBeNull()
-    await expect(canvas.getByRole('link', { name: 'Sida 9' })).toBeVisible()
+    await expect(canvas.queryByRole('link', { name: 'Next page' })).toBeNull()
+    await expect(canvas.getByRole('link', { name: 'Page 9' })).toBeVisible()
   },
 }
 
@@ -148,7 +148,7 @@ export const Keyboard: Story = {
     children: (
       <Pagination.List>
         <Item>
-          <Pagination.Previous href="#sida-1" />
+          <Pagination.Previous href="#page-1" />
         </Item>
         {pageLink(1)}
         {pageLink(2, true)}
@@ -157,20 +157,20 @@ export const Keyboard: Story = {
         </Item>
         {pageLink(9)}
         <Item>
-          <Pagination.Next href="#sida-3" />
+          <Pagination.Next href="#page-3" />
         </Item>
       </Pagination.List>
     ),
   },
   play: async ({ canvas }) => {
-    for (const name of ['Föregående sida', 'Sida 1', 'Sida 2', 'Sida 9']) {
+    for (const name of ['Previous page', 'Page 1', 'Page 2', 'Page 9']) {
       await userEvent.tab()
       await expect(canvas.getByRole('link', { name })).toHaveFocus()
     }
     await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Nästa sida' })).toHaveFocus()
+    await expect(canvas.getByRole('link', { name: 'Next page' })).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect(canvas.getByRole('link', { name: 'Sida 9' })).toHaveFocus()
+    await expect(canvas.getByRole('link', { name: 'Page 9' })).toHaveFocus()
   },
 }
 
@@ -180,7 +180,7 @@ export const Reflow320: Story = {
     children: (
       <Pagination.List>
         <Item>
-          <Pagination.Previous href="#sivu-4" />
+          <Pagination.Previous href="#page-4" />
         </Item>
         {pageLink(1)}
         <Item>
@@ -197,7 +197,7 @@ export const Reflow320: Story = {
           <Pagination.Status page={5} total={9} />
         </Item>
         <Item>
-          <Pagination.Next href="#sivu-6" />
+          <Pagination.Next href="#page-6" />
         </Item>
       </Pagination.List>
     ),
@@ -209,6 +209,7 @@ export const Reflow320: Story = {
     if (column === null) {
       throw new Error('no narrow column')
     }
+    // kv-lang-ok: asserts the Finnish built-in navigation name under locale fi
     await expect(canvas.getByRole('navigation', { name: 'Sivut' })).toBeVisible()
     await expectNoHorizontalOverflow(column)
   },
@@ -248,7 +249,7 @@ export const ForcedColors: Story = {
     children: (
       <Pagination.List>
         <Item>
-          <Pagination.Previous href="#sida-1" />
+          <Pagination.Previous href="#page-1" />
         </Item>
         {pageLink(1)}
         {pageLink(2, true)}
@@ -257,7 +258,7 @@ export const ForcedColors: Story = {
           <Pagination.Status page={2} total={3} />
         </Item>
         <Item>
-          <Pagination.Next href="#sida-3" />
+          <Pagination.Next href="#page-3" />
         </Item>
       </Pagination.List>
     ),

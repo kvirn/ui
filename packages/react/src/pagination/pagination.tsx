@@ -33,11 +33,11 @@ interface PaginationPartComponentProps extends HTMLAttributes<HTMLElement> {
 
 export interface PaginationRootProps extends PaginationPartComponentProps {
   /**
-   * The landmark's accessible name, from your translations: `Sidor`. Replaces the message
+   * The landmark's accessible name, from your translations: `Pages`. Replaces the message
    * `pagination.label`, set as `aria-label`.
    */
   label?: string | undefined
-  /** Per-instance message overrides: `{ next: 'Nästa' }`. */
+  /** Per-instance message overrides: `{ next: 'Next' }`. */
   messages?: Partial<KvirnMessages['pagination']> | undefined
 }
 export type PaginationListProps = PaginationPartComponentProps
@@ -61,12 +61,12 @@ export type PaginationLinkProps<Component extends ElementType = RegisteredLinkCo
 > & {
   /**
    * The page this link goes to, from 1. It becomes the link's text and, with the message, its
-   * name (`Sida 2`). Your own `children` replace both: the visible text is then the name (2.5.3).
+   * name (`Page 2`). Your own `children` replace both: the visible text is then the name (2.5.3).
    */
   page: number
   /** This link is the current page. It stays a link, and gets `aria-current="page"`. */
   current?: boolean | undefined
-  /** Per-instance message overrides for this link: `{ page: ({ page }) => `Sida ${page}` }`. */
+  /** Per-instance message overrides for this link: `{ page: ({ page }) => `Page ${page}` }`. */
   messages?: Partial<KvirnMessages['pagination']> | undefined
 }
 
@@ -76,7 +76,7 @@ export type PaginationPreviousProps<Component extends ElementType = RegisteredLi
 > & {
   /** Your own text. Replaces the message `pagination.previous`, so its language is yours to set. */
   children?: ReactNode
-  /** Per-instance message overrides: `{ previous: 'Tillbaka' }`. */
+  /** Per-instance message overrides: `{ previous: 'Back' }`. */
   messages?: Partial<KvirnMessages['pagination']> | undefined
 }
 export type PaginationNextProps<Component extends ElementType = RegisteredLinkComponent> =
@@ -189,7 +189,7 @@ export function PaginationEllipsis({
 PaginationEllipsis.displayName = 'Pagination.Ellipsis'
 
 /**
- * The status text for a narrow screen: `Sida 2 av 9` from the message `pagination.status`, in
+ * The status text for a narrow screen: `Page 2 of 9` from the message `pagination.status`, in
  * an `Item`. The theme shows it, with Previous and Next, instead of the page links below 40rem.
  */
 export function PaginationStatus({
@@ -216,7 +216,7 @@ PaginationStatus.displayName = 'Pagination.Status'
 
 /**
  * A page link: a thin wrapper over `Link.Root`, so a native `<a href>` rendered by the app's
- * registered router link. Its text is the page number, its name `Sida 2` (`current` adds `aria-current`, not
+ * registered router link. Its text is the page number, its name `Page 2` (`current` adds `aria-current`, not
  * words), so the visible number is in the name (2.5.3). With your own `children` there is no
  * `aria-label`: the visible text is the name.
  */
@@ -250,7 +250,7 @@ export function PaginationLink({
 }
 PaginationLink.displayName = 'Pagination.Link'
 
-/** The link to the previous page, with the words `Föregående sida` and an arrow the theme draws. */
+/** The link to the previous page, with the words `Previous page` and an arrow the theme draws. */
 export function PaginationPrevious<Component extends ElementType = RegisteredLinkComponent>(
   props: PaginationPreviousProps<Component>,
 ): ReactElement
@@ -268,7 +268,7 @@ export function PaginationPrevious({
 }
 PaginationPrevious.displayName = 'Pagination.Previous'
 
-/** The link to the next page, with the words `Nästa sida` and an arrow the theme draws. */
+/** The link to the next page, with the words `Next page` and an arrow the theme draws. */
 export function PaginationNext<Component extends ElementType = RegisteredLinkComponent>(
   props: PaginationNextProps<Component>,
 ): ReactElement
@@ -297,13 +297,13 @@ PaginationNext.displayName = 'Pagination.Next'
  * @example
  * <Pagination.Root>
  *   <Pagination.List>
- *     <Pagination.Item><Pagination.Previous href="?sida=1" /></Pagination.Item>
- *     <Pagination.Item><Pagination.Link page={1} href="?sida=1" /></Pagination.Item>
- *     <Pagination.Item><Pagination.Link page={2} href="?sida=2" current /></Pagination.Item>
+ *     <Pagination.Item><Pagination.Previous href="?page=1" /></Pagination.Item>
+ *     <Pagination.Item><Pagination.Link page={1} href="?page=1" /></Pagination.Item>
+ *     <Pagination.Item><Pagination.Link page={2} href="?page=2" current /></Pagination.Item>
  *     <Pagination.Item><Pagination.Ellipsis /></Pagination.Item>
- *     <Pagination.Item><Pagination.Link page={9} href="?sida=9" /></Pagination.Item>
+ *     <Pagination.Item><Pagination.Link page={9} href="?page=9" /></Pagination.Item>
  *     <Pagination.Item><Pagination.Status page={2} total={9} /></Pagination.Item>
- *     <Pagination.Item><Pagination.Next href="?sida=3" /></Pagination.Item>
+ *     <Pagination.Item><Pagination.Next href="?page=3" /></Pagination.Item>
  *   </Pagination.List>
  * </Pagination.Root>
  */

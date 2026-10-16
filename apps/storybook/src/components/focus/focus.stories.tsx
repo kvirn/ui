@@ -23,7 +23,7 @@ const source = (...names: string[]) => showSource('focus/focus.fixture.tsx', ...
 
 const meta = {
   title: 'Foundation/Focus',
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [withFormLocale],
   parameters: {
     a11yContract: contract,
@@ -41,10 +41,10 @@ export const NativeFirst: Story = {
   parameters: source('NativeDialog'),
   render: (_args, { globals }) => <NativeDialog locale={localeFor(globals)} />,
   play: async ({ canvas }) => {
-    const opener = canvas.getByRole('button', { name: 'Öppna dialogrutan' })
+    const opener = canvas.getByRole('button', { name: 'Open the dialog' })
     await userEvent.click(opener)
     await waitFor(() => expect(document.querySelector('dialog[open]')).not.toBeNull())
-    await userEvent.click(await within(document.body).findByRole('button', { name: 'Stäng' }))
+    await userEvent.click(await within(document.body).findByRole('button', { name: 'Close' }))
     await waitFor(() => expect(opener).toHaveFocus())
   },
 }
@@ -54,10 +54,10 @@ export const Restore: Story = {
   parameters: source('RestoreDrawer'),
   render: (_args, { globals }) => <RestoreDrawer locale={localeFor(globals)} />,
   play: async ({ canvas }) => {
-    const opener = canvas.getByRole('button', { name: 'Öppna filter' })
+    const opener = canvas.getByRole('button', { name: 'Open filters' })
     await userEvent.click(opener)
-    await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Sök' })).toHaveFocus())
-    await userEvent.click(canvas.getByRole('button', { name: 'Stäng' }))
+    await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus())
+    await userEvent.click(canvas.getByRole('button', { name: 'Close' }))
     await waitFor(() => expect(opener).toHaveFocus())
   },
 }
@@ -67,13 +67,13 @@ export const Loop: Story = {
   parameters: source('LoopDrawer'),
   render: (_args, { globals }) => <LoopDrawer locale={localeFor(globals)} />,
   play: async ({ canvas }) => {
-    const opener = canvas.getByRole('button', { name: 'Öppna filter' })
+    const opener = canvas.getByRole('button', { name: 'Open filters' })
     await userEvent.click(opener)
-    await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Sök' })).toHaveFocus())
+    await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus())
     await userEvent.tab({ shift: true })
-    await expect(canvas.getByRole('button', { name: 'Stäng' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'Close' })).toHaveFocus()
     await userEvent.tab()
-    await expect(canvas.getByRole('textbox', { name: 'Sök' })).toHaveFocus()
+    await expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(opener).toHaveFocus())
   },
@@ -84,9 +84,9 @@ export const Inert: Story = {
   parameters: source('InertDrawer'),
   render: (_args, { globals }) => <InertDrawer locale={localeFor(globals)} />,
   play: async ({ canvas, canvasElement }) => {
-    const opener = canvas.getByRole('button', { name: 'Öppna filter' })
+    const opener = canvas.getByRole('button', { name: 'Open filters' })
     await userEvent.click(opener)
-    await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Sök' })).toHaveFocus())
+    await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus())
     await expect(canvasElement.querySelector('[inert]')).not.toBeNull()
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(opener).toHaveFocus())
@@ -101,8 +101,8 @@ export const InitialFocus: Story = {
   render: (_args, { globals }) => <InitialFocusChoices locale={localeFor(globals)} />,
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole('radio', { name: '"#filter-search"' }))
-    await userEvent.click(canvas.getByRole('button', { name: 'Öppna filter' }))
-    await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Sök' })).toHaveFocus())
+    await userEvent.click(canvas.getByRole('button', { name: 'Open filters' }))
+    await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus())
   },
 }
 
@@ -113,10 +113,10 @@ export const Step: Story = {
   render: (_args, { globals }) => <WizardStep locale={localeFor(globals)} />,
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('heading', { level: 2 })).not.toHaveFocus()
-    await userEvent.click(canvas.getByRole('button', { name: 'Nästa steg' }))
-    await waitFor(() => expect(canvas.getByRole('heading', { name: 'Steg 2' })).toHaveFocus())
+    await userEvent.click(canvas.getByRole('button', { name: 'Next step' }))
+    await waitFor(() => expect(canvas.getByRole('heading', { name: 'Step 2' })).toHaveFocus())
     await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'Första i steget' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'First in the step' })).toHaveFocus()
   },
 }
 
@@ -125,9 +125,9 @@ export const Route: Story = {
   parameters: source('RouteMove'),
   render: (_args, { globals }) => <RouteMove locale={localeFor(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Till tjänster' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'To services' }))
     await waitFor(() => expect(canvas.getByRole('heading', { level: 1 })).toHaveFocus())
-    await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('Våra tjänster')
+    await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('Our services')
   },
 }
 
@@ -137,9 +137,9 @@ export const Part: Story = {
   parameters: source('ScopePart'),
   render: (_args, { globals }) => <ScopePart locale={localeFor(globals)} />,
   play: async ({ canvas }) => {
-    const opener = canvas.getByRole('button', { name: 'Öppna filter' })
+    const opener = canvas.getByRole('button', { name: 'Open filters' })
     await userEvent.click(opener)
-    await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Sök' })).toHaveFocus())
+    await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus())
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(opener).toHaveFocus())
   },
@@ -150,17 +150,17 @@ export const Keyboard: Story = {
   parameters: source('LoopDrawer'),
   render: (_args, { globals }) => <LoopDrawer locale={localeFor(globals)} />,
   play: async ({ canvas }) => {
-    const opener = canvas.getByRole('button', { name: 'Öppna filter' })
+    const opener = canvas.getByRole('button', { name: 'Open filters' })
     await userEvent.click(opener)
-    await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Sök' })).toHaveFocus())
+    await waitFor(() => expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus())
     await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'Använd' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'Apply' })).toHaveFocus()
     await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'Stäng' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'Close' })).toHaveFocus()
     await userEvent.tab()
-    await expect(canvas.getByRole('textbox', { name: 'Sök' })).toHaveFocus()
+    await expect(canvas.getByRole('textbox', { name: 'Search' })).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect(canvas.getByRole('button', { name: 'Stäng' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'Close' })).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(opener).toHaveFocus())
   },

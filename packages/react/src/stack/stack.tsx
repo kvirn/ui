@@ -18,7 +18,7 @@ export type StackProps = AsTag<(typeof stackTags)[number], 'div'>
  *
  * @example
  * <Stack className="kv-stack--gap-8">
- *   <Heading as="h2">Kontakta oss</Heading>
+ *   <Heading as="h2">Contact us</Heading>
  *   <p>Vi svarar vardagar 9–16.</p>
  * </Stack>
  */

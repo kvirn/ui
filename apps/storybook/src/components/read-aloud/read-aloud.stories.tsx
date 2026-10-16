@@ -51,6 +51,7 @@ const meta = {
     messages: { control: false, description: 'Per-instance text overrides.' },
     onStatusChange: { control: false },
   },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
@@ -70,15 +71,15 @@ export const Default: Story = {
   parameters: source('ArticleWithPlayer', 'Article'),
   render: () => <Reader />,
   play: async ({ canvas, userEvent }) => {
-    const group = canvas.getByRole('group', { name: 'Lyssna på texten' })
+    const group = canvas.getByRole('group', { name: 'Listen to this text' })
     await expect(group).toHaveAttribute('data-status', 'idle')
-    await expect(canvas.getByRole('combobox', { name: 'Röst' })).toBeVisible()
-    const listen = canvas.getByRole('button', { name: 'Lyssna' })
+    await expect(canvas.getByRole('combobox', { name: 'Voice' })).toBeVisible()
+    const listen = canvas.getByRole('button', { name: 'Listen' })
     await userEvent.click(listen)
     await expect(group).toHaveAttribute('data-status', 'playing')
-    await expect(canvas.getByRole('button', { name: 'Pausa' })).toHaveFocus()
-    await expect(canvas.getByText(/^Mening 1 av \d+$/)).toBeVisible()
-    await userEvent.click(canvas.getByRole('button', { name: 'Stoppa' }))
+    await expect(canvas.getByRole('button', { name: 'Pause' })).toHaveFocus()
+    await expect(canvas.getByText(/^Sentence 1 of \d+$/)).toBeVisible()
+    await userEvent.click(canvas.getByRole('button', { name: 'Stop' }))
     await expect(group).toHaveAttribute('data-status', 'idle')
   },
 }
@@ -88,9 +89,9 @@ export const Playing: Story = {
   parameters: source('ArticleWithPlayer', 'Article'),
   render: () => <Reader sentenceDuration={null} />,
   play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Lyssna' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Listen' }))
     await expect(canvas.getByRole('group')).toHaveAttribute('data-status', 'playing')
-    await expect(canvas.getByRole('button', { name: 'Pausa' })).toHaveAttribute('data-playing')
+    await expect(canvas.getByRole('button', { name: 'Pause' })).toHaveAttribute('data-playing')
   },
 }
 
@@ -99,11 +100,11 @@ export const Paused: Story = {
   parameters: source('ArticleWithPlayer', 'Article'),
   render: () => <Reader sentenceDuration={null} />,
   play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Lyssna' }))
-    await userEvent.click(canvas.getByRole('button', { name: 'Pausa' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Listen' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Pause' }))
     await expect(canvas.getByRole('group')).toHaveAttribute('data-status', 'paused')
-    await expect(canvas.getByText(/^Pausad vid mening 1 av \d+$/)).toBeVisible()
-    await expect(canvas.getByRole('button', { name: 'Lyssna' })).toBeVisible()
+    await expect(canvas.getByText(/^Paused at sentence 1 of \d+$/)).toBeVisible()
+    await expect(canvas.getByRole('button', { name: 'Listen' })).toBeVisible()
   },
 }
 
@@ -122,7 +123,7 @@ export const WithSelection: Story = {
     // Play and the trigger carry the same name.
     await waitFor(() =>
       expect(
-        canvas.getAllByRole('button', { name: 'Lyssna på markerad text', hidden: true }),
+        canvas.getAllByRole('button', { name: 'Listen to selected text', hidden: true }),
       ).toHaveLength(2),
     )
   },
@@ -133,9 +134,9 @@ export const NoVoice: Story = {
   parameters: source('ArticleWithPlayer', 'Article'),
   render: () => <Reader voices={[swedishVoice]} />,
   play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Lyssna' }))
-    await expect(await canvas.findByText(/ingen röst/)).toBeVisible()
-    await expect(canvas.queryByRole('combobox', { name: 'Röst' })).toBeNull()
+    await userEvent.click(canvas.getByRole('button', { name: 'Listen' }))
+    await expect(await canvas.findByText(/no voice/)).toBeVisible()
+    await expect(canvas.queryByRole('combobox', { name: 'Voice' })).toBeNull()
   },
 }
 
@@ -159,8 +160,8 @@ export const OneVoice: Story = {
     />
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('combobox', { name: 'Hastighet' })).toBeVisible()
-    await expect(canvas.queryByRole('combobox', { name: 'Röst' })).toBeNull()
+    await expect(canvas.getByRole('combobox', { name: 'Speed' })).toBeVisible()
+    await expect(canvas.queryByRole('combobox', { name: 'Voice' })).toBeNull()
   },
 }
 
@@ -170,23 +171,23 @@ export const Keyboard: Story = {
   render: () => <Reader sentenceDuration={null} />,
   play: async ({ canvas, userEvent }) => {
     await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'Lyssna' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'Listen' })).toHaveFocus()
     await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'Föregående mening' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'Previous sentence' })).toHaveFocus()
     await userEvent.tab()
     await userEvent.tab()
     await userEvent.tab()
-    await expect(canvas.getByRole('combobox', { name: 'Hastighet' })).toHaveFocus()
+    await expect(canvas.getByRole('combobox', { name: 'Speed' })).toHaveFocus()
     await userEvent.tab({ shift: true })
     await userEvent.tab({ shift: true })
     await userEvent.tab({ shift: true })
     await userEvent.tab({ shift: true })
     await userEvent.keyboard('{Enter}')
-    const pause = canvas.getByRole('button', { name: 'Pausa' })
+    const pause = canvas.getByRole('button', { name: 'Pause' })
     await expect(pause).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await expect(canvas.getByRole('group')).toHaveAttribute('data-status', 'idle')
-    await expect(canvas.getByRole('button', { name: 'Lyssna' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'Listen' })).toHaveFocus()
   },
 }
 
@@ -207,7 +208,7 @@ export const ForcedColors: Story = {
   parameters: source('ArticleWithPlayer', 'Article'),
   render: () => <Reader sentenceDuration={null} />,
   play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Lyssna' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Listen' }))
   },
 }
 

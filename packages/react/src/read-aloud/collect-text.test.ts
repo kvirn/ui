@@ -73,7 +73,7 @@ describe('collectText', () => {
   })
 
   it('records the nearest lang ancestor of each run, up to the element itself', () => {
-    const root = mount('<p>Hej <span lang="en">Hello <b>there</b></span> igen</p>')
+    const root = mount('<p>Hey <span lang="en">Hello <b>there</b></span> more</p>')
     root.setAttribute('lang', 'sv')
     const collected = collectText(root)
     expect(collected.languageRuns).toEqual([
@@ -84,11 +84,11 @@ describe('collectText', () => {
   })
 
   it('splits language runs where the lang changes and ignores a lang above the element', () => {
-    const outer = mount('<div><p>Hej <span lang="en">Hello <b>there</b></span> igen</p></div>')
+    const outer = mount('<div><p>Hey <span lang="en">Hello <b>there</b></span> more</p></div>')
     outer.setAttribute('lang', 'fi')
     const root = outer.firstElementChild as Element
     const collected = collectText(root)
-    expect(collected.text).toBe('Hej Hello there igen')
+    expect(collected.text).toBe('Hey Hello there more')
     expect(collected.languageRuns).toEqual([{ start: 4, end: 15, language: 'en' }])
   })
 })

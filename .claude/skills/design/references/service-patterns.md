@@ -54,4 +54,4 @@ Evidence-based defaults for municipal and agency services. Deviate only with a r
 - GOV.UK Design System and Service Manual: patterns, research-backed content guidance.
 - Designsystemet (Digdir, Norway): Nordic public-sector components and tokens.
 - Suomi.fi design system: Finnish public-sector components and content in fi, sv and en.
-- Nordic plain-language guidance: Språkrådet (SE and NO), Kotus (FI), Selkokeskus (FI) for easy-to-read.
+- Nordic plain-language guidance: Språkrådet (SE and NO), Kotus (FI), Selkokeskus (FI) for easy-to-read. <!-- kv-lang-ok: names of Nordic plain-language bodies -->

@@ -48,32 +48,32 @@ function Pages(props: PaginationRootProps) {
       <Pagination.Root {...props}>
         <Pagination.List>
           <Pagination.Item>
-            <Pagination.Previous href="?sida=1" />
+            <Pagination.Previous href="?page=1" />
           </Pagination.Item>
           <Pagination.Item>
-            <Pagination.Link page={1} href="?sida=1" />
+            <Pagination.Link page={1} href="?page=1" />
           </Pagination.Item>
           <Pagination.Item>
-            <Pagination.Link page={2} href="?sida=2" current />
+            <Pagination.Link page={2} href="?page=2" current />
           </Pagination.Item>
           <Pagination.Item>
-            <Pagination.Link page={3} href="?sida=3" />
+            <Pagination.Link page={3} href="?page=3" />
           </Pagination.Item>
           <Pagination.Item>
             <Pagination.Ellipsis />
           </Pagination.Item>
           <Pagination.Item>
-            <Pagination.Link page={9} href="?sida=9" />
+            <Pagination.Link page={9} href="?page=9" />
           </Pagination.Item>
           <Pagination.Item>
             <Pagination.Status page={2} total={9} />
           </Pagination.Item>
           <Pagination.Item>
-            <Pagination.Next href="?sida=3" />
+            <Pagination.Next href="?page=3" />
           </Pagination.Item>
         </Pagination.List>
       </Pagination.Root>
-      <button type="button">Efter</button>
+      <button type="button">After</button>
     </>
   )
 }
@@ -89,7 +89,7 @@ describe('Pagination keyboard', () => {
     await userEvent.tab()
     await expect.element(page.getByRole('link', { name: 'Next page' })).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('the current page is a link and a Tab stop', async () => {
@@ -111,7 +111,7 @@ describe('Pagination keyboard', () => {
 
   test('Enter follows a link through the registered router link, without a page load', async () => {
     function Search() {
-      return <p>Sökning: {useMockPathname()}</p>
+      return <p>Search: {useMockPathname()}</p>
     }
     await render(
       <KvirnProvider linkComponent={mockRouterLinkComponent}>
@@ -124,7 +124,7 @@ describe('Pagination keyboard', () => {
     await userEvent.tab()
     await userEvent.tab()
     await userEvent.keyboard('{Enter}')
-    await expect.element(page.getByText('Sökning: ?sida=1')).toBeVisible()
+    await expect.element(page.getByText('Search: ?page=1')).toBeVisible()
     await expect.element(page.getByRole('link', { name: 'Page 1' })).toHaveFocus()
   })
 
@@ -153,7 +153,7 @@ describe('Pagination', () => {
       <Pagination.Root>
         <Pagination.List>
           <Pagination.Item>
-            <Pagination.Link page={1} href="?sida=1" current />
+            <Pagination.Link page={1} href="?page=1" current />
           </Pagination.Item>
         </Pagination.List>
       </Pagination.Root>,
@@ -174,7 +174,7 @@ describe('Pagination', () => {
     expect(document.querySelectorAll('nav button')).toHaveLength(0)
     for (const link of page.getByRole('link').elements()) {
       expect(link.tagName).toBe('A')
-      expect(link.getAttribute('href')).toMatch(/^\?sida=\d$/)
+      expect(link.getAttribute('href')).toMatch(/^\?page=\d$/)
     }
   })
 
@@ -198,14 +198,14 @@ describe('Pagination', () => {
       <Pagination.Root>
         <Pagination.List>
           <Pagination.Item>
-            <Pagination.Link page={2} href="?sida=2">
-              två
+            <Pagination.Link page={2} href="?page=2">
+              two
             </Pagination.Link>
           </Pagination.Item>
         </Pagination.List>
       </Pagination.Root>,
     )
-    const link = page.getByRole('link', { name: 'två' })
+    const link = page.getByRole('link', { name: 'two' })
     await expect.element(link).toBeInTheDocument()
     expect(link.element().hasAttribute('aria-label')).toBe(false)
   })
@@ -242,18 +242,18 @@ describe('Pagination', () => {
       <Pagination.Root>
         <Pagination.List>
           <Pagination.Item>
-            <Pagination.Previous href="?sida=1">Tillbaka</Pagination.Previous>
+            <Pagination.Previous href="?page=1">Back</Pagination.Previous>
           </Pagination.Item>
           <Pagination.Item>
             <Pagination.Status page={2} total={9}>
-              Sida två av nio
+              Page two of nine
             </Pagination.Status>
           </Pagination.Item>
         </Pagination.List>
       </Pagination.Root>,
     )
-    await expect.element(page.getByRole('link', { name: 'Tillbaka' })).toBeVisible()
-    await expect.element(page.getByText('Sida två av nio')).toBeVisible()
+    await expect.element(page.getByRole('link', { name: 'Back' })).toBeVisible()
+    await expect.element(page.getByText('Page two of nine')).toBeVisible()
   })
 
   test('Pagination links render the provider’s registered router link', async () => {
@@ -276,19 +276,17 @@ describe('Pagination', () => {
 
   test('messages override the words per instance', async () => {
     await render(
-      <Pages
-        messages={{ label: 'Resultatsidor', page: ({ page: number }) => `Sidan ${number}` }}
-      />,
+      <Pages messages={{ label: 'Result pages', page: ({ page: number }) => `Page ${number}` }} />,
     )
-    await expect.element(page.getByRole('navigation', { name: 'Resultatsidor' })).toBeVisible()
+    await expect.element(page.getByRole('navigation', { name: 'Result pages' })).toBeVisible()
   })
 
   test.each([
-    ['sv', sv, 'Sidor', 'Föregående sida', 'Nästa sida', 'Sida 2 av 9', 'Sida 2'],
+    ['sv', sv, 'Sidor', 'Föregående sida', 'Nästa sida', 'Sida 2 av 9', 'Sida 2'], // kv-lang-ok: the sv catalog strings
     ['en', en, 'Pages', 'Previous page', 'Next page', 'Page 2 of 9', 'Page 2'],
-    ['fi', fi, 'Sivut', 'Edellinen sivu', 'Seuraava sivu', 'Sivu 2/9', 'Sivu 2'],
-    ['nb', nb, 'Sider', 'Forrige side', 'Neste side', 'Side 2 av 9', 'Side 2'],
-    ['nn', nn, 'Sider', 'Førre side', 'Neste side', 'Side 2 av 9', 'Side 2'],
+    ['fi', fi, 'Sivut', 'Edellinen sivu', 'Seuraava sivu', 'Sivu 2/9', 'Sivu 2'], // kv-lang-ok: the fi catalog strings
+    ['nb', nb, 'Sider', 'Forrige side', 'Neste side', 'Side 2 av 9', 'Side 2'], // kv-lang-ok: the nb catalog strings
+    ['nn', nn, 'Sider', 'Førre side', 'Neste side', 'Side 2 av 9', 'Side 2'], // kv-lang-ok: the nn catalog strings
   ] as const)(
     'the %s catalog names the landmark, the links and the status',
     async (locale, messages, label, previous, next, status, current) => {
@@ -311,7 +309,7 @@ describe('Pagination', () => {
         <Pagination.Root>
           <Pagination.List>
             <Pagination.Item>
-              <Pagination.Link page={1250} href="?sida=1250" />
+              <Pagination.Link page={1250} href="?page=1250" />
             </Pagination.Item>
           </Pagination.List>
         </Pagination.Root>
@@ -343,29 +341,29 @@ describe('Pagination', () => {
     const rootRef = createRef<HTMLElement>()
     const linkRef = createRef<HTMLAnchorElement>()
     await render(
-      <Pagination.Root ref={rootRef} id="sidor" className="min" data-testid="root">
+      <Pagination.Root ref={rootRef} id="pages" className="min" data-testid="root">
         <Pagination.List>
-          <Pagination.Item data-own="ja" className="eget" data-testid="item">
-            <Pagination.Link page={1} href="?sida=1" ref={linkRef} className="egen" />
+          <Pagination.Item data-own="yes" className="own-class" data-testid="item">
+            <Pagination.Link page={1} href="?page=1" ref={linkRef} className="own" />
           </Pagination.Item>
         </Pagination.List>
       </Pagination.Root>,
     )
     const root = page.getByTestId('root')
-    await expect.element(root).toHaveAttribute('id', 'sidor')
+    await expect.element(root).toHaveAttribute('id', 'pages')
     await expect.element(root).toHaveClass('kv-pagination', 'min')
     expect(rootRef.current).toBe(root.element())
     expect(linkRef.current).toBe(page.getByRole('link').element())
-    await expect.element(page.getByRole('link')).toHaveClass('kv-pagination-link', 'egen')
+    await expect.element(page.getByRole('link')).toHaveClass('kv-pagination-link', 'own')
     const item = page.getByTestId('item')
-    await expect.element(item).toHaveAttribute('data-own', 'ja')
-    await expect.element(item).toHaveClass('kv-pagination-item', 'eget')
+    await expect.element(item).toHaveAttribute('data-own', 'yes')
+    await expect.element(item).toHaveClass('kv-pagination-item', 'own-class')
   })
 
   test('a Pagination.Link with as="a" bypasses the registered router link', async () => {
     await render(
       <KvirnProvider linkComponent={mockRouterLinkComponent}>
-        <Pagination.Link page={1} href="?sida=1" as="a" />
+        <Pagination.Link page={1} href="?page=1" as="a" />
       </KvirnProvider>,
     )
     const link = page.getByRole('link', { name: 'Page 1' })
@@ -388,7 +386,7 @@ describe('usePagination', () => {
       <nav {...pagination.rootProps}>
         <ul {...pagination.listProps}>
           <li {...pagination.itemProps}>
-            <a href="?sida=3" aria-label={pagination.getPageLabel(3)}>
+            <a href="?page=3" aria-label={pagination.getPageLabel(3)}>
               3
             </a>
           </li>

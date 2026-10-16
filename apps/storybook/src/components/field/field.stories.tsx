@@ -327,7 +327,7 @@ export const SeveralDescriptions: Story = {
  * lands on the input itself, not on the label. Without it the id is generated.
  */
 export const LinkedFromErrorSummary: Story = {
-  args: { invalid: true, controlId: 'kontakt-telefon' },
+  args: { invalid: true, controlId: 'contact-phone' },
   render: (args, { globals }) => {
     const locale = localeOf(globals)
     const { text } = textsFor(locale)
@@ -554,6 +554,7 @@ export const LongFinnish: Story = {
   },
   play: async ({ canvas }) => {
     await expect(
+      // kv-lang-ok: asserts the long Finnish label hard case
       canvas.getByRole('textbox', { name: /Asunnonmuutostyöavustushakemuksen/ }),
     ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))

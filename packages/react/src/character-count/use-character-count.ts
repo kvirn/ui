@@ -17,7 +17,7 @@ export interface UseCharacterCountOptions {
   limit: number
   /**
    * Counts a text your own way, such as the way your server does, so both agree. Default: the
-   * characters the user sees (grapheme clusters, so `å` and an emoji are one each, and a line
+   * characters the user sees (grapheme clusters, so a decomposed letter and an emoji are one each, and a line
    * break is one).
    */
   countCharacters?: ((value: string) => number) | undefined

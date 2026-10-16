@@ -74,7 +74,11 @@ export function AccessibilityStatement({ country = 'se' }: AccessibilityStatemen
             <Prose>
               <h2>Our accessibility statement</h2>
               <p>
-                Kvirnby municipality publishes its <span lang="nb">tilgjengelighetserklæring</span>{' '}
+                Kvirnby municipality publishes its{' '}
+                <span lang="nb">
+                  {/* kv-lang-ok: a Norwegian term marked with lang (WCAG 3.1.2) */}
+                  tilgjengelighetserklæring
+                </span>{' '}
                 in the Norwegian Digitalisation Agency&apos;s reporting tool, so this page does not
                 repeat it.
               </p>

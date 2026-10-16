@@ -36,12 +36,12 @@ function Drawer({ children, ...options }: DrawerProps) {
   return (
     <div style={{ display: 'grid', gap: 24, justifyItems: 'start' }}>
       <button type="button" onClick={() => setOpen(true)}>
-        Öppna
+        Open
       </button>
       <aside {...scopeProps} aria-label="Filter" hidden={!open}>
         {children ?? (
           <div style={{ display: 'grid', gap: 24, justifyItems: 'start' }}>
-            <button type="button">Första</button>
+            <button type="button">First</button>
             <button type="button" id="second">
               Mellan
             </button>
@@ -51,12 +51,12 @@ function Drawer({ children, ...options }: DrawerProps) {
           </div>
         )}
       </aside>
-      <button type="button">Efter</button>
+      <button type="button">After</button>
     </div>
   )
 }
 
-const opener = () => page.getByRole('button', { name: 'Öppna' })
+const opener = () => page.getByRole('button', { name: 'Open' })
 const byName = (name: string) => page.getByRole('button', { name, exact: true })
 
 async function openDrawer() {
@@ -69,13 +69,13 @@ describe('use-focus.test.tsx › keyboard', () => {
     await openDrawer()
     byName('Sista').element().focus()
     await userEvent.tab()
-    await expect.element(byName('Första')).toHaveFocus()
+    await expect.element(byName('First')).toHaveFocus()
   })
 
   test('Shift+Tab on the first stop wraps to the last', async () => {
     await render(<Drawer contain="loop" onEscape={() => {}} />)
     await openDrawer()
-    await expect.element(byName('Första')).toHaveFocus()
+    await expect.element(byName('First')).toHaveFocus()
     await userEvent.tab({ shift: true })
     await expect.element(byName('Sista')).toHaveFocus()
   })
@@ -93,7 +93,7 @@ describe('use-focus.test.tsx › keyboard', () => {
       return (
         <Drawer contain="loop" onEscape={() => {}}>
           <button type="button" onClick={() => setExtra(true)}>
-            Lägg till
+            Add
           </button>
           {extra && <button type="button">Ny</button>}
         </Drawer>
@@ -105,7 +105,7 @@ describe('use-focus.test.tsx › keyboard', () => {
     await userEvent.tab()
     await expect.element(byName('Ny')).toHaveFocus()
     await userEvent.tab()
-    await expect.element(byName('Lägg till')).toHaveFocus()
+    await expect.element(byName('Add')).toHaveFocus()
   })
 
   test('inert keeps Tab inside and restores siblings', async () => {
@@ -116,16 +116,16 @@ describe('use-focus.test.tsx › keyboard', () => {
         <div>
           <main data-testid="page">
             <button type="button" onClick={() => setOpen(true)}>
-              Öppna
+              Open
             </button>
           </main>
           <nav data-testid="already" inert>
-            Redan inert
+            Already inert
           </nav>
           <div data-testid="wrapper">
             <aside {...scopeProps} aria-label="Filter" hidden={!open}>
               <button type="button" onClick={() => setOpen(false)}>
-                Stäng
+                Close
               </button>
             </aside>
             <p data-testid="inner-sibling">Text</p>
@@ -141,7 +141,7 @@ describe('use-focus.test.tsx › keyboard', () => {
       await userEvent.tab()
       expect(document.activeElement?.closest('main, nav, [data-testid="inner-sibling"]')).toBeNull()
     }
-    await userEvent.click(byName('Stäng'))
+    await userEvent.click(byName('Close'))
     await expect.element(page.getByTestId('page')).not.toHaveAttribute('inert')
     await expect.element(page.getByTestId('inner-sibling')).not.toHaveAttribute('inert')
     await expect.element(page.getByTestId('already')).toHaveAttribute('inert')
@@ -161,10 +161,10 @@ describe('use-focus.test.tsx › keyboard', () => {
               setOpen(true)
             }}
           >
-            Öppna
+            Open
           </button>
           <aside {...scopeProps} aria-label="Filter" hidden={!open}>
-            <button type="button">Inne</button>
+            <button type="button">Inside</button>
           </aside>
         </div>
       )
@@ -205,18 +205,18 @@ describe('use-focus.test.tsx › keyboard', () => {
       return (
         <>
           <button type="button" onClick={() => setStep('2')}>
-            Nästa
+            Next
           </button>
-          <h1>Steg {step}</h1>
-          <button type="button">Fortsätt</button>
+          <h1>Step {step}</h1>
+          <button type="button">Continue</button>
         </>
       )
     }
     await render(<Wizard />)
-    await userEvent.click(byName('Nästa'))
-    await expect.element(page.getByRole('heading', { name: 'Steg 2' })).toHaveFocus()
+    await userEvent.click(byName('Next'))
+    await expect.element(page.getByRole('heading', { name: 'Step 2' })).toHaveFocus()
     await userEvent.tab()
-    await expect.element(byName('Fortsätt')).toHaveFocus()
+    await expect.element(byName('Continue')).toHaveFocus()
   })
 
   test('Shift+Tab after a move goes back to the stop before the target', async () => {
@@ -226,16 +226,16 @@ describe('use-focus.test.tsx › keyboard', () => {
       return (
         <>
           <button type="button" onClick={() => setStep('2')}>
-            Nästa
+            Next
           </button>
-          <h1>Steg {step}</h1>
+          <h1>Step {step}</h1>
         </>
       )
     }
     await render(<Wizard />)
-    await userEvent.click(byName('Nästa'))
+    await userEvent.click(byName('Next'))
     await userEvent.tab({ shift: true })
-    await expect.element(byName('Nästa')).toHaveFocus()
+    await expect.element(byName('Next')).toHaveFocus()
   })
 })
 
@@ -243,18 +243,18 @@ describe('use-focus.test.tsx › moveOn', () => {
   test('does not move on the first render, and adds no tabindex that stays', async () => {
     await render(<MoveProbe stepKey="1" />)
     expect(document.activeElement).toBe(document.body)
-    await page.getByRole('button', { name: 'Steg' }).click()
+    await page.getByRole('button', { name: 'Step' }).click()
     const heading = page.getByRole('heading', { level: 2 }).element()
     expect(document.activeElement).toBe(heading)
     expect(heading.getAttribute('tabindex')).toBe('-1')
-    byName('Steg').element().focus()
+    byName('Step').element().focus()
     expect(heading.hasAttribute('tabindex')).toBe(false)
   })
 
   test('onLost is called when no element matches the selector', async () => {
     const onLost = vi.fn<() => void>()
     await render(<MoveProbe stepKey="1" selector="h6" onLost={onLost} />)
-    await page.getByRole('button', { name: 'Steg' }).click()
+    await page.getByRole('button', { name: 'Step' }).click()
     expect(onLost).toHaveBeenCalledTimes(1)
   })
 })
@@ -274,9 +274,9 @@ function MoveProbe({
   return (
     <div ref={containerRef}>
       <button type="button" onClick={() => setStep('2')}>
-        Steg
+        Step
       </button>
-      <h2>Rubrik {step}</h2>
+      <h2>Heading {step}</h2>
     </div>
   )
 }
@@ -285,20 +285,20 @@ describe('use-focus.test.tsx › focus management', () => {
   test('focus moves to the first stop when the scope opens', async () => {
     await render(<Drawer />)
     await openDrawer()
-    await expect.element(byName('Första')).toHaveFocus()
+    await expect.element(byName('First')).toHaveFocus()
   })
 
   test('a stop far below the fold is scrolled into view when the scope opens (2.4.11)', async () => {
     await render(
       <Drawer>
         <div style={{ blockSize: 3000 }} />
-        <button type="button">Långt ner</button>
+        <button type="button">Far down</button>
       </Drawer>,
     )
     await openDrawer()
     // The spacer comes first, so the first stop is the one below it.
-    await expect.element(byName('Långt ner')).toHaveFocus()
-    const { top, bottom } = byName('Långt ner').element().getBoundingClientRect()
+    await expect.element(byName('Far down')).toHaveFocus()
+    const { top, bottom } = byName('Far down').element().getBoundingClientRect()
     expect(top).toBeGreaterThanOrEqual(0)
     expect(bottom).toBeLessThanOrEqual(window.innerHeight)
   })
@@ -317,7 +317,7 @@ describe('use-focus.test.tsx › focus management', () => {
     const scope = page.getByRole('complementary').element()
     expect(document.activeElement).toBe(scope)
     await userEvent.tab()
-    await expect.element(byName('Första')).toHaveFocus()
+    await expect.element(byName('First')).toHaveFocus()
     expect(scope.hasAttribute('tabindex')).toBe(false)
   })
 
@@ -336,13 +336,13 @@ describe('use-focus.test.tsx › focus management', () => {
   test('initialFocus as a selector falls through to the first stop when it matches nothing', async () => {
     await render(<Drawer initialFocus="#gone" />)
     await openDrawer()
-    await expect.element(byName('Första')).toHaveFocus()
+    await expect.element(byName('First')).toHaveFocus()
   })
 
   test('a scope with no focusable stop focuses the container', async () => {
     await render(
       <Drawer>
-        <p>Bara text</p>
+        <p>Just text</p>
       </Drawer>,
     )
     await openDrawer()
@@ -370,20 +370,20 @@ describe('use-focus.test.tsx › focus management', () => {
       return (
         <>
           <button type="button" onClick={() => setOpen(true)}>
-            Öppna
+            Open
           </button>
           <button type="button" ref={finalRef}>
-            Slutmål
+            Destination
           </button>
           <button type="button" ref={triggerRef}>
-            Utlösare
+            Trigger
           </button>
           <button type="button" onClick={() => setUseFinal(false)}>
-            Utan slutmål
+            No destination
           </button>
           <aside {...scopeProps} aria-label="Filter" hidden={!open}>
             <button type="button" onClick={() => setOpen(false)}>
-              Stäng
+              Close
             </button>
           </aside>
         </>
@@ -391,12 +391,12 @@ describe('use-focus.test.tsx › focus management', () => {
     }
     await render(<Order />)
     await openDrawer()
-    await userEvent.click(byName('Stäng'))
-    await expect.element(byName('Slutmål')).toHaveFocus()
-    await userEvent.click(byName('Utan slutmål'))
+    await userEvent.click(byName('Close'))
+    await expect.element(byName('Destination')).toHaveFocus()
+    await userEvent.click(byName('No destination'))
     await openDrawer()
-    await userEvent.click(byName('Stäng'))
-    await expect.element(byName('Utlösare')).toHaveFocus()
+    await userEvent.click(byName('Close'))
+    await expect.element(byName('Trigger')).toHaveFocus()
   })
 
   test('focus the user moved elsewhere is not taken back', async () => {
@@ -406,21 +406,21 @@ describe('use-focus.test.tsx › focus management', () => {
       return (
         <>
           <button type="button" onClick={() => setOpen(true)}>
-            Öppna
+            Open
           </button>
           <button type="button" onClick={() => setOpen(false)}>
-            Stäng utanför
+            Close outside
           </button>
           <aside {...scopeProps} aria-label="Filter" hidden={!open}>
-            <button type="button">Inne</button>
+            <button type="button">Inside</button>
           </aside>
         </>
       )
     }
     await render(<Moves />)
     await openDrawer()
-    await userEvent.click(byName('Stäng utanför'))
-    await expect.element(byName('Stäng utanför')).toHaveFocus()
+    await userEvent.click(byName('Close outside'))
+    await expect.element(byName('Close outside')).toHaveFocus()
   })
 
   test('restore false leaves focus where it is', async () => {
@@ -440,7 +440,7 @@ describe('use-focus.test.tsx › focus management', () => {
         <>
           {showOpener && (
             <button type="button" onClick={() => setOpen(true)}>
-              Öppna
+              Open
             </button>
           )}
           <aside {...scopeProps} aria-label="Filter" hidden={!open}>
@@ -451,7 +451,7 @@ describe('use-focus.test.tsx › focus management', () => {
                 setOpen(false)
               }}
             >
-              Stäng
+              Close
             </button>
           </aside>
         </>
@@ -459,7 +459,7 @@ describe('use-focus.test.tsx › focus management', () => {
     }
     await render(<Lost />)
     await openDrawer()
-    await userEvent.click(byName('Stäng'))
+    await userEvent.click(byName('Close'))
     expect(onLost).toHaveBeenCalledTimes(1)
     expect(document.activeElement).toBe(document.body)
   })
@@ -472,13 +472,13 @@ describe('use-focus.test.tsx › focus management', () => {
         <div>
           <main data-testid="page">
             <button type="button" onClick={() => setOpen(true)}>
-              Öppna
+              Open
             </button>
           </main>
           <div>
             <aside {...scopeProps} aria-label="Filter" hidden={!open}>
               <button type="button" onClick={() => setOpen(false)}>
-                Stäng
+                Close
               </button>
             </aside>
           </div>
@@ -491,9 +491,9 @@ describe('use-focus.test.tsx › focus management', () => {
       </StrictMode>,
     )
     await openDrawer()
-    await expect.element(byName('Stäng')).toHaveFocus()
+    await expect.element(byName('Close')).toHaveFocus()
     await expect.element(page.getByTestId('page')).toHaveAttribute('inert')
-    await userEvent.click(byName('Stäng'))
+    await userEvent.click(byName('Close'))
     await expect.element(page.getByTestId('page')).not.toHaveAttribute('inert')
     await expect.element(opener()).toHaveFocus()
   })
@@ -504,11 +504,11 @@ describe('use-focus.test.tsx › FocusScope', () => {
     const ref = { current: null as HTMLElement | null }
     await render(
       <FocusScope active ref={ref} as="aside" aria-label="Filter">
-        <button type="button">Inne</button>
+        <button type="button">Inside</button>
       </FocusScope>,
     )
     expect(ref.current?.tagName).toBe('ASIDE')
-    await expect.element(byName('Inne')).toHaveFocus()
+    await expect.element(byName('Inside')).toHaveFocus()
   })
 
   test('FocusScope with a tag outside its list warns once and renders a div', async () => {
@@ -516,7 +516,7 @@ describe('use-focus.test.tsx › FocusScope', () => {
     const ref = { current: null as HTMLElement | null }
     await render(
       <FocusScope active ref={ref} as={notAllowed}>
-        <button type="button">Inne</button>
+        <button type="button">Inside</button>
       </FocusScope>,
     )
     expect(ref.current?.tagName).toBe('DIV')
@@ -576,7 +576,7 @@ describe('use-focus.test.tsx › imperative and types', () => {
           <button type="button" disabled>
             Av
           </button>
-          <button type="button">På</button>
+          <button type="button">On</button>
         </>
       )
     }
@@ -585,10 +585,10 @@ describe('use-focus.test.tsx › imperative and types', () => {
       result?.focusFirstAvailable([
         null,
         byName('Av').element() as HTMLElement,
-        byName('På').element() as HTMLElement,
+        byName('On').element() as HTMLElement,
       ]),
     ).toBe(true)
-    await expect.element(byName('På')).toHaveFocus()
+    await expect.element(byName('On')).toHaveFocus()
     expect(result?.focusFirstAvailable([null])).toBe(false)
     expect(result?.isFocusTarget(byName('Av').element() as HTMLElement)).toBe(false)
   })

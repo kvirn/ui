@@ -27,14 +27,14 @@ import { Disclosure } from './disclosure'
 
 const Fixture = () => (
   <Disclosure.Root>
-    <Disclosure.Trigger>Visa mer</Disclosure.Trigger>
-    <Disclosure.Panel>Innehåll</Disclosure.Panel>
+    <Disclosure.Trigger>Show more</Disclosure.Trigger>
+    <Disclosure.Panel>Content</Disclosure.Panel>
   </Disclosure.Root>
 )
 
 test('trigger exposes aria-expanded and toggles panel', async () => {
   const { container } = await render(<Fixture />)
-  const trigger = page.getByRole('button', { name: 'Visa mer' })
+  const trigger = page.getByRole('button', { name: 'Show more' })
   await expect.element(trigger).toHaveAttribute('aria-expanded', 'false')
   await userEvent.click(trigger)
   await expect.element(trigger).toHaveAttribute('aria-expanded', 'true')
@@ -51,7 +51,7 @@ One test per contract row, named after it. `userEvent` sends real key events, so
 ```tsx
 test('Enter toggles the panel and keeps focus on the trigger', async () => {
   await render(<Fixture />)
-  const trigger = page.getByRole('button', { name: 'Visa mer' })
+  const trigger = page.getByRole('button', { name: 'Show more' })
   await userEvent.tab()
   await expect.element(trigger).toHaveFocus()
   await userEvent.keyboard('{Enter}')
@@ -95,8 +95,8 @@ const meta = {
   args: {
     children: (
       <>
-        <Disclosure.Trigger>Visa mer</Disclosure.Trigger>
-        <Disclosure.Panel>Innehåll</Disclosure.Panel>
+        <Disclosure.Trigger>Show more</Disclosure.Trigger>
+        <Disclosure.Panel>Content</Disclosure.Panel>
       </>
     ),
   },
@@ -118,7 +118,7 @@ export const Keyboard: Story = {
   play: async ({ canvas, userEvent }) => {
     await userEvent.tab()
     await userEvent.keyboard('{Enter}')
-    await expect(canvas.getByRole('button', { name: 'Visa mer' })).toHaveAttribute(
+    await expect(canvas.getByRole('button', { name: 'Show more' })).toHaveAttribute(
       'aria-expanded',
       'true',
     )

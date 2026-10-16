@@ -90,7 +90,7 @@ Most of an audit is the contract's wording, because the page shows it. In every 
 
 - No internal references: no "Plan NNNN", skill names, file paths or "hard rule N". The reader can't follow them.
 - No token names or pixel values in Visual and modes. Write the threshold and who it helps: "the focus ring has at least 3:1 contrast against its background", not `--kv-focus-ring` or `2px`. System colours (forced colours) are described by what they do: "uses the system's text and highlight colours".
-- A non-English string gets an English gloss: "Inga träffar" (No matches).
+- Prose and examples are English. A non-English string appears only when it is the point (a locale, `lang` or `itemToLang` demo), is marked `kv-lang-ok: <reason>`, and gets an English gloss: "Inga träffar" (No matches).
 - Every WCAG criterion is number, name and level: "1.4.11 Non-text Contrast (AA)". AAA criteria are marked AAA and are never counted toward the AA bar.
 - A relative link in a contract doesn't render as a link today. Don't rely on it: name the page in words.
 - Before a batch of audits, grep every contract once for API words that no longer exist (`isSelected`, "`render` state", `asChild`) and hand the hits to component-engineer in one brief.

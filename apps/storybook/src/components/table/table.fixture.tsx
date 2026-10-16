@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
 import {
   Button,
   Checkbox,
@@ -269,7 +270,7 @@ export const cases: CaseRecord[] = [
     received: '2026-03-02',
     amount: 12600,
     handler: 'Karin Holm',
-    decision: 'Beviljad',
+    decision: 'Approved',
   },
   {
     id: 'c2',
@@ -278,7 +279,7 @@ export const cases: CaseRecord[] = [
     received: '2026-03-04',
     amount: 4200,
     handler: 'Jonas Berg',
-    decision: 'Under utredning',
+    decision: 'Under investigation',
   },
   {
     id: 'c3',
@@ -287,7 +288,7 @@ export const cases: CaseRecord[] = [
     received: '2026-03-05',
     amount: 850,
     handler: 'Karin Holm',
-    decision: 'Ej beslutat',
+    decision: 'Not decided',
   },
   {
     id: 'c4',
@@ -296,7 +297,7 @@ export const cases: CaseRecord[] = [
     received: '2026-02-27',
     amount: 7300,
     handler: 'Jonas Berg',
-    decision: 'Beviljad',
+    decision: 'Approved',
   },
   {
     id: 'c5',
@@ -305,7 +306,7 @@ export const cases: CaseRecord[] = [
     received: '2026-03-09',
     amount: 15900,
     handler: 'Sofia Nyberg',
-    decision: 'Under utredning',
+    decision: 'Under investigation',
   },
 ]
 

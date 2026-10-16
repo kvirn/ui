@@ -173,7 +173,7 @@ export function ImageForm({ editor, onClose }: ImageFormProps): ReactElement {
 
 /**
  * The Image control: a toolbar button that opens a small form in a popover, to add an image from
- * an address, or to change or remove the selected one. The description ("Vad visar bilden?") is
+ * an address, or to change or remove the selected one. The description ("What does the image show?") is
  * required unless the image is ticked as only decoration, which saves an empty `alt`: an image can't
  * be added without one of the two (WCAG 1.1.1). The address is limited to the allowed image
  * sources (`imageSources`, this site's own by default). There is no upload.

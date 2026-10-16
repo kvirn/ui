@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the tests run in sv because the decimal comma, the grouping space and the mask announcements are locale behaviour
 import type { MaskInput } from '@kvirn-ui/core'
 import { en } from '@kvirn-ui/i18n/en'
 import { sv } from '@kvirn-ui/i18n/sv'
@@ -45,12 +46,12 @@ describe('rendering', () => {
   test('renders a native text box, not a spinbutton, with no min, max or pattern attribute', async () => {
     const { container } = await render(
       <Field.Root required>
-        <Field.Label>Hur många barn bor hos dig?</Field.Label>
+        <Field.Label>How many children live with you?</Field.Label>
         <NumberInput name="children" min={0} max={12} />
-        <Field.HelpText>Ett heltal från 0 till 12.</Field.HelpText>
+        <Field.HelpText>A whole number from 0 to 12.</Field.HelpText>
       </Field.Root>,
     )
-    const input = page.getByRole('textbox', { name: /Hur många barn bor hos dig\?/ })
+    const input = page.getByRole('textbox', { name: /How many children live with you\?/ })
     expect(page.getByRole('spinbutton').elements()).toHaveLength(0)
     await expect.element(input).toHaveAttribute('type', 'text')
     await expect.element(input).toHaveAttribute('inputmode', 'numeric')
@@ -209,11 +210,11 @@ describe('the props become the mask', () => {
       >
         <NumberInput aria-label="Antal" name="count" />
         <NumberInput aria-label="Fast" name="fixed" value="12" readOnly />
-        <button type="submit">Skicka</button>
+        <button type="submit">Send</button>
       </form>,
     )
     await userEvent.type(page.getByRole('textbox', { name: 'Antal' }), '7')
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Send' }))
     const submitted = onSubmit.mock.lastCall?.[0]
     expect(submitted?.get('count')).toBe('7')
     expect(submitted?.get('fixed')).toBe('12')
@@ -328,7 +329,7 @@ describe('keys and paste (contract: number-input.a11y.md › Keyboard)', () => {
         }}
       >
         <NumberInput aria-label="Antal" name="count" />
-        <button type="submit">Skicka</button>
+        <button type="submit">Send</button>
       </form>,
     )
     await userEvent.type(page.getByRole('textbox', { name: 'Antal' }), '12')
@@ -341,13 +342,13 @@ describe('keys and paste (contract: number-input.a11y.md › Keyboard)', () => {
     await render(
       <>
         <NumberInput aria-label="Ett" />
-        <NumberInput aria-label="Två" />
+        <NumberInput aria-label="Two" />
       </>,
     )
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('textbox', { name: 'Ett' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('textbox', { name: 'Två' })).toHaveFocus()
+    await expect.element(page.getByRole('textbox', { name: 'Two' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     await expect.element(page.getByRole('textbox', { name: 'Ett' })).toHaveFocus()
   })
@@ -476,20 +477,22 @@ describe('in a Field', () => {
   test('the label names it, the help text and the error describe it, and the state is on it', async () => {
     const { container } = await render(
       <Field.Root required invalid>
-        <Field.Label>Hur många barn bor hos dig?</Field.Label>
+        <Field.Label>How many children live with you?</Field.Label>
         <NumberInput name="children" max={12} />
-        <Field.HelpText>Ett heltal från 0 till 12, till exempel 2.</Field.HelpText>
-        <Field.ErrorMessage>Ange antalet barn som ett tal från 0 till 12</Field.ErrorMessage>
+        <Field.HelpText>A whole number from 0 to 12, for example 2.</Field.HelpText>
+        <Field.ErrorMessage>
+          Enter the number of children as a number from 0 to 12
+        </Field.ErrorMessage>
       </Field.Root>,
     )
-    const input = page.getByRole('textbox', { name: /Hur många barn bor hos dig\?/ })
+    const input = page.getByRole('textbox', { name: /How many children live with you\?/ })
     await expect.element(input).toHaveAttribute('aria-invalid', 'true')
     await expect.element(input).toHaveAttribute('aria-required', 'true')
     await expect.element(input).toHaveAttribute('data-invalid', '')
     await expect
       .element(input)
       .toHaveAccessibleDescription(
-        'Ett heltal från 0 till 12, till exempel 2. Error: Ange antalet barn som ett tal från 0 till 12',
+        'A whole number from 0 to 12, for example 2. Error: Enter the number of children as a number from 0 to 12',
       )
     expect(container.querySelector('label')?.getAttribute('for')).toBe(input.element().id)
     await expectNoA11yViolations(container)
@@ -504,13 +507,13 @@ describe('in a Field', () => {
           <NumberInput />
         </Field.Root>
         <Field.Root>
-          <Field.Label marker="none">Två</Field.Label>
+          <Field.Label marker="none">Two</Field.Label>
           <NumberInput disabled />
         </Field.Root>
       </>,
     )
     await expect.element(page.getByRole('textbox', { name: 'Ett' })).toBeDisabled()
-    const second = page.getByRole('textbox', { name: 'Två' })
+    const second = page.getByRole('textbox', { name: 'Two' })
     await expect.element(second).toBeDisabled()
     await expect.element(second).toHaveAttribute('data-disabled', '')
   })
@@ -522,13 +525,13 @@ describe('in a Field', () => {
         <Field.Root>
           <Field.Label marker="none">Belopp</Field.Label>
           <NumberInput decimals={2} aria-describedby="extra" />
-          <Field.HelpText>Till exempel 1 250,50.</Field.HelpText>
+          <Field.HelpText>For example 1 250,50.</Field.HelpText>
         </Field.Root>
       </>,
     )
     await expect
       .element(page.getByRole('textbox', { name: 'Belopp' }))
-      .toHaveAccessibleDescription('Till exempel 1 250,50. Utan valutatecken.')
+      .toHaveAccessibleDescription('For example 1 250,50. Utan valutatecken.')
   })
 })
 
@@ -536,17 +539,17 @@ describe('inside an InputGroup', () => {
   test('works in InputGroup.Root next to an Addon, and the label carries the unit', async () => {
     const { container } = await render(
       <Field.Root required>
-        <Field.Label>Månadshyra i kronor</Field.Label>
+        <Field.Label>Monthly rent in kronor</Field.Label>
         <InputGroup.Root>
           <NumberInput name="rent" grouping className="kv-input--width-10" />
           <InputGroup.Addon data-testid="addon">kr</InputGroup.Addon>
         </InputGroup.Root>
-        <Field.HelpText>Till exempel 8 450</Field.HelpText>
+        <Field.HelpText>For example 8 450</Field.HelpText>
       </Field.Root>,
     )
-    const input = page.getByRole('textbox', { name: /Månadshyra i kronor/ })
+    const input = page.getByRole('textbox', { name: /Monthly rent in kronor/ })
     await expect.element(page.getByTestId('addon')).toHaveAttribute('aria-hidden', 'true')
-    await expect.element(input).toHaveAccessibleDescription('Till exempel 8 450')
+    await expect.element(input).toHaveAccessibleDescription('For example 8 450')
     // A click on the unit focuses the input, and the mask still shapes what is typed.
     await userEvent.click(page.getByTestId('addon'))
     await expect.element(input).toHaveFocus()
@@ -578,14 +581,14 @@ describe('dev warnings', () => {
 
   test('an id inside a Field is ignored, with a warning: the label stays associated', async () => {
     await render(
-      <Field.Root controlId="fältet">
+      <Field.Root controlId="the-field">
         <Field.Label marker="none">Antal</Field.Label>
         <NumberInput id="eget" />
       </Field.Root>,
     )
     await expect
       .element(page.getByRole('textbox', { name: 'Antal' }))
-      .toHaveAttribute('id', 'fältet')
+      .toHaveAttribute('id', 'the-field')
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('controlId')
   })
@@ -615,13 +618,13 @@ describe('dev warnings', () => {
         <Field.Root>
           <Field.Label>Hyra</Field.Label>
           <NumberInput decimals={2} />
-          <Field.HelpText>Till exempel 1 250,50.</Field.HelpText>
+          <Field.HelpText>For example 1 250,50.</Field.HelpText>
         </Field.Root>
         <Field.Root>
           <Field.Label>Skuld</Field.Label>
           <NumberInput decimals={2} aria-describedby="eget-tips" />
         </Field.Root>
-        <p id="eget-tips">Till exempel 300,25.</p>
+        <p id="eget-tips">For example 300,25.</p>
       </>,
     )
     await new Promise((resolve) => setTimeout(resolve, 100))
@@ -651,13 +654,13 @@ describe('dev warnings: your own mask', () => {
         <Field.Root>
           <Field.Label>Postnummer</Field.Label>
           <NumberInput mask="digits" />
-          <Field.HelpText>Fem siffror, till exempel 123 45.</Field.HelpText>
+          <Field.HelpText>Five digits, for example 123 45.</Field.HelpText>
         </Field.Root>
         <Field.Root>
           <Field.Label>Kod</Field.Label>
           <NumberInput mask={{ pattern: '99-99' }} aria-describedby="eget-tips" />
         </Field.Root>
-        <p id="eget-tips">Fyra siffror, till exempel 12-34.</p>
+        <p id="eget-tips">Four digits, for example 12-34.</p>
         <Field.Root>
           <Field.Label>Belopp</Field.Label>
           <NumberInput mask={false} />
@@ -682,8 +685,8 @@ describe('useNumberInput', () => {
         <Field.Root invalid required>
           <Field.Label>Belopp</Field.Label>
           <HookInput label="Belopp" decimals={2} onValueChange={onValueChange} />
-          <Field.HelpText>Till exempel 1 250,50.</Field.HelpText>
-          <Field.ErrorMessage>Ange ett belopp</Field.ErrorMessage>
+          <Field.HelpText>For example 1 250,50.</Field.HelpText>
+          <Field.ErrorMessage>Enter an amount</Field.ErrorMessage>
         </Field.Root>
       </KvirnProvider>,
     )

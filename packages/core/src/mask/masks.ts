@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the comments name the letters the ASCII-only masks reject
 import { ibanLengths } from './checks/iban.ts'
 import { createMask, createMaskFromEngine } from './create-mask.ts'
 import { createDateEngine } from './date-engine.ts'

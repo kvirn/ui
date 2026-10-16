@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale fixture text sets (sv, fi, nb, nn), picked by the locale toolbar
 import { sv } from '@kvirn-ui/i18n/sv'
 import {
   Button,

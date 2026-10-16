@@ -28,9 +28,9 @@ describe('VisuallyHidden', () => {
     const ref = createRef<HTMLElement>()
     await render(
       <p>
-        Sökträffar
+        Search results
         <VisuallyHidden id="count" ref={ref} data-testid="hidden">
-          , 3 resultat
+          , 3 results
         </VisuallyHidden>
       </p>,
     )
@@ -44,30 +44,30 @@ describe('VisuallyHidden', () => {
 
   test("the part class joins a consumer's", async () => {
     await render(
-      <VisuallyHidden className="annan" data-testid="hidden">
+      <VisuallyHidden className="other" data-testid="hidden">
         text
       </VisuallyHidden>,
     )
-    expect(page.getByTestId('hidden').element().className).toBe('annan kv-visually-hidden')
+    expect(page.getByTestId('hidden').element().className).toBe('other kv-visually-hidden')
   })
 
   test('its text stays in the accessibility tree', async () => {
     await render(
       <p>
-        Avgift<VisuallyHidden> i kronor</VisuallyHidden>
+        Fee<VisuallyHidden> in kronor</VisuallyHidden>
       </p>,
     )
-    await expect.element(page.getByText('i kronor')).toBeInTheDocument()
+    await expect.element(page.getByText('in kronor')).toBeInTheDocument()
   })
 
   test('hidden text inside a control becomes part of the control’s name', async () => {
     await render(
       <button type="button">
-        Ta bort<VisuallyHidden> bilagan Intyg.pdf</VisuallyHidden>
+        Remove<VisuallyHidden> attachment Certificate.pdf</VisuallyHidden>
       </button>,
     )
     await expect
-      .element(page.getByRole('button', { name: 'Ta bort bilagan Intyg.pdf', exact: true }))
+      .element(page.getByRole('button', { name: 'Remove attachment Certificate.pdf', exact: true }))
       .toBeInTheDocument()
   })
 
@@ -78,7 +78,7 @@ describe('VisuallyHidden', () => {
           Meny
         </VisuallyHidden>
         <VisuallyHidden as="div" data-testid="div">
-          Sök
+          Search
         </VisuallyHidden>
       </>,
     )
@@ -103,12 +103,12 @@ describe('VisuallyHidden', () => {
   test('the ref and className still apply to the chosen element', async () => {
     const ref = createRef<HTMLElement>()
     await render(
-      <VisuallyHidden as="p" ref={ref} className="annan" data-testid="hidden">
+      <VisuallyHidden as="p" ref={ref} className="other" data-testid="hidden">
         text
       </VisuallyHidden>,
     )
     expect(ref.current).toBe(page.getByTestId('hidden').element())
-    expect(ref.current?.className).toBe('annan kv-visually-hidden')
+    expect(ref.current?.className).toBe('other kv-visually-hidden')
   })
 
   test('useVisuallyHidden gives the class', () => {
@@ -118,13 +118,13 @@ describe('VisuallyHidden', () => {
   test('has no axe violations', async () => {
     const { container } = await render(
       <main>
-        <h1>Sök</h1>
+        <h1>Search</h1>
         <p>
-          Hittade 3<VisuallyHidden> resultat</VisuallyHidden>
+          Found 3<VisuallyHidden> results</VisuallyHidden>
         </p>
       </main>,
     )
-    await expect.element(page.getByText('resultat')).toBeInTheDocument()
+    await expect.element(page.getByText('results')).toBeInTheDocument()
     await expectNoA11yViolations(container)
   })
 })

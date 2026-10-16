@@ -35,7 +35,7 @@ const meta = {
     },
   },
   decorators: [withErrorSummaryLocale],
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: {
@@ -48,7 +48,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const summaryName = /Det finns ett problem/
+const summaryName = /There is a problem/
 
 /** After a failed submit: the summary above the form, and each link goes to its field or group. */
 export const Default: Story = {
@@ -64,7 +64,7 @@ export const Default: Story = {
 export const TitlePrefix: Story = {
   render: () => <ParkingForm prefix="title-prefix" prefixDocumentTitle disableAutoFocus />,
   play: async () => {
-    await waitFor(() => expect(document.title.startsWith('Fel: ')).toBe(true))
+    await waitFor(() => expect(document.title.startsWith('Error: ')).toBe(true))
   },
 }
 
@@ -73,7 +73,7 @@ function Submitting() {
   return (
     <>
       <button type="button" className="kv-button" onClick={() => setSubmitCount(submitCount + 1)}>
-        Skicka ansökan
+        Send application
       </button>
       <ParkingForm prefix="submitting" focusKey={submitCount} showErrors={submitCount > 0} />
     </>
@@ -88,11 +88,11 @@ export const OnSubmit: Story = {
       return
     }
     await expect(canvas.queryByRole('group', { name: summaryName })).toBeNull()
-    await userEvent.click(canvas.getAllByRole('button', { name: 'Skicka ansökan' })[0]!)
+    await userEvent.click(canvas.getAllByRole('button', { name: 'Send application' })[0]!)
     await expect(canvas.getByRole('group', { name: summaryName })).toHaveFocus()
-    await userEvent.click(canvas.getByRole('link', { name: 'Ange din e-postadress' }))
-    await expect(canvas.getByRole('textbox', { name: /E-post/ })).toHaveFocus()
-    await userEvent.click(canvas.getAllByRole('button', { name: 'Skicka ansökan' })[0]!)
+    await userEvent.click(canvas.getByRole('link', { name: 'Enter your email address' }))
+    await expect(canvas.getByRole('textbox', { name: /Email/ })).toHaveFocus()
+    await userEvent.click(canvas.getAllByRole('button', { name: 'Send application' })[0]!)
     await expect(canvas.getByRole('group', { name: summaryName })).toHaveFocus()
   },
 }
@@ -106,14 +106,14 @@ export const Keyboard: Story = {
     }
     canvas.getByRole('group', { name: summaryName }).focus()
     await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Ange din e-postadress' })).toHaveFocus()
+    await expect(canvas.getByRole('link', { name: 'Enter your email address' })).toHaveFocus()
     await userEvent.tab()
     await expect(
-      canvas.getByRole('link', { name: 'Välj hur länge tillståndet ska gälla' }),
+      canvas.getByRole('link', { name: 'Choose how long the permit should be valid' }),
     ).toHaveFocus()
     await userEvent.tab({ shift: true })
     await userEvent.keyboard('{Enter}')
-    await expect(canvas.getByRole('textbox', { name: /E-post/ })).toHaveFocus()
+    await expect(canvas.getByRole('textbox', { name: /Email/ })).toHaveFocus()
   },
 }
 
@@ -124,7 +124,7 @@ export const SingleError: Story = {
       <ErrorSummary.Title />
       <ErrorSummary.List>
         <ErrorSummary.Item>
-          <ErrorSummary.Link controlId="enda-faltet">Ange ditt namn</ErrorSummary.Link>
+          <ErrorSummary.Link controlId="only-field">Enter your name</ErrorSummary.Link>
         </ErrorSummary.Item>
       </ErrorSummary.List>
     </ErrorSummary.Root>
@@ -143,10 +143,12 @@ export const Reflow320: Story = {
       <ErrorSummary.List>
         <ErrorSummary.Item>
           <ErrorSummary.Link controlId="pitka-1">
+            {/* kv-lang-ok: long Finnish compound hard case under locale fi */}
             Anna jätehuoltomaksunpalautuspäätöksentarkistuslomakkeen päivämäärä
           </ErrorSummary.Link>
         </ErrorSummary.Item>
         <ErrorSummary.Item>
+          {/* kv-lang-ok: Finnish locale story text under locale fi */}
           <ErrorSummary.Link controlId="pitka-2">Valitse maksutapa</ErrorSummary.Link>
         </ErrorSummary.Item>
       </ErrorSummary.List>
@@ -159,6 +161,7 @@ export const Reflow320: Story = {
     if (column === null) {
       throw new Error('no narrow column')
     }
+    // kv-lang-ok: asserts the Finnish summary title under locale fi
     await expect(canvas.getByRole('group', { name: /Lomakkeessa on virheitä/ })).toBeVisible()
     await expectNoHorizontalOverflow(column)
   },

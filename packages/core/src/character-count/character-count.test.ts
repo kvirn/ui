@@ -1,3 +1,4 @@
+// kv-lang-ok-file: a decomposed and a composed å are the cases under test
 import { describe, expect, test } from 'vite-plus/test'
 import {
   countCharacters,
@@ -12,7 +13,7 @@ describe('countCharacters', () => {
   test.each([
     ['', 0],
     ['Hej', 3],
-    ['Hej på dig', 10],
+    ['Hey you, hi', 11],
     // a decomposed å: a, then a combining ring above
     ['å', 1],
     ['å', 1],

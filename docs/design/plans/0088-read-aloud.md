@@ -92,21 +92,21 @@ No custom shortcuts in v1 (Space is not hijacked outside the controls). `Selecti
 
 ### i18n strings (namespace `readAloud`, all six locales, overridable per provider and per instance)
 
-| Key           | en                                       | sv                                        |
-| ------------- | ---------------------------------------- | ----------------------------------------- |
-| label         | Listen to this text                      | Lyssna på texten                          |
-| play          | Listen                                   | Lyssna                                    |
-| playSelection | Listen to selection                      | Lyssna på markeringen                     |
-| pause         | Pause                                    | Pausa                                     |
-| previous      | Previous sentence                        | Föregående mening                         |
-| next          | Next sentence                            | Nästa mening                              |
-| stop          | Stop                                     | Stoppa                                    |
-| rate          | Speed                                    | Hastighet                                 |
-| voice         | Voice                                    | Röst                                      |
-| position      | Sentence {current} of {total}            | Mening {current} av {total}               |
-| noVoice       | No voice is installed for this language. | Det finns ingen röst för det här språket. |
-| speechError   | The text could not be read aloud.        | Texten kunde inte läsas upp.              |
-| unsupported   | Your browser can't read text aloud.      | Din webbläsare kan inte läsa upp text.    |
+| Key           | en                                       | sv                                                                                                               |
+| ------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| label         | Listen to this text                      | Lyssna på texten <!-- kv-lang-ok: locale table: the Swedish strings are the subject -->                          |
+| play          | Listen                                   | Lyssna                                                                                                           |
+| playSelection | Listen to selection                      | Lyssna på markeringen <!-- kv-lang-ok: locale table: the Swedish strings are the subject -->                     |
+| pause         | Pause                                    | Pausa                                                                                                            |
+| previous      | Previous sentence                        | Föregående mening <!-- kv-lang-ok: locale table: the Swedish strings are the subject -->                         |
+| next          | Next sentence                            | Nästa mening <!-- kv-lang-ok: locale table: the Swedish strings are the subject -->                              |
+| stop          | Stop                                     | Stoppa                                                                                                           |
+| rate          | Speed                                    | Hastighet                                                                                                        | <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| voice         | Voice                                    | Röst <!-- kv-lang-ok: locale table: the Swedish strings are the subject -->                                      |
+| position      | Sentence {current} of {total}            | Mening {current} av {total}                                                                                      |
+| noVoice       | No voice is installed for this language. | Det finns ingen röst för det här språket. <!-- kv-lang-ok: locale table: the Swedish strings are the subject --> |
+| speechError   | The text could not be read aloud.        | Texten kunde inte läsas upp. <!-- kv-lang-ok: locale table: the Swedish strings are the subject -->              |
+| unsupported   | Your browser can't read text aloud.      | Din webbläsare kan inte läsa upp text. <!-- kv-lang-ok: locale table: the Swedish strings are the subject -->    |
 
 `rate` option labels are numbers formatted with `useFormat` (`1×`), not strings. fi, nb, nn, en are written by the engineer; **se (Northern Sami) needs a native check**, marked `pending` in the PR (Q2).
 

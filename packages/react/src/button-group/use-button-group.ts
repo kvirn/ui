@@ -36,7 +36,7 @@ const named: UseButtonGroupResult = Object.freeze({
  *
  * @example
  * const group = useButtonGroup({ isNamed: true })
- * <div {...group.groupProps} aria-label="Ärendet">…</div>
+ * <div {...group.groupProps} aria-label="The case">…</div>
  */
 export function useButtonGroup({
   isNamed = false,

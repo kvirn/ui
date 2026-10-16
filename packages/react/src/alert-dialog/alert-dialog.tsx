@@ -56,8 +56,8 @@ const withClass = (own: string, className: string | undefined) =>
  * @example
  * <AlertDialog.Root open={isWarning} onOpenChange={onChange} initialFocusRef={keepRef}>
  *   <AlertDialog.Popup>
- *     <AlertDialog.Title>Vill du ta bort utkastet?</AlertDialog.Title>
- *     <AlertDialog.Description>Det går inte att ångra.</AlertDialog.Description>
+ *     <AlertDialog.Title>Delete the draft?</AlertDialog.Title>
+ *     <AlertDialog.Description>This cannot be undone.</AlertDialog.Description>
  *     <AlertDialog.Actions>…</AlertDialog.Actions>
  *   </AlertDialog.Popup>
  * </AlertDialog.Root>
@@ -123,7 +123,7 @@ AlertDialogActions.displayName = 'AlertDialog.Actions'
 
 /**
  * A plain `<button type="button">` that closes the alert dialog (reason `'close-press'`) and
- * returns focus. Its children are its name: say what it does ("Behåll utkastet"). It has no icon
+ * returns focus. Its children are its name: say what it does ("Keep the draft"). It has no icon
  * and no default text, and the consumer styles it. It is an ordinary action, so it can also be
  * the `initialFocusRef`.
  */
@@ -148,7 +148,7 @@ export function AlertDialogClose({
     ) {
       warnOnce(
         'alert-dialog-close-without-name',
-        'An AlertDialog.Close has no name: it has no default text and no icon. Give it children that say what it does ("Behåll utkastet"), or aria-label (WCAG 4.1.2, 2.5.3).',
+        'An AlertDialog.Close has no name: it has no default text and no icon. Give it children that say what it does ("Keep the draft"), or aria-label (WCAG 4.1.2, 2.5.3).',
       )
     }
   })

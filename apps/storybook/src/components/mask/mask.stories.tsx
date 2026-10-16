@@ -47,7 +47,7 @@ import {
 const meta = {
   title: 'Components/Forms/Mask',
   component: TextInput,
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   argTypes: {
     mask: {
       control: false,
@@ -390,7 +390,7 @@ export const Identifiers: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = maskTextsFor(globals)
     const personalIdentityNumber = canvas.getByRole('textbox', {
-      name: new RegExp(`^${text.personalIdentityNumber}`),
+      name: exactly(text.personalIdentityNumber),
     })
     await userEvent.click(personalIdentityNumber)
     await userEvent.paste('19900101 2385')
@@ -398,16 +398,16 @@ export const Identifiers: Story = {
     await expect(personalIdentityNumber).toHaveAttribute('inputmode', 'numeric')
     await expect(personalIdentityNumber).toHaveAttribute('dir', 'ltr')
 
-    const postalCode = canvas.getByRole('textbox', { name: new RegExp(`^${text.postalCode}`) })
+    const postalCode = canvas.getByRole('textbox', { name: exactly(text.postalCode) })
     await userEvent.type(postalCode, '12345')
     await expect(postalCode).toHaveValue('123 45')
 
-    const iban = canvas.getByRole('textbox', { name: new RegExp(`^${text.iban}`) })
+    const iban = canvas.getByRole('textbox', { name: exactly(text.iban) })
     await userEvent.type(iban, 'se4550000000058398257466')
     await expect(iban).toHaveValue('SE45 5000 0000 0583 9825 7466')
 
     const finnish = canvas.getByRole('textbox', {
-      name: new RegExp(`^${text.personalIdentityNumberFi}`),
+      name: exactly(text.personalIdentityNumberFi),
     })
     await userEvent.type(finnish, '131052-308t')
     await expect(finnish).toHaveValue('131052-308T')
@@ -424,15 +424,15 @@ export const Filters: Story = {
   render: (_args, { globals }) => <FilterFields locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = maskTextsFor(globals)
-    const digits = canvas.getByRole('textbox', { name: new RegExp(`^${text.digits}`) })
+    const digits = canvas.getByRole('textbox', { name: exactly(text.digits) })
     await userEvent.type(digits, '00-45 12')
     await expect(digits).toHaveValue('004512')
 
-    const email = canvas.getByRole('textbox', { name: new RegExp(`^${text.email}`) })
+    const email = canvas.getByRole('textbox', { name: exactly(text.email) })
     await userEvent.type(email, 'anna @example.se')
     await expect(email).toHaveValue('anna@example.se')
 
-    const telephone = canvas.getByRole('textbox', { name: new RegExp(`^${text.telephone}`) })
+    const telephone = canvas.getByRole('textbox', { name: exactly(text.telephone) })
     await userEvent.type(telephone, '+46 70-12x3')
     await expect(telephone).toHaveValue('+46 70-123')
   },
@@ -444,12 +444,12 @@ export const PatternAndRegexp: Story = {
   render: (_args, { globals }) => <CustomMaskFields locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = maskTextsFor(globals)
-    const caseNumber = canvas.getByRole('textbox', { name: new RegExp(`^${text.caseNumber}`) })
+    const caseNumber = canvas.getByRole('textbox', { name: exactly(text.caseNumber) })
     await userEvent.type(caseNumber, 'ab1234')
     await expect(caseNumber).toHaveValue('AB-1234')
 
     const registration = canvas.getByRole('textbox', {
-      name: new RegExp(`^${text.registration}`),
+      name: exactly(text.registration),
     })
     await userEvent.type(registration, 'abc123')
     await expect(registration).toHaveValue('ABC123')
@@ -466,7 +466,7 @@ export const Numbers: Story = {
   render: (_args, { globals }) => <NumberFields locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text, locale } = maskTextsFor(globals)
-    const rent = canvas.getByRole('textbox', { name: new RegExp(`^${text.amount}`) })
+    const rent = canvas.getByRole('textbox', { name: exactly(text.amount) })
     await userEvent.type(rent, '1250.5')
     await expect(rent).toHaveValue(locale === 'en' ? '1250.5' : '1250,5')
     await expect(canvas.getByTestId('range')).toHaveTextContent(text.amountInRange)
@@ -499,7 +499,7 @@ export const PersonalIdentityNumberCheck: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = maskTextsFor(globals)
     const input = canvas.getByRole('textbox', {
-      name: new RegExp(`^${text.personalIdentityNumber}`),
+      name: exactly(text.personalIdentityNumber),
     })
     await userEvent.type(input, '199001012386')
     await userEvent.click(canvas.getByRole('button', { name: text.send }))
@@ -525,7 +525,7 @@ export const StoredValue: Story = {
   render: (_args, { globals }) => <StoredValueField locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = maskTextsFor(globals)
-    const input = canvas.getByRole('textbox', { name: new RegExp(`^${text.stored}`) })
+    const input = canvas.getByRole('textbox', { name: exactly(text.stored) })
     await expect(input).toHaveValue('19900101-2385')
     await expect(canvas.getByTestId('stored-details')).toHaveTextContent('199001012385')
   },
@@ -537,7 +537,7 @@ export const OwnInput: Story = {
   render: (_args, { globals }) => <OwnInputField locale={localeOf(globals)} />,
   play: async ({ canvas, globals }) => {
     const { text } = maskTextsFor(globals)
-    const input = canvas.getByRole('textbox', { name: new RegExp(`^${text.ownInput}`) })
+    const input = canvas.getByRole('textbox', { name: exactly(text.ownInput) })
     await userEvent.type(input, 'ab1234')
     await expect(input).toHaveValue('AB-1234')
     await expect(input).toHaveAttribute('data-own')
@@ -561,7 +561,8 @@ export const RefusedCharacter: Story = {
     await waitFor(() =>
       expect(canvas.getByRole('status')).toHaveTextContent(
         locale === 'sv'
-          ? 'Här kan du bara skriva siffror.'
+          ? // kv-lang-ok: the Swedish built-in message of the sv locale
+            'Här kan du bara skriva siffror.'
           : locale === 'en'
             ? 'Only digits can be entered here.'
             : characterNotAllowedMessage(locale, 'digits'),

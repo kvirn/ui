@@ -61,9 +61,9 @@ function warnings(): string[] {
 }
 
 const entries: TableOfContentsEntry[] = [
-  { id: 'avgift', label: 'Avgift', level: 2 },
-  { id: 'avgift-bostad', label: 'Bostäder', level: 3 },
-  { id: 'ansok', label: 'Så ansöker du', level: 2 },
+  { id: 'fee', label: 'Fee', level: 2 },
+  { id: 'fee-housing', label: 'Housing', level: 3 },
+  { id: 'apply', label: 'How to apply', level: 2 },
 ]
 
 interface PageProps {
@@ -101,7 +101,7 @@ function Page({
       {/* Unstyled links: a 24px minimum keeps them clear of axe's target-size rule (2.5.8). */}
       <style>{'a { display: inline-block; min-block-size: 24px; }'}</style>
       {withLinksAround ? <a href="#title">Before the contents</a> : null}
-      <h2 id="title">På den här sidan</h2>
+      <h2 id="title">On this page</h2>
       <TableOfContents.Root items={items} offset={offset} aria-labelledby="title" />
       <div style={{ height: 200 }} />
       {headings.map((heading, index) => (
@@ -143,7 +143,7 @@ const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() 
 describe('rendering', () => {
   test('renders a navigation landmark named by aria-labelledby, with no aria-label', async () => {
     const { container } = await render(<Page />)
-    const navigation = page.getByRole('navigation', { name: 'På den här sidan' })
+    const navigation = page.getByRole('navigation', { name: 'On this page' })
     await expect.element(navigation).toBeVisible()
     await expect.element(navigation).toHaveAttribute('aria-labelledby', 'title')
     await expect.element(navigation).not.toHaveAttribute('aria-label')
@@ -161,10 +161,10 @@ describe('rendering', () => {
   })
 
   const localeNames: Array<[locale: string, messages: KvirnMessages, name: string]> = [
-    ['sv', sv, 'På den här sidan'],
-    ['fi', fi, 'Tällä sivulla'],
-    ['nb', nb, 'På denne siden'],
-    ['nn', nn, 'På denne sida'],
+    ['sv', sv, 'På den här sidan'], // kv-lang-ok: the catalog string of the locale
+    ['fi', fi, 'Tällä sivulla'], // kv-lang-ok: the catalog string of the locale
+    ['nb', nb, 'På denne siden'], // kv-lang-ok: the catalog string of the locale
+    ['nn', nn, 'På denne sida'], // kv-lang-ok: the catalog string of the locale
     ['en', en, 'On this page'],
   ]
   for (const [locale, messages, name] of localeNames) {
@@ -181,17 +181,17 @@ describe('rendering', () => {
   test('messages on the instance beat the provider’s message', async () => {
     await render(
       <KvirnProvider locale="sv" messages={sv}>
-        <TableOfContents.Root items={entries} messages={{ label: 'Innehåll' }} />
+        <TableOfContents.Root items={entries} messages={{ label: 'Contents' }} />
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('navigation', { name: 'Innehåll' })).toBeVisible()
+    await expect.element(page.getByRole('navigation', { name: 'Contents' })).toBeVisible()
   })
 
   test('an aria-label of your own names it instead of the message', async () => {
-    await render(<TableOfContents.Root items={entries} aria-label="Innehåll" />)
-    const navigation = page.getByRole('navigation', { name: 'Innehåll' })
+    await render(<TableOfContents.Root items={entries} aria-label="Contents" />)
+    const navigation = page.getByRole('navigation', { name: 'Contents' })
     await expect.element(navigation).toBeVisible()
-    await expect.element(navigation).toHaveAttribute('aria-label', 'Innehåll')
+    await expect.element(navigation).toHaveAttribute('aria-label', 'Contents')
   })
 
   test('nests the lists from the levels, so the depth is announced', async () => {
@@ -207,7 +207,7 @@ describe('rendering', () => {
         .getByRole('link')
         .all()
         .map((link) => link.element().textContent),
-    ).toEqual(['Avgift', 'Bostäder', 'Så ansöker du'])
+    ).toEqual(['Fee', 'Housing', 'How to apply'])
   })
 
   test('a skipped level nests one step', async () => {
@@ -241,7 +241,7 @@ describe('rendering', () => {
   })
 
   test('empty items render nothing: no empty landmark, and the function child is not called', async () => {
-    const children = vi.fn<() => ReactNode>(() => <p>Rubrik</p>)
+    const children = vi.fn<() => ReactNode>(() => <p>Heading</p>)
     const { container } = await render(
       <>
         <TableOfContents.Root items={[]} aria-labelledby="title" />
@@ -300,18 +300,18 @@ describe('rendering', () => {
       <TableOfContents.Root
         ref={rootRef}
         items={entries.slice(0, 1)}
-        id="innehall"
-        className="min-lista"
+        id="contents"
+        className="min-list"
         data-testid="root"
       >
         {({ tree }) => (
-          <TableOfContents.List ref={listRef} className="min-lista-2" data-testid="list">
+          <TableOfContents.List ref={listRef} className="min-list-2" data-testid="list">
             {tree.map((node) => (
               <TableOfContents.Item
                 key={node.item.id}
                 ref={itemRef}
-                data-own="ja"
-                className="eget"
+                data-own="yes"
+                className="own"
                 data-testid="item"
               >
                 <TableOfContents.Link
@@ -327,20 +327,20 @@ describe('rendering', () => {
       </TableOfContents.Root>,
     )
     const root = page.getByTestId('root')
-    await expect.element(root).toHaveAttribute('id', 'innehall')
-    await expect.element(root).toHaveClass('kv-table-of-contents', 'min-lista')
+    await expect.element(root).toHaveAttribute('id', 'contents')
+    await expect.element(root).toHaveClass('kv-table-of-contents', 'min-list')
     expect(rootRef.current).toBe(root.element())
     await expect
       .element(page.getByTestId('list'))
-      .toHaveClass('kv-table-of-contents-list', 'min-lista-2')
+      .toHaveClass('kv-table-of-contents-list', 'min-list-2')
     expect(listRef.current).toBe(page.getByTestId('list').element())
     const item = page.getByTestId('item')
-    await expect.element(item).toHaveAttribute('data-own', 'ja')
-    await expect.element(item).toHaveClass('kv-table-of-contents-item', 'eget')
+    await expect.element(item).toHaveAttribute('data-own', 'yes')
+    await expect.element(item).toHaveClass('kv-table-of-contents-item', 'own')
     expect(itemRef.current).toBe(item.element())
     const link = page.getByTestId('link')
     await expect.element(link).toHaveClass('kv-link', 'min-lank')
-    await expect.element(link).toHaveAttribute('href', '#avgift')
+    await expect.element(link).toHaveAttribute('href', '#fee')
     expect(linkRef.current).toBe(link.element())
   })
 
@@ -385,8 +385,8 @@ describe('rendering', () => {
           <TableOfContents.List>
             {tree.map((node) => (
               <TableOfContents.Item key={node.item.id}>
-                <TableOfContents.Link item={node.item} title="Eget element">
-                  Första avsnittet
+                <TableOfContents.Link item={node.item} title="Own element">
+                  First section
                 </TableOfContents.Link>
               </TableOfContents.Item>
             ))}
@@ -394,9 +394,9 @@ describe('rendering', () => {
         )}
       </TableOfContents.Root>,
     )
-    const link = page.getByRole('link', { name: 'Första avsnittet' })
-    await expect.element(link).toHaveAttribute('title', 'Eget element')
-    await expect.element(link).toHaveAttribute('href', '#avgift')
+    const link = page.getByRole('link', { name: 'First section' })
+    await expect.element(link).toHaveAttribute('title', 'Own element')
+    await expect.element(link).toHaveAttribute('href', '#fee')
     await expect.element(link).toHaveClass('kv-link')
   })
 })
@@ -407,7 +407,7 @@ describe('the function child', () => {
     await render(
       <>
         <style>{'a { display: inline-block; min-block-size: 24px; }'}</style>
-        <h2 id="title">På den här sidan</h2>
+        <h2 id="title">On this page</h2>
         <TableOfContents.Root items={entries} aria-labelledby="title">
           {(state) => {
             received.push(state)
@@ -420,7 +420,7 @@ describe('the function child', () => {
                     </TableOfContents.Item>
                   ))}
                 </TableOfContents.List>
-                <p data-testid="active">{state.activeId ?? 'ingen'}</p>
+                <p data-testid="active">{state.activeId ?? 'none'}</p>
               </>
             )
           }}
@@ -436,80 +436,78 @@ describe('the function child', () => {
     // Only the top level: the function drew its own list, so the h3 has no link.
     expect(page.getByRole('link').all()).toHaveLength(2)
     expect(page.getByRole('list').all()).toHaveLength(1)
-    expect(received.at(-1)?.tree.map((node) => node.item.id)).toEqual(['avgift', 'ansok'])
-    expect(received.at(-1)?.tree[0]?.children.map((node) => node.item.id)).toEqual([
-      'avgift-bostad',
-    ])
-    await expect.element(page.getByTestId('active')).toHaveTextContent('avgift')
-    scrollHeading('ansok')
-    await expect.element(page.getByTestId('active')).toHaveTextContent('ansok')
-    await expect.poll(currentLabels).toEqual(['Så ansöker du'])
+    expect(received.at(-1)?.tree.map((node) => node.item.id)).toEqual(['fee', 'apply'])
+    expect(received.at(-1)?.tree[0]?.children.map((node) => node.item.id)).toEqual(['fee-housing'])
+    await expect.element(page.getByTestId('active')).toHaveTextContent('fee')
+    scrollHeading('apply')
+    await expect.element(page.getByTestId('active')).toHaveTextContent('apply')
+    await expect.poll(currentLabels).toEqual(['How to apply'])
   })
 })
 
 describe('the current heading', () => {
   test('on load, a first heading that is visible below the line is current', async () => {
     await render(<Page />)
-    await expect.poll(currentLabels).toEqual(['Avgift'])
-    const current = page.getByRole('link', { name: 'Avgift', exact: true })
+    await expect.poll(currentLabels).toEqual(['Fee'])
+    const current = page.getByRole('link', { name: 'Fee', exact: true })
     await expect.element(current).toHaveAttribute('aria-current', 'location')
     expect(document.querySelectorAll('[data-current]')).toHaveLength(1)
   })
 
   test('scrolling to a heading makes its link the one aria-current="location"', async () => {
     await render(<Page />)
-    scrollHeading('ansok')
-    await expect.poll(currentLabels).toEqual(['Så ansöker du'])
-    const current = page.getByRole('link', { name: 'Så ansöker du' })
+    scrollHeading('apply')
+    await expect.poll(currentLabels).toEqual(['How to apply'])
+    const current = page.getByRole('link', { name: 'How to apply' })
     await expect.element(current).toHaveAttribute('aria-current', 'location')
     await expect.element(current).toHaveAttribute('data-current', '')
     expect(document.querySelectorAll('[aria-current]')).toHaveLength(1)
-    scrollHeading('avgift-bostad')
-    await expect.poll(currentLabels).toEqual(['Bostäder'])
+    scrollHeading('fee-housing')
+    await expect.poll(currentLabels).toEqual(['Housing'])
     expect(document.querySelectorAll('[aria-current]')).toHaveLength(1)
   })
 
   test('the last heading above the line stays current while the next one is still below it', async () => {
     await render(<Page />)
-    scrollHeading('ansok', 300)
-    await expect.poll(currentLabels).toEqual(['Bostäder'])
+    scrollHeading('apply', 300)
+    await expect.poll(currentLabels).toEqual(['Housing'])
   })
 
   test('scrolling back above the first heading keeps it current while it is visible', async () => {
     await render(<Page />)
-    scrollHeading('ansok')
-    await expect.poll(currentLabels).toEqual(['Så ansöker du'])
+    scrollHeading('apply')
+    await expect.poll(currentLabels).toEqual(['How to apply'])
     window.scrollTo(0, 0)
-    await expect.poll(currentLabels).toEqual(['Avgift'])
+    await expect.poll(currentLabels).toEqual(['Fee'])
   })
 
   test('offset moves the line: a heading is current once it reaches offset', async () => {
     await render(<Page offset={64} scrollMargin={64} />)
     // Halfway down the viewport is below the line, which is 64px plus 20% of the rest.
-    scrollHeading('ansok', window.innerHeight / 2)
-    await expect.poll(currentLabels).toEqual(['Bostäder'])
+    scrollHeading('apply', window.innerHeight / 2)
+    await expect.poll(currentLabels).toEqual(['Housing'])
     // Where a link to it lands, with scroll-margin-top: 64px.
-    scrollHeading('ansok', 64)
-    await expect.poll(currentLabels).toEqual(['Så ansöker du'])
+    scrollHeading('apply', 64)
+    await expect.poll(currentLabels).toEqual(['How to apply'])
   })
 
   test('a heading that is not rendered (display: none) is skipped', async () => {
-    await render(<Page hidden={['avgift-bostad']} />)
+    await render(<Page hidden={['fee-housing']} />)
     // A hidden heading reads 0 for its top, which would look like it is above the line.
-    await expect.poll(currentLabels).toEqual(['Avgift'])
+    await expect.poll(currentLabels).toEqual(['Fee'])
     // Past the first heading and before the last: the hidden one in between is not the current.
-    scrollHeading('ansok', 300)
-    await expect.poll(currentLabels).toEqual(['Avgift'])
+    scrollHeading('apply', 300)
+    await expect.poll(currentLabels).toEqual(['Fee'])
     expect(warnings()).toEqual([])
   })
 
   test('at the end of the page the last heading is current, though it cannot reach the line', async () => {
     await render(<Page shortEnd />)
     // Before the end, the last heading is below the line, so the one above it is current.
-    scrollHeading('avgift-bostad')
-    await expect.poll(currentLabels).toEqual(['Bostäder'])
+    scrollHeading('fee-housing')
+    await expect.poll(currentLabels).toEqual(['Housing'])
     window.scrollTo(0, document.documentElement.scrollHeight)
-    await expect.poll(currentLabels).toEqual(['Så ansöker du'])
+    await expect.poll(currentLabels).toEqual(['How to apply'])
   })
 
   test('a page that does not scroll has no end: the last heading is not current for being there', async () => {
@@ -534,7 +532,7 @@ describe('the current heading', () => {
       await nextFrame()
       expect(document.documentElement.scrollHeight).toBeLessThanOrEqual(window.innerHeight)
       // The first visible heading, below the line: not the last one, as at the end of a long page.
-      expect(currentLabels()).toEqual(['Avgift'])
+      expect(currentLabels()).toEqual(['Fee'])
     } finally {
       if (bodyStyle === null) {
         document.body.removeAttribute('style')
@@ -551,19 +549,19 @@ describe('keyboard', () => {
   test('Tab moves through the links in DOM order, nested ones included', async () => {
     await render(<Page withLinksAround />)
     link('Before the contents').element().focus()
-    for (const name of ['Avgift', 'Bostäder', 'Så ansöker du']) {
+    for (const name of ['Fee', 'Housing', 'How to apply']) {
       await userEvent.tab()
       await expect.element(link(name)).toHaveFocus()
     }
     await userEvent.tab()
     expect(document.activeElement?.closest('nav')).toBeNull()
-    expect(document.activeElement?.textContent).toBe('Inside Avgift')
+    expect(document.activeElement?.textContent).toBe('Inside Fee')
   })
 
   test('Shift+Tab moves back through the links, then out of the contents', async () => {
     await render(<Page withLinksAround />)
-    link('Så ansöker du').element().focus()
-    for (const name of ['Bostäder', 'Avgift']) {
+    link('How to apply').element().focus()
+    for (const name of ['Housing', 'Fee']) {
       await userEvent.tab({ shift: true })
       await expect.element(link(name)).toHaveFocus()
     }
@@ -573,12 +571,12 @@ describe('keyboard', () => {
 
   test('Enter scrolls to the heading, and the next Tab continues after it', async () => {
     await render(<Page withLinksAround />)
-    link('Så ansöker du').element().focus()
+    link('How to apply').element().focus()
     await userEvent.keyboard('{Enter}')
     try {
-      await expect.poll(() => window.location.hash).toBe('#ansok')
+      await expect.poll(() => window.location.hash).toBe('#apply')
       await userEvent.tab()
-      expect(document.activeElement?.textContent).toBe('Inside Så ansöker du')
+      expect(document.activeElement?.textContent).toBe('Inside How to apply')
     } finally {
       window.history.replaceState(null, '', window.location.pathname + window.location.search)
     }
@@ -586,7 +584,7 @@ describe('keyboard', () => {
 
   test('Arrow keys, Home and End are not handled', async () => {
     await render(<Page withLinksAround />)
-    const start = link('Så ansöker du')
+    const start = link('How to apply')
     start.element().focus()
     for (const key of ['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', 'End', 'Home']) {
       await userEvent.keyboard(`{${key}}`)
@@ -600,12 +598,12 @@ describe('keyboard', () => {
         <Page />
       </KvirnProvider>,
     )
-    const first = link('Avgift')
+    const first = link('Fee')
     first.element().focus()
     expect(page.getByRole('status').element().textContent).toBe('')
     expect(page.getByRole('alert').element().textContent).toBe('')
-    scrollHeading('ansok')
-    await expect.poll(currentLabels).toEqual(['Så ansöker du'])
+    scrollHeading('apply')
+    await expect.poll(currentLabels).toEqual(['How to apply'])
     await new Promise((resolve) => setTimeout(resolve, 400))
     await expect.element(first).toHaveFocus()
     expect(page.getByRole('status').element().textContent).toBe('')
@@ -634,11 +632,11 @@ describe('the observer', () => {
 
   test('a changed set of ids is observed again, and a link that is no longer listed is gone', async () => {
     const { rerender } = await render(<Page />)
-    scrollHeading('ansok')
-    await expect.poll(currentLabels).toEqual(['Så ansöker du'])
+    scrollHeading('apply')
+    await expect.poll(currentLabels).toEqual(['How to apply'])
     await rerender(<Page items={entries.slice(0, 2)} headings={entries} />)
     // The page is still at the last heading, which is no longer listed: the one above it is.
-    await expect.poll(currentLabels).toEqual(['Bostäder'])
+    await expect.poll(currentLabels).toEqual(['Housing'])
     expect(page.getByRole('link').all()).toHaveLength(2)
   })
 
@@ -647,7 +645,7 @@ describe('the observer', () => {
     Reflect.deleteProperty(window, 'IntersectionObserver')
     try {
       await render(<Page />)
-      scrollHeading('ansok')
+      scrollHeading('apply')
       await nextFrame()
       await nextFrame()
       expect(page.getByRole('link').all()).toHaveLength(3)
@@ -660,21 +658,21 @@ describe('the observer', () => {
 
 describe('development warnings', () => {
   test('a missing heading warns once, naming the id, and its link stays', async () => {
-    const withMissing = [...entries, { id: 'saknas', label: 'Saknas', level: 2 }]
+    const withMissing = [...entries, { id: 'missing', label: 'Missing', level: 2 }]
     const { rerender } = await render(<Page items={withMissing} headings={entries} />)
-    const matching = () => warnings().filter((text) => text.includes('#saknas'))
+    const matching = () => warnings().filter((text) => text.includes('#missing'))
     expect(matching()).toHaveLength(1)
     expect(matching()[0]).toContain('2.4.1')
     await expect
-      .element(page.getByRole('link', { name: 'Saknas' }))
-      .toHaveAttribute('href', '#saknas')
+      .element(page.getByRole('link', { name: 'Missing' }))
+      .toHaveAttribute('href', '#missing')
     // The same ids in a new array: nothing is checked again, and the warning is once per id anyway.
     await rerender(<Page items={[...withMissing]} headings={entries} />)
     expect(matching()).toHaveLength(1)
   })
 
   test('a list, an item and a link outside the root warn once each, and still render', async () => {
-    const first = { id: 'avgift', label: 'Avgift', level: 2 }
+    const first = { id: 'fee', label: 'Fee', level: 2 }
     await render(
       <>
         <TableOfContents.List data-testid="list">
@@ -690,7 +688,7 @@ describe('development warnings', () => {
     expect(warnings().filter((text) => text.includes('TableOfContents.Link'))).toHaveLength(1)
     expect(page.getByTestId('list').element().className).toBe('kv-table-of-contents-list')
     expect(page.getByTestId('item').element().className).toBe('kv-table-of-contents-item')
-    await expect.element(page.getByTestId('link')).toHaveAttribute('href', '#avgift')
+    await expect.element(page.getByTestId('link')).toHaveAttribute('href', '#fee')
     await expect.element(page.getByTestId('link')).not.toHaveAttribute('aria-current')
   })
 
@@ -732,11 +730,11 @@ describe('useTableOfContents', () => {
     const contents = useTableOfContents({ items: entries, labelledBy })
     return (
       <>
-        <h2 id="title">På den här sidan</h2>
+        <h2 id="title">On this page</h2>
         <nav {...contents.rootProps} data-testid="root">
           <OwnNodes contents={contents} nodes={contents.tree} />
         </nav>
-        <p data-testid="active">{contents.activeId ?? 'ingen'}</p>
+        <p data-testid="active">{contents.activeId ?? 'none'}</p>
         <div style={{ height: 200 }} />
         {entries.map((entry) => (
           <section key={entry.id} style={{ minHeight: '120vh' }}>
@@ -755,9 +753,9 @@ describe('useTableOfContents', () => {
     expect(root.element().className).toBe('kv-table-of-contents')
     expect(root.element().querySelector('ul')?.className).toBe('kv-table-of-contents-list')
     expect(root.element().querySelector('li')?.className).toBe('kv-table-of-contents-item')
-    const link = page.getByRole('link', { name: 'Avgift' })
+    const link = page.getByRole('link', { name: 'Fee' })
     expect(link.element().className).toBe('kv-link')
-    await expect.element(link).toHaveAttribute('href', '#avgift')
+    await expect.element(link).toHaveAttribute('href', '#fee')
   })
 
   test('labelledBy replaces the message: aria-labelledby, and no aria-label', async () => {
@@ -765,19 +763,19 @@ describe('useTableOfContents', () => {
     const root = page.getByTestId('root')
     await expect.element(root).toHaveAttribute('aria-labelledby', 'title')
     await expect.element(root).not.toHaveAttribute('aria-label')
-    await expect.element(page.getByRole('navigation', { name: 'På den här sidan' })).toBeVisible()
+    await expect.element(page.getByRole('navigation', { name: 'On this page' })).toBeVisible()
   })
 
   test('activeId follows the scroll, and getLinkProps marks only that item', async () => {
     await render(<OwnContents />)
-    await expect.element(page.getByTestId('active')).toHaveTextContent('avgift')
-    scrollHeading('avgift-bostad')
-    await expect.element(page.getByTestId('active')).toHaveTextContent('avgift-bostad')
+    await expect.element(page.getByTestId('active')).toHaveTextContent('fee')
+    scrollHeading('fee-housing')
+    await expect.element(page.getByTestId('active')).toHaveTextContent('fee-housing')
     await expect
-      .element(page.getByRole('link', { name: 'Bostäder' }))
+      .element(page.getByRole('link', { name: 'Housing' }))
       .toHaveAttribute('aria-current', 'location')
     await expect
-      .element(page.getByRole('link', { name: 'Avgift' }))
+      .element(page.getByRole('link', { name: 'Fee' }))
       .not.toHaveAttribute('aria-current')
   })
 })
@@ -788,10 +786,10 @@ describe('server rendering', () => {
     expect(html).toContain('<nav')
     expect(html).toContain('aria-labelledby="title"')
     expect(html).not.toContain('aria-label=')
-    expect(html).toContain('href="#avgift"')
-    expect(html).toContain('href="#avgift-bostad"')
-    expect(html).toContain('href="#ansok"')
-    expect(html).toContain('>Så ansöker du</a>')
+    expect(html).toContain('href="#fee"')
+    expect(html).toContain('href="#fee-housing"')
+    expect(html).toContain('href="#apply"')
+    expect(html).toContain('>How to apply</a>')
     expect(html).not.toContain('aria-current')
     expect(html.match(/<ul class="kv-table-of-contents-list" role="list"/g)).toHaveLength(2)
     expect(html.match(/<li/g)).toHaveLength(3)

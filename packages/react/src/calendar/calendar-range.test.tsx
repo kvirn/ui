@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the day names, range hints and announcements are asserted in the sv locale (Intl dates and the sv catalog)
 import { sv } from '@kvirn-ui/i18n/sv'
 import { act, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
@@ -36,7 +37,7 @@ type ExampleProps = Partial<Extract<CalendarRootProps, { mode: 'range' }>> & {
 function Example({ dir, locale = 'sv', ...props }: ExampleProps) {
   return (
     <KvirnProvider locale={locale} dir={dir} messages={sv}>
-      <button type="button">Före</button>
+      <button type="button">Before</button>
       <Calendar.Root today="2026-10-14" mode="range" {...props}>
         <Calendar.PreviousMonth />
         <Calendar.Heading />
@@ -46,7 +47,7 @@ function Example({ dir, locale = 'sv', ...props }: ExampleProps) {
         <Calendar.Grid />
         <Calendar.Grid offset={1} />
       </Calendar.Root>
-      <button type="button">Efter</button>
+      <button type="button">After</button>
     </KvirnProvider>
   )
 }
@@ -258,7 +259,7 @@ describe('two months', () => {
 describe('keyboard', () => {
   test('Tab with two months passes the month buttons, then both grids as one stop', async () => {
     await render(<Example visibleMonths={2} />)
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     await userEvent.tab()
     await expect.element(button('Föregående månad')).toHaveFocus()
     await userEvent.tab()
@@ -266,7 +267,7 @@ describe('keyboard', () => {
     await userEvent.tab()
     await expect.element(starts('onsdag 14 oktober 2026')).toHaveFocus()
     await userEvent.tab()
-    await expect.element(button('Efter')).toHaveFocus()
+    await expect.element(button('After')).toHaveFocus()
     expect(document.querySelectorAll('[role="gridcell"][tabindex="0"]')).toHaveLength(1)
   })
 

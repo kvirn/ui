@@ -86,8 +86,8 @@ export interface UseDisclosureResult {
  *
  * @example
  * const disclosure = useDisclosure({ defaultOpen: false })
- * <button {...disclosure.triggerProps}>Öppettider</button>
- * <div {...disclosure.panelProps}>Måndag till fredag 10–19.</div>
+ * <button {...disclosure.triggerProps}>Opening hours</button>
+ * <div {...disclosure.panelProps}>Monday to Friday 10–19.</div>
  */
 export function useDisclosure({
   open: openProp,

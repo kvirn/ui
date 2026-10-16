@@ -70,30 +70,32 @@ function Form({
           <ErrorSummary.Title />
           <ErrorSummary.List>
             <ErrorSummary.Item>
-              <ErrorSummary.Link controlId="email">Ange din e-postadress</ErrorSummary.Link>
+              <ErrorSummary.Link controlId="email">Enter your email address</ErrorSummary.Link>
             </ErrorSummary.Item>
             <ErrorSummary.Item>
-              <ErrorSummary.Link controlId="kontakt-epost">Välj hur vi når dig</ErrorSummary.Link>
+              <ErrorSummary.Link controlId="contact-email">
+                Choose how we can reach you
+              </ErrorSummary.Link>
             </ErrorSummary.Item>
           </ErrorSummary.List>
         </ErrorSummary.Root>
       ) : null}
       <form>
         <Field.Root controlId="email" invalid>
-          <Field.Label>E-post</Field.Label>
+          <Field.Label>Email</Field.Label>
           <TextInput />
-          <Field.ErrorMessage>Ange din e-postadress</Field.ErrorMessage>
+          <Field.ErrorMessage>Enter your email address</Field.ErrorMessage>
         </Field.Root>
         <Fieldset.Root>
-          <Fieldset.Legend>Hur når vi dig?</Fieldset.Legend>
+          <Fieldset.Legend>How can we reach you?</Fieldset.Legend>
           <label>
-            <input type="radio" name="kontakt" id="kontakt-epost" /> E-post
+            <input type="radio" name="contact" id="contact-email" /> Email
           </label>
           <label>
-            <input type="radio" name="kontakt" id="kontakt-telefon" /> Telefon
+            <input type="radio" name="contact" id="contact-phone" /> Phone
           </label>
         </Fieldset.Root>
-        <button type="submit">Skicka</button>
+        <button type="submit">Send</button>
       </form>
     </>
   )
@@ -129,13 +131,13 @@ describe('rendering', () => {
   test('the title takes a heading level and your own text', async () => {
     await render(
       <ErrorSummary.Root>
-        <ErrorSummary.Title as="h3">Rätta det här</ErrorSummary.Title>
+        <ErrorSummary.Title as="h3">Fix this</ErrorSummary.Title>
         <ErrorSummary.List />
       </ErrorSummary.Root>,
     )
     await expect
       .element(page.getByRole('heading', { level: 3 }))
-      .toHaveTextContent('Error: Rätta det här')
+      .toHaveTextContent('Error: Fix this')
   })
 
   test('each part forwards its ref, its attributes and its class', async () => {
@@ -147,7 +149,7 @@ describe('rendering', () => {
         <ErrorSummary.List className="egen">
           <ErrorSummary.Item className="egen">
             <ErrorSummary.Link ref={linkRef} className="egen" controlId="x">
-              Fel
+              Error
             </ErrorSummary.Link>
           </ErrorSummary.Item>
         </ErrorSummary.List>
@@ -180,29 +182,29 @@ describe('links', () => {
   test('each link goes to its control id and reads the field error text', async () => {
     await render(<Form />)
     await expect
-      .element(page.getByRole('link', { name: 'Ange din e-postadress' }))
+      .element(page.getByRole('link', { name: 'Enter your email address' }))
       .toHaveAttribute('href', '#email')
     await expect
-      .element(page.getByRole('link', { name: 'Välj hur vi når dig' }))
-      .toHaveAttribute('href', '#kontakt-epost')
+      .element(page.getByRole('link', { name: 'Choose how we can reach you' }))
+      .toHaveAttribute('href', '#contact-email')
   })
 
   test('a link moves focus to the field and keeps the address', async () => {
     await render(<Form />)
-    await userEvent.click(page.getByRole('link', { name: 'Ange din e-postadress' }))
+    await userEvent.click(page.getByRole('link', { name: 'Enter your email address' }))
     expect(document.activeElement).toBe(document.getElementById('email'))
     expect(window.location.hash).toBe('')
   })
 
   test('a link to a group focuses its first option', async () => {
     await render(<Form />)
-    await userEvent.click(page.getByRole('link', { name: 'Välj hur vi når dig' }))
-    expect(document.activeElement).toBe(document.getElementById('kontakt-epost'))
+    await userEvent.click(page.getByRole('link', { name: 'Choose how we can reach you' }))
+    expect(document.activeElement).toBe(document.getElementById('contact-email'))
   })
 
   test('a Ctrl click is left to the browser', async () => {
     await render(<Form />)
-    await userEvent.click(page.getByRole('link', { name: 'Ange din e-postadress' }), {
+    await userEvent.click(page.getByRole('link', { name: 'Enter your email address' }), {
       modifiers: ['Control'],
     })
     expect(document.activeElement).not.toBe(document.getElementById('email'))
@@ -214,15 +216,15 @@ describe('links', () => {
         <ErrorSummary.Title />
         <ErrorSummary.List>
           <ErrorSummary.Item>
-            <ErrorSummary.Link controlId="finns-inte">Fel</ErrorSummary.Link>
+            <ErrorSummary.Link controlId="does-not-exist">Error</ErrorSummary.Link>
           </ErrorSummary.Item>
         </ErrorSummary.List>
       </ErrorSummary.Root>,
     )
-    await userEvent.click(page.getByRole('link', { name: 'Fel' }))
-    expect(window.location.hash).toBe('#finns-inte')
-    expect(warnings()).toEqual([expect.stringContaining('no element with the id "finns-inte"')])
-    await userEvent.click(page.getByRole('link', { name: 'Fel' }))
+    await userEvent.click(page.getByRole('link', { name: 'Error' }))
+    expect(window.location.hash).toBe('#does-not-exist')
+    expect(warnings()).toEqual([expect.stringContaining('no element with the id "does-not-exist"')])
+    await userEvent.click(page.getByRole('link', { name: 'Error' }))
     expect(warnings()).toHaveLength(1)
   })
 
@@ -234,16 +236,16 @@ describe('links', () => {
           <ErrorSummary.Title />
           <ErrorSummary.List>
             <ErrorSummary.Item>
-              <ErrorSummary.Link controlId="dold">Fel</ErrorSummary.Link>
+              <ErrorSummary.Link controlId="dold">Error</ErrorSummary.Link>
             </ErrorSummary.Item>
           </ErrorSummary.List>
         </ErrorSummary.Root>
       </>,
     )
-    await userEvent.click(page.getByRole('link', { name: 'Fel' }))
+    await userEvent.click(page.getByRole('link', { name: 'Error' }))
     expect(window.location.hash).toBe('#dold')
     expect(warnings()).toEqual([expect.stringContaining("can't take focus")])
-    await userEvent.click(page.getByRole('link', { name: 'Fel' }))
+    await userEvent.click(page.getByRole('link', { name: 'Error' }))
     expect(warnings()).toHaveLength(1)
   })
 
@@ -254,19 +256,21 @@ describe('links', () => {
         <ErrorSummary.List>
           <ErrorSummary.Item>
             <ErrorSummary.Link controlId="email" onClick={(event) => event.preventDefault()}>
-              Fel
+              Error
             </ErrorSummary.Link>
           </ErrorSummary.Item>
         </ErrorSummary.List>
       </ErrorSummary.Root>,
     )
-    await userEvent.click(page.getByRole('link', { name: 'Fel' }))
+    await userEvent.click(page.getByRole('link', { name: 'Error' }))
     expect(document.activeElement).not.toBe(document.getElementById('email'))
   })
 
   test('outside a root it is a plain link and warns', async () => {
-    await render(<ErrorSummary.Link controlId="email">Fel</ErrorSummary.Link>)
-    await expect.element(page.getByRole('link', { name: 'Fel' })).toHaveAttribute('href', '#email')
+    await render(<ErrorSummary.Link controlId="email">Error</ErrorSummary.Link>)
+    await expect
+      .element(page.getByRole('link', { name: 'Error' }))
+      .toHaveAttribute('href', '#email')
     expect(warnings()).toEqual([expect.stringContaining('ErrorSummary.Link is outside')])
   })
 })
@@ -283,7 +287,7 @@ describe('focus', () => {
       return (
         <>
           <button type="button" onClick={() => setSubmitCount(submitCount + 1)}>
-            Skicka igen
+            Send again
           </button>
           <Form focusKey={submitCount} />
         </>
@@ -291,8 +295,8 @@ describe('focus', () => {
     }
     await render(<Harness />)
     await expect.element(summary()).toHaveFocus()
-    page.getByRole('link', { name: 'Ange din e-postadress' }).element().focus()
-    await userEvent.click(page.getByRole('button', { name: 'Skicka igen' }))
+    page.getByRole('link', { name: 'Enter your email address' }).element().focus()
+    await userEvent.click(page.getByRole('button', { name: 'Send again' }))
     await expect.element(summary()).toHaveFocus()
   })
 
@@ -300,7 +304,7 @@ describe('focus', () => {
     const view = await render(<Form focusKey={1} />)
     await expect.element(summary()).toHaveFocus()
     page.getByRole('link', { name: 'Tillbaka' }).element().focus()
-    await view.rerender(<Form focusKey={1} rootProps={{ className: 'annan' }} />)
+    await view.rerender(<Form focusKey={1} rootProps={{ className: 'other' }} />)
     await expect.element(page.getByRole('link', { name: 'Tillbaka' })).toHaveFocus()
   })
 
@@ -312,11 +316,11 @@ describe('focus', () => {
     )
     await expect.element(summary()).toHaveFocus()
     page
-      .getByRole('textbox', { name: /^E-post/ })
+      .getByRole('textbox', { name: /^Email/ })
       .element()
       .focus()
     await userEvent.keyboard('anna')
-    await expect.element(page.getByRole('textbox', { name: /^E-post/ })).toHaveFocus()
+    await expect.element(page.getByRole('textbox', { name: /^Email/ })).toHaveFocus()
   })
 
   test('disableAutoFocus leaves focus where it was, on mount and when focusKey changes', async () => {
@@ -334,7 +338,7 @@ describe('focus', () => {
     page.getByRole('link', { name: 'Tillbaka' }).element().focus()
     await userEvent.tab()
     expect(document.activeElement).toBe(
-      page.getByRole('link', { name: 'Ange din e-postadress' }).element(),
+      page.getByRole('link', { name: 'Enter your email address' }).element(),
     )
   })
 })
@@ -345,7 +349,7 @@ describe('keyboard', () => {
     await expect.element(summary()).toHaveFocus()
     await userEvent.tab()
     expect(document.activeElement).toBe(
-      page.getByRole('link', { name: 'Ange din e-postadress' }).element(),
+      page.getByRole('link', { name: 'Enter your email address' }).element(),
     )
   })
 
@@ -354,10 +358,10 @@ describe('keyboard', () => {
     await userEvent.tab()
     await userEvent.tab()
     expect(document.activeElement).toBe(
-      page.getByRole('link', { name: 'Välj hur vi når dig' }).element(),
+      page.getByRole('link', { name: 'Choose how we can reach you' }).element(),
     )
     await userEvent.tab()
-    expect(document.activeElement).toBe(page.getByRole('textbox', { name: /^E-post/ }).element())
+    expect(document.activeElement).toBe(page.getByRole('textbox', { name: /^Email/ }).element())
   })
 
   test('Shift+Tab from the first link goes to the stop before the summary', async () => {
@@ -371,7 +375,7 @@ describe('keyboard', () => {
     await render(<Form />)
     await userEvent.tab()
     await userEvent.keyboard('{Enter}')
-    expect(document.activeElement).toBe(page.getByRole('textbox', { name: /^E-post/ }).element())
+    expect(document.activeElement).toBe(page.getByRole('textbox', { name: /^Email/ }).element())
   })
 })
 
@@ -407,7 +411,7 @@ describe('announcements', () => {
     const notAllowed = 'p' as 'h2'
     await render(
       <ErrorSummary.Root>
-        <ErrorSummary.Title as={notAllowed}>Rätta det här</ErrorSummary.Title>
+        <ErrorSummary.Title as={notAllowed}>Fix this</ErrorSummary.Title>
         <ErrorSummary.List />
       </ErrorSummary.Root>,
     )
@@ -436,41 +440,41 @@ describe('announcements', () => {
 
 describe('document title', () => {
   test('prefixes the page title while shown and restores it on unmount', async () => {
-    document.title = 'Steg 2 - Parkeringstillstånd'
+    document.title = 'Step 2 - Parking permit'
     const view = await render(<Form prefixDocumentTitle />)
-    expect(document.title).toBe('Error: Steg 2 - Parkeringstillstånd')
+    expect(document.title).toBe('Error: Step 2 - Parking permit')
     await view.rerender(<Form prefixDocumentTitle showSummary={false} />)
-    expect(document.title).toBe('Steg 2 - Parkeringstillstånd')
+    expect(document.title).toBe('Step 2 - Parking permit')
   })
 
   test('never doubles the prefix, in Strict Mode or on a second summary', async () => {
-    document.title = 'Steg 2'
+    document.title = 'Step 2'
     await render(
       <StrictMode>
         <Form prefixDocumentTitle />
       </StrictMode>,
     )
-    expect(document.title).toBe('Error: Steg 2')
+    expect(document.title).toBe('Error: Step 2')
   })
 
   test('is off by default', async () => {
-    document.title = 'Steg 2'
+    document.title = 'Step 2'
     await render(<Form />)
-    expect(document.title).toBe('Steg 2')
+    expect(document.title).toBe('Step 2')
   })
 })
 
 describe('messages', () => {
   test.each([
-    ['sv', sv, 'Fel: Det finns ett problem', 'Fel:'],
+    ['sv', sv, 'Fel: Det finns ett problem', 'Fel:'], // kv-lang-ok: the sv catalog strings
     ['en', en, 'Error: There is a problem', 'Error:'],
-    ['fi', fi, 'Virhe: Lomakkeessa on virheitä', 'Virhe:'],
+    ['fi', fi, 'Virhe: Lomakkeessa on virheitä', 'Virhe:'], // kv-lang-ok: the fi catalog string
     ['nb', nb, 'Feil: Det er et problem', 'Feil:'],
-    ['nn', nn, 'Feil: Det er eit problem', 'Feil:'],
+    ['nn', nn, 'Feil: Det er eit problem', 'Feil:'], // kv-lang-ok: the nn catalog string
   ] as const)(
     'the %s catalog gives the title and the page title prefix',
     async (locale, messages, heading, prefix) => {
-      document.title = 'Sida'
+      document.title = 'Page'
       await render(
         <KvirnProvider locale={locale} messages={messages}>
           <ErrorSummary.Root prefixDocumentTitle>
@@ -479,24 +483,24 @@ describe('messages', () => {
         </KvirnProvider>,
       )
       await expect.element(page.getByRole('heading', { level: 2 })).toHaveTextContent(heading)
-      expect(document.title).toBe(`${prefix} Sida`)
+      expect(document.title).toBe(`${prefix} Page`)
     },
   )
 
   test('messages override the title and the prefix per instance', async () => {
-    document.title = 'Sida'
+    document.title = 'Page'
     await render(
       <ErrorSummary.Root
         prefixDocumentTitle
-        messages={{ title: 'Rätta felen', titlePrefix: 'Problem:' }}
+        messages={{ title: 'Fix the errors', titlePrefix: 'Problem:' }}
       >
         <ErrorSummary.Title />
       </ErrorSummary.Root>,
     )
     await expect
       .element(page.getByRole('heading', { level: 2 }))
-      .toHaveTextContent('Error: Rätta felen')
-    expect(document.title).toBe('Problem: Sida')
+      .toHaveTextContent('Error: Fix the errors')
+    expect(document.title).toBe('Problem: Page')
   })
 })
 
@@ -556,7 +560,7 @@ describe('accessibility', () => {
       </main>,
     )
     await userEvent.tab()
-    await expect.element(page.getByRole('link', { name: 'Ange din e-postadress' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Enter your email address' })).toHaveFocus()
     await expectNoA11yViolations(container)
   })
 })

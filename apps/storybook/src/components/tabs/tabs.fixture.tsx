@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
 import { Button, Card, Link, Tabs } from '@kvirn-ui/react'
 import type { TabsChangeReason } from '@kvirn-ui/react'
 import { useId, useState } from 'react'
@@ -42,29 +43,31 @@ const filingTexts = {
 /** The main example as a fixture: three tabs, one panel for each, and the first tab selected. */
 export function CaseTabs() {
   return (
-    <Tabs.Root defaultValue="uppgifter">
-      <Tabs.List aria-label="Ärendet">
-        <Tabs.Tab value="uppgifter">Uppgifter</Tabs.Tab>
-        <Tabs.Tab value="handlingar">Handlingar</Tabs.Tab>
-        <Tabs.Tab value="historik">Historik</Tabs.Tab>
+    <Tabs.Root defaultValue="details">
+      <Tabs.List aria-label="Case">
+        <Tabs.Tab value="details">Details</Tabs.Tab>
+        <Tabs.Tab value="documents">Documents</Tabs.Tab>
+        <Tabs.Tab value="history">History</Tabs.Tab>
       </Tabs.List>
-      <Tabs.Panel value="uppgifter">
-        <p>Ansökan om bygglov för Strandvägen 4. Ärendet väntar på granskning.</p>
+      <Tabs.Panel value="details">
+        <p>Building permit application for 4 Strand Road. The case awaits review.</p>
       </Tabs.Panel>
-      <Tabs.Panel value="handlingar">
-        <p>Ritningar, situationsplan och kontrollplan har kommit in.</p>
+      <Tabs.Panel value="documents">
+        <p>Drawings, a site plan and a control plan have arrived.</p>
       </Tabs.Panel>
-      <Tabs.Panel value="historik">
-        <p>Ansökan kom in den 2 september. Komplettering begärdes den 9 september.</p>
+      <Tabs.Panel value="history">
+        <p>
+          The application arrived on 2 September. More information was requested on 9 September.
+        </p>
       </Tabs.Panel>
     </Tabs.Root>
   )
 }
 
 /**
- * The fixture the keyboard tests drive: a button before, four tabs and a button after. Historik is
+ * The fixture the keyboard tests drive: a button before, four tabs and a button after. History is
  * disabled: it stays focusable, and the arrows reach it but never select it. The panel of
- * Handlingar starts with a link, so it sets `tabIndex={-1}` and Tab goes straight to the link.
+ * Documents starts with a link, so it sets `tabIndex={-1}` and Tab goes straight to the link.
  */
 export function FilingTabs({ locale }: { locale: 'sv' | 'en' }) {
   const text = filingTexts[locale]
@@ -107,20 +110,20 @@ export function FilingTabs({ locale }: { locale: 'sv' | 'en' }) {
  */
 export function ReviewTabs() {
   return (
-    <Tabs.Root defaultValue="handlingar" activationMode="manual">
-      <Tabs.List aria-label="Granskning">
-        <Tabs.Tab value="oversikt">Översikt</Tabs.Tab>
-        <Tabs.Tab value="handlingar">Handlingar</Tabs.Tab>
-        <Tabs.Tab value="beslut">Beslut</Tabs.Tab>
+    <Tabs.Root defaultValue="documents" activationMode="manual">
+      <Tabs.List aria-label="Review">
+        <Tabs.Tab value="oversikt">Overview</Tabs.Tab>
+        <Tabs.Tab value="documents">Documents</Tabs.Tab>
+        <Tabs.Tab value="beslut">Decision</Tabs.Tab>
       </Tabs.List>
       <Tabs.Panel value="oversikt">
-        <p>Fastigheten, sökanden och vad ansökan gäller.</p>
+        <p>The property, the applicant and what the application is about.</p>
       </Tabs.Panel>
-      <Tabs.Panel value="handlingar">
-        <p>Alla handlingar som har kommit in, med datum.</p>
+      <Tabs.Panel value="documents">
+        <p>All the documents that have arrived, with dates.</p>
       </Tabs.Panel>
       <Tabs.Panel value="beslut">
-        <p>Nämndens beslut och hur du överklagar det.</p>
+        <p>The board’s decision and how you appeal it.</p>
       </Tabs.Panel>
     </Tabs.Root>
   )
@@ -134,19 +137,19 @@ export function ReviewTabs() {
 export function SettingsTabs() {
   return (
     <Tabs.Root defaultValue="konto" orientation="vertical">
-      <Tabs.List aria-label="Inställningar">
-        <Tabs.Tab value="konto">Konto</Tabs.Tab>
-        <Tabs.Tab value="behorigheter">Behörigheter</Tabs.Tab>
-        <Tabs.Tab value="aviseringar">Aviseringar</Tabs.Tab>
+      <Tabs.List aria-label="Settings">
+        <Tabs.Tab value="konto">Account</Tabs.Tab>
+        <Tabs.Tab value="behorigheter">Permissions</Tabs.Tab>
+        <Tabs.Tab value="aviseringar">Notifications</Tabs.Tab>
       </Tabs.List>
       <Tabs.Panel value="konto">
-        <p>Namn, e-postadress och lösenord.</p>
+        <p>Name, email address and password.</p>
       </Tabs.Panel>
       <Tabs.Panel value="behorigheter">
-        <p>Vem som får se och ändra dina ärenden.</p>
+        <p>Who can see and change your cases.</p>
       </Tabs.Panel>
       <Tabs.Panel value="aviseringar">
-        <p>När och hur vi meddelar dig om ett ärende.</p>
+        <p>When and how we notify you about a case.</p>
       </Tabs.Panel>
     </Tabs.Root>
   )
@@ -160,25 +163,25 @@ export function ApplicationTabs() {
   const reasonId = useId()
   return (
     <>
-      <Tabs.Root defaultValue="uppgifter">
-        <Tabs.List aria-label="Ansökan">
-          <Tabs.Tab value="uppgifter">Uppgifter</Tabs.Tab>
-          <Tabs.Tab value="bilagor">Bilagor</Tabs.Tab>
+      <Tabs.Root defaultValue="details">
+        <Tabs.List aria-label="Application">
+          <Tabs.Tab value="details">Details</Tabs.Tab>
+          <Tabs.Tab value="bilagor">Attachments</Tabs.Tab>
           <Tabs.Tab value="beslut" disabled aria-describedby={reasonId}>
-            Beslut
+            Decision
           </Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value="uppgifter">
-          <p>Sökande, fastighet och vad du vill bygga.</p>
+        <Tabs.Panel value="details">
+          <p>The applicant, the property and what you want to build.</p>
         </Tabs.Panel>
         <Tabs.Panel value="bilagor">
-          <p>Ritningar och andra bilagor till ansökan.</p>
+          <p>Drawings and other attachments to the application.</p>
         </Tabs.Panel>
         <Tabs.Panel value="beslut">
-          <p>Nämndens beslut.</p>
+          <p>The board’s decision.</p>
         </Tabs.Panel>
       </Tabs.Root>
-      <p id={reasonId}>Fliken Beslut öppnas när nämnden har fattat sitt beslut.</p>
+      <p id={reasonId}>The Decision tab opens when the board has made its decision.</p>
     </>
   )
 }
@@ -188,7 +191,7 @@ export function ApplicationTabs() {
  * (`reason`) and the event. It reports and never changes the value itself.
  */
 export function ControlledTabs() {
-  const [value, setValue] = useState('uppgifter')
+  const [value, setValue] = useState('details')
   const [reason, setReason] = useState<TabsChangeReason | null>(null)
   return (
     <>
@@ -199,23 +202,23 @@ export function ControlledTabs() {
           setReason(details.reason)
         }}
       >
-        <Tabs.List aria-label="Ärendet">
-          <Tabs.Tab value="uppgifter">Uppgifter</Tabs.Tab>
-          <Tabs.Tab value="handlingar">Handlingar</Tabs.Tab>
-          <Tabs.Tab value="historik">Historik</Tabs.Tab>
+        <Tabs.List aria-label="Case">
+          <Tabs.Tab value="details">Details</Tabs.Tab>
+          <Tabs.Tab value="documents">Documents</Tabs.Tab>
+          <Tabs.Tab value="history">History</Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value="uppgifter">
-          <p>Ansökan om bygglov för Strandvägen 4.</p>
+        <Tabs.Panel value="details">
+          <p>Building permit application for 4 Strand Road.</p>
         </Tabs.Panel>
-        <Tabs.Panel value="handlingar">
-          <p>Ritningar, situationsplan och kontrollplan.</p>
+        <Tabs.Panel value="documents">
+          <p>Drawings, a site plan and a control plan.</p>
         </Tabs.Panel>
-        <Tabs.Panel value="historik">
-          <p>Ansökan kom in den 2 september.</p>
+        <Tabs.Panel value="history">
+          <p>The application arrived on 2 September.</p>
         </Tabs.Panel>
       </Tabs.Root>
       <p>
-        Vald flik: {value}. Senaste orsak: {reason ?? 'ingen än'}.
+        Selected tab: {value}. Last reason: {reason ?? 'none yet'}.
       </p>
     </>
   )
@@ -254,20 +257,22 @@ export function FinnishTabs() {
 export function CompactCaseTabs() {
   return (
     <div className="kv-compact">
-      <Tabs.Root defaultValue="uppgifter">
-        <Tabs.List aria-label="Ärendet">
-          <Tabs.Tab value="uppgifter">Uppgifter</Tabs.Tab>
-          <Tabs.Tab value="handlingar">Handlingar</Tabs.Tab>
-          <Tabs.Tab value="historik">Historik</Tabs.Tab>
+      <Tabs.Root defaultValue="details">
+        <Tabs.List aria-label="Case">
+          <Tabs.Tab value="details">Details</Tabs.Tab>
+          <Tabs.Tab value="documents">Documents</Tabs.Tab>
+          <Tabs.Tab value="history">History</Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value="uppgifter">
-          <p>Ansökan om bygglov för Strandvägen 4. Ärendet väntar på granskning.</p>
+        <Tabs.Panel value="details">
+          <p>Building permit application for 4 Strand Road. The case awaits review.</p>
         </Tabs.Panel>
-        <Tabs.Panel value="handlingar">
-          <p>Ritningar, situationsplan och kontrollplan har kommit in.</p>
+        <Tabs.Panel value="documents">
+          <p>Drawings, a site plan and a control plan have arrived.</p>
         </Tabs.Panel>
-        <Tabs.Panel value="historik">
-          <p>Ansökan kom in den 2 september. Komplettering begärdes den 9 september.</p>
+        <Tabs.Panel value="history">
+          <p>
+            The application arrived on 2 September. More information was requested on 9 September.
+          </p>
         </Tabs.Panel>
       </Tabs.Root>
     </div>
@@ -279,20 +284,22 @@ export function CardTabs() {
   return (
     <Card.Root>
       <Card.Body>
-        <Tabs.Root defaultValue="uppgifter">
-          <Tabs.List aria-label="Ärendet">
-            <Tabs.Tab value="uppgifter">Uppgifter</Tabs.Tab>
-            <Tabs.Tab value="handlingar">Handlingar</Tabs.Tab>
-            <Tabs.Tab value="historik">Historik</Tabs.Tab>
+        <Tabs.Root defaultValue="details">
+          <Tabs.List aria-label="Case">
+            <Tabs.Tab value="details">Details</Tabs.Tab>
+            <Tabs.Tab value="documents">Documents</Tabs.Tab>
+            <Tabs.Tab value="history">History</Tabs.Tab>
           </Tabs.List>
-          <Tabs.Panel value="uppgifter">
-            <p>Ansökan om bygglov för Strandvägen 4. Ärendet väntar på granskning.</p>
+          <Tabs.Panel value="details">
+            <p>Building permit application for 4 Strand Road. The case awaits review.</p>
           </Tabs.Panel>
-          <Tabs.Panel value="handlingar">
-            <p>Ritningar, situationsplan och kontrollplan har kommit in.</p>
+          <Tabs.Panel value="documents">
+            <p>Drawings, a site plan and a control plan have arrived.</p>
           </Tabs.Panel>
-          <Tabs.Panel value="historik">
-            <p>Ansökan kom in den 2 september. Komplettering begärdes den 9 september.</p>
+          <Tabs.Panel value="history">
+            <p>
+              The application arrived on 2 September. More information was requested on 9 September.
+            </p>
           </Tabs.Panel>
         </Tabs.Root>
       </Card.Body>

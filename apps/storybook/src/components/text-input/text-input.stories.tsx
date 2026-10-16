@@ -150,7 +150,7 @@ const meta = {
     },
     ref: { control: false, description: 'A ref to the `<input>`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [
     // The masked examples are Swedish whatever the toolbar's language, so the provider says so:
     // without `country` the country masks follow the locale (nb is Norway, English has none).

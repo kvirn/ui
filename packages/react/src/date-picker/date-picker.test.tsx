@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the tests run in sv and fi because the box order, month and weekday names and the built-in labels are locale behaviour
 import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
@@ -68,7 +69,7 @@ function Example({
         }}
       >
         <Fieldset.Root group>
-          <Fieldset.Legend>Datum för besöket</Fieldset.Legend>
+          <Fieldset.Legend>Date of the visit</Fieldset.Legend>
           <DateInput.Root name="visit" value={date} onValueChange={setDate}>
             <DateInput.Year />
             <DateInput.Month />
@@ -135,7 +136,7 @@ describe('roles, names and states', () => {
         <DatePicker.Root today="2026-10-14">
           <DatePicker.Trigger />
           <DatePicker.Popup>
-            <DatePicker.Title>Välj dag för ditt besök</DatePicker.Title>
+            <DatePicker.Title>Choose the day of your visit</DatePicker.Title>
             <DatePicker.Calendar />
           </DatePicker.Popup>
         </DatePicker.Root>
@@ -143,7 +144,7 @@ describe('roles, names and states', () => {
     )
     await page.getByRole('button', { name: 'Välj datum' }).click()
     await expect
-      .element(page.getByRole('dialog', { name: 'Välj dag för ditt besök' }))
+      .element(page.getByRole('dialog', { name: 'Choose the day of your visit' }))
       .toBeVisible()
   })
 
@@ -368,14 +369,14 @@ describe('keyboard', () => {
       <Example
         onValueChange={onValueChange}
         isDateUnavailable={(date) => date === '2026-10-15'}
-        getDateDescription={(date) => (date === '2026-10-15' ? 'Stängt' : undefined)}
+        getDateDescription={(date) => (date === '2026-10-15' ? 'Closed' : undefined)}
       />,
     )
     await open()
     await userEvent.keyboard('{ArrowRight}{Enter}')
     await expect.element(dialog()).toBeVisible()
     expect(onValueChange).not.toHaveBeenCalled()
-    await expect.element(day('torsdag 15 oktober 2026, Stängt')).toHaveFocus()
+    await expect.element(day('torsdag 15 oktober 2026, Closed')).toHaveFocus()
   })
 
   test('with the trigger gone, focus goes to the first box of the field, never to body', async () => {

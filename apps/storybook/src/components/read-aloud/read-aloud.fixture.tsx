@@ -79,6 +79,7 @@ export function Article({ ref }: { ref: React.Ref<HTMLElement> }) {
         told what, and the time stops until you reply.
       </p>
       <p lang="sv">
+        {/* kv-lang-ok: a passage in another language, marked with lang (3.1.2) */}
         Du kan följa ärendet under Mina sidor. Där ser du också vilka handlingar som saknas.
       </p>
       <p>

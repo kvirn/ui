@@ -5,7 +5,7 @@
  * values never give the same id: `a b` is `a_20_b` and `a_20_b` is `a_5f_20_5f_b`.
  *
  * @example
- * escapeTabValue('Bygga och bo') // 'Bygga_20_och_20_bo'
+ * escapeTabValue('Build and live') // 'Build_20_and_20_live'
  */
 export function escapeTabValue(value: string): string {
   let escaped = ''

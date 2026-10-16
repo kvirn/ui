@@ -5,10 +5,10 @@ import { useMessages } from '../provider/use-messages.ts'
 export interface UsePaginationOptions {
   /**
    * The landmark's accessible name, from your translations. Replaces the message
-   * `pagination.label` (`Sidor`). An empty or whitespace-only label counts as none.
+   * `pagination.label` (`Pages`). An empty or whitespace-only label counts as none.
    */
   label?: string | undefined
-  /** Per-instance message overrides: `{ next: 'Nästa' }`. */
+  /** Per-instance message overrides: `{ next: 'Next' }`. */
   messages?: Partial<KvirnMessages['pagination']> | undefined
 }
 
@@ -56,9 +56,9 @@ export interface UsePaginationResult {
   previousLabel: string
   /** The message `pagination.next`: the text of the Next link. */
   nextLabel: string
-  /** The name of a page link: `Sida 2`. The current page's state is `aria-current`, not the name. */
+  /** The name of a page link: `Page 2`. The current page's state is `aria-current`, not the name. */
   getPageLabel: (page: number) => string
-  /** The text `Sida 2 av 9`. */
+  /** The text `Page 2 of 9`. */
   getStatus: (page: number, total: number) => string
 }
 
@@ -82,7 +82,7 @@ const statusProps: PaginationStatusPartProps = Object.freeze({ className: 'kv-pa
  * <nav {...pagination.rootProps}>
  *   <ul {...pagination.listProps}>
  *     <li {...pagination.itemProps}>
- *       <a href="?sida=3" aria-label={pagination.getPageLabel(3)}>3</a>
+ *       <a href="?page=3" aria-label={pagination.getPageLabel(3)}>3</a>
  *     </li>
  *   </ul>
  * </nav>

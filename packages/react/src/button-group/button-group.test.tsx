@@ -31,12 +31,12 @@ afterEach(() => {
 describe('role and name', () => {
   test('with aria-label it is a group with that name', async () => {
     const { container } = await render(
-      <ButtonGroup aria-label="Ärendet">
-        <Button>Spara utkast</Button>
-        <Button>Skicka</Button>
+      <ButtonGroup aria-label="The case">
+        <Button>Save draft</Button>
+        <Button>Send</Button>
       </ButtonGroup>,
     )
-    const group = page.getByRole('group', { name: 'Ärendet' })
+    const group = page.getByRole('group', { name: 'The case' })
     await expect.element(group).toBeVisible()
     await expectNoA11yViolations(container)
   })
@@ -44,22 +44,22 @@ describe('role and name', () => {
   test('with aria-labelledby it is a group named by that element', async () => {
     const { container } = await render(
       <>
-        <h2 id="rubrik">Bygglov</h2>
-        <ButtonGroup aria-labelledby="rubrik">
-          <Button>Spara utkast</Button>
-          <Button>Skicka</Button>
+        <h2 id="heading">Building permit</h2>
+        <ButtonGroup aria-labelledby="heading">
+          <Button>Save draft</Button>
+          <Button>Send</Button>
         </ButtonGroup>
       </>,
     )
-    await expect.element(page.getByRole('group', { name: 'Bygglov' })).toBeVisible()
+    await expect.element(page.getByRole('group', { name: 'Building permit' })).toBeVisible()
     await expectNoA11yViolations(container)
   })
 
   test('without a name it is a plain div with no role, so it adds no empty group to the tree', async () => {
     const { container } = await render(
       <ButtonGroup data-testid="footer">
-        <Button>Spara utkast</Button>
-        <Button>Skicka</Button>
+        <Button>Save draft</Button>
+        <Button>Send</Button>
       </ButtonGroup>,
     )
     const group = page.getByTestId('footer')
@@ -75,13 +75,13 @@ describe('part class and props', () => {
   test('marks its part with class="kv-button-group", joins a consumer class and passes props on', async () => {
     const ref = createRef<HTMLDivElement>()
     await render(
-      <ButtonGroup ref={ref} className="egen-klass" aria-label="Ärendet" id="atgarder">
-        <Button>Skicka</Button>
+      <ButtonGroup ref={ref} className="own-class" aria-label="The case" id="actions">
+        <Button>Send</Button>
       </ButtonGroup>,
     )
-    const group = page.getByRole('group', { name: 'Ärendet' })
-    await expect.element(group).toHaveClass('kv-button-group', 'egen-klass')
-    await expect.element(group).toHaveAttribute('id', 'atgarder')
+    const group = page.getByRole('group', { name: 'The case' })
+    await expect.element(group).toHaveClass('kv-button-group', 'own-class')
+    await expect.element(group).toHaveAttribute('id', 'actions')
     expect(ref.current).toBe(group.element())
   })
 })
@@ -89,15 +89,15 @@ describe('part class and props', () => {
 describe('attached', () => {
   test('a consumer-added kv-button-group--attached keeps the group role and name, and joins the class', async () => {
     const { container } = await render(
-      <ButtonGroup aria-label="Textstil" className="kv-button-group--attached egen-klass">
+      <ButtonGroup aria-label="Text style" className="kv-button-group--attached own-class">
         <Button>Fet</Button>
-        <Button>Kursiv</Button>
+        <Button>Italic</Button>
       </ButtonGroup>,
     )
-    const group = page.getByRole('group', { name: 'Textstil' })
+    const group = page.getByRole('group', { name: 'Text style' })
     await expect
       .element(group)
-      .toHaveClass('kv-button-group', 'kv-button-group--attached', 'egen-klass')
+      .toHaveClass('kv-button-group', 'kv-button-group--attached', 'own-class')
     await expectNoA11yViolations(container)
   })
 
@@ -115,17 +115,17 @@ describe('attached', () => {
 describe('keyboard', () => {
   test('Tab and Shift+Tab move through its buttons in DOM order, one stop each, and the group adds none', async () => {
     await render(
-      <ButtonGroup aria-label="Ärendet">
-        <Button>Spara utkast</Button>
-        <Button>Skicka</Button>
+      <ButtonGroup aria-label="The case">
+        <Button>Save draft</Button>
+        <Button>Send</Button>
       </ButtonGroup>,
     )
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Spara utkast' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Save draft' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Skicka' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Send' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Spara utkast' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Save draft' })).toHaveFocus()
     expect(page.getByRole('group').element().getAttribute('tabindex')).toBeNull()
   })
 })
@@ -133,15 +133,15 @@ describe('keyboard', () => {
 describe('inside a Toolbar', () => {
   test('warns in development when a group in a toolbar has no name', async () => {
     await render(
-      <Toolbar.Root aria-label="Formatering">
+      <Toolbar.Root aria-label="Formatting">
         <ButtonGroup>
-          <Toolbar.Button>Ångra</Toolbar.Button>
-          <Toolbar.Button>Gör om</Toolbar.Button>
-          <Toolbar.Button>Spara</Toolbar.Button>
+          <Toolbar.Button>Undo</Toolbar.Button>
+          <Toolbar.Button>Redo</Toolbar.Button>
+          <Toolbar.Button>Save</Toolbar.Button>
         </ButtonGroup>
       </Toolbar.Root>,
     )
-    await expect.element(page.getByRole('toolbar', { name: 'Formatering' })).toBeVisible()
+    await expect.element(page.getByRole('toolbar', { name: 'Formatting' })).toBeVisible()
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('ButtonGroup')
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('aria-label')
@@ -150,19 +150,19 @@ describe('inside a Toolbar', () => {
   test('does not warn when the group in a toolbar is named, or a group stands alone without a name', async () => {
     await render(
       <>
-        <Toolbar.Root aria-label="Formatering">
-          <ButtonGroup aria-label="Historik">
-            <Toolbar.Button>Ångra</Toolbar.Button>
-            <Toolbar.Button>Gör om</Toolbar.Button>
-            <Toolbar.Button>Spara</Toolbar.Button>
+        <Toolbar.Root aria-label="Formatting">
+          <ButtonGroup aria-label="History">
+            <Toolbar.Button>Undo</Toolbar.Button>
+            <Toolbar.Button>Redo</Toolbar.Button>
+            <Toolbar.Button>Save</Toolbar.Button>
           </ButtonGroup>
         </Toolbar.Root>
         <ButtonGroup>
-          <Button>Skicka</Button>
+          <Button>Send</Button>
         </ButtonGroup>
       </>,
     )
-    await expect.element(page.getByRole('group', { name: 'Historik' })).toBeVisible()
+    await expect.element(page.getByRole('group', { name: 'History' })).toBeVisible()
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
@@ -170,22 +170,22 @@ describe('inside a Toolbar', () => {
 describe('Toolbar.Group', () => {
   test('is attached, and keeps a consumer class', async () => {
     await render(
-      <Toolbar.Root aria-label="Formatering">
-        <Toolbar.Group aria-label="Historik">
-          <Toolbar.Button>Ångra</Toolbar.Button>
-          <Toolbar.Button>Gör om</Toolbar.Button>
+      <Toolbar.Root aria-label="Formatting">
+        <Toolbar.Group aria-label="History">
+          <Toolbar.Button>Undo</Toolbar.Button>
+          <Toolbar.Button>Redo</Toolbar.Button>
         </Toolbar.Group>
-        <Toolbar.Group aria-label="Textstil" className="egen-klass">
+        <Toolbar.Group aria-label="Text style" className="own-class">
           <Toolbar.Button>Fet</Toolbar.Button>
         </Toolbar.Group>
       </Toolbar.Root>,
     )
     await expect
-      .element(page.getByRole('group', { name: 'Historik' }))
+      .element(page.getByRole('group', { name: 'History' }))
       .toHaveClass('kv-button-group--attached')
     await expect
-      .element(page.getByRole('group', { name: 'Textstil' }))
-      .toHaveClass('kv-button-group--attached', 'egen-klass')
+      .element(page.getByRole('group', { name: 'Text style' }))
+      .toHaveClass('kv-button-group--attached', 'own-class')
   })
 })
 
@@ -193,8 +193,8 @@ describe('useButtonGroup', () => {
   function HookGroup({ isNamed }: { isNamed: boolean }) {
     const group = useButtonGroup({ isNamed })
     return (
-      <div {...mergeProps(group.groupProps, { 'aria-label': isNamed ? 'Ärendet' : undefined })}>
-        <Button>Skicka</Button>
+      <div {...mergeProps(group.groupProps, { 'aria-label': isNamed ? 'The case' : undefined })}>
+        <Button>Send</Button>
       </div>
     )
   }
@@ -202,7 +202,7 @@ describe('useButtonGroup', () => {
   test('gives spreadable groupProps: a group role only when named', async () => {
     const { container, rerender } = await render(<HookGroup isNamed />)
     await expect
-      .element(page.getByRole('group', { name: 'Ärendet' }))
+      .element(page.getByRole('group', { name: 'The case' }))
       .toHaveClass('kv-button-group')
     await expectNoA11yViolations(container)
     await rerender(<HookGroup isNamed={false} />)
@@ -214,12 +214,12 @@ describe('server rendering', () => {
   test('renders to a string without touching the page', () => {
     expect(
       renderToString(
-        <ButtonGroup aria-label="Ärendet">
-          <Button>Skicka</Button>
+        <ButtonGroup aria-label="The case">
+          <Button>Send</Button>
         </ButtonGroup>,
       ),
     ).toBe(
-      '<div aria-label="Ärendet" class="kv-button-group" role="group"><button class="kv-button" type="button">Skicka</button></div>',
+      '<div aria-label="The case" class="kv-button-group" role="group"><button class="kv-button" type="button">Send</button></div>',
     )
     expect(renderToString(<ButtonGroup />)).toBe('<div class="kv-button-group"></div>')
   })

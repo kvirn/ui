@@ -131,7 +131,7 @@ Arrows do not wrap. PageUp and PageDown move ten options and stop at the ends. H
 
 ### Filtering
 
-- The default filter matches the query anywhere in the label with `Intl.Collator` (provider locale, `sensitivity: 'base'`), so å, ä and ö stay distinct from a and o in `sv`, `fi`, `nb` and `nn`. A blank query matches everything.
+- The default filter matches the query anywhere in the label with `Intl.Collator` (provider locale, `sensitivity: 'base'`), so å, ä and ö stay distinct from a and o in `sv`, `fi`, `nb` and `nn`. A blank query matches everything. <!-- kv-lang-ok: letters are the subject of the collation rule -->
 - A consumer can pass `filter` (a function), or `filter={false}` and `isLoading` for server-side results.
 
 ### Forms
@@ -185,7 +185,7 @@ Native `<table>` with TanStack Table behind `createTable` and the `useTable` hoo
 - **Loading** sets `aria-busy` and `data-busy` and announces. **Empty** renders `Table.Empty`, a `<tbody>` with one row and one cell (a `<tr>` beside `Table.Body` is invalid). It says "Loading rows." while loading with no rows. **Filtering** announces the row count, debounced 500 ms.
 - **Pagination** is the recommended default for long data: each page is its own table, with a status such as "Rows 21-40 of 312".
 - **Virtualization** (opt-in, rows only): `aria-hidden` spacer rows, `aria-rowcount` (header rows included) with `aria-rowindex` (a header row's index comes from `Table.Row headerGroup`), a sticky head with `scroll-padding-block-start`, `table-layout: fixed`, the focused row stays rendered, no column virtualization. Spacer, detail and empty rows span the columns read from the header row's `colSpan` after render.
-- Sort and locale: `createLocaleSortFn(locale)` sorts with `Intl.Collator` (numeric on), so å, ä and ö sort correctly.
+- Sort and locale: `createLocaleSortFn(locale)` sorts with `Intl.Collator` (numeric on), so å, ä and ö sort correctly. <!-- kv-lang-ok: letters are the subject of the collation rule -->
 - `createTable` returns `{ table, store, updateOptions }`. `store` is `table.store` as a structural `ReadableStore`, so `@tanstack/store` stays in `core/src/store/`. `useTable` calls `updateOptions` on every render before reading rows, with notifications suppressed (no "update while rendering" warning).
 - Feature-gated TanStack APIs are reached with type guards (`hasColumnSorting`, `hasRowSelection`, `hasRowExpanding`, `hasTableRowSelection`), not casts. Parts get types through an untyped context plus `useTableContext<TFeatures, TData>()`.
 - `@kvirn-ui/core` and `@kvirn-ui/react` re-export the tested TanStack features (sorting, selection, expansion, pagination, filtering, global filtering, column visibility, row models, `createColumnHelper`, `tableFeatures`, types). What is not re-exported is not supported. A TanStack Table major release forces a KvirnUI major release, and consumers cannot pass their own instance.

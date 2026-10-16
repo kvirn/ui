@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the docs name the letters the collator orders
 import type { RowData, SortFn, TableFeatures } from './table-exports.ts'
 
 /**

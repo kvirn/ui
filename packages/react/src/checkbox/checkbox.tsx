@@ -39,7 +39,7 @@ export interface CheckboxProps extends Omit<
  * @example
  * <Field.Root required invalid={errors.declaration !== undefined}>
  *   <Checkbox name="declaration" />
- *   <Field.Label>Jag intygar att uppgifterna är korrekta</Field.Label>
+ *   <Field.Label>I confirm that the information is correct</Field.Label>
  *   <Field.ErrorMessage>{errors.declaration}</Field.ErrorMessage>
  * </Field.Root>
  */

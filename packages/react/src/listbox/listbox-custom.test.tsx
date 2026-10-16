@@ -41,18 +41,18 @@ interface Municipality {
 }
 
 const municipalities: readonly Municipality[] = [
-  { code: 'angelholm', name: 'Ängelholm' },
+  { code: 'angelholm', name: 'Engelholm' },
   { code: 'arvika', name: 'Arvika' },
-  { code: 'gbg', name: 'Göteborg' },
-  { code: 'malmo', name: 'Malmö' },
-  { code: 'orebro', name: 'Örebro' },
+  { code: 'gbg', name: 'Goteborg' },
+  { code: 'malmo', name: 'Malmo' },
+  { code: 'orebro', name: 'Orebro' },
   { code: 'sthlm', name: 'Stockholm', disabled: true },
   { code: 'uppsala', name: 'Uppsala' },
 ]
 
 const numbered: readonly Municipality[] = Array.from({ length: 30 }, (_, index) => ({
   code: `n${index + 1}`,
-  name: `Alternativ ${index + 1}`,
+  name: `Option ${index + 1}`,
 }))
 
 /** The fixture's own buttons are unstyled: give them the 24px that 2.5.8 asks for, so axe checks the Listbox. */
@@ -65,13 +65,13 @@ function Example({ items = municipalities, ...rootProps }: SingleProps) {
   return (
     <>
       {/* Above the trigger, so the popup (placed under it) never covers the text a test presses. */}
-      <p>Text utanför</p>
+      <p>Text outside</p>
       <button type="button" style={fixtureButtonStyle}>
-        Före
+        Before
       </button>
       <Field.Root required>
-        <Field.Label>Kommun</Field.Label>
-        <Field.Prose>Där du är folkbokförd.</Field.Prose>
+        <Field.Label>Municipality</Field.Label>
+        <Field.Prose>Where you are registered.</Field.Prose>
         <Listbox.Root
           items={items}
           itemToString={(municipality) => municipality.name}
@@ -81,7 +81,7 @@ function Example({ items = municipalities, ...rootProps }: SingleProps) {
           {...rootProps}
         >
           <Listbox.Trigger>
-            <Listbox.Value placeholder="Välj kommun" />
+            <Listbox.Value placeholder="Choose a municipality" />
           </Listbox.Trigger>
           <Listbox.Popup>
             <Listbox.List>
@@ -92,7 +92,7 @@ function Example({ items = municipalities, ...rootProps }: SingleProps) {
         </Listbox.Root>
       </Field.Root>
       <button type="button" style={fixtureButtonStyle}>
-        Efter
+        After
       </button>
     </>
   )
@@ -101,9 +101,9 @@ function Example({ items = municipalities, ...rootProps }: SingleProps) {
 function MultipleExample({ items = municipalities, ...rootProps }: MultipleProps) {
   return (
     <>
-      <p>Text utanför</p>
+      <p>Text outside</p>
       <Field.Root required>
-        <Field.Label>Kommuner</Field.Label>
+        <Field.Label>Municipalities</Field.Label>
         <Listbox.Root
           items={items}
           itemToString={(municipality) => municipality.name}
@@ -113,7 +113,7 @@ function MultipleExample({ items = municipalities, ...rootProps }: MultipleProps
           {...rootProps}
         >
           <Listbox.Trigger>
-            <Listbox.Value placeholder="Välj kommuner" />
+            <Listbox.Value placeholder="Choose municipalities" />
           </Listbox.Trigger>
           <Listbox.Popup>
             <Listbox.List>
@@ -123,13 +123,13 @@ function MultipleExample({ items = municipalities, ...rootProps }: MultipleProps
         </Listbox.Root>
       </Field.Root>
       <button type="button" style={fixtureButtonStyle}>
-        Efter
+        After
       </button>
     </>
   )
 }
 
-const trigger = () => page.getByRole('combobox', { name: /Kommun/ })
+const trigger = () => page.getByRole('combobox', { name: /Municipalit/ })
 const triggerElement = () => trigger().element()
 
 /** A located element as an HTML element: the locators type it as `HTMLElement | SVGElement`. */
@@ -164,6 +164,7 @@ function activeOption(): HTMLElement | undefined {
 }
 const activeName = () => activeOption()?.textContent
 
+// kv-lang-ok: the characters named are the point of the helper
 /** Presses a key that the browser keyboard helper can't type, such as å, ä and ö. */
 function pressCharacter(character: string) {
   triggerElement().dispatchEvent(
@@ -212,18 +213,18 @@ describe('rendering', () => {
     expect(element.getAttribute('aria-labelledby')).toBe(`${label?.id} ${value?.id}`)
     expect(listElement()?.getAttribute('aria-labelledby')).toBe(label?.id)
     expect(element.id).toBe(label?.getAttribute('for'))
-    await expect.element(trigger()).toHaveAccessibleName('Kommun Välj kommun')
-    await expect.element(trigger()).toHaveAccessibleDescription('Där du är folkbokförd.')
+    await expect.element(trigger()).toHaveAccessibleName('Municipality Choose a municipality')
+    await expect.element(trigger()).toHaveAccessibleDescription('Where you are registered.')
   })
 
   test('the placeholder shows with data-placeholder, and the chosen text replaces it', async () => {
     await render(<Example defaultValue="gbg" />)
     const value = triggerElement().querySelector('.kv-listbox-value')
-    expect(value?.textContent).toBe('Göteborg')
+    expect(value?.textContent).toBe('Goteborg')
     expect(value?.hasAttribute('data-placeholder')).toBe(false)
     await render(<Example />)
     const placeholder = document.querySelectorAll('.kv-listbox-value')[1]
-    expect(placeholder?.textContent).toBe('Välj kommun')
+    expect(placeholder?.textContent).toBe('Choose a municipality')
     expect(placeholder?.hasAttribute('data-placeholder')).toBe(true)
   })
 
@@ -236,8 +237,8 @@ describe('rendering', () => {
     expect(popupElement()?.hasAttribute('data-open')).toBe(true)
     await expect.element(page.getByRole('listbox')).toBeVisible()
     expect(page.getByRole('option').elements()).toHaveLength(7)
-    await expect.element(option('Malmö')).toHaveAttribute('aria-selected', 'true')
-    await expect.element(option('Malmö')).toHaveAttribute('data-selected', '')
+    await expect.element(option('Malmo')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(option('Malmo')).toHaveAttribute('data-selected', '')
     await expect.element(option('Arvika')).toHaveAttribute('aria-selected', 'false')
     await expect.element(option('Arvika')).not.toHaveAttribute('data-selected')
     // Opening with a press activates nothing, and focus never leaves the trigger.
@@ -258,22 +259,22 @@ describe('rendering', () => {
     expect(ids.every((id) => id !== '')).toBe(true)
     await expect.element(option('Stockholm')).toHaveAttribute('aria-disabled', 'true')
     await expect.element(option('Stockholm')).toHaveAttribute('data-disabled', '')
-    await expect.element(option('Malmö')).not.toHaveAttribute('aria-disabled')
+    await expect.element(option('Malmo')).not.toHaveAttribute('aria-disabled')
   })
 
   test('groups: role=group named by its label, with axe clean', async () => {
     const { container } = await render(
       <Field.Root required>
-        <Field.Label>Kommun</Field.Label>
+        <Field.Label>Municipality</Field.Label>
         <Listbox.Root
           native="never"
           groups={[
-            { key: 'west', label: 'Västra Götaland', items: ['Göteborg', 'Borås'] },
-            { key: 'south', label: 'Skåne', items: ['Malmö'] },
+            { key: 'west', label: 'Vastra Gotaland', items: ['Goteborg', 'Boras'] },
+            { key: 'south', label: 'Skane', items: ['Malmo'] },
           ]}
         >
           <Listbox.Trigger>
-            <Listbox.Value placeholder="Välj kommun" />
+            <Listbox.Value placeholder="Choose a municipality" />
           </Listbox.Trigger>
           <Listbox.Popup>
             <Listbox.List>{(item: string) => <Listbox.Option item={item} />}</Listbox.List>
@@ -283,8 +284,8 @@ describe('rendering', () => {
     )
     await userEvent.click(trigger())
     await expect.poll(isShown).toBe(true)
-    await expect.element(page.getByRole('group', { name: 'Västra Götaland' })).toBeVisible()
-    await expect.element(page.getByRole('group', { name: 'Skåne' })).toBeVisible()
+    await expect.element(page.getByRole('group', { name: 'Vastra Gotaland' })).toBeVisible()
+    await expect.element(page.getByRole('group', { name: 'Skane' })).toBeVisible()
     const groups = container.querySelectorAll('.kv-listbox-group')
     expect(groups).toHaveLength(2)
     expect(groups[0]?.querySelectorAll('[role="option"]')).toHaveLength(2)
@@ -315,7 +316,7 @@ describe('rendering', () => {
       </KvirnProvider>,
     )
     await openWithClick()
-    await expect.element(page.getByText('Inga resultat')).toBeVisible()
+    await expect.element(page.getByText('Inga resultat')).toBeVisible() // kv-lang-ok: the sv catalog string
   })
 
   test('there is no Listbox.Empty element while the list has options', async () => {
@@ -330,8 +331,8 @@ describe('rendering', () => {
     const optionRef = createRef<HTMLDivElement>()
     await render(
       <Field.Root required>
-        <Field.Label>Kommun</Field.Label>
-        <Listbox.Root native="never" items={['Göteborg']} defaultOpen>
+        <Field.Label>Municipality</Field.Label>
+        <Listbox.Root native="never" items={['Goteborg']} defaultOpen>
           <Listbox.Trigger ref={triggerRef} className="egen" data-egen="trigger" />
           <Listbox.Popup ref={popupRef} className="egen" data-egen="popup">
             <Listbox.List>
@@ -344,7 +345,7 @@ describe('rendering', () => {
     await expect.poll(isShown).toBe(true)
     expect(triggerRef.current).toBe(triggerElement())
     expect(popupRef.current).toBe(popupElement())
-    expect(optionRef.current).toBe(option('Göteborg').element())
+    expect(optionRef.current).toBe(option('Goteborg').element())
     expect(triggerRef.current?.className).toBe('egen kv-listbox-trigger')
     expect(popupRef.current?.className).toContain('egen')
     expect(popupRef.current?.className).toContain('kv-listbox-popup')
@@ -357,8 +358,8 @@ describe('rendering', () => {
   test('a tabIndex from the consumer wins over the trigger’s own tabindex="0"', async () => {
     await render(
       <Field.Root required>
-        <Field.Label>Kommun</Field.Label>
-        <Listbox.Root native="never" items={['Göteborg']}>
+        <Field.Label>Municipality</Field.Label>
+        <Listbox.Root native="never" items={['Goteborg']}>
           <Listbox.Trigger tabIndex={-1} />
           <Listbox.Popup>
             <Listbox.List>{(item: string) => <Listbox.Option item={item} />}</Listbox.List>
@@ -372,14 +373,14 @@ describe('rendering', () => {
   test('a rich option: your own children replace the text, which stays the option’s label', async () => {
     await render(
       <Field.Root required>
-        <Field.Label>Kommun</Field.Label>
-        <Listbox.Root native="never" items={['Göteborg']} defaultOpen>
+        <Field.Label>Municipality</Field.Label>
+        <Listbox.Root native="never" items={['Goteborg']} defaultOpen>
           <Listbox.Trigger />
           <Listbox.Popup>
             <Listbox.List>
               {(item: string) => (
                 <Listbox.Option item={item}>
-                  <strong>{item}</strong> <small>Västra Götaland</small>
+                  <strong>{item}</strong> <small>Vastra Gotaland</small>
                 </Listbox.Option>
               )}
             </Listbox.List>
@@ -389,7 +390,7 @@ describe('rendering', () => {
     )
     await expect.poll(isShown).toBe(true)
     await expect
-      .element(page.getByRole('option', { name: 'Göteborg Västra Götaland' }))
+      .element(page.getByRole('option', { name: 'Goteborg Vastra Gotaland' }))
       .toBeVisible()
   })
 })
@@ -399,9 +400,9 @@ describe('in a Field', () => {
     const { container } = await render(
       <>
         <Field.Root invalid required>
-          <Field.Label>Kommun</Field.Label>
-          <Field.ErrorMessage>Välj en kommun</Field.ErrorMessage>
-          <Listbox.Root native="never" items={['Göteborg']}>
+          <Field.Label>Municipality</Field.Label>
+          <Field.ErrorMessage>Choose a municipality</Field.ErrorMessage>
+          <Listbox.Root native="never" items={['Goteborg']}>
             <Listbox.Trigger />
             <Listbox.Popup>
               <Listbox.List>{(item: string) => <Listbox.Option item={item} />}</Listbox.List>
@@ -424,7 +425,7 @@ describe('in a Field', () => {
     expect(invalid.getAttribute('aria-required')).toBe('true')
     expect(invalid.hasAttribute('data-invalid')).toBe(true)
     expect(invalid.hasAttribute('data-required')).toBe(true)
-    await expect.element(trigger()).toHaveAccessibleDescription('Error: Välj en kommun')
+    await expect.element(trigger()).toHaveAccessibleDescription('Error: Choose a municipality')
     const disabled = page.getByRole('combobox', { name: /Land/ }).element()
     expect(disabled.getAttribute('aria-disabled')).toBe('true')
     expect(disabled.hasAttribute('tabindex')).toBe(false)
@@ -446,14 +447,14 @@ describe('in a Field', () => {
 
   test('clicking the label focuses the trigger', async () => {
     await render(<Example />)
-    await userEvent.click(page.getByText('Kommun', { exact: true }))
+    await userEvent.click(page.getByText('Municipality', { exact: true }))
     await expect.element(trigger()).toHaveFocus()
   })
 
   test('a trigger in a Field with no label warns once', async () => {
     await render(
       <Field.Root>
-        <Listbox.Root native="never" items={['Göteborg']}>
+        <Listbox.Root native="never" items={['Goteborg']}>
           <Listbox.Trigger />
           <Listbox.Popup>
             <Listbox.List>{(item: string) => <Listbox.Option item={item} />}</Listbox.List>
@@ -467,10 +468,10 @@ describe('in a Field', () => {
 
   test('a trigger outside a Field with no name warns once, and aria-label names it', async () => {
     await render(
-      <Listbox.Root native="never" items={['Göteborg']}>
+      <Listbox.Root native="never" items={['Goteborg']}>
         <Listbox.Trigger />
         <Listbox.Popup>
-          <Listbox.List aria-label="Kommuner">
+          <Listbox.List aria-label="Municipalities">
             {(item: string) => <Listbox.Option item={item} />}
           </Listbox.List>
         </Listbox.Popup>
@@ -481,19 +482,19 @@ describe('in a Field', () => {
     resetDevWarnings()
     consoleWarn.mockClear()
     await render(
-      <Listbox.Root native="never" items={['Göteborg']}>
-        <Listbox.Trigger aria-label="Kommun">
-          <Listbox.Value placeholder="Välj kommun" />
+      <Listbox.Root native="never" items={['Goteborg']}>
+        <Listbox.Trigger aria-label="Municipality">
+          <Listbox.Value placeholder="Choose a municipality" />
         </Listbox.Trigger>
         <Listbox.Popup>
-          <Listbox.List aria-label="Kommuner">
+          <Listbox.List aria-label="Municipalities">
             {(item: string) => <Listbox.Option item={item} />}
           </Listbox.List>
         </Listbox.Popup>
       </Listbox.Root>,
     )
     expect(consoleWarn).not.toHaveBeenCalled()
-    await expect.element(page.getByRole('combobox', { name: 'Kommun' })).toBeVisible()
+    await expect.element(page.getByRole('combobox', { name: 'Municipality' })).toBeVisible()
   })
 })
 
@@ -515,10 +516,10 @@ describe('opening and closing', () => {
     const onOpenChange = vi.fn<(open: boolean, details: ListboxOpenChangeDetails) => void>()
     await render(<Example onOpenChange={onOpenChange} />)
     await openWithClick()
-    // The button above the trigger: the popup sits under the trigger and would cover "Efter".
-    await userEvent.click(page.getByRole('button', { name: 'Före' }))
+    // The button above the trigger: the popup sits under the trigger and would cover "After".
+    await userEvent.click(page.getByRole('button', { name: 'Before' }))
     await expect.poll(isShown).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     expect(onOpenChange).toHaveBeenLastCalledWith(false, { reason: 'outside-press' })
   })
 
@@ -530,7 +531,7 @@ describe('opening and closing', () => {
     const press = new MouseEvent('mousedown', { bubbles: true, cancelable: true })
     popup?.dispatchEvent(press)
     expect(press.defaultPrevented).toBe(true)
-    await userEvent.click(option('Göteborg'))
+    await userEvent.click(option('Goteborg'))
     await expect.element(trigger()).toHaveFocus()
   })
 
@@ -570,8 +571,8 @@ describe('keyboard', () => {
     triggerElement().focus()
     await userEvent.keyboard('{ArrowDown}')
     await expect.poll(isShown).toBe(true)
-    expect(activeName()).toBe('Ängelholm')
-    await expect.element(option('Ängelholm')).toHaveAttribute('data-active', '')
+    expect(activeName()).toBe('Engelholm')
+    await expect.element(option('Engelholm')).toHaveAttribute('data-active', '')
     await expect.element(trigger()).toHaveFocus()
   })
 
@@ -588,7 +589,7 @@ describe('keyboard', () => {
     triggerElement().focus()
     await userEvent.keyboard('{ArrowDown}')
     await expect.poll(isShown).toBe(true)
-    expect(activeName()).toBe('Malmö')
+    expect(activeName()).toBe('Malmo')
   })
 
   test('ArrowDown and ArrowUp move the active option and stop at the ends: no wrap', async () => {
@@ -598,9 +599,9 @@ describe('keyboard', () => {
     await userEvent.keyboard('{ArrowDown}')
     expect(activeName()).toBe('Arvika')
     await userEvent.keyboard('{ArrowUp}')
-    expect(activeName()).toBe('Ängelholm')
+    expect(activeName()).toBe('Engelholm')
     await userEvent.keyboard('{ArrowUp}')
-    expect(activeName()).toBe('Ängelholm')
+    expect(activeName()).toBe('Engelholm')
     await userEvent.keyboard('{End}')
     expect(activeName()).toBe('Uppsala')
     await userEvent.keyboard('{ArrowDown}')
@@ -614,21 +615,21 @@ describe('keyboard', () => {
     await expect.poll(isShown).toBe(true)
     expect(activeName()).toBe('Uppsala')
     await userEvent.keyboard('{Home}')
-    expect(activeName()).toBe('Ängelholm')
+    expect(activeName()).toBe('Engelholm')
   })
 
   test('PageDown and PageUp move ten options, and stop at the ends', async () => {
     await render(<Example items={numbered} />)
     triggerElement().focus()
     await userEvent.keyboard('{ArrowDown}')
-    expect(activeName()).toBe('Alternativ 1')
+    expect(activeName()).toBe('Option 1')
     await userEvent.keyboard('{PageDown}')
-    expect(activeName()).toBe('Alternativ 11')
+    expect(activeName()).toBe('Option 11')
     await userEvent.keyboard('{PageDown}')
     await userEvent.keyboard('{PageDown}')
-    expect(activeName()).toBe('Alternativ 30')
+    expect(activeName()).toBe('Option 30')
     await userEvent.keyboard('{PageUp}')
-    expect(activeName()).toBe('Alternativ 20')
+    expect(activeName()).toBe('Option 20')
   })
 
   test('Enter chooses the active option, closes the popup and keeps focus on the trigger', async () => {
@@ -693,7 +694,7 @@ describe('keyboard', () => {
     await expect.poll(isShown).toBe(false)
     expect(onValueChange).not.toHaveBeenCalled()
     expect(onOpenChange).toHaveBeenLastCalledWith(false, { reason: 'escape' })
-    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Göteborg')
+    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Goteborg')
     await expect.element(trigger()).toHaveFocus()
   })
 
@@ -715,7 +716,7 @@ describe('keyboard', () => {
     await userEvent.keyboard('{Tab}')
     await expect.poll(isShown).toBe(false)
     expect(onValueChange).toHaveBeenCalledWith('arvika', { reason: 'key' })
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('Shift+Tab chooses the active option and moves focus back', async () => {
@@ -727,7 +728,7 @@ describe('keyboard', () => {
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     await expect.poll(isShown).toBe(false)
     expect(onValueChange).toHaveBeenCalledWith('angelholm', { reason: 'key' })
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('Tab with no active option closes the popup and chooses nothing', async () => {
@@ -738,7 +739,7 @@ describe('keyboard', () => {
     await userEvent.keyboard('{Tab}')
     await expect.poll(isShown).toBe(false)
     expect(onValueChange).not.toHaveBeenCalled()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('Alt+ArrowDown opens the popup without activating an option', async () => {
@@ -770,22 +771,34 @@ describe('keyboard', () => {
     // A pause ends the word: a new letter starts over.
     await new Promise((resolve) => setTimeout(resolve, 650))
     await userEvent.keyboard('g')
-    await expect.poll(activeName).toBe('Göteborg')
+    await expect.poll(activeName).toBe('Goteborg')
   })
 
+  // kv-lang-ok: å, ä and ö collation is the point of this test
   test('typeahead keeps å, ä and ö apart from a and o in Swedish', async () => {
+    const swedishCities = [
+      // kv-lang-ok: å, ä and ö collation is the point of this test
+      { code: 'angelholm', name: 'Ängelholm' },
+      { code: 'arvika', name: 'Arvika' },
+      // kv-lang-ok: å, ä and ö collation is the point of this test
+      { code: 'orebro', name: 'Örebro' },
+    ]
     await render(
       <KvirnProvider locale="sv-SE" messages={sv}>
-        <Example />
+        <Example items={swedishCities} />
       </KvirnProvider>,
     )
     triggerElement().focus()
+    // kv-lang-ok: å, ä and ö collation is the point of this test
     pressCharacter('ä')
     await expect.poll(isShown).toBe(true)
+    // kv-lang-ok: Swedish names, asserted for collation
     expect(activeName()).toBe('Ängelholm')
     // A pause ends the word: a new letter starts over.
     await new Promise((resolve) => setTimeout(resolve, 650))
+    // kv-lang-ok: å, ä and ö collation is the point of this test
     pressCharacter('ö')
+    // kv-lang-ok: Swedish name, asserted for collation
     await expect.poll(activeName).toBe('Örebro')
     await new Promise((resolve) => setTimeout(resolve, 650))
     await userEvent.keyboard('a')
@@ -827,18 +840,18 @@ describe('keyboard', () => {
   test('Tab leaves the listbox: it is one tab stop', async () => {
     await render(<Example />)
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
     await expect.element(trigger()).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('Shift+Tab on the closed trigger moves focus to the previous element', async () => {
     await render(<Example />)
     triggerElement().focus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     expect(isShown()).toBe(false)
   })
 
@@ -851,11 +864,11 @@ describe('keyboard', () => {
     triggerElement().focus()
     await userEvent.keyboard('{ArrowDown}')
     await expect.poll(isShown).toBe(true)
-    expect(activeName()).toBe('Ängelholm')
+    expect(activeName()).toBe('Engelholm')
     await userEvent.keyboard('{ArrowDown}')
     expect(activeName()).toBe('Arvika')
     await userEvent.keyboard('{ArrowUp}')
-    expect(activeName()).toBe('Ängelholm')
+    expect(activeName()).toBe('Engelholm')
   })
 
   test('the keys it handles are cancelled, and the others are left to the browser', async () => {
@@ -882,27 +895,27 @@ describe('pointer', () => {
     const onOpenChange = vi.fn<(open: boolean, details: ListboxOpenChangeDetails) => void>()
     await render(<Example onValueChange={onValueChange} onOpenChange={onOpenChange} />)
     await openWithClick()
-    await userEvent.click(option('Malmö'))
+    await userEvent.click(option('Malmo'))
     await expect.poll(isShown).toBe(false)
     expect(onValueChange).toHaveBeenCalledWith('malmo', { reason: 'option-press' })
     expect(onOpenChange).toHaveBeenLastCalledWith(false, { reason: 'option-press' })
     await expect.element(trigger()).toHaveFocus()
-    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Malmö')
+    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Malmo')
   })
 
   test('moving the pointer over an option makes it the active option', async () => {
     await render(<Example />)
     await openWithClick()
-    await userEvent.hover(option('Göteborg'))
-    await expect.poll(activeName).toBe('Göteborg')
-    await expect.element(option('Göteborg')).toHaveAttribute('data-active', '')
+    await userEvent.hover(option('Goteborg'))
+    await expect.poll(activeName).toBe('Goteborg')
+    await expect.element(option('Goteborg')).toHaveAttribute('data-active', '')
   })
 })
 
 describe('value', () => {
   test('uncontrolled: defaultValue shows, and a choice is kept without a parent', async () => {
     await render(<Example defaultValue="gbg" />)
-    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Göteborg')
+    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Goteborg')
     await openWithClick()
     await userEvent.click(option('Uppsala'))
     await expect.poll(isShown).toBe(false)
@@ -920,11 +933,11 @@ describe('value', () => {
       )
     }
     await render(<Controlled />)
-    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Göteborg')
+    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Goteborg')
     await openWithClick()
-    await userEvent.click(option('Malmö'))
+    await userEvent.click(option('Malmo'))
     await expect.element(page.getByRole('status')).toHaveTextContent('malmo')
-    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Malmö')
+    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Malmo')
   })
 
   test('controlled: stays as it is when the parent does not update the value', async () => {
@@ -932,17 +945,17 @@ describe('value', () => {
       vi.fn<(value: string | null, details: ListboxValueChangeDetails) => void>()
     await render(<Example value="gbg" onValueChange={onValueChange} />)
     await openWithClick()
-    await userEvent.click(option('Malmö'))
+    await userEvent.click(option('Malmo'))
     expect(onValueChange).toHaveBeenCalledWith('malmo', { reason: 'option-press' })
     await expect
       .poll(() => triggerElement().querySelector('.kv-listbox-value')?.textContent)
-      .toBe('Göteborg')
+      .toBe('Goteborg')
   })
 
   test('controlled null shows the placeholder', async () => {
     await render(<Example value={null} />)
     const value = triggerElement().querySelector('.kv-listbox-value')
-    expect(value?.textContent).toBe('Välj kommun')
+    expect(value?.textContent).toBe('Choose a municipality')
     expect(value?.hasAttribute('data-placeholder')).toBe(true)
   })
 
@@ -952,27 +965,29 @@ describe('value', () => {
       return (
         <>
           <button type="button" onClick={() => setItems([{ code: 'lund', name: 'Lund' }])}>
-            Byt lista
+            Switch list
           </button>
           <Example items={items} defaultValue="gbg" />
         </>
       )
     }
     await render(<Changing />)
-    await userEvent.click(page.getByRole('button', { name: 'Byt lista' }))
+    await userEvent.click(page.getByRole('button', { name: 'Switch list' }))
     await openWithClick()
     expect(page.getByRole('option').elements()).toHaveLength(1)
     await expect.element(option('Lund')).toBeVisible()
-    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Göteborg')
+    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Goteborg')
   })
 
   test('Listbox.Value takes a function that gets the chosen items', async () => {
     await render(
       <Field.Root required>
-        <Field.Label>Kommun</Field.Label>
-        <Listbox.Root native="never" items={['Göteborg', 'Malmö']} defaultValue="Malmö">
+        <Field.Label>Municipality</Field.Label>
+        <Listbox.Root native="never" items={['Goteborg', 'Malmo']} defaultValue="Malmo">
           <Listbox.Trigger>
-            <Listbox.Value>{(items: readonly string[]) => `${items.length} vald`}</Listbox.Value>
+            <Listbox.Value>
+              {(items: readonly string[]) => `${items.length} selected`}
+            </Listbox.Value>
           </Listbox.Trigger>
           <Listbox.Popup>
             <Listbox.List>{(item: string) => <Listbox.Option item={item} />}</Listbox.List>
@@ -980,7 +995,7 @@ describe('value', () => {
         </Listbox.Root>
       </Field.Root>,
     )
-    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('1 vald')
+    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('1 selected')
   })
 })
 
@@ -990,17 +1005,17 @@ describe('multiple', () => {
     const { container } = await render(<MultipleExample onValueChange={onValueChange} />)
     await openWithClick()
     expect(listElement()?.getAttribute('aria-multiselectable')).toBe('true')
-    await userEvent.click(option('Malmö'))
+    await userEvent.click(option('Malmo'))
     await userEvent.click(option('Arvika'))
     expect(isShown()).toBe(true)
     expect(onValueChange.mock.calls.map(([value]) => value)).toEqual([
       ['malmo'],
       ['malmo', 'arvika'],
     ])
-    await expect.element(option('Malmö')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(option('Malmo')).toHaveAttribute('aria-selected', 'true')
     await expect.element(option('Arvika')).toHaveAttribute('aria-selected', 'true')
-    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Malmö, Arvika')
-    await userEvent.click(option('Malmö'))
+    expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe('Malmo, Arvika')
+    await userEvent.click(option('Malmo'))
     expect(onValueChange).toHaveBeenLastCalledWith(['arvika'], { reason: 'option-press' })
     await expectNoA11yViolations(container)
   })
@@ -1033,7 +1048,7 @@ describe('multiple', () => {
   test('controlled: the keys it is given are chosen, in order', async () => {
     await render(<MultipleExample value={['uppsala', 'gbg']} />)
     expect(triggerElement().querySelector('.kv-listbox-value')?.textContent).toBe(
-      'Uppsala, Göteborg',
+      'Uppsala, Goteborg',
     )
   })
 })
@@ -1043,21 +1058,21 @@ describe('forms', () => {
     let submitted: FormData | undefined
     await render(
       <form
-        aria-label="Ansökan"
+        aria-label="Application"
         onSubmit={(event) => {
           event.preventDefault()
           submitted = new FormData(event.currentTarget)
         }}
       >
         <Example name="municipality" />
-        <button type="submit">Skicka</button>
+        <button type="submit">Submit</button>
       </form>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Submit' }))
     expect(submitted?.get('municipality')).toBe('')
     await openWithClick()
     await userEvent.click(option('Uppsala'))
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Submit' }))
     expect(submitted?.get('municipality')).toBe('uppsala')
   })
 
@@ -1065,17 +1080,17 @@ describe('forms', () => {
     let submitted: FormData | undefined
     await render(
       <form
-        aria-label="Ansökan"
+        aria-label="Application"
         onSubmit={(event) => {
           event.preventDefault()
           submitted = new FormData(event.currentTarget)
         }}
       >
         <MultipleExample name="municipality" defaultValue={['malmo', 'gbg']} />
-        <button type="submit">Skicka</button>
+        <button type="submit">Submit</button>
       </form>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Submit' }))
     expect(submitted?.getAll('municipality')).toEqual(['malmo', 'gbg'])
     expect(document.querySelectorAll('input[type="hidden"]')).toHaveLength(2)
   })
@@ -1095,8 +1110,8 @@ describe('native rendering', () => {
   test('native="always" renders a native select with the Field’s label, description and error', async () => {
     const { container } = await render(
       <Field.Root invalid required>
-        <Field.Label>Kommun</Field.Label>
-        <Field.Prose>Där du är folkbokförd.</Field.Prose>
+        <Field.Label>Municipality</Field.Label>
+        <Field.Prose>Where you are registered.</Field.Prose>
         <Listbox.Root
           native="always"
           items={municipalities}
@@ -1105,7 +1120,7 @@ describe('native rendering', () => {
           isItemDisabled={(municipality) => municipality.disabled === true}
           name="municipality"
           autoComplete="address-level2"
-          placeholder="Välj kommun"
+          placeholder="Choose a municipality"
         >
           <Listbox.Trigger />
           <Listbox.Popup>
@@ -1114,10 +1129,10 @@ describe('native rendering', () => {
             </Listbox.List>
           </Listbox.Popup>
         </Listbox.Root>
-        <Field.ErrorMessage>Välj en kommun</Field.ErrorMessage>
+        <Field.ErrorMessage>Choose a municipality</Field.ErrorMessage>
       </Field.Root>,
     )
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     const element = asSelectElement(select.element())
     expect(element.tagName).toBe('SELECT')
     expect(element.getAttribute('name')).toBe('municipality')
@@ -1125,12 +1140,12 @@ describe('native rendering', () => {
     expect(element.getAttribute('aria-invalid')).toBe('true')
     await expect
       .element(select)
-      .toHaveAccessibleDescription('Där du är folkbokförd. Error: Välj en kommun')
+      .toHaveAccessibleDescription('Where you are registered. Error: Choose a municipality')
     // The popup parts aren't rendered, and the empty option carries the placeholder.
     expect(document.querySelector('.kv-listbox-popup')).toBeNull()
     expect(element.options).toHaveLength(8)
     expect(element.options[0]?.value).toBe('')
-    expect(element.options[0]?.textContent).toBe('Välj kommun')
+    expect(element.options[0]?.textContent).toBe('Choose a municipality')
     expect(element.options[6]?.disabled).toBe(true)
     await expectNoA11yViolations(container)
   })
@@ -1138,21 +1153,21 @@ describe('native rendering', () => {
   test('native groups become optgroups', async () => {
     await render(
       <Field.Root required>
-        <Field.Label>Kommun</Field.Label>
+        <Field.Label>Municipality</Field.Label>
         <Listbox.Root
           native="always"
           groups={[
-            { key: 'west', label: 'Västra Götaland', items: ['Göteborg'] },
-            { key: 'south', label: 'Skåne', items: ['Malmö'] },
+            { key: 'west', label: 'Vastra Gotaland', items: ['Goteborg'] },
+            { key: 'south', label: 'Skane', items: ['Malmo'] },
           ]}
         >
           <Listbox.Trigger />
         </Listbox.Root>
       </Field.Root>,
     )
-    const element = page.getByRole('combobox', { name: 'Kommun' }).element()
+    const element = page.getByRole('combobox', { name: 'Municipality' }).element()
     expect(element.querySelectorAll('optgroup')).toHaveLength(2)
-    expect(element.querySelector('optgroup')?.getAttribute('label')).toBe('Västra Götaland')
+    expect(element.querySelector('optgroup')?.getAttribute('label')).toBe('Vastra Gotaland')
   })
 
   test('choosing in the native select reports the key and goes in the form', async () => {
@@ -1161,21 +1176,21 @@ describe('native rendering', () => {
     let submitted: FormData | undefined
     await render(
       <form
-        aria-label="Ansökan"
+        aria-label="Application"
         onSubmit={(event) => {
           event.preventDefault()
           submitted = new FormData(event.currentTarget)
         }}
       >
         <Example native="always" name="municipality" onValueChange={onValueChange} />
-        <button type="submit">Skicka</button>
+        <button type="submit">Submit</button>
       </form>,
     )
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     await userEvent.selectOptions(select, 'malmo')
     expect(onValueChange).toHaveBeenCalledWith('malmo', { reason: 'native' })
     await expect.element(select).toHaveValue('malmo')
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Submit' }))
     expect(submitted?.get('municipality')).toBe('malmo')
     expect(document.querySelectorAll('input[type="hidden"]')).toHaveLength(0)
   })
@@ -1186,12 +1201,15 @@ describe('native rendering', () => {
     await render(
       <Example
         native="always"
-        placeholder="Välj kommun"
+        placeholder="Choose a municipality"
         defaultValue="gbg"
         onValueChange={onValueChange}
       />,
     )
-    await userEvent.selectOptions(page.getByRole('combobox', { name: 'Kommun' }), 'Välj kommun')
+    await userEvent.selectOptions(
+      page.getByRole('combobox', { name: 'Municipality' }),
+      'Choose a municipality',
+    )
     expect(onValueChange).toHaveBeenCalledWith(null, { reason: 'native' })
   })
 
@@ -1210,7 +1228,7 @@ describe('native rendering', () => {
     await render(<Switching />)
     await openWithClick()
     await userEvent.click(page.getByRole('button', { name: 'Byt' }))
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     await expect.element(select).toHaveValue('gbg')
     expect(select.element().tagName).toBe('SELECT')
     expect(document.querySelector('.kv-listbox-popup')).toBeNull()
@@ -1311,8 +1329,8 @@ describe('useListbox', () => {
 describe('server rendering', () => {
   test('the server markup has the combobox, a closed popup and a hidden input, and no options', () => {
     const markup = renderToString(
-      <Field.Root controlId="kommun" required>
-        <Field.Label>Kommun</Field.Label>
+      <Field.Root controlId="municipality" required>
+        <Field.Label>Municipality</Field.Label>
         <Listbox.Root
           items={municipalities}
           itemToString={(municipality) => municipality.name}
@@ -1321,7 +1339,7 @@ describe('server rendering', () => {
           defaultValue="gbg"
         >
           <Listbox.Trigger>
-            <Listbox.Value placeholder="Välj kommun" />
+            <Listbox.Value placeholder="Choose a municipality" />
           </Listbox.Trigger>
           <Listbox.Popup>
             <Listbox.List>
@@ -1333,12 +1351,12 @@ describe('server rendering', () => {
     )
     // The first render is the popup: the native rendering only follows after mount.
     expect(markup).toContain('role="combobox"')
-    expect(markup).toContain('id="kommun"')
+    expect(markup).toContain('id="municipality"')
     expect(markup).toContain('aria-expanded="false"')
     expect(markup).toContain('aria-haspopup="listbox"')
     expect(markup).toContain('popover="manual"')
     expect(markup).toContain('role="listbox"')
-    expect(markup).toContain('Göteborg')
+    expect(markup).toContain('Goteborg')
     expect(markup).not.toContain('role="option"')
     expect(markup).not.toContain('<select')
     expect(markup).toContain('type="hidden"')
@@ -1352,7 +1370,7 @@ const languageCodes = Object.keys(languageNames)
 function LanguageExample(rootProps: Partial<UseListboxSingleOptions<string>>) {
   return (
     <Field.Root>
-      <Field.Label>Språk</Field.Label>
+      <Field.Label>Language</Field.Label>
       <Listbox.Root
         items={languageCodes}
         itemToString={(code) => languageNames[code] ?? code}
@@ -1362,7 +1380,7 @@ function LanguageExample(rootProps: Partial<UseListboxSingleOptions<string>>) {
         {...rootProps}
       >
         <Listbox.Trigger>
-          <Listbox.Value placeholder="Välj språk" />
+          <Listbox.Value placeholder="Choose a language" />
         </Listbox.Trigger>
         <Listbox.Popup>
           <Listbox.List>{(code: string) => <Listbox.Option item={code} />}</Listbox.List>
@@ -1375,7 +1393,7 @@ function LanguageExample(rootProps: Partial<UseListboxSingleOptions<string>>) {
 function MultipleLanguageExample(rootProps: Partial<UseListboxMultipleOptions<string>>) {
   return (
     <Field.Root>
-      <Field.Label>Språk</Field.Label>
+      <Field.Label>Language</Field.Label>
       <Listbox.Root
         items={languageCodes}
         itemToString={(code) => languageNames[code] ?? code}
@@ -1385,7 +1403,7 @@ function MultipleLanguageExample(rootProps: Partial<UseListboxMultipleOptions<st
         {...rootProps}
       >
         <Listbox.Trigger>
-          <Listbox.Value placeholder="Välj språk" />
+          <Listbox.Value placeholder="Choose a language" />
         </Listbox.Trigger>
         <Listbox.Popup>
           <Listbox.List>{(code: string) => <Listbox.Option item={code} />}</Listbox.List>
@@ -1395,7 +1413,7 @@ function MultipleLanguageExample(rootProps: Partial<UseListboxMultipleOptions<st
   )
 }
 
-const languageTrigger = () => page.getByRole('combobox', { name: /Språk/ }).element()
+const languageTrigger = () => page.getByRole('combobox', { name: /Language/ }).element()
 
 async function openLanguages() {
   await userEvent.click(languageTrigger())
@@ -1430,18 +1448,18 @@ describe('itemToLang (3.1.2)', () => {
   test('the placeholder has no lang', async () => {
     await render(<LanguageExample />)
     const value = languageTrigger().querySelector('.kv-listbox-value')
-    expect(value?.textContent).toBe('Välj språk')
+    expect(value?.textContent).toBe('Choose a language')
     expect(value?.querySelector('[lang]')).toBeNull()
   })
 
   test('a lang of your own on an option wins', async () => {
     await render(
       <Field.Root>
-        <Field.Label>Språk</Field.Label>
+        <Field.Label>Language</Field.Label>
         <Listbox.Root
           items={languageCodes}
           itemToLang={() => 'fi'}
-          placeholder="Välj"
+          placeholder="Choose"
           native="never"
         >
           <Listbox.Trigger />
@@ -1468,7 +1486,7 @@ describe('itemToLang (3.1.2)', () => {
   test('the native select puts lang on each option, not on the empty one or the select', async () => {
     const { container } = await render(
       <Field.Root>
-        <Field.Label>Språk</Field.Label>
+        <Field.Label>Language</Field.Label>
         <Listbox.Root
           items={languageCodes}
           itemToString={(code) => languageNames[code] ?? code}
@@ -1477,7 +1495,7 @@ describe('itemToLang (3.1.2)', () => {
         />
       </Field.Root>,
     )
-    const select = asSelectElement(page.getByRole('combobox', { name: /Språk/ }).element())
+    const select = asSelectElement(page.getByRole('combobox', { name: /Language/ }).element())
     const langs = [...select.options].map((optionElement) => optionElement.getAttribute('lang'))
     expect(langs).toEqual([null, null, 'fi', 'nn'])
     expect(select.hasAttribute('lang')).toBe(false)

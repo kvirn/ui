@@ -26,7 +26,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: (args) => (
     <p>
-      Du kan flytta mellan fälten i formuläret med <Kbd {...args} />.
+      You can move between the fields in the form with <Kbd {...args} />.
     </p>
   ),
   play: async ({ canvas }) => {
@@ -38,7 +38,7 @@ export const Default: Story = {
 export const Combination: Story = {
   render: () => (
     <p>
-      Kopiera med{' '}
+      Copy with{' '}
       <Kbd data-testid="combination">
         <Kbd>Ctrl</Kbd>+<Kbd>C</Kbd>
       </Kbd>
@@ -56,11 +56,11 @@ export const InProse: Story = {
   render: () => (
     <div className="kv-prose">
       <p>
-        Tryck på <Kbd>Esc</Kbd> för att stänga, eller{' '}
+        Press <Kbd>Esc</Kbd> to close, or{' '}
         <Kbd>
           <Kbd>Shift</Kbd>+<Kbd>Tab</Kbd>
         </Kbd>{' '}
-        för att gå bakåt.
+        to go back.
       </p>
     </div>
   ),

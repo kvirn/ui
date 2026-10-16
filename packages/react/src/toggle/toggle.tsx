@@ -43,7 +43,7 @@ export interface ToggleProps extends Omit<
  * icon-only toggle an `aria-label` from your translations.
  *
  * @example
- * <Toggle pressed={isUnread} onPressedChange={setIsUnread}>Visa bara olästa</Toggle>
+ * <Toggle pressed={isUnread} onPressedChange={setIsUnread}>Show only unread</Toggle>
  */
 export function Toggle({
   pressed,

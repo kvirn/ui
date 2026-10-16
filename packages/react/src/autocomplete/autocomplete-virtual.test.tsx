@@ -26,7 +26,7 @@ afterEach(() => {
 
 const count = 10_000
 const streets: readonly string[] = Array.from({ length: count }, (_, index) =>
-  index === 7000 ? 'Västra vägen' : `Gatan ${index + 1}`,
+  index === 7000 ? 'West Road' : `Street ${index + 1}`,
 )
 
 const fixtureButtonStyle = { minBlockSize: '2rem', minInlineSize: '2rem' }
@@ -38,9 +38,9 @@ type ExampleProps = Partial<UseAutocompleteOptions<string>>
 function Example({ items = streets, ...rootProps }: ExampleProps) {
   return (
     <KvirnProvider locale="sv-SE" messages={sv}>
-      <p>Text utanför</p>
+      <p>Text outside</p>
       <button type="button" style={fixtureButtonStyle}>
-        Före
+        Before
       </button>
       <Field.Root required>
         <Field.Label>Gatuadress</Field.Label>
@@ -59,7 +59,7 @@ function Example({ items = streets, ...rootProps }: ExampleProps) {
         </Autocomplete.Root>
       </Field.Root>
       <button type="button" style={fixtureButtonStyle}>
-        Efter
+        After
       </button>
     </KvirnProvider>
   )
@@ -109,7 +109,7 @@ async function typeText(text: string) {
 describe('virtualize: the window', () => {
   test('typing opens a list of 10 000 suggestions that mounts only a window', async () => {
     await render(<Example />)
-    await typeText('Gatan')
+    await typeText('Street')
     await expect.poll(isShown).toBe(true)
     await expect.poll(renderedCount).toBeGreaterThan(5)
     expect(renderedCount()).toBeLessThan(60)
@@ -124,7 +124,7 @@ describe('virtualize: the window', () => {
 
   test('an open virtualized autocomplete has no axe violations', async () => {
     const { container } = await render(<Example />)
-    await typeText('Gatan')
+    await typeText('Street')
     await expect.poll(renderedCount).toBeGreaterThan(5)
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
@@ -132,7 +132,7 @@ describe('virtualize: the window', () => {
 
   test('an autocomplete that is not virtualized is unchanged: every suggestion, no set size', async () => {
     await render(<Example items={streets.slice(0, 40)} virtualize={undefined} />)
-    await typeText('Gatan')
+    await typeText('Street')
     await expect.poll(isShown).toBe(true)
     expect(renderedCount()).toBe(40)
     expect(sizerElement()).toBeNull()
@@ -144,13 +144,13 @@ describe('virtualize: keys reach suggestions that are not rendered', () => {
   test('Enter fills the input with a suggestion that was far away', async () => {
     const onValueChange = vi.fn<NonNullable<ExampleProps['onValueChange']>>()
     await render(<Example onValueChange={onValueChange} />)
-    await typeText('Gatan')
+    await typeText('Street')
     await expect.poll(isShown).toBe(true)
     await userEvent.keyboard('{ArrowUp}')
     await userEvent.keyboard('{Enter}')
-    expect(onValueChange).toHaveBeenLastCalledWith('Gatan 10000', { reason: 'selection' })
+    expect(onValueChange).toHaveBeenLastCalledWith('Street 10000', { reason: 'selection' })
     await expect.poll(isShown).toBe(false)
-    expect(inputElement().value).toBe('Gatan 10000')
+    expect(inputElement().value).toBe('Street 10000')
     await expect.element(input()).toHaveFocus()
   })
 })
@@ -158,10 +158,10 @@ describe('virtualize: keys reach suggestions that are not rendered', () => {
 describe('virtualize: keyboard rows', () => {
   test('virtualized: ArrowUp activates the last suggestion, rendered and in view', async () => {
     await render(<Example />)
-    await typeText('Gatan')
+    await typeText('Street')
     await expect.poll(isShown).toBe(true)
     await userEvent.keyboard('{ArrowUp}')
-    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 10000')
+    await expect.poll(() => activeOption()?.textContent).toBe('Street 10000')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe(String(count - 1))
     expect(activeOption()?.getAttribute('aria-setsize')).toBe(String(count - 1))
     await expect.poll(activeIsInView).toBe(true)
@@ -171,55 +171,55 @@ describe('virtualize: keyboard rows', () => {
 
   test('virtualized: ArrowDown and ArrowUp always leave aria-activedescendant on a suggestion in the page', async () => {
     await render(<Example />)
-    await typeText('Gatan')
+    await typeText('Street')
     await expect.poll(isShown).toBe(true)
     await userEvent.keyboard('{ArrowDown}')
-    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 1')
+    await expect.poll(() => activeOption()?.textContent).toBe('Street 1')
     for (let step = 0; step < 40; step += 1) {
       await userEvent.keyboard('{ArrowDown}')
       expect(activeDescendantResolves()).toBe(true)
     }
-    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 41')
+    await expect.poll(() => activeOption()?.textContent).toBe('Street 41')
     await expect.poll(activeIsInView).toBe(true)
     for (let step = 0; step < 40; step += 1) {
       await userEvent.keyboard('{ArrowUp}')
       expect(activeDescendantResolves()).toBe(true)
     }
-    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 1')
+    await expect.poll(() => activeOption()?.textContent).toBe('Street 1')
     await expect.poll(activeIsInView).toBe(true)
   })
 
   test('virtualized: PageDown and PageUp move ten suggestions that may not be rendered', async () => {
     await render(<Example />)
-    await typeText('Gatan')
+    await typeText('Street')
     await expect.poll(isShown).toBe(true)
     await userEvent.keyboard('{ArrowDown}')
     for (let step = 0; step < 25; step += 1) {
       await userEvent.keyboard('{PageDown}')
       expect(activeDescendantResolves()).toBe(true)
     }
-    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 251')
+    await expect.poll(() => activeOption()?.textContent).toBe('Street 251')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('251')
     await expect.poll(activeIsInView).toBe(true)
     await userEvent.keyboard('{PageUp}')
-    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 241')
+    await expect.poll(() => activeOption()?.textContent).toBe('Street 241')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('241')
     await expect.poll(activeIsInView).toBe(true)
   })
 
   test('virtualized: typing narrows the suggestions, and the size of the set follows', async () => {
     await render(<Example />)
-    await typeText('Gatan 99')
+    await typeText('Street 99')
     await expect.poll(isShown).toBe(true)
     await expect.poll(renderedCount).toBeGreaterThan(5)
     const first = renderedOptions()[0]
-    expect(first?.textContent).toBe('Gatan 99')
+    expect(first?.textContent).toBe('Street 99')
     expect(first?.getAttribute('aria-setsize')).toBe('111')
     expect(first?.getAttribute('aria-posinset')).toBe('1')
     expect(listElement()?.hasAttribute('data-virtualized')).toBe(true)
     expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
     await userEvent.keyboard('{ArrowUp}')
-    await expect.poll(() => activeOption()?.textContent).toBe('Gatan 9999')
+    await expect.poll(() => activeOption()?.textContent).toBe('Street 9999')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('111')
   })
 })
@@ -228,7 +228,7 @@ describe('virtualize: what it does not do', () => {
   test('groups are not virtualized: a development warning, and every suggestion renders', async () => {
     const groups = [
       { key: 'a', label: 'Norr', items: streets.slice(0, 20) },
-      { key: 'b', label: 'Söder', items: streets.slice(20, 40) },
+      { key: 'b', label: 'South', items: streets.slice(20, 40) },
     ]
     await render(
       <KvirnProvider locale="sv-SE" messages={sv}>
@@ -245,7 +245,7 @@ describe('virtualize: what it does not do', () => {
         </Field.Root>
       </KvirnProvider>,
     )
-    await typeText('Gatan')
+    await typeText('Street')
     await expect.poll(isShown).toBe(true)
     expect(renderedCount()).toBe(40)
     expect(sizerElement()).toBeNull()

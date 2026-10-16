@@ -46,8 +46,10 @@ test('a nested fi-FI section server-renders and hydrates in Finnish without erro
   )
   const container = serverRender(app)
   hydrated = { container, ...hydrate(container, app) }
+  // kv-lang-ok: the fi catalog's settings heading
   expect(hydrated.container.textContent).toContain('Asetukset')
 
+  // kv-lang-ok: the fi catalog's settings heading
   await expect.element(page.getByRole('heading', { name: 'Asetukset' })).toBeVisible()
   expect(hydrated.container.querySelector('section')?.getAttribute('lang')).toBe('fi-FI')
   expect(hydrated.container.querySelector('time')?.textContent).toContain('lokakuuta')

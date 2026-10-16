@@ -8,7 +8,7 @@ import { KvirnProvider } from '@kvirn-ui/react'
 import type { Decorator } from '@storybook/react-vite'
 
 // The library's own strings follow the locale toolbar, through a provider with the catalog like
-// an app's would. The visible fixture text is Swedish, or the story's own language.
+// an app's would. The visible fixture text is English, or the story's own language.
 
 const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, en }
 

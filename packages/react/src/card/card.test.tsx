@@ -41,12 +41,12 @@ function ServiceCard() {
         <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="" />
       </Card.Header>
       <Card.Body>
-        <h2>Sophämtning vid Storgatan 12</h2>
-        <p>Matavfall och restavfall töms varannan vecka.</p>
+        <h2>Waste collection at Storgatan 12</h2>
+        <p>Food waste and residual waste are collected every other week.</p>
       </Card.Body>
       <Card.Footer className="kv-button-group">
-        <Button className="kv-button--primary">Beställ extra tömning</Button>
-        <Button>Pausa hämtningen</Button>
+        <Button className="kv-button--primary">Order an extra collection</Button>
+        <Button>Pause the collection</Button>
       </Card.Footer>
     </Card.Root>
   )
@@ -56,11 +56,11 @@ describe('rendering', () => {
   test.each(parts)(
     'Card.%s renders one element with its part class',
     async (_name, Part, className) => {
-      const { container } = await render(<Part data-testid="part">Innehåll</Part>)
+      const { container } = await render(<Part data-testid="part">Content</Part>)
       const part = page.getByTestId('part')
       expect(part.element().className).toBe(className)
       await expect.element(part).not.toHaveAttribute('data-kv')
-      await expect.element(part).toHaveTextContent('Innehåll')
+      await expect.element(part).toHaveTextContent('Content')
       expect(container.children).toHaveLength(1)
       expect(container.firstElementChild).toBe(part.element())
     },
@@ -112,23 +112,25 @@ describe('rendering', () => {
       <Card.Root>
         <Card.Body>
           <h3>
-            <Link.Root href="#atervinning">Nya öppettider på återvinningscentralen</Link.Root>
+            <Link.Root href="#recycling">New opening hours at the recycling centre</Link.Root>
           </h3>
         </Card.Body>
         <Card.Footer className="kv-button-group">
-          <Button className="kv-button--primary">Beställ extra tömning</Button>
-          <Button>Pausa hämtningen</Button>
+          <Button className="kv-button--primary">Order an extra collection</Button>
+          <Button>Pause the collection</Button>
         </Card.Footer>
       </Card.Root>,
     )
     await userEvent.keyboard('{Tab}')
     await expect
-      .element(page.getByRole('link', { name: 'Nya öppettider på återvinningscentralen' }))
+      .element(page.getByRole('link', { name: 'New opening hours at the recycling centre' }))
       .toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Beställ extra tömning' })).toHaveFocus()
+    await expect
+      .element(page.getByRole('button', { name: 'Order an extra collection' }))
+      .toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Pausa hämtningen' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Pause the collection' })).toHaveFocus()
   })
 
   test('Shift+Tab moves back through the children', async () => {
@@ -136,33 +138,35 @@ describe('rendering', () => {
       <Card.Root>
         <Card.Body>
           <h3>
-            <Link.Root href="#atervinning">Nya öppettider på återvinningscentralen</Link.Root>
+            <Link.Root href="#recycling">New opening hours at the recycling centre</Link.Root>
           </h3>
         </Card.Body>
         <Card.Footer className="kv-button-group">
-          <Button>Beställ extra tömning</Button>
-          <Button>Pausa hämtningen</Button>
+          <Button>Order an extra collection</Button>
+          <Button>Pause the collection</Button>
         </Card.Footer>
       </Card.Root>,
     )
-    page.getByRole('button', { name: 'Pausa hämtningen' }).element().focus()
-    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Beställ extra tömning' })).toHaveFocus()
+    page.getByRole('button', { name: 'Pause the collection' }).element().focus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     await expect
-      .element(page.getByRole('link', { name: 'Nya öppettider på återvinningscentralen' }))
+      .element(page.getByRole('button', { name: 'Order an extra collection' }))
+      .toHaveFocus()
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+    await expect
+      .element(page.getByRole('link', { name: 'New opening hours at the recycling centre' }))
       .toHaveFocus()
   })
 
   test('passes attributes through: id and title on the consumer’s element', async () => {
     await render(
-      <Card.Root data-testid="card" id="kontakt" title="Kort">
+      <Card.Root data-testid="card" id="contact" title="Card">
         <Card.Body>Contact us</Card.Body>
       </Card.Root>,
     )
     const card = page.getByTestId('card')
-    await expect.element(card).toHaveAttribute('id', 'kontakt')
-    await expect.element(card).toHaveAttribute('title', 'Kort')
+    await expect.element(card).toHaveAttribute('id', 'contact')
+    await expect.element(card).toHaveAttribute('title', 'Card')
   })
 
   test('keeps its own class: a consumer className joins it instead of replacing it', async () => {
@@ -188,7 +192,7 @@ describe('rendering', () => {
       </main>,
     )
     await expect
-      .element(page.getByRole('heading', { name: 'Sophämtning vid Storgatan 12', level: 2 }))
+      .element(page.getByRole('heading', { name: 'Waste collection at Storgatan 12', level: 2 }))
       .toBeVisible()
     await expectNoA11yViolations(container)
   })
@@ -248,8 +252,8 @@ describe('as', () => {
       const headingId = useId()
       return (
         <Card.Root as="section" aria-labelledby={headingId}>
-          <h2 id={headingId}>Kontakta oss</h2>
-          <p>Ring kundcenter på 0123-45 67 89.</p>
+          <h2 id={headingId}>Contact us</h2>
+          <p>Call customer service on 0123-45 67 89.</p>
         </Card.Root>
       )
     }
@@ -258,16 +262,16 @@ describe('as', () => {
         <ContactSection />
       </main>,
     )
-    await expect.element(page.getByRole('region', { name: 'Kontakta oss' })).toBeVisible()
+    await expect.element(page.getByRole('region', { name: 'Contact us' })).toBeVisible()
     await expectNoA11yViolations(container)
   })
 
   test('<li> cards make a list with one item per card', async () => {
     const { container } = await render(
       <ul>
-        <Card.Root as="li">Nya öppettider</Card.Root>
-        <Card.Root as="li">Vinterväghållning</Card.Root>
-        <Card.Root as="li">Föreningsbidrag</Card.Root>
+        <Card.Root as="li">New opening hours</Card.Root>
+        <Card.Root as="li">Winter road maintenance</Card.Root>
+        <Card.Root as="li">Association grants</Card.Root>
       </ul>,
     )
     expect(page.getByRole('listitem').elements()).toHaveLength(3)
@@ -305,7 +309,7 @@ describe('useCard', () => {
       <section {...card.rootProps} aria-labelledby={headingId} data-testid="card">
         <div {...card.headerProps} data-testid="header" />
         <div {...card.bodyProps} data-testid="body">
-          <h2 id={headingId}>Senaste händelse</h2>
+          <h2 id={headingId}>Latest event</h2>
         </div>
         <div {...card.footerProps} data-testid="footer" />
       </section>
@@ -318,9 +322,7 @@ describe('useCard', () => {
         <HookCard />
       </main>,
     )
-    await expect
-      .element(page.getByRole('region', { name: 'Senaste händelse' }))
-      .toHaveClass('kv-card')
+    await expect.element(page.getByRole('region', { name: 'Latest event' })).toHaveClass('kv-card')
     await expect.element(page.getByTestId('header')).toHaveClass('kv-card-header')
     await expect.element(page.getByTestId('body')).toHaveClass('kv-card-body')
     await expect.element(page.getByTestId('footer')).toHaveClass('kv-card-footer')

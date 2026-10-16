@@ -31,12 +31,12 @@ describe('Badge', () => {
     const ref = createRef<HTMLElement>()
     await render(
       <Badge id="status" ref={ref} data-testid="badge">
-        Beviljad
+        Granted
       </Badge>,
     )
     const element = page.getByTestId('badge').element()
     expect(element.tagName).toBe('SPAN')
-    expect(element.textContent).toBe('Beviljad')
+    expect(element.textContent).toBe('Granted')
     expect(element.getAttributeNames().sort()).toEqual(['class', 'data-testid', 'id'])
     expect(ref.current).toBe(element)
   })
@@ -59,11 +59,11 @@ describe('Badge', () => {
 
   test("the part class joins a consumer's", async () => {
     await render(
-      <Badge className="annan" variant="info" data-testid="badge">
+      <Badge className="other" variant="info" data-testid="badge">
         Info
       </Badge>,
     )
-    expect(page.getByTestId('badge').element().className).toBe('annan kv-badge kv-badge--info')
+    expect(page.getByTestId('badge').element().className).toBe('other kv-badge kv-badge--info')
   })
 
   test('useBadge gives the element and the class', () => {
@@ -101,12 +101,12 @@ describe('Badge', () => {
   test('the ref, className and variant still apply to the chosen element', async () => {
     const ref = createRef<HTMLElement>()
     await render(
-      <Badge as="strong" variant="warning" ref={ref} className="annan" data-testid="badge">
+      <Badge as="strong" variant="warning" ref={ref} className="other" data-testid="badge">
         Ny
       </Badge>,
     )
     expect(ref.current).toBe(page.getByTestId('badge').element())
-    expect(ref.current?.className).toBe('annan kv-badge kv-badge--warning')
+    expect(ref.current?.className).toBe('other kv-badge kv-badge--warning')
   })
 
   test('is not a Tab stop', async () => {
@@ -126,11 +126,11 @@ describe('Badge', () => {
   test('has no axe violations in any variant', async () => {
     const { container } = await render(
       <main>
-        <h1>Mina ärenden</h1>
+        <h1>My cases</h1>
         <ul>
           {variants.map((variant) => (
             <li key={variant}>
-              Ärende <Badge variant={variant}>Status {variant}</Badge>
+              Case <Badge variant={variant}>Status {variant}</Badge>
             </li>
           ))}
         </ul>

@@ -31,8 +31,8 @@ function ContactSection() {
   const headingId = useId()
   return (
     <Section as="aside" aria-labelledby={headingId} className="kv-section--padding-lg">
-      <h2 id={headingId}>Kontakta oss</h2>
-      <p>Ring kundcenter på 0123-45 67 89.</p>
+      <h2 id={headingId}>Contact us</h2>
+      <p>Call customer service on 0123-45 67 89.</p>
       <p>
         <Link.Root href="#epost">Mejla kundcenter</Link.Root>
       </p>
@@ -42,11 +42,11 @@ function ContactSection() {
 
 describe('rendering', () => {
   test('renders one element with the kv-section class and its children', async () => {
-    const { container } = await render(<Section data-testid="section">Innehåll</Section>)
+    const { container } = await render(<Section data-testid="section">Content</Section>)
     const section = page.getByTestId('section')
     expect(section.element().className).toBe('kv-section')
     await expect.element(section).not.toHaveAttribute('data-kv')
-    await expect.element(section).toHaveTextContent('Innehåll')
+    await expect.element(section).toHaveTextContent('Content')
     expect(container.children).toHaveLength(1)
     expect(container.firstElementChild).toBe(section.element())
   })
@@ -98,26 +98,26 @@ describe('rendering', () => {
   test('the section is skipped by Tab: focus goes through its children in DOM order', async () => {
     await render(
       <Section>
-        <Link.Root href="#forsta">Första länken</Link.Root>
-        <Link.Root href="#andra">Andra länken</Link.Root>
+        <Link.Root href="#first">First link</Link.Root>
+        <Link.Root href="#second">Second link</Link.Root>
       </Section>,
     )
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('link', { name: 'Första länken' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'First link' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('link', { name: 'Andra länken' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Second link' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('link', { name: 'Första länken' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'First link' })).toHaveFocus()
   })
 
   test('passes attributes through: id and title on the consumer’s element', async () => {
     await render(
-      <Section data-testid="section" id="kontakt" title="Section">
+      <Section data-testid="section" id="contact" title="Section">
         Contact us
       </Section>,
     )
     const section = page.getByTestId('section')
-    await expect.element(section).toHaveAttribute('id', 'kontakt')
+    await expect.element(section).toHaveAttribute('id', 'contact')
     await expect.element(section).toHaveAttribute('title', 'Section')
   })
 
@@ -150,13 +150,13 @@ describe('rendering', () => {
   test('has no axe violations as a sidebar and as a band with a card', async () => {
     const { container } = await render(
       <main>
-        <h1>Bygglov</h1>
+        <h1>Building permit</h1>
         <ContactSection />
         <Section>
           <h2>Nyheter</h2>
           <ul>
-            <Card.Root as="li">Nya öppettider</Card.Root>
-            <Card.Root as="li">Vinterväghållning</Card.Root>
+            <Card.Root as="li">New opening hours</Card.Root>
+            <Card.Root as="li">Winter road maintenance</Card.Root>
           </ul>
         </Section>
       </main>,
@@ -202,7 +202,7 @@ describe('refs and style', () => {
         as="aside"
         style={{ maxInlineSize: '20rem' }}
         className="annat"
-        aria-label="Kontakt"
+        aria-label="Contact"
         data-testid="section"
       >
         Text
@@ -218,11 +218,11 @@ describe('as', () => {
   test('<aside aria-labelledby> makes the section a named complementary landmark', async () => {
     const { container } = await render(
       <main>
-        <h1>Bygglov</h1>
+        <h1>Building permit</h1>
         <ContactSection />
       </main>,
     )
-    const section = page.getByRole('complementary', { name: 'Kontakta oss' })
+    const section = page.getByRole('complementary', { name: 'Contact us' })
     await expect.element(section).toBeVisible()
     await expectNoA11yViolations(container)
   })
@@ -250,8 +250,8 @@ describe('as', () => {
       const headingId = useId()
       return (
         <Section as="nav" aria-labelledby={headingId}>
-          <h2 id={headingId}>Ärenden</h2>
-          <Link.Root href="#aktuella">Aktuella ärenden</Link.Root>
+          <h2 id={headingId}>Cases</h2>
+          <Link.Root href="#current">Current cases</Link.Root>
         </Section>
       )
     }
@@ -260,15 +260,15 @@ describe('as', () => {
         <CaseNavigation />
       </main>,
     )
-    await expect.element(page.getByRole('navigation', { name: 'Ärenden' })).toBeVisible()
+    await expect.element(page.getByRole('navigation', { name: 'Cases' })).toBeVisible()
     await expectNoA11yViolations(container)
   })
 
   test('<li> sections make a list with one item per section', async () => {
     const { container } = await render(
       <ul>
-        <Section as="li">Nya öppettider</Section>
-        <Section as="li">Vinterväghållning</Section>
+        <Section as="li">New opening hours</Section>
+        <Section as="li">Winter road maintenance</Section>
       </ul>,
     )
     expect(page.getByRole('listitem').elements()).toHaveLength(2)
@@ -304,7 +304,7 @@ describe('useSection', () => {
     const headingId = useId()
     return (
       <nav {...section.rootProps} aria-labelledby={headingId} data-testid="section">
-        <h2 id={headingId}>Ärenden</h2>
+        <h2 id={headingId}>Cases</h2>
       </nav>
     )
   }
@@ -315,9 +315,7 @@ describe('useSection', () => {
         <HookSection />
       </main>,
     )
-    await expect
-      .element(page.getByRole('navigation', { name: 'Ärenden' }))
-      .toHaveClass('kv-section')
+    await expect.element(page.getByRole('navigation', { name: 'Cases' })).toHaveClass('kv-section')
     await expectNoA11yViolations(container)
   })
 

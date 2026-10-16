@@ -56,7 +56,7 @@ function Confirm({
   const keepRef = useRef<HTMLButtonElement>(null)
   return (
     <>
-      <button type="button">Före</button>
+      <button type="button">Before</button>
       <AlertDialog.Root
         open={open}
         initialFocusRef={withFocusRef ? keepRef : undefined}
@@ -67,31 +67,31 @@ function Confirm({
           }
         }}
       >
-        <AlertDialog.Trigger>Ta bort utkast</AlertDialog.Trigger>
+        <AlertDialog.Trigger>Delete draft</AlertDialog.Trigger>
         <AlertDialog.Popup>
-          <AlertDialog.Title>Vill du ta bort utkastet?</AlertDialog.Title>
+          <AlertDialog.Title>Delete the draft?</AlertDialog.Title>
           {withDescription ? (
-            <AlertDialog.Description>Det går inte att ångra.</AlertDialog.Description>
+            <AlertDialog.Description>This cannot be undone.</AlertDialog.Description>
           ) : null}
           {children}
           <AlertDialog.Actions>
             <button type="button" style={spaced} onClick={() => setOpen(false)}>
-              Ta bort utkastet
+              Delete the draft
             </button>
             <button ref={keepRef} type="button" style={spaced} onClick={() => setOpen(false)}>
-              Behåll utkastet
+              Keep the draft
             </button>
           </AlertDialog.Actions>
         </AlertDialog.Popup>
       </AlertDialog.Root>
-      <button type="button">Efter</button>
+      <button type="button">After</button>
     </>
   )
 }
 
-const trigger = () => page.getByRole('button', { name: 'Ta bort utkast', exact: true })
-const deleteButton = () => page.getByRole('button', { name: 'Ta bort utkastet', exact: true })
-const keepButton = () => page.getByRole('button', { name: 'Behåll utkastet', exact: true })
+const trigger = () => page.getByRole('button', { name: 'Delete draft', exact: true })
+const deleteButton = () => page.getByRole('button', { name: 'Delete the draft', exact: true })
+const keepButton = () => page.getByRole('button', { name: 'Keep the draft', exact: true })
 const popupElement = () => document.querySelector<HTMLDialogElement>('dialog.kv-alert-dialog')
 const triggerElement = () => document.querySelector<HTMLButtonElement>('.kv-dialog-trigger')
 const isModal = () => popupElement()?.matches(':modal') === true
@@ -131,9 +131,7 @@ describe('rendering and ARIA', () => {
     )
     expect(popup?.hasAttribute('data-open')).toBe(true)
     expect(triggerElement()?.getAttribute('aria-haspopup')).toBe('dialog')
-    await expect
-      .element(page.getByRole('alertdialog', { name: 'Vill du ta bort utkastet?' }))
-      .toBeVisible()
+    await expect.element(page.getByRole('alertdialog', { name: 'Delete the draft?' })).toBeVisible()
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -155,7 +153,7 @@ describe('rendering and ARIA', () => {
         <AlertDialog.Popup>
           <AlertDialog.Title>Titel</AlertDialog.Title>
           <AlertDialog.Description>Text</AlertDialog.Description>
-          <AlertDialog.Close>Behåll</AlertDialog.Close>
+          <AlertDialog.Close>Keep</AlertDialog.Close>
         </AlertDialog.Popup>
       </AlertDialog.Root>,
     )
@@ -166,27 +164,27 @@ describe('rendering and ARIA', () => {
     expect(close?.hasAttribute('aria-label')).toBe(false)
     expect(close?.querySelector('svg')).toBeNull()
     expect(close?.classList.contains('kv-dialog-close')).toBe(false)
-    expect(close?.textContent).toBe('Behåll')
+    expect(close?.textContent).toBe('Keep')
   })
 
   test('forwards refs, className and native props, and as replaces the element', async () => {
     const popupRef = createRef<HTMLDialogElement>()
     await render(
       <AlertDialog.Root defaultOpen>
-        <AlertDialog.Popup ref={popupRef} className="egen" data-egen="popup">
+        <AlertDialog.Popup ref={popupRef} className="own" data-own="popup">
           <AlertDialog.Title as="h3">Titel</AlertDialog.Title>
           <AlertDialog.Description>Text</AlertDialog.Description>
-          <AlertDialog.Body as="section" aria-label="Innehåll">
-            Innehåll
+          <AlertDialog.Body as="section" aria-label="Content">
+            Content
           </AlertDialog.Body>
         </AlertDialog.Popup>
       </AlertDialog.Root>,
     )
     expect(popupRef.current).toBe(popupElement())
-    expect(popupRef.current?.classList.contains('egen')).toBe(true)
+    expect(popupRef.current?.classList.contains('own')).toBe(true)
     expect(popupRef.current?.classList.contains('kv-alert-dialog')).toBe(true)
     expect(popupRef.current?.classList.contains('kv-dialog')).toBe(true)
-    expect(popupRef.current?.getAttribute('data-egen')).toBe('popup')
+    expect(popupRef.current?.getAttribute('data-own')).toBe('popup')
     expect(document.querySelector('h3.kv-dialog-title')).not.toBeNull()
     expect(document.querySelector('section.kv-dialog-body')).not.toBeNull()
   })
@@ -197,14 +195,14 @@ describe('rendering and ARIA', () => {
         <AlertDialog.Popup>
           <AlertDialog.Title>Titel</AlertDialog.Title>
           <AlertDialog.Description>Text</AlertDialog.Description>
-          <AlertDialog.Close as={Button} data-egen="close">
-            Behåll
+          <AlertDialog.Close as={Button} data-own="close">
+            Keep
           </AlertDialog.Close>
         </AlertDialog.Popup>
       </AlertDialog.Root>,
     )
-    const close = page.getByRole('button', { name: 'Behåll' })
-    await expect.element(close).toHaveAttribute('data-egen', 'close')
+    const close = page.getByRole('button', { name: 'Keep' })
+    await expect.element(close).toHaveAttribute('data-own', 'close')
     await expect.element(close).toHaveClass('kv-alert-dialog-close')
     await userEvent.click(close)
     await expect.poll(() => popupElement()?.matches(':modal')).toBe(false)
@@ -218,13 +216,13 @@ describe('rendering and ARIA', () => {
       useEffect(() => registerDescription(), [registerDescription])
       return (
         <>
-          <button {...alertDialog.triggerProps}>Öppna</button>
+          <button {...alertDialog.triggerProps}>Open</button>
           <dialog {...alertDialog.popupProps}>
             {alertDialog.isOpen ? (
               <>
                 <h2 {...alertDialog.titleProps}>Egen titel</h2>
                 <p {...alertDialog.descriptionProps}>Egen text</p>
-                <button {...alertDialog.closeProps}>Stäng</button>
+                <button {...alertDialog.closeProps}>Close</button>
               </>
             ) : null}
           </dialog>
@@ -232,20 +230,20 @@ describe('rendering and ARIA', () => {
       )
     }
     await render(<Own />)
-    await userEvent.click(page.getByRole('button', { name: 'Öppna' }))
+    await userEvent.click(page.getByRole('button', { name: 'Open' }))
     await expect.element(page.getByRole('alertdialog', { name: 'Egen titel' })).toBeVisible()
     await expect.element(page.getByRole('alertdialog')).toHaveAccessibleDescription('Egen text')
     // The hook's closeProps carry no aria-label: the button's own text is its name.
-    await expect.element(page.getByRole('button', { name: 'Stäng', exact: true })).toBeVisible()
+    await expect.element(page.getByRole('button', { name: 'Close', exact: true })).toBeVisible()
     expect(
-      page.getByRole('button', { name: 'Stäng', exact: true }).element().hasAttribute('aria-label'),
+      page.getByRole('button', { name: 'Close', exact: true }).element().hasAttribute('aria-label'),
     ).toBe(false)
   })
 
   test('server rendering with defaultOpen writes a closed <dialog> and touches no window', () => {
     const html = renderToString(<Confirm defaultOpen />)
     expect(html).not.toMatch(/<dialog[^>]*\sopen/)
-    expect(html).toContain('Vill du ta bort utkastet?')
+    expect(html).toContain('Delete the draft?')
   })
 
   test('nested over a Dialog, with no axe violations', async () => {
@@ -255,9 +253,9 @@ describe('rendering and ARIA', () => {
           <Dialog.Title>Redigera</Dialog.Title>
           <AlertDialog.Root defaultOpen>
             <AlertDialog.Popup>
-              <AlertDialog.Title>Förkasta?</AlertDialog.Title>
-              <AlertDialog.Description>Ändringarna sparas inte.</AlertDialog.Description>
-              <button type="button">Förkasta</button>
+              <AlertDialog.Title>Discard?</AlertDialog.Title>
+              <AlertDialog.Description>The changes are not saved.</AlertDialog.Description>
+              <button type="button">Discard</button>
             </AlertDialog.Popup>
           </AlertDialog.Root>
         </Dialog.Popup>
@@ -272,11 +270,11 @@ describe('keyboard', () => {
   test('Tab focuses the trigger, and is one stop', async () => {
     await render(<Confirm />)
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     await userEvent.tab()
     await expect.element(trigger()).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('Shift+Tab leaves the trigger backwards', async () => {
@@ -284,7 +282,7 @@ describe('keyboard', () => {
     await userEvent.tab()
     await userEvent.tab()
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('Enter and Space on the trigger open it, and focus starts on initialFocusRef', async () => {
@@ -358,11 +356,11 @@ describe('keyboard', () => {
         <Dialog.Popup className="outer-dialog">
           <Dialog.Title>Redigera</Dialog.Title>
           <AlertDialog.Root>
-            <AlertDialog.Trigger>Förkasta</AlertDialog.Trigger>
+            <AlertDialog.Trigger>Discard</AlertDialog.Trigger>
             <AlertDialog.Popup>
-              <AlertDialog.Title>Förkasta?</AlertDialog.Title>
-              <AlertDialog.Description>Ändringarna sparas inte.</AlertDialog.Description>
-              <button type="button">Ja, förkasta</button>
+              <AlertDialog.Title>Discard?</AlertDialog.Title>
+              <AlertDialog.Description>The changes are not saved.</AlertDialog.Description>
+              <button type="button">Yes, discard</button>
             </AlertDialog.Popup>
           </AlertDialog.Root>
         </Dialog.Popup>
@@ -370,12 +368,12 @@ describe('keyboard', () => {
     )
     const outerModal = () => document.querySelector('.outer-dialog')?.matches(':modal') === true
     await expect.poll(outerModal).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Förkasta', exact: true }))
+    await userEvent.click(page.getByRole('button', { name: 'Discard', exact: true }))
     await expect.poll(isModal).toBe(true)
     await userEvent.keyboard('{Escape}')
     await expect.poll(isModal).toBe(false)
     expect(outerModal()).toBe(true)
-    await expect.element(page.getByRole('button', { name: 'Förkasta', exact: true })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Discard', exact: true })).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await expect.poll(outerModal).toBe(false)
   })
@@ -395,19 +393,19 @@ describe('keyboard', () => {
     const onOpenChange = vi.fn<(open: boolean, details: AlertDialogChangeDetails) => void>()
     await render(
       <AlertDialog.Root onOpenChange={onOpenChange}>
-        <AlertDialog.Trigger>Öppna</AlertDialog.Trigger>
+        <AlertDialog.Trigger>Open</AlertDialog.Trigger>
         <AlertDialog.Popup>
           <AlertDialog.Title>Titel</AlertDialog.Title>
           <AlertDialog.Description>Text</AlertDialog.Description>
-          <AlertDialog.Close>Behåll</AlertDialog.Close>
+          <AlertDialog.Close>Keep</AlertDialog.Close>
         </AlertDialog.Popup>
       </AlertDialog.Root>,
     )
-    const open = page.getByRole('button', { name: 'Öppna' })
+    const open = page.getByRole('button', { name: 'Open' })
     await userEvent.click(open)
     await expect.poll(isModal).toBe(true)
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Behåll' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Keep' })).toHaveFocus()
     await userEvent.keyboard('{Enter}')
     await expect.poll(isModal).toBe(false)
     await expect.element(open).toHaveFocus()
@@ -429,12 +427,12 @@ describe('keyboard', () => {
         <AlertDialog.Popup>
           <AlertDialog.Title>Titel</AlertDialog.Title>
           <AlertDialog.Description>Text</AlertDialog.Description>
-          <AlertDialog.Close>Behåll</AlertDialog.Close>
+          <AlertDialog.Close>Keep</AlertDialog.Close>
         </AlertDialog.Popup>
       </AlertDialog.Root>,
     )
     await expect.poll(isModal).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Behåll' }))
+    await userEvent.click(page.getByRole('button', { name: 'Keep' }))
     expect(onOpenChange).toHaveBeenCalledWith(
       false,
       expect.objectContaining({ reason: 'close-press' }),
@@ -471,7 +469,7 @@ describe('keyboard', () => {
     const onOpenChange = vi.fn<() => void>()
     await render(<Confirm defaultOpen onOpenChange={onOpenChange} />)
     await expect.poll(isModal).toBe(true)
-    await userEvent.click(page.getByText('Det går inte att ångra.'))
+    await userEvent.click(page.getByText('This cannot be undone.'))
     await new Promise((resolve) => setTimeout(resolve, 50))
     expect(isModal()).toBe(true)
     expect(onOpenChange).not.toHaveBeenCalled()
@@ -481,7 +479,7 @@ describe('keyboard', () => {
 describe('focus', () => {
   test('with no initialFocusRef, focus starts on the title, not the first control', async () => {
     await render(<Confirm defaultOpen withFocusRef={false} />)
-    await expect.poll(() => document.activeElement?.textContent).toBe('Vill du ta bort utkastet?')
+    await expect.poll(() => document.activeElement?.textContent).toBe('Delete the draft?')
   })
 
   test('initial focus is initialFocusRef, the safe action, not the first control', async () => {
@@ -495,7 +493,7 @@ describe('announcements', () => {
     const { announce } = useAnnouncer()
     return (
       <button type="button" onClick={() => announce('Sparat')}>
-        Spara
+        Save
       </button>
     )
   }
@@ -507,7 +505,7 @@ describe('announcements', () => {
       </Confirm>,
     )
     await expect.poll(isModal).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Spara' }))
+    await userEvent.click(page.getByRole('button', { name: 'Save' }))
     await expect
       .poll(() => popupElement()?.querySelector('[aria-live="polite"]')?.textContent)
       .toBe('Sparat')
@@ -576,8 +574,8 @@ describe('Close without a name', () => {
         <AlertDialog.Popup>
           <AlertDialog.Title>Titel</AlertDialog.Title>
           <AlertDialog.Description>Text</AlertDialog.Description>
-          <AlertDialog.Close>Behåll</AlertDialog.Close>
-          <AlertDialog.Close aria-label="Stäng" />
+          <AlertDialog.Close>Keep</AlertDialog.Close>
+          <AlertDialog.Close aria-label="Close" />
         </AlertDialog.Popup>
       </AlertDialog.Root>,
     )

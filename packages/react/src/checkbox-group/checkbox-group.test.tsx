@@ -1,4 +1,3 @@
-import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useState } from 'react'
 import type { ReactNode } from 'react'
@@ -44,14 +43,10 @@ function expectNoDanglingReferences(container: Element) {
   }
 }
 
-const sweden = (children: ReactNode) => (
-  <KvirnProvider locale="sv-SE" messages={sv}>
-    {children}
-  </KvirnProvider>
-)
+const english = (children: ReactNode) => <KvirnProvider locale="en">{children}</KvirnProvider>
 
 const options = [
-  ['email', 'E-post'],
+  ['email', 'Email'],
   ['text', 'Sms'],
   ['letter', 'Brev'],
 ] as const
@@ -65,18 +60,18 @@ interface ContactProps extends Omit<CheckboxGroupRootProps, 'children'> {
 function Contact({ withDescription = true, optionHelpText = false, ...rootProps }: ContactProps) {
   return (
     <CheckboxGroup.Root {...rootProps}>
-      <Fieldset.Legend>Hur ska vi kontakta dig?</Fieldset.Legend>
-      {withDescription ? <CheckboxGroup.Prose>Välj alla som passar.</CheckboxGroup.Prose> : null}
+      <Fieldset.Legend>How should we contact you?</Fieldset.Legend>
+      {withDescription ? <CheckboxGroup.Prose>Select all that apply.</CheckboxGroup.Prose> : null}
       {options.map(([value, label]) => (
         <Field.Root key={value}>
           <Checkbox value={value} />
           <Field.Label>{label}</Field.Label>
           {optionHelpText && value === 'letter' ? (
-            <Field.HelpText>Tar några dagar extra.</Field.HelpText>
+            <Field.HelpText>Takes a few extra days.</Field.HelpText>
           ) : null}
         </Field.Root>
       ))}
-      <Fieldset.ErrorMessage>Välj hur vi ska kontakta dig</Fieldset.ErrorMessage>
+      <Fieldset.ErrorMessage>Choose how we should contact you</Fieldset.ErrorMessage>
     </CheckboxGroup.Root>
   )
 }
@@ -86,7 +81,7 @@ describe('rendering', () => {
     const ref = createRef<HTMLFieldSetElement>()
     const { container } = await render(
       <CheckboxGroup.Root ref={ref} className="egen" data-testid="root">
-        <Fieldset.Legend data-testid="legend">Kontakt</Fieldset.Legend>
+        <Fieldset.Legend data-testid="legend">Contact</Fieldset.Legend>
       </CheckboxGroup.Root>,
     )
     const root = page.getByTestId('root').element()
@@ -101,11 +96,11 @@ describe('rendering', () => {
   })
 
   test('the group is named by its legend and described by its help text and error', async () => {
-    const { container } = await render(sweden(<Contact invalid />))
-    const group = page.getByRole('group', { name: 'Hur ska vi kontakta dig? (valfritt)' })
+    const { container } = await render(english(<Contact invalid />))
+    const group = page.getByRole('group', { name: 'How should we contact you? (optional)' })
     await expect
       .element(group)
-      .toHaveAccessibleDescription('Välj alla som passar. Fel: Välj hur vi ska kontakta dig')
+      .toHaveAccessibleDescription('Select all that apply. Error: Choose how we should contact you')
     await expect.element(group).toHaveAttribute('data-invalid', '')
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
@@ -114,47 +109,47 @@ describe('rendering', () => {
 
   test('options carry no optional marker, and the legend does, unless the group is required', async () => {
     await render(
-      sweden(
+      english(
         <>
           <Contact />
           <CheckboxGroup.Root required>
-            <Fieldset.Legend>Obligatorisk fråga</Fieldset.Legend>
+            <Fieldset.Legend>Required question</Fieldset.Legend>
             <Field.Root>
               <Checkbox value="a" />
-              <Field.Label>Alternativ A</Field.Label>
+              <Field.Label>Option A</Field.Label>
             </Field.Root>
           </CheckboxGroup.Root>
         </>,
       ),
     )
-    await expect.element(page.getByRole('checkbox', { name: 'E-post', exact: true })).toBeVisible()
+    await expect.element(page.getByRole('checkbox', { name: 'Email', exact: true })).toBeVisible()
     await expect
-      .element(page.getByRole('group', { name: 'Hur ska vi kontakta dig? (valfritt)' }))
+      .element(page.getByRole('group', { name: 'How should we contact you? (optional)' }))
       .toBeVisible()
     await expect
-      .element(page.getByRole('group', { name: 'Obligatorisk fråga', exact: true }))
+      .element(page.getByRole('group', { name: 'Required question', exact: true }))
       .toHaveAttribute('data-required', '')
   })
 
   test('an option’s own help text is in that checkbox’s description', async () => {
-    await render(sweden(<Contact optionHelpText />))
+    await render(english(<Contact optionHelpText />))
     await expect
       .element(page.getByRole('checkbox', { name: 'Brev' }))
-      .toHaveAccessibleDescription('Tar några dagar extra.')
+      .toHaveAccessibleDescription('Takes a few extra days.')
     await expect
-      .element(page.getByRole('checkbox', { name: 'E-post' }))
+      .element(page.getByRole('checkbox', { name: 'Email' }))
       .not.toHaveAttribute('aria-describedby')
   })
 
   test('an option help text is a Field.HelpText in that option’s Field, outside its label, and has no axe violations', async () => {
-    const { container } = await render(sweden(<Contact optionHelpText />))
-    const helpText = page.getByText('Tar några dagar extra.').element()
+    const { container } = await render(english(<Contact optionHelpText />))
+    const helpText = page.getByText('Takes a few extra days.').element()
     expect(helpText.id).not.toBe('')
     expect(helpText.closest('label')).toBeNull()
     // The group's description is its own help text, not the option's.
     await expect
-      .element(page.getByRole('group', { name: 'Hur ska vi kontakta dig? (valfritt)' }))
-      .toHaveAccessibleDescription('Välj alla som passar.')
+      .element(page.getByRole('group', { name: 'How should we contact you? (optional)' }))
+      .toHaveAccessibleDescription('Select all that apply.')
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
@@ -163,25 +158,25 @@ describe('rendering', () => {
   test('CheckboxGroup.HelpText is the group’s help text: after the description, before the error', async () => {
     expect(CheckboxGroup.HelpText.displayName).toBe('CheckboxGroup.HelpText')
     await render(
-      sweden(
+      english(
         <CheckboxGroup.Root invalid>
-          <CheckboxGroup.Legend>Hur ska vi kontakta dig?</CheckboxGroup.Legend>
-          <CheckboxGroup.Prose>Välj alla som passar.</CheckboxGroup.Prose>
+          <CheckboxGroup.Legend>How should we contact you?</CheckboxGroup.Legend>
+          <CheckboxGroup.Prose>Select all that apply.</CheckboxGroup.Prose>
           <Field.Root>
             <Checkbox value="email" />
-            <Field.Label>E-post</Field.Label>
+            <Field.Label>Email</Field.Label>
           </Field.Root>
           <CheckboxGroup.HelpText data-testid="helpText">
-            Du kan ändra det senare.
+            You can change this later.
           </CheckboxGroup.HelpText>
-          <CheckboxGroup.ErrorMessage>Välj hur vi ska kontakta dig</CheckboxGroup.ErrorMessage>
+          <CheckboxGroup.ErrorMessage>Choose how we should contact you</CheckboxGroup.ErrorMessage>
         </CheckboxGroup.Root>,
       ),
     )
     await expect
-      .element(page.getByRole('group', { name: 'Hur ska vi kontakta dig? (valfritt)' }))
+      .element(page.getByRole('group', { name: 'How should we contact you? (optional)' }))
       .toHaveAccessibleDescription(
-        'Välj alla som passar. Du kan ändra det senare. Fel: Välj hur vi ska kontakta dig',
+        'Select all that apply. You can change this later. Error: Choose how we should contact you',
       )
   })
 })
@@ -205,31 +200,31 @@ describe('value', () => {
         </>
       )
     }
-    await render(sweden(<Controlled />))
-    await expect.element(page.getByRole('checkbox', { name: 'E-post' })).toBeChecked()
+    await render(english(<Controlled />))
+    await expect.element(page.getByRole('checkbox', { name: 'Email' })).toBeChecked()
     await expect.element(page.getByRole('checkbox', { name: 'Sms' })).not.toBeChecked()
     await userEvent.click(page.getByRole('checkbox', { name: 'Brev' }))
     expect(onValueChange.mock.calls.at(-1)?.[0]).toEqual(['email', 'letter'])
     expect(onValueChange.mock.calls.at(-1)?.[1].reason).toBe('input')
     expect(onValueChange.mock.calls.at(-1)?.[1].event.type).toBe('change')
     await expect.element(page.getByTestId('value')).toHaveTextContent('email,letter')
-    await userEvent.click(page.getByRole('checkbox', { name: 'E-post' }))
+    await userEvent.click(page.getByRole('checkbox', { name: 'Email' }))
     expect(onValueChange.mock.calls.at(-1)?.[0]).toEqual(['letter'])
-    await expect.element(page.getByRole('checkbox', { name: 'E-post' })).not.toBeChecked()
+    await expect.element(page.getByRole('checkbox', { name: 'Email' })).not.toBeChecked()
   })
 
   test('the group never stores the value: if the parent does not update it, the box stays', async () => {
     const onValueChange = vi.fn<(value: string[], details: CheckboxGroupChangeDetails) => void>()
-    await render(sweden(<Contact value={['email']} onValueChange={onValueChange} />))
+    await render(english(<Contact value={['email']} onValueChange={onValueChange} />))
     await userEvent.click(page.getByRole('checkbox', { name: 'Sms' }))
     expect(onValueChange.mock.calls.at(-1)?.[0]).toEqual(['email', 'text'])
     await expect.element(page.getByRole('checkbox', { name: 'Sms' })).not.toBeChecked()
-    await expect.element(page.getByRole('checkbox', { name: 'E-post' })).toBeChecked()
+    await expect.element(page.getByRole('checkbox', { name: 'Email' })).toBeChecked()
   })
 
   test('every checkbox gets the group’s name, and a name on a Checkbox wins', async () => {
     await render(
-      <CheckboxGroup.Root name="contact" aria-label="Kontakt">
+      <CheckboxGroup.Root name="contact" aria-label="Contact">
         <Field.Root>
           <Checkbox value="a" />
           <Field.Label>A</Field.Label>
@@ -250,26 +245,26 @@ describe('value', () => {
     const onValueChange = vi.fn<(value: string[], details: CheckboxGroupChangeDetails) => void>()
     let submitted: FormData | undefined
     await render(
-      sweden(
+      english(
         <form
-          aria-label="Ansökan"
+          aria-label="Application"
           onSubmit={(event) => {
             event.preventDefault()
             submitted = new FormData(event.currentTarget)
           }}
         >
           <Contact name="contact" defaultValue={['email']} onValueChange={onValueChange} />
-          <button type="submit">Skicka</button>
+          <button type="submit">Send</button>
         </form>,
       ),
     )
-    await expect.element(page.getByRole('checkbox', { name: 'E-post' })).toBeChecked()
+    await expect.element(page.getByRole('checkbox', { name: 'Email' })).toBeChecked()
     await userEvent.click(page.getByRole('checkbox', { name: 'Brev' }))
     expect(onValueChange.mock.calls.at(-1)?.[0]).toEqual(['email', 'letter'])
-    await userEvent.click(page.getByRole('checkbox', { name: 'E-post' }))
+    await userEvent.click(page.getByRole('checkbox', { name: 'Email' }))
     expect(onValueChange.mock.calls.at(-1)?.[0]).toEqual(['letter'])
     await userEvent.click(page.getByRole('checkbox', { name: 'Sms' }))
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Send' }))
     expect(submitted?.getAll('contact')).toEqual(['text', 'letter'])
   })
 
@@ -288,24 +283,24 @@ describe('value', () => {
             setValue(next)
           }}
         >
-          <Fieldset.Legend>Hur ska vi kontakta dig?</Fieldset.Legend>
+          <Fieldset.Legend>How should we contact you?</Fieldset.Legend>
           <Field.Root>
             <Checkbox
               value="all"
               indeterminate={value.length > 0 && !value.includes('all')}
               onCheckedChange={() => calls.push('onCheckedChange')}
             />
-            <Field.Label>Alla sätt</Field.Label>
+            <Field.Label>All ways</Field.Label>
           </Field.Root>
           <Field.Root>
             <Checkbox value="email" />
-            <Field.Label>E-post</Field.Label>
+            <Field.Label>Email</Field.Label>
           </Field.Root>
         </CheckboxGroup.Root>
       )
     }
     await render(<SelectAll />)
-    const all = page.getByRole('checkbox', { name: 'Alla sätt' })
+    const all = page.getByRole('checkbox', { name: 'All ways' })
     await expect.element(all).toBePartiallyChecked()
     await userEvent.click(all)
     expect(calls).toEqual(['onValueChange', 'onCheckedChange'])
@@ -318,7 +313,7 @@ describe('value', () => {
 
   test('a Checkbox in a group without a value warns once', async () => {
     await render(
-      <CheckboxGroup.Root aria-label="Kontakt" name="contact">
+      <CheckboxGroup.Root aria-label="Contact" name="contact">
         <Field.Root>
           <Checkbox />
           <Field.Label>A</Field.Label>
@@ -332,7 +327,7 @@ describe('value', () => {
 
 describe('state', () => {
   test('invalid styles every option and sets no aria-invalid', async () => {
-    await render(sweden(<Contact invalid />))
+    await render(english(<Contact invalid />))
     for (const [, label] of options) {
       const checkbox = page.getByRole('checkbox', { name: label })
       await expect.element(checkbox).toHaveAttribute('data-invalid', '')
@@ -341,12 +336,12 @@ describe('state', () => {
   })
 
   test('invalid does not cascade to the Fields', async () => {
-    const { container } = await render(sweden(<Contact invalid />))
+    const { container } = await render(english(<Contact invalid />))
     expect(container.querySelectorAll('.kv-field[data-invalid]')).toHaveLength(0)
   })
 
   test('disabled disables every checkbox natively', async () => {
-    await render(sweden(<Contact disabled />))
+    await render(english(<Contact disabled />))
     expect((page.getByRole('group').element() as HTMLFieldSetElement).disabled).toBe(true)
     for (const [, label] of options) {
       await expect.element(page.getByRole('checkbox', { name: label })).toBeDisabled()
@@ -355,12 +350,12 @@ describe('state', () => {
 
   test('server markup is complete: the group’s description and each box’s name', () => {
     const markup = renderToString(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en">
         <CheckboxGroup.Root name="contact" defaultValue={['email']} invalid>
-          <Fieldset.Legend>Kontakt</Fieldset.Legend>
+          <Fieldset.Legend>Contact</Fieldset.Legend>
           <Field.Root controlId="a">
             <Checkbox value="email" />
-            <Field.Label>E-post</Field.Label>
+            <Field.Label>Email</Field.Label>
           </Field.Root>
         </CheckboxGroup.Root>
       </KvirnProvider>,
@@ -376,7 +371,7 @@ describe('useCheckboxGroup', () => {
   test('gives the props for your own checkboxes', async () => {
     const onValueChange = vi.fn<(value: string[], details: CheckboxGroupChangeDetails) => void>()
     function Own() {
-      const group = useCheckboxGroup({ name: 'kontakt', value: ['a'], onValueChange })
+      const group = useCheckboxGroup({ name: 'contact', value: ['a'], onValueChange })
       /* eslint-disable react/refs -- the hook's groupRef and getCheckboxProps are spread, never read in render */
       return (
         <fieldset ref={group.groupRef}>
@@ -391,7 +386,7 @@ describe('useCheckboxGroup', () => {
     await expect.element(page.getByRole('checkbox', { name: 'A' })).toBeChecked()
     await expect
       .element(page.getByRole('checkbox', { name: 'B' }))
-      .toHaveAttribute('name', 'kontakt')
+      .toHaveAttribute('name', 'contact')
     await userEvent.click(page.getByRole('checkbox', { name: 'B' }))
     expect(onValueChange.mock.calls.at(-1)?.[0]).toEqual(['a', 'b'])
   })
@@ -411,21 +406,21 @@ describe('keyboard', () => {
 
   test('Tab moves through every checkbox in DOM order', async () => {
     await render(
-      sweden(
+      english(
         <>
           <button type="button">Tillbaka</button>
           <Contact name="contact" />
-          <button type="button">Skicka</button>
+          <button type="button">Send</button>
         </>,
       ),
     )
     page.getByRole('button', { name: 'Tillbaka' }).element().focus()
-    for (const name of ['E-post', 'Sms', 'Brev']) {
+    for (const name of ['Email', 'Sms', 'Brev']) {
       await userEvent.tab()
       await expect.element(box(name)).toHaveFocus()
     }
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Skicka' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Send' })).toHaveFocus()
     const root = page.getByRole('group').element()
     expect(root.hasAttribute('tabindex')).toBe(false)
     expect(root.querySelector('legend')?.hasAttribute('tabindex')).toBe(false)
@@ -433,7 +428,7 @@ describe('keyboard', () => {
 
   test('Shift+Tab moves back through the checkboxes', async () => {
     await render(
-      sweden(
+      english(
         <>
           <button type="button">Tillbaka</button>
           <Contact name="contact" />
@@ -444,7 +439,7 @@ describe('keyboard', () => {
     await userEvent.tab({ shift: true })
     await expect.element(box('Sms')).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect.element(box('E-post')).toHaveFocus()
+    await expect.element(box('Email')).toHaveFocus()
     await userEvent.tab({ shift: true })
     await expect.element(page.getByRole('button', { name: 'Tillbaka' })).toHaveFocus()
   })
@@ -464,14 +459,14 @@ describe('keyboard', () => {
         />
       )
     }
-    await render(sweden(<Controlled />))
+    await render(english(<Controlled />))
     box('Sms').element().focus()
     const prevented = recordPreventedKeys()
     await userEvent.keyboard(' ')
     await expect.element(box('Sms')).toBeChecked()
     expect(onValueChange.mock.calls.at(-1)?.[0]).toEqual(['letter', 'text'])
     await expect.element(box('Brev')).toBeChecked()
-    await expect.element(box('E-post')).not.toBeChecked()
+    await expect.element(box('Email')).not.toBeChecked()
     await userEvent.keyboard(' ')
     await expect.element(box('Sms')).not.toBeChecked()
     expect(onValueChange.mock.calls.at(-1)?.[0]).toEqual(['letter'])
@@ -481,7 +476,7 @@ describe('keyboard', () => {
   })
 
   test('Arrow keys do not move focus between checkboxes', async () => {
-    await render(sweden(<Contact name="contact" />))
+    await render(english(<Contact name="contact" />))
     box('Sms').element().focus()
     const prevented = recordPreventedKeys()
     for (const key of ['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft']) {
@@ -489,24 +484,24 @@ describe('keyboard', () => {
       await expect.element(box('Sms')).toHaveFocus()
     }
     prevented.stop()
-    for (const name of ['E-post', 'Sms', 'Brev']) await expect.element(box(name)).not.toBeChecked()
+    for (const name of ['Email', 'Sms', 'Brev']) await expect.element(box(name)).not.toBeChecked()
     expect(prevented.keys).toEqual([])
   })
 
   test('Tab skips the checkboxes of a disabled group (native)', async () => {
     await render(
-      sweden(
+      english(
         <>
           <button type="button">Tillbaka</button>
           <Contact name="contact" disabled />
-          <button type="button">Skicka</button>
+          <button type="button">Send</button>
         </>,
       ),
     )
-    for (const name of ['E-post', 'Sms', 'Brev']) await expect.element(box(name)).toBeDisabled()
+    for (const name of ['Email', 'Sms', 'Brev']) await expect.element(box(name)).toBeDisabled()
     page.getByRole('button', { name: 'Tillbaka' }).element().focus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Skicka' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Send' })).toHaveFocus()
   })
 })
 

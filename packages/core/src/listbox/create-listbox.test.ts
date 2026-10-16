@@ -1,3 +1,4 @@
+// kv-lang-ok-file: Swedish place names prove locale-aware typeahead and lookup
 import { describe, expect, test, vi } from 'vite-plus/test'
 import { createListbox } from './create-listbox.ts'
 import type { ListboxEnv } from './create-listbox.ts'

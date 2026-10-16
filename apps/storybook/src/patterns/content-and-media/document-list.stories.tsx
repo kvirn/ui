@@ -131,6 +131,7 @@ export const OtherLanguage: Story = {
         <List.Root>
           <List.Item>
             <Link.Root href="#fees-fi" hrefLang="fi">
+              {/* kv-lang-ok: a Finnish passage that sets lang (3.1.2) */}
               <span lang="fi">Päiväkodin maksut 2027</span> (PDF, 240 kB)
             </Link.Root>{' '}
             <span>in Finnish</span>

@@ -143,7 +143,7 @@ const meta = {
     },
     ref: { control: false, description: 'A ref to the `<input>`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [
     (Story) => (
       <div className="kv-story-form">
@@ -300,14 +300,14 @@ export const WithoutMask: Story = {
     const input = canvas.getByRole('textbox', { name: text.rent })
     await expect(input).toHaveAttribute('inputmode', 'decimal')
     // Nothing is left out: a letter and a currency sign stay as typed.
-    await userEvent.type(input, 'ca 1250 kr')
-    await expect(input).toHaveValue('ca 1250 kr')
+    await userEvent.type(input, 'about 1250 kr')
+    await expect(input).toHaveValue('about 1250 kr')
   },
 }
 
 /**
  * An amount with its unit shown in the box: an `InputGroup` with a "kr" Addon. The Addon is
- * `aria-hidden`, so the label carries the unit: "Månadshyra i kronor". See Components/Form/InputGroup
+ * `aria-hidden`, so the label carries the unit: "Monthly rent in kronor". See Components/Form/InputGroup
  * for the other add-ons.
  */
 export const AmountWithUnit: Story = {
@@ -463,6 +463,7 @@ export const Finnish: Story = {
   },
   play: async ({ canvas, canvasElement }) => {
     await expect(
+      // kv-lang-ok: asserts the Finnish label under locale fi
       canvas.getByRole('textbox', { name: 'Montako lasta asuu kanssasi?' }),
     ).toBeVisible()
     const column = canvasElement.querySelector<HTMLElement>('.kv-story-narrow')

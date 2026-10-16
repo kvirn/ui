@@ -9,7 +9,7 @@
 
 ## 1. Brief
 
-- **Users:** both. **Hardest case:** an NVDA user reading Swedish as a second language, on a phone on a slow connection, who presses "Skicka ansökan", hears nothing, and presses it again (a double submission). Then: a magnifier user at 400% who can't see a status that appears far from the button; a staff user who refreshes a case table fifty times a day and must not hear the same "Loading" every time.
+- **Users:** both. **Hardest case:** an NVDA user reading Swedish as a second language, on a phone on a slow connection, who presses "Send application", hears nothing, and presses it again (a double submission). Then: a magnifier user at 400% who can't see a status that appears far from the button; a staff user who refreshes a case table fifty times a day and must not hear the same "Loading" every time.
 - **Job:** _When I've asked the service to do something, I want to know it's working and roughly how long it takes, so I don't give up, reload or press again._ And: _When there's nothing to show, I want to know why and what to do next._
 - **Context:** residents once, under stress, often mobile. Staff many times a day, compact density.
 - **Constraints:** 4.1.3 (status messages), 2.2.2 (moving content), 2.4.3 (focus order), 1.4.1 (colour), 2.5.3 (label in name), 3.2.2 (no change of context on input). No new dependency.
@@ -69,7 +69,7 @@ Story and docs fixtures (not library keys; consumer copy): `Loading your cases.`
 
 1. Name the thing and the action: "Loading your cases.", never "Loading…" or "Please wait".
 2. End with a full stop, no ellipsis: some speech settings read "…" as "dot dot dot", and it isn't a sentence. (Combobox's `Loading results` has no stop: open question 3.)
-3. sv, nb, nn: present tense, verb first, no subject ("Hämtar dina ärenden."). fi: passive, no "me" ("Haetaan …"). se: native-speaker review. en: present participle.
+3. sv, nb, nn: present tense, verb first, no subject ("Hämtar dina ärenden."). fi: passive, no "me" ("Haetaan …"). se: native-speaker review. en: present participle. <!-- kv-lang-ok: language-specific wording rules quote Swedish, Finnish and Sámi copy -->
 4. No tech words (server, request, fetch, error code), no apology chains, no blame.
 5. Numbers and percent through `format.number`, so `45 %` with a no-break space in sv, fi, nb, nn.
 6. Empty: say what isn't there and what to do next, in that order. Never "No data".
@@ -188,7 +188,7 @@ Never: a Toast for an error. A job in progress may be a Toast with `busy` (a spi
 ### Usability test plan (`pending`)
 
 - **Participants:** 6–8 residents, including NVDA or TalkBack users, a magnifier user, a person with a cognitive disability, a second-language Swedish speaker, low digital confidence; 3 staff who use a case table daily.
-- **Tasks:** send an application on a throttled connection (10–15 s); filter a case list to zero results and recover; open "Mina ärenden" with no cases; lose the connection mid-form.
+- **Tasks:** send an application on a throttled connection (10–15 s); filter a case list to zero results and recover; open "My cases" with no cases; lose the connection mid-form.
 - **Measure:** double presses, reloads, time to first doubt, whether they can say what's happening, extra or missing announcements (logged per AT).
 
 ## 10. Task split for Plan 0073

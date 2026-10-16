@@ -138,7 +138,7 @@ export function useBlockOptions(): BlockOption[] {
  * The block type picker: a Listbox (`native="never"`, so it stays a toolbar item on touch screens)
  * for Normal text, the configured heading levels, Quote and Code block. It shows the type at the
  * caret, or "Several types" when the selection spans more than one, and choosing an option applies
- * it and puts focus back in the text. Its name, "Texttyp", is its `aria-label` and its tooltip.
+ * it and puts focus back in the text. Its name, "Text type", is its `aria-label` and its tooltip.
  */
 export function BlockFormat(): ReactElement {
   const context = useRichTextEditorContext('RichTextEditor.BlockFormat')

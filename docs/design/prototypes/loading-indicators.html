@@ -522,7 +522,8 @@
         }
 
         :root:not(:has(#rm:checked, #stop:checked)) .kv-spinner-dot {
-          animation: kv-spinner-dot calc(var(--kv-duration-loop) * 0.75) var(--kv-easing-standard) infinite;
+          animation: kv-spinner-dot calc(var(--kv-duration-loop) * 0.75) var(--kv-easing-standard)
+            infinite;
         }
 
         :root:not(:has(#rm:checked, #stop:checked)) .kv-spinner-dot:nth-child(2) {
@@ -1319,7 +1320,7 @@
               <p class="lockup">
                 <span class="kv-spinner kv-spinner--sm" aria-hidden="true"></span>
                 <span class="kv-progress-label" style="font-size: 0.875rem"
-                  >Laddar dina ansökningar.</span
+                  >Loading your applications.</span
                 >
               </p>
             </div>
@@ -1332,13 +1333,13 @@
                   data-busy
                   aria-disabled="true"
                 >
-                  <span class="kv-spinner" aria-hidden="true"></span>Skicka ansökan
+                  <span class="kv-spinner" aria-hidden="true"></span>Send application
                 </button>
                 <button class="kv-button" type="button" data-busy aria-disabled="true">
-                  <span class="kv-spinner" aria-hidden="true"></span>Spara utkast
+                  <span class="kv-spinner" aria-hidden="true"></span>Save draft
                 </button>
               </div>
-              <p class="kv-progress-label">Skickar din ansökan.</p>
+              <p class="kv-progress-label">Sending your application.</p>
               <p class="cap">
                 The arc is <code>currentColor</code>: on-primary on the fill, text on the plain
                 button. Label unchanged (2.5.3). The text beside the button carries it.
@@ -1388,7 +1389,10 @@
                 <span class="kv-spinner kv-spinner--lg" aria-hidden="true"></span>
                 <span class="kv-spinner" aria-hidden="true"></span>
               </div>
-              <p class="cap">Breathes 0.75 → 0.2 → 0.75 in place on the standard easing while the box turns every 0.8 s.</p>
+              <p class="cap">
+                Breathes 0.75 → 0.2 → 0.75 in place on the standard easing while the box turns every
+                0.8 s.
+              </p>
             </div>
             <div class="cell pick">
               <span class="tag">Recommended</span>
@@ -1397,7 +1401,10 @@
                 <span class="kv-spinner sv sv-b kv-spinner--lg" aria-hidden="true"></span>
                 <span class="kv-spinner sv sv-b" aria-hidden="true"></span>
               </div>
-              <p class="cap">Head on the standard easing, tail on an ease-in-out: the head leads, the tail catches up, and the arc crawls forward.</p>
+              <p class="cap">
+                Head on the standard easing, tail on an ease-in-out: the head leads, the tail
+                catches up, and the arc crawls forward.
+              </p>
             </div>
             <div class="cell">
               <h3>C Inchworm</h3>
@@ -1405,7 +1412,9 @@
                 <span class="kv-spinner sv sv-c kv-spinner--lg" aria-hidden="true"></span>
                 <span class="kv-spinner sv sv-c" aria-hidden="true"></span>
               </div>
-              <p class="cap">The head stretches, then the tail follows, one at a time, ease-in-out cubic.</p>
+              <p class="cap">
+                The head stretches, then the tail follows, one at a time, ease-in-out cubic.
+              </p>
             </div>
             <div class="cell">
               <h3>D Deep breath</h3>
@@ -1421,7 +1430,9 @@
                 <span class="kv-spinner sv sv-e kv-spinner--lg" aria-hidden="true"></span>
                 <span class="kv-spinner sv sv-e" aria-hidden="true"></span>
               </div>
-              <p class="cap">Breathes 0.7 ↔ 0.25, sine in-out, 2 s: the calmest of the breathing ones.</p>
+              <p class="cap">
+                Breathes 0.7 ↔ 0.25, sine in-out, 2 s: the calmest of the breathing ones.
+              </p>
             </div>
             <div class="cell">
               <h3>F Drift</h3>
@@ -1429,7 +1440,10 @@
                 <span class="kv-spinner sv sv-f kv-spinner--lg" aria-hidden="true"></span>
                 <span class="kv-spinner sv sv-f" aria-hidden="true"></span>
               </div>
-              <p class="cap">Turns every 1.4 s against a 1.6 s breath, so the short arc lands somewhere new each time.</p>
+              <p class="cap">
+                Turns every 1.4 s against a 1.6 s breath, so the short arc lands somewhere new each
+                time.
+              </p>
             </div>
             <div class="cell">
               <h3>G Overshoot</h3>
@@ -1453,7 +1467,9 @@
                 <span class="kv-spinner sv sv-i kv-spinner--lg" aria-hidden="true"></span>
                 <span class="kv-spinner sv sv-i" aria-hidden="true"></span>
               </div>
-              <p class="cap">No grow: a 0.3-turn arc turning every 0.8 s. The cheapest (compositor only).</p>
+              <p class="cap">
+                No grow: a 0.3-turn arc turning every 0.8 s. The cheapest (compositor only).
+              </p>
             </div>
             <div class="cell">
               <h3>J Calm crawl</h3>
@@ -1484,9 +1500,9 @@
                 aria-label="Sweep example"
               ></progress>
               <p class="cap">
-                A 40 % band, primary to accent, crosses the track on transform, endlessly; stopped, the
-                track shows the existing static hatch. Determinate: gradient fill, a 20 % on-primary
-                sheen on an @property.
+                A 40 % band, primary to accent, crosses the track on transform, endlessly; stopped,
+                the track shows the existing static hatch. Determinate: gradient fill, a 20 %
+                on-primary sheen on an @property.
               </p>
             </div>
             <div class="cell" dir="rtl">
@@ -1609,22 +1625,22 @@
               <h3>Bar + label</h3>
               <div class="kv-progress">
                 <p class="kv-progress-label">
-                  <span>Laddar upp kvitto.jpg</span><span class="kv-progress-percent"> 68 %</span>
+                  <span>Uploading receipt.jpg</span><span class="kv-progress-percent"> 68 %</span>
                 </p>
                 <progress
                   class="kv-progress-bar"
                   max="100"
                   value="68"
-                  aria-label="Laddar upp kvitto.jpg"
+                  aria-label="Uploading receipt.jpg"
                 ></progress>
               </div>
               <h3>Slow, after 10 s</h3>
               <p class="lockup kv-progress demo-delayed">
                 <span class="kv-spinner" aria-hidden="true"></span>
                 <span class="kv-progress-label"
-                  ><span>Haetaan hakemuksiasi.</span
+                  ><span>Fetching your applications.</span
                   ><span class="kv-progress-slow demo-slow">
-                    Tämä kestää tavallista kauemmin. Pidä tämä sivu auki.</span
+                    This is taking longer than usual. Keep this page open.</span
                   ></span
                 >
               </p>
@@ -1663,9 +1679,9 @@
               <h3>Toast: job in progress</h3>
               <div class="kv-alert kv-alert--info kv-toast">
                 <span class="kv-spinner kv-alert-icon" aria-hidden="true"></span>
-                <p class="kv-alert-title">Exporterar 1 240 ärenden.</p>
+                <p class="kv-alert-title">Exporting 1,240 cases.</p>
                 <p class="kv-alert-body">
-                  Du kan fortsätta arbeta. Filen visas här när den är klar.
+                  You can keep working. The file appears here when it is ready.
                 </p>
               </div>
               <p class="cap">

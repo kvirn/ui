@@ -22,7 +22,7 @@ export type ListItemProps = ComponentPropsWithRef<'li'>
  *
  * @example
  * <List.Root>
- *   <List.Item><Link.Root href="/bygglov">Bygglov</Link.Root></List.Item>
+ *   <List.Item><Link.Root href="/building-permit">Building permit</Link.Root></List.Item>
  *   <List.Item><Link.Root href="/avfall">Avfall</Link.Root></List.Item>
  * </List.Root>
  */

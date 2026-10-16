@@ -59,12 +59,12 @@ const FieldsetContext = createContext<FieldsetContextValue | null>(null)
  *
  * @example
  * <Fieldset.Root group invalid={errors.contact !== undefined}>
- *   <Fieldset.Legend>Hur vill du bli kontaktad?</Fieldset.Legend>
+ *   <Fieldset.Legend>How would you like to be contacted?</Fieldset.Legend>
  *   <Fieldset.Prose>
- *     <p>Välj alla som passar. Vi kontaktar dig bara om beslutet.</p>
+ *     <p>Choose all that apply. We only contact you about the decision.</p>
  *   </Fieldset.Prose>
  *   …
- *   <Fieldset.HelpText>Du kan ändra dig senare under Mina sidor.</Fieldset.HelpText>
+ *   <Fieldset.HelpText>You can change your mind later under My pages.</Fieldset.HelpText>
  *   <Fieldset.ErrorMessage>{errors.contact}</Fieldset.ErrorMessage>
  * </Fieldset.Root>
  */

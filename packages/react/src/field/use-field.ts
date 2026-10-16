@@ -113,11 +113,11 @@ export interface UseFieldResult {
   /** The resolved marker: the option, else `'none'` in a group fieldset, else `'optional'`. */
   marker: FieldMarker
   /**
-   * The text to render in the label after a space, for example `(valfritt)`, or `undefined`
+   * The text to render in the label after a space, for example `(optional)`, or `undefined`
    * when the label shows none: the field is required, or the marker is `'none'`.
    */
   optionalMarker: string | undefined
-  /** The resolved `field.errorPrefix` text, for example `Fel:`. Start the message with it. */
+  /** The resolved `field.errorPrefix` text, for example `Error:`. Start the message with it. */
   errorPrefix: string
 }
 
@@ -134,11 +134,11 @@ export interface UseFieldResult {
  * @example
  * const field = useField({ invalid, required, descriptions: ['above', 'under'] })
  * <div {...field.rootProps}>
- *   <label {...field.labelProps}>Registreringsnummer</label>
- *   <p {...field.getDescriptionProps('above')}>Det står på registreringsbeviset.</p>
+ *   <label {...field.labelProps}>Registration-number</label>
+ *   <p {...field.getDescriptionProps('above')}>It is on the registration certificate.</p>
  *   <input {...field.controlProps} />
- *   <p {...field.getDescriptionProps('under')}>Till exempel ABC 123</p>
- *   {invalid ? <p {...field.errorMessageProps}>{field.errorPrefix} Ange numret</p> : null}
+ *   <p {...field.getDescriptionProps('under')}>For example ABC 123</p>
+ *   {invalid ? <p {...field.errorMessageProps}>{field.errorPrefix} Enter number</p> : null}
  * </div>
  */
 export function useField({

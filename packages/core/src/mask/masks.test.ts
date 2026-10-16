@@ -1,3 +1,4 @@
+// kv-lang-ok-file: letter-set tests need å, ä, ö and ø
 import { describe, expect, it } from 'vite-plus/test'
 import { masks } from './masks.ts'
 import { insert, remove, showCaret } from './mask-test-support.ts'

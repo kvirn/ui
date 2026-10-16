@@ -24,7 +24,7 @@ export type BadgeProps = AsTag<(typeof badgeTags)[number], 'span', BadgeOwnProps
  * not a Tab stop and announces nothing. For something that acts, use a Button.
  *
  * @example
- * <Badge variant="success">Beviljad</Badge>
+ * <Badge variant="success">Granted</Badge>
  */
 export function Badge({ variant = 'neutral', as, ref, ...otherProps }: BadgeProps): ReactElement {
   const badge = useBadge({ variant })

@@ -38,44 +38,44 @@ const scriptAddress = ['javascript', ':alert(1)'].join('')
 
 describe('headings', () => {
   test('are levels 2 and 3: the page owns the H1, and H1 and H4 become paragraphs', () => {
-    const editor = create('<h1>Ett</h1><h2>Två</h2><h3>Tre</h3><h4>Fyra</h4>')
+    const editor = create('<h1>One</h1><h2>Two</h2><h3>Three</h3><h4>Four</h4>')
     const html = editor.getHTML()
-    expect(html).toContain('<h2>Två</h2>')
-    expect(html).toContain('<h3>Tre</h3>')
+    expect(html).toContain('<h2>Two</h2>')
+    expect(html).toContain('<h3>Three</h3>')
     expect(html).not.toContain('<h1')
     expect(html).not.toContain('<h4')
   })
 
   test('the configured levels decide which headings exist', () => {
-    const editor = create('<h4>Fyra</h4>', { heading: { levels: [2, 3, 4] } })
-    expect(editor.getHTML()).toContain('<h4>Fyra</h4>')
+    const editor = create('<h4>Four</h4>', { heading: { levels: [2, 3, 4] } })
+    expect(editor.getHTML()).toContain('<h4>Four</h4>')
   })
 
   test('heading: false leaves headings out', () => {
-    const editor = create('<h2>Två</h2>', { heading: false })
+    const editor = create('<h2>Two</h2>', { heading: false })
     expect(editor.getHTML()).not.toContain('<h2')
   })
 })
 
 describe('links', () => {
   test('only https, http, mailto, tel and relative addresses can be set', () => {
-    const editor = create('<p>Ansök här</p>')
+    const editor = create('<p>Apply here</p>')
     editor.commands.selectAll()
     const allowed = [
-      'https://exempel.se/ansok',
-      'http://exempel.se',
-      'mailto:kontakt@exempel.se',
+      'https://example.se/ansok',
+      'http://example.se',
+      'mailto:contact@example.se',
       'tel:+46701234567',
       '/hjalp',
       './hjalp',
-      '#kontakt',
+      '#contact',
     ]
     const refused = [
       scriptAddress,
       // A tab inside the scheme is ignored by browsers, so it is no way around the check.
       ['java', 'script:alert(1)'].join('\t'),
       'data:text/html,<p>x</p>',
-      'ftp://exempel.se/fil',
+      'ftp://example.se/fil',
       'vbscript:x',
     ]
     // One comparison of address to result, so a failure names the address.
@@ -89,40 +89,40 @@ describe('links', () => {
   })
 
   test('a link has no target: the reader decides where it opens', () => {
-    const editor = create('<p>Ansök här</p>')
+    const editor = create('<p>Apply here</p>')
     editor.commands.selectAll()
-    editor.commands.setLink({ href: 'https://exempel.se/ansok' })
+    editor.commands.setLink({ href: 'https://example.se/ansok' })
     const html = editor.getHTML()
-    expect(html).toContain('<a href="https://exempel.se/ansok">')
+    expect(html).toContain('<a href="https://example.se/ansok">')
     expect(html).not.toContain('target')
   })
 
   test('a stored link with an address that isn’t allowed is dropped, and the text stays', () => {
     const editor = create(
-      '<p><a href="ftp://exempel.se/fil">Filen</a> och <a href="https://exempel.se">sidan</a></p>',
+      '<p><a href="ftp://example.se/fil">File</a> and <a href="https://example.se">page</a></p>',
     )
     const html = editor.getHTML()
     expect(html).not.toContain('ftp:')
-    expect(html).toContain('Filen')
-    expect(html).toContain('href="https://exempel.se"')
+    expect(html).toContain('File')
+    expect(html).toContain('href="https://example.se"')
   })
 
   test('a click on a link only puts the caret in it (the Link control edits it)', () => {
-    const editor = create('<p><a href="https://exempel.se">sidan</a></p>')
+    const editor = create('<p><a href="https://example.se">page</a></p>')
     const link = editor.extensionManager.extensions.find((extension) => extension.name === 'link')
     expect(link?.options.openOnClick).toBe(false)
   })
 
   test('isAllowedLinkAddress follows the same rule, and extra protocols widen it', () => {
-    expect(isAllowedLinkAddress('https://exempel.se')).toBe(true)
+    expect(isAllowedLinkAddress('https://example.se')).toBe(true)
     expect(isAllowedLinkAddress('/relativ')).toBe(true)
     expect(isAllowedLinkAddress(scriptAddress)).toBe(false)
-    expect(isAllowedLinkAddress('ftp://exempel.se')).toBe(false)
-    expect(isAllowedLinkAddress('ftp://exempel.se', ['https', 'ftp'])).toBe(true)
+    expect(isAllowedLinkAddress('ftp://example.se')).toBe(false)
+    expect(isAllowedLinkAddress('ftp://example.se', ['https', 'ftp'])).toBe(true)
   })
 
   test('link: false leaves links out', () => {
-    const editor = create('<p><a href="https://exempel.se">sidan</a></p>', { link: false })
+    const editor = create('<p><a href="https://example.se">page</a></p>', { link: false })
     expect(editor.getHTML()).not.toContain('<a ')
   })
 })
@@ -153,14 +153,14 @@ describe('images', () => {
     // starts from a fresh document, because an inserted image stays selected and the next one
     // would replace it.
     const sources = () => imageAddresses(editor)
-    expect(editor.commands.setImage({ src: '/bilder/karta.png', alt: 'Karta' })).toBe(true)
-    expect(sources()).toEqual(['/bilder/karta.png'])
+    expect(editor.commands.setImage({ src: '/images/map.png', alt: 'Map' })).toBe(true)
+    expect(sources()).toEqual(['/images/map.png'])
     editor.commands.setContent('<p></p>')
-    const sameOrigin = `${location.origin}/bilder/plan.png`
+    const sameOrigin = `${location.origin}/images/plan.png`
     expect(editor.commands.setImage({ src: sameOrigin, alt: 'Plan' })).toBe(true)
     expect(sources()).toEqual([sameOrigin])
     editor.commands.setContent('<p></p>')
-    expect(editor.commands.setImage({ src: 'https://annan.example/bild.png', alt: 'Bild' })).toBe(
+    expect(editor.commands.setImage({ src: 'https://other.example/image.png', alt: 'Image' })).toBe(
       false,
     )
     expect(sources()).toEqual([])
@@ -171,10 +171,10 @@ describe('images', () => {
     expect(allowed.commands.setImage({ src: 'https://bilder.example.se/a.png', alt: 'A' })).toBe(
       true,
     )
-    expect(allowed.commands.setImage({ src: 'https://annan.example/a.png', alt: 'A' })).toBe(false)
+    expect(allowed.commands.setImage({ src: 'https://other.example/a.png', alt: 'A' })).toBe(false)
     fixture?.destroy()
     const any = create('<p></p>', { imageSources: ['*'] })
-    expect(any.commands.setImage({ src: 'https://annan.example/a.png', alt: 'A' })).toBe(true)
+    expect(any.commands.setImage({ src: 'https://other.example/a.png', alt: 'A' })).toBe(true)
   })
 
   test('base64 and script addresses are never images', () => {
@@ -185,10 +185,10 @@ describe('images', () => {
 
   test('a stored or pasted image from another origin is dropped, and the others stay', () => {
     const editor = create(
-      '<p>Text</p><img src="https://annan.example/a.png" alt="Borta"><img src="/b.png" alt="Kvar">',
+      '<p>Text</p><img src="https://other.example/a.png" alt="Gone"><img src="/b.png" alt="Kept">',
     )
     const html = editor.getHTML()
-    expect(html).not.toContain('annan.example')
+    expect(html).not.toContain('other.example')
     expect(html).toContain('src="/b.png"')
   })
 
@@ -199,18 +199,18 @@ describe('images', () => {
   })
 
   test('image: false leaves images out', () => {
-    const editor = create('<img src="/b.png" alt="Kvar">', { image: false })
+    const editor = create('<img src="/b.png" alt="Kept">', { image: false })
     expect(editor.getHTML()).not.toContain('<img')
   })
 
   test('isAllowedImageSource: relative and same-origin pass, anything else is refused', () => {
     const baseUrl = 'https://kommun.example/sida/'
-    expect(isAllowedImageSource('bild.png', { baseUrl })).toBe(true)
-    expect(isAllowedImageSource('/bild.png', { baseUrl })).toBe(true)
-    expect(isAllowedImageSource('https://kommun.example/bild.png', { baseUrl })).toBe(true)
-    expect(isAllowedImageSource('https://cdn.example/bild.png', { baseUrl })).toBe(false)
+    expect(isAllowedImageSource('image.png', { baseUrl })).toBe(true)
+    expect(isAllowedImageSource('/image.png', { baseUrl })).toBe(true)
+    expect(isAllowedImageSource('https://kommun.example/image.png', { baseUrl })).toBe(true)
+    expect(isAllowedImageSource('https://cdn.example/image.png', { baseUrl })).toBe(false)
     // A protocol-relative address names its own origin.
-    expect(isAllowedImageSource('//cdn.example/bild.png', { baseUrl })).toBe(false)
+    expect(isAllowedImageSource('//cdn.example/image.png', { baseUrl })).toBe(false)
     expect(isAllowedImageSource('blob:https://kommun.example/uuid', { baseUrl })).toBe(false)
     expect(isAllowedImageSource('data:image/png;base64,AAAA', { baseUrl })).toBe(false)
     expect(isAllowedImageSource('data:image/png;base64,AAAA', { baseUrl, allowBase64: true })).toBe(
@@ -219,7 +219,7 @@ describe('images', () => {
     expect(isAllowedImageSource('', { baseUrl })).toBe(false)
     expect(isAllowedImageSource(undefined, { baseUrl })).toBe(false)
     expect(
-      isAllowedImageSource('https://cdn.example/bild.png', {
+      isAllowedImageSource('https://cdn.example/image.png', {
         baseUrl,
         sources: ['https://cdn.example'],
       }),
@@ -231,16 +231,16 @@ describe('typing rules', () => {
   test('are off: ## and a space stay as typed, which a screen reader user would not be told about', async () => {
     const editor = create('<p></p>')
     focusEnd(editor)
-    await userEvent.keyboard('## Rubrik')
-    expect(editor.getHTML()).toBe('<p>## Rubrik</p>')
+    await userEvent.keyboard('## Heading')
+    expect(editor.getHTML()).toBe('<p>## Heading</p>')
   })
 
   test('inputRules: true turns them on', async () => {
     const editor = create('<p></p>', { inputRules: true })
     focusEnd(editor)
-    await userEvent.keyboard('## Rubrik')
+    await userEvent.keyboard('## Heading')
     // Tiptap's TrailingNode adds an empty paragraph after a heading, so the caret has somewhere to go.
-    expect(editor.getHTML()).toBe('<h2>Rubrik</h2><p></p>')
+    expect(editor.getHTML()).toBe('<h2>Heading</h2><p></p>')
   })
 })
 

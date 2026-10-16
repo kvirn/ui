@@ -25,7 +25,7 @@
 | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Combobox `multiple` (`combobox.a11y.md:27`, `theme.css` `kv-combobox-value*`, `use-combobox.ts:809`) | `<ul role="list">` of chips; `Remove {label}`; focus to next, else previous, else fallback; Backspace removes nothing | The whole chip becomes the button (resolves `combobox.md` m4: users pressing the text get nothing). The focus logic is extracted, not copied                     |
 | APG [Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/)                                       | Native buttons, Enter and Space                                                                                       | APG has no chip or tag pattern; we invent no keys (no Delete/Backspace)                                                                                          |
-| Designsystemet [Chip](https://designsystemet.no/en/components/docs/chip/overview)                    | Removable chip as one button named "Slett Norge"; Checkbox chips for filters; a "clear all" button                    | We keep the checkbox box visible in the chip look, so selection isn't fill alone                                                                                 |
+| Designsystemet [Chip](https://designsystemet.no/en/components/docs/chip/overview)                    | Removable chip as one button named "Slett Norge"; Checkbox chips for filters; a "clear all" button                    | We keep the checkbox box visible in the chip look, so selection isn't fill alone                                                                                 | <!-- kv-lang-ok: Slett Norge is the Norwegian label of a quoted design system --> |
 | MOJ [Filter](https://design-patterns.service.justice.gov.uk/components/filter/)                      | "Selected filters" as tags above the results, "Clear filters", an Apply button                                        | Their Apply button sits above the options (a keyboard problem they document). Ours: results update in place with JS; the no-JS submit sits after the last option |
 
 ## 3. Decisions
@@ -75,7 +75,7 @@ Unhappy paths: **no results** → `filters.noResults` + `filters.noResultsHint`,
 | `filters.loadFailed`                                                | `The results couldn’t be updated.`                                 |                                                                                   |
 | `filters.retry`                                                     | `Try again`                                                        |                                                                                   |
 
-Length: Finnish compounds ("Käytössä olevat suodattimet") wrap; tags hyphenate and `overflow-wrap: anywhere`.
+Length: Finnish compounds ("Käytössä olevat suodattimet") wrap; tags hyphenate and `overflow-wrap: anywhere`. <!-- kv-lang-ok: a Finnish compound is the wrapping test case -->
 
 ## 6. Structure
 

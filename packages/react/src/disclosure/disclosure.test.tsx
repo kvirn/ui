@@ -26,27 +26,27 @@ afterEach(() => {
 function Example(rootProps: DisclosureRootProps) {
   return (
     <>
-      <button type="button">Före</button>
+      <button type="button">Before</button>
       {/* Space around the controls, so the axe target-size rule has room without the theme. */}
       <div style={{ padding: 24 }}>
         <Disclosure.Root {...rootProps}>
-          <Disclosure.Trigger>Öppettider</Disclosure.Trigger>
+          <Disclosure.Trigger>Opening hours</Disclosure.Trigger>
           <Disclosure.Panel>
-            <a href="/kontakt" style={{ display: 'inline-block', padding: 8 }}>
-              Kontakta oss
+            <a href="/contact" style={{ display: 'inline-block', padding: 8 }}>
+              Contact us
             </a>
           </Disclosure.Panel>
         </Disclosure.Root>
       </div>
-      <button type="button">Efter</button>
+      <button type="button">After</button>
     </>
   )
 }
 
-const trigger = () => page.getByRole('button', { name: 'Öppettider', exact: true })
+const trigger = () => page.getByRole('button', { name: 'Opening hours', exact: true })
 const triggerElement = () => trigger().element()
 const panelElement = () => document.querySelector<HTMLElement>('.kv-disclosure-panel')
-const link = () => page.getByRole('link', { name: 'Kontakta oss', includeHidden: true })
+const link = () => page.getByRole('link', { name: 'Contact us', includeHidden: true })
 
 describe('rendering', () => {
   test('a closed disclosure: the trigger is wired to a hidden panel', async () => {
@@ -83,7 +83,7 @@ describe('rendering', () => {
     expect(triggerElement().querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
     await userEvent.click(trigger())
     expect(iconPath()).not.toBe(closedPath)
-    expect(trigger().element().textContent).toBe('Öppettider')
+    expect(trigger().element().textContent).toBe('Opening hours')
   })
 
   test('forwards refs, className and native props, and merges them with its own', async () => {
@@ -92,7 +92,7 @@ describe('rendering', () => {
     await render(
       <Disclosure.Root>
         <Disclosure.Trigger ref={triggerRef} className="egen" data-egen="trigger">
-          Öppettider
+          Opening hours
         </Disclosure.Trigger>
         <Disclosure.Panel ref={panelRef} className="egen" data-egen="panel">
           Text
@@ -112,7 +112,7 @@ describe('rendering', () => {
       const disclosure = useDisclosure()
       return (
         <>
-          <button {...disclosure.triggerProps}>Öppettider</button>
+          <button {...disclosure.triggerProps}>Opening hours</button>
           <div {...disclosure.panelProps}>Text</div>
         </>
       )
@@ -142,7 +142,7 @@ describe('opening and closing', () => {
     await expect.element(trigger()).toBeInTheDocument()
     await userEvent.click(trigger())
     expect(triggerElement().getAttribute('aria-expanded')).toBe('false')
-    expect(triggerElement().textContent).toBe('Öppettider')
+    expect(triggerElement().textContent).toBe('Opening hours')
   })
 
   test('a press on the trigger opens the panel, then closes it', async () => {
@@ -187,18 +187,18 @@ describe('opening and closing', () => {
 
   test('Tab focuses the trigger, and is one stop', async () => {
     await render(<Example />)
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     await userEvent.tab()
     await expect.element(trigger()).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('Shift+Tab leaves the trigger backwards', async () => {
     await render(<Example />)
     triggerElement().focus()
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('Tab goes from the trigger into an open panel', async () => {
@@ -207,7 +207,7 @@ describe('opening and closing', () => {
     await userEvent.tab()
     await expect.element(link()).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     await userEvent.tab({ shift: true })
     await expect.element(link()).toHaveFocus()
     await userEvent.tab({ shift: true })
@@ -218,7 +218,7 @@ describe('opening and closing', () => {
     await render(<Example />)
     triggerElement().focus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 })
 
@@ -227,9 +227,9 @@ describe('disabled', () => {
     const onOpenChange = vi.fn<(open: boolean, details: DisclosureChangeDetails) => void>()
     await render(<Example disabled onOpenChange={onOpenChange} />)
     expect(triggerElement().hasAttribute('disabled')).toBe(true)
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     expect(onOpenChange).not.toHaveBeenCalled()
     expect(triggerElement().getAttribute('aria-expanded')).toBe('false')
   })
@@ -239,7 +239,7 @@ describe('disabled', () => {
     const onClick = vi.fn<() => void>()
     await render(
       <Disclosure.Root disabled focusableWhenDisabled onOpenChange={onOpenChange}>
-        <Disclosure.Trigger onClick={onClick}>Öppettider</Disclosure.Trigger>
+        <Disclosure.Trigger onClick={onClick}>Opening hours</Disclosure.Trigger>
         <Disclosure.Panel>Text</Disclosure.Panel>
       </Disclosure.Root>,
     )
@@ -325,7 +325,7 @@ describe('developer warnings', () => {
   test('a Trigger and a Panel outside a Root warn once each', async () => {
     await render(
       <>
-        <Disclosure.Trigger>Öppettider</Disclosure.Trigger>
+        <Disclosure.Trigger>Opening hours</Disclosure.Trigger>
         <Disclosure.Panel>Text</Disclosure.Panel>
       </>,
     )

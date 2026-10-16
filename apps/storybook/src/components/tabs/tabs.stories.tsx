@@ -33,20 +33,20 @@ const meta = {
   title: 'Components/Navigation/Tabs',
   component: Tabs.Root,
   // Every option at its default, so the main example starts where an adopter starts.
-  args: { defaultValue: 'uppgifter', activationMode: 'automatic', orientation: 'horizontal' },
+  args: { defaultValue: 'details', activationMode: 'automatic', orientation: 'horizontal' },
   // Every prop of Tabs.Root in tabs.tsx and use-tabs.ts. Any other `<div>` prop passes through.
   // The props of the other parts (`value`, `disabled` and `onClick` on a Tab, `value` and `tabIndex`
   // on a Panel, the name of the List) are in the API section below.
   argTypes: {
     defaultValue: {
       control: 'select',
-      options: ['uppgifter', 'handlingar', 'historik'],
+      options: ['details', 'documents', 'history'],
       description:
         'Uncontrolled: the value of the tab that is selected to begin with. One of `defaultValue` and `value` is required: there is no first-tab fallback.',
     },
     value: {
       control: 'select',
-      options: [undefined, 'uppgifter', 'handlingar', 'historik'],
+      options: [undefined, 'details', 'documents', 'history'],
       description:
         'Controlled: the value of the selected tab. Pair it with `onValueChange`: with only a control here, a click selects nothing until you change the control (see Controlled).',
     },
@@ -74,7 +74,7 @@ const meta = {
     },
     ref: { control: false, description: 'The root’s `<div>`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof Tabs.Root>
 
@@ -89,33 +89,35 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: (args) => (
     <Tabs.Root {...args}>
-      <Tabs.List aria-label="Ärendet">
-        <Tabs.Tab value="uppgifter">Uppgifter</Tabs.Tab>
-        <Tabs.Tab value="handlingar">Handlingar</Tabs.Tab>
-        <Tabs.Tab value="historik">Historik</Tabs.Tab>
+      <Tabs.List aria-label="Case">
+        <Tabs.Tab value="details">Details</Tabs.Tab>
+        <Tabs.Tab value="documents">Documents</Tabs.Tab>
+        <Tabs.Tab value="history">History</Tabs.Tab>
       </Tabs.List>
-      <Tabs.Panel value="uppgifter">
-        <p>Ansökan om bygglov för Strandvägen 4. Ärendet väntar på granskning.</p>
+      <Tabs.Panel value="details">
+        <p>Building permit application for 4 Strand Road. The case awaits review.</p>
       </Tabs.Panel>
-      <Tabs.Panel value="handlingar">
-        <p>Ritningar, situationsplan och kontrollplan har kommit in.</p>
+      <Tabs.Panel value="documents">
+        <p>Drawings, a site plan and a control plan have arrived.</p>
       </Tabs.Panel>
-      <Tabs.Panel value="historik">
-        <p>Ansökan kom in den 2 september. Komplettering begärdes den 9 september.</p>
+      <Tabs.Panel value="history">
+        <p>
+          The application arrived on 2 September. More information was requested on 9 September.
+        </p>
       </Tabs.Panel>
     </Tabs.Root>
   ),
   play: async ({ canvas }) => {
-    const list = canvas.getByRole('tablist', { name: 'Ärendet' })
+    const list = canvas.getByRole('tablist', { name: 'Case' })
     await expect(list).not.toHaveAttribute('aria-orientation')
     const tabs = canvas.getAllByRole('tab')
     await expect(tabs).toHaveLength(3)
-    await expect(canvas.getByRole('tab', { name: 'Uppgifter' })).toHaveAttribute(
+    await expect(canvas.getByRole('tab', { name: 'Details' })).toHaveAttribute(
       'aria-selected',
       'true',
     )
     await expectAnimationsSettled()
-    await expect(canvas.getByRole('tabpanel', { name: 'Uppgifter' })).toBeVisible()
+    await expect(canvas.getByRole('tabpanel', { name: 'Details' })).toBeVisible()
     // One Tab stop: the selected tab has tabindex 0 and the others -1.
     await expect(list.querySelectorAll('[tabindex="0"]')).toHaveLength(1)
     for (const tab of tabs) {
@@ -127,24 +129,24 @@ export const Default: Story = {
 /**
  * The fixture the keyboard tests drive: a button before, four tabs and a button after. Try the
  * keys in the Keyboard section above: Tab enters at the selected tab and the next Tab leaves for
- * its panel, the arrows move and wrap, and Home and End go to the ends. Historik is disabled: the
- * arrows reach it and never select it. The panel of Handlingar starts with a link, so it sets
+ * its panel, the arrows move and wrap, and Home and End go to the ends. History is disabled: the
+ * arrows reach it and never select it. The panel of Documents starts with a link, so it sets
  * `tabIndex={-1}`.
  */
 export const Keyboard: Story = {
   parameters: showSource('tabs/tabs.fixture.tsx', 'FilingTabs'),
-  render: () => <FilingTabs locale="sv" />,
+  render: () => <FilingTabs locale="en" />,
   play: async ({ canvas, canvasElement }) => {
-    const list = canvas.getByRole('tablist', { name: 'Ärendet' })
+    const list = canvas.getByRole('tablist', { name: 'Case' })
     await expect(list.querySelectorAll('[tabindex="0"]')).toHaveLength(1)
-    await expect(canvas.getByRole('tab', { name: 'Historik' })).toHaveAttribute(
+    await expect(canvas.getByRole('tab', { name: 'History' })).toHaveAttribute(
       'aria-disabled',
       'true',
     )
     // The panel with a link first leaves the Tab stop to the link. A hidden panel has no
     // accessible name to query, so find it through its tab's `aria-controls`.
     const documentsPanelId = canvas
-      .getByRole('tab', { name: 'Handlingar' })
+      .getByRole('tab', { name: 'Documents' })
       .getAttribute('aria-controls')
     await expect(canvasElement.querySelector(`[id="${documentsPanelId}"]`)).toHaveAttribute(
       'tabindex',
@@ -161,7 +163,7 @@ export const Manual: Story = {
   parameters: showSource('tabs/tabs.fixture.tsx', 'ReviewTabs'),
   render: () => <ReviewTabs />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('tab', { name: 'Handlingar' })).toHaveAttribute(
+    await expect(canvas.getByRole('tab', { name: 'Documents' })).toHaveAttribute(
       'aria-selected',
       'true',
     )
@@ -177,7 +179,7 @@ export const Vertical: Story = {
   parameters: showSource('tabs/tabs.fixture.tsx', 'SettingsTabs'),
   render: () => <SettingsTabs />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('tablist', { name: 'Inställningar' })).toHaveAttribute(
+    await expect(canvas.getByRole('tablist', { name: 'Settings' })).toHaveAttribute(
       'aria-orientation',
       'vertical',
     )
@@ -192,11 +194,11 @@ export const DisabledTab: Story = {
   parameters: showSource('tabs/tabs.fixture.tsx', 'ApplicationTabs'),
   render: () => <ApplicationTabs />,
   play: async ({ canvas }) => {
-    const decision = canvas.getByRole('tab', { name: 'Beslut' })
+    const decision = canvas.getByRole('tab', { name: 'Decision' })
     await expect(decision).toHaveAttribute('aria-disabled', 'true')
     await expect(decision).not.toHaveAttribute('disabled')
     await expect(decision).toHaveAccessibleDescription(
-      'Fliken Beslut öppnas när nämnden har fattat sitt beslut.',
+      'The Decision tab opens when the board has made its decision.',
     )
   },
 }
@@ -210,9 +212,9 @@ export const Controlled: Story = {
   parameters: showSource('tabs/tabs.fixture.tsx', 'ControlledTabs'),
   render: () => <ControlledTabs />,
   play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole('tab', { name: 'Handlingar' }))
-    await expect(canvas.getByText('Vald flik: handlingar. Senaste orsak: press.')).toBeVisible()
-    await expect(canvas.getByRole('tab', { name: 'Handlingar' })).toHaveAttribute(
+    await userEvent.click(canvas.getByRole('tab', { name: 'Documents' }))
+    await expect(canvas.getByText('Selected tab: documents. Last reason: press.')).toBeVisible()
+    await expect(canvas.getByRole('tab', { name: 'Documents' })).toHaveAttribute(
       'aria-selected',
       'true',
     )
@@ -254,7 +256,7 @@ export const InACard: Story = {
   parameters: showSource('tabs/tabs.fixture.tsx', 'CardTabs'),
   render: () => <CardTabs />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('tablist', { name: 'Ärendet' })).toBeVisible()
+    await expect(canvas.getByRole('tablist', { name: 'Case' })).toBeVisible()
   },
 }
 

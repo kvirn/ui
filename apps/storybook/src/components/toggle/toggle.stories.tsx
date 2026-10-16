@@ -11,23 +11,24 @@ import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-st
 // toggle.a11y.md).
 
 /** Fixture text. Stories set `locale` to match it, so `lang` matches the content (3.1.2). */
-const sv = {
-  unread: 'Visa bara olästa',
-  showPassword: 'Visa lösenord',
-  map: 'Visa karta',
-  before: 'Före',
-  after: 'Efter',
-  pressedCount: 'Antal ändringar',
+const text = {
+  unread: 'Show only unread',
+  showPassword: 'Show password',
+  map: 'Show map',
+  before: 'Before',
+  after: 'After',
+  pressedCount: 'Number of changes',
   states: {
-    off: 'Av',
-    on: 'På',
-    disabledOff: 'Inaktiverad, av',
-    disabledOn: 'Inaktiverad, på',
-    focusableDisabledOn: 'Inaktiverad men fokuserbar, på',
+    off: 'Off',
+    on: 'On',
+    disabledOff: 'Disabled, off',
+    disabledOn: 'Disabled, on',
+    focusableDisabledOn: 'Disabled but focusable, on',
   },
-  surfaces: { canvas: 'På sidan', section: 'På en yta', card: 'På ett kort' },
-  cardTitle: 'Meddelanden',
+  surfaces: { canvas: 'On the page', section: 'On a surface', card: 'On a card' },
+  cardTitle: 'Messages',
 }
+// kv-lang-ok: Finnish locale story: a long label
 const fiLong = 'Näytä vain ne rakennuslupahakemukset, jotka odottavat käsittelyä'
 
 const meta = {
@@ -35,7 +36,7 @@ const meta = {
   component: Toggle,
   // Every option at its default, so the main example starts where an adopter starts.
   args: {
-    children: sv.unread,
+    children: text.unread,
     defaultPressed: false,
     disabled: false,
     focusableWhenDisabled: false,
@@ -85,7 +86,7 @@ const meta = {
     children: { control: 'text', description: 'The visible label, which is the name.' },
     ref: { control: false, description: 'A ref to the `<button>`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
@@ -101,7 +102,7 @@ type Story = StoryObj<typeof meta>
  */
 export const Default: Story = {
   play: async ({ canvas }) => {
-    const toggle = canvas.getByRole('button', { name: sv.unread })
+    const toggle = canvas.getByRole('button', { name: text.unread })
     await expect(toggle).toHaveAttribute('type', 'button')
     await expect(toggle).toHaveAttribute('aria-pressed', 'false')
     await expectMinimumTargetSize(toggle)
@@ -112,7 +113,7 @@ export const Default: Story = {
 export const Pressed: Story = {
   args: { defaultPressed: true },
   play: async ({ canvas }) => {
-    const toggle = canvas.getByRole('button', { name: sv.unread })
+    const toggle = canvas.getByRole('button', { name: text.unread })
     await expect(toggle).toHaveAttribute('aria-pressed', 'true')
     await expect(toggle).toHaveAttribute('data-pressed', '')
   },
@@ -125,25 +126,25 @@ function ControlledExample({ label }: { label: string }) {
       <Toggle pressed={isShown} onPressedChange={setIsShown}>
         {label}
       </Toggle>
-      <p>{isShown ? 'Kartan visas.' : 'Kartan är dold.'}</p>
+      <p>{isShown ? 'The map is shown.' : 'The map is hidden.'}</p>
     </>
   )
 }
 
 /**
  * Controlled by your state: the toggle shows the `pressed` it is given and reports each press
- * through `onPressedChange(pressed, { event })`. The label stays the same, "Visa karta", whatever
+ * through `onPressedChange(pressed, { event })`. The label stays the same, "Show map", whatever
  * the state: the screen reader says it is on from `aria-pressed`.
  */
 export const Controlled: Story = {
   parameters: showSource('toggle/toggle.stories.tsx', 'ControlledExample'),
-  render: () => <ControlledExample label={sv.map} />,
+  render: () => <ControlledExample label={text.map} />,
   play: async ({ canvas, userEvent }) => {
-    const toggle = canvas.getByRole('button', { name: sv.map })
+    const toggle = canvas.getByRole('button', { name: text.map })
     await userEvent.click(toggle)
     await waitFor(() => expect(toggle).toHaveAttribute('aria-pressed', 'true'))
-    await expect(canvas.getByText('Kartan visas.')).toBeVisible()
-    await expect(canvas.getByRole('button', { name: sv.map })).toBe(toggle)
+    await expect(canvas.getByText('The map is shown.')).toBeVisible()
+    await expect(canvas.getByRole('button', { name: text.map })).toBe(toggle)
   },
 }
 
@@ -154,16 +155,16 @@ export const Controlled: Story = {
 export const IconOnly: Story = {
   args: {
     className: 'kv-button--icon-only',
-    'aria-label': sv.showPassword,
+    'aria-label': text.showPassword,
     children: <Icon name="eye" />,
   },
   play: async ({ canvas, userEvent }) => {
-    const toggle = canvas.getByRole('button', { name: sv.showPassword })
+    const toggle = canvas.getByRole('button', { name: text.showPassword })
     await expect(toggle.textContent).toBe('')
     await expectMinimumTargetSize(toggle)
     await userEvent.click(toggle)
     await expect(toggle).toHaveAttribute('aria-pressed', 'true')
-    await expect(canvas.getByRole('button', { name: sv.showPassword })).toBe(toggle)
+    await expect(canvas.getByRole('button', { name: text.showPassword })).toBe(toggle)
   },
 }
 
@@ -174,12 +175,12 @@ export const Disabled: Story = {
     <>
       <Toggle {...args} />
       <button type="button" className="kv-button">
-        {sv.after}
+        {text.after}
       </button>
     </>
   ),
   play: async ({ canvas }) => {
-    const toggle = canvas.getByRole('button', { name: sv.unread })
+    const toggle = canvas.getByRole('button', { name: text.unread })
     await expect(toggle).toBeDisabled()
     await expect(toggle).toHaveAttribute('aria-pressed', 'true')
     await expect(toggle).toHaveAttribute('data-disabled', '')
@@ -197,7 +198,7 @@ function PressCounter({
         {children}
       </Toggle>
       <p>
-        {sv.pressedCount}: {changes}
+        {text.pressedCount}: {changes}
       </p>
     </>
   )
@@ -211,9 +212,9 @@ function PressCounter({
 export const FocusableWhenDisabled: Story = {
   parameters: showSource('toggle/toggle.stories.tsx', 'PressCounter'),
   args: { disabled: true, focusableWhenDisabled: true },
-  render: (args) => <PressCounter {...args}>{sv.unread}</PressCounter>,
+  render: (args) => <PressCounter {...args}>{text.unread}</PressCounter>,
   play: async ({ canvas }) => {
-    const toggle = canvas.getByRole('button', { name: sv.unread })
+    const toggle = canvas.getByRole('button', { name: text.unread })
     await expect(toggle).toHaveAttribute('aria-disabled', 'true')
     await expect(toggle).not.toHaveAttribute('disabled')
     await expect(toggle).toHaveAttribute('aria-pressed', 'false')
@@ -229,11 +230,11 @@ export const Keyboard: Story = {
   render: (args) => (
     <>
       <button type="button" className="kv-button">
-        {sv.before}
+        {text.before}
       </button>
-      <PressCounter {...args}>{sv.unread}</PressCounter>
+      <PressCounter {...args}>{text.unread}</PressCounter>
       <button type="button" className="kv-button">
-        {sv.after}
+        {text.after}
       </button>
     </>
   ),
@@ -243,27 +244,27 @@ function Matrix() {
   return (
     <div className="kv-story-states">
       <div className="kv-story-state">
-        <p>{sv.states.off}</p>
-        <Toggle>{sv.unread}</Toggle>
+        <p>{text.states.off}</p>
+        <Toggle>{text.unread}</Toggle>
       </div>
       <div className="kv-story-state">
-        <p>{sv.states.on}</p>
-        <Toggle defaultPressed>{sv.unread}</Toggle>
+        <p>{text.states.on}</p>
+        <Toggle defaultPressed>{text.unread}</Toggle>
       </div>
       <div className="kv-story-state">
-        <p>{sv.states.disabledOff}</p>
-        <Toggle disabled>{sv.unread}</Toggle>
+        <p>{text.states.disabledOff}</p>
+        <Toggle disabled>{text.unread}</Toggle>
       </div>
       <div className="kv-story-state">
-        <p>{sv.states.disabledOn}</p>
+        <p>{text.states.disabledOn}</p>
         <Toggle disabled defaultPressed>
-          {sv.unread}
+          {text.unread}
         </Toggle>
       </div>
       <div className="kv-story-state">
-        <p>{sv.states.focusableDisabledOn}</p>
+        <p>{text.states.focusableDisabledOn}</p>
         <Toggle disabled focusableWhenDisabled defaultPressed>
-          {sv.unread}
+          {text.unread}
         </Toggle>
       </div>
     </div>
@@ -280,23 +281,23 @@ export const States: Story = {
   render: () => (
     <>
       <div className="kv-story-section">
-        <h2>{sv.surfaces.canvas}</h2>
+        <h2>{text.surfaces.canvas}</h2>
         <Matrix />
       </div>
       <Section className="kv-story-section">
-        <h2>{sv.surfaces.section}</h2>
+        <h2>{text.surfaces.section}</h2>
         <Matrix />
       </Section>
       <Card.Root className="kv-story-section">
         <Card.Body>
-          <h2>{sv.surfaces.card}</h2>
+          <h2>{text.surfaces.card}</h2>
           <Matrix />
         </Card.Body>
       </Card.Root>
     </>
   ),
   play: async ({ canvas }) => {
-    const toggles = canvas.getAllByRole('button', { name: sv.unread })
+    const toggles = canvas.getAllByRole('button', { name: text.unread })
     await expect(toggles).toHaveLength(15)
     await expect(toggles.filter((toggle) => toggle.hasAttribute('data-pressed'))).toHaveLength(9)
     await expect(toggles.filter((toggle) => toggle.hasAttribute('data-disabled'))).toHaveLength(9)

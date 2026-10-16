@@ -44,16 +44,16 @@
 
 The docs catalog (`apps/docs/messages/en.ts`) is English-only by decision (docs-site.md §4). sv, fi, nb, nn below are agent-written proposals for when the site is translated (Q5); native review `pending`.
 
-| Key (`docs.header.*`)     | en                                  | sv                 | fi (longest)            | nb / nn                             | Notes                                              |
-| ------------------------- | ----------------------------------- | ------------------ | ----------------------- | ----------------------------------- | -------------------------------------------------- |
-| `toolsLabel` **new**      | Tools                               | Verktyg            | Työkalut                | Verktøy / Verktøy                   | Top-bar `nav` name: "Tools, navigation"            |
-| `navLabel` (exists)       | Site                                | Webbplats          | Sivusto                 | Nettsted / Nettstad                 | Bottom-band `nav` name                             |
-| `latest` **new**          | `({ status }) => Latest: ${status}` | Senaste: ${status} | Uusin versio: ${status} | Siste: ${status} / Siste: ${status} | One link; name = visible text                      |
-| `status` (exists)         | Pre-alpha                           | Pre-alfa           | Esialfa                 | Pre-alfa / Pre-alfa                 | Reused by `latest` and the Badge                   |
-| `tools.docs` **new**      | Documentation                       | Dokumentation      | Dokumentaatio           | Dokumentasjon / Dokumentasjon       | → `/`; not "Docs", which is a section (Q2)         |
-| `tools.storybook` **new** | Storybook                           | Storybook          | Storybook               | Storybook                           | Only with a deployed URL (Q3)                      |
-| `tools.github` **new**    | GitHub                              | GitHub             | GitHub                  | GitHub                              | → `https://github.com/kvirn/ui`, `target="_blank"` |
-| `home` (exists)           | KvirnUI                             | –                  | –                       | –                                   | Brand link; the mark is decorative                 |
+| Key (`docs.header.*`)     | en                                  | sv                 | fi (longest)            | nb / nn                             | Notes                                                                                                                      |
+| ------------------------- | ----------------------------------- | ------------------ | ----------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `toolsLabel` **new**      | Tools                               | Verktyg            | Työkalut                | Verktøy / Verktøy                   | Top-bar `nav` name: "Tools, navigation" <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `navLabel` (exists)       | Site                                | Webbplats          | Sivusto                 | Nettsted / Nettstad                 | Bottom-band `nav` name                                                                                                     |
+| `latest` **new**          | `({ status }) => Latest: ${status}` | Senaste: ${status} | Uusin versio: ${status} | Siste: ${status} / Siste: ${status} | One link; name = visible text                                                                                              |
+| `status` (exists)         | Pre-alpha                           | Pre-alfa           | Esialfa                 | Pre-alfa / Pre-alfa                 | Reused by `latest` and the Badge                                                                                           |
+| `tools.docs` **new**      | Documentation                       | Dokumentation      | Dokumentaatio           | Dokumentasjon / Dokumentasjon       | → `/`; not "Docs", which is a section (Q2)                                                                                 |
+| `tools.storybook` **new** | Storybook                           | Storybook          | Storybook               | Storybook                           | Only with a deployed URL (Q3)                                                                                              |
+| `tools.github` **new**    | GitHub                              | GitHub             | GitHub                  | GitHub                              | → `https://github.com/kvirn/ui`, `target="_blank"`                                                                         |
+| `home` (exists)           | KvirnUI                             | –                  | –                       | –                                   | Brand link; the mark is decorative                                                                                         |
 
 Reused: `docs.nav.menuButton` "Menu", `docs.display.button` "Display settings", `link.newTabNotice` from `@kvirn-ui/i18n` (all locales). `docs.nav.sections.*` unchanged.
 

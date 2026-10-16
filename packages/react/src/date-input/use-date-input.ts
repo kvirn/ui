@@ -96,7 +96,7 @@ export interface UseDateInputResult {
    * Render the boxes in this order.
    */
   order: readonly DateInputPart[]
-  /** The resolved labels, for example `Dag`, `Månad` and `År`. */
+  /** The resolved labels, for example `Day`, `Month` and `Year`. */
   labels: Readonly<Record<DateInputPart, string>>
   /**
    * The resolved `dateInput.autoAdvanceHint` while `autoAdvance` is on, `undefined` when it is
@@ -131,7 +131,7 @@ const autoCompleteTokens = {
  * @example
  * const dateInput = useDateInput({ name: 'birth', autoComplete: 'bday' })
  * <Fieldset.Root group required>
- *   <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+ *   <Fieldset.Legend>Date of birth</Fieldset.Legend>
  *   <div {...dateInput.rootProps}>
  *     {dateInput.order.map((part) => (
  *       <Field.Root key={part} {...dateInput.getBoxProps(part)}>

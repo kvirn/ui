@@ -47,10 +47,10 @@ function warnOutsideRoot(part: string): void {
  *
  * @example
  * <Popover.Root>
- *   <Popover.Trigger>Om tjänsten</Popover.Trigger>
- *   <Popover.Popup aria-label="Om tjänsten">
- *     <p>Tjänsten drivs av kommunen.</p>
- *     <Popover.Close>Stäng</Popover.Close>
+ *   <Popover.Trigger>About the service</Popover.Trigger>
+ *   <Popover.Popup aria-label="About the service">
+ *     <p>The service is run by the municipality.</p>
+ *     <Popover.Close>Close</Popover.Close>
  *   </Popover.Popup>
  * </Popover.Root>
  */

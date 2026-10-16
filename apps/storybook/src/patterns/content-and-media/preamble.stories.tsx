@@ -1,3 +1,4 @@
+// kv-lang-ok-file: a long Finnish word, a hard case for wrapping
 import { en } from '@kvirn-ui/i18n/en'
 import { Heading, KvirnProvider } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'

@@ -24,13 +24,13 @@ function ReferenceBar({ variant }: UseTopBarOptions) {
       <style>{'a { display: inline-block; min-block-size: 24px; }'}</style>
       <TopBar variant={variant} data-testid="top-bar">
         <p>
-          Kvirnby kommun. <Link.Root href="#senaste">Senaste nytt</Link.Root>
+          Kvirnby kommun. <Link.Root href="#senaste">Latest news</Link.Root>
         </p>
         <Navigation.Root label="Verktyg" className="kv-navigation--horizontal">
           <Navigation.List>
             <Navigation.Item>
               <Link.Root href="#dokumentation" current>
-                Dokumentation
+                Documentation
               </Link.Root>
             </Navigation.Item>
             <Navigation.Item>
@@ -66,7 +66,7 @@ describe('rendering', () => {
     const bar = page.getByTestId('top-bar').element()
     expect(bar.firstElementChild).toBe(page.getByRole('paragraph').element())
     expect(bar.lastElementChild).toBe(page.getByRole('navigation').element())
-    expect(bar.textContent).toBe('Kvirnby kommun. Senaste nyttDokumentationGitHub')
+    expect(bar.textContent).toBe('Kvirnby kommun. Latest newsDocumentationGitHub')
   })
 
   test('forwards its ref and passes attributes through', async () => {
@@ -120,13 +120,13 @@ describe('keyboard', () => {
     return (
       <TopBar variant="primary">
         <p>
-          Kvirnby kommun. <Link.Root href="#senaste">Senaste nytt</Link.Root>
+          Kvirnby kommun. <Link.Root href="#senaste">Latest news</Link.Root>
         </p>
         <Navigation.Root label="Verktyg" className="kv-navigation--horizontal">
           <Navigation.List>
             <Navigation.Item>
               <Link.Root href="#dokumentation" current>
-                Dokumentation
+                Documentation
               </Link.Root>
             </Navigation.Item>
             <Navigation.Item>
@@ -135,20 +135,20 @@ describe('keyboard', () => {
           </Navigation.List>
         </Navigation.Root>
         <Button className="kv-button--link" onClick={onActivate}>
-          Visningsinställningar
+          Display settings
         </Button>
       </TopBar>
     )
   }
 
-  const itemNames = ['Senaste nytt', 'Dokumentation', 'GitHub', 'Visningsinställningar']
+  const itemNames = ['Latest news', 'Documentation', 'GitHub', 'Display settings']
 
   test('Tab moves through the bar items in DOM order', async () => {
     await render(<KeyboardBar />)
     for (const name of itemNames) {
       await userEvent.keyboard('{Tab}')
       await expect
-        .element(page.getByRole(name === 'Visningsinställningar' ? 'button' : 'link', { name }))
+        .element(page.getByRole(name === 'Display settings' ? 'button' : 'link', { name }))
         .toHaveFocus()
     }
   })
@@ -158,7 +158,7 @@ describe('keyboard', () => {
     for (let step = 0; step < itemNames.length; step++) {
       await userEvent.keyboard('{Tab}')
     }
-    await expect.element(page.getByRole('button', { name: 'Visningsinställningar' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Display settings' })).toHaveFocus()
     for (const name of itemNames.toReversed().slice(1)) {
       await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
       await expect.element(page.getByRole('link', { name })).toHaveFocus()
@@ -178,7 +178,7 @@ describe('keyboard', () => {
   test('Enter or Space activates a link-look button', async () => {
     const onActivate = vi.fn<() => void>()
     await render(<KeyboardBar onActivate={onActivate} />)
-    const button = page.getByRole('button', { name: 'Visningsinställningar' })
+    const button = page.getByRole('button', { name: 'Display settings' })
     await userEvent.keyboard('{Tab}{Tab}{Tab}{Tab}')
     await expect.element(button).toHaveFocus()
     await userEvent.keyboard('{Enter}')
@@ -191,7 +191,7 @@ describe('keyboard', () => {
   test('the bar handles no key itself: arrows, Home and End move nothing', async () => {
     await render(<KeyboardBar />)
     await userEvent.keyboard('{Tab}')
-    const first = page.getByRole('link', { name: 'Senaste nytt' })
+    const first = page.getByRole('link', { name: 'Latest news' })
     await expect.element(first).toHaveFocus()
     for (const key of [
       '{ArrowRight}',
@@ -270,22 +270,22 @@ describe('read aloud', () => {
             <Navigation.List>
               <Navigation.Item>
                 <Link.Root href="#dokumentation" current>
-                  Dokumentation
+                  Documentation
                 </Link.Root>
               </Navigation.Item>
             </Navigation.List>
           </Navigation.Root>
-          <Button className="kv-button--link">Visningsinställningar</Button>
+          <Button className="kv-button--link">Display settings</Button>
         </TopBar>
       </main>,
     )
     const phrases = await readAloud(container)
     expect(phrases).toContain('navigation, Verktyg')
-    expect(phrases).toContain('link, Dokumentation, current item')
-    expect(phrases).toContain('button, Visningsinställningar')
+    expect(phrases).toContain('link, Documentation, current item')
+    expect(phrases).toContain('button, Display settings')
     expect(phrases.some((phrase) => /banner|region|group/.test(phrase))).toBe(false)
     expect(phrases.indexOf('navigation, Verktyg')).toBeLessThan(
-      phrases.indexOf('button, Visningsinställningar'),
+      phrases.indexOf('button, Display settings'),
     )
   })
 })

@@ -103,7 +103,7 @@ export interface AlertActionsPartProps {
 export interface AlertClosePartProps {
   className: 'kv-alert-close'
   type: 'button'
-  /** The resolved `alert.close` message, for example `Stäng meddelandet`. */
+  /** The resolved `alert.close` message, for example `Close message`. */
   'aria-label': string
 }
 
@@ -116,7 +116,7 @@ export interface AlertIconPartProps {
 /** Spread on a `<span>` at the start of the Title: `<span {...alert.statusProps} />`. */
 export interface AlertStatusPartProps {
   className: 'kv-alert-status'
-  /** The resolved status word, for example `Varning:`. */
+  /** The resolved status word, for example `Warning:`. */
   children: string
 }
 
@@ -158,7 +158,7 @@ export function readText(element: HTMLElement | null): string {
  * <div {...alert.rootProps}>
  *   <Icon {...alert.iconProps} />
  *   <h2 {...alert.titleProps}>
- *     <span {...alert.statusProps} /> Ditt tillstånd går ut
+ *     <span {...alert.statusProps} /> Your permit expires
  *   </h2>
  * </div>
  */

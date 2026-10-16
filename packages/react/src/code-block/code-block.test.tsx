@@ -63,12 +63,12 @@ describe('rendering', () => {
   test('a className joins the part class and the ref reaches the element', async () => {
     const ref = createRef<HTMLElement>()
     await render(
-      <CodeBlock.Code className="annan" ref={ref} data-testid="code">
+      <CodeBlock.Code className="other" ref={ref} data-testid="code">
         {command}
       </CodeBlock.Code>,
     )
     const element = page.getByTestId('code').element()
-    expect(element.className).toBe('annan kv-code-block-code')
+    expect(element.className).toBe('other kv-code-block-code')
     expect(ref.current).toBe(element)
   })
 
@@ -190,19 +190,19 @@ describe('keyboard', () => {
           <CodeBlock.Code>{command}</CodeBlock.Code>
           <CodeBlock.Copy />
         </CodeBlock.Root>
-        <button type="button">Efter</button>
+        <button type="button">After</button>
       </KvirnProvider>,
     )
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('button', { name: 'Copy' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('Shift+Tab moves focus off the Copy button', async () => {
     await render(
       <KvirnProvider>
-        <button type="button">Före</button>
+        <button type="button">Before</button>
         <CodeBlock.Root>
           <CodeBlock.Code>{command}</CodeBlock.Code>
           <CodeBlock.Copy />
@@ -212,7 +212,7 @@ describe('keyboard', () => {
     await userEvent.keyboard('{Tab}{Tab}')
     await expect.element(page.getByRole('button', { name: 'Copy' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 })
 

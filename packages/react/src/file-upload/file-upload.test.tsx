@@ -698,15 +698,24 @@ const spoken = {
     remove: /^Remove report\.pdf/,
   },
   sv: {
+    // kv-lang-ok: the sv announcement
     added: 'report.pdf har lagts till.',
+    // kv-lang-ok: the sv announcement
     addedAndRefused: 'report.pdf har lagts till. 1 fil kunde inte läggas till.',
     dropped:
+      // kv-lang-ok: the sv announcement
       'report.pdf har lagts till. 1 fil kunde inte läggas till: photo.png har ett filformat som inte går att använda. Välj en fil i formatet PDF.',
+    // kv-lang-ok: the sv announcement
     removed: 'report.pdf har tagits bort.',
+    // kv-lang-ok: the sv announcement
     full: '2 filer har lagts till. 2 av 2 filer tillagda. Ta bort en fil om du vill lägga till en annan.',
+    // kv-lang-ok: the sv announcement
     started: 'Laddar upp 1 fil.',
+    // kv-lang-ok: the sv announcement
     allUploaded: 'Filen har laddats upp.',
+    // kv-lang-ok: the sv announcement
     mixed: 'a.pdf har laddats upp. b.pdf kunde inte laddas upp.',
+    // kv-lang-ok: the sv announcement
     remove: /^Ta bort report\.pdf/,
   },
 } as const

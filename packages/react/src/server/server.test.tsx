@@ -78,6 +78,6 @@ test('getMessages equals useMessages for a text key and a parameterised key', ()
 test('getMessages falls back to built-in English for a missing catalog or key', () => {
   expect(server.getMessages('pagination').next).toBe('Next page')
   expect(
-    server.getMessages('pagination', { messages: { pagination: { next: 'Nästa' } } }).label,
+    server.getMessages('pagination', { messages: { pagination: { next: 'Next' } } }).label,
   ).toBe('Pages')
 })

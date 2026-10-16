@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale fixture text sets, picked by the locale toolbar
 import { Button, Heading } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/empty-state/empty-state.a11y.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -63,7 +64,7 @@ const textsFor = (locale: FormLocale) => ({
 
 const meta = {
   title: 'Components/Content/EmptyState',
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: {

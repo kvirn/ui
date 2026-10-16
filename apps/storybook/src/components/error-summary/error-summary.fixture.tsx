@@ -56,8 +56,8 @@ export function ParkingForm({
   prefixDocumentTitle?: boolean
   showErrors?: boolean
 }) {
-  const emailId = `${prefix}-epost`
-  const firstOptionId = `${prefix}-giltighet-1`
+  const emailId = `${prefix}-email`
+  const firstOptionId = `${prefix}-validity-1`
   return (
     <div className="kv-stack">
       {showErrors ? (
@@ -69,39 +69,41 @@ export function ParkingForm({
           <ErrorSummary.Title />
           <ErrorSummary.List>
             <ErrorSummary.Item>
-              <ErrorSummary.Link controlId={emailId}>Ange din e-postadress</ErrorSummary.Link>
+              <ErrorSummary.Link controlId={emailId}>Enter your email address</ErrorSummary.Link>
             </ErrorSummary.Item>
             <ErrorSummary.Item>
               <ErrorSummary.Link controlId={firstOptionId}>
-                Välj hur länge tillståndet ska gälla
+                Choose how long the permit should be valid
               </ErrorSummary.Link>
             </ErrorSummary.Item>
           </ErrorSummary.List>
         </ErrorSummary.Root>
       ) : null}
       <Heading as="h1" size="heading-2">
-        Ansök om boendeparkering
+        Apply for resident parking
       </Heading>
       <form noValidate onSubmit={(event) => event.preventDefault()} className="kv-stack">
         <Field.Root controlId={emailId} invalid={showErrors} required>
-          <Field.Label>E-post</Field.Label>
+          <Field.Label>Email</Field.Label>
           <TextInput type="email" autoComplete="email" />
-          <Field.ErrorMessage>Ange din e-postadress</Field.ErrorMessage>
+          <Field.ErrorMessage>Enter your email address</Field.ErrorMessage>
         </Field.Root>
         <RadioGroup.Root invalid={showErrors} required>
-          <RadioGroup.Legend>Hur länge behöver du tillståndet?</RadioGroup.Legend>
+          <RadioGroup.Legend>How long do you need the permit?</RadioGroup.Legend>
           <Field.Root controlId={firstOptionId}>
             <RadioGroup.Radio value="1" />
-            <Field.Label>1 månad</Field.Label>
+            <Field.Label>1 month</Field.Label>
           </Field.Root>
           <Field.Root>
             <RadioGroup.Radio value="12" />
-            <Field.Label>12 månader</Field.Label>
+            <Field.Label>12 months</Field.Label>
           </Field.Root>
-          <RadioGroup.ErrorMessage>Välj hur länge tillståndet ska gälla</RadioGroup.ErrorMessage>
+          <RadioGroup.ErrorMessage>
+            Choose how long the permit should be valid
+          </RadioGroup.ErrorMessage>
         </RadioGroup.Root>
         <Button type="submit" className="kv-button--primary">
-          Skicka ansökan
+          Send application
         </Button>
       </form>
     </div>

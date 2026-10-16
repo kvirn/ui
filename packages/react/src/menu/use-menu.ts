@@ -155,8 +155,8 @@ function getLabel(item: HTMLElement): string {
  *
  * @example
  * const menu = useMenu()
- * <button {...menu.triggerProps}>Åtgärder</button>
- * <div {...menu.popupProps}><button {...menu.getItemProps('item')}>Skriv ut</button></div>
+ * <button {...menu.triggerProps}>Actions</button>
+ * <div {...menu.popupProps}><button {...menu.getItemProps('item')}>Print</button></div>
  */
 export function useMenu({
   open: openProp,

@@ -53,8 +53,8 @@ describe('mergeProps', () => {
   })
 
   it('joins class names', () => {
-    expect(mergeProps({ className: 'egen' }, { className: 'del' }).className).toBe('egen del')
-    expect(mergeProps({ className: 'egen' }, {}).className).toBe('egen')
+    expect(mergeProps({ className: 'own' }, { className: 'del' }).className).toBe('own del')
+    expect(mergeProps({ className: 'own' }, {}).className).toBe('own')
     expect(mergeProps({ className: '' }, { className: 'del' }).className).toBe('del')
   })
 
@@ -105,15 +105,15 @@ describe('mergeProps', () => {
   })
 
   it('warns once when two prop objects set different ids, and the later wins', () => {
-    expect(mergeProps({ id: 'egen' }, { id: 'del' }).id).toBe('del')
-    mergeProps({ id: 'egen' }, { id: 'del' })
+    expect(mergeProps({ id: 'own' }, { id: 'del' }).id).toBe('del')
+    mergeProps({ id: 'own' }, { id: 'del' })
     expect(consoleWarn).toHaveBeenCalledTimes(1)
-    expect(consoleWarn.mock.calls[0]?.[0]).toContain('"egen"')
+    expect(consoleWarn.mock.calls[0]?.[0]).toContain('"own"')
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('"del"')
   })
 
   it('does not warn for the same id twice', () => {
-    mergeProps({ id: 'samma' }, { id: 'samma' })
+    mergeProps({ id: 'same' }, { id: 'same' })
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 

@@ -7,25 +7,25 @@
 
 ## 1. Brief
 
-- **Users:** both. Hardest case: a resident on a 320px phone with 200% text, in Finnish, who has to find the one link that starts the e-service ("Ansök om bygglov"), and a screen-reader user who lists landmarks and links to find the same thing.
+- **Users:** both. Hardest case: a resident on a 320px phone with 200% text, in Finnish, who has to find the one link that starts the e-service ("Apply for building permit"), and a screen-reader user who lists landmarks and links to find the same thing.
 - **Job to be done:** When I land on a service page, I want to see where I am in the site and which link starts the e-service, so I can begin without hunting.
 - **Context:** once a year, often under time pressure. Staff see the same navigation every day in compact density.
 - **Constraints:** WAD (EN 301 549). A link is a link: it navigates, so it is never a Button (Plan 0043). No new colours.
 - **Success criteria:** users find and start the e-service on the first try. Screen-reader users reach the navigation by its landmark name.
-- **Evidence:** none of our own. The service-link look is the "Länk till e-tjänst" of Stockholm stad's webbmanual (named in the plan).
+- **Evidence:** none of our own. The service-link look is the "Link to e-service" of Stockholm stad's webbmanual (named in the plan). <!-- kv-lang-ok: Stockholm stad webbmanual is the Swedish name of a source -->
 - **Assumptions and research questions:**
   - Assumption: a filled icon block plus an outline makes the e-service link findable among plain links, without reading as a button. → Do residents recognise it as a link, and do they expect it to open a new place (it does)?
   - Assumption: two nesting levels are enough on resident pages. → Do any customers need three?
 
 ## 2. Prior art
 
-| Source                                          | What we reuse                                                                  | What we change and why                                                                                               |
-| ----------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| `.kv-nav` (`theme.css` §7 today)                | Every item rule: 44px rows, `nav-item`, the current bar, weight and background | Moves to part classes the component renders. Adds a nested indent, which `.kv-nav` never had                         |
-| `.kv-button` and `.kv-button--primary`          | The choice is a class the consumer adds; hover darkens a fill; focus ring      | No depth: DESIGN.md forbids button depth on links ("Depth means press me")                                           |
-| APG Disclosure Navigation (site nav example)    | A `<nav>` landmark with a list of links, Tab between links, no arrow keys      | No disclosure here: that is NavigationMenu (M4)                                                                      |
-| GOV.UK start button                             | A distinct, single "start this service" link with an arrow                     | GOV.UK adds `role="button"`. We keep the native link role: it navigates, and a screen reader must say "link" (4.1.2) |
-| Stockholm stad webbmanual, "Länk till e-tjänst" | Filled square icon block at the start, outlined label                          | Our tokens: `primary` block, `on-primary` icon, `link` text. The label text is `link`, not `primary` (see §6.4)      |
+| Source                                         | What we reuse                                                                  | What we change and why                                                                                               |
+| ---------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `.kv-nav` (`theme.css` §7 today)               | Every item rule: 44px rows, `nav-item`, the current bar, weight and background | Moves to part classes the component renders. Adds a nested indent, which `.kv-nav` never had                         |
+| `.kv-button` and `.kv-button--primary`         | The choice is a class the consumer adds; hover darkens a fill; focus ring      | No depth: DESIGN.md forbids button depth on links ("Depth means press me")                                           |
+| APG Disclosure Navigation (site nav example)   | A `<nav>` landmark with a list of links, Tab between links, no arrow keys      | No disclosure here: that is NavigationMenu (M4)                                                                      |
+| GOV.UK start button                            | A distinct, single "start this service" link with an arrow                     | GOV.UK adds `role="button"`. We keep the native link role: it navigates, and a screen reader must say "link" (4.1.2) |
+| Stockholm stad webbmanual, "Link to e-service" | Filled square icon block at the start, outlined label                          | Our tokens: `primary` block, `on-primary` icon, `link` text. The label text is `link`, not `primary` (see §6.4)      | <!-- kv-lang-ok: Stockholm stad webbmanual is the Swedish name of a source --> |
 
 ## 3. Flow
 
@@ -44,14 +44,14 @@ Unhappy paths:
 
 No new i18n keys. Navigation.Root's name is the consumer's string from their own translations. Examples:
 
-| Use              | en                             | sv                    | fi (longest)                   |
-| ---------------- | ------------------------------ | --------------------- | ------------------------------ |
-| Navigation label | Main menu                      | Huvudmeny             | Päävalikko                     |
-| Sub-navigation   | In this section                | I det här avsnittet   | Tässä osiossa                  |
-| Service link     | Apply for building permit      | Ansök om bygglov      | Hae rakennuslupaa sähköisesti  |
-| New-tab notice   | `link.newTabNotice` (existing) | (öppnas i en ny flik) | (avautuu uudessa välilehdessä) |
+| Use              | en                             | sv                    | fi (longest)                                                                                                      |
+| ---------------- | ------------------------------ | --------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Navigation label | Main menu                      | Huvudmeny             | Päävalikko <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                     |
+| Sub-navigation   | In this section                | I det här avsnittet   | Tässä osiossa <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                  |
+| Service link     | Apply for building permit      | Ansök om bygglov      | Hae rakennuslupaa sähköisesti <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->  |
+| New-tab notice   | `link.newTabNotice` (existing) | (öppnas i en ny flik) | (avautuu uudessa välilehdessä) <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
 
-Copy rules: the service link label starts with the verb and names the service ("Ansök om bygglov"), never "Klicka här" or "E-tjänst" alone (2.4.4). Don't put "länk" in the label: the role says it.
+Copy rules: the service link label starts with the verb and names the service ("Apply for building permit"), never "Click here" or "E-service" alone (2.4.4). Don't put "link" in the label: the role says it.
 
 ## 5. Structure
 
@@ -60,12 +60,12 @@ All breakpoints (320px · 40rem · 64rem) are the same: Navigation is a vertical
 > **Replaced in part (Plan 0047).** The horizontal bar is [navigation-link-options.md](navigation-link-options.md) §13, and the current-page and trail look is its §12. This section's structure (the three parts and the nested list) stands.
 
 ```
-[nav aria-label="Huvudmeny"]        Navigation.Root   .kv-navigation
+[nav aria-label="Main menu"]        Navigation.Root   .kv-navigation
   [ul]                              Navigation.List   .kv-navigation-list
     [li] link "Start"               Navigation.Item   .kv-navigation-item > .kv-link
-    [li] link "Bygga och bo" (current="page")
+    [li] link "Building and living" (current="page")
       [ul]  indented 16px           nested Navigation.List
-        [li] link "Bygglov"
+        [li] link "Building permit"
     [li] link "Om oss"
 ```
 
@@ -73,7 +73,7 @@ Service link, inline-level, in a paragraph or on its own line:
 
 ```
 ┌────┬──────────────────────────────┐
-│ ▶  │ Ansök om bygglov             │   1px primary edge, 8px radius
+│ ▶  │ Apply for building permit    │   1px primary edge, 8px radius
 └────┴──────────────────────────────┘
  block: primary fill, on-primary icon, square at one line, full height when the label wraps
 ```

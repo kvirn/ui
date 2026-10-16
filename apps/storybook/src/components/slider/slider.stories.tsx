@@ -47,7 +47,7 @@ const meta = {
     },
   },
   args: { name: 'volume', defaultValue: 40, disabled: false },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [
     (Story) => (
       <div className="kv-story-form">

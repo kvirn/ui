@@ -50,6 +50,7 @@ export const Removable: Story = {
   render: (_args, { globals }) => <RemovableTags locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await expect(
+      // kv-lang-ok: the built-in remove-button names in every locale
       canvas.getAllByRole('button', { name: /^(Remove|Ta bort|Poista|Fjern) / }).length,
     ).toBe(3)
     await expect(canvas.getByRole('list')).toBeVisible()

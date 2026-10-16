@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the grid names, weekday headers and announcements are asserted in the sv locale (Intl dates and the sv catalog)
 import { sv } from '@kvirn-ui/i18n/sv'
 import { act, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, onTestFinished, test, vi } from 'vite-plus/test'
@@ -32,7 +33,7 @@ function Example({
 }: Partial<CalendarRootProps> & { dir?: 'ltr' | 'rtl' | undefined; locale?: string | undefined }) {
   return (
     <KvirnProvider locale={locale} dir={dir} messages={sv}>
-      <button type="button">Före</button>
+      <button type="button">Before</button>
       <Calendar.Root today="2026-10-14" {...props}>
         <Calendar.PreviousYear />
         <Calendar.PreviousMonth />
@@ -200,10 +201,12 @@ describe('roles, names and states', () => {
     await render(
       <Example
         isDateUnavailable={(date) => date === '2026-10-16'}
-        getDateDescription={(date) => (date === '2026-10-16' ? 'Återvinningen stängd' : undefined)}
+        getDateDescription={(date) =>
+          date === '2026-10-16' ? 'Recycling centre closed' : undefined
+        }
       />,
     )
-    const closed = day('fredag 16 oktober 2026, Återvinningen stängd')
+    const closed = day('fredag 16 oktober 2026, Recycling centre closed')
     await expect.element(closed).toHaveAttribute('aria-disabled', 'true')
     await expect.element(closed).toHaveAttribute('data-unavailable')
     expect(closed.element().getAttribute('tabindex')).toBe('-1')
@@ -267,7 +270,7 @@ describe('roles, names and states', () => {
 describe('keyboard', () => {
   test('Tab moves from before the calendar through the month buttons to the grid, one stop', async () => {
     await render(<Example />)
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     for (const name of ['Föregående år', 'Föregående månad', 'Nästa månad', 'Nästa år']) {
       await userEvent.tab()
       await expect.element(button(name)).toHaveFocus()
@@ -597,9 +600,9 @@ describe('read aloud', () => {
   test('an unavailable day reads its reason and as disabled', async () => {
     const phrases = await phrasesOf({
       isDateUnavailable: (date) => date === '2026-10-16',
-      getDateDescription: (date) => (date === '2026-10-16' ? 'Återvinningen stängd' : undefined),
+      getDateDescription: (date) => (date === '2026-10-16' ? 'Recycling centre closed' : undefined),
     })
-    expect(phrases).toContain('gridcell, fredag 16 oktober 2026, Återvinningen stängd, disabled')
+    expect(phrases).toContain('gridcell, fredag 16 oktober 2026, Recycling centre closed, disabled')
   })
 
   test('a month button at the edge reads as a disabled button', async () => {
@@ -634,8 +637,8 @@ describe('read aloud', () => {
 
 describe('language, messages and settings', () => {
   test('a per-instance messages override replaces the catalog string', async () => {
-    await render(<Example messages={{ nextMonth: 'Förra veckan, fast framåt' }} />)
-    await expect.element(button('Förra veckan, fast framåt')).toBeVisible()
+    await render(<Example messages={{ nextMonth: 'Last week, but forward' }} />)
+    await expect.element(button('Last week, but forward')).toBeVisible()
   })
 
   test('an invalid weekStart falls back to the provider setting', async () => {

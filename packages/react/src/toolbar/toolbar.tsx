@@ -105,9 +105,9 @@ function useToolbarItem(part: string): ToolbarItemRegistration {
  * wrap unless `loop` is `false`. Tab returns to the control that last had focus.
  *
  * @example
- * <Toolbar.Root aria-label="Formatering" aria-controls={editorId}>
- *   <Toolbar.Group aria-label="Textstil">
- *     <Toolbar.Toggle aria-label="Fetstil" pressed={isBold} onPressedChange={setIsBold}>
+ * <Toolbar.Root aria-label="Formatting" aria-controls={editorId}>
+ *   <Toolbar.Group aria-label="Text style">
+ *     <Toolbar.Toggle aria-label="Bold" pressed={isBold} onPressedChange={setIsBold}>
  *       <Icon name="bold" />
  *     </Toolbar.Toggle>
  *   </Toolbar.Group>
@@ -254,8 +254,8 @@ const activationKeys = new Set(['Enter', ' '])
  * stays editable, so make a field `readOnly`.
  *
  * @example
- * <Toolbar.Item as={Popover.Trigger}>Länk</Toolbar.Item>
- * // A Listbox in a toolbar: <Listbox.Root native="never" …><Toolbar.Item as={Listbox.Trigger} aria-label="Texttyp" /> …
+ * <Toolbar.Item as={Popover.Trigger}>Link</Toolbar.Item>
+ * // A Listbox in a toolbar: <Listbox.Root native="never" …><Toolbar.Item as={Listbox.Trigger} aria-label="Text type" /> …
  */
 export function ToolbarItem<Component extends ElementType = 'button'>(
   props: ToolbarItemProps<Component>,
@@ -334,7 +334,7 @@ ToolbarItem.displayName = 'Toolbar.Item'
 
 /**
  * A `ButtonGroup` in the toolbar: a `role="group"` that needs a name, so a screen reader says
- * "Textstil, group" as focus enters it. The theme draws a hairline between groups.
+ * "Text style, group" as focus enters it. The theme draws a hairline between groups.
  * Its buttons are joined into one strip: it adds `kv-button-group--attached` next to your class.
  */
 export function ToolbarGroup({ className, ...otherProps }: ToolbarGroupProps): ReactElement {

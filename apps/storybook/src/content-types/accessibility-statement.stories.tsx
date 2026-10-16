@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the statement names the national terms of each country (tillgänglighetsredogörelse, tilgjengelighetserklæring)
 import { PageFrame } from '@kvirn-ui/patterns'
 import { AccessibilityStatement } from '@kvirn-ui/patterns/content-types'
 import type { Meta, StoryObj } from '@storybook/react-vite'

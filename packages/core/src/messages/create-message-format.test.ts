@@ -1,3 +1,4 @@
+// kv-lang-ok-file: Swedish plural and list formatting is the behaviour under test
 import { describe, expect, it, vi } from 'vite-plus/test'
 import { createMessageFormat } from './create-message-format.ts'
 

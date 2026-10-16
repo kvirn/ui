@@ -295,7 +295,7 @@
 
     /* The theme loads no font. Self-host IBM Plex Sans and IBM Plex Serif (IBM's files,
      * unmodified), or the system fonts are used. On Apple, Windows and Android, the system
-     * stack finds San Francisco, Segoe UI or Roboto first, and each covers å ä ö æ ø. On Linux, system-ui is the desktop's font, with
+     * stack finds San Francisco, Segoe UI or Roboto first, and each covers the Nordic letters. On Linux, system-ui is the desktop's font, with
      * Noto Sans and Arial behind it. End your own stack with it. The serif stack is its twin,
      * for headings: ui-serif is New York in Safari, Cambria is on Windows, Noto Serif on
      * Android and most Linux desktops, and Georgia comes last because it draws old-style
@@ -1179,7 +1179,7 @@
    * a link and not a button, and it has no disabled state.
    *
    *   <Link.Root href="…" className="kv-link--service">
-   *     <Link.Icon><Icon name="arrow-forward" size="24" /></Link.Icon>Ansök om bygglov
+   *     <Link.Icon><Icon name="arrow-forward" size="24" /></Link.Icon>Apply for a building permit
    *   </Link.Root>
    */
   .kv-link {
@@ -3466,6 +3466,7 @@
     line-height: var(--kv-font-heading-4-line-height);
     letter-spacing: var(--kv-font-heading-4-letter-spacing);
     font-feature-settings: var(--kv-font-heading-4-feature-settings);
+    /* kv-lang-ok: a real Swedish compound is the stress example */
     /* Like prose: a long compound ("boendeparkeringstillstånd", 25 letters at 24px) splits at
      * the hyphenation points, then wraps anywhere, so a heading outside prose never scrolls a
      * 320px page sideways (1.4.10). */
@@ -4888,7 +4889,7 @@
    *   kv-section--padding-none, -sm, -md, -lg      the padding. Default md
    *
    *   <Section render={<aside aria-labelledby="contact" />} className="kv-prose">
-   *     <h2 id="contact">Kontakta oss</h2><p>…</p>
+   *     <h2 id="contact">Contact us</h2><p>…</p>
    *   </Section>
    *
    * The border is 1px and transparent, so the background paints under it and stacked sections
@@ -6071,10 +6072,10 @@
    *   kv-phone-input-group, kv-phone-input-country           PhoneInput.Root and the calling-code select
    *
    *   <Field.Root invalid={error !== undefined} required>
-   *     <Field.Label>Postnummer</Field.Label>
-   *     <Field.Prose><p>Det står på brevet från kommunen.</p></Field.Prose>
+   *     <Field.Label>Postal code</Field.Label>
+   *     <Field.Prose><p>It says so in the letter from the municipality.</p></Field.Prose>
    *     <TextInput name="postcode" inputMode="numeric" className="kv-input--width-6" />
-   *     <Field.HelpText>Fem siffror, till exempel 00100.</Field.HelpText>
+   *     <Field.HelpText>Five digits, for example 00100.</Field.HelpText>
    *     <Field.ErrorMessage>{error}</Field.ErrorMessage>
    *   </Field.Root>
    *
@@ -6103,7 +6104,7 @@
    * A unit, an icon or a button inside the input's box goes in an input group:
    *
    *   <Field.Root>
-   *     <Field.Label>Månadshyra i kronor</Field.Label>
+   *     <Field.Label>Monthly rent in kronor</Field.Label>
    *     <InputGroup.Root>
    *       <NumberInput name="rent" grouping className="kv-input--width-10" />
    *       <InputGroup.Addon>kr</InputGroup.Addon>
@@ -6124,9 +6125,9 @@
    * A date is three boxes in a group fieldset, a row of fields (design spec §6.6):
    *
    *   <Fieldset.Root group required>
-   *     <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+   *     <Fieldset.Legend>Date of birth</Fieldset.Legend>
    *     <DateInput.Root name="birth" autoComplete="bday" />
-   *     <Fieldset.HelpText>Till exempel 2007 3 27</Fieldset.HelpText>
+   *     <Fieldset.HelpText>For example 2007 3 27</Fieldset.HelpText>
    *   </Fieldset.Root>
    *
    * kv-date-input is a row that wraps, 16px between the boxes (12px in compact density, from
@@ -7153,7 +7154,7 @@
    *
    *   <Field.Root>
    *     <Checkbox name="declaration" />
-   *     <Field.Label>Jag intygar att uppgifterna är korrekta</Field.Label>
+   *     <Field.Label>I confirm that the details are correct</Field.Label>
    *   </Field.Root>
    *
    * The marks are the input's own ::before, drawn with clip-path on a background-color: no
@@ -9066,8 +9067,8 @@
    * docs/design/one-time-code.md.
    *
    *   <Field.Root>
-   *     <Field.Label>Kod från e-postmeddelandet</Field.Label>
-   *     <Prose><p>Koden har 8 tecken, i 2 grupper om 4.</p></Prose>
+   *     <Field.Label>Code from the email</Field.Label>
+   *     <Prose><p>The code has 8 characters, in 2 groups of 4.</p></Prose>
    *     <OneTimeCode.Root pattern="&&&&-&&&&">
    *       <OneTimeCode.Input name="code" />
    *       <OneTimeCode.Slot index={0} /> … <OneTimeCode.Slot index={8} />
@@ -11415,7 +11416,7 @@
    *
    *   <Table.ScrollRegion table={cases}>
    *     <Table.Root table={cases}>
-   *       <Table.Caption>Öppna ärenden</Table.Caption>
+   *       <Table.Caption>Open cases</Table.Caption>
    *       …
    *
    * Never changes the display of a table element: display: block on a table, row or cell drops

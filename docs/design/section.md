@@ -74,14 +74,14 @@ A section has no flow. Its "unhappy paths" are layout conditions:
 - Example B reuses the Card fixture's `NewsList` (its strings stay in `card.fixture.tsx`).
 - Example C reuses the Card fixture's `CaseCard`, and adds:
 
-| Key                     | en                       | sv                       | longest: fi (draft)     | Element                      |
-| ----------------------- | ------------------------ | ------------------------ | ----------------------- | ---------------------------- |
-| `caseDetails.heading`   | Case details             | Ärendeuppgifter          | Asian tiedot            | h2                           |
-| `caseDetails.number`    | Case number              | Ärendenummer             | Asianumero              | dt (value `BAB-2026-004512`) |
-| `caseDetails.received`  | Received                 | Inkom                    | Vastaanotettu           | dt (value: `<time>`, `Intl`) |
-| `caseDetails.type`      | Type of grant            | Typ av bidrag            | Avustuslaji             | dt                           |
-| `caseDetails.typeValue` | Housing adaptation grant | Bostadsanpassningsbidrag | Asunnonmuutostyöavustus | dd                           |
-| `caseDetails.officer`   | Case officer             | Handläggare              | Asian käsittelijä       | dt (value: a fixture name)   |
+| Key                     | en                       | sv                       | longest: fi (draft)     | Element                                                                                                         |
+| ----------------------- | ------------------------ | ------------------------ | ----------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `caseDetails.heading`   | Case details             | Ärendeuppgifter          | Asian tiedot            | h2 <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                           |
+| `caseDetails.number`    | Case number              | Ärendenummer             | Asianumero              | dt (value `BAB-2026-004512`) <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `caseDetails.received`  | Received                 | Inkom                    | Vastaanotettu           | dt (value: `<time>`, `Intl`)                                                                                    |
+| `caseDetails.type`      | Type of grant            | Typ av bidrag            | Avustuslaji             | dt                                                                                                              |
+| `caseDetails.typeValue` | Housing adaptation grant | Bostadsanpassningsbidrag | Asunnonmuutostyöavustus | dd <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                           |
+| `caseDetails.officer`   | Case officer             | Handläggare              | Asian käsittelijä       | dt (value: a fixture name) <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->   |
 
 ## 5. Structure
 

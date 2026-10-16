@@ -45,31 +45,31 @@ flowchart TD
 
 Component strings (`@kvirn-ui/i18n`, all six locales, overridable per provider and instance):
 
-| Key            | en    | sv    | fi    |
-| -------------- | ----- | ----- | ----- |
-| `dialog.close` | Close | Stäng | Sulje |
+| Key            | en    | sv    | fi                                                                                       |
+| -------------- | ----- | ----- | ---------------------------------------------------------------------------------------- |
+| `dialog.close` | Close | Stäng | Sulje <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
 
 Example strings (the block's or the app's keys, not the component's). Length check: `fi` is the longest.
 
-| Key                               | en                                                                                      | sv                                                                                | fi                                                                                                   |
-| --------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `sessionTimeout.title`            | Do you want to stay signed in?                                                          | Vill du fortsätta vara inloggad?                                                  | Haluatko pysyä kirjautuneena?                                                                        |
-| `sessionTimeout.description`      | For your security, we will sign you out in {minutes} at {time}. Your answers are saved. | Av säkerhetsskäl loggar vi ut dig om {minutes}, kl. {time}. Dina svar är sparade. | Tietoturvasi vuoksi kirjaamme sinut ulos {minutes} kuluttua, klo {time}. Vastauksesi on tallennettu. |
-| `sessionTimeout.stay`             | Stay signed in                                                                          | Fortsätt vara inloggad                                                            | Jatka kirjautuneena                                                                                  |
-| `sessionTimeout.signOut`          | Sign out                                                                                | Logga ut                                                                          | Kirjaudu ulos                                                                                        |
-| `sessionTimeout.remaining` (live) | {minutes} left.                                                                         | {minutes} kvar.                                                                   | {minutes} jäljellä.                                                                                  |
-| `deleteDraft.title`               | Delete the draft application?                                                           | Vill du ta bort utkastet till ansökan?                                            | Haluatko poistaa hakemusluonnoksen?                                                                  |
-| `deleteDraft.description`         | You can't undo this. Your answers will be deleted.                                      | Det går inte att ångra. Dina svar tas bort.                                       | Tätä ei voi perua. Vastauksesi poistetaan.                                                           |
-| `deleteDraft.confirm` / `.keep`   | Delete draft / Keep draft                                                               | Ta bort utkastet / Behåll utkastet                                                | Poista luonnos / Säilytä luonnos                                                                     |
+| Key                               | en                                                                                      | sv                                                                                | fi                                                                                                                                                                                      |
+| --------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sessionTimeout.title`            | Do you want to stay signed in?                                                          | Vill du fortsätta vara inloggad?                                                  | Haluatko pysyä kirjautuneena? <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                                        |
+| `sessionTimeout.description`      | For your security, we will sign you out in {minutes} at {time}. Your answers are saved. | Av säkerhetsskäl loggar vi ut dig om {minutes}, kl. {time}. Dina svar är sparade. | Tietoturvasi vuoksi kirjaamme sinut ulos {minutes} kuluttua, klo {time}. Vastauksesi on tallennettu. <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `sessionTimeout.stay`             | Stay signed in                                                                          | Fortsätt vara inloggad                                                            | Jatka kirjautuneena <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                                                  |
+| `sessionTimeout.signOut`          | Sign out                                                                                | Logga ut                                                                          | Kirjaudu ulos                                                                                                                                                                           |
+| `sessionTimeout.remaining` (live) | {minutes} left.                                                                         | {minutes} kvar.                                                                   | {minutes} jäljellä. <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                                                  |
+| `deleteDraft.title`               | Delete the draft application?                                                           | Vill du ta bort utkastet till ansökan?                                            | Haluatko poistaa hakemusluonnoksen? <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                                  |
+| `deleteDraft.description`         | You can't undo this. Your answers will be deleted.                                      | Det går inte att ångra. Dina svar tas bort.                                       | Tätä ei voi perua. Vastauksesi poistetaan. <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                           |
+| `deleteDraft.confirm` / `.keep`   | Delete draft / Keep draft                                                               | Ta bort utkastet / Behåll utkastet                                                | Poista luonnos / Säilytä luonnos <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                                     |
 
 `{minutes}` is formatted with `Intl` and plural rules ("2 minuter", "1 minut", "40 sekunder"); `{time}` with `Intl.DateTimeFormat` (`14:32`).
 
 **Copy rules (docs page and content guide):**
 
-- **Title** is the question the buttons answer, or a verb phrase for a task ("Ändra telefonnummer"). Never "Är du säker?" / "Are you sure?", "Varning", "Bekräfta" or "Confirm".
+- **Title** is the question the buttons answer, or a verb phrase for a task ("Change phone number"). Never "Are you sure?", "Warning" or "Confirm".
 - **Description** says the consequence and whether it can be undone, in one or two short sentences. `text`, never muted.
-- **Buttons** say verb + object ("Ta bort utkastet"), so each makes sense alone. Never "OK", "Ja", "Nej". Avoid "Avbryt" when it could mean "cancel the application"; say what is kept ("Behåll utkastet").
-- One primary action. No blame, no jargon ("session" → "inloggad").
+- **Buttons** say verb + object ("Delete draft"), so each makes sense alone. Never "OK", "Yes", "No". Avoid "Cancel" when it could mean "cancel the application"; say what is kept ("Keep draft").
+- One primary action. No blame, no jargon ("session" → "signed in").
 
 ## 5. Structure
 

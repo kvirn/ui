@@ -62,7 +62,7 @@ type Story = StoryObj<typeof meta>
 
 /**
  * In a Field: the message under the input, with the icon and the hidden prefix. Screen
- * readers hear "Fel: Ange ditt fullständiga namn" as the input's description.
+ * readers hear "Error: Enter your full name" as the input's description.
  */
 export const InField: Story = {
   play: async ({ canvas, globals }) => {

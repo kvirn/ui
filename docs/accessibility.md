@@ -57,4 +57,4 @@ This is an approximation, not a screen reader. Its accessibility tree is its own
 ## User testing
 
 - At least twice a year, test with disabled users recruited through Nordic disability organisations, and pay them.
-- Blocks get plain-language review: _klarspråk_ in Sweden, _selkokieli_ in Finland.
+- Blocks get plain-language review: _klarspråk_ in Sweden, _selkokieli_ in Finland. <!-- kv-lang-ok: national plain-language terms -->

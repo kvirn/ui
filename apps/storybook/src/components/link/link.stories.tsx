@@ -24,7 +24,7 @@ const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, en }
 const meta = {
   title: 'Components/Actions/Link',
   component: Link.Root,
-  args: { href: '#ansok', children: 'Ansök om bygglov' },
+  args: { href: '#apply', children: 'Apply for a building permit' },
   argTypes: {
     className: {
       control: 'select',
@@ -42,7 +42,7 @@ const meta = {
       description: 'Another element or component. `as="a"` bypasses the registered router link.',
     },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   // Library strings follow the locale toolbar, like an app's provider would.
   decorators: [
     (Story, { globals }) => {
@@ -66,8 +66,8 @@ type Story = StoryObj<typeof meta>
 /** On its own, a link has the link colour, and an underline on hover. */
 export const Default: Story = {
   play: async ({ canvas }) => {
-    const link = canvas.getByRole('link', { name: 'Ansök om bygglov' })
-    await expect(link).toHaveAttribute('href', '#ansok')
+    const link = canvas.getByRole('link', { name: 'Apply for a building permit' })
+    await expect(link).toHaveAttribute('href', '#apply')
   },
 }
 
@@ -78,12 +78,12 @@ export const SamePageLink: Story = {
       <p>
         <Link.Root {...args} />
       </p>
-      <h2 id="ansok">Ansök</h2>
+      <h2 id="apply">Apply</h2>
     </>
   ),
   play: async ({ canvas }) => {
-    const link = canvas.getByRole('link', { name: 'Ansök om bygglov' })
-    await expect(link).toHaveAttribute('href', '#ansok')
+    const link = canvas.getByRole('link', { name: 'Apply for a building permit' })
+    await expect(link).toHaveAttribute('href', '#apply')
     await expect(link).not.toHaveAttribute('aria-current')
   },
 }
@@ -99,7 +99,7 @@ export const Keyboard: Story = {
         <Link.Root {...args} />
       </p>
       <p>
-        <Link.Root href="#kontakt">Kontakta oss</Link.Root>
+        <Link.Root href="#contact">Contact us</Link.Root>
       </p>
     </>
   ),
@@ -109,14 +109,12 @@ export const Keyboard: Story = {
 export const InRunningText: Story = {
   render: () => (
     <p>
-      Du kan <Link.Root href="#ansokan">ansöka om parkeringstillstånd</Link.Root> på webben.
+      You can <Link.Root href="#application">apply for a parking permit</Link.Root> online.
     </p>
   ),
   play: async ({ canvas }) => {
-    const link = canvas.getByRole('link', { name: 'ansöka om parkeringstillstånd' })
-    await expect(link.closest('p')).toHaveTextContent(
-      'Du kan ansöka om parkeringstillstånd på webben.',
-    )
+    const link = canvas.getByRole('link', { name: 'apply for a parking permit' })
+    await expect(link.closest('p')).toHaveTextContent('You can apply for a parking permit online.')
   },
 }
 
@@ -128,48 +126,48 @@ export const CurrentKinds: Story = {
   render: () => (
     <ul>
       <li>
-        <Link.Root href="#steg-1" current="step">
-          Steg 1: Fyll i uppgifter
+        <Link.Root href="#step-1" current="step">
+          Step 1: Fill in the details
         </Link.Root>
       </li>
       <li>
-        <Link.Root href="#plats" current="location">
-          Du är här: Bygglov
+        <Link.Root href="#location" current="location">
+          You are here: Building permits
         </Link.Root>
       </li>
       <li>
-        <Link.Root href="#datum" current="date">
-          Idag
+        <Link.Root href="#date" current="date">
+          Today
         </Link.Root>
       </li>
       <li>
-        <Link.Root href="#tid" current="time">
-          Nu
+        <Link.Root href="#time" current="time">
+          Now
         </Link.Root>
       </li>
       <li>
-        <Link.Root href="#aktuell" current>
-          Aktuellt val
+        <Link.Root href="#current" current>
+          Current choice
         </Link.Root>
       </li>
       <li>
-        <Link.Root href="#andra" current={false}>
-          Andra val
+        <Link.Root href="#other" current={false}>
+          Other choices
         </Link.Root>
       </li>
     </ul>
   ),
   play: async ({ canvas }) => {
     for (const [name, value] of [
-      ['Steg 1: Fyll i uppgifter', 'step'],
-      ['Du är här: Bygglov', 'location'],
-      ['Idag', 'date'],
-      ['Nu', 'time'],
-      ['Aktuellt val', 'true'],
+      ['Step 1: Fill in the details', 'step'],
+      ['You are here: Building permits', 'location'],
+      ['Today', 'date'],
+      ['Now', 'time'],
+      ['Current choice', 'true'],
     ] as const) {
       await expect(canvas.getByRole('link', { name })).toHaveAttribute('aria-current', value)
     }
-    await expect(canvas.getByRole('link', { name: 'Andra val' })).not.toHaveAttribute(
+    await expect(canvas.getByRole('link', { name: 'Other choices' })).not.toHaveAttribute(
       'aria-current',
     )
   },
@@ -183,14 +181,14 @@ export const BypassRouterAndKeepRel: Story = {
   parameters: showSource('link/link.fixture.tsx', 'RouterAndPlainLinks'),
   render: () => <RouterAndPlainLinks />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'Ansök' })).toHaveAttribute(
+    await expect(canvas.getByRole('link', { name: 'Apply' })).toHaveAttribute(
       'data-router-link',
       '',
     )
-    await expect(canvas.getByRole('link', { name: 'Blankett (PDF)' })).not.toHaveAttribute(
+    await expect(canvas.getByRole('link', { name: 'Form (PDF)' })).not.toHaveAttribute(
       'data-router-link',
     )
-    const external = canvas.getByRole('link', { name: 'Digg (öppnas i en ny flik)' })
+    const external = canvas.getByRole('link', { name: 'Digg (opens in a new tab)' })
     await expect(external).toHaveAttribute('rel', 'author noopener noreferrer')
     await expect(external.querySelector('small')).toHaveClass('kv-link-new-tab-notice')
   },
@@ -220,11 +218,11 @@ export const UnderlineProperties: Story = {
   ],
   render: () => (
     <p>
-      Du kan <Link.Root href="#ansokan">ansöka om parkeringstillstånd</Link.Root> på webben.
+      You can <Link.Root href="#application">apply for a parking permit</Link.Root> online.
     </p>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'ansöka om parkeringstillstånd' })).toBeVisible()
+    await expect(canvas.getByRole('link', { name: 'apply for a parking permit' })).toBeVisible()
   },
 }
 
@@ -243,12 +241,14 @@ export const Service: Story = {
         <Link.Icon>
           <Icon name="arrow-forward" size="24" />
         </Link.Icon>
-        Ansök om bygglov <Link.NewTabNotice />
+        Apply for a building permit <Link.NewTabNotice />
       </>
     ),
   },
   play: async ({ canvas }) => {
-    const link = canvas.getByRole('link', { name: 'Ansök om bygglov (öppnas i en ny flik)' })
+    const link = canvas.getByRole('link', {
+      name: 'Apply for a building permit (opens in a new tab)',
+    })
     await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
     await expect(link).toHaveClass('kv-link', 'kv-link--service')
     await expectMinimumTargetSize(link)
@@ -267,6 +267,7 @@ export const ServiceLongFinnishText: Story = {
         <Link.Icon>
           <Icon name="arrow-forward" size="24" />
         </Link.Icon>
+        {/* kv-lang-ok: Finnish locale story */}
         Hae rakennuslupaa sähköisesti
       </>
     ),
@@ -282,6 +283,7 @@ export const ServiceLongFinnishText: Story = {
     ),
   ],
   play: async ({ canvas }) => {
+    // kv-lang-ok: Finnish locale story
     await expect(canvas.getByRole('link', { name: 'Hae rakennuslupaa sähköisesti' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
@@ -303,7 +305,7 @@ export const NewTab: Story = {
     ),
   },
   play: async ({ canvas }) => {
-    const link = canvas.getByRole('link', { name: 'Digg (öppnas i en ny flik)' })
+    const link = canvas.getByRole('link', { name: 'Digg (opens in a new tab)' })
     await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
   },
 }
@@ -316,22 +318,22 @@ export const NewTabNoticeOverrides: Story = {
         <Link.Root
           href="https://www.digg.se/"
           target="_blank"
-          messages={{ newTabNotice: '(öppnas i nytt fönster)' }}
+          messages={{ newTabNotice: '(opens in a new window)' }}
         >
           Digg <Link.NewTabNotice />
         </Link.Root>
       </li>
       <li>
         <Link.Root href="https://www.riksdagen.se/" target="_blank">
-          Riksdagen <Link.NewTabNotice>(extern länk, ny flik)</Link.NewTabNotice>
+          Parliament <Link.NewTabNotice>(external link, new tab)</Link.NewTabNotice>
         </Link.Root>
       </li>
     </ul>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'Digg (öppnas i nytt fönster)' })).toBeVisible()
+    await expect(canvas.getByRole('link', { name: 'Digg (opens in a new window)' })).toBeVisible()
     await expect(
-      canvas.getByRole('link', { name: 'Riksdagen (extern länk, ny flik)' }),
+      canvas.getByRole('link', { name: 'Parliament (external link, new tab)' }),
     ).toBeVisible()
   },
 }
@@ -370,6 +372,7 @@ export const OtherLanguage: Story = {
       <li>
         <InLanguage locale="sv" messages={sv}>
           <Link.Root href="#sv" hrefLang="sv">
+            {/* kv-lang-ok: Finnish locale story */}
             På svenska
           </Link.Root>
         </InLanguage>
@@ -379,6 +382,7 @@ export const OtherLanguage: Story = {
   play: async ({ canvas }) => {
     for (const [name, language] of [
       ['Suomeksi', 'fi'],
+      // kv-lang-ok: Finnish locale story
       ['På svenska', 'sv'],
     ] as const) {
       const link = canvas.getByRole('link', { name })
@@ -395,11 +399,11 @@ export const OtherLanguage: Story = {
 export const FocusVisible: Story = {
   render: () => (
     <p>
-      Du kan <Link.Root href="#ansokan">ansöka om parkeringstillstånd</Link.Root> på webben.
+      You can <Link.Root href="#application">apply for a parking permit</Link.Root> online.
     </p>
   ),
   play: async ({ canvas, userEvent }) => {
-    const inText = canvas.getByRole('link', { name: 'ansöka om parkeringstillstånd' })
+    const inText = canvas.getByRole('link', { name: 'apply for a parking permit' })
     await userEvent.tab()
     await expect(inText).toHaveFocus()
     await waitFor(() => expect(inText).toHaveAttribute('data-focus-visible'))
@@ -432,6 +436,7 @@ export const LongFinnishText: Story = {
   play: async ({ canvas }) => {
     await expect(
       canvas.getByRole('link', {
+        // kv-lang-ok: Finnish locale story
         name: 'Lue saavutettavuusohjeet (avautuu uuteen välilehteen)',
       }),
     ).toBeVisible()
@@ -461,7 +466,7 @@ export const ForcedColors: Story = {
   render: () => (
     <>
       <p>
-        Läs mer om <Link.Root href="#parkering">parkering</Link.Root>.
+        Read more about <Link.Root href="#parkering">parking</Link.Root>.
       </p>
       <p>
         <Link.Root href="https://www.digg.se/" target="_blank">
@@ -469,11 +474,11 @@ export const ForcedColors: Story = {
         </Link.Root>
       </p>
       <p>
-        <Link.Root href="#bygglov" className="kv-link--service">
+        <Link.Root href="#building-permits" className="kv-link--service">
           <Link.Icon>
             <Icon name="arrow-forward" size="24" />
           </Link.Icon>
-          Starta e-tjänsten
+          Start the e-service
         </Link.Root>
       </p>
     </>

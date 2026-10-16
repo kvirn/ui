@@ -49,7 +49,7 @@ const meta = {
     },
   },
   args: { name: 'sms', disabled: false },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [
     (Story) => (
       <div className="kv-story-form">

@@ -15,7 +15,7 @@ export function ApplicationForm() {
   return (
     <>
       <form
-        aria-label="Ansökan"
+        aria-label="Application"
         onSubmit={(event) => {
           event.preventDefault()
           setSubmittedName(name)
@@ -23,9 +23,9 @@ export function ApplicationForm() {
       >
         <p>
           <label>
-            Namn{' '}
+            Name{' '}
             <input
-              name="namn"
+              name="name"
               autoComplete="name"
               value={name}
               onChange={(event) => setName(event.currentTarget.value)}
@@ -34,7 +34,7 @@ export function ApplicationForm() {
         </p>
         <ButtonGroup>
           <Button type="submit" className="kv-button--primary">
-            Skicka ansökan
+            Send application
           </Button>
           <Button
             onClick={() => {
@@ -42,12 +42,14 @@ export function ApplicationForm() {
               setSubmittedName(undefined)
             }}
           >
-            Börja om
+            Start over
           </Button>
         </ButtonGroup>
       </form>
       <output>
-        {submittedName === undefined ? '' : `Ansökan skickad för ${submittedName || 'okänt namn'}`}
+        {submittedName === undefined
+          ? ''
+          : `Application sent for ${submittedName || 'unknown name'}`}
       </output>
     </>
   )
@@ -62,14 +64,18 @@ export function ChangeAddressForm() {
   const [sentCount, setSentCount] = useState(0)
   return (
     <>
-      <form aria-label="Ändra adress" onSubmit={(event) => event.preventDefault()}>
+      <form aria-label="Change address" onSubmit={(event) => event.preventDefault()}>
         <p>
           <label>
-            Gatuadress{' '}
-            <input name="gatuadress" autoComplete="street-address" defaultValue="Storgatan 1" />
+            Street address{' '}
+            <input
+              name="street-address"
+              autoComplete="street-address"
+              defaultValue="1 High Street"
+            />
           </label>
         </p>
-        <p id="address-reason">Adressen kan inte ändras förrän du har fyllt i ett datum.</p>
+        <p id="address-reason">The address can’t be changed until you have filled in a date.</p>
         <ButtonGroup>
           <Button
             type="submit"
@@ -79,12 +85,12 @@ export function ChangeAddressForm() {
             aria-describedby="address-reason"
             onClick={() => setSentCount((count) => count + 1)}
           >
-            Spara adress
+            Save address
           </Button>
-          <Button type="reset">Återställ</Button>
+          <Button type="reset">Reset</Button>
         </ButtonGroup>
       </form>
-      <output>{sentCount === 0 ? '' : `Adressen sparades ${sentCount} gånger`}</output>
+      <output>{sentCount === 0 ? '' : `The address was saved ${sentCount} times`}</output>
     </>
   )
 }

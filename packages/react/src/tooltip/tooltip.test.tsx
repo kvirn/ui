@@ -45,32 +45,32 @@ function Example(rootProps: ExampleProps) {
   return (
     <>
       <button type="button" style={buttonStyle}>
-        Före
+        Before
       </button>
       <Tooltip.Root delay={20} closeDelay={50} group={ownGroup} {...rootProps}>
-        <Tooltip.Trigger aria-label="Fetstil" style={buttonStyle}>
+        <Tooltip.Trigger aria-label="Bold" style={buttonStyle}>
           B
         </Tooltip.Trigger>
         <Tooltip.Popup>
-          <Tooltip.Name>Fetstil</Tooltip.Name> <Tooltip.Shortcut>Ctrl+B</Tooltip.Shortcut>
+          <Tooltip.Name>Bold</Tooltip.Name> <Tooltip.Shortcut>Ctrl+B</Tooltip.Shortcut>
         </Tooltip.Popup>
       </Tooltip.Root>
       <button type="button" style={buttonStyle}>
-        Efter
+        After
       </button>
     </>
   )
 }
 
-const trigger = () => page.getByRole('button', { name: 'Fetstil', exact: true })
+const trigger = () => page.getByRole('button', { name: 'Bold', exact: true })
 const triggerElement = () => trigger().element()
 const popupElement = () => document.querySelector<HTMLElement>('.kv-tooltip')
 const isShown = () => popupElement()?.matches(':popover-open') === true
 
-/** Tab to the trigger: from the page's start, through "Före". */
+/** Tab to the trigger: from the page's start, through "Before". */
 async function tabToTrigger() {
   await userEvent.tab()
-  await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+  await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   await userEvent.tab()
   await expect.element(trigger()).toHaveFocus()
 }
@@ -102,7 +102,7 @@ describe('rendering', () => {
     expect(shortcut?.textContent).toBe('Ctrl+B')
     expect(popup?.contains(shortcut ?? null)).toBe(true)
     // The trigger keeps its own name and no tooltip state of its own.
-    expect(triggerElement().getAttribute('aria-label')).toBe('Fetstil')
+    expect(triggerElement().getAttribute('aria-label')).toBe('Bold')
     expect(triggerElement().hasAttribute('data-open')).toBe(false)
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
@@ -113,26 +113,26 @@ describe('rendering', () => {
     await expect.poll(isShown).toBe(true)
     const name = popupElement()?.querySelector('.kv-tooltip-name')
     expect(name?.getAttribute('aria-hidden')).toBe('true')
-    expect(name?.textContent).toBe('Fetstil')
+    expect(name?.textContent).toBe('Bold')
     // With a shortcut the popup itself is part of the tree: only the name line is hidden.
     expect(popupElement()?.hasAttribute('aria-hidden')).toBe(false)
-    await expect.element(trigger()).toHaveAccessibleName('Fetstil')
+    await expect.element(trigger()).toHaveAccessibleName('Bold')
     await expect.element(trigger()).toHaveAccessibleDescription('Ctrl+B')
   })
 
   test('plain text in the popup is the description as a whole', async () => {
     const { container } = await render(
       <Tooltip.Root defaultOpen>
-        <Tooltip.Trigger aria-label="Skriv ut" style={buttonStyle}>
+        <Tooltip.Trigger aria-label="Print" style={buttonStyle}>
           P
         </Tooltip.Trigger>
-        <Tooltip.Popup>Öppnar utskriftsvyn</Tooltip.Popup>
+        <Tooltip.Popup>Opens the print view</Tooltip.Popup>
       </Tooltip.Root>,
     )
     await expect.poll(isShown).toBe(true)
-    const button = page.getByRole('button', { name: 'Skriv ut', exact: true })
+    const button = page.getByRole('button', { name: 'Print', exact: true })
     expect(button.element().getAttribute('aria-describedby')).toBe(popupElement()?.id)
-    await expect.element(button).toHaveAccessibleDescription('Öppnar utskriftsvyn')
+    await expect.element(button).toHaveAccessibleDescription('Opens the print view')
     expect(popupElement()?.hasAttribute('aria-hidden')).toBe(false)
     await expectNoA11yViolations(container)
   })
@@ -140,15 +140,15 @@ describe('rendering', () => {
   test('a popup with only the name adds nothing for assistive technology: no description, and the whole popup is aria-hidden with its role kept', async () => {
     const { container } = await render(
       <Tooltip.Root defaultOpen>
-        <Tooltip.Trigger aria-label="Sök" style={buttonStyle}>
+        <Tooltip.Trigger aria-label="Search" style={buttonStyle}>
           S
         </Tooltip.Trigger>
         <Tooltip.Popup>
-          <Tooltip.Name>Sök</Tooltip.Name>
+          <Tooltip.Name>Search</Tooltip.Name>
         </Tooltip.Popup>
       </Tooltip.Root>,
     )
-    const button = page.getByRole('button', { name: 'Sök', exact: true })
+    const button = page.getByRole('button', { name: 'Search', exact: true })
     await expect.element(button).toBeVisible()
     await expect.poll(isShown).toBe(true)
     expect(button.element().hasAttribute('aria-describedby')).toBe(false)
@@ -212,12 +212,12 @@ describe('composition', () => {
     const [group] = useState(() => createTooltipGroup())
     return (
       <>
-        <p id="hint">Markera texten först.</p>
-        <Toolbar.Root aria-label="Formatering">
+        <p id="hint">Select the text first.</p>
+        <Toolbar.Root aria-label="Formatting">
           {(
             [
-              ['Fetstil', 'Ctrl+B', 'Control+B'],
-              ['Kursiv', 'Ctrl+I', 'Control+I'],
+              ['Bold', 'Ctrl+B', 'Control+B'],
+              ['Italic', 'Ctrl+I', 'Control+I'],
               ['Understruken', 'Ctrl+U', 'Control+U'],
             ] as const
           ).map(([name, shortcut, keys]) => (
@@ -243,14 +243,14 @@ describe('composition', () => {
 
   test('works on a Toolbar.Toggle: its name, state and keys stay, and its own aria-describedby is kept', async () => {
     const { container } = await render(<FormattingToolbar />)
-    const bold = page.getByRole('button', { name: 'Fetstil', exact: true })
+    const bold = page.getByRole('button', { name: 'Bold', exact: true })
     const element = bold.element()
     expect(element.getAttribute('aria-pressed')).toBe('false')
     expect(element.getAttribute('aria-keyshortcuts')).toBe('Control+B')
     const tokens = (element.getAttribute('aria-describedby') ?? '').split(' ')
     expect(tokens).toContain('hint')
     expect(tokens).toHaveLength(2)
-    expect(describedText(element as HTMLElement)).toBe('Markera texten först. Ctrl+B')
+    expect(describedText(element as HTMLElement)).toBe('Select the text first. Ctrl+B')
     // Still one Tab stop with the toolbar's roving tabindex.
     expect(container.querySelectorAll('[tabindex="0"]')).toHaveLength(1)
     await expectNoA11yViolations(container)
@@ -263,16 +263,16 @@ describe('the tooltip layer and a Popover underneath', () => {
     const onOpenChange = vi.fn<(open: boolean, details: PopoverChangeDetails) => void>()
     await render(
       <>
-        <p>Text utanför</p>
+        <p>Text outside</p>
         <Popover.Root defaultOpen onOpenChange={onOpenChange}>
           <Popover.Trigger style={buttonStyle}>Meny</Popover.Trigger>
           <Popover.Popup aria-label="Meny">
             <Tooltip.Root>
-              <Tooltip.Trigger aria-label="Fetstil" style={buttonStyle}>
+              <Tooltip.Trigger aria-label="Bold" style={buttonStyle}>
                 B
               </Tooltip.Trigger>
               <Tooltip.Popup>
-                <Tooltip.Name>Fetstil</Tooltip.Name> <Tooltip.Shortcut>Ctrl+B</Tooltip.Shortcut>
+                <Tooltip.Name>Bold</Tooltip.Name> <Tooltip.Shortcut>Ctrl+B</Tooltip.Shortcut>
               </Tooltip.Popup>
             </Tooltip.Root>
           </Popover.Popup>
@@ -285,7 +285,7 @@ describe('the tooltip layer and a Popover underneath', () => {
     await userEvent.tab()
     await expect.element(trigger()).toHaveFocus()
     await expect.poll(isShown).toBe(true)
-    await userEvent.click(page.getByText('Text utanför'))
+    await userEvent.click(page.getByText('Text outside'))
     await expect.poll(() => popover()?.matches(':popover-open')).toBe(false)
     // Our own outside-press handling closed it on pointerdown. Had the tooltip's layer taken the
     // press, only the platform's light dismiss would have, later.
@@ -303,7 +303,7 @@ describe('dev warnings', () => {
         <Tooltip.Trigger style={buttonStyle}>
           <svg aria-hidden="true" width="16" height="16" />
         </Tooltip.Trigger>
-        <Tooltip.Popup>Sök</Tooltip.Popup>
+        <Tooltip.Popup>Search</Tooltip.Popup>
       </Tooltip.Root>,
     )
     await expect.poll(() => consoleWarn.mock.calls.length).toBe(1)
@@ -313,10 +313,10 @@ describe('dev warnings', () => {
   test('a title does not count as a name', async () => {
     await render(
       <Tooltip.Root>
-        <Tooltip.Trigger title="Sök" style={buttonStyle}>
+        <Tooltip.Trigger title="Search" style={buttonStyle}>
           <svg aria-hidden="true" width="16" height="16" />
         </Tooltip.Trigger>
-        <Tooltip.Popup>Sök</Tooltip.Popup>
+        <Tooltip.Popup>Search</Tooltip.Popup>
       </Tooltip.Root>,
     )
     await expect.poll(() => consoleWarn.mock.calls.length).toBe(1)
@@ -325,11 +325,11 @@ describe('dev warnings', () => {
   test('interactive content in the popup warns once', async () => {
     await render(
       <Tooltip.Root>
-        <Tooltip.Trigger aria-label="Hjälp" style={buttonStyle}>
+        <Tooltip.Trigger aria-label="Help" style={buttonStyle}>
           ?
         </Tooltip.Trigger>
         <Tooltip.Popup>
-          Mer hjälp: <a href="/hjalp">Läs här</a>
+          More help: <a href="/help">Read here</a>
         </Tooltip.Popup>
       </Tooltip.Root>,
     )
@@ -340,11 +340,11 @@ describe('dev warnings', () => {
   test('a part outside a Root warns, and renders an ordinary element', async () => {
     await render(
       <>
-        <Tooltip.Trigger aria-label="Hjälp" style={buttonStyle}>
+        <Tooltip.Trigger aria-label="Help" style={buttonStyle}>
           ?
         </Tooltip.Trigger>
-        <Tooltip.Popup>Hjälp</Tooltip.Popup>
-        <Tooltip.Name>Hjälp</Tooltip.Name>
+        <Tooltip.Popup>Help</Tooltip.Popup>
+        <Tooltip.Name>Help</Tooltip.Name>
         <Tooltip.Shortcut>F1</Tooltip.Shortcut>
       </>,
     )
@@ -378,16 +378,16 @@ describe('controlled and uncontrolled', () => {
       return (
         <>
           <button type="button" style={buttonStyle} onClick={() => setOpen((current) => !current)}>
-            Visa
+            Show
           </button>
           <Example open={open} onOpenChange={setOpen} />
         </>
       )
     }
     await render(<Controlled />)
-    await userEvent.click(page.getByRole('button', { name: 'Visa' }))
+    await userEvent.click(page.getByRole('button', { name: 'Show' }))
     await expect.poll(isShown).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Visa' }))
+    await userEvent.click(page.getByRole('button', { name: 'Show' }))
     await expect.poll(isShown).toBe(false)
   })
 
@@ -443,10 +443,10 @@ describe('keyboard and pointer contract', () => {
     return (
       <>
         <button type="button" style={buttonStyle}>
-          Före
+          Before
         </button>
-        <Toolbar.Root aria-label="Formatering">
-          {['Ångra', 'Fetstil', 'Kursiv'].map((name) => (
+        <Toolbar.Root aria-label="Formatting">
+          {['Undo', 'Bold', 'Italic'].map((name) => (
             <Tooltip.Root key={name} delay={delay} group={group}>
               <Tooltip.Trigger as={Toolbar.Toggle} aria-label={name} style={buttonStyle}>
                 {name.slice(0, 1)}
@@ -459,17 +459,17 @@ describe('keyboard and pointer contract', () => {
           <Popover.Root>
             <Tooltip.Root delay={delay} group={group}>
               <Tooltip.Trigger as={PopoverToolbarItem} style={buttonStyle}>
-                Länk
+                Link
               </Tooltip.Trigger>
               <Tooltip.Popup>
-                <Tooltip.Name>Länk</Tooltip.Name>
+                <Tooltip.Name>Link</Tooltip.Name>
               </Tooltip.Popup>
             </Tooltip.Root>
-            <Popover.Popup aria-label="Lägg till länk">Webbadress</Popover.Popup>
+            <Popover.Popup aria-label="Add link">Web address</Popover.Popup>
           </Popover.Root>
         </Toolbar.Root>
         <button type="button" style={buttonStyle}>
-          Efter
+          After
         </button>
       </>
     )
@@ -486,7 +486,7 @@ describe('keyboard and pointer contract', () => {
     await tabToTrigger()
     await expect.poll(isShown).toBe(true)
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     await expect.poll(isShown).toBe(false)
   })
 
@@ -494,16 +494,16 @@ describe('keyboard and pointer contract', () => {
     await render(<ContractToolbar />)
     await userEvent.tab()
     await userEvent.tab()
-    await expect.element(control('Ångra')).toHaveFocus()
-    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Ångra'])
+    await expect.element(control('Undo')).toHaveFocus()
+    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Undo'])
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(control('Fetstil')).toHaveFocus()
-    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Fetstil'])
+    await expect.element(control('Bold')).toHaveFocus()
+    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Bold'])
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(control('Kursiv')).toHaveFocus()
-    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Kursiv'])
+    await expect.element(control('Italic')).toHaveFocus()
+    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Italic'])
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     await expect.poll(shownTooltipTexts).toEqual([])
   })
 
@@ -515,32 +515,32 @@ describe('keyboard and pointer contract', () => {
     )
     await userEvent.tab()
     await userEvent.tab()
-    await expect.element(control('Ångra')).toHaveFocus()
-    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Ångra'])
+    await expect.element(control('Undo')).toHaveFocus()
+    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Undo'])
     await userEvent.keyboard('{ArrowLeft}')
-    await expect.element(control('Fetstil')).toHaveFocus()
-    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Fetstil'])
+    await expect.element(control('Bold')).toHaveFocus()
+    await expect.poll(shownTooltipTexts, { timeout: 300 }).toEqual(['Bold'])
   })
 
   test('Enter and Space activate the trigger and the tooltip stays', async () => {
     await render(<ContractToolbar delay={20} />)
-    const bold = control('Fetstil')
+    const bold = control('Bold')
     bold.element().focus()
-    await expect.poll(shownTooltipTexts).toEqual(['Fetstil'])
+    await expect.poll(shownTooltipTexts).toEqual(['Bold'])
     await userEvent.keyboard('{Enter}')
     await expect.element(bold).toHaveAttribute('aria-pressed', 'true')
     await userEvent.keyboard(' ')
     await expect.element(bold).toHaveAttribute('aria-pressed', 'false')
     await expect.element(bold).toHaveFocus()
     await wait(150)
-    expect(shownTooltipTexts()).toEqual(['Fetstil'])
+    expect(shownTooltipTexts()).toEqual(['Bold'])
   })
 
   test('a trigger that opens a popup closes its tooltip while the popup is open', async () => {
     await render(<ContractToolbar delay={20} />)
-    const link = control('Länk')
+    const link = control('Link')
     link.element().focus()
-    await expect.poll(shownTooltipTexts).toEqual(['Länk'])
+    await expect.poll(shownTooltipTexts).toEqual(['Link'])
     await userEvent.keyboard('{Enter}')
     await expect.element(link).toHaveAttribute('aria-expanded', 'true')
     await expect.poll(shownTooltipTexts).toEqual([])
@@ -561,29 +561,29 @@ describe('keyboard and pointer contract', () => {
   test('Escape closes only the tooltip when a popover is open underneath', async () => {
     await render(
       <Popover.Root>
-        <Popover.Trigger style={buttonStyle}>Fler åtgärder</Popover.Trigger>
-        <Popover.Popup aria-label="Fler åtgärder">
+        <Popover.Trigger style={buttonStyle}>More actions</Popover.Trigger>
+        <Popover.Popup aria-label="More actions">
           <Tooltip.Root delay={5000}>
-            <Tooltip.Trigger aria-label="Kopiera" style={buttonStyle}>
+            <Tooltip.Trigger aria-label="Copy" style={buttonStyle}>
               K
             </Tooltip.Trigger>
             <Tooltip.Popup>
-              <Tooltip.Name>Kopiera</Tooltip.Name>
+              <Tooltip.Name>Copy</Tooltip.Name>
             </Tooltip.Popup>
           </Tooltip.Root>
         </Popover.Popup>
       </Popover.Root>,
     )
     const popover = () => document.querySelector<HTMLElement>('.kv-popover-popup')
-    await userEvent.click(page.getByRole('button', { name: 'Fler åtgärder' }))
+    await userEvent.click(page.getByRole('button', { name: 'More actions' }))
     await expect.poll(() => popover()?.matches(':popover-open')).toBe(true)
     await userEvent.tab()
-    await expect.element(control('Kopiera')).toHaveFocus()
-    await expect.poll(shownTooltipTexts).toEqual(['Kopiera'])
+    await expect.element(control('Copy')).toHaveFocus()
+    await expect.poll(shownTooltipTexts).toEqual(['Copy'])
     await userEvent.keyboard('{Escape}')
     await expect.poll(shownTooltipTexts).toEqual([])
     expect(popover()?.matches(':popover-open')).toBe(true)
-    await expect.element(control('Kopiera')).toHaveFocus()
+    await expect.element(control('Copy')).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await expect.poll(() => popover()?.matches(':popover-open')).toBe(false)
   })
@@ -597,7 +597,7 @@ describe('keyboard and pointer contract', () => {
     await wait(150)
     expect(isShown()).toBe(false)
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     await userEvent.tab({ shift: true })
     await expect.element(trigger()).toHaveFocus()
     await expect.poll(isShown).toBe(true)
@@ -612,11 +612,11 @@ describe('keyboard and pointer contract', () => {
       }
     }
     document.addEventListener('keydown', record)
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     await userEvent.keyboard('{Escape}')
     document.removeEventListener('keydown', record)
     expect(isShown()).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     expect(preventedKeys).toEqual([])
   })
 
@@ -669,12 +669,12 @@ describe('the public API', () => {
     const shortcutRef = createRef<HTMLSpanElement>()
     await render(
       <Tooltip.Root defaultOpen>
-        <Tooltip.Trigger ref={triggerRef} className="egen" data-egen="trigger" aria-label="Fetstil">
+        <Tooltip.Trigger ref={triggerRef} className="egen" data-egen="trigger" aria-label="Bold">
           B
         </Tooltip.Trigger>
         <Tooltip.Popup ref={popupRef} className="egen" data-egen="popup">
           <Tooltip.Name ref={nameRef} className="egen">
-            Fetstil
+            Bold
           </Tooltip.Name>
           <Tooltip.Shortcut ref={shortcutRef} className="egen">
             Ctrl+B
@@ -701,15 +701,15 @@ describe('the public API', () => {
       <Tooltip.Root>
         <Tooltip.Trigger
           as={Button}
-          aria-label="Fetstil"
+          aria-label="Bold"
           aria-describedby="hint"
           onFocus={onFocus}
           data-egen="trigger"
         >
           B
         </Tooltip.Trigger>
-        <Tooltip.Popup>Fetstil</Tooltip.Popup>
-        <p id="hint">Markera texten först.</p>
+        <Tooltip.Popup>Bold</Tooltip.Popup>
+        <p id="hint">Select the text first.</p>
       </Tooltip.Root>,
     )
     await userEvent.tab()
@@ -717,7 +717,7 @@ describe('the public API', () => {
     expect(onFocus).toHaveBeenCalledTimes(1)
     expect(triggerElement().getAttribute('data-egen')).toBe('trigger')
     expect(triggerElement().getAttribute('aria-describedby')?.split(' ')).toContain('hint')
-    await expect.element(trigger()).toHaveAccessibleDescription(/Markera texten först\./)
+    await expect.element(trigger()).toHaveAccessibleDescription(/Select the text first\./)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
@@ -729,12 +729,12 @@ describe('the public API', () => {
           as={Button}
           disabled
           focusableWhenDisabled
-          aria-label="Fetstil"
+          aria-label="Bold"
           onClick={onClick}
         >
           B
         </Tooltip.Trigger>
-        <Tooltip.Popup>Fetstil</Tooltip.Popup>
+        <Tooltip.Popup>Bold</Tooltip.Popup>
       </Tooltip.Root>,
     )
     await userEvent.tab()
@@ -749,14 +749,14 @@ describe('the public API', () => {
     const notAllowed = 'div' as TooltipNameProps['as']
     await render(
       <Tooltip.Root>
-        <Tooltip.Trigger aria-label="Fetstil">B</Tooltip.Trigger>
+        <Tooltip.Trigger aria-label="Bold">B</Tooltip.Trigger>
         <Tooltip.Popup>
-          <Tooltip.Name as={notAllowed}>Fetstil</Tooltip.Name>{' '}
+          <Tooltip.Name as={notAllowed}>Bold</Tooltip.Name>{' '}
           <Tooltip.Shortcut as="small">Ctrl+B</Tooltip.Shortcut>
         </Tooltip.Popup>
       </Tooltip.Root>,
     )
-    expect(page.getByText('Fetstil').element().tagName).toBe('SPAN')
+    expect(page.getByText('Bold').element().tagName).toBe('SPAN')
     expect(page.getByText('Ctrl+B').element().tagName).toBe('SMALL')
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('Tooltip.Name as="div"')
@@ -767,12 +767,11 @@ describe('the public API', () => {
       const tooltip = useTooltip({ description: 'shortcut' })
       return (
         <>
-          <button {...tooltip.triggerProps} aria-label="Fetstil" style={buttonStyle}>
+          <button {...tooltip.triggerProps} aria-label="Bold" style={buttonStyle}>
             B
           </button>
           <div {...tooltip.popupProps}>
-            <span {...tooltip.nameProps}>Fetstil</span>{' '}
-            <span {...tooltip.shortcutProps}>Ctrl+B</span>
+            <span {...tooltip.nameProps}>Bold</span> <span {...tooltip.shortcutProps}>Ctrl+B</span>
           </div>
         </>
       )

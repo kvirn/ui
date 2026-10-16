@@ -18,7 +18,7 @@ const meta = {
   // Another file of the same Foundation/Focus entry: its own id keeps the story ids apart.
   id: 'foundation-focus-route',
   tags: ['!autodocs'],
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [withFormLocale],
   parameters: {
     a11yContract: contract,
@@ -40,9 +40,9 @@ export const Default: Story = {
   name: 'Route change',
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('heading', { level: 1 })).not.toHaveFocus()
-    await userEvent.click(canvas.getByRole('link', { name: 'Till tjänster' }))
+    await userEvent.click(canvas.getByRole('link', { name: 'To services' }))
     await waitFor(() => expect(canvas.getByRole('heading', { level: 1 })).toHaveFocus())
-    await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('Våra tjänster')
+    await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('Our services')
     await expect(canvas.getByRole('heading', { level: 1 })).toHaveAttribute('tabindex', '-1')
   },
 }
@@ -54,14 +54,14 @@ export const Default: Story = {
 export const Keyboard: Story = {
   name: 'Route keyboard',
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('link', { name: 'Till tjänster' }))
+    await userEvent.click(canvas.getByRole('link', { name: 'To services' }))
     await waitFor(() => expect(canvas.getByRole('heading', { level: 1 })).toHaveFocus())
     await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Första länken på sidan' })).toHaveFocus()
+    await expect(canvas.getByRole('link', { name: 'First link on the page' })).toHaveFocus()
     await expect(canvas.getByRole('heading', { level: 1 })).not.toHaveAttribute('tabindex')
     await userEvent.tab({ shift: true })
     await expect(
-      canvas.getByRole('link', { name: 'Hoppa till avsnittet längre ner' }),
+      canvas.getByRole('link', { name: 'Jump to the section further down' }),
     ).toHaveFocus()
   },
 }
@@ -70,7 +70,7 @@ export const Keyboard: Story = {
 export const HashChange: Story = {
   name: 'Route hash change',
   play: async ({ canvas }) => {
-    const link = canvas.getByRole('link', { name: 'Hoppa till avsnittet längre ner' })
+    const link = canvas.getByRole('link', { name: 'Jump to the section further down' })
     await userEvent.click(link)
     await expect(link).toHaveFocus()
     await expect(canvas.getByRole('heading', { level: 1 })).not.toHaveAttribute('tabindex')
@@ -82,8 +82,8 @@ export const Announce: Story = {
   name: 'Route announce',
   render: (_args, { globals }) => <RouteFocusPage locale={localeFor(globals)} announce />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('link', { name: 'Till tjänster' }))
-    await waitFor(() => expect(canvas.getByRole('status')).toHaveTextContent('Du har kommit till'))
+    await userEvent.click(canvas.getByRole('link', { name: 'To services' }))
+    await waitFor(() => expect(canvas.getByRole('status')).toHaveTextContent('Navigated to'))
   },
 }
 

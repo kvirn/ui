@@ -63,7 +63,7 @@ const ownBehaviourSelector = 'input, textarea, select, button, a[href], label, [
  *
  * Buttons (clear, show password) go directly in the box, never in an addon: each keeps its own
  * name and Tab stop. Addons are `aria-hidden` and never focusable, so the label must say what
- * they show ("Månadshyra i kronor" for a "kr" addon).
+ * they show ("Monthly rent in kronor" for a "kr" addon).
  *
  * @example
  * const group = useInputGroup()

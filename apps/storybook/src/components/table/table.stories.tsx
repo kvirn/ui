@@ -40,7 +40,7 @@ const description = usageGuide(guide)
 const meta = {
   title: 'Components/Data and behaviour/Table',
   component: Table.Root,
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   argTypes: {
     table: {
       control: false,
@@ -91,7 +91,9 @@ export const Static: Story = {
   parameters: showSource('table/table.fixture.tsx', 'StaticPayments'),
   render: (_args, { globals }) => <StaticPayments locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('table', { name: 'Utbetalt bostadsbidrag 2026' })).toBeVisible()
+    await expect(
+      canvas.getByRole('table', { name: 'Housing allowance paid in 2026' }),
+    ).toBeVisible()
     await expect(canvasElement.querySelector('[aria-sort]')).toBeNull()
     // It fits, so the region around it is a plain `<div>`: no role, no name, no tab stop.
     await expect(canvas.queryByRole('region')).toBeNull()
@@ -109,7 +111,9 @@ export const AlwaysRegion: Story = {
   parameters: showSource('table/table.fixture.tsx', 'AlwaysRegionPayments'),
   render: (_args, { globals }) => <AlwaysRegionPayments locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('region', { name: 'Utbetalt bostadsbidrag 2026' })).toBeVisible()
+    await expect(
+      canvas.getByRole('region', { name: 'Housing allowance paid in 2026' }),
+    ).toBeVisible()
     await expect(regionOf(canvasElement)).not.toHaveAttribute('tabindex')
   },
 }
@@ -129,10 +133,10 @@ export const StaticScrolling: Story = {
   ],
   render: (_args, { globals }) => <StaticScrollingCases locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('table', { name: 'Öppna ärenden' })).toBeVisible()
+    await expect(canvas.getByRole('table', { name: 'Open cases' })).toBeVisible()
     await waitFor(() => expect(regionOf(canvasElement)).toHaveAttribute('tabindex', '0'))
     // It scrolls, so it is a region named by the caption.
-    await expect(canvas.getByRole('region', { name: 'Öppna ärenden' })).toBeVisible()
+    await expect(canvas.getByRole('region', { name: 'Open cases' })).toBeVisible()
   },
 }
 
@@ -152,7 +156,7 @@ export const StaticLateHead: Story = {
   ],
   render: (_args, { globals }) => <StaticLateHeadCases locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('table', { name: 'Öppna ärenden' })).toBeVisible()
+    await expect(canvas.getByRole('table', { name: 'Open cases' })).toBeVisible()
     await waitFor(() => expect(canvasElement.querySelector('thead')).not.toBeNull())
     await waitFor(() => expect(regionOf(canvasElement)).toHaveAttribute('tabindex', '0'))
   },
@@ -208,7 +212,7 @@ export const Sortable: Story = {
   parameters: showSource('table/table.fixture.tsx', 'SortableCases'),
   render: (_args, { globals }) => <SortableCases locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('table', { name: 'Öppna ärenden' })).toBeVisible()
+    await expect(canvas.getByRole('table', { name: 'Open cases' })).toBeVisible()
     await expect(sortedHeaders(canvasElement)).toHaveLength(1)
     await expect(sortedHeaders(canvasElement)[0]).toHaveAttribute('aria-sort', 'ascending')
     await expect(sortedHeaders(canvasElement)[0]).toHaveAttribute('data-sort', 'ascending')
@@ -231,9 +235,9 @@ export const Selectable: Story = {
   play: async ({ canvas, canvasElement }) => {
     await expect(canvasElement.querySelectorAll('tr[data-selected]')).toHaveLength(2)
     await expect(canvasElement.querySelector('[aria-selected]')).toBeNull()
-    const checkbox = canvas.getByRole('checkbox', { name: 'Välj Anna Svensson' })
+    const checkbox = canvas.getByRole('checkbox', { name: 'Select Anna Svensson' })
     await expect(checkbox).toBeChecked()
-    const selectAll = canvas.getByRole('checkbox', { name: 'Välj alla rader' })
+    const selectAll = canvas.getByRole('checkbox', { name: 'Select all rows' })
     await expect(selectAll).toBePartiallyChecked()
     await expectMinimumTargetSize(checkbox)
   },
@@ -247,12 +251,12 @@ export const Expandable: Story = {
   parameters: showSource('table/table.fixture.tsx', 'ExpandableCases'),
   render: (_args, { globals }) => <ExpandableCases locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
-    const open = canvas.getByRole('button', { name: 'Detaljer Matti Virtanen' })
+    const open = canvas.getByRole('button', { name: 'Details Matti Virtanen' })
     await expect(open).toHaveAttribute('aria-expanded', 'true')
     const controlled = open.getAttribute('aria-controls') ?? ''
     await expect(canvasElement.querySelector(`[id="${controlled}"]`)).not.toBeNull()
     await expect(canvasElement.querySelectorAll('.kv-table-detail-row > td')).toHaveLength(1)
-    const closed = canvas.getByRole('button', { name: 'Detaljer Anna Svensson' })
+    const closed = canvas.getByRole('button', { name: 'Details Anna Svensson' })
     await expect(closed).toHaveAttribute('aria-expanded', 'false')
     await expectMinimumTargetSize(closed)
   },
@@ -268,7 +272,7 @@ export const Empty: Story = {
   play: async ({ canvas, canvasElement }) => {
     await expect(
       canvas.getByRole('cell', {
-        name: 'Inga ärenden matchar sökningen. Ändra sökningen eller rensa filtret.',
+        name: 'No cases match your search. Change your search or clear the filter.',
       }),
     ).toBeVisible()
     const cell = canvasElement.querySelector<HTMLElement>('.kv-table-empty td')
@@ -297,7 +301,7 @@ export const Loading: Story = {
       await expect(table).toHaveAttribute('data-busy')
     }
     await expect(canvasElement.querySelector('.kv-table-empty td')).toHaveTextContent(
-      'Laddar rader.',
+      'Loading rows.',
     )
   },
 }
@@ -311,14 +315,14 @@ export const ColumnVisibility: Story = {
   parameters: showSource('table/table.fixture.tsx', 'ColumnVisibilityCases'),
   render: (_args, { globals }) => <ColumnVisibilityCases locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('group', { name: 'Visa kolumner' })).toBeVisible()
-    await expect(canvas.queryByRole('checkbox', { name: 'Namn' })).toBeNull()
-    await expect(canvas.queryByRole('columnheader', { name: 'Handläggare' })).toBeNull()
-    await userEvent.click(canvas.getByRole('checkbox', { name: 'Handläggare' }))
-    await expect(canvas.getByRole('columnheader', { name: 'Handläggare' })).toBeVisible()
-    await userEvent.click(canvas.getByRole('checkbox', { name: 'Ärendenummer' }))
-    await expect(canvas.queryByRole('columnheader', { name: 'Ärendenummer' })).toBeNull()
-    await expect(canvas.getByRole('checkbox', { name: 'Ärendenummer' })).not.toBeChecked()
+    await expect(canvas.getByRole('group', { name: 'Show columns' })).toBeVisible()
+    await expect(canvas.queryByRole('checkbox', { name: 'Name' })).toBeNull()
+    await expect(canvas.queryByRole('columnheader', { name: 'Handler' })).toBeNull()
+    await userEvent.click(canvas.getByRole('checkbox', { name: 'Handler' }))
+    await expect(canvas.getByRole('columnheader', { name: 'Handler' })).toBeVisible()
+    await userEvent.click(canvas.getByRole('checkbox', { name: 'Case number' }))
+    await expect(canvas.queryByRole('columnheader', { name: 'Case number' })).toBeNull()
+    await expect(canvas.getByRole('checkbox', { name: 'Case number' })).not.toBeChecked()
   },
 }
 
@@ -332,14 +336,14 @@ export const Search: Story = {
   play: async ({ canvas, canvasElement }) => {
     // Testing Library has no role mapping for <search> yet, so the element itself is checked.
     await expect(canvasElement.querySelector('search')).not.toBeNull()
-    const field = canvas.getByRole('searchbox', { name: 'Sök bland ärenden' })
+    const field = canvas.getByRole('searchbox', { name: 'Search cases' })
     await userEvent.type(field, 'Anna')
     await waitFor(() => expect(canvas.getAllByRole('row')).toHaveLength(2))
     await userEvent.clear(field)
     await userEvent.type(field, 'zzz')
     await expect(
       await canvas.findByRole('cell', {
-        name: 'Inga ärenden matchar sökningen. Ändra sökningen eller rensa filtret.',
+        name: 'No cases match your search. Change your search or clear the filter.',
       }),
     ).toBeVisible()
   },
@@ -354,14 +358,12 @@ export const PaginatedRecipe: Story = {
   parameters: showSource('table/table.fixture.tsx', 'PaginatedCases'),
   render: (_args, { globals }) => <PaginatedCases locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
-    await expect(
-      canvas.getByRole('table', { name: 'Öppna ärenden, rad 21–40 av 312' }),
-    ).toBeVisible()
+    await expect(canvas.getByRole('table', { name: 'Open cases, rows 21–40 of 312' })).toBeVisible()
     await expect(canvasElement.querySelector('[aria-rowcount]')).toBeNull()
-    const next = canvas.getByRole('button', { name: 'Nästa' })
+    const next = canvas.getByRole('button', { name: 'Next' })
     await userEvent.click(next)
     await waitFor(() =>
-      expect(canvas.getByRole('table', { name: 'Öppna ärenden, rad 41–60 av 312' })).toBeVisible(),
+      expect(canvas.getByRole('table', { name: 'Open cases, rows 41–60 of 312' })).toBeVisible(),
     )
     await expect(next).toHaveFocus()
   },
@@ -376,7 +378,7 @@ export const Virtualized: Story = {
   parameters: showSource('table/table.fixture.tsx', 'VirtualizedCases'),
   render: (_args, { globals }) => <VirtualizedCases locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('table', { name: 'Alla ärenden' })).toBeVisible()
+    await expect(canvas.getByRole('table', { name: 'All cases' })).toBeVisible()
     const table = canvasElement.querySelector('table')
     await expect(table).toHaveAttribute('aria-rowcount', '10001')
     await expect(table).toHaveAttribute('data-virtualized')
@@ -405,6 +407,7 @@ export const NarrowScreen: Story = {
   render: (_args, { globals }) => <NarrowCases locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('table', { name: 'Avoimet asiat' })).toBeVisible()
+    // kv-lang-ok: Finnish locale story
     await expect(canvas.getByRole('button', { name: 'Hakemuksen vastaanottopäivä' })).toBeVisible()
   },
 }
@@ -436,7 +439,7 @@ export const ForcedColors: Story = {
   ],
   render: (_args, { globals }) => <EverythingCases locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('table', { name: 'Öppna ärenden' })).toBeVisible()
+    await expect(canvas.getByRole('table', { name: 'Open cases' })).toBeVisible()
     await expect(canvasElement.querySelectorAll('tr[data-selected]')).toHaveLength(2)
     await expect(canvasElement.querySelectorAll('tr.kv-table-row[data-expanded]')).toHaveLength(1)
     await expect(canvasElement.querySelector('table')).toHaveAttribute('data-busy')
@@ -460,7 +463,7 @@ export const Keyboard: Story = {
   ],
   render: (_args, { globals }) => <KeyboardCases locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
-    await expect(canvas.getByRole('table', { name: 'Öppna ärenden' })).toBeVisible()
+    await expect(canvas.getByRole('table', { name: 'Open cases' })).toBeVisible()
     await waitFor(() => expect(regionOf(canvasElement)).toHaveAttribute('tabindex', '0'))
   },
 }

@@ -144,7 +144,7 @@ One sans family for text and controls, one serif family for headings, each with 
 
 The theme sets neither override. A link keeps the font around it. The serif is only for real headings: anything users operate or scan as data stays sans, and hierarchy never depends on the family alone. An alert's title is the exception that stays sans (weight 600, at `--kv-alert-title-size`): it is a message label, and a serif at that size would read as new page structure.
 
-Each brand stack ends in the matching system stack, `--kv-font-family-system` (`system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif`) or `--kv-font-family-system-serif` (`ui-serif, Cambria, 'Noto Serif', Georgia, serif`). `--kv-font-family-sans` and `-serif` are IBM Plex in front of them. A replacement font must cover å ä ö æ ø: check the Glyphs story in Foundation/Typography.
+Each brand stack ends in the matching system stack, `--kv-font-family-system` (`system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif`) or `--kv-font-family-system-serif` (`ui-serif, Cambria, 'Noto Serif', Georgia, serif`). `--kv-font-family-sans` and `-serif` are IBM Plex in front of them. A replacement font must cover å ä ö æ ø: check the Glyphs story in Foundation/Typography. <!-- kv-lang-ok: letters are the subject of the font rule -->
 
 ### Why IBM Plex
 
@@ -172,13 +172,13 @@ Six levels, `h1` to `h6`, each a role (`heading-1` to `heading-6`), with `displa
 
 - `heading-4`, `heading-5` and `heading-6` all use the `body` size, because essential content is never below it. They are told apart by `-weight`, `-line-height` and `-letter-spacing`, never by shrinking: `heading-4` is the heaviest with the tighter line height, `heading-5` is lighter, and only `heading-6` has tracking. They never step down on a small screen.
 - The three are close in look, and a hierarchy never depends on weight alone, so resident-facing text stops at `h3` where it can. In the large prose sizes they are smaller than the body, which is why `h4` to `h6` don't belong there.
-- `display` has slight negative tracking and a line height set so the ring on Å clears the descenders above it. Below 40px there is no tracking: negative tracking crowds serifs, and it reverses under the 1.4.12 overrides anyway.
+- `display` has slight negative tracking and a line height set so the ring on Å clears the descenders above it. Below 40px there is no tracking: negative tracking crowds serifs, and it reverses under the 1.4.12 overrides anyway. <!-- kv-lang-ok: letters are the subject of the font rule -->
 
 ### Reading and spacing
 
 - **Line length** 60–75 characters (`--kv-prose-measure`, `70ch`, on prose).
 - **Sentence case** everywhere. No all-caps labels, headings or eyebrows: they read slower and some screen readers spell them out.
-- **Disambiguation.** No feature settings are needed. Don't turn on the slashed zero (`zero`, `ss03`): it reads as Ø in Danish and Norwegian. Set codes where O and 0 matter in `code` (mono), or add `'ss04'` (the dotted zero). A brand font that needs features for l, I and 1 sets them in the `--kv-font-*-feature-settings` tokens (Inter: `'cv05', 'cv08'`).
+- **Disambiguation.** No feature settings are needed. Don't turn on the slashed zero (`zero`, `ss03`): it reads as Ø in Danish and Norwegian. Set codes where O and 0 matter in `code` (mono), or add `'ss04'` (the dotted zero). A brand font that needs features for l, I and 1 sets them in the `--kv-font-*-feature-settings` tokens (Inter: `'cv05', 'cv08'`). <!-- kv-lang-ok: letters are the subject of the font rule -->
 - **Text spacing (1.4.12).** Everything keeps working with line height 1.5, paragraph spacing 2em, letter spacing 0.12em and word spacing 0.16em. No fixed heights on text containers: control heights, such as 44px, are minimum block sizes.
 - **Sizes in `rem`**, so browser zoom and font-size settings work (1.4.4).
 - **One family, or keep Inter.** One family: `--kv-font-family-heading: var(--kv-font-family-sans)`. To keep Inter, set both family tokens and the body feature settings.
@@ -468,7 +468,7 @@ Navigation (`Navigation.Root`) and `TableOfContents` share one item look.
 
 - **Breadcrumb.** A row that wraps and never collapses into "…": a hidden level is a hidden way out. Items are `text` in the control type with `--kv-space-2` between; the separator is a chevron in `text-muted`, drawn as generated content with empty alternative text, so it is never read, and it mirrors in RTL. The links keep the `link` look and are at least 24px tall. The current page is the last item, plain text at weight 600 with `aria-current="page"`, never a link to itself.
 - **Pagination.** Targets at the control height (`--kv-control-min-block-size`, 44px), `--kv-space-3` on each side and `--kv-space-2` apart, in a row that wraps. A page number is a navigation item (`text`, weight 400, underline on hover). The current page is the Navigation current look: a solid `primary` fill, `on-primary` number, weight 600, a shape and `aria-current="page"` and never colour alone. Previous and Next keep the link colour and underline, with a decorative arrow (mirrored in RTL). The gap is the text `…`.
-- **Narrow.** Below `40rem` the page numbers and gaps are hidden and the row is Previous, the status text (`Sida 2 av 9`) and Next. From `40rem` the status is hidden.
+- **Narrow.** Below `40rem` the page numbers and gaps are hidden and the row is Previous, the status text (`Page 2 of 9`) and Next. From `40rem` the status is hidden.
 - **Forced colours.** The fill drops: the current page keeps a straight `LinkText` bar under its number. Separators and text are `CanvasText`.
 
 ### Forms
@@ -527,7 +527,7 @@ A plain `Fieldset.Root` (not `group`, so Line 2 can show "(optional)") with a le
 
 `InputGroup.Root` (`kv-input-group`) is the box: the input's edge, fill, radius and states, and the focus ring around the whole group when its input has keyboard focus. The input inside has no edge or ring of its own. Width classes stay on the input, and the group fits around it.
 
-- `InputGroup.Addon` holds a short unit or symbol ("kr", "%", "km", at most 4 characters) or a decorative icon, in `body` and `text`, with no fill or separator. Addons are hidden from screen readers, so the label always names the unit ("Månadshyra i kronor"). An addon before the input sits at the start, on the right in right-to-left.
+- `InputGroup.Addon` holds a short unit or symbol ("kr", "%", "km", at most 4 characters) or a decorative icon, in `body` and `text`, with no fill or separator. Addons are hidden from screen readers, so the label always names the unit ("Monthly rent in kronor"). An addon before the input sits at the start, on the right in right-to-left.
 - A button in a group (clear, show password) is a flat segment with a 1px `border-control` divider, as tall as the box, with `primary-subtle` on hover and its own focus ring.
 
 #### Date input
@@ -555,7 +555,7 @@ At least 24px, with the whole label clickable, grouped in a `fieldset` with a `l
 
 #### Error summary
 
-An `Alert.Danger` at the top of `main` with the heading "Det finns ett problem" and a list of links to each invalid field, worded like the field errors. It receives focus on submit and isn't announced.
+An `Alert.Danger` at the top of `main` with the heading "There is a problem" and a list of links to each invalid field, worded like the field errors. It receives focus on submit and isn't announced.
 
 > **Maintainer review (Plan 0063).** The looks below are a proposal and reuse existing tokens only (no new token, no new colour pair). Remove this note when approved.
 >
@@ -613,7 +613,7 @@ A native `<dl>` of rows for the answers on a check-your-answers page, a contact 
 - **Rows:** a 1px `border-subtle` line under every row and above the first, `space-3` block padding, no fill and no zebra. The text is `body` in `text`; the term is weight 600.
 - **From `40rem`** a row has three columns: the term, the description (twice as wide) and the actions at the inline end. A row with no actions gives the description the last column too. The column gap is `space-6`.
 - **Below `40rem` and at 320px** a row stacks: term, description, then the actions at the start. A long word wraps anywhere and a description is never truncated.
-- **Change link:** a plain `kv-link` with the word "Ändra" visible; its name adds the term ("Ändra Namn"). 24px tall at least. Several actions are `space-4` apart.
+- **Change link:** a plain `kv-link` with the word "Change" visible; its name adds the term ("Change Name"). 24px tall at least. Several actions are `space-4` apart.
 - **Prose** leaves the list alone. In forced colours the row lines are `CanvasText`.
 
 #### Address
@@ -758,7 +758,7 @@ Parts render these classes, choices are classes the consumer adds, and state is 
 
 Content is design. Most failures in public services are unclear words, not unclear pixels.
 
-- Write in plain language (_klarspråk_ in Sweden and Norway, _selkeä kieli_ in Finland): short sentences, common words, active voice, "you" and "we". Key services also need an easy-to-read version (_lättläst_, _selkokieli_).
+- Write in plain language (_klarspråk_ in Sweden and Norway, _selkeä kieli_ in Finland): short sentences, common words, active voice, "you" and "we". Key services also need an easy-to-read version (_lättläst_, _selkokieli_). <!-- kv-lang-ok: national plain-language terms -->
 - Lead with what the user needs to do and by when. Put the exception at the end.
 - Headings and buttons describe the task: "Apply for parking permit", not "Parking permit form".
 - Errors say what went wrong and how to fix it: "Enter a date in the format 31.12.2026", not "Invalid input".

@@ -66,7 +66,7 @@ const meta = {
         'Per-instance overrides of the legend’s optional text (`field.optional`) and the error prefix (`field.errorPrefix`).',
     },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [
     (Story) => (
       <div className="kv-story-form">
@@ -285,7 +285,7 @@ export const Invalid: Story = {
 }
 
 /**
- * Required: the legend has no optional text (the other examples end with "(valfritt)") and the
+ * Required: the legend has no optional text (the other examples end with "(optional)") and the
  * fieldset gets `data-required`. ARIA has no `aria-required` on a group or a radio, so it is not
  * announced as required: say what is required in the legend or the description.
  */

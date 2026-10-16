@@ -87,7 +87,7 @@ const meta = {
     withAction: false,
     focus: false,
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: {
@@ -107,10 +107,10 @@ type Story = StoryObj<typeof meta>
  */
 export const Default: Story = {
   play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: 'Spara aviseringsinställningar' })
+    const button = canvas.getByRole('button', { name: 'Save notification settings' })
     await userEvent.click(button)
-    await expectShown(/Aviseringsinställningarna är sparade\./)
-    await expect(page().getByRole('region', { name: 'Meddelanden' })).toBeInTheDocument()
+    await expectShown(/Notification settings saved\./)
+    await expect(page().getByRole('region', { name: 'Messages' })).toBeInTheDocument()
     await expect(button).toHaveFocus()
   },
 }
@@ -120,10 +120,10 @@ export const Statuses: Story = {
   parameters: source('StatusToasts', 'StatusButtons'),
   render: (_args, { globals }) => <StatusToasts locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Starta exporten' }))
-    await userEvent.click(canvas.getByRole('button', { name: 'Spara aviseringsinställningar' }))
-    await expectShown(/Exporten pågår\./)
-    await expectShown(/Aviseringsinställningarna är sparade\./)
+    await userEvent.click(canvas.getByRole('button', { name: 'Start the export' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Save notification settings' }))
+    await expectShown(/The export is running\./)
+    await expectShown(/Notification settings saved\./)
   },
 }
 
@@ -135,13 +135,13 @@ export const JobInProgress: Story = {
   parameters: source('JobToast', 'JobButtons'),
   render: (_args, { globals }) => <JobToast locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Starta exporten' }))
-    await expectShown(/Exporten pågår\./)
+    await userEvent.click(canvas.getByRole('button', { name: 'Start the export' }))
+    await expectShown(/The export is running\./)
     await expect(region()?.querySelector('.kv-alert-icon.kv-spinner')).toHaveAttribute(
       'aria-hidden',
       'true',
     )
-    await waitFor(() => expect(inRegion(/Din rapport är klar\./)).not.toBeNull(), {
+    await waitFor(() => expect(inRegion(/Your report is ready\./)).not.toBeNull(), {
       timeout: 4000,
     })
     await expect(region()?.querySelector('.kv-spinner')).toBeNull()
@@ -156,11 +156,11 @@ export const WithAction: Story = {
   parameters: source('DeleteDraft', 'DeleteDraftButtons'),
   render: (_args, { globals }) => <DeleteDraft locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Ta bort utkastet' }))
-    await expect(canvas.getByTestId('draft')).toHaveTextContent('är borttaget')
-    await userEvent.click(await page().findByRole('button', { name: 'Ångra' }))
-    await expect(canvas.getByTestId('draft')).toHaveTextContent('finns')
-    await waitFor(() => expect(inRegion(/Utkastet har tagits bort\./)).toBeNull())
+    await userEvent.click(canvas.getByRole('button', { name: 'Delete the draft' }))
+    await expect(canvas.getByTestId('draft')).toHaveTextContent('is deleted')
+    await userEvent.click(await page().findByRole('button', { name: 'Undo' }))
+    await expect(canvas.getByTestId('draft')).toHaveTextContent('exists')
+    await waitFor(() => expect(inRegion(/Draft deleted\./)).toBeNull())
   },
 }
 
@@ -174,13 +174,13 @@ export const AutoDismiss: Story = {
   parameters: source('TimedToasts', 'TimedButtons'),
   render: (_args, { globals }) => <TimedToasts locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Kopiera länken' }))
-    await expectShown(/Länken har kopierats\./)
-    const copied = page().getByText(/Länken har kopierats\./)
+    await userEvent.click(canvas.getByRole('button', { name: 'Copy the link' }))
+    await expectShown(/Link copied\./)
+    const copied = page().getByText(/Link copied\./)
     await userEvent.hover(copied)
     await expect(copied).toBeInTheDocument()
-    await userEvent.click(canvas.getByRole('button', { name: 'Din rapport är klar.' }))
-    await expect(await page().findByRole('button', { name: 'Öppna rapporten' })).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: 'Your report is ready.' }))
+    await expect(await page().findByRole('button', { name: 'Open report' })).toBeInTheDocument()
   },
 }
 
@@ -195,15 +195,15 @@ export const TimerRing: Story = {
   parameters: source('TimedToasts', 'TimedButtons'),
   render: (_args, { globals }) => <TimedToasts locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Kopiera länken' }))
-    await expectShown(/Länken har kopierats\./)
+    await userEvent.click(canvas.getByRole('button', { name: 'Copy the link' }))
+    await expectShown(/Link copied\./)
     const ring = document.querySelector('.kv-toast-timer')
     await expect(ring).toHaveAttribute('aria-hidden', 'true')
-    const copied = page().getByText(/Länken har kopierats\./)
+    const copied = page().getByText(/Link copied\./)
     await userEvent.hover(copied)
     await waitFor(() => expect(copied.closest('.kv-toast')).toHaveAttribute('data-paused'))
-    await userEvent.click(canvas.getByRole('button', { name: 'Din rapport är klar.' }))
-    await expect(await page().findByRole('button', { name: 'Öppna rapporten' })).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: 'Your report is ready.' }))
+    await expect(await page().findByRole('button', { name: 'Open report' })).toBeInTheDocument()
     await expect(document.querySelectorAll('.kv-toast-timer')).toHaveLength(1)
   },
 }
@@ -226,8 +226,8 @@ export const TimerRingForcedColors: Story = {
   parameters: source('TimedToasts', 'TimedButtons'),
   render: (_args, { globals }) => <TimedToasts locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Kopiera länken' }))
-    await expectShown(/Länken har kopierats\./)
+    await userEvent.click(canvas.getByRole('button', { name: 'Copy the link' }))
+    await expectShown(/Link copied\./)
     await expect(document.querySelector('.kv-toast-timer')).not.toBeNull()
   },
 }
@@ -242,18 +242,18 @@ export const Stacking: Story = {
   render: (_args, { globals }) => <StackedToasts locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     const count = () => region()?.querySelectorAll('li').length ?? 0
-    await userEvent.click(canvas.getByRole('button', { name: 'Visa tre meddelanden' }))
-    await expectShown(/Meddelande 1\./)
+    await userEvent.click(canvas.getByRole('button', { name: 'Show three messages' }))
+    await expectShown(/Message 1\./)
     await expect(count()).toBe(3)
-    await userEvent.click(canvas.getByRole('button', { name: 'Stäng alla meddelanden' }))
-    await expect(canvas.getByTestId('outcome')).toHaveTextContent('Alla meddelanden är stängda.')
+    await userEvent.click(canvas.getByRole('button', { name: 'Close all messages' }))
+    await expect(canvas.getByTestId('outcome')).toHaveTextContent('All messages are closed.')
     await waitFor(() => expect(region()).toBeNull())
-    await userEvent.click(canvas.getByRole('button', { name: 'Visa tolv meddelanden' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Show twelve messages' }))
     await waitFor(() => expect(count()).toBe(10))
-    await userEvent.click(canvas.getByRole('button', { name: 'Stäng alla meddelanden' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Close all messages' }))
     await waitFor(() => expect(region()).toBeNull())
-    await userEvent.click(canvas.getByRole('button', { name: 'Spara utkastet' }))
-    await userEvent.click(canvas.getByRole('button', { name: 'Spara utkastet' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Save the draft' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Save the draft' }))
     await waitFor(() => expect(count()).toBe(1))
   },
 }
@@ -263,9 +263,9 @@ export const SharedRegion: Story = {
   parameters: source('TwoProviders', 'ShowToastButton'),
   render: (_args, { globals }) => <TwoProviders locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Spara aviseringsinställningar' }))
-    await userEvent.click(canvas.getByRole('button', { name: 'Kopiera länken' }))
-    await expectShown(/Länken har kopierats\./)
+    await userEvent.click(canvas.getByRole('button', { name: 'Save notification settings' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Copy the link' }))
+    await expectShown(/Link copied\./)
     await expect(document.querySelectorAll('.kv-toast-region')).toHaveLength(1)
     await expect(region()?.querySelectorAll('li').length).toBe(2)
   },
@@ -280,20 +280,20 @@ export const Keyboard: Story = {
   parameters: source('KeyboardToasts', 'KeyboardButtons'),
   render: (_args, { globals }) => <KeyboardToasts locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    const show = canvas.getByRole('button', { name: 'Visa meddelanden' })
+    const show = canvas.getByRole('button', { name: 'Show messages' })
     await userEvent.click(show)
-    await expectShown(/Utkastet har tagits bort\./)
+    await expectShown(/Draft deleted\./)
     await expect(show).toHaveFocus()
     await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'After' })).toHaveFocus()
     await userEvent.tab()
-    await expect(page().getByRole('button', { name: 'Ångra' })).toHaveFocus()
+    await expect(page().getByRole('button', { name: 'Undo' })).toHaveFocus()
     await userEvent.tab()
-    await expect(page().getAllByRole('button', { name: 'Stäng meddelandet' })[0]).toHaveFocus()
+    await expect(page().getAllByRole('button', { name: 'Close message' })[0]).toHaveFocus()
     await userEvent.keyboard('{Escape}')
-    await waitFor(() => expect(inRegion(/Utkastet har tagits bort\./)).toBeNull())
-    await waitFor(() => expect(inRegion(/Exporten pågår\./)).not.toBeNull())
-    await expect(canvas.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await waitFor(() => expect(inRegion(/Draft deleted\./)).toBeNull())
+    await waitFor(() => expect(inRegion(/The export is running\./)).not.toBeNull())
+    await expect(canvas.getByRole('button', { name: 'After' })).toHaveFocus()
   },
 }
 
@@ -314,8 +314,8 @@ export const ForcedColors: Story = {
   parameters: source('EveryToast', 'EveryToastButton'),
   render: (_args, { globals }) => <EveryToast locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Visa meddelanden' }))
-    await expectShown(/Din rapport är klar\./)
+    await userEvent.click(canvas.getByRole('button', { name: 'Show messages' }))
+    await expectShown(/Your report is ready\./)
   },
 }
 
@@ -384,23 +384,25 @@ export const Reflow320: Story = {
   parameters: { ...reflowViewport.parameters, ...source('LongToast', 'LongToastButton') },
   render: (_args, { globals }) => <LongToast locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
+    // kv-lang-ok: the Finnish locale story asserts the Finnish built-in and fixture strings
     const trigger = canvas.getByRole('button', { name: 'Näytä ilmoitukset' })
     await userEvent.click(trigger)
+    // kv-lang-ok: the Finnish locale story asserts the Finnish built-in and fixture strings
     await expectToastReflows('Sulje ilmoitus', /Asunnonmuutostyöavustushakemuksesi/, trigger)
   },
 }
 
-/** A long title, a body and an action at 320 × 256, in Swedish: every part wraps and none is lost. */
+/** A long title, a body and an action at 320 × 256, in English: every part wraps and none is lost. */
 export const LongText: Story = {
   ...reflowViewport,
-  globals: { ...reflowViewport.globals, locale: 'sv' },
+  globals: { ...reflowViewport.globals, locale: 'en' },
   parameters: { ...reflowViewport.parameters, ...source('LongToast', 'LongToastButton') },
   render: (_args, { globals }) => <LongToast locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Visa meddelanden' })
+    const trigger = canvas.getByRole('button', { name: 'Show messages' })
     await userEvent.click(trigger)
-    await expectToastReflows('Stäng meddelandet', /Din ansökan är mottagen/, trigger)
-    await expect(page().getByRole('button', { name: 'Ångra' })).toBeInTheDocument()
+    await expectToastReflows('Close message', /Your application is received/, trigger)
+    await expect(page().getByRole('button', { name: 'Undo' })).toBeInTheDocument()
   },
 }
 
@@ -411,11 +413,11 @@ export const LongText: Story = {
  */
 export const TenToastsReflow: Story = {
   ...reflowViewport,
-  globals: { ...reflowViewport.globals, locale: 'sv' },
+  globals: { ...reflowViewport.globals, locale: 'en' },
   parameters: { ...reflowViewport.parameters, ...source('StackedToasts', 'StackingButtons') },
   render: (_args, { globals }) => <StackedToasts locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Visa tolv meddelanden' })
+    const trigger = canvas.getByRole('button', { name: 'Show twelve messages' })
     await userEvent.click(trigger)
     await waitFor(() => expect(region()?.querySelectorAll('li').length).toBe(10))
     const toastRegion = region()
@@ -427,7 +429,7 @@ export const TenToastsReflow: Story = {
     await expect(window.innerHeight).toBeLessThanOrEqual(256)
     await expect(toastRegion.scrollHeight).toBeGreaterThan(toastRegion.clientHeight)
     await expect(toastRegion).toHaveAttribute('tabindex', '0')
-    await expect(page().getByRole('region', { name: 'Meddelanden' })).toBe(toastRegion)
+    await expect(page().getByRole('region', { name: 'Messages' })).toBe(toastRegion)
     await expectNoHorizontalOverflow(toastRegion)
     const newest = toastRegion.querySelectorAll('li')[9]
     const regionBox = toastRegion.getBoundingClientRect()
@@ -458,12 +460,12 @@ export const NextToAModal: Story = {
   parameters: source('ToastNextToADialog', 'DialogWithToast'),
   render: (_args, { globals }) => <ToastNextToADialog locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Ändra telefonnummer' })
+    const trigger = canvas.getByRole('button', { name: 'Change phone number' })
     await userEvent.click(trigger)
-    await userEvent.click(await page().findByRole('button', { name: 'Visa ett meddelande nu' }))
-    await expect(page().queryByText(/Meddelandet visades när dialogrutan stängdes\./)).toBeNull()
+    await userEvent.click(await page().findByRole('button', { name: 'Show a message now' }))
+    await expect(page().queryByText(/The message was shown when the dialog closed\./)).toBeNull()
     await userEvent.keyboard('{Escape}')
-    await expectShown(/Meddelandet visades när dialogrutan stängdes\./)
+    await expectShown(/The message was shown when the dialog closed\./)
     await expect(trigger).toHaveFocus()
   },
 }

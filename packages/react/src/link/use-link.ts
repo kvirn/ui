@@ -41,7 +41,7 @@ export interface UseLinkResult {
   isFocusVisible: boolean
   /** `true` for `target="_blank"`: render `newTabNotice` inside the link. */
   opensInNewTab: boolean
-  /** The resolved `link.newTabNotice` text, for example `(öppnas i en ny flik)`. */
+  /** The resolved `link.newTabNotice` text, for example `(opens in a new tab)`. */
   newTabNotice: string
 }
 

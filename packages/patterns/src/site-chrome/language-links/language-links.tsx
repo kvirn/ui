@@ -15,7 +15,7 @@ export interface LanguageLinksRootProps extends Omit<
 /**
  * `current` is `true` on the language the page is in now (`aria-current="true"`), one at most.
  * `lang` is the language of the link text when it differs from the page (3.1.2), and `hrefLang`
- * the language of the target: leave it out for a format such as Lättläst.
+ * the language of the target: leave it out for a format such as Easy Read.
  */
 export type LanguageLinksLinkProps<Component extends ElementType = 'a'> = LinkProps<Component>
 

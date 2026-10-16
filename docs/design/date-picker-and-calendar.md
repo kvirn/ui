@@ -52,18 +52,18 @@ Unhappy paths: **Escape or Close** → nothing changes, focus on the trigger · 
 
 ## 5. Content (English; the six locales come in the plans)
 
-| i18n key                                           | en                                                   | Notes                                                                                                            |
-| -------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `datePicker.trigger`                               | Choose date                                          | Visible text with the `calendar` icon (decorative). fi "Valitse päivämäärä" (18): wraps below the boxes at 320px |
-| `datePicker.title`                                 | Choose a date                                        | Dialog title (`h2`). Docs: overridable with the question ("Choose the date of your visit")                       |
-| `calendar.previousMonth` / `nextMonth`             | Previous month / Next month                          | Names of the chevron buttons, and their Tooltip                                                                  |
-| `calendar.previousYear` / `nextYear`               | Previous year / Next year                            | Only when the consumer renders the year buttons                                                                  |
-| `calendar.dayName({ date, isToday, description })` | {date}, today, {description}                         | Cell name. `date` = `useFormat().date(iso, { dateStyle: 'full' })`. Parts drop when absent                       |
-| `calendar.weekHeader` / `weekHeaderLong`           | Wk / Week                                            | Visible short (aria-hidden) and visually hidden long column header                                               |
-| `calendar.weekName({ week })`                      | Week {week}                                          | Row header name                                                                                                  |
-| `calendar.rangeHint({ min, max })`                 | Dates from {min} to {max} · from {min} · up to {max} | Visible line above the grid, the grid's description (3.3.2)                                                      |
-| `calendar.selected({ date })`                      | {date} selected                                      | Polite, after a select                                                                                           |
-| `dialog.close`                                     | (exists)                                             | The Dialog's Close                                                                                               |
+| i18n key                                           | en                                                   | Notes                                                                                                                                                                                               |
+| -------------------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `datePicker.trigger`                               | Choose date                                          | Visible text with the `calendar` icon (decorative). fi "Valitse päivämäärä" (18): wraps below the boxes at 320px <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `datePicker.title`                                 | Choose a date                                        | Dialog title (`h2`). Docs: overridable with the question ("Choose the date of your visit")                                                                                                          |
+| `calendar.previousMonth` / `nextMonth`             | Previous month / Next month                          | Names of the chevron buttons, and their Tooltip                                                                                                                                                     |
+| `calendar.previousYear` / `nextYear`               | Previous year / Next year                            | Only when the consumer renders the year buttons                                                                                                                                                     |
+| `calendar.dayName({ date, isToday, description })` | {date}, today, {description}                         | Cell name. `date` = `useFormat().date(iso, { dateStyle: 'full' })`. Parts drop when absent                                                                                                          |
+| `calendar.weekHeader` / `weekHeaderLong`           | Wk / Week                                            | Visible short (aria-hidden) and visually hidden long column header                                                                                                                                  |
+| `calendar.weekName({ week })`                      | Week {week}                                          | Row header name                                                                                                                                                                                     |
+| `calendar.rangeHint({ min, max })`                 | Dates from {min} to {max} · from {min} · up to {max} | Visible line above the grid, the grid's description (3.3.2)                                                                                                                                         |
+| `calendar.selected({ date })`                      | {date} selected                                      | Polite, after a select                                                                                                                                                                              |
+| `dialog.close`                                     | (exists)                                             | The Dialog's Close                                                                                                                                                                                  |
 
 From `Intl` with `calendar: 'gregory'`, `numberingSystem: 'latn'`: heading `{ month: 'long', year: 'numeric' }` (sv "oktober 2026", fi "lokakuu 2026", se-FI "golggotmánnu 2026"); weekdays `short` and `long`; cell dates `full`. If the locale isn't supported, `se-FI` falls back to `fi`, `se-SE` to `sv`, other `se` to `nb`, and every Intl string gets `lang` = the resolved locale (3.1.2).
 
@@ -77,7 +77,7 @@ From `Intl` with `calendar: 'gregory'`, `numberingSystem: 'latn'`: heading `{ mo
     [‹ Previous month] [Next month ›]          (+ optional « » year buttons, outer)
     p kv-calendar-range "Dates from … to …"    Calendar.RangeHint (grid description)
     table kv-calendar-grid role=grid           Calendar.Grid
-      thead: [Wk] mån tis ons tors fre lör sön
+      thead: [Wk] Mon Tue Wed Thu Fri Sat Sun
       tbody: [42] ·  ·  1  2  3  4  5   ← empty td before the 1st
 ```
 

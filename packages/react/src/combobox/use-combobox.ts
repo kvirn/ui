@@ -101,8 +101,8 @@ export interface UseComboboxCommonOptions<TItem> {
   /** Disabled options stay reachable with the arrow keys and can't be chosen. */
   isItemDisabled?: ((item: TItem) => boolean) | undefined
   /**
-   * Replaces the default filter, which matches anywhere in the text, in the provider's locale (å,
-   * ä and ö are not a and o in Swedish). Called with each item and what the user typed. Applied
+   * Replaces the default filter, which matches anywhere in the text, in the provider's locale (letters
+   * that are separate in the locale stay apart). Called with each item and what the user typed. Applied
    * on the next keystroke. `false` turns filtering off, for results that your server has
    * already filtered: pass `isLoading` while it works.
    */
@@ -258,7 +258,7 @@ export interface ComboboxValueListPartProps {
   className: 'kv-tag-group-list kv-combobox-value-list'
   /** Redundant on a `<ul>` on purpose: Safari drops the list semantics when the theme removes the markers. */
   role: 'list'
-  /** The Field's label: "Kommuner, list, 2 items". */
+  /** The Field's label: "Municipalities, list, 2 items". */
   'aria-labelledby'?: string | undefined
 }
 

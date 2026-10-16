@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale fixture text sets (sv, fi), picked by the locale toolbar
 import { AlertDialog, Button, Combobox, Dialog, Field, Popover, TextInput } from '@kvirn-ui/react'
 import { useRef, useState } from 'react'
 import { comboboxTextsFor, municipalities } from '../combobox/combobox.fixture.tsx'

@@ -116,38 +116,39 @@ export const LegendAsHeading: Story = {
 
 /** A wizard page (T4): error summary after a failed submit, the heading and Stepper as one pair, then the field and the button. */
 export const WizardPage: Story = {
-  args: { current: 3, total: 5, name: 'Adress' },
+  args: { current: 3, total: 5, name: 'Address' },
   render: (args) => (
     <Stack>
-      <a href="#tillbaka">Tillbaka</a>
+      <a href="#back">Back</a>
       <ErrorSummary.Root>
         <ErrorSummary.Title />
         <ErrorSummary.List>
           <ErrorSummary.Item>
-            <ErrorSummary.Link controlId="street">Ange din gatuadress</ErrorSummary.Link>
+            <ErrorSummary.Link controlId="street">Enter your street address</ErrorSummary.Link>
           </ErrorSummary.Item>
         </ErrorSummary.List>
       </ErrorSummary.Root>
       <Stack className="kv-stack--gap-2">
-        <Heading as="h1">Var bor du?</Heading>
+        <Heading as="h1">Where do you live?</Heading>
         <Stepper {...args} />
       </Stack>
       <Field.Root required invalid>
-        <Field.Label>Gatuadress</Field.Label>
+        <Field.Label>Street address</Field.Label>
         <TextInput id="street" name="street" autoComplete="street-address" />
-        <Field.ErrorMessage>Ange din gatuadress</Field.ErrorMessage>
+        <Field.ErrorMessage>Enter your street address</Field.ErrorMessage>
       </Field.Root>
-      <Button type="submit">Fortsätt</Button>
+      <Button type="submit">Continue</Button>
     </Stack>
   ),
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   play: async ({ canvas }) => {
-    await expect(canvas.getByText('Steg 3 av 5: Adress')).toBeVisible()
+    await expect(canvas.getByText('Step 3 of 5: Address')).toBeVisible()
   },
 }
 
 /** Finnish with a long name at 320px: it wraps and hyphenates, never truncates. */
 export const LongFinnish: Story = {
+  // kv-lang-ok: Finnish locale story: a long name
   args: { current: 4, total: 5, name: 'Pysäköintitunnuksen tyyppi ja voimassaoloaika' },
   parameters: {
     viewport: {
@@ -159,6 +160,7 @@ export const LongFinnish: Story = {
   render: (args) => (
     <div className="kv-story-narrow">
       <Stack className="kv-stack--gap-2">
+        {/* kv-lang-ok: Finnish locale story: a long name */}
         <Heading as="h1">Minkä tunnuksen haluat?</Heading>
         <Stepper {...args} />
       </Stack>
@@ -172,6 +174,7 @@ export const LongFinnish: Story = {
       throw new Error('no narrow column')
     }
     await expect(
+      // kv-lang-ok: Finnish locale story: a long name
       canvas.getByText('Vaihe 4/5: Pysäköintitunnuksen tyyppi ja voimassaoloaika'),
     ).toBeVisible()
     await expectNoHorizontalOverflow(column)
@@ -184,20 +187,20 @@ export const Overrides: Story = {
     <KvirnProvider
       messages={{
         stepper: {
-          statusWithName: ({ current, total, name }) => `Del ${current} av ${total}, ${name}`,
+          statusWithName: ({ current, total, name }) => `Part ${current} of ${total}, ${name}`,
         },
       }}
     >
       <Stack className="kv-stack--gap-2">
-        <Stepper current={2} total={5} name="Fordonet" />
-        <Stepper current={5} total={5} messages={{ status: () => 'Sista delen' }} />
+        <Stepper current={2} total={5} name="Vehicle" />
+        <Stepper current={5} total={5} messages={{ status: () => 'The last part' }} />
       </Stack>
     </KvirnProvider>
   ),
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   play: async ({ canvas }) => {
-    await expect(canvas.getByText('Del 2 av 5, Fordonet')).toBeVisible()
-    await expect(canvas.getByText('Sista delen')).toBeVisible()
+    await expect(canvas.getByText('Part 2 of 5, Vehicle')).toBeVisible()
+    await expect(canvas.getByText('The last part')).toBeVisible()
   },
 }
 

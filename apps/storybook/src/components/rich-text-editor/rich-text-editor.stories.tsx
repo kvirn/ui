@@ -134,7 +134,7 @@ const meta = {
     },
     ref: { control: false, description: 'A ref to the box (`<div class="kv-rich-text">`).' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [
     (Story) => (
       <div className="kv-story-form">
@@ -215,7 +215,7 @@ export const RefusedImagePaste: Story = {
     const { text } = editorTextsFor(localeOf(globals))
     const box = await canvas.findByRole('textbox', { name: text.label })
     const data = new DataTransfer()
-    data.items.add(new File(['x'], 'bild.png', { type: 'image/png' }))
+    data.items.add(new File(['x'], 'image.png', { type: 'image/png' }))
     box.dispatchEvent(
       new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }),
     )
@@ -281,7 +281,7 @@ export const ControlledJson: Story = {
     const box = await canvas.findByRole('textbox', { name: text.label })
     await expect(canvas.getByTestId('json')).toHaveTextContent('null')
     await userEvent.click(box)
-    await userEvent.keyboard('Hej')
+    await userEvent.keyboard('Hey')
     await waitFor(() => expect(canvas.getByTestId('json')).toHaveTextContent('"type":"doc"'))
   },
 }
@@ -309,6 +309,7 @@ export const WithoutTablesAndImages: Story = {
   render: (_args, { globals }) => <PlainEditor locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await canvas.findByRole('toolbar')
+    // kv-lang-ok: the built-in Swedish and Norwegian button names of the removed controls
     await expect(canvas.queryByRole('button', { name: /^(Tabell|Bild|Table|Image)$/ })).toBeNull()
   },
 }

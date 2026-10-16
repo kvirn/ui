@@ -1,3 +1,4 @@
+// kv-lang-ok-file: sentence splitting is proven on Swedish and Finnish text
 import { describe, expect, it, vi } from 'vite-plus/test'
 import { splitSentences } from './split-sentences.ts'
 

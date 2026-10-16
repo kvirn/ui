@@ -1,7 +1,7 @@
 ---
 name: regulations
 description: EU and Nordic accessibility/digital regulation guidance for KvirnUI — WAD, EAA, EN 301 549, DOS-lagen (SE), Laki digitaalisten palvelujen tarjoamisesta (FI), forskrift om universell utforming av IKT (NO), GDPR, CRA. Use when writing any claim about compliance, conformance reports, accessibility-statement or feedback/consent blocks, docs-site copy, or when adding third-party services or dependencies.
-when_to_use: compliance claim, marketing copy, accessibility statement, tillgänglighetsredogörelse, saavutettavuusseloste, tilgjengelighetserklæring, cookie consent, SBOM, security policy, new dependency or external service
+when_to_use: compliance claim, marketing copy, accessibility statement, tillgänglighetsredogörelse, saavutettavuusseloste, tilgjengelighetserklæring, cookie consent, SBOM, security policy, new dependency or external service # kv-lang-ok: national legal terms for the accessibility statement
 ---
 
 # Regulations
@@ -28,12 +28,12 @@ when_to_use: compliance claim, marketing copy, accessibility statement, tillgän
 
 ## Accessibility statement block, per country
 
-| Country  | Name                                     | Must include (verify)                                                                                                                           | Notes                                             |
-| -------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| SE       | Tillgänglighetsredogörelse               | Conformance status, non-accessible content and reasons, feedback mechanism, how to report to the supervisor (Digg; PTS from 2027-01-01, verify) | Follow the supervisor's template                  |
-| FI       | Saavutettavuusseloste                    | Status, deficiencies, feedback channel, enforcement contact (Traficom), in both fi **and** sv                                                   | Public bodies publish in both national languages  |
-| NO       | Tilgjengelighetserklæring                | Created and published via Digdir's **uustatus.no** tool for covered entities                                                                    | Our block should link to uustatus, not replace it |
-| EU (EAA) | Service information / accessibility info | Description of how the service meets the requirements                                                                                           | Private-sector adopters                           |
+| Country  | Name                                     | Must include (verify)                                                                                                                           | Notes                                                                                                                       |
+| -------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| SE       | Tillgänglighetsredogörelse               | Conformance status, non-accessible content and reasons, feedback mechanism, how to report to the supervisor (Digg; PTS from 2027-01-01, verify) | Follow the supervisor's template <!-- kv-lang-ok: national legal terms for the accessibility statement -->                  |
+| FI       | Saavutettavuusseloste                    | Status, deficiencies, feedback channel, enforcement contact (Traficom), in both fi **and** sv                                                   | Public bodies publish in both national languages                                                                            |
+| NO       | Tilgjengelighetserklæring                | Created and published via Digdir's **uustatus.no** tool for covered entities                                                                    | Our block should link to uustatus, not replace it <!-- kv-lang-ok: national legal terms for the accessibility statement --> |
+| EU (EAA) | Service information / accessibility info | Description of how the service meets the requirements                                                                                           | Private-sector adopters                                                                                                     |
 
 The block must never pre-fill the adopter's conformance status. It provides structure and wording, and the adopter supplies the facts.
 

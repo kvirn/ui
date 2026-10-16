@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale fixture text sets (sv, fi, nb, nn), picked by the locale toolbar
 import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { Button, Card, KvirnProvider, Link, useFormat } from '@kvirn-ui/react'

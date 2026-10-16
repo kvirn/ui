@@ -63,7 +63,7 @@ describe('copying', () => {
     stubClipboard(async (text) => {
       written.push(text)
     })
-    let current = 'första'
+    let current = 'first'
     await render(
       <KvirnProvider>
         <CopyButton text={() => current} />
@@ -166,7 +166,9 @@ describe('announcements', () => {
         <CopyButton text="123" />
       </KvirnProvider>,
     )
+    // kv-lang-ok: the sv catalog's copy label
     await userEvent.click(page.getByRole('button', { name: 'Kopiera' }))
+    // kv-lang-ok: the sv catalog's copied message
     await expect.element(politeRegion()).toHaveTextContent('Kopierat')
   })
 
@@ -176,12 +178,12 @@ describe('announcements', () => {
       <KvirnProvider>
         <CopyButton
           text="123"
-          messages={{ label: 'Kopiera nummer', copied: 'Numret kopierades' }}
+          messages={{ label: 'Copy number', copied: 'The number was copied' }}
         />
       </KvirnProvider>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Kopiera nummer' }))
-    await expect.element(politeRegion()).toHaveTextContent('Numret kopierades')
+    await userEvent.click(page.getByRole('button', { name: 'Copy number' }))
+    await expect.element(politeRegion()).toHaveTextContent('The number was copied')
   })
 
   test('says it again when the button is pressed again', async () => {
@@ -222,10 +224,10 @@ describe('name', () => {
   test('children replace the label and become the name', async () => {
     await render(
       <KvirnProvider>
-        <CopyButton text="123">Kopiera ärendenumret</CopyButton>
+        <CopyButton text="123">Copy the case number</CopyButton>
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('button', { name: 'Kopiera ärendenumret' })).toBeVisible()
+    await expect.element(page.getByRole('button', { name: 'Copy the case number' })).toBeVisible()
   })
 
   test('is a button of type button, with no ARIA of its own, and passes the ref through', async () => {
@@ -289,7 +291,7 @@ describe('failure', () => {
     await render(
       <KvirnProvider>
         <p>
-          Ärendenummer <span ref={textRef}>PK-2026-004217</span>
+          Case number <span ref={textRef}>PK-2026-004217</span>
         </p>
         <CopyButton text="PK-2026-004217" textRef={textRef} />
       </KvirnProvider>,
@@ -342,25 +344,25 @@ describe('keyboard', () => {
   test('Shift+Tab moves focus off the copy button', async () => {
     await render(
       <KvirnProvider>
-        <button type="button">Före</button>
+        <button type="button">Before</button>
         <CopyButton text="123" />
       </KvirnProvider>,
     )
     await userEvent.keyboard('{Tab}{Tab}')
     await expect.element(copyButton()).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('a disabled copy button is skipped by Tab', async () => {
     await render(
       <KvirnProvider>
         <CopyButton text="123" disabled />
-        <button type="button">Efter</button>
+        <button type="button">After</button>
       </KvirnProvider>,
     )
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('a focusable disabled copy button is reached by Tab and copies nothing', async () => {
@@ -449,6 +451,7 @@ describe('visible status', () => {
         <CopyButton text="123" />
       </KvirnProvider>,
     )
+    // kv-lang-ok: the sv catalog's copy label
     await userEvent.click(page.getByRole('button', { name: 'Kopiera' }))
     await expect.poll(() => statusElement()?.textContent).toBe(sv.copyButton.failed)
   })
@@ -457,11 +460,11 @@ describe('visible status', () => {
     stubClipboard(async () => {})
     await render(
       <KvirnProvider>
-        <CopyButton text="123" messages={{ copied: 'Numret kopierades' }} />
+        <CopyButton text="123" messages={{ copied: 'The number was copied' }} />
       </KvirnProvider>,
     )
     await userEvent.click(copyButton())
-    await expect.poll(() => statusElement()?.textContent).toBe('Numret kopierades')
+    await expect.poll(() => statusElement()?.textContent).toBe('The number was copied')
   })
 
   test('copied clears after five seconds', async () => {
@@ -555,7 +558,7 @@ describe('accessibility', () => {
       <KvirnProvider>
         <main>
           <p>
-            Ärendenummer <span>PK-2026-004217</span>
+            Case number <span>PK-2026-004217</span>
           </p>
           <CopyButton text="PK-2026-004217" />
         </main>

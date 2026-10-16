@@ -47,7 +47,7 @@ const meta = {
     messages: {
       control: false,
       description:
-        'Per-instance override of this root’s status word, such as `{ infoPrefix: "Viktigt:" }`. It changes the word, never the status.',
+        'Per-instance override of this root’s status word, such as `{ infoPrefix: "Important:" }`. It changes the word, never the status.',
     },
     className: {
       control: 'text',
@@ -60,7 +60,7 @@ const meta = {
         "Another element: a string from the part's short list (Title `h2` to `h6` or `p`).",
     },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [withAlertColumn, withAlertLocale],
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof Alert.Info>
@@ -73,12 +73,12 @@ export const Default: Story = {
   render: (args) => (
     <Alert.Info {...args} data-testid="deadline">
       <Alert.Title>
-        Sista dag att ansöka är <time dateTime="2026-08-31">31 augusti 2026</time>
+        Applications close on <time dateTime="2026-08-31">31 August 2026</time>
       </Alert.Title>
       <Alert.Body>
         <p>
-          Ansök senast då om du vill ha ett sommarjobb i kommunen. Vi svarar alla senast{' '}
-          <time dateTime="2026-09-30">30 september 2026</time>.
+          Apply before then if you want a summer job in the municipality. We reply to everyone by{' '}
+          <time dateTime="2026-09-30">30 September 2026</time>.
         </p>
       </Alert.Body>
     </Alert.Info>
@@ -86,7 +86,7 @@ export const Default: Story = {
   play: async ({ canvas }) => {
     const heading = canvas.getByRole('heading', { level: 2 })
     // The status word is the first text in the heading, so a screen reader says it first.
-    await expect(heading.textContent).toMatch(/^Information: Sista dag att ansöka är /)
+    await expect(heading.textContent).toMatch(/^Information: Applications close on /)
     await expect(heading.closest('.kv-alert')).not.toBeNull()
     await expect(canvas.getByRole('status')).toBeEmptyDOMElement()
   },
@@ -102,9 +102,9 @@ export const Statuses: Story = {
   parameters: showSource('alert/alert.fixture.tsx', 'FourStatuses'),
   render: (_args, { globals }) => <FourStatuses locale={localeOf(globals)} />,
   play: async ({ canvas, canvasElement }) => {
-    for (const word of ['Information:', 'Klart:', 'Varning:', 'Fel:']) {
+    for (const word of ['Information:', 'Success:', 'Warning:', 'Error:']) {
       await expect(
-        canvas.getByRole('heading', { level: 2, name: `${word} Något du bör veta` }),
+        canvas.getByRole('heading', { level: 2, name: `${word} Something you should know` }),
       ).toBeVisible()
     }
     // No box has a role: the status is text. The only live regions are the Announcer's.
@@ -126,7 +126,7 @@ export const TitleOnly: Story = {
     </>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByTestId('saved').textContent).toBe('Klart: Dina ändringar är sparade')
+    await expect(canvas.getByTestId('saved').textContent).toBe('Success: Your changes are saved')
     await expect(canvas.queryByRole('heading')).toBeNull()
   },
 }
@@ -145,9 +145,9 @@ export const WithActions: Story = {
   ),
   play: async ({ canvas }) => {
     const permit = within(canvas.getByTestId('permit'))
-    await expect(permit.getByRole('link', { name: 'Förnya parkeringstillstånd' })).toBeVisible()
+    await expect(permit.getByRole('link', { name: 'Renew parking permit' })).toBeVisible()
     const failed = within(canvas.getByTestId('send-failed-alert'))
-    await expect(failed.getByRole('button', { name: 'Försök igen' })).toBeVisible()
+    await expect(failed.getByRole('button', { name: 'Try again' })).toBeVisible()
   },
 }
 
@@ -167,12 +167,12 @@ export const Announced: Story = {
   play: async ({ canvas }) => {
     // The live region exists before any text, and an alert present at load adds none.
     await expect(canvas.getByRole('status')).toBeEmptyDOMElement()
-    const save = canvas.getByRole('button', { name: 'Spara' })
+    const save = canvas.getByRole('button', { name: 'Save' })
     await userEvent.click(save)
     await waitFor(() =>
-      expect(canvas.getByRole('status').textContent).toBe('Klart: Dina ändringar är sparade'),
+      expect(canvas.getByRole('status').textContent).toBe('Success: Your changes are saved'),
     )
-    await expect(canvas.getByRole('status')).not.toHaveTextContent('Sista dag')
+    await expect(canvas.getByRole('status')).not.toHaveTextContent('Applications close')
     await expect(save).toHaveFocus()
     // The visible box has no role of its own: there is still one status region, the Announcer's.
     await expect(canvas.getAllByRole('status')).toHaveLength(1)
@@ -182,8 +182,8 @@ export const Announced: Story = {
 /**
  * Example D: danger, inserted after Send fails, directly above Send. It is announced politely.
  * A second failure keeps the same instance and announces through `useAnnouncer()`, because
- * "Försök igen" is inside it and a remount would drop the focus. Shift+Tab from Send reaches
- * "Försök igen".
+ * "Try again" is inside it and a remount would drop the focus. Shift+Tab from Send reaches
+ * "Try again".
  */
 export const SendFailed: Story = {
   parameters: showSource('alert/alert.fixture.tsx', 'SendFailedExample'),
@@ -199,10 +199,10 @@ export const SendFailed: Story = {
       }
     })
     observer.observe(region, { childList: true, characterData: true, subtree: true })
-    const send = canvas.getByRole('button', { name: 'Skicka ansökan' })
+    const send = canvas.getByRole('button', { name: 'Send application' })
     await userEvent.click(send)
     await waitFor(() => expect(announcements).toHaveLength(1))
-    await expect(announcements[0]).toMatch(/^Fel: Vi kunde inte skicka din ansökan /)
+    await expect(announcements[0]).toMatch(/^Error: We couldn’t send your application /)
     await expect(send).toHaveFocus()
     await userEvent.click(send)
     await waitFor(() => expect(announcements).toHaveLength(2))
@@ -220,7 +220,7 @@ export const FocusTarget: Story = {
   parameters: showSource('alert/alert.fixture.tsx', 'FocusTargetExample'),
   render: (_args, { globals }) => <FocusTargetExample locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Skicka ansökan' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Send application' }))
     const root = canvas.getByTestId('focus-target')
     await waitFor(() => expect(root).toHaveFocus())
     await expect(root).toHaveAttribute('tabindex', '-1')
@@ -232,14 +232,14 @@ export const FocusTarget: Story = {
  * The optional close button, and the focus rule that comes with it (WCAG 2.4.3). Try the keys in
  * the table below: Tab reaches the link and then the close button, and Enter or Space on it
  * removes the alert. The Alert owns no state, so your `onClick` removes it, and moves focus to
- * the page heading first: the button that had focus is gone. "Visa meddelandet igen" brings it back.
+ * the page heading first: the button that had focus is gone. a button that shows the message again brings it back.
  */
 export const Keyboard: Story = {
   parameters: showSource('alert/alert.fixture.tsx', 'DismissibleExample'),
   render: (_args, { globals }) => <DismissibleExample locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     const alert = within(canvas.getByTestId('dismissible'))
-    await expect(alert.getByRole('button', { name: 'Stäng meddelandet' })).toBeVisible()
+    await expect(alert.getByRole('button', { name: 'Close message' })).toBeVisible()
     // Present at load: content, not announced, and the box itself is not a Tab stop.
     await expect(canvas.getByRole('status')).toBeEmptyDOMElement()
     await expect(canvas.getByTestId('dismissible')).not.toHaveAttribute('tabindex')
@@ -255,7 +255,7 @@ export const WithCloseButton: Story = {
   parameters: showSource('alert/alert.fixture.tsx', 'ClosableAlerts'),
   render: (_args, { globals }) => <ClosableAlerts locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    const buttons = canvas.getAllByRole('button', { name: 'Stäng meddelandet' })
+    const buttons = canvas.getAllByRole('button', { name: 'Close message' })
     await expect(buttons).toHaveLength(4)
     for (const button of buttons) {
       await expect(button.querySelector('svg[aria-hidden="true"]')).not.toBeNull()
@@ -272,11 +272,11 @@ export const SiteWideOutage: Story = {
   parameters: showSource('alert/alert.fixture.tsx', 'OutageAlert'),
   render: (_args, { globals }) => <OutageAlert locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Visa en driftstörning' }))
-    await expect(canvas.getByRole('region', { name: 'Fel: Tjänsten är nere' })).toBeVisible()
+    await userEvent.click(canvas.getByRole('button', { name: 'Simulate an outage' }))
+    await expect(canvas.getByRole('region', { name: 'Error: The service is down' })).toBeVisible()
     // Assertive goes to the Announcer's `alert` region, and the visible box has no role of its own.
     await waitFor(() =>
-      expect(canvas.getByRole('alert').textContent).toMatch(/^Fel: Tjänsten är nere /),
+      expect(canvas.getByRole('alert').textContent).toMatch(/^Error: The service is down /),
     )
     await expect(canvas.getByRole('status')).toBeEmptyDOMElement()
   },
@@ -290,9 +290,9 @@ export const CloseButtonNaming: Story = {
   parameters: showSource('alert/alert.fixture.tsx', 'CloseButtonNames'),
   render: (_args, { globals }) => <CloseButtonNames locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('button', { name: 'Dölj tipset' })).toHaveLength(2)
-    const visible = canvas.getByRole('button', { name: 'Dölj' })
-    await expect(visible).toHaveTextContent('Dölj')
+    await expect(canvas.getAllByRole('button', { name: 'Hide the tip' })).toHaveLength(2)
+    const visible = canvas.getByRole('button', { name: 'Hide' })
+    await expect(visible).toHaveTextContent('Hide')
     await expect(visible.querySelector('svg')).toBeNull()
   },
 }
@@ -307,7 +307,7 @@ export const DynamicStatus: Story = {
   play: async ({ canvas }) => {
     await userEvent.selectOptions(canvas.getByRole('combobox', { name: 'Status' }), 'danger')
     await expect(canvas.getByRole('heading', { level: 2 }).textContent).toBe(
-      'Fel: Något du bör veta',
+      'Error: Something you should know',
     )
   },
 }
@@ -338,7 +338,7 @@ export const RestyleWithTokens: Story = {
     for (const testId of ['rebranded', 'own-class']) {
       const alert = canvas.getByTestId(testId)
       await expect(alert.querySelector('svg.kv-alert-icon')).not.toBeNull()
-      await expect(alert.querySelector('.kv-alert-status')?.textContent).toBe('Varning:')
+      await expect(alert.querySelector('.kv-alert-status')?.textContent).toBe('Warning:')
     }
     await expect(canvas.getByTestId('own-class')).toHaveClass('kv-alert', 'kv-story-my-warning')
   },
@@ -365,7 +365,7 @@ export const BringYourOwn: Story = {
     const own = canvas.getByTestId('own')
     await expect(own.className).toBe('kv-story-my-notice kv-alert')
     await expect(canvas.getByRole('heading', { level: 2 }).textContent).toBe(
-      'Observera: Något du bör veta',
+      'Notice: Something you should know',
     )
   },
 }
@@ -399,19 +399,19 @@ export const MessagesOverride: Story = {
   },
   play: async ({ canvas }) => {
     await expect(
-      canvas.getByRole('heading', { level: 2, name: 'Viktigt: Vi kunde inte spara dina svar' }),
+      canvas.getByRole('heading', { level: 2, name: 'Important: We couldn’t save your answers' }),
     ).toBeVisible()
     await expect(
       canvas.getByRole('heading', {
         level: 2,
-        name: 'Obs: Kontrollera dina svar innan du skickar',
+        name: 'Note: Check your answers before you send',
       }),
     ).toBeVisible()
     await expect(
-      canvas.getByRole('heading', { level: 2, name: 'Tips: Något du bör veta' }),
+      canvas.getByRole('heading', { level: 2, name: 'Tip: Something you should know' }),
     ).toBeVisible()
     await expect(
-      canvas.getByRole('heading', { level: 2, name: 'Sparat: Något du bör veta' }),
+      canvas.getByRole('heading', { level: 2, name: 'Saved: Something you should know' }),
     ).toBeVisible()
   },
 }
@@ -500,10 +500,12 @@ export const LongFinnishText: Story = {
     )
   },
   play: async ({ canvas }) => {
+    // kv-lang-ok: asserts the Finnish built-in close label under locale fi
     await expect(canvas.getByRole('button', { name: 'Sulje ilmoitus' })).toBeVisible()
     await expect(
       canvas.getByRole('heading', {
         level: 2,
+        // kv-lang-ok: asserts the Finnish long-compound title under locale fi
         name: /^Tiedoksi: Asunnonmuutostyöavustushakemuksesi/,
       }),
     ).toBeVisible()

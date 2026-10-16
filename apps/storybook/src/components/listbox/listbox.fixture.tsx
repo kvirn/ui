@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale story texts (the toolbar locale selects the table), and municipality names with å, ä and ö for the type-ahead and collation examples
 import { Button, Card, Field, Icon, Listbox } from '@kvirn-ui/react'
 import { useMemo, useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
@@ -82,8 +83,8 @@ export const richMunicipalities: readonly Municipality[] = Object.entries(counti
 )
 
 export const longList: readonly Municipality[] = Array.from({ length: 300 }, (_, index) => ({
-  code: `ort-${index + 1}`,
-  name: `Ort ${index + 1}`,
+  code: `place-${index + 1}`,
+  name: `Place ${index + 1}`,
 }))
 
 /** Five of them: a list short enough to fit above a trigger. */
@@ -193,7 +194,7 @@ export function useMunicipalityGroups(text: ChoiceTexts) {
 export function MunicipalityField() {
   return (
     <Field.Root required>
-      <Field.Label>Kommun</Field.Label>
+      <Field.Label>Municipality</Field.Label>
       <Listbox.Root
         native="never"
         items={municipalities}
@@ -202,7 +203,7 @@ export function MunicipalityField() {
         name="municipality"
       >
         <Listbox.Trigger>
-          <Listbox.Value placeholder="Välj kommun" />
+          <Listbox.Value placeholder="Choose a municipality" />
         </Listbox.Trigger>
         <Listbox.Popup>
           <Listbox.List>
@@ -227,7 +228,7 @@ export function KeyboardForm({ locale }: { locale: FormLocale }) {
     <>
       <form className="kv-story-form" noValidate onSubmit={(e) => e.preventDefault()}>
         <div className="kv-button-group">
-          <Button type="button">Före</Button>
+          <Button type="button">Before</Button>
         </div>
         <Field.Root required controlId="municipality">
           <Field.Label>{text.municipality}</Field.Label>
@@ -789,7 +790,7 @@ export function SeveralMunicipalitiesAsCount({ locale }: { locale: FormLocale })
 }
 
 /**
- * Your own empty text: `messages` on the Root replaces the default "Inga resultat" that
+ * Your own empty text: `messages` on the Root replaces the default "No results" that
  * `Listbox.Empty` shows, for this listbox only. A provider's `messages` change it for every one.
  */
 export function MunicipalitiesWithOwnEmptyText({ locale }: { locale: FormLocale }) {
@@ -868,7 +869,7 @@ export function ControlledOpenMunicipality({ locale }: { locale: FormLocale }) {
   return (
     <>
       <div className="kv-story-form">
-        <Button type="button">Före</Button>
+        <Button type="button">Before</Button>
         <Field.Root required>
           <Field.Label>{text.municipality}</Field.Label>
           <Listbox.Root
@@ -1277,20 +1278,20 @@ const languageCodes = Object.keys(languageNames)
 /**
  * A language switcher: each name is written in its own language, so `itemToLang` puts `lang` on
  * every option and on the trigger's value, and a screen reader reads "Suomi" in Finnish (3.1.2).
- * The page is Swedish, so `sv` returns `undefined` and gets no `lang`. First the popup, then the
+ * The page is English, so `en` returns `undefined` and gets no `lang`. First the popup, then the
  * browser's own `<select>`, which takes the same props.
  */
 export function LanguageSwitcher() {
   return (
-    <form className="kv-story-form" lang="sv" noValidate onSubmit={(e) => e.preventDefault()}>
+    <form className="kv-story-form" lang="en" noValidate onSubmit={(e) => e.preventDefault()}>
       <Field.Root>
-        <Field.Label>Språk</Field.Label>
+        <Field.Label>Language</Field.Label>
         <Listbox.Root
           native="never"
           items={languageCodes}
           itemToString={(code) => languageNames[code] ?? code}
           itemToKey={(code) => code}
-          itemToLang={(code) => (code === 'sv' ? undefined : code)}
+          itemToLang={(code) => (code === 'en' ? undefined : code)}
           defaultValue="fi"
         >
           <Listbox.Trigger>
@@ -1302,13 +1303,13 @@ export function LanguageSwitcher() {
         </Listbox.Root>
       </Field.Root>
       <Field.Root>
-        <Field.Label>Språk (webbläsarens egen lista)</Field.Label>
+        <Field.Label>Language (the browser’s own list)</Field.Label>
         <Listbox.Root
           native="always"
           items={languageCodes}
           itemToString={(code) => languageNames[code] ?? code}
           itemToKey={(code) => code}
-          itemToLang={(code) => (code === 'sv' ? undefined : code)}
+          itemToLang={(code) => (code === 'en' ? undefined : code)}
           defaultValue="fi"
         />
       </Field.Root>

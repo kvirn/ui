@@ -179,7 +179,7 @@ The site copy is English (en-GB spelling, as elsewhere in the repo: "colour", "l
 | `docs.template.columns.*`                              | Prop · Type · Default · Description · Key · Context · Action · Test · Part · Element or role · ARIA and attributes · Notes · Attribute · Values · Meaning · Assistive technology, browser and system · Date · Result | Table headers                                                                                                                                                                |
 | `docs.template.result.pending`                         | Pending                                                                                                                                                                                                              | AT result in words, never colour alone                                                                                                                                       |
 | `docs.display.exampleLanguage`                         | Example language                                                                                                                                                                                                     | `<label>` of the global example-language select in Display settings                                                                                                          |
-| `docs.example.languages.*`                             | Svenska · Suomi · Norsk bokmål · Norsk nynorsk · Davvisámegiella · English                                                                                                                                           | Each option in its own language, with `lang` on the `<option>`                                                                                                               |
+| `docs.example.languages.*`                             | Svenska · Suomi · Norsk bokmål · Norsk nynorsk · Davvisámegiella · English                                                                                                                                           | Each option in its own language, with `lang` on the `<option>` <!-- kv-lang-ok: each language is named in its own language -->                                               |
 | `docs.example.codeHeading`                             | Code                                                                                                                                                                                                                 | A visible label above the code block (label typography, not a heading)                                                                                                       |
 | `docs.example.samiPending`                             | Some text in this example is in English because it isn't available in Northern Sámi.                                                                                                                                 | English, `lang="en"`                                                                                                                                                         |
 | `docs.example.error`                                   | This example could not be shown. The rest of the page still works. Reload the page to try again.                                                                                                                     |                                                                                                                                                                              |
@@ -192,7 +192,7 @@ The site copy is English (en-GB spelling, as elsewhere in the repo: "colour", "l
 | `docs.notFound.body`                                   | Check the web address. If you followed a link on this site, the page may have moved.                                                                                                                                 |                                                                                                                                                                              |
 | `docs.notFound.homeLink`                               | Go to the introduction                                                                                                                                                                                               |                                                                                                                                                                              |
 
-The longest example string is fi `button.saveLong`, "Tallenna rakennuslupahakemuksen luonnos", 39 characters with a 23-character compound. The longest library string is fi `link.newTabNotice`, "(avautuu uuteen välilehteen)", 28 characters against 20 in en. Both are shown in the examples to prove wrapping.
+The longest example string is fi `button.saveLong`, "Tallenna rakennuslupahakemuksen luonnos", 39 characters with a 23-character compound. The longest library string is fi `link.newTabNotice`, "(avautuu uuteen välilehteen)", 28 characters against 20 in en. Both are shown in the examples to prove wrapping. <!-- kv-lang-ok: a Finnish string is the stress case -->
 
 ### Page content outlines
 
@@ -206,7 +206,7 @@ The headings below are the real headings. The sentences are first drafts in plai
 - `h2` **What you get**
   - "Behaviour, keyboard support and ARIA for each component. You own the markup and the styles."
   - "An accessibility contract for each component, with the tests behind it and the results of testing with assistive technology."
-  - "Text in Swedish, Finnish, Norwegian Bokmål, Norwegian Nynorsk, Northern Sámi and English. You can replace any of it."
+  - "Text in Swedish, Finnish, Norwegian Bokmål, Norwegian Nynorsk, Northern Sámi and English. You can replace any of it." <!-- kv-lang-ok: the sentence names the languages and the Bokmål form -->
   - "An optional default theme with light, dark and two high-contrast versions."
 - `h2` **Components**: a table (Component · What it's for · Status). Rows:
   - KvirnProvider: "Gives components their language, text, router links and theme."
@@ -268,7 +268,7 @@ The headings below are the real headings. The sentences are first drafts in plai
 - Summary: "A button that does something, such as sending a form or saving a draft. It never sends a form by accident, and it can stay reachable by keyboard when it's disabled."
 - Status: badge plus text.
 - `h2` On this page.
-- `h2` **Example**: the Variants group (Skicka ansökan · Spara utkast · Ta bort utkast), followed by the danger note.
+- `h2` **Example**: the Variants group (Send application · Save draft · Delete draft), followed by the danger note.
 - `h2` **When to use it**:
   - "Use a button when the user does something: sends, saves, deletes or opens."
   - "Write the label as a verb that says what will happen: 'Send application', not 'OK'."
@@ -310,12 +310,12 @@ The headings below are the real headings. The sentences are first drafts in plai
   - `h3` The current page in a navigation
   - `h3` Opening a new tab
   - `h3` Changing the new-tab text: three ways, in resolution order.
-  - `h3` Links to pages in another language: `hrefLang` and `lang`, with the example "Suomeksi · På svenska · Sámegillii".
+  - `h3` Links to pages in another language: `hrefLang` and `lang`, with the example "Suomeksi · På svenska · Sámegillii". <!-- kv-lang-ok: each language is named in its own language -->
   - `h3` Downloads and links outside your router: `as="a"`.
   - `h3` The hook: `useLink`
 - `h2` **Accessibility**, from `link.a11y.md`.
 - `h2` **Strings**: `h3` `link.newTabNotice`, with a Language · Default text table:
-  - Svenska (sv), Suomi (fi), Norsk bokmål (nb), Norsk nynorsk (nn), Davvisámegiella (se), English (en).
+  - Svenska (sv), Suomi (fi), Norsk bokmål (nb), Norsk nynorsk (nn), Davvisámegiella (se), English (en). <!-- kv-lang-ok: each language is named in its own language -->
   - Each text cell has `lang`.
   - The `se` row says `docs.template.stringPendingSami`.
 - `h2` **Styling**:
@@ -365,9 +365,9 @@ Reading order equals focus order at every width. The `display-panel` sits inside
 │ • Example …                  │
 │ h2 Example                   │
 │ ┌ Example language [Svenska▾]┐
-│ │ [Skicka ansökan   (full)]  │  button group stacks
-│ │ [Spara utkast     (full)]  │
-│ │ [Ta bort utkast   (full)]  │
+│ │ [Send application (full)] │  button group stacks
+│ │ [Save draft       (full)]  │
+│ │ [Delete draft     (full)]  │
 │ │ danger note                │
 │ └────────────────────────────┘
 │ Code                         │
@@ -474,7 +474,7 @@ Only DESIGN.md tokens, the theme-delivery decision recipes and the three `--docs
 - The "Test" column shows test names as `code`. It doesn't link to files, because the docs site isn't a code browser. Open question 9 covers a repository link.
 - A section that can't be derived fails the build (§3).
 
-**Font.** Self-host IBM Plex Sans (text and controls) and IBM Plex Serif (headings), IBM's own split woff2 files (Latin1, Latin2, Pi), so the Sámi letters á č đ ŋ š ŧ ž and å ä ö æ ø are covered. Amended by the IBM Plex decision and [typography-ibm-plex.md](typography-ibm-plex.md), which replace Inter.
+**Font.** Self-host IBM Plex Sans (text and controls) and IBM Plex Serif (headings), IBM's own split woff2 files (Latin1, Latin2, Pi), so the Sámi letters á č đ ŋ š ŧ ž and å ä ö æ ø are covered. Amended by the IBM Plex decision and [typography-ibm-plex.md](typography-ibm-plex.md), which replace Inter. <!-- kv-lang-ok: the Nordic letters are the subject of the font coverage -->
 
 - Vendor the woff2 and the OFL licence in `apps/docs/fonts/ibm-plex/`, with `ibm-plex.css` holding the `@font-face` blocks. Don't modify, subset or rename the files (the licence reserves the name "Plex").
 - The docs layout and Storybook's `preview.tsx` import `ibm-plex.css`: plain CSS, no new dependency and no network call (the theme-prototype decision, as amended).

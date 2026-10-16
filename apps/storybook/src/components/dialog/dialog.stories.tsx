@@ -60,24 +60,26 @@ const meta = {
     children: { control: false, description: 'The Trigger and the Popup.' },
   },
   args: { defaultOpen: false, dismissOnOutsidePress: false, onOpenChange: fn() },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [withFormLocale],
   // A short read: the title names it, Close is an icon button, and with no field inside focus
   // starts on the title.
   render: (args) => (
     <Dialog.Root {...args}>
-      <Dialog.Trigger className="kv-button">Om e-tjänsten</Dialog.Trigger>
+      <Dialog.Trigger className="kv-button">About the e-service</Dialog.Trigger>
       <Dialog.Popup>
-        <Dialog.Title>Om e-tjänsten</Dialog.Title>
+        <Dialog.Title>About the e-service</Dialog.Title>
         <Dialog.Close />
         <Dialog.Description>
-          Tjänsten drivs av kommunen och är öppen dygnet runt.
+          The service is run by the municipality and is open around the clock.
         </Dialog.Description>
         <Dialog.Body>
-          <p>Du kan spara din ansökan och fortsätta senare. Dina svar finns kvar i 30 dagar.</p>
+          <p>
+            You can save your application and continue later. Your answers are kept for 30 days.
+          </p>
         </Dialog.Body>
         <Dialog.Actions>
-          <Button className="kv-button--primary">Kontakta oss</Button>
+          <Button className="kv-button--primary">Contact us</Button>
         </Dialog.Actions>
       </Dialog.Popup>
     </Dialog.Root>
@@ -96,7 +98,7 @@ const modalDialog = () => document.querySelector<HTMLDialogElement>('dialog.kv-d
 /** The main example: a closed trigger that says it has a dialog (`aria-haspopup="dialog"`). */
 export const Default: Story = {
   play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Om e-tjänsten' })
+    const trigger = canvas.getByRole('button', { name: 'About the e-service' })
     await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog')
     await expect(trigger).not.toHaveAttribute('aria-expanded')
     await expect(modalDialog()).toBeNull()
@@ -104,20 +106,20 @@ export const Default: Story = {
 }
 
 /**
- * Open: the page behind is inert and focus is on the first action, "Kontakta oss". Close comes
+ * Open: the page behind is inert and focus is on the first action, "Contact us". Close comes
  * after the title in the DOM and is never the first focus.
  */
 export const Open: Story = {
   args: { defaultOpen: true },
   play: async ({ canvas }) => {
     await waitFor(() => expect(modalDialog()).not.toBeNull())
-    const dialog = canvas.getByRole('dialog', { name: 'Om e-tjänsten' })
+    const dialog = canvas.getByRole('dialog', { name: 'About the e-service' })
     await expect(dialog).toHaveAttribute('aria-modal', 'true')
     await expect(dialog).toHaveAccessibleDescription(
-      'Tjänsten drivs av kommunen och är öppen dygnet runt.',
+      'The service is run by the municipality and is open around the clock.',
     )
-    await expect(canvas.getByRole('button', { name: 'Kontakta oss' })).toHaveFocus()
-    await expect(canvas.getByRole('button', { name: 'Stäng dialogrutan' })).toBeInTheDocument()
+    await expect(canvas.getByRole('button', { name: 'Contact us' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'Close dialog' })).toBeInTheDocument()
   },
 }
 
@@ -129,19 +131,15 @@ export const WithForm: Story = {
   parameters: source('PhoneNumberForm'),
   render: (_args, { globals }) => <PhoneNumberForm locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Ändra telefonnummer' }))
-    await waitFor(() =>
-      expect(canvas.getByRole('textbox', { name: /Telefonnummer/ })).toHaveFocus(),
-    )
-    await expect(canvas.getByRole('dialog', { name: 'Ändra telefonnummer' })).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: 'Change phone number' }))
+    await waitFor(() => expect(canvas.getByRole('textbox', { name: /Phone number/ })).toHaveFocus())
+    await expect(canvas.getByRole('dialog', { name: 'Change phone number' })).toBeInTheDocument()
     await userEvent.keyboard('070 123 45 67')
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(modalDialog()).toBeNull())
-    await userEvent.click(canvas.getByRole('button', { name: 'Ändra telefonnummer' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Change phone number' }))
     await waitFor(() => expect(modalDialog()).not.toBeNull())
-    await expect(canvas.getByRole('textbox', { name: /Telefonnummer/ })).toHaveValue(
-      '070 123 45 67',
-    )
+    await expect(canvas.getByRole('textbox', { name: /Phone number/ })).toHaveValue('070 123 45 67')
   },
 }
 
@@ -153,11 +151,11 @@ export const LongContent: Story = {
   parameters: source('LongTerms'),
   render: (_args, { globals }) => <LongTerms locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Läs villkoren' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Read the terms' }))
     await waitFor(() => expect(modalDialog()).not.toBeNull())
-    const dialog = canvas.getByRole('dialog', { name: 'Villkor för e-tjänsten' })
+    const dialog = canvas.getByRole('dialog', { name: 'Terms of the e-service' })
     await expectNoHorizontalOverflow(dialog)
-    await expect(canvas.getByRole('heading', { name: 'Villkor för e-tjänsten' })).toHaveFocus()
+    await expect(canvas.getByRole('heading', { name: 'Terms of the e-service' })).toHaveFocus()
   },
 }
 
@@ -178,18 +176,18 @@ export const Controlled: Story = {
   render: (_args, { globals }) => <ControlledDialog locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     const reason = canvas.getByTestId('reason')
-    await userEvent.click(canvas.getByRole('button', { name: 'Öppna från sidan' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Open from the page' }))
     await waitFor(() => expect(modalDialog()).not.toBeNull())
-    await expect(canvas.getByTestId('state')).toHaveTextContent('öppen')
+    await expect(canvas.getByTestId('state')).toHaveTextContent('open')
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(modalDialog()).toBeNull())
     await expect(reason).toHaveTextContent('escape')
-    await userEvent.click(canvas.getByRole('button', { name: 'Visa kvittot' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Show the receipt' }))
     await waitFor(() => expect(reason).toHaveTextContent('trigger-press'))
-    await userEvent.click(canvas.getByRole('button', { name: 'Stäng' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Close' }))
     await waitFor(() => expect(reason).toHaveTextContent('close-press'))
     await waitFor(() => expect(modalDialog()).toBeNull())
-    await userEvent.click(canvas.getByRole('button', { name: 'Visa kvittot' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Show the receipt' }))
     await waitFor(() => expect(modalDialog()).not.toBeNull())
   },
 }
@@ -202,7 +200,7 @@ export const NoTrigger: Story = {
   parameters: source('OpenedByAButton'),
   render: (_args, { globals }) => <OpenedByAButton locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: 'Visa kvittot' })
+    const button = canvas.getByRole('button', { name: 'Show the receipt' })
     await userEvent.click(button)
     await waitFor(() => expect(modalDialog()).not.toBeNull())
     await userEvent.keyboard('{Escape}')
@@ -221,17 +219,17 @@ export const Nested: Story = {
   parameters: source('RemoveNumberOverDialog'),
   render: (_args, { globals }) => <RemoveNumberOverDialog locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Ändra telefonnummer' }))
-    const removeTrigger = await canvas.findByRole('button', { name: 'Ta bort telefonnumret' })
+    await userEvent.click(canvas.getByRole('button', { name: 'Change phone number' }))
+    const removeTrigger = await canvas.findByRole('button', { name: 'Remove the phone number' })
     await userEvent.click(removeTrigger)
     await expect(
-      await canvas.findByRole('alertdialog', { name: 'Vill du ta bort telefonnumret?' }),
+      await canvas.findByRole('alertdialog', { name: 'Remove the phone number?' }),
     ).toBeInTheDocument()
-    await expect(canvas.getByRole('button', { name: 'Behåll numret' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'Keep the number' })).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(canvas.queryByRole('alertdialog')).toBeNull())
     await expect(removeTrigger).toHaveFocus()
-    await expect(canvas.getByRole('dialog', { name: 'Ändra telefonnummer' })).toBeInTheDocument()
+    await expect(canvas.getByRole('dialog', { name: 'Change phone number' })).toBeInTheDocument()
   },
 }
 
@@ -240,16 +238,12 @@ export const PopoverInside: Story = {
   parameters: source('PopoverInDialog'),
   render: (_args, { globals }) => <PopoverInDialog locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Ändra telefonnummer' }))
-    await userEvent.click(await canvas.findByRole('button', { name: 'Varför frågar vi?' }))
-    await expect(
-      await canvas.findByRole('dialog', { name: 'Varför frågar vi?' }),
-    ).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: 'Change phone number' }))
+    await userEvent.click(await canvas.findByRole('button', { name: 'Why do we ask?' }))
+    await expect(await canvas.findByRole('dialog', { name: 'Why do we ask?' })).toBeInTheDocument()
     await userEvent.keyboard('{Escape}')
-    await waitFor(() =>
-      expect(canvas.queryByRole('dialog', { name: 'Varför frågar vi?' })).toBeNull(),
-    )
-    await expect(canvas.getByRole('dialog', { name: 'Ändra telefonnummer' })).toBeInTheDocument()
+    await waitFor(() => expect(canvas.queryByRole('dialog', { name: 'Why do we ask?' })).toBeNull())
+    await expect(canvas.getByRole('dialog', { name: 'Change phone number' })).toBeInTheDocument()
   },
 }
 
@@ -261,8 +255,8 @@ export const ComboboxInside: Story = {
   parameters: source('ComboboxInDialog'),
   render: (_args, { globals }) => <ComboboxInDialog locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Ändra telefonnummer' }))
-    const input = await canvas.findByRole('combobox', { name: /Kommun/ })
+    await userEvent.click(canvas.getByRole('button', { name: 'Change phone number' }))
+    const input = await canvas.findByRole('combobox', { name: /Municipality/ })
     await userEvent.type(input, 'Ma')
     await expect(await canvas.findByRole('listbox')).toBeInTheDocument()
     await waitFor(() =>
@@ -315,14 +309,12 @@ export const Keyboard: Story = {
   parameters: source('KeyboardDialog'),
   render: (_args, { globals }) => <KeyboardDialog locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Ändra telefonnummer' })
+    const trigger = canvas.getByRole('button', { name: 'Change phone number' })
     trigger.focus()
     await userEvent.keyboard('{Enter}')
-    await waitFor(() =>
-      expect(canvas.getByRole('textbox', { name: /Telefonnummer/ })).toHaveFocus(),
-    )
+    await waitFor(() => expect(canvas.getByRole('textbox', { name: /Phone number/ })).toHaveFocus())
     await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'Stäng' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'Close' })).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(modalDialog()).toBeNull())
     await expect(trigger).toHaveFocus()

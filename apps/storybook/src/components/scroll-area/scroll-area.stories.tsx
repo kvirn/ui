@@ -31,7 +31,7 @@ const meta = {
     },
     as: { control: false, description: 'Another element: `section`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },

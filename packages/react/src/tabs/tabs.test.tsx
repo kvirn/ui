@@ -54,27 +54,27 @@ interface CaseTabsProps {
 
 function CaseTabs({
   value,
-  defaultValue = 'uppgifter',
+  defaultValue = 'details',
   onValueChange,
   activationMode,
   orientation,
 }: CaseTabsProps) {
   const parts = (
     <>
-      <Tabs.List aria-label="Ärendet">
-        <Tabs.Tab value="uppgifter" style={fixtureTabStyle}>
-          Uppgifter
+      <Tabs.List aria-label="The case">
+        <Tabs.Tab value="details" style={fixtureTabStyle}>
+          Details
         </Tabs.Tab>
-        <Tabs.Tab value="handlingar" style={fixtureTabStyle}>
-          Handlingar
+        <Tabs.Tab value="documents" style={fixtureTabStyle}>
+          Documents
         </Tabs.Tab>
-        <Tabs.Tab value="historik" style={fixtureTabStyle}>
-          Historik
+        <Tabs.Tab value="history" style={fixtureTabStyle}>
+          History
         </Tabs.Tab>
       </Tabs.List>
-      <Tabs.Panel value="uppgifter">Uppgifterna om ärendet.</Tabs.Panel>
-      <Tabs.Panel value="handlingar">Handlingarna i ärendet.</Tabs.Panel>
-      <Tabs.Panel value="historik">Ärendets historik.</Tabs.Panel>
+      <Tabs.Panel value="details">The details of the case.</Tabs.Panel>
+      <Tabs.Panel value="documents">The documents in the case.</Tabs.Panel>
+      <Tabs.Panel value="history">The history of the case.</Tabs.Panel>
     </>
   )
   return value === undefined ? (
@@ -101,11 +101,11 @@ function CaseTabs({
 describe('rendering', () => {
   test('is a tablist of tabs and panels with the names the consumer gives, and warns about nothing', async () => {
     const { container } = await render(<CaseTabs />)
-    const list = page.getByRole('tablist', { name: 'Ärendet' })
+    const list = page.getByRole('tablist', { name: 'The case' })
     await expect.element(list).toBeVisible()
     expect(page.getByRole('tab').elements()).toHaveLength(3)
-    await expect.element(tab('Uppgifter')).toBeVisible()
-    await expect.element(page.getByRole('tabpanel', { name: 'Uppgifter' })).toBeVisible()
+    await expect.element(tab('Details')).toBeVisible()
+    await expect.element(page.getByRole('tabpanel', { name: 'Details' })).toBeVisible()
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -132,7 +132,7 @@ describe('rendering', () => {
   })
 
   test('exactly one tab is selected, and aria-selected is explicit on every tab', async () => {
-    await render(<CaseTabs defaultValue="handlingar" />)
+    await render(<CaseTabs defaultValue="documents" />)
     const selected = page
       .getByRole('tab')
       .elements()
@@ -141,10 +141,10 @@ describe('rendering', () => {
   })
 
   test('every tab controls its panel and every panel is named by its tab, for values with spaces and punctuation too', async () => {
-    const values = ['Bygga och bo', "a:b'c", 'a_b', 'a_5f_b']
+    const values = ['Build and live', "a:b'c", 'a_b', 'a_5f_b']
     await render(
-      <Tabs.Root defaultValue="Bygga och bo">
-        <Tabs.List aria-label="Ämnen">
+      <Tabs.Root defaultValue="Build and live">
+        <Tabs.List aria-label="Topics">
           {values.map((value) => (
             <Tabs.Tab key={value} value={value} style={fixtureTabStyle}>
               {value}
@@ -214,24 +214,24 @@ describe('rendering', () => {
 
   test('the parts render their classes, and the consumer’s join them', async () => {
     const { container } = await render(
-      <Tabs.Root defaultValue="a" className="egen-rot" data-egen="rot">
-        <Tabs.List aria-label="Test" className="egen-lista">
-          <Tabs.Tab value="a" className="egen-flik">
+      <Tabs.Root defaultValue="a" className="own-rot" data-own="rot">
+        <Tabs.List aria-label="Test" className="own-list">
+          <Tabs.Tab value="a" className="own-tab">
             A
           </Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value="a" className="egen-panel">
+        <Tabs.Panel value="a" className="own-panel">
           Panel A
         </Tabs.Panel>
       </Tabs.Root>,
     )
     const root = container.firstElementChild
     expect(root?.classList.contains('kv-tabs')).toBe(true)
-    expect(root?.classList.contains('egen-rot')).toBe(true)
-    expect(root?.getAttribute('data-egen')).toBe('rot')
-    await expect.element(page.getByRole('tablist')).toHaveClass('kv-tabs-list', 'egen-lista')
-    await expect.element(tab('A')).toHaveClass('kv-tabs-tab', 'egen-flik')
-    await expect.element(page.getByRole('tabpanel')).toHaveClass('kv-tabs-panel', 'egen-panel')
+    expect(root?.classList.contains('own-rot')).toBe(true)
+    expect(root?.getAttribute('data-own')).toBe('rot')
+    await expect.element(page.getByRole('tablist')).toHaveClass('kv-tabs-list', 'own-list')
+    await expect.element(tab('A')).toHaveClass('kv-tabs-tab', 'own-tab')
+    await expect.element(page.getByRole('tabpanel')).toHaveClass('kv-tabs-panel', 'own-panel')
   })
 
   test('forwards refs and passes props on', async () => {
@@ -241,11 +241,11 @@ describe('rendering', () => {
     const panelRef = createRef<HTMLDivElement>()
     await render(
       <Tabs.Root ref={rootRef} defaultValue="a" orientation="vertical" activationMode="manual">
-        <Tabs.List ref={listRef} aria-label="Test" data-egen="lista">
+        <Tabs.List ref={listRef} aria-label="Test" data-own="list">
           <Tabs.Tab ref={tabRef} value="a">
             A
           </Tabs.Tab>
-          <Tabs.Tab value="b" data-egen="flik">
+          <Tabs.Tab value="b" data-own="tab">
             B
           </Tabs.Tab>
         </Tabs.List>
@@ -258,9 +258,9 @@ describe('rendering', () => {
     expect(rootRef.current?.classList.contains('kv-tabs')).toBe(true)
     expect(rootRef.current?.getAttribute('data-orientation')).toBe('vertical')
     expect(listRef.current).toBe(page.getByRole('tablist').element())
-    await expect.element(page.getByRole('tablist')).toHaveAttribute('data-egen', 'lista')
+    await expect.element(page.getByRole('tablist')).toHaveAttribute('data-own', 'list')
     expect(tabRef.current).toBe(tab('A').element())
-    await expect.element(tab('B')).toHaveAttribute('data-egen', 'flik')
+    await expect.element(tab('B')).toHaveAttribute('data-own', 'tab')
     await expect.element(tab('B')).toHaveAttribute('role', 'tab')
     expect(panelRef.current).toBe(page.getByRole('tabpanel').element())
   })
@@ -274,7 +274,7 @@ describe('rendering', () => {
           <Tabs.Tab value="c">C</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="a" tabIndex={-1}>
-          <a href="#kontakt">Kontakt</a>
+          <a href="#contact">Contact</a>
         </Tabs.Panel>
         <Tabs.Panel value="b">Panel B</Tabs.Panel>
         <Tabs.Panel value="c" tabIndex={-1}>
@@ -289,32 +289,32 @@ describe('rendering', () => {
 
 describe('roving tabindex', () => {
   test('the selected tab is the one Tab stop, and the others are -1', async () => {
-    await render(<CaseTabs defaultValue="handlingar" />)
-    expect(tabIndexOf('Uppgifter')).toBe('-1')
-    expect(tabIndexOf('Handlingar')).toBe('0')
-    expect(tabIndexOf('Historik')).toBe('-1')
+    await render(<CaseTabs defaultValue="documents" />)
+    expect(tabIndexOf('Details')).toBe('-1')
+    expect(tabIndexOf('Documents')).toBe('0')
+    expect(tabIndexOf('History')).toBe('-1')
     expect(tabStops()).toBe(1)
   })
 
   test('a tab that has focus is the Tab stop while focus is in the list, and the selected tab is again once it leaves', async () => {
-    await render(<CaseTabs activationMode="manual" defaultValue="handlingar" />)
+    await render(<CaseTabs activationMode="manual" defaultValue="documents" />)
     // Manual activation: focus moves to a tab without selecting it.
-    tab('Uppgifter').element().focus()
-    await expect.element(tab('Uppgifter')).toHaveAttribute('tabindex', '0')
-    await expect.element(tab('Handlingar')).toHaveAttribute('tabindex', '-1')
+    tab('Details').element().focus()
+    await expect.element(tab('Details')).toHaveAttribute('tabindex', '0')
+    await expect.element(tab('Documents')).toHaveAttribute('tabindex', '-1')
     expect(tabStops()).toBe(1)
-    await expect.element(tab('Handlingar')).toHaveAttribute('aria-selected', 'true')
-    tab('Uppgifter').element().blur()
-    await expect.element(tab('Handlingar')).toHaveAttribute('tabindex', '0')
-    await expect.element(tab('Uppgifter')).toHaveAttribute('tabindex', '-1')
+    await expect.element(tab('Documents')).toHaveAttribute('aria-selected', 'true')
+    tab('Details').element().blur()
+    await expect.element(tab('Documents')).toHaveAttribute('tabindex', '0')
+    await expect.element(tab('Details')).toHaveAttribute('tabindex', '-1')
     expect(tabStops()).toBe(1)
   })
 
   test('a tab that a pointer selects is the Tab stop', async () => {
     await render(<CaseTabs />)
-    await userEvent.click(tab('Historik'))
-    await expect.element(tab('Historik')).toHaveAttribute('tabindex', '0')
-    expect(tabIndexOf('Uppgifter')).toBe('-1')
+    await userEvent.click(tab('History'))
+    await expect.element(tab('History')).toHaveAttribute('tabindex', '0')
+    expect(tabIndexOf('Details')).toBe('-1')
     expect(tabStops()).toBe(1)
   })
 })
@@ -322,59 +322,59 @@ describe('roving tabindex', () => {
 describe('selection', () => {
   test('uncontrolled: a click selects the tab and shows its panel', async () => {
     await render(<CaseTabs />)
-    await userEvent.click(tab('Handlingar'))
-    await expect.element(tab('Handlingar')).toHaveAttribute('aria-selected', 'true')
-    await expect.element(tab('Uppgifter')).toHaveAttribute('aria-selected', 'false')
-    await expect.element(page.getByRole('tabpanel', { name: 'Handlingar' })).toBeVisible()
+    await userEvent.click(tab('Documents'))
+    await expect.element(tab('Documents')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(tab('Details')).toHaveAttribute('aria-selected', 'false')
+    await expect.element(page.getByRole('tabpanel', { name: 'Documents' })).toBeVisible()
     expect(page.getByRole('tabpanel').elements()).toHaveLength(1)
   })
 
   test('controlled: value decides what is selected, and a change from outside moves the selection', async () => {
     function Controlled() {
-      const [value, setValue] = useState('uppgifter')
+      const [value, setValue] = useState('details')
       return (
         <>
-          <button type="button" style={fixtureTabStyle} onClick={() => setValue('historik')}>
-            Visa historiken
+          <button type="button" style={fixtureTabStyle} onClick={() => setValue('history')}>
+            Show history
           </button>
           <CaseTabs value={value} onValueChange={(next) => setValue(next)} />
         </>
       )
     }
     await render(<Controlled />)
-    await userEvent.click(tab('Handlingar'))
-    await expect.element(tab('Handlingar')).toHaveAttribute('aria-selected', 'true')
-    await userEvent.click(page.getByRole('button', { name: 'Visa historiken' }))
-    await expect.element(tab('Historik')).toHaveAttribute('aria-selected', 'true')
-    await expect.element(tab('Handlingar')).toHaveAttribute('aria-selected', 'false')
-    await expect.element(page.getByRole('tabpanel', { name: 'Historik' })).toBeVisible()
+    await userEvent.click(tab('Documents'))
+    await expect.element(tab('Documents')).toHaveAttribute('aria-selected', 'true')
+    await userEvent.click(page.getByRole('button', { name: 'Show history' }))
+    await expect.element(tab('History')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(tab('Documents')).toHaveAttribute('aria-selected', 'false')
+    await expect.element(page.getByRole('tabpanel', { name: 'History' })).toBeVisible()
   })
 
   test('a controlled owner that refuses keeps the selection, and focus still moves', async () => {
     const onValueChange = vi.fn<(value: string, details: TabsChangeDetails) => void>()
-    await render(<CaseTabs value="uppgifter" onValueChange={onValueChange} />)
-    await userEvent.click(tab('Handlingar'))
+    await render(<CaseTabs value="details" onValueChange={onValueChange} />)
+    await userEvent.click(tab('Documents'))
     expect(onValueChange).toHaveBeenCalledTimes(1)
-    await expect.element(tab('Uppgifter')).toHaveAttribute('aria-selected', 'true')
-    await expect.element(tab('Handlingar')).toHaveAttribute('aria-selected', 'false')
-    await expect.element(page.getByRole('tabpanel', { name: 'Uppgifter' })).toBeVisible()
+    await expect.element(tab('Details')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(tab('Documents')).toHaveAttribute('aria-selected', 'false')
+    await expect.element(page.getByRole('tabpanel', { name: 'Details' })).toBeVisible()
     // Focus is on a tab that is not selected, so it is the Tab stop while it has focus.
-    await expect.element(tab('Handlingar')).toHaveFocus()
-    await expect.element(tab('Handlingar')).toHaveAttribute('tabindex', '0')
+    await expect.element(tab('Documents')).toHaveFocus()
+    await expect.element(tab('Documents')).toHaveAttribute('tabindex', '0')
   })
 
   test('onValueChange reports the value, the reason and the event: press, arrow-key and home-end-key', async () => {
     const onValueChange = vi.fn<(value: string, details: TabsChangeDetails) => void>()
     await render(<CaseTabs onValueChange={onValueChange} />)
-    await userEvent.click(tab('Handlingar'))
+    await userEvent.click(tab('Documents'))
     await userEvent.keyboard('{ArrowRight}')
     await userEvent.keyboard('{Home}')
     await userEvent.keyboard('{End}')
     expect(onValueChange.mock.calls.map(([value, details]) => [value, details.reason])).toEqual([
-      ['handlingar', 'press'],
-      ['historik', 'arrow-key'],
-      ['uppgifter', 'home-end-key'],
-      ['historik', 'home-end-key'],
+      ['documents', 'press'],
+      ['history', 'arrow-key'],
+      ['details', 'home-end-key'],
+      ['history', 'home-end-key'],
     ])
     expect(onValueChange.mock.calls.map(([, details]) => details.event.type)).toEqual([
       'click',
@@ -387,22 +387,22 @@ describe('selection', () => {
   test('onValueChange is not called for the tab that is already selected', async () => {
     const onValueChange = vi.fn<(value: string, details: TabsChangeDetails) => void>()
     await render(<CaseTabs onValueChange={onValueChange} />)
-    await userEvent.click(tab('Uppgifter'))
+    await userEvent.click(tab('Details'))
     expect(onValueChange).not.toHaveBeenCalled()
   })
 
   test('manual activation: Enter selects through the click, with the reason press', async () => {
     const onValueChange = vi.fn<(value: string, details: TabsChangeDetails) => void>()
     await render(<CaseTabs activationMode="manual" onValueChange={onValueChange} />)
-    tab('Uppgifter').element().focus()
+    tab('Details').element().focus()
     await userEvent.keyboard('{ArrowRight}')
     expect(onValueChange).not.toHaveBeenCalled()
-    await expect.element(tab('Handlingar')).toHaveFocus()
+    await expect.element(tab('Documents')).toHaveFocus()
     await userEvent.keyboard('{Enter}')
     expect(onValueChange.mock.calls.map(([value, details]) => [value, details.reason])).toEqual([
-      ['handlingar', 'press'],
+      ['documents', 'press'],
     ])
-    await expect.element(tab('Handlingar')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(tab('Documents')).toHaveAttribute('aria-selected', 'true')
   })
 })
 
@@ -419,34 +419,30 @@ describe('keyboard contract', () => {
   }: Pick<CaseTabsProps, 'activationMode' | 'orientation'>) {
     return (
       <>
-        <button type="button">Före</button>
-        <Tabs.Root
-          defaultValue="uppgifter"
-          activationMode={activationMode}
-          orientation={orientation}
-        >
-          <Tabs.List aria-label="Ärendet">
-            <Tabs.Tab value="uppgifter" style={fixtureTabStyle}>
-              Uppgifter
+        <button type="button">Before</button>
+        <Tabs.Root defaultValue="details" activationMode={activationMode} orientation={orientation}>
+          <Tabs.List aria-label="The case">
+            <Tabs.Tab value="details" style={fixtureTabStyle}>
+              Details
             </Tabs.Tab>
-            <Tabs.Tab value="handlingar" style={fixtureTabStyle}>
-              Handlingar
+            <Tabs.Tab value="documents" style={fixtureTabStyle}>
+              Documents
             </Tabs.Tab>
-            <Tabs.Tab value="historik" disabled style={fixtureTabStyle}>
-              Historik
+            <Tabs.Tab value="history" disabled style={fixtureTabStyle}>
+              History
             </Tabs.Tab>
-            <Tabs.Tab value="kontakt" style={fixtureTabStyle}>
-              Kontakt
+            <Tabs.Tab value="contact" style={fixtureTabStyle}>
+              Contact
             </Tabs.Tab>
           </Tabs.List>
-          <Tabs.Panel value="uppgifter">Uppgifterna om ärendet.</Tabs.Panel>
-          <Tabs.Panel value="handlingar" tabIndex={-1}>
-            <a href="#beslut">Läs beslutet</a>
+          <Tabs.Panel value="details">The details of the case.</Tabs.Panel>
+          <Tabs.Panel value="documents" tabIndex={-1}>
+            <a href="#decision">Read the decision</a>
           </Tabs.Panel>
-          <Tabs.Panel value="historik">Ärendets historik.</Tabs.Panel>
-          <Tabs.Panel value="kontakt">Kontaktuppgifter.</Tabs.Panel>
+          <Tabs.Panel value="history">The history of the case.</Tabs.Panel>
+          <Tabs.Panel value="contact">Contact details.</Tabs.Panel>
         </Tabs.Root>
-        <button type="button">Efter</button>
+        <button type="button">After</button>
       </>
     )
   }
@@ -454,65 +450,65 @@ describe('keyboard contract', () => {
   test('Tab enters at the selected tab', async () => {
     await render(<KeyboardTabs />)
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     await userEvent.tab()
-    await expect.element(tab('Uppgifter')).toHaveFocus()
+    await expect.element(tab('Details')).toHaveFocus()
     await userEvent.keyboard('{End}')
-    await selectedAndFocused('Kontakt')
+    await selectedAndFocused('Contact')
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     await userEvent.tab()
-    await expect.element(tab('Kontakt')).toHaveFocus()
+    await expect.element(tab('Contact')).toHaveFocus()
   })
 
   test('Tab leaves the tab list for the panel', async () => {
     await render(<KeyboardTabs />)
-    tab('Uppgifter').element().focus()
+    tab('Details').element().focus()
     await userEvent.tab()
-    await expect.element(panel('Uppgifter')).toHaveFocus()
+    await expect.element(panel('Details')).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
 
-    tab('Uppgifter').element().focus()
+    tab('Details').element().focus()
     await userEvent.keyboard('{End}')
-    await selectedAndFocused('Kontakt')
+    await selectedAndFocused('Contact')
     await userEvent.keyboard('{ArrowLeft}')
-    await expect.element(tab('Historik')).toHaveFocus()
-    await expect.element(tab('Kontakt')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(tab('History')).toHaveFocus()
+    await expect.element(tab('Contact')).toHaveAttribute('aria-selected', 'true')
     await userEvent.tab()
-    await expect.element(panel('Kontakt')).toHaveFocus()
+    await expect.element(panel('Contact')).toHaveFocus()
 
-    tab('Kontakt').element().focus()
+    tab('Contact').element().focus()
     await userEvent.keyboard('{Home}')
     await userEvent.keyboard('{ArrowRight}')
-    await selectedAndFocused('Handlingar')
+    await selectedAndFocused('Documents')
     await userEvent.tab()
-    await expect.element(page.getByRole('link', { name: 'Läs beslutet' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'Read the decision' })).toHaveFocus()
   })
 
   test('Shift+Tab returns to the selected tab and leaves the list', async () => {
     await render(<KeyboardTabs />)
-    tab('Uppgifter').element().focus()
+    tab('Details').element().focus()
     await userEvent.tab()
-    await expect.element(panel('Uppgifter')).toHaveFocus()
+    await expect.element(panel('Details')).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect.element(tab('Uppgifter')).toHaveFocus()
+    await expect.element(tab('Details')).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('ArrowRight and ArrowLeft move, wrap and select', async () => {
     await render(<KeyboardTabs />)
-    tab('Uppgifter').element().focus()
+    tab('Details').element().focus()
     await userEvent.keyboard('{ArrowLeft}')
-    await selectedAndFocused('Kontakt')
+    await selectedAndFocused('Contact')
     await userEvent.keyboard('{ArrowRight}')
-    await selectedAndFocused('Uppgifter')
+    await selectedAndFocused('Details')
     await userEvent.keyboard('{ArrowRight}')
-    await selectedAndFocused('Handlingar')
+    await selectedAndFocused('Documents')
     await userEvent.keyboard('{ArrowLeft}')
-    await selectedAndFocused('Uppgifter')
-    await expect.element(tab('Uppgifter')).toHaveAttribute('aria-selected', 'true')
+    await selectedAndFocused('Details')
+    await expect.element(tab('Details')).toHaveAttribute('aria-selected', 'true')
   })
 
   test('right to left: the arrows flip', async () => {
@@ -521,90 +517,90 @@ describe('keyboard contract', () => {
         <KeyboardTabs />
       </div>,
     )
-    tab('Uppgifter').element().focus()
+    tab('Details').element().focus()
     await userEvent.keyboard('{ArrowLeft}')
-    await selectedAndFocused('Handlingar')
+    await selectedAndFocused('Documents')
     await userEvent.keyboard('{ArrowRight}')
-    await selectedAndFocused('Uppgifter')
+    await selectedAndFocused('Details')
     await userEvent.keyboard('{ArrowRight}')
-    await selectedAndFocused('Kontakt')
-    await expect.element(tab('Kontakt')).toHaveAttribute('aria-selected', 'true')
+    await selectedAndFocused('Contact')
+    await expect.element(tab('Contact')).toHaveAttribute('aria-selected', 'true')
   })
 
   test('vertical: ArrowDown and ArrowUp move', async () => {
     await render(<KeyboardTabs orientation="vertical" />)
     await expect.element(page.getByRole('tablist')).toHaveAttribute('aria-orientation', 'vertical')
-    tab('Uppgifter').element().focus()
+    tab('Details').element().focus()
     await userEvent.keyboard('{ArrowDown}')
-    await selectedAndFocused('Handlingar')
+    await selectedAndFocused('Documents')
     await userEvent.keyboard('{ArrowRight}')
-    await selectedAndFocused('Handlingar')
+    await selectedAndFocused('Documents')
     await userEvent.keyboard('{ArrowUp}')
-    await selectedAndFocused('Uppgifter')
+    await selectedAndFocused('Details')
     await userEvent.keyboard('{ArrowUp}')
-    await selectedAndFocused('Kontakt')
+    await selectedAndFocused('Contact')
     await userEvent.keyboard('{ArrowDown}')
-    await selectedAndFocused('Uppgifter')
+    await selectedAndFocused('Details')
   })
 
   test('Home and End go to the ends', async () => {
     await render(<KeyboardTabs />)
-    tab('Uppgifter').element().focus()
+    tab('Details').element().focus()
     await userEvent.keyboard('{End}')
-    await selectedAndFocused('Kontakt')
+    await selectedAndFocused('Contact')
     await userEvent.keyboard('{Home}')
-    await selectedAndFocused('Uppgifter')
-    await expect.element(tab('Uppgifter')).toHaveAttribute('aria-selected', 'true')
+    await selectedAndFocused('Details')
+    await expect.element(tab('Details')).toHaveAttribute('aria-selected', 'true')
   })
 
   test('manual activation: arrows move focus, Enter and Space select', async () => {
     await render(<KeyboardTabs activationMode="manual" />)
-    tab('Handlingar').element().focus()
+    tab('Documents').element().focus()
     await userEvent.keyboard('{ArrowLeft}')
-    await expect.element(tab('Uppgifter')).toHaveFocus()
-    await expect.element(tab('Uppgifter')).toHaveAttribute('aria-selected', 'true')
-    await expect.element(tab('Handlingar')).toHaveAttribute('aria-selected', 'false')
+    await expect.element(tab('Details')).toHaveFocus()
+    await expect.element(tab('Details')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(tab('Documents')).toHaveAttribute('aria-selected', 'false')
     await userEvent.keyboard('{End}')
-    await expect.element(tab('Kontakt')).toHaveFocus()
-    await expect.element(tab('Kontakt')).toHaveAttribute('aria-selected', 'false')
+    await expect.element(tab('Contact')).toHaveFocus()
+    await expect.element(tab('Contact')).toHaveAttribute('aria-selected', 'false')
     await userEvent.keyboard('{Enter}')
-    await selectedAndFocused('Kontakt')
+    await selectedAndFocused('Contact')
     await userEvent.keyboard('{Home}')
-    await expect.element(tab('Uppgifter')).toHaveFocus()
-    await expect.element(tab('Kontakt')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(tab('Details')).toHaveFocus()
+    await expect.element(tab('Contact')).toHaveAttribute('aria-selected', 'true')
     await userEvent.keyboard(' ')
-    await selectedAndFocused('Uppgifter')
+    await selectedAndFocused('Details')
   })
 
   test('a disabled tab is reachable and never selected', async () => {
     await render(<KeyboardTabs />)
-    tab('Uppgifter').element().focus()
+    tab('Details').element().focus()
     await userEvent.keyboard('{ArrowRight}')
-    await selectedAndFocused('Handlingar')
+    await selectedAndFocused('Documents')
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(tab('Historik')).toHaveFocus()
-    await expect.element(tab('Historik')).toHaveAttribute('aria-disabled', 'true')
-    await expect.element(tab('Historik')).toHaveAttribute('aria-selected', 'false')
-    await expect.element(tab('Handlingar')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(tab('History')).toHaveFocus()
+    await expect.element(tab('History')).toHaveAttribute('aria-disabled', 'true')
+    await expect.element(tab('History')).toHaveAttribute('aria-selected', 'false')
+    await expect.element(tab('Documents')).toHaveAttribute('aria-selected', 'true')
     await userEvent.keyboard('{Enter}')
     await userEvent.keyboard(' ')
-    await expect.element(tab('Historik')).toHaveAttribute('aria-selected', 'false')
-    await expect.element(tab('Handlingar')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(tab('History')).toHaveAttribute('aria-selected', 'false')
+    await expect.element(tab('Documents')).toHaveAttribute('aria-selected', 'true')
     await userEvent.keyboard('{ArrowRight}')
-    await selectedAndFocused('Kontakt')
+    await selectedAndFocused('Contact')
   })
 })
 
 describe('keys the tabs leave alone', () => {
   test('keys with Control, Alt, Meta or Shift are left alone', async () => {
     await render(<CaseTabs />)
-    tab('Uppgifter').element().focus()
+    tab('Details').element().focus()
     await userEvent.keyboard('{Control>}{ArrowRight}{/Control}')
     await userEvent.keyboard('{Alt>}{ArrowRight}{/Alt}')
     await userEvent.keyboard('{Shift>}{ArrowRight}{/Shift}')
     await userEvent.keyboard('{Control>}{End}{/Control}')
-    await expect.element(tab('Uppgifter')).toHaveFocus()
-    await expect.element(tab('Uppgifter')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(tab('Details')).toHaveFocus()
+    await expect.element(tab('Details')).toHaveAttribute('aria-selected', 'true')
   })
 
   test('a key that was already handled is not taken again', async () => {
@@ -628,42 +624,42 @@ describe('keys the tabs leave alone', () => {
 
   test('a nested Tabs keeps its own arrows', async () => {
     await render(
-      <Tabs.Root defaultValue="yttre-ett">
-        <Tabs.List aria-label="Yttre">
-          <Tabs.Tab value="yttre-ett" style={fixtureTabStyle}>
-            Yttre ett
+      <Tabs.Root defaultValue="outer-one">
+        <Tabs.List aria-label="Outer">
+          <Tabs.Tab value="outer-one" style={fixtureTabStyle}>
+            Outer one
           </Tabs.Tab>
-          <Tabs.Tab value="yttre-tva" style={fixtureTabStyle}>
-            Yttre två
+          <Tabs.Tab value="outer-two" style={fixtureTabStyle}>
+            Outer two
           </Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value="yttre-ett">
-          <Tabs.Root defaultValue="inre-ett">
-            <Tabs.List aria-label="Inre">
-              <Tabs.Tab value="inre-ett" style={fixtureTabStyle}>
-                Inre ett
+        <Tabs.Panel value="outer-one">
+          <Tabs.Root defaultValue="inner-one">
+            <Tabs.List aria-label="Inner">
+              <Tabs.Tab value="inner-one" style={fixtureTabStyle}>
+                Inner one
               </Tabs.Tab>
-              <Tabs.Tab value="inre-tva" style={fixtureTabStyle}>
-                Inre två
+              <Tabs.Tab value="inner-two" style={fixtureTabStyle}>
+                Inner two
               </Tabs.Tab>
             </Tabs.List>
-            <Tabs.Panel value="inre-ett">Första inre panelen.</Tabs.Panel>
-            <Tabs.Panel value="inre-tva">Andra inre panelen.</Tabs.Panel>
+            <Tabs.Panel value="inner-one">First inner panel.</Tabs.Panel>
+            <Tabs.Panel value="inner-two">Second inner panel.</Tabs.Panel>
           </Tabs.Root>
         </Tabs.Panel>
-        <Tabs.Panel value="yttre-tva">Andra yttre panelen.</Tabs.Panel>
+        <Tabs.Panel value="outer-two">Second outer panel.</Tabs.Panel>
       </Tabs.Root>,
     )
-    tab('Inre ett').element().focus()
+    tab('Inner one').element().focus()
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(tab('Inre två')).toHaveFocus()
-    await expect.element(tab('Inre två')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(tab('Inner two')).toHaveFocus()
+    await expect.element(tab('Inner two')).toHaveAttribute('aria-selected', 'true')
     // The outer tabs didn't move.
-    await expect.element(tab('Yttre ett')).toHaveAttribute('aria-selected', 'true')
-    tab('Yttre ett').element().focus()
+    await expect.element(tab('Outer one')).toHaveAttribute('aria-selected', 'true')
+    tab('Outer one').element().focus()
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(tab('Yttre två')).toHaveAttribute('aria-selected', 'true')
-    await expect.element(page.getByRole('tabpanel', { name: 'Yttre två' })).toBeVisible()
+    await expect.element(tab('Outer two')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(page.getByRole('tabpanel', { name: 'Outer two' })).toBeVisible()
   })
 })
 
@@ -723,20 +719,20 @@ describe('disabled tabs', () => {
 })
 
 describe('useTabs', () => {
-  const hookValues = ['ett', 'tva', 'tre']
+  const hookValues = ['one', 'two', 'three']
 
   function HookTabs({ onDisabledClick }: { onDisabledClick?: () => void }) {
-    const tabs = useTabs({ defaultValue: 'ett' })
+    const tabs = useTabs({ defaultValue: 'one' })
     return (
       <div {...tabs.rootProps}>
-        <p>Vald: {tabs.value}</p>
-        <div {...tabs.listProps} aria-label="Egen">
+        <p>Selected: {tabs.value}</p>
+        <div {...tabs.listProps} aria-label="Own">
           {hookValues.map((value) => (
             <button
               key={value}
               {...tabs.getTabProps(value, {
-                disabled: value === 'tre',
-                onClick: value === 'tre' ? onDisabledClick : undefined,
+                disabled: value === 'three',
+                onClick: value === 'three' ? onDisabledClick : undefined,
               })}
               style={fixtureTabStyle}
             >
@@ -756,27 +752,27 @@ describe('useTabs', () => {
   test('gives props for your own elements: roles, ids, the roving tabindex and selection', async () => {
     const onDisabledClick = vi.fn<() => void>()
     const { container } = await render(<HookTabs onDisabledClick={onDisabledClick} />)
-    await expect.element(page.getByRole('tablist', { name: 'Egen' })).toBeVisible()
-    expect(tabIndexOf('ett')).toBe('0')
-    expect(tabIndexOf('tva')).toBe('-1')
-    await userEvent.click(tab('tva'))
-    await expect.element(page.getByText('Vald: tva')).toBeVisible()
-    await expect.element(tab('tva')).toHaveAttribute('aria-selected', 'true')
-    await expect.element(page.getByRole('tabpanel', { name: 'tva' })).toBeVisible()
+    await expect.element(page.getByRole('tablist', { name: 'Own' })).toBeVisible()
+    expect(tabIndexOf('one')).toBe('0')
+    expect(tabIndexOf('two')).toBe('-1')
+    await userEvent.click(tab('two'))
+    await expect.element(page.getByText('Selected: two')).toBeVisible()
+    await expect.element(tab('two')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(page.getByRole('tabpanel', { name: 'two' })).toBeVisible()
     // Arrow keys: the list's handler works on your own elements too.
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(tab('tre')).toHaveFocus()
-    await expect.element(tab('tre')).toHaveAttribute('aria-selected', 'false')
+    await expect.element(tab('three')).toHaveFocus()
+    await expect.element(tab('three')).toHaveAttribute('aria-selected', 'false')
     await expectNoA11yViolations(container)
   })
 
   test('getTabProps gates onClick for a disabled tab, as useButton does', async () => {
     const onDisabledClick = vi.fn<() => void>()
     await render(<HookTabs onDisabledClick={onDisabledClick} />)
-    await expect.element(tab('tre')).toHaveAttribute('aria-disabled', 'true')
-    await userEvent.click(tab('tre'), { force: true })
+    await expect.element(tab('three')).toHaveAttribute('aria-disabled', 'true')
+    await userEvent.click(tab('three'), { force: true })
     expect(onDisabledClick).not.toHaveBeenCalled()
-    await expect.element(tab('ett')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(tab('one')).toHaveAttribute('aria-selected', 'true')
   })
 })
 
@@ -785,7 +781,7 @@ describe('server rendering', () => {
     new RegExp(`\\s${name}="([^"]*)"`).exec(tag ?? '')?.[1]
 
   test('renders the ids, the hidden panels and the roving tabindex without touching the page', () => {
-    const html = renderToString(<CaseTabs defaultValue="handlingar" />)
+    const html = renderToString(<CaseTabs defaultValue="documents" />)
     expect(html).toContain('role="tablist"')
     const tabs = html.match(/<button[^>]*>/g) ?? []
     const panels = html.match(/<div[^>]*role="tabpanel"[^>]*>/g) ?? []
@@ -810,13 +806,13 @@ describe('development warnings', () => {
   test('a part outside a Tabs.Root warns and still renders', async () => {
     await render(
       <>
-        <Tabs.List aria-label="Ensam lista" />
-        <Tabs.Tab value="a">Ensam flik</Tabs.Tab>
-        <Tabs.Panel value="a">Ensam panel</Tabs.Panel>
+        <Tabs.List aria-label="Alone list" />
+        <Tabs.Tab value="a">Alone tab</Tabs.Tab>
+        <Tabs.Panel value="a">Alone panel</Tabs.Panel>
       </>,
     )
-    await expect.element(page.getByText('Ensam flik')).toBeVisible()
-    await expect.element(page.getByText('Ensam panel')).toBeVisible()
+    await expect.element(page.getByText('Alone tab')).toBeVisible()
+    await expect.element(page.getByText('Alone panel')).toBeVisible()
     expect(consoleWarn).toHaveBeenCalledTimes(3)
     for (const part of ['Tabs.List', 'Tabs.Tab', 'Tabs.Panel']) {
       expect(warnings().some((text) => text.includes(part))).toBe(true)
@@ -824,10 +820,10 @@ describe('development warnings', () => {
   })
 
   test('a value that no tab has: no Tab stop, and nothing shown', async () => {
-    await render(<CaseTabs defaultValue="saknas" />)
+    await render(<CaseTabs defaultValue="missing" />)
     await expect.element(page.getByRole('tablist')).toBeVisible()
     expect(consoleWarn).toHaveBeenCalledTimes(1)
-    expect(warnings()[0]).toContain('"saknas"')
+    expect(warnings()[0]).toContain('"missing"')
     expect(tabStops()).toBe(0)
     expect(page.getByRole('tabpanel').elements()).toHaveLength(0)
   })
@@ -874,16 +870,16 @@ describe('accessibility', () => {
   test('no axe violations: a disabled tab, and a tab with a long label', async () => {
     const { container } = await render(
       <Tabs.Root defaultValue="a">
-        <Tabs.List aria-label="Ansökan">
+        <Tabs.List aria-label="Application">
           <Tabs.Tab value="a" style={fixtureTabStyle}>
-            Rakennus- ja toimenpidelupahakemuksen liitteet
+            Attachments to the building and construction permit application
           </Tabs.Tab>
           <Tabs.Tab value="b" disabled style={fixtureTabStyle}>
-            Päätös
+            Decision
           </Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value="a">Liitteet.</Tabs.Panel>
-        <Tabs.Panel value="b">Päätös.</Tabs.Panel>
+        <Tabs.Panel value="a">Attachments.</Tabs.Panel>
+        <Tabs.Panel value="b">Decision.</Tabs.Panel>
       </Tabs.Root>,
     )
     await expectNoA11yViolations(container)

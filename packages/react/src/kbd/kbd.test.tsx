@@ -29,7 +29,7 @@ describe('Kbd', () => {
     const ref = createRef<HTMLElement>()
     await render(
       <p>
-        Tryck på{' '}
+        Press{' '}
         <Kbd id="tab" ref={ref} data-testid="key">
           Tab
         </Kbd>
@@ -45,11 +45,11 @@ describe('Kbd', () => {
 
   test("the part class kv-kbd joins a consumer's", async () => {
     await render(
-      <Kbd className="annan" data-testid="key">
+      <Kbd className="other" data-testid="key">
         Esc
       </Kbd>,
     )
-    expect(page.getByTestId('key').element().className).toBe('annan kv-kbd')
+    expect(page.getByTestId('key').element().className).toBe('other kv-kbd')
   })
 
   test('keys nest to show a combination', async () => {
@@ -93,12 +93,12 @@ describe('Kbd', () => {
   test('the ref and className still apply to the chosen element', async () => {
     const ref = createRef<HTMLElement>()
     await render(
-      <Kbd as="kbd" ref={ref} className="annan" data-testid="key">
+      <Kbd as="kbd" ref={ref} className="other" data-testid="key">
         Tab
       </Kbd>,
     )
     expect(ref.current).toBe(page.getByTestId('key').element())
-    expect(ref.current?.className).toBe('annan kv-kbd')
+    expect(ref.current?.className).toBe('other kv-kbd')
   })
 
   test('is not a Tab stop', async () => {
@@ -112,7 +112,7 @@ describe('Kbd', () => {
     const { container } = await render(
       <main>
         <p>
-          Du kan flytta mellan fälten i formuläret med <Kbd>Tab</Kbd>.
+          You can move between the fields in the form with <Kbd>Tab</Kbd>.
         </p>
       </main>,
     )

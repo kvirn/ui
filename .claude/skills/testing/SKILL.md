@@ -57,7 +57,7 @@ Vitest projects (root `vite.config.ts`): `node` (core, i18n, theme, tooling), `b
 
 ## Rules
 
-- **Query by role and name** (`getByRole('button', { name: 'Stäng' })`). Only use `data-testid` for things that have no role.
+- **Query by role and name** (`getByRole('button', { name: 'Close' })`). Only use `data-testid` for things that have no role.
 - **Every story state gets an axe run** with the tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`.
 - **Assert the accessibility tree** with `expect(locator).toMatchAriaSnapshot(...)` for complex widgets.
 - **Assert what is read aloud** with `readAloud(container)` and `readAnnouncements(container, act, { timeout? })` from `@kvirn-ui/testing/read-aloud`, one named test per row of the contract's Read aloud table. Use `toMatchAriaSnapshot` for role, name and state (no dependency), axe for rule violations, and these two for spoken phrases, order and live-region text. Limits: built on `@guidepup/virtual-screen-reader` (MIT, optional peer of the sub-entry, pre-1.0, phrases can change between versions); its own approximation of an accessibility tree, not NVDA or JAWS wording; it doesn't enforce or prove modality or focus containment; label and description text can be read as extra stops. Assert the key phrase, not the whole transcript.

@@ -547,7 +547,7 @@ All of them stay one import, with no new class or `data-*` (with M1), and no cha
 
 `kv-navigation--horizontal` on `Navigation.Root` lays the top-level list out as a row that wraps. It's a choice class the consumer adds, not a prop, because nothing about the keys or the roles changes. Every link is a Tab stop in DOM order, and there are no arrow keys and no `aria-orientation`: it's a list of links, not a composite.
 
-Use it for a short set of sections in a page header or above the content: "Start, Bygga och bo, Trafik, Uppleva, Om kommunen". It's not Tabs, which switch panels on one page (Plan 0048), and not a menu: flyouts and collapsing are NavigationMenu (M4).
+Use it for a short set of sections in a page header or above the content: "Start, Building and living, Traffic, Experience, About the municipality". It's not Tabs, which switch panels on one page (Plan 0048), and not a menu: flyouts and collapsing are NavigationMenu (M4).
 
 ### 13.1 Layout
 
@@ -595,7 +595,7 @@ Items in one bar are siblings, never each other's ancestors. So a bar item is on
 - **320px:**
   - The bar wraps onto as many rows as it needs, starting at the inline start. It never scrolls, and never collapses (collapsing is NavigationMenu).
   - Each item keeps its own width.
-  - "Rakentaminen ja asuminen" fits a row as one pill. "Rakennus- ja toimenpidelupahakemuksen liitteet" is wider than the row, so its pill is capped at 100% and the label wraps inside it. `overflow-wrap: anywhere` breaks a compound only where no space fits.
+  - "Rakentaminen ja asuminen" fits a row as one pill. "Rakennus- ja toimenpidelupahakemuksen liitteet" is wider than the row, so its pill is capped at 100% and the label wraps inside it. `overflow-wrap: anywhere` breaks a compound only where no space fits. <!-- kv-lang-ok: Finnish compounds are the wrapping test case -->
   - 400% zoom on a 1280px window is the same case.
 - **40rem:** four to six short sections fit one row, and longer sets wrap.
 - **1.4.12 text spacing:** the items grow, nothing has a fixed width, and nothing is clipped.
@@ -649,7 +649,7 @@ That's about 25 lines on top of the vertical rules, with no new token, pair or c
 
 A municipal page often has both: a horizontal bar in the header (the sections) and a vertical navigation in a sidebar (the pages of one section).
 
-- **Two `Navigation.Root`s, each named,** for example "Huvudmeny" and "I det här avsnittet", and each with exactly one `aria-current`.
+- **Two `Navigation.Root`s, each named,** for example "Main menu" and "In this section", and each with exactly one `aria-current`.
 - **The same tokens, heights, type, weights, hover and focus.** Only three things differ: the row layout, the symmetric padding, and where the forced-colours bar sits.
 - **The surfaces:**
   - The bar sits in the page header: `canvas` with a block-end `border-subtle` hairline, as the docs site's header does.
@@ -667,14 +667,14 @@ A municipal page often has both: a horizontal bar in the header (the sections) a
 
 ### 13.8 Open questions for the maintainer
 
-**Q-N1: should the trail branch show as a second row?** Recommendation: **no, not inside one navigation.** Render the branch as a second `Navigation.Root` instead: a second bar right under the first, or a sidebar, named "I det här avsnittet". It looks like a second row, needs nothing built, and wraps on its own at 320px. The reasons:
+**Q-N1: should the trail branch show as a second row?** Recommendation: **no, not inside one navigation.** Render the branch as a second `Navigation.Root` instead: a second bar right under the first, or a sidebar, named "In this section". It looks like a second row, needs nothing built, and wraps on its own at 320px. The reasons:
 
 1. **Focus order would jump** (2.4.3).
    - The branch is a nested list inside the section's `li`, so in the DOM it comes straight after the section's link.
    - Drawn as a second row under the whole bar, Tab would go from the section to the branch's links, then back up to the next section, and a screen reader would read it in that order too.
    - A second navigation keeps DOM order and visual order the same.
 2. **It breaks the layout.** Drawing a nested list as a full-width row means taking it out of its item, with absolute positioning or `display: contents`. That breaks wrapping at 320px and the 1.4.12 text spacing, and a long Finnish label would push the rows over each other.
-3. **Two landmarks are clearer than one.** Screen-reader users get two landmarks, each with its own name and its own `aria-current` ("Bygga och bo" as `true` in the bar, the page as `page` in the branch), instead of one list whose second level has no name.
+3. **Two landmarks are clearer than one.** Screen-reader users get two landmarks, each with its own name and its own `aria-current` ("Building and living" as `true` in the bar, the page as `page` in the branch), instead of one list whose second level has no name.
 
 A branch that opens on hover or click (a flyout) is NavigationMenu (M4).
 

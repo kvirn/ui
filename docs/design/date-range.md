@@ -51,21 +51,21 @@ Unhappy paths: **Escape or Close** → nothing changes · **a day that can't end
 
 ## 5. Content (English; six locales in the plans; `fi` longest checked)
 
-| i18n key                                                            | en                                                                           | Notes                                                                                                     |
-| ------------------------------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `calendar.rangeStart` / `rangeEnd` / `rangeStartAndEnd`             | start date / end date / start and end date                                   | Name parts of the chosen days                                                                             |
-| `calendar.rangeLength({ days, nights })`                            | 1 day · {days} days                                                          | Name part of each possible end while the end is pending; plural through `Intl.PluralRules` in each locale |
-| `calendar.rangeTooShort({ minimum })` / `rangeTooLong({ maximum })` | fewer than {minimum} days / more than {maximum} days                         | Name part of a day that can't be the end                                                                  |
-| `calendar.rangeBlocked`                                             | an unavailable day is in between                                             | As above                                                                                                  |
-| `calendar.rangeBeforeStart`                                         | before the start date                                                        | `selects="end"` only, with `aria-disabled`                                                                |
-| `calendar.rangeSpanHint({ minimum, maximum })`                      | {minimum} to {maximum} days · at least {minimum} days · up to {maximum} days | Range hint line (3.3.2)                                                                                   |
-| `calendar.rangeChooseStart`                                         | Choose the start date.                                                       | Step line; fi "Valitse alkupäivä."                                                                        |
-| `calendar.rangeChooseEnd({ start })`                                | Start date {start}. Choose the end date.                                     | Step line **and** the announcement after press 1 (one key, same words seen and heard)                     |
-| `calendar.rangeSelected({ start, end, length })`                    | {start} to {end} selected, {length}                                          | Step line when complete and the completion announcement (same words seen and heard)                       |
-| `calendar.rangeEndSelected({ date })` / `rangeEndCleared`           | End date {date} selected. / End date cleared.                                | `selects` start or end only                                                                               |
-| `calendar.visibleMonths({ first, last })`                           | {first} and {last}                                                           | Announced by a month button with two months                                                               |
-| `calendar.clearRange` / `rangeCleared`                              | Clear dates / Dates cleared                                                  | Only with `Calendar.ClearRange` (Q5)                                                                      |
-| `dateRangePicker.trigger` / `title`                                 | Choose dates / Choose the dates                                              | sv "Välj datum" / "Välj datumen"; fi "Valitse päivämäärät" (19, wraps below the To field at 320px)        |
+| i18n key                                                            | en                                                                           | Notes                                                                                                                                                                                 |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `calendar.rangeStart` / `rangeEnd` / `rangeStartAndEnd`             | start date / end date / start and end date                                   | Name parts of the chosen days                                                                                                                                                         |
+| `calendar.rangeLength({ days, nights })`                            | 1 day · {days} days                                                          | Name part of each possible end while the end is pending; plural through `Intl.PluralRules` in each locale                                                                             |
+| `calendar.rangeTooShort({ minimum })` / `rangeTooLong({ maximum })` | fewer than {minimum} days / more than {maximum} days                         | Name part of a day that can't be the end                                                                                                                                              |
+| `calendar.rangeBlocked`                                             | an unavailable day is in between                                             | As above                                                                                                                                                                              |
+| `calendar.rangeBeforeStart`                                         | before the start date                                                        | `selects="end"` only, with `aria-disabled`                                                                                                                                            |
+| `calendar.rangeSpanHint({ minimum, maximum })`                      | {minimum} to {maximum} days · at least {minimum} days · up to {maximum} days | Range hint line (3.3.2)                                                                                                                                                               |
+| `calendar.rangeChooseStart`                                         | Choose the start date.                                                       | Step line; fi "Valitse alkupäivä." <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                                 |
+| `calendar.rangeChooseEnd({ start })`                                | Start date {start}. Choose the end date.                                     | Step line **and** the announcement after press 1 (one key, same words seen and heard)                                                                                                 |
+| `calendar.rangeSelected({ start, end, length })`                    | {start} to {end} selected, {length}                                          | Step line when complete and the completion announcement (same words seen and heard)                                                                                                   |
+| `calendar.rangeEndSelected({ date })` / `rangeEndCleared`           | End date {date} selected. / End date cleared.                                | `selects` start or end only                                                                                                                                                           |
+| `calendar.visibleMonths({ first, last })`                           | {first} and {last}                                                           | Announced by a month button with two months                                                                                                                                           |
+| `calendar.clearRange` / `rangeCleared`                              | Clear dates / Dates cleared                                                  | Only with `Calendar.ClearRange` (Q5)                                                                                                                                                  |
+| `dateRangePicker.trigger` / `title`                                 | Choose dates / Choose the dates                                              | sv "Välj datum" / "Välj datumen"; fi "Valitse päivämäärät" (19, wraps below the To field at 320px) <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
 
 `calendar.dayName` gains two optional, already-translated parts: `{date}, today, {rangePosition}, {rangeNote}, {description}` (additive, overriding functions keep working). Dates in names and messages: `useFormat().date(iso, { dateStyle: 'full' })`, as `calendar.selected`. Field labels and the legend are the consumer's words (Field.Label, Fieldset.Legend), not keys.
 
@@ -148,19 +148,19 @@ APG has no range grid pattern, so no key is added: no Shift+Arrow extension (und
 
 ### 7.4 Read aloud (draft rows; tests use sv as the Calendar contract)
 
-| State or action                  | Expected phrase(s)                                                                       |
-| -------------------------------- | ---------------------------------------------------------------------------------------- |
-| Grid in range mode               | `grid, oktober 2026, multi-selectable` (wording is the virtual reader's)                 |
-| Start                            | `gridcell, fredag 16 oktober 2026, start date, selected`                                 |
-| A day between                    | `gridcell, lördag 17 oktober 2026, selected`                                             |
-| End                              | `gridcell, fredag 23 oktober 2026, end date, selected`                                   |
-| Possible end                     | `gridcell, torsdag 22 oktober 2026, 7 days`                                              |
-| Too long                         | `gridcell, fredag 6 november 2026, more than 14 days`                                    |
-| Impossible end (`selects="end"`) | `gridcell, torsdag 15 oktober 2026, before the start date, disabled`                     |
-| Inline pair grid                 | `grid, End date, oktober 2026`                                                           |
-| Press 1                          | `polite: Start date fredag 16 oktober 2026. Choose the end date.`                        |
-| Completed in the picker          | after close: `polite: fredag 16 oktober 2026 to fredag 23 oktober 2026 selected, 8 days` |
-| Escape                           | nothing                                                                                  |
+| State or action                  | Expected phrase(s)                                                                                                                 |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Grid in range mode               | `grid, oktober 2026, multi-selectable` (wording is the virtual reader's)                                                           |
+| Start                            | `gridcell, fredag 16 oktober 2026, start date, selected`                                                                           |
+| A day between                    | `gridcell, lördag 17 oktober 2026, selected` <!-- kv-lang-ok: the expected phrases of the sv Calendar contract are the subject --> |
+| End                              | `gridcell, fredag 23 oktober 2026, end date, selected`                                                                             |
+| Possible end                     | `gridcell, torsdag 22 oktober 2026, 7 days`                                                                                        |
+| Too long                         | `gridcell, fredag 6 november 2026, more than 14 days`                                                                              |
+| Impossible end (`selects="end"`) | `gridcell, torsdag 15 oktober 2026, before the start date, disabled`                                                               |
+| Inline pair grid                 | `grid, End date, oktober 2026`                                                                                                     |
+| Press 1                          | `polite: Start date fredag 16 oktober 2026. Choose the end date.`                                                                  |
+| Completed in the picker          | after close: `polite: fredag 16 oktober 2026 to fredag 23 oktober 2026 selected, 8 days`                                           |
+| Escape                           | nothing                                                                                                                            |
 
 SCs of note: 1.3.1, 1.4.1, 1.4.10, 1.4.11, 2.1.1, 2.4.3, 2.4.7, 2.4.11, 2.5.7, 2.5.8, 3.2.2, 3.3.2, 3.3.7, 4.1.2, 4.1.3.
 

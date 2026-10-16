@@ -11,7 +11,7 @@ import { usageGuide } from '../../docs-source.ts'
 const meta = {
   title: 'Components/Content/Badge',
   component: Badge,
-  args: { children: 'Utkast' },
+  args: { children: 'Draft' },
   argTypes: { as: { control: false } },
   parameters: {
     a11yContract: contract,
@@ -26,11 +26,11 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: (args) => (
     <p>
-      Ansökan om bygglov <Badge {...args} />
+      Building permit application <Badge {...args} />
     </p>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByText('Utkast')).toBeVisible()
+    await expect(canvas.getByText('Draft')).toBeVisible()
   },
 }
 
@@ -39,28 +39,28 @@ export const Variants: Story = {
   render: () => (
     <ul>
       <li>
-        Ärende <Badge>Utkast</Badge>
+        Case <Badge>Draft</Badge>
       </li>
       <li>
-        Ärende <Badge variant="primary">Nytt</Badge>
+        Case <Badge variant="primary">New</Badge>
       </li>
       <li>
-        Ärende <Badge variant="info">Under handläggning</Badge>
+        Case <Badge variant="info">Under review</Badge>
       </li>
       <li>
-        Ärende <Badge variant="success">Beviljat</Badge>
+        Case <Badge variant="success">Approved</Badge>
       </li>
       <li>
-        Ärende <Badge variant="warning">Väntar på komplettering</Badge>
+        Case <Badge variant="warning">Waiting for more information</Badge>
       </li>
       <li>
-        Ärende <Badge variant="danger">Avslaget</Badge>
+        Case <Badge variant="danger">Rejected</Badge>
       </li>
     </ul>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByText('Beviljat')).toBeVisible()
-    await expect(canvas.getByText('Avslaget')).toBeVisible()
+    await expect(canvas.getByText('Approved')).toBeVisible()
+    await expect(canvas.getByText('Rejected')).toBeVisible()
   },
 }
 
@@ -68,12 +68,12 @@ export const Variants: Story = {
 export const InHeading: Story = {
   render: () => (
     <h2>
-      Bygglov Storgatan 4 <Badge variant="success">Beviljat</Badge>
+      Building permit 4 High Street <Badge variant="success">Approved</Badge>
     </h2>
   ),
   play: async ({ canvas }) => {
     await expect(
-      canvas.getByRole('heading', { name: 'Bygglov Storgatan 4 Beviljat' }),
+      canvas.getByRole('heading', { name: 'Building permit 4 High Street Approved' }),
     ).toBeVisible()
   },
 }
@@ -96,12 +96,12 @@ export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
   render: () => (
     <p>
-      <Badge>Utkast</Badge> <Badge variant="success">Beviljat</Badge>{' '}
-      <Badge variant="danger">Avslaget</Badge>
+      <Badge>Draft</Badge> <Badge variant="success">Approved</Badge>{' '}
+      <Badge variant="danger">Rejected</Badge>
     </p>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByText('Beviljat')).toBeVisible()
+    await expect(canvas.getByText('Approved')).toBeVisible()
   },
 }
 
@@ -117,13 +117,13 @@ export const Narrow: Story = {
   },
   render: () => (
     <div style={{ inlineSize: '20rem', maxInlineSize: '100%' }}>
-      <Badge>Utkast</Badge> <Badge variant="primary">Nytt</Badge>{' '}
-      <Badge variant="info">Under handläggning</Badge>{' '}
-      <Badge variant="warning">Väntar på komplettering</Badge>
+      <Badge>Draft</Badge> <Badge variant="primary">New</Badge>{' '}
+      <Badge variant="info">Under review</Badge>{' '}
+      <Badge variant="warning">Waiting for more information</Badge>
     </div>
   ),
   play: async ({ canvas }) => {
     await expect(window.innerWidth).toBeLessThanOrEqual(320)
-    await expect(canvas.getByText('Väntar på komplettering')).toBeVisible()
+    await expect(canvas.getByText('Waiting for more information')).toBeVisible()
   },
 }

@@ -105,10 +105,10 @@ function renderNativeOptions<TItem>(
  *
  * @example
  * <Field.Root>
- *   <Field.Label>Kommun</Field.Label>
+ *   <Field.Label>Municipality</Field.Label>
  *   <Listbox.Root items={municipalities} itemToString={(municipality) => municipality.name}
  *     itemToKey={(municipality) => municipality.code} name="municipality">
- *     <Listbox.Trigger><Listbox.Value placeholder="Välj kommun" /></Listbox.Trigger>
+ *     <Listbox.Trigger><Listbox.Value placeholder="Choose a municipality" /></Listbox.Trigger>
  *     <Listbox.Popup>
  *       <Listbox.List>{(municipality) => <Listbox.Option item={municipality} />}</Listbox.List>
  *       <Listbox.Empty />

@@ -31,7 +31,7 @@ export interface UseProgressOptions {
    * another part announces it. Default `true`. The percent is never announced.
    */
   announce?: boolean | undefined
-  /** Per-instance message overrides: `{ slow: 'Det här tar tid. Stäng inte sidan.' }`. */
+  /** Per-instance message overrides: `{ slow: 'This takes time. Do not close the page.' }`. */
   messages?: Partial<KvirnMessages['progress']> | undefined
 }
 

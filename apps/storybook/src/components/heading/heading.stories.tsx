@@ -11,7 +11,7 @@ import { usageGuide } from '../../docs-source.ts'
 const meta = {
   title: 'Components/Content/Heading',
   component: Heading,
-  args: { as: 'h2', children: 'Kontakta oss' },
+  args: { as: 'h2', children: 'Contact us' },
   argTypes: {
     as: { control: 'inline-radio', options: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] },
     size: {
@@ -42,7 +42,7 @@ type Story = StoryObj<typeof meta>
 /** `as` is the element: `<Heading as="h2">` is an `<h2>`. */
 export const Default: Story = {
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('heading', { level: 2, name: 'Kontakta oss' })).toBeVisible()
+    await expect(canvas.getByRole('heading', { level: 2, name: 'Contact us' })).toBeVisible()
   },
 }
 
@@ -96,18 +96,18 @@ export const Sizes: Story = {
 export const Outline: Story = {
   render: () => (
     <div className="kv-prose">
-      <Heading as="h1">Tjänster</Heading>
-      <Heading as="h2">Avfall och återvinning</Heading>
-      <Heading as="h3">Sophämtning</Heading>
-      <Heading as="h4">Öppettider</Heading>
-      <Heading as="h5">Helger</Heading>
-      <Heading as="h6">Midsommarafton</Heading>
-      <Heading as="h3">Återvinningscentral</Heading>
+      <Heading as="h1">Services</Heading>
+      <Heading as="h2">Waste and recycling</Heading>
+      <Heading as="h3">Waste collection</Heading>
+      <Heading as="h4">Opening hours</Heading>
+      <Heading as="h5">Public holidays</Heading>
+      <Heading as="h6">Midsummer Eve</Heading>
+      <Heading as="h3">Recycling centre</Heading>
     </div>
   ),
   play: async ({ canvas }) => {
     await expect(canvas.getAllByRole('heading')).toHaveLength(7)
-    await expect(canvas.getByRole('heading', { level: 6, name: 'Midsommarafton' })).toBeVisible()
+    await expect(canvas.getByRole('heading', { level: 6, name: 'Midsummer Eve' })).toBeVisible()
     await expect(canvas.getByRole('heading', { level: 1 })).toBeVisible()
   },
 }
@@ -120,27 +120,27 @@ export const Outline: Story = {
 export const SizeOnDeepLevelsAndLabelledRegion: Story = {
   decorators: inColumn,
   render: () => (
-    <section aria-labelledby="oppettider">
-      <Heading as="h4" size="heading-3" id="oppettider">
-        Öppettider
+    <section aria-labelledby="opening-hours">
+      <Heading as="h4" size="heading-3" id="opening-hours">
+        Opening hours
       </Heading>
       <Heading as="h5" size="heading-4">
-        Helger
+        Public holidays
       </Heading>
       <Heading as="h6" size="heading-5">
-        Midsommarafton
+        Midsummer Eve
       </Heading>
     </section>
   ),
   play: async ({ canvas }) => {
-    const region = canvas.getByRole('region', { name: 'Öppettider' })
+    const region = canvas.getByRole('region', { name: 'Opening hours' })
     await expect(region).toBeVisible()
-    await expect(canvas.getByRole('heading', { level: 4, name: 'Öppettider' })).toHaveAttribute(
+    await expect(canvas.getByRole('heading', { level: 4, name: 'Opening hours' })).toHaveAttribute(
       'id',
-      'oppettider',
+      'opening-hours',
     )
-    await expect(canvas.getByRole('heading', { level: 5, name: 'Helger' })).toBeVisible()
-    await expect(canvas.getByRole('heading', { level: 6, name: 'Midsommarafton' })).toBeVisible()
+    await expect(canvas.getByRole('heading', { level: 5, name: 'Public holidays' })).toBeVisible()
+    await expect(canvas.getByRole('heading', { level: 6, name: 'Midsummer Eve' })).toBeVisible()
   },
 }
 

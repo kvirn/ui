@@ -66,29 +66,31 @@ export const Default: Story = {
     <Accordion.Root {...args}>
       <Accordion.Item>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Hur ansöker jag om bygglov?</Accordion.Trigger>
+          <Accordion.Trigger>How do I apply for a building permit?</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel>
           <p>
-            Du ansöker på <a href="/mina-sidor">Mina sidor</a>. Ha ritningar och en situationsplan
-            till hands.
+            Apply on <a href="/my-pages">My pages</a>. Have your drawings and a site plan ready.
           </p>
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Vad kostar det?</Accordion.Trigger>
+          <Accordion.Trigger>What does it cost?</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel>
-          <p>Avgiften beror på byggnadens storlek. Vi räknar ut den när ansökan har kommit in.</p>
+          <p>
+            The fee depends on the size of the building. We calculate it when your application
+            arrives.
+          </p>
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Hur länge tar handläggningen?</Accordion.Trigger>
+          <Accordion.Trigger>How long does processing take?</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel>
-          <p>Du får besked inom tio veckor från att ansökan är komplett.</p>
+          <p>You get a decision within ten weeks of your application being complete.</p>
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion.Root>
@@ -96,13 +98,13 @@ export const Default: Story = {
   play: async ({ canvas, userEvent }) => {
     const headings = canvas.getAllByRole('heading', { level: 3 })
     await expect(headings).toHaveLength(3)
-    const trigger = canvas.getByRole('button', { name: 'Vad kostar det?' })
+    const trigger = canvas.getByRole('button', { name: 'What does it cost?' })
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await expectMinimumTargetSize(trigger)
     await userEvent.click(trigger)
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
     await expectAnimationsSettled()
-    await expect(canvas.getByText(/Avgiften beror/)).toBeVisible()
+    await expect(canvas.getByText(/The fee depends/)).toBeVisible()
   },
 }
 
@@ -115,12 +117,12 @@ export const Keyboard: Story = {
   parameters: showSource('accordion/accordion.fixture.tsx', 'KeyboardAccordion'),
   render: () => <KeyboardAccordion />,
   play: async ({ canvas, userEvent }) => {
-    const first = canvas.getByRole('button', { name: 'Hur ansöker jag?' })
+    const first = canvas.getByRole('button', { name: 'How do I apply?' })
     first.focus()
     await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Logga in på Mina sidor' })).toHaveFocus()
+    await expect(canvas.getByRole('link', { name: 'Sign in to My pages' })).toHaveFocus()
     await userEvent.tab()
-    await expect(canvas.getByRole('button', { name: 'Vad kostar det?' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'What does it cost?' })).toHaveFocus()
   },
 }
 
@@ -129,8 +131,8 @@ export const SeveralOpenAtOnce: Story = {
   parameters: showSource('accordion/accordion.fixture.tsx', 'SeveralOpen'),
   render: () => <SeveralOpen />,
   play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Telefon' }))
-    for (const name of ['Öppettider', 'Adress', 'Telefon']) {
+    await userEvent.click(canvas.getByRole('button', { name: 'Phone' }))
+    for (const name of ['Opening hours', 'Address', 'Phone']) {
       await expect(canvas.getByRole('button', { name })).toHaveAttribute('aria-expanded', 'true')
     }
   },
@@ -142,22 +144,21 @@ export const Regions: Story = {
   render: () => <RegionPanels />,
   play: async ({ canvas }) => {
     await expectAnimationsSettled()
-    await expect(canvas.getByRole('region', { name: 'Sophämtning' })).toBeVisible()
+    await expect(canvas.getByRole('region', { name: 'Waste collection' })).toBeVisible()
   },
 }
 
 /**
- * `hiddenUntilFound` on the root: search the page for "återvinningscentralen" and a browser that
+ * `hiddenUntilFound` on the root: search the page for "recycling centre" and a browser that
  * supports `hidden="until-found"` opens the answer on the match.
  */
 export const FindInPage: Story = {
   parameters: showSource('accordion/accordion.fixture.tsx', 'FindableAccordion'),
   render: () => <FindableAccordion />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: 'Var lämnar jag grovsopor?' })).toHaveAttribute(
-      'aria-expanded',
-      'false',
-    )
+    await expect(
+      canvas.getByRole('button', { name: 'Where do I leave bulky waste?' }),
+    ).toHaveAttribute('aria-expanded', 'false')
   },
 }
 
@@ -167,7 +168,7 @@ export const AsAList: Story = {
   render: () => <ListAccordion />,
   play: async ({ canvas }) => {
     await expect(canvas.getAllByRole('listitem')).toHaveLength(2)
-    await expect(canvas.getByRole('button', { name: 'Beslut' })).toHaveAttribute(
+    await expect(canvas.getByRole('button', { name: 'Decision' })).toHaveAttribute(
       'aria-disabled',
       'true',
     )
@@ -184,6 +185,7 @@ export const NarrowFinnishText: Story = {
     </div>
   ),
   play: async ({ canvas }) => {
+    // kv-lang-ok: asserts the Finnish long-compound fixture
     await expect(canvas.getByRole('button', { name: /Rakennuslupahakemuksen/ })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },

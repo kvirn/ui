@@ -35,7 +35,7 @@ export interface SwitchProps extends Omit<
  * @example
  * <Field.Root>
  *   <Switch name="sms" checked={sms} onCheckedChange={setSms} />
- *   <Field.Label marker="none">Få meddelanden som sms</Field.Label>
+ *   <Field.Label marker="none">Get messages by text message</Field.Label>
  * </Field.Root>
  */
 export function Switch({

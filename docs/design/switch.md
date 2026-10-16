@@ -51,23 +51,23 @@ Flow (immediate effect, server save):
 
 `Switch` has **no strings of its own**: the label, help text and error are the consumer's; "on/off" is spoken by the AT from the role. Story fixtures go in `apps/storybook/src/components/switch/switch.fixture.tsx` in all six locales (storybook-presentation.md §4).
 
-| Key                         | en                                                                  | sv                                                                        | longest: fi (draft)                                                       | Element                              |
-| --------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------ |
-| `settings.legend`           | Notifications                                                       | Aviseringar                                                               | Ilmoitukset                                                               | Legend of the group                  |
-| `settings.savedAtOnce`      | Changes are saved straight away.                                    | Ändringar sparas direkt.                                                  | Muutokset tallentuvat heti.                                               | Group description (`Fieldset` Prose) |
-| `settings.smsReminders`     | Text message reminders                                              | Påminnelser via sms                                                       | Tekstiviestimuistutukset                                                  | Label                                |
-| `settings.smsRemindersHint` | We send a text message the day before your appointment.             | Vi skickar ett sms dagen före din tid.                                    | Lähetämme tekstiviestin vastaanottoasi edeltävänä päivänä.                | Help text                            |
-| `settings.emailDecisions`   | Decisions by email                                                  | Beslut via e-post                                                         | Päätökset sähköpostiin                                                    | Label                                |
-| `settings.noMobileHint`     | Add a mobile number in Contact details to use this.                 | Lägg till ett mobilnummer under Kontaktuppgifter för att använda det här. | Lisää matkapuhelinnumero yhteystietoihin, jotta voit käyttää tätä.        | Help text of a disabled switch       |
-| `settings.saveFailed`       | The setting was not saved. Check your connection and try again.     | Inställningen sparades inte. Kontrollera din anslutning och försök igen.  | Asetusta ei tallennettu. Tarkista verkkoyhteys ja yritä uudelleen.        | Error message, announced             |
-| `settings.longLabel`        | Reminders by text message and email before every booked appointment | Påminnelser via sms och e-post före varje bokad tid                       | Muistutukset tekstiviestinä ja sähköpostina ennen jokaista varattua aikaa | Wrap test at 320px                   |
+| Key                         | en                                                                  | sv                                                                        | longest: fi (draft)                                                       | Element                                                                                                                 |
+| --------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `settings.legend`           | Notifications                                                       | Aviseringar                                                               | Ilmoitukset                                                               | Legend of the group                                                                                                     | <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `settings.savedAtOnce`      | Changes are saved straight away.                                    | Ändringar sparas direkt.                                                  | Muutokset tallentuvat heti.                                               | Group description (`Fieldset` Prose) <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `settings.smsReminders`     | Text message reminders                                              | Påminnelser via sms                                                       | Tekstiviestimuistutukset                                                  | Label <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                |
+| `settings.smsRemindersHint` | We send a text message the day before your appointment.             | Vi skickar ett sms dagen före din tid.                                    | Lähetämme tekstiviestin vastaanottoasi edeltävänä päivänä.                | Help text <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                            |
+| `settings.emailDecisions`   | Decisions by email                                                  | Beslut via e-post                                                         | Päätökset sähköpostiin                                                    | Label <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                |
+| `settings.noMobileHint`     | Add a mobile number in Contact details to use this.                 | Lägg till ett mobilnummer under Kontaktuppgifter för att använda det här. | Lisää matkapuhelinnumero yhteystietoihin, jotta voit käyttää tätä.        | Help text of a disabled switch <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->       |
+| `settings.saveFailed`       | The setting was not saved. Check your connection and try again.     | Inställningen sparades inte. Kontrollera din anslutning och försök igen.  | Asetusta ei tallennettu. Tarkista verkkoyhteys ja yritä uudelleen.        | Error message, announced <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->             |
+| `settings.longLabel`        | Reminders by text message and email before every booked appointment | Påminnelser via sms och e-post före varje bokad tid                       | Muistutukset tekstiviestinä ja sähköpostina ennen jokaista varattua aikaa | Wrap test at 320px <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                   |
 
 **Rules (sv and en):**
 
-- The label **names the setting**, a noun phrase: "Påminnelser via sms", "Text message reminders". It reads correctly with "på/av", "on/off" after it.
-- Not the action: never "Slå på påminnelser", "Turn on reminders", "Skicka mig sms".
-- Never "På", "Av", "On", "Off" or "Aktiverad" as the label or inside it, and the label never changes with the state (APG).
-- Not a question ("Vill du ha påminnelser?"): a question is a RadioGroup in a form.
+- The label **names the setting**, a noun phrase: "Text message reminders". It reads correctly with "on/off" after it.
+- Not the action: never "Turn on reminders", "Text me".
+- Never "On", "Off" or "Enabled" as the label or inside it, and the label never changes with the state (APG).
+- Not a question ("Do you want reminders?"): a question is a RadioGroup in a form.
 - The help text says what happens when it is on, in `text`, under the label. A disabled switch's help text says why, and what to do.
 
 ## 5. Structure
@@ -164,5 +164,5 @@ Draft for `packages/react/src/switch/switch.a11y.md`.
 ## 9. Open questions
 
 1. **Separate component or Toggle's `role="switch"`** (roadmap)? Assumed separate, on a native checkbox, so Field's label, help and error come free.
-2. **Visible state text** ("På"/"Av") beside the track: not proposed (new strings, risk of a name that changes with state). Revisit if testing shows the tick isn't enough.
+2. **Visible state text** ("On"/"Off") beside the track: not proposed (new strings, risk of a name that changes with state). Revisit if testing shows the tick isn't enough.
 3. **Track at the row's end** (as Designsystemet allows) and the **size aliases** in §6.5: out of brief / for the maintainer.

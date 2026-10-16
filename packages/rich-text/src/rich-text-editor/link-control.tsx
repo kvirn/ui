@@ -16,7 +16,7 @@ export type AddressProblem = 'missing' | 'invalid'
 
 /**
  * Checks a link address from the form: it must be there, and be a full `https`, `http`, `mailto`
- * or `tel` address, or a path or fragment on this site (`/hjalp`, `#kontakt`). A scheme-less
+ * or `tel` address, or a path or fragment on this site (`/help`, `#contact`). A scheme-less
  * `www.example.se` is refused with the format, because guessing a scheme would link somewhere the
  * author didn't see. Never `javascript:` and the like.
  */

@@ -16,7 +16,7 @@ const labelTags = ['p', 'div', 'span'] as const
 
 export interface ProgressRootProps
   extends ComponentPropsWithRef<'div'>, Omit<UseProgressOptions, 'messages'> {
-  /** Per-instance message overrides: `{ slow: 'Det här tar tid. Stäng inte sidan.' }`. */
+  /** Per-instance message overrides: `{ slow: 'This takes time. Do not close the page.' }`. */
   messages?: UseProgressOptions['messages']
 }
 

@@ -30,22 +30,22 @@
 
 1. The resident types. Bold, Italic and the two lists are on the bar and act as today (a press keeps focus in the text).
 2. They need Underline: tap **Mer ⌄**. The menu opens under it, focus on its first item.
-3. Tap **Understrykning**: it toggles, the menu closes, focus is back in the text at the caret, "Understrykning på" is announced, and the next letters are underlined.
+3. Tap **Underline**: it toggles, the menu closes, focus is back in the text at the caret, "Underline on" is announced, and the next letters are underlined.
 
-Unhappy and other paths: **Escape** in the menu closes it, nothing runs, focus on "Mer". **Tap outside** closes it, nothing runs. **Unavailable item** (Ångra with nothing to undo, indent outside a list, a table action outside a table): reachable, read as unavailable, nothing runs, the menu stays open. **Lägg till länk / bild:** the menu closes and the form opens under "Mer", focus in its first field; Avbryt or Escape puts focus back in the text. **Infoga tabell:** focus goes into the new first cell; the Table group appears inside the menu, never as a new toolbar row. **Ta bort tabellen** (the last): focus to the text, the group leaves the menu. **Editor disabled:** "Mer" natively disabled, out of the Tab order. **Read-only:** no toolbar. **Overflow would hold one command:** that command is on the bar and there is no "Mer". **None:** no "Mer". **On-screen keyboard closes** when focus enters the menu: the menu is placed after the viewport settles (Menu's own placement).
+Unhappy and other paths: **Escape** in the menu closes it, nothing runs, focus on "More". **Tap outside** closes it, nothing runs. **Unavailable item** (Undo with nothing to undo, indent outside a list, a table action outside a table): reachable, read as unavailable, nothing runs, the menu stays open. **Add link / Add image:** the menu closes and the form opens under "More", focus in its first field; Cancel or Escape puts focus back in the text. **Insert table:** focus goes into the new first cell; the Table group appears inside the menu, never as a new toolbar row. **Delete table** (the last): focus to the text, the group leaves the menu. **Editor disabled:** "More" natively disabled, out of the Tab order. **Read-only:** no toolbar. **Overflow would hold one command:** that command is on the bar and there is no "More". **None:** no "More". **On-screen keyboard closes** when focus enters the menu: the menu is placed after the viewport settles (Menu's own placement).
 
 ## 4. Content
 
 Every other string is an existing `richText` key. Menu items use the menu rule "verb + object" for actions and the option name for checkbox and radio items.
 
-| i18n key                                                                                 | en                     | sv                          | nb / nn                          | fi (longest, length check) | Notes                                                                                                                           |
-| ---------------------------------------------------------------------------------------- | ---------------------- | --------------------------- | -------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `richText.more` (new)                                                                    | More                   | Mer                         | Mer / Meir                       | Muut                       | Visible text and name of the trigger, and the menu's name. fi avoids "Lisää", which is already `groupInsert`: translator review |
-| `richText.insertTable` (new)                                                             | Insert table           | Infoga tabell               | Sett inn tabell / Set inn tabell | Lisää taulukko             | The Table item in the menu ("Tabell" is a bare noun)                                                                            |
-| `linkAddTitle` / `linkEditTitle`                                                         | Add link / Edit link   | Lägg till länk / Ändra länk | (existing)                       | (existing)                 | The Link item, by whether the caret is on a link                                                                                |
-| `imageAddTitle` / `imageEditTitle`                                                       | Add image / Edit image | Lägg till bild / Ändra bild | (existing)                       | (existing)                 | The Image item, by whether an image is selected                                                                                 |
-| `groupHistory`, `blockType`, `groupTextStyle`, `groupLists`, `groupInsert`, `groupTable` | (existing)             |                             |                                  |                            | Group labels in the menu                                                                                                        |
-| `formatOn` / `formatOff`                                                                 | Underline on / off     | Understrykning på / av      |                                  |                            | Announced after a checkbox item (§7)                                                                                            |
+| i18n key                                                                                 | en                     | sv                          | nb / nn                          | fi (longest, length check) | Notes                                                                                                                                                                                                              |
+| ---------------------------------------------------------------------------------------- | ---------------------- | --------------------------- | -------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `richText.more` (new)                                                                    | More                   | Mer                         | Mer / Meir                       | Muut                       | Visible text and name of the trigger, and the menu's name. fi avoids "Lisää", which is already `groupInsert`: translator review <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `richText.insertTable` (new)                                                             | Insert table           | Infoga tabell               | Sett inn tabell / Set inn tabell | Lisää taulukko             | The Table item in the menu ("Tabell" is a bare noun) <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                                            |
+| `linkAddTitle` / `linkEditTitle`                                                         | Add link / Edit link   | Lägg till länk / Ändra länk | (existing)                       | (existing)                 | The Link item, by whether the caret is on a link <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                                                |
+| `imageAddTitle` / `imageEditTitle`                                                       | Add image / Edit image | Lägg till bild / Ändra bild | (existing)                       | (existing)                 | The Image item, by whether an image is selected <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                                                 |
+| `groupHistory`, `blockType`, `groupTextStyle`, `groupLists`, `groupInsert`, `groupTable` | (existing)             |                             |                                  |                            | Group labels in the menu                                                                                                                                                                                           |
+| `formatOn` / `formatOff`                                                                 | Underline on / off     | Understrykning på / av      |                                  |                            | Announced after a checkbox item (§7) <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                                                                                            |
 
 Both new keys in all five locales, typed, overridable per provider and per instance (`messages` on Root), as every `richText` key.
 
@@ -57,7 +57,7 @@ The same DOM and order at every width: the split never changes with the viewport
 
 ```
 ┌──────────────────────────────────┐
-│ (B)(I)  (•≡)(1≡)  [Mer ⌄]        │  one row: 87 + 8 + 87 + 8 + 78 ≈ 268px
+│ (B)(I)  (•≡)(1≡)  [More ⌄]       │  one row: 87 + 8 + 87 + 8 + 78 ≈ 268px
 │──────────────────────────────────│
 │ text …                           │
 ```
@@ -67,21 +67,21 @@ Inside a Card at 320px, or with 1.4.12 spacing or 200% text, "Mer" wraps to row 
 **Menu open (sv, every group present):**
 
 ```
-│ (B)(I)  (•≡)(1≡)  [Mer ⌄]        │  "Mer": primary edge + primary-subtle (open)
+│ (B)(I)  (•≡)(1≡)  [More ⌄]       │  "More": primary edge + primary-subtle (open)
 │      ┌───────────────────────────┐   kv-menu-popup, aligned to the trigger's inline end,
-│      │ Ångra och gör om          │   8px inside the viewport, scrolls inside
-│      │   Ångra           Ctrl+Z  │   menuitem, hint at inline end (with tooltips on)
-│      │   Gör om   Ctrl+Shift+Z  │
+│      │ Undo and redo             │   8px inside the viewport, scrolls inside
+│      │   Undo             Ctrl+Z │   menuitem, hint at inline end (with tooltips on)
+│      │   Redo   Ctrl+Shift+Z    │
 │      │ ───────────────────────── │
-│      │ Texttyp                   │   group of menuitemradio
-│      │ (•) Vanlig text           │   checked = the type at the caret; none when mixed
-│      │ ( ) Rubrik 2 · 3 · 4      │
-│      │ ( ) Citat · Kodblock      │
-│      │ Textstil                  │   menuitemcheckbox: Understrykning, Genomstrykning, Kod
-│      │ Listor                    │   Öka indrag, Minska indrag
-│      │ Infoga                    │   Lägg till länk, Lägg till bild, Infoga tabell
-│      │   Ta bort formatering     │   alone, after a separator
-│      │ Tabell (while a table)    │   the 7 table actions, then the Rubrikrad checkbox
+│      │ Text type                 │   group of menuitemradio
+│      │ (•) Normal text           │   checked = the type at the caret; none when mixed
+│      │ ( ) Heading 2 · 3 · 4     │
+│      │ ( ) Quote · Code block    │
+│      │ Text style                │   menuitemcheckbox: Underline, Strikethrough, Code
+│      │ Lists                     │   Increase indent, Decrease indent
+│      │ Insert                    │   Add link, Add image, Insert table
+│      │   Clear formatting        │   alone, after a separator
+│      │ Table (while a table)     │   the 7 table actions, then the Header row checkbox
 │      └───────────────────────────┘
 ```
 
@@ -138,9 +138,9 @@ None. One new part class, `kv-rich-text-more` (spacing from existing `space-*`),
 
 ## 7. Accessibility annotations (draft rows for `rich-text-editor.a11y.md`)
 
-- **Roles:** "Mer" is `Toolbar.Item as={Menu.Trigger}`: `<button aria-haspopup="menu" aria-expanded aria-controls>`, name = visible text (2.5.3). Popup `role="menu"` `aria-labelledby` → trigger. Groups `role="group"` labelled by their visible group label. Underline, Strikethrough, Code, Rubrikrad: `menuitemcheckbox` `aria-checked` following the caret. Text types: `menuitemradio` in a group, `aria-checked` on the current one (none when mixed). Link and Image items: `menuitem` `aria-haspopup="dialog"`. Unavailable: `aria-disabled="true"`, focusable. Shortcuts: `aria-keyshortcuts` per platform.
+- **Roles:** "More" is `Toolbar.Item as={Menu.Trigger}`: `<button aria-haspopup="menu" aria-expanded aria-controls>`, name = visible text (2.5.3). Popup `role="menu"` `aria-labelledby` → trigger. Groups `role="group"` labelled by their visible group label. Underline, Strikethrough, Code, Header row: `menuitemcheckbox` `aria-checked` following the caret. Text types: `menuitemradio` in a group, `aria-checked` on the current one (none when mixed). Link and Image items: `menuitem` `aria-haspopup="dialog"`. Unavailable: `aria-disabled="true"`, focusable. Shortcuts: `aria-keyshortcuts` per platform.
 - **Tab stops:** unchanged: the toolbar (one stop, roving; "Mer" can be it), the text. Menu items are never toolbar items (Menu.Popup clears the toolbar context).
-- **Focus after a menu item** (the editor's existing rules, carried over): keyboard command → "Mer" (as a toolbar button keeps focus); text type → the text (as the picker); Link/Image → the form's first field; Infoga tabell → the new first cell; Ta bort tabellen → the text. **Pointer press on any item → the text, at the selection** (as a bar button keeps focus in the text), so stored marks survive and the on-screen keyboard returns. Needs maintainer approval (§9).
+- **Focus after a menu item** (the editor's existing rules, carried over): keyboard command → "More" (as a toolbar button keeps focus); text type → the text (as the picker); Link/Image → the form's first field; Insert table → the new first cell; Delete table → the text. **Pointer press on any item → the text, at the selection** (as a bar button keeps focus in the text), so stored marks survive and the on-screen keyboard returns. Needs maintainer approval (§9).
 - **Implementation hazard:** the toolbar's `onKeyDownCapture` Escape handler sees keys from the menu popup (it is in the toolbar's DOM). It must ignore events from inside `[role="menu"]`, or Escape in the menu would jump to the text.
 - **Announcements (polite, existing keys):** a checkbox item announces `formatOn` / `formatOff` by keyboard and pointer, because the control that showed its state has gone; other commands announce exactly what their bar button does (`undone`, `redone`, `listLevel`, `formattingCleared`, `tableInserted`, `rowAdded`, …). A text type announces nothing (as the picker).
 - **SCs of note:** 1.3.1, 1.4.1, 1.4.10, 1.4.11, 1.4.12, 2.1.1, 2.1.2, 2.4.3, 2.4.7, 2.4.11, 2.5.3, 2.5.8, 3.2.1, 4.1.2, 4.1.3.
@@ -149,21 +149,21 @@ None. One new part class, `kv-rich-text-more` (spacing from existing `space-*`),
 
 No new key: each row is an APG Toolbar or Menu Button key in this composition.
 
-| Key                                         | Context                  | Action                                                                     | Test                                                                                                                                                 |
-| ------------------------------------------- | ------------------------ | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ArrowRight / ArrowLeft, End                 | compact toolbar          | "Mer" is the last control; the arrows reach it and wrap. Flip in RTL       | `"More" is the last toolbar item, reached by ArrowRight and End, and the arrows wrap` · `right to left: ArrowLeft goes from Numbered list to "More"` |
-| Enter / Space / ArrowDown                   | on "Mer"                 | Opens the menu, focus on the first item                                    | `Enter, Space and ArrowDown on "More" open the menu on its first item, and ArrowUp on its last`                                                      |
-| ArrowUp                                     | on "Mer"                 | Opens the menu, focus on the last item                                     | (same test)                                                                                                                                          |
-| ArrowDown / ArrowUp, Home / End, characters | in the menu              | The Menu's keys: move, wrap, ends, typeahead                               | `ArrowDown, ArrowUp, Home, End and typeahead move in the "More" menu`                                                                                |
-| Enter / Space                               | on a command item        | Runs it, closes, focus on "Mer", announced as its bar button               | `Enter on a command item runs it, closes the menu, keeps focus on "More", and announces it`                                                          |
-| Enter / Space                               | on a checkbox item       | Toggles the format, closes, focus on "Mer", "Understrykning på"            | `Enter on Underline toggles it, closes the menu and announces "Understrykning på"`                                                                   |
-| Enter / Space                               | on a text type           | Applies it, closes, focus back in the text                                 | `choosing a text type in the menu applies it and puts focus back in the text`                                                                        |
-| Enter / Space                               | on an unavailable item   | Nothing; the menu stays open                                               | `an unavailable item is focusable, read as unavailable, and Enter does nothing`                                                                      |
-| Enter / Space                               | on Lägg till länk / bild | Closes the menu, opens the form under "Mer", focus in its first field      | `"Add link" in the menu opens the link form with focus in "Web address", and Escape puts focus in the text`                                          |
-| Enter / Space                               | on Infoga tabell         | Inserts, focus in the first cell; the Table group is then in the menu      | `"Insert table" moves focus into the new table, and the Table group is in the menu, unavailable outside a table`                                     |
-| Escape                                      | in the menu              | Closes it, focus on "Mer" (not the text). A second Escape goes to the text | `Escape in the menu closes it and focus goes to "More"; a second Escape goes to the text`                                                            |
-| Tab / Shift+Tab                             | in the menu              | Tab closes it and moves to the text; Shift+Tab closes it, focus on "Mer"   | `Tab in the menu closes it and moves to the text; Shift+Tab closes it onto "More"`                                                                   |
-| Control/Command+K                           | in the text, compact     | Opens the link form under "Mer", focus in "Webbadress"                     | `Mod-k opens the link form in the compact toolbar too`                                                                                               |
+| Key                                         | Context                 | Action                                                                      | Test                                                                                                                                                 |
+| ------------------------------------------- | ----------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ArrowRight / ArrowLeft, End                 | compact toolbar         | "Mer" is the last control; the arrows reach it and wrap. Flip in RTL        | `"More" is the last toolbar item, reached by ArrowRight and End, and the arrows wrap` · `right to left: ArrowLeft goes from Numbered list to "More"` |
+| Enter / Space / ArrowDown                   | on "Mer"                | Opens the menu, focus on the first item                                     | `Enter, Space and ArrowDown on "More" open the menu on its first item, and ArrowUp on its last`                                                      |
+| ArrowUp                                     | on "Mer"                | Opens the menu, focus on the last item                                      | (same test)                                                                                                                                          |
+| ArrowDown / ArrowUp, Home / End, characters | in the menu             | The Menu's keys: move, wrap, ends, typeahead                                | `ArrowDown, ArrowUp, Home, End and typeahead move in the "More" menu`                                                                                |
+| Enter / Space                               | on a command item       | Runs it, closes, focus on "More", announced as its bar button               | `Enter on a command item runs it, closes the menu, keeps focus on "More", and announces it`                                                          |
+| Enter / Space                               | on a checkbox item      | Toggles the format, closes, focus on "More", "Underline on"                 | `Enter on Underline toggles it, closes the menu and announces "Underline on"`                                                                        |
+| Enter / Space                               | on a text type          | Applies it, closes, focus back in the text                                  | `choosing a text type in the menu applies it and puts focus back in the text`                                                                        |
+| Enter / Space                               | on an unavailable item  | Nothing; the menu stays open                                                | `an unavailable item is focusable, read as unavailable, and Enter does nothing`                                                                      |
+| Enter / Space                               | on Add link / Add image | Closes the menu, opens the form under "More", focus in its first field      | `"Add link" in the menu opens the link form with focus in "Web address", and Escape puts focus in the text`                                          |
+| Enter / Space                               | on Insert table         | Inserts, focus in the first cell; the Table group is then in the menu       | `"Insert table" moves focus into the new table, and the Table group is in the menu, unavailable outside a table`                                     |
+| Escape                                      | in the menu             | Closes it, focus on "More" (not the text). A second Escape goes to the text | `Escape in the menu closes it and focus goes to "More"; a second Escape goes to the text`                                                            |
+| Tab / Shift+Tab                             | in the menu             | Tab closes it and moves to the text; Shift+Tab closes it, focus on "More"   | `Tab in the menu closes it and moves to the text; Shift+Tab closes it onto "More"`                                                                   |
+| Control/Command+K                           | in the text, compact    | Opens the link form under "More", focus in "Web address"                    | `Mod-k opens the link form in the compact toolbar too`                                                                                               |
 
 Non-key tests in the same `describe`: `CompactControls shows Bold, Italic and the two lists, then "More", and every other control once, in the menu, in the default order` · `with one control left over it is on the bar and there is no "More"` · `include and exclude choose the controls of the compact toolbar` · `a pointer press on a menu item puts focus back in the text at the selection, and the next letters get the format` · `disabled with the editor: "More" is natively disabled and out of the Tab order` · `the menu's items follow the caret: checked text styles and the current text type`. Stories (axe in every theme): Compact, menu open, with a table, `icon-and-text`, disabled, RTL, ForcedColors, and the compact form in the `Keyboard` story.
 
@@ -173,7 +173,7 @@ Non-key tests in the same `describe`: `CompactControls shows Bold, Italic and th
 - [x] Contrast: no new pair (all in menu.md §6.2 and the editor spec).
 - [x] Usability test plan written. Result: `pending`. AT matrix rows: `pending`.
 
-**Usability test plan (`pending`).** Participants: NVDA + Chrome, VoiceOver iOS, TalkBack users; a magnifier user at 400%; a tremor user on a phone; a Windows Contrast Themes user; two second-language Swedish and two Finnish readers; two low-confidence residents; two staff. Tasks on a phone form: 1. Write three bullet points. 2. Underline one word (in "Mer"). 3. Add a link to a web page. 4. Undo a mistake. 5. Keyboard only (desktop): make a heading and a numbered list. Measure: first-time discovery of "Mer", wrong-item taps, lost formatting after a menu tap, rows of text visible with the keyboard open, whether "Muut" is understood.
+**Usability test plan (`pending`).** Participants: NVDA + Chrome, VoiceOver iOS, TalkBack users; a magnifier user at 400%; a tremor user on a phone; a Windows Contrast Themes user; two second-language Swedish and two Finnish readers; two low-confidence residents; two staff. Tasks on a phone form: 1. Write three bullet points. 2. Underline one word (in "More"). 3. Add a link to a web page. 4. Undo a mistake. 5. Keyboard only (desktop): make a heading and a numbered list. Measure: first-time discovery of "More", wrong-item taps, lost formatting after a menu tap, rows of text visible with the keyboard open, whether "Muut" is understood. <!-- kv-lang-ok: second-language Swedish readers are a test participant group -->
 
 ## 9. Open questions
 
@@ -187,6 +187,6 @@ Non-key tests in the same `describe`: `CompactControls shows Bold, Italic and th
 
 **Other**
 
-6. `richText.more` in Finnish ("Muut"): translator review.
-7. `imagePasteNotSupported` says "Use the Image button"; in the compact toolbar it is "Lägg till bild" in "Mer". Reword in Plan 0114 §1 ("Use Add image")?
+6. `richText.more` in Finnish ("Muut"): translator review. <!-- kv-lang-ok: the Finnish label is the subject -->
+7. `imagePasteNotSupported` says "Use the Image button"; in the compact toolbar it is "Add image" in "More". Reword in Plan 0114 §1 ("Use Add image")?
 8. A consumer's own split (`Toolbar.Item as={Menu.Trigger}` with editor commands as menu items) needs exported menu-item commands: a later plan.

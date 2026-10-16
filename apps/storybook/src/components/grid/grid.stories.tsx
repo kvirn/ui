@@ -12,7 +12,14 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 const description = usageGuide(guide)
 
-const services = ['Sophämtning', 'Bygglov', 'Skolskjuts', 'Äldreomsorg', 'Bibliotek', 'Simhall']
+const services = [
+  'Waste collection',
+  'Building permits',
+  'School transport',
+  'Elderly care',
+  'Library',
+  'Swimming pool',
+]
 
 function cell(label: string, className?: string) {
   return (
@@ -47,8 +54,8 @@ export const Default: Story = {
   args: {
     className: 'kv-grid--cols-1 kv-grid--lg-cols-12',
     children: [
-      cell('Huvudinnehåll', 'kv-grid-item--lg-span-8'),
-      cell('Sidopanel', 'kv-grid-item--lg-span-4'),
+      cell('Main content', 'kv-grid-item--lg-span-8'),
+      cell('Side panel', 'kv-grid-item--lg-span-4'),
     ],
   },
 }
@@ -74,7 +81,7 @@ export const SpansAndLines: Story = {
   args: {
     className: 'kv-grid--cols-1 kv-grid--sm-cols-4',
     children: [
-      cell('Rubrik, span-full', 'kv-grid-item--span-full'),
+      cell('Heading, span-full', 'kv-grid-item--span-full'),
       cell('span-2', 'kv-grid-item--sm-span-2'),
       cell('span-1'),
       cell('span-1'),
@@ -92,8 +99,8 @@ export const Lines: Story = {
   args: {
     className: 'kv-grid--cols-1 kv-grid--sm-cols-6',
     children: [
-      cell('Första, 1 till 3', 'kv-grid-item--sm-start-1 kv-grid-item--sm-end-3'),
-      cell('Andra, 4 till 7', 'kv-grid-item--sm-start-4 kv-grid-item--sm-end-7'),
+      cell('First, 1 to 3', 'kv-grid-item--sm-start-1 kv-grid-item--sm-end-3'),
+      cell('Second, 4 to 7', 'kv-grid-item--sm-start-4 kv-grid-item--sm-end-7'),
     ],
   },
 }
@@ -102,7 +109,7 @@ export const Lines: Story = {
 export const Rows: Story = {
   args: {
     className: 'kv-grid--cols-1 kv-grid--sm-cols-2 kv-grid--sm-rows-2',
-    children: [cell('row-span-2', 'kv-grid-item--sm-row-span-2'), cell('Överst'), cell('Nederst')],
+    children: [cell('row-span-2', 'kv-grid-item--sm-row-span-2'), cell('Top'), cell('Bottom')],
   },
 }
 
@@ -132,17 +139,17 @@ export const Alignment: Story = {
     <>
       <Grid.Root className="kv-grid--cols-1 kv-grid--sm-cols-3 kv-grid--items-start">
         {cell('items-start')}
-        {cell('Längre text som gör raden högre än de andra cellerna i den här raden')}
+        {cell('Longer text that makes the row taller than the other cells in this row')}
         {cell('C')}
       </Grid.Root>
       <Grid.Root className="kv-grid--cols-1 kv-grid--sm-cols-3 kv-grid--items-center">
         {cell('items-center')}
-        {cell('Längre text som gör raden högre än de andra cellerna i den här raden')}
+        {cell('Longer text that makes the row taller than the other cells in this row')}
         {cell('C')}
       </Grid.Root>
       <Grid.Root className="kv-grid--cols-1 kv-grid--sm-cols-3">
-        {cell('Standard')}
-        {cell('Längre text som gör raden högre än de andra cellerna i den här raden')}
+        {cell('Default')}
+        {cell('Longer text that makes the row taller than the other cells in this row')}
         {cell('self-end', 'kv-grid-item--self-end')}
       </Grid.Root>
       <Grid.Root className="kv-grid--cols-1 kv-grid--sm-cols-3 kv-grid--justify-items-center">
@@ -159,11 +166,11 @@ export const Subgrid: Story = {
   args: { className: 'kv-grid--cols-1 kv-grid--sm-cols-4' },
   render: (args) => (
     <Grid.Root {...args}>
-      {cell('Rad 1, kolumn 1')}
+      {cell('Row 1, column 1')}
       <Grid.Item className="kv-grid-item--sm-subgrid kv-grid-item--sm-span-3">
-        {cell('Underrutnät A')}
-        {cell('Underrutnät B')}
-        {cell('Underrutnät C')}
+        {cell('Subgrid A')}
+        {cell('Subgrid B')}
+        {cell('Subgrid C')}
       </Grid.Item>
     </Grid.Root>
   ),
@@ -180,16 +187,16 @@ export const Nested: Story = {
     <Grid.Root {...args}>
       <Grid.Item className="kv-grid-item--lg-span-8">
         <Grid.Root className="kv-grid--cols-1 kv-grid--sm-cols-2">
-          {cell('Inre A')}
-          {cell('Inre B')}
-          {cell('Inre C')}
-          {cell('Inre D')}
+          {cell('Inner A')}
+          {cell('Inner B')}
+          {cell('Inner C')}
+          {cell('Inner D')}
         </Grid.Root>
       </Grid.Item>
       <Grid.Item className="kv-grid-item--lg-span-4">
         <Grid.Root className="kv-grid--cols-1 kv-grid--sm-cols-2">
-          {cell('Smal A')}
-          {cell('Smal B')}
+          {cell('Narrow A')}
+          {cell('Narrow B')}
         </Grid.Root>
       </Grid.Item>
     </Grid.Root>
@@ -221,6 +228,7 @@ export const AsList: Story = {
 export const Reflow320: Story = {
   args: {
     className: 'kv-grid--cols-1 kv-grid--sm-cols-2 kv-grid--lg-cols-3',
+    // kv-lang-ok: long Finnish compound hard case
     children: cell('Jätehuoltomaksunpalautuspäätöksentarkistuslomake'),
   },
   decorators: [(Story) => <div className="kv-story-narrow">{<Story />}</div>],

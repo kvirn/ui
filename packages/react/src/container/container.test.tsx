@@ -46,11 +46,11 @@ const propChoices = [
 
 describe('rendering', () => {
   test('renders one <div> with the base class and the children', async () => {
-    const { container } = await render(<Container data-testid="layout">Innehåll</Container>)
+    const { container } = await render(<Container data-testid="layout">Content</Container>)
     const layout = page.getByTestId('layout')
     expect(layout.element().tagName).toBe('DIV')
     expect(layout.element().className).toBe('kv-container')
-    await expect.element(layout).toHaveTextContent('Innehåll')
+    await expect.element(layout).toHaveTextContent('Content')
     expect(container.children).toHaveLength(1)
   })
 
@@ -73,12 +73,12 @@ describe('rendering', () => {
 
   test('passes attributes through: id, aria-label and title', async () => {
     await render(
-      <Container data-testid="layout" id="innehall" aria-label="Kokoelma" title="Otsikko" />,
+      <Container data-testid="layout" id="content" aria-label="Collection" title="Heading" />,
     )
     const layout = page.getByTestId('layout')
-    await expect.element(layout).toHaveAttribute('id', 'innehall')
-    await expect.element(layout).toHaveAttribute('aria-label', 'Kokoelma')
-    await expect.element(layout).toHaveAttribute('title', 'Otsikko')
+    await expect.element(layout).toHaveAttribute('id', 'content')
+    await expect.element(layout).toHaveAttribute('aria-label', 'Collection')
+    await expect.element(layout).toHaveAttribute('title', 'Heading')
   })
 
   test('keeps its own class: a consumer className joins it instead of replacing it', async () => {
@@ -100,12 +100,12 @@ describe('as and ref', () => {
   test('an element changes the element and keeps the children', async () => {
     const { container } = await render(
       <main>
-        <Container as="section" aria-label="Tjänster">
+        <Container as="section" aria-label="Services">
           <h1>Kvirnby kommun</h1>
         </Container>
       </main>,
     )
-    await expect.element(page.getByRole('region', { name: 'Tjänster' })).toBeVisible()
+    await expect.element(page.getByRole('region', { name: 'Services' })).toBeVisible()
     await expect
       .element(page.getByRole('heading', { name: 'Kvirnby kommun', level: 1 }))
       .toBeVisible()
@@ -151,7 +151,7 @@ describe('keyboard', () => {
   function Controls() {
     return (
       <Container>
-        <Link.Root href="#forst">Första</Link.Root>
+        <Link.Root href="#first">First</Link.Root>
         <Button>Andra</Button>
         <Link.Root href="#tredje">Tredje</Link.Root>
       </Container>
@@ -161,7 +161,7 @@ describe('keyboard', () => {
   test('is not a Tab stop and keeps the children in DOM order', async () => {
     await render(<Controls />)
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('link', { name: 'Första' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'First' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('button', { name: 'Andra' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
@@ -174,7 +174,7 @@ describe('keyboard', () => {
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     await expect.element(page.getByRole('button', { name: 'Andra' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('link', { name: 'Första' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'First' })).toHaveFocus()
   })
 })
 
@@ -218,7 +218,7 @@ describe('accessibility', () => {
         <Container>
           <h1>Kvirnby kommun</h1>
           <p>Vi svarar vardagar 9–16.</p>
-          <Link.Root href="#kontakt">Kontakta oss</Link.Root>
+          <Link.Root href="#contact">Contact us</Link.Root>
         </Container>
       </main>,
     )

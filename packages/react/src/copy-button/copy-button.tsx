@@ -40,8 +40,8 @@ export interface CopyButtonProps extends Omit<ButtonProps, 'type' | 'onClick'> {
  * user can copy them by hand. `data-status` is `idle`, `copied` or `failed` for your own cue.
  *
  * @example
- * <p>Ditt ärendenummer är <span ref={numberRef}>PK-2026-004217</span></p>
- * <CopyButton text="PK-2026-004217" textRef={numberRef}>Kopiera ärendenumret</CopyButton>
+ * <p>Your case number is <span ref={numberRef}>PK-2026-004217</span></p>
+ * <CopyButton text="PK-2026-004217" textRef={numberRef}>Copy the case number</CopyButton>
  */
 export function CopyButton({
   text,

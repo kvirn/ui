@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
 import { Button, Listbox, Popover, Toolbar } from '@kvirn-ui/react'
 import type { ToolbarRootProps } from '@kvirn-ui/react'
 import { useId, useState } from 'react'
@@ -71,24 +72,24 @@ const popupStyle: CSSProperties = {
 }
 
 /**
- * The main example: three named groups of text buttons and toggles. Fet is on to start with. Tab
+ * The main example: three named groups of text buttons and toggles. Bold is on to start with. Tab
  * enters the toolbar once, and the arrow keys move between the controls.
  */
 export function TextToolbar(props: ToolbarRootProps) {
   return (
-    <Toolbar.Root aria-label="Formatering" {...props}>
-      <Toolbar.Group aria-label="Historik">
-        <Toolbar.Button>Ångra</Toolbar.Button>
-        <Toolbar.Button>Gör om</Toolbar.Button>
+    <Toolbar.Root aria-label="Formatting" {...props}>
+      <Toolbar.Group aria-label="History">
+        <Toolbar.Button>Undo</Toolbar.Button>
+        <Toolbar.Button>Redo</Toolbar.Button>
       </Toolbar.Group>
-      <Toolbar.Group aria-label="Textstil">
-        <Toolbar.Toggle defaultPressed>Fet</Toolbar.Toggle>
-        <Toolbar.Toggle>Kursiv</Toolbar.Toggle>
-        <Toolbar.Toggle>Understruken</Toolbar.Toggle>
+      <Toolbar.Group aria-label="Text style">
+        <Toolbar.Toggle defaultPressed>Bold</Toolbar.Toggle>
+        <Toolbar.Toggle>Italic</Toolbar.Toggle>
+        <Toolbar.Toggle>Underline</Toolbar.Toggle>
       </Toolbar.Group>
-      <Toolbar.Group aria-label="Infoga">
-        <Toolbar.Button>Länk</Toolbar.Button>
-        <Toolbar.Button>Bild</Toolbar.Button>
+      <Toolbar.Group aria-label="Insert">
+        <Toolbar.Button>Link</Toolbar.Button>
+        <Toolbar.Button>Image</Toolbar.Button>
       </Toolbar.Group>
     </Toolbar.Root>
   )
@@ -161,14 +162,14 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
 export function RowActionsToolbar() {
   return (
     <Toolbar.Root
-      aria-label="Åtgärder för raden"
+      aria-label="Row actions"
       orientation="vertical"
       style={{ flexDirection: 'column', alignItems: 'flex-start' }}
     >
-      <Toolbar.Button>Flytta upp</Toolbar.Button>
-      <Toolbar.Button>Flytta ned</Toolbar.Button>
-      <Toolbar.Button>Duplicera</Toolbar.Button>
-      <Toolbar.Button>Ta bort</Toolbar.Button>
+      <Toolbar.Button>Move up</Toolbar.Button>
+      <Toolbar.Button>Move down</Toolbar.Button>
+      <Toolbar.Button>Duplicate</Toolbar.Button>
+      <Toolbar.Button>Delete</Toolbar.Button>
     </Toolbar.Root>
   )
 }

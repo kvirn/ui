@@ -74,7 +74,7 @@ const meta = {
     },
   },
   args: { onValueChange: fn(), onOpenChange: fn() },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [withCalendarProvider],
   render: (args, { globals }) => <VisitDatePicker {...args} locale={localeOf(globals)} />,
   parameters: {
@@ -97,17 +97,17 @@ const openFrom = async (trigger: HTMLElement) => {
 // which also keeps the Docs page closed: every modal dialog is in the top layer and would stack.
 const openPicker = (canvas: {
   getByRole: (role: 'button', options: { name: RegExp }) => HTMLElement
-}) => openFrom(canvas.getByRole('button', { name: /^(Välj datum|Choose date)$/ }))
+}) => openFrom(canvas.getByRole('button', { name: /^Choose date$/ }))
 
-/** The main example: one `masks.date()` field with "Välj datum" beside it. One Tab stop, paste works, and the chosen day is written in the field's own format. */
+/** The main example: one `masks.date()` field with "Choose date" beside it. One Tab stop, paste works, and the chosen day is written in the field's own format. */
 export const MaskedTextInput: Story = {
   parameters: source('MaskedDatePicker'),
   render: (args, { globals }) => (
-    <MaskedDatePicker {...args} locale={localeOf(globals)} initial="2026-10-20" />
+    <MaskedDatePicker {...args} locale={localeOf(globals)} initial="20/10/2026" />
   ),
   play: async ({ canvas, globals }) => {
     const { text } = dateTextsFor(localeOf(globals))
-    const trigger = canvas.getByRole('button', { name: 'Välj datum' })
+    const trigger = canvas.getByRole('button', { name: 'Choose date' })
     await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog')
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await expect(modalDialog()).toBeNull()
@@ -121,15 +121,15 @@ export const MaskedTextInput: Story = {
     await waitFor(() => expect(modalDialog()).toBeNull())
     await expect(
       canvas.getByRole('textbox', { name: new RegExp(`^${text.oneFieldLabel}`) }),
-    ).toHaveValue('2026-10-21')
+    ).toHaveValue('21/10/2026')
     await expect(trigger).toHaveFocus()
   },
 }
 
-/** The second example: the three boxes with "Välj datum" last in the row, for when separate labelled day, month and year are wanted. Typing always works. */
+/** The second example: the three boxes with "Choose date" last in the row, for when separate labelled day, month and year are wanted. Typing always works. */
 export const WithDateInput: Story = {
   play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Välj datum' })
+    const trigger = canvas.getByRole('button', { name: 'Choose date' })
     await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog')
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await expect(modalDialog()).toBeNull()
@@ -142,9 +142,28 @@ export const Open: Story = {
   render: (args, { globals }) => <MaskedDatePicker {...args} locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
     await openPicker(canvas)
-    const dialog = canvas.getByRole('dialog', { name: 'Välj ett datum' })
+    const dialog = canvas.getByRole('dialog', { name: 'Choose a date' })
     await expect(dialog).toHaveAttribute('aria-modal', 'true')
     await expect(
+      canvas.getByRole('gridcell', { name: 'Wednesday, 14 October 2026, today' }),
+    ).toHaveFocus()
+  },
+}
+
+/** The Swedish locale proof: the trigger, the dialog title and the day names follow the catalog. */
+export const Swedish: Story = {
+  // kv-lang-ok: the one Swedish locale proof, Swedish date names and format
+  globals: { locale: 'sv' },
+  parameters: source('MaskedDatePicker'),
+  render: (args, { globals }) => <MaskedDatePicker {...args} locale={localeOf(globals)} />,
+  play: async ({ canvas }) => {
+    // kv-lang-ok: proves Swedish date names and format
+    await openFrom(canvas.getByRole('button', { name: 'Välj datum' }))
+    // kv-lang-ok: proves Swedish date names and format
+    await expect(canvas.getByRole('dialog', { name: 'Välj ett datum' })).toBeInTheDocument()
+    // kv-lang-ok: proves Swedish date names and format
+    await expect(
+      // kv-lang-ok: proves Swedish date names and format
       canvas.getByRole('gridcell', { name: 'onsdag 14 oktober 2026, idag' }),
     ).toHaveFocus()
   },
@@ -161,9 +180,9 @@ export const WithValue: Story = {
   ),
   parameters: source('VisitDatePicker'),
   play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Välj datum' })
+    const trigger = canvas.getByRole('button', { name: 'Choose date' })
     await openFrom(trigger)
-    const selected = canvas.getByRole('gridcell', { name: 'tisdag 20 oktober 2026' })
+    const selected = canvas.getByRole('gridcell', { name: 'Tuesday, 20 October 2026' })
     await expect(selected).toHaveAttribute('aria-selected', 'true')
     await waitFor(() => expect(selected).toHaveFocus())
     await userEvent.keyboard('{ArrowRight}{Enter}')
@@ -208,9 +227,9 @@ export const Invalid: Story = {
   ),
   parameters: source('VisitDatePicker'),
   play: async ({ canvas }) => {
-    await openFrom(canvas.getByRole('button', { name: 'Välj datum' }))
+    await openFrom(canvas.getByRole('button', { name: 'Choose date' }))
     await expect(
-      canvas.getByRole('gridcell', { name: 'onsdag 14 oktober 2026, idag' }),
+      canvas.getByRole('gridcell', { name: 'Wednesday, 14 October 2026, today' }),
     ).toHaveFocus()
   },
 }
@@ -259,7 +278,9 @@ export const Locales: Story = {
   parameters: source('LocalePickers'),
   render: () => <LocalePickers />,
   play: async ({ canvas }) => {
+    // kv-lang-ok: the trigger text of every locale
     await expect(
+      // kv-lang-ok: the trigger text of every locale
       canvas.getAllByRole('button', { name: /Välj|Valitse|Velg|Vel |Choose/ }),
     ).toHaveLength(6)
   },
@@ -319,12 +340,14 @@ export const ForcedColors: Story = {
 export const Keyboard: Story = {
   parameters: source('VisitDatePicker'),
   play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Välj datum' })
+    const trigger = canvas.getByRole('button', { name: 'Choose date' })
     trigger.focus()
     await userEvent.keyboard('{Enter}')
     await waitFor(() => expect(modalDialog()).not.toBeNull())
     await waitFor(() =>
-      expect(canvas.getByRole('gridcell', { name: 'onsdag 14 oktober 2026, idag' })).toHaveFocus(),
+      expect(
+        canvas.getByRole('gridcell', { name: 'Wednesday, 14 October 2026, today' }),
+      ).toHaveFocus(),
     )
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(modalDialog()).toBeNull())

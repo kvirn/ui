@@ -58,7 +58,7 @@ export interface UseButtonResult {
  *
  * @example
  * const button = useButton({ disabled, focusableWhenDisabled: true, onClick: save })
- * <button {...button.buttonProps}>Spara</button>
+ * <button {...button.buttonProps}>Save</button>
  */
 export function useButton({
   disabled = false,

@@ -1,3 +1,4 @@
+// kv-lang-ok-file: Swedish and Finnish place names prove diacritic-aware filtering and typeahead
 import { describe, expect, test, vi } from 'vite-plus/test'
 import { announcementDebounceMilliseconds, createCombobox } from './create-combobox.ts'
 import type { ComboboxKeyEvent, ComboboxOptions } from './create-combobox.ts'

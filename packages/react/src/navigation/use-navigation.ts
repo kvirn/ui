@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 export interface UseNavigationOptions {
   /**
-   * The navigation's accessible name, from your translations: `Huvudmeny`. It becomes
+   * The navigation's accessible name, from your translations: `Main menu`. It becomes
    * `aria-label`. Where a visible heading names it, leave this out and put `aria-labelledby`
    * on your element instead. An empty or whitespace-only label counts as none.
    */
@@ -66,12 +66,12 @@ export function hasLabel(label: string | undefined): label is string {
  * each `Link`. Nest another `<ul class="kv-navigation-list">` inside an `<li>` for a sub-list.
  *
  * @example
- * const navigation = useNavigation({ label: 'Huvudmeny' })
+ * const navigation = useNavigation({ label: 'Main menu' })
  * <nav {...navigation.rootProps}>
  *   <ul {...navigation.listProps}>
  *     <li {...navigation.itemProps}><a href="/start">Start</a></li>
  *     <li {...navigation.itemProps}>
- *       <span {...navigation.labelProps} id="docs">Dokumentation</span>
+ *       <span {...navigation.labelProps} id="docs">Documentation</span>
  *       <ul {...navigation.listProps} aria-labelledby="docs">…</ul>
  *     </li>
  *   </ul>

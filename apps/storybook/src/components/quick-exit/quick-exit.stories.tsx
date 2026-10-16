@@ -33,6 +33,7 @@ const meta = {
   beforeEach: restorePage,
   decorators: [withQuickExitMessages],
   argTypes: { navigate: { control: false } },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
@@ -47,8 +48,8 @@ function Page({ children }: { children?: React.ReactNode }) {
     <div data-testid="page">
       {children}
       <main>
-        <h1>Stöd vid våld i nära relation</h1>
-        <p>Här finns information om hur du får hjälp, och vart du kan vända dig.</p>
+        <h1>Support if you are in an abusive relationship</h1>
+        <p>Here you can find information about how to get help and where to turn.</p>
       </main>
     </div>
   )
@@ -65,7 +66,7 @@ export const Default: Story = {
     </Page>
   ),
   play: async ({ canvas }) => {
-    const link = canvas.getByRole('link', { name: 'Lämna sidan' })
+    const link = canvas.getByRole('link', { name: 'Leave this page' })
     await expect(link).toHaveAttribute('href', destination)
     await expect(link).toHaveAttribute('rel', 'noreferrer')
   },
@@ -121,6 +122,7 @@ export const LongLabel: Story = {
     <div className="kv-story-narrow" data-testid="narrow">
       <QuickExit.Root {...args}>
         <QuickExit.Link href={destination}>
+          {/* kv-lang-ok: Finnish locale story: a long label */}
           Poistu tältä sivulta heti ja siirry turvalliselle sivustolle
         </QuickExit.Link>
         <QuickExit.Hint />
@@ -139,18 +141,18 @@ export const InContext: Story = {
         <QuickExit.Hint />
       </QuickExit.Root>
       <main>
-        <h1>Stöd vid våld i nära relation</h1>
+        <h1>Support if you are in an abusive relationship</h1>
         {Array.from({ length: 12 }, (_, index) => (
           <p key={index}>
-            Om du är i fara just nu, ring 112. Du kan också kontakta kvinnofridslinjen dygnet runt,
-            och samtalet syns inte på telefonräkningen.
+            If you are in danger right now, call 112. You can also contact the helpline around the
+            clock, and the call does not show on your phone bill.
           </p>
         ))}
       </main>
     </div>
   ),
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'Lämna sidan' })).toBeVisible()
+    await expect(canvas.getByRole('link', { name: 'Leave this page' })).toBeVisible()
   },
 }
 

@@ -19,7 +19,7 @@
 ## 1. Brief
 
 - **Users:** both.
-  - **The hardest case** is a resident reading a long guidance page ("Bygglov: så går det till", eight sections) on a phone at 200% text. They lose their place and want to jump to "Avgifter".
+  - **The hardest case** is a resident reading a long guidance page ("Building permit: how it works", eight sections) on a phone at 200% text. They lose their place and want to jump to "Fees".
   - **Also hard:**
     - a screen-reader user who wants the sections as a list of links;
     - a reader with attention difficulties, for whom a highlight that jumps beside the text can pull them away from reading.
@@ -79,15 +79,15 @@ Unhappy paths:
 
 ## 4. Content
 
-| i18n key                | en           | sv               | fi            | nb             | nn            | se                         | Notes                                                                                                  |
-| ----------------------- | ------------ | ---------------- | ------------- | -------------- | ------------- | -------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `tableOfContents.label` | On this page | På den här sidan | Tällä sivulla | På denne siden | På denne sida | On this page (placeholder) | The landmark's name when there's no `aria-labelledby`. Northern Sámi needs a native review (`pending`) |
+| i18n key                | en           | sv               | fi            | nb             | nn            | se                         | Notes                                                                                                                                                                                     |
+| ----------------------- | ------------ | ---------------- | ------------- | -------------- | ------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tableOfContents.label` | On this page | På den här sidan | Tällä sivulla | På denne siden | På denne sida | On this page (placeholder) | The landmark's name when there's no `aria-labelledby`. Northern Sámi needs a native review (`pending`) <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
 
 Content rules for consumers:
 
-- **The title** uses the same words as the label ("På den här sidan"), from the consumer's translations, and names the `<nav>` with `aria-labelledby`.
+- **The title** uses the same words as the label ("On this page"), from the consumer's translations, and names the `<nav>` with `aria-labelledby`.
 - **Each link's text is its heading's text.** Then a link and its heading have the same name (2.4.4, 2.4.6), and the list reads as the page's outline.
-- **Headings are unique and say what the section is about,** for example "Avgifter för bygglov", not "Mer information".
+- **Headings are unique and say what the section is about,** for example "Fees for building permits", not "More information".
 - **No numbering** unless the headings are numbered.
 
 ## 5. Structure
@@ -97,21 +97,21 @@ The component isn't sticky and has no layout of its own: placement is the page's
 ```
 320px and 40rem (one column)          64rem and wider (the consumer may add a side column)
 [main]                                 [main]
-  h1 Bygglov: så går det till             h1 …              ┌ side column ─────────────┐
-  lead                                    lead              │ h2 På den här sidan      │
-  h2 På den här sidan   (the title)       h2 Vem behöver …  │ [nav aria-labelledby]    │
-  [nav aria-labelledby → title]           …                 │   Vem behöver bygglov?   │
-    ul                                                      │   Så ansöker du          │
-      Vem behöver bygglov?                                  │     Ritningar   (trail)  │
-      Så ansöker du                                         │     Avgifter  (current)  │
-        Ritningar                                           │   Efter beslutet         │
-        Avgifter                                            └──────────────────────────┘
-      Efter beslutet
-  h2 Vem behöver bygglov? …
+  h1 Building permit: how it works        h1 …              ┌ side column ─────────────┐
+  lead                                    lead              │ h2 On this page          │
+  h2 On this page   (the title)           h2 Who needs a …  │ [nav aria-labelledby]    │
+  [nav aria-labelledby → title]           …                 │   Who needs a permit?    │
+    ul                                                      │   How to apply           │
+      Who needs a building permit?                          │     Drawings    (trail)  │
+      How to apply                                          │     Fees      (current)  │
+        Drawings                                            │   After the decision     │
+        Fees                                                └──────────────────────────┘
+      After the decision
+  h2 Who needs a building permit? …
 ```
 
 - **Landmarks:** a `<nav>` named by its title, inside `main` or in an `aside`. One contents list per page.
-- **The heading outline:** `h1` (the page), then `h2` "På den här sidan" (the list's title), then the article's `h2` and `h3` sections. The docs site uses the same outline.
+- **The heading outline:** `h1` (the page), then `h2` "On this page" (the list's title), then the article's `h2` and `h3` sections. The docs site uses the same outline.
 - **Reading order is focus order:** the title, then the links in the order of the headings.
 - **The list comes first in the DOM,** right after the page's `h1` and lead, so keyboard and screen-reader users meet it before the article (USWDS gives the same advice).
   - In a side column, the inline start keeps the DOM order and the visual order the same.
@@ -180,12 +180,12 @@ The component isn't sticky and has no layout of its own: placement is the page's
 
 - **The indent is 16px per level at every width,** the shared nested-list rule, and never capped, because the indent is how the level shows without colour. Plan 0049's core nests a skipped level one step, so the indent never jumps two steps.
 - **How many levels.** Resident pages list `h2` and `h3`, two levels, because DESIGN.md says resident-facing text stops at `h3`. `h4` is a third level at most. A deeper page should be split, not given a longer list.
-- **At 320px past two levels nothing changes.** Each level costs 16px, so a third-level label still has about 228px, or about 25 characters at 16px, before it wraps, and a fourth about 212px. Long Finnish headings wrap through `overflow-wrap: anywhere`, for example "Rakennus- ja toimenpidelupahakemuksen käsittelyaika ja maksut". So the limit is a content rule, not a CSS cap.
+- **At 320px past two levels nothing changes.** Each level costs 16px, so a third-level label still has about 228px, or about 25 characters at 16px, before it wraps, and a fourth about 212px. Long Finnish headings wrap through `overflow-wrap: anywhere`, for example "Rakennus- ja toimenpidelupahakemuksen käsittelyaika ja maksut". So the limit is a content rule, not a CSS cap. <!-- kv-lang-ok: a long Finnish heading is the wrapping test case -->
 - **No underline at rest, and the underline on hover,** as Navigation (S2). Position in a labelled `<nav>` list is the cue (DESIGN.md, Colors), and GOV.UK's contents list doesn't underline its links either. docs-site.md line 456 ("Underlined links") describes the docs site's own list today, and changes when the site adopts TableOfContents.
 
 ### 6.5 The title
 
-- **It's a real heading the consumer renders,** at the outline's level, normally `h2`, with the same words as the label: "På den här sidan".
+- **It's a real heading the consumer renders,** at the outline's level, normally `h2`, with the same words as the label: "On this page".
   - **Beside an article** (a side column), use the `heading-4` look: `<Heading as="h2" className="kv-heading--heading-4">`, which is 16px, weight 600, serif and `text`. Then it doesn't compete with the article's own `h2` headings.
   - **Above the article,** its level's own look is fine, as with the docs site's 18px "On this page".
 - **It's never muted.** It's a heading, not a label (docs-site.md line 456).
@@ -227,7 +227,7 @@ Draft input for `table-of-contents.a11y.md` (Plan 0049).
 
 - **Name:**
   - `aria-labelledby` points at the visible title, which is preferred.
-  - Otherwise `aria-label` comes from `tableOfContents.label` ("På den här sidan").
+  - Otherwise `aria-label` comes from `tableOfContents.label` ("On this page").
   - Never both.
 - **Roles:** a `navigation` landmark, native nested lists (the level comes from the nesting), and native links. No `role`, no `tabindex`.
 - **State:**

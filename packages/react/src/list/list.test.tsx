@@ -12,13 +12,13 @@ test('renders a ul or an ol with li items and keeps its class next to a consumer
     <>
       <List.Root data-testid="unordered" className="kv-list--gap-8 annat" id="tjanster">
         <List.Item>
-          <Link.Root href="#bygglov">Bygglov</Link.Root>
+          <Link.Root href="#building-permit">Building permit</Link.Root>
         </List.Item>
         <List.Item>Avfall</List.Item>
       </List.Root>
       <List.Root as="ol" data-testid="ordered">
-        <List.Item>Ansök</List.Item>
-        <List.Item>Vänta på beslut</List.Item>
+        <List.Item>Apply</List.Item>
+        <List.Item>Wait for a decision</List.Item>
       </List.Root>
     </>,
   )

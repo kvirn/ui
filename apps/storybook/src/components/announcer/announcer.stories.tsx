@@ -15,7 +15,7 @@ import { AnnouncementButtons, BurstsAndBlanks } from './announcer.fixture.tsx'
 
 const meta = {
   title: 'Components/Data and behaviour/Announcer',
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [withFormLocale],
   parameters: {
     a11yContract: contract,
@@ -37,9 +37,9 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   play: async ({ canvas }) => {
     await expect(canvas.getByRole('status')).toBeEmptyDOMElement()
-    await userEvent.click(canvas.getByRole('button', { name: 'Säg det vänligt' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Say it politely' }))
     await waitFor(() =>
-      expect(canvas.getByRole('status')).toHaveTextContent('Ändringarna är sparade'),
+      expect(canvas.getByRole('status')).toHaveTextContent('Your changes are saved'),
     )
     await expect(canvas.getByRole('alert')).toBeEmptyDOMElement()
   },
@@ -48,9 +48,11 @@ export const Default: Story = {
 /** An assertive message interrupts the screen reader. Only for something to act on right now. */
 export const Assertive: Story = {
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Säg det med eftertryck' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Say it assertively' }))
     await waitFor(() =>
-      expect(canvas.getByRole('alert')).toHaveTextContent('Sessionen har gått ut. Logga in igen.'),
+      expect(canvas.getByRole('alert')).toHaveTextContent(
+        'Your session has expired. Sign in again.',
+      ),
     )
     await expect(canvas.getByRole('status')).toBeEmptyDOMElement()
   },
@@ -59,15 +61,15 @@ export const Assertive: Story = {
 /** The same message twice: the region is emptied and filled again, so it is read again. */
 export const RepeatedMessage: Story = {
   play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: 'Upprepa samma meddelande' })
+    const button = canvas.getByRole('button', { name: 'Repeat the same message' })
     await userEvent.click(button)
     await waitFor(() =>
-      expect(canvas.getByRole('status')).toHaveTextContent('Ändringarna är sparade'),
+      expect(canvas.getByRole('status')).toHaveTextContent('Your changes are saved'),
     )
     await userEvent.click(button)
-    await expect(canvas.getByTestId('last-call')).toHaveTextContent('skickades')
+    await expect(canvas.getByTestId('last-call')).toHaveTextContent('sent')
     await waitFor(() =>
-      expect(canvas.getByRole('status')).toHaveTextContent('Ändringarna är sparade'),
+      expect(canvas.getByRole('status')).toHaveTextContent('Your changes are saved'),
     )
   },
 }
@@ -76,12 +78,12 @@ export const RepeatedMessage: Story = {
 export const Throttled: Story = {
   play: async ({ canvas }) => {
     const button = canvas.getByRole('button', {
-      name: 'Meddelande med nyckel (högst ett var tredje sekund)',
+      name: 'Message with a key (at most one every three seconds)',
     })
     await userEvent.click(button)
-    await expect(canvas.getByTestId('last-call')).toHaveTextContent('skickades')
+    await expect(canvas.getByTestId('last-call')).toHaveTextContent('sent')
     await userEvent.click(button)
-    await expect(canvas.getByTestId('last-call')).toHaveTextContent('släpptes')
+    await expect(canvas.getByTestId('last-call')).toHaveTextContent('dropped')
   },
 }
 
@@ -94,17 +96,19 @@ export const BurstsAndBlankMessages: Story = {
   parameters: showSource('announcer/announcer.fixture.tsx', 'BurstsAndBlanks'),
   render: (_args, { globals }) => <BurstsAndBlanks locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    const unthrottled = canvas.getByRole('button', { name: 'Samma nyckel, utan spärr' })
+    const unthrottled = canvas.getByRole('button', { name: 'Same key, no throttle' })
     await userEvent.click(unthrottled)
     await userEvent.click(unthrottled)
-    await expect(canvas.getByTestId('last-call')).toHaveTextContent('skickades')
-    await userEvent.click(canvas.getByRole('button', { name: 'Två meddelanden på en gång' }))
+    await expect(canvas.getByTestId('last-call')).toHaveTextContent('sent')
+    await userEvent.click(canvas.getByRole('button', { name: 'Two messages at once' }))
     await waitFor(() =>
-      expect(canvas.getByRole('status')).toHaveTextContent('Sessionen har gått ut. Logga in igen.'),
+      expect(canvas.getByRole('status')).toHaveTextContent(
+        'Your session has expired. Sign in again.',
+      ),
     )
-    await expect(canvas.getByRole('status')).not.toHaveTextContent('Ändringarna är sparade')
-    await userEvent.click(canvas.getByRole('button', { name: 'Tomt meddelande' }))
-    await expect(canvas.getByTestId('last-call')).toHaveTextContent('släpptes (tomt)')
+    await expect(canvas.getByRole('status')).not.toHaveTextContent('Your changes are saved')
+    await userEvent.click(canvas.getByRole('button', { name: 'Empty message' }))
+    await expect(canvas.getByTestId('last-call')).toHaveTextContent('dropped (empty)')
   },
 }
 

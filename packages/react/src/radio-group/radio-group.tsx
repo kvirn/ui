@@ -51,7 +51,7 @@ export interface RadioGroupRootProps extends Omit<FieldsetRootProps, 'group'> {
  *
  * @example
  * <RadioGroup.Root name="language" value={language} onValueChange={setLanguage} required>
- *   <RadioGroup.Legend>Vilket språk vill du använda?</RadioGroup.Legend>
+ *   <RadioGroup.Legend>Which language do you want to use?</RadioGroup.Legend>
  *   <Field.Root>
  *     <RadioGroup.Radio value="sv" />
  *     <Field.Label>Svenska</Field.Label>

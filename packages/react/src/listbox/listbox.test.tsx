@@ -1,4 +1,3 @@
-import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from 'vite-plus/test'
@@ -37,10 +36,10 @@ function asSelect(element: HTMLElement | SVGElement): HTMLSelectElement {
 
 const municipalities = (
   <>
-    <option value="">Välj kommun</option>
-    <option value="gbg">Göteborg</option>
+    <option value="">Choose a municipality</option>
+    <option value="gbg">Goteborg</option>
     <option value="sthlm">Stockholm</option>
-    <option value="malmo">Malmö</option>
+    <option value="malmo">Malmo</option>
   </>
 )
 
@@ -54,9 +53,9 @@ describe('rendering', () => {
 
   test('renders a native <select>, outside a Field', async () => {
     const { container } = await render(
-      <ListboxNative aria-label="Kommun">{municipalities}</ListboxNative>,
+      <ListboxNative aria-label="Municipality">{municipalities}</ListboxNative>,
     )
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     const element = select.element()
     expect(element.tagName).toBe('SELECT')
     await expect.element(select).not.toHaveAttribute('id')
@@ -73,21 +72,21 @@ describe('rendering', () => {
     await render(
       <ListboxNative
         ref={ref}
-        aria-label="Kommun"
+        aria-label="Municipality"
         className="egen"
         name="municipality"
         autoComplete="address-level2"
         data-egen=""
       >
-        <optgroup label="Västra Götaland">
-          <option value="gbg">Göteborg</option>
+        <optgroup label="Vastra Gotaland">
+          <option value="gbg">Goteborg</option>
         </optgroup>
-        <optgroup label="Skåne">
-          <option value="malmo">Malmö</option>
+        <optgroup label="Skane">
+          <option value="malmo">Malmo</option>
         </optgroup>
       </ListboxNative>,
     )
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     expect(ref.current).toBe(select.element())
     await expect.element(select).toHaveClass('egen', 'kv-listbox-native')
     await expect.element(select).toHaveAttribute('name', 'municipality')
@@ -97,7 +96,7 @@ describe('rendering', () => {
   })
 
   test('multiple and size warn once: use a CheckboxGroup', async () => {
-    const props = { 'aria-label': 'Kommun', multiple: true } as unknown as ListboxNativeProps
+    const props = { 'aria-label': 'Municipality', multiple: true } as unknown as ListboxNativeProps
     await render(<ListboxNative {...props}>{municipalities}</ListboxNative>)
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('CheckboxGroup')
@@ -108,19 +107,19 @@ describe('in a Field', () => {
   test('the Field’s label is the name, and the description and error describe it', async () => {
     const { container } = await render(
       <Field.Root invalid required>
-        <Field.Label>Kommun</Field.Label>
-        <Field.Prose>Där du är folkbokförd.</Field.Prose>
+        <Field.Label>Municipality</Field.Label>
+        <Field.Prose>Where you are registered.</Field.Prose>
         <ListboxNative name="municipality">{municipalities}</ListboxNative>
-        <Field.ErrorMessage>Välj en kommun</Field.ErrorMessage>
+        <Field.ErrorMessage>Choose a municipality</Field.ErrorMessage>
       </Field.Root>,
     )
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     const id = select.element().id
     expect(id).not.toBe('')
     expect(container.querySelector('label')?.getAttribute('for')).toBe(id)
     await expect
       .element(select)
-      .toHaveAccessibleDescription('Där du är folkbokförd. Error: Välj en kommun')
+      .toHaveAccessibleDescription('Where you are registered. Error: Choose a municipality')
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -129,8 +128,8 @@ describe('in a Field', () => {
     await render(
       <>
         <Field.Root invalid required>
-          <Field.Label>Kommun</Field.Label>
-          <Field.ErrorMessage>Välj en kommun</Field.ErrorMessage>
+          <Field.Label>Municipality</Field.Label>
+          <Field.ErrorMessage>Choose a municipality</Field.ErrorMessage>
           <ListboxNative>{municipalities}</ListboxNative>
         </Field.Root>
         <Field.Root disabled>
@@ -139,7 +138,7 @@ describe('in a Field', () => {
         </Field.Root>
       </>,
     )
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     await expect.element(select).toHaveAttribute('aria-invalid', 'true')
     await expect.element(select).toHaveAttribute('aria-required', 'true')
     await expect.element(select).toHaveAttribute('data-invalid', '')
@@ -153,62 +152,64 @@ describe('in a Field', () => {
   test('the select’s own disabled disables it too', async () => {
     await render(
       <Field.Root>
-        <Field.Label marker="none">Kommun</Field.Label>
+        <Field.Label marker="none">Municipality</Field.Label>
         <ListboxNative disabled>{municipalities}</ListboxNative>
       </Field.Root>,
     )
-    await expect.element(page.getByRole('combobox', { name: 'Kommun' })).toBeDisabled()
+    await expect.element(page.getByRole('combobox', { name: 'Municipality' })).toBeDisabled()
   })
 
   test('a non-required Field marks the label optional', async () => {
     await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider>
         <Field.Root>
-          <Field.Label>Kommun</Field.Label>
+          <Field.Label>Municipality</Field.Label>
           <ListboxNative>{municipalities}</ListboxNative>
         </Field.Root>
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('combobox', { name: 'Kommun (valfritt)' })).toBeVisible()
+    await expect
+      .element(page.getByRole('combobox', { name: 'Municipality (optional)' }))
+      .toBeVisible()
   })
 
   test('keeps your own aria-describedby ids, after the Field’s', async () => {
     await render(
       <>
-        <p id="extra">Mer information.</p>
+        <p id="extra">More information.</p>
         <Field.Root required>
-          <Field.Label>Kommun</Field.Label>
-          <Field.Prose>Där du bor.</Field.Prose>
+          <Field.Label>Municipality</Field.Label>
+          <Field.Prose>Where you live.</Field.Prose>
           <ListboxNative aria-describedby="extra">{municipalities}</ListboxNative>
         </Field.Root>
       </>,
     )
     await expect
-      .element(page.getByRole('combobox', { name: 'Kommun' }))
-      .toHaveAccessibleDescription('Där du bor. Mer information.')
+      .element(page.getByRole('combobox', { name: 'Municipality' }))
+      .toHaveAccessibleDescription('Where you live. More information.')
   })
 
   test('clicking the label focuses the select', async () => {
     await render(
       <Field.Root required>
-        <Field.Label>Kommun</Field.Label>
+        <Field.Label>Municipality</Field.Label>
         <ListboxNative>{municipalities}</ListboxNative>
       </Field.Root>,
     )
-    await userEvent.click(page.getByText('Kommun', { exact: true }))
+    await userEvent.click(page.getByText('Municipality', { exact: true }))
     await expect.element(page.getByRole('combobox')).toHaveFocus()
   })
 
   test('an id inside a Field is ignored with a dev warning: the label stays associated', async () => {
     await render(
-      <Field.Root controlId="fältet" required>
-        <Field.Label>Kommun</Field.Label>
+      <Field.Root controlId="the-field" required>
+        <Field.Label>Municipality</Field.Label>
         <ListboxNative id="annat">{municipalities}</ListboxNative>
       </Field.Root>,
     )
     await expect
-      .element(page.getByRole('combobox', { name: 'Kommun' }))
-      .toHaveAttribute('id', 'fältet')
+      .element(page.getByRole('combobox', { name: 'Municipality' }))
+      .toHaveAttribute('id', 'the-field')
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('controlId')
   })
@@ -220,7 +221,7 @@ describe('value', () => {
     const onChange = vi.fn<(event: React.ChangeEvent<HTMLSelectElement>) => void>()
     await render(
       <ListboxNative
-        aria-label="Kommun"
+        aria-label="Municipality"
         defaultValue="sthlm"
         onValueChange={onValueChange}
         onChange={onChange}
@@ -228,7 +229,7 @@ describe('value', () => {
         {municipalities}
       </ListboxNative>,
     )
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     await expect.element(select).toHaveValue('sthlm')
     await userEvent.selectOptions(select, 'malmo')
     await expect.element(select).toHaveValue('malmo')
@@ -244,7 +245,7 @@ describe('value', () => {
       const [value, setValue] = useState('gbg')
       return (
         <>
-          <ListboxNative aria-label="Kommun" value={value} onValueChange={setValue}>
+          <ListboxNative aria-label="Municipality" value={value} onValueChange={setValue}>
             {municipalities}
           </ListboxNative>
           <output>{value}</output>
@@ -252,7 +253,7 @@ describe('value', () => {
       )
     }
     await render(<Controlled />)
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     await expect.element(select).toHaveValue('gbg')
     await userEvent.selectOptions(select, 'sthlm')
     await expect.element(select).toHaveValue('sthlm')
@@ -262,11 +263,11 @@ describe('value', () => {
   test('a controlled select stays as it is when the parent does not update the value', async () => {
     const onValueChange = vi.fn<(value: string, details: ListboxNativeChangeDetails) => void>()
     await render(
-      <ListboxNative aria-label="Kommun" value="gbg" onValueChange={onValueChange}>
+      <ListboxNative aria-label="Municipality" value="gbg" onValueChange={onValueChange}>
         {municipalities}
       </ListboxNative>,
     )
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     await userEvent.selectOptions(select, 'malmo')
     expect(onValueChange).toHaveBeenCalledWith(
       'malmo',
@@ -279,23 +280,23 @@ describe('value', () => {
     let submitted: FormData | undefined
     await render(
       <form
-        aria-label="Ansökan"
+        aria-label="Application"
         onSubmit={(event) => {
           event.preventDefault()
           submitted = new FormData(event.currentTarget)
         }}
       >
         <Field.Root required>
-          <Field.Label>Kommun</Field.Label>
+          <Field.Label>Municipality</Field.Label>
           <ListboxNative name="municipality" defaultValue="gbg">
             {municipalities}
           </ListboxNative>
         </Field.Root>
-        <button type="submit">Skicka</button>
+        <button type="submit">Submit</button>
       </form>,
     )
-    await userEvent.selectOptions(page.getByRole('combobox', { name: 'Kommun' }), 'malmo')
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.selectOptions(page.getByRole('combobox', { name: 'Municipality' }), 'malmo')
+    await userEvent.click(page.getByRole('button', { name: 'Submit' }))
     expect(submitted?.get('municipality')).toBe('malmo')
   })
 
@@ -315,11 +316,11 @@ describe('value', () => {
     })
     await render(
       <Field.Root required>
-        <Field.Label>Kommun</Field.Label>
+        <Field.Label>Municipality</Field.Label>
         <ListboxNative {...register('municipality')}>{municipalities}</ListboxNative>
       </Field.Root>,
     )
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     expect(registered.element).toBe(select.element())
     await userEvent.selectOptions(select, 'sthlm')
     expect(registered.changes).toEqual(['sthlm'])
@@ -330,17 +331,17 @@ describe('focus visible', () => {
   test('sets data-focus-visible on keyboard focus only, and Tab moves on', async () => {
     await render(
       <>
-        <ListboxNative aria-label="Ett">{municipalities}</ListboxNative>
-        <ListboxNative aria-label="Två">{municipalities}</ListboxNative>
+        <ListboxNative aria-label="One">{municipalities}</ListboxNative>
+        <ListboxNative aria-label="Two">{municipalities}</ListboxNative>
       </>,
     )
-    const first = page.getByRole('combobox', { name: 'Ett' })
+    const first = page.getByRole('combobox', { name: 'One' })
     await userEvent.keyboard('{Tab}')
     await expect.element(first).toHaveFocus()
     await expect.element(first).toHaveAttribute('data-focus-visible', '')
     await userEvent.keyboard('{Tab}')
     await expect.element(first).not.toHaveAttribute('data-focus-visible')
-    await expect.element(page.getByRole('combobox', { name: 'Två' })).toHaveFocus()
+    await expect.element(page.getByRole('combobox', { name: 'Two' })).toHaveFocus()
   })
 })
 
@@ -348,38 +349,38 @@ describe('keyboard: the browser’s own keys', () => {
   test('Shift+Tab leaves the select backwards', async () => {
     await render(
       <>
-        <button type="button">Före</button>
-        <ListboxNative aria-label="Kommun">{municipalities}</ListboxNative>
+        <button type="button">Before</button>
+        <ListboxNative aria-label="Municipality">{municipalities}</ListboxNative>
       </>,
     )
-    page.getByRole('combobox', { name: 'Kommun' }).element().focus()
+    page.getByRole('combobox', { name: 'Municipality' }).element().focus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('Tab skips a disabled select', async () => {
     await render(
       <>
-        <ListboxNative aria-label="Ett">{municipalities}</ListboxNative>
-        <ListboxNative aria-label="Två" disabled>
+        <ListboxNative aria-label="One">{municipalities}</ListboxNative>
+        <ListboxNative aria-label="Two" disabled>
           {municipalities}
         </ListboxNative>
-        <button type="button">Efter</button>
+        <button type="button">After</button>
       </>,
     )
-    page.getByRole('combobox', { name: 'Ett' }).element().focus()
+    page.getByRole('combobox', { name: 'One' }).element().focus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('ArrowDown chooses the next option and ArrowUp the previous one, without wrapping', async () => {
     const onValueChange = vi.fn<(value: string, details: ListboxNativeChangeDetails) => void>()
     await render(
-      <ListboxNative aria-label="Kommun" onValueChange={onValueChange}>
+      <ListboxNative aria-label="Municipality" onValueChange={onValueChange}>
         {municipalities}
       </ListboxNative>,
     )
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     select.element().focus()
     await userEvent.keyboard('{ArrowDown}')
     await expect.element(select).toHaveValue('gbg')
@@ -392,8 +393,8 @@ describe('keyboard: the browser’s own keys', () => {
   })
 
   test('Home and End choose the first and the last option', async () => {
-    await render(<ListboxNative aria-label="Kommun">{municipalities}</ListboxNative>)
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    await render(<ListboxNative aria-label="Municipality">{municipalities}</ListboxNative>)
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     select.element().focus()
     await userEvent.keyboard('{End}')
     await expect.element(select).toHaveValue('malmo')
@@ -402,8 +403,8 @@ describe('keyboard: the browser’s own keys', () => {
   })
 
   test('typing a letter chooses the option that starts with it', async () => {
-    await render(<ListboxNative aria-label="Kommun">{municipalities}</ListboxNative>)
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    await render(<ListboxNative aria-label="Municipality">{municipalities}</ListboxNative>)
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     select.element().focus()
     await userEvent.keyboard('s')
     await expect.element(select).toHaveValue('sthlm')
@@ -411,11 +412,11 @@ describe('keyboard: the browser’s own keys', () => {
 
   test('Alt+ArrowDown opens the list without changing the value, and Escape closes it', async () => {
     await render(
-      <ListboxNative aria-label="Kommun" defaultValue="sthlm">
+      <ListboxNative aria-label="Municipality" defaultValue="sthlm">
         {municipalities}
       </ListboxNative>,
     )
-    const select = page.getByRole('combobox', { name: 'Kommun' })
+    const select = page.getByRole('combobox', { name: 'Municipality' })
     const element = asSelect(select.element())
     element.focus()
     await userEvent.keyboard('{Alt>}{ArrowDown}{/Alt}')
@@ -464,13 +465,13 @@ describe('useListboxNative', () => {
 
   test('server markup is complete: id, description and selected option', () => {
     const markup = renderToString(
-      <Field.Root controlId="kommun" required>
-        <Field.Label>Kommun</Field.Label>
+      <Field.Root controlId="municipality" required>
+        <Field.Label>Municipality</Field.Label>
         <ListboxNative defaultValue="gbg">{municipalities}</ListboxNative>
       </Field.Root>,
     )
     expect(markup).toContain('<select')
-    expect(markup).toContain('id="kommun"')
+    expect(markup).toContain('id="municipality"')
     expect(markup).toContain('aria-required="true"')
   })
 })

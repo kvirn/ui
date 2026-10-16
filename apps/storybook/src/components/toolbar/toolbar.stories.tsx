@@ -19,7 +19,7 @@ const meta = {
   title: 'Components/Actions/Toolbar',
   component: Toolbar.Root,
   // Every option at its default, so the main example starts where an adopter starts.
-  args: { 'aria-label': 'Formatering', orientation: 'horizontal', loop: true },
+  args: { 'aria-label': 'Formatting', orientation: 'horizontal', loop: true },
   // Every prop of Toolbar.Root in toolbar.tsx and use-toolbar.ts. Any other `<div>` prop passes through.
   argTypes: {
     orientation: {
@@ -54,7 +54,7 @@ const meta = {
     ref: { control: false, description: 'A ref to the toolbar’s element.' },
     as: { control: false, description: 'Another element for the Root: `section`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
@@ -66,23 +66,23 @@ type Story = StoryObj<typeof meta>
 
 /**
  * The main example: a formatting toolbar with three named groups, each one a joined strip of buttons. Tab enters it once, at the
- * first control, and the arrow keys move between the controls, across groups. Fet is on to
+ * first control, and the arrow keys move between the controls, across groups. Bold is on to
  * start with. Every option is a control below.
  */
 export const Default: Story = {
   parameters: showSource('toolbar/toolbar.fixture.tsx', 'TextToolbar'),
   render: (args) => <TextToolbar {...args} />,
   play: async ({ canvas }) => {
-    const toolbar = canvas.getByRole('toolbar', { name: 'Formatering' })
+    const toolbar = canvas.getByRole('toolbar', { name: 'Formatting' })
     await expect(toolbar).not.toHaveAttribute('aria-orientation')
-    await expect(canvas.getByRole('group', { name: 'Textstil' })).toHaveClass(
+    await expect(canvas.getByRole('group', { name: 'Text style' })).toHaveClass(
       'kv-button-group--attached',
     )
     // One Tab stop: the first control has tabindex 0 and the other six -1. The controls
     // register after the first render.
     await waitFor(() => expect(toolbar.querySelectorAll('[tabindex="0"]')).toHaveLength(1))
     await expect(toolbar.querySelectorAll('[tabindex="-1"]')).toHaveLength(6)
-    await expect(canvas.getByRole('button', { name: 'Fet' })).toHaveAttribute(
+    await expect(canvas.getByRole('button', { name: 'Bold' })).toHaveAttribute(
       'aria-pressed',
       'true',
     )
@@ -100,17 +100,17 @@ export const Default: Story = {
  */
 export const Keyboard: Story = {
   parameters: showSource('toolbar/toolbar.fixture.tsx', 'FormattingToolbar'),
-  render: () => <FormattingToolbar locale="sv" />,
+  render: () => <FormattingToolbar locale="en" />,
   play: async ({ canvas }) => {
-    const toolbar = canvas.getByRole('toolbar', { name: 'Formatering' })
+    const toolbar = canvas.getByRole('toolbar', { name: 'Formatting' })
     await waitFor(() => expect(toolbar.querySelectorAll('[tabindex="0"]')).toHaveLength(1))
     // The Listbox trigger sets its own tabindex 0, and the toolbar's roving one wins.
-    await expect(canvas.getByRole('combobox', { name: 'Texttyp' })).toHaveAttribute(
+    await expect(canvas.getByRole('combobox', { name: 'Text type' })).toHaveAttribute(
       'tabindex',
       '-1',
     )
     // A disabled control stays focusable, so the arrows reach it.
-    await expect(canvas.getByRole('button', { name: 'Gör om' })).toHaveAttribute(
+    await expect(canvas.getByRole('button', { name: 'Redo' })).toHaveAttribute(
       'aria-disabled',
       'true',
     )
@@ -125,7 +125,7 @@ export const Vertical: Story = {
   parameters: showSource('toolbar/toolbar.fixture.tsx', 'RowActionsToolbar'),
   render: () => <RowActionsToolbar />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('toolbar', { name: 'Åtgärder för raden' })).toHaveAttribute(
+    await expect(canvas.getByRole('toolbar', { name: 'Row actions' })).toHaveAttribute(
       'aria-orientation',
       'vertical',
     )
@@ -145,6 +145,7 @@ export const Wrapping: Story = {
     </div>
   ),
   play: async ({ canvas }) => {
+    // kv-lang-ok: asserts the Finnish toolbar name under locale fi
     await expect(canvas.getByRole('toolbar', { name: 'Muotoilu' })).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
     for (const control of canvas.getAllByRole('button')) {

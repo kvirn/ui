@@ -15,7 +15,7 @@
 - **Evidence:** none of our own. Prior art below.
 - **Assumptions and research questions:**
   - Assumption: the step is orientation, not task content, so one reading stop after the question is enough → RQ: do SR users notice it there, or miss it when they Tab straight to the field?
-  - Assumption: residents read a step as a section that may span pages → RQ: does "Steg 2 av 5" on two pages in a row confuse?
+  - Assumption: residents read a step as a section that may span pages → RQ: does "Step 2 of 5" on two pages in a row confuse?
 
 ## 2. Prior art
 
@@ -35,26 +35,26 @@ Reference flow (parking permit, P4–P8). A step is a **section**, which may spa
 
 ```mermaid
 flowchart TD
-  start[P4 Start page: no Stepper] --> s1[Steg 1 av 5: Om dig, prefilled from e-ID]
-  s1 --> s2[Steg 2 av 5: Fordonet, 2 pages]
-  s2 --> s3[Steg 3 av 5: Adress] --> s4[Steg 4 av 5: Tillståndstyp]
-  s4 --> s5[Steg 5 av 5: Kontrollera och skicka, P7] --> done[P8 Confirmation: no Stepper]
+  start[P4 Start page: no Stepper] --> s1[Step 1 of 5: About you, prefilled from e-ID]
+  s1 --> s2[Step 2 of 5: The vehicle, 2 pages]
+  s2 --> s3[Step 3 of 5: Address] --> s4[Step 4 of 5: Permit type]
+  s4 --> s5[Step 5 of 5: Check and send, P7] --> done[P8 Confirmation: no Stepper]
   s3 -- Back link --> s2
   s5 -- Change link --> s2
 ```
 
-| Path                               | Stepper                                 | Focus and what is heard (approximation, AT `pending`)                                            |
-| ---------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Next step (client navigation)      | new step                                | `useRouteFocus` → `h1`: "Var bor du?, heading level 1". Next reading stop: "Steg 3 av 5: Adress" |
-| Submit with errors                 | unchanged                               | ErrorSummary gets focus; reading on: `h1`, then the Stepper                                      |
-| Back link (B19, previous URL)      | previous step, answers kept (3.3.7)     | as Next: the key changes, so `useRouteFocus` moves to the `h1`                                   |
-| Browser Back                       | previous step                           | `useRouteFocus` leaves focus to the browser (its rule); reading order is unchanged               |
-| Full page load (no SPA)            | as rendered                             | SR reads `<title>`; H or 1 reaches the `h1`, the Stepper follows it                              |
-| Change from Check answers          | the step of that answer ("Steg 2 av 5") | as Next; returning to Check answers is the flow's job (out of scope)                             |
-| Branching changes the page count   | unchanged, because it counts sections   | if even sections can't be counted reliably, **leave the Stepper out**; never "Steg 3 av ?"       |
-| Save and return later, timeout     | the step resumed                        | owned by the flow and the Dialog spec                                                            |
-| Not eligible, integration failed   | none: an exit page is not a step        | the exit page's `h1`                                                                             |
-| Start, Confirmation, one-page form | none                                    | –                                                                                                |
+| Path                               | Stepper                                 | Focus and what is heard (approximation, AT `pending`)                                                    |
+| ---------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Next step (client navigation)      | new step                                | `useRouteFocus` → `h1`: "Where do you live?, heading level 1". Next reading stop: "Step 3 of 5: Address" |
+| Submit with errors                 | unchanged                               | ErrorSummary gets focus; reading on: `h1`, then the Stepper                                              |
+| Back link (B19, previous URL)      | previous step, answers kept (3.3.7)     | as Next: the key changes, so `useRouteFocus` moves to the `h1`                                           |
+| Browser Back                       | previous step                           | `useRouteFocus` leaves focus to the browser (its rule); reading order is unchanged                       |
+| Full page load (no SPA)            | as rendered                             | SR reads `<title>`; H or 1 reaches the `h1`, the Stepper follows it                                      |
+| Change from Check answers          | the step of that answer ("Step 2 of 5") | as Next; returning to Check answers is the flow's job (out of scope)                                     |
+| Branching changes the page count   | unchanged, because it counts sections   | if even sections can't be counted reliably, **leave the Stepper out**; never "Step 3 of ?"               |
+| Save and return later, timeout     | the step resumed                        | owned by the flow and the Dialog spec                                                                    |
+| Not eligible, integration failed   | none: an exit page is not a step        | the exit page's `h1`                                                                                     |
+| Start, Confirmation, one-page form | none                                    | –                                                                                                        |
 
 ## 4. Content
 
@@ -62,12 +62,12 @@ Library keys (all 6 locales; messages are functions with `format.number`, like `
 
 | i18n key                 | en                                | sv                                | fi                              | nb / nn                           | se                                           |
 | ------------------------ | --------------------------------- | --------------------------------- | ------------------------------- | --------------------------------- | -------------------------------------------- |
-| `stepper.status`         | Step {current} of {total}         | Steg {current} av {total}         | Vaihe {current}/{total}         | Steg {current} av {total}         | English placeholder, native review `pending` |
-| `stepper.statusWithName` | Step {current} of {total}: {name} | Steg {current} av {total}: {name} | Vaihe {current}/{total}: {name} | Steg {current} av {total}: {name} | English placeholder, native review `pending` |
+| `stepper.status`         | Step {current} of {total}         | Steg {current} av {total}         | Vaihe {current}/{total}         | Steg {current} av {total}         | English placeholder, native review `pending` | <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `stepper.statusWithName` | Step {current} of {total}: {name} | Steg {current} av {total}: {name} | Vaihe {current}/{total}: {name} | Steg {current} av {total}: {name} | English placeholder, native review `pending` | <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
 
 - fi uses `{current}/{total}` to avoid case endings on the numbers. fi, nb, nn are drafts for native review (`pending`).
 - The colon is in the message, so each locale owns its punctuation.
-- `name` is the section name, short and in plain words. Reference copy (S4, sv/en): Om dig / About you; Fordonet / Your vehicle; Adress / Address; Tillståndstyp / Permit type; Kontrollera och skicka / Check and send. Length check, fi: "Vaihe 4/5: Pysäköintitunnuksen tyyppi" wraps at 320px and must not truncate.
+- `name` is the section name, short and in plain words. Reference copy (S4): About you; Your vehicle; Address; Permit type; Check and send. Length check, fi: "Vaihe 4/5: Pysäköintitunnuksen tyyppi" wraps at 320px and must not truncate. <!-- kv-lang-ok: a Finnish string is the wrapping test case -->
 - No string for "completed", "current" or "remaining": there is no list.
 
 ## 5. Structure
@@ -75,16 +75,16 @@ Library keys (all 6 locales; messages are functions with `format.number`, like `
 Same at 320px, 40rem and 64rem: T4, one column, `Container size="form"` (40rem). No sidebar.
 
 ```
-[banner] skip link · brand · service name · language · Kontakta oss
+[banner] skip link · brand · service name · language · Contact us
 [main]
   Back link "Tillbaka"                                  (B19)
   [ErrorSummary, only after a submit with errors]
   ┌ Stack gap="2" (one item of the form's Stack)
-  │ h1 "Vilket fordon gäller ansökan?"
-  └ p.kv-stepper "Steg 2 av 5: Fordonet"                (directly after the h1, a sibling)
+  │ h1 "Which vehicle is the application for?"
+  └ p.kv-stepper "Step 2 of 5: Your vehicle"                (directly after the h1, a sibling)
   Field(s)
-  [primary] Fortsätt
-  link Spara och fortsätt senare
+  [primary] Continue
+  link Save and continue later
 [contentinfo]
 ```
 

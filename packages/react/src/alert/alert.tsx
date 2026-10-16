@@ -43,7 +43,7 @@ interface AlertRootOwnProps {
 export type AlertRootProps = AsTag<AlertRootTag, 'div', AlertRootOwnProps>
 
 interface AlertStatusRootOwnProps extends AlertRootOwnProps {
-  /** Per-instance override for this root's status word, such as `{ dangerPrefix: 'Viktigt:' }`. */
+  /** Per-instance override for this root's status word, such as `{ dangerPrefix: 'Important:' }`. */
   messages?: Partial<KvirnMessages['alert']> | undefined
   /**
    * Replaces the status icon, such as a `kv-spinner` for a job in progress. Give it
@@ -143,7 +143,7 @@ AlertInfo.displayName = 'Alert.Info'
 
 /**
  * A ready-made root for success: the `kv-alert--success` class, the `success` icon and
- * the `alert.successPrefix` word ("Klart:") at the start of the Title.
+ * the `alert.successPrefix` word ("Success:") at the start of the Title.
  */
 export function AlertSuccess(props: AlertStatusRootProps): ReactElement {
   return <AlertRootBase {...props} variant="success" />
@@ -152,7 +152,7 @@ AlertSuccess.displayName = 'Alert.Success'
 
 /**
  * A ready-made root for a warning: the `kv-alert--warning` class, the `warning` icon and
- * the `alert.warningPrefix` word ("Varning:") at the start of the Title.
+ * the `alert.warningPrefix` word ("Warning:") at the start of the Title.
  */
 export function AlertWarning(props: AlertStatusRootProps): ReactElement {
   return <AlertRootBase {...props} variant="warning" />
@@ -161,7 +161,7 @@ AlertWarning.displayName = 'Alert.Warning'
 
 /**
  * A ready-made root for an error or a failure: the `kv-alert--danger` class, the `error`
- * icon and the `alert.dangerPrefix` word ("Fel:") at the start of the Title.
+ * icon and the `alert.dangerPrefix` word ("Error:") at the start of the Title.
  */
 export function AlertDanger(props: AlertStatusRootProps): ReactElement {
   return <AlertRootBase {...props} variant="danger" />
@@ -250,7 +250,7 @@ AlertActions.displayName = 'Alert.Actions'
 
 /**
  * The optional close (dismiss) button: a native `<button type="button">` with the decorative
- * `close` icon, named by `alert.close` ("Stäng meddelandet"). The Alert owns no open or closed
+ * `close` icon, named by `alert.close` ("Close message"). The Alert owns no open or closed
  * state: remove the alert in `onClick`, then move focus to a sensible place, because the button
  * that had focus is gone (WCAG 2.4.3). Put it last in the root: the theme shows it at the inline
  * end of the first line, and it is the last Tab stop of the alert. It never changes how the
@@ -308,12 +308,12 @@ AlertClose.displayName = 'Alert.Close'
  *
  * @example
  * <Alert.Warning>
- *   <Alert.Title>Ditt parkeringstillstånd går ut den 12 november 2026</Alert.Title>
+ *   <Alert.Title>Your parking permit expires on 12 November 2026</Alert.Title>
  *   <Alert.Body>
- *     <p>Förnya det senast den 5 november.</p>
+ *     <p>Renew it by 5 November at the latest.</p>
  *   </Alert.Body>
  *   <Alert.Actions>
- *     <Button>Förnya tillståndet</Button>
+ *     <Button>Renew the permit</Button>
  *   </Alert.Actions>
  *   <Alert.Close onClick={dismiss} />
  * </Alert.Warning>

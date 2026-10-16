@@ -11,7 +11,7 @@ interface SkipLinkOwnProps {
   href: string
   /** Your own text. Replaces the message `skipLink.label`, so its language is yours to set. */
   children?: ReactNode
-  /** Per-instance message overrides: `{ label: 'Hoppa till innehållet' }`. */
+  /** Per-instance message overrides: `{ label: 'Jump to the content' }`. */
   messages?: Partial<KvirnMessages['skipLink']> | undefined
 }
 
@@ -34,7 +34,7 @@ export type SkipLinkProps<Component extends ElementType = 'a'> = AsComponent<
  * <main id="main">…</main>
  *
  * @example
- * <SkipLink href="#main">Hoppa till innehållet</SkipLink>
+ * <SkipLink href="#main">Jump to the content</SkipLink>
  */
 export function SkipLink<Component extends ElementType = 'a'>(
   props: SkipLinkProps<Component>,

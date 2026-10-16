@@ -58,10 +58,10 @@ export interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'aria
  * state (APG Button, contract: button.a11y.md).
  *
  * @example
- * <Button onClick={save}>Spara</Button>
- * <Button type="submit">Skicka ansökan</Button>
- * <Button disabled focusableWhenDisabled>Skicka</Button>
- * <Button busy={isSending}>Skicka ansökan</Button>
+ * <Button onClick={save}>Save</Button>
+ * <Button type="submit">Submit application</Button>
+ * <Button disabled focusableWhenDisabled>Send</Button>
+ * <Button busy={isSending}>Submit application</Button>
  */
 export function Button({
   disabled,

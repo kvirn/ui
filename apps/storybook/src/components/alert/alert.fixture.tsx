@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale fixture text sets (sv, fi, nb, nn), picked by the locale toolbar
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { en as enMessages } from '@kvirn-ui/i18n/en'
 import { fi as fiMessages } from '@kvirn-ui/i18n/fi'
@@ -681,8 +682,8 @@ export function SavedExample({ locale }: AlertFixtureProps) {
 
 /**
  * Example D, danger, inserted after Send fails: placed directly above Send, so Shift+Tab from Send
- * reaches "Försök igen". The first Send shows it, announced once on mount. Every next failure
- * keeps the same instance, because "Försök igen" is inside it and a remount would drop the focus
+ * reaches "Try again". The first Send shows it, announced once on mount. Every next failure
+ * keeps the same instance, because "Try again" is inside it and a remount would drop the focus
  * to the page, and announces through `useAnnouncer()` instead.
  */
 export function SendFailedExample({ locale }: AlertFixtureProps) {

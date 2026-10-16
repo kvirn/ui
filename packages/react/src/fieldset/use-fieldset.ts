@@ -73,9 +73,9 @@ export interface UseFieldsetResult {
   isGroup: boolean
   /** The resolved legend marker. */
   marker: FieldMarker
-  /** The legend's optional text, for example `(valfritt)`, or `undefined` when it shows none. */
+  /** The legend's optional text, for example `(optional)`, or `undefined` when it shows none. */
   optionalMarker: string | undefined
-  /** The resolved `field.errorPrefix` text, for example `Fel:`. Start the message with it. */
+  /** The resolved `field.errorPrefix` text, for example `Error:`. Start the message with it. */
   errorPrefix: string
 }
 
@@ -91,10 +91,10 @@ export interface UseFieldsetResult {
  * @example
  * const fieldset = useFieldset({ invalid, group: true, descriptions: ['helpText'] })
  * <fieldset {...fieldset.fieldsetProps}>
- *   <legend {...fieldset.legendProps}>Hur vill du bli kontaktad? {fieldset.optionalMarker}</legend>
- *   <p {...fieldset.getDescriptionProps('helpText')}>Välj alla som passar.</p>
+ *   <legend {...fieldset.legendProps}>How would you like to be contacted? {fieldset.optionalMarker}</legend>
+ *   <p {...fieldset.getDescriptionProps('helpText')}>Choose all that apply.</p>
  *   …
- *   {invalid ? <p {...fieldset.errorMessageProps}>{fieldset.errorPrefix} Välj ett sätt</p> : null}
+ *   {invalid ? <p {...fieldset.errorMessageProps}>{fieldset.errorPrefix} Choose a way</p> : null}
  * </fieldset>
  */
 export function useFieldset({

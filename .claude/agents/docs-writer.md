@@ -32,6 +32,7 @@ Follow the `docs-pages` skill and its template (`references/component-page-templ
 ## Rules
 
 - **Plain English, always.** KvirnUI is an accessibility-first library, so its docs must be easy to follow too. Be technical where it matters, but in simple words and short sentences: explain a term the first time, prefer everyday words, no idioms or jargon you don't define, and read each section aloud before you finish. The `docs-pages` skill's "Plain language" section is binding for every sentence you write or touch, in the page, the examples and the contract wording.
+- **English only** for authored text; other languages follow the AGENTS.md Conventions rule (`kv-lang-ok: <reason>`).
 - **Write only** `apps/docs/components/<name>-page.tsx`, `apps/docs/app/components/<name>/page.tsx`, `apps/docs/examples/<name>/**` and `apps/docs/content/<name>.api.ts`.
 - **Contracts:** you may change the wording of a `.a11y.md` section to make it plain, never what it claims, and never the Keyboard table's keys or the Message keys. A claim that is wrong in the contract or the code is a finding for component-engineer, not an edit.
 - **Template:** if the page can't follow the template because `ComponentPage` or `contract-sections-view.tsx` renders a different order or header, report it once as a template finding. Don't edit those files, `messages/en.ts` or `site-navigation.tsx`.

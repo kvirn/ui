@@ -16,9 +16,9 @@ export function ControlledPopover() {
   return (
     <>
       {/* Above the popover, so the popup (placed under the trigger) never covers them. */}
-      <output data-testid="state">{open ? 'öppen' : 'stängd'}</output>
+      <output data-testid="state">{open ? 'open' : 'closed'}</output>
       <output data-testid="reason">{reason}</output>
-      <Button onClick={() => setOpen((current) => !current)}>Visa från sidan</Button>
+      <Button onClick={() => setOpen((current) => !current)}>Show from the page</Button>
       <Popover.Root
         open={open}
         onOpenChange={(nextOpen, details) => {
@@ -26,11 +26,11 @@ export function ControlledPopover() {
           setReason(details.reason)
         }}
       >
-        <Popover.Trigger className="kv-button">Om tjänsten</Popover.Trigger>
-        <Popover.Popup aria-label="Om tjänsten">
-          <p>Tjänsten drivs av kommunen och är öppen dygnet runt.</p>
+        <Popover.Trigger className="kv-button">About the service</Popover.Trigger>
+        <Popover.Popup aria-label="About the service">
+          <p>The service is run by the municipality and is open around the clock.</p>
           <p>
-            <Popover.Close className="kv-button">Stäng</Popover.Close>
+            <Popover.Close className="kv-button">Close</Popover.Close>
           </p>
         </Popover.Popup>
       </Popover.Root>

@@ -1,3 +1,4 @@
+import { en } from '@kvirn-ui/i18n/en'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useEffect, useRef, useState } from 'react'
@@ -52,8 +53,8 @@ function expectNoDanglingReferences(container: Element) {
   }
 }
 
-const sweden = (children: ReactNode) => (
-  <KvirnProvider locale="sv-SE" messages={sv}>
+const english = (children: ReactNode) => (
+  <KvirnProvider locale="en" messages={en}>
     {children}
   </KvirnProvider>
 )
@@ -66,7 +67,7 @@ interface ContactGroupProps {
   withDescription?: boolean
 }
 
-/** The design spec's contact question: a group of options, in Swedish. */
+/** The design spec's contact question: a group of options, in English. */
 function ContactGroup({
   invalid = false,
   required = false,
@@ -76,15 +77,15 @@ function ContactGroup({
 }: ContactGroupProps) {
   return (
     <Fieldset.Root invalid={invalid} required={required} disabled={disabled} group={group}>
-      <Fieldset.Legend>Hur ska vi kontakta dig om tillståndet?</Fieldset.Legend>
-      {withDescription ? <Fieldset.Prose>Välj alla som passar.</Fieldset.Prose> : null}
-      <Fieldset.ErrorMessage>Välj hur vi ska kontakta dig</Fieldset.ErrorMessage>
+      <Fieldset.Legend>How should we contact you about the permit?</Fieldset.Legend>
+      {withDescription ? <Fieldset.Prose>Choose all that apply.</Fieldset.Prose> : null}
+      <Fieldset.ErrorMessage>Choose how we should contact you</Fieldset.ErrorMessage>
       <Field.Root>
         <Field.Label>E-post</Field.Label>
         <TextInput type="email" autoComplete="email" />
       </Field.Root>
       <Field.Root>
-        <Field.Label>Telefon</Field.Label>
+        <Field.Label>Phone</Field.Label>
         <TextInput type="tel" autoComplete="tel" />
       </Field.Root>
     </Fieldset.Root>
@@ -95,9 +96,9 @@ describe('rendering', () => {
   test('renders a <fieldset> with a <legend> first, and the text parts, each with its part class', async () => {
     const { container } = await render(
       <Fieldset.Root data-testid="root" invalid>
-        <Fieldset.Legend data-testid="legend">Adress</Fieldset.Legend>
-        <Fieldset.Prose data-testid="description">Där du bor.</Fieldset.Prose>
-        <Fieldset.ErrorMessage data-testid="error">Ange din adress</Fieldset.ErrorMessage>
+        <Fieldset.Legend data-testid="legend">Address</Fieldset.Legend>
+        <Fieldset.Prose data-testid="description">Where you live.</Fieldset.Prose>
+        <Fieldset.ErrorMessage data-testid="error">Enter your address</Fieldset.ErrorMessage>
       </Fieldset.Root>,
     )
     const root = page.getByTestId('root').element()
@@ -116,15 +117,15 @@ describe('rendering', () => {
     const rootRef = createRef<HTMLFieldSetElement>()
     const legendRef = createRef<HTMLLegendElement>()
     await render(
-      <Fieldset.Root ref={rootRef} className="egen" data-testid="root">
-        <Fieldset.Legend ref={legendRef} className="egen-forklaring">
-          Adress
+      <Fieldset.Root ref={rootRef} className="own" data-testid="root">
+        <Fieldset.Legend ref={legendRef} className="own-explanation">
+          Address
         </Fieldset.Legend>
       </Fieldset.Root>,
     )
     expect(rootRef.current).toBe(page.getByTestId('root').element())
-    await expect.element(page.getByTestId('root')).toHaveClass('egen', 'kv-fieldset')
-    expect(legendRef.current?.className).toBe('egen-forklaring kv-fieldset-legend')
+    await expect.element(page.getByTestId('root')).toHaveClass('own', 'kv-fieldset')
+    expect(legendRef.current?.className).toBe('own-explanation kv-fieldset-legend')
   })
 
   test('the compound and the named exports are the same parts, each with its own display name', () => {
@@ -152,32 +153,32 @@ describe('rendering', () => {
   test('the deprecated flat form wires the legend and the error like the namespace form', async () => {
     await render(
       <Fieldset invalid>
-        <Legend>Adress</Legend>
-        <FieldsetErrorMessage>Ange en adress</FieldsetErrorMessage>
+        <Legend>Address</Legend>
+        <FieldsetErrorMessage>Enter an address</FieldsetErrorMessage>
       </Fieldset>,
     )
     await expect
-      .element(page.getByRole('group', { name: 'Adress' }))
-      .toHaveAccessibleDescription('Error: Ange en adress')
+      .element(page.getByRole('group', { name: 'Address' }))
+      .toHaveAccessibleDescription('Error: Enter an address')
   })
 })
 
 describe('wiring: name and description per state', () => {
-  test('the legend is the group’s name, and the description is its description, in sv', async () => {
-    const { container } = await render(sweden(<ContactGroup required />))
-    const group = page.getByRole('group', { name: 'Hur ska vi kontakta dig om tillståndet?' })
-    await expect.element(group).toHaveAccessibleName('Hur ska vi kontakta dig om tillståndet?')
-    await expect.element(group).toHaveAccessibleDescription('Välj alla som passar.')
+  test('the legend is the group’s name, and the description is its description, in en', async () => {
+    const { container } = await render(english(<ContactGroup required />))
+    const group = page.getByRole('group', { name: 'How should we contact you about the permit?' })
+    await expect.element(group).toHaveAccessibleName('How should we contact you about the permit?')
+    await expect.element(group).toHaveAccessibleDescription('Choose all that apply.')
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
   })
 
-  test('invalid: the description is followed by "Fel:" and the message, in sv', async () => {
-    const { container } = await render(sweden(<ContactGroup invalid group={false} />))
-    const group = page.getByRole('group', { name: 'Hur ska vi kontakta dig om tillståndet?' })
+  test('invalid: the description is followed by "Error:" and the message, in en', async () => {
+    const { container } = await render(english(<ContactGroup invalid group={false} />))
+    const group = page.getByRole('group', { name: 'How should we contact you about the permit?' })
     await expect
       .element(group)
-      .toHaveAccessibleDescription('Välj alla som passar. Fel: Välj hur vi ska kontakta dig')
+      .toHaveAccessibleDescription('Choose all that apply. Error: Choose how we should contact you')
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
   })
@@ -186,16 +187,16 @@ describe('wiring: name and description per state', () => {
     await render(<ContactGroup invalid group={false} />)
     await expect
       .element(page.getByRole('group'))
-      .toHaveAccessibleDescription('Välj alla som passar. Error: Välj hur vi ska kontakta dig')
+      .toHaveAccessibleDescription('Choose all that apply. Error: Choose how we should contact you')
   })
 
   test('invalid without a description: the description is just the error', async () => {
-    const { container } = await render(sweden(<ContactGroup invalid withDescription={false} />))
+    const { container } = await render(english(<ContactGroup invalid withDescription={false} />))
     const fieldset = container.querySelector('fieldset')
     expect(fieldset?.getAttribute('aria-describedby')?.split(' ')).toHaveLength(1)
     await expect
       .element(page.getByRole('group'))
-      .toHaveAccessibleDescription('Fel: Välj hur vi ska kontakta dig')
+      .toHaveAccessibleDescription('Error: Choose how we should contact you')
     expectNoDanglingReferences(container)
   })
 
@@ -208,43 +209,43 @@ describe('wiring: name and description per state', () => {
   test('toggling invalid adds and removes the error from aria-describedby', async () => {
     const screen = await render(<ContactGroup />)
     const group = page.getByRole('group')
-    await expect.element(group).toHaveAccessibleDescription('Välj alla som passar.')
+    await expect.element(group).toHaveAccessibleDescription('Choose all that apply.')
     await screen.rerender(<ContactGroup invalid />)
     await expect
       .element(group)
-      .toHaveAccessibleDescription('Välj alla som passar. Error: Välj hur vi ska kontakta dig')
+      .toHaveAccessibleDescription('Choose all that apply. Error: Choose how we should contact you')
     await screen.rerender(<ContactGroup />)
-    await expect.element(group).toHaveAccessibleDescription('Välj alla som passar.')
+    await expect.element(group).toHaveAccessibleDescription('Choose all that apply.')
     expectNoDanglingReferences(screen.container)
   })
 
   test('a Field inside a Fieldset keeps its own description and error, apart from the group’s', async () => {
     const { container } = await render(
       <Fieldset.Root invalid group required>
-        <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
-        <Fieldset.Prose>Till exempel 27 3 2007</Fieldset.Prose>
-        <Fieldset.ErrorMessage>Ange ett datum</Fieldset.ErrorMessage>
+        <Fieldset.Legend>Date of birth</Fieldset.Legend>
+        <Fieldset.Prose>For example 27 3 2007</Fieldset.Prose>
+        <Fieldset.ErrorMessage>Enter a date</Fieldset.ErrorMessage>
         <Field.Root invalid>
-          <Field.Label>År</Field.Label>
-          <Field.ErrorMessage>Ange ett år</Field.ErrorMessage>
+          <Field.Label>Year</Field.Label>
+          <Field.ErrorMessage>Enter a year</Field.ErrorMessage>
           <TextInput inputMode="numeric" />
         </Field.Root>
         <Field.Root>
-          <Field.Label>Månad</Field.Label>
-          <Field.Prose>Siffror</Field.Prose>
+          <Field.Label>Month</Field.Label>
+          <Field.Prose>Digits</Field.Prose>
           <TextInput inputMode="numeric" />
         </Field.Root>
       </Fieldset.Root>,
     )
     await expect
-      .element(page.getByRole('group', { name: 'Födelsedatum' }))
-      .toHaveAccessibleDescription('Till exempel 27 3 2007 Error: Ange ett datum')
+      .element(page.getByRole('group', { name: 'Date of birth' }))
+      .toHaveAccessibleDescription('For example 27 3 2007 Error: Enter a date')
     await expect
-      .element(page.getByRole('textbox', { name: 'År' }))
-      .toHaveAccessibleDescription('Error: Ange ett år')
+      .element(page.getByRole('textbox', { name: 'Year' }))
+      .toHaveAccessibleDescription('Error: Enter a year')
     await expect
-      .element(page.getByRole('textbox', { name: 'Månad' }))
-      .toHaveAccessibleDescription('Siffror')
+      .element(page.getByRole('textbox', { name: 'Month' }))
+      .toHaveAccessibleDescription('Digits')
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
   })
@@ -257,7 +258,7 @@ describe('keyboard', () => {
     await userEvent.tab()
     await expect.element(page.getByRole('textbox', { name: 'E-post' })).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('textbox', { name: 'Telefon' })).toHaveFocus()
+    await expect.element(page.getByRole('textbox', { name: 'Phone' })).toHaveFocus()
     await userEvent.tab({ shift: true })
     await expect.element(page.getByRole('textbox', { name: 'E-post' })).toHaveFocus()
     await userEvent.tab({ shift: true })
@@ -270,12 +271,12 @@ describe('keyboard', () => {
     await render(
       <>
         <ContactGroup disabled />
-        <button type="button">Fortsätt</button>
+        <button type="button">Continue</button>
       </>,
     )
     await expect.element(page.getByRole('textbox', { name: 'E-post' })).toBeDisabled()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Fortsätt' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Continue' })).toHaveFocus()
   })
 
   test('a legend that is the page heading is an h1 inside the legend', async () => {
@@ -285,7 +286,7 @@ describe('keyboard', () => {
           <h1>Var bor du?</h1>
         </Fieldset.Legend>
         <Field.Root>
-          <Field.Label>Gatuadress</Field.Label>
+          <Field.Label>Street address</Field.Label>
           <TextInput />
         </Field.Root>
       </Fieldset.Root>,
@@ -308,15 +309,15 @@ describe('focus on submit (accessibility review, Plan 0013)', () => {
       }, [error])
       return (
         <form
-          aria-label="Ansökan"
+          aria-label="Application"
           noValidate
           onSubmit={(event) => {
             event.preventDefault()
-            setError('Välj hur vi ska kontakta dig')
+            setError('Choose how we should contact you')
           }}
         >
           <Fieldset.Root invalid={error !== undefined} group required>
-            <Fieldset.Legend>Hur ska vi kontakta dig?</Fieldset.Legend>
+            <Fieldset.Legend>How should we contact you?</Fieldset.Legend>
             <Fieldset.ErrorMessage>{error}</Fieldset.ErrorMessage>
             <Field.Root>
               <Field.Label>E-post</Field.Label>
@@ -330,12 +331,12 @@ describe('focus on submit (accessibility review, Plan 0013)', () => {
               />
             </Field.Root>
           </Fieldset.Root>
-          <button type="submit">Skicka</button>
+          <button type="submit">Send</button>
         </form>
       )
     }
     const { container } = await render(<Form />)
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Send' }))
     await expect.element(page.getByRole('textbox', { name: 'E-post' })).toHaveFocus()
     const ids = describedByAtFocus.at(-1)?.split(' ') ?? []
     expect(ids).toHaveLength(1)
@@ -348,9 +349,9 @@ describe('states', () => {
   test('invalid: data-invalid on every part and no aria-invalid on the group', async () => {
     await render(
       <Fieldset.Root invalid data-testid="root">
-        <Fieldset.Legend data-testid="legend">Adress</Fieldset.Legend>
-        <Fieldset.Prose data-testid="description">Där du bor.</Fieldset.Prose>
-        <Fieldset.ErrorMessage data-testid="error">Ange din adress</Fieldset.ErrorMessage>
+        <Fieldset.Legend data-testid="legend">Address</Fieldset.Legend>
+        <Fieldset.Prose data-testid="description">Where you live.</Fieldset.Prose>
+        <Fieldset.ErrorMessage data-testid="error">Enter your address</Fieldset.ErrorMessage>
       </Fieldset.Root>,
     )
     for (const testId of ['root', 'legend', 'description', 'error']) {
@@ -363,8 +364,8 @@ describe('states', () => {
   test('invalid does not cascade: the Fields inside stay valid', async () => {
     await render(
       <Fieldset.Root invalid>
-        <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
-        <Fieldset.ErrorMessage>Ange ett datum</Fieldset.ErrorMessage>
+        <Fieldset.Legend>Date of birth</Fieldset.Legend>
+        <Fieldset.ErrorMessage>Enter a date</Fieldset.ErrorMessage>
         <Field.Root data-testid="field">
           <Field.Label>Dag</Field.Label>
           <TextInput />
@@ -395,7 +396,7 @@ describe('states', () => {
     await expect.element(fieldset).toHaveAttribute('data-disabled', '')
     expect((fieldset.element() as HTMLFieldSetElement).disabled).toBe(true)
     await expect.element(page.getByRole('textbox', { name: 'E-post' })).toBeDisabled()
-    await expect.element(page.getByRole('textbox', { name: 'Telefon' })).toBeDisabled()
+    await expect.element(page.getByRole('textbox', { name: 'Phone' })).toBeDisabled()
   })
 
   test('not disabled: the controls inside are enabled', async () => {
@@ -409,27 +410,27 @@ describe('marker defaults in a group', () => {
   test('a plain Fieldset has no legend marker, and its Fields mark themselves', async () => {
     const { container } = await render(
       <Fieldset.Root>
-        <Fieldset.Legend>Adress</Fieldset.Legend>
+        <Fieldset.Legend>Address</Fieldset.Legend>
         <Field.Root>
-          <Field.Label>Gata</Field.Label>
+          <Field.Label>Street</Field.Label>
           <TextInput />
         </Field.Root>
       </Fieldset.Root>,
     )
-    await expect.element(page.getByRole('group', { name: 'Adress' })).toBeVisible()
-    await expect.element(page.getByRole('textbox', { name: 'Gata (optional)' })).toBeVisible()
+    await expect.element(page.getByRole('group', { name: 'Address' })).toBeVisible()
+    await expect.element(page.getByRole('textbox', { name: 'Street (optional)' })).toBeVisible()
     expect(container.querySelectorAll('.kv-field-optional')).toHaveLength(1)
   })
 
   test('a group that isn’t required marks its legend, and its Fields drop the marker', async () => {
-    const { container } = await render(sweden(<ContactGroup />))
+    const { container } = await render(english(<ContactGroup />))
     await expect
       .element(
-        page.getByRole('group', { name: 'Hur ska vi kontakta dig om tillståndet? (valfritt)' }),
+        page.getByRole('group', { name: 'How should we contact you about the permit? (optional)' }),
       )
       .toBeVisible()
     await expect.element(page.getByRole('textbox', { name: 'E-post' })).toBeVisible()
-    await expect.element(page.getByRole('textbox', { name: 'Telefon' })).toBeVisible()
+    await expect.element(page.getByRole('textbox', { name: 'Phone' })).toBeVisible()
     const markers = [...container.querySelectorAll('.kv-field-optional')]
     expect(markers.map((marker) => marker.closest('legend') !== null)).toEqual([true])
     await expectNoA11yViolations(container)
@@ -438,7 +439,7 @@ describe('marker defaults in a group', () => {
   test('a required group has no legend marker, and its Fields stay unmarked', async () => {
     const { container } = await render(<ContactGroup required />)
     await expect
-      .element(page.getByRole('group', { name: 'Hur ska vi kontakta dig om tillståndet?' }))
+      .element(page.getByRole('group', { name: 'How should we contact you about the permit?' }))
       .toBeVisible()
     expect(container.querySelector('.kv-field-optional')).toBeNull()
   })
@@ -447,79 +448,85 @@ describe('marker defaults in a group', () => {
     const { container } = await render(
       <>
         <Fieldset.Root>
-          <Fieldset.Legend marker="optional">Adress</Fieldset.Legend>
+          <Fieldset.Legend marker="optional">Address</Fieldset.Legend>
         </Fieldset.Root>
         <Fieldset.Root group>
-          <Fieldset.Legend marker="none">Kontakt</Fieldset.Legend>
+          <Fieldset.Legend marker="none">Contact</Fieldset.Legend>
         </Fieldset.Root>
       </>,
     )
-    await expect.element(page.getByRole('group', { name: 'Adress (optional)' })).toBeVisible()
-    await expect.element(page.getByRole('group', { name: 'Kontakt' })).toBeVisible()
+    await expect.element(page.getByRole('group', { name: 'Address (optional)' })).toBeVisible()
+    await expect.element(page.getByRole('group', { name: 'Contact' })).toBeVisible()
     expect(container.querySelectorAll('.kv-field-optional')).toHaveLength(1)
   })
 
   test('a Field’s own marker prop wins over the group default', async () => {
     await render(
       <Fieldset.Root group required>
-        <Fieldset.Legend>Kontakt</Fieldset.Legend>
+        <Fieldset.Legend>Contact</Fieldset.Legend>
         <Field.Root>
-          <Field.Label marker="optional">Telefon</Field.Label>
+          <Field.Label marker="optional">Phone</Field.Label>
           <TextInput />
         </Field.Root>
       </Fieldset.Root>,
     )
-    await expect.element(page.getByRole('textbox', { name: 'Telefon (optional)' })).toBeVisible()
+    await expect.element(page.getByRole('textbox', { name: 'Phone (optional)' })).toBeVisible()
   })
 
   test('a plain Fieldset inside a group stops the group defaults', async () => {
     const { container } = await render(
       <Fieldset.Root group required>
-        <Fieldset.Legend>Kontakt</Fieldset.Legend>
+        <Fieldset.Legend>Contact</Fieldset.Legend>
         <Fieldset.Root>
-          <Fieldset.Legend>Adress</Fieldset.Legend>
+          <Fieldset.Legend>Address</Fieldset.Legend>
           <Field.Root>
-            <Field.Label>Gata</Field.Label>
+            <Field.Label>Street</Field.Label>
             <TextInput />
           </Field.Root>
         </Fieldset.Root>
       </Fieldset.Root>,
     )
-    await expect.element(page.getByRole('textbox', { name: 'Gata (optional)' })).toBeVisible()
+    await expect.element(page.getByRole('textbox', { name: 'Street (optional)' })).toBeVisible()
     expect(container.querySelectorAll('.kv-field-optional')).toHaveLength(1)
   })
 })
 
 describe('messages resolution', () => {
   test('uses the provider’s catalog for the legend marker and the prefix', async () => {
-    const { container } = await render(sweden(<ContactGroup invalid />))
+    const { container } = await render(
+      <KvirnProvider locale="sv-SE" messages={sv}>
+        <ContactGroup invalid />
+      </KvirnProvider>,
+    )
+    // kv-lang-ok: the sv catalog strings
     expect(container.querySelector('legend .kv-field-optional')?.textContent).toBe('(valfritt)')
+    // kv-lang-ok: the sv catalog strings
     expect(container.querySelector('.kv-field-error-prefix')?.textContent).toBe('Fel:')
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
   test('the Root’s messages prop beats the provider', async () => {
     const { container } = await render(
-      sweden(
+      english(
         <Fieldset.Root
           group
           invalid
-          messages={{ optional: '(ej obligatoriskt)', errorPrefix: 'Problem:' }}
+          messages={{ optional: '(ej required)', errorPrefix: 'Problem:' }}
         >
-          <Fieldset.Legend>Kontakt</Fieldset.Legend>
-          <Fieldset.ErrorMessage>Välj ett sätt</Fieldset.ErrorMessage>
+          <Fieldset.Legend>Contact</Fieldset.Legend>
+          <Fieldset.ErrorMessage>Choose a way</Fieldset.ErrorMessage>
         </Fieldset.Root>,
       ),
     )
-    expect(container.querySelector('.kv-field-optional')?.textContent).toBe('(ej obligatoriskt)')
+    expect(container.querySelector('.kv-field-optional')?.textContent).toBe('(ej required)')
     expect(container.querySelector('.kv-field-error-prefix')?.textContent).toBe('Problem:')
   })
 })
 
 describe('dev warnings', () => {
   test('a Legend outside a Fieldset warns once and renders a <legend>', async () => {
-    await render(<FieldsetLegend>Adress</FieldsetLegend>)
-    await expect.element(page.getByText('Adress')).toBeVisible()
+    await render(<FieldsetLegend>Address</FieldsetLegend>)
+    await expect.element(page.getByText('Address')).toBeVisible()
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('Fieldset.Legend')
   })
@@ -527,7 +534,7 @@ describe('dev warnings', () => {
   test('an invalid Fieldset without an ErrorMessage warns once, naming WCAG 3.3.1', async () => {
     await render(
       <Fieldset.Root invalid>
-        <Fieldset.Legend>Adress</Fieldset.Legend>
+        <Fieldset.Legend>Address</Fieldset.Legend>
       </Fieldset.Root>,
     )
     await expect.element(page.getByRole('group')).not.toHaveAttribute('aria-describedby')
@@ -536,7 +543,7 @@ describe('dev warnings', () => {
   })
 
   test('a complete group doesn’t warn', async () => {
-    await render(sweden(<ContactGroup invalid />))
+    await render(english(<ContactGroup invalid />))
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
@@ -547,15 +554,15 @@ describe('useFieldset', () => {
     return (
       <fieldset {...fieldset.fieldsetProps}>
         <legend {...fieldset.legendProps}>
-          Adress{' '}
+          Address{' '}
           {fieldset.optionalMarker === undefined ? null : (
             <span className="kv-field-optional">{fieldset.optionalMarker}</span>
           )}
         </legend>
-        <p {...fieldset.descriptionProps}>Där du bor.</p>
+        <p {...fieldset.descriptionProps}>Where you live.</p>
         {fieldset.isInvalid ? (
           <p {...fieldset.errorMessageProps}>
-            <span className="kv-field-error-prefix">{fieldset.errorPrefix}</span> Ange din adress
+            <span className="kv-field-error-prefix">{fieldset.errorPrefix}</span> Enter your address
           </p>
         ) : null}
       </fieldset>
@@ -564,12 +571,14 @@ describe('useFieldset', () => {
 
   test('gives spreadable props for your own elements', async () => {
     const { container } = await render(
-      <KvirnProvider locale="sv-SE" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <HookFieldset invalid group />
       </KvirnProvider>,
     )
-    const group = page.getByRole('group', { name: 'Adress (valfritt)' })
-    await expect.element(group).toHaveAccessibleDescription('Där du bor. Fel: Ange din adress')
+    const group = page.getByRole('group', { name: 'Address (optional)' })
+    await expect
+      .element(group)
+      .toHaveAccessibleDescription('Where you live. Error: Enter your address')
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
   })
@@ -598,31 +607,31 @@ describe('several descriptions', () => {
   function AddressGroup({ invalid = false }: { invalid?: boolean }) {
     return (
       <Fieldset.Root invalid={invalid}>
-        <Fieldset.Legend>Adress</Fieldset.Legend>
-        <Fieldset.Prose data-testid="where">Där du är folkbokförd.</Fieldset.Prose>
-        <Fieldset.Prose data-testid="format">Gatan och numret.</Fieldset.Prose>
+        <Fieldset.Legend>Address</Fieldset.Legend>
+        <Fieldset.Prose data-testid="where">Where you are registered.</Fieldset.Prose>
+        <Fieldset.Prose data-testid="format">The street and number.</Fieldset.Prose>
         <Field.Root>
-          <Field.Label>Gatuadress</Field.Label>
+          <Field.Label>Street address</Field.Label>
           <TextInput />
         </Field.Root>
-        <Fieldset.ErrorMessage>Ange din adress</Fieldset.ErrorMessage>
+        <Fieldset.ErrorMessage>Enter your address</Fieldset.ErrorMessage>
       </Fieldset.Root>
     )
   }
 
   test('aria-describedby lists every Description in DOM order, then the error', async () => {
     const { container } = await render(<AddressGroup invalid />)
-    const group = page.getByRole('group', { name: 'Adress' })
+    const group = page.getByRole('group', { name: 'Address' })
     const ids = (group.element().getAttribute('aria-describedby') ?? '').split(' ')
     expect(ids).toHaveLength(3)
     expect(ids[0]).toBe(page.getByTestId('where').element().id)
     expect(ids[1]).toBe(page.getByTestId('format').element().id)
-    expect(document.getElementById(ids[2] ?? '')?.textContent).toContain('Ange din adress')
+    expect(document.getElementById(ids[2] ?? '')?.textContent).toContain('Enter your address')
     expect(new Set(ids).size).toBe(3)
     await expect
       .element(group)
       .toHaveAccessibleDescription(
-        'Där du är folkbokförd. Gatan och numret. Error: Ange din adress',
+        'Where you are registered. The street and number. Error: Enter your address',
       )
     expectNoDanglingReferences(container)
     await expectNoA11yViolations(container)
@@ -633,23 +642,23 @@ describe('several descriptions', () => {
       const [show, setShow] = useState(true)
       return (
         <Fieldset.Root>
-          <Fieldset.Legend>Adress</Fieldset.Legend>
-          <Fieldset.Prose>Först.</Fieldset.Prose>
-          {show ? <Fieldset.Prose>Sist.</Fieldset.Prose> : null}
+          <Fieldset.Legend>Address</Fieldset.Legend>
+          <Fieldset.Prose>First.</Fieldset.Prose>
+          {show ? <Fieldset.Prose>Last.</Fieldset.Prose> : null}
           <button type="button" onClick={() => setShow(false)}>
-            Dölj
+            Hide
           </button>
         </Fieldset.Root>
       )
     }
     const { container } = await render(<Removable />)
     await expect
-      .element(page.getByRole('group', { name: 'Adress' }))
-      .toHaveAccessibleDescription('Först. Sist.')
-    await userEvent.click(page.getByRole('button', { name: 'Dölj' }))
+      .element(page.getByRole('group', { name: 'Address' }))
+      .toHaveAccessibleDescription('First. Last.')
+    await userEvent.click(page.getByRole('button', { name: 'Hide' }))
     await expect
-      .element(page.getByRole('group', { name: 'Adress' }))
-      .toHaveAccessibleDescription('Först.')
+      .element(page.getByRole('group', { name: 'Address' }))
+      .toHaveAccessibleDescription('First.')
     expectNoDanglingReferences(container)
   })
 
@@ -658,22 +667,22 @@ describe('several descriptions', () => {
       const [showFirst, setShowFirst] = useState(false)
       return (
         <Fieldset.Root>
-          <Fieldset.Legend>Adress</Fieldset.Legend>
-          {showFirst ? <Fieldset.Prose data-testid="first">Först.</Fieldset.Prose> : null}
-          <Fieldset.Prose data-testid="last">Sist.</Fieldset.Prose>
+          <Fieldset.Legend>Address</Fieldset.Legend>
+          {showFirst ? <Fieldset.Prose data-testid="first">First.</Fieldset.Prose> : null}
+          <Fieldset.Prose data-testid="last">Last.</Fieldset.Prose>
           <button type="button" onClick={() => setShowFirst(true)}>
-            Visa
+            Show
           </button>
         </Fieldset.Root>
       )
     }
     const { container } = await render(<LateHelpText />)
-    const group = page.getByRole('group', { name: 'Adress' })
+    const group = page.getByRole('group', { name: 'Address' })
     expect(group.element().getAttribute('aria-describedby')).toBe(
       page.getByTestId('last').element().id,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Visa' }))
-    await expect.element(group).toHaveAccessibleDescription('Först. Sist.')
+    await userEvent.click(page.getByRole('button', { name: 'Show' }))
+    await expect.element(group).toHaveAccessibleDescription('First. Last.')
     expect((group.element().getAttribute('aria-describedby') ?? '').split(' ')).toEqual([
       page.getByTestId('first').element().id,
       page.getByTestId('last').element().id,
@@ -686,25 +695,25 @@ describe('several descriptions', () => {
       const fieldset = useFieldset({ hasDescription: true, descriptions: ['under'] })
       return (
         <fieldset {...fieldset.fieldsetProps}>
-          <legend {...fieldset.legendProps}>Adress</legend>
-          <p {...fieldset.descriptionProps}>Först.</p>
-          <p {...fieldset.getDescriptionProps('under')}>Sist.</p>
+          <legend {...fieldset.legendProps}>Address</legend>
+          <p {...fieldset.descriptionProps}>First.</p>
+          <p {...fieldset.getDescriptionProps('under')}>Last.</p>
         </fieldset>
       )
     }
     const { container } = await render(<Mixed />)
     await expect
-      .element(page.getByRole('group', { name: 'Adress' }))
-      .toHaveAccessibleDescription('Först. Sist.')
+      .element(page.getByRole('group', { name: 'Address' }))
+      .toHaveAccessibleDescription('First. Last.')
     expectNoDanglingReferences(container)
   })
 
   test('two ErrorMessages in one Fieldset give a dev warning, once', async () => {
     await render(
       <Fieldset.Root invalid>
-        <Fieldset.Legend>Adress</Fieldset.Legend>
-        <Fieldset.ErrorMessage>Ange din adress</Fieldset.ErrorMessage>
-        <Fieldset.ErrorMessage>Ange din fullständiga adress</Fieldset.ErrorMessage>
+        <Fieldset.Legend>Address</Fieldset.Legend>
+        <Fieldset.ErrorMessage>Enter your address</Fieldset.ErrorMessage>
+        <Fieldset.ErrorMessage>Enter your full address</Fieldset.ErrorMessage>
       </Fieldset.Root>,
     )
     const warnings = consoleWarn.mock.calls
@@ -718,10 +727,10 @@ describe('several descriptions', () => {
       const fieldset = useFieldset({ invalid: true, descriptions: ['where', 'format'] })
       return (
         <fieldset {...fieldset.fieldsetProps}>
-          <legend {...fieldset.legendProps}>Adress</legend>
-          <p {...fieldset.getDescriptionProps('where')}>Där du bor.</p>
-          <p {...fieldset.getDescriptionProps('format')}>Gatan och numret.</p>
-          <p {...fieldset.errorMessageProps}>Fel: Ange din adress</p>
+          <legend {...fieldset.legendProps}>Address</legend>
+          <p {...fieldset.getDescriptionProps('where')}>Where you live.</p>
+          <p {...fieldset.getDescriptionProps('format')}>The street and number.</p>
+          <p {...fieldset.errorMessageProps}>Error: Enter your address</p>
         </fieldset>
       )
     }
@@ -744,22 +753,22 @@ describe('Fieldset.HelpText (Plan 0029)', () => {
   function VisitDate({ invalid = false, disabled = false }) {
     return (
       <Fieldset.Root group invalid={invalid} disabled={disabled}>
-        <Fieldset.Legend>När var besöket?</Fieldset.Legend>
-        <Fieldset.Prose data-testid="why">Välj dagen då du var hos oss.</Fieldset.Prose>
+        <Fieldset.Legend>When was the visit?</Fieldset.Legend>
+        <Fieldset.Prose data-testid="why">Choose the day you visited us.</Fieldset.Prose>
         <Field.Root>
           <Field.Label>Dag</Field.Label>
           <TextInput inputMode="numeric" />
         </Field.Root>
         <Field.Root>
-          <Field.Label>Månad</Field.Label>
+          <Field.Label>Month</Field.Label>
           <TextInput inputMode="numeric" />
         </Field.Root>
         <Field.Root>
-          <Field.Label>År</Field.Label>
+          <Field.Label>Year</Field.Label>
           <TextInput inputMode="numeric" />
         </Field.Root>
-        <Fieldset.HelpText data-testid="example">Till exempel 2026-03-27</Fieldset.HelpText>
-        <Fieldset.ErrorMessage>Skriv ett datum</Fieldset.ErrorMessage>
+        <Fieldset.HelpText data-testid="example">For example 2026-03-27</Fieldset.HelpText>
+        <Fieldset.ErrorMessage>Write a date</Fieldset.ErrorMessage>
       </Fieldset.Root>
     )
   }
@@ -767,7 +776,7 @@ describe('Fieldset.HelpText (Plan 0029)', () => {
   const describedByIds = () =>
     (
       page
-        .getByRole('group', { name: 'När var besöket?', exact: false })
+        .getByRole('group', { name: 'When was the visit?', exact: false })
         .element()
         .getAttribute('aria-describedby') ?? ''
     ).split(' ')
@@ -776,8 +785,8 @@ describe('Fieldset.HelpText (Plan 0029)', () => {
     await render(<VisitDate />)
     expect(page.getByTestId('example').element().id).not.toBe('')
     await expect
-      .element(page.getByRole('group', { name: 'När var besöket?', exact: false }))
-      .toHaveAccessibleDescription('Välj dagen då du var hos oss. Till exempel 2026-03-27')
+      .element(page.getByRole('group', { name: 'When was the visit?', exact: false }))
+      .toHaveAccessibleDescription('Choose the day you visited us. For example 2026-03-27')
   })
 
   test('aria-describedby lists the description, the help text, then the error', async () => {
@@ -786,28 +795,28 @@ describe('Fieldset.HelpText (Plan 0029)', () => {
     expect(ids).toHaveLength(3)
     expect(ids[0]).toBe(page.getByTestId('why').element().id)
     expect(ids[1]).toBe(page.getByTestId('example').element().id)
-    expect(document.getElementById(ids[2] ?? '')?.textContent).toContain('Skriv ett datum')
+    expect(document.getElementById(ids[2] ?? '')?.textContent).toContain('Write a date')
     expectNoDanglingReferences(container)
   })
 
   test('a Field’s own help text inside the group describes its input, not the group', async () => {
     await render(
       <Fieldset.Root group>
-        <Fieldset.Legend>När var besöket?</Fieldset.Legend>
+        <Fieldset.Legend>When was the visit?</Fieldset.Legend>
         <Field.Root>
           <Field.Label>Dag</Field.Label>
           <TextInput inputMode="numeric" />
-          <Field.HelpText>Ett eller två tal.</Field.HelpText>
+          <Field.HelpText>One or two numbers.</Field.HelpText>
         </Field.Root>
-        <Fieldset.HelpText>Till exempel 2026-03-27</Fieldset.HelpText>
+        <Fieldset.HelpText>For example 2026-03-27</Fieldset.HelpText>
       </Fieldset.Root>,
     )
     await expect
       .element(page.getByRole('textbox', { name: 'Dag' }))
-      .toHaveAccessibleDescription('Ett eller två tal.')
+      .toHaveAccessibleDescription('One or two numbers.')
     await expect
-      .element(page.getByRole('group', { name: 'När var besöket?', exact: false }))
-      .toHaveAccessibleDescription('Till exempel 2026-03-27')
+      .element(page.getByRole('group', { name: 'When was the visit?', exact: false }))
+      .toHaveAccessibleDescription('For example 2026-03-27')
   })
 
   test('gets data-invalid and data-disabled from the Fieldset', async () => {
@@ -822,8 +831,8 @@ describe('Fieldset.HelpText (Plan 0029)', () => {
   test('a Fieldset.HelpText before the group’s controls warns once', async () => {
     await render(
       <Fieldset.Root group>
-        <Fieldset.Legend>När var besöket?</Fieldset.Legend>
-        <Fieldset.HelpText>Till exempel 2026-03-27</Fieldset.HelpText>
+        <Fieldset.Legend>When was the visit?</Fieldset.Legend>
+        <Fieldset.HelpText>For example 2026-03-27</Fieldset.HelpText>
         <Field.Root>
           <Field.Label>Dag</Field.Label>
           <TextInput inputMode="numeric" />
@@ -836,7 +845,7 @@ describe('Fieldset.HelpText (Plan 0029)', () => {
   })
 
   test('a group with a description, a help text and an error has no axe violations and no warnings', async () => {
-    const { container } = await render(sweden(<VisitDate invalid />))
+    const { container } = await render(english(<VisitDate invalid />))
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -844,10 +853,10 @@ describe('Fieldset.HelpText (Plan 0029)', () => {
 
 describe('server rendering', () => {
   test('renders the Fieldset and its parts to a string without touching the page', () => {
-    const html = renderToString(sweden(<ContactGroup invalid />))
+    const html = renderToString(english(<ContactGroup invalid />))
     expect(html).toContain('<fieldset')
     expect(html).toContain('<legend')
-    expect(html).toContain('Fel:')
+    expect(html).toContain('Error:')
   })
 })
 

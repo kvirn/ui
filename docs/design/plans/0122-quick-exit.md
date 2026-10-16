@@ -27,7 +27,7 @@ A person reading sensitive content (how to report domestic violence, abuse suppo
 ### API sketch
 
 ```tsx
-;<QuickExit.Root shortcut messages={{ label: 'Lämna sidan' }}>
+;<QuickExit.Root shortcut messages={{ label: 'Leave the site' }}>
   <QuickExit.Link href="https://www.smhi.se" /> {/* children override the visible label */}
   <QuickExit.Hint /> {/* visible shortcut hint; renders nothing when shortcut is off */}
 </QuickExit.Root>
@@ -74,13 +74,13 @@ const { rootProps, linkProps, hintProps } = useQuickExit({
 
 ### i18n strings (keys; wording from the spec)
 
-| Key                           | en                                                    | sv                                                         |
-| ----------------------------- | ----------------------------------------------------- | ---------------------------------------------------------- |
-| `quickExit.label`             | Leave this page                                       | Lämna sidan                                                |
-| `quickExit.shortcutRemaining` | Press Shift {remaining} more times to leave this page | Tryck på Skift {remaining} gånger till för att lämna sidan |
-| `quickExit.hint`              | Or press Shift 3 times.                               | Eller tryck på Skift 3 gånger.                             |
+| Key                           | en                                                    | sv                                                                                                                           |
+| ----------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `quickExit.label`             | Leave this page                                       | Lämna sidan <!-- kv-lang-ok: national hide-a-page phrases are the subject -->                                                |
+| `quickExit.shortcutRemaining` | Press Shift {remaining} more times to leave this page | Tryck på Skift {remaining} gånger till för att lämna sidan <!-- kv-lang-ok: national hide-a-page phrases are the subject --> |
+| `quickExit.hint`              | Or press Shift 3 times.                               | Eller tryck på Skift 3 gånger. <!-- kv-lang-ok: national hide-a-page phrases are the subject -->                             |
 
-fi ("Poistu sivulta"), nb and nn in the same change (`i18n:check`); fi, nb, nn need native-speaker review. The hint uses each locale's own key name.
+fi ("Poistu sivulta"), nb and nn in the same change (`i18n:check`); fi, nb, nn need native-speaker review. The hint uses each locale's own key name. <!-- kv-lang-ok: the Finnish label is the subject -->
 
 ### Theming surface
 
@@ -122,7 +122,7 @@ fi ("Poistu sivulta"), nb and nn in the same change (`i18n:check`); fi, nb, nn n
 - **Wiring:** `Link` registers its `href` with `Root` through an effect, so the shortcut is live one render after mount. `navigate`, `shortcut` and `messages` are `Root` props. An invalid href renders the anchor with no `href` and a dev warning (engineer).
 - **Pointer:** click, Ctrl/Cmd-click and middle click are `preventDefault`ed and exit in the same tab (engineer, follows spec §3).
 - **`shortcutRemaining`** uses `format.plural`; fi, nb, nn carry a "draft, native review" header. The Link is `aria-describedby` the Hint (visible text) while a Hint is mounted; there is no count display.
-- **Label:** "Leave this page" / "Lämna sidan" (maintainer). Not user-tested yet.
+- **Label:** "Leave this page" / "Lämna sidan" (maintainer). Not user-tested yet. <!-- kv-lang-ok: national hide-a-page phrases are the subject -->
 - **Look:** flat `secondary` fill link, a named exception to "links look like links" in DESIGN.md (maintainer). No new tokens; hover is an underline.
 - **Tab stop 2**, after the skip link (maintainer).
 - **Shortcut default on** despite the NVDA risk (maintainer, informed).

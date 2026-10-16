@@ -49,7 +49,9 @@ interface CaseRecord {
 
 const records: CaseRecord[] = [
   { id: 'c1', name: 'Anna Svensson', caseNumber: 'A-102', received: '2026-09-02' },
+  // kv-lang-ok: Swedish collation fixture
   { id: 'c2', name: 'Åsa Berg', caseNumber: 'A-087', received: '2026-08-14' },
+  // kv-lang-ok: Swedish collation fixture
   { id: 'c3', name: 'Zack Öberg', caseNumber: 'B-310', received: '2026-09-21' },
   { id: 'c4', name: 'Bertil Ek', caseNumber: 'A-201', received: '2026-07-30' },
 ]
@@ -301,6 +303,7 @@ describe('native semantics', () => {
       'col',
       'col',
     ])
+    // kv-lang-ok: Swedish collation fixture
     expect(rowHeaders(container)).toEqual(['Anna Svensson', 'Åsa Berg', 'Zack Öberg', 'Bertil Ek'])
     // Only the `rowHeader` column is a row header: the rest are data cells.
     expect(element.querySelectorAll('tbody td')).toHaveLength(4 * 3)
@@ -502,11 +505,14 @@ describe('sorting', () => {
     expect(sortedColumns(container)).toEqual([])
   })
 
+  // kv-lang-ok: Swedish collation
   test('rows follow the locale: å, ä and ö sort after z in Swedish', async () => {
     const { container } = await renderInProvider(<CasesTable />)
     await userEvent.click(sortButton('Name'))
+    // kv-lang-ok: Swedish collation fixture
     expect(rowHeaders(container)).toEqual(['Anna Svensson', 'Bertil Ek', 'Zack Öberg', 'Åsa Berg'])
     await userEvent.click(sortButton('Name'))
+    // kv-lang-ok: Swedish collation fixture
     expect(rowHeaders(container)).toEqual(['Åsa Berg', 'Zack Öberg', 'Bertil Ek', 'Anna Svensson'])
   })
 
@@ -523,6 +529,7 @@ describe('sorting', () => {
   test('each change is announced in the provider locale, in sv', async () => {
     await renderInProvider(<CasesTable />, 'sv')
     await userEvent.click(sortButton('Name'))
+    // kv-lang-ok: the sv catalog string
     await expect.element(status()).toHaveTextContent('Sorterad efter Name, stigande.')
   })
 
@@ -572,6 +579,7 @@ describe('selection', () => {
     expect(headerCell?.tagName).toBe('TH')
     expect(headerCell?.getAttribute('scope')).toBe('row')
     expect(headerCell?.textContent).toBe('Anna Svensson')
+    // kv-lang-ok: Swedish collation fixture
     expect(page.getByRole('checkbox', { name: 'Select Zack Öberg' }).elements()).toHaveLength(1)
   })
 
@@ -589,7 +597,9 @@ describe('selection', () => {
 
   test('checkbox names are in the provider locale, in sv', async () => {
     await renderInProvider(<CasesTable />, 'sv')
+    // kv-lang-ok: Swedish collation fixture
     await expect.element(page.getByRole('checkbox', { name: 'Välj Anna Svensson' })).toBeVisible()
+    // kv-lang-ok: Swedish collation fixture
     await expect.element(page.getByRole('checkbox', { name: 'Välj alla rader' })).toBeVisible()
   })
 
@@ -727,6 +737,7 @@ describe('expanding', () => {
       'sv',
     )
     expect(swedish.querySelector('button.kv-table-expand-button')?.getAttribute('aria-label')).toBe(
+      // kv-lang-ok: the sv catalog string
       'Detaljer rad 1',
     )
   })
@@ -808,6 +819,7 @@ describe('states', () => {
   test('the empty row is in the provider locale, in sv', async () => {
     await renderInProvider(<CasesTable data={[]} />, 'sv')
     await expect
+      // kv-lang-ok: the sv catalog string
       .element(page.getByRole('cell', { name: 'Det finns inga rader att visa.' }))
       .toBeVisible()
   })
@@ -839,6 +851,7 @@ describe('states', () => {
 
   test('the empty row says it is loading in the provider locale, in sv', async () => {
     const { container } = await renderInProvider(<CasesTable data={[]} isLoading />, 'sv')
+    // kv-lang-ok: the sv catalog string
     expect(container.querySelector('.kv-table-empty')?.textContent).toBe('Laddar rader.')
   })
 
@@ -1340,6 +1353,7 @@ describe('keyboard', () => {
       rowCheckbox('Anna Svensson'),
       expandButton('Anna Svensson'),
       page.getByRole('link', { name: 'Anna Svensson' }),
+      // kv-lang-ok: Swedish collation fixture
       rowCheckbox('Åsa Berg'),
     ]
     for (const control of inOrder) {
@@ -1423,6 +1437,7 @@ describe('keyboard', () => {
 
   test('Space on an expand button hides the details', async () => {
     const { container } = await renderInProvider(<KeyboardTable />)
+    // kv-lang-ok: Swedish collation fixture
     const button = expandButton('Åsa Berg')
     button.element().focus()
     await userEvent.keyboard('{Enter}')

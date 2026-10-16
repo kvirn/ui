@@ -254,11 +254,11 @@ describe('registry', () => {
   })
 
   test('an unknown name with a label is still an image with that name, and warns', async () => {
-    const { container } = await render(<Icon name={'not-registered' as IconName} label="Okänd" />)
+    const { container } = await render(<Icon name={'not-registered' as IconName} label="Unknown" />)
     const svg = svgIn(container)
     expect(svg.children).toHaveLength(0)
     expect(svg.getAttribute('role')).toBe('img')
-    expect(svg.getAttribute('aria-label')).toBe('Okänd')
+    expect(svg.getAttribute('aria-label')).toBe('Unknown')
     expect(svg.hasAttribute('aria-hidden')).toBe(false)
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('"not-registered"')
@@ -387,13 +387,13 @@ describe('keyboard', () => {
   function IconsAmongStops() {
     return (
       <>
-        <Icon name={firstBuiltInName} label="Stäng" />
+        <Icon name={firstBuiltInName} label="Close" />
         <Button>
           <Icon name={firstBuiltInName} />
           Radera
         </Button>
         <a href="#ansok">
-          Ansök <Icon name={firstBuiltInName} />
+          Apply <Icon name={firstBuiltInName} />
         </a>
       </>
     )
@@ -432,16 +432,16 @@ describe('accessibility', () => {
   test.each(['lucide-trash', 'heroicons-trash', 'phosphor-trash'] as const)(
     '%s with a label is an image with that name, never hidden',
     async (name) => {
-      await renderIcon(<RegisteredIcon name={name} label="Varning" />)
-      const image = page.getByRole('img', { name: 'Varning' })
+      await renderIcon(<RegisteredIcon name={name} label="Warning" />)
+      const image = page.getByRole('img', { name: 'Warning' })
       await expect.element(image).toBeVisible()
       await expect.element(image).not.toHaveAttribute('aria-hidden')
     },
   )
 
   test('a built-in icon with a label is an image with that name', async () => {
-    await render(<Icon name={firstBuiltInName} label="Stäng" />)
-    await expect.element(page.getByRole('img', { name: 'Stäng' })).toBeVisible()
+    await render(<Icon name={firstBuiltInName} label="Close" />)
+    await expect.element(page.getByRole('img', { name: 'Close' })).toBeVisible()
   })
 
   test('next to a Button label, the button is named by its text only', async () => {
@@ -468,13 +468,13 @@ describe('accessibility', () => {
             <RegisteredIcon name="lucide-trash" />
             Radera
           </Button>
-          <Button className="kv-button--icon-only" aria-label="Radera ansökan">
+          <Button className="kv-button--icon-only" aria-label="Delete application">
             <RegisteredIcon name="lucide-trash" />
           </Button>
         </main>
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('button', { name: 'Radera ansökan' })).toBeVisible()
+    await expect.element(page.getByRole('button', { name: 'Delete application' })).toBeVisible()
     await expectNoA11yViolations(container)
   })
 })

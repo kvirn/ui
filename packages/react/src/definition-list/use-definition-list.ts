@@ -68,10 +68,10 @@ const classProps = Object.freeze({
  * const list = useDefinitionList()
  * <dl {...list.rootProps}>
  *   <div {...list.rowProps}>
- *     <dt {...list.termProps} id={termId}>Namn</dt>
+ *     <dt {...list.termProps} id={termId}>Name</dt>
  *     <dd {...list.descriptionProps}>Anna Svensson</dd>
  *     <dd {...list.actionsProps}>
- *       <a {...list.getChangeProps({ id: changeId, termId })} href="/steg/1">{list.changeLabel}</a>
+ *       <a {...list.getChangeProps({ id: changeId, termId })} href="/step/1">{list.changeLabel}</a>
  *     </dd>
  *   </div>
  * </dl>

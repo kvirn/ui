@@ -56,7 +56,7 @@ interface CodeFieldProps {
 /** The design spec's field: label, description above, the row of slots over the one input. */
 function CodeField({
   pattern = '999999',
-  hint = 'Koden har 6 siffror.',
+  hint = 'The code has 6 digits.',
   slotCount = Array.from(pattern).length,
   invalid = false,
   disabled = false,
@@ -67,7 +67,7 @@ function CodeField({
 }: CodeFieldProps) {
   return (
     <Field.Root invalid={invalid} disabled={disabled}>
-      <Field.Label>Kod från sms:et</Field.Label>
+      <Field.Label>Code from the text message</Field.Label>
       <Field.Prose>{hint}</Field.Prose>
       <OneTimeCode.Root pattern={pattern} data-testid="root" {...rootProps}>
         <OneTimeCode.Input name="code" readOnly={readOnly} ref={inputRef} />
@@ -75,13 +75,13 @@ function CodeField({
           <OneTimeCode.Slot key={index} index={index} />
         ))}
       </OneTimeCode.Root>
-      {invalid ? <Field.ErrorMessage>Koden stämmer inte.</Field.ErrorMessage> : null}
+      {invalid ? <Field.ErrorMessage>The code is not correct.</Field.ErrorMessage> : null}
       {after}
     </Field.Root>
   )
 }
 
-const code = () => page.getByRole('textbox', { name: /^Kod från sms:et/ })
+const code = () => page.getByRole('textbox', { name: /^Code from the text message/ })
 const inputElement = () => code().element() as HTMLInputElement
 const slots = () => [...document.querySelectorAll<HTMLElement>('.kv-one-time-code-slot')]
 const root = () => document.querySelector<HTMLElement>('[data-testid="root"]')
@@ -136,7 +136,7 @@ describe('the input', () => {
     await render(<CodeField />)
     await expect.element(code()).toBeVisible()
     expect(inputElement().type).toBe('text')
-    await expect.element(code()).toHaveAccessibleDescription('Koden har 6 siffror.')
+    await expect.element(code()).toHaveAccessibleDescription('The code has 6 digits.')
     expect(page.getByRole('textbox').elements()).toHaveLength(1)
   })
 
@@ -186,7 +186,7 @@ describe('the input', () => {
     await render(<CodeField invalid />)
     await expect
       .element(code())
-      .toHaveAccessibleDescription(/Koden har 6 siffror\..*Koden stämmer inte\./)
+      .toHaveAccessibleDescription(/The code has 6 digits\..*The code is not correct\./)
   })
 
   test('an own aria-describedby id comes after the Field ids', async () => {
@@ -244,12 +244,12 @@ describe('the slots', () => {
     await render(
       <form data-testid="form">
         <CodeField defaultValue="481" />
-        <button type="reset">Rensa</button>
+        <button type="reset">Clear</button>
       </form>,
     )
     await userEvent.type(code(), '920')
     expect(characters()).toEqual(['4', '8', '1', '9', '2', '0'])
-    await userEvent.click(page.getByRole('button', { name: 'Rensa' }))
+    await userEvent.click(page.getByRole('button', { name: 'Clear' }))
     await expect.poll(characters).toEqual(['4', '8', '1', '', '', ''])
   })
 
@@ -377,12 +377,12 @@ describe('a value already in the field when the script starts goes through the m
     await render(
       <form>
         <CodeField defaultValue="481 920" />
-        <button type="reset">Rensa</button>
+        <button type="reset">Clear</button>
       </form>,
     )
     await expect.element(code()).toHaveValue('481920')
     await userEvent.fill(code(), '1')
-    await userEvent.click(page.getByRole('button', { name: 'Rensa' }))
+    await userEvent.click(page.getByRole('button', { name: 'Clear' }))
     await expect.poll(characters).toEqual(['4', '8', '1', '9', '2', '0'])
     await expect.element(code()).toHaveValue('481920')
   })
@@ -443,7 +443,7 @@ describe('typing, paste and autofill', () => {
     )
     await render(
       <form onSubmit={onSubmit}>
-        <CodeField after={<button type="submit">Fortsätt</button>} />
+        <CodeField after={<button type="submit">Continue</button>} />
       </form>,
     )
     await userEvent.type(code(), '481920')
@@ -457,13 +457,13 @@ describe('typing, paste and autofill', () => {
   test('Tab leaves the field, also when the code is complete: the only stop is the input', async () => {
     await render(
       <>
-        <CodeField defaultValue="481920" after={<button type="button">Fortsätt</button>} />
+        <CodeField defaultValue="481920" after={<button type="button">Continue</button>} />
       </>,
     )
     await userEvent.tab()
     await expect.element(code()).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Fortsätt' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Continue' })).toHaveFocus()
     await userEvent.tab({ shift: true })
     await expect.element(code()).toHaveFocus()
   })
@@ -495,7 +495,7 @@ describe('value, defaultValue and onValueChange', () => {
         <>
           <CodeField value={value} onValueChange={setValue} />
           <button type="button" onClick={() => setValue('')}>
-            Töm
+            Clear
           </button>
         </>
       )
@@ -505,7 +505,7 @@ describe('value, defaultValue and onValueChange', () => {
     await userEvent.type(code(), '1')
     await expect.element(code()).toHaveValue('481')
     expect(characters()).toEqual(['4', '8', '1', '', '', ''])
-    await userEvent.click(page.getByRole('button', { name: 'Töm' }))
+    await userEvent.click(page.getByRole('button', { name: 'Clear' }))
     await expect.element(code()).toHaveValue('')
     await expect.poll(characters).toEqual(['', '', '', '', '', ''])
   })
@@ -559,16 +559,16 @@ describe('keyboard', () => {
   test('Shift+Tab leaves the field to the previous focusable element, never to a box', async () => {
     await render(
       <>
-        <button type="button">Tillbaka</button>
+        <button type="button">Back</button>
         <CodeField />
       </>,
     )
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Tillbaka' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Back' })).toHaveFocus()
     await userEvent.tab()
     await expect.element(code()).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('button', { name: 'Tillbaka' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Back' })).toHaveFocus()
   })
 
   test('arrows follow the code on an RTL page: ArrowRight is the next character', async () => {
@@ -644,7 +644,7 @@ describe('keyboard', () => {
   })
 
   test('a click marks focus but not focus-visible, and a key brings it back', async () => {
-    await render(<CodeField after={<button type="button">Fortsätt</button>} />)
+    await render(<CodeField after={<button type="button">Continue</button>} />)
     await userEvent.click(code())
     await expect.element(code()).toHaveAttribute('data-focused', '')
     await expect.element(code()).not.toHaveAttribute('data-focus-visible')
@@ -731,7 +731,7 @@ describe('caret and selection are drawn from the input', () => {
   })
 
   test('blur clears the active and selected state', async () => {
-    await render(<CodeField defaultValue="481" after={<button type="button">Fortsätt</button>} />)
+    await render(<CodeField defaultValue="481" after={<button type="button">Continue</button>} />)
     await userEvent.click(code())
     await userEvent.keyboard('{Control>}a{/Control}')
     await expect.poll(() => selectedSlots().length).toBe(3)
@@ -748,7 +748,7 @@ describe('caret and selection are drawn from the input', () => {
 })
 
 describe('patterns with separators', () => {
-  const groupedHint = 'Koden har 8 tecken i två grupper om 4.'
+  const groupedHint = 'The code has 8 characters in two groups of 4.'
 
   test.each([
     {
@@ -1073,7 +1073,7 @@ describe('patterns with separators', () => {
       await render(
         <Field.Root>
           <Field.Label marker="none">Kod</Field.Label>
-          <Field.Prose>Åtta tecken.</Field.Prose>
+          <Field.Prose>Eight characters.</Field.Prose>
           <OneTimeCode.Root pattern="****-****" defaultValue="abcd-12" style={{ display: 'flex' }}>
             <OneTimeCode.Input style={{ position: 'absolute' }} />
             {Array.from({ length: 9 }, (_, index) => (
@@ -1271,7 +1271,7 @@ describe('development warnings', () => {
     await render(
       <Field.Root>
         <Field.Label marker="none">Kod</Field.Label>
-        <Field.Prose>Sex siffror.</Field.Prose>
+        <Field.Prose>Six digits.</Field.Prose>
         <OneTimeCode.Input />
       </Field.Root>,
     )

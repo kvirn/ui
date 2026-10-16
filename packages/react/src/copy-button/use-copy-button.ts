@@ -26,7 +26,7 @@ export interface UseCopyActionOptions {
   onCopyError?: ((text: string) => void) | undefined
   /** Called first on activation, before the text is written. */
   onClick?: ((event: MouseEvent<HTMLButtonElement>) => void) | undefined
-  /** Per-instance message overrides: `{ label: 'Kopiera ärendenumret' }`. */
+  /** Per-instance message overrides: `{ label: 'Copy the case number' }`. */
   messages?: Partial<KvirnMessages['copyButton']> | undefined
 }
 

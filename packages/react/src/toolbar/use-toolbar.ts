@@ -164,8 +164,8 @@ function chooseTabStop(
  *
  * @example
  * const toolbar = useToolbar()
- * <div {...toolbar.toolbarProps} aria-label="Formatering">
- *   <button {...toolbar.getItemProps('bold')}>Fet</button>
+ * <div {...toolbar.toolbarProps} aria-label="Formatting">
+ *   <button {...toolbar.getItemProps('bold')}>Bold</button>
  * </div>
  */
 export function useToolbar({

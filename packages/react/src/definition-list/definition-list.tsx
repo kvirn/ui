@@ -167,10 +167,10 @@ DefinitionListChange.displayName = 'DefinitionList.Change'
  * @example
  * <DefinitionList.Root>
  *   <DefinitionList.Row>
- *     <DefinitionList.Term>Namn</DefinitionList.Term>
+ *     <DefinitionList.Term>Name</DefinitionList.Term>
  *     <DefinitionList.Description>Anna Svensson</DefinitionList.Description>
  *     <DefinitionList.Actions>
- *       <DefinitionList.Change href="/steg/1" />
+ *       <DefinitionList.Change href="/step/1" />
  *     </DefinitionList.Actions>
  *   </DefinitionList.Row>
  * </DefinitionList.Root>

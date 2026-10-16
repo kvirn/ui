@@ -14,29 +14,30 @@ import { ApplicationForm, ChangeAddressForm } from './button.fixture.tsx'
 // The keyboard contract is proved in button.test.tsx, so the play functions only read.
 
 /** Fixture text. Stories set `locale` to match it, so `lang` matches the content (3.1.2). */
-const sv = {
-  clickCount: 'Antal klick',
-  send: 'Skicka ansökan',
-  saveDraft: 'Spara utkast',
-  deleteDraft: 'Ta bort utkast',
-  reason: 'Fyll i alla obligatoriska fält innan du skickar.',
+const fixtureText = {
+  clickCount: 'Click count',
+  send: 'Send application',
+  saveDraft: 'Save draft',
+  deleteDraft: 'Delete draft',
+  reason: 'Fill in all required fields before you send.',
   dangerNote:
-    'Knappar som tar bort något behöver alltid ett bekräftelsesteg. De visas tillsammans här bara för att kunna jämföras.',
-  variants: { primary: 'Primär', secondary: 'Sekundär', danger: 'Farlig' },
+    'Buttons that delete something always need a confirmation step. They are shown together here only so they can be compared.',
+  variants: { primary: 'Primary', secondary: 'Secondary', danger: 'Danger' },
   states: {
-    default: 'Standard',
-    disabled: 'Inaktiverad',
-    focusableDisabled: 'Inaktiverad men fokuserbar',
+    default: 'Default',
+    disabled: 'Disabled',
+    focusableDisabled: 'Disabled but focusable',
   },
-  addChild: 'Lägg till ett barn till',
-  continue: 'Fortsätt',
-  close: 'Stäng',
-  settings: 'Visningsinställningar',
-  comfortable: 'Bekväm (standard)',
-  compact: 'Kompakt',
-  caseNumber: 'Ärendenummer',
-  search: 'Sök',
+  addChild: 'Add another child',
+  continue: 'Continue',
+  close: 'Close',
+  settings: 'Display settings',
+  comfortable: 'Comfortable (default)',
+  compact: 'Compact',
+  caseNumber: 'Case number',
+  search: 'Search',
 }
+// kv-lang-ok: long Finnish compound hard case under locale fi
 const fiSaveLong = 'Tallenna rakennuslupahakemuksen luonnos'
 
 /** Secondary is the base look, with no class. */
@@ -57,7 +58,7 @@ function ClickCounter({ children }: { children: (countClick: () => void) => Reac
     <>
       {children(() => setClickCount((count) => count + 1))}
       <p>
-        {sv.clickCount}: {clickCount}
+        {fixtureText.clickCount}: {clickCount}
       </p>
     </>
   )
@@ -84,7 +85,11 @@ const withClickCount: Decorator = (Story, { args }) => {
 
 /** Primary first: it is the main next step, and comes first in DOM and focus order. */
 function variantsGroup(
-  labels: readonly [string, string, string] = [sv.send, sv.saveDraft, sv.deleteDraft],
+  labels: readonly [string, string, string] = [
+    fixtureText.send,
+    fixtureText.saveDraft,
+    fixtureText.deleteDraft,
+  ],
 ) {
   const [primary, secondary, danger] = labels
   return (
@@ -100,22 +105,22 @@ function variantsGroup(
 function statesMatrix(idPrefix: string) {
   return variants.map((variant) => (
     <section key={variant} className="kv-story-section" aria-labelledby={`${idPrefix}-${variant}`}>
-      <h2 id={`${idPrefix}-${variant}`}>{sv.variants[variant]}</h2>
+      <h2 id={`${idPrefix}-${variant}`}>{fixtureText.variants[variant]}</h2>
       <div className="kv-story-states">
         <div className="kv-story-state">
-          <p>{sv.states.default}</p>
-          <Button className={variantClass(variant)}>{sv.send}</Button>
+          <p>{fixtureText.states.default}</p>
+          <Button className={variantClass(variant)}>{fixtureText.send}</Button>
         </div>
         <div className="kv-story-state">
-          <p>{sv.states.disabled}</p>
+          <p>{fixtureText.states.disabled}</p>
           <Button className={variantClass(variant)} disabled>
-            {sv.send}
+            {fixtureText.send}
           </Button>
         </div>
         <div className="kv-story-state">
-          <p>{sv.states.focusableDisabled}</p>
+          <p>{fixtureText.states.focusableDisabled}</p>
           <Button className={variantClass(variant)} disabled focusableWhenDisabled>
-            {sv.send}
+            {fixtureText.send}
           </Button>
         </div>
       </div>
@@ -126,7 +131,7 @@ function statesMatrix(idPrefix: string) {
 const meta = {
   title: 'Components/Actions/Button',
   component: Button,
-  args: { children: 'Spara', onClick: fn() },
+  args: { children: 'Save', onClick: fn() },
   argTypes: {
     className: {
       control: 'select',
@@ -136,7 +141,7 @@ const meta = {
     },
     type: { control: 'inline-radio', options: ['button', 'submit', 'reset'] },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
@@ -149,16 +154,20 @@ type Story = StoryObj<typeof meta>
 /** The base look is secondary: a primary button is always an explicit choice. */
 export const Default: Story = {
   play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: 'Spara' })
+    const button = canvas.getByRole('button', { name: 'Save' })
     await expect(button).toHaveAttribute('type', 'button')
   },
 }
 
 /** `kv-button--primary`: the main next step on a page. */
-export const Primary: Story = { args: { className: 'kv-button--primary', children: sv.send } }
+export const Primary: Story = {
+  args: { className: 'kv-button--primary', children: fixtureText.send },
+}
 
 /** `kv-button--danger`: removes something, always behind a confirmation step. */
-export const Danger: Story = { args: { className: 'kv-button--danger', children: sv.deleteDraft } }
+export const Danger: Story = {
+  args: { className: 'kv-button--danger', children: fixtureText.deleteDraft },
+}
 
 /** An icon before the text. The order in the markup is the order on screen, and RTL flips it. */
 export const IconAtStart: Story = {
@@ -166,12 +175,12 @@ export const IconAtStart: Story = {
     children: (
       <>
         <Icon name="add" />
-        {sv.addChild}
+        {fixtureText.addChild}
       </>
     ),
   },
   play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: sv.addChild })
+    const button = canvas.getByRole('button', { name: fixtureText.addChild })
     await expect(button.firstElementChild).toHaveAttribute('aria-hidden', 'true')
   },
 }
@@ -182,13 +191,13 @@ export const IconAtEnd: Story = {
     className: 'kv-button--primary',
     children: (
       <>
-        {sv.continue}
+        {fixtureText.continue}
         <Icon name="arrow-forward" />
       </>
     ),
   },
   play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: sv.continue })
+    const button = canvas.getByRole('button', { name: fixtureText.continue })
     await expect(button.lastElementChild).toHaveAttribute('data-mirror-in-rtl')
   },
 }
@@ -200,11 +209,11 @@ export const IconAtEnd: Story = {
 export const IconOnly: Story = {
   args: {
     className: 'kv-button--icon-only',
-    'aria-label': sv.close,
+    'aria-label': fixtureText.close,
     children: <Icon name="close" />,
   },
   play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: sv.close })
+    const button = canvas.getByRole('button', { name: fixtureText.close })
     await expect(button.children).toHaveLength(1)
     await expect(button.textContent).toBe('')
     await expectMinimumTargetSize(button)
@@ -220,16 +229,16 @@ export const LinkLook: Story = {
   render: () => (
     <ButtonGroup>
       <Button className="kv-button--link" aria-expanded="false">
-        {sv.settings}
+        {fixtureText.settings}
         <Icon name="chevron-down" />
       </Button>
       <Button className="kv-button--link" disabled>
-        {sv.settings}
+        {fixtureText.settings}
       </Button>
     </ButtonGroup>
   ),
   play: async ({ canvas }) => {
-    const [enabled, disabled] = canvas.getAllByRole('button', { name: sv.settings })
+    const [enabled, disabled] = canvas.getAllByRole('button', { name: fixtureText.settings })
     await expectMinimumTargetSize(enabled!)
     await expectMinimumTargetSize(disabled!)
     await expect(disabled).toBeDisabled()
@@ -245,34 +254,34 @@ export const Size: Story = {
   render: () => (
     <>
       <section className="kv-story-section" aria-labelledby="size-comfortable">
-        <h2 id="size-comfortable">{sv.comfortable}</h2>
+        <h2 id="size-comfortable">{fixtureText.comfortable}</h2>
         <form className="kv-story-filter" onSubmit={(event) => event.preventDefault()}>
           <Field.Root>
-            <Field.Label>{sv.caseNumber}</Field.Label>
+            <Field.Label>{fixtureText.caseNumber}</Field.Label>
             <TextInput name="case-comfortable" autoComplete="off" />
           </Field.Root>
-          <Button type="submit">{sv.search}</Button>
+          <Button type="submit">{fixtureText.search}</Button>
         </form>
       </section>
       <section className="kv-story-section" aria-labelledby="size-compact">
-        <h2 id="size-compact">{sv.compact}</h2>
+        <h2 id="size-compact">{fixtureText.compact}</h2>
         <form className="kv-story-filter" onSubmit={(event) => event.preventDefault()}>
           <Field.Root className="kv-compact">
-            <Field.Label>{sv.caseNumber}</Field.Label>
+            <Field.Label>{fixtureText.caseNumber}</Field.Label>
             <TextInput name="case-compact" autoComplete="off" />
           </Field.Root>
           <Button type="submit" className="kv-button--compact">
-            {sv.search}
+            {fixtureText.search}
           </Button>
         </form>
       </section>
     </>
   ),
   play: async ({ canvas }) => {
-    for (const name of [sv.comfortable, sv.compact]) {
+    for (const name of [fixtureText.comfortable, fixtureText.compact]) {
       const region = within(canvas.getByRole('region', { name }))
-      const input = region.getByRole('textbox', { name: new RegExp(`^${sv.caseNumber}`) })
-      const button = region.getByRole('button', { name: sv.search })
+      const input = region.getByRole('textbox', { name: new RegExp(`^${fixtureText.caseNumber}`) })
+      const button = region.getByRole('button', { name: fixtureText.search })
       await expectMinimumTargetSize(button)
       // The same height at every width: 44px both below 64rem, 32px both from it.
       await expect(
@@ -286,7 +295,7 @@ export const Size: Story = {
 export const Activation: Story = {
   decorators: [withClickCount],
   play: async ({ canvas }) => {
-    const button = canvas.getByRole('button', { name: 'Spara' })
+    const button = canvas.getByRole('button', { name: 'Save' })
     await expect(button).toHaveAttribute('type', 'button')
     await expect(button).not.toHaveAttribute('data-disabled')
     await expectMinimumTargetSize(button)
@@ -303,7 +312,7 @@ export const Keyboard: Story = {
   render: (args) => (
     <ButtonGroup>
       <Button {...args} />
-      <Button>Avbryt</Button>
+      <Button>Cancel</Button>
     </ButtonGroup>
   ),
 }
@@ -313,15 +322,15 @@ export const Variants: Story = {
   render: () => (
     <>
       {variantsGroup()}
-      <p>{sv.dangerNote}</p>
+      <p>{fixtureText.dangerNote}</p>
     </>
   ),
   play: async ({ canvas }) => {
     const buttons = canvas.getAllByRole('button')
     await expect(buttons.map((button) => button.textContent)).toEqual([
-      sv.send,
-      sv.saveDraft,
-      sv.deleteDraft,
+      fixtureText.send,
+      fixtureText.saveDraft,
+      fixtureText.deleteDraft,
     ])
   },
 }
@@ -330,7 +339,7 @@ export const Variants: Story = {
 export const States: Story = {
   render: () => <>{statesMatrix('states')}</>,
   play: async ({ canvas }) => {
-    const buttons = canvas.getAllByRole('button', { name: sv.send })
+    const buttons = canvas.getAllByRole('button', { name: fixtureText.send })
     await expect(buttons).toHaveLength(9)
     for (const button of buttons.filter((_, index) => index % 3 !== 0)) {
       await expect(button).toHaveAttribute('data-disabled')
@@ -349,7 +358,7 @@ export const Disabled: Story = {
   render: (args) => (
     <ButtonGroup>
       <Button {...args} />
-      <Button>Avbryt</Button>
+      <Button>Cancel</Button>
     </ButtonGroup>
   ),
   play: async ({ canvas }) => {
@@ -370,7 +379,7 @@ export const FocusableWhenDisabled: Story = {
   decorators: [withClickCount],
   render: (args) => (
     <>
-      <p id="send-reason">{sv.reason}</p>
+      <p id="send-reason">{fixtureText.reason}</p>
       <Button {...args} aria-describedby="send-reason" />
     </>
   ),
@@ -378,7 +387,7 @@ export const FocusableWhenDisabled: Story = {
     const button = canvas.getByRole('button', { name: 'Skicka' })
     await expect(button).toHaveAttribute('aria-disabled', 'true')
     await expect(button).not.toHaveAttribute('disabled')
-    await expect(button).toHaveAccessibleDescription(sv.reason)
+    await expect(button).toHaveAccessibleDescription(fixtureText.reason)
   },
 }
 
@@ -387,11 +396,14 @@ export const SubmitInForm: Story = {
   parameters: showSource('button/button.fixture.tsx', 'ApplicationForm'),
   render: () => <ApplicationForm />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: 'Skicka ansökan' })).toHaveAttribute(
+    await expect(canvas.getByRole('button', { name: 'Send application' })).toHaveAttribute(
       'type',
       'submit',
     )
-    await expect(canvas.getByRole('button', { name: 'Börja om' })).toHaveAttribute('type', 'button')
+    await expect(canvas.getByRole('button', { name: 'Start over' })).toHaveAttribute(
+      'type',
+      'button',
+    )
   },
 }
 
@@ -403,25 +415,25 @@ export const ResetAndBlockedClick: Story = {
   parameters: showSource('button/button.fixture.tsx', 'ChangeAddressForm'),
   render: () => <ChangeAddressForm />,
   play: async ({ canvas, userEvent }) => {
-    const address = canvas.getByRole('textbox', { name: 'Gatuadress' })
-    const reset = canvas.getByRole('button', { name: 'Återställ' })
-    const save = canvas.getByRole('button', { name: 'Spara adress' })
+    const address = canvas.getByRole('textbox', { name: 'Street address' })
+    const reset = canvas.getByRole('button', { name: 'Reset' })
+    const save = canvas.getByRole('button', { name: 'Save address' })
     await expect(reset).toHaveAttribute('type', 'reset')
     await expect(save).toHaveAttribute('aria-disabled', 'true')
     await userEvent.clear(address)
-    await userEvent.type(address, 'Kungsgatan 5')
+    await userEvent.type(address, '5 King Street')
     await userEvent.click(save)
     await expect(canvas.getByRole('status')).toBeEmptyDOMElement()
     await userEvent.click(reset)
-    await expect(address).toHaveValue('Storgatan 1')
+    await expect(address).toHaveValue('1 High Street')
   },
 }
 
 /** Keyboard focus shows a 2px ring, offset from the button (2.4.7, 2.4.13). */
 export const FocusVisible: Story = {
-  args: { className: 'kv-button--primary', children: sv.send },
+  args: { className: 'kv-button--primary', children: fixtureText.send },
   play: async ({ canvas, userEvent }) => {
-    const button = canvas.getByRole('button', { name: sv.send })
+    const button = canvas.getByRole('button', { name: fixtureText.send })
     await userEvent.tab()
     await expect(button).toHaveFocus()
     await waitFor(() => expect(button).toHaveAttribute('data-focus-visible'))
@@ -457,17 +469,17 @@ export const CompactDensity: Story = {
   render: () => (
     <>
       <section className="kv-story-section" aria-labelledby="density-comfortable">
-        <h2 id="density-comfortable">{sv.comfortable}</h2>
+        <h2 id="density-comfortable">{fixtureText.comfortable}</h2>
         {variantsGroup()}
       </section>
       <section className="kv-story-section kv-compact" aria-labelledby="density-compact">
-        <h2 id="density-compact">{sv.compact}</h2>
+        <h2 id="density-compact">{fixtureText.compact}</h2>
         {variantsGroup()}
       </section>
     </>
   ),
   play: async ({ canvas }) => {
-    for (const name of [sv.comfortable, sv.compact]) {
+    for (const name of [fixtureText.comfortable, fixtureText.compact]) {
       for (const button of within(canvas.getByRole('region', { name })).getAllByRole('button')) {
         await expectMinimumTargetSize(button)
       }
@@ -499,7 +511,7 @@ export const SiteWideSizing: Story = {
   ],
   render: () => (
     <>
-      {variantsGroup(['OK', sv.saveDraft, sv.deleteDraft])}
+      {variantsGroup(['OK', fixtureText.saveDraft, fixtureText.deleteDraft])}
       {statesMatrix('site-wide-states')}
     </>
   ),
@@ -541,8 +553,8 @@ export const ThemeOverride: Story = {
   ],
   render: () => (
     <ButtonGroup>
-      <Button className="my-button kv-button--primary">{sv.send}</Button>
-      <Button>{sv.saveDraft}</Button>
+      <Button className="my-button kv-button--primary">{fixtureText.send}</Button>
+      <Button>{fixtureText.saveDraft}</Button>
     </ButtonGroup>
   ),
   play: async ({ canvasElement }) => {
@@ -558,9 +570,9 @@ export const ThemeOverride: Story = {
  * with a Progress beside it (Components/Progress).
  */
 export const Busy: Story = {
-  args: { busy: true, children: sv.send, onClick: fn() },
+  args: { busy: true, children: fixtureText.send, onClick: fn() },
   play: async ({ canvas, args }) => {
-    const button = canvas.getByRole('button', { name: sv.send })
+    const button = canvas.getByRole('button', { name: fixtureText.send })
     await expect(button).toHaveAttribute('aria-disabled', 'true')
     await expect(button).toHaveAttribute('data-busy')
     await expect(button).not.toHaveAttribute('disabled')
@@ -596,11 +608,11 @@ export const ForcedColors: Story = {
  * after a Tab, passed in so the state can be shown without moving focus.
  */
 const depthText = {
-  send: sv.send,
-  variants: sv.variants,
-  states: { rest: 'Standard', focusVisible: 'Tangentbordsfokus', disabled: 'Inaktiverad' },
-  surfaces: { canvas: 'På sidan', surface: 'På en yta', raised: 'På ett upphöjt kort' },
-  note: 'Hovring och tryckt läge går inte att visa statiskt. För hovring, för pekaren över en knapp. För tryckt läge, håll ned musknappen på den.',
+  send: fixtureText.send,
+  variants: fixtureText.variants,
+  states: { rest: 'Default', focusVisible: 'Keyboard focus', disabled: 'Disabled' },
+  surfaces: { canvas: 'On the page', surface: 'On a surface', raised: 'On a raised card' },
+  note: 'Hover and pressed states can’t be shown statically. For hover, move the pointer over a button. For pressed, hold down the mouse button on it.',
 } as const
 
 function depthSurface(heading: string, headingId: string) {

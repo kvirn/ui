@@ -95,7 +95,7 @@ const unknownNameProps = Object.freeze({ viewBox: '0 0 24 24' })
  * <Icon name="close" />
  * <Icon icon={Search} label={messages.search} />
  * <Icon name="warning" label={messages.warning} size="24" />
- * <Button><Icon name="add" />Lägg till</Button>
+ * <Button><Icon name="add" />Add</Button>
  */
 export function Icon({
   name,

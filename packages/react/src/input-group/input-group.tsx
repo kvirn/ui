@@ -30,7 +30,7 @@ const focusableSelector =
  *
  * @example
  * <Field.Root>
- *   <Field.Label>Månadshyra i kronor</Field.Label>
+ *   <Field.Label>Monthly rent in kronor</Field.Label>
  *   <InputGroup.Root>
  *     <NumberInput name="rent" grouping className="kv-input--width-10" />
  *     <InputGroup.Addon>kr</InputGroup.Addon>

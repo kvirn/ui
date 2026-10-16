@@ -193,7 +193,7 @@ function usePresentation({
  *
  * @example
  * <RichTextEditor.CommandButton
- *   label="Ångra"
+ *   label="Undo"
  *   icon={<RichTextEditor.Icon name="undo" />}
  *   shortcut={['Mod-z']}
  *   isAvailable={(editor) => editor.can().undo()}
@@ -251,7 +251,7 @@ CommandButton.displayName = 'RichTextEditor.CommandButton'
  *
  * @example
  * <RichTextEditor.CommandToggle
- *   label="Markera"
+ *   label="Highlight"
  *   icon={<RichTextEditor.Icon paths={highlightPaths} />}
  *   isPressed={(editor) => editor.isActive('highlight')}
  *   onPress={(editor) => editor.chain().toggleHighlight().run()}

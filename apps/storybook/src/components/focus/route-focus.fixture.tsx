@@ -1,3 +1,4 @@
+// kv-lang-ok-file: sv and en fixture text pairs, picked by the locale toolbar
 import { Link, useRouteFocus } from '@kvirn-ui/react'
 import { useRef, useState } from 'react'
 

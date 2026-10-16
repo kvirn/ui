@@ -240,7 +240,7 @@ export const Invalid: Story = {
 }
 
 /**
- * Required: the legend has no optional text (the other examples end with "(valfritt)") and the
+ * Required: the legend has no optional text (the other examples end with the optional marker) and the
  * fieldset gets `data-required`. ARIA has no `aria-required` on a group, so it is not announced
  * as required: say what is required in the legend or the description.
  */

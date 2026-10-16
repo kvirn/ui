@@ -6,7 +6,6 @@ import {
 } from '@kvirn-ui/core'
 import type { Env } from '@kvirn-ui/core'
 import { fi } from '@kvirn-ui/i18n/fi'
-import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
@@ -34,7 +33,7 @@ function createEnv(): Env {
 
 function renderSwitcher(env: Env, providerProps: Omit<KvirnProviderProps, 'children'> = {}) {
   return render(
-    <KvirnProvider locale="sv-SE" messages={sv} env={env} {...providerProps}>
+    <KvirnProvider locale="en" env={env} {...providerProps}>
       <ThemeSwitcherFixture />
     </KvirnProvider>,
   )
@@ -76,10 +75,8 @@ describe('theme preference', () => {
     const env = createEnv()
     const { container } = await renderSwitcher(env)
 
-    await expect.element(radio('Följ systemet').first()).toBeChecked()
-    await expect
-      .element(page.getByText('Används nu: Mörkt, Hög kontrast, Full rörelse'))
-      .toBeVisible()
+    await expect.element(radio('Follow system').first()).toBeChecked()
+    await expect.element(page.getByText('In use: Dark, High contrast, Full motion')).toBeVisible()
     expect(readAttributes(env)).toEqual({ colorScheme: 'dark', contrast: 'more', motion: 'full' })
     expect(readStorage()).toBeNull()
     await expectNoA11yViolations(container)
@@ -89,16 +86,14 @@ describe('theme preference', () => {
     const env = createEnv()
     await renderSwitcher(env)
     await expect
-      .element(page.getByText('Används nu: Ljust, Normal kontrast, Full rörelse'))
+      .element(page.getByText('In use: Light, Standard contrast, Full motion'))
       .toBeVisible()
 
     await emulateSystem([
       { name: 'prefers-color-scheme', value: 'dark' },
       { name: 'prefers-contrast', value: 'more' },
     ])
-    await expect
-      .element(page.getByText('Används nu: Mörkt, Hög kontrast, Full rörelse'))
-      .toBeVisible()
+    await expect.element(page.getByText('In use: Dark, High contrast, Full motion')).toBeVisible()
     expect(readAttributes(env)).toEqual({ colorScheme: 'dark', contrast: 'more', motion: 'full' })
     expect(readStorage()).toBeNull()
   })
@@ -106,11 +101,11 @@ describe('theme preference', () => {
   test('an explicit choice wins over the OS', async () => {
     const env = createEnv()
     await renderSwitcher(env)
-    await radio('Ljust').click()
+    await radio('Light').click()
     await emulateSystem([{ name: 'prefers-color-scheme', value: 'dark' }])
-    await expect.element(radio('Ljust')).toBeChecked()
+    await expect.element(radio('Light')).toBeChecked()
     await expect
-      .element(page.getByText('Används nu: Ljust, Normal kontrast, Full rörelse'))
+      .element(page.getByText('In use: Light, Standard contrast, Full motion'))
       .toBeVisible()
     expect(readAttributes(env).colorScheme).toBe('light')
   })
@@ -118,18 +113,16 @@ describe('theme preference', () => {
   test('selecting persists the choice, and a new page load reads it', async () => {
     const env = createEnv()
     const screen = await renderSwitcher(env)
-    await radio('Mörkt').click()
-    await radio('Hög kontrast').click()
-    await expect
-      .element(page.getByText('Används nu: Mörkt, Hög kontrast, Full rörelse'))
-      .toBeVisible()
+    await radio('Dark').click()
+    await radio('High contrast').click()
+    await expect.element(page.getByText('In use: Dark, High contrast, Full motion')).toBeVisible()
     expect(JSON.parse(readStorage() ?? 'null')).toEqual({ colorScheme: 'dark', contrast: 'more' })
     expect(readAttributes(env)).toEqual({ colorScheme: 'dark', contrast: 'more', motion: 'full' })
     await screen.unmount()
 
     await renderSwitcher(createEnv())
-    await expect.element(radio('Mörkt')).toBeChecked()
-    await expect.element(radio('Hög kontrast')).toBeChecked()
+    await expect.element(radio('Dark')).toBeChecked()
+    await expect.element(radio('High contrast')).toBeChecked()
   })
 
   test('less motion: follows the OS, then the user, and writes data-kv-motion', async () => {
@@ -137,13 +130,13 @@ describe('theme preference', () => {
     await renderSwitcher(env)
     expect(readAttributes(env).motion).toBe('full')
     await emulateSystem([{ name: 'prefers-reduced-motion', value: 'reduce' }])
-    await expect.element(radio('Följ systemet').last()).toBeChecked()
+    await expect.element(radio('Follow system').last()).toBeChecked()
     await expect.poll(() => readAttributes(env).motion).toBe('reduce')
 
-    await radio('Full rörelse').click()
+    await radio('Full motion').click()
     expect(readAttributes(env).motion).toBe('full')
     expect(JSON.parse(readStorage() ?? 'null')).toEqual({ motion: 'full' })
-    await radio('Mindre rörelse').click()
+    await radio('Less motion').click()
     expect(readAttributes(env).motion).toBe('reduce')
     expect(JSON.parse(readStorage() ?? 'null')).toEqual({ motion: 'reduce' })
   })
@@ -151,31 +144,31 @@ describe('theme preference', () => {
   test('selecting system on every axis clears storage', async () => {
     localStorage.setItem(themeStorageKey, JSON.stringify({ colorScheme: 'dark', contrast: 'more' }))
     await renderSwitcher(createEnv())
-    await expect.element(radio('Mörkt')).toBeChecked()
+    await expect.element(radio('Dark')).toBeChecked()
 
-    await radio('Följ systemet').first().click()
+    await radio('Follow system').first().click()
     expect(JSON.parse(readStorage() ?? 'null')).toEqual({ contrast: 'more' })
-    await radio('Följ systemet').nth(1).click()
-    await expect.element(radio('Följ systemet').nth(1)).toBeChecked()
+    await radio('Follow system').nth(1).click()
+    await expect.element(radio('Follow system').nth(1)).toBeChecked()
     expect(readStorage()).toBeNull()
   })
 
   test('arrow keys change the radio group; focus stays and nothing is announced', async () => {
     await renderSwitcher(createEnv())
-    const system = radio('Följ systemet').first()
+    const system = radio('Follow system').first()
     await expect.element(system).toBeChecked()
     await userEvent.tab()
     await expect.element(system).toHaveFocus()
 
     await userEvent.keyboard('{ArrowUp}')
-    await expect.element(radio('Mörkt')).toBeChecked()
-    await expect.element(radio('Mörkt')).toHaveFocus()
+    await expect.element(radio('Dark')).toBeChecked()
+    await expect.element(radio('Dark')).toHaveFocus()
     await expect
-      .element(page.getByText('Används nu: Mörkt, Normal kontrast, Full rörelse'))
+      .element(page.getByText('In use: Dark, Standard contrast, Full motion'))
       .toBeVisible()
 
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(radio('Följ systemet').first()).toBeChecked()
+    await expect.element(radio('Follow system').first()).toBeChecked()
     // The provider's two live regions exist, and stay empty: nothing is announced.
     await expect.element(page.getByRole('status')).toBeEmptyDOMElement()
     await expect.element(page.getByRole('alert')).toBeEmptyDOMElement()
@@ -183,39 +176,41 @@ describe('theme preference', () => {
 
   test('syncs with another tab through the storage event', async () => {
     await renderSwitcher(createEnv())
-    await expect.element(radio('Följ systemet').first()).toBeChecked()
+    await expect.element(radio('Follow system').first()).toBeChecked()
 
     localStorage.setItem(themeStorageKey, JSON.stringify({ colorScheme: 'dark' }))
     window.dispatchEvent(new StorageEvent('storage', { key: themeStorageKey }))
-    await expect.element(radio('Mörkt')).toBeChecked()
+    await expect.element(radio('Dark')).toBeChecked()
   })
 
   test('theme options set the defaults and the storage', async () => {
     await renderSwitcher(createEnv(), {
       theme: { defaultColorScheme: 'dark', defaultContrast: 'more', storage: 'none' },
     })
-    await expect.element(radio('Mörkt')).toBeChecked()
-    await expect.element(radio('Hög kontrast')).toBeChecked()
-    await radio('Ljust').click()
-    await expect.element(radio('Ljust')).toBeChecked()
+    await expect.element(radio('Dark')).toBeChecked()
+    await expect.element(radio('High contrast')).toBeChecked()
+    await radio('Light').click()
+    await expect.element(radio('Light')).toBeChecked()
     expect(readStorage()).toBeNull()
   })
 
   test('nested providers share one store, and a nested theme prop warns', async () => {
     const env = createEnv()
     await render(
-      <KvirnProvider locale="sv-SE" messages={sv} env={env}>
+      <KvirnProvider locale="en" env={env}>
         <ThemeSwitcherFixture />
         <KvirnProvider locale="fi-FI" messages={fi} theme={{ defaultColorScheme: 'dark' }}>
           <ThemeSwitcherFixture />
         </KvirnProvider>
       </KvirnProvider>,
     )
-    await expect.element(radio('Följ systemet').first()).toBeChecked()
+    await expect.element(radio('Follow system').first()).toBeChecked()
+    // kv-lang-ok: the nested provider is fi, so its fixture labels are Finnish
     await expect.element(radio('Järjestelmän mukaan').first()).toBeChecked()
 
+    // kv-lang-ok: the fi catalog's Dark label
     await radio('Tumma').click()
-    await expect.element(radio('Mörkt')).toBeChecked()
+    await expect.element(radio('Dark')).toBeChecked()
     expect(readAttributes(env).colorScheme).toBe('dark')
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('theme')
@@ -224,16 +219,16 @@ describe('theme preference', () => {
   test('reports forced colors, so a switcher can say the system colours are in use', async () => {
     await renderSwitcher(createEnv())
     await expect
-      .element(page.getByText('Används nu: Ljust, Normal kontrast, Full rörelse'))
+      .element(page.getByText('In use: Light, Standard contrast, Full motion'))
       .toBeVisible()
     await emulateSystem([{ name: 'forced-colors', value: 'active' }])
     await expect
-      .element(page.getByText('Systemets tvingade färger används och går före ditt val.'))
+      .element(page.getByText('Your system’s forced colours are in use and override your choice.'))
       .toBeVisible()
-    await radio('Mörkt').click()
-    await expect.element(radio('Mörkt')).toBeChecked()
+    await radio('Dark').click()
+    await expect.element(radio('Dark')).toBeChecked()
     await expect
-      .element(page.getByText('Systemets tvingade färger används och går före ditt val.'))
+      .element(page.getByText('Your system’s forced colours are in use and override your choice.'))
       .toBeVisible()
   })
 
@@ -259,7 +254,7 @@ describe('theme preference', () => {
       JSON.stringify({ defaultColorScheme: '"><script>', storage: 'session' }),
     ) as KvirnProviderProps['theme']
     await renderSwitcher(env, { theme: hostileTheme })
-    await expect.element(radio('Följ systemet').first()).toBeChecked()
+    await expect.element(radio('Follow system').first()).toBeChecked()
     expect(readAttributes(env)).toEqual({
       colorScheme: 'light',
       contrast: 'standard',
@@ -275,21 +270,21 @@ describe('theme switcher keyboard', () => {
     await renderSwitcher(createEnv())
     await userEvent.tab()
 
-    await expect.element(radio('Följ systemet').first()).toHaveFocus()
-    await expect.element(radio('Följ systemet').first()).toBeChecked()
+    await expect.element(radio('Follow system').first()).toHaveFocus()
+    await expect.element(radio('Follow system').first()).toBeChecked()
   })
 
   test('Tab moves to the next group: one Tab stop per radio group', async () => {
     await renderSwitcher(createEnv())
     await userEvent.tab()
     await userEvent.tab()
-    await expect.element(radio('Följ systemet').nth(1)).toHaveFocus()
+    await expect.element(radio('Follow system').nth(1)).toHaveFocus()
     await userEvent.tab()
-    await expect.element(radio('Följ systemet').last()).toHaveFocus()
+    await expect.element(radio('Follow system').last()).toHaveFocus()
 
     await userEvent.tab({ shift: true })
     await userEvent.tab({ shift: true })
-    await expect.element(radio('Följ systemet').first()).toHaveFocus()
+    await expect.element(radio('Follow system').first()).toHaveFocus()
   })
 
   test('ArrowUp / ArrowLeft select the previous option and keep focus on it', async () => {
@@ -297,12 +292,12 @@ describe('theme switcher keyboard', () => {
     await renderSwitcher(env)
     await userEvent.tab()
     await userEvent.keyboard('{ArrowUp}')
-    await expect.element(radio('Mörkt')).toBeChecked()
-    await expect.element(radio('Mörkt')).toHaveFocus()
+    await expect.element(radio('Dark')).toBeChecked()
+    await expect.element(radio('Dark')).toHaveFocus()
 
     await userEvent.keyboard('{ArrowLeft}')
-    await expect.element(radio('Ljust')).toBeChecked()
-    await expect.element(radio('Ljust')).toHaveFocus()
+    await expect.element(radio('Light')).toBeChecked()
+    await expect.element(radio('Light')).toHaveFocus()
     expect(readAttributes(env).colorScheme).toBe('light')
   })
 
@@ -311,11 +306,11 @@ describe('theme switcher keyboard', () => {
     await renderSwitcher(env)
     await userEvent.tab()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(radio('Ljust')).toBeChecked()
+    await expect.element(radio('Light')).toBeChecked()
 
     await userEvent.keyboard('{ArrowRight}')
-    await expect.element(radio('Mörkt')).toBeChecked()
-    await expect.element(radio('Mörkt')).toHaveFocus()
+    await expect.element(radio('Dark')).toBeChecked()
+    await expect.element(radio('Dark')).toHaveFocus()
     expect(readAttributes(env).colorScheme).toBe('dark')
   })
 
@@ -326,8 +321,8 @@ describe('theme switcher keyboard', () => {
     await userEvent.tab()
     await userEvent.keyboard('{ArrowUp}')
 
-    await expect.element(radio('Hög kontrast')).toBeChecked()
-    await expect.element(radio('Följ systemet').first()).toBeChecked()
+    await expect.element(radio('High contrast')).toBeChecked()
+    await expect.element(radio('Follow system').first()).toBeChecked()
     expect(readAttributes(env).contrast).toBe('more')
   })
 })

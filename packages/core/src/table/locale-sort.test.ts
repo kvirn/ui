@@ -1,3 +1,4 @@
+// kv-lang-ok-file: collation of å, ä, ö, æ and ø is the behaviour under test
 import { describe, expect, it } from 'vite-plus/test'
 import { createTable } from './create-table.ts'
 import { createLocaleSortFn } from './locale-sort.ts'

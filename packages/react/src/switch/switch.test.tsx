@@ -35,8 +35,8 @@ afterEach(() => {
 
 describe('rendering', () => {
   test('renders a native <input type="checkbox" role="switch">, outside a Field', async () => {
-    const { container } = await render(<Switch aria-label="Sms" />)
-    const control = page.getByRole('switch', { name: 'Sms' })
+    const { container } = await render(<Switch aria-label="Text message" />)
+    const control = page.getByRole('switch', { name: 'Text message' })
     await expect.element(control).toHaveAttribute('type', 'checkbox')
     await expect.element(control).toHaveAttribute('role', 'switch')
     await expect.element(control).toHaveAttribute('data-state', 'unchecked')
@@ -54,21 +54,21 @@ describe('rendering', () => {
     await render(
       <Switch
         ref={ref}
-        aria-label="Sms"
-        className="egen"
+        aria-label="Text message"
+        className="own"
         name="sms"
-        value="ja"
-        form="inställningar"
-        data-egen=""
+        value="yes"
+        form="settings"
+        data-own=""
       />,
     )
-    const control = page.getByRole('switch', { name: 'Sms' })
+    const control = page.getByRole('switch', { name: 'Text message' })
     expect(ref.current).toBe(control.element())
-    await expect.element(control).toHaveClass('egen', 'kv-switch')
+    await expect.element(control).toHaveClass('own', 'kv-switch')
     await expect.element(control).toHaveAttribute('name', 'sms')
-    await expect.element(control).toHaveAttribute('value', 'ja')
-    await expect.element(control).toHaveAttribute('form', 'inställningar')
-    await expect.element(control).toHaveAttribute('data-egen', '')
+    await expect.element(control).toHaveAttribute('value', 'yes')
+    await expect.element(control).toHaveAttribute('form', 'settings')
+    await expect.element(control).toHaveAttribute('data-own', '')
   })
 })
 
@@ -77,15 +77,15 @@ describe('in a Field', () => {
     const { container } = await render(
       <Field.Root>
         <Switch name="sms" />
-        <Field.Label marker="none">Få meddelanden som sms</Field.Label>
-        <Field.HelpText>Du kan ändra detta när som helst.</Field.HelpText>
+        <Field.Label marker="none">Get messages by text message</Field.Label>
+        <Field.HelpText>You can change this at any time.</Field.HelpText>
       </Field.Root>,
     )
-    const control = page.getByRole('switch', { name: 'Få meddelanden som sms' })
+    const control = page.getByRole('switch', { name: 'Get messages by text message' })
     const id = control.element().id
     expect(id).not.toBe('')
     expect(container.querySelector('label')?.getAttribute('for')).toBe(id)
-    await expect.element(control).toHaveAccessibleDescription('Du kan ändra detta när som helst.')
+    await expect.element(control).toHaveAccessibleDescription('You can change this at any time.')
     await expect.element(control).not.toHaveAttribute('aria-required')
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
@@ -96,34 +96,36 @@ describe('in a Field', () => {
       <>
         <Field.Root>
           <Switch />
-          <Field.Label>Nyhetsbrev</Field.Label>
+          <Field.Label>Newsletter</Field.Label>
         </Field.Root>
         <Field.Root>
           <Switch />
-          <Field.Label marker="none">Sms</Field.Label>
+          <Field.Label marker="none">Text message</Field.Label>
         </Field.Root>
       </>,
     )
-    await expect.element(page.getByRole('switch', { name: 'Nyhetsbrev (optional)' })).toBeVisible()
-    await expect.element(page.getByRole('switch', { name: 'Sms', exact: true })).toBeVisible()
+    await expect.element(page.getByRole('switch', { name: 'Newsletter (optional)' })).toBeVisible()
+    await expect
+      .element(page.getByRole('switch', { name: 'Text message', exact: true }))
+      .toBeVisible()
   })
 
   test('an invalid Field gives aria-invalid and the error in the description', async () => {
     const { container } = await render(
       <Field.Root invalid>
         <Switch />
-        <Field.Label marker="none">Påminnelser via sms</Field.Label>
-        <Field.HelpText>Vi skickar ett sms dagen före.</Field.HelpText>
-        <Field.ErrorMessage>Inställningen sparades inte</Field.ErrorMessage>
+        <Field.Label marker="none">Reminders by text message</Field.Label>
+        <Field.HelpText>We send a text message the day before.</Field.HelpText>
+        <Field.ErrorMessage>The setting was not saved</Field.ErrorMessage>
       </Field.Root>,
     )
-    const control = page.getByRole('switch', { name: 'Påminnelser via sms' })
+    const control = page.getByRole('switch', { name: 'Reminders by text message' })
     await expect.element(control).toHaveAttribute('aria-invalid', 'true')
     await expect.element(control).toHaveAttribute('data-invalid', '')
     await expect
       .element(control)
       .toHaveAccessibleDescription(
-        'Vi skickar ett sms dagen före. Error: Inställningen sparades inte',
+        'We send a text message the day before. Error: The setting was not saved',
       )
     await expectNoA11yViolations(container)
   })
@@ -133,16 +135,16 @@ describe('in a Field', () => {
       <>
         <Field.Root disabled>
           <Switch />
-          <Field.Label marker="none">Ett</Field.Label>
+          <Field.Label marker="none">One</Field.Label>
         </Field.Root>
         <Field.Root>
           <Switch disabled />
-          <Field.Label marker="none">Två</Field.Label>
+          <Field.Label marker="none">Two</Field.Label>
         </Field.Root>
       </>,
     )
-    await expect.element(page.getByRole('switch', { name: 'Ett' })).toBeDisabled()
-    const second = page.getByRole('switch', { name: 'Två' })
+    await expect.element(page.getByRole('switch', { name: 'One' })).toBeDisabled()
+    const second = page.getByRole('switch', { name: 'Two' })
     await expect.element(second).toBeDisabled()
     await expect.element(second).toHaveAttribute('data-disabled', '')
   })
@@ -150,17 +152,17 @@ describe('in a Field', () => {
   test('keeps your own aria-describedby ids, after the Field’s', async () => {
     await render(
       <>
-        <p id="extra">Mer information.</p>
+        <p id="extra">More information.</p>
         <Field.Root>
           <Switch aria-describedby="extra" />
-          <Field.Label marker="none">Sms</Field.Label>
-          <Field.HelpText>Du kan ändra detta.</Field.HelpText>
+          <Field.Label marker="none">Text message</Field.Label>
+          <Field.HelpText>You can change this.</Field.HelpText>
         </Field.Root>
       </>,
     )
     await expect
-      .element(page.getByRole('switch', { name: 'Sms' }))
-      .toHaveAccessibleDescription('Du kan ändra detta. Mer information.')
+      .element(page.getByRole('switch', { name: 'Text message' }))
+      .toHaveAccessibleDescription('You can change this. More information.')
   })
 
   test('the accessible name and description follow the locale', async () => {
@@ -168,13 +170,14 @@ describe('in a Field', () => {
       <KvirnProvider locale="sv-SE" messages={sv}>
         <Field.Root invalid>
           <Switch />
-          <Field.Label>Nyhetsbrev</Field.Label>
-          <Field.ErrorMessage>Inställningen sparades inte</Field.ErrorMessage>
+          <Field.Label>Newsletter</Field.Label>
+          <Field.ErrorMessage>The setting was not saved</Field.ErrorMessage>
         </Field.Root>
       </KvirnProvider>,
     )
-    const control = page.getByRole('switch', { name: 'Nyhetsbrev (valfritt)' })
-    await expect.element(control).toHaveAccessibleDescription('Fel: Inställningen sparades inte')
+    // kv-lang-ok: the sv catalog strings for the optional marker and the error prefix
+    const control = page.getByRole('switch', { name: 'Newsletter (valfritt)' })
+    await expect.element(control).toHaveAccessibleDescription('Fel: The setting was not saved')
   })
 
   test('the name is the same in English and does not change with the state', async () => {
@@ -196,10 +199,10 @@ describe('in a Field', () => {
     await render(
       <Field.Root required>
         <Switch />
-        <Field.Label marker="none">Sms</Field.Label>
+        <Field.Label marker="none">Text message</Field.Label>
       </Field.Root>,
     )
-    const control = page.getByRole('switch', { name: 'Sms' })
+    const control = page.getByRole('switch', { name: 'Text message' })
     await expect.element(control).not.toHaveAttribute('aria-required')
     await expect.element(control).not.toHaveAttribute('data-required')
     expect((control.element() as HTMLInputElement).required).toBe(false)
@@ -214,13 +217,13 @@ describe('checked', () => {
     const onChange = vi.fn<(event: React.ChangeEvent<HTMLInputElement>) => void>()
     await render(
       <Switch
-        aria-label="Sms"
+        aria-label="Text message"
         defaultChecked
         onCheckedChange={onCheckedChange}
         onChange={onChange}
       />,
     )
-    const control = page.getByRole('switch', { name: 'Sms' })
+    const control = page.getByRole('switch', { name: 'Text message' })
     await expect.element(control).toBeChecked()
     await userEvent.click(control)
     await expect.element(control).not.toBeChecked()
@@ -236,24 +239,26 @@ describe('checked', () => {
       const [checked, setChecked] = useState(false)
       return (
         <>
-          <Switch aria-label="Sms" checked={checked} onCheckedChange={setChecked} />
-          <output>{checked ? 'på' : 'av'}</output>
+          <Switch aria-label="Text message" checked={checked} onCheckedChange={setChecked} />
+          <output>{checked ? 'on' : 'off'}</output>
         </>
       )
     }
     await render(<Controlled />)
-    const control = page.getByRole('switch', { name: 'Sms' })
+    const control = page.getByRole('switch', { name: 'Text message' })
     await expect.element(control).not.toBeChecked()
     await userEvent.click(control)
     await expect.element(control).toBeChecked()
     await expect.element(control).toHaveAttribute('data-state', 'checked')
-    await expect.element(page.getByRole('status')).toHaveTextContent('på')
+    await expect.element(page.getByRole('status')).toHaveTextContent('on')
   })
 
   test('a controlled switch stays as it is when the parent does not update checked', async () => {
     const onCheckedChange = vi.fn<(checked: boolean, details: SwitchChangeDetails) => void>()
-    await render(<Switch aria-label="Sms" checked={false} onCheckedChange={onCheckedChange} />)
-    const control = page.getByRole('switch', { name: 'Sms' })
+    await render(
+      <Switch aria-label="Text message" checked={false} onCheckedChange={onCheckedChange} />,
+    )
+    const control = page.getByRole('switch', { name: 'Text message' })
     await userEvent.click(control)
     expect(onCheckedChange).toHaveBeenCalledWith(true, expect.objectContaining({ reason: 'input' }))
     await expect.element(control).not.toBeChecked()
@@ -264,7 +269,7 @@ describe('checked', () => {
     let submitted: FormData | undefined
     await render(
       <form
-        aria-label="Inställningar"
+        aria-label="Settings"
         onSubmit={(event) => {
           event.preventDefault()
           submitted = new FormData(event.currentTarget)
@@ -272,26 +277,26 @@ describe('checked', () => {
       >
         <Field.Root>
           <Switch name="sms" />
-          <Field.Label marker="none">Sms</Field.Label>
+          <Field.Label marker="none">Text message</Field.Label>
         </Field.Root>
         <Field.Root>
-          <Switch name="epost" value="ja" defaultChecked />
+          <Switch name="email" value="yes" defaultChecked />
           <Field.Label marker="none">E-post</Field.Label>
         </Field.Root>
-        <button type="submit">Spara</button>
-        <button type="reset">Återställ</button>
+        <button type="submit">Save</button>
+        <button type="reset">Reset</button>
       </form>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Spara' }))
+    await userEvent.click(page.getByRole('button', { name: 'Save' }))
     expect(submitted?.has('sms')).toBe(false)
-    expect(submitted?.get('epost')).toBe('ja')
-    await userEvent.click(page.getByRole('switch', { name: 'Sms' }))
+    expect(submitted?.get('email')).toBe('yes')
+    await userEvent.click(page.getByRole('switch', { name: 'Text message' }))
     await userEvent.click(page.getByRole('switch', { name: 'E-post' }))
-    await userEvent.click(page.getByRole('button', { name: 'Spara' }))
+    await userEvent.click(page.getByRole('button', { name: 'Save' }))
     expect(submitted?.get('sms')).toBe('on')
-    expect(submitted?.has('epost')).toBe(false)
-    await userEvent.click(page.getByRole('button', { name: 'Återställ' }))
-    await expect.element(page.getByRole('switch', { name: 'Sms' })).not.toBeChecked()
+    expect(submitted?.has('email')).toBe(false)
+    await userEvent.click(page.getByRole('button', { name: 'Reset' }))
+    await expect.element(page.getByRole('switch', { name: 'Text message' })).not.toBeChecked()
     await expect.element(page.getByRole('switch', { name: 'E-post' })).toBeChecked()
   })
 
@@ -312,10 +317,10 @@ describe('checked', () => {
     await render(
       <Field.Root>
         <Switch {...register('sms')} />
-        <Field.Label marker="none">Sms</Field.Label>
+        <Field.Label marker="none">Text message</Field.Label>
       </Field.Root>,
     )
-    const control = page.getByRole('switch', { name: 'Sms' })
+    const control = page.getByRole('switch', { name: 'Text message' })
     expect(registered.element).toBe(control.element())
     await userEvent.click(control)
     await userEvent.click(control)
@@ -325,8 +330,8 @@ describe('checked', () => {
 
 describe('data-state', () => {
   test('data-state follows the native state', async () => {
-    await render(<Switch aria-label="Sms" />)
-    const control = page.getByRole('switch', { name: 'Sms' })
+    await render(<Switch aria-label="Text message" />)
+    const control = page.getByRole('switch', { name: 'Text message' })
     await expect.element(control).toHaveAttribute('data-state', 'unchecked')
     await userEvent.click(control)
     await expect.element(control).toHaveAttribute('data-state', 'checked')
@@ -335,9 +340,9 @@ describe('data-state', () => {
   })
 
   test('defaultChecked starts as checked', async () => {
-    await render(<Switch aria-label="Sms" defaultChecked />)
+    await render(<Switch aria-label="Text message" defaultChecked />)
     await expect
-      .element(page.getByRole('switch', { name: 'Sms' }))
+      .element(page.getByRole('switch', { name: 'Text message' }))
       .toHaveAttribute('data-state', 'checked')
   })
 })
@@ -361,12 +366,14 @@ describe('dev warnings', () => {
 
   test('an id inside a Field is ignored with a dev warning: the label stays associated', async () => {
     await render(
-      <Field.Root controlId="fältet">
-        <Switch id="annat" />
-        <Field.Label marker="none">Sms</Field.Label>
+      <Field.Root controlId="the-field">
+        <Switch id="other" />
+        <Field.Label marker="none">Text message</Field.Label>
       </Field.Root>,
     )
-    await expect.element(page.getByRole('switch', { name: 'Sms' })).toHaveAttribute('id', 'fältet')
+    await expect
+      .element(page.getByRole('switch', { name: 'Text message' }))
+      .toHaveAttribute('id', 'the-field')
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('controlId')
   })
@@ -375,7 +382,7 @@ describe('dev warnings', () => {
     await render(
       <Field.Root required>
         <Switch />
-        <Field.Label marker="none">Sms</Field.Label>
+        <Field.Label marker="none">Text message</Field.Label>
         <Switch aria-label="Extra" />
       </Field.Root>,
     )
@@ -388,14 +395,14 @@ describe('dev warnings', () => {
     await render(
       <Field.Root>
         <Switch />
-        <Field.Label marker="none">Sms</Field.Label>
+        <Field.Label marker="none">Text message</Field.Label>
       </Field.Root>,
     )
     expect(consoleWarn).not.toHaveBeenCalled()
     await render(
       <Field.Root>
         <Switch />
-        <Field.Label>Nyhetsbrev</Field.Label>
+        <Field.Label>Newsletter</Field.Label>
       </Field.Root>,
     )
     expect(consoleWarn).toHaveBeenCalledTimes(1)
@@ -407,10 +414,10 @@ describe('useSwitch', () => {
   test('spreads the same props on your own input', async () => {
     function Own() {
       const control = useSwitch({ defaultChecked: true, name: 'sms' })
-      return <input aria-label="Egen" {...control.inputProps} />
+      return <input aria-label="Own" {...control.inputProps} />
     }
     await render(<Own />)
-    const input = page.getByRole('switch', { name: 'Egen' })
+    const input = page.getByRole('switch', { name: 'Own' })
     await expect.element(input).toBeChecked()
     await expect.element(input).toHaveAttribute('data-state', 'checked')
     await expect.element(input).toHaveAttribute('name', 'sms')
@@ -421,15 +428,15 @@ describe('useSwitch', () => {
 describe('server rendering', () => {
   test('server markup is complete: the role, the id, the state', () => {
     const markup = renderToString(
-      <Field.Root controlId="fält">
+      <Field.Root controlId="field">
         <Switch defaultChecked />
-        <Field.Label marker="none">Sms</Field.Label>
+        <Field.Label marker="none">Text message</Field.Label>
         <Field.HelpText>Direkt.</Field.HelpText>
       </Field.Root>,
     )
     expect(markup).toContain('type="checkbox"')
     expect(markup).toContain('role="switch"')
-    expect(markup).toContain('id="fält"')
+    expect(markup).toContain('id="field"')
     expect(markup).toContain('data-state="checked"')
     expect(markup).toContain('checked=""')
     expect(markup).not.toContain('aria-checked')
@@ -440,12 +447,12 @@ describe('keyboard', () => {
   function Form() {
     return (
       <form>
-        <button type="button">Före</button>
-        <Switch aria-label="Sms" />
+        <button type="button">Before</button>
+        <Switch aria-label="Text message" />
         <Switch aria-label="E-post" />
-        <Switch aria-label="Ärende" disabled />
+        <Switch aria-label="Case" disabled />
         <Switch aria-label="Post" />
-        <button type="button">Skicka</button>
+        <button type="button">Send</button>
       </form>
     )
   }
@@ -461,15 +468,15 @@ describe('keyboard', () => {
 
   test('Tab moves to each switch, one stop each', async () => {
     await render(<Form />)
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     await userEvent.tab()
-    await expect.element(page.getByRole('switch', { name: 'Sms' })).toHaveFocus()
+    await expect.element(page.getByRole('switch', { name: 'Text message' })).toHaveFocus()
     await userEvent.tab()
     await expect.element(page.getByRole('switch', { name: 'E-post' })).toHaveFocus()
     await userEvent.tab()
     await expect.element(page.getByRole('switch', { name: 'Post' })).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Skicka' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Send' })).toHaveFocus()
   })
 
   test('Shift+Tab moves to the previous switch', async () => {
@@ -478,12 +485,12 @@ describe('keyboard', () => {
     await userEvent.tab({ shift: true })
     await expect.element(page.getByRole('switch', { name: 'E-post' })).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('switch', { name: 'Sms' })).toHaveFocus()
+    await expect.element(page.getByRole('switch', { name: 'Text message' })).toHaveFocus()
   })
 
   test('Tab skips a disabled switch', async () => {
     await render(<Form />)
-    const disabled = page.getByRole('switch', { name: 'Ärende' })
+    const disabled = page.getByRole('switch', { name: 'Case' })
     await expect.element(disabled).toBeDisabled()
     page.getByRole('switch', { name: 'E-post' }).element().focus()
     await userEvent.tab()
@@ -493,8 +500,8 @@ describe('keyboard', () => {
 
   test('Space toggles the switch and reports the new state', async () => {
     const onCheckedChange = vi.fn<(checked: boolean, details: SwitchChangeDetails) => void>()
-    await render(<Switch aria-label="Sms" onCheckedChange={onCheckedChange} />)
-    const control = page.getByRole('switch', { name: 'Sms' })
+    await render(<Switch aria-label="Text message" onCheckedChange={onCheckedChange} />)
+    const control = page.getByRole('switch', { name: 'Text message' })
     control.element().focus()
     const prevented = recordPreventedKeys()
     await userEvent.keyboard(' ')
@@ -512,7 +519,7 @@ describe('keyboard', () => {
 
   test('Enter does not toggle the switch and is not intercepted', async () => {
     await render(<Form />)
-    const control = page.getByRole('switch', { name: 'Sms' })
+    const control = page.getByRole('switch', { name: 'Text message' })
     control.element().focus()
     const prevented = recordPreventedKeys()
     await userEvent.keyboard('{Enter}')
@@ -526,11 +533,11 @@ describe('keyboard', () => {
     await render(
       <Field.Root>
         <Switch />
-        <Field.Label marker="none">Påminnelser via sms</Field.Label>
+        <Field.Label marker="none">Reminders by text message</Field.Label>
       </Field.Root>,
     )
-    const control = page.getByRole('switch', { name: /Påminnelser via sms/ })
-    await userEvent.click(page.getByText('Påminnelser via sms'))
+    const control = page.getByRole('switch', { name: /Reminders by text message/ })
+    await userEvent.click(page.getByText('Reminders by text message'))
     await expect.element(control).toBeChecked()
     await expect.element(control).toHaveFocus()
   })
@@ -538,13 +545,13 @@ describe('keyboard', () => {
   test('the same keys work in a right-to-left page', async () => {
     await render(
       <div dir="rtl">
-        <button type="button">Före</button>
-        <Switch aria-label="Sms" />
+        <button type="button">Before</button>
+        <Switch aria-label="Text message" />
       </div>,
     )
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     await userEvent.tab()
-    const control = page.getByRole('switch', { name: 'Sms' })
+    const control = page.getByRole('switch', { name: 'Text message' })
     await expect.element(control).toHaveFocus()
     await userEvent.keyboard(' ')
     await expect.element(control).toBeChecked()

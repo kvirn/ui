@@ -48,7 +48,7 @@ const catalogs: Record<string, KvirnMessages> = { sv, fi, nb, nn, en }
 
 const localeOf = (globals: Record<string, unknown>): IconFixtureLocale => {
   const locale = globals['locale']
-  return isIconFixtureLocale(locale) ? locale : 'sv'
+  return isIconFixtureLocale(locale) ? locale : 'en'
 }
 
 /** The pixel sizes the controls offer. */
@@ -96,7 +96,7 @@ const meta = {
     },
     children: { control: false, description: 'Your own shapes, with Icon as the `<svg>`.' },
   } as NonNullable<Meta<IconArgs>['argTypes']>, // `icon`, `as` and `children` are documented but not controllable
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   // Library strings follow the locale toolbar, like an app's provider would. A locale without
   // a translated fixture shows English, so its catalog is English too.
   decorators: [
@@ -164,7 +164,7 @@ export const BuiltInSet: Story = {
     )
   },
   play: async ({ canvas }) => {
-    const { text } = textsFor('sv')
+    const { text } = textsFor('en')
     const cells = within(canvas.getByRole('list')).getAllByRole('listitem')
     await expect(cells).toHaveLength(builtInIconNames.length)
     for (const [index, cell] of cells.entries()) {
@@ -379,7 +379,7 @@ export const InButtons: Story = {
     )
   },
   play: async ({ canvas, canvasElement }) => {
-    const { text } = textsFor('sv')
+    const { text } = textsFor('en')
     // Four groups in two densities.
     const closeButtons = canvas.getAllByRole('button', { name: text.button.close })
     await expect(closeButtons).toHaveLength(8)
@@ -397,6 +397,7 @@ export const InButtons: Story = {
     const next = canvas.getAllByRole('button', { name: text.button.continue })[0]
     await expect(next?.lastElementChild).toBe(next?.querySelector('svg'))
     await expect(
+      // kv-lang-ok: Finnish locale story
       canvas.getAllByRole('button', { name: 'Lataa päätös PDF-tiedostona' }),
     ).toHaveLength(1)
   },
@@ -421,7 +422,7 @@ export const StatusWithText: Story = {
     )
   },
   play: async ({ canvas }) => {
-    const { text } = textsFor('sv')
+    const { text } = textsFor('en')
     for (const status of statusKinds) {
       // Two copies of each alert, and the status word is its title (after the alert's own
       // status prefix in the accessible name).
@@ -496,7 +497,7 @@ export const DecorativeAndMeaningful: Story = {
     )
   },
   play: async ({ canvas, canvasElement }) => {
-    const { text } = textsFor('sv')
+    const { text } = textsFor('en')
     const logo = canvas.getByRole('img', { name: text.label.logo })
     await expect(logo).not.toHaveAttribute('aria-hidden')
     // Only the logo is in the accessibility tree: the calendar icon is hidden.
@@ -603,7 +604,7 @@ export const RegistryEntriesAndDefaults: Story = {
 export const UnknownName: Story = {
   render: () => (
     <p>
-      Spara <Icon name={'delte' as IconName} size="24" />
+      Save <Icon name={'delte' as IconName} size="24" />
     </p>
   ),
   play: async ({ canvasElement }) => {
@@ -696,7 +697,7 @@ export const YourOwnSvg: Story = {
     )
   },
   play: async ({ canvas, canvasElement }) => {
-    const { text } = textsFor('sv')
+    const { text } = textsFor('en')
     await expect(canvasElement.querySelectorAll('svg')).toHaveLength(3)
     // Only the one with a label is an image.
     await expect(canvas.getAllByRole('img')).toHaveLength(1)
@@ -721,7 +722,7 @@ export const Lucide: Story = {
     </>
   ),
   play: async ({ canvas, canvasElement }) => {
-    const { text } = textsFor('sv')
+    const { text } = textsFor('en')
     const icons = canvasElement.querySelectorAll('svg')
     await expect(icons).toHaveLength(5)
     // The one-off icons: Icon's size wins over Lucide's 24, and only the labelled one is an image.
@@ -754,7 +755,7 @@ export const Heroicons: Story = {
     </>
   ),
   play: async ({ canvas, canvasElement }) => {
-    const { text } = textsFor('sv')
+    const { text } = textsFor('en')
     const icons = canvasElement.querySelectorAll('svg')
     await expect(icons).toHaveLength(5)
     await expect(icons[0]).toHaveAttribute('data-slot', 'icon')
@@ -787,7 +788,7 @@ export const LibraryIconsViaTheRegistry: Story = {
       // The libraries turn `color` into their own stroke or fill, so the size is the check.
       await expect(registered).toHaveAttribute('width', '1.5rem')
     }
-    await expect(canvas.getByRole('img', { name: textsFor('sv').text.label.logo })).toBeVisible()
+    await expect(canvas.getByRole('img', { name: textsFor('en').text.label.logo })).toBeVisible()
     await expect(canvas.getByTestId('overridden-arrow')).toHaveAttribute('data-mirror-in-rtl')
   },
 }
@@ -820,10 +821,10 @@ export const InRunningTextAndLinks: Story = {
     )
   },
   play: async ({ canvas }) => {
-    const { text } = textsFor('sv')
+    const { text } = textsFor('en')
     // The new-tab notice is part of the link's name. The icon adds nothing.
     await expect(
-      canvas.getByRole('link', { name: `${text.text.guide} (öppnas i en ny flik)` }),
+      canvas.getByRole('link', { name: `${text.text.guide} (opens in a new tab)` }),
     ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },

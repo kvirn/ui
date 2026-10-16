@@ -21,7 +21,7 @@ export type KbdProps = AsTag<(typeof kbdTags)[number], 'kbd'>
  * A key in another script (Arabic text, say) goes in your own `<span lang="en"><Kbd>Tab</Kbd></span>` (3.1.2).
  *
  * @example
- * <p>Du kan flytta mellan fälten med <Kbd>Tab</Kbd>.</p>
+ * <p>You can move between the fields with <Kbd>Tab</Kbd>.</p>
  *
  * @example
  * <Kbd><Kbd>Ctrl</Kbd>+<Kbd>C</Kbd></Kbd>

@@ -25,7 +25,7 @@ const meta = {
     className: { control: 'text', description: 'Your own classes, added to `kv-field-help-text`.' },
     ref: { control: false, description: 'A ref to the `<p>`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [
     (Story) => (
       <div className="kv-story-form">

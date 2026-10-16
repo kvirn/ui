@@ -45,7 +45,7 @@ import { maplibre } from '@kvirn-ui/map/maplibre'
 
 const provider = maplibre({ style: 'https://tiles.example.se/style.json', attribution })
 
-<Map.Root provider={provider} label="Förskolor" places={places} layers={layers}
+<Map.Root provider={provider} label="Preschools" places={places} layers={layers}
           defaultView={{ center: [18.07, 59.33], zoom: 11 }}>
   <Map.Skip />
   <Map.Viewport>

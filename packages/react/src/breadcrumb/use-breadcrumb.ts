@@ -12,10 +12,10 @@ export interface UseBreadcrumbOptions {
   variant?: BreadcrumbVariant | undefined
   /**
    * The trail's accessible name, from your translations. Replaces the message `breadcrumb.label`
-   * (`Du är här`). An empty or whitespace-only label counts as none.
+   * (`You are here`). An empty or whitespace-only label counts as none.
    */
   label?: string | undefined
-  /** Per-instance message overrides: `{ label: 'Du är här' }`. */
+  /** Per-instance message overrides: `{ label: 'You are here' }`. */
   messages?: Partial<KvirnMessages['breadcrumb']> | undefined
 }
 
@@ -91,7 +91,7 @@ const separatorProps: BreadcrumbSeparatorPartProps = Object.freeze({
  * <nav {...breadcrumb.rootProps}>
  *   <ol {...breadcrumb.listProps}>
  *     <li {...breadcrumb.itemProps}><a href="/">Start</a></li>
- *     <li {...breadcrumb.itemProps}><span {...breadcrumb.currentProps}>Förskola</span></li>
+ *     <li {...breadcrumb.itemProps}><span {...breadcrumb.currentProps}>Preschool</span></li>
  *   </ol>
  * </nav>
  */

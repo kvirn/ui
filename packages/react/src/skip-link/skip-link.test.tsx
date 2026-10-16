@@ -167,16 +167,16 @@ describe('SkipLink name and attributes', () => {
   })
 
   test('children replace the label', async () => {
-    await render(<Page>Hoppa till innehållet</Page>)
-    await expect.element(page.getByRole('link', { name: 'Hoppa till innehållet' })).toBeVisible()
+    await render(<Page>Jump to the content</Page>)
+    await expect.element(page.getByRole('link', { name: 'Jump to the content' })).toBeVisible()
   })
 
   test.each([
-    ['sv', sv, 'Hoppa till huvudinnehållet'],
+    ['sv', sv, 'Hoppa till huvudinnehållet'], // kv-lang-ok: the catalog string
     ['en', en, 'Skip to main content'],
-    ['fi', fi, 'Siirry pääsisältöön'],
-    ['nb', nb, 'Gå til hovedinnhold'],
-    ['nn', nn, 'Gå til hovudinnhald'],
+    ['fi', fi, 'Siirry pääsisältöön'], // kv-lang-ok: the catalog string
+    ['nb', nb, 'Gå til hovedinnhold'], // kv-lang-ok: the catalog string
+    ['nn', nn, 'Gå til hovudinnhald'], // kv-lang-ok: the catalog string
   ] as const)('the %s catalog names the link', async (locale, messages, name) => {
     await render(
       <KvirnProvider locale={locale} messages={messages}>
@@ -189,24 +189,24 @@ describe('SkipLink name and attributes', () => {
   test('messages override the label per instance', async () => {
     await render(
       <>
-        <SkipLink href="#main" messages={{ label: 'Till innehållet' }} />
+        <SkipLink href="#main" messages={{ label: 'Go to the content' }} />
         <main id="main" />
       </>,
     )
-    await expect.element(page.getByRole('link', { name: 'Till innehållet' })).toBeInTheDocument()
+    await expect.element(page.getByRole('link', { name: 'Go to the content' })).toBeInTheDocument()
   })
 
   test("attributes and the ref pass through, and the part class joins a consumer's", async () => {
     const ref = createRef<HTMLAnchorElement>()
     await render(
       <>
-        <SkipLink href="#main" className="annan" id="skip" ref={ref} />
+        <SkipLink href="#main" className="other" id="skip" ref={ref} />
         <main id="main" />
       </>,
     )
     const link = page.getByRole('link').element()
     expect(ref.current).toBe(link)
-    expect(link.className).toBe('annan kv-skip-link')
+    expect(link.className).toBe('other kv-skip-link')
     expect(link.id).toBe('skip')
   })
 

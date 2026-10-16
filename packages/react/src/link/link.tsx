@@ -116,7 +116,7 @@ export function LinkRoot({
 LinkRoot.displayName = 'Link.Root'
 
 /**
- * Tells users that the link opens in a new tab: `(öppnas i en ny flik)` from
+ * Tells users that the link opens in a new tab: `(opens in a new tab)` from
  * `link.newTabNotice`. It's part of the link's name. Hide it visually if you must, but keep
  * it for screen readers (WCAG 3.2.5, G201). A link that opens a new tab must say so; nothing
  * checks that you did.
@@ -167,13 +167,13 @@ LinkIcon.displayName = 'Link.Icon'
  * same component as `Link.Root`, but it isn't shown in docs.
  *
  * @example
- * <Link.Root href="/ansok" current="page">Ansök</Link.Root>
+ * <Link.Root href="/apply" current="page">Apply</Link.Root>
  * <Link.Root href="https://www.digg.se/" target="_blank">
  *   Digg <Link.NewTabNotice />
  * </Link.Root>
- * <Link.Root href="/bygglov" className="kv-link--service">
+ * <Link.Root href="/permit" className="kv-link--service">
  *   <Link.Icon><Icon name="arrow-forward" size="24" /></Link.Icon>
- *   Ansök om bygglov
+ *   Apply for a building permit
  * </Link.Root>
  */
 export const Link = Object.assign(LinkRoot, {

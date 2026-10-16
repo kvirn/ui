@@ -124,7 +124,7 @@ const withStoryEnvironment: Decorator = (Story, { globals, parameters, viewMode 
         ? undefined
         : { mode: modeOf(globals['mode']), contrast: contrastOf(globals['contrast']) }
     }
-    locale={String(globals['locale'] ?? 'sv')}
+    locale={String(globals['locale'] ?? 'en')}
     dir={String(globals['dir'] ?? 'ltr')}
     forcedColors={String(globals['forcedColors'] ?? 'none')}
     scoped={viewMode === 'docs'}
@@ -178,7 +178,7 @@ const preview: Preview = {
   initialGlobals: {
     mode: modeOf(import.meta.env.VITE_STORYBOOK_MODE),
     contrast: contrastOf(import.meta.env.VITE_STORYBOOK_CONTRAST),
-    locale: 'sv',
+    locale: 'en',
     dir: 'ltr',
     forcedColors: 'none',
     // The reflow sweep (1.4.10) opens every story in a 320 CSS px wide viewport.

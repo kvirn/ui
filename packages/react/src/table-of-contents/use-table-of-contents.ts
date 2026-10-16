@@ -10,7 +10,7 @@ export type { TableOfContentsEntry, TableOfContentsNode }
 
 export interface UseTableOfContentsOptions {
   /**
-   * The headings of the page, in document order: `{ id: 'avgift', label: 'Avgift', level: 2 }`.
+   * The headings of the page, in document order: `{ id: 'fee', label: 'Fee', level: 2 }`.
    * The `id` is the heading's own, unique on the page, and the link is `#id`. Keep the array in
    * one place (a constant, or `useMemo`): the observer is keyed by the ids, so a new array of the
    * same ids changes nothing, but the tree is worked out again.
@@ -29,7 +29,7 @@ export interface UseTableOfContentsOptions {
    * replaces the message as the name, never both. An empty or whitespace-only id counts as none.
    */
   labelledBy?: string | undefined
-  /** Per-instance message overrides: `{ label: 'Innehåll' }`. */
+  /** Per-instance message overrides: `{ label: 'Contents' }`. */
   messages?: Partial<KvirnMessages['tableOfContents']> | undefined
 }
 

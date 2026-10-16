@@ -31,10 +31,10 @@ interface Place {
 }
 
 const count = 10_000
-/** "Ort 1" to "Ort 10000". */
+/** "Place 1" to "Place 10000". */
 const places: readonly Place[] = Array.from({ length: count }, (_, index) => ({
   code: `ort-${index + 1}`,
-  name: `Ort ${index + 1}`,
+  name: `Place ${index + 1}`,
 }))
 
 const fixtureButtonStyle = { minBlockSize: '2rem', minInlineSize: '2rem' }
@@ -47,12 +47,12 @@ type MultipleProps = Partial<UseListboxMultipleOptions<Place>>
 function Example({ items = places, ...rootProps }: ExampleProps) {
   return (
     <>
-      <p>Text utanför</p>
+      <p>Text outside</p>
       <button type="button" style={fixtureButtonStyle}>
-        Före
+        Before
       </button>
       <Field.Root required>
-        <Field.Label>Ort</Field.Label>
+        <Field.Label>Place</Field.Label>
         <Listbox.Root
           items={items}
           itemToString={(place) => place.name}
@@ -62,7 +62,7 @@ function Example({ items = places, ...rootProps }: ExampleProps) {
           {...rootProps}
         >
           <Listbox.Trigger>
-            <Listbox.Value placeholder="Välj ort" />
+            <Listbox.Value placeholder="Choose a place" />
           </Listbox.Trigger>
           <Listbox.Popup>
             <Listbox.List style={listStyle}>
@@ -72,7 +72,7 @@ function Example({ items = places, ...rootProps }: ExampleProps) {
         </Listbox.Root>
       </Field.Root>
       <button type="button" style={fixtureButtonStyle}>
-        Efter
+        After
       </button>
     </>
   )
@@ -81,7 +81,7 @@ function Example({ items = places, ...rootProps }: ExampleProps) {
 function MultipleExample({ items = places, ...rootProps }: MultipleProps) {
   return (
     <Field.Root required>
-      <Field.Label>Ort</Field.Label>
+      <Field.Label>Place</Field.Label>
       <Listbox.Root
         items={items}
         itemToString={(place) => place.name}
@@ -91,7 +91,7 @@ function MultipleExample({ items = places, ...rootProps }: MultipleProps) {
         {...rootProps}
       >
         <Listbox.Trigger>
-          <Listbox.Value placeholder="Välj orter" />
+          <Listbox.Value placeholder="Choose places" />
         </Listbox.Trigger>
         <Listbox.Popup>
           <Listbox.List style={listStyle}>
@@ -103,7 +103,7 @@ function MultipleExample({ items = places, ...rootProps }: MultipleProps) {
   )
 }
 
-const trigger = () => page.getByRole('combobox', { name: /Ort/ })
+const trigger = () => page.getByRole('combobox', { name: /Place/ })
 const triggerElement = () => trigger().element()
 const popupElement = () => document.querySelector<HTMLElement>('.kv-listbox-popup')
 const listElement = () => document.querySelector<HTMLElement>('.kv-listbox-list')
@@ -223,22 +223,22 @@ describe('virtualize: keys reach options that are not rendered', () => {
     await render(<Example />)
     await openWithKey('{End}')
     await userEvent.keyboard('{ArrowDown}')
-    expect(activeName()).toBe('Ort 10000')
+    expect(activeName()).toBe('Place 10000')
     await userEvent.keyboard('{ArrowUp}')
-    expect(activeName()).toBe('Ort 9999')
+    expect(activeName()).toBe('Place 9999')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('9999')
   })
 
   test('Home and End reach the first and the last option, rendered and in view', async () => {
     await render(<Example />)
     await openWithKey('{End}')
-    expect(activeName()).toBe('Ort 10000')
+    expect(activeName()).toBe('Place 10000')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('10000')
-    expect(option('Ort 1').elements()).toHaveLength(0)
+    expect(option('Place 1').elements()).toHaveLength(0)
     expect(renderedCount()).toBeLessThan(60)
     await userEvent.keyboard('{Home}')
-    expect(activeName()).toBe('Ort 1')
-    expect(option('Ort 10000').elements()).toHaveLength(0)
+    expect(activeName()).toBe('Place 1')
+    expect(option('Place 10000').elements()).toHaveLength(0)
   })
 
   test('ArrowDown and ArrowUp always leave aria-activedescendant on an option in the page', async () => {
@@ -248,12 +248,12 @@ describe('virtualize: keys reach options that are not rendered', () => {
       await userEvent.keyboard('{ArrowDown}')
       expect(activeOption()).toBeDefined()
     }
-    expect(activeName()).toBe('Ort 41')
+    expect(activeName()).toBe('Place 41')
     for (let step = 0; step < 40; step += 1) {
       await userEvent.keyboard('{ArrowUp}')
       expect(activeOption()).toBeDefined()
     }
-    expect(activeName()).toBe('Ort 1')
+    expect(activeName()).toBe('Place 1')
   })
 
   test('PageDown and PageUp move ten options that may not be rendered', async () => {
@@ -263,24 +263,27 @@ describe('virtualize: keys reach options that are not rendered', () => {
       await userEvent.keyboard('{PageDown}')
       expect(activeOption()).toBeDefined()
     }
-    expect(activeName()).toBe('Ort 251')
+    expect(activeName()).toBe('Place 251')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('251')
     await userEvent.keyboard('{PageUp}')
-    expect(activeName()).toBe('Ort 241')
+    expect(activeName()).toBe('Place 241')
   })
 
+  // kv-lang-ok: å, ä and ö collation is the point of this test
   test('typing a letter reaches an option that was not rendered, and å, ä and ö stay apart', async () => {
     const lettered = [
       ...Array.from({ length: 4000 }, (_, index) => ({
         code: `ort-${index + 1}`,
-        name: `Ort ${index + 1}`,
+        name: `Oak ${index + 1}`,
       })),
       ...Array.from({ length: 3000 }, (_, index) => ({
         code: `odeby-${index + 1}`,
+        // kv-lang-ok: å, ä and ö collation is the point of this test
         name: `Ödeby ${index + 1}`,
       })),
       ...Array.from({ length: 3000 }, (_, index) => ({
         code: `akerby-${index + 1}`,
+        // kv-lang-ok: å, ä and ö collation is the point of this test
         name: `Åkerby ${index + 1}`,
       })),
     ]
@@ -294,18 +297,23 @@ describe('virtualize: keys reach options that are not rendered', () => {
       triggerElement().dispatchEvent(
         new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }),
       )
+    // kv-lang-ok: å, ä and ö collation is the point of this test
     expect(option('Ödeby 1').elements()).toHaveLength(0)
+    // kv-lang-ok: å, ä and ö collation is the point of this test
     pressCharacter('ö')
     await expect.poll(isShown).toBe(true)
+    // kv-lang-ok: å, ä and ö collation is the point of this test
     await expect.poll(activeName).toBe('Ödeby 1')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('4001')
     await new Promise((resolve) => setTimeout(resolve, 650))
+    // kv-lang-ok: å, ä and ö collation is the point of this test
     pressCharacter('å')
+    // kv-lang-ok: å, ä and ö collation is the point of this test
     await expect.poll(activeName).toBe('Åkerby 1')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('7001')
     await new Promise((resolve) => setTimeout(resolve, 650))
     await userEvent.keyboard('o')
-    await expect.poll(activeName).toBe('Ort 1')
+    await expect.poll(activeName).toBe('Oak 1')
   })
 
   test('Enter chooses the active option that was far away, and the value is its key', async () => {
@@ -316,7 +324,7 @@ describe('virtualize: keys reach options that are not rendered', () => {
     expect(onValueChange).toHaveBeenCalledWith('ort-10000', { reason: 'key' })
     await expect.poll(isShown).toBe(false)
     await expect.element(trigger()).toHaveFocus()
-    expect(triggerElement().textContent).toBe('Ort 10000')
+    expect(triggerElement().textContent).toBe('Place 10000')
   })
 
   test('the pointer moving over an option makes it active without scrolling the list', async () => {
@@ -324,8 +332,8 @@ describe('virtualize: keys reach options that are not rendered', () => {
     await openWithKey('{ArrowDown}')
     await expect.poll(renderedCount).toBeGreaterThan(5)
     const before = listElement()?.scrollTop
-    await userEvent.hover(option('Ort 3'))
-    await expect.element(option('Ort 3')).toHaveAttribute('data-active', '')
+    await userEvent.hover(option('Place 3'))
+    await expect.element(option('Place 3')).toHaveAttribute('data-active', '')
     expect(listElement()?.scrollTop).toBe(before)
   })
 })
@@ -335,9 +343,9 @@ describe('virtualize: the chosen option', () => {
     await render(<Example defaultValue="ort-5000" />)
     await userEvent.click(trigger())
     await expect.poll(isShown).toBe(true)
-    await expect.element(option('Ort 5000')).toBeInTheDocument()
-    await expect.element(option('Ort 5000')).toHaveAttribute('aria-selected', 'true')
-    await expect.element(option('Ort 5000')).toHaveAttribute('aria-posinset', '5000')
+    await expect.element(option('Place 5000')).toBeInTheDocument()
+    await expect.element(option('Place 5000')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(option('Place 5000')).toHaveAttribute('aria-posinset', '5000')
     await expect.poll(() => (listElement()?.scrollTop ?? 0) > 1000).toBe(true)
     expect(renderedCount()).toBeLessThan(60)
   })
@@ -345,15 +353,15 @@ describe('virtualize: the chosen option', () => {
   test('opening with a key activates the chosen option, far from the top', async () => {
     await render(<Example defaultValue="ort-5000" />)
     await openWithKey('{ArrowDown}')
-    expect(activeName()).toBe('Ort 5000')
+    expect(activeName()).toBe('Place 5000')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('5000')
   })
 
   test('the chosen option stays mounted while the list is scrolled far from it', async () => {
     await render(<Example defaultValue="ort-3" />)
     await openWithKey('{End}')
-    expect(activeName()).toBe('Ort 10000')
-    const chosen = option('Ort 3')
+    expect(activeName()).toBe('Place 10000')
+    const chosen = option('Place 3')
     await expect.element(chosen).toBeInTheDocument()
     await expect.element(chosen).toHaveAttribute('aria-selected', 'true')
     await expect.element(chosen).toHaveAttribute('aria-posinset', '3')
@@ -366,8 +374,8 @@ describe('virtualize: the chosen option', () => {
     await expect.poll(isShown).toBe(false)
     await userEvent.click(trigger())
     await expect.poll(isShown).toBe(true)
-    await expect.element(option('Ort 1')).toBeInTheDocument()
-    expect(option('Ort 10000').elements()).toHaveLength(0)
+    await expect.element(option('Place 1')).toBeInTheDocument()
+    expect(option('Place 10000').elements()).toHaveLength(0)
     expect(listElement()?.scrollTop).toBe(0)
   })
 })
@@ -376,11 +384,11 @@ describe('virtualize: several choices', () => {
   test('every chosen option stays mounted and Enter toggles an option far away', async () => {
     await render(<MultipleExample defaultValue={['ort-2', 'ort-9000']} />)
     await openWithKey('{End}')
-    expect(activeName()).toBe('Ort 10000')
-    await expect.element(option('Ort 2')).toHaveAttribute('aria-selected', 'true')
-    await expect.element(option('Ort 9000')).toHaveAttribute('aria-selected', 'true')
+    expect(activeName()).toBe('Place 10000')
+    await expect.element(option('Place 2')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(option('Place 9000')).toHaveAttribute('aria-selected', 'true')
     await userEvent.keyboard('{Enter}')
-    await expect.element(option('Ort 10000')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(option('Place 10000')).toHaveAttribute('aria-selected', 'true')
     expect(isShown()).toBe(true)
     expect(listElement()?.getAttribute('aria-multiselectable')).toBe('true')
   })
@@ -390,12 +398,12 @@ describe('virtualize: what it does not do', () => {
   test('groups are not virtualized: a development warning, and every option renders', async () => {
     const groups = [
       { key: 'a', label: 'Norr', items: places.slice(0, 20) },
-      { key: 'b', label: 'Söder', items: places.slice(20, 40) },
+      { key: 'b', label: 'South', items: places.slice(20, 40) },
     ]
     await render(
       <>
         <Field.Root required>
-          <Field.Label>Ort</Field.Label>
+          <Field.Label>Place</Field.Label>
           <Listbox.Root
             groups={groups}
             itemToString={(place) => place.name}
@@ -404,7 +412,7 @@ describe('virtualize: what it does not do', () => {
             virtualize
           >
             <Listbox.Trigger>
-              <Listbox.Value placeholder="Välj ort" />
+              <Listbox.Value placeholder="Choose a place" />
             </Listbox.Trigger>
             <Listbox.Popup>
               <Listbox.List style={listStyle}>
@@ -438,7 +446,7 @@ describe('virtualize: what it does not do', () => {
   test('children that are not a function are rendered as they are, with a development warning', async () => {
     await render(
       <Field.Root required>
-        <Field.Label>Ort</Field.Label>
+        <Field.Label>Place</Field.Label>
         <Listbox.Root
           items={places.slice(0, 5)}
           itemToString={(place) => place.name}
@@ -447,7 +455,7 @@ describe('virtualize: what it does not do', () => {
           virtualize
         >
           <Listbox.Trigger>
-            <Listbox.Value placeholder="Välj ort" />
+            <Listbox.Value placeholder="Choose a place" />
           </Listbox.Trigger>
           <Listbox.Popup>
             <Listbox.List style={listStyle}>

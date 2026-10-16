@@ -41,7 +41,7 @@ export type { HeadingLevel, HeadingSize }
  * not for size.
  *
  * @example
- * <Heading as="h1" size="display" id="start">Välkommen till Kvirnby</Heading>
+ * <Heading as="h1" size="display" id="start">Welcome to Kvirnby</Heading>
  */
 export function Heading({ as, size, ref, ...otherProps }: HeadingProps): ReactElement {
   // A JS caller can pass any string. The outline can't be guessed, so the fallback is h2 and warns.

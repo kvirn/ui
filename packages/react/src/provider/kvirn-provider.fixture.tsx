@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the sv and fi fixture labels, so `lang` matches the content (3.1.2)
 import { getLanguage } from '@kvirn-ui/core'
 import type { ColorSchemePreference, ContrastPreference, MotionPreference } from '@kvirn-ui/core'
 import { useId } from 'react'

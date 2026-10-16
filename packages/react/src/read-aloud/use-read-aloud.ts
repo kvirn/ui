@@ -98,7 +98,7 @@ export interface UseReadAloudOptions {
   highlight?: boolean | undefined
   /** Scrolls the sentence into view when it is out of view, unless the user prefers reduced motion. Default `true`. */
   scroll?: boolean | undefined
-  /** Per-instance message overrides: `{ play: 'Lyssna' }`. */
+  /** Per-instance message overrides: `{ play: 'Listen' }`. */
   messages?: Partial<KvirnMessages['readAloud']> | undefined
   /** Called when the status changes. */
   onStatusChange?: ((status: ReadAloudStatus) => void) | undefined

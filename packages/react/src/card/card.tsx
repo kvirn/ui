@@ -88,8 +88,8 @@ CardFooter.displayName = 'Card.Footer'
  *       <img src="/bibliotek.jpg" alt="" />
  *     </Card.Header>
  *     <Card.Body>
- *       <h3><Link.Root href="/bibliotek">Biblioteket på Storgatan</Link.Root></h3>
- *       <p>Öppet alla dagar 10–19.</p>
+ *       <h3><Link.Root href="/bibliotek">The library on Storgatan</Link.Root></h3>
+ *       <p>Open every day 10–19.</p>
  *     </Card.Body>
  *     <Card.Footer className="kv-button-group">
  *       <Button>Boka tid</Button>

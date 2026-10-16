@@ -1,3 +1,4 @@
+// kv-lang-ok-file: asserts the sv and fi catalogs' strings and fixture labels for locale behaviour
 import { getDefaultEnv } from '@kvirn-ui/core'
 import type { Env } from '@kvirn-ui/core'
 import { defineMessages } from '@kvirn-ui/i18n'
@@ -248,7 +249,7 @@ describe('nesting', () => {
     await render(
       <KvirnProvider linkComponent="a" env={env}>
         <KvirnProvider locale="sv-SE">
-          <LinkProbe href="#hjalp" label="Hjälp" />
+          <LinkProbe href="#help" label="Help" />
           <EnvProbe
             onEnv={(nestedEnv) => {
               seenEnv = nestedEnv
@@ -257,7 +258,7 @@ describe('nesting', () => {
         </KvirnProvider>
       </KvirnProvider>,
     )
-    await expect.element(page.getByRole('link', { name: 'Hjälp' })).toBeVisible()
+    await expect.element(page.getByRole('link', { name: 'Help' })).toBeVisible()
     expect(seenEnv).toBe(env)
   })
 })
@@ -276,13 +277,13 @@ describe('message resolution', () => {
     await render(
       <KvirnProvider locale="sv-SE" messages={sv}>
         <NoticeProbe />
-        <KvirnProvider messages={{ link: { newTabNotice: '(extern tjänst, ny flik)' } }}>
+        <KvirnProvider messages={{ link: { newTabNotice: '(external service, new tab)' } }}>
           <NoticeProbe />
         </KvirnProvider>
       </KvirnProvider>,
     )
     await expect.element(page.getByText('(öppnas i en ny flik)')).toBeVisible()
-    await expect.element(page.getByText('(extern tjänst, ny flik)')).toBeVisible()
+    await expect.element(page.getByText('(external service, new tab)')).toBeVisible()
   })
 
   test('an ancestor provider fills keys the nearest one leaves unset', async () => {
@@ -325,7 +326,7 @@ describe('message resolution', () => {
   })
 
   test('function values plug in an external i18n system and follow new messages', async () => {
-    const translations = { sv: 'från appens i18n', en: 'from the app i18n' }
+    const translations = { sv: 'from the app i18n, sv', en: 'from the app i18n' }
     const renderWith = (language: 'sv' | 'en') => (
       <KvirnProvider
         locale="sv-SE"
@@ -335,7 +336,7 @@ describe('message resolution', () => {
       </KvirnProvider>
     )
     const screen = await render(renderWith('sv'))
-    await expect.element(page.getByText('från appens i18n')).toBeVisible()
+    await expect.element(page.getByText('from the app i18n, sv')).toBeVisible()
     await screen.rerender(renderWith('en'))
     await expect.element(page.getByText('from the app i18n')).toBeVisible()
   })

@@ -83,7 +83,7 @@ const subscribeToNothing = () => () => {}
  *
  * @example
  * <Field.Root required>
- *   <Field.Label>Beskriv ärendet</Field.Label>
+ *   <Field.Label>Describe the case</Field.Label>
  *   <RichTextEditor.Root name="description">
  *     <RichTextEditor.Content />
  *   </RichTextEditor.Root>

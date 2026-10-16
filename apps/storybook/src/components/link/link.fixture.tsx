@@ -43,12 +43,12 @@ export function RoutedLinkList() {
           </Link.Root>
         </li>
         <li>
-          <Link.Root href="/ansok" current={pathname === '/ansok' ? 'page' : false}>
-            Ansök
+          <Link.Root href="/apply" current={pathname === '/apply' ? 'page' : false}>
+            Apply
           </Link.Root>
         </li>
       </ul>
-      <p>Nuvarande sida: {pathname}</p>
+      <p>Current page: {pathname}</p>
     </>
   )
 }
@@ -64,11 +64,11 @@ export function RouterAndPlainLinks() {
       <MockRouterProvider initialPathname="/start">
         <ul>
           <li>
-            <Link.Root href="/ansok">Ansök</Link.Root>
+            <Link.Root href="/apply">Apply</Link.Root>
           </li>
           <li>
-            <Link.Root href="/blankett.pdf" download as="a">
-              Blankett (PDF)
+            <Link.Root href="/form.pdf" download as="a">
+              Form (PDF)
             </Link.Root>
           </li>
           <li>

@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale fixture text sets (sv, fi, nb, nn), picked by the locale toolbar
 import { action } from 'storybook/actions'
 import type { FormLocale } from './form.fixture.tsx'
 

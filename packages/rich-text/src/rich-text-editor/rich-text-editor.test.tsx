@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the tests run on the Swedish catalog and assert its built-in strings
 import { Field, KvirnProvider } from '@kvirn-ui/react'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { readAloud, readAnnouncements } from '@kvirn-ui/testing/read-aloud'

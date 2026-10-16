@@ -38,17 +38,21 @@ function Fixture({
     <div>
       <SkipLink href={`#${prefix}-main`}>{children}</SkipLink>
       <header>
-        <Link.Root href="/">Kommunen</Link.Root>
+        <Link.Root href="/">Municipality</Link.Root>
       </header>
       <main id={`${prefix}-main`} {...mainProps}>
-        <h1>Bygglov</h1>
+        <h1>Building permits</h1>
         <p>
-          <Link.Root href="/avgifter">Avgifter</Link.Root>
+          <Link.Root href="/fees">Fees</Link.Root>
         </p>
       </main>
     </div>
   )
 }
+
+// The built-in label in whichever locale the toolbar sets.
+// kv-lang-ok: matches the skip link's built-in text in every locale the toolbar offers
+const skipLinkName = /Skip to main content|Hoppa till|Siirry|Gå til/
 
 // The test runner's frame can't take the hash navigation of a followed link (it closes the browser
 // connection), so the play functions that press Enter stop the jump. The focus move is the link's.
@@ -68,13 +72,13 @@ async function expectShown(link: HTMLElement) {
 export const Default: Story = {
   render: () => <Fixture prefix="default" />,
   play: async ({ canvas }) => {
-    const link = canvas.getByRole('link', { name: /Skip to main content|Hoppa till|Siirry|Gå til/ })
+    const link = canvas.getByRole('link', { name: skipLinkName })
     await expectHidden(link)
     await userEvent.tab()
     await expect(link).toHaveFocus()
     await expectShown(link)
     await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Kommunen' })).toHaveFocus()
+    await expect(canvas.getByRole('link', { name: 'Municipality' })).toHaveFocus()
     await expectHidden(link)
   },
 }
@@ -87,14 +91,12 @@ export const Default: Story = {
 export const Keyboard: Story = {
   render: () => <Fixture prefix="keyboard" />,
   play: async ({ canvas }) => {
-    keepFrameStill(
-      canvas.getByRole('link', { name: /Skip to main content|Hoppa till|Siirry|Gå til/ }),
-    )
+    keepFrameStill(canvas.getByRole('link', { name: skipLinkName }))
     await userEvent.tab()
     await userEvent.keyboard('{Enter}')
     await expect(canvas.getByRole('main')).toHaveFocus()
     await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Avgifter' })).toHaveFocus()
+    await expect(canvas.getByRole('link', { name: 'Fees' })).toHaveFocus()
   },
 }
 
@@ -102,12 +104,12 @@ export const Keyboard: Story = {
 export const CustomLabel: Story = {
   render: () => (
     <Fixture prefix="custom-label">
-      <span lang="sv">Hoppa till innehållet</span>
+      <span lang="en">Skip to the content</span>
     </Fixture>
   ),
   play: async ({ canvas }) => {
     await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Hoppa till innehållet' })).toHaveFocus()
+    await expect(canvas.getByRole('link', { name: 'Skip to the content' })).toHaveFocus()
   },
 }
 
@@ -116,9 +118,7 @@ export const TargetNotFocusable: Story = {
   render: () => <Fixture prefix="not-focusable" />,
   play: async ({ canvas }) => {
     const main = canvas.getByRole('main')
-    keepFrameStill(
-      canvas.getByRole('link', { name: /Skip to main content|Hoppa till|Siirry|Gå til/ }),
-    )
+    keepFrameStill(canvas.getByRole('link', { name: skipLinkName }))
     await expect(main).not.toHaveAttribute('tabindex')
     await userEvent.tab()
     await userEvent.keyboard('{Enter}')
@@ -131,9 +131,7 @@ export const TargetNotFocusable: Story = {
 export const TargetAlreadyFocusable: Story = {
   render: () => <Fixture prefix="focusable" mainProps={{ tabIndex: 0 }} />,
   play: async ({ canvas }) => {
-    keepFrameStill(
-      canvas.getByRole('link', { name: /Skip to main content|Hoppa till|Siirry|Gå til/ }),
-    )
+    keepFrameStill(canvas.getByRole('link', { name: skipLinkName }))
     await userEvent.tab()
     await userEvent.keyboard('{Enter}')
     await expect(canvas.getByRole('main')).toHaveFocus()

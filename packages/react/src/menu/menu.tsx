@@ -114,9 +114,9 @@ const hasName = (element: Element | null) =>
  *
  * @example
  * <Menu.Root>
- *   <Menu.Trigger>Åtgärder</Menu.Trigger>
+ *   <Menu.Trigger>Actions</Menu.Trigger>
  *   <Menu.Popup>
- *     <Menu.Item onSelect={print}>Skriv ut</Menu.Item>
+ *     <Menu.Item onSelect={print}>Print</Menu.Item>
  *   </Menu.Popup>
  * </Menu.Root>
  */

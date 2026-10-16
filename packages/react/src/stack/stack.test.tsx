@@ -30,11 +30,11 @@ const warnings = () => consoleWarn.mock.calls.map(([message]) => String(message)
 
 describe('rendering', () => {
   test('renders one <div> with the base class and the children', async () => {
-    const { container } = await render(<Stack data-testid="layout">Innehåll</Stack>)
+    const { container } = await render(<Stack data-testid="layout">Content</Stack>)
     const layout = page.getByTestId('layout')
     expect(layout.element().tagName).toBe('DIV')
     expect(layout.element().className).toBe('kv-stack')
-    await expect.element(layout).toHaveTextContent('Innehåll')
+    await expect.element(layout).toHaveTextContent('Content')
     expect(container.children).toHaveLength(1)
   })
 
@@ -69,11 +69,13 @@ describe('rendering', () => {
   })
 
   test('passes attributes through: id, aria-label and title', async () => {
-    await render(<Stack data-testid="layout" id="innehall" aria-label="Kokoelma" title="Otsikko" />)
+    await render(
+      <Stack data-testid="layout" id="content" aria-label="Collection" title="Heading" />,
+    )
     const layout = page.getByTestId('layout')
-    await expect.element(layout).toHaveAttribute('id', 'innehall')
-    await expect.element(layout).toHaveAttribute('aria-label', 'Kokoelma')
-    await expect.element(layout).toHaveAttribute('title', 'Otsikko')
+    await expect.element(layout).toHaveAttribute('id', 'content')
+    await expect.element(layout).toHaveAttribute('aria-label', 'Collection')
+    await expect.element(layout).toHaveAttribute('title', 'Heading')
   })
 
   test('keeps its own class: a consumer className joins it instead of replacing it', async () => {
@@ -95,12 +97,12 @@ describe('as and ref', () => {
   test('an element changes the element and keeps the children', async () => {
     const { container } = await render(
       <main>
-        <Stack as="section" aria-label="Tjänster">
+        <Stack as="section" aria-label="Services">
           <h1>Kvirnby kommun</h1>
         </Stack>
       </main>,
     )
-    await expect.element(page.getByRole('region', { name: 'Tjänster' })).toBeVisible()
+    await expect.element(page.getByRole('region', { name: 'Services' })).toBeVisible()
     await expect
       .element(page.getByRole('heading', { name: 'Kvirnby kommun', level: 1 }))
       .toBeVisible()
@@ -109,9 +111,9 @@ describe('as and ref', () => {
   test('as="ul" with <li> children makes a list with an announced count', async () => {
     const { container } = await render(
       <Stack as="ul">
-        <li>Sophämtning</li>
-        <li>Vinterväghållning</li>
-        <li>Föreningsbidrag</li>
+        <li>Waste collection</li>
+        <li>Winter road maintenance</li>
+        <li>Association grants</li>
       </Stack>,
     )
     expect(page.getByRole('list').elements()).toHaveLength(1)
@@ -159,8 +161,8 @@ describe('keyboard', () => {
   function Controls() {
     return (
       <Stack>
-        <Link.Root href="#forst">Första</Link.Root>
-        <Button>Andra</Button>
+        <Link.Root href="#first">First</Link.Root>
+        <Button>Second</Button>
         <Link.Root href="#tredje">Tredje</Link.Root>
       </Stack>
     )
@@ -169,9 +171,9 @@ describe('keyboard', () => {
   test('is not a Tab stop and keeps the children in DOM order', async () => {
     await render(<Controls />)
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('link', { name: 'Första' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'First' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Andra' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Second' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('link', { name: 'Tredje' })).toHaveFocus()
   })
@@ -180,9 +182,9 @@ describe('keyboard', () => {
     await render(<Controls />)
     page.getByRole('link', { name: 'Tredje' }).element().focus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Andra' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Second' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('link', { name: 'Första' })).toHaveFocus()
+    await expect.element(page.getByRole('link', { name: 'First' })).toHaveFocus()
   })
 })
 
@@ -221,7 +223,7 @@ describe('accessibility', () => {
         <Stack>
           <h1>Kvirnby kommun</h1>
           <p>Vi svarar vardagar 9–16.</p>
-          <Link.Root href="#kontakt">Kontakta oss</Link.Root>
+          <Link.Root href="#contact">Contact us</Link.Root>
         </Stack>
       </main>,
     )

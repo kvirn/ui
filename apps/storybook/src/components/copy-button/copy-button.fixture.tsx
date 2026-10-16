@@ -5,7 +5,7 @@ import { sv } from '@kvirn-ui/i18n/sv'
 import type { Decorator } from '@storybook/react-vite'
 
 // Story fixture for Components/CopyButton and Components/CodeBlock. The library's own words
-// ("Kopiera", "Copy") follow the locale toolbar through a provider, like an app's would. The
+// follow the locale toolbar through a provider, like an app's would. The
 // provider also renders the live regions the copy result is announced through.
 const catalogs = { sv, fi, en }
 

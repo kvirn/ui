@@ -19,12 +19,12 @@ export interface UseErrorSummaryOptions {
    */
   disableAutoFocus?: boolean | undefined
   /**
-   * Puts `errorSummary.titlePrefix` ("Fel:") before `document.title` while the summary is shown,
+   * Puts `errorSummary.titlePrefix` ("Error:") before `document.title` while the summary is shown,
    * and restores the title when it is removed (2.4.2). Off by default, because a router that
    * owns the title would fight it: then set the prefix there.
    */
   prefixDocumentTitle?: boolean | undefined
-  /** Per-instance message overrides: `{ title: 'Rätta felen', titlePrefix: 'Problem:' }`. */
+  /** Per-instance message overrides: `{ title: 'Fix the errors', titlePrefix: 'Problem:' }`. */
   messages?: Partial<KvirnMessages['errorSummary']> | undefined
 }
 
@@ -103,7 +103,7 @@ const itemProps: ErrorSummaryItemPartProps = Object.freeze({ className: 'kv-erro
  *   <h2 {...errorSummary.titleProps}>{errorSummary.title}</h2>
  *   <ul {...errorSummary.listProps}>
  *     <li {...errorSummary.itemProps}>
- *       <a {...errorSummary.getLinkProps('email')}>Ange din e-postadress</a>
+ *       <a {...errorSummary.getLinkProps('email')}>Enter your email address</a>
  *     </li>
  *   </ul>
  * </div>

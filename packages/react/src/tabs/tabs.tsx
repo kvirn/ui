@@ -147,13 +147,13 @@ TabsPanel.displayName = 'Tabs.Panel'
  * `kv-navigation--horizontal`: tabs never navigate.
  *
  * @example
- * <Tabs.Root defaultValue="uppgifter">
- *   <Tabs.List aria-label="Ärendet">
- *     <Tabs.Tab value="uppgifter">Uppgifter</Tabs.Tab>
- *     <Tabs.Tab value="historik" disabled>Historik</Tabs.Tab>
+ * <Tabs.Root defaultValue="details">
+ *   <Tabs.List aria-label="The case">
+ *     <Tabs.Tab value="details">Details</Tabs.Tab>
+ *     <Tabs.Tab value="history" disabled>History</Tabs.Tab>
  *   </Tabs.List>
- *   <Tabs.Panel value="uppgifter">…</Tabs.Panel>
- *   <Tabs.Panel value="historik">…</Tabs.Panel>
+ *   <Tabs.Panel value="details">…</Tabs.Panel>
+ *   <Tabs.Panel value="history">…</Tabs.Panel>
  * </Tabs.Root>
  */
 export const Tabs = {

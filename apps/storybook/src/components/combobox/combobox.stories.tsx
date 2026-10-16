@@ -1,3 +1,4 @@
+// kv-lang-ok-file: asserts the Swedish municipality names of the collation fixture
 import contract from '../../../../../packages/react/src/combobox/combobox.a11y.md?raw'
 import guide from '../../../../../packages/react/src/combobox/combobox.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'

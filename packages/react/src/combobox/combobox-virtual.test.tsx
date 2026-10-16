@@ -32,7 +32,7 @@ interface Place {
 const count = 10_000
 const places: readonly Place[] = Array.from({ length: count }, (_, index) => ({
   code: `ort-${index + 1}`,
-  name: index === 7000 ? 'Västerås' : `Ort ${index + 1}`,
+  name: index === 7000 ? 'Vasteras' : `Place ${index + 1}`,
 }))
 
 const fixtureButtonStyle = { minBlockSize: '2rem', minInlineSize: '2rem' }
@@ -45,12 +45,12 @@ type MultipleProps = Partial<UseComboboxMultipleOptions<Place>>
 function Example({ items = places, ...rootProps }: ExampleProps) {
   return (
     <KvirnProvider locale="sv-SE" messages={sv}>
-      <p>Text utanför</p>
+      <p>Text outside</p>
       <button type="button" style={fixtureButtonStyle}>
-        Före
+        Before
       </button>
       <Field.Root required>
-        <Field.Label>Ort</Field.Label>
+        <Field.Label>Place</Field.Label>
         <Combobox.Root
           items={items}
           itemToString={(place) => place.name}
@@ -68,7 +68,7 @@ function Example({ items = places, ...rootProps }: ExampleProps) {
         </Combobox.Root>
       </Field.Root>
       <button type="button" style={fixtureButtonStyle}>
-        Efter
+        After
       </button>
     </KvirnProvider>
   )
@@ -78,7 +78,7 @@ function MultipleExample({ items = places, ...rootProps }: MultipleProps) {
   return (
     <KvirnProvider locale="sv-SE" messages={sv}>
       <Field.Root required>
-        <Field.Label>Orter</Field.Label>
+        <Field.Label>Places</Field.Label>
         <Combobox.Root
           items={items}
           itemToString={(place) => place.name}
@@ -101,7 +101,7 @@ function MultipleExample({ items = places, ...rootProps }: MultipleProps) {
   )
 }
 
-const input = () => page.getByRole('combobox', { name: /Ort/ })
+const input = () => page.getByRole('combobox', { name: /Place/ })
 
 function asInputElement(element: HTMLElement | SVGElement): HTMLInputElement {
   if (!(element instanceof HTMLInputElement)) {
@@ -189,36 +189,36 @@ describe('virtualize: keys reach options that are not rendered', () => {
     await render(<Example />)
     await openWithKey('{ArrowUp}')
     await userEvent.keyboard('{ArrowDown}')
-    expect(activeName()).toBe('Ort 10000')
+    expect(activeName()).toBe('Place 10000')
     await userEvent.keyboard('{ArrowUp}')
-    expect(activeName()).toBe('Ort 9999')
+    expect(activeName()).toBe('Place 9999')
   })
 
   test('virtualized: ArrowUp opens the popup and activates the last option, rendered and in view', async () => {
     await render(<Example />)
     await openWithKey('{ArrowUp}')
-    expect(activeName()).toBe('Ort 10000')
+    expect(activeName()).toBe('Place 10000')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe(String(count))
     expect(activeOption()?.getAttribute('aria-setsize')).toBe(String(count))
     await expect.poll(() => (listElement()?.scrollTop ?? 0) > 1000).toBe(true)
-    await expect.element(option('Ort 1')).not.toBeInTheDocument()
+    await expect.element(option('Place 1')).not.toBeInTheDocument()
     expect(renderedCount()).toBeLessThan(60)
   })
 
   test('virtualized: ArrowDown and ArrowUp always leave aria-activedescendant on an option in the page', async () => {
     await render(<Example />)
     await openWithKey('{ArrowDown}')
-    expect(activeName()).toBe('Ort 1')
+    expect(activeName()).toBe('Place 1')
     for (let step = 0; step < 40; step += 1) {
       await userEvent.keyboard('{ArrowDown}')
       expect(activeOption()).toBeDefined()
     }
-    expect(activeName()).toBe('Ort 41')
+    expect(activeName()).toBe('Place 41')
     for (let step = 0; step < 40; step += 1) {
       await userEvent.keyboard('{ArrowUp}')
       expect(activeOption()).toBeDefined()
     }
-    expect(activeName()).toBe('Ort 1')
+    expect(activeName()).toBe('Place 1')
   })
 
   test('virtualized: PageDown and PageUp move ten options that may not be rendered', async () => {
@@ -228,10 +228,10 @@ describe('virtualize: keys reach options that are not rendered', () => {
       await userEvent.keyboard('{PageDown}')
       expect(activeOption()).toBeDefined()
     }
-    expect(activeName()).toBe('Ort 251')
+    expect(activeName()).toBe('Place 251')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('251')
     await userEvent.keyboard('{PageUp}')
-    expect(activeName()).toBe('Ort 241')
+    expect(activeName()).toBe('Place 241')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('241')
   })
 
@@ -242,27 +242,27 @@ describe('virtualize: keys reach options that are not rendered', () => {
     await userEvent.keyboard('{Enter}')
     expect(onValueChange).toHaveBeenCalledWith('ort-10000', { reason: 'key' })
     await expect.poll(isShown).toBe(false)
-    expect(inputElement().value).toBe('Ort 10000')
+    expect(inputElement().value).toBe('Place 10000')
     await expect.element(input()).toHaveFocus()
   })
 
   test('typing a text that few options contain renders them all, and the window follows the list', async () => {
     await render(<Example />)
-    // `fill` types the å and ä that the keyboard helper has no key for.
-    await userEvent.fill(input(), 'Västerås')
+    // `fill` sets the whole text at once, with no key per letter.
+    await userEvent.fill(input(), 'Vasteras')
     await expect.poll(isShown).toBe(true)
     await expect.poll(renderedCount).toBe(1)
     expect(renderedOptions()[0]?.getAttribute('aria-setsize')).toBe('1')
     expect(renderedOptions()[0]?.getAttribute('aria-posinset')).toBe('1')
     await userEvent.keyboard('{ArrowDown}')
-    expect(activeName()).toBe('Västerås')
+    expect(activeName()).toBe('Vasteras')
   })
 
   test('Home and End still move the caret, and leave no option active', async () => {
     await render(<Example />)
-    await typeText('Ort 9')
+    await typeText('Place 9')
     await userEvent.keyboard('{ArrowUp}')
-    expect(activeName()).toBe('Ort 9999')
+    expect(activeName()).toBe('Place 9999')
     await userEvent.keyboard('{Home}')
     expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
     expect(inputElement().selectionStart).toBe(0)
@@ -273,7 +273,7 @@ describe('virtualize: the chosen option', () => {
   test('opening with a key activates the chosen option, far from the top, and renders it', async () => {
     await render(<Example defaultValue="ort-5000" />)
     await openWithKey('{ArrowDown}')
-    expect(activeName()).toBe('Ort 5000')
+    expect(activeName()).toBe('Place 5000')
     expect(activeOption()?.getAttribute('aria-posinset')).toBe('5000')
     await expect.poll(() => (listElement()?.scrollTop ?? 0) > 1000).toBe(true)
   })
@@ -282,16 +282,16 @@ describe('virtualize: the chosen option', () => {
     await render(<MultipleExample defaultValue={['ort-2', 'ort-9000']} />)
     // Opening with a key activates the first chosen option, as for a short list.
     await openWithKey('{ArrowUp}')
-    expect(activeName()).toBe('Ort 2')
+    expect(activeName()).toBe('Place 2')
     // The other one is 9 000 options away from the window, and is rendered all the same.
-    await expect.element(option('Ort 9000')).toHaveAttribute('aria-selected', 'true')
-    await expect.element(option('Ort 9000')).toHaveAttribute('aria-posinset', '9000')
+    await expect.element(option('Place 9000')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(option('Place 9000')).toHaveAttribute('aria-posinset', '9000')
     for (let step = 0; step < 3; step += 1) {
       await userEvent.keyboard('{PageDown}')
     }
-    expect(activeName()).toBe('Ort 32')
-    await expect.element(option('Ort 2')).toHaveAttribute('aria-selected', 'true')
-    await expect.element(option('Ort 9000')).toHaveAttribute('aria-selected', 'true')
+    expect(activeName()).toBe('Place 32')
+    await expect.element(option('Place 2')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(option('Place 9000')).toHaveAttribute('aria-selected', 'true')
   })
 })
 
@@ -299,12 +299,12 @@ describe('virtualize: what it does not do', () => {
   test('groups are not virtualized: a development warning, and every option renders', async () => {
     const groups = [
       { key: 'a', label: 'Norr', items: places.slice(0, 20) },
-      { key: 'b', label: 'Söder', items: places.slice(20, 40) },
+      { key: 'b', label: 'South', items: places.slice(20, 40) },
     ]
     await render(
       <KvirnProvider locale="sv-SE" messages={sv}>
         <Field.Root required>
-          <Field.Label>Ort</Field.Label>
+          <Field.Label>Place</Field.Label>
           <Combobox.Root
             groups={groups}
             itemToString={(place) => place.name}

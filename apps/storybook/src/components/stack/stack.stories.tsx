@@ -16,12 +16,15 @@ const meta = {
   args: {
     children: (
       <>
-        <Heading as="h2">Sophämtning</Heading>
+        {/* kv-lang-ok: a long Finnish word, a hard case for wrapping */}
+        <Heading as="h2">Waste collection</Heading>
         <Card.Root>
-          <Card.Body>Nästa hämtning är på tisdag.</Card.Body>
+          {/* kv-lang-ok: a long Finnish word, a hard case for wrapping */}
+          <Card.Body>The next collection is on Tuesday.</Card.Body>
         </Card.Root>
         <Card.Root>
-          <Card.Body>Ställ ut kärlet senast klockan 06.</Card.Body>
+          {/* kv-lang-ok: a long Finnish word, a hard case for wrapping */}
+          <Card.Body>Put the bin out by 6 a.m.</Card.Body>
         </Card.Root>
       </>
     ),
@@ -51,9 +54,10 @@ export const Gap8: Story = { args: { className: 'kv-stack--gap-8' } }
 export const AsList: Story = {
   render: (args) => (
     <Stack as="ul" className={args.className}>
-      <li>Sophämtning</li>
-      <li>Bygglov</li>
-      <li>Skolskjuts</li>
+      {/* kv-lang-ok: a long Finnish word, a hard case for wrapping */}
+      <li>Waste collection</li>
+      <li>Building permits</li>
+      <li>School transport</li>
     </Stack>
   ),
   play: async ({ canvas }) => {
@@ -67,6 +71,7 @@ export const Reflow320: Story = {
   args: {
     children: (
       <Card.Root>
+        {/* kv-lang-ok: a long Finnish word, a hard case for wrapping */}
         <Card.Body>Jätehuoltomaksunpalautuspäätöksentarkistuslomake</Card.Body>
       </Card.Root>
     ),

@@ -66,7 +66,7 @@ afterEach(() => {
 
 describe('the live regions', () => {
   test('a polite and an assertive region exist, empty, as soon as the provider mounts', async () => {
-    await render(<KvirnProvider>Innehåll</KvirnProvider>)
+    await render(<KvirnProvider>Content</KvirnProvider>)
 
     await expect.element(politeRegion()).toBeInTheDocument()
     await expect.element(politeRegion()).toBeEmptyDOMElement()
@@ -77,7 +77,7 @@ describe('the live regions', () => {
   })
 
   test('the regions are in the server HTML, empty, so they exist before hydration', () => {
-    const html = renderToString(<KvirnProvider>Innehåll</KvirnProvider>)
+    const html = renderToString(<KvirnProvider>Content</KvirnProvider>)
     const container = document.createElement('div')
     container.innerHTML = html
 
@@ -86,7 +86,7 @@ describe('the live regions', () => {
   })
 
   test('the regions are never hidden from assistive technology', async () => {
-    await render(<KvirnProvider>Innehåll</KvirnProvider>)
+    await render(<KvirnProvider>Content</KvirnProvider>)
 
     for (const region of [politeRegion(), assertiveRegion()]) {
       const element = region.element()
@@ -95,7 +95,7 @@ describe('the live regions', () => {
   })
 
   test('the regions are not focusable', async () => {
-    await render(<KvirnProvider>Innehåll</KvirnProvider>)
+    await render(<KvirnProvider>Content</KvirnProvider>)
 
     for (const region of [politeRegion(), assertiveRegion()]) {
       const element = region.element()
@@ -120,8 +120,8 @@ describe('the live regions', () => {
 
     expect(page.getByRole('status').elements()).toHaveLength(1)
     expect(page.getByRole('alert').elements()).toHaveLength(1)
-    announce?.('Sparat')
-    await expect.element(politeRegion()).toHaveTextContent('Sparat')
+    announce?.('Saved')
+    await expect.element(politeRegion()).toHaveTextContent('Saved')
   })
 })
 
@@ -131,9 +131,9 @@ describe('announce', () => {
     await expect.element(politeRegion()).toBeEmptyDOMElement()
     const regionElement = politeRegion().element()
 
-    announce('Ändringarna är sparade')
+    announce('The changes are saved')
 
-    await expect.element(politeRegion()).toHaveTextContent('Ändringarna är sparade')
+    await expect.element(politeRegion()).toHaveTextContent('The changes are saved')
     expect(politeRegion().element()).toBe(regionElement)
     await expect.element(assertiveRegion()).toBeEmptyDOMElement()
   })
@@ -142,7 +142,7 @@ describe('announce', () => {
     let announce: Announce | undefined
     await render(
       <KvirnProvider>
-        <button type="button">Spara</button>
+        <button type="button">Save</button>
         <Probe
           onAnnounce={(next) => {
             announce = next
@@ -150,23 +150,23 @@ describe('announce', () => {
         />
       </KvirnProvider>,
     )
-    const button = page.getByRole('button', { name: 'Spara' })
+    const button = page.getByRole('button', { name: 'Save' })
     button.element().focus()
 
-    announce?.('Ändringarna är sparade')
-    announce?.('Sessionen har gått ut', { politeness: 'assertive' })
+    announce?.('The changes are saved')
+    announce?.('The session has expired', { politeness: 'assertive' })
 
-    await expect.element(politeRegion()).toHaveTextContent('Ändringarna är sparade')
-    await expect.element(assertiveRegion()).toHaveTextContent('Sessionen har gått ut')
+    await expect.element(politeRegion()).toHaveTextContent('The changes are saved')
+    await expect.element(assertiveRegion()).toHaveTextContent('The session has expired')
     await expect.element(button).toHaveFocus()
   })
 
   test('an assertive message goes to the alert region', async () => {
     const { announce } = await renderProbe()
 
-    announce('Sessionen har gått ut', { politeness: 'assertive' })
+    announce('The session has expired', { politeness: 'assertive' })
 
-    await expect.element(assertiveRegion()).toHaveTextContent('Sessionen har gått ut')
+    await expect.element(assertiveRegion()).toHaveTextContent('The session has expired')
     await expect.element(politeRegion()).toBeEmptyDOMElement()
   })
 
@@ -183,26 +183,26 @@ describe('announce', () => {
       subtree: true,
     })
 
-    announce('Sparat')
-    await expect.element(politeRegion()).toHaveTextContent('Sparat')
-    announce('Sparat')
+    announce('Saved')
+    await expect.element(politeRegion()).toHaveTextContent('Saved')
+    announce('Saved')
     await vi.waitFor(() => {
-      expect(seen.filter((text) => text === 'Sparat')).toHaveLength(2)
+      expect(seen.filter((text) => text === 'Saved')).toHaveLength(2)
     })
     observer.disconnect()
 
-    expect(seen).toEqual(['Sparat', '', 'Sparat'])
+    expect(seen).toEqual(['Saved', '', 'Saved'])
   })
 
   test('returns true when accepted and false when throttled by key', async () => {
     const { announce } = await renderProbe()
 
-    expect(announce('Endast siffror', { key: 'telefon' })).toBe(true)
-    expect(announce('Endast siffror', { key: 'telefon' })).toBe(false)
+    expect(announce('Digits only', { key: 'phone' })).toBe(true)
+    expect(announce('Digits only', { key: 'phone' })).toBe(false)
     // Once spoken, the key stays throttled. A different key is not affected.
-    await expect.element(politeRegion()).toHaveTextContent('Endast siffror')
-    expect(announce('Endast siffror', { key: 'postnummer' })).toBe(true)
-    expect(announce('Endast siffror', { key: 'telefon' })).toBe(false)
+    await expect.element(politeRegion()).toHaveTextContent('Digits only')
+    expect(announce('Digits only', { key: 'postnummer' })).toBe(true)
+    expect(announce('Digits only', { key: 'phone' })).toBe(false)
   })
 
   test('text is passed through unchanged, in the provider language (sv and fi)', async () => {
@@ -250,7 +250,7 @@ describe('announce', () => {
   test('unmounting the provider cancels what is pending, and nothing throws', async () => {
     const { announce, view } = await renderProbe()
     await expect.element(politeRegion()).toBeInTheDocument()
-    announce('Sparat')
+    announce('Saved')
 
     await view.unmount()
     await new Promise((resolve) => setTimeout(resolve, 200))
@@ -278,8 +278,8 @@ describe('without a provider', () => {
       />,
     )
 
-    expect(announce?.('Sparat')).toBe(false)
-    expect(announce?.('Sparat', { politeness: 'assertive' })).toBe(false)
+    expect(announce?.('Saved')).toBe(false)
+    expect(announce?.('Saved', { politeness: 'assertive' })).toBe(false)
     await view.rerender(<Probe onAnnounce={() => {}} />)
 
     expect(page.getByRole('status').elements()).toHaveLength(0)
@@ -297,7 +297,7 @@ describe('axe', () => {
     const { container } = await render(
       <KvirnProvider locale="sv" messages={sv}>
         <main>
-          <h1>Ansökan</h1>
+          <h1>Application</h1>
         </main>
       </KvirnProvider>,
     )
@@ -309,10 +309,10 @@ describe('axe', () => {
 
   test('no violations while both regions hold a message', async () => {
     const { announce } = await renderProbe({ locale: 'sv', messages: sv })
-    announce('Sparat')
-    announce('Sessionen har gått ut', { politeness: 'assertive' })
-    await expect.element(politeRegion()).toHaveTextContent('Sparat')
-    await expect.element(assertiveRegion()).toHaveTextContent('Sessionen har gått ut')
+    announce('Saved')
+    announce('The session has expired', { politeness: 'assertive' })
+    await expect.element(politeRegion()).toHaveTextContent('Saved')
+    await expect.element(assertiveRegion()).toHaveTextContent('The session has expired')
 
     await expectNoA11yViolations(document.body)
   })

@@ -10,7 +10,10 @@ Plans describe **how** we will build something. Decisions live in the skills and
 
 ## Index
 
-| #                          | Title                                                  | Status      |
-| -------------------------- | ------------------------------------------------------ | ----------- |
-| [0088](0088-read-aloud.md) | ReadAloud (text to speech player and selection reader) | In progress |
-| [0122](0122-quick-exit.md) | QuickExit (leave a sensitive page in one action)       | In progress |
+| #                                  | Title                                                  | Status      |
+| ---------------------------------- | ------------------------------------------------------ | ----------- |
+| [0088](0088-read-aloud.md)         | ReadAloud (text to speech player and selection reader) | In progress |
+| [0118](0118-docs-back-to-top.md)   | Back to top on the docs site                           | Done        |
+| [0122](0122-quick-exit.md)         | QuickExit (leave a sensitive page in one action)       | In progress |
+| [0123](0123-english-only-prose.md) | English-only prose, examples and fixtures              | Done        |
+| [0124](0124-icon-library.md)       | Icon library (`@kvirn-ui/icons`, 150+ outline icons)   | In progress |

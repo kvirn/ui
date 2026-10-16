@@ -24,7 +24,7 @@ const sectionProps: UseSectionResult = Object.freeze({
  *
  * @example
  * const section = useSection()
- * <nav {...section.rootProps} aria-label="Ärenden">…</nav>
+ * <nav {...section.rootProps} aria-label="Cases">…</nav>
  */
 export function useSection(): UseSectionResult {
   return sectionProps

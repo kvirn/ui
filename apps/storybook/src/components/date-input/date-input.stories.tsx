@@ -45,7 +45,7 @@ const meta = {
     defaultValue: {
       control: 'text',
       description:
-        'Uncontrolled: the text the field starts with, in the mask’s form (`2026-10-27` in Swedish, `27.10.2026` in Finnish).',
+        'Uncontrolled: the text the field starts with, in the mask’s form (`27/10/2026` in English, `27.10.2026` in Finnish).',
     },
     required: {
       control: 'boolean',
@@ -54,7 +54,7 @@ const meta = {
     disabled: { control: 'boolean', description: 'Native `disabled` and `data-disabled`.' },
     readOnly: { control: 'boolean', description: 'Native `readOnly`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [
     (Story) => (
       <div className="kv-story-form">
@@ -164,7 +164,7 @@ const box = (canvasElement: HTMLElement, part: 'day' | 'month' | 'year') => {
 /**
  * The main example, and the one to prefer: one field with `masks.date()`. One Tab stop, paste and
  * autofill work, and mobile keyboards show digits. `masks.date()` follows the page's locale: type
- * `4.10.2026` in Finnish, `20261004` in Swedish. The form keeps the ISO date. Use the three boxes
+ * `4.10.2026` in Finnish, `04102026` in English. The form keeps the ISO date. Use the three boxes
  * below when you want separate labelled day, month and year, for a date of birth (`bday`), or auto-advance.
  */
 export const Default: Story = {
@@ -176,10 +176,10 @@ export const Default: Story = {
     await expectMinimumTargetSize(field)
     await expect(field).toHaveAttribute('inputmode', 'numeric')
     // The help text, with an example in the locale's form, describes the field.
-    await expect(field).toHaveAccessibleDescription(text.oneFieldHint('2026-10-27'))
+    await expect(field).toHaveAccessibleDescription(text.oneFieldHint('27/10/2026'))
     // Eight digits are enough: the mask puts the separators in.
-    await userEvent.type(field, '20261004')
-    await expect(field).toHaveValue('2026-10-04')
+    await userEvent.type(field, '04102026')
+    await expect(field).toHaveValue('04/10/2026')
     await expect(canvas.getByTestId('stored')).toHaveTextContent(`${text.stored}: 2026-10-04`)
   },
 }
@@ -286,13 +286,17 @@ export const NoAutoAdvance: ThreeBoxStory = {
   },
 }
 
-/** `sv-SE`: year, month, day, and the help text's example is written in that order. */
+/** `sv-SE`: the locale proof for Swedish date names. Year, month, day, and the example is written in that order. */
 export const SwedishSweden: ThreeBoxStory = {
   render: renderBirthDate,
+  // kv-lang-ok: the one Swedish locale proof, Swedish date names and format
+  globals: { locale: 'sv' },
   decorators: [withRegion('sv-SE')],
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   play: async ({ canvasElement, canvas }) => {
+    // kv-lang-ok: proves Swedish date names and format
     await expect(boxLabels(canvasElement)).toEqual(['År', 'Månad', 'Dag'])
+    // kv-lang-ok: proves Swedish date names and format
     await expect(canvas.getByText('Till exempel 1990 3 27')).toBeVisible()
   },
 }
@@ -303,10 +307,14 @@ export const SwedishSweden: ThreeBoxStory = {
  */
 export const SwedishFinland: ThreeBoxStory = {
   render: renderBirthDate,
+  // kv-lang-ok: Swedish catalog under region sv-FI, proves Swedish date names and format
+  globals: { locale: 'sv' },
   decorators: [withRegion('sv-FI')],
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   play: async ({ canvasElement, canvas }) => {
+    // kv-lang-ok: proves Swedish date names and format
     await expect(boxLabels(canvasElement)).toEqual(['Dag', 'Månad', 'År'])
+    // kv-lang-ok: proves Swedish date names and format
     await expect(canvas.getByText('Till exempel 27 3 1990')).toBeVisible()
   },
 }
@@ -317,7 +325,9 @@ export const Finnish: ThreeBoxStory = {
   globals: { locale: 'fi' },
   parameters: showSource('date-input/date-input.fixture.tsx', 'BirthDate'),
   play: async ({ canvasElement, canvas }) => {
+    // kv-lang-ok: asserts the Finnish box labels under locale fi
     await expect(boxLabels(canvasElement)).toEqual(['Päivä', 'Kuukausi', 'Vuosi'])
+    // kv-lang-ok: asserts the Finnish example hint under locale fi
     await expect(canvas.getByText('Esimerkiksi 27 3 1990')).toBeVisible()
   },
 }
@@ -343,7 +353,7 @@ export const OwnOrder: Story = {
   parameters: showSource('date-input/date-input.fixture.tsx', 'PaperFormDate'),
   render: (_args, { globals }) => <PaperFormDate locale={localeOf(globals)} />,
   play: async ({ canvasElement }) => {
-    await expect(boxLabels(canvasElement)).toEqual(['Dag', 'Månad', 'År'])
+    await expect(boxLabels(canvasElement)).toEqual(['Day', 'Month', 'Year'])
   },
 }
 
@@ -376,7 +386,7 @@ export const InvalidDate: ThreeBoxStory = {
   },
 }
 
-/** A date that is not a birthday has no `autoComplete`, and an optional one ends its legend with "(valfritt)". */
+/** A date that is not a birthday has no `autoComplete`, and an optional one ends its legend with the optional marker. */
 export const NotABirthday: Story = {
   parameters: showSource('date-input/date-input.fixture.tsx', 'VisitDate'),
   render: (_args, { globals }) => <VisitDate locale={localeOf(globals)} />,

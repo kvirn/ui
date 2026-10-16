@@ -4,7 +4,6 @@ import {
   motionAttribute,
   themeStorageKey,
 } from '@kvirn-ui/core'
-import { sv } from '@kvirn-ui/i18n/sv'
 import { afterEach, expect, test } from 'vite-plus/test'
 import { page } from 'vite-plus/test/browser'
 import { KvirnProvider } from './kvirn-provider.tsx'
@@ -28,7 +27,7 @@ test('hydration with a stored theme keeps the attributes the script set and the 
     JSON.stringify({ colorScheme: 'dark', contrast: 'more', motion: 'reduce' }),
   )
   const app = (
-    <KvirnProvider locale="sv-SE" messages={sv} timeZone="Europe/Stockholm">
+    <KvirnProvider locale="en" timeZone="Europe/Stockholm">
       <KvirnThemeScript nonce="r4nd0m" />
       <ThemeSwitcherFixture />
     </KvirnProvider>
@@ -42,9 +41,9 @@ test('hydration with a stored theme keeps the attributes the script set and the 
   expect(attributesBefore).toEqual(['dark', 'more', 'reduce'])
   hydrated = hydrate(container, app)
 
-  await expect.element(page.getByRole('radio', { name: 'Mörkt' })).toBeChecked()
-  await expect.element(page.getByRole('radio', { name: 'Hög kontrast' })).toBeChecked()
-  await expect.element(page.getByRole('radio', { name: 'Mindre rörelse' })).toBeChecked()
+  await expect.element(page.getByRole('radio', { name: 'Dark' })).toBeChecked()
+  await expect.element(page.getByRole('radio', { name: 'High contrast' })).toBeChecked()
+  await expect.element(page.getByRole('radio', { name: 'Less motion' })).toBeChecked()
   expect(
     [colorSchemeAttribute, contrastAttribute, motionAttribute].map((attribute) =>
       root.getAttribute(attribute),

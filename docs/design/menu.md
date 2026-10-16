@@ -6,12 +6,12 @@
 
 ## 1. Brief
 
-- **Users:** mainly staff (row actions in a case list, an editor's "More" overflow), many times a day, often keyboard-only, desktop, compact density. Residents rarely (a "Mina sidor" document row), once, on a phone.
+- **Users:** mainly staff (row actions in a case list, an editor's "More" overflow), many times a day, often keyboard-only, desktop, compact density. Residents rarely (a "My pages" document row), once, on a phone.
 - **Hardest cases:** 1. A resident with low digital confidence, Swedish as a second language, who doesn't know a button can hold hidden actions. 2. A magnifier user at 400% (320 × ~256 CSS px) who must see the whole menu and its highlighted item. 3. A tremor user on a phone, where a slip lands on the next item. 4. A Windows Contrast Themes user who must see the highlighted, checked and disabled items without the theme's colours.
 - **Job:** _When I need an action that isn't on screen, I want to open one labelled button, see every action in plain words, and pick one, so I can act without searching._
 - **Constraints:** APG Menu Button + Menu; DESIGN.md Overlays (level 3, `xl`, `space-2` padding, items at control height); existing tokens only; strings in six locales.
 - **Success:** 0 axe violations in every story state and theme; in the usability test (`pending`) participants find a menu action first time, and nobody triggers a destructive item by mistake.
-- **Evidence:** none from our users. Assumption: a visible word plus a chevron tells residents the button opens a list. → RQ: do low-confidence participants open "Åtgärder ˅" when the task needs it?
+- **Evidence:** none from our users. Assumption: a visible word plus a chevron tells residents the button opens a list. → RQ: do low-confidence participants open "Actions ˅" when the task needs it?
 
 ## 2. Prior art
 
@@ -25,7 +25,7 @@
 
 ## 3. Flow
 
-1. Staff see "Åtgärder ˅" in a case row. Click, Enter, Space or ArrowDown opens the menu below it; focus moves to the first item (ArrowUp: the last).
+1. Staff see "Actions ˅" in a case row. Click, Enter, Space or ArrowDown opens the menu below it; focus moves to the first item (ArrowUp: the last).
 2. Arrows or typeahead move the highlight. Enter, or a click, runs the item: the menu closes and focus returns to the trigger.
 3. An item that opens a Dialog moves focus into it; when the dialog closes, focus returns to the trigger.
 
@@ -41,37 +41,37 @@ Unhappy paths: **Escape** closes, nothing runs, focus on the trigger. **Tab** cl
 
 Menu ships **no component strings**: the trigger, items and group labels are the consumer's keys. Examples (longest is `fi`):
 
-| Key                                     | en                                | sv                                 | fi                               |
-| --------------------------------------- | --------------------------------- | ---------------------------------- | -------------------------------- |
-| `caseActions.trigger`                   | Actions                           | Åtgärder                           | Toiminnot                        |
-| `caseActions.assign`                    | Assign a case officer             | Tilldela handläggare               | Määritä käsittelijä              |
-| `caseActions.transfer`                  | Move the case to another unit     | Flytta ärendet till en annan enhet | Siirrä asia toiselle yksikölle   |
-| `caseActions.print`                     | Print the decision                | Skriv ut beslutet                  | Tulosta päätös                   |
-| `caseActions.delete`                    | Delete the draft                  | Ta bort utkastet                   | Poista luonnos                   |
-| `caseList.viewTrigger`                  | View options                      | Visningsval                        | Näkymän asetukset                |
-| `caseList.sortLabel` (group label)      | Sort by                           | Sortera efter                      | Lajitteluperuste                 |
-| `caseList.sortNewest` / `.sortOldest`   | Newest first / Oldest first       | Senaste först / Äldsta först       | Uusin ensin / Vanhin ensin       |
-| `caseList.showClosed` (checkbox)        | Show closed cases                 | Visa avslutade ärenden             | Näytä päättyneet asiat           |
-| `caseActions.unavailable` (description) | Only the case officer can do this | Bara handläggaren kan göra detta   | Vain käsittelijä voi tehdä tämän |
+| Key                                     | en                                | sv                                 | fi                                                                                                                  |
+| --------------------------------------- | --------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `caseActions.trigger`                   | Actions                           | Åtgärder                           | Toiminnot <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                        |
+| `caseActions.assign`                    | Assign a case officer             | Tilldela handläggare               | Määritä käsittelijä <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->              |
+| `caseActions.transfer`                  | Move the case to another unit     | Flytta ärendet till en annan enhet | Siirrä asia toiselle yksikölle <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->   |
+| `caseActions.print`                     | Print the decision                | Skriv ut beslutet                  | Tulosta päätös <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                   |
+| `caseActions.delete`                    | Delete the draft                  | Ta bort utkastet                   | Poista luonnos                                                                                                      |
+| `caseList.viewTrigger`                  | View options                      | Visningsval                        | Näkymän asetukset <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->                |
+| `caseList.sortLabel` (group label)      | Sort by                           | Sortera efter                      | Lajitteluperuste                                                                                                    |
+| `caseList.sortNewest` / `.sortOldest`   | Newest first / Oldest first       | Senaste först / Äldsta först       | Uusin ensin / Vanhin ensin <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->       |
+| `caseList.showClosed` (checkbox)        | Show closed cases                 | Visa avslutade ärenden             | Näytä päättyneet asiat <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->           |
+| `caseActions.unavailable` (description) | Only the case officer can do this | Bara handläggaren kan göra detta   | Vain käsittelijä voi tehdä tämän <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
 
-**Rules (docs page):** action items are verb + object ("Skriv ut beslutet"), never "OK" or a bare noun; checkbox and radio items name the option. Sentence case, no ellipsis. The trigger says what's inside ("Åtgärder", "Visningsval"), never only "…". **No icon-only items**, and no icon-only trigger (DESIGN.md Icons). At most about 7 items; more get group labels and separators. The destructive item is last, after a separator. Items keep their order: never sort by use. Shortcut hints only in staff tools, opt-in, keys untranslated and formatted per platform (Plan 0037's formatter).
+**Rules (docs page):** action items are verb + object ("Print the decision"), never "OK" or a bare noun; checkbox and radio items name the option. Sentence case, no ellipsis. The trigger says what's inside ("Actions", "View options"), never only "…". **No icon-only items**, and no icon-only trigger (DESIGN.md Icons). At most about 7 items; more get group labels and separators. The destructive item is last, after a separator. Items keep their order: never sort by use. Shortcut hints only in staff tools, opt-in, keys untranslated and formatted per platform (Plan 0037's formatter).
 
 ## 5. Structure
 
 ```
-[ Åtgärder  ˅ ]                       ← kv-button (secondary) + chevron-down, aria-haspopup=menu
+[ Actions  ˅ ]                       ← kv-button (secondary) + chevron-down, aria-haspopup=menu
 ┌──────────────────────────────────┐  ← kv-menu-popup, 4px below, level 3, xl, 8px padding
-│ ▓ Tilldela handläggare  {keys}  ▓│  ← kv-menu-item, highlighted; hint at inline end
-│   Flytta ärendet till en annan   │     long labels wrap, the row grows
-│   enhet                          │
-│   Skriv ut beslutet              │
+│ ▓ Assign a case officer {keys}  ▓│  ← kv-menu-item, highlighted; hint at inline end
+│   Move the case to another       │     long labels wrap, the row grows
+│   unit                           │
+│   Print the decision             │
 │ ──────────────────────────────── │  ← kv-menu-separator
-│ Sortera efter                    │  ← kv-menu-group-label (inside role=group)
-│ (•) Senaste först                │  ← kv-menu-item--radio, checked
-│ ( ) Äldsta först                 │
-│ [✓] Visa avslutade ärenden       │  ← kv-menu-item--checkbox, checked
+│ Sort by                          │  ← kv-menu-group-label (inside role=group)
+│ (•) Newest first                 │  ← kv-menu-item--radio, checked
+│ ( ) Oldest first                 │
+│ [✓] Show closed cases            │  ← kv-menu-item--checkbox, checked
 │ ──────────────────────────────── │
-│ [i] Ta bort utkastet             │  ← kv-menu-item--danger (delete icon), last
+│ [i] Delete the draft             │  ← kv-menu-item--danger (delete icon), last
 └──────────────────────────────────┘
 ```
 
@@ -91,7 +91,7 @@ Same at every breakpoint. Placement: below the trigger, aligned to its inline st
 | Radio indicator                                     | A 1em circle, 1px `border-control`; checked: a 0.5em dot in `currentColor`. Shape tells radio from checkbox (DESIGN.md Radii)                                                                                                           |
 | Group label `kv-menu-group-label`                   | `label` in `text`, padding `space-2` `space-3` `space-1`; not focusable                                                                                                                                                                 |
 | Separator `kv-menu-separator`                       | 1px `border-subtle`, margin-block `space-2`. Decorative: the group label and order carry grouping                                                                                                                                       |
-| Destructive `kv-menu-item--danger`                  | `danger` text and icon (`delete`); the words say it ("Ta bort …"), so never colour alone                                                                                                                                                |
+| Destructive `kv-menu-item--danger`                  | `danger` text and icon (`delete`); the words say it ("Delete …"), so never colour alone                                                                                                                                                 |
 
 ### 6.1 States
 
@@ -137,7 +137,7 @@ No new colour. One maintainer decision: **`--kv-menu-max-inline-size`** (a compo
 ## 7. Accessibility annotations (draft for `menu.a11y.md`)
 
 - **Roles:** trigger `<button type="button" aria-haspopup="menu" aria-expanded aria-controls>`; popup `role="menu"` `aria-labelledby` → trigger; items `menuitem`, `menuitemcheckbox`, `menuitemradio` with `aria-checked`; `role="group"` `aria-labelledby` → group label; `role="separator"`. Disabled: `aria-disabled="true"`, focusable, activation blocked.
-- **Names:** the trigger's visible text (2.5.3). In a table row, `aria-labelledby` = trigger, then the row's key cell ("Åtgärder, Ärende 2026-0142"). An item's name is its label; a description via `aria-describedby`; a shortcut via `aria-keyshortcuts`, its hint hidden from the name.
+- **Names:** the trigger's visible text (2.5.3). In a table row, `aria-labelledby` = trigger, then the row's key cell ("Actions, Case 2026-0142"). An item's name is its label; a description via `aria-describedby`; a shortcut via `aria-keyshortcuts`, its hint hidden from the name.
 - **Tab stops:** one, the trigger. Items use a roving tabindex (the focused item `0`, the others `-1`; the popup has none), and DOM focus moves.
 - **Keys (keyboard skill, Menu button and Menu rows):** Enter / Space / ArrowDown open on the first item, ArrowUp on the last; ArrowDown / ArrowUp next and previous, wrapping; Home / End; typeahead; Enter activates and closes; Escape closes, focus to the trigger; Tab closes and moves on. **Proposed (APG optional):** Space on a checkbox or radio item toggles and keeps the menu open; Enter toggles and closes (Q2; updates the key table).
 - **Focus on close:** the trigger; a Dialog's own focus when an item opens one; a documented fallback when the trigger is gone. Never `body`.
@@ -151,13 +151,13 @@ No new colour. One maintainer decision: **`--kv-menu-max-inline-size`** (a compo
 - [ ] `theme:check` needs no new pair. `--kv-menu-max-inline-size` is a size, not a colour.
 - [x] Usability test plan written. Result: `pending`. AT matrix: `pending`.
 
-**Usability test plan (`pending`).** Participants: NVDA, JAWS and VoiceOver (iOS) users; a magnifier user at 400%; a tremor user on a phone; a Windows Contrast Themes user; two second-language Swedish readers; two residents with low digital confidence; three staff. Tasks: 1. Print the decision for case 2026-0142 (row menu). 2. Show closed cases, newest first. 3. Delete a draft, then cancel. 4. Resident, phone: download a letter from "Mina sidor" with the actions visible, then in a menu (compare). 5. Keyboard only: assign a case officer in five rows. Measure: first-time discovery of the menu, wrong-item activations, accidental destructive starts, whether checked and highlighted items are told apart in Contrast Themes.
+**Usability test plan (`pending`).** Participants: NVDA, JAWS and VoiceOver (iOS) users; a magnifier user at 400%; a tremor user on a phone; a Windows Contrast Themes user; two second-language Swedish readers; two residents with low digital confidence; three staff. Tasks: 1. Print the decision for case 2026-0142 (row menu). 2. Show closed cases, newest first. 3. Delete a draft, then cancel. 4. Resident, phone: download a letter from "My pages" with the actions visible, then in a menu (compare). 5. Keyboard only: assign a case officer in five rows. Measure: first-time discovery of the menu, wrong-item activations, accidental destructive starts, whether checked and highlighted items are told apart in Contrast Themes.
 
 ## 9. Open questions
 
 1. **(maintainer) D1** `--kv-menu-max-inline-size` (§6.4). **D2** a DESIGN.md Overlays line for Menu (the highlighted row, the open trigger, "prefer visible buttons") and the index row.
 2. **Checkbox and radio items:** keep the menu open on Space and on click (see the result), close on Enter? APG allows it; confirm, then update the keyboard skill's Menu rows.
 3. **Submenus:** out of v1. Staff tools may ask; they'd need ArrowRight/Left (flipping in RTL) and hover intent. A plan of their own.
-4. **Dense tables:** staff may want an icon-only "⋯" trigger per row. DESIGN.md allows icon-only only for close and search, and there's no such icon. Keep "Åtgärder" in text, or a DESIGN.md change?
+4. **Dense tables:** staff may want an icon-only "⋯" trigger per row. DESIGN.md allows icon-only only for close and search, and there's no such icon. Keep "Actions" in text, or a DESIGN.md change?
 5. **Popup consistency:** the built Listbox popup is `md` with no padding and edge-to-edge rows; this spec follows DESIGN.md (`xl`, `space-2`, inset rows). Align Listbox to DESIGN.md, or amend DESIGN.md for list popups?
 6. **Outside tap on touch:** close only, or close and pass the tap to what's under it? Recommend close only, so a stray tap never activates a page control.

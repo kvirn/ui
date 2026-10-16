@@ -46,7 +46,7 @@ ProseRoot.displayName = 'Prose'
  *
  * @example
  * <Prose>
- *   <h2>Kontakta oss</h2>
+ *   <h2>Contact us</h2>
  *   <p>Vi svarar vardagar 9–16.</p>
  * </Prose>
  */

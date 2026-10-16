@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale fixture text sets (sv, fi, nb, nn), picked by the locale toolbar
 import { createMessageFormat } from '@kvirn-ui/core'
 import type { KvirnMessages, TextMessage } from '@kvirn-ui/i18n'
 import { en } from '@kvirn-ui/i18n/en'

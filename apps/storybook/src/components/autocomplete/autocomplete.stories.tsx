@@ -172,7 +172,7 @@ function firstOf(elements: HTMLElement[]): HTMLElement {
 }
 
 /** The input of the Autocomplete: its name is the label. */
-// A regular expression: the label of an optional field ends in "(valfritt)".
+// A regular expression: the label of an optional field ends in the locale's optional marker.
 const inputOf = (canvas: Canvas, label: string) =>
   canvas.getByRole('combobox', { name: new RegExp(label) })
 
@@ -241,6 +241,7 @@ export const WithValue: Story = {
   },
 }
 
+// kv-lang-ok: Swedish collation story, å, ä and ö are not a and o
 /** Typing filters the suggestions: å, ä and ö are not a and o in Swedish, so "ä" finds only the names that have it. */
 export const Suggestions: Story = {
   parameters: source('SuggestionsExample'),
@@ -248,8 +249,10 @@ export const Suggestions: Story = {
   play: async ({ canvas, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.street)
+    // kv-lang-ok: Swedish collation story, å, ä and ö are not a and o
     await userEvent.type(input, 'ä')
     await waitFor(() => expect(canvas.getByRole('listbox')).toBeVisible())
+    // kv-lang-ok: Swedish collation story, å, ä and ö are not a and o
     await expect(canvas.getByRole('option', { name: 'Järnvägsgatan' })).toBeVisible()
     await expect(canvas.queryByRole('option', { name: 'Storgatan' })).toBeNull()
   },
@@ -285,7 +288,7 @@ export const NoSuggestions: Story = {
   },
 }
 
-/** The suggestions are being fetched: the popup says "Laddar resultat", with `filter={false}` and `isLoading`. */
+/** The suggestions are being fetched: the popup shows its loading text, with `filter={false}` and `isLoading`. */
 export const Loading: Story = {
   parameters: source('LoadingExample'),
   render: (_args, { globals }) => <LoadingExample locale={localeOf(globals)} />,

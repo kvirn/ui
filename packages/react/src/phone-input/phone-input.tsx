@@ -269,7 +269,7 @@ PhoneInputCountry.displayName = 'PhoneInput.Country'
  * <Field.Root controlId="phone" required>
  *   <Field.Label>Telefonnummer</Field.Label>
  *   <PhoneInput.Number name="phone" />
- *   <Field.HelpText>Om numret inte är svenskt, börja med landsnumret, till exempel +358.</Field.HelpText>
+ *   <Field.HelpText>If the number is not Swedish, start with the country code, for example +358.</Field.HelpText>
  * </Field.Root>
  */
 export function PhoneInputNumber({

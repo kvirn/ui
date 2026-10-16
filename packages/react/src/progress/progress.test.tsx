@@ -90,13 +90,13 @@ describe('show delay', () => {
               <Progress.Label />
             </Progress.Root>
           ) : null}
-          <Button onClick={() => setIsWaiting(false)}>Klart</Button>
+          <Button onClick={() => setIsWaiting(false)}>Done</Button>
         </KvirnProvider>
       )
     }
     await render(<Waiting />)
     await advance(500)
-    await userEvent.click(page.getByRole('button', { name: 'Klart' }))
+    await userEvent.click(page.getByRole('button', { name: 'Done' }))
     await advance(20_000)
     await expect.element(page.getByText('Sending your application.')).not.toBeInTheDocument()
     await expect.element(politeRegion()).toHaveTextContent('')
@@ -118,7 +118,7 @@ describe('show delay', () => {
   test('takes the delay from delayMilliseconds', async () => {
     const { container } = await render(
       <KvirnProvider>
-        <Progress.Root label="Hämtar." delayMilliseconds={200}>
+        <Progress.Root label="Fetching." delayMilliseconds={200}>
           <Progress.Label />
         </Progress.Root>
       </KvirnProvider>,
@@ -202,7 +202,7 @@ describe('indicator', () => {
     const ref = createRef<HTMLElement>()
     const { container } = await render(
       <KvirnProvider>
-        <Progress.Root label="Hämtar.">
+        <Progress.Root label="Fetching.">
           <Progress.Indicator className="kv-spinner--lg" ref={ref} />
           <Progress.Label />
         </Progress.Root>
@@ -259,7 +259,7 @@ describe('announcements', () => {
               <Progress.Label />
             </Progress.Root>
           ) : null}
-          <Button onClick={() => setIsWaiting(false)}>Klart</Button>
+          <Button onClick={() => setIsWaiting(false)}>Done</Button>
         </KvirnProvider>
       )
     }
@@ -267,7 +267,7 @@ describe('announcements', () => {
     await passShowDelay()
     await advance(5500)
     await expect.element(politeRegion()).toHaveTextContent('')
-    await userEvent.click(page.getByRole('button', { name: 'Klart' }))
+    await userEvent.click(page.getByRole('button', { name: 'Done' }))
     await advance(20_000)
     await expect.element(page.getByText('Sending your application.')).not.toBeInTheDocument()
     await expect.element(politeRegion()).toHaveTextContent('')
@@ -317,28 +317,28 @@ describe('slow', () => {
     await render(
       <KvirnProvider>
         <Progress.Root
-          label="Hämtar."
+          label="Fetching."
           slowAfterMilliseconds={3000}
-          messages={{ slow: 'Det här tar tid. Stäng inte sidan.' }}
+          messages={{ slow: 'This takes time. Do not close the page.' }}
         >
           <Progress.Label />
         </Progress.Root>
       </KvirnProvider>,
     )
     await advance(3100)
-    await expect.element(page.getByText('Det här tar tid. Stäng inte sidan.')).toBeVisible()
+    await expect.element(page.getByText('This takes time. Do not close the page.')).toBeVisible()
   })
 
   test('announces the slow sentence even when it follows the label within three seconds', async () => {
     await render(
       <KvirnProvider>
-        <Progress.Root label="Hämtar." slowAfterMilliseconds={3000}>
+        <Progress.Root label="Fetching." slowAfterMilliseconds={3000}>
           <Progress.Label />
         </Progress.Root>
       </KvirnProvider>,
     )
     await advance(1100)
-    await expect.element(politeRegion()).toHaveTextContent('Hämtar.')
+    await expect.element(politeRegion()).toHaveTextContent('Fetching.')
     await advance(2000)
     await expect.element(politeRegion()).toHaveTextContent(slowText)
   })
@@ -346,7 +346,7 @@ describe('slow', () => {
   test('a slow limit inside the show delay still announces the slow sentence', async () => {
     await render(
       <KvirnProvider>
-        <Progress.Root label="Hämtar." delayMilliseconds={1000} slowAfterMilliseconds={500}>
+        <Progress.Root label="Fetching." delayMilliseconds={1000} slowAfterMilliseconds={500}>
           <Progress.Label />
         </Progress.Root>
       </KvirnProvider>,
@@ -354,7 +354,7 @@ describe('slow', () => {
     await advance(1300)
     await expect.element(page.getByText(slowText)).toBeVisible()
     await advance(200)
-    await expect.element(politeRegion()).toHaveTextContent(`Hämtar. ${slowText}`)
+    await expect.element(politeRegion()).toHaveTextContent(`Fetching. ${slowText}`)
   })
 })
 
@@ -400,7 +400,7 @@ describe('determinate', () => {
   test('max sets the scale, and the percent is clamped to 0 to 100', async () => {
     const { container } = await render(
       <KvirnProvider>
-        <Progress.Root label="Laddar upp" value={5} max={20}>
+        <Progress.Root label="Uploading" value={5} max={20}>
           <Progress.Label />
           <Progress.Bar />
         </Progress.Root>
@@ -409,7 +409,7 @@ describe('determinate', () => {
     await passShowDelay()
     expect(container.querySelector('progress')?.getAttribute('max')).toBe('20')
     expect(container.querySelector('progress')?.getAttribute('aria-valuetext')).toBe(
-      'Laddar upp, 25%',
+      'Uploading, 25%',
     )
   })
 })
@@ -439,8 +439,8 @@ describe('label', () => {
       </KvirnProvider>,
     )
     await passShowDelay()
-    await expect.element(page.getByRole('progressbar', { name: 'Laddar.' })).toBeVisible()
-    await expect.element(politeRegion()).toHaveTextContent('Laddar.')
+    await expect.element(page.getByRole('progressbar', { name: 'Laddar.' })).toBeVisible() // kv-lang-ok: the sv catalog string
+    await expect.element(politeRegion()).toHaveTextContent('Laddar.') // kv-lang-ok: the sv catalog string
   })
 
   test('Label children replace the label text but keep it as the name', async () => {
@@ -463,12 +463,12 @@ describe('keyboard', () => {
   function Around() {
     return (
       <KvirnProvider>
-        <Button>Före</Button>
+        <Button>Before</Button>
         <Progress.Root label="Sending your application." value={30}>
           <Progress.Label />
           <Progress.Bar />
         </Progress.Root>
-        <Button>Efter</Button>
+        <Button>After</Button>
       </KvirnProvider>
     )
   }
@@ -477,17 +477,17 @@ describe('keyboard', () => {
     await render(<Around />)
     await passShowDelay()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('Shift+Tab passes over it too', async () => {
     await render(<Around />)
     await passShowDelay()
-    page.getByRole('button', { name: 'Efter' }).element().focus()
+    page.getByRole('button', { name: 'After' }).element().focus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('focus stays on the button when the wait shows, turns slow and ends', async () => {
@@ -502,7 +502,7 @@ describe('keyboard', () => {
               setTimeout(() => setIsBusy(false), 12_000)
             }}
           >
-            Skicka
+            Send
           </Button>
           {isBusy ? (
             <Progress.Root label="Sending your application.">
@@ -513,7 +513,7 @@ describe('keyboard', () => {
       )
     }
     await render(<Sender />)
-    const send = page.getByRole('button', { name: 'Skicka' })
+    const send = page.getByRole('button', { name: 'Send' })
     await userEvent.keyboard('{Tab}')
     await userEvent.keyboard('{Enter}')
     await passShowDelay()
@@ -533,14 +533,18 @@ describe('parts', () => {
     const ref = createRef<HTMLElement>()
     const { container } = await render(
       <KvirnProvider>
-        <Progress.Root label="Hämtar." className="egen" ref={ref as React.Ref<HTMLDivElement>}>
+        <Progress.Root
+          label="Fetching."
+          className="own-class"
+          ref={ref as React.Ref<HTMLDivElement>}
+        >
           <Progress.Label as="div" />
         </Progress.Root>
       </KvirnProvider>,
     )
     await passShowDelay()
     const root = container.querySelector('div.kv-progress')
-    expect(root?.className).toContain('egen')
+    expect(root?.className).toContain('own-class')
     expect(ref.current).toBe(root)
     expect(container.querySelector('div.kv-progress-label')).not.toBeNull()
   })
@@ -548,7 +552,7 @@ describe('parts', () => {
   test('the Label takes span beside a busy button', async () => {
     const { container } = await render(
       <KvirnProvider>
-        <Progress.Root label="Hämtar.">
+        <Progress.Root label="Fetching.">
           <Progress.Label as="span" />
         </Progress.Root>
       </KvirnProvider>,
@@ -561,7 +565,7 @@ describe('parts', () => {
     const notAllowed = 'h2' as 'p'
     const { container } = await render(
       <KvirnProvider>
-        <Progress.Root label="Hämtar.">
+        <Progress.Root label="Fetching.">
           <Progress.Label as={notAllowed} />
         </Progress.Root>
       </KvirnProvider>,
@@ -600,7 +604,7 @@ describe('useProgress', () => {
   test('gives props for your own markup, with no bar until the value is known', async () => {
     const seen = vi.fn<(progress: UseProgressResult) => void>()
     function Own({ value }: { value?: number }) {
-      const progress = useProgress({ label: 'Hämtar ärenden.', value })
+      const progress = useProgress({ label: 'Fetching cases.', value })
       seen(progress)
       return progress.isShown ? (
         <div {...progress.rootProps}>
@@ -626,7 +630,7 @@ describe('useProgress', () => {
       </KvirnProvider>,
     )
     expect(seen.mock.lastCall?.[0].barProps?.value).toBe(60)
-    await expect.element(page.getByRole('progressbar', { name: 'Hämtar ärenden.' })).toBeVisible()
+    await expect.element(page.getByRole('progressbar', { name: 'Fetching cases.' })).toBeVisible()
     vi.useRealTimers()
     await expectNoA11yViolations(container)
   })

@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the type-ahead and collation examples use Swedish municipality names with å, ä and ö
 import contract from '../../../../../packages/react/src/listbox/listbox.a11y.md?raw'
 import guide from '../../../../../packages/react/src/listbox/listbox.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -136,7 +137,7 @@ const meta = {
     },
   },
   args: { onValueChange: logChange('onValueChange') },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [
     (Story) => (
       <div className="kv-story-form">
@@ -167,7 +168,7 @@ export const Default: Story = {
   parameters: showSource('listbox/listbox.fixture.tsx', 'MunicipalityField'),
   render: () => <MunicipalityField />,
   play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('combobox', { name: /Kommun/ })
+    const trigger = canvas.getByRole('combobox', { name: /Municipality/ })
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await expectMinimumTargetSize(trigger)
     await userEvent.click(trigger)
@@ -446,7 +447,7 @@ export const ControlledOpen: Story = {
     await waitFor(() => expect(state).toHaveTextContent('open: false, reason: escape'))
     await userEvent.click(trigger)
     await waitFor(() => expect(state).toHaveTextContent('open: true, reason: trigger-press'))
-    await userEvent.click(canvas.getByRole('button', { name: 'Före' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Before' }))
     await waitFor(() => expect(state).toHaveTextContent('open: false, reason: outside-press'))
   },
 }
@@ -464,12 +465,13 @@ export const Languages: Story = {
     await userEvent.click(trigger)
     await waitFor(() => expect(trigger).toHaveAttribute('aria-expanded', 'true'))
     const popup = within(canvas.getByRole('listbox'))
-    await expect(popup.getByRole('option', { name: 'English' })).toHaveAttribute('lang', 'en')
-    await expect(popup.getByRole('option', { name: 'Svenska' })).not.toHaveAttribute('lang')
+    await expect(popup.getByRole('option', { name: 'English' })).not.toHaveAttribute('lang')
+    await expect(popup.getByRole('option', { name: 'Svenska' })).toHaveAttribute('lang', 'sv')
     await userEvent.keyboard('{Escape}')
-    const select = canvas.getByRole('combobox', { name: /webbläsarens/ })
+    const select = canvas.getByRole('combobox', { name: /browser’s own/ })
     await expect(select.querySelector('option[value="fi"]')).toHaveAttribute('lang', 'fi')
-    await expect(select.querySelector('option[value="sv"]')).not.toHaveAttribute('lang')
+    await expect(select.querySelector('option[value="en"]')).not.toHaveAttribute('lang')
+    await expect(select.querySelector('option[value="sv"]')).toHaveAttribute('lang', 'sv')
   },
 }
 

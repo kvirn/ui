@@ -39,7 +39,7 @@ function focusToolbarStop(toolbar: HTMLElement | null): boolean {
  * The formatting toolbar (APG Toolbar, contract: rich-text-editor.a11y.md): a `Toolbar.Root` with
  * one Tab stop and the arrow keys between its controls, attached to the top of the editor's box.
  *
- * - **Named** "Formatering" plus the Field's label ("Formatering Beskrivning"), so two editors on
+ * - **Named** "Formatting" plus the Field's label ("Formatting Description"), so two editors on
  *   a page have different toolbars. It has `aria-controls` pointing at the editable text, and
  *   `aria-keyshortcuts="Alt+F10"`.
  * - **Alt+F10** (Option+F10) in the text moves focus to it, and **Escape** in it moves focus back
@@ -97,7 +97,7 @@ export function RichTextEditorToolbar({
     return null
   }
 
-  // "Formatering Beskrivning": the toolbar's own name, then the Field's label, so two editors on a
+  // "Formatting Description": the toolbar's own name, then the Field's label, so two editors on a
   // page have different names. Outside a Field the name stands alone.
   const hasOwnName = ariaLabel !== undefined || ariaLabelledBy !== undefined
   const nameProps = hasOwnName

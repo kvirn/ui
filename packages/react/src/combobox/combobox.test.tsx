@@ -60,10 +60,25 @@ interface Municipality {
 }
 
 const municipalities: readonly Municipality[] = [
+  { code: 'angelholm', name: 'Angelholm' },
+  { code: 'arvika', name: 'Arvika' },
+  { code: 'gbg', name: 'Goteborg' },
+  { code: 'malmo', name: 'Malmo' },
+  { code: 'orebro', name: 'Orebro' },
+  { code: 'sthlm', name: 'Stockholm', disabled: true },
+  { code: 'uppsala', name: 'Uppsala' },
+]
+
+// The names with Swedish letters, for the tests of filtering and accents.
+const swedishMunicipalities: readonly Municipality[] = [
+  // kv-lang-ok: Swedish names, for the å, ä and ö filtering tests
   { code: 'angelholm', name: 'Ängelholm' },
   { code: 'arvika', name: 'Arvika' },
+  // kv-lang-ok: Swedish names, for the å, ä and ö filtering tests
   { code: 'gbg', name: 'Göteborg' },
+  // kv-lang-ok: Swedish names, for the å, ä and ö filtering tests
   { code: 'malmo', name: 'Malmö' },
+  // kv-lang-ok: Swedish names, for the å, ä and ö filtering tests
   { code: 'orebro', name: 'Örebro' },
   { code: 'sthlm', name: 'Stockholm', disabled: true },
   { code: 'uppsala', name: 'Uppsala' },
@@ -71,7 +86,7 @@ const municipalities: readonly Municipality[] = [
 
 const numbered: readonly Municipality[] = Array.from({ length: 30 }, (_, index) => ({
   code: `n${index + 1}`,
-  name: `Alternativ ${index + 1}`,
+  name: `Option ${index + 1}`,
 }))
 
 /** The fixture's own buttons are unstyled: give them the 24px that 2.5.8 asks for, so axe checks the Combobox. */
@@ -92,13 +107,13 @@ function Example({
   return (
     <KvirnProvider locale={swedish ? 'sv-SE' : 'en'} messages={swedish ? sv : undefined}>
       {/* Above the input, so the popup (placed under it) never covers the text a test presses. */}
-      <p>Text utanför</p>
+      <p>Text outside</p>
       <button type="button" style={fixtureButtonStyle}>
-        Före
+        Before
       </button>
       <Field.Root required>
-        <Field.Label>Kommun</Field.Label>
-        <Field.Prose>Där du är folkbokförd.</Field.Prose>
+        <Field.Label>Municipality</Field.Label>
+        <Field.Prose>Where you are registered.</Field.Prose>
         <Combobox.Root
           items={items}
           itemToString={(municipality) => municipality.name}
@@ -125,7 +140,7 @@ function Example({
         </Combobox.Root>
       </Field.Root>
       <button type="button" style={fixtureButtonStyle}>
-        Efter
+        After
       </button>
     </KvirnProvider>
   )
@@ -134,9 +149,9 @@ function Example({
 function MultipleExample({ items = municipalities, swedish = false, ...rootProps }: MultipleProps) {
   return (
     <KvirnProvider locale={swedish ? 'sv-SE' : 'en'} messages={swedish ? sv : undefined}>
-      <p>Text utanför</p>
+      <p>Text outside</p>
       <Field.Root required>
-        <Field.Label>Kommuner</Field.Label>
+        <Field.Label>Municipalities</Field.Label>
         <Combobox.Root
           items={items}
           itemToString={(municipality) => municipality.name}
@@ -156,13 +171,13 @@ function MultipleExample({ items = municipalities, swedish = false, ...rootProps
         </Combobox.Root>
       </Field.Root>
       <button type="button" style={fixtureButtonStyle}>
-        Efter
+        After
       </button>
     </KvirnProvider>
   )
 }
 
-const input = () => page.getByRole('combobox', { name: /Kommun/ })
+const input = () => page.getByRole('combobox', { name: /Municipalit/ })
 
 /** A located element as an input element: the locators type it as `HTMLElement | SVGElement`. */
 function asInputElement(element: HTMLElement | SVGElement): HTMLInputElement {
@@ -244,8 +259,8 @@ describe('rendering', () => {
     const label = document.querySelector('label')
     expect(inputElement().id).toBe(label?.getAttribute('for'))
     expect(listElement()?.getAttribute('aria-labelledby')).toBe(label?.id)
-    await expect.element(input()).toHaveAccessibleName('Kommun')
-    await expect.element(input()).toHaveAccessibleDescription('Där du är folkbokförd.')
+    await expect.element(input()).toHaveAccessibleName('Municipality')
+    await expect.element(input()).toHaveAccessibleDescription('Where you are registered.')
   })
 
   test('typing opens the popup with the matching options, and focus stays on the input', async () => {
@@ -255,7 +270,7 @@ describe('rendering', () => {
     expect(inputElement().getAttribute('aria-expanded')).toBe('true')
     expect(inputElement().hasAttribute('data-open')).toBe(true)
     expect(popupElement()?.hasAttribute('data-open')).toBe(true)
-    expect(optionNames()).toEqual(['Arvika', 'Göteborg', 'Örebro'])
+    expect(optionNames()).toEqual(['Arvika', 'Goteborg', 'Orebro'])
     // Nothing is active until an arrow key, so Enter never chooses something the user didn't move to.
     expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
     await expect.element(input()).toHaveFocus()
@@ -282,19 +297,19 @@ describe('rendering', () => {
     expect(ids.every((id) => id !== '')).toBe(true)
     await expect.element(option('Stockholm')).toHaveAttribute('aria-disabled', 'true')
     await expect.element(option('Stockholm')).toHaveAttribute('data-disabled', '')
-    await expect.element(option('Malmö')).not.toHaveAttribute('aria-disabled')
-    await expect.element(option('Malmö')).toHaveAttribute('aria-selected', 'false')
+    await expect.element(option('Malmo')).not.toHaveAttribute('aria-disabled')
+    await expect.element(option('Malmo')).toHaveAttribute('aria-selected', 'false')
   })
 
   test('groups: role=group named by its label, with axe clean', async () => {
     const { container } = await render(
       <KvirnProvider>
         <Field.Root required>
-          <Field.Label>Kommun</Field.Label>
+          <Field.Label>Municipality</Field.Label>
           <Combobox.Root
             groups={[
-              { key: 'west', label: 'Västra Götaland', items: ['Göteborg', 'Borås'] },
-              { key: 'south', label: 'Skåne', items: ['Malmö'] },
+              { key: 'west', label: 'Vastra Gotaland', items: ['Goteborg', 'Boras'] },
+              { key: 'south', label: 'Skane', items: ['Malmo'] },
             ]}
           >
             <Combobox.Input />
@@ -307,8 +322,8 @@ describe('rendering', () => {
     )
     await typeText('{ArrowDown}')
     await expect.poll(isShown).toBe(true)
-    await expect.element(page.getByRole('group', { name: 'Västra Götaland' })).toBeVisible()
-    await expect.element(page.getByRole('group', { name: 'Skåne' })).toBeVisible()
+    await expect.element(page.getByRole('group', { name: 'Vastra Gotaland' })).toBeVisible()
+    await expect.element(page.getByRole('group', { name: 'Skane' })).toBeVisible()
     expect(container.querySelectorAll('.kv-listbox-group')).toHaveLength(2)
     await typeText('b')
     // The filter keeps the groups that still have a match, and drops the empty ones.
@@ -335,7 +350,7 @@ describe('rendering', () => {
     await render(<Example swedish />)
     await typeText('zzz')
     await expect.poll(isShown).toBe(true)
-    expect(emptyText()).toBe('Inga resultat')
+    expect(emptyText()).toBe('Inga resultat') // kv-lang-ok: the sv catalog string
   })
 
   test('there is no Combobox.Empty element while the list has options', async () => {
@@ -352,14 +367,14 @@ describe('rendering', () => {
     await render(
       <KvirnProvider>
         <Field.Root required>
-          <Field.Label>Kommun</Field.Label>
-          <Combobox.Root items={['Göteborg']} defaultOpen>
+          <Field.Label>Municipality</Field.Label>
+          <Combobox.Root items={['Goteborg']} defaultOpen>
             <Combobox.Control ref={controlRef} className="egen" data-egen="control">
               <Combobox.Input
                 ref={inputRef}
                 className="egen"
                 data-egen="input"
-                placeholder="Börja skriva"
+                placeholder="Start typing"
                 autoComplete="address-level2"
               />
             </Combobox.Control>
@@ -376,7 +391,7 @@ describe('rendering', () => {
     expect(controlRef.current?.className).toBe('egen kv-combobox-control')
     expect(inputRef.current?.className).toBe('egen kv-combobox-input')
     expect(inputRef.current?.getAttribute('data-egen')).toBe('input')
-    expect(inputRef.current?.getAttribute('placeholder')).toBe('Börja skriva')
+    expect(inputRef.current?.getAttribute('placeholder')).toBe('Start typing')
     // Your own autoComplete replaces the default.
     expect(inputRef.current?.getAttribute('autocomplete')).toBe('address-level2')
     // The part's own ref still reaches the hook: the popup was placed against the control.
@@ -389,9 +404,9 @@ describe('in a Field', () => {
     const { container } = await render(
       <KvirnProvider>
         <Field.Root invalid required>
-          <Field.Label>Kommun</Field.Label>
-          <Field.ErrorMessage>Välj en kommun</Field.ErrorMessage>
-          <Combobox.Root items={['Göteborg']}>
+          <Field.Label>Municipality</Field.Label>
+          <Field.ErrorMessage>Choose a municipality</Field.ErrorMessage>
+          <Combobox.Root items={['Goteborg']}>
             <Combobox.Input />
             <Combobox.Popup>
               <Combobox.List>{(item: string) => <Combobox.Option item={item} />}</Combobox.List>
@@ -414,7 +429,7 @@ describe('in a Field', () => {
     expect(invalid.getAttribute('aria-required')).toBe('true')
     expect(invalid.hasAttribute('data-invalid')).toBe(true)
     expect(invalid.hasAttribute('data-required')).toBe(true)
-    await expect.element(input()).toHaveAccessibleDescription('Error: Välj en kommun')
+    await expect.element(input()).toHaveAccessibleDescription('Error: Choose a municipality')
     const disabled = asInputElement(page.getByRole('combobox', { name: /Land/ }).element())
     expect(disabled.disabled).toBe(true)
     expect(disabled.hasAttribute('data-disabled')).toBe(true)
@@ -426,16 +441,16 @@ describe('in a Field', () => {
     await render(<Example disabled onOpenChange={onOpenChange} />)
     expect(inputElement().disabled).toBe(true)
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     expect(isShown()).toBe(false)
     expect(onOpenChange).not.toHaveBeenCalled()
   })
 
   test('clicking the label focuses the input', async () => {
     await render(<Example />)
-    await userEvent.click(page.getByText('Kommun', { exact: true }))
+    await userEvent.click(page.getByText('Municipality', { exact: true }))
     await expect.element(input()).toHaveFocus()
     expect(isShown()).toBe(false)
   })
@@ -443,7 +458,7 @@ describe('in a Field', () => {
   test('an input in a Field with no label warns once', async () => {
     await render(
       <Field.Root>
-        <Combobox.Root items={['Göteborg']}>
+        <Combobox.Root items={['Goteborg']}>
           <Combobox.Input />
           <Combobox.Popup>
             <Combobox.List>{(item: string) => <Combobox.Option item={item} />}</Combobox.List>
@@ -457,10 +472,10 @@ describe('in a Field', () => {
 
   test('an input outside a Field with no name warns once, and aria-label names it', async () => {
     await render(
-      <Combobox.Root items={['Göteborg']}>
+      <Combobox.Root items={['Goteborg']}>
         <Combobox.Input />
         <Combobox.Popup>
-          <Combobox.List aria-label="Kommuner">
+          <Combobox.List aria-label="Municipalities">
             {(item: string) => <Combobox.Option item={item} />}
           </Combobox.List>
         </Combobox.Popup>
@@ -471,21 +486,21 @@ describe('in a Field', () => {
     resetDevWarnings()
     consoleWarn.mockClear()
     await render(
-      <Combobox.Root items={['Göteborg']}>
-        <Combobox.Input aria-label="Kommun" />
+      <Combobox.Root items={['Goteborg']}>
+        <Combobox.Input aria-label="Municipality" />
         <Combobox.Popup>
-          <Combobox.List aria-label="Kommuner">
+          <Combobox.List aria-label="Municipalities">
             {(item: string) => <Combobox.Option item={item} />}
           </Combobox.List>
         </Combobox.Popup>
       </Combobox.Root>,
     )
     expect(consoleWarn).not.toHaveBeenCalled()
-    await expect.element(page.getByRole('combobox', { name: 'Kommun' })).toBeVisible()
+    await expect.element(page.getByRole('combobox', { name: 'Municipality' })).toBeVisible()
   })
 
   test('a part outside a Root warns once', async () => {
-    await render(<Combobox.Input aria-label="Kommun" />)
+    await render(<Combobox.Input aria-label="Municipality" />)
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('outside a Combobox.Root')
   })
@@ -510,9 +525,9 @@ describe('opening and closing', () => {
     await render(<Example onOpenChange={onOpenChange} />)
     await typeText('r')
     await expect.poll(isShown).toBe(true)
-    await userEvent.click(page.getByRole('button', { name: 'Före' }))
+    await userEvent.click(page.getByRole('button', { name: 'Before' }))
     await expect.poll(isShown).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     expect(onOpenChange).toHaveBeenLastCalledWith(false, { reason: 'outside-press' })
   })
 
@@ -534,7 +549,7 @@ describe('opening and closing', () => {
     await expect.poll(isShown).toBe(true)
     await userEvent.keyboard('{Tab}')
     await expect.poll(isShown).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('focus moving to another control closes the popup with the reason "blur"', async () => {
@@ -542,7 +557,7 @@ describe('opening and closing', () => {
     await render(<Example onOpenChange={onOpenChange} />)
     await typeText('r')
     await expect.poll(isShown).toBe(true)
-    asHtmlElement(page.getByRole('button', { name: 'Efter' }).element()).focus()
+    asHtmlElement(page.getByRole('button', { name: 'After' }).element()).focus()
     await expect.poll(isShown).toBe(false)
     expect(onOpenChange).toHaveBeenLastCalledWith(false, { reason: 'blur' })
   })
@@ -582,8 +597,8 @@ describe('keyboard', () => {
     await render(<Example />)
     await typeText('{ArrowDown}')
     await expect.poll(isShown).toBe(true)
-    expect(activeName()).toBe('Ängelholm')
-    await expect.element(option('Ängelholm')).toHaveAttribute('data-active', '')
+    expect(activeName()).toBe('Angelholm')
+    await expect.element(option('Angelholm')).toHaveAttribute('data-active', '')
     await expect.element(input()).toHaveFocus()
   })
 
@@ -598,7 +613,7 @@ describe('keyboard', () => {
     await render(<Example defaultValue="malmo" />)
     await typeText('{ArrowDown}')
     await expect.poll(isShown).toBe(true)
-    expect(activeName()).toBe('Malmö')
+    expect(activeName()).toBe('Malmo')
   })
 
   test('ArrowDown and ArrowUp move the active option and stop at the ends: no wrap', async () => {
@@ -607,9 +622,9 @@ describe('keyboard', () => {
     await userEvent.keyboard('{ArrowDown}')
     expect(activeName()).toBe('Arvika')
     await userEvent.keyboard('{ArrowUp}')
-    expect(activeName()).toBe('Ängelholm')
+    expect(activeName()).toBe('Angelholm')
     await userEvent.keyboard('{ArrowUp}')
-    expect(activeName()).toBe('Ängelholm')
+    expect(activeName()).toBe('Angelholm')
     for (let step = 0; step < 8; step += 1) {
       await userEvent.keyboard('{ArrowDown}')
     }
@@ -619,14 +634,14 @@ describe('keyboard', () => {
   test('PageDown and PageUp move ten options, and stop at the ends', async () => {
     await render(<Example items={numbered} />)
     await typeText('{ArrowDown}')
-    expect(activeName()).toBe('Alternativ 1')
+    expect(activeName()).toBe('Option 1')
     await userEvent.keyboard('{PageDown}')
-    expect(activeName()).toBe('Alternativ 11')
+    expect(activeName()).toBe('Option 11')
     await userEvent.keyboard('{PageDown}')
     await userEvent.keyboard('{PageDown}')
-    expect(activeName()).toBe('Alternativ 30')
+    expect(activeName()).toBe('Option 30')
     await userEvent.keyboard('{PageUp}')
-    expect(activeName()).toBe('Alternativ 20')
+    expect(activeName()).toBe('Option 20')
   })
 
   test('Home, End, ArrowLeft, ArrowRight and Space are left to the input: the caret moves, a space is typed, and no option stays active', async () => {
@@ -671,12 +686,12 @@ describe('keyboard', () => {
     await typeText('m')
     await userEvent.keyboard('{ArrowDown}')
     await userEvent.keyboard('{ArrowDown}')
-    expect(activeName()).toBe('Malmö')
+    expect(activeName()).toBe('Malmo')
     await userEvent.keyboard('{Enter}')
     await expect.poll(isShown).toBe(false)
     expect(onValueChange).toHaveBeenCalledWith('malmo', { reason: 'key' })
-    expect(onInputValueChange).toHaveBeenLastCalledWith('Malmö', { reason: 'selection' })
-    expect(inputElement().value).toBe('Malmö')
+    expect(onInputValueChange).toHaveBeenLastCalledWith('Malmo', { reason: 'selection' })
+    expect(inputElement().value).toBe('Malmo')
     expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
     await expect.element(input()).toHaveFocus()
   })
@@ -688,15 +703,15 @@ describe('keyboard', () => {
     await render(
       <KvirnProvider>
         <form
-          aria-label="Ansökan"
+          aria-label="Application"
           onSubmit={(event) => {
             event.preventDefault()
             onSubmit(event)
           }}
         >
           <Field.Root>
-            <Field.Label>Kommun</Field.Label>
-            <Combobox.Root items={['Göteborg', 'Malmö']} onValueChange={onValueChange}>
+            <Field.Label>Municipality</Field.Label>
+            <Combobox.Root items={['Goteborg', 'Malmo']} onValueChange={onValueChange}>
               <Combobox.Input />
               <Combobox.Popup>
                 <Combobox.List>{(item: string) => <Combobox.Option item={item} />}</Combobox.List>
@@ -704,7 +719,7 @@ describe('keyboard', () => {
             </Combobox.Root>
           </Field.Root>
           <button type="submit" style={fixtureButtonStyle}>
-            Skicka
+            Submit
           </button>
         </form>
       </KvirnProvider>,
@@ -723,15 +738,15 @@ describe('keyboard', () => {
     await render(
       <KvirnProvider>
         <form
-          aria-label="Ansökan"
+          aria-label="Application"
           onSubmit={(event) => {
             event.preventDefault()
             onSubmit(event)
           }}
         >
           <Field.Root>
-            <Field.Label>Kommun</Field.Label>
-            <Combobox.Root items={['Göteborg', 'Malmö']}>
+            <Field.Label>Municipality</Field.Label>
+            <Combobox.Root items={['Goteborg', 'Malmo']}>
               <Combobox.Input />
               <Combobox.Popup>
                 <Combobox.List>{(item: string) => <Combobox.Option item={item} />}</Combobox.List>
@@ -739,7 +754,7 @@ describe('keyboard', () => {
             </Combobox.Root>
           </Field.Root>
           <button type="submit" style={fixtureButtonStyle}>
-            Skicka
+            Submit
           </button>
         </form>
       </KvirnProvider>,
@@ -747,7 +762,7 @@ describe('keyboard', () => {
     await typeText('{ArrowDown}')
     await userEvent.keyboard('{Enter}')
     expect(onSubmit).not.toHaveBeenCalled()
-    expect(inputElement().value).toBe('Göteborg')
+    expect(inputElement().value).toBe('Goteborg')
   })
 
   test('Escape closes the popup and keeps the text and the value, and a second Escape keeps them too', async () => {
@@ -756,9 +771,9 @@ describe('keyboard', () => {
     await expect.poll(isShown).toBe(true)
     await userEvent.keyboard('{Escape}')
     await expect.poll(isShown).toBe(false)
-    expect(inputElement().value).toBe('Malmö')
+    expect(inputElement().value).toBe('Malmo')
     await userEvent.keyboard('{Escape}')
-    expect(inputElement().value).toBe('Malmö')
+    expect(inputElement().value).toBe('Malmo')
     await expect.element(input()).toHaveFocus()
   })
 
@@ -779,7 +794,7 @@ describe('keyboard', () => {
     await userEvent.keyboard('{Tab}')
     await expect.poll(isShown).toBe(false)
     expect(onValueChange).not.toHaveBeenCalled()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('Shift+Tab closes the popup without choosing, and moves focus back', async () => {
@@ -790,14 +805,14 @@ describe('keyboard', () => {
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     await expect.poll(isShown).toBe(false)
     expect(onValueChange).not.toHaveBeenCalled()
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('Shift+Tab leaves the input backwards while the popup is closed', async () => {
     await render(<Example />)
     inputElement().focus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('right to left: ArrowDown and ArrowUp still mean next and previous option, and ArrowLeft and ArrowRight only move the caret', async () => {
@@ -807,15 +822,15 @@ describe('keyboard', () => {
       </div>,
     )
     await typeText('{ArrowDown}')
-    expect(activeName()).toBe('Ängelholm')
+    expect(activeName()).toBe('Angelholm')
     await userEvent.keyboard('{ArrowDown}')
     expect(activeName()).toBe('Arvika')
     await userEvent.keyboard('{ArrowUp}')
-    expect(activeName()).toBe('Ängelholm')
+    expect(activeName()).toBe('Angelholm')
     await userEvent.keyboard('{ArrowLeft}')
     expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
     await userEvent.keyboard('{ArrowDown}')
-    expect(activeName()).toBe('Ängelholm')
+    expect(activeName()).toBe('Angelholm')
     await userEvent.keyboard('{ArrowRight}')
     expect(inputElement().hasAttribute('aria-activedescendant')).toBe(false)
     expect(isShown()).toBe(true)
@@ -878,11 +893,11 @@ describe('keyboard', () => {
   test('Tab goes through the field in order: the input is one stop', async () => {
     await render(<Example withButtons />)
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
     await expect.element(input()).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('the keys it handles are cancelled, and the others are left to the browser', async () => {
@@ -928,7 +943,7 @@ describe('pointer', () => {
     await userEvent.click(input())
     await expect.element(input()).toHaveFocus()
     await expect.element(input()).toHaveAttribute('data-focused', '')
-    await userEvent.click(page.getByRole('button', { name: 'Efter' }))
+    await userEvent.click(page.getByRole('button', { name: 'After' }))
     await expect.element(input()).not.toHaveAttribute('data-focused')
   })
 
@@ -939,39 +954,47 @@ describe('pointer', () => {
     await render(<Example onValueChange={onValueChange} onOpenChange={onOpenChange} />)
     await typeText('r')
     await expect.poll(isShown).toBe(true)
-    await userEvent.click(option('Örebro'))
+    await userEvent.click(option('Orebro'))
     await expect.poll(isShown).toBe(false)
     expect(onValueChange).toHaveBeenCalledWith('orebro', { reason: 'option-press' })
     expect(onOpenChange).toHaveBeenLastCalledWith(false, { reason: 'option-press' })
     await expect.element(input()).toHaveFocus()
-    expect(inputElement().value).toBe('Örebro')
+    expect(inputElement().value).toBe('Orebro')
   })
 
   test('moving the pointer over an option makes it the active option', async () => {
     await render(<Example />)
     await typeText('{ArrowDown}')
-    await userEvent.hover(option('Göteborg'))
-    await expect.poll(activeName).toBe('Göteborg')
-    await expect.element(option('Göteborg')).toHaveAttribute('data-active', '')
+    await userEvent.hover(option('Goteborg'))
+    await expect.poll(activeName).toBe('Goteborg')
+    await expect.element(option('Goteborg')).toHaveAttribute('data-active', '')
   })
 })
 
 describe('filtering', () => {
+  // kv-lang-ok: å, ä and ö filtering is the point of this test
   test('å, ä and ö are not a and o in the Swedish provider', async () => {
-    await render(<Example swedish />)
+    await render(<Example swedish items={swedishMunicipalities} />)
     await typeText('a')
     await expect.poll(isShown).toBe(true)
+    // kv-lang-ok: å, ä and ö filtering is the point of this test
     expect(optionNames()).toEqual(['Arvika', 'Malmö', 'Uppsala'])
+    // kv-lang-ok: å, ä and ö filtering is the point of this test
     await userEvent.fill(input(), 'ä')
+    // kv-lang-ok: å, ä and ö filtering is the point of this test
     await expect.poll(optionNames).toEqual(['Ängelholm'])
+    // kv-lang-ok: å, ä and ö filtering is the point of this test
     await userEvent.fill(input(), 'ö')
+    // kv-lang-ok: å, ä and ö filtering is the point of this test
     await expect.poll(optionNames).toEqual(['Göteborg', 'Malmö', 'Örebro'])
   })
 
+  // kv-lang-ok: å, ä and ö filtering is the point of this test
   test('in English the accents are ignored: a finds Ängelholm too', async () => {
-    await render(<Example />)
+    await render(<Example items={swedishMunicipalities} />)
     await typeText('a')
     await expect.poll(isShown).toBe(true)
+    // kv-lang-ok: å, ä and ö filtering is the point of this test
     expect(optionNames()).toEqual(['Ängelholm', 'Arvika', 'Malmö', 'Uppsala'])
   })
 
@@ -998,7 +1021,7 @@ describe('filtering', () => {
     await render(<Example filter={false} items={municipalities.slice(0, 3)} />)
     await typeText('zzz')
     await expect.poll(isShown).toBe(true)
-    expect(optionNames()).toEqual(['Ängelholm', 'Arvika', 'Göteborg'])
+    expect(optionNames()).toEqual(['Angelholm', 'Arvika', 'Goteborg'])
   })
 
   test('new items from outside replace the list', async () => {
@@ -1007,7 +1030,7 @@ describe('filtering', () => {
       return (
         <>
           <button type="button" style={fixtureButtonStyle} onClick={() => setItems(municipalities)}>
-            Hämta
+            Fetch
           </button>
           <Example items={items} defaultValue="arvika" />
         </>
@@ -1015,7 +1038,7 @@ describe('filtering', () => {
     }
     await render(<Changing />)
     expect(inputElement().value).toBe('Arvika')
-    await userEvent.click(page.getByRole('button', { name: 'Hämta' }))
+    await userEvent.click(page.getByRole('button', { name: 'Fetch' }))
     await userEvent.fill(input(), '')
     await userEvent.keyboard('{ArrowDown}')
     await expect.poll(() => optionNames().length).toBe(7)
@@ -1033,7 +1056,7 @@ describe('the text is never cleared silently', () => {
     await userEvent.keyboard('{Escape}')
     expect(inputElement().value).toBe('zzz')
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     expect(inputElement().value).toBe('zzz')
     expect(onValueChange).not.toHaveBeenCalled()
   })
@@ -1042,9 +1065,9 @@ describe('the text is never cleared silently', () => {
     const onValueChange =
       vi.fn<(value: string | null, details: ComboboxValueChangeDetails) => void>()
     await render(<Example defaultValue="gbg" onValueChange={onValueChange} />)
-    expect(inputElement().value).toBe('Göteborg')
-    await userEvent.fill(input(), 'Göteborgx')
-    expect(inputElement().value).toBe('Göteborgx')
+    expect(inputElement().value).toBe('Goteborg')
+    await userEvent.fill(input(), 'Goteborgx')
+    expect(inputElement().value).toBe('Goteborgx')
     expect(onValueChange).toHaveBeenCalledWith(null, { reason: 'input' })
   })
 
@@ -1077,11 +1100,11 @@ describe('Clear with several choices', () => {
     await render(
       <KvirnProvider>
         <Field.Root>
-          <Field.Label>Kommuner</Field.Label>
+          <Field.Label>Municipalities</Field.Label>
           <Combobox.Root
             multiple
-            items={['Göteborg', 'Malmö', 'Uppsala']}
-            defaultValue={['Malmö', 'Uppsala']}
+            items={['Goteborg', 'Malmo', 'Uppsala']}
+            defaultValue={['Malmo', 'Uppsala']}
             onValueChange={onValueChange}
           >
             <Combobox.ValueList />
@@ -1099,14 +1122,14 @@ describe('Clear with several choices', () => {
     const clear = () => page.getByRole('button', { name: 'Clear' })
     // Values alone don't make a Clear button.
     expect(clear().elements()).toHaveLength(0)
-    await userEvent.type(page.getByRole('combobox', { name: /Kommuner/ }), 'gö')
+    await userEvent.type(page.getByRole('combobox', { name: /Municipalities/ }), 'go')
     await userEvent.click(clear())
-    expect(asInputElement(page.getByRole('combobox', { name: /Kommuner/ }).element()).value).toBe(
-      '',
-    )
+    expect(
+      asInputElement(page.getByRole('combobox', { name: /Municipalities/ }).element()).value,
+    ).toBe('')
     expect(onValueChange).not.toHaveBeenCalled()
     expect(page.getByRole('listitem').elements()).toHaveLength(2)
-    await expect.element(page.getByRole('combobox', { name: /Kommuner/ })).toHaveFocus()
+    await expect.element(page.getByRole('combobox', { name: /Municipalities/ })).toHaveFocus()
     await expect.poll(() => clear().elements().length).toBe(0)
   })
 })
@@ -1136,8 +1159,8 @@ describe('Toggle and Clear', () => {
 
   test('Toggle and Clear are named in the provider’s language', async () => {
     await render(<Example withButtons swedish defaultValue="gbg" />)
-    await expect.element(page.getByRole('button', { name: 'Visa alternativ' })).toBeVisible()
-    await expect.element(page.getByRole('button', { name: 'Rensa' })).toBeVisible()
+    await expect.element(page.getByRole('button', { name: 'Visa alternativ' })).toBeVisible() // kv-lang-ok: the sv catalog string
+    await expect.element(page.getByRole('button', { name: 'Rensa' })).toBeVisible() // kv-lang-ok: the sv catalog string
   })
 
   test('Clear is not rendered while there is nothing to clear, and a disabled field disables the buttons', async () => {
@@ -1150,11 +1173,11 @@ describe('Toggle and Clear', () => {
 describe('value', () => {
   test('uncontrolled: defaultValue shows its text, and a choice is kept without a parent', async () => {
     await render(<Example defaultValue="gbg" />)
-    expect(inputElement().value).toBe('Göteborg')
+    expect(inputElement().value).toBe('Goteborg')
     await typeText('{ArrowDown}')
     await userEvent.keyboard('{ArrowDown}')
     await userEvent.keyboard('{Enter}')
-    expect(inputElement().value).toBe('Malmö')
+    expect(inputElement().value).toBe('Malmo')
   })
 
   test('opening after a choice shows the whole list, with the chosen option marked', async () => {
@@ -1162,8 +1185,8 @@ describe('value', () => {
     await typeText('{ArrowDown}')
     await expect.poll(isShown).toBe(true)
     expect(optionNames()).toHaveLength(7)
-    await expect.element(option('Malmö')).toHaveAttribute('aria-selected', 'true')
-    await expect.element(option('Malmö')).toHaveAttribute('data-selected', '')
+    await expect.element(option('Malmo')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(option('Malmo')).toHaveAttribute('data-selected', '')
   })
 
   test('controlled: shows the value it is given, and follows it', async () => {
@@ -1179,14 +1202,14 @@ describe('value', () => {
       )
     }
     await render(<Controlled />)
-    expect(inputElement().value).toBe('Göteborg')
+    expect(inputElement().value).toBe('Goteborg')
     await userEvent.click(page.getByRole('button', { name: 'Uppsala' }))
     await expect.poll(() => inputElement().value).toBe('Uppsala')
     await typeText('{ArrowDown}')
     await userEvent.keyboard('{ArrowUp}')
     await userEvent.keyboard('{ArrowUp}')
     await userEvent.keyboard('{Enter}')
-    await expect.poll(() => inputElement().value).toBe('Örebro')
+    await expect.poll(() => inputElement().value).toBe('Orebro')
   })
 
   test('controlled: stays as it is when the parent does not update the value', async () => {
@@ -1197,16 +1220,16 @@ describe('value', () => {
     await userEvent.keyboard('{ArrowDown}')
     await userEvent.keyboard('{Enter}')
     expect(onValueChange).toHaveBeenCalledWith('malmo', { reason: 'key' })
-    await expect.poll(() => inputElement().value).toBe('Göteborg')
+    await expect.poll(() => inputElement().value).toBe('Goteborg')
   })
 
   test('controlled inputValue: shows the text it is given, and a refused change is pulled back', async () => {
     const onInputValueChange = vi.fn<(value: string, details: ComboboxInputChangeDetails) => void>()
-    await render(<Example inputValue="Gö" onInputValueChange={onInputValueChange} />)
-    expect(inputElement().value).toBe('Gö')
+    await render(<Example inputValue="Go" onInputValueChange={onInputValueChange} />)
+    expect(inputElement().value).toBe('Go')
     await userEvent.type(input(), 'x')
-    expect(onInputValueChange).toHaveBeenCalledWith('Göx', { reason: 'input' })
-    await expect.poll(() => inputElement().value).toBe('Gö')
+    expect(onInputValueChange).toHaveBeenCalledWith('Gox', { reason: 'input' })
+    await expect.poll(() => inputElement().value).toBe('Go')
   })
 
   test('controlled inputValue that the parent updates follows the typing', async () => {
@@ -1219,7 +1242,7 @@ describe('value', () => {
     await expect.poll(isShown).toBe(true)
     await userEvent.keyboard('r')
     await expect.poll(() => inputElement().value).toBe('or')
-    expect(optionNames()).toEqual(['Göteborg', 'Örebro'])
+    expect(optionNames()).toEqual(['Goteborg', 'Orebro'])
   })
 
   test('the value is a key: onValueChange gets the key and the reason', async () => {
@@ -1245,15 +1268,15 @@ describe('multiple', () => {
     expect(listElement()?.getAttribute('aria-multiselectable')).toBe('true')
     await userEvent.keyboard('{ArrowDown}')
     await userEvent.keyboard('{ArrowDown}')
-    expect(activeName()).toBe('Malmö')
+    expect(activeName()).toBe('Malmo')
     await userEvent.keyboard('{Enter}')
     expect(onValueChange).toHaveBeenCalledWith(['malmo'], { reason: 'key' })
     expect(onInputValueChange).toHaveBeenLastCalledWith('', { reason: 'selection' })
     expect(inputElement().value).toBe('')
     expect(isShown()).toBe(true)
     await expect.poll(() => optionNames().length).toBe(7)
-    await expect.element(option('Malmö')).toHaveAttribute('aria-selected', 'true')
-    await expect.element(page.getByRole('button', { name: 'Remove Malmö' })).toBeVisible()
+    await expect.element(option('Malmo')).toHaveAttribute('aria-selected', 'true')
+    await expect.element(page.getByRole('button', { name: 'Remove Malmo' })).toBeVisible()
     await expect.element(input()).toHaveFocus()
     await expectNoA11yViolations(container)
   })
@@ -1262,9 +1285,9 @@ describe('multiple', () => {
     const onValueChange = vi.fn<(value: string[], details: ComboboxValueChangeDetails) => void>()
     await render(<MultipleExample defaultValue={['malmo']} onValueChange={onValueChange} />)
     await typeText('{ArrowDown}')
-    await userEvent.click(option('Malmö'))
+    await userEvent.click(option('Malmo'))
     expect(onValueChange).toHaveBeenCalledWith([], { reason: 'option-press' })
-    expect(page.getByRole('button', { name: 'Remove Malmö' }).elements()).toHaveLength(0)
+    expect(page.getByRole('button', { name: 'Remove Malmo' }).elements()).toHaveLength(0)
   })
 
   test('the value list is a list named by the Field’s label, with a remove button per value', async () => {
@@ -1279,7 +1302,7 @@ describe('multiple', () => {
         .getByRole('listitem')
         .elements()
         .map((element) => element.textContent),
-    ).toEqual(['Malmö', 'Göteborg', 'Uppsala'])
+    ).toEqual(['Malmo', 'Goteborg', 'Uppsala'])
     const buttons = page.getByRole('button', { name: /^Remove / }).elements()
     expect(buttons).toHaveLength(3)
     expect(buttons.every((button) => button.getAttribute('type') === 'button')).toBe(true)
@@ -1299,7 +1322,7 @@ describe('multiple', () => {
     await render(
       <MultipleExample defaultValue={['malmo', 'gbg', 'uppsala']} onValueChange={onValueChange} />,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Remove Göteborg' }))
+    await userEvent.click(page.getByRole('button', { name: 'Remove Goteborg' }))
     expect(onValueChange).toHaveBeenCalledWith(['malmo', 'uppsala'], { reason: 'remove' })
     await expect.element(page.getByRole('button', { name: 'Remove Uppsala' })).toHaveFocus()
   })
@@ -1307,12 +1330,12 @@ describe('multiple', () => {
   test('removing the last value moves focus to the previous remove button', async () => {
     await render(<MultipleExample defaultValue={['malmo', 'gbg', 'uppsala']} />)
     await userEvent.click(page.getByRole('button', { name: 'Remove Uppsala' }))
-    await expect.element(page.getByRole('button', { name: 'Remove Göteborg' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Remove Goteborg' })).toHaveFocus()
   })
 
   test('removing the only value moves focus to the input', async () => {
     await render(<MultipleExample defaultValue={['malmo']} />)
-    await userEvent.click(page.getByRole('button', { name: 'Remove Malmö' }))
+    await userEvent.click(page.getByRole('button', { name: 'Remove Malmo' }))
     await expect.element(input()).toHaveFocus()
     expect(page.getByRole('button', { name: /^Remove / }).elements()).toHaveLength(0)
   })
@@ -1320,11 +1343,11 @@ describe('multiple', () => {
   test('a remove button is operated with Enter and Space, and Tab reaches it before the input', async () => {
     await render(<MultipleExample defaultValue={['malmo', 'gbg']} />)
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Remove Malmö' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Remove Malmo' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Remove Göteborg' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Remove Goteborg' })).toHaveFocus()
     await userEvent.keyboard('{Enter}')
-    await expect.element(page.getByRole('button', { name: 'Remove Malmö' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Remove Malmo' })).toHaveFocus()
     await userEvent.keyboard(' ')
     await expect.element(input()).toHaveFocus()
     expect(page.getByRole('listitem').elements()).toHaveLength(0)
@@ -1333,12 +1356,12 @@ describe('multiple', () => {
   test('a chip is one button that holds its text, so pressing the text removes the value', async () => {
     const onValueChange = vi.fn<(value: string[], details: ComboboxValueChangeDetails) => void>()
     await render(<MultipleExample defaultValue={['malmo', 'gbg']} onValueChange={onValueChange} />)
-    const button = page.getByRole('button', { name: 'Remove Malmö' }).element()
-    expect(button.textContent).toBe('Malmö')
+    const button = page.getByRole('button', { name: 'Remove Malmo' }).element()
+    expect(button.textContent).toBe('Malmo')
     expect(button.closest('li')?.querySelectorAll('button')).toHaveLength(1)
-    await userEvent.click(page.getByText('Malmö', { exact: true }))
+    await userEvent.click(page.getByText('Malmo', { exact: true }))
     expect(onValueChange).toHaveBeenCalledWith(['gbg'], { reason: 'remove' })
-    await expect.element(page.getByRole('button', { name: 'Remove Göteborg' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Remove Goteborg' })).toHaveFocus()
   })
 
   test('a custom removeIcon replaces the cross inside the button and stays hidden from the name', async () => {
@@ -1354,11 +1377,11 @@ describe('multiple', () => {
           <Combobox.ValueList>
             {(item) => <Combobox.Value item={item} removeIcon={<svg data-testid="icon" />} />}
           </Combobox.ValueList>
-          <Combobox.Input aria-label="Kommun" />
+          <Combobox.Input aria-label="Municipality" />
         </Combobox.Root>
       </KvirnProvider>,
     )
-    const button = page.getByRole('button', { name: 'Remove Malmö' }).element()
+    const button = page.getByRole('button', { name: 'Remove Malmo' }).element()
     expect(
       button.querySelector('.kv-tag-remove-icon[aria-hidden="true"] [data-testid="icon"]'),
     ).not.toBeNull()
@@ -1377,7 +1400,7 @@ describe('multiple', () => {
           <Combobox.ValueList>
             {(item) => <Combobox.Value item={item}>Sthlm</Combobox.Value>}
           </Combobox.ValueList>
-          <Combobox.Input aria-label="Kommun" />
+          <Combobox.Input aria-label="Municipality" />
         </Combobox.Root>
       </KvirnProvider>,
     )
@@ -1423,7 +1446,7 @@ describe('multiple', () => {
         .getByRole('listitem')
         .elements()
         .map((element) => element.textContent),
-    ).toEqual(['Uppsala', 'Göteborg'])
+    ).toEqual(['Uppsala', 'Goteborg'])
     await userEvent.click(page.getByRole('button', { name: 'Remove Uppsala' }))
     expect(onValueChange).toHaveBeenCalledWith(['gbg'], { reason: 'remove' })
     await expect.poll(() => page.getByRole('listitem').elements().length).toBe(2)
@@ -1435,8 +1458,8 @@ describe('multiple', () => {
     await render(<MultipleExample defaultValue={['malmo']} />)
     await typeText('r')
     await expect.poll(isShown).toBe(true)
-    expect(optionNames()).toEqual(['Arvika', 'Göteborg', 'Örebro'])
-    expect(page.getByRole('button', { name: 'Remove Malmö' }).elements()).toHaveLength(1)
+    expect(optionNames()).toEqual(['Arvika', 'Goteborg', 'Orebro'])
+    expect(page.getByRole('button', { name: 'Remove Malmo' }).elements()).toHaveLength(1)
   })
 })
 
@@ -1445,7 +1468,7 @@ describe('forms', () => {
     let submitted: FormData | undefined
     await render(
       <form
-        aria-label="Ansökan"
+        aria-label="Application"
         onSubmit={(event) => {
           event.preventDefault()
           submitted = new FormData(event.currentTarget)
@@ -1453,15 +1476,15 @@ describe('forms', () => {
       >
         <Example name="municipality" />
         <button type="submit" style={fixtureButtonStyle}>
-          Skicka
+          Submit
         </button>
       </form>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Submit' }))
     expect(submitted?.get('municipality')).toBe('')
     await typeText('{ArrowDown}')
     await userEvent.click(option('Uppsala'))
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Submit' }))
     expect(submitted?.get('municipality')).toBe('uppsala')
     expect(inputElement().hasAttribute('name')).toBe(false)
     expect([...(submitted?.keys() ?? [])]).toEqual(['municipality'])
@@ -1471,7 +1494,7 @@ describe('forms', () => {
     let submitted: FormData | undefined
     await render(
       <form
-        aria-label="Ansökan"
+        aria-label="Application"
         onSubmit={(event) => {
           event.preventDefault()
           submitted = new FormData(event.currentTarget)
@@ -1479,11 +1502,11 @@ describe('forms', () => {
       >
         <MultipleExample name="municipality" defaultValue={['malmo', 'gbg']} />
         <button type="submit" style={fixtureButtonStyle}>
-          Skicka
+          Submit
         </button>
       </form>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Submit' }))
     expect(submitted?.getAll('municipality')).toEqual(['malmo', 'gbg'])
     expect(document.querySelectorAll('input[type="hidden"]')).toHaveLength(2)
   })
@@ -1506,7 +1529,7 @@ describe('announcements', () => {
   test('the count is Swedish in the Swedish provider, and singular for one', async () => {
     await render(<Example swedish announcementDebounceMilliseconds={30} />)
     await typeText('kh')
-    await expect.element(status()).toHaveTextContent('1 resultat')
+    await expect.element(status()).toHaveTextContent('1 resultat') // kv-lang-ok: the sv catalog string
   })
 
   test('no results and loading are announced', async () => {
@@ -1565,8 +1588,8 @@ describe('announcements', () => {
   test('without a provider nothing is announced and one warning is logged', async () => {
     await render(
       <Field.Root>
-        <Field.Label>Kommun</Field.Label>
-        <Combobox.Root items={['Göteborg']} announcementDebounceMilliseconds={10}>
+        <Field.Label>Municipality</Field.Label>
+        <Combobox.Root items={['Goteborg']} announcementDebounceMilliseconds={10}>
           <Combobox.Input />
           <Combobox.Popup>
             <Combobox.List>{(item: string) => <Combobox.Option item={item} />}</Combobox.List>
@@ -1622,8 +1645,8 @@ describe('useCombobox', () => {
 describe('server rendering', () => {
   test('the server markup has the input, a closed popup and a hidden input, and no options', () => {
     const markup = renderToString(
-      <Field.Root controlId="kommun" required>
-        <Field.Label>Kommun</Field.Label>
+      <Field.Root controlId="municipality" required>
+        <Field.Label>Municipality</Field.Label>
         <Combobox.Root
           items={municipalities}
           itemToString={(municipality) => municipality.name}
@@ -1641,10 +1664,10 @@ describe('server rendering', () => {
       </Field.Root>,
     )
     expect(markup).toContain('role="combobox"')
-    expect(markup).toContain('id="kommun"')
+    expect(markup).toContain('id="municipality"')
     expect(markup).toContain('aria-expanded="false"')
     expect(markup).toContain('aria-autocomplete="list"')
-    expect(markup).toContain('value="Göteborg"')
+    expect(markup).toContain('value="Goteborg"')
     expect(markup).toContain('popover="manual"')
     expect(markup).toContain('role="listbox"')
     expect(markup).not.toContain('role="option"')

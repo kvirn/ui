@@ -1,3 +1,4 @@
+// kv-lang-ok-file: the docs name the letters the letter classes accept
 /**
  * Why the mask dropped a character. The first four say what the field
  * accepts, so the message can be "Only digits can be entered here". `length` means the mask is

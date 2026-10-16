@@ -22,7 +22,7 @@ const visuallyHidden: UseVisuallyHiddenResult = Object.freeze({
  *
  * @example
  * const { visuallyHiddenProps } = useVisuallyHidden()
- * <span {...visuallyHiddenProps}>, 3 resultat</span>
+ * <span {...visuallyHiddenProps}>, 3 results</span>
  */
 export function useVisuallyHidden(): UseVisuallyHiddenResult {
   return visuallyHidden

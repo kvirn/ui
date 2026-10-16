@@ -14,7 +14,7 @@
 
 | Option                                                          | Result                                                                                                                                                                                                          |
 | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A. Visible label becomes "Copied", `aria-label` stays "Copy"    | **Fails 2.5.3:** the visible text "Copied" is not in the name "Copy" ("Kopierat" / "Kopiera", "Kopioitu" / "Kopioi"). "Click Copied" does nothing for a voice user                                              |
+| A. Visible label becomes "Copied", `aria-label` stays "Copy"    | **Fails 2.5.3:** the visible text "Copied" is not in the name "Copy" ("Kopierat" / "Kopiera", "Kopioitu" / "Kopioi"). "Click Copied" does nothing for a voice user                                              | <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
 | B. Label and name both become "Copied" for 5 s                  | Passes 2.5.3 but breaks the contract (name never changes, 4.1.2 stability); "click Copy" fails for 5 s; the button changes width under the pointer; screen readers may re-read the name on focus                |
 | C. Icon swap inside the button (decorative, `aria-hidden`)      | Name unchanged, but a check mark alone is a symbol, not words (cognitive and second-language users); the built-in set has no `copy` icon to swap from                                                           |
 | **D. Label never changes; a status text sits after the button** | **Chosen.** Name = visible label at all times (2.5.3). The status is words plus a decorative icon (1.4.1). The button keeps its width, so nothing moves under the pointer. Same as docs-code.md §6 (status row) |
@@ -23,12 +23,12 @@
 
 No new i18n key: the visible status reuses the announced string, so what is seen is what is heard.
 
-| `data-status` | Button (name = visible)                              | Status text (`kv-copy-status`)                                                                                                                       | Icon (`aria-hidden`) | Shown until                                          |
-| ------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ---------------------------------------------------- |
-| `idle`        | `copyButton.label` "Copy" / "Kopiera", or `children` | not rendered                                                                                                                                         | –                    | –                                                    |
-| `copied`      | unchanged                                            | `copyButton.copied`: "Copied" / "Kopierat" / fi "Kopioitu"                                                                                           | `check`              | 5 s, or the next activation (re-shown at once)       |
-| `failed`      | unchanged                                            | `copyButton.failed`: "Could not copy. Select the text and copy it yourself." / sv "Det gick inte att kopiera. Markera texten och kopiera den själv." | `warning`            | **The next activation.** Never timed out (see below) |
-| disabled      | Button's disabled look                               | not rendered (a status from before disabling is removed)                                                                                             | –                    | –                                                    |
+| `data-status` | Button (name = visible)                              | Status text (`kv-copy-status`)                                                                                                                       | Icon (`aria-hidden`) | Shown until                                                                                                                             |
+| ------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `idle`        | `copyButton.label` "Copy" / "Kopiera", or `children` | not rendered                                                                                                                                         | –                    | –                                                                                                                                       | <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `copied`      | unchanged                                            | `copyButton.copied`: "Copied" / "Kopierat" / fi "Kopioitu"                                                                                           | `check`              | 5 s, or the next activation (re-shown at once)                                                                                          | <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| `failed`      | unchanged                                            | `copyButton.failed`: "Could not copy. Select the text and copy it yourself." / sv "Det gick inte att kopiera. Markera texten och kopiera den själv." | `warning`            | **The next activation.** Never timed out (see below) <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject --> |
+| disabled      | Button's disabled look                               | not rendered (a status from before disabling is removed)                                                                                             | –                    | –                                                                                                                                       |
 
 - **Why failed persists:** it is an instruction the user follows _after_ reading it (selecting, Ctrl+C, a long-press on a phone). At 5 s a magnifier, low-vision or slow reader loses it mid-task (3.3.1, and the spirit of 2.2.1). **Engineering change:** the hook's 5 s reset applies to `copied` only; `failed` stays until the next activation. Contract rows in both `.a11y.md` files change.
 - **Why copied may time out:** it confirms, it doesn't instruct; it was also announced; pressing again copies, re-shows and re-announces, so nothing is lost (no trap).
@@ -41,8 +41,8 @@ DOM order = visual order = reading order: button, then status. The status is nev
 **Standalone** (P8 reference number):
 
 ```
-p        Ditt ärendenummer är <span class="kv-numeric">PK-2026-004217</span>.     ← textRef
-div      [button.kv-button "Kopiera ärendenumret"] [span.kv-copy-status ✓ Kopierat]
+p        Your case number is <span class="kv-numeric">PK-2026-004217</span>.     ← textRef
+div      [button.kv-button "Copy the case number"] [span.kv-copy-status ✓ Copied]
 ```
 
 **CodeBlock:** `kv-code-block` (Label, Code, Copy, Status)

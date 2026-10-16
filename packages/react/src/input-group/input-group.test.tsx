@@ -43,13 +43,13 @@ function RentField({
 }) {
   return (
     <Field.Root required invalid={invalid} disabled={disabled}>
-      <Field.Label>Månadshyra i kronor</Field.Label>
+      <Field.Label>Monthly rent in kronor</Field.Label>
       <InputGroup.Root data-testid="root">
         <TextInput name="rent" inputMode="decimal" className="kv-input--width-10" />
         <InputGroup.Addon data-testid="addon">kr</InputGroup.Addon>
       </InputGroup.Root>
-      <Field.Prose>Till exempel 8450</Field.Prose>
-      {invalid ? <Field.ErrorMessage>Ange hyran i hela kronor</Field.ErrorMessage> : null}
+      <Field.Prose>For example 8450</Field.Prose>
+      {invalid ? <Field.ErrorMessage>Enter the rent in whole kronor</Field.ErrorMessage> : null}
     </Field.Root>
   )
 }
@@ -60,7 +60,7 @@ function SearchField({ onClear }: { onClear?: () => void }) {
   return (
     <>
       <Field.Root>
-        <Field.Label marker="none">Sök bland tjänster</Field.Label>
+        <Field.Label marker="none">Search among services</Field.Label>
         <InputGroup.Root data-testid="root">
           <InputGroup.Addon data-testid="addon">
             <svg viewBox="0 0 8 8" focusable="false" />
@@ -72,13 +72,13 @@ function SearchField({ onClear }: { onClear?: () => void }) {
               setValue('')
             }}
           >
-            Rensa
+            Clear
           </Button>
         </InputGroup.Root>
       </Field.Root>
       {/* Component tests load no theme, so the target needs its own size for axe (2.5.8). */}
       <button type="button" style={{ minInlineSize: 24, minBlockSize: 24 }}>
-        Efter
+        After
       </button>
     </>
   )
@@ -125,11 +125,13 @@ describe('rendering', () => {
   test('works without a Field: the Input is named by its own aria-label', async () => {
     const { container } = await render(
       <InputGroup.Root>
-        <TextInput aria-label="Månadshyra i kronor" />
+        <TextInput aria-label="Monthly rent in kronor" />
         <InputGroup.Addon>kr</InputGroup.Addon>
       </InputGroup.Root>,
     )
-    await expect.element(page.getByRole('textbox', { name: 'Månadshyra i kronor' })).toBeVisible()
+    await expect
+      .element(page.getByRole('textbox', { name: 'Monthly rent in kronor' }))
+      .toBeVisible()
     await expectNoA11yViolations(container)
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -138,16 +140,16 @@ describe('rendering', () => {
 describe('name and description come from the Field, never from the Addon', () => {
   test('the accessible name is the label, without "kr"', async () => {
     await render(<RentField />)
-    const input = page.getByRole('textbox', { name: 'Månadshyra i kronor' })
-    await expect.element(input).toHaveAccessibleName('Månadshyra i kronor')
+    const input = page.getByRole('textbox', { name: 'Monthly rent in kronor' })
+    await expect.element(input).toHaveAccessibleName('Monthly rent in kronor')
   })
 
   test('the accessible description is the Field’s Description and error, without "kr"', async () => {
     await render(<RentField invalid />)
-    const input = page.getByRole('textbox', { name: 'Månadshyra i kronor' })
+    const input = page.getByRole('textbox', { name: 'Monthly rent in kronor' })
     await expect
       .element(input)
-      .toHaveAccessibleDescription('Till exempel 8450 Error: Ange hyran i hela kronor')
+      .toHaveAccessibleDescription('For example 8450 Error: Enter the rent in whole kronor')
     const describedBy = (input.element().getAttribute('aria-describedby') ?? '').split(' ')
     const addon = page.getByTestId('addon').element()
     expect(addon.id).toBe('')
@@ -164,8 +166,9 @@ describe('name and description come from the Field, never from the Addon', () =>
       </KvirnProvider>,
     )
     await expect
-      .element(page.getByRole('textbox', { name: 'Månadshyra i kronor' }))
-      .toHaveAccessibleDescription('Till exempel 8450 Fel: Ange hyran i hela kronor')
+      .element(page.getByRole('textbox', { name: 'Monthly rent in kronor' }))
+      // kv-lang-ok: the sv catalog's error prefix
+      .toHaveAccessibleDescription('For example 8450 Fel: Enter the rent in whole kronor')
     await expectNoA11yViolations(swedish.container)
     await swedish.unmount()
 
@@ -175,17 +178,17 @@ describe('name and description come from the Field, never from the Addon', () =>
       </KvirnProvider>,
     )
     await expect
-      .element(page.getByRole('textbox', { name: 'Månadshyra i kronor' }))
-      .toHaveAccessibleDescription('Till exempel 8450 Error: Ange hyran i hela kronor')
+      .element(page.getByRole('textbox', { name: 'Monthly rent in kronor' }))
+      .toHaveAccessibleDescription('For example 8450 Error: Enter the rent in whole kronor')
     await expectNoA11yViolations(english.container)
   })
 
   test('the Button’s name is its own text, and the group adds no name to it', async () => {
     const { container } = await render(<SearchField />)
-    await expect.element(page.getByRole('button', { name: 'Rensa' })).toBeVisible()
+    await expect.element(page.getByRole('button', { name: 'Clear' })).toBeVisible()
     await expect
-      .element(page.getByRole('searchbox', { name: 'Sök bland tjänster' }))
-      .toHaveAccessibleName('Sök bland tjänster')
+      .element(page.getByRole('searchbox', { name: 'Search among services' }))
+      .toHaveAccessibleName('Search among services')
     await expectNoA11yViolations(container)
   })
 })
@@ -196,7 +199,7 @@ describe('field state on the Root', () => {
     const root = page.getByTestId('root')
     await expect.element(root).toHaveAttribute('data-invalid', '')
     await expect.element(root).toHaveAttribute('data-disabled', '')
-    const input = page.getByRole('textbox', { name: 'Månadshyra i kronor' })
+    const input = page.getByRole('textbox', { name: 'Monthly rent in kronor' })
     await expect.element(input).toHaveAttribute('aria-invalid', 'true')
     await expect.element(input).toBeDisabled()
   })
@@ -213,7 +216,7 @@ describe('field state on the Root', () => {
     await render(
       <Field.Root invalid>
         <Field.Label marker="none">Belopp</Field.Label>
-        <Field.ErrorMessage>Ange ett belopp</Field.ErrorMessage>
+        <Field.ErrorMessage>Enter an amount</Field.ErrorMessage>
         <InputGroup.Root data-testid="root" invalid={false} disabled>
           <TextInput />
         </InputGroup.Root>
@@ -229,7 +232,9 @@ describe('clicking an Addon focuses the Input', () => {
   test('a click on the Addon focuses the Input', async () => {
     await render(<RentField />)
     await userEvent.click(page.getByTestId('addon'))
-    await expect.element(page.getByRole('textbox', { name: 'Månadshyra i kronor' })).toHaveFocus()
+    await expect
+      .element(page.getByRole('textbox', { name: 'Monthly rent in kronor' }))
+      .toHaveFocus()
   })
 
   test('a mousedown on the box’s padding focuses the Input', async () => {
@@ -237,7 +242,9 @@ describe('clicking an Addon focuses the Input', () => {
     const root = page.getByTestId('root').element()
     // Dispatched on the Root itself, the way a click in its padding is: not on a child.
     root.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, button: 0 }))
-    await expect.element(page.getByRole('textbox', { name: 'Månadshyra i kronor' })).toHaveFocus()
+    await expect
+      .element(page.getByRole('textbox', { name: 'Monthly rent in kronor' }))
+      .toHaveFocus()
   })
 
   test('a click on an icon Addon inside the Root focuses the Input, not the Button', async () => {
@@ -249,7 +256,7 @@ describe('clicking an Addon focuses the Input', () => {
   test('a click on the Button keeps its own behaviour: focus stays on the Button and it activates', async () => {
     const onClear = vi.fn<() => void>()
     await render(<SearchField onClear={onClear} />)
-    await userEvent.click(page.getByRole('button', { name: 'Rensa' }))
+    await userEvent.click(page.getByRole('button', { name: 'Clear' }))
     expect(onClear).toHaveBeenCalledTimes(1)
     await expect.element(page.getByRole('searchbox')).toHaveValue('')
   })
@@ -262,7 +269,7 @@ describe('clicking an Addon focuses the Input', () => {
           <TextInput />
           <InputGroup.Addon data-testid="addon">kr</InputGroup.Addon>
         </InputGroup.Root>
-        <button type="button">Efter</button>
+        <button type="button">After</button>
       </Field.Root>,
     )
     await userEvent.click(page.getByTestId('addon'))
@@ -271,7 +278,7 @@ describe('clicking an Addon focuses the Input', () => {
 
   test('a click on the Addon doesn’t select or change the typed text', async () => {
     await render(<RentField />)
-    const input = page.getByRole('textbox', { name: 'Månadshyra i kronor' })
+    const input = page.getByRole('textbox', { name: 'Monthly rent in kronor' })
     await userEvent.type(input, '8450')
     await userEvent.click(page.getByTestId('addon'))
     await expect.element(input).toHaveValue('8450')
@@ -284,7 +291,7 @@ describe('data-focus-visible', () => {
     await render(
       <>
         <RentField />
-        <button type="button">Efter</button>
+        <button type="button">After</button>
       </>,
     )
     const root = page.getByTestId('root')
@@ -292,7 +299,7 @@ describe('data-focus-visible', () => {
     await expect.element(page.getByRole('textbox')).toHaveFocus()
     await expect.element(root).toHaveAttribute('data-focus-visible', '')
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     await expect.element(root).not.toHaveAttribute('data-focus-visible')
   })
 
@@ -303,16 +310,16 @@ describe('data-focus-visible', () => {
     await expect.element(page.getByRole('searchbox')).toHaveFocus()
     await expect.element(root).toHaveAttribute('data-focus-visible', '')
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Rensa' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Clear' })).toHaveFocus()
     await expect.element(root).not.toHaveAttribute('data-focus-visible')
     await expect
-      .element(page.getByRole('button', { name: 'Rensa' }))
+      .element(page.getByRole('button', { name: 'Clear' }))
       .toHaveAttribute('data-focus-visible', '')
   })
 
   test('isn’t set when the focus came from a click on the Button', async () => {
     await render(<SearchField />)
-    await userEvent.click(page.getByRole('button', { name: 'Rensa' }))
+    await userEvent.click(page.getByRole('button', { name: 'Clear' }))
     await expect.element(page.getByTestId('root')).not.toHaveAttribute('data-focus-visible')
   })
 })
@@ -324,11 +331,11 @@ describe('keyboard (contract rows)', () => {
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('searchbox')).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Rensa' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Clear' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Rensa' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Clear' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     await expect.element(page.getByRole('searchbox')).toHaveFocus()
   })
@@ -337,13 +344,13 @@ describe('keyboard (contract rows)', () => {
     await render(
       <>
         <RentField />
-        <button type="button">Efter</button>
+        <button type="button">After</button>
       </>,
     )
     await userEvent.keyboard('{Tab}')
     await expect.element(page.getByRole('textbox')).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     expect(page.getByTestId('addon').element().getAttribute('tabindex')).toBeNull()
   })
 
@@ -351,7 +358,7 @@ describe('keyboard (contract rows)', () => {
     const onClear = vi.fn<() => void>()
     await render(<SearchField onClear={onClear} />)
     await userEvent.keyboard('{Tab}{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Rensa' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Clear' })).toHaveFocus()
     await userEvent.keyboard('{Enter}')
     expect(onClear).toHaveBeenCalledTimes(1)
     await userEvent.keyboard(' ')
@@ -360,7 +367,7 @@ describe('keyboard (contract rows)', () => {
 
   test('any character types, and the unit can be typed too', async () => {
     await render(<RentField />)
-    const input = page.getByRole('textbox', { name: 'Månadshyra i kronor' })
+    const input = page.getByRole('textbox', { name: 'Monthly rent in kronor' })
     await userEvent.type(input, '8 450 kr')
     await expect.element(input).toHaveValue('8 450 kr')
   })
@@ -399,10 +406,10 @@ describe('dev warnings', () => {
         <InputGroup.Root>
           <TextInput />
           <InputGroup.Addon>
-            <button type="button">Rensa</button>
+            <button type="button">Clear</button>
           </InputGroup.Addon>
           <InputGroup.Addon>
-            <a href="/hjalp">Hjälp</a>
+            <a href="/help">Help</a>
           </InputGroup.Addon>
         </InputGroup.Root>
       </Field.Root>,
@@ -439,7 +446,7 @@ describe('dev warnings: the Root’s invalid and disabled against the input insi
         <InputGroup.Root invalid>
           <InputGroup.Input id="rent-a" />
         </InputGroup.Root>
-        <label htmlFor="rent-b">Avgift</label>
+        <label htmlFor="rent-b">Fee</label>
         <InputGroup.Root invalid>
           <InputGroup.Input id="rent-b" />
         </InputGroup.Root>
@@ -485,7 +492,7 @@ describe('dev warnings: the Root’s invalid and disabled against the input insi
         <InputGroup.Root invalid disabled>
           <InputGroup.Input id="rent-e" aria-invalid="true" disabled />
         </InputGroup.Root>
-        <label htmlFor="rent-f">Avgift</label>
+        <label htmlFor="rent-f">Fee</label>
         <InputGroup.Root invalid={false} disabled={false}>
           <InputGroup.Input id="rent-f" />
         </InputGroup.Root>
@@ -511,12 +518,12 @@ describe('refs and props', () => {
         <Field.Label marker="none">Belopp</Field.Label>
         <InputGroup.Root
           ref={rootRef}
-          className="egen-ruta"
+          className="own-box"
           data-testid="root"
           onMouseDown={onMouseDown}
         >
           <TextInput />
-          <InputGroup.Addon ref={addonRef} className="egen-enhet" data-testid="addon">
+          <InputGroup.Addon ref={addonRef} className="own-unit" data-testid="addon">
             kr
           </InputGroup.Addon>
         </InputGroup.Root>
@@ -524,10 +531,8 @@ describe('refs and props', () => {
     )
     expect(rootRef.current).toBe(page.getByTestId('root').element())
     expect(addonRef.current).toBe(page.getByTestId('addon').element())
-    await expect.element(page.getByTestId('root')).toHaveClass('egen-ruta', 'kv-input-group')
-    await expect
-      .element(page.getByTestId('addon'))
-      .toHaveClass('egen-enhet', 'kv-input-group-addon')
+    await expect.element(page.getByTestId('root')).toHaveClass('own-box', 'kv-input-group')
+    await expect.element(page.getByTestId('addon')).toHaveClass('own-unit', 'kv-input-group-addon')
     await userEvent.click(page.getByTestId('addon'))
     // Your handler runs, and the group's own still focuses the Input.
     expect(onMouseDown).toHaveBeenCalled()

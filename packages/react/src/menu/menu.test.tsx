@@ -48,41 +48,41 @@ const controlStyle = { display: 'block', minBlockSize: '2rem', minInlineSize: '2
 
 interface ExampleProps extends Omit<MenuRootProps, 'children'> {
   onPrint?: ((event: MouseEvent<HTMLButtonElement>) => void) | undefined
-  onShare?: ((event: MouseEvent<HTMLButtonElement>) => void) | undefined
+  onDeliver?: ((event: MouseEvent<HTMLButtonElement>) => void) | undefined
   closeOnSelect?: boolean | undefined
 }
 
-function Example({ onPrint, onShare, closeOnSelect, ...rootProps }: ExampleProps) {
+function Example({ onPrint, onDeliver, closeOnSelect, ...rootProps }: ExampleProps) {
   return (
     <>
       {/* Above the trigger, so the popup (placed under it) never covers the text a test presses. */}
-      <p>Text utanför</p>
+      <p>Text outside</p>
       <button type="button" style={controlStyle}>
-        Före
+        Before
       </button>
       <Menu.Root {...rootProps}>
-        <Menu.Trigger style={controlStyle}>Åtgärder</Menu.Trigger>
+        <Menu.Trigger style={controlStyle}>Actions</Menu.Trigger>
         <Menu.Popup>
           <Menu.Item style={controlStyle} onSelect={onPrint} closeOnSelect={closeOnSelect}>
-            Skriv ut
+            Save as
           </Menu.Item>
-          <Menu.Item style={controlStyle} disabled onSelect={onShare}>
-            Dela
+          <Menu.Item style={controlStyle} disabled onSelect={onDeliver}>
+            Deliver
           </Menu.Item>
-          <Menu.Item style={controlStyle}>Ladda ner</Menu.Item>
-          <Menu.Item style={controlStyle}>Ladda upp</Menu.Item>
+          <Menu.Item style={controlStyle}>Load down</Menu.Item>
+          <Menu.Item style={controlStyle}>Load up</Menu.Item>
           <Menu.Separator />
-          <Menu.Item style={controlStyle}>Radera</Menu.Item>
+          <Menu.Item style={controlStyle}>Remove</Menu.Item>
         </Menu.Popup>
       </Menu.Root>
       <button type="button" style={controlStyle}>
-        Efter
+        After
       </button>
     </>
   )
 }
 
-const trigger = () => page.getByRole('button', { name: 'Åtgärder', exact: true })
+const trigger = () => page.getByRole('button', { name: 'Actions', exact: true })
 const item = (name: string) => page.getByRole('menuitem', { name, exact: true })
 const triggerElement = () => trigger().element()
 const popupElement = () => document.querySelector<HTMLElement>('.kv-menu-popup')
@@ -135,7 +135,7 @@ describe('rendering', () => {
   test('a disabled item has aria-disabled and data-disabled, and is still a button that takes focus', async () => {
     await render(<Example />)
     await openWithClick()
-    const disabled = item('Dela').element()
+    const disabled = item('Deliver').element()
     expect(disabled.getAttribute('aria-disabled')).toBe('true')
     expect(disabled.hasAttribute('data-disabled')).toBe(true)
     expect(disabled.hasAttribute('disabled')).toBe(false)
@@ -144,63 +144,63 @@ describe('rendering', () => {
   test('a disabled item points at the reason on the page with aria-describedby', async () => {
     await render(
       <>
-        <p id="share-reason">Du kan inte dela ett utkast.</p>
+        <p id="share-reason">You cannot deliver a draft.</p>
         <Menu.Root defaultOpen>
-          <Menu.Trigger>Åtgärder</Menu.Trigger>
+          <Menu.Trigger>Actions</Menu.Trigger>
           <Menu.Popup>
             <Menu.Item disabled aria-describedby="share-reason">
-              Dela
+              Deliver
             </Menu.Item>
           </Menu.Popup>
         </Menu.Root>
       </>,
     )
     await expect.poll(isShown).toBe(true)
-    await expect.element(item('Dela')).toHaveAccessibleDescription('Du kan inte dela ett utkast.')
+    await expect.element(item('Deliver')).toHaveAccessibleDescription('You cannot deliver a draft.')
   })
 
   test('checkbox and radio items expose role, aria-checked and groups, with no axe violations', async () => {
     const { container } = await render(
       <Menu.Root defaultOpen>
-        <Menu.Trigger style={controlStyle}>Visa</Menu.Trigger>
+        <Menu.Trigger style={controlStyle}>Show</Menu.Trigger>
         <Menu.Popup>
           <Menu.Group>
             <Menu.GroupLabel>Layout</Menu.GroupLabel>
             <Menu.CheckboxItem style={controlStyle} defaultChecked>
-              Rutnät
+              Grid
             </Menu.CheckboxItem>
-            <Menu.CheckboxItem style={controlStyle}>Kompakt</Menu.CheckboxItem>
+            <Menu.CheckboxItem style={controlStyle}>Compact</Menu.CheckboxItem>
           </Menu.Group>
           <Menu.Separator />
-          <Menu.RadioGroup aria-label="Sortera" defaultValue="name">
+          <Menu.RadioGroup aria-label="Sort" defaultValue="name">
             <Menu.RadioItem style={controlStyle} value="name">
-              Namn
+              Name
             </Menu.RadioItem>
             <Menu.RadioItem style={controlStyle} value="date">
-              Datum
+              Date
             </Menu.RadioItem>
           </Menu.RadioGroup>
           <Menu.Item style={controlStyle} disabled>
-            Dela
+            Deliver
           </Menu.Item>
         </Menu.Popup>
       </Menu.Root>,
     )
     await expect.poll(isShown).toBe(true)
-    const grid = page.getByRole('menuitemcheckbox', { name: 'Rutnät' })
+    const grid = page.getByRole('menuitemcheckbox', { name: 'Grid' })
     await expect.element(grid).toHaveAttribute('aria-checked', 'true')
     await expect.element(grid).toHaveAttribute('data-checked', '')
     await expect
-      .element(page.getByRole('menuitemcheckbox', { name: 'Kompakt' }))
+      .element(page.getByRole('menuitemcheckbox', { name: 'Compact' }))
       .toHaveAttribute('aria-checked', 'false')
     await expect
-      .element(page.getByRole('menuitemradio', { name: 'Namn' }))
+      .element(page.getByRole('menuitemradio', { name: 'Name' }))
       .toHaveAttribute('aria-checked', 'true')
     await expect
-      .element(page.getByRole('menuitemradio', { name: 'Datum' }))
+      .element(page.getByRole('menuitemradio', { name: 'Date' }))
       .toHaveAttribute('aria-checked', 'false')
     await expect.element(page.getByRole('group', { name: 'Layout' })).toBeVisible()
-    await expect.element(page.getByRole('group', { name: 'Sortera' })).toBeVisible()
+    await expect.element(page.getByRole('group', { name: 'Sort' })).toBeVisible()
     await expectNoA11yViolations(container)
   })
 
@@ -208,22 +208,22 @@ describe('rendering', () => {
     const { container } = await render(
       <>
         <button type="button" style={controlStyle}>
-          Före
+          Before
         </button>
         <Menu.Root>
-          <Menu.Trigger style={controlStyle}>Åtgärder</Menu.Trigger>
+          <Menu.Trigger style={controlStyle}>Actions</Menu.Trigger>
           <Menu.Popup
             style={{ '--kv-popup-height-limit': '6rem', overflowY: 'auto' } as CSSProperties}
           >
             {Array.from({ length: 30 }, (_, index) => (
               <Menu.Item key={index} style={controlStyle}>
-                {`Åtgärd ${index + 1}`}
+                {`Action ${index + 1}`}
               </Menu.Item>
             ))}
           </Menu.Popup>
         </Menu.Root>
         <button type="button" style={controlStyle}>
-          Efter
+          After
         </button>
       </>,
     )
@@ -232,21 +232,21 @@ describe('rendering', () => {
     expect(popup && popup.scrollHeight > popup.clientHeight).toBe(true)
     expect(popup?.hasAttribute('tabindex')).toBe(false)
     expect(document.activeElement?.getAttribute('tabindex')).toBe('0')
-    await expect.element(item('Åtgärd 1')).toHaveFocus()
+    await expect.element(item('Action 1')).toHaveFocus()
     await expectNoA11yViolations(container)
   })
 
   test('the popup is named by the trigger unless the consumer names it', async () => {
     await render(
       <Menu.Root>
-        <Menu.Trigger>Åtgärder</Menu.Trigger>
-        <Menu.Popup aria-label="Egen etikett">
-          <Menu.Item>Skriv ut</Menu.Item>
+        <Menu.Trigger>Actions</Menu.Trigger>
+        <Menu.Popup aria-label="Own label">
+          <Menu.Item>Save as</Menu.Item>
         </Menu.Popup>
       </Menu.Root>,
     )
     const popup = popupElement()
-    expect(popup?.getAttribute('aria-label')).toBe('Egen etikett')
+    expect(popup?.getAttribute('aria-label')).toBe('Own label')
     expect(popup?.hasAttribute('aria-labelledby')).toBe(false)
   })
 
@@ -256,12 +256,12 @@ describe('rendering', () => {
     const itemRef = createRef<HTMLButtonElement>()
     await render(
       <Menu.Root defaultOpen>
-        <Menu.Trigger ref={triggerRef} className="egen" data-egen="trigger">
-          Åtgärder
+        <Menu.Trigger ref={triggerRef} className="own" data-own="trigger">
+          Actions
         </Menu.Trigger>
-        <Menu.Popup ref={popupRef} className="egen" data-egen="popup">
-          <Menu.Item ref={itemRef} className="egen" data-egen="item">
-            Skriv ut
+        <Menu.Popup ref={popupRef} className="own" data-own="popup">
+          <Menu.Item ref={itemRef} className="own" data-own="item">
+            Save as
           </Menu.Item>
         </Menu.Popup>
       </Menu.Root>,
@@ -269,52 +269,48 @@ describe('rendering', () => {
     await expect.poll(isShown).toBe(true)
     expect(triggerRef.current).toBe(triggerElement())
     expect(popupRef.current).toBe(popupElement())
-    expect(itemRef.current).toBe(item('Skriv ut').element())
-    expect(triggerRef.current?.className).toBe('egen kv-menu-trigger')
-    expect(popupRef.current?.className).toBe('egen kv-menu-popup')
-    expect(itemRef.current?.className).toBe('egen kv-menu-item')
-    expect(itemRef.current?.getAttribute('data-egen')).toBe('item')
+    expect(itemRef.current).toBe(item('Save as').element())
+    expect(triggerRef.current?.className).toBe('own kv-menu-trigger')
+    expect(popupRef.current?.className).toBe('own kv-menu-popup')
+    expect(itemRef.current?.className).toBe('own kv-menu-item')
+    expect(itemRef.current?.getAttribute('data-own')).toBe('item')
   })
 
   test('as changes the Trigger, the Popup, the groups and the label, and keeps the roles', async () => {
     await render(
       <Menu.Root defaultOpen>
-        <Menu.Trigger as={Button} data-egen="trigger">
-          Åtgärder
+        <Menu.Trigger as={Button} data-own="trigger">
+          Actions
         </Menu.Trigger>
         <Menu.Popup as="section">
-          <Menu.Group as="section" aria-label="Grupp">
-            <Menu.GroupLabel as="span" data-egen="label">
-              Etikett
+          <Menu.Group as="section" aria-label="Group">
+            <Menu.GroupLabel as="span" data-own="label">
+              Label
             </Menu.GroupLabel>
-            <Menu.Item>Ett</Menu.Item>
-            <Menu.CheckboxItem data-egen="checkbox">Två</Menu.CheckboxItem>
+            <Menu.Item>One</Menu.Item>
+            <Menu.CheckboxItem data-own="checkbox">Two</Menu.CheckboxItem>
           </Menu.Group>
           <Menu.RadioGroup aria-label="Val" as="section">
-            <Menu.RadioItem value="a" data-egen="radio">
+            <Menu.RadioItem value="a" data-own="radio">
               Tre
             </Menu.RadioItem>
           </Menu.RadioGroup>
-          <Menu.Separator data-egen="separator" />
+          <Menu.Separator data-own="separator" />
         </Menu.Popup>
       </Menu.Root>,
     )
     await expect.poll(isShown).toBe(true)
-    expect(triggerElement().getAttribute('data-egen')).toBe('trigger')
+    expect(triggerElement().getAttribute('data-own')).toBe('trigger')
     expect(triggerElement().getAttribute('aria-expanded')).toBe('true')
     expect(popupElement()?.tagName).toBe('SECTION')
     expect(popupElement()?.getAttribute('role')).toBe('menu')
-    expect(document.querySelector('[data-egen="label"]')?.tagName).toBe('SPAN')
-    expect(document.querySelector('[data-egen="label"]')?.className).toBe('kv-menu-group-label')
-    expect(document.querySelector('[data-egen="separator"]')?.getAttribute('role')).toBe(
-      'separator',
-    )
-    expect(document.querySelector('[data-egen="checkbox"]')?.getAttribute('role')).toBe(
+    expect(document.querySelector('[data-own="label"]')?.tagName).toBe('SPAN')
+    expect(document.querySelector('[data-own="label"]')?.className).toBe('kv-menu-group-label')
+    expect(document.querySelector('[data-own="separator"]')?.getAttribute('role')).toBe('separator')
+    expect(document.querySelector('[data-own="checkbox"]')?.getAttribute('role')).toBe(
       'menuitemcheckbox',
     )
-    expect(document.querySelector('[data-egen="radio"]')?.getAttribute('role')).toBe(
-      'menuitemradio',
-    )
+    expect(document.querySelector('[data-own="radio"]')?.getAttribute('role')).toBe('menuitemradio')
     expect(document.querySelector('section.kv-menu-group')?.getAttribute('role')).toBe('group')
   })
 
@@ -322,9 +318,9 @@ describe('rendering', () => {
     const notAllowed = 'ul' as MenuPopupProps['as']
     await render(
       <Menu.Root defaultOpen>
-        <Menu.Trigger>Åtgärder</Menu.Trigger>
+        <Menu.Trigger>Actions</Menu.Trigger>
         <Menu.Popup as={notAllowed}>
-          <Menu.Item>Ett</Menu.Item>
+          <Menu.Item>One</Menu.Item>
         </Menu.Popup>
       </Menu.Root>,
     )
@@ -336,10 +332,10 @@ describe('rendering', () => {
   test('the focused item is the highlight: data-highlighted follows focus', async () => {
     await render(<Example />)
     await openWithEnter()
-    await expect.element(item('Skriv ut')).toHaveAttribute('data-highlighted', '')
+    await expect.element(item('Save as')).toHaveAttribute('data-highlighted', '')
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(item('Skriv ut')).not.toHaveAttribute('data-highlighted')
-    await expect.element(item('Dela')).toHaveAttribute('data-highlighted', '')
+    await expect.element(item('Save as')).not.toHaveAttribute('data-highlighted')
+    await expect.element(item('Deliver')).toHaveAttribute('data-highlighted', '')
   })
 
   test('useMenu spreads the same props on your own elements', async () => {
@@ -348,7 +344,7 @@ describe('rendering', () => {
       const [current, setCurrent] = useState<string>()
       return (
         <>
-          <button {...menu.triggerProps}>Åtgärder</button>
+          <button {...menu.triggerProps}>Actions</button>
           <div {...menu.popupProps}>
             {menu.isOpen ? (
               <>
@@ -357,10 +353,10 @@ describe('rendering', () => {
                   onFocus={() => setCurrent('print')}
                   onBlur={() => setCurrent(undefined)}
                 >
-                  Skriv ut
+                  Save as
                 </button>
-                <button {...menu.getItemProps('checkbox', { checked: true })}>Rutnät</button>
-                <button {...menu.getItemProps('radio', { disabled: true })}>Namn</button>
+                <button {...menu.getItemProps('checkbox', { checked: true })}>Grid</button>
+                <button {...menu.getItemProps('radio', { disabled: true })}>Name</button>
               </>
             ) : null}
           </div>
@@ -370,17 +366,17 @@ describe('rendering', () => {
     await render(<Own />)
     await userEvent.click(trigger())
     await expect.poll(isShown).toBe(true)
-    await expect.element(item('Skriv ut')).toHaveFocus()
-    await expect.element(item('Skriv ut')).toHaveAttribute('tabindex', '0')
-    await expect.element(item('Skriv ut')).toHaveAttribute('data-highlighted', '')
+    await expect.element(item('Save as')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveAttribute('tabindex', '0')
+    await expect.element(item('Save as')).toHaveAttribute('data-highlighted', '')
     await expect
-      .element(page.getByRole('menuitemcheckbox', { name: 'Rutnät' }))
+      .element(page.getByRole('menuitemcheckbox', { name: 'Grid' }))
       .toHaveAttribute('tabindex', '-1')
     await expect
-      .element(page.getByRole('menuitemcheckbox', { name: 'Rutnät' }))
+      .element(page.getByRole('menuitemcheckbox', { name: 'Grid' }))
       .toHaveAttribute('aria-checked', 'true')
     await expect
-      .element(page.getByRole('menuitemradio', { name: 'Namn' }))
+      .element(page.getByRole('menuitemradio', { name: 'Name' }))
       .toHaveAttribute('aria-disabled', 'true')
     await userEvent.keyboard('{Enter}')
     await expect.poll(isShown).toBe(false)
@@ -392,18 +388,18 @@ describe('keyboard: the trigger', () => {
   test('Tab focuses the trigger, and is one stop', async () => {
     await render(<Example />)
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     await userEvent.tab()
     await expect.element(trigger()).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
   })
 
   test('Shift+Tab leaves the trigger backwards', async () => {
     await render(<Example />)
     triggerElement().focus()
     await userEvent.tab({ shift: true })
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('Enter and Space on the trigger open the menu with focus on the first item', async () => {
@@ -411,13 +407,13 @@ describe('keyboard: the trigger', () => {
     triggerElement().focus()
     await userEvent.keyboard('{Enter}')
     await expect.poll(isShown).toBe(true)
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await expect.poll(isShown).toBe(false)
     await expect.element(trigger()).toHaveFocus()
     await userEvent.keyboard(' ')
     await expect.poll(isShown).toBe(true)
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
   })
 
   test('ArrowDown and ArrowUp on the trigger open the menu on the first and last item', async () => {
@@ -425,19 +421,19 @@ describe('keyboard: the trigger', () => {
     triggerElement().focus()
     await userEvent.keyboard('{ArrowDown}')
     await expect.poll(isShown).toBe(true)
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await expect.poll(isShown).toBe(false)
     await userEvent.keyboard('{ArrowUp}')
     await expect.poll(isShown).toBe(true)
-    await expect.element(item('Radera')).toHaveFocus()
+    await expect.element(item('Remove')).toHaveFocus()
   })
 
   test('a pointer press on the trigger toggles the menu, and a closing press does not reopen it', async () => {
     await render(<Example />)
     await userEvent.click(trigger())
     await expect.poll(isShown).toBe(true)
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
     await userEvent.click(trigger())
     await expect.poll(isShown).toBe(false)
     // Wait out anything the platform's own light dismiss still queues.
@@ -452,15 +448,15 @@ describe('keyboard: in the menu', () => {
     await render(<Example />)
     await openWithEnter()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(item('Dela')).toHaveFocus()
+    await expect.element(item('Deliver')).toHaveFocus()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(item('Ladda ner')).toHaveFocus()
+    await expect.element(item('Load down')).toHaveFocus()
     await userEvent.keyboard('{ArrowUp}')
-    await expect.element(item('Dela')).toHaveFocus()
+    await expect.element(item('Deliver')).toHaveFocus()
     await userEvent.keyboard('{ArrowUp}{ArrowUp}')
-    await expect.element(item('Radera')).toHaveFocus()
+    await expect.element(item('Remove')).toHaveFocus()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
   })
 
   test('ArrowDown and ArrowUp do not flip in right-to-left text', async () => {
@@ -471,39 +467,39 @@ describe('keyboard: in the menu', () => {
     )
     await openWithEnter()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(item('Dela')).toHaveFocus()
+    await expect.element(item('Deliver')).toHaveFocus()
     await userEvent.keyboard('{ArrowUp}{ArrowUp}')
-    await expect.element(item('Radera')).toHaveFocus()
+    await expect.element(item('Remove')).toHaveFocus()
   })
 
   test('Home and End move to the first and last item', async () => {
     await render(<Example />)
     await openWithEnter()
     await userEvent.keyboard('{End}')
-    await expect.element(item('Radera')).toHaveFocus()
+    await expect.element(item('Remove')).toHaveFocus()
     await userEvent.keyboard('{Home}')
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
   })
 
   test('a character moves focus by typeahead, a word narrows it and a pause resets it', async () => {
     await render(<Example />)
     await openWithEnter()
     await userEvent.keyboard('r')
-    await expect.element(item('Radera')).toHaveFocus()
+    await expect.element(item('Remove')).toHaveFocus()
     await wait(600)
-    // A word narrows the match: "ladda u" passes over "Ladda ner" to "Ladda upp".
-    await userEvent.keyboard('ladda u')
-    await expect.element(item('Ladda upp')).toHaveFocus()
+    // A word narrows the match: "load u" passes over "Load down" to "Load up".
+    await userEvent.keyboard('load u')
+    await expect.element(item('Load up')).toHaveFocus()
     await wait(600)
     // A repeated character cycles through the items that start with it.
     await userEvent.keyboard('l')
-    await expect.element(item('Ladda ner')).toHaveFocus()
+    await expect.element(item('Load down')).toHaveFocus()
     await userEvent.keyboard('l')
-    await expect.element(item('Ladda upp')).toHaveFocus()
+    await expect.element(item('Load up')).toHaveFocus()
     await wait(600)
     // A disabled item is found by typeahead too.
     await userEvent.keyboard('d')
-    await expect.element(item('Dela')).toHaveFocus()
+    await expect.element(item('Deliver')).toHaveFocus()
     expect(isShown()).toBe(true)
   })
 
@@ -513,7 +509,7 @@ describe('keyboard: in the menu', () => {
     await userEvent.keyboard('{Control>}r{/Control}')
     await userEvent.keyboard('{Alt>}r{/Alt}')
     await userEvent.keyboard('{Meta>}r{/Meta}')
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
   })
 
   test('a character taken by typeahead is prevented, one that is not is left alone', async () => {
@@ -534,9 +530,9 @@ describe('keyboard: in the menu', () => {
   test('keys typed in a field inside the popup are the field’s own', async () => {
     await render(
       <Menu.Root defaultOpen>
-        <Menu.Trigger>Åtgärder</Menu.Trigger>
+        <Menu.Trigger>Actions</Menu.Trigger>
         <Menu.Popup>
-          <Menu.Item>Skriv ut</Menu.Item>
+          <Menu.Item>Save as</Menu.Item>
           <input aria-label="Filter" />
         </Menu.Popup>
       </Menu.Root>,
@@ -565,7 +561,7 @@ describe('keyboard: in the menu', () => {
         cancelable: true,
       }),
     )
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
   })
 
   test('Space during a typeahead word adds a space and does not activate', async () => {
@@ -579,9 +575,9 @@ describe('keyboard: in the menu', () => {
     expect(isShown()).toBe(true)
     await userEvent.keyboard('{ArrowDown}')
     await wait(600)
-    await userEvent.keyboard('ladda ')
+    await userEvent.keyboard('load ')
     await userEvent.keyboard('u')
-    await expect.element(item('Ladda upp')).toHaveFocus()
+    await expect.element(item('Load up')).toHaveFocus()
   })
 
   test('Enter and Space on an item run it, close the menu and return focus to the trigger', async () => {
@@ -606,7 +602,7 @@ describe('keyboard: in the menu', () => {
     await userEvent.keyboard('{Enter}')
     expect(onPrint).toHaveBeenCalledTimes(1)
     expect(isShown()).toBe(true)
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
   })
 
   test('event.preventDefault() in onSelect keeps the menu open', async () => {
@@ -617,16 +613,16 @@ describe('keyboard: in the menu', () => {
   })
 
   test('Enter and Space on a disabled item do nothing and keep the menu open', async () => {
-    const onShare = vi.fn<(event: MouseEvent<HTMLButtonElement>) => void>()
-    await render(<Example onShare={onShare} />)
+    const onDeliver = vi.fn<(event: MouseEvent<HTMLButtonElement>) => void>()
+    await render(<Example onDeliver={onDeliver} />)
     await openWithEnter()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(item('Dela')).toHaveFocus()
+    await expect.element(item('Deliver')).toHaveFocus()
     await userEvent.keyboard('{Enter}')
     await userEvent.keyboard(' ')
-    expect(onShare).not.toHaveBeenCalled()
+    expect(onDeliver).not.toHaveBeenCalled()
     expect(isShown()).toBe(true)
-    await expect.element(item('Dela')).toHaveFocus()
+    await expect.element(item('Deliver')).toHaveFocus()
   })
 
   test('Escape closes the menu and returns focus to the trigger, and only the menu', async () => {
@@ -635,9 +631,9 @@ describe('keyboard: in the menu', () => {
         <Popover.Trigger>Mer</Popover.Trigger>
         <Popover.Popup aria-label="Mer">
           <Menu.Root>
-            <Menu.Trigger>Åtgärder</Menu.Trigger>
+            <Menu.Trigger>Actions</Menu.Trigger>
             <Menu.Popup>
-              <Menu.Item>Skriv ut</Menu.Item>
+              <Menu.Item>Save as</Menu.Item>
             </Menu.Popup>
           </Menu.Root>
         </Popover.Popup>
@@ -646,7 +642,7 @@ describe('keyboard: in the menu', () => {
     await expect.poll(() => document.querySelector('.kv-popover-popup:popover-open')).not.toBeNull()
     await userEvent.click(trigger())
     await expect.poll(isShown).toBe(true)
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await expect.poll(isShown).toBe(false)
     expect(document.querySelector('.kv-popover-popup:popover-open')).not.toBeNull()
@@ -661,9 +657,9 @@ describe('keyboard: in the menu', () => {
     await openWithEnter()
     await userEvent.keyboard('{ArrowDown}')
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     await expect.poll(isShown).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     expect(onOpenChange).toHaveBeenLastCalledWith(false, expect.objectContaining({ reason: 'tab' }))
   })
 
@@ -685,7 +681,7 @@ describe('keyboard: in the menu', () => {
     await userEvent.keyboard('{ArrowRight}{ArrowLeft}')
     document.removeEventListener('keydown', record)
     expect(prevented).toEqual([false, false])
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
     expect(isShown()).toBe(true)
   })
 
@@ -703,16 +699,16 @@ describe('pointer', () => {
     const onPrint = vi.fn<(event: MouseEvent<HTMLButtonElement>) => void>()
     await render(<Example onPrint={onPrint} />)
     await openWithClick()
-    await userEvent.hover(item('Ladda upp'))
-    await expect.element(item('Ladda upp')).toHaveFocus()
-    await userEvent.hover(item('Radera'))
-    await expect.element(item('Radera')).toHaveFocus()
-    await userEvent.click(item('Skriv ut'))
+    await userEvent.hover(item('Load up'))
+    await expect.element(item('Load up')).toHaveFocus()
+    await userEvent.hover(item('Remove'))
+    await expect.element(item('Remove')).toHaveFocus()
+    await userEvent.click(item('Save as'))
     expect(onPrint).toHaveBeenCalledTimes(1)
     await expect.poll(isShown).toBe(false)
     await expect.element(trigger()).toHaveFocus()
     await openWithClick()
-    await userEvent.click(page.getByText('Text utanför'))
+    await userEvent.click(page.getByText('Text outside'))
     await expect.poll(isShown).toBe(false)
     await expect.element(trigger()).toHaveFocus()
   })
@@ -720,13 +716,13 @@ describe('pointer', () => {
   test('only a mouse move focuses an item: touch and pen moves do not', async () => {
     await render(<Example />)
     await openWithClick()
-    const target = item('Radera').element()
+    const target = item('Remove').element()
     for (const pointerType of ['touch', 'pen']) {
       target.dispatchEvent(
         new PointerEvent('pointermove', { pointerType, movementX: 4, movementY: 4, bubbles: true }),
       )
     }
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
     target.dispatchEvent(
       new PointerEvent('pointermove', {
         pointerType: 'mouse',
@@ -735,24 +731,24 @@ describe('pointer', () => {
         bubbles: true,
       }),
     )
-    await expect.element(item('Radera')).toHaveFocus()
+    await expect.element(item('Remove')).toHaveFocus()
   })
 
   test('a press on another control closes the menu, and that control keeps the focus', async () => {
     await render(<Example />)
     await openWithClick()
-    await userEvent.click(page.getByRole('button', { name: 'Före' }))
+    await userEvent.click(page.getByRole('button', { name: 'Before' }))
     await expect.poll(isShown).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 
   test('a press on a disabled item does not run it or close the menu', async () => {
-    const onShare = vi.fn<(event: MouseEvent<HTMLButtonElement>) => void>()
-    await render(<Example onShare={onShare} />)
+    const onDeliver = vi.fn<(event: MouseEvent<HTMLButtonElement>) => void>()
+    await render(<Example onDeliver={onDeliver} />)
     await openWithClick()
     // Playwright will not press an aria-disabled element, as a user can: the click is dispatched.
     document.querySelector<HTMLElement>('[aria-disabled="true"]')?.click()
-    expect(onShare).not.toHaveBeenCalled()
+    expect(onDeliver).not.toHaveBeenCalled()
     expect(isShown()).toBe(true)
   })
 
@@ -760,14 +756,14 @@ describe('pointer', () => {
     const elementOnClick = vi.fn<(event: MouseEvent<HTMLButtonElement>) => void>()
     await render(
       <Menu.Root>
-        <Menu.Trigger>Åtgärder</Menu.Trigger>
-        <Menu.Popup aria-label="Åtgärder">
-          <Menu.Item onClick={elementOnClick}>Dela</Menu.Item>
+        <Menu.Trigger>Actions</Menu.Trigger>
+        <Menu.Popup aria-label="Actions">
+          <Menu.Item onClick={elementOnClick}>Deliver</Menu.Item>
         </Menu.Popup>
       </Menu.Root>,
     )
     await openWithEnter()
-    await item('Dela').click()
+    await item('Deliver').click()
     expect(elementOnClick).toHaveBeenCalledTimes(1)
     await expect.poll(isShown).toBe(false)
   })
@@ -776,17 +772,17 @@ describe('pointer', () => {
     const elementOnClick = vi.fn<(event: MouseEvent<HTMLButtonElement>) => void>()
     await render(
       <Menu.Root>
-        <Menu.Trigger>Åtgärder</Menu.Trigger>
-        <Menu.Popup aria-label="Åtgärder">
+        <Menu.Trigger>Actions</Menu.Trigger>
+        <Menu.Popup aria-label="Actions">
           <Menu.Item disabled onClick={elementOnClick}>
-            Dela
+            Deliver
           </Menu.Item>
         </Menu.Popup>
       </Menu.Root>,
     )
     await openWithEnter()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(item('Dela')).toHaveFocus()
+    await expect.element(item('Deliver')).toHaveFocus()
     await userEvent.keyboard('{Enter}')
     await userEvent.keyboard(' ')
     document.querySelector<HTMLElement>('[aria-disabled="true"]')?.click()
@@ -822,7 +818,7 @@ describe('onOpenChange reasons', () => {
     await userEvent.keyboard('{Enter}')
     await expect.poll(isShown).toBe(false)
     await openWithClick()
-    await userEvent.click(page.getByText('Text utanför'))
+    await userEvent.click(page.getByText('Text outside'))
     await expect.poll(isShown).toBe(false)
     expect(reasons(onOpenChange)).toEqual([
       [true, 'trigger-press'],
@@ -854,7 +850,7 @@ describe('controlled', () => {
     expect(isShown()).toBe(false)
     await rerender(<Example open />)
     await expect.poll(isShown).toBe(true)
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
     await rerender(<Example open={false} />)
     await expect.poll(isShown).toBe(false)
   })
@@ -864,9 +860,9 @@ describe('controlled', () => {
     await expect.poll(isShown).toBe(true)
     await wait(100)
     expect(document.activeElement).toBe(document.body)
-    item('Skriv ut').element().focus()
+    item('Save as').element().focus()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(item('Dela')).toHaveFocus()
+    await expect.element(item('Deliver')).toHaveFocus()
   })
 
   test('StrictMode’s second effect run does not count as an opening', async () => {
@@ -893,19 +889,19 @@ describe('checkbox and radio items', () => {
     const onCheckedChange = vi.fn<(checked: boolean) => void>()
     await render(
       <Menu.Root>
-        <Menu.Trigger>Visa</Menu.Trigger>
+        <Menu.Trigger>Show</Menu.Trigger>
         <Menu.Popup>
-          <Menu.CheckboxItem onCheckedChange={onCheckedChange}>Rutnät</Menu.CheckboxItem>
+          <Menu.CheckboxItem onCheckedChange={onCheckedChange}>Grid</Menu.CheckboxItem>
         </Menu.Popup>
       </Menu.Root>,
     )
-    const checkbox = () => page.getByRole('menuitemcheckbox', { name: 'Rutnät' })
-    await userEvent.click(page.getByRole('button', { name: 'Visa' }))
+    const checkbox = () => page.getByRole('menuitemcheckbox', { name: 'Grid' })
+    await userEvent.click(page.getByRole('button', { name: 'Show' }))
     await expect.poll(isShown).toBe(true)
     await userEvent.keyboard('{Enter}')
     expect(onCheckedChange).toHaveBeenLastCalledWith(true)
     await expect.poll(isShown).toBe(false)
-    await userEvent.click(page.getByRole('button', { name: 'Visa' }))
+    await userEvent.click(page.getByRole('button', { name: 'Show' }))
     await expect.element(checkbox()).toHaveAttribute('aria-checked', 'true')
     await userEvent.keyboard(' ')
     expect(onCheckedChange).toHaveBeenLastCalledWith(false)
@@ -915,24 +911,24 @@ describe('checkbox and radio items', () => {
     const onCheckedChange = vi.fn<(checked: boolean) => void>()
     await render(
       <Menu.Root defaultOpen>
-        <Menu.Trigger>Visa</Menu.Trigger>
+        <Menu.Trigger>Show</Menu.Trigger>
         <Menu.Popup>
           <Menu.CheckboxItem
             checked={false}
             onCheckedChange={onCheckedChange}
             closeOnSelect={false}
           >
-            Rutnät
+            Grid
           </Menu.CheckboxItem>
         </Menu.Popup>
       </Menu.Root>,
     )
     await expect.poll(isShown).toBe(true)
-    page.getByRole('menuitemcheckbox', { name: 'Rutnät' }).element().focus()
+    page.getByRole('menuitemcheckbox', { name: 'Grid' }).element().focus()
     await userEvent.keyboard('{Enter}')
     expect(onCheckedChange).toHaveBeenCalledWith(true)
     await expect
-      .element(page.getByRole('menuitemcheckbox', { name: 'Rutnät' }))
+      .element(page.getByRole('menuitemcheckbox', { name: 'Grid' }))
       .toHaveAttribute('aria-checked', 'false')
     expect(isShown()).toBe(true)
   })
@@ -941,28 +937,28 @@ describe('checkbox and radio items', () => {
     const onValueChange = vi.fn<(value: string) => void>()
     await render(
       <Menu.Root defaultOpen>
-        <Menu.Trigger>Sortera</Menu.Trigger>
+        <Menu.Trigger>Sort</Menu.Trigger>
         <Menu.Popup>
-          <Menu.RadioGroup aria-label="Sortera" defaultValue="name" onValueChange={onValueChange}>
+          <Menu.RadioGroup aria-label="Sort" defaultValue="name" onValueChange={onValueChange}>
             <Menu.RadioItem value="name" closeOnSelect={false}>
-              Namn
+              Name
             </Menu.RadioItem>
             <Menu.RadioItem value="date" closeOnSelect={false}>
-              Datum
+              Date
             </Menu.RadioItem>
           </Menu.RadioGroup>
         </Menu.Popup>
       </Menu.Root>,
     )
     await expect.poll(isShown).toBe(true)
-    page.getByRole('menuitemradio', { name: 'Namn' }).element().focus()
+    page.getByRole('menuitemradio', { name: 'Name' }).element().focus()
     await userEvent.keyboard('{ArrowDown}{Enter}')
     expect(onValueChange).toHaveBeenCalledWith('date')
     await expect
-      .element(page.getByRole('menuitemradio', { name: 'Datum' }))
+      .element(page.getByRole('menuitemradio', { name: 'Date' }))
       .toHaveAttribute('aria-checked', 'true')
     await expect
-      .element(page.getByRole('menuitemradio', { name: 'Namn' }))
+      .element(page.getByRole('menuitemradio', { name: 'Name' }))
       .toHaveAttribute('aria-checked', 'false')
   })
 
@@ -971,14 +967,14 @@ describe('checkbox and radio items', () => {
       const [value, setValue] = useState('name')
       return (
         <Menu.Root defaultOpen>
-          <Menu.Trigger>Sortera</Menu.Trigger>
+          <Menu.Trigger>Sort</Menu.Trigger>
           <Menu.Popup>
-            <Menu.RadioGroup aria-label="Sortera" value={value} onValueChange={setValue}>
+            <Menu.RadioGroup aria-label="Sort" value={value} onValueChange={setValue}>
               <Menu.RadioItem value="name" closeOnSelect={false}>
-                Namn
+                Name
               </Menu.RadioItem>
               <Menu.RadioItem value="date" closeOnSelect={false}>
-                Datum
+                Date
               </Menu.RadioItem>
             </Menu.RadioGroup>
           </Menu.Popup>
@@ -987,10 +983,10 @@ describe('checkbox and radio items', () => {
     }
     await render(<Controlled />)
     await expect.poll(isShown).toBe(true)
-    page.getByRole('menuitemradio', { name: 'Namn' }).element().focus()
+    page.getByRole('menuitemradio', { name: 'Name' }).element().focus()
     await userEvent.keyboard('{ArrowDown}{Enter}')
     await expect
-      .element(page.getByRole('menuitemradio', { name: 'Datum' }))
+      .element(page.getByRole('menuitemradio', { name: 'Date' }))
       .toHaveAttribute('aria-checked', 'true')
   })
 })
@@ -1001,10 +997,10 @@ describe('focus return', () => {
     const dialog = (
       <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
         <Dialog.Popup>
-          <Dialog.Title>Ta bort ärendet?</Dialog.Title>
+          <Dialog.Title>Remove the case?</Dialog.Title>
           <Dialog.Actions>
             <button type="button" onClick={() => setDialogOpen(false)}>
-              Avbryt
+              Cancel
             </button>
           </Dialog.Actions>
         </Dialog.Popup>
@@ -1014,9 +1010,9 @@ describe('focus return', () => {
       <>
         {dialogFirst ? dialog : null}
         <Menu.Root>
-          <Menu.Trigger>Åtgärder</Menu.Trigger>
+          <Menu.Trigger>Actions</Menu.Trigger>
           <Menu.Popup>
-            <Menu.Item onSelect={() => setDialogOpen(true)}>Ta bort…</Menu.Item>
+            <Menu.Item onSelect={() => setDialogOpen(true)}>Delete…</Menu.Item>
           </Menu.Popup>
         </Menu.Root>
         {dialogFirst ? null : dialog}
@@ -1031,7 +1027,7 @@ describe('focus return', () => {
       await expect.poll(isShown).toBe(true)
       await userEvent.keyboard('{Enter}')
       await expect.element(page.getByRole('dialog')).toBeVisible()
-      await userEvent.click(page.getByRole('button', { name: 'Avbryt' }))
+      await userEvent.click(page.getByRole('button', { name: 'Cancel' }))
       await expect.poll(() => document.querySelector('dialog')?.open).toBe(false)
       await expect.element(trigger()).toHaveFocus()
     })
@@ -1058,7 +1054,7 @@ describe('focus return', () => {
     await render(<Example defaultOpen />)
     await expect.poll(isShown).toBe(true)
     const focus = vi.spyOn(triggerElement(), 'focus')
-    await userEvent.click(page.getByText('Text utanför'))
+    await userEvent.click(page.getByText('Text outside'))
     await expect.poll(isShown).toBe(false)
     await wait(100)
     expect(focus).not.toHaveBeenCalled()
@@ -1068,7 +1064,7 @@ describe('focus return', () => {
   test('a menu that starts open, with focus on an item, returns focus to the trigger when the platform closes it', async () => {
     await render(<Example defaultOpen />)
     await expect.poll(isShown).toBe(true)
-    item('Skriv ut').element().focus()
+    item('Save as').element().focus()
     const other = document.createElement('div')
     other.popover = 'auto'
     document.body.append(other)
@@ -1086,7 +1082,7 @@ describe('focus return', () => {
       <>
         <Example />
         <div style={{ blockSize: '3000px' }}>
-          <p style={{ marginBlockStart: '2000px' }}>Långt ner</p>
+          <p style={{ marginBlockStart: '2000px' }}>Far down</p>
         </div>
       </>,
     )
@@ -1094,7 +1090,7 @@ describe('focus return', () => {
     const focus = vi.spyOn(triggerElement(), 'focus')
     window.scrollTo(0, 1500)
     await expect.poll(() => window.scrollY).toBe(1500)
-    await userEvent.click(page.getByText('Långt ner'))
+    await userEvent.click(page.getByText('Far down'))
     await expect.poll(isShown).toBe(false)
     await expect.element(trigger()).toHaveFocus()
     expect(window.scrollY).toBe(1500)
@@ -1114,25 +1110,25 @@ describe('focus return', () => {
       return (
         <>
           <Menu.Root open={open} onOpenChange={setOpen}>
-            <Menu.Trigger>Åtgärder</Menu.Trigger>
+            <Menu.Trigger>Actions</Menu.Trigger>
             <Menu.Popup>
-              <Menu.Item>Skriv ut</Menu.Item>
+              <Menu.Item>Save as</Menu.Item>
             </Menu.Popup>
           </Menu.Root>
           <button type="button" onClick={() => setOpen(true)}>
-            Öppna
+            Open
           </button>
         </>
       )
     }
     await render(<OpenedFromAnotherControl />)
-    await userEvent.click(page.getByRole('button', { name: 'Öppna' }))
+    await userEvent.click(page.getByRole('button', { name: 'Open' }))
     await expect.poll(isShown).toBe(true)
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
     await userEvent.tab()
-    await expect.element(page.getByRole('button', { name: 'Öppna' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Open' })).toHaveFocus()
     await expect.poll(isShown).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Öppna' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Open' })).toHaveFocus()
   })
 
   for (const leaveBy of ['focus-out', 'tab'] as const) {
@@ -1148,27 +1144,27 @@ describe('focus return', () => {
               }
             }}
           >
-            <Menu.Trigger>Åtgärder</Menu.Trigger>
+            <Menu.Trigger>Actions</Menu.Trigger>
             <Menu.Popup>
-              <Menu.Item>Skriv ut</Menu.Item>
+              <Menu.Item>Save as</Menu.Item>
             </Menu.Popup>
-            <button type="button">Efter</button>
+            <button type="button">After</button>
           </Menu.Root>
         )
       }
       await render(<Refusing />)
       await expect.poll(isShown).toBe(true)
-      item('Skriv ut').element().focus()
-      await expect.element(item('Skriv ut')).toHaveFocus()
+      item('Save as').element().focus()
+      await expect.element(item('Save as')).toHaveFocus()
       if (leaveBy === 'tab') {
         await userEvent.tab()
       } else {
-        page.getByRole('button', { name: 'Efter' }).element().focus()
+        page.getByRole('button', { name: 'After' }).element().focus()
       }
-      await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+      await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
       await wait(100)
       expect(isShown()).toBe(true)
-      item('Skriv ut').element().focus()
+      item('Save as').element().focus()
       await userEvent.keyboard('{Escape}')
       await expect.poll(isShown).toBe(false)
       await expect.element(trigger()).toHaveFocus()
@@ -1191,21 +1187,21 @@ describe('focus return', () => {
             }
           }}
         >
-          <Menu.Trigger>Åtgärder</Menu.Trigger>
+          <Menu.Trigger>Actions</Menu.Trigger>
           <Menu.Popup>
-            <Menu.Item>Skriv ut</Menu.Item>
+            <Menu.Item>Save as</Menu.Item>
           </Menu.Popup>
-          <button type="button">Efter</button>
+          <button type="button">After</button>
         </Menu.Root>
       )
     }
     await render(<Refusing />)
     await expect.poll(isShown).toBe(true)
-    item('Skriv ut').element().focus()
-    await expect.element(item('Skriv ut')).toHaveFocus()
-    page.getByRole('button', { name: 'Efter' }).element().focus()
+    item('Save as').element().focus()
+    await expect.element(item('Save as')).toHaveFocus()
+    page.getByRole('button', { name: 'After' }).element().focus()
     await wait(100)
-    item('Skriv ut').element().focus()
+    item('Save as').element().focus()
     closeFromOutside()
     await expect.poll(isShown).toBe(false)
     await expect.element(trigger()).toHaveFocus()
@@ -1215,9 +1211,9 @@ describe('focus return', () => {
     const onOpenChange = vi.fn<(open: boolean, details: MenuChangeDetails) => void>()
     await render(<Example onOpenChange={onOpenChange} />)
     await openWithEnter()
-    page.getByRole('button', { name: 'Före' }).element().focus()
+    page.getByRole('button', { name: 'Before' }).element().focus()
     await expect.poll(isShown).toBe(false)
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     expect(onOpenChange).toHaveBeenLastCalledWith(
       false,
       expect.objectContaining({ reason: 'focus-out' }),
@@ -1229,26 +1225,26 @@ describe('focus return', () => {
 describe('composition', () => {
   test('in a vertical Toolbar the trigger’s ArrowDown opens the menu and the toolbar does not move focus', async () => {
     await render(
-      <Toolbar.Root aria-label="Verktyg" orientation="vertical">
-        <Toolbar.Button style={controlStyle}>Ett</Toolbar.Button>
+      <Toolbar.Root aria-label="Tools" orientation="vertical">
+        <Toolbar.Button style={controlStyle}>One</Toolbar.Button>
         <Menu.Root>
           <Toolbar.Item as={Menu.Trigger} style={controlStyle}>
-            Åtgärder
+            Actions
           </Toolbar.Item>
           <Menu.Popup>
-            <Menu.Item style={controlStyle}>Skriv ut</Menu.Item>
-            <Menu.Item style={controlStyle}>Dela</Menu.Item>
+            <Menu.Item style={controlStyle}>Save as</Menu.Item>
+            <Menu.Item style={controlStyle}>Deliver</Menu.Item>
           </Menu.Popup>
         </Menu.Root>
-        <Toolbar.Button style={controlStyle}>Två</Toolbar.Button>
+        <Toolbar.Button style={controlStyle}>Two</Toolbar.Button>
       </Toolbar.Root>,
     )
     triggerElement().focus()
     await userEvent.keyboard('{ArrowDown}')
     await expect.poll(isShown).toBe(true)
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
     await userEvent.keyboard('{ArrowDown}')
-    await expect.element(item('Dela')).toHaveFocus()
+    await expect.element(item('Deliver')).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await expect.element(trigger()).toHaveFocus()
   })
@@ -1259,11 +1255,11 @@ describe('composition', () => {
       <Tooltip.Root delay={20} group={group}>
         <Menu.Root>
           <Tooltip.Trigger as={Menu.Trigger} style={controlStyle}>
-            Åtgärder
+            Actions
           </Tooltip.Trigger>
-          <Tooltip.Popup>Fler åtgärder</Tooltip.Popup>
+          <Tooltip.Popup>More actions</Tooltip.Popup>
           <Menu.Popup>
-            <Menu.Item style={controlStyle}>Skriv ut</Menu.Item>
+            <Menu.Item style={controlStyle}>Save as</Menu.Item>
           </Menu.Popup>
         </Menu.Root>
       </Tooltip.Root>,
@@ -1281,14 +1277,14 @@ describe('composition', () => {
   test('inside a Dialog the menu stacks above it and Escape closes the menu only', async () => {
     await render(
       <Dialog.Root defaultOpen>
-        <Dialog.Trigger>Öppna</Dialog.Trigger>
+        <Dialog.Trigger>Open</Dialog.Trigger>
         <Dialog.Popup>
-          <Dialog.Title>Ärende</Dialog.Title>
+          <Dialog.Title>Case</Dialog.Title>
           <Dialog.Body>
             <Menu.Root>
-              <Menu.Trigger>Åtgärder</Menu.Trigger>
+              <Menu.Trigger>Actions</Menu.Trigger>
               <Menu.Popup>
-                <Menu.Item>Skriv ut</Menu.Item>
+                <Menu.Item>Save as</Menu.Item>
               </Menu.Popup>
             </Menu.Root>
           </Dialog.Body>
@@ -1298,7 +1294,7 @@ describe('composition', () => {
     await expect.element(page.getByRole('dialog')).toBeVisible()
     await userEvent.click(trigger())
     await expect.poll(isShown).toBe(true)
-    await expect.element(item('Skriv ut')).toHaveFocus()
+    await expect.element(item('Save as')).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await expect.poll(isShown).toBe(false)
     await expect.element(page.getByRole('dialog')).toBeVisible()
@@ -1328,7 +1324,7 @@ describe('development warnings', () => {
       <>
         <Menu.Trigger>Ut</Menu.Trigger>
         <Menu.Popup />
-        <Menu.Item>Ett</Menu.Item>
+        <Menu.Item>One</Menu.Item>
       </>,
     )
     const text = messages().join('\n')
@@ -1340,7 +1336,7 @@ describe('development warnings', () => {
   test('a Trigger that is not a button', async () => {
     await render(
       <Menu.Root>
-        <Menu.Trigger as="div">Åtgärder</Menu.Trigger>
+        <Menu.Trigger as="div">Actions</Menu.Trigger>
         <Menu.Popup />
       </Menu.Root>,
     )
@@ -1350,13 +1346,13 @@ describe('development warnings', () => {
   test('a RadioGroup and a Group with no name', async () => {
     await render(
       <Menu.Root defaultOpen>
-        <Menu.Trigger>Åtgärder</Menu.Trigger>
+        <Menu.Trigger>Actions</Menu.Trigger>
         <Menu.Popup>
           <Menu.RadioGroup>
-            <Menu.RadioItem value="a">Ett</Menu.RadioItem>
+            <Menu.RadioItem value="a">One</Menu.RadioItem>
           </Menu.RadioGroup>
           <Menu.Group>
-            <Menu.Item>Två</Menu.Item>
+            <Menu.Item>Two</Menu.Item>
           </Menu.Group>
         </Menu.Popup>
       </Menu.Root>,
@@ -1370,14 +1366,14 @@ describe('development warnings', () => {
   test('a Group named by its label and a RadioGroup named by aria-label do not warn', async () => {
     await render(
       <Menu.Root defaultOpen>
-        <Menu.Trigger>Åtgärder</Menu.Trigger>
+        <Menu.Trigger>Actions</Menu.Trigger>
         <Menu.Popup>
-          <Menu.RadioGroup aria-label="Sortera">
-            <Menu.RadioItem value="a">Ett</Menu.RadioItem>
+          <Menu.RadioGroup aria-label="Sort">
+            <Menu.RadioItem value="a">One</Menu.RadioItem>
           </Menu.RadioGroup>
           <Menu.Group>
-            <Menu.GroupLabel>Visa</Menu.GroupLabel>
-            <Menu.Item>Två</Menu.Item>
+            <Menu.GroupLabel>Show</Menu.GroupLabel>
+            <Menu.Item>Two</Menu.Item>
           </Menu.Group>
         </Menu.Popup>
       </Menu.Root>,

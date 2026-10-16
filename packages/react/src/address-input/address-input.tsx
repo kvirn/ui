@@ -59,7 +59,7 @@ const AddressInputContext = createContext<AddressInputContextValue | null>(null)
  *
  * @example
  * <Fieldset.Root>
- *   <Fieldset.Legend>Din adress</Fieldset.Legend>
+ *   <Fieldset.Legend>Your address</Fieldset.Legend>
  *   <AddressInput.Root country="SE">
  *     <Field.Root required>
  *       <Field.Label>Gatuadress</Field.Label>
@@ -68,7 +68,7 @@ const AddressInputContext = createContext<AddressInputContextValue | null>(null)
  *     <Field.Root required>
  *       <Field.Label>Postnummer</Field.Label>
  *       <AddressInput.PostalCode name="postalCode" />
- *       <Field.HelpText>Till exempel 123 45</Field.HelpText>
+ *       <Field.HelpText>For example 123 45</Field.HelpText>
  *     </Field.Root>
  *   </AddressInput.Root>
  * </Fieldset.Root>

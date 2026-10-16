@@ -70,7 +70,7 @@ Unhappy states to cover:
 
 ## 4. Content
 
-The recipes add no strings. The example labels are in [storybook-presentation.md §4](storybook-presentation.md#4-content). The only library string involved is `link.newTabNotice`: en "(opens in a new tab)", sv "(öppnas i en ny flik)", and fi "(avautuu uuteen välilehteen)", the longest, which must wrap with the link text. It is always visible in default-theme examples.
+The recipes add no strings. The example labels are in [storybook-presentation.md §4](storybook-presentation.md#4-content). The only library string involved is `link.newTabNotice`: en "(opens in a new tab)", sv "(öppnas i en ny flik)", and fi "(avautuu uuteen välilehteen)", the longest, which must wrap with the link text. It is always visible in default-theme examples. <!-- kv-lang-ok: locale table: the Swedish and Finnish strings are the subject -->
 
 ## 5. Structure
 

@@ -55,8 +55,8 @@ export function NewsArticle({ state = 'published', image = true }: NewsArticlePr
           <div ref={contentRef}>
             <Stack className="kv-stack--gap-8">
               <p className="kv-lead">
-                Storgatan is being rebuilt between the square and Skolvägen. Buses are diverted and
-                walking and cycling routes stay open.
+                Storgatan is being rebuilt between the square and School Road. Buses are diverted
+                and walking and cycling routes stay open.
               </p>
               {image ? (
                 <Prose>
@@ -72,8 +72,8 @@ export function NewsArticle({ state = 'published', image = true }: NewsArticlePr
               <Prose>
                 <h2>What changes</h2>
                 <p>
-                  Only one lane is open at a time, with traffic lights. Buses 3 and 7 use Skolvägen
-                  and stop at the temporary stops marked on the map at the town hall.
+                  Only one lane is open at a time, with traffic lights. Buses 3 and 7 use School
+                  Road and stop at the temporary stops marked on the map at the town hall.
                 </p>
                 <h2>When it is finished</h2>
                 <p>

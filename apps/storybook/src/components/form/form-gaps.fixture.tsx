@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale fixture text sets (sv, fi, nb, nn), picked by the locale toolbar
 import type { FormLocale } from './form.fixture.tsx'
 
 // Story texts for the Field and Fieldset examples that show an option the main examples don't:

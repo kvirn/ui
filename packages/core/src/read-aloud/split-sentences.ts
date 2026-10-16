@@ -99,7 +99,7 @@ function splitLong(text: string, from: number, to: number, maxLength: number): S
  * `maxLength`. Chunks are trimmed, in order, never cross a language run, and hold every non-space character. Pure: no DOM.
  *
  * @example
- * splitSentences('Hej! Hur mår du?', { language: 'sv' }).map((chunk) => chunk.text) // ['Hej!', 'Hur mår du?']
+ * splitSentences('Hello! How are you?', { language: 'en' }).map((chunk) => chunk.text) // ['Hello!', 'How are you?']
  */
 export function splitSentences(
   text: string,

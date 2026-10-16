@@ -56,7 +56,7 @@ function Page({
   return (
     <>
       <button type="button" style={spaced}>
-        Före
+        Before
       </button>
       <KvirnProvider {...providerProps}>
         <main>
@@ -67,7 +67,7 @@ function Page({
         </main>
       </KvirnProvider>
       <button type="button" style={spaced}>
-        Efter
+        After
       </button>
     </>
   )
@@ -115,16 +115,16 @@ const wait = (milliseconds: number) =>
   })
 
 const showSaved: Run = (toast) => {
-  toast.show({ variant: 'success', title: 'Utkastet sparades' })
+  toast.show({ variant: 'success', title: 'The draft was saved' })
 }
 
 const showSavedAsJob: Run = (toast) => {
-  toast.show({ id: 'job', variant: 'success', title: 'Utkastet sparades' })
+  toast.show({ id: 'job', variant: 'success', title: 'The draft was saved' })
 }
 
 describe('rendering and ARIA', () => {
   test('the region is absent while no toast exists', async () => {
-    await render(<Page actions={{ Visa: showSaved }} />)
+    await render(<Page actions={{ Show: showSaved }} />)
     expect(regionElement()).toBeNull()
     expect(document.querySelector('[role="region"], .kv-toast-region')).toBeNull()
   })
@@ -133,17 +133,17 @@ describe('rendering and ARIA', () => {
     await render(
       <Page
         actions={{
-          Visa: (toast) => {
+          Show: (toast) => {
             toast.show({
               variant: 'success',
-              title: 'Utkastet sparades',
-              body: <p>Se Mina ärenden.</p>,
+              title: 'The draft was saved',
+              body: <p>See My cases.</p>,
             })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
 
     await expect.element(page.getByRole('region', { name: 'Messages' })).toBeVisible()
     const region = regionElement()
@@ -172,37 +172,37 @@ describe('rendering and ARIA', () => {
     await render(
       <Page
         actions={{
-          Visa: (toast) => {
-            toast.show({ id: 'job', busy: true, title: 'Sparar utkastet' })
+          Show: (toast) => {
+            toast.show({ id: 'job', busy: true, title: 'Saving the draft' })
           },
-          Klart: showSavedAsJob,
+          Done: showSavedAsJob,
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
     const spinner = toastElements()[0]?.querySelector(':scope > .kv-alert-icon.kv-spinner')
     expect(spinner?.getAttribute('aria-hidden')).toBe('true')
     expect(toastElements()[0]?.querySelector('svg.kv-alert-icon')).toBeNull()
     expect(toastElements()[0]?.querySelector('.kv-alert-status')?.textContent).not.toBe('')
-    await press('Klart')
+    await press('Done')
     expect(toastElements()).toHaveLength(1)
     expect(toastElements()[0]?.querySelector('.kv-spinner')).toBeNull()
     expect(toastElements()[0]?.querySelector('svg.kv-alert-icon')).not.toBeNull()
   })
 
   test('the list exposes the list role under list-style: none', async () => {
-    await render(<Page actions={{ Visa: showSaved }} />)
-    await press('Visa')
+    await render(<Page actions={{ Show: showSaved }} />)
+    await press('Show')
     expect(regionElement()?.querySelector('ul')?.getAttribute('role')).toBe('list')
   })
 
   test('the title is a paragraph that starts with the status word, and it is the only tabindex, at -1', async () => {
-    await render(<Page actions={{ Visa: showSaved }} />)
-    await press('Visa')
+    await render(<Page actions={{ Show: showSaved }} />)
+    await press('Show')
 
     const title = document.querySelector<HTMLElement>('.kv-toast .kv-alert-title')
     expect(title?.tagName).toBe('P')
-    expect(title?.textContent).toBe('Success: Utkastet sparades')
+    expect(title?.textContent).toBe('Success: The draft was saved')
     expect(title?.getAttribute('tabindex')).toBe('-1')
     expect(regionElement()?.querySelectorAll('[tabindex]').length).toBe(1)
   })
@@ -211,13 +211,13 @@ describe('rendering and ARIA', () => {
     await render(
       <Page
         actions={{
-          Visa: (toast) => {
-            toast.show({ title: 'Din rapport är klar' })
+          Show: (toast) => {
+            toast.show({ title: 'Your report is ready' })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
 
     expect(toastElements()[0]?.classList.contains('kv-alert--info')).toBe(true)
   })
@@ -226,26 +226,26 @@ describe('rendering and ARIA', () => {
     await render(
       <Page
         actions={{
-          Visa: (toast) => {
+          Show: (toast) => {
             toast.show({
-              title: 'Utkastet togs bort',
-              action: { label: 'Ångra', onPress: () => {} },
+              title: 'The draft was removed',
+              action: { label: 'Undo', onPress: () => {} },
             })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
 
     const controls = [...(toastElements()[0]?.querySelectorAll('button') ?? [])]
     expect(
       controls.map((control) => control.getAttribute('aria-label') ?? control.textContent),
-    ).toEqual(['Ångra', 'Close message'])
+    ).toEqual(['Undo', 'Close message'])
   })
 
   test('the region carries the provider locale and direction', async () => {
-    await render(<Page actions={{ Visa: showSaved }} locale="ar" messages={sv} />)
-    await press('Visa')
+    await render(<Page actions={{ Show: showSaved }} locale="ar" messages={sv} />)
+    await press('Show')
 
     expect(regionElement()?.getAttribute('lang')).toBe('ar')
     expect(regionElement()?.getAttribute('dir')).toBe('rtl')
@@ -255,19 +255,19 @@ describe('rendering and ARIA', () => {
     const { container } = await render(
       <Page
         actions={{
-          Visa: (toast) => {
+          Show: (toast) => {
             toast.show({
               variant: 'success',
-              title: 'Utkastet har tagits bort',
-              body: <p>Du kan ångra det.</p>,
-              action: { label: 'Ångra', onPress: () => {} },
+              title: 'The draft has been removed',
+              body: <p>You can undo it.</p>,
+              action: { label: 'Undo', onPress: () => {} },
             })
-            toast.show({ title: 'Din rapport är klar' })
+            toast.show({ title: 'Your report is ready' })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
     await expect.element(page.getByRole('region', { name: 'Messages' })).toBeVisible()
 
     // The theme spaces the action and Close; without it they touch (target-size, 2.5.8).
@@ -285,45 +285,51 @@ describe('rendering and ARIA', () => {
 describe('languages', () => {
   test('sv: a long title wraps in the region, with the Swedish name, status word and Close', async () => {
     const title =
+      // kv-lang-ok: a long Swedish title, to prove it wraps under lang sv
       'Dina ändringar av aviseringsinställningarna är sparade och börjar gälla från och med nästa inloggning'
     const { container } = await render(
       <Page
         locale="sv"
         messages={sv}
         actions={{
-          Visa: (toast) => {
+          Show: (toast) => {
             toast.show({ variant: 'success', title })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
 
+    // kv-lang-ok: the provider catalog's region label
     await expect.element(page.getByRole('region', { name: 'Meddelanden' })).toBeVisible()
     expect(toastTitles()).toEqual([`${sv.alert.successPrefix} ${title}`])
+    // kv-lang-ok: the sv catalog's Close label
     await expect.element(page.getByRole('button', { name: 'Stäng meddelandet' })).toBeVisible()
     await expectNoA11yViolations(container)
   })
 
   test('fi: a long compound-word title and body show in full, with the Finnish name and status word', async () => {
+    // kv-lang-ok: a long Finnish compound-word title, to prove it shows in full under lang fi
     const title = 'Luonnoksen tallennusasetukset on päivitetty ja ilmoitusasetukset tallennettu'
     const { container } = await render(
       <Page
         locale="fi"
         messages={fi}
         actions={{
-          Visa: (toast) => {
+          Show: (toast) => {
             toast.show({
               variant: 'success',
               title,
+              // kv-lang-ok: Finnish body text for the same fi test
               body: <p>Löydät asetukset kohdasta Omat asetukset ja tiedot.</p>,
             })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
 
+    // kv-lang-ok: the provider catalog's region label
     await expect.element(page.getByRole('region', { name: 'Ilmoitukset' })).toBeVisible()
     expect(toastTitles()).toEqual([`${fi.alert.successPrefix} ${title}`])
     await expectNoA11yViolations(container)
@@ -335,23 +341,23 @@ describe('announcements', () => {
     await render(
       <Page
         actions={{
-          Visa: (toast) => {
+          Show: (toast) => {
             toast.show({
               variant: 'success',
-              title: 'Utkastet sparades',
-              body: <p>Se Mina ärenden.</p>,
-              action: { label: 'Ångra', onPress: () => {} },
+              title: 'The draft was saved',
+              body: <p>See My cases.</p>,
+              action: { label: 'Undo', onPress: () => {} },
             })
           },
         }}
       />,
     )
     const { spoken, stop } = recordAnnouncements()
-    await press('Visa')
+    await press('Show')
 
-    await expect.poll(politeText).toBe('Success: Utkastet sparades Se Mina ärenden.')
+    await expect.poll(politeText).toBe('Success: The draft was saved See My cases.')
     await wait(300)
-    expect(spoken).toEqual(['Success: Utkastet sparades Se Mina ärenden.'])
+    expect(spoken).toEqual(['Success: The draft was saved See My cases.'])
     expect(document.querySelector('[role="alert"][aria-live="assertive"]')?.textContent).toBe('')
     stop()
   })
@@ -360,17 +366,19 @@ describe('announcements', () => {
     await render(
       <Page
         actions={{
-          Visa: (toast) => {
-            toast.show({ variant: 'success', title: 'Utkastet sparades' })
-            toast.show({ title: 'Exporten är klar' })
+          Show: (toast) => {
+            toast.show({ variant: 'success', title: 'The draft was saved' })
+            toast.show({ title: 'The export is ready' })
           },
         }}
       />,
     )
     const { spoken, stop } = recordAnnouncements()
-    await press('Visa')
+    await press('Show')
 
-    await expect.poll(politeText).toBe('Success: Utkastet sparades Information: Exporten är klar')
+    await expect
+      .poll(politeText)
+      .toBe('Success: The draft was saved Information: The export is ready')
     await wait(300)
     expect(spoken).toHaveLength(1)
     stop()
@@ -380,22 +388,22 @@ describe('announcements', () => {
     await render(
       <Page
         actions={{
-          Första: showSaved,
-          Andra: (toast) => {
-            toast.show({ title: 'Exporten är klar' })
+          First: showSaved,
+          Second: (toast) => {
+            toast.show({ title: 'The export is ready' })
           },
         }}
       />,
     )
     const { spoken, stop } = recordAnnouncements()
-    await press('Första')
-    await expect.poll(() => spoken).toEqual(['Success: Utkastet sparades'])
+    await press('First')
+    await expect.poll(() => spoken).toEqual(['Success: The draft was saved'])
     await wait(200)
-    await press('Andra')
+    await press('Second')
 
     await expect
       .poll(() => spoken)
-      .toEqual(['Success: Utkastet sparades', 'Information: Exporten är klar'])
+      .toEqual(['Success: The draft was saved', 'Information: The export is ready'])
     stop()
   })
 
@@ -405,36 +413,36 @@ describe('announcements', () => {
       <Page
         toast={{ limit: 1, autoDismiss: 10_000 }}
         actions={{
-          Visa: showSaved,
-          Ersätt: (toast) => {
-            toast.show({ title: 'Exporten är klar' })
+          Show: showSaved,
+          Replace: (toast) => {
+            toast.show({ title: 'The export is ready' })
           },
         }}
       />,
     )
     const { spoken, stop } = recordAnnouncements()
 
-    await press('Visa')
+    await press('Show')
     await vi.advanceTimersByTimeAsync(300)
     spoken.length = 0
     await userEvent.click(closeButton(0))
     await vi.advanceTimersByTimeAsync(300)
     expect(spoken).toEqual([])
 
-    await press('Visa')
+    await press('Show')
     await vi.advanceTimersByTimeAsync(300)
     spoken.length = 0
     await vi.advanceTimersByTimeAsync(11_000)
     expect(toastElements()).toHaveLength(0)
     expect(spoken).toEqual([])
 
-    await press('Visa')
+    await press('Show')
     await vi.advanceTimersByTimeAsync(300)
     spoken.length = 0
-    await press('Ersätt')
+    await press('Replace')
     await vi.advanceTimersByTimeAsync(300)
-    expect(toastTitles()).toEqual(['Information: Exporten är klar'])
-    expect(spoken).toEqual(['Information: Exporten är klar'])
+    expect(toastTitles()).toEqual(['Information: The export is ready'])
+    expect(spoken).toEqual(['Information: The export is ready'])
     stop()
   })
 
@@ -442,25 +450,25 @@ describe('announcements', () => {
     await render(
       <Page
         actions={{
-          Spara: (toast) => {
-            toast.show({ id: 'draft', title: 'Sparar utkastet' })
+          Save: (toast) => {
+            toast.show({ id: 'draft', title: 'Saving the draft' })
           },
-          Klart: (toast) => {
-            toast.show({ id: 'draft', variant: 'success', title: 'Utkastet sparades' })
+          Done: (toast) => {
+            toast.show({ id: 'draft', variant: 'success', title: 'The draft was saved' })
           },
         }}
       />,
     )
     const { spoken, stop } = recordAnnouncements()
-    await press('Spara')
-    await expect.poll(() => spoken).toEqual(['Information: Sparar utkastet'])
+    await press('Save')
+    await expect.poll(() => spoken).toEqual(['Information: Saving the draft'])
     await wait(200)
-    await press('Klart')
+    await press('Done')
 
     await expect
       .poll(() => spoken)
-      .toEqual(['Information: Sparar utkastet', 'Success: Utkastet sparades'])
-    expect(toastTitles()).toEqual(['Success: Utkastet sparades'])
+      .toEqual(['Information: Saving the draft', 'Success: The draft was saved'])
+    expect(toastTitles()).toEqual(['Success: The draft was saved'])
     expect(toastElements()[0]?.classList.contains('kv-alert--success')).toBe(true)
     stop()
   })
@@ -469,14 +477,14 @@ describe('announcements', () => {
     await render(
       <Page
         actions={{
-          Visa: (toast) => {
-            toast.show({ title: 'Utkastet sparades', focus: true })
+          Show: (toast) => {
+            toast.show({ title: 'The draft was saved', focus: true })
           },
         }}
       />,
     )
     const { spoken, stop } = recordAnnouncements()
-    await press('Visa')
+    await press('Show')
 
     await vi.waitFor(() => {
       expect(document.activeElement).toBe(document.querySelector('.kv-toast .kv-alert-title'))
@@ -487,19 +495,19 @@ describe('announcements', () => {
   })
 
   test('showing a toast never moves focus', async () => {
-    await render(<Page actions={{ Visa: showSaved }} />)
-    await press('Visa')
+    await render(<Page actions={{ Show: showSaved }} />)
+    await press('Show')
 
-    await expect.element(button('Visa')).toHaveFocus()
+    await expect.element(button('Show')).toHaveFocus()
   })
 
   test('toast.focus() focuses the title of the newest toast', async () => {
     await render(
       <Page
         actions={{
-          Visa: (toast) => {
-            toast.show({ title: 'Första' })
-            toast.show({ title: 'Andra' })
+          Show: (toast) => {
+            toast.show({ title: 'First' })
+            toast.show({ title: 'Second' })
           },
           Fokusera: (toast) => {
             toast.focus()
@@ -507,17 +515,17 @@ describe('announcements', () => {
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
     await press('Fokusera')
 
     await vi.waitFor(() => {
-      expect(document.activeElement?.textContent).toBe('Information: Andra')
+      expect(document.activeElement?.textContent).toBe('Information: Second')
     })
   })
 })
 
 describe('timers', () => {
-  const timedOptions: ToastShowOptions = { title: 'Utkastet sparades' }
+  const timedOptions: ToastShowOptions = { title: 'The draft was saved' }
   const showTimed: Run = (toast) => {
     toast.show(timedOptions)
   }
@@ -528,8 +536,8 @@ describe('timers', () => {
 
   test('autoDismiss: false has no timers: a toast stays after ten minutes', async () => {
     useFakeClock()
-    await render(<Page actions={{ Visa: showTimed }} />)
-    await press('Visa')
+    await render(<Page actions={{ Show: showTimed }} />)
+    await press('Show')
     await vi.advanceTimersByTimeAsync(600_000)
 
     expect(toastElements()).toHaveLength(1)
@@ -537,8 +545,8 @@ describe('timers', () => {
 
   test('a number sets the exact timer length: a toast times out after it, and not before', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: 2500 }} actions={{ Visa: showTimed }} />)
-    await press('Visa')
+    await render(<Page toast={{ autoDismiss: 2500 }} actions={{ Show: showTimed }} />)
+    await press('Show')
     await vi.advanceTimersByTimeAsync(2499)
     expect(toastElements()).toHaveLength(1)
     await vi.advanceTimersByTimeAsync(1)
@@ -552,9 +560,9 @@ describe('timers', () => {
     'autoDismiss %s acts as false: the toast stays, with one warning',
     async (autoDismiss) => {
       useFakeClock()
-      await render(<Page toast={{ autoDismiss }} actions={{ Visa: showTimed }} />)
-      await press('Visa')
-      await press('Visa')
+      await render(<Page toast={{ autoDismiss }} actions={{ Show: showTimed }} />)
+      await press('Show')
+      await press('Show')
       await vi.advanceTimersByTimeAsync(600_000)
 
       expect(toastElements()).toHaveLength(2)
@@ -570,9 +578,9 @@ describe('timers', () => {
       const [autoDismiss, setAutoDismiss] = useState<false | number>(false)
       return (
         <KvirnProvider toast={{ autoDismiss }}>
-          <Trigger label="Visa" run={showTimed} />
+          <Trigger label="Show" run={showTimed} />
           <button type="button" style={spaced} onClick={() => setAutoDismiss(3000)}>
-            På
+            On
           </button>
           <button type="button" style={spaced} onClick={() => setAutoDismiss(false)}>
             Av
@@ -581,11 +589,11 @@ describe('timers', () => {
       )
     }
     await render(<Switchable />)
-    await press('Visa')
+    await press('Show')
     await vi.advanceTimersByTimeAsync(600_000)
     expect(toastElements()).toHaveLength(1)
 
-    await press('På')
+    await press('On')
     await vi.advanceTimersByTimeAsync(2999)
     expect(toastElements()).toHaveLength(1)
     await vi.advanceTimersByTimeAsync(1)
@@ -593,7 +601,7 @@ describe('timers', () => {
       expect(regionElement()).toBeNull()
     })
 
-    await press('Visa')
+    await press('Show')
     await press('Av')
     await vi.advanceTimersByTimeAsync(600_000)
     expect(toastElements()).toHaveLength(1)
@@ -605,16 +613,16 @@ describe('timers', () => {
       <Page
         toast={{ autoDismiss: 10_000 }}
         actions={{
-          Visa: (toast) => {
+          Show: (toast) => {
             toast.show({
-              title: 'Utkastet togs bort',
-              action: { label: 'Ångra', onPress: () => {} },
+              title: 'The draft was removed',
+              action: { label: 'Undo', onPress: () => {} },
             })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
     await vi.advanceTimersByTimeAsync(600_000)
 
     expect(toastElements()).toHaveLength(1)
@@ -622,14 +630,14 @@ describe('timers', () => {
 
   test('the timer pauses while the pointer is over the region, and resumes with at least five seconds', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Visa: showTimed }} />)
-    await press('Visa')
+    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Show: showTimed }} />)
+    await press('Show')
     await vi.advanceTimersByTimeAsync(8000)
     await userEvent.hover(closeButton(0))
     await vi.advanceTimersByTimeAsync(600_000)
     expect(toastElements()).toHaveLength(1)
 
-    await userEvent.hover(button('Före'))
+    await userEvent.hover(button('Before'))
     await vi.advanceTimersByTimeAsync(4999)
     expect(toastElements()).toHaveLength(1)
     await vi.advanceTimersByTimeAsync(1)
@@ -641,8 +649,8 @@ describe('timers', () => {
 
   test('the timer pauses while focus is inside a toast, and the toast is not removed under the user', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Visa: showTimed }} />)
-    await press('Visa')
+    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Show: showTimed }} />)
+    await press('Show')
     await userEvent.tab()
     await expect.element(closeButton(0)).toHaveFocus()
     await vi.advanceTimersByTimeAsync(600_000)
@@ -659,8 +667,8 @@ describe('timers', () => {
 
   test('the timer pauses while the tab is hidden', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Visa: showTimed }} />)
-    await press('Visa')
+    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Show: showTimed }} />)
+    await press('Show')
     Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' })
     document.dispatchEvent(new Event('visibilitychange'))
     await vi.advanceTimersByTimeAsync(600_000)
@@ -677,8 +685,8 @@ describe('timers', () => {
 
   test('the timer pauses while the window is blurred', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Visa: showTimed }} />)
-    await press('Visa')
+    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Show: showTimed }} />)
+    await press('Show')
     window.dispatchEvent(new Event('blur'))
     await vi.advanceTimersByTimeAsync(600_000)
     expect(toastElements()).toHaveLength(1)
@@ -694,7 +702,7 @@ describe('timers', () => {
 
 describe('the timer ring', () => {
   const showTimed: Run = (toast) => {
-    toast.show({ title: 'Utkastet sparades' })
+    toast.show({ title: 'The draft was saved' })
   }
   const ringOf = (index: number) =>
     toastElements()[index]?.querySelector<HTMLElement>('.kv-toast-timer') ?? null
@@ -705,8 +713,8 @@ describe('the timer ring', () => {
 
   test('a timed toast has a decorative ring in Close, and Close keeps its name and no extra tab stop', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: 6000 }} actions={{ Visa: showTimed }} />)
-    await press('Visa')
+    await render(<Page toast={{ autoDismiss: 6000 }} actions={{ Show: showTimed }} />)
+    await press('Show')
 
     const ring = ringOf(0)
     expect(ring?.getAttribute('aria-hidden')).toBe('true')
@@ -718,8 +726,8 @@ describe('the timer ring', () => {
 
   test('the ring carries the duration and the time left, in milliseconds', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: 6000 }} actions={{ Visa: showTimed }} />)
-    await press('Visa')
+    await render(<Page toast={{ autoDismiss: 6000 }} actions={{ Show: showTimed }} />)
+    await press('Show')
 
     expect(ringOf(0)?.style.getPropertyValue('--kv-toast-timer-remaining')).toBe('6000ms')
     expect(ringOf(0)?.style.getPropertyValue('--kv-toast-timer-from')).toBe('1')
@@ -727,8 +735,8 @@ describe('the timer ring', () => {
 
   test('data-paused follows hover and focus', async () => {
     useFakeClock()
-    await render(<Page toast={{ autoDismiss: 20_000 }} actions={{ Visa: showTimed }} />)
-    await press('Visa')
+    await render(<Page toast={{ autoDismiss: 20_000 }} actions={{ Show: showTimed }} />)
+    await press('Show')
     await vi.advanceTimersByTimeAsync(5000)
     expect(toastElements()[0]?.hasAttribute('data-paused')).toBe(false)
 
@@ -736,7 +744,7 @@ describe('the timer ring', () => {
     await vi.waitFor(() => {
       expect(toastElements()[0]?.hasAttribute('data-paused')).toBe(true)
     })
-    await userEvent.hover(button('Före'))
+    await userEvent.hover(button('Before'))
     await vi.waitFor(() => {
       expect(toastElements()[0]?.hasAttribute('data-paused')).toBe(false)
     })
@@ -754,16 +762,16 @@ describe('the timer ring', () => {
       <Page
         toast={{ autoDismiss: 6000 }}
         actions={{
-          Visa: (toast) => {
+          Show: (toast) => {
             toast.show({
-              title: 'Utkastet togs bort',
-              action: { label: 'Ångra', onPress: () => {} },
+              title: 'The draft was removed',
+              action: { label: 'Undo', onPress: () => {} },
             })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
 
     expect(ringOf(0)).toBeNull()
     expect(toastElements()[0]?.hasAttribute('data-timed')).toBe(false)
@@ -784,21 +792,21 @@ describe('the timer ring', () => {
       <Page
         toast={{ autoDismiss: 6000 }}
         actions={{
-          Visa: (toast) => {
-            toast.show({ id: 'samma', title: 'Utkastet sparades' })
+          Show: (toast) => {
+            toast.show({ id: 'same', title: 'The draft was saved' })
           },
         }}
       >
         <Capture />
       </Page>,
     )
-    await press('Visa')
+    await press('Show')
     const firstRing = ringOf(0)
     await userEvent.tab()
     await expect.element(closeButton(0)).toHaveFocus()
     const close = document.activeElement
 
-    toastApi?.show({ id: 'samma', title: 'Utkastet sparades igen' })
+    toastApi?.show({ id: 'same', title: 'The draft was saved again' })
 
     await vi.waitFor(() => {
       expect(ringOf(0)).not.toBe(firstRing)
@@ -810,8 +818,8 @@ describe('the timer ring', () => {
 
 describe('limit', () => {
   const showThree: Run = (toast) => {
-    toast.show({ id: 'a', title: 'Första' })
-    toast.show({ id: 'b', title: 'Andra' })
+    toast.show({ id: 'a', title: 'First' })
+    toast.show({ id: 'b', title: 'Second' })
     toast.show({ id: 'c', title: 'Tredje' })
   }
 
@@ -821,7 +829,7 @@ describe('limit', () => {
     await render(
       <Page
         actions={{
-          Visa: (toast) => {
+          Show: (toast) => {
             for (let index = 1; index <= 11; index += 1) {
               returned.push(toast.show({ id: `t${index}`, title: `Toast ${index}` }))
             }
@@ -829,7 +837,7 @@ describe('limit', () => {
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
 
     expect(toastTitles()).toHaveLength(10)
     expect(toastTitles()).not.toContain('Information: Toast 11')
@@ -843,19 +851,19 @@ describe('limit', () => {
       <Page
         toast={{ limit: 2 }}
         actions={{
-          Visa: showThree,
+          Show: showThree,
           Ta: (toast) => {
             toast.dismiss('a')
           },
         }}
       />,
     )
-    await press('Visa')
-    expect(toastTitles()).toEqual(['Information: Första', 'Information: Andra'])
+    await press('Show')
+    expect(toastTitles()).toEqual(['Information: First', 'Information: Second'])
 
     await press('Ta')
     await wait(200)
-    expect(toastTitles()).toEqual(['Information: Andra'])
+    expect(toastTitles()).toEqual(['Information: Second'])
   })
 
   test('a persistent toast is never evicted: when full the new one is ignored', async () => {
@@ -863,17 +871,17 @@ describe('limit', () => {
       <Page
         toast={{ limit: 1 }}
         actions={{
-          Visa: showSaved,
+          Show: showSaved,
           Ny: (toast) => {
-            toast.show({ title: 'Exporten är klar' })
+            toast.show({ title: 'The export is ready' })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
     await press('Ny')
 
-    expect(toastTitles()).toEqual(['Success: Utkastet sparades'])
+    expect(toastTitles()).toEqual(['Success: The draft was saved'])
     expect(warnings()).toMatch(/A toast was ignored/)
   })
 
@@ -882,56 +890,56 @@ describe('limit', () => {
       <Page
         toast={{ limit: 1, autoDismiss: 10_000 }}
         actions={{
-          Visa: showSaved,
+          Show: showSaved,
           Ny: (toast) => {
-            toast.show({ title: 'Exporten är klar' })
+            toast.show({ title: 'The export is ready' })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
     await press('Ny')
 
-    expect(toastTitles()).toEqual(['Information: Exporten är klar'])
+    expect(toastTitles()).toEqual(['Information: The export is ready'])
   })
 
   test('the same id while shown updates in place and keeps the count', async () => {
     await render(
       <Page
         actions={{
-          Visa: (toast) => {
-            toast.show({ id: 'draft', title: 'Sparar' })
-            toast.show({ id: 'draft', title: 'Sparat' })
+          Show: (toast) => {
+            toast.show({ id: 'draft', title: 'Saving' })
+            toast.show({ id: 'draft', title: 'Saved' })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
 
-    expect(toastTitles()).toEqual(['Information: Sparat'])
+    expect(toastTitles()).toEqual(['Information: Saved'])
   })
 
   test('dismiss(id) removes one toast and dismissAll removes every one', async () => {
     await render(
       <Page
         actions={{
-          Visa: showThree,
+          Show: showThree,
           Ta: (toast) => {
             toast.dismiss('a')
           },
-          Alla: (toast) => {
+          All: (toast) => {
             toast.dismissAll()
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
     await press('Ta')
     await vi.waitFor(() => {
-      expect(toastTitles()).toEqual(['Information: Andra', 'Information: Tredje'])
+      expect(toastTitles()).toEqual(['Information: Second', 'Information: Tredje'])
     })
 
-    await press('Alla')
+    await press('All')
     await vi.waitFor(() => {
       expect(regionElement()).toBeNull()
     })
@@ -942,17 +950,17 @@ describe('keyboard', () => {
   const showTwo =
     (onPress: () => void = () => {}): Run =>
     (toast) => {
-      toast.show({ title: 'Utkastet sparades', action: { label: 'Ångra', onPress } })
-      toast.show({ title: 'Exporten är klar' })
+      toast.show({ title: 'The draft was saved', action: { label: 'Undo', onPress } })
+      toast.show({ title: 'The export is ready' })
     }
 
   test('Tab from the page enters the first toast at its action, then its Close, then the next toast', async () => {
-    await render(<Page actions={{ Visa: showTwo() }} />)
-    await press('Visa')
+    await render(<Page actions={{ Show: showTwo() }} />)
+    await press('Show')
     await expect.element(page.getByRole('region', { name: 'Messages' })).toBeVisible()
 
     await userEvent.tab()
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
     await userEvent.tab()
     await expect.element(closeButton(0)).toHaveFocus()
     await userEvent.tab()
@@ -960,34 +968,34 @@ describe('keyboard', () => {
   })
 
   test('Shift+Tab from after the region enters the last toast at its Close and goes back in reverse order', async () => {
-    await render(<Page actions={{ Visa: showTwo() }} />)
-    await press('Visa')
-    button('Efter').element().focus()
+    await render(<Page actions={{ Show: showTwo() }} />)
+    await press('Show')
+    button('After').element().focus()
 
     await userEvent.tab({ shift: true })
     await expect.element(closeButton(1)).toHaveFocus()
     await userEvent.tab({ shift: true })
     await expect.element(closeButton(0)).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
   })
 
   test('Tab and Shift+Tab inside the region follow DOM order and never trap', async () => {
-    await render(<Page actions={{ Visa: showTwo() }} />)
-    await press('Visa')
+    await render(<Page actions={{ Show: showTwo() }} />)
+    await press('Show')
     await userEvent.tab()
     await userEvent.tab()
     await userEvent.tab()
     await expect.element(closeButton(1)).toHaveFocus()
 
     await userEvent.tab()
-    await expect.element(button('Efter')).toHaveFocus()
+    await expect.element(button('After')).toHaveFocus()
     await userEvent.tab({ shift: true })
     await expect.element(closeButton(1)).toHaveFocus()
     await userEvent.tab({ shift: true })
     await userEvent.tab({ shift: true })
     await userEvent.tab({ shift: true })
-    await expect.element(button('Visa')).toHaveFocus()
+    await expect.element(button('Show')).toHaveFocus()
   })
 
   const overflowing = async (run: () => Promise<void>) => {
@@ -1003,8 +1011,8 @@ describe('keyboard', () => {
 
   test('Tab from the page stops on the region first while it overflows, then enters the first toast', async () => {
     await overflowing(async () => {
-      await render(<Page actions={{ Visa: showTwo() }} />)
-      await press('Visa')
+      await render(<Page actions={{ Show: showTwo() }} />)
+      await press('Show')
       await vi.waitFor(() => {
         expect(regionElement()?.getAttribute('tabindex')).toBe('0')
       })
@@ -1012,20 +1020,20 @@ describe('keyboard', () => {
       await userEvent.tab()
       expect(document.activeElement).toBe(regionElement())
       await userEvent.tab()
-      await expect.element(button('Ångra')).toHaveFocus()
+      await expect.element(button('Undo')).toHaveFocus()
     })
   })
 
   test('Shift+Tab from the first toast goes back to the region while it overflows', async () => {
     await overflowing(async () => {
-      await render(<Page actions={{ Visa: showTwo() }} />)
-      await press('Visa')
+      await render(<Page actions={{ Show: showTwo() }} />)
+      await press('Show')
       await vi.waitFor(() => {
         expect(regionElement()?.getAttribute('tabindex')).toBe('0')
       })
       await userEvent.tab()
       await userEvent.tab()
-      await expect.element(button('Ångra')).toHaveFocus()
+      await expect.element(button('Undo')).toHaveFocus()
 
       await userEvent.tab({ shift: true })
 
@@ -1034,8 +1042,8 @@ describe('keyboard', () => {
   })
 
   test('Enter on Close dismisses the toast and returns focus to the element focused before', async () => {
-    await render(<Page actions={{ Visa: showSaved }} />)
-    await press('Visa')
+    await render(<Page actions={{ Show: showSaved }} />)
+    await press('Show')
     await userEvent.tab()
     await expect.element(closeButton(0)).toHaveFocus()
 
@@ -1044,12 +1052,12 @@ describe('keyboard', () => {
     await vi.waitFor(() => {
       expect(regionElement()).toBeNull()
     })
-    await expect.element(button('Visa')).toHaveFocus()
+    await expect.element(button('Show')).toHaveFocus()
   })
 
   test('Space on Close dismisses the toast and returns focus to the element focused before', async () => {
-    await render(<Page actions={{ Visa: showSaved }} />)
-    await press('Visa')
+    await render(<Page actions={{ Show: showSaved }} />)
+    await press('Show')
     await userEvent.tab()
     await expect.element(closeButton(0)).toHaveFocus()
 
@@ -1058,7 +1066,7 @@ describe('keyboard', () => {
     await vi.waitFor(() => {
       expect(regionElement()).toBeNull()
     })
-    await expect.element(button('Visa')).toHaveFocus()
+    await expect.element(button('Show')).toHaveFocus()
   })
 
   test('Enter on the action runs onPress, then dismisses the toast', async () => {
@@ -1066,39 +1074,39 @@ describe('keyboard', () => {
     const onPress = () => {
       toastsWhenPressed.push(toastElements().length)
     }
-    await render(<Page actions={{ Visa: showTwo(onPress) }} />)
-    await press('Visa')
+    await render(<Page actions={{ Show: showTwo(onPress) }} />)
+    await press('Show')
     await userEvent.tab()
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
 
     await userEvent.keyboard('{Enter}')
 
     await vi.waitFor(() => {
-      expect(toastTitles()).toEqual(['Information: Exporten är klar'])
+      expect(toastTitles()).toEqual(['Information: The export is ready'])
     })
     expect(toastsWhenPressed).toEqual([2])
-    await expect.element(button('Visa')).toHaveFocus()
+    await expect.element(button('Show')).toHaveFocus()
   })
 
   test('Space on the action runs onPress, then dismisses the toast', async () => {
     const onPress = vi.fn<() => void>()
-    await render(<Page actions={{ Visa: showTwo(onPress) }} />)
-    await press('Visa')
+    await render(<Page actions={{ Show: showTwo(onPress) }} />)
+    await press('Show')
     await userEvent.tab()
-    await expect.element(button('Ångra')).toHaveFocus()
+    await expect.element(button('Undo')).toHaveFocus()
 
     await userEvent.keyboard(' ')
 
     await vi.waitFor(() => {
-      expect(toastTitles()).toEqual(['Information: Exporten är klar'])
+      expect(toastTitles()).toEqual(['Information: The export is ready'])
     })
     expect(onPress).toHaveBeenCalledOnce()
-    await expect.element(button('Visa')).toHaveFocus()
+    await expect.element(button('Show')).toHaveFocus()
   })
 
   test('Escape with focus inside a toast dismisses that toast only', async () => {
-    await render(<Page actions={{ Visa: showTwo() }} />)
-    await press('Visa')
+    await render(<Page actions={{ Show: showTwo() }} />)
+    await press('Show')
     await userEvent.tab()
     await userEvent.tab()
     await expect.element(closeButton(0)).toHaveFocus()
@@ -1106,9 +1114,9 @@ describe('keyboard', () => {
     await userEvent.keyboard('{Escape}')
 
     await vi.waitFor(() => {
-      expect(toastTitles()).toEqual(['Information: Exporten är klar'])
+      expect(toastTitles()).toEqual(['Information: The export is ready'])
     })
-    await expect.element(button('Visa')).toHaveFocus()
+    await expect.element(button('Show')).toHaveFocus()
   })
 
   test('Escape with focus outside the region is not handled', async () => {
@@ -1119,9 +1127,9 @@ describe('keyboard', () => {
       }
     }
     window.addEventListener('keydown', record)
-    await render(<Page actions={{ Visa: showTwo() }} />)
-    await press('Visa')
-    button('Före').element().focus()
+    await render(<Page actions={{ Show: showTwo() }} />)
+    await press('Show')
+    button('Before').element().focus()
 
     await userEvent.keyboard('{Escape}')
 
@@ -1141,12 +1149,12 @@ describe('focus on dismissal', () => {
           type="button"
           style={spaced}
           onClick={() => {
-            toast.show({ title: 'Första' })
-            toast.show({ title: 'Andra' })
+            toast.show({ title: 'First' })
+            toast.show({ title: 'Second' })
             setShown(false)
           }}
         >
-          Visa
+          Show
         </button>
       ) : null
     }
@@ -1155,7 +1163,7 @@ describe('focus on dismissal', () => {
         <Vanishing />
       </KvirnProvider>,
     )
-    await press('Visa')
+    await press('Show')
     await expect.element(page.getByRole('region', { name: 'Messages' })).toBeVisible()
     await userEvent.tab()
     await expect.element(closeButton(0)).toHaveFocus()
@@ -1163,7 +1171,7 @@ describe('focus on dismissal', () => {
     await userEvent.keyboard('{Enter}')
 
     await vi.waitFor(() => {
-      expect(toastTitles()).toEqual(['Information: Andra'])
+      expect(toastTitles()).toEqual(['Information: Second'])
     })
     await expect.element(closeButton(0)).toHaveFocus()
   })
@@ -1177,12 +1185,12 @@ describe('focus on dismissal', () => {
           type="button"
           style={spaced}
           onClick={() => {
-            toast.show({ title: 'Första' })
-            toast.show({ title: 'Andra' })
+            toast.show({ title: 'First' })
+            toast.show({ title: 'Second' })
             setShown(false)
           }}
         >
-          Visa
+          Show
         </button>
       ) : null
     }
@@ -1191,7 +1199,7 @@ describe('focus on dismissal', () => {
         <Vanishing />
       </KvirnProvider>,
     )
-    await press('Visa')
+    await press('Show')
     await expect.element(page.getByRole('region', { name: 'Messages' })).toBeVisible()
     await userEvent.tab()
     await userEvent.tab()
@@ -1200,7 +1208,7 @@ describe('focus on dismissal', () => {
     await userEvent.keyboard('{Enter}')
 
     await vi.waitFor(() => {
-      expect(toastTitles()).toEqual(['Information: Första'])
+      expect(toastTitles()).toEqual(['Information: First'])
     })
     await expect.element(closeButton(0)).toHaveFocus()
   })
@@ -1218,7 +1226,7 @@ describe('focus on dismissal', () => {
             setShown(false)
           }}
         >
-          Visa
+          Show
         </button>
       ) : null
     }
@@ -1227,7 +1235,7 @@ describe('focus on dismissal', () => {
         <Vanishing />
       </KvirnProvider>,
     )
-    await press('Visa')
+    await press('Show')
     await expect.element(page.getByRole('region', { name: 'Messages' })).toBeVisible()
     await userEvent.tab()
     const focusSpy = vi.spyOn(document.body, 'focus')
@@ -1246,14 +1254,14 @@ describe('focus on dismissal', () => {
     await render(
       <Page
         actions={{
-          Visa: showSaved,
+          Show: showSaved,
           Ta: (toast) => {
             toast.dismissAll()
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
     await press('Ta')
 
     await vi.waitFor(() => {
@@ -1267,14 +1275,14 @@ describe('focus on dismissal', () => {
       <Page
         toast={{ limit: 1, autoDismiss: 10_000 }}
         actions={{
-          Visa: showSaved,
+          Show: showSaved,
           Ny: (toast) => {
-            toast.show({ title: 'Exporten är klar' })
+            toast.show({ title: 'The export is ready' })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
     await userEvent.tab()
     await userEvent.tab()
     await expect.element(closeButton(0)).toHaveFocus()
@@ -1284,7 +1292,7 @@ describe('focus on dismissal', () => {
       .dispatchEvent(new MouseEvent('click', { bubbles: true }))
     await wait(200)
 
-    expect(toastTitles()).toEqual(['Success: Utkastet sparades'])
+    expect(toastTitles()).toEqual(['Success: The draft was saved'])
     await expect.element(closeButton(0)).toHaveFocus()
   })
 })
@@ -1304,28 +1312,28 @@ describe('placement', () => {
     document.head.append(placing)
     try {
       await render(
-        <Page actions={{ Visa: showSaved }}>
+        <Page actions={{ Show: showSaved }}>
           <button type="button" style={pinned(0)}>
-            Längst ned
+            At the bottom
           </button>
           <button type="button" style={pinned(60)}>
-            Över regionen
+            Above the region
           </button>
         </Page>,
       )
-      await press('Visa')
+      await press('Show')
       await expect.element(page.getByRole('region', { name: 'Messages' })).toBeVisible()
       expect(regionElement()?.hasAttribute('data-placement')).toBe(false)
 
-      button('Längst ned').element().focus()
+      button('At the bottom').element().focus()
       await wait(100)
       expect(regionElement()?.hasAttribute('data-placement')).toBe(false)
 
-      button('Över regionen').element().focus()
+      button('Above the region').element().focus()
       await vi.waitFor(() => {
         expect(regionElement()?.getAttribute('data-placement')).toBe('block-start')
       })
-      button('Före').element().focus()
+      button('Before').element().focus()
       await vi.waitFor(() => {
         expect(regionElement()?.hasAttribute('data-placement')).toBe(false)
       })
@@ -1344,16 +1352,16 @@ describe('a region taller than the viewport', () => {
       await render(
         <Page
           actions={{
-            Visa: (toast) => {
+            Show: (toast) => {
               toast.show({
-                title: 'Utkastet sparades',
-                body: <p>Du hittar det under Mina ärenden.</p>,
+                title: 'The draft was saved',
+                body: <p>You can find it under My cases.</p>,
               })
             },
           }}
         />,
       )
-      await press('Visa')
+      await press('Show')
 
       await vi.waitFor(() => {
         expect(regionElement()?.getAttribute('tabindex')).toBe('0')
@@ -1377,16 +1385,16 @@ describe('a region taller than the viewport', () => {
       await render(
         <Page
           actions={{
-            Visa: (toast) => {
+            Show: (toast) => {
               toast.show({
-                title: 'Utkastet sparades',
-                body: <p>Du hittar det under Mina ärenden.</p>,
+                title: 'The draft was saved',
+                body: <p>You can find it under My cases.</p>,
               })
             },
           }}
         />,
       )
-      await press('Visa')
+      await press('Show')
       await vi.waitFor(() => {
         expect(regionElement()?.getAttribute('tabindex')).toBe('0')
       })
@@ -1415,19 +1423,19 @@ describe('a region taller than the viewport', () => {
       await render(
         <Page
           actions={{
-            Visa: (toast) => {
+            Show: (toast) => {
               toast.show({
-                title: 'Utkastet sparades',
-                body: <p>Du hittar det under Mina ärenden.</p>,
+                title: 'The draft was saved',
+                body: <p>You can find it under My cases.</p>,
               })
             },
-            Alla: (toast) => {
+            All: (toast) => {
               toast.dismissAll()
             },
           }}
         />,
       )
-      await press('Visa')
+      await press('Show')
       await vi.waitFor(() => {
         expect(regionElement()?.getAttribute('tabindex')).toBe('0')
       })
@@ -1435,22 +1443,22 @@ describe('a region taller than the viewport', () => {
       await userEvent.tab()
       expect(document.activeElement).toBe(regionElement())
 
-      button('Alla')
+      button('All')
         .element()
         .dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
       await vi.waitFor(() => {
         expect(regionElement()).toBeNull()
       })
-      await expect.element(button('Alla')).toHaveFocus()
+      await expect.element(button('All')).toHaveFocus()
     } finally {
       limiting.remove()
     }
   })
 
   test('has no tabindex when it fits', async () => {
-    await render(<Page actions={{ Visa: showSaved }} />)
-    await press('Visa')
+    await render(<Page actions={{ Show: showSaved }} />)
+    await press('Show')
     await wait(100)
 
     expect(regionElement()?.hasAttribute('tabindex')).toBe(false)
@@ -1465,9 +1473,9 @@ describe('while a modal is open', () => {
       <>
         {mounted ? (
           <Dialog.Root>
-            <Dialog.Trigger>Öppna</Dialog.Trigger>
+            <Dialog.Trigger>Open</Dialog.Trigger>
             <Dialog.Popup>
-              <Dialog.Title>Ändra telefonnummer</Dialog.Title>
+              <Dialog.Title>Change phone number</Dialog.Title>
               <Dialog.Close />
               <button
                 type="button"
@@ -1479,7 +1487,7 @@ describe('while a modal is open', () => {
                   }
                 }}
               >
-                Spara
+                Save
               </button>
             </Dialog.Popup>
           </Dialog.Root>
@@ -1497,11 +1505,11 @@ describe('while a modal is open', () => {
       </KvirnProvider>,
     )
     const { spoken, stop } = recordAnnouncements()
-    await press('Öppna')
+    await press('Open')
     await vi.waitFor(() => {
       expect(isModalOpen()).toBe(true)
     })
-    await press('Spara')
+    await press('Save')
     await wait(400)
     expect(regionElement()).toBeNull()
     expect(spoken).toEqual([])
@@ -1520,11 +1528,11 @@ describe('while a modal is open', () => {
         <ModalExample remove />
       </KvirnProvider>,
     )
-    await press('Öppna')
+    await press('Open')
     await vi.waitFor(() => {
       expect(isModalOpen()).toBe(true)
     })
-    await press('Spara')
+    await press('Save')
 
     await expect.element(page.getByRole('region', { name: 'Messages' })).toBeVisible()
     expect(isModalOpen()).toBe(false)
@@ -1536,9 +1544,9 @@ describe('while a modal is open', () => {
       const toast = useToast()
       return (
         <Dialog.Root>
-          <Dialog.Trigger>Öppna</Dialog.Trigger>
+          <Dialog.Trigger>Open</Dialog.Trigger>
           <Dialog.Popup>
-            <Dialog.Title>Ändra</Dialog.Title>
+            <Dialog.Title>Change</Dialog.Title>
             <Dialog.Close />
             <button
               type="button"
@@ -1548,7 +1556,7 @@ describe('while a modal is open', () => {
                 toast.dismiss('saved')
               }}
             >
-              Spara
+              Save
             </button>
           </Dialog.Popup>
         </Dialog.Root>
@@ -1559,11 +1567,11 @@ describe('while a modal is open', () => {
         <Held />
       </KvirnProvider>,
     )
-    await press('Öppna')
+    await press('Open')
     await vi.waitFor(() => {
       expect(isModalOpen()).toBe(true)
     })
-    await press('Spara')
+    await press('Save')
     await userEvent.keyboard('{Escape}')
     await vi.waitFor(() => {
       expect(isModalOpen()).toBe(false)
@@ -1575,8 +1583,8 @@ describe('while a modal is open', () => {
 
   test('a timed toast does not expire while a modal is open, and expires after it closes', async () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'performance'] })
-    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Visa: showSaved }} />)
-    await press('Visa')
+    await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Show: showSaved }} />)
+    await press('Show')
     await vi.advanceTimersByTimeAsync(300)
     // A bare modal: pressing a trigger would let the test's own waiting move the fake clock.
     const modal = document.createElement('dialog')
@@ -1584,13 +1592,13 @@ describe('while a modal is open', () => {
     modal.showModal()
     await Promise.resolve()
     await vi.advanceTimersByTimeAsync(60_000)
-    expect(toastTitles()).toEqual(['Success: Utkastet sparades'])
+    expect(toastTitles()).toEqual(['Success: The draft was saved'])
 
     modal.close()
     modal.remove()
     await Promise.resolve()
     await vi.advanceTimersByTimeAsync(4000)
-    expect(toastTitles()).toEqual(['Success: Utkastet sparades'])
+    expect(toastTitles()).toEqual(['Success: The draft was saved'])
     await vi.advanceTimersByTimeAsync(6000)
 
     expect(toastTitles()).toEqual([])
@@ -1599,45 +1607,45 @@ describe('while a modal is open', () => {
 
 describe('several providers on one page', () => {
   const showFirst: Run = (toast) => {
-    toast.show({ id: 'first', title: 'Från första' })
+    toast.show({ id: 'first', title: 'From first' })
   }
   const showSecond: Run = (toast) => {
-    toast.show({ id: 'second', title: 'Från andra' })
+    toast.show({ id: 'second', title: 'From second' })
   }
 
   test('share one region and one list: a trigger in either subtree shows into it', async () => {
     await render(
       <>
         <KvirnProvider>
-          <Trigger label="Visa första" run={showFirst} />
+          <Trigger label="Show first" run={showFirst} />
         </KvirnProvider>
         <KvirnProvider>
-          <Trigger label="Visa andra" run={showSecond} />
+          <Trigger label="Show second" run={showSecond} />
         </KvirnProvider>
       </>,
     )
-    await press('Visa andra')
-    await press('Visa första')
+    await press('Show second')
+    await press('Show first')
 
     expect(document.querySelectorAll('section.kv-toast-region')).toHaveLength(1)
-    expect(toastTitles()).toEqual(['Information: Från andra', 'Information: Från första'])
+    expect(toastTitles()).toEqual(['Information: From second', 'Information: From first'])
   })
 
   test('share one limit: the first provider that mounted owns it, and a later toast option is ignored with a warning', async () => {
     await render(
       <>
         <KvirnProvider toast={{ limit: 1 }}>
-          <Trigger label="Visa första" run={showFirst} />
+          <Trigger label="Show first" run={showFirst} />
         </KvirnProvider>
         <KvirnProvider toast={{ limit: 5 }}>
-          <Trigger label="Visa andra" run={showSecond} />
+          <Trigger label="Show second" run={showSecond} />
         </KvirnProvider>
       </>,
     )
-    await press('Visa första')
-    await press('Visa andra')
+    await press('Show first')
+    await press('Show second')
 
-    expect(toastTitles()).toEqual(['Information: Från första'])
+    expect(toastTitles()).toEqual(['Information: From first'])
     expect(warnings()).toMatch(/More than one <KvirnProvider> is on the page/)
     expect(warnings().match(/More than one <KvirnProvider>/g)).toHaveLength(1)
   })
@@ -1649,7 +1657,7 @@ describe('several providers on one page', () => {
         <>
           {hasFirst ? (
             <KvirnProvider>
-              <Trigger label="Visa första" run={showFirst} />
+              <Trigger label="Show first" run={showFirst} />
             </KvirnProvider>
           ) : null}
           <KvirnProvider locale="sv" messages={sv}>
@@ -1660,23 +1668,24 @@ describe('several providers on one page', () => {
                 setHasFirst(false)
               }}
             >
-              Ta bort första
+              Remove first
             </button>
-            <Trigger label="Visa andra" run={showSecond} />
+            <Trigger label="Show second" run={showSecond} />
           </KvirnProvider>
         </>
       )
     }
     await render(<Handover />)
-    await press('Visa första')
+    await press('Show first')
     await expect.element(page.getByRole('region', { name: 'Messages' })).toBeVisible()
 
-    await press('Ta bort första')
+    await press('Remove first')
 
+    // kv-lang-ok: the provider catalog's region label
     await expect.element(page.getByRole('region', { name: 'Meddelanden' })).toBeVisible()
-    expect(toastTitles()).toEqual(['Information: Från första'])
+    expect(toastTitles()).toEqual(['Information: From first'])
     expect(document.querySelectorAll('section.kv-toast-region')).toHaveLength(1)
-    await press('Visa andra')
+    await press('Show second')
     expect(toastTitles()).toHaveLength(2)
   })
 
@@ -1686,7 +1695,7 @@ describe('several providers on one page', () => {
       <>
         {hasFirst ? (
           <KvirnProvider locale={hostLocale}>
-            <Trigger label="Visa första" run={showFirst} />
+            <Trigger label="Show first" run={showFirst} />
           </KvirnProvider>
         ) : null}
         <KvirnProvider locale="sv" messages={sv}>
@@ -1697,40 +1706,42 @@ describe('several providers on one page', () => {
               setHasFirst(false)
             }}
           >
-            Ta bort första
+            Remove first
           </button>
         </KvirnProvider>
       </>
     )
   }
   const removeFirstProvider = () =>
-    button('Ta bort första')
+    button('Remove first')
       .element()
       .dispatchEvent(new MouseEvent('click', { bubbles: true }))
 
   test('a handover announces nothing: the toasts that were spoken are not spoken again', async () => {
     await render(<Handover />)
     const { spoken, stop } = recordAnnouncements()
-    await press('Visa första')
-    await expect.poll(() => spoken).toEqual(['Information: Från första'])
+    await press('Show first')
+    await expect.poll(() => spoken).toEqual(['Information: From first'])
     await wait(200)
 
     removeFirstProvider()
+    // kv-lang-ok: the provider catalog's region label
     await expect.element(page.getByRole('region', { name: 'Meddelanden' })).toBeVisible()
     await wait(500)
 
-    expect(spoken).toEqual(['Information: Från första'])
+    expect(spoken).toEqual(['Information: From first'])
     stop()
   })
 
   test('a handover keeps focus in the toast that had it', async () => {
     await render(<Handover />)
-    await press('Visa första')
+    await press('Show first')
     await userEvent.tab()
     await expect.element(closeButton(0)).toHaveFocus()
 
     removeFirstProvider()
 
+    // kv-lang-ok: the provider catalog's region label
     await expect.element(page.getByRole('region', { name: 'Meddelanden' })).toBeVisible()
     await vi.waitFor(() => {
       expect(document.activeElement?.classList.contains('kv-alert-close')).toBe(true)
@@ -1741,7 +1752,7 @@ describe('several providers on one page', () => {
   test('a handover keeps the pointer pause: a toast under the pointer does not time out', async () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'performance'] })
     await render(<Handover />)
-    await press('Visa första')
+    await press('Show first')
     await userEvent.hover(closeButton(0))
 
     removeFirstProvider()
@@ -1751,50 +1762,50 @@ describe('several providers on one page', () => {
     })
     await vi.advanceTimersByTimeAsync(600_000)
 
-    expect(toastTitles()).toEqual(['Information: Från första'])
+    expect(toastTitles()).toEqual(['Information: From first'])
   })
 
   test('two React roots each with a provider share one region and announce once', async () => {
     await render(
       <KvirnProvider>
-        <Trigger label="Visa första" run={showFirst} />
+        <Trigger label="Show first" run={showFirst} />
       </KvirnProvider>,
     )
     await render(
       <KvirnProvider>
-        <Trigger label="Visa andra" run={showSecond} />
+        <Trigger label="Show second" run={showSecond} />
       </KvirnProvider>,
     )
-    await press('Visa första')
-    await press('Visa andra')
+    await press('Show first')
+    await press('Show second')
 
     expect(document.querySelectorAll('section.kv-toast-region')).toHaveLength(1)
-    expect(toastTitles()).toEqual(['Information: Från första', 'Information: Från andra'])
+    expect(toastTitles()).toEqual(['Information: From first', 'Information: From second'])
   })
 
   test('a toast shown from a provider in another language marks its title and body with lang, not the status word or the list item', async () => {
     await render(
       <>
         <KvirnProvider>
-          <Trigger label="Visa första" run={showFirst} />
+          <Trigger label="Show first" run={showFirst} />
         </KvirnProvider>
         <KvirnProvider locale="sv" messages={sv}>
           <Trigger
-            label="Visa andra"
+            label="Show second"
             run={(toast) => {
-              toast.show({ id: 'second', title: 'Från andra', body: 'Brödtext' })
+              toast.show({ id: 'second', title: 'From second', body: 'Body text' })
             }}
           />
         </KvirnProvider>
       </>,
     )
-    await press('Visa första')
-    await press('Visa andra')
+    await press('Show first')
+    await press('Show second')
 
     expect(document.querySelectorAll('.kv-toast-item[lang]')).toHaveLength(0)
     const [first, second] = [...document.querySelectorAll<HTMLElement>('.kv-toast-item')]
     expect(first?.querySelector('[lang]')).toBeNull()
-    expect(second?.querySelector('.kv-alert-title [lang="sv"]')?.textContent).toBe('Från andra')
+    expect(second?.querySelector('.kv-alert-title [lang="sv"]')?.textContent).toBe('From second')
     expect(second?.querySelector('.kv-alert-title .kv-alert-status')?.closest('[lang]')).toBe(
       regionElement(),
     )
@@ -1908,18 +1919,18 @@ describe('provider and development warnings', () => {
         <button
           type="button"
           onClick={() => {
-            toast.show({ title: 'Utkastet sparades' })
-            toast.show({ title: 'Igen' })
+            toast.show({ title: 'The draft was saved' })
+            toast.show({ title: 'Again' })
             toast.dismissAll()
             toast.focus()
           }}
         >
-          Visa
+          Show
         </button>
       )
     }
     await render(<Alone />)
-    await press('Visa')
+    await press('Show')
 
     expect(regionElement()).toBeNull()
     expect(warnings().match(/useToast\(\) was used outside a <KvirnProvider>/g)).toHaveLength(1)
@@ -1930,13 +1941,13 @@ describe('provider and development warnings', () => {
     await render(
       <Page
         actions={{
-          Visa: (toast) => {
-            ids.push(toast.show({ id: 'gen', title: 'Ett' }), toast.show({ title: 'Två' }))
+          Show: (toast) => {
+            ids.push(toast.show({ id: 'gen', title: 'One' }), toast.show({ title: 'Two' }))
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
 
     expect(ids[0]).toBe('gen')
     expect(ids[1]).not.toBe('')
@@ -1946,7 +1957,7 @@ describe('provider and development warnings', () => {
     const ids: string[] = []
     function Early() {
       const toast = useToast()
-      ids.push(toast.show({ title: 'För tidigt' }))
+      ids.push(toast.show({ title: 'Too early' }))
       return null
     }
     renderToString(
@@ -1964,14 +1975,14 @@ describe('provider and development warnings', () => {
       <Page
         toast={{ autoDismiss: 10_000 }}
         actions={{
-          Visa: (toast) => {
-            toast.show({ title: 'Ett', action: { label: 'Ångra', onPress: () => {} } })
-            toast.show({ title: 'Två', action: { label: 'Ångra', onPress: () => {} } })
+          Show: (toast) => {
+            toast.show({ title: 'One', action: { label: 'Undo', onPress: () => {} } })
+            toast.show({ title: 'Two', action: { label: 'Undo', onPress: () => {} } })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
 
     expect(warnings().match(/never times out/g)).toHaveLength(1)
   })
@@ -1980,14 +1991,14 @@ describe('provider and development warnings', () => {
     await render(
       <Page
         actions={{
-          Visa: (toast) => {
+          Show: (toast) => {
             toast.show({ title: 'Fel', variant: 'danger' as ToastVariant })
-            toast.show({ title: 'Varning', variant: 'danger' as ToastVariant })
+            toast.show({ title: 'Warning', variant: 'danger' as ToastVariant })
           },
         }}
       />,
     )
-    await press('Visa')
+    await press('Show')
 
     expect(toastElements().every((element) => element.classList.contains('kv-alert--info'))).toBe(
       true,
@@ -1999,14 +2010,14 @@ describe('provider and development warnings', () => {
     await render(
       <Page actions={{}}>
         <KvirnProvider toast={{ limit: 1 }}>
-          <Trigger label="Visa" run={showSaved} />
+          <Trigger label="Show" run={showSaved} />
         </KvirnProvider>
       </Page>,
     )
-    await press('Visa')
+    await press('Show')
 
     expect(document.querySelectorAll('section.kv-toast-region')).toHaveLength(1)
-    expect(toastTitles()).toEqual(['Success: Utkastet sparades'])
+    expect(toastTitles()).toEqual(['Success: The draft was saved'])
     expect(warnings()).toMatch(/nested <KvirnProvider> received `toast`/)
   })
 
@@ -2015,7 +2026,7 @@ describe('provider and development warnings', () => {
       const [autoDismiss, setAutoDismiss] = useState<false | number>(false)
       return (
         <KvirnProvider toast={{ limit: 2, autoDismiss }}>
-          <Trigger label="Visa" run={showSaved} />
+          <Trigger label="Show" run={showSaved} />
           <button
             type="button"
             style={spaced}
@@ -2023,45 +2034,47 @@ describe('provider and development warnings', () => {
               setAutoDismiss(10_000)
             }}
           >
-            Ändra
+            Change
           </button>
         </KvirnProvider>
       )
     }
     await render(<Switchable />)
     const { spoken, stop } = recordAnnouncements()
-    await press('Visa')
-    await expect.poll(() => spoken).toEqual(['Success: Utkastet sparades'])
-    await press('Ändra')
+    await press('Show')
+    await expect.poll(() => spoken).toEqual(['Success: The draft was saved'])
+    await press('Change')
     await wait(400)
 
-    expect(toastTitles()).toEqual(['Success: Utkastet sparades'])
-    expect(spoken).toEqual(['Success: Utkastet sparades'])
+    expect(toastTitles()).toEqual(['Success: The draft was saved'])
+    expect(spoken).toEqual(['Success: The draft was saved'])
     stop()
   })
 
   test('an outside press still light-dismisses a Popover under the toast layer', async () => {
     await render(
-      <Page actions={{ Visa: showSaved }}>
-        <p>Text utanför</p>
+      <Page actions={{ Show: showSaved }}>
+        <p>Text outside</p>
         <Popover.Root>
-          <Popover.Trigger>Hjälp</Popover.Trigger>
-          <Popover.Popup aria-label="Hjälp om tjänsten">
-            <p>Tjänsten drivs av kommunen.</p>
+          <Popover.Trigger>Help</Popover.Trigger>
+          <Popover.Popup aria-label="Help about the service">
+            <p>The service is run by the municipality.</p>
           </Popover.Popup>
         </Popover.Root>
       </Page>,
     )
-    await press('Visa')
-    await press('Hjälp')
-    await expect.element(page.getByText('Tjänsten drivs av kommunen.')).toBeVisible()
+    await press('Show')
+    await press('Help')
+    await expect.element(page.getByText('The service is run by the municipality.')).toBeVisible()
     closeButton(0).element().focus()
     await wait(100)
-    await expect.element(page.getByText('Tjänsten drivs av kommunen.')).toBeVisible()
+    await expect.element(page.getByText('The service is run by the municipality.')).toBeVisible()
 
-    await userEvent.click(page.getByText('Text utanför'))
+    await userEvent.click(page.getByText('Text outside'))
 
-    await expect.element(page.getByText('Tjänsten drivs av kommunen.')).not.toBeVisible()
+    await expect
+      .element(page.getByText('The service is run by the municipality.'))
+      .not.toBeVisible()
   })
 })
 

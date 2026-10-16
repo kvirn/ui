@@ -106,6 +106,7 @@ describe('rendering', () => {
     await expectNoA11yViolations(container)
   })
 
+  // kv-lang-ok: the decomposed å is the point of the test
   test('counts what the user sees: a decomposed å and an emoji are one character each', async () => {
     const { container } = await render(<Counted limit={10} initialValue={'å\u{1F44D}'} />)
     expect(container.querySelector('p')?.textContent).toBe('You have 8 characters remaining.')
@@ -125,15 +126,15 @@ describe('rendering', () => {
         ref={ref}
         value=""
         limit={5}
-        className="egen"
+        className="own"
         data-testid="count"
-        id="eget"
+        id="own-id"
       />,
     )
     const count = container.querySelector('p')
     expect(ref.current).toBe(count)
-    expect(count?.className).toBe('egen kv-field-help-text kv-character-count')
-    expect(count?.getAttribute('id')).toBe('eget')
+    expect(count?.className).toBe('own kv-field-help-text kv-character-count')
+    expect(count?.getAttribute('id')).toBe('own-id')
     expect(count?.getAttribute('data-testid')).toBe('count')
   })
 
@@ -177,25 +178,29 @@ describe('strings', () => {
     )
     const texts = [...container.querySelectorAll('p')].map((count) => count.textContent)
     expect(texts).toEqual([
-      // The limit is formatted for the locale: sv groups thousands with a no-break space.
+      // kv-lang-ok: sv and fi catalog strings; the limit is formatted for the locale
       expect.stringMatching(/^Du kan skriva högst 1\s000 tecken\.$/),
+      // kv-lang-ok: the sv catalog string for 120 remaining
       'Du har 120 tecken kvar.',
+      // kv-lang-ok: the sv catalog string for 12 too many
       'Du har 12 tecken för mycket.',
+      // kv-lang-ok: the fi catalog string for 1 remaining
       'Sinulla on 1 merkki jäljellä.',
+      // kv-lang-ok: the fi catalog string for 1 too many
       'Sinulla on 1 merkki liikaa.',
     ])
   })
 
   test('an instance’s messages win over the provider’s', async () => {
     const messages: Partial<KvirnMessages['characterCount']> = {
-      remaining: ({ count }) => `${count} kvar i rutan`,
+      remaining: ({ count }) => `${count} left in the box`,
     }
     const { container } = await render(
-      <KvirnProvider locale="sv" messages={sv}>
+      <KvirnProvider>
         <CharacterCount value="abc" limit={10} messages={messages} />
       </KvirnProvider>,
     )
-    expect(container.querySelector('p')?.textContent).toBe('7 kvar i rutan')
+    expect(container.querySelector('p')?.textContent).toBe('7 left in the box')
   })
 })
 
@@ -203,20 +208,20 @@ describe('in a Field', () => {
   test('the control’s description lists the description, the count, the help text and the error, in DOM order', async () => {
     await render(
       <Field.Root required invalid>
-        <Field.Label>Beskriv</Field.Label>
+        <Field.Label>Describe</Field.Label>
         <Field.Prose>
-          <p>Skriv kort.</p>
+          <p>Keep it short.</p>
         </Field.Prose>
         <TextInput />
         <CharacterCount value="abc" limit={10} />
-        <Field.HelpText>Svenska eller engelska.</Field.HelpText>
-        <Field.ErrorMessage>Beskriv ärendet</Field.ErrorMessage>
+        <Field.HelpText>Swedish or English.</Field.HelpText>
+        <Field.ErrorMessage>Describe the case</Field.ErrorMessage>
       </Field.Root>,
     )
     await expect
-      .element(page.getByRole('textbox', { name: 'Beskriv' }))
+      .element(page.getByRole('textbox', { name: 'Describe' }))
       .toHaveAccessibleDescription(
-        'Skriv kort. You have 7 characters remaining. Svenska eller engelska. Error: Beskriv ärendet',
+        'Keep it short. You have 7 characters remaining. Swedish or English. Error: Describe the case',
       )
   })
 
@@ -224,7 +229,7 @@ describe('in a Field', () => {
     await render(
       <>
         <Field.Root>
-          <Field.Label>Beskriv</Field.Label>
+          <Field.Label>Describe</Field.Label>
           <TextInput />
           <CharacterCount value="" limit={10} />
         </Field.Root>
@@ -237,17 +242,17 @@ describe('in a Field', () => {
   test('directly in a Fieldset, a count keeps its own id and describes the box, not the fieldset', async () => {
     const { container } = await render(
       <Fieldset.Root>
-        <Fieldset.Legend>Din situation</Fieldset.Legend>
-        <textarea aria-label="Beskrivning" aria-describedby="antal" />
-        <CharacterCount id="antal" value="abc" limit={10} />
+        <Fieldset.Legend>Your situation</Fieldset.Legend>
+        <textarea aria-label="Description" aria-describedby="count" />
+        <CharacterCount id="count" value="abc" limit={10} />
       </Fieldset.Root>,
     )
-    expect(container.querySelector('p')?.id).toBe('antal')
+    expect(container.querySelector('p')?.id).toBe('count')
     await expect
-      .element(page.getByRole('textbox', { name: 'Beskrivning' }))
+      .element(page.getByRole('textbox', { name: 'Description' }))
       .toHaveAccessibleDescription('You have 7 characters remaining.')
     await expect
-      .element(page.getByRole('group', { name: 'Din situation' }))
+      .element(page.getByRole('group', { name: 'Your situation' }))
       .not.toHaveAccessibleDescription('You have 7 characters remaining.')
   })
 
@@ -256,14 +261,14 @@ describe('in a Field', () => {
       const [value, setValue] = useState('')
       return (
         <Field.Root>
-          <Field.Label>Beskriv</Field.Label>
+          <Field.Label>Describe</Field.Label>
           <TextInput value={value} onValueChange={setValue} />
           <CharacterCount value={value} limit={10} />
         </Field.Root>
       )
     }
     await render(<Harness />)
-    const input = page.getByRole('textbox', { name: 'Beskriv (optional)' })
+    const input = page.getByRole('textbox', { name: 'Describe (optional)' })
     await expect.element(input).toHaveAccessibleDescription('You can enter up to 10 characters.')
     await userEvent.type(input, 'abc')
     await expect.element(input).toHaveAccessibleDescription('You have 7 characters remaining.')
@@ -271,11 +276,7 @@ describe('in a Field', () => {
 })
 
 describe('announcements (4.1.3)', () => {
-  const withProvider = (children: React.ReactNode) => (
-    <KvirnProvider locale="sv" messages={sv}>
-      {children}
-    </KvirnProvider>
-  )
+  const withProvider = (children: React.ReactNode) => <KvirnProvider>{children}</KvirnProvider>
 
   test('nothing is announced below 80% of the limit', async () => {
     await render(withProvider(<Counted limit={100} />))
@@ -290,7 +291,7 @@ describe('announcements (4.1.3)', () => {
     await userEvent.fill(box(), 'a'.repeat(80))
     // Not on every key: nothing yet, before the pause is over.
     await expect.element(status()).toBeEmptyDOMElement()
-    await expect.element(status()).toHaveTextContent('Du har 20 tecken kvar.')
+    await expect.element(status()).toHaveTextContent('You have 20 characters remaining.')
   })
 
   test('typing on restarts the pause, so only the last count is said', async () => {
@@ -298,7 +299,7 @@ describe('announcements (4.1.3)', () => {
     await userEvent.fill(box(), 'a'.repeat(85))
     await new Promise((resolve) => setTimeout(resolve, 100))
     await userEvent.fill(box(), 'a'.repeat(90))
-    await expect.element(status()).toHaveTextContent('Du har 10 tecken kvar.')
+    await expect.element(status()).toHaveTextContent('You have 10 characters remaining.')
     expect(status().element().textContent).not.toContain('15')
   })
 
@@ -307,7 +308,7 @@ describe('announcements (4.1.3)', () => {
     await userEvent.fill(box(), 'a'.repeat(100))
     await expect.element(status()).toBeEmptyDOMElement()
     await userEvent.fill(box(), 'a'.repeat(101))
-    await expect.element(status()).toHaveTextContent('Du har 1 tecken för mycket.')
+    await expect.element(status()).toHaveTextContent('You have 1 character too many.')
   })
 
   test('announceChanges={false} keeps a change silent, and true says it', async () => {
@@ -317,13 +318,13 @@ describe('announcements (4.1.3)', () => {
       return (
         <>
           <button type="button" onClick={() => setValue('a'.repeat(100))}>
-            Sätt
+            Set
           </button>
           <button type="button" onClick={() => setIsAnnouncing(true)}>
-            Lyssna
+            Listen
           </button>
           <button type="button" onClick={() => setValue('a'.repeat(101))}>
-            Skriv
+            Write
           </button>
           <CharacterCount
             value={value}
@@ -335,13 +336,13 @@ describe('announcements (4.1.3)', () => {
       )
     }
     await render(withProvider(<Switched />))
-    await userEvent.click(page.getByRole('button', { name: 'Sätt' }))
+    await userEvent.click(page.getByRole('button', { name: 'Set' }))
     // Longer than the pause (50 ms) after which the count would have been said.
     await new Promise((resolve) => setTimeout(resolve, 300))
     await expect.element(status()).toBeEmptyDOMElement()
-    await userEvent.click(page.getByRole('button', { name: 'Lyssna' }))
-    await userEvent.click(page.getByRole('button', { name: 'Skriv' }))
-    await expect.element(status()).toHaveTextContent('Du har 1 tecken för mycket.')
+    await userEvent.click(page.getByRole('button', { name: 'Listen' }))
+    await userEvent.click(page.getByRole('button', { name: 'Write' }))
+    await expect.element(status()).toHaveTextContent('You have 1 character too many.')
   })
 
   test('the same text is not said twice in a row', async () => {
@@ -355,11 +356,11 @@ describe('announcements (4.1.3)', () => {
       }
     }).observe(region ?? document.body, { childList: true, characterData: true, subtree: true })
     await userEvent.fill(box(), 'a'.repeat(90))
-    await expect.element(status()).toHaveTextContent('Du har 10 tecken kvar.')
+    await expect.element(status()).toHaveTextContent('You have 10 characters remaining.')
     // A new value with the same length, so the same count.
     await userEvent.fill(box(), 'b'.repeat(90))
     await new Promise((resolve) => setTimeout(resolve, 400))
-    expect(seen.filter((text) => text === 'Du har 10 tecken kvar.')).toHaveLength(1)
+    expect(seen.filter((text) => text === 'You have 10 characters remaining.')).toHaveLength(1)
   })
 
   test('without a KvirnProvider a count that should be announced warns once, and nothing breaks', async () => {

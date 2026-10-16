@@ -181,7 +181,7 @@ const isEmptyContent = (children: ReactNode): boolean =>
  * @example
  * <Table.ScrollRegion table={cases}>
  *   <Table.Root table={cases}>
- *     <Table.Caption>Öppna ärenden</Table.Caption>
+ *     <Table.Caption>Open cases</Table.Caption>
  *     <Table.Head>
  *       {cases.table.getHeaderGroups().map((headerGroup) => (
  *         <Table.Row key={headerGroup.id} headerGroup={headerGroup}>

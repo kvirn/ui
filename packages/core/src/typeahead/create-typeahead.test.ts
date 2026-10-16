@@ -1,3 +1,4 @@
+// kv-lang-ok-file: å, ä and ö typeahead is the behaviour under test
 import { describe, expect, test } from 'vite-plus/test'
 import { createTypeahead } from './create-typeahead.ts'
 import type { TypeaheadEnv } from './create-typeahead.ts'

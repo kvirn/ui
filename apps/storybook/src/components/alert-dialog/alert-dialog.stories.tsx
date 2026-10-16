@@ -45,7 +45,7 @@ const meta = {
     children: { control: false, description: 'The Trigger and the Popup.' },
   },
   args: { defaultOpen: false, onOpenChange: fn() },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [withFormLocale],
   parameters: {
     a11yContract: contract,
@@ -60,41 +60,43 @@ const alertDialog = () => document.querySelector<HTMLDialogElement>('dialog.kv-a
 
 /**
  * The main example: confirm before deleting. The danger action is first, and focus starts on the
- * safe "Behåll utkastet", so an accidental Enter changes nothing. Press the trigger, then Escape:
+ * safe "Keep draft", so an accidental Enter changes nothing. Press the trigger, then Escape:
  * it keeps the draft.
  */
 export const ConfirmDelete: Story = {
   parameters: source('DeleteDraftConfirmation'),
   render: (args, { globals }) => <DeleteDraftConfirmation {...args} locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Ta bort utkastet' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Delete the draft' }))
     const dialog = await canvas.findByRole('alertdialog', {
-      name: 'Vill du ta bort utkastet till ansökan?',
+      name: 'Delete the draft application?',
     })
     await expect(dialog).toHaveAttribute('aria-modal', 'true')
-    await expect(dialog).toHaveAccessibleDescription('Det går inte att ångra. Dina svar tas bort.')
-    await expect(canvas.getByRole('button', { name: 'Behåll utkastet' })).toHaveFocus()
+    await expect(dialog).toHaveAccessibleDescription(
+      "You can't undo this. Your answers will be deleted.",
+    )
+    await expect(canvas.getByRole('button', { name: 'Keep draft' })).toHaveFocus()
   },
 }
 
 /**
- * The session timeout warning (B25). It opens from state, starts on the primary action, "Fortsätt
- * vara inloggad", and keeps the remaining time in a polite region that updates once a minute, then
+ * The session timeout warning (B25). It opens from state, starts on the primary action, "Stay
+ * signed in", and keeps the remaining time in a polite region that updates once a minute, then
  * every 20 seconds in the last minute. The clock time follows the locale (`useFormat()`).
  */
 export const TimeoutWarning: Story = {
   parameters: source('SessionTimeoutWarning'),
   render: (_args, { globals }) => <SessionTimeoutWarning locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Visa varningen' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Show the warning' }))
     const dialog = await canvas.findByRole('alertdialog', {
-      name: 'Vill du fortsätta vara inloggad?',
+      name: 'Do you want to stay signed in?',
     })
-    await expect(canvas.getByRole('button', { name: 'Fortsätt vara inloggad' })).toHaveFocus()
+    await expect(canvas.getByRole('button', { name: 'Stay signed in' })).toHaveFocus()
     await expect(dialog).toHaveAccessibleDescription(
-      /Av säkerhetsskäl loggar vi ut dig om 2 minuter, kl\. /,
+      /For your security, we will sign you out in 2 minutes at /,
     )
-    await expect(canvas.getByText('2 minuter kvar.')).toBeInTheDocument()
+    await expect(canvas.getByText('2 minutes left.')).toBeInTheDocument()
   },
 }
 
@@ -115,7 +117,7 @@ export const ForcedColors: Story = {
   parameters: source('DeleteDraftConfirmation'),
   render: (args, { globals }) => <DeleteDraftConfirmation {...args} locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Ta bort utkastet' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Delete the draft' }))
     await waitFor(() => expect(alertDialog()).not.toBeNull())
   },
 }
@@ -128,15 +130,13 @@ export const Keyboard: Story = {
   parameters: source('KeyboardAlertDialog'),
   render: (_args, { globals }) => <KeyboardAlertDialog locale={localeOf(globals)} />,
   play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Ta bort utkastet' })
+    const trigger = canvas.getByRole('button', { name: 'Delete the draft' })
     trigger.focus()
     await userEvent.keyboard('{Enter}')
-    await waitFor(() =>
-      expect(canvas.getByRole('button', { name: 'Behåll utkastet' })).toHaveFocus(),
-    )
+    await waitFor(() => expect(canvas.getByRole('button', { name: 'Keep draft' })).toHaveFocus())
     await userEvent.tab({ shift: true })
     await expect(
-      within(canvas.getByRole('alertdialog')).getByRole('button', { name: 'Ta bort utkastet' }),
+      within(canvas.getByRole('alertdialog')).getByRole('button', { name: 'Delete draft' }),
     ).toHaveFocus()
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(alertDialog()).toBeNull())

@@ -73,7 +73,7 @@ const meta = {
     matchAnchorWidth: { control: 'boolean', description: 'Make the popup as wide as the trigger.' },
   },
   args: { onOpenChange: fn() },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   decorators: [
     (Story) => (
       <>
@@ -85,11 +85,11 @@ const meta = {
   // A popup with a paragraph and a Close button. Its name is the trigger's wording.
   render: (args) => (
     <Popover.Root {...args}>
-      <Popover.Trigger className="kv-button">Om tjänsten</Popover.Trigger>
-      <Popover.Popup aria-label="Om tjänsten">
-        <p>Tjänsten drivs av kommunen och är öppen dygnet runt.</p>
+      <Popover.Trigger className="kv-button">About the service</Popover.Trigger>
+      <Popover.Popup aria-label="About the service">
+        <p>The service is run by the municipality and is open around the clock.</p>
         <p>
-          <Popover.Close className="kv-button">Stäng</Popover.Close>
+          <Popover.Close className="kv-button">Close</Popover.Close>
         </p>
       </Popover.Popup>
     </Popover.Root>
@@ -114,7 +114,7 @@ const openPopup = () => document.querySelector('.kv-popover-popup:popover-open')
 /** Closed: a button that says it has a popup (`aria-haspopup="dialog"`) and is collapsed. */
 export const Default: Story = {
   play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Om tjänsten' })
+    const trigger = canvas.getByRole('button', { name: 'About the service' })
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog')
     await expect(trigger).toHaveAttribute('aria-controls')
@@ -128,10 +128,10 @@ export const Open: Story = {
   decorators: [withRoomBelow],
   play: async ({ canvas }) => {
     await waitFor(() => expect(isPopupOpen()).toBe(true))
-    const trigger = canvas.getByRole('button', { name: 'Om tjänsten' })
+    const trigger = canvas.getByRole('button', { name: 'About the service' })
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
     await expectAnimationsSettled()
-    await expect(canvas.getByRole('dialog', { name: 'Om tjänsten' })).toBeVisible()
+    await expect(canvas.getByRole('dialog', { name: 'About the service' })).toBeVisible()
     await expect(document.querySelector('.kv-popover-popup')).toHaveAttribute('data-open')
   },
 }
@@ -145,19 +145,19 @@ export const Keyboard: Story = {
   render: (args) => (
     <>
       {/* Above the row, so the popup (placed under the trigger) never covers it. */}
-      <p data-testid="outside">Text utanför</p>
+      <p data-testid="outside">Text outside</p>
       <div className="kv-button-group">
-        <Button>Före</Button>
+        <Button>Before</Button>
         <Popover.Root {...args}>
-          <Popover.Trigger className="kv-button">Om tjänsten</Popover.Trigger>
-          <Popover.Popup aria-label="Om tjänsten">
-            <p>Tjänsten drivs av kommunen och är öppen dygnet runt.</p>
+          <Popover.Trigger className="kv-button">About the service</Popover.Trigger>
+          <Popover.Popup aria-label="About the service">
+            <p>The service is run by the municipality and is open around the clock.</p>
             <p>
-              <Popover.Close className="kv-button">Stäng</Popover.Close>
+              <Popover.Close className="kv-button">Close</Popover.Close>
             </p>
           </Popover.Popup>
         </Popover.Root>
-        <Button>Efter</Button>
+        <Button>After</Button>
       </div>
     </>
   ),
@@ -166,7 +166,7 @@ export const Keyboard: Story = {
 /** Pressing the trigger opens the popup, and pressing it again closes it. */
 export const Toggles: Story = {
   play: async ({ canvas, args }) => {
-    const trigger = canvas.getByRole('button', { name: 'Om tjänsten' })
+    const trigger = canvas.getByRole('button', { name: 'About the service' })
     await userEvent.click(trigger)
     await waitFor(() => expect(isPopupOpen()).toBe(true))
     await expect(args.onOpenChange).toHaveBeenLastCalledWith(
@@ -197,19 +197,19 @@ export const Controlled: Story = {
   play: async ({ canvas }) => {
     const reason = canvas.getByTestId('reason')
     // Your own button opens it: the popup follows `open`, and no request is made.
-    await userEvent.click(canvas.getByRole('button', { name: 'Visa från sidan' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Show from the page' }))
     await waitFor(() => expect(isPopupOpen()).toBe(true))
-    await expect(canvas.getByTestId('state')).toHaveTextContent('öppen')
+    await expect(canvas.getByTestId('state')).toHaveTextContent('open')
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(isPopupOpen()).toBe(false))
-    await expect(canvas.getByTestId('state')).toHaveTextContent('stängd')
+    await expect(canvas.getByTestId('state')).toHaveTextContent('closed')
     await expect(reason).toHaveTextContent('escape')
     // Each way of asking has its own reason.
-    await userEvent.click(canvas.getByRole('button', { name: 'Om tjänsten' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'About the service' }))
     await waitFor(() => expect(reason).toHaveTextContent('trigger-press'))
-    await userEvent.click(canvas.getByRole('button', { name: 'Stäng' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Close' }))
     await waitFor(() => expect(reason).toHaveTextContent('close-press'))
-    await userEvent.click(canvas.getByRole('button', { name: 'Om tjänsten' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'About the service' }))
     await userEvent.click(canvas.getByTestId('state'))
     await waitFor(() => expect(reason).toHaveTextContent('outside-press'))
     await waitFor(() => expect(isPopupOpen()).toBe(false))
@@ -220,13 +220,13 @@ export const Controlled: Story = {
 export const Nested: Story = {
   render: () => (
     <Popover.Root>
-      <Popover.Trigger className="kv-button">Yttre</Popover.Trigger>
-      <Popover.Popup aria-label="Yttre ruta" className="outer">
-        <p>Den yttre rutan.</p>
+      <Popover.Trigger className="kv-button">Outer</Popover.Trigger>
+      <Popover.Popup aria-label="Outer box" className="outer">
+        <p>The outer box.</p>
         <Popover.Root>
-          <Popover.Trigger className="kv-button">Inre</Popover.Trigger>
-          <Popover.Popup aria-label="Inre ruta" className="inner">
-            <p>Den inre rutan.</p>
+          <Popover.Trigger className="kv-button">Inner</Popover.Trigger>
+          <Popover.Popup aria-label="Inner box" className="inner">
+            <p>The inner box.</p>
           </Popover.Popup>
         </Popover.Root>
       </Popover.Popup>
@@ -255,12 +255,14 @@ export const FlipsAtTheEdge: Story = {
   ],
   render: (args) => (
     <Popover.Root {...args}>
-      <Popover.Trigger className="kv-button">Om tjänsten</Popover.Trigger>
-      <Popover.Popup aria-label="Om tjänsten">Tjänsten drivs av kommunen.</Popover.Popup>
+      <Popover.Trigger className="kv-button">About the service</Popover.Trigger>
+      <Popover.Popup aria-label="About the service">
+        The service is run by the municipality.
+      </Popover.Popup>
     </Popover.Root>
   ),
   play: async ({ canvas }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Om tjänsten' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'About the service' }))
     await waitFor(() =>
       expect(document.querySelector('.kv-popover-popup')).toHaveAttribute(
         'data-placement',
@@ -290,8 +292,8 @@ export const MatchAnchorWidth: Story = {
   ],
   render: (args) => (
     <Popover.Root {...args}>
-      <Popover.Trigger className="kv-button">Välj hur vi ska nå dig</Popover.Trigger>
-      <Popover.Popup aria-label="Så når vi dig">Vi ringer eller skickar ett sms.</Popover.Popup>
+      <Popover.Trigger className="kv-button">Choose how we reach you</Popover.Trigger>
+      <Popover.Popup aria-label="How we reach you">We call or send a text message.</Popover.Popup>
     </Popover.Root>
   ),
 }
@@ -312,28 +314,28 @@ export const Placements: Story = {
   render: () => (
     <div className="kv-button-group">
       <Popover.Root placement="top-start">
-        <Popover.Trigger className="kv-button">Ovanför</Popover.Trigger>
-        <Popover.Popup aria-label="Ovanför">Rutan ligger ovanför knappen.</Popover.Popup>
+        <Popover.Trigger className="kv-button">Above</Popover.Trigger>
+        <Popover.Popup aria-label="Above">The box sits above the button.</Popover.Popup>
       </Popover.Root>
       <Popover.Root placement="bottom-end">
-        <Popover.Trigger className="kv-button">Under, till slutet</Popover.Trigger>
-        <Popover.Popup aria-label="Under, till slutet">
-          Rutan slutar där knappen slutar.
+        <Popover.Trigger className="kv-button">Below, to the end</Popover.Trigger>
+        <Popover.Popup aria-label="Below, to the end">
+          The box ends where the button ends.
         </Popover.Popup>
       </Popover.Root>
       <Popover.Root placement="bottom">
-        <Popover.Trigger className="kv-button">Under, i mitten</Popover.Trigger>
-        <Popover.Popup aria-label="Under, i mitten">
-          Rutan är centrerad under knappen.
+        <Popover.Trigger className="kv-button">Below, centred</Popover.Trigger>
+        <Popover.Popup aria-label="Below, centred">
+          The box is centred under the button.
         </Popover.Popup>
       </Popover.Root>
     </div>
   ),
   play: async ({ canvas }) => {
     for (const [name, placement] of [
-      ['Ovanför', 'top-start'],
-      ['Under, till slutet', 'bottom-end'],
-      ['Under, i mitten', 'bottom'],
+      ['Above', 'top-start'],
+      ['Below, to the end', 'bottom-end'],
+      ['Below, centred', 'bottom'],
     ] as const) {
       await userEvent.click(canvas.getByRole('button', { name }))
       await waitFor(() => expect(openPopup()).not.toBeNull())
@@ -373,20 +375,20 @@ export const SizedWithVariables: Story = {
   ],
   render: (args) => (
     <Popover.Root {...args}>
-      <Popover.Trigger className="kv-button">Villkor</Popover.Trigger>
-      <Popover.Popup aria-label="Villkor" className="kv-popover-sized">
+      <Popover.Trigger className="kv-button">Terms</Popover.Trigger>
+      <Popover.Popup aria-label="Terms" className="kv-popover-sized">
         {Array.from({ length: 12 }, (_, index) => (
-          <p key={index}>Villkor {index + 1}: uppgifter du lämnar används bara för ditt ärende.</p>
+          <p key={index}>Terms {index + 1}: the information you give is used only for your case.</p>
         ))}
-        <a href="#villkor">Läs hela villkoren</a>
+        <a href="#villkor">Read the full terms</a>
       </Popover.Popup>
     </Popover.Root>
   ),
   play: async ({ canvas }) => {
-    const trigger = canvas.getByRole('button', { name: 'Villkor' })
+    const trigger = canvas.getByRole('button', { name: 'Terms' })
     await userEvent.click(trigger)
     await waitFor(() => expect(isPopupOpen()).toBe(true))
-    const popup = canvas.getByRole('dialog', { name: 'Villkor' })
+    const popup = canvas.getByRole('dialog', { name: 'Terms' })
     // The popup publishes the trigger's width, and the long content scrolls inside it (1.4.10).
     await waitFor(() =>
       expect(parseFloat(popup.style.getPropertyValue('--kv-anchor-width'))).toBeCloseTo(
@@ -402,10 +404,10 @@ export const SizedWithVariables: Story = {
 export const LongContent: Story = {
   render: (args) => (
     <Popover.Root {...args}>
-      <Popover.Trigger className="kv-button">Villkor</Popover.Trigger>
-      <Popover.Popup aria-label="Villkor">
+      <Popover.Trigger className="kv-button">Terms</Popover.Trigger>
+      <Popover.Popup aria-label="Terms">
         {Array.from({ length: 40 }, (_, index) => (
-          <p key={index}>Villkor {index + 1}: uppgifter du lämnar används bara för ditt ärende.</p>
+          <p key={index}>Terms {index + 1}: the information you give is used only for your case.</p>
         ))}
       </Popover.Popup>
     </Popover.Root>
@@ -416,23 +418,23 @@ export const LongContent: Story = {
 export const WithForm: Story = {
   render: (args) => (
     <Popover.Root {...args}>
-      <Popover.Trigger className="kv-button">Ändra telefonnummer</Popover.Trigger>
-      <Popover.Popup aria-label="Ändra telefonnummer">
+      <Popover.Trigger className="kv-button">Change phone number</Popover.Trigger>
+      <Popover.Popup aria-label="Change phone number">
         <form
           onSubmit={(event) => {
             event.preventDefault()
           }}
         >
           <label>
-            Telefonnummer
+            Phone number
             <br />
             <input name="phone" type="tel" autoComplete="tel" className="kv-input" />
           </label>
           <p>
             <button type="submit" className="kv-button kv-button--primary">
-              Spara
+              Save
             </button>{' '}
-            <Popover.Close className="kv-button">Avbryt</Popover.Close>
+            <Popover.Close className="kv-button">Cancel</Popover.Close>
           </p>
         </form>
       </Popover.Popup>

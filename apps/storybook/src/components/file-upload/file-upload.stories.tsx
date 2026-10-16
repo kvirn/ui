@@ -39,9 +39,13 @@ import {
 
 /** The trigger's own text per locale. */
 const chooseFiles: Record<FormLocale, string> = {
+  // kv-lang-ok: the trigger's own text per locale
   sv: 'Välj filer',
+  // kv-lang-ok: the trigger's own text per locale
   fi: 'Valitse tiedostot',
+  // kv-lang-ok: the trigger's own text per locale
   nb: 'Velg filer',
+  // kv-lang-ok: the trigger's own text per locale
   nn: 'Vel filer',
   en: 'Choose files',
 }
@@ -121,7 +125,7 @@ const meta = {
     },
     ref: { control: false, description: 'A ref to the Root `<div>`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: {
@@ -199,7 +203,7 @@ const choose = (canvasElement: HTMLElement, ...files: File[]) =>
 /**
  * The main example: empty, with every option as a control. One button opens the system dialog and
  * is the way in. Its name is its own text, then the
- * Field label, so voice users say "Välj filer". The limits are in its description, so they are
+ * Field label, so voice users say "Choose files". The limits are in its description, so they are
  * said before anyone chooses a file.
  */
 export const Default: Story = {
@@ -220,9 +224,9 @@ export const SingleFile: Story = {
   args: { multiple: false, accept: '.pdf' },
   play: async ({ canvasElement }) => {
     await choose(canvasElement, makeFile('intyg.pdf'))
-    await choose(canvasElement, makeFile('nytt-intyg.pdf', 30_000))
+    await choose(canvasElement, makeFile('new-certificate.pdf', 30_000))
     await expect(itemsOf(canvasElement)).toHaveLength(1)
-    await expect(itemsOf(canvasElement)[0]).toHaveTextContent('nytt-intyg.pdf')
+    await expect(itemsOf(canvasElement)[0]).toHaveTextContent('new-certificate.pdf')
   },
 }
 
@@ -236,7 +240,7 @@ export const WithFiles: Story = {
   play: async ({ canvasElement }) => {
     await choose(
       canvasElement,
-      makeFile('läkarintyg.pdf', 240_000),
+      makeFile('medical-certificate.pdf', 240_000),
       makeFile('kvitto-1.jpg', 1_800_000, 'image/jpeg'),
       makeFile('kvitto-2.jpg', 2_400_000, 'image/jpeg'),
     )
@@ -251,9 +255,9 @@ export const WithFiles: Story = {
 export const Uploading: Story = {
   args: { multiple: true, upload: controlledUpload('known') },
   play: async ({ canvas, canvasElement }) => {
-    await choose(canvasElement, makeFile('läkarintyg.pdf', 240_000))
+    await choose(canvasElement, makeFile('medical-certificate.pdf', 240_000))
     const bar = await canvas.findByRole('progressbar')
-    await expect(bar).toHaveAccessibleName(/läkarintyg\.pdf/)
+    await expect(bar).toHaveAccessibleName(/medical-certificate\.pdf/)
     await expect(itemsOf(canvasElement)[0]).toHaveAttribute('data-status', 'uploading')
   },
 }
@@ -262,7 +266,7 @@ export const Uploading: Story = {
 export const UploadingUnknownSize: Story = {
   args: { multiple: true, upload: controlledUpload('unknown') },
   play: async ({ canvas, canvasElement }) => {
-    await choose(canvasElement, makeFile('läkarintyg.pdf'))
+    await choose(canvasElement, makeFile('medical-certificate.pdf'))
     await waitFor(() => expect(canvasElement.querySelector('.kv-progress-track')).not.toBeNull())
     await expect(canvasElement.querySelector('.kv-progress-track')).toHaveAttribute(
       'aria-hidden',
@@ -276,7 +280,7 @@ export const UploadingUnknownSize: Story = {
 export const Complete: Story = {
   args: { multiple: true, upload: controlledUpload('succeed') },
   play: async ({ canvasElement }) => {
-    await choose(canvasElement, makeFile('läkarintyg.pdf'))
+    await choose(canvasElement, makeFile('medical-certificate.pdf'))
     await waitFor(() =>
       expect(itemsOf(canvasElement)[0]).toHaveAttribute('data-status', 'complete'),
     )
@@ -287,7 +291,7 @@ export const Complete: Story = {
 export const Failed: Story = {
   args: { multiple: true, upload: controlledUpload('fail') },
   play: async ({ canvasElement }) => {
-    await choose(canvasElement, makeFile('läkarintyg.pdf'))
+    await choose(canvasElement, makeFile('medical-certificate.pdf'))
     await waitFor(() => expect(itemsOf(canvasElement)[0]).toHaveAttribute('data-status', 'failed'))
   },
 }
@@ -296,8 +300,8 @@ export const Failed: Story = {
 export const Cancelled: Story = {
   args: { multiple: true, upload: controlledUpload('unknown') },
   play: async ({ canvas, canvasElement }) => {
-    await choose(canvasElement, makeFile('läkarintyg.pdf'))
-    await userEvent.click(await canvas.findByRole('button', { name: /läkarintyg\.pdf/ }))
+    await choose(canvasElement, makeFile('medical-certificate.pdf'))
+    await userEvent.click(await canvas.findByRole('button', { name: /medical-certificate\.pdf/ }))
     await waitFor(() =>
       expect(itemsOf(canvasElement)[0]).toHaveAttribute('data-status', 'cancelled'),
     )
@@ -313,14 +317,14 @@ export const Rejected: Story = {
   play: async ({ canvasElement }) => {
     await choose(
       canvasElement,
-      makeFile('bild.png', 5_000, 'image/png'),
+      makeFile('image.png', 5_000, 'image/png'),
       makeFile('stor.pdf', 2_000_000),
       makeFile('tom.pdf', 0),
       makeFile('bra.pdf', 40_000),
     )
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(1))
     await expect(canvasElement.querySelector('.kv-file-upload-rejections')).toHaveTextContent(
-      'bild.png',
+      'image.png',
     )
   },
 }
@@ -337,8 +341,8 @@ export const RejectedForOtherReasons: Story = {
   args: { multiple: true, minFileSize: 10_000, maxFiles: 2 },
   play: async ({ canvasElement, globals }) => {
     const { texts } = fileUploadTextsFor(localeOf(globals))
-    const folder = Object.defineProperty(makeFile('mapp', 20_000), 'isDirectory', { value: true })
-    const kept = makeFile('läkarintyg.pdf', 20_000)
+    const folder = Object.defineProperty(makeFile('folder', 20_000), 'isDirectory', { value: true })
+    const kept = makeFile('medical-certificate.pdf', 20_000)
     await choose(
       canvasElement,
       makeFile('liten.pdf', 500),
@@ -409,7 +413,7 @@ export const FailureReasons: Story = {
     const { texts } = fileUploadTextsFor(localeOf(globals))
     await choose(
       canvasElement,
-      makeFile('läkarintyg.pdf'),
+      makeFile('medical-certificate.pdf'),
       makeFile('foto.jpg', 90_000, 'image/jpeg'),
     )
     await waitFor(() => expect(statusesOf(canvasElement)).toEqual(['failed', 'failed']))
@@ -436,10 +440,10 @@ export const OwnWords: Story = {
     await expect(triggerOf(canvasElement)).toHaveAccessibleName(
       new RegExp(`^${texts.ownChooseFiles}`),
     )
-    await choose(canvasElement, makeFile('läkarintyg.pdf'))
+    await choose(canvasElement, makeFile('medical-certificate.pdf'))
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(1))
     await expect(
-      canvas.getByRole('button', { name: `${texts.ownRemove} läkarintyg.pdf` }),
+      canvas.getByRole('button', { name: `${texts.ownRemove} medical-certificate.pdf` }),
     ).toBeVisible()
   },
 }
@@ -485,6 +489,7 @@ export const LongNames: Story = {
   play: async ({ canvas, canvasElement }) => {
     await choose(
       canvasElement,
+      // kv-lang-ok: long Finnish filename hard case
       makeFile(`${'kuntaliitoksenjälkeinenasumistukihakemuksenliiteasiakirja'.repeat(2)}.pdf`),
     )
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(1))
@@ -511,7 +516,7 @@ export const Dragging: Story = {
   play: async ({ canvasElement }) => {
     const zone = dropZoneOf(canvasElement)
     const dataTransfer = new DataTransfer()
-    dataTransfer.items.add(makeFile('läkarintyg.pdf'))
+    dataTransfer.items.add(makeFile('medical-certificate.pdf'))
     for (const type of ['dragenter', 'dragover']) {
       zone.dispatchEvent(new DragEvent(type, { dataTransfer, bubbles: true, cancelable: true }))
     }
@@ -530,7 +535,7 @@ export const DraggedOverThePage: Story = {
   args: { multiple: true, maxFiles: 5, accept: '.pdf' },
   play: async ({ canvasElement }) => {
     const dataTransfer = new DataTransfer()
-    dataTransfer.items.add(makeFile('läkarintyg.pdf'))
+    dataTransfer.items.add(makeFile('medical-certificate.pdf'))
     canvasElement.ownerDocument.body.dispatchEvent(
       new DragEvent('dragover', { dataTransfer, bubbles: true, cancelable: true }),
     )

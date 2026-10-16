@@ -1,4 +1,5 @@
 import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { en } from '@kvirn-ui/i18n/en'
 import { sv } from '@kvirn-ui/i18n/sv'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
 import { createRef, useState } from 'react'
@@ -45,11 +46,11 @@ describe('keyboard', () => {
     await render(
       <>
         <Textarea aria-label="Situation" />
-        <button type="button">Skicka</button>
+        <button type="button">Send</button>
       </>,
     )
     const box = page.getByRole('textbox', { name: 'Situation' })
-    const send = page.getByRole('button', { name: 'Skicka' })
+    const send = page.getByRole('button', { name: 'Send' })
     await userEvent.keyboard('{Tab}')
     await expect.element(box).toHaveFocus()
     await userEvent.keyboard('Hej{Tab}')
@@ -64,23 +65,23 @@ describe('keyboard', () => {
     const onSubmit = vi.fn<() => void>()
     await render(
       <form
-        aria-label="Ansökan"
+        aria-label="Application"
         onSubmit={(event) => {
           event.preventDefault()
           onSubmit()
         }}
       >
         <Textarea aria-label="Situation" />
-        <button type="submit">Skicka</button>
+        <button type="submit">Send</button>
       </form>,
     )
     const box = page.getByRole('textbox', { name: 'Situation' })
     await userEvent.click(box)
-    await userEvent.keyboard('Rad ett{Enter}Rad två')
-    await expect.element(box).toHaveValue('Rad ett\nRad två')
+    await userEvent.keyboard('Line one{Enter}Line two')
+    await expect.element(box).toHaveValue('Line one\nLine two')
     await expect.element(box).toHaveFocus()
     expect(onSubmit).not.toHaveBeenCalled()
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.click(page.getByRole('button', { name: 'Send' }))
     expect(onSubmit).toHaveBeenCalledTimes(1)
   })
 
@@ -147,8 +148,8 @@ describe('keyboard', () => {
 
 describe('rendering', () => {
   test('renders a native <textarea> with 5 rows, outside a Field', async () => {
-    const { container } = await render(<Textarea aria-label="Beskrivning" />)
-    const box = page.getByRole('textbox', { name: 'Beskrivning' })
+    const { container } = await render(<Textarea aria-label="Description" />)
+    const box = page.getByRole('textbox', { name: 'Description' })
     expect(box.element().tagName).toBe('TEXTAREA')
     await expect.element(box).toHaveAttribute('rows', '5')
     await expect.element(box).not.toHaveAttribute('id')
@@ -165,20 +166,20 @@ describe('rendering', () => {
     await render(
       <Textarea
         ref={ref}
-        aria-label="Beskrivning"
-        className="egen"
+        aria-label="Description"
+        className="own"
         name="description"
         autoComplete="off"
         rows={8}
         maxLength={400}
-        placeholder="Skriv här"
+        placeholder="Write here"
         spellCheck={false}
         defaultValue="Hej"
       />,
     )
-    const box = page.getByRole('textbox', { name: 'Beskrivning' })
+    const box = page.getByRole('textbox', { name: 'Description' })
     expect(ref.current).toBe(box.element())
-    await expect.element(box).toHaveClass('egen', 'kv-textarea')
+    await expect.element(box).toHaveClass('own', 'kv-textarea')
     await expect.element(box).toHaveAttribute('name', 'description')
     await expect.element(box).toHaveAttribute('autocomplete', 'off')
     await expect.element(box).toHaveAttribute('rows', '8')
@@ -191,13 +192,13 @@ describe('rendering', () => {
   test('required, readOnly and disabled pass through as native attributes', async () => {
     await render(
       <>
-        <Textarea aria-label="Ett" required />
-        <Textarea aria-label="Två" readOnly />
+        <Textarea aria-label="One" required />
+        <Textarea aria-label="Two" readOnly />
         <Textarea aria-label="Tre" disabled />
       </>,
     )
-    await expect.element(page.getByRole('textbox', { name: 'Ett' })).toBeRequired()
-    await expect.element(page.getByRole('textbox', { name: 'Två' })).toHaveAttribute('readonly')
+    await expect.element(page.getByRole('textbox', { name: 'One' })).toBeRequired()
+    await expect.element(page.getByRole('textbox', { name: 'Two' })).toHaveAttribute('readonly')
     await expect.element(page.getByRole('textbox', { name: 'Tre' })).toBeDisabled()
     await expect
       .element(page.getByRole('textbox', { name: 'Tre' }))
@@ -209,11 +210,11 @@ describe('in a Field', () => {
   test('the Field’s label is the name, and its id links them', async () => {
     const { container } = await render(
       <Field.Root required>
-        <Field.Label>Beskriv din situation</Field.Label>
+        <Field.Label>Describe your situation</Field.Label>
         <Textarea name="situation" />
       </Field.Root>,
     )
-    const box = page.getByRole('textbox', { name: 'Beskriv din situation' })
+    const box = page.getByRole('textbox', { name: 'Describe your situation' })
     const id = box.element().id
     expect(id).not.toBe('')
     expect(container.querySelector('label')?.getAttribute('for')).toBe(id)
@@ -224,12 +225,12 @@ describe('in a Field', () => {
   test('takes invalid, required and disabled from the Field, and required is not the native attribute', async () => {
     await render(
       <Field.Root invalid required>
-        <Field.Label>Beskrivning</Field.Label>
-        <Field.ErrorMessage>Beskriv ärendet</Field.ErrorMessage>
+        <Field.Label>Description</Field.Label>
+        <Field.ErrorMessage>Describe the case</Field.ErrorMessage>
         <Textarea />
       </Field.Root>,
     )
-    const box = page.getByRole('textbox', { name: 'Beskrivning' })
+    const box = page.getByRole('textbox', { name: 'Description' })
     await expect.element(box).toHaveAttribute('aria-invalid', 'true')
     await expect.element(box).toHaveAttribute('aria-required', 'true')
     await expect.element(box).toHaveAttribute('data-invalid', '')
@@ -240,27 +241,27 @@ describe('in a Field', () => {
   test('a disabled Field disables the box', async () => {
     await render(
       <Field.Root disabled>
-        <Field.Label marker="none">Beskrivning</Field.Label>
+        <Field.Label marker="none">Description</Field.Label>
         <Textarea />
       </Field.Root>,
     )
-    await expect.element(page.getByRole('textbox', { name: 'Beskrivning' })).toBeDisabled()
+    await expect.element(page.getByRole('textbox', { name: 'Description' })).toBeDisabled()
   })
 
   test('the description lists the description, the help text and the error, in DOM order', async () => {
     const { container } = await render(
       <Field.Root invalid>
-        <Field.Label>Beskrivning</Field.Label>
-        <Field.Prose>Skriv vad som har hänt.</Field.Prose>
+        <Field.Label>Description</Field.Label>
+        <Field.Prose>Write what has happened.</Field.Prose>
         <Textarea />
-        <Field.HelpText>Svenska eller engelska.</Field.HelpText>
-        <Field.ErrorMessage>Beskriv ärendet</Field.ErrorMessage>
+        <Field.HelpText>Swedish or English.</Field.HelpText>
+        <Field.ErrorMessage>Describe the case</Field.ErrorMessage>
       </Field.Root>,
     )
     await expect
-      .element(page.getByRole('textbox', { name: 'Beskrivning (optional)' }))
+      .element(page.getByRole('textbox', { name: 'Description (optional)' }))
       .toHaveAccessibleDescription(
-        'Skriv vad som har hänt. Svenska eller engelska. Error: Beskriv ärendet',
+        'Write what has happened. Swedish or English. Error: Describe the case',
       )
     await expectNoA11yViolations(container)
   })
@@ -270,27 +271,27 @@ describe('in a Field', () => {
       <>
         <p id="extra">Extra information.</p>
         <Field.Root>
-          <Field.Label>Beskrivning</Field.Label>
-          <Field.Prose>Som i ärendet.</Field.Prose>
+          <Field.Label>Description</Field.Label>
+          <Field.Prose>As in the case.</Field.Prose>
           <Textarea aria-describedby="extra" />
         </Field.Root>
       </>,
     )
-    const box = page.getByRole('textbox', { name: 'Beskrivning (optional)' })
-    await expect.element(box).toHaveAccessibleDescription('Som i ärendet. Extra information.')
+    const box = page.getByRole('textbox', { name: 'Description (optional)' })
+    await expect.element(box).toHaveAccessibleDescription('As in the case. Extra information.')
     expect(box.element().getAttribute('aria-describedby')?.endsWith(' extra')).toBe(true)
   })
 
   test('an id on the Textarea inside a Field is ignored with a dev warning: the label stays associated', async () => {
     await render(
-      <Field.Root controlId="fältet">
-        <Field.Label marker="none">Beskrivning</Field.Label>
-        <Textarea id="annat" />
+      <Field.Root controlId="the-field">
+        <Field.Label marker="none">Description</Field.Label>
+        <Textarea id="other" />
       </Field.Root>,
     )
     await expect
-      .element(page.getByRole('textbox', { name: 'Beskrivning' }))
-      .toHaveAttribute('id', 'fältet')
+      .element(page.getByRole('textbox', { name: 'Description' }))
+      .toHaveAttribute('id', 'the-field')
     await vi.waitFor(() => {
       expect(consoleWarn).toHaveBeenCalledTimes(1)
     })
@@ -302,17 +303,19 @@ describe('in a Field', () => {
     await render(
       <KvirnProvider locale="sv-SE" messages={sv}>
         <Field.Root invalid>
-          <Field.Label>Beskriv din situation</Field.Label>
-          <Field.Prose>Berätta vad som har hänt.</Field.Prose>
+          <Field.Label>Describe your situation</Field.Label>
+          <Field.Prose>Tell us what has happened.</Field.Prose>
           <Textarea />
-          <Field.ErrorMessage>Beskriv din situation</Field.ErrorMessage>
+          <Field.ErrorMessage>Describe your situation</Field.ErrorMessage>
         </Field.Root>
       </KvirnProvider>,
     )
-    const box = page.getByRole('textbox', { name: 'Beskriv din situation (valfritt)' })
+    // kv-lang-ok: the sv catalog strings for the optional marker and the error prefix
+    const box = page.getByRole('textbox', { name: 'Describe your situation (valfritt)' })
     await expect
       .element(box)
-      .toHaveAccessibleDescription('Berätta vad som har hänt. Fel: Beskriv din situation')
+      // kv-lang-ok: the sv catalog string for the error prefix
+      .toHaveAccessibleDescription('Tell us what has happened. Fel: Describe your situation')
   })
 })
 
@@ -321,9 +324,9 @@ describe('value', () => {
     const onValueChange = vi.fn<(value: string, details: TextareaChangeDetails) => void>()
     const onChange = vi.fn<(event: React.ChangeEvent<HTMLTextAreaElement>) => void>()
     await render(
-      <Textarea aria-label="Beskrivning" onValueChange={onValueChange} onChange={onChange} />,
+      <Textarea aria-label="Description" onValueChange={onValueChange} onChange={onChange} />,
     )
-    const box = page.getByRole('textbox', { name: 'Beskrivning' })
+    const box = page.getByRole('textbox', { name: 'Description' })
     await userEvent.type(box, 'Hej')
     expect(onValueChange.mock.calls.map(([value]) => value)).toEqual(['H', 'He', 'Hej'])
     const details = onValueChange.mock.calls.at(-1)?.[1]
@@ -340,13 +343,13 @@ describe('value', () => {
       const [value, setValue] = useState('Hej')
       return (
         <>
-          <Textarea aria-label="Beskrivning" value={value} onValueChange={setValue} />
+          <Textarea aria-label="Description" value={value} onValueChange={setValue} />
           <output>{value}</output>
         </>
       )
     }
     await render(<Controlled />)
-    const box = page.getByRole('textbox', { name: 'Beskrivning' })
+    const box = page.getByRole('textbox', { name: 'Description' })
     await expect.element(box).toHaveValue('Hej')
     await userEvent.click(box)
     await userEvent.keyboard('{End}!')
@@ -355,32 +358,32 @@ describe('value', () => {
   })
 
   test('uncontrolled: defaultValue is kept, and line breaks too', async () => {
-    await render(<Textarea aria-label="Beskrivning" defaultValue="Rad ett" />)
-    const box = page.getByRole('textbox', { name: 'Beskrivning' })
+    await render(<Textarea aria-label="Description" defaultValue="Line one" />)
+    const box = page.getByRole('textbox', { name: 'Description' })
     await userEvent.click(box)
-    await userEvent.keyboard('{End}{Enter}Rad två')
-    await expect.element(box).toHaveValue('Rad ett\nRad två')
+    await userEvent.keyboard('{End}{Enter}Line two')
+    await expect.element(box).toHaveValue('Line one\nLine two')
   })
 
   test('no form state: a plain <form> submit gets the typed value from the native box', async () => {
     let submitted: FormData | undefined
     await render(
       <form
-        aria-label="Ansökan"
+        aria-label="Application"
         onSubmit={(event) => {
           event.preventDefault()
           submitted = new FormData(event.currentTarget)
         }}
       >
         <Field.Root>
-          <Field.Label marker="none">Beskrivning</Field.Label>
+          <Field.Label marker="none">Description</Field.Label>
           <Textarea name="description" />
         </Field.Root>
-        <button type="submit">Skicka</button>
+        <button type="submit">Send</button>
       </form>,
     )
-    await userEvent.type(page.getByRole('textbox', { name: 'Beskrivning' }), 'Hej')
-    await userEvent.click(page.getByRole('button', { name: 'Skicka' }))
+    await userEvent.type(page.getByRole('textbox', { name: 'Description' }), 'Hej')
+    await userEvent.click(page.getByRole('button', { name: 'Send' }))
     expect(submitted?.get('description')).toBe('Hej')
   })
 
@@ -405,11 +408,11 @@ describe('value', () => {
     })
     await render(
       <Field.Root required>
-        <Field.Label>Beskrivning</Field.Label>
+        <Field.Label>Description</Field.Label>
         <Textarea {...register('description')} />
       </Field.Root>,
     )
-    const box = page.getByRole('textbox', { name: 'Beskrivning' })
+    const box = page.getByRole('textbox', { name: 'Description' })
     expect(registered.element).toBe(box.element())
     await userEvent.type(box, 'ab')
     await userEvent.keyboard('{Tab}')
@@ -420,11 +423,11 @@ describe('value', () => {
   test('clicking the label focuses the box', async () => {
     await render(
       <Field.Root>
-        <Field.Label marker="none">Beskrivning</Field.Label>
+        <Field.Label marker="none">Description</Field.Label>
         <Textarea />
       </Field.Root>,
     )
-    await userEvent.click(page.getByText('Beskrivning', { exact: true }))
+    await userEvent.click(page.getByText('Description', { exact: true }))
     await expect.element(page.getByRole('textbox')).toHaveFocus()
   })
 })
@@ -433,16 +436,16 @@ describe('focus visible', () => {
   test('sets data-focus-visible on keyboard focus only', async () => {
     await render(
       <>
-        <Textarea aria-label="Ett" />
-        <Textarea aria-label="Två" />
+        <Textarea aria-label="One" />
+        <Textarea aria-label="Two" />
       </>,
     )
-    const first = page.getByRole('textbox', { name: 'Ett' })
+    const first = page.getByRole('textbox', { name: 'One' })
     await userEvent.keyboard('{Tab}')
     await expect.element(first).toHaveFocus()
     await expect.element(first).toHaveAttribute('data-focused', '')
     await expect.element(first).toHaveAttribute('data-focus-visible', '')
-    const second = page.getByRole('textbox', { name: 'Två' })
+    const second = page.getByRole('textbox', { name: 'Two' })
     await userEvent.click(second)
     await expect.element(first).not.toHaveAttribute('data-focus-visible')
     await expect.element(first).not.toHaveAttribute('data-focused')
@@ -456,7 +459,7 @@ describe('focus visible', () => {
 
 describe('dev warnings', () => {
   test('a Textarea without a label, outside a Field, warns once', async () => {
-    await render(<Textarea placeholder="Beskrivning" />)
+    await render(<Textarea placeholder="Description" />)
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('accessible name')
   })
@@ -474,12 +477,12 @@ describe('dev warnings', () => {
   test('aria-label, aria-labelledby and a wrapping <label> are names enough', async () => {
     await render(
       <>
-        <Textarea aria-label="Sök" />
-        <span id="rubrik">Beskrivning</span>
-        <Textarea aria-labelledby="rubrik" />
-        <label htmlFor="meddelande">
-          Meddelande
-          <Textarea id="meddelande" />
+        <Textarea aria-label="Search" />
+        <span id="heading">Description</span>
+        <Textarea aria-labelledby="heading" />
+        <label htmlFor="message">
+          Message
+          <Textarea id="message" />
         </label>
       </>,
     )
@@ -491,11 +494,11 @@ describe('characterCount', () => {
   test('maxLength is the count’s limit and is not written as the native attribute, so a paste is never cut', async () => {
     const { container } = await render(
       <Field.Root>
-        <Field.Label>Beskrivning</Field.Label>
+        <Field.Label>Description</Field.Label>
         <Textarea characterCount maxLength={100} />
       </Field.Root>,
     )
-    const box = page.getByRole('textbox', { name: 'Beskrivning (optional)' })
+    const box = page.getByRole('textbox', { name: 'Description (optional)' })
     await expect.element(box).not.toHaveAttribute('maxlength')
     const long = 'a'.repeat(130)
     await userEvent.fill(box, long)
@@ -507,23 +510,28 @@ describe('characterCount', () => {
     await render(
       <>
         <Field.Root>
-          <Field.Label>I ett fält</Field.Label>
-          <Field.Prose>Skriv kort.</Field.Prose>
+          <Field.Label>In a field</Field.Label>
+          <Field.Prose>Write short.</Field.Prose>
           <Textarea characterCount maxLength={100} />
         </Field.Root>
-        <Textarea aria-label="Utan fält" characterCount maxLength={50} aria-describedby="extra" />
+        <Textarea
+          aria-label="Without a field"
+          characterCount
+          maxLength={50}
+          aria-describedby="extra"
+        />
         <p id="extra">Extra.</p>
       </>,
     )
-    const inField = page.getByRole('textbox', { name: 'I ett fält (optional)' })
+    const inField = page.getByRole('textbox', { name: 'In a field (optional)' })
     await expect
       .element(inField)
-      .toHaveAccessibleDescription('Skriv kort. You can enter up to 100 characters.')
+      .toHaveAccessibleDescription('Write short. You can enter up to 100 characters.')
     await userEvent.type(inField, 'abc')
     await expect
       .element(inField)
-      .toHaveAccessibleDescription('Skriv kort. You have 97 characters remaining.')
-    const outside = page.getByRole('textbox', { name: 'Utan fält' })
+      .toHaveAccessibleDescription('Write short. You have 97 characters remaining.')
+    const outside = page.getByRole('textbox', { name: 'Without a field' })
     await expect
       .element(outside)
       .toHaveAccessibleDescription('Extra. You can enter up to 50 characters.')
@@ -532,11 +540,11 @@ describe('characterCount', () => {
   test('data-over is on the Textarea and the count while over the limit', async () => {
     const { container } = await render(
       <Field.Root>
-        <Field.Label>Beskrivning</Field.Label>
+        <Field.Label>Description</Field.Label>
         <Textarea characterCount maxLength={10} />
       </Field.Root>,
     )
-    const box = page.getByRole('textbox', { name: 'Beskrivning (optional)' })
+    const box = page.getByRole('textbox', { name: 'Description (optional)' })
     await expect.element(box).not.toHaveAttribute('data-over')
     await userEvent.fill(box, 'a'.repeat(11))
     await expect.element(box).toHaveAttribute('data-over', '')
@@ -551,13 +559,13 @@ describe('characterCount', () => {
     const onValueChange = vi.fn<(value: string, details: TextareaChangeDetails) => void>()
     await render(
       <Textarea
-        aria-label="Beskrivning"
+        aria-label="Description"
         characterCount
         maxLength={5}
         onValueChange={onValueChange}
       />,
     )
-    const box = page.getByRole('textbox', { name: 'Beskrivning' })
+    const box = page.getByRole('textbox', { name: 'Description' })
     await userEvent.fill(box, 'abc')
     await userEvent.fill(box, 'abcdefg')
     expect(onValueChange.mock.calls.at(-2)?.[1]).toMatchObject({
@@ -579,14 +587,14 @@ describe('characterCount', () => {
       return (
         <>
           <Textarea
-            aria-label="Styrd"
+            aria-label="Controlled"
             characterCount
             maxLength={10}
             value={value}
             onValueChange={setValue}
           />
           <button type="button" onClick={() => setValue('')}>
-            Töm
+            Clear
           </button>
         </>
       )
@@ -594,7 +602,7 @@ describe('characterCount', () => {
     const { container } = await render(
       <>
         <Controlled />
-        <Textarea aria-label="Ostyrd" characterCount maxLength={10} defaultValue="abcdefgh" />
+        <Textarea aria-label="Uncontrolled" characterCount maxLength={10} defaultValue="abcdefgh" />
       </>,
     )
     const counts = () => [...container.querySelectorAll('p')].map((count) => count.textContent)
@@ -602,21 +610,21 @@ describe('characterCount', () => {
       'You have 7 characters remaining.',
       'You have 2 characters remaining.',
     ])
-    await userEvent.click(page.getByRole('button', { name: 'Töm' }))
+    await userEvent.click(page.getByRole('button', { name: 'Clear' }))
     expect(counts()[0]).toBe('You can enter up to 10 characters.')
   })
 
   test('a form reset puts the count back to the default value’s', async () => {
     const { container } = await render(
-      <form aria-label="Ansökan">
-        <Textarea aria-label="Beskrivning" characterCount maxLength={10} defaultValue="abc" />
-        <button type="reset">Rensa</button>
+      <form aria-label="Application">
+        <Textarea aria-label="Description" characterCount maxLength={10} defaultValue="abc" />
+        <button type="reset">Clear</button>
       </form>,
     )
     const count = () => container.querySelector('p')?.textContent
-    await userEvent.type(page.getByRole('textbox', { name: 'Beskrivning' }), 'defg')
+    await userEvent.type(page.getByRole('textbox', { name: 'Description' }), 'defg')
     expect(count()).toBe('You have 3 characters remaining.')
-    await userEvent.click(page.getByRole('button', { name: 'Rensa' }))
+    await userEvent.click(page.getByRole('button', { name: 'Clear' }))
     await vi.waitFor(() => {
       expect(count()).toBe('You have 7 characters remaining.')
     })
@@ -625,27 +633,27 @@ describe('characterCount', () => {
   test('directly in a Fieldset, the count describes the box and not the fieldset', async () => {
     const { container } = await render(
       <Fieldset.Root>
-        <Fieldset.Legend>Din situation</Fieldset.Legend>
-        <Textarea aria-label="Beskrivning" characterCount maxLength={100} />
+        <Fieldset.Legend>Your situation</Fieldset.Legend>
+        <Textarea aria-label="Description" characterCount maxLength={100} />
       </Fieldset.Root>,
     )
     await expect
-      .element(page.getByRole('textbox', { name: 'Beskrivning' }))
+      .element(page.getByRole('textbox', { name: 'Description' }))
       .toHaveAccessibleDescription('You can enter up to 100 characters.')
     await expect
-      .element(page.getByRole('group', { name: 'Din situation' }))
+      .element(page.getByRole('group', { name: 'Your situation' }))
       .not.toHaveAccessibleDescription('You can enter up to 100 characters.')
     await expectNoA11yViolations(container)
   })
 
   test('an uncontrolled box counts the value the browser restored: on mount and on pageshow', async () => {
     const { container } = await render(
-      <Textarea aria-label="Beskrivning" characterCount maxLength={10} defaultValue="abc" />,
+      <Textarea aria-label="Description" characterCount maxLength={10} defaultValue="abc" />,
     )
     const count = () => container.querySelector('p')?.textContent
     expect(count()).toBe('You have 7 characters remaining.')
     // Form restoration writes the value without an input event, then the page is shown.
-    const element = page.getByRole('textbox', { name: 'Beskrivning' }).element()
+    const element = page.getByRole('textbox', { name: 'Description' }).element()
     ;(element as HTMLTextAreaElement).value = 'abcdef'
     window.dispatchEvent(new Event('pageshow'))
     await vi.waitFor(() => {
@@ -655,11 +663,11 @@ describe('characterCount', () => {
 
   test('countCharacters and messages reach the count', async () => {
     const messages: Partial<KvirnMessages['characterCount']> = {
-      remaining: ({ count }) => `${count} kvar i rutan`,
+      remaining: ({ count }) => `${count} left in the box`,
     }
     const { container } = await render(
       <Textarea
-        aria-label="Beskrivning"
+        aria-label="Description"
         characterCount
         maxLength={10}
         defaultValue="abc"
@@ -667,20 +675,22 @@ describe('characterCount', () => {
         messages={messages}
       />,
     )
-    expect(container.querySelector('p')?.textContent).toBe('4 kvar i rutan')
+    expect(container.querySelector('p')?.textContent).toBe('4 left in the box')
   })
 
   test('the count is said in the provider’s language', async () => {
     await render(
       <KvirnProvider locale="sv" messages={sv}>
         <Field.Root>
-          <Field.Label>Beskrivning</Field.Label>
+          <Field.Label>Description</Field.Label>
           <Textarea characterCount maxLength={100} />
         </Field.Root>
       </KvirnProvider>,
     )
     await expect
-      .element(page.getByRole('textbox', { name: 'Beskrivning (valfritt)' }))
+      // kv-lang-ok: the sv catalog strings for the optional marker and the limit
+      .element(page.getByRole('textbox', { name: 'Description (valfritt)' }))
+      // kv-lang-ok: the sv catalog string for the limit
       .toHaveAccessibleDescription('Du kan skriva högst 100 tecken.')
   })
 
@@ -690,43 +700,43 @@ describe('characterCount', () => {
       return (
         <>
           <button type="button" onClick={() => setValue('a'.repeat(100))}>
-            Hämta utkast
+            Fetch draft
           </button>
           <Field.Root>
-            <Field.Label>Beskrivning</Field.Label>
+            <Field.Label>Description</Field.Label>
             <Textarea characterCount maxLength={100} value={value} onValueChange={setValue} />
           </Field.Root>
         </>
       )
     }
     await render(
-      <KvirnProvider locale="sv" messages={sv}>
+      <KvirnProvider locale="en" messages={en}>
         <Draft />
       </KvirnProvider>,
     )
     const status = page.getByRole('status')
-    await userEvent.click(page.getByRole('button', { name: 'Hämta utkast' }))
+    await userEvent.click(page.getByRole('button', { name: 'Fetch draft' }))
     // The draft fills the box: the count shows it, but nobody typed it, so nothing is said.
     await expect
-      .element(page.getByRole('textbox', { name: 'Beskrivning (valfritt)' }))
-      .toHaveAccessibleDescription('Du har 0 tecken kvar.')
+      .element(page.getByRole('textbox', { name: 'Description (optional)' }))
+      .toHaveAccessibleDescription('You have 0 characters remaining.')
     // Longer than the pause before a count is announced (500 ms).
     await new Promise((resolve) => setTimeout(resolve, 700))
     await expect.element(status).toBeEmptyDOMElement()
-    await userEvent.type(page.getByRole('textbox', { name: 'Beskrivning (valfritt)' }), 'b')
-    await expect.element(status).toHaveTextContent('Du har 1 tecken för mycket.')
+    await userEvent.type(page.getByRole('textbox', { name: 'Description (optional)' }), 'b')
+    await expect.element(status).toHaveTextContent('You have 1 character too many.')
   })
 
   test('characterCount without maxLength warns once and renders no count', async () => {
     const { container } = await render(
       <Field.Root>
-        <Field.Label>Beskrivning</Field.Label>
+        <Field.Label>Description</Field.Label>
         <Textarea characterCount />
       </Field.Root>,
     )
     expect(container.querySelector('p')).toBeNull()
     await expect
-      .element(page.getByRole('textbox', { name: 'Beskrivning (optional)' }))
+      .element(page.getByRole('textbox', { name: 'Description (optional)' }))
       .not.toHaveAttribute('aria-describedby')
     await vi.waitFor(() => {
       expect(consoleWarn).toHaveBeenCalledTimes(1)
@@ -737,24 +747,24 @@ describe('characterCount', () => {
   })
 
   test('without characterCount, maxLength is untouched and nothing is rendered after the box', async () => {
-    const { container } = await render(<Textarea aria-label="Beskrivning" maxLength={10} />)
+    const { container } = await render(<Textarea aria-label="Description" maxLength={10} />)
     expect(container.querySelector('p')).toBeNull()
     await expect
-      .element(page.getByRole('textbox', { name: 'Beskrivning' }))
+      .element(page.getByRole('textbox', { name: 'Description' }))
       .toHaveAttribute('maxlength', '10')
   })
 
   test('has no axe violations under, near and over the limit, and invalid', async () => {
     const { container } = await render(
       <Field.Root required invalid>
-        <Field.Label>Beskriv din situation</Field.Label>
-        <Field.Prose>Berätta vad som har hänt.</Field.Prose>
+        <Field.Label>Describe your situation</Field.Label>
+        <Field.Prose>Tell us what has happened.</Field.Prose>
         <Textarea characterCount maxLength={20} />
-        <Field.HelpText>Svenska eller engelska.</Field.HelpText>
-        <Field.ErrorMessage>Beskriv din situation</Field.ErrorMessage>
+        <Field.HelpText>Swedish or English.</Field.HelpText>
+        <Field.ErrorMessage>Describe your situation</Field.ErrorMessage>
       </Field.Root>,
     )
-    const box = page.getByRole('textbox', { name: 'Beskriv din situation' })
+    const box = page.getByRole('textbox', { name: 'Describe your situation' })
     await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
     await userEvent.fill(box, 'a'.repeat(17))
     await expect(expectNoA11yViolations(container)).resolves.toBeUndefined()
@@ -773,15 +783,15 @@ describe('useTextarea', () => {
   test('gives spreadable props for your own <textarea>, reading the nearest Field', async () => {
     const { container } = await render(
       <Field.Root invalid required>
-        <Field.Label>Beskrivning</Field.Label>
-        <Field.ErrorMessage>Beskriv ärendet</Field.ErrorMessage>
-        <HookBox label="Beskrivning" />
+        <Field.Label>Description</Field.Label>
+        <Field.ErrorMessage>Describe the case</Field.ErrorMessage>
+        <HookBox label="Description" />
       </Field.Root>,
     )
-    const box = page.getByRole('textbox', { name: 'Beskrivning' })
+    const box = page.getByRole('textbox', { name: 'Description' })
     await expect.element(box).toHaveAttribute('aria-invalid', 'true')
     await expect.element(box).toHaveAttribute('aria-required', 'true')
-    await expect.element(box).toHaveAccessibleDescription('Error: Beskriv ärendet')
+    await expect.element(box).toHaveAccessibleDescription('Error: Describe the case')
     await expect.element(box).toHaveClass('kv-textarea')
     await expectNoA11yViolations(container)
   })
@@ -789,18 +799,18 @@ describe('useTextarea', () => {
   test('rows default to 5 and can be set', async () => {
     await render(
       <>
-        <HookBox label="Ett" />
-        <HookBox label="Två" rows={3} />
+        <HookBox label="One" />
+        <HookBox label="Two" rows={3} />
       </>,
     )
-    await expect.element(page.getByRole('textbox', { name: 'Ett' })).toHaveAttribute('rows', '5')
-    await expect.element(page.getByRole('textbox', { name: 'Två' })).toHaveAttribute('rows', '3')
+    await expect.element(page.getByRole('textbox', { name: 'One' })).toHaveAttribute('rows', '5')
+    await expect.element(page.getByRole('textbox', { name: 'Two' })).toHaveAttribute('rows', '3')
   })
 
   test('onValueChange works without a Field', async () => {
     const onValueChange = vi.fn<(value: string, details: TextareaChangeDetails) => void>()
-    await render(<HookBox label="Beskrivning" onValueChange={onValueChange} />)
-    await userEvent.type(page.getByRole('textbox', { name: 'Beskrivning' }), 'a')
+    await render(<HookBox label="Description" onValueChange={onValueChange} />)
+    await userEvent.type(page.getByRole('textbox', { name: 'Description' }), 'a')
     expect(onValueChange).toHaveBeenCalledWith('a', expect.objectContaining({ reason: 'input' }))
   })
 
@@ -823,7 +833,7 @@ describe('useTextarea', () => {
 describe('server rendering', () => {
   test('renders the box and its count to a string without touching the page', () => {
     const html = renderToString(
-      <Textarea aria-label="Beskrivning" characterCount maxLength={10} defaultValue="Hej" />,
+      <Textarea aria-label="Description" characterCount maxLength={10} defaultValue="Hej" />,
     )
     expect(html).toContain('<textarea')
     expect(html).toContain('You have 7 characters remaining.')

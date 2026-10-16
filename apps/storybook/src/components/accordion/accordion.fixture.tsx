@@ -1,9 +1,9 @@
+// kv-lang-ok-file: FinnishAccordion is the long Finnish compound hard case
 import { Accordion } from '@kvirn-ui/react'
 
 // Fixtures for Components/Accordion. Each exported function is one example, written to be read: the
-// stories show its source as "Show code" (`showSource`). The texts are fixture text from the
-// resident's language, so they are plain strings here, where an app would take them from its
-// translations.
+// stories show its source as "Show code" (`showSource`). The texts are plain strings here, where
+// an app would take them from its translations.
 
 /** The main example as a fixture: three questions under an `h2`, so the headings are level 3. */
 export function Questions() {
@@ -11,29 +11,31 @@ export function Questions() {
     <Accordion.Root>
       <Accordion.Item>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Hur ansöker jag om bygglov?</Accordion.Trigger>
+          <Accordion.Trigger>How do I apply for a building permit?</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel>
           <p>
-            Du ansöker på <a href="/mina-sidor">Mina sidor</a>. Ha ritningar och en situationsplan
-            till hands.
+            Apply on <a href="/my-pages">My pages</a>. Have your drawings and a site plan ready.
           </p>
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Vad kostar det?</Accordion.Trigger>
+          <Accordion.Trigger>What does it cost?</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel>
-          <p>Avgiften beror på byggnadens storlek. Vi räknar ut den när ansökan har kommit in.</p>
+          <p>
+            The fee depends on the size of the building. We calculate it when your application
+            arrives.
+          </p>
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Hur länge tar handläggningen?</Accordion.Trigger>
+          <Accordion.Trigger>How long does processing take?</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel>
-          <p>Du får besked inom tio veckor från att ansökan är komplett.</p>
+          <p>You get a decision within ten weeks of your application being complete.</p>
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion.Root>
@@ -45,38 +47,38 @@ export function KeyboardAccordion() {
   return (
     <>
       <button type="button" className="kv-button">
-        Före
+        Before
       </button>
       <Accordion.Root>
         <Accordion.Item defaultOpen>
           <Accordion.Heading level={3}>
-            <Accordion.Trigger>Hur ansöker jag?</Accordion.Trigger>
+            <Accordion.Trigger>How do I apply?</Accordion.Trigger>
           </Accordion.Heading>
           <Accordion.Panel>
             <p>
-              <a href="/mina-sidor">Logga in på Mina sidor</a> och välj Ansök.
+              <a href="/my-pages">Sign in to My pages</a> and choose Apply.
             </p>
           </Accordion.Panel>
         </Accordion.Item>
         <Accordion.Item>
           <Accordion.Heading level={3}>
-            <Accordion.Trigger>Vad kostar det?</Accordion.Trigger>
+            <Accordion.Trigger>What does it cost?</Accordion.Trigger>
           </Accordion.Heading>
           <Accordion.Panel>
-            <p>Det är gratis.</p>
+            <p>It is free.</p>
           </Accordion.Panel>
         </Accordion.Item>
         <Accordion.Item>
           <Accordion.Heading level={3}>
-            <Accordion.Trigger>Hur länge tar det?</Accordion.Trigger>
+            <Accordion.Trigger>How long does it take?</Accordion.Trigger>
           </Accordion.Heading>
           <Accordion.Panel>
-            <p>Två veckor.</p>
+            <p>Two weeks.</p>
           </Accordion.Panel>
         </Accordion.Item>
       </Accordion.Root>
       <button type="button" className="kv-button">
-        Efter
+        After
       </button>
     </>
   )
@@ -88,23 +90,23 @@ export function SeveralOpen() {
     <Accordion.Root>
       <Accordion.Item defaultOpen>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Öppettider</Accordion.Trigger>
+          <Accordion.Trigger>Opening hours</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel>
-          <p>Måndag till fredag 10–19.</p>
+          <p>Monday to Friday 10–19.</p>
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item defaultOpen>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Adress</Accordion.Trigger>
+          <Accordion.Trigger>Address</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel>
-          <p>Storgatan 1, Kvirnby.</p>
+          <p>1 High Street, Kvirnby.</p>
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Telefon</Accordion.Trigger>
+          <Accordion.Trigger>Phone</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel>
           <p>08-123 45 67.</p>
@@ -120,42 +122,42 @@ export function RegionPanels() {
     <Accordion.Root>
       <Accordion.Item defaultOpen>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Sophämtning</Accordion.Trigger>
+          <Accordion.Trigger>Waste collection</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel region>
-          <p>Hushållsavfall hämtas varannan vecka.</p>
+          <p>Household waste is collected every second week.</p>
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Grovsopor</Accordion.Trigger>
+          <Accordion.Trigger>Bulky waste</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel region>
-          <p>Lämnas på återvinningscentralen.</p>
+          <p>Take it to the recycling centre.</p>
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion.Root>
   )
 }
 
-/** `hiddenUntilFound` on the root: search the page for "återvinningscentralen" and a closed answer opens. */
+/** `hiddenUntilFound` on the root: search the page for "recycling centre" and a closed answer opens. */
 export function FindableAccordion() {
   return (
     <Accordion.Root hiddenUntilFound>
       <Accordion.Item>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Var lämnar jag grovsopor?</Accordion.Trigger>
+          <Accordion.Trigger>Where do I leave bulky waste?</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel>
-          <p>Grovsopor lämnas på återvinningscentralen vid Industrivägen.</p>
+          <p>Bulky waste goes to the recycling centre on Industry Road.</p>
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Hur sorterar jag glas?</Accordion.Trigger>
+          <Accordion.Trigger>How do I sort glass?</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel>
-          <p>Glasförpackningar sorteras i färgat och ofärgat glas.</p>
+          <p>Glass packaging is sorted into coloured and clear glass.</p>
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion.Root>
@@ -168,18 +170,18 @@ export function ListAccordion() {
     <Accordion.Root as="ul">
       <Accordion.Item as="li">
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Ansökan</Accordion.Trigger>
+          <Accordion.Trigger>Application</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel>
-          <p>Du ansöker på Mina sidor.</p>
+          <p>You apply on My pages.</p>
         </Accordion.Panel>
       </Accordion.Item>
       <Accordion.Item as="li" disabled focusableWhenDisabled>
         <Accordion.Heading level={3}>
-          <Accordion.Trigger>Beslut</Accordion.Trigger>
+          <Accordion.Trigger>Decision</Accordion.Trigger>
         </Accordion.Heading>
         <Accordion.Panel>
-          <p>Beslutet visas när det är fattat.</p>
+          <p>The decision appears here once it is made.</p>
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion.Root>

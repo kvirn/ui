@@ -57,7 +57,7 @@ export interface MapIconLayer extends MapLayer {
 export interface UseMapOptions<Data = unknown> {
   /** The engine adapter, for example `maplibre({ style })` from `@kvirn-ui/map/maplibre`. Keep it stable. */
   provider: MapProvider
-  /** The map's accessible name: `Karta över förskolor`. Yours, so it is in your language. */
+  /** The map's accessible name: `Map of preschools`. Yours, so it is in your language. */
   label: string
   /** The places. Keep the array stable between renders. For many places use `source`. */
   places?: readonly MapPlace<Data>[] | undefined

@@ -31,8 +31,8 @@ afterEach(() => {
 
 describe('rendering', () => {
   test('is a native button with aria-pressed, off by default, and the part classes', async () => {
-    const { container } = await render(<Toggle>Visa bara olästa</Toggle>)
-    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
+    const { container } = await render(<Toggle>Show only unread</Toggle>)
+    const toggle = page.getByRole('button', { name: 'Show only unread' })
     await expect.element(toggle).toHaveAttribute('type', 'button')
     await expect.element(toggle).toHaveAttribute('aria-pressed', 'false')
     await expect.element(toggle).not.toHaveAttribute('data-pressed')
@@ -43,27 +43,27 @@ describe('rendering', () => {
 
   test('a consumer class joins the part classes and other button props pass through', async () => {
     await render(
-      <Toggle className="egen-klass" name="olasta" value="ja">
-        Visa bara olästa
+      <Toggle className="own-class" name="unread" value="yes">
+        Show only unread
       </Toggle>,
     )
-    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
-    await expect.element(toggle).toHaveClass('kv-button', 'kv-toggle', 'egen-klass')
-    await expect.element(toggle).toHaveAttribute('name', 'olasta')
-    await expect.element(toggle).toHaveAttribute('value', 'ja')
+    const toggle = page.getByRole('button', { name: 'Show only unread' })
+    await expect.element(toggle).toHaveClass('kv-button', 'kv-toggle', 'own-class')
+    await expect.element(toggle).toHaveAttribute('name', 'unread')
+    await expect.element(toggle).toHaveAttribute('value', 'yes')
   })
 
   test('forwards its ref to the button', async () => {
     const ref = createRef<HTMLButtonElement>()
-    await render(<Toggle ref={ref}>Visa bara olästa</Toggle>)
-    expect(ref.current).toBe(page.getByRole('button', { name: 'Visa bara olästa' }).element())
+    await render(<Toggle ref={ref}>Show only unread</Toggle>)
+    expect(ref.current).toBe(page.getByRole('button', { name: 'Show only unread' }).element())
   })
 })
 
 describe('uncontrolled', () => {
   test('defaultPressed starts it on, and a press switches it, with data-pressed', async () => {
-    const { container } = await render(<Toggle defaultPressed>Visa bara olästa</Toggle>)
-    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
+    const { container } = await render(<Toggle defaultPressed>Show only unread</Toggle>)
+    const toggle = page.getByRole('button', { name: 'Show only unread' })
     await expect.element(toggle).toHaveAttribute('aria-pressed', 'true')
     await expect.element(toggle).toHaveAttribute('data-pressed', '')
     await expectNoA11yViolations(container)
@@ -75,8 +75,8 @@ describe('uncontrolled', () => {
   })
 
   test('Enter and Space switch it, the name stays and focus stays', async () => {
-    await render(<Toggle>Visa bara olästa</Toggle>)
-    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
+    await render(<Toggle>Show only unread</Toggle>)
+    const toggle = page.getByRole('button', { name: 'Show only unread' })
     await userEvent.keyboard('{Tab}')
     await expect.element(toggle).toHaveFocus()
     await userEvent.keyboard('{Enter}')
@@ -85,13 +85,13 @@ describe('uncontrolled', () => {
     await expect.element(toggle).toHaveAttribute('aria-pressed', 'false')
     await expect.element(toggle).toHaveFocus()
     // The accessible name is found again by the same name: it never changed with the state.
-    await expect.element(page.getByRole('button', { name: 'Visa bara olästa' })).toBeVisible()
+    await expect.element(page.getByRole('button', { name: 'Show only unread' })).toBeVisible()
   })
 
   test('onPressedChange reports the new value and the event, once per press', async () => {
     const onPressedChange = vi.fn<PressedChange>()
-    await render(<Toggle onPressedChange={onPressedChange}>Visa bara olästa</Toggle>)
-    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
+    await render(<Toggle onPressedChange={onPressedChange}>Show only unread</Toggle>)
+    const toggle = page.getByRole('button', { name: 'Show only unread' })
     await userEvent.click(toggle)
     await userEvent.click(toggle)
     expect(onPressedChange).toHaveBeenCalledTimes(2)
@@ -107,10 +107,10 @@ describe('uncontrolled', () => {
         onPressedChange={() => calls.push('pressed-change')}
         onClick={() => calls.push('click')}
       >
-        Visa bara olästa
+        Show only unread
       </Toggle>,
     )
-    await userEvent.click(page.getByRole('button', { name: 'Visa bara olästa' }))
+    await userEvent.click(page.getByRole('button', { name: 'Show only unread' }))
     expect(calls).toEqual(['pressed-change', 'click'])
   })
 })
@@ -120,10 +120,10 @@ describe('controlled', () => {
     const onPressedChange = vi.fn<PressedChange>()
     await render(
       <Toggle pressed={false} onPressedChange={onPressedChange}>
-        Visa bara olästa
+        Show only unread
       </Toggle>,
     )
-    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
+    const toggle = page.getByRole('button', { name: 'Show only unread' })
     await userEvent.click(toggle)
     expect(onPressedChange).toHaveBeenCalledTimes(1)
     expect(onPressedChange.mock.calls[0]?.[0]).toBe(true)
@@ -136,17 +136,17 @@ describe('controlled', () => {
       return (
         <>
           <Toggle pressed={isOn} onPressedChange={setIsOn}>
-            Visa bara olästa
+            Show only unread
           </Toggle>
-          <output>{isOn ? 'på' : 'av'}</output>
+          <output>{isOn ? 'on' : 'off'}</output>
         </>
       )
     }
     await render(<Controlled />)
-    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
+    const toggle = page.getByRole('button', { name: 'Show only unread' })
     await userEvent.click(toggle)
     await expect.element(toggle).toHaveAttribute('aria-pressed', 'true')
-    await expect.element(page.getByText('på')).toBeVisible()
+    await expect.element(page.getByText('on')).toBeVisible()
     await userEvent.click(toggle)
     await expect.element(toggle).toHaveAttribute('aria-pressed', 'false')
   })
@@ -157,17 +157,17 @@ describe('disabled', () => {
     const { container } = await render(
       <>
         <Toggle disabled defaultPressed>
-          Visa bara olästa
+          Show only unread
         </Toggle>
-        <button type="button">Efter</button>
+        <button type="button">After</button>
       </>,
     )
-    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
+    const toggle = page.getByRole('button', { name: 'Show only unread' })
     await expect.element(toggle).toBeDisabled()
     await expect.element(toggle).toHaveAttribute('aria-pressed', 'true')
     await expect.element(toggle).toHaveAttribute('data-disabled', '')
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     await expectNoA11yViolations(container)
   })
 
@@ -175,10 +175,10 @@ describe('disabled', () => {
     const onPressedChange = vi.fn<PressedChange>()
     const { container } = await render(
       <Toggle disabled focusableWhenDisabled onPressedChange={onPressedChange}>
-        Visa bara olästa
+        Show only unread
       </Toggle>,
     )
-    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
+    const toggle = page.getByRole('button', { name: 'Show only unread' })
     await expect.element(toggle).toHaveAttribute('aria-disabled', 'true')
     await expect.element(toggle).not.toHaveAttribute('disabled')
     await userEvent.keyboard('{Tab}')
@@ -197,22 +197,22 @@ describe('Tab order', () => {
   test('Tab moves to the toggle and Shift+Tab moves off it', async () => {
     await render(
       <>
-        <button type="button">Före</button>
-        <Toggle>Visa bara olästa</Toggle>
-        <button type="button">Efter</button>
+        <button type="button">Before</button>
+        <Toggle>Show only unread</Toggle>
+        <button type="button">After</button>
       </>,
     )
-    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
+    const toggle = page.getByRole('button', { name: 'Show only unread' })
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
     await userEvent.keyboard('{Tab}')
     await expect.element(toggle).toHaveFocus()
     await userEvent.keyboard('{Tab}')
-    await expect.element(page.getByRole('button', { name: 'Efter' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
     await expect.element(toggle).toHaveFocus()
     await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
-    await expect.element(page.getByRole('button', { name: 'Före' })).toHaveFocus()
+    await expect.element(page.getByRole('button', { name: 'Before' })).toHaveFocus()
   })
 })
 
@@ -221,7 +221,7 @@ describe('focus visible', () => {
     await render(
       <>
         <Toggle>Fet</Toggle>
-        <Toggle>Kursiv</Toggle>
+        <Toggle>Italic</Toggle>
       </>,
     )
     const toggle = page.getByRole('button', { name: 'Fet' })
@@ -239,10 +239,10 @@ describe('handlers on a focusable disabled toggle', () => {
     const onClick = vi.fn<() => void>()
     await render(
       <Toggle disabled focusableWhenDisabled onClick={onClick}>
-        Visa bara olästa
+        Show only unread
       </Toggle>,
     )
-    const toggle = page.getByRole('button', { name: 'Visa bara olästa' })
+    const toggle = page.getByRole('button', { name: 'Show only unread' })
     await userEvent.click(toggle, { force: true })
     await userEvent.keyboard('{Tab}')
     await userEvent.keyboard('{Enter}')
@@ -265,13 +265,13 @@ describe('accessible name', () => {
 
   test('an aria-label names an icon-only toggle, and it does not change with the state', async () => {
     await render(
-      <Toggle aria-label="Fetstil">
+      <Toggle aria-label="Bold">
         <Icon name="close" />
       </Toggle>,
     )
-    const toggle = page.getByRole('button', { name: 'Fetstil' })
+    const toggle = page.getByRole('button', { name: 'Bold' })
     await userEvent.click(toggle)
-    await expect.element(page.getByRole('button', { name: 'Fetstil', pressed: true })).toBeVisible()
+    await expect.element(page.getByRole('button', { name: 'Bold', pressed: true })).toBeVisible()
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
@@ -282,7 +282,7 @@ describe('useToggle', () => {
     const toggle = useToggle(toggleOptions)
     return (
       <button {...mergeProps(toggle.toggleProps, { className: 'egen' })}>
-        {children} ({toggle.isPressed ? 'på' : 'av'})
+        {children} ({toggle.isPressed ? 'on' : 'off'})
       </button>
     )
   }

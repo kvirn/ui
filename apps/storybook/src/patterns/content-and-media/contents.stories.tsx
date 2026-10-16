@@ -98,6 +98,7 @@ export const LongTitles: Story = {
         },
         {
           id: 'b',
+          // kv-lang-ok: a long Finnish word, a hard case for wrapping
           label: 'Varhaiskasvatuksenerityisopettajapalvelut ja niiden hakeminen',
           level: 2,
         },

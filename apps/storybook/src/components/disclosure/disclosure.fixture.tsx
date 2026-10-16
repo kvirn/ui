@@ -1,29 +1,29 @@
+// kv-lang-ok-file: FinnishDisclosure is the long Finnish compound hard case
 import { Disclosure } from '@kvirn-ui/react'
 import type { DisclosureChangeReason } from '@kvirn-ui/react'
 import { useState } from 'react'
 
 // Fixtures for Components/Disclosure. Each exported function is one example, written to be read:
-// the stories show its source as "Show code" (`showSource`). The texts are fixture text from the
-// resident's language, so they are plain strings here, where an app would take them from its
-// translations.
+// the stories show its source as "Show code" (`showSource`). The texts are plain strings here, where
+// an app would take them from its translations.
 
 /** The fixture the keyboard tests drive: a button before, the disclosure with a link in its panel, and a button after. */
 export function KeyboardDisclosure() {
   return (
     <>
       <button type="button" className="kv-button">
-        Före
+        Before
       </button>
       <Disclosure.Root>
-        <Disclosure.Trigger>Kontakta oss</Disclosure.Trigger>
+        <Disclosure.Trigger>Contact us</Disclosure.Trigger>
         <Disclosure.Panel>
           <p>
-            Ring <a href="tel:0812345678">08-123 45 67</a> eller skriv till kommunen.
+            Call <a href="tel:0812345678">08-123 45 67</a> or write to the municipality.
           </p>
         </Disclosure.Panel>
       </Disclosure.Root>
       <button type="button" className="kv-button">
-        Efter
+        After
       </button>
     </>
   )
@@ -33,9 +33,9 @@ export function KeyboardDisclosure() {
 export function OpenFromTheStart() {
   return (
     <Disclosure.Root defaultOpen>
-      <Disclosure.Trigger>Öppettider</Disclosure.Trigger>
+      <Disclosure.Trigger>Opening hours</Disclosure.Trigger>
       <Disclosure.Panel>
-        <p>Måndag till fredag 10–19. Lördag 10–15. Stängt på söndagar.</p>
+        <p>Monday to Friday 10–19. Saturday 10–15. Closed on Sundays.</p>
       </Disclosure.Panel>
     </Disclosure.Root>
   )
@@ -46,18 +46,18 @@ export function DisabledDisclosures() {
   return (
     <>
       <Disclosure.Root disabled>
-        <Disclosure.Trigger>Beslut</Disclosure.Trigger>
+        <Disclosure.Trigger>Decision</Disclosure.Trigger>
         <Disclosure.Panel>
-          <p>Beslutet visas när nämnden har beslutat.</p>
+          <p>The decision appears here once the board has decided.</p>
         </Disclosure.Panel>
       </Disclosure.Root>
       <Disclosure.Root disabled focusableWhenDisabled>
-        <Disclosure.Trigger aria-describedby="decision-reason">Överklagande</Disclosure.Trigger>
+        <Disclosure.Trigger aria-describedby="decision-reason">Appeal</Disclosure.Trigger>
         <Disclosure.Panel>
-          <p>Du kan överklaga inom tre veckor.</p>
+          <p>You can appeal within three weeks.</p>
         </Disclosure.Panel>
       </Disclosure.Root>
-      <p id="decision-reason">Överklagande går att öppna när beslutet är fattat.</p>
+      <p id="decision-reason">The appeal can be opened once the decision is made.</p>
     </>
   )
 }
@@ -75,28 +75,28 @@ export function ControlledDisclosure() {
           setReason(details.reason)
         }}
       >
-        <Disclosure.Trigger>Villkor</Disclosure.Trigger>
+        <Disclosure.Trigger>Terms</Disclosure.Trigger>
         <Disclosure.Panel>
-          <p>Avgiften är 250 kronor och betalas vid ansökan.</p>
+          <p>The fee is 250 kronor and is paid when you apply.</p>
         </Disclosure.Panel>
       </Disclosure.Root>
       <p>
-        Öppen: {isOpen ? 'ja' : 'nej'}. Senaste orsak: {reason ?? 'ingen'}.
+        Open: {isOpen ? 'yes' : 'no'}. Last reason: {reason ?? 'none'}.
       </p>
     </>
   )
 }
 
 /**
- * `hiddenUntilFound`: the closed panel is `hidden="until-found"`. Search the page for "tredje
- * våningen" (Ctrl+F, or Cmd+F): in a browser that supports it, the panel opens on the match.
+ * `hiddenUntilFound`: the closed panel is `hidden="until-found"`. Search the page for "third
+ * floor" (Ctrl+F, or Cmd+F): in a browser that supports it, the panel opens on the match.
  */
 export function FindableDisclosure() {
   return (
     <Disclosure.Root hiddenUntilFound>
-      <Disclosure.Trigger>Hitta hit</Disclosure.Trigger>
+      <Disclosure.Trigger>Find this</Disclosure.Trigger>
       <Disclosure.Panel>
-        <p>Receptionen finns på tredje våningen, till höger om hissen.</p>
+        <p>The reception is on the third floor, to the right of the lift.</p>
       </Disclosure.Panel>
     </Disclosure.Root>
   )

@@ -1,3 +1,4 @@
+// kv-lang-ok-file: Reflow320 is the long Finnish word hard case under locale fi
 import { Card, Heading, DefinitionList } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/definition-list/definition-list.a11y.md?raw'
 import guide from '../../../../../packages/react/src/definition-list/definition-list.md?raw'
@@ -8,7 +9,7 @@ import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { withDefinitionListLocale } from './definition-list.fixture.tsx'
 
 // Components/DefinitionList: the headless DefinitionList, styled by @kvirn-ui/theme/theme.css. The rows
-// are the answers of a parking-permit application, in Swedish. The Change link's word is the
+// are the answers of a parking-permit application, in English. The Change link's word is the
 // library's own string and follows the locale toolbar.
 
 const meta = {
@@ -18,21 +19,21 @@ const meta = {
     children: (
       <>
         <DefinitionList.Row>
-          <DefinitionList.Term>Namn</DefinitionList.Term>
-          <DefinitionList.Description>Anna Svensson</DefinitionList.Description>
+          <DefinitionList.Term>Name</DefinitionList.Term>
+          <DefinitionList.Description>Anna Smith</DefinitionList.Description>
           <DefinitionList.Actions>
-            <DefinitionList.Change href="#namn" />
+            <DefinitionList.Change href="#name" />
           </DefinitionList.Actions>
         </DefinitionList.Row>
         <DefinitionList.Row>
-          <DefinitionList.Term>Adress</DefinitionList.Term>
-          <DefinitionList.Description>Storgatan 12, 111 22 Kvirnby</DefinitionList.Description>
+          <DefinitionList.Term>Address</DefinitionList.Term>
+          <DefinitionList.Description>12 High Street, 111 22 Kvirnby</DefinitionList.Description>
           <DefinitionList.Actions>
-            <DefinitionList.Change href="#adress" />
+            <DefinitionList.Change href="#address" />
           </DefinitionList.Actions>
         </DefinitionList.Row>
         <DefinitionList.Row>
-          <DefinitionList.Term>Registreringsnummer</DefinitionList.Term>
+          <DefinitionList.Term>Registration number</DefinitionList.Term>
           <DefinitionList.Description>ABC 123</DefinitionList.Description>
           <DefinitionList.Actions>
             <DefinitionList.Change href="#regnr" />
@@ -49,7 +50,7 @@ const meta = {
     },
   },
   decorators: [withDefinitionListLocale],
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
@@ -63,8 +64,8 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   play: async ({ canvas }) => {
     await expect(canvas.getAllByRole('term')).toHaveLength(3)
-    await expect(canvas.getByRole('link', { name: 'Ändra Namn' })).toHaveTextContent('Ändra')
-    await expect(canvas.getByRole('link', { name: 'Ändra Registreringsnummer' })).toBeVisible()
+    await expect(canvas.getByRole('link', { name: 'Change Name' })).toHaveTextContent('Change')
+    await expect(canvas.getByRole('link', { name: 'Change Registration number' })).toBeVisible()
   },
 }
 
@@ -74,16 +75,16 @@ export const WithoutActions: Story = {
     children: (
       <>
         <DefinitionList.Row>
-          <DefinitionList.Term>Telefon</DefinitionList.Term>
+          <DefinitionList.Term>Phone</DefinitionList.Term>
           <DefinitionList.Description>08-000 00 00</DefinitionList.Description>
         </DefinitionList.Row>
         <DefinitionList.Row>
-          <DefinitionList.Term>E-post</DefinitionList.Term>
-          <DefinitionList.Description>kontakt@kvirnby.example</DefinitionList.Description>
+          <DefinitionList.Term>Email</DefinitionList.Term>
+          <DefinitionList.Description>contact@kvirnby.example</DefinitionList.Description>
         </DefinitionList.Row>
         <DefinitionList.Row>
-          <DefinitionList.Term>Öppettider</DefinitionList.Term>
-          <DefinitionList.Description>Vardagar 9–16</DefinitionList.Description>
+          <DefinitionList.Term>Opening hours</DefinitionList.Term>
+          <DefinitionList.Description>Weekdays 9–16</DefinitionList.Description>
         </DefinitionList.Row>
       </>
     ),
@@ -99,30 +100,30 @@ export const MissingAndMultiple: Story = {
     children: (
       <>
         <DefinitionList.Row>
-          <DefinitionList.Term>Telefon</DefinitionList.Term>
-          <DefinitionList.Description>Ej angivet</DefinitionList.Description>
+          <DefinitionList.Term>Phone</DefinitionList.Term>
+          <DefinitionList.Description>Not provided</DefinitionList.Description>
           <DefinitionList.Actions>
-            <DefinitionList.Change href="#telefon">Lägg till</DefinitionList.Change>
+            <DefinitionList.Change href="#phone">Add</DefinitionList.Change>
           </DefinitionList.Actions>
         </DefinitionList.Row>
         <DefinitionList.Row>
-          <DefinitionList.Term>Bilagor</DefinitionList.Term>
+          <DefinitionList.Term>Attachments</DefinitionList.Term>
           <DefinitionList.Description>
-            <a href="#intyg">intyg.pdf</a>
+            <a href="#certificate">certificate.pdf</a>
             <br />
-            <a href="#foto">foto-av-bilen.jpg</a>
+            <a href="#photo">photo-of-the-car.jpg</a>
           </DefinitionList.Description>
           <DefinitionList.Actions>
-            <DefinitionList.Change href="#bilagor" />
-            <DefinitionList.Change href="#bilagor-ta-bort">Ta bort</DefinitionList.Change>
+            <DefinitionList.Change href="#attachments" />
+            <DefinitionList.Change href="#attachments-remove">Remove</DefinitionList.Change>
           </DefinitionList.Actions>
         </DefinitionList.Row>
       </>
     ),
   },
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'Lägg till Telefon' })).toBeVisible()
-    await expect(canvas.getByRole('link', { name: 'Ta bort Bilagor' })).toBeVisible()
+    await expect(canvas.getByRole('link', { name: 'Add Phone' })).toBeVisible()
+    await expect(canvas.getByRole('link', { name: 'Remove Attachments' })).toBeVisible()
   },
 }
 
@@ -131,19 +132,19 @@ export const InACard: Story = {
   render: (args) => (
     <Card.Root>
       <Card.Body>
-        <Heading as="h2">Ärende 2026-0142</Heading>
+        <Heading as="h2">Case 2026-0142</Heading>
         <DefinitionList.Root {...args}>
           <DefinitionList.Row>
             <DefinitionList.Term>Status</DefinitionList.Term>
-            <DefinitionList.Description>Under handläggning</DefinitionList.Description>
+            <DefinitionList.Description>Under review</DefinitionList.Description>
           </DefinitionList.Row>
           <DefinitionList.Row>
-            <DefinitionList.Term>Inkommet</DefinitionList.Term>
-            <DefinitionList.Description>6 oktober 2026</DefinitionList.Description>
+            <DefinitionList.Term>Received</DefinitionList.Term>
+            <DefinitionList.Description>6 October 2026</DefinitionList.Description>
           </DefinitionList.Row>
           <DefinitionList.Row>
-            <DefinitionList.Term>Handläggare</DefinitionList.Term>
-            <DefinitionList.Description>Parkeringsenheten</DefinitionList.Description>
+            <DefinitionList.Term>Case officer</DefinitionList.Term>
+            <DefinitionList.Description>The parking unit</DefinitionList.Description>
           </DefinitionList.Row>
         </DefinitionList.Root>
       </Card.Body>
@@ -156,11 +157,11 @@ export const InACard: Story = {
 export const Keyboard: Story = {
   play: async ({ canvas }) => {
     await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Ändra Namn' })).toHaveFocus()
+    await expect(canvas.getByRole('link', { name: 'Change Name' })).toHaveFocus()
     await userEvent.tab()
-    await expect(canvas.getByRole('link', { name: 'Ändra Adress' })).toHaveFocus()
+    await expect(canvas.getByRole('link', { name: 'Change Address' })).toHaveFocus()
     await userEvent.tab({ shift: true })
-    await expect(canvas.getByRole('link', { name: 'Ändra Namn' })).toHaveFocus()
+    await expect(canvas.getByRole('link', { name: 'Change Name' })).toHaveFocus()
   },
 }
 
@@ -204,7 +205,7 @@ export const Reflow320: Story = {
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('link', { name: 'Change Namn' })).toBeVisible()
+    await expect(canvas.getByRole('link', { name: 'Change Name' })).toBeVisible()
   },
 }
 

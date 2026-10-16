@@ -11,41 +11,41 @@ function mulberry32(seed: number) {
 }
 
 const streets = [
-  'Hornsgatan',
-  'Sveavägen',
-  'Götgatan',
-  'Drottninggatan',
-  'Valhallavägen',
-  'Folkungagatan',
-  'Odengatan',
-  'Kungsholmsgatan',
-  'Birger Jarlsgatan',
-  'Nynäsvägen',
-  'Essingeleden',
-  'Södertäljevägen',
-  'Roslagsvägen',
-  'Strandvägen',
-  'Karlbergsvägen',
+  'Horn Street',
+  'Svea Avenue',
+  'Gote Street',
+  'Drottning Street',
+  'Valhalla Avenue',
+  'Folkunga Street',
+  'Oden Street',
+  'Kungsholm Street',
+  'Birger Jarl Street',
+  'Nynas Road',
+  'Essinge Road',
+  'Sodertalje Road',
+  'Roslagen Road',
+  'Strand Road',
+  'Karlberg Road',
 ]
 
 const areas = [
-  ['Södermalm', '118 20'],
+  ['Sodermalm', '118 20'],
   ['Norrmalm', '111 22'],
-  ['Östermalm', '114 32'],
+  ['Ostermalm', '114 32'],
   ['Kungsholmen', '112 20'],
-  ['Hägersten', '126 30'],
+  ['Hagersten', '126 30'],
   ['Solna', '171 45'],
   ['Nacka', '131 30'],
   ['Bromma', '168 67'],
 ] as const
 
-const fuelNames = ['Nordtank', 'Vägkant', 'Energia', 'Tankstopp', 'Mälarbränsle']
+const fuelNames = ['Nordtank', 'Roadside', 'Energia', 'Fuel stop', 'Lakeside Fuel']
 const hotelNames = [
-  'Hotell Strandvik',
-  'Hotell Mälarsund',
-  'Stadshotellet',
-  'Hotell Skärgård',
-  'Hotell Nordljus',
+  'Hotel Strandvik',
+  'Hotel Lakesound',
+  'City Hotel',
+  'Hotel Archipelago',
+  'Hotel Nordljus',
 ]
 
 function generate(layer: 'fuel' | 'hotels', prefix: string, seed: number): MapPlace[] {

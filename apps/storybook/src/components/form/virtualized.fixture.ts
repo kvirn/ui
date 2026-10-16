@@ -1,3 +1,4 @@
+// kv-lang-ok-file: Swedish place names prove Swedish collation and typeahead (å, ä, ö)
 // Story and test data for the Virtualized stories of Listbox, Combobox and Autocomplete
 // (contracts: the "Virtualization" sections of listbox.a11y.md, combobox.a11y.md and
 // autocomplete.a11y.md). 10 000 deterministic labels, in the Swedish alphabet, so typeahead and

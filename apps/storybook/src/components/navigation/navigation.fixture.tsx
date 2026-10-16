@@ -1,3 +1,4 @@
+// kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
 import { fi } from '@kvirn-ui/i18n/fi'
 import { KvirnProvider, Link, Navigation } from '@kvirn-ui/react'
 import { InLanguage } from '../../fixture-language.tsx'
@@ -70,7 +71,7 @@ export function RoutedNavigation() {
   const pathname = useMockPathname()
   return (
     <>
-      <Navigation.Root label="Huvudmeny">
+      <Navigation.Root label="Main menu">
         <Navigation.List>
           <Navigation.Item>
             <Link.Root href="/start" current={pathname === '/start' ? 'page' : false}>
@@ -79,12 +80,12 @@ export function RoutedNavigation() {
           </Navigation.Item>
           <Navigation.Item>
             <Link.Root href="/ansok" current={pathname === '/ansok' ? 'page' : false}>
-              Ansök
+              Apply
             </Link.Root>
           </Navigation.Item>
         </Navigation.List>
       </Navigation.Root>
-      <p>Nuvarande sida: {pathname}</p>
+      <p>Current page: {pathname}</p>
     </>
   )
 }
@@ -96,51 +97,53 @@ export function RoutedNavigation() {
  */
 export function StaffNavigation() {
   return (
-    <Navigation.Root label="Handläggning">
+    <Navigation.Root label="Case handling">
       <Navigation.List>
         <Navigation.Item>
-          <Link.Root href="#oversikt">Översikt</Link.Root>
+          <Link.Root href="#oversikt">Overview</Link.Root>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#arenden">Ärenden</Link.Root>
+          <Link.Root href="#arenden">Cases</Link.Root>
           <Navigation.List>
             <Navigation.Item>
-              <Link.Root href="#mina-arenden">Mina ärenden</Link.Root>
+              <Link.Root href="#mina-arenden">My cases</Link.Root>
             </Navigation.Item>
             <Navigation.Item>
-              <Link.Root href="#bygglov">Bygglov</Link.Root>
+              <Link.Root href="#bygglov">Building permits</Link.Root>
               <Navigation.List>
                 <Navigation.Item>
-                  <Link.Root href="#nya-ansokningar">Nya ansökningar</Link.Root>
+                  <Link.Root href="#nya-ansokningar">New applications</Link.Root>
                 </Navigation.Item>
                 <Navigation.Item>
                   <Link.Root href="#under-handlaggning" current="page">
-                    Under handläggning
+                    In progress
                   </Link.Root>
                   <Navigation.List>
                     <Navigation.Item>
-                      <Link.Root href="#vantar-pa-komplettering">Väntar på komplettering</Link.Root>
+                      <Link.Root href="#vantar-pa-komplettering">
+                        Awaiting more information
+                      </Link.Root>
                     </Navigation.Item>
                     <Navigation.Item>
-                      <Link.Root href="#klara-for-beslut">Klara för beslut</Link.Root>
+                      <Link.Root href="#klara-for-beslut">Ready for decision</Link.Root>
                     </Navigation.Item>
                   </Navigation.List>
                 </Navigation.Item>
                 <Navigation.Item>
-                  <Link.Root href="#beslutade">Beslutade</Link.Root>
+                  <Link.Root href="#beslutade">Decided</Link.Root>
                 </Navigation.Item>
               </Navigation.List>
             </Navigation.Item>
             <Navigation.Item>
-              <Link.Root href="#miljo-och-halsa">Miljö och hälsa</Link.Root>
+              <Link.Root href="#miljo-och-halsa">Environment and health</Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#kunder">Kunder</Link.Root>
+          <Link.Root href="#kunder">Customers</Link.Root>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#rapporter">Rapporter</Link.Root>
+          <Link.Root href="#rapporter">Reports</Link.Root>
         </Navigation.Item>
       </Navigation.List>
     </Navigation.Root>
@@ -153,24 +156,24 @@ export function StaffNavigation() {
  */
 export function HorizontalNavigation() {
   return (
-    <Navigation.Root label="Huvudmeny" className="kv-navigation--horizontal">
+    <Navigation.Root label="Main menu" className="kv-navigation--horizontal">
       <Navigation.List>
         <Navigation.Item>
           <Link.Root href="#start">Start</Link.Root>
         </Navigation.Item>
         <Navigation.Item>
           <Link.Root href="#bygga-och-bo" current="page">
-            Bygga och bo
+            Building and living
           </Link.Root>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#trafik-och-resor">Trafik och resor</Link.Root>
+          <Link.Root href="#trafik-och-resor">Traffic and roads</Link.Root>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#uppleva-och-gora">Uppleva och göra</Link.Root>
+          <Link.Root href="#uppleva-och-gora">Things to do</Link.Root>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#om-kommunen">Om kommunen</Link.Root>
+          <Link.Root href="#om-kommunen">About the municipality</Link.Root>
         </Navigation.Item>
       </Navigation.List>
     </Navigation.Root>
@@ -180,42 +183,42 @@ export function HorizontalNavigation() {
 /**
  * Groups you collapse are rendered with `hidden`, never unmounted: their links leave the Tab
  * sequence and the accessibility tree, and nothing remounts when your own toggle opens one. The
- * page, Bygglov, is inside the first collapsed group, so Bygga och bo, the deepest item shown,
+ * page, Building permits, is inside the first collapsed group, so Building and living, the deepest item shown,
  * carries `current`. A link inside a hidden group never does.
  */
 export function CollapsedNavigation() {
   return (
-    <Navigation.Root label="Huvudmeny">
+    <Navigation.Root label="Main menu">
       <Navigation.List>
         <Navigation.Item>
           <Link.Root href="#start">Start</Link.Root>
         </Navigation.Item>
         <Navigation.Item>
           <Link.Root href="#bygga-och-bo" current>
-            Bygga och bo
+            Building and living
           </Link.Root>
           <Navigation.List hidden>
             <Navigation.Item>
-              <Link.Root href="#bygglov">Bygglov</Link.Root>
+              <Link.Root href="#bygglov">Building permits</Link.Root>
             </Navigation.Item>
             <Navigation.Item>
-              <Link.Root href="#bygga-om">Bygga om</Link.Root>
+              <Link.Root href="#bygga-om">Renovating</Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#trafik-och-resor">Trafik och resor</Link.Root>
+          <Link.Root href="#trafik-och-resor">Traffic and roads</Link.Root>
           <Navigation.List hidden>
             <Navigation.Item>
-              <Link.Root href="#parkering">Parkering</Link.Root>
+              <Link.Root href="#parkering">Parking</Link.Root>
             </Navigation.Item>
             <Navigation.Item>
-              <Link.Root href="#kollektivtrafik">Kollektivtrafik</Link.Root>
+              <Link.Root href="#kollektivtrafik">Public transport</Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#om-kommunen">Om kommunen</Link.Root>
+          <Link.Root href="#om-kommunen">About the municipality</Link.Root>
         </Navigation.Item>
       </Navigation.List>
     </Navigation.Root>
@@ -223,32 +226,32 @@ export function CollapsedNavigation() {
 }
 
 /**
- * The page the reader is on, a permit case, is not a menu item. The deepest item shown, Bygglov,
+ * The page the reader is on, a permit case, is not a menu item. The deepest item shown, Building permits,
  * carries `current`, which gives `aria-current="true"`: the navigation still has exactly one
- * current link, and the ancestor Bygga och bo is the trail.
+ * current link, and the ancestor Building and living is the trail.
  */
 export function UnlistedPageNavigation() {
   return (
-    <Navigation.Root label="Huvudmeny">
+    <Navigation.Root label="Main menu">
       <Navigation.List>
         <Navigation.Item>
           <Link.Root href="#start">Start</Link.Root>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#bygga-och-bo">Bygga och bo</Link.Root>
+          <Link.Root href="#bygga-och-bo">Building and living</Link.Root>
           <Navigation.List>
             <Navigation.Item>
               <Link.Root href="#bygglov" current>
-                Bygglov
+                Building permits
               </Link.Root>
             </Navigation.Item>
             <Navigation.Item>
-              <Link.Root href="#bygga-om">Bygga om</Link.Root>
+              <Link.Root href="#bygga-om">Renovating</Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Item>
         <Navigation.Item>
-          <Link.Root href="#om-oss">Om oss</Link.Root>
+          <Link.Root href="#om-oss">About us</Link.Root>
         </Navigation.Item>
       </Navigation.List>
     </Navigation.Root>
@@ -348,37 +351,37 @@ export function NavigationOrientations({ locale }: { locale: 'sv' | 'en' }) {
 /**
  * A sidebar that groups links under labels, as in a staff or documentation menu. Each
  * `Navigation.Label` is plain text that names the list next to it, so a screen reader announces
- * "Komponenter, list, 3 items". It is not a heading and not a link, and the group needs no
+ * "Components, list, 3 items". It is not a heading and not a link, and the group needs no
  * indentation of its own.
  */
 export function GroupedNavigation() {
   return (
-    <Navigation.Root label="Dokumentation">
+    <Navigation.Root label="Documentation">
       <Navigation.List>
         <Navigation.Item>
-          <Navigation.Label>Grunder</Navigation.Label>
+          <Navigation.Label>Foundations</Navigation.Label>
           <Navigation.List>
             <Navigation.Item>
-              <Link.Root href="#kom-igang">Kom igång</Link.Root>
+              <Link.Root href="#kom-igang">Get started</Link.Root>
             </Navigation.Item>
             <Navigation.Item>
               <Link.Root href="#teman" current="page">
-                Teman
+                Themes
               </Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Item>
         <Navigation.Item>
-          <Navigation.Label>Komponenter</Navigation.Label>
+          <Navigation.Label>Components</Navigation.Label>
           <Navigation.List>
             <Navigation.Item>
-              <Link.Root href="#knapp">Knapp</Link.Root>
+              <Link.Root href="#knapp">Button</Link.Root>
             </Navigation.Item>
             <Navigation.Item>
-              <Link.Root href="#lank">Länk</Link.Root>
+              <Link.Root href="#lank">Link</Link.Root>
             </Navigation.Item>
             <Navigation.Item>
-              <Link.Root href="#valjare">Väljare</Link.Root>
+              <Link.Root href="#valjare">Picker</Link.Root>
             </Navigation.Item>
           </Navigation.List>
         </Navigation.Item>

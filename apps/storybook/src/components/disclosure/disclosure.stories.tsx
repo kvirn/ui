@@ -68,7 +68,7 @@ const meta = {
     },
     children: { control: false, description: 'A `Disclosure.Trigger` and its `Disclosure.Panel`.' },
   },
-  globals: { locale: 'sv' },
+  globals: { locale: 'en' },
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof Disclosure.Root>
 
@@ -82,20 +82,20 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: (args) => (
     <Disclosure.Root {...args}>
-      <Disclosure.Trigger>Öppettider</Disclosure.Trigger>
+      <Disclosure.Trigger>Opening hours</Disclosure.Trigger>
       <Disclosure.Panel>
-        <p>Måndag till fredag 10–19. Lördag 10–15. Stängt på söndagar.</p>
+        <p>Monday to Friday 10–19. Saturday 10–15. Closed on Sundays.</p>
       </Disclosure.Panel>
     </Disclosure.Root>
   ),
   play: async ({ canvas, userEvent }) => {
-    const trigger = canvas.getByRole('button', { name: 'Öppettider' })
+    const trigger = canvas.getByRole('button', { name: 'Opening hours' })
     await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     await expectMinimumTargetSize(trigger)
     await userEvent.click(trigger)
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
     await expectAnimationsSettled()
-    await expect(canvas.getByText(/Måndag till fredag/)).toBeVisible()
+    await expect(canvas.getByText(/Monday to Friday/)).toBeVisible()
   },
 }
 
@@ -108,7 +108,7 @@ export const Keyboard: Story = {
   parameters: showSource('disclosure/disclosure.fixture.tsx', 'KeyboardDisclosure'),
   render: () => <KeyboardDisclosure />,
   play: async ({ canvas, userEvent }) => {
-    const trigger = canvas.getByRole('button', { name: 'Kontakta oss' })
+    const trigger = canvas.getByRole('button', { name: 'Contact us' })
     trigger.focus()
     await userEvent.keyboard('{Enter}')
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
@@ -122,7 +122,7 @@ export const Open: Story = {
   parameters: showSource('disclosure/disclosure.fixture.tsx', 'OpenFromTheStart'),
   render: () => <OpenFromTheStart />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: 'Öppettider' })).toHaveAttribute(
+    await expect(canvas.getByRole('button', { name: 'Opening hours' })).toHaveAttribute(
       'aria-expanded',
       'true',
     )
@@ -137,11 +137,11 @@ export const Disabled: Story = {
   parameters: showSource('disclosure/disclosure.fixture.tsx', 'DisabledDisclosures'),
   render: () => <DisabledDisclosures />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: 'Beslut' })).toBeDisabled()
-    const appeal = canvas.getByRole('button', { name: 'Överklagande' })
+    await expect(canvas.getByRole('button', { name: 'Decision' })).toBeDisabled()
+    const appeal = canvas.getByRole('button', { name: 'Appeal' })
     await expect(appeal).toHaveAttribute('aria-disabled', 'true')
     await expect(appeal).toHaveAccessibleDescription(
-      'Överklagande går att öppna när beslutet är fattat.',
+      'The appeal can be opened once the decision is made.',
     )
   },
 }
@@ -151,21 +151,21 @@ export const Controlled: Story = {
   parameters: showSource('disclosure/disclosure.fixture.tsx', 'ControlledDisclosure'),
   render: () => <ControlledDisclosure />,
   play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole('button', { name: 'Villkor' }))
-    await expect(canvas.getByText('Öppen: ja. Senaste orsak: trigger-press.')).toBeVisible()
+    await userEvent.click(canvas.getByRole('button', { name: 'Terms' }))
+    await expect(canvas.getByText('Open: yes. Last reason: trigger-press.')).toBeVisible()
   },
 }
 
 /**
- * `hiddenUntilFound`: the closed panel is `hidden="until-found"`. Search the page for "tredje
- * våningen": a browser that supports it opens the panel on the match. One that doesn’t treats it
+ * `hiddenUntilFound`: the closed panel is `hidden="until-found"`. Search the page for "third
+ * floor": a browser that supports it opens the panel on the match. One that doesn’t treats it
  * as `hidden`.
  */
 export const FindInPage: Story = {
   parameters: showSource('disclosure/disclosure.fixture.tsx', 'FindableDisclosure'),
   render: () => <FindableDisclosure />,
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole('button', { name: 'Hitta hit' })).toHaveAttribute(
+    await expect(canvas.getByRole('button', { name: 'Find this' })).toHaveAttribute(
       'aria-expanded',
       'false',
     )

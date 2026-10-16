@@ -43,16 +43,19 @@ describe('resolveMessageNamespace: text keys', () => {
   it('takes the first layer that has a value (instance, then nearest provider, then ancestors)', () => {
     const { searchMessages, reportIssue } = resolveSearch([
       undefined,
-      { heading: 'Sök (närmast)' },
-      { heading: 'Sök (rot)' },
+      { heading: 'Search (nearest)' },
+      { heading: 'Search (root)' },
     ])
-    expect(searchMessages.heading).toBe('Sök (närmast)')
+    expect(searchMessages.heading).toBe('Search (nearest)')
     expect(reportIssue).not.toHaveBeenCalledWith(expect.objectContaining({ key: 'heading' }))
   })
 
   it('falls through an empty or whitespace-only override and reports it', () => {
-    const { searchMessages, reportIssue } = resolveSearch([{ heading: '  ' }, { heading: 'Sök' }])
-    expect(searchMessages.heading).toBe('Sök')
+    const { searchMessages, reportIssue } = resolveSearch([
+      { heading: '  ' },
+      { heading: 'Search' },
+    ])
+    expect(searchMessages.heading).toBe('Search')
     expect(reportIssue).toHaveBeenCalledWith({
       type: 'empty-override',
       namespace: 'search',
@@ -77,24 +80,24 @@ describe('resolveMessageNamespace: function keys', () => {
     const { searchMessages } = resolveSearch([
       {
         resultCount: ({ count }, format) =>
-          format.plural(count, { one: 'en träff', other: `${format.number(count)} träffar` }),
+          format.plural(count, { one: 'one hit', other: `${format.number(count)} hits` }),
       },
     ])
-    expect(searchMessages.resultCount({ count: 1 })).toBe('en träff')
+    expect(searchMessages.resultCount({ count: 1 })).toBe('one hit')
     expect(searchMessages.resultCount({ count: 1500 })).toBe(
-      `${new Intl.NumberFormat('sv-SE').format(1500)} träffar`,
+      `${new Intl.NumberFormat('sv-SE').format(1500)} hits`,
     )
   })
 
   it('calls the layers in order and returns the first non-empty result', () => {
     const nearest = vi.fn<SearchMessages['resultCount']>(() => ' ')
-    const root = vi.fn<SearchMessages['resultCount']>(({ count }) => `${count} träffar`)
+    const root = vi.fn<SearchMessages['resultCount']>(({ count }) => `${count} hits`)
     const { searchMessages, reportIssue } = resolveSearch([
       { resultCount: nearest },
       { resultCount: root },
     ])
 
-    expect(searchMessages.resultCount({ count: 3 })).toBe('3 träffar')
+    expect(searchMessages.resultCount({ count: 3 })).toBe('3 hits')
     expect(nearest).toHaveBeenCalledWith({ count: 3 }, swedishFormat)
     expect(root).toHaveBeenCalledWith({ count: 3 }, swedishFormat)
     expect(reportIssue).toHaveBeenCalledWith({

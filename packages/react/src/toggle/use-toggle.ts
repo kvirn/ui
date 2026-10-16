@@ -44,12 +44,12 @@ export interface UseToggleResult {
  * toggle.a11y.md). It is `useButton` plus `aria-pressed` and `data-pressed`, and it holds the
  * pressed state the way `usePopover` holds `open`: controlled with `pressed`, or uncontrolled.
  *
- * The name must never change with the state: "Fetstil", not "Slå på fetstil". It's on when
+ * The name must never change with the state: "Bold", not "Turn on bold". It's on when
  * `aria-pressed` says so.
  *
  * @example
  * const toggle = useToggle({ pressed: isBold, onPressedChange: setIsBold })
- * <button {...toggle.toggleProps} aria-label="Fetstil">B</button>
+ * <button {...toggle.toggleProps} aria-label="Bold">B</button>
  */
 export function useToggle({
   pressed: pressedProp,

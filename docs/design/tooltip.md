@@ -11,7 +11,7 @@
 - **Hardest-case users:**
   1. A **magnifier user at 400%**, who sees a small part of the screen. The tooltip must stay while she moves the pointer onto it to read it, must not cover the button she's on, and must go away with Escape when it covers what she's reading (1.4.13).
   2. A **keyboard user** arrowing along a toolbar. Each button's tooltip must show at once on focus, without waiting for a hover delay, and the next one must replace it without flicker.
-  3. A **screen-reader user**, who must hear the button's name once, not "Fetstil … Fetstil", and learn the shortcut.
+  3. A **screen-reader user**, who must hear the button's name once, not "Bold … Bold", and learn the shortcut.
   4. A **touch user**, who has no hover. Nothing they need may be only in a tooltip.
   5. A **Windows Contrast Themes** user, who must see the tooltip's edge with no shadow.
 - **Job to be done:** _When I see an icon I don't recognise, I want to find out what it does, and its shortcut, without pressing it, so I can act with confidence._
@@ -72,15 +72,15 @@ Tooltip has **no strings of its own**: the consumer passes the text, from their 
 - **The name first** (2.5.3): on an icon-only button, the tooltip starts with exactly the button's accessible name, from the same i18n key, so a voice-control user can say what they see.
 - **One shortcut**, the platform's usual one, with key names that aren't translated (the Kbd decision): `Ctrl` + `B` on Windows and Linux, `⌘` `B` on macOS (Apple's convention, no plus). Redo shows `Ctrl` + `Y` on Windows and `⇧` `⌘` `Z` on macOS. The editor's platform formatter writes them (Plan 0037).
 
-Example, the editor's Bold button: **Fetstil** `Ctrl` + `B`.
+Example, the editor's Bold button: **Bold** `Ctrl` + `B`.
 
 ## 5. Structure
 
 ```
-<button aria-label="Fetstil" aria-pressed="false"
+<button aria-label="Bold" aria-pressed="false"
         aria-keyshortcuts="Control+B" aria-describedby="tt-1-shortcut">  (icon)  </button>
 <div class="kv-tooltip" role="tooltip" id="tt-1" popover="manual" data-placement="top">
-  <span class="kv-tooltip-name" aria-hidden="true">Fetstil</span>
+  <span class="kv-tooltip-name" aria-hidden="true">Bold</span>
   <span class="kv-tooltip-shortcut" id="tt-1-shortcut">
     <kbd class="kv-kbd"><kbd class="kv-kbd">Ctrl</kbd>+<kbd class="kv-kbd">B</kbd></kbd>
   </span>
@@ -166,7 +166,7 @@ Draft input for `tooltip.a11y.md`.
 - **Names (the decision, 2026-10-04 brief):** a tooltip **never duplicates the trigger's accessible name to AT**.
   - The trigger always has a name of its own (`aria-label` from i18n, or its content). A tooltip is never the only name (dev warning, Plan 0037).
   - The part of the tooltip that repeats the name is `aria-hidden="true"`, so it isn't read in the description and isn't read again in browse mode while the tooltip is open.
-  - The part that adds information (the shortcut) is the trigger's `aria-describedby`. NVDA: "Fetstil, växlingsknapp, inte nedtryckt, Ctrl+B".
+  - The part that adds information (the shortcut) is the trigger's `aria-describedby`. NVDA: "Bold, toggle button, not pressed, Ctrl+B".
   - Why not hide the whole tooltip and rely on `aria-keyshortcuts` (Plan 0037's draft default): screen readers don't reliably announce `aria-keyshortcuts`, so a screen-reader user would never learn the shortcut, which is the one thing the tooltip adds for them. The trigger keeps `aria-keyshortcuts` too (keyboard rule 7). A screen reader that announces both may read the shortcut twice; the name is still read once. The AT matrix checks it (`pending`).
   - A tooltip with only extra information (APG's case) is the trigger's description as a whole. A tooltip with only the name adds no description.
 - **Keyboard:**

@@ -14,7 +14,7 @@ body {
   font-feature-settings: var(--kv-font-body-feature-settings);
 }
 
-/* Headings a story draws outside kv-prose (section headings like "Primär" or "Nyheter") get
+/* Headings a story draws outside kv-prose (section headings like "Primary" or "News") get
  * the heading family, like the prose headings next to them. */
 :where(h1, h2, h3, h4, h5, h6) {
   font-family: var(--kv-font-family-heading, var(--kv-font-family-serif));
