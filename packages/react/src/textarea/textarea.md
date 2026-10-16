@@ -2,15 +2,15 @@
 
 > **Draft** (Plan 0034). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [textarea.a11y.md](textarea.a11y.md), the design spec is [docs/design/rich-text-editor.md](../../../../docs/design/rich-text-editor.md) (Textarea and Character count), and the decisions are in the forms skill.
 
-**KvirnUI holds no form state; bring your own form logic.** Textarea is the multi-line text box of a [Field](../field/field.md): a native `<textarea>` for a longer answer, such as "Beskriv din situation", a message to a caseworker or a reason for an appeal. It renders the `value` you give it, reports changes up through `onValueChange`, never copies the value into state of its own, and doesn't validate. Use it with TanStack Form, React Hook Form, your own `useState`, or a plain `<form>`.
+**KvirnUI holds no form state; bring your own form logic.** Textarea is the multi-line text box of a [Field](../field/field.md): a native `<textarea>` for a longer answer, such as "Describe your situation", a message to a caseworker or a reason for an appeal. It renders the `value` you give it, reports changes up through `onValueChange`, never copies the value into state of its own, and doesn't validate. Use it with TanStack Form, React Hook Form, your own `useState`, or a plain `<form>`.
 
-For a short answer on one line, use [TextInput](../text-input/text-input.md). For text with headings, lists and links, use the rich text editor (Plan 0036). Don't use a Textarea to collect a code, a number or a date: those are a TextInput with a mask, a [NumberInput](../number-input/number-input.md) and a [DateInput](../date-input/date-input.md).
+For a short answer on one line, use [TextInput](../text-input/text-input.md). For text with headings, lists and links, use the rich text editor (`@kvirn-ui/rich-text`). Don't use a Textarea to collect a code, a number or a date: those are a TextInput with a mask, a [NumberInput](../number-input/number-input.md) and a [DateInput](../date-input/date-input.md).
 
 - A native `<textarea>`. The browser supplies the role (`textbox`, multi-line), the keyboard, selection, spellcheck, paste, undo and autofill. Enter is a line break, and Tab leaves the box.
 - Inside a Field it takes its `id`, `aria-describedby`, `aria-invalid`, `aria-required` and `disabled` from it. Outside a Field it needs `aria-label` or `aria-labelledby`: a dev warning says so.
 - `rows` is 5 unless you set it. The box grows with its text where the browser supports `field-sizing: content`, and `rows` is its minimum. Nothing is written in JavaScript.
 - **Controlled:** pass `value` and `onValueChange(value, { reason: 'input', event })`. **Uncontrolled:** pass `defaultValue` and `name`, and the browser keeps the value until a form submit reads it. `onChange` and every other native prop, `name` and `ref` pass through.
-- **A count of the characters left:** `characterCount` with `maxLength` shows "Du har 120 tecken kvar." right under the box, announces it politely when it matters, and never cuts a pasted text.
+- **A count of the characters left:** `characterCount` with `maxLength` shows "You have 120 characters remaining." right under the box, announces it politely when it matters, and never cuts a pasted text.
 - Headless: no CSS. It renders `kv-textarea`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported it is styled like a TextInput, full width, with vertical resize only.
 
 ## API
@@ -61,9 +61,9 @@ import { Field, Textarea } from '@kvirn-ui/react'
 const [situation, setSituation] = useState('')
 
 <Field.Root required>
-  <Field.Label>Beskriv din situation</Field.Label>
+  <Field.Label>Describe your situation</Field.Label>
   <Field.Prose>
-    <p>Berätta vad som har hänt och vad du behöver hjälp med.</p>
+    <p>Tell us what has happened and what you need help with.</p>
   </Field.Prose>
   <Textarea name="situation" value={situation} onValueChange={setSituation} />
 </Field.Root>
@@ -77,7 +77,7 @@ TanStack Form owns the value, the validity and the errors. Textarea and Field sh
 <form.Field name="situation">
   {(field) => (
     <Field.Root invalid={!field.state.meta.isValid} required>
-      <Field.Label>Beskriv din situation</Field.Label>
+      <Field.Label>Describe your situation</Field.Label>
       <Textarea
         name={field.name}
         value={field.state.value}
@@ -107,10 +107,10 @@ No `value`, no handlers: the Textarea is uncontrolled, and the form's `FormData`
   }}
 >
   <Field.Root required>
-    <Field.Label>Beskriv din situation</Field.Label>
+    <Field.Label>Describe your situation</Field.Label>
     <Textarea name="situation" />
   </Field.Root>
-  <Button type="submit">Skicka</Button>
+  <Button type="submit">Send</Button>
 </form>
 ```
 
@@ -120,12 +120,12 @@ The default order is label, description, box, count, help text, then the error (
 
 ```tsx
 <Field.Root invalid={invalid} required>
-  <Field.Label>Beskriv din situation</Field.Label>
+  <Field.Label>Describe your situation</Field.Label>
   <Field.Prose>
-    <p>Berätta vad som har hänt och vad du behöver hjälp med.</p>
+    <p>Tell us what has happened and what you need help with.</p>
   </Field.Prose>
   <Textarea name="situation" maxLength={1000} characterCount />
-  <Field.HelpText>Du kan svara på svenska, finska eller engelska.</Field.HelpText>
+  <Field.HelpText>You can answer in Swedish, Finnish or English.</Field.HelpText>
   <Field.ErrorMessage>{error}</Field.ErrorMessage>
 </Field.Root>
 ```
@@ -139,8 +139,8 @@ Use a count when the limit is real (a form field with a size in the register, an
 ```
 
 - **`maxLength` is the count's limit and is not written to the element.** A pasted text of any length is kept whole, and the count says how many characters are over, so the user can shorten it. The native attribute would cut it silently.
-- **Over the limit is a warning, not an error.** The count gets `data-over`, weight 600 and the `warning` icon, and the box gets `data-over`. Nothing is `aria-invalid`: your form decides on submit, and writes an error that names the fix ("Beskrivningen kan vara högst 1 000 tecken. Ta bort 12 tecken."). `onValueChange` gets `details.length`, `details.limit` and `details.isOverLimit` to help.
-- **It counts what the user sees:** grapheme clusters (`Intl.Segmenter`), so `å` typed as `a` plus a combining ring, and an emoji, count as one, and a line break counts as one. When your server counts differently (UTF-16 `value.length`, bytes, or `\r\n` as two), pass your rule as `countCharacters={(value) => number}` and **count the same way on both sides**, or a text the user was told fits is refused on submit.
+- **Over the limit is a warning, not an error.** The count gets `data-over`, weight 600 and the `warning` icon, and the box gets `data-over`. Nothing is `aria-invalid`: your form decides on submit, and writes an error that names the fix ("The description can be at most 1,000 characters. Remove 12 characters."). `onValueChange` gets `details.length`, `details.limit` and `details.isOverLimit` to help.
+- **It counts what the user sees:** grapheme clusters (`Intl.Segmenter`), so a letter typed as a base letter plus a combining accent, and an emoji, count as one, and a line break counts as one. When your server counts differently (UTF-16 `value.length`, bytes, or `\r\n` as two), pass your rule as `countCharacters={(value) => number}` and **count the same way on both sides**, or a text the user was told fits is refused on submit.
 - **Said politely, when it matters.** The count is read with the box when it gets focus (it is in `aria-describedby`). While typing it is announced through the Announcer, only from 80% of the limit and only when typing pauses (500 ms), and at once when the text crosses the limit, so a screen reader user is never interrupted on every key. Only what the user types is announced: a text set from code (a restored draft) changes the count and says nothing. It needs the `KvirnProvider`: without one the count still shows and nothing is announced.
 - **`characterCount` without `maxLength`** warns once in development and renders nothing.
 - **An uncontrolled box** keeps its value in the element. With `characterCount` it reads that value on mount and on `pageshow` (the browser restores a form without an input event), and after a form reset. For any other change from code, pass `value`.
@@ -151,7 +151,7 @@ Use a count when the limit is real (a form field with a size in the register, an
 const { textareaProps, isFocused } = useTextarea({ onValueChange: setValue })
 
 <Field.Root>
-  <Field.Label>Beskriv din situation</Field.Label>
+  <Field.Label>Describe your situation</Field.Label>
   <textarea {...textareaProps} name="situation" value={value} />
   <CharacterCount value={value} limit={1000} announceChanges={isFocused} />
 </Field.Root>

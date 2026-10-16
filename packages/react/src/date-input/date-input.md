@@ -9,7 +9,7 @@
 A DateInput asks for a date in three text boxes: day, month and year, in the order the user's region writes dates in. Use it for a date people know by heart, such as a date of birth. For a date read off a document, use one `TextInput` with `masks.date()` (see "One field instead of three"). For a date picked from a calendar near today, add a [DatePicker](../date-picker/date-picker.md) button after either form.
 
 - Four parts: `DateInput.Root` (a `<div>`, the row of boxes) and `DateInput.Day`, `DateInput.Month` and `DateInput.Year`. Each box is a Field with a visible label and a native text `TextInput`. Each is also exported on its own (`DateInputRoot`, `DateInputDay`, `DateInputMonth`, `DateInputYear`), which is the form to import in a React Server Component, and the hook is `useDateInput`.
-- It goes inside a `Fieldset.Root` (use `group`) whose `Fieldset.Legend` asks the question, then the boxes, a `Fieldset.HelpText` under them with an example, and a `Fieldset.ErrorMessage`. The legend names the group, and the hint and the error describe it. Without a group the Root warns, and it warns when the Fieldset is neither `group` nor `required`: an optional date shows "(valfritt)" only on a `group` legend.
+- It goes inside a `Fieldset.Root` (use `group`) whose `Fieldset.Legend` asks the question, then the boxes, a `Fieldset.HelpText` under them with an example, and a `Fieldset.ErrorMessage`. The legend names the group, and the hint and the error describe it. Without a group the Root warns, and it warns when the Fieldset is neither `group` nor `required`: an optional date shows "(optional)" only on a `group` legend.
 - **The order follows the region.** `sv-SE` is year, month, day. `sv-FI`, `fi`, `nb`, `nn` and `en-GB` are day, month, year. A result that starts with the month (`en`, `en-US`) becomes day first, because month first reads as day first for the EU readers this library serves. The order comes from `Intl`, so we keep no data of our own.
 - **Three Tab stops, in that order, and typing a full box moves on.** When the user's typing fills a box (two digits for day and month, four for year), focus moves to the next box with its text selected, so a date is typed without Tab. It is on by default, with a visible hint under the boxes that is part of the group's description, and `autoAdvance={false}` turns both off. The arrow keys never step a value: numbers are text. See "Auto-advance" below.
 - **Every value is a string, as typed.** `007`, `13` and letters stay as they are. You validate the date and write the error.
@@ -38,7 +38,7 @@ Props the controls can't show:
 What the parts do on their own:
 
 - Without children, the Root renders Day, Month and Year in the locale's order. With children, the order is yours.
-- Every box is a Field, so it gets `id`, a `<label for>` and `data-*` state from its own Field. The Root puts the boxes in a group Field, so a label never ends with "(valfritt)".
+- Every box is a Field, so it gets `id`, a `<label for>` and `data-*` state from its own Field. The Root puts the boxes in a group Field, so a label never ends with "(optional)".
 - `required` and `disabled` default to the Fieldset's. `required` is `aria-required="true"` on the three boxes, and `disabled` is native `disabled`.
 - `name="birth"` gives the boxes `birth-day`, `birth-month` and `birth-year`. A `name` on one box wins.
 - `autoComplete="bday"` gives `bday-day`, `bday-month` and `bday-year`.
@@ -57,12 +57,12 @@ What the parts do on their own:
 | `kv-date-input`                        | Root            | A row that wraps, 16px between the boxes (12px with `kv-compact` from 64rem) |
 | `kv-date-input-day`, `-month`, `-year` | the box's field | The box's width: two characters for the day and the month, four for the year |
 
-| Message key                 | sv                                                   | en                                                | Used for                                                                                |
-| --------------------------- | ---------------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `dateInput.day`             | `Dag`                                                | `Day`                                             | The day box's label                                                                     |
-| `dateInput.month`           | `Månad`                                              | `Month`                                           | The month box's label                                                                   |
-| `dateInput.year`            | `År`                                                 | `Year`                                            | The year box's label                                                                    |
-| `dateInput.autoAdvanceHint` | `Fokus flyttas till nästa ruta när en ruta är full.` | `Focus moves to the next box when a box is full.` | The visible hint under the boxes, in the group's description, while `autoAdvance` is on |
+| Message key                 | sv                                                   | en                                                | Used for                                                                                                                           |
+| --------------------------- | ---------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `dateInput.day`             | `Dag`                                                | `Day`                                             | The day box's label <!-- kv-lang-ok: the sv catalog string -->                                                                     |
+| `dateInput.month`           | `Månad`                                              | `Month`                                           | The month box's label <!-- kv-lang-ok: the sv catalog string -->                                                                   |
+| `dateInput.year`            | `År`                                                 | `Year`                                            | The year box's label <!-- kv-lang-ok: the sv catalog string -->                                                                    |
+| `dateInput.autoAdvanceHint` | `Fokus flyttas till nästa ruta när en ruta är full.` | `Focus moves to the next box when a box is full.` | The visible hint under the boxes, in the group's description, while `autoAdvance` is on <!-- kv-lang-ok: the sv catalog string --> |
 
 Override them with `messages` on the Root, per provider, or in your catalog.
 
@@ -72,9 +72,9 @@ Override them with `messages` on the Root, per provider, or in your catalog.
 import { DateInput, Fieldset } from '@kvirn-ui/react'
 
 ;<Fieldset.Root group required invalid={error !== undefined}>
-  <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+  <Fieldset.Legend>Date of birth</Fieldset.Legend>
   <DateInput.Root name="birth" autoComplete="bday" invalidParts={error?.parts} />
-  <Fieldset.HelpText>Till exempel 1990 3 27</Fieldset.HelpText>
+  <Fieldset.HelpText>For example 1990 3 27</Fieldset.HelpText>
   <Fieldset.ErrorMessage>{error?.message}</Fieldset.ErrorMessage>
 </Fieldset.Root>
 ```
@@ -83,15 +83,14 @@ The question is the legend. The help text is under the boxes, and the error is t
 
 ### The help text is yours, in the order of the boxes
 
-KvirnUI supplies the names of the boxes ("Dag", "Månad", "År"), not the example. The help text is yours, and its example follows the order the boxes are in (3.3.2). The default order is the region's, so write one example per order:
+KvirnUI supplies the names of the boxes ("Day", "Month", "Year"), not the example. The help text is yours, and its example follows the order the boxes are in (3.3.2). The default order is the region's, so write one example per order:
 
-| Locale        | Order            | Help text example      |
-| ------------- | ---------------- | ---------------------- |
-| `sv-SE`, `sv` | year, month, day | Till exempel 1990 3 27 |
-| `sv-FI`       | day, month, year | Till exempel 27 3 1990 |
-| `fi`          | day, month, year | Esimerkiksi 27 3 1990  |
-| `nb`, `nn`    | day, month, year | For eksempel 27 3 1990 |
-| `en`, `en-GB` | day, month, year | For example, 27 3 1990 |
+| Locale                                   | Order            | Numbers in the example |
+| ---------------------------------------- | ---------------- | ---------------------- |
+| `sv-SE`, `sv`                            | year, month, day | `1990 3 27`            |
+| `sv-FI`, `fi`, `nb`, `nn`, `en`, `en-GB` | day, month, year | `27 3 1990`            |
+
+Write the words around the numbers in the service's own language, for example "For example 27 3 1990" in English.
 
 Read the order with the hook, so the help text and the boxes can't disagree:
 
@@ -101,7 +100,7 @@ const { order } = useDateInput()
 ;<>
   <DateInput.Root name="birth" autoComplete="bday" />
   <Fieldset.HelpText>
-    {order[0] === 'year' ? 'Till exempel 1990 3 27' : 'Till exempel 27 3 1990'}
+    {order[0] === 'year' ? 'For example 1990 3 27' : 'For example 27 3 1990'}
   </Fieldset.HelpText>
 </>
 ```
@@ -126,7 +125,7 @@ Three boxes suit a date people know by heart. Ask in one field when people read 
 import { Field, TextInput, masks, checks } from '@kvirn-ui/react'
 
 ;<Field.Root required>
-  <Field.Label>Startdatum</Field.Label>
+  <Field.Label>Start date</Field.Label>
   <TextInput
     name="start"
     mask={masks.date()}
@@ -136,7 +135,7 @@ import { Field, TextInput, masks, checks } from '@kvirn-ui/react'
       checks.date(details.unmaskedValue, { min: '2026-01-01' }) // { isValid, reason }
     }}
   />
-  <Field.HelpText>Till exempel 2026-10-27</Field.HelpText>
+  <Field.HelpText>For example 2026-10-27</Field.HelpText>
 </Field.Root>
 ```
 
@@ -160,7 +159,7 @@ A year of fewer than four digits (`0999`) always needs Tab. People who dictate o
 
 ### Errors
 
-One message for the whole date in `Fieldset.ErrorMessage`, under the boxes, and `invalid` on the wrong boxes only. "Födelsedatumet måste innehålla ett år" marks the Year box. "Födelsedatumet måste vara ett riktigt datum" marks all three. Say what is wrong and how to fix it, in the user's words ("Ange ditt födelsedatum", not "Ogiltigt värde"). On submit, move focus to the first invalid box, or to the first box when the whole date is wrong.
+One message for the whole date in `Fieldset.ErrorMessage`, under the boxes, and `invalid` on the wrong boxes only. "The date of birth must include a year" marks the Year box. "The date of birth must be a real date" marks all three. Say what is wrong and how to fix it, in the user's words ("Enter your date of birth", not "Invalid value"). On submit, move focus to the first invalid box, or to the first box when the whole date is wrong.
 
 The Fieldset's `invalid` is the group's: it shows the message and marks the legend and help text, but none of the boxes. A box that is `invalid` is not linked to the message of its own (the date has one message, in the group's description).
 
@@ -178,7 +177,7 @@ Nothing is padded, cut or checked: `3` stays `3`, and `31` in the month box stay
 
 ### Your part
 
-- A `Fieldset.Legend` that asks the question, first in the Fieldset. Use `group`, so an optional date gets "(valfritt)" on its legend.
+- A `Fieldset.Legend` that asks the question, first in the Fieldset. Use `group`, so an optional date gets "(optional)" on its legend.
 - A date of birth gets `autoComplete="bday"`. Any other date gets none (1.3.5).
 - Validate the date yourself, and write the messages in the user's words.
 - Don't add your own focus move between the boxes, and don't change the value with the arrow keys. DateInput advances by itself, and a handler of yours would double it or break paste, autofill and dictation (3.2.2).
@@ -195,7 +194,7 @@ function Birth() {
   const dateInput = useDateInput({ name: 'birth', autoComplete: 'bday' })
   return (
     <Fieldset.Root group required>
-      <Fieldset.Legend>Födelsedatum</Fieldset.Legend>
+      <Fieldset.Legend>Date of birth</Fieldset.Legend>
       <div {...dateInput.rootProps}>
         {dateInput.order.map((part) => (
           <Field.Root key={part} {...dateInput.getBoxProps(part)}>

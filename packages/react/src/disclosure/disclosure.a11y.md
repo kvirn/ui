@@ -65,7 +65,7 @@ Disclosure has no strings of its own and announces nothing: the change of `aria-
 
 ## Consumer responsibilities
 
-- **Name the trigger with visible text that says what the panel holds** ("Öppettider", Opening hours), the same open and closed (4.1.2 Name, Role, Value; 2.5.3 Label in Name). Never "Visa mer" (Show more) for one state and "Visa mindre" (Show less) for the other: `aria-expanded` carries the state.
+- **Name the trigger with visible text that says what the panel holds** ("Opening hours"), the same open and closed (4.1.2 Name, Role, Value; 2.5.3 Label in Name). Never "Show more" for one state and "Show less" for the other: `aria-expanded` carries the state.
 - **Render the Panel right after the Trigger,** in the same parent, so the Tab order matches the visual order (2.4.3 Focus Order).
 - **Keep what the page needs to work out of a closed panel,** and do not hide an error message or the only way to complete a task in one (3.3.1 Error Identification).
 - **A panel shown from a breakpoint, expanded without JavaScript, is not a Disclosure feature.** The trigger's `aria-expanded="false"` would lie while the panel is visible. A navigation menu that is always shown on a wide screen and a button on a narrow one is not built yet: no menu component does it (the Navigation component covers nested lists and a horizontal bar). Use your own CSS: show the panel with an author rule on `.kv-disclosure-panel[hidden]` (`display: block`, and `content-visibility: visible` for `until-found`) and hide the trigger from that width with `display: none`, which also removes it from the accessibility tree. Nothing in the library supports or tests it.

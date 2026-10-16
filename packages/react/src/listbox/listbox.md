@@ -20,7 +20,7 @@ interface Municipality {
 }
 
 ;<Field.Root required>
-  <Field.Label>Kommun</Field.Label>
+  <Field.Label>Municipality</Field.Label>
   <Listbox.Root
     items={municipalities}
     itemToString={(municipality) => municipality.name}
@@ -30,7 +30,7 @@ interface Municipality {
     name="municipality"
   >
     <Listbox.Trigger>
-      <Listbox.Value placeholder="Välj kommun" />
+      <Listbox.Value placeholder="Choose a municipality" />
     </Listbox.Trigger>
     <Listbox.Popup>
       <Listbox.List>
@@ -82,7 +82,7 @@ Every part renders exactly one element and takes your own `className`, `ref` and
 
 ### Keys
 
-Arrows move the highlight and don't wrap, Home and End go to the first and last option, Page Up and Page Down move ten, Enter, Space, Tab or a click choose, Escape closes and keeps the value, Alt+ArrowDown opens without highlighting, and a letter jumps to the next option that starts with it, in the provider's locale (å, ä and ö are not a and o in Swedish). The full table is the Keyboard section of [listbox.a11y.md](listbox.a11y.md), shown on the Docs page.
+Arrows move the highlight and don't wrap, Home and End go to the first and last option, Page Up and Page Down move ten, Enter, Space, Tab or a click choose, Escape closes and keeps the value, Alt+ArrowDown opens without highlighting, and a letter jumps to the next option that starts with it, in the provider's locale (in Swedish, å, ä and ö are not a and o). The full table is the Keyboard section of [listbox.a11y.md](listbox.a11y.md), shown on the Docs page. <!-- kv-lang-ok: names the Swedish letters where it describes Swedish typeahead -->
 
 ### Native on touch devices
 
@@ -149,13 +149,13 @@ There is no separate native part. `<Listbox.Root native="always">` (and `native=
 
 ```tsx
 <Field.Root required>
-  <Field.Label>Kommun</Field.Label>
+  <Field.Label>Municipality</Field.Label>
   <Listbox.Root
     native="always"
     items={municipalities}
     itemToString={(municipality) => municipality.name}
     itemToKey={(municipality) => municipality.code}
-    placeholder="Välj kommun"
+    placeholder="Choose a municipality"
     name="municipality"
     autoComplete="address-level2"
   />

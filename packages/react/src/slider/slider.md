@@ -52,9 +52,9 @@ Slider is a single part, `<Slider>`. `type` is fixed. There are no sub-parts: th
 import { Field, Slider } from '@kvirn-ui/react'
 
 ;<Field.Root>
-  <Field.Label marker="none">Avstånd från din adress i kilometer</Field.Label>
+  <Field.Label marker="none">Distance from your address in kilometres</Field.Label>
   <Slider name="distance" max={50} step={5} defaultValue={15} valueText={(km) => `${km} km`} />
-  <Field.HelpText>Från 0 till 50 km.</Field.HelpText>
+  <Field.HelpText>From 0 to 50 km.</Field.HelpText>
 </Field.Root>
 ```
 
@@ -75,9 +75,9 @@ function Volume({ volume, setVolume }: { volume: number; setVolume: (value: numb
   const control = useSlider({
     value: volume,
     onValueChange: setVolume,
-    valueText: (percent) => `${percent} procent`,
+    valueText: (percent) => `${percent} percent`,
   })
-  return <input {...control.inputProps} name="volume" aria-label="Volym" />
+  return <input {...control.inputProps} name="volume" aria-label="Volume" />
 }
 ```
 

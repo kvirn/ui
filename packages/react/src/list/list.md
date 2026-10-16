@@ -16,7 +16,7 @@ import { Link, List } from '@kvirn-ui/react'
 ;<nav aria-label="Related links">
   <List.Root>
     <List.Item>
-      <Link.Root href="/bygglov">Building permits</Link.Root>
+      <Link.Root href="/building-permits">Building permits</Link.Root>
     </List.Item>
     <List.Item>
       <Link.Root href="/avfall">Waste and recycling</Link.Root>

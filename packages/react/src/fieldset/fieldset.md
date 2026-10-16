@@ -7,12 +7,12 @@
 A native `<fieldset>` with a `<legend>`: it groups related questions (an address) or the controls of one question (the options of a radio group, the three boxes of a date), under one accessible name. Its description, help text and error describe the group.
 
 - Five parts: `<Fieldset.Root>` is the root (`<fieldset>`), `<Fieldset.Legend>` is the `<legend>`, `<Fieldset.Prose>` is the description, `<Fieldset.HelpText>` is the help text (`<p>`) and `<Fieldset.ErrorMessage>` behaves like [Field's](../field/field.md). Each part is also exported on its own (`FieldsetRoot`, `FieldsetLegend`, `FieldsetProse`, `FieldsetHelpText`, `FieldsetErrorMessage`), which is the form to import in a React Server Component, because a server component can't dot into a client module. The description is a [Prose](../prose/prose.md): inside the Fieldset (and not inside a Field in it) it is the group's description, so write `<Fieldset.Prose>`, not a bare `<Prose>`. The help text is [Field's](../field/field.md) `HelpText` under the group's name. The older flat name `Legend`, and the callable `Fieldset`, still work but are deprecated.
-- **A description and a help text are different things,** as in a Field. The description (`Fieldset.Prose`) is what the user must read before answering, above the controls, in 16px. The help text (`Fieldset.HelpText`) is a short instruction that helps while answering, such as the format of a date ("Till exempel 2026-03-27"), under the controls, in 14px.
+- **A description and a help text are different things,** as in a Field. The description (`Fieldset.Prose`) is what the user must read before answering, above the controls, in 16px. The help text (`Fieldset.HelpText`) is a short instruction that helps while answering, such as the format of a date ("For example 2026-03-27"), under the controls, in 14px.
 - **A description and a help text are text.** The accessible description is the text content, so a heading, list or link inside it loses its structure for a screen-reader user. Keep a help text to one or two short sentences or an example, with no links. A Prose that isn't a description goes outside the Fieldset. A `Fieldset.HelpText` outside a Fieldset warns in development and renders a plain paragraph with no id.
 - The legend is the group's name, and the browser maps the fieldset to the `group` role. `aria-describedby` on the fieldset lists every description and help text in DOM order and then the error, only for parts that are rendered. A fieldset can have several of each, each with its own id, and one error: two `Fieldset.ErrorMessage`s give a dev warning.
 - `disabled` is native `fieldset[disabled]`: every control inside is disabled and skipped by Tab.
 - `invalid` marks the fieldset's own parts (`data-invalid`) and renders its Fieldset.ErrorMessage. It does **not** pass down to the Fields inside, so one message for the group doesn't mark every control: set `invalid` on each Field that is wrong. There is no `aria-invalid` on a fieldset, because ARIA doesn't support it on `group`: the error reaches users through the description.
-- `group` is for one question answered with several controls. The legend then ends with "(valfritt)" when the group isn't `required`, and the Fields inside drop their own marker: an option or a date box is never "(optional)". A plain Fieldset only groups questions, so its legend has no marker, and its Fields mark themselves.
+- `group` is for one question answered with several controls. The legend then ends with "(optional)" (the text for `en`; each language has its own) when the group isn't `required`, and the Fields inside drop their own marker: an option or a date box is never "(optional)". A plain Fieldset only groups questions, so its legend has no marker, and its Fields mark themselves.
 - Headless: no CSS. It renders `kv-fieldset` and `kv-fieldset-legend`. With `@kvirn-ui/theme/theme.css` imported it is styled: no border, and a gap between the parts.
 
 ## API
@@ -43,16 +43,16 @@ A native `<fieldset>` with a `<legend>`: it groups related questions (an address
 import { Field, Fieldset, TextInput } from '@kvirn-ui/react'
 
 ;<Fieldset.Root invalid={errors.address !== undefined}>
-  <Fieldset.Legend>Var bor du?</Fieldset.Legend>
+  <Fieldset.Legend>Where do you live?</Fieldset.Legend>
   <Fieldset.Prose>
-    <p>Adressen där du är folkbokförd.</p>
+    <p>The address where you are registered.</p>
   </Fieldset.Prose>
   <Field.Root required>
-    <Field.Label>Gatuadress</Field.Label>
+    <Field.Label>Street address</Field.Label>
     <TextInput name="street" autoComplete="street-address" />
   </Field.Root>
   <Field.Root required>
-    <Field.Label>Postnummer</Field.Label>
+    <Field.Label>Postcode</Field.Label>
     <TextInput
       name="postcode"
       inputMode="numeric"
@@ -61,7 +61,7 @@ import { Field, Fieldset, TextInput } from '@kvirn-ui/react'
       className="kv-input--width-6"
     />
   </Field.Root>
-  <Fieldset.HelpText>Gatan och numret, till exempel Storgatan 12.</Fieldset.HelpText>
+  <Fieldset.HelpText>The street and number, for example Main Street 12.</Fieldset.HelpText>
   <Fieldset.ErrorMessage>{errors.address}</Fieldset.ErrorMessage>
 </Fieldset.Root>
 ```
@@ -71,9 +71,9 @@ The default order is the legend, the description, the controls, the help text, t
 Your part:
 
 - **Put the Fieldset.Legend first** inside the Fieldset. It asks the question or names the group.
-- **A legend that is the page's heading:** `<Fieldset.Legend className="kv-fieldset-legend--heading"><h1>Var bor du?</h1></Fieldset.Legend>`. One question per page, as in a service flow.
+- **A legend that is the page's heading:** `<Fieldset.Legend className="kv-fieldset-legend--heading"><h1>Where do you live?</h1></Fieldset.Legend>`. One question per page, as in a service flow.
 - **Don't wrap every Field in a fieldset.** A fieldset announces itself, and nested ones get noisy. Use one for options and for one question asked in several controls.
-- **An optional section.** A plain Fieldset's legend has no marker, but `<Fieldset.Legend marker="optional">` adds the optional text, for a section the user may skip whole ("Kontaktperson (valfritt)"). The Fields inside keep their own state, so a section that is optional but complete once started has `required` Fields. `messages` on the Fieldset rewords the text for that one section.
+- **An optional section.** A plain Fieldset's legend has no marker, but `<Fieldset.Legend marker="optional">` adds the optional text, for a section the user may skip whole ("Contact person (optional)"). The Fields inside keep their own state, so a section that is optional but complete once started has `required` Fields. `messages` on the Fieldset rewords the text for that one section.
 - **A required group.** `required` on a `group` removes the optional text from the legend and sets `data-required`. It is not announced as required (no `aria-required` on `group`), so say what is required in the legend or the description.
 - **Your own description.** Pass `aria-describedby` with the id of a paragraph elsewhere on the page and it is appended after the group's own descriptions.
 - **Set `invalid` and render a Fieldset.ErrorMessage together,** with text that says what's wrong and how to fix it. Until the error summary block ships, move focus to the first invalid control on submit.
@@ -90,11 +90,11 @@ function Group({ invalid }: { invalid: boolean }) {
   const fieldset = useFieldset({ invalid, hasDescription: true })
   return (
     <fieldset {...fieldset.fieldsetProps}>
-      <legend {...fieldset.legendProps}>Var bor du?</legend>
-      <p {...fieldset.descriptionProps}>Adressen där du är folkbokförd.</p>
+      <legend {...fieldset.legendProps}>Where do you live?</legend>
+      <p {...fieldset.descriptionProps}>The address where you are registered.</p>
       {/* the controls */}
       {invalid ? (
-        <p {...fieldset.errorMessageProps}>{fieldset.errorPrefix} Ange din adress</p>
+        <p {...fieldset.errorMessageProps}>{fieldset.errorPrefix} Enter your address</p>
       ) : null}
     </fieldset>
   )
@@ -107,8 +107,8 @@ For several descriptions, list their names in `descriptions` and spread `getDesc
 
 ```tsx
 const fieldset = useFieldset({ invalid, descriptions: ['where', 'format'] })
-<p {...fieldset.getDescriptionProps('where')}>Adressen där du är folkbokförd.</p>
+<p {...fieldset.getDescriptionProps('where')}>The address where you are registered.</p>
 <p {...fieldset.getDescriptionProps('format')} className="kv-field-help-text">
-  Gatan och numret, till exempel Storgatan 12.
+  The street and number, for example Main Street 12.
 </p>
 ```

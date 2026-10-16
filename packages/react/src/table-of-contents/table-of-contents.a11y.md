@@ -78,13 +78,13 @@ Nothing is announced and nothing is live: there is no live region, because the c
 
 ### Message keys
 
-`tableOfContents.label`: the landmark's name when there is no `aria-labelledby`, for example `On this page` (English), `På den här sidan` (Swedish), `Tällä sivulla` (Finnish), `På denne siden` (Norwegian Bokmål) and `På denne sida` (Norwegian Nynorsk). Override it per provider and per instance (`messages={{ label }}`). The text of a visible title is the consumer's own.
+`tableOfContents.label`: the landmark's name when there is no `aria-labelledby`, for example `On this page` (English), `På den här sidan` (Swedish), `Tällä sivulla` (Finnish), `På denne siden` (Norwegian Bokmål) and `På denne sida` (Norwegian Nynorsk). Override it per provider and per instance (`messages={{ label }}`). The text of a visible title is the consumer's own. <!-- kv-lang-ok: the catalog strings of each locale -->
 
 ## Consumer responsibilities
 
-- **Name it, and prefer a visible title** (2.4.1 Bypass Blocks, A; 2.4.6 Headings and Labels, AA). Render a real heading yourself, normally an `h2` with the words "På den här sidan" (On this page), the same words as the message (2.5.3 Label in Name, A), never muted, and point `aria-labelledby` at its id. TableOfContents renders no title. Two navigations on a page need two names.
+- **Name it, and prefer a visible title** (2.4.1 Bypass Blocks, A; 2.4.6 Headings and Labels, AA). Render a real heading yourself, normally an `h2` with the words "On this page", the same words as the message (2.5.3 Label in Name, A), never muted, and point `aria-labelledby` at its id. TableOfContents renders no title. Two navigations on a page need two names.
 - **Unique heading ids, and in the list too.** The id is the link's target (`#id`). A missing one warns in development and the link goes nowhere.
-- **The link text is the heading's text** (2.4.4 Link Purpose (In Context), A; 2.4.6 Headings and Labels, AA), so the list reads as the page's outline. Write headings that say what the section is about ("Avgifter för bygglov" (Fees for building permits), not "Mer information" (More information)).
+- **The link text is the heading's text** (2.4.4 Link Purpose (In Context), A; 2.4.6 Headings and Labels, AA), so the list reads as the page's outline. Write headings that say what the section is about ("Fees for building permits", not "More information").
 - **Items in document order, and memoized.** A constant or `useMemo`. The order is the order on the page, not alphabetical.
 - **`offset` equals `scroll-padding-top` on `html`,** which equals any sticky header's height (plus any `scroll-margin-top` you also put on the headings). If they differ, a heading a link scrolls to lands below the line and the one above it stays current.
 - **No `<base href>`.** `#id` links would resolve against it and leave the page.

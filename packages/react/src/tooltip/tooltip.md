@@ -2,13 +2,13 @@
 
 > **Draft** (Plan 0037). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [tooltip.a11y.md](tooltip.a11y.md), and the design spec is [docs/design/tooltip.md](../../../../docs/design/tooltip.md).
 
-A short label for a control, shown when the pointer rests on it or it has keyboard focus: the name of an icon-only button, and its shortcut ("Fetstil Ctrl+B"). **A tooltip never holds anything a user needs.** The control has a name of its own, and the tooltip only shows it or adds a shortcut. For content a user can act on, such as a link or a short form, use a [Popover](../popover/popover.md). For help a user must read, use visible text, a [Field](../field/field.md) hint or a Details disclosure.
+A short label for a control, shown when the pointer rests on it or it has keyboard focus: the name of an icon-only button, and its shortcut ("Bold Ctrl+B"). **A tooltip never holds anything a user needs.** The control has a name of its own, and the tooltip only shows it or adds a shortcut. For content a user can act on, such as a link or a short form, use a [Popover](../popover/popover.md). For help a user must read, use visible text, a [Field](../field/field.md) hint or a Details disclosure.
 
 - **Parts:** `Tooltip.Root` (no element, it owns the state), `Tooltip.Trigger` (the control: a `<button>`, or your own through `as`), `Tooltip.Popup` (`<div popover="manual" role="tooltip">`), `Tooltip.Name` and `Tooltip.Shortcut` (`<span>`). Render the popup **right after the trigger**.
 - **Opens** when the pointer has rested on the trigger for half a second, and **at once on keyboard focus** (focus that shows a focus ring: a click doesn't open it). Once one tooltip has opened, the next opens at once, so moving along a toolbar isn't slow. **Not on touch**: a long press isn't discoverable, and the control's name carries it.
 - **Stays** while the pointer is on the trigger or on the tooltip, or the trigger has keyboard focus, and has no timeout. After the pointer leaves, a 100 ms grace lets it cross the gap onto the tooltip (WCAG 1.4.13: hoverable and persistent).
 - **Closes** on Escape, when the pointer or focus leaves, on a press on the trigger, and while the trigger's own popup is open. **Escape hides only the tooltip**: focus stays, and an open Popover underneath stays open (1.4.13: dismissable). An open Listbox or Combobox that has focus handles Escape first and closes itself, so the tooltip needs a second Escape (see the contract's Known issues). After Escape it stays hidden until the pointer or focus leaves and comes back.
-- **The name is heard once.** The popup is always in the DOM, hidden while closed. `Tooltip.Name` repeats the trigger's name and is `aria-hidden`. `Tooltip.Shortcut` is the trigger's description, so a screen reader says "Fetstil, växlingsknapp, inte nedtryckt, Ctrl+B". Plain text in the popup, with neither part, is the description as a whole. A tooltip with only a name adds nothing for assistive technology, so the whole popup is `aria-hidden` (its role stays) and the trigger gets no description.
+- **The name is heard once.** The popup is always in the DOM, hidden while closed. `Tooltip.Name` repeats the trigger's name and is `aria-hidden`. `Tooltip.Shortcut` is the trigger's description, so a screen reader says "Bold, toggle button, not pressed, Ctrl+B". Plain text in the popup, with neither part, is the description as a whole. A tooltip with only a name adds nothing for assistive technology, so the whole popup is `aria-hidden` (its role stays) and the trigger gets no description.
 - **Never the only name.** Give the trigger an `aria-label` from your translations (or visible text), and start the tooltip with the same text, so a voice-control user can say what they see (2.5.3). Don't use the `title` attribute next to it: it isn't shown on keyboard focus or touch, can't be hovered or dismissed, and is announced twice. A development warning fires for a trigger with no name of its own.
 - **Text and keys only.** No link, button or field in a tooltip: a development warning fires. A tooltip on a natively `disabled` button never shows (no pointer events, no focus): use `aria-disabled` (toolbar items always do).
 - No strings of its own: the text is yours. Headless: no CSS. With `@kvirn-ui/theme/theme.css` it is a level 3 popup with the `md` radius, 20rem at most, in the top layer, above its trigger and flipping below when there is no room.
@@ -17,13 +17,13 @@ A short label for a control, shown when the pointer rests on it or it has keyboa
 
 ### Parts
 
-| Part             | Renders                                                    | Props                                                                                                                                                                                                  |
-| ---------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Tooltip.Root     | no element                                                 | `open`, `defaultOpen`, `onOpenChange`, `placement`, `offset`, `padding`, `delay`, `closeDelay`, `group` (the controls above)                                                                           |
-| Tooltip.Trigger  | `<button type="button">`, or your `as`                     | `as` (for example `as={Toolbar.Toggle}` with `aria-label="Fetstil"`), and every `<button>` prop (or the target's). Your `aria-describedby` is joined with the tooltip's. It gets no class and no state |
-| Tooltip.Popup    | `<div popover="manual" role="tooltip">`, always in the DOM | every `<div>` prop; no `as`. State: `data-open`, `data-placement`                                                                                                                                      |
-| Tooltip.Name     | `<span aria-hidden="true">`                                | `as` (`span` or `strong`), and every `<span>` prop                                                                                                                                                     |
-| Tooltip.Shortcut | `<span>`                                                   | `as` (`span` or `small`), and every `<span>` prop. Put `Kbd` in it for keys                                                                                                                            |
+| Part             | Renders                                                    | Props                                                                                                                                                                                               |
+| ---------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tooltip.Root     | no element                                                 | `open`, `defaultOpen`, `onOpenChange`, `placement`, `offset`, `padding`, `delay`, `closeDelay`, `group` (the controls above)                                                                        |
+| Tooltip.Trigger  | `<button type="button">`, or your `as`                     | `as` (for example `as={Toolbar.Toggle}` with `aria-label="Bold"`), and every `<button>` prop (or the target's). Your `aria-describedby` is joined with the tooltip's. It gets no class and no state |
+| Tooltip.Popup    | `<div popover="manual" role="tooltip">`, always in the DOM | every `<div>` prop; no `as`. State: `data-open`, `data-placement`                                                                                                                                   |
+| Tooltip.Name     | `<span aria-hidden="true">`                                | `as` (`span` or `strong`), and every `<span>` prop                                                                                                                                                  |
+| Tooltip.Shortcut | `<span>`                                                   | `as` (`span` or `small`), and every `<span>` prop. Put `Kbd` in it for keys                                                                                                                         |
 
 Each part is also exported on its own (`TooltipRoot`, `TooltipTrigger`, `TooltipPopup`, `TooltipName`, `TooltipShortcut`), and the hook is `useTooltip`. Every part takes `ref`, `className` and handlers, which merge with its own. `Tooltip.Trigger`'s `as` is a component whose props are plain props of the trigger; `Name` and `Shortcut` take a tag `as`; the popup has none, because it is a `popover` element with a fixed role.
 
@@ -62,11 +62,11 @@ Keyed `tooltip-*`, English, for the developer only: a trigger with no accessible
 import { Icon, Kbd, Toolbar, Tooltip } from '@kvirn-ui/react'
 
 ;<Tooltip.Root>
-  <Tooltip.Trigger as={Toolbar.Toggle} aria-label="Fetstil" aria-keyshortcuts="Control+B">
+  <Tooltip.Trigger as={Toolbar.Toggle} aria-label="Bold" aria-keyshortcuts="Control+B">
     <Icon name="bold" />
   </Tooltip.Trigger>
   <Tooltip.Popup>
-    <Tooltip.Name>Fetstil</Tooltip.Name>
+    <Tooltip.Name>Bold</Tooltip.Name>
     <Tooltip.Shortcut>
       <Kbd>
         <Kbd>Ctrl</Kbd>+<Kbd>B</Kbd>
@@ -92,14 +92,14 @@ The trigger is complete without the tooltip: its name is its own, and `aria-keys
 
 ## The name and the description
 
-How a screen reader hears it follows from the parts you use:
+How a screen reader hears it follows from the parts you use. The exact words differ between screen readers:
 
-| In the popup                          | The trigger's `aria-describedby`  | A screen reader says                             |
-| ------------------------------------- | --------------------------------- | ------------------------------------------------ |
-| `Tooltip.Name` and `Tooltip.Shortcut` | the shortcut                      | "Fetstil, växlingsknapp, inte nedtryckt, Ctrl+B" |
-| `Tooltip.Name` only                   | none (the popup is `aria-hidden`) | "Sök, knapp"                                     |
-| `Tooltip.Shortcut` only               | the shortcut                      | "Fetstil, växlingsknapp, Ctrl+B"                 |
-| plain text, neither part              | the popup as a whole              | "Skriv ut, knapp, Öppnar en utskriftsvy"         |
+| In the popup                          | The trigger's `aria-describedby`  | A screen reader says, for example          |
+| ------------------------------------- | --------------------------------- | ------------------------------------------ |
+| `Tooltip.Name` and `Tooltip.Shortcut` | the shortcut                      | "Bold, toggle button, not pressed, Ctrl+B" |
+| `Tooltip.Name` only                   | none (the popup is `aria-hidden`) | "Search, button"                           |
+| `Tooltip.Shortcut` only               | the shortcut                      | "Bold, toggle button, not pressed, Ctrl+B" |
+| plain text, neither part              | the popup as a whole              | "Print, button, Opens the print view"      |
 
 The popup stays in the DOM while it is closed, so the reference always resolves, even before the tooltip has opened.
 
@@ -109,7 +109,7 @@ Wrap a `Toolbar.Button`, `Toolbar.Toggle` or `Toolbar.Item` with `as`: the toolt
 
 ## When the trigger opens its own popup
 
-A trigger that opens a Popover or a Listbox (`aria-expanded="true"`) closes its tooltip, and the tooltip stays closed while that popup is open. Wrap it the same way: `<Tooltip.Trigger as={Popover.Trigger} aria-label="Länk">`.
+A trigger that opens a Popover or a Listbox (`aria-expanded="true"`) closes its tooltip, and the tooltip stays closed while that popup is open. Wrap it the same way: `<Tooltip.Trigger as={Popover.Trigger} aria-label="Link">`.
 
 ## Hook
 
@@ -120,11 +120,11 @@ function BoldButton() {
   const tooltip = useTooltip({ description: 'shortcut' })
   return (
     <>
-      <button {...tooltip.triggerProps} aria-label="Fetstil">
+      <button {...tooltip.triggerProps} aria-label="Bold">
         B
       </button>
       <div {...tooltip.popupProps}>
-        <span {...tooltip.nameProps}>Fetstil</span>
+        <span {...tooltip.nameProps}>Bold</span>
         <span {...tooltip.shortcutProps}>Ctrl+B</span>
       </div>
     </>

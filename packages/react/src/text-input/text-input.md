@@ -55,7 +55,7 @@ import { Field, TextInput } from '@kvirn-ui/react'
 const [name, setName] = useState('')
 
 <Field.Root required>
-  <Field.Label>Fullständigt namn</Field.Label>
+  <Field.Label>Full name</Field.Label>
   <TextInput name="name" autoComplete="name" value={name} onValueChange={setName} />
 </Field.Root>
 ```
@@ -99,14 +99,14 @@ No `value`, no handlers: each TextInput is uncontrolled, and the form's `FormDat
   }}
 >
   <Field.Root required>
-    <Field.Label>Fullständigt namn</Field.Label>
+    <Field.Label>Full name</Field.Label>
     <TextInput name="name" autoComplete="name" />
   </Field.Root>
   <Field.Root required>
     <Field.Label>E-postadress</Field.Label>
     <TextInput name="email" type="email" autoComplete="email" />
   </Field.Root>
-  <Button type="submit">Skicka</Button>
+  <Button type="submit">Send</Button>
 </form>
 ```
 
@@ -118,12 +118,12 @@ The default order is label, description, input, help text, then the error ([Fiel
 
 ```tsx
 <Field.Root invalid={invalid}>
-  <Field.Label>Fordonets registreringsnummer</Field.Label>
+  <Field.Label>Vehicle registration number</Field.Label>
   <Field.Prose>
-    <p>Det står på registreringsbeviset.</p>
+    <p>It says so on the registration certificate.</p>
   </Field.Prose>
   <TextInput name="registration" className="kv-input--width-10" />
-  <Field.HelpText>Till exempel ABC 123</Field.HelpText>
+  <Field.HelpText>For example ABC 123</Field.HelpText>
   <Field.ErrorMessage>{error}</Field.ErrorMessage>
 </Field.Root>
 ```
@@ -159,7 +159,7 @@ A mask shapes what the user types: it drops characters that can't be valid, puts
 import { Field, TextInput } from '@kvirn-ui/react'
 
 ;<Field.Root invalid={errors.personalIdentityNumber !== undefined} required>
-  <Field.Label>Personnummer</Field.Label>
+  <Field.Label>Personal identity number</Field.Label>
   <TextInput
     name="personalIdentityNumber"
     mask="personal-identity-number"
@@ -168,7 +168,7 @@ import { Field, TextInput } from '@kvirn-ui/react'
     }
   />
   {/* The help text says the format. The mask doesn't (3.3.2): a masked TextInput without one warns. */}
-  <Field.HelpText>Tio eller tolv siffror, till exempel 19900101-2385.</Field.HelpText>
+  <Field.HelpText>Ten or twelve digits, for example 19900101-2385.</Field.HelpText>
   <Field.ErrorMessage>{errors.personalIdentityNumber}</Field.ErrorMessage>
 </Field.Root>
 ```

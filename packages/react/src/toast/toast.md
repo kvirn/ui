@@ -17,7 +17,7 @@ A short status message after something worked, that does not move focus, is hear
 
 ```tsx
 import { KvirnProvider, useToast } from '@kvirn-ui/react'
-;<KvirnProvider locale="sv" toast={{ limit: 5, autoDismiss: false }}>
+;<KvirnProvider locale="en" toast={{ limit: 5, autoDismiss: false }}>
   <App />
 </KvirnProvider>
 
@@ -29,14 +29,14 @@ function SaveDraft() {
       onClick={() => {
         toast.show({
           variant: 'success',
-          title: 'Utkastet sparades',
-          body: <p>Du hittar det under Mina ärenden.</p>,
-          action: { label: 'Ångra', onPress: restoreDraft },
+          title: 'The draft was saved',
+          body: <p>You can find it under My cases.</p>,
+          action: { label: 'Undo', onPress: restoreDraft },
           id: 'draft-saved',
         })
       }}
     >
-      Spara
+      Save
     </button>
   )
 }
@@ -64,9 +64,9 @@ function SaveDraft() {
 | `id`          | Showing it again updates the toast and announces it once                                                                                                                                                                                                                                                                                                                                                                                         |
 | `focus`       | `true` moves focus to the toast and skips the announcement. **Only for a user-initiated action** whose trigger is gone (3.2.2)                                                                                                                                                                                                                                                                                                                   |
 
-| Message key (`messages.toast`) | Default (sv) | Used by                                                          |
+| Message key (`messages.toast`) | Default (en) | Used by                                                          |
 | ------------------------------ | ------------ | ---------------------------------------------------------------- |
-| `regionLabel`                  | Meddelanden  | The region's accessible name. It exists only while a toast shows |
+| `regionLabel`                  | Messages     | The region's accessible name. It exists only while a toast shows |
 
 The status word and Close's name reuse `alert.infoPrefix`, `alert.successPrefix` and `alert.close`.
 

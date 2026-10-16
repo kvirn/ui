@@ -17,12 +17,12 @@ A native `<button>` for actions. For navigation, use [Link](../link/link.md).
 ```tsx
 import { Button } from '@kvirn-ui/react'
 
-<Button onClick={save}>Spara</Button>
-<Button type="submit">Skicka ansökan</Button>
+<Button onClick={save}>Save</Button>
+<Button type="submit">Submit application</Button>
 
-<p id="skicka-hjalp">Fyll i alla obligatoriska fält innan du skickar.</p>
-<Button type="submit" disabled focusableWhenDisabled aria-describedby="skicka-hjalp">
-  Skicka ansökan
+<p id="submit-help">Fill in all required fields before you submit.</p>
+<Button type="submit" disabled focusableWhenDisabled aria-describedby="submit-help">
+  Submit application
 </Button>
 ```
 
@@ -41,14 +41,14 @@ import { useButton } from '@kvirn-ui/react'
 
 function SaveButton({ isSaving }: { isSaving: boolean }) {
   const button = useButton({ disabled: isSaving, focusableWhenDisabled: true, onClick: save })
-  return <button {...button.buttonProps}>Spara</button>
+  return <button {...button.buttonProps}>Save</button>
 }
 ```
 
 Pass your click handler as `useButton({ onClick })`. A handler merged on top of `buttonProps` isn't blocked while disabled. `buttonProps.className` is `kv-button`: add a variant class with `mergeProps`, which joins class names, instead of overriding it.
 
 ```tsx
-<button {...mergeProps(button.buttonProps, { className: 'kv-button--primary' })}>Skicka</button>
+<button {...mergeProps(button.buttonProps, { className: 'kv-button--primary' })}>Send</button>
 ```
 
 | Option                  | Type                                   | Default    |
@@ -63,4 +63,5 @@ Pass your click handler as `useButton({ onClick })`. A handler merged on top of 
 | ---------------- | ----------------- |
 | `buttonProps`    | `ButtonPartProps` |
 | `isDisabled`     | `boolean`         |
+| `isBusy`         | `boolean`         |
 | `isFocusVisible` | `boolean`         |

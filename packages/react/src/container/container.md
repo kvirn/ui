@@ -1,6 +1,6 @@
 # Container
 
-> **Draft** (Plan 0056). The accessibility contract is [container.a11y.md](container.a11y.md).
+> **Alpha candidate.** The accessibility reviewer and assistive-technology tests are still pending. The accessibility contract is [container.a11y.md](container.a11y.md).
 
 A block that centres and limits the width of the page's content. One `<div class="kv-container">`.
 
@@ -13,7 +13,7 @@ import { Container } from '@kvirn-ui/react'
 
 ;<Container as="main" id="main">
   <Container size="reading" className="kv-prose">
-    <h1>Sophämtning</h1>
+    <h1>Waste collection</h1>
   </Container>
 </Container>
 ```

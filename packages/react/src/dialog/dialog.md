@@ -1,6 +1,6 @@
 # Dialog
 
-> **Draft** (Plan 0067). This page moves to the docs site with the other components. The accessibility contract is [dialog.a11y.md](dialog.a11y.md), and the look is in `docs/design/dialog.md`.
+> **Draft.** This page moves to the docs site with the other components. The accessibility contract is [dialog.a11y.md](dialog.a11y.md), and the look is in `docs/design/dialog.md`.
 
 A Dialog is a window on top of the page that asks for the user's attention: a form, a short read, a decision. It is a native `<dialog>` shown with `showModal()`, so it is in the **top layer** (no portal, no `z-index`) and the page behind it is **inert** for the keyboard, the pointer and screen readers. Focus moves in when it opens and returns when it closes.
 
@@ -23,13 +23,13 @@ A Dialog is a window on top of the page that asks for the user's attention: a fo
 import { Dialog } from '@kvirn-ui/react'
 
 ;<Dialog.Root>
-  <Dialog.Trigger>Ändra telefonnummer</Dialog.Trigger>
+  <Dialog.Trigger>Change phone number</Dialog.Trigger>
   <Dialog.Popup>
-    <Dialog.Title>Ändra telefonnummer</Dialog.Title>
+    <Dialog.Title>Change phone number</Dialog.Title>
     <Dialog.Close />
-    <Dialog.Description>Vi skickar en kod med sms.</Dialog.Description>
-    <Dialog.Body>…fält…</Dialog.Body>
-    <Dialog.Actions>…knappar…</Dialog.Actions>
+    <Dialog.Description>We send a code by text message.</Dialog.Description>
+    <Dialog.Body>…field…</Dialog.Body>
+    <Dialog.Actions>…buttons…</Dialog.Actions>
   </Dialog.Popup>
 </Dialog.Root>
 ```
@@ -55,9 +55,9 @@ function Own() {
   useEffect(() => dialog.registerTitle(), [dialog.registerTitle])
   return (
     <>
-      <button {...dialog.triggerProps}>Ändra</button>
+      <button {...dialog.triggerProps}>Change</button>
       <dialog {...dialog.popupProps}>
-        {dialog.isOpen ? <h2 {...dialog.titleProps}>Ändra telefonnummer</h2> : null}
+        {dialog.isOpen ? <h2 {...dialog.titleProps}>Change phone number</h2> : null}
       </dialog>
     </>
   )

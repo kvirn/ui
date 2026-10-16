@@ -8,7 +8,7 @@ A FileUpload attaches files to a form. **One native button opens the system file
 
 - Parts: `FileUpload.Root`, `.Trigger`, `.Input`, `.DropZone`, `.DropHint`, `.Limits`, `.Rejections`, `.Summary`, `.List`, `.Item`, `.Preview`, `.Name`, `.Type`, `.Size`, `.Status`, `.Progress`, `.ItemError`, `.Actions`, `.CancelButton`, `.RetryButton` and `.RemoveButton`. Each is also exported on its own (`FileUploadRoot`, …), and the hook is `useFileUpload`. The state machine is `createFileUpload` in `@kvirn-ui/core`.
 - **Every limit is checked here,** because a drop and "All files" skip the browser's checks: type (MIME type and extension), largest and smallest size, how many files, empty files, duplicates, folders, and your own `validate(file)`.
-- **A refused file never enters the list.** It is named under the button with how to fix it ("stor.pdf är 2 MB. Välj en fil som är högst 1 MB."). The Field is not marked invalid by it: you decide whether it blocks the form, from `onFilesReject`.
+- **A refused file never enters the list.** It is named under the button with how to fix it ("large.pdf is 2 MB. Choose a file that is 1 MB or smaller. To make a photo or scan smaller, save or scan it again at a lower resolution.", for the limit 1 MB and the language `en`). The Field is not marked invalid by it: you decide whether it blocks the form, from `onFilesReject`.
 - **Adding appends,** except with `multiple` off, where a new file replaces the old one.
 - **Progress is a native `<progress>`,** shown only while a file uploads, with the percentage as text. A file of unknown size gets no `<progress>` but a decorative `<span class="kv-progress-track" aria-hidden="true">` (a moving bar that loops while the upload runs and rests under reduced motion; for WCAG 2.2.2 see [Moving indicators and WCAG 2.2.2](/foundation/theming#moving-indicators)). Progress is never announced: only starts, finishes and failures are, in one polite sentence per batch.
 - **Focus never falls to the page.** Removing a file, or a button going away when an upload ends, moves focus to the next item (then the previous, then the button), never to a destructive button.
@@ -24,10 +24,10 @@ A FileUpload attaches files to a form. **One native button opens the system file
 | `FileUpload.Trigger`                                       | `<button class="kv-button kv-file-upload-trigger">`     | The one control that adds files. Opens the system dialog. `aria-disabled` at `maxFiles`, never `aria-required`                         |
 | `FileUpload.Input`                                         | `<input type="file">`, visually hidden                  | Out of the accessibility tree. Give it a `name` to post the files with a plain form. The Root adds one if you render none              |
 | `FileUpload.DropZone`                                      | `<div class="kv-file-upload-drop-zone">`                | The extra for devices that drag. Not focusable, no role                                                                                |
-| `FileUpload.DropHint`                                      | `<p class="kv-file-upload-drop-hint">`                  | "eller släpp filer här", and "Släpp filerna för att lägga till dem" while a file is over the zone                                      |
+| `FileUpload.DropHint`                                      | `<p class="kv-file-upload-drop-hint">`                  | "or drop files here", and "Drop the files to add them" while a file is over the zone                                                   |
 | `FileUpload.Limits`                                        | `<p class="kv-file-upload-limits">`                     | The limits that are set, built from the options. A description of the Field                                                            |
 | `FileUpload.Rejections`                                    | `<div class="kv-file-upload-rejections">` with a `<ul>` | The files the latest add refused, one line each. Not in the list                                                                       |
-| `FileUpload.Summary`                                       | `<p class="kv-file-upload-summary">`                    | "2 av 5 filer tillagda", and what to do next when the list is full                                                                     |
+| `FileUpload.Summary`                                       | `<p class="kv-file-upload-summary">`                    | "2 of 5 files added", and what to do next when the list is full                                                                        |
 | `FileUpload.List`                                          | `<ul role="list" class="kv-file-upload-list">`          | Accepted files only. Its children are a function `(item) => …` that renders one `FileUpload.Item` per file                             |
 | `FileUpload.Item`                                          | `<li class="kv-file-upload-item" tabindex="-1">`        | One file. Takes `item`. Focusable by script only, to keep focus in place                                                               |
 | `FileUpload.Preview`                                       | `<span>` with an `<img alt="">` or the document icon    | An opt-in thumbnail for images. Decorative                                                                                             |
@@ -38,7 +38,7 @@ A FileUpload attaches files to a form. **One native button opens the system file
 | `FileUpload.Actions`                                       | `<div>`                                                 | A layout wrapper for an item's buttons                                                                                                 |
 | `FileUpload.CancelButton`, `.RetryButton`, `.RemoveButton` | `<button class="kv-button kv-file-upload-cancel" …>`    | One action per state: Cancel while uploading, Retry and Remove after a failure or a cancel, otherwise Remove. Their names add the file |
 
-- **`FileUpload.ItemError`** is the place for the reason an upload failed. Without `children` it shows the consumer's own `message` from the rejection of `upload`, else a neutral sentence ("Det gick inte att ladda upp läkarintyg.pdf. Om det fortsätter att misslyckas, kontakta oss.") that never says why. Put it in the item next to `Status`: while the item is failed, the item's buttons are described by it, so a screen-reader user hears the reason on Retry and Remove. Without it, the failure shows only in the `Status` text.
+- **`FileUpload.ItemError`** is the place for the reason an upload failed. Without `children` it shows the consumer's own `message` from the rejection of `upload`, else a neutral sentence ("We couldn’t upload medical-certificate.pdf. If it keeps failing, contact us.") that never says why. Put it in the item next to `Status`: while the item is failed, the item's buttons are described by it, so a screen-reader user hears the reason on Retry and Remove. Without it, the failure shows only in the `Status` text.
 - **Refusal reasons** (`onFilesReject` gets them as data, and `Rejections` writes each as a sentence): `type`, `tooLarge`, `tooSmall`, `tooMany`, `empty`, `duplicate`, `folder` and `custom` (your `validate` returned a string). The file itself is checked first (folder, type, empty, size, duplicate, then `validate`) and the list's room last, so a wrong file is never told "too many". A dropped folder is refused as `folder`.
 - **`FileUploadFailure`:** reject `upload` with `{ retryable?: boolean, message?: string }` (an `Error` that sets `retryable` works too). `retryable: false` removes Retry. `message` is shown by `ItemError` for a plain object, or for an `Error` that sets a boolean `retryable` (a bare `Error` is never shown), and must name the file and say what to do.
 - **`FileUploadContext`:** the second argument of `upload`, `{ signal, onProgress }`.
@@ -61,9 +61,9 @@ A FileUpload attaches files to a form. **One native button opens the system file
 import { Field, FileUpload } from '@kvirn-ui/react'
 
 ;<Field.Root>
-  <Field.Label>Bilagor</Field.Label>
+  <Field.Label>Attachments</Field.Label>
   <Field.Prose>
-    <p>Bifoga ditt läkarintyg och dina kvitton.</p>
+    <p>Attach your medical certificate and your receipts.</p>
   </Field.Prose>
   <FileUpload.Root
     multiple
@@ -103,7 +103,7 @@ import { Field, FileUpload } from '@kvirn-ui/react'
 </Field.Root>
 ```
 
-Put it in a Field. The Trigger takes the Field's id, so the label and an error-summary link reach it, and its name is its own text then the label ("Välj filer Bilagor"). It never carries `aria-required`: a button doesn't allow it, and a required Field shows through the missing "(valfritt)".
+Put it in a Field. The Trigger takes the Field's id, so the label and an error-summary link reach it, and its name is its own text then the label ("Choose files Attachments" in `en`). It never carries `aria-required`: a button doesn't allow it, and a required Field shows through the missing "(optional)" text (in `en`; each language has its own).
 
 Options (also the options of the hook):
 
@@ -144,7 +144,7 @@ const upload = (file: File, { signal, onProgress }: FileUploadContext) =>
   })
 ```
 
-A failed upload shows neutral words and a Retry button, which restarts the same file. To say more, reject with an error that opts in, a plain object or an `Error` that sets a boolean `retryable` (`true` or `false`): `{ retryable: false, message: 'Filen kunde inte skickas…' }`. A bare `Error('Failed to fetch')` is never shown to people. Render `FileUpload.ItemError` in the item to show the reason; `retryable: false` leaves only Remove. What `upload` resolves with is stored on the item as `result`, so you can put server ids in your form state from `onFilesChange`.
+A failed upload shows neutral words and a Retry button, which restarts the same file. To say more, reject with an error that opts in, a plain object or an `Error` that sets a boolean `retryable` (`true` or `false`): `{ retryable: false, message: 'The file could not be sent…' }`. A bare `Error('Failed to fetch')` is never shown to people. Render `FileUpload.ItemError` in the item to show the reason; `retryable: false` leaves only Remove. What `upload` resolves with is stored on the item as `result`, so you can put server ids in your form state from `onFilesChange`.
 
 Without `upload`, files stay `pending` and the component keeps the native input's `files` equal to the list (through `DataTransfer`), so a plain `<form>` posts them, dropped files included. Give the input a name: `<FileUpload.Input name="attachments" />`.
 

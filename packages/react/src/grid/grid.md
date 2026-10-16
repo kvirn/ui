@@ -25,7 +25,7 @@ Sidebar and content (replaces SidebarLayout). Write the part that comes first at
 
 ```tsx
 ;<Grid.Root className="kv-grid--lg-cols-12 kv-grid--lg-gap-10">
-  <Grid.Item as="nav" aria-label="I det här avsnittet" className="kv-grid-item--lg-span-3">
+  <Grid.Item as="nav" aria-label="In this section" className="kv-grid-item--lg-span-3">
     …
   </Grid.Item>
   <Grid.Item as="main" id="main" className="kv-grid-item--lg-span-9">

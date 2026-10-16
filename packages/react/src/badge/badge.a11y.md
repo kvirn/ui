@@ -49,8 +49,8 @@ Badge renders no text of its own, so it has no message keys. A badge that change
 
 ## Consumer responsibilities
 
-- **Words, always.** The text says the status (`Beviljad`, Granted; `Väntar på komplettering`, Waiting for more information): the colour is only a second cue (1.4.1 Use of Color, A). Never an empty badge, a dot or an icon alone.
-- **Give it context.** A badge next to a title reads as part of it. Where "Beviljad" (Granted) alone is unclear, label what it is for in the surrounding text (a "Status" term in a definition list).
+- **Words, always.** The text says the status ("Granted", "Waiting for more information"): the colour is only a second cue (1.4.1 Use of Color, A). Never an empty badge, a dot or an icon alone.
+- **Give it context.** A badge next to a title reads as part of it. Where "Granted" alone is unclear, label what it is for in the surrounding text (a "Status" term in a definition list).
 - **Keep it short.** A badge is one word or a few; it does not wrap. Long text belongs in a paragraph.
 - **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2 Language of Parts, AA).
 - **Changing status.** Announce a change in your own live region if the user needs to hear it (4.1.3 Status Messages, AA).
@@ -61,7 +61,7 @@ Headless: Badge ships no CSS. With the theme stylesheet (`@kvirn-ui/theme`), a b
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships (A): a status is text in an element, not an image or a background (`badge.test.tsx › renders a span, no role or ARIA…`).
+- 1.3.1 Info and Relationships (A): a status is text in an element, not an image or a background (`badge.test.tsx › renders a span, no role or ARIA, and passes attributes and the ref through`).
 - 1.4.1 Use of Color (A): the consumer's words are the status (story `Variants`, axe in every theme).
 - 1.4.3 Contrast (Minimum) (AA): the text on its background, measured by the theme's contrast check.
 - 1.4.4 Resize Text (AA): the size is in rem.

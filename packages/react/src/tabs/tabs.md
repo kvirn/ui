@@ -69,26 +69,26 @@ Keyed `tabs-*`, English, for the developer only: a `Tabs.List`, `Tab` or `Panel`
 ```tsx
 import { Tabs } from '@kvirn-ui/react'
 
-;<Tabs.Root defaultValue="uppgifter">
-  <Tabs.List aria-label="Ärendet">
-    <Tabs.Tab value="uppgifter">Uppgifter</Tabs.Tab>
-    <Tabs.Tab value="handlingar">Handlingar</Tabs.Tab>
-    <Tabs.Tab value="historik" disabled>
-      Historik
+;<Tabs.Root defaultValue="details">
+  <Tabs.List aria-label="The case">
+    <Tabs.Tab value="details">Details</Tabs.Tab>
+    <Tabs.Tab value="documents">Documents</Tabs.Tab>
+    <Tabs.Tab value="history" disabled>
+      History
     </Tabs.Tab>
   </Tabs.List>
-  <Tabs.Panel value="uppgifter">…</Tabs.Panel>
-  <Tabs.Panel value="handlingar" tabIndex={-1}>
-    <a href="/beslut">Läs beslutet</a>
+  <Tabs.Panel value="details">…</Tabs.Panel>
+  <Tabs.Panel value="documents" tabIndex={-1}>
+    <a href="/decision">Read the decision</a>
   </Tabs.Panel>
-  <Tabs.Panel value="historik">…</Tabs.Panel>
+  <Tabs.Panel value="history">…</Tabs.Panel>
 </Tabs.Root>
 ```
 
 Controlled, with a reason for the change:
 
 ```tsx
-const [tab, setTab] = useState('uppgifter')
+const [tab, setTab] = useState('details')
 
 ;<Tabs.Root value={tab} onValueChange={(value, { reason }) => setTab(value)}>
   …
@@ -103,15 +103,15 @@ Pitfalls: give every tab a panel and every panel a tab, with the same `value`: t
 import { useTabs } from '@kvirn-ui/react'
 
 function CaseTabs() {
-  const tabs = useTabs({ defaultValue: 'uppgifter', activationMode: 'automatic' })
+  const tabs = useTabs({ defaultValue: 'details', activationMode: 'automatic' })
   return (
     <div {...tabs.rootProps}>
-      <div {...tabs.listProps} aria-label="Ärendet">
-        <button {...tabs.getTabProps('uppgifter')}>Uppgifter</button>
-        <button {...tabs.getTabProps('historik', { disabled: true })}>Historik</button>
+      <div {...tabs.listProps} aria-label="The case">
+        <button {...tabs.getTabProps('details')}>Details</button>
+        <button {...tabs.getTabProps('history', { disabled: true })}>History</button>
       </div>
-      <div {...tabs.getPanelProps('uppgifter')}>…</div>
-      <div {...tabs.getPanelProps('historik')}>…</div>
+      <div {...tabs.getPanelProps('details')}>…</div>
+      <div {...tabs.getPanelProps('history')}>…</div>
     </div>
   )
 }

@@ -72,12 +72,14 @@ An inert page drops an announcement, so the choice waits for the dialog to close
 
 ### Read aloud
 
-| State or action             | Expected phrase(s) as read aloud                                                      | Live region politeness | Test                                                                                                                          |
-| --------------------------- | ------------------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Field and trigger           | the boxes `År`, `Månad`, `Dag` (sv order), then `button, Välj datum`, `not expanded`  | none                   | `date-picker.test.tsx › read aloud › reads the field, then the trigger as a button with a popup that is not expanded`         |
-| Open dialog                 | `dialog, Välj ett datum` → heading → `grid, oktober 2026` → the typed day, `selected` | none                   | `date-picker.test.tsx › read aloud › reads the open dialog by its title, then the grid and the typed day as selected`         |
-| A day chosen                | `polite: torsdag 15 oktober 2026 vald`                                                | polite                 | `date-picker.test.tsx › read aloud › says "{date} vald" as a polite announcement when a day is chosen`                        |
-| Closed with Escape or Close | nothing                                                                               | none                   | `date-picker.test.tsx › announcements › closing with Escape announces nothing` and `… › closing with Close announces nothing` |
+The test reads the Swedish (`sv`) texts. An English gloss follows each Swedish phrase in brackets.
+
+| State or action             | Expected phrase(s) as read aloud                                                                                     | Live region politeness | Test                                                                                                                          |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Field and trigger           | the boxes `År` (Year), `Månad` (Month), `Dag` (Day), then `button, Välj datum` (Choose date), `not expanded`         | none                   | `date-picker.test.tsx › read aloud › reads the field, then the trigger as a button with a popup that is not expanded`         | <!-- kv-lang-ok: the sv strings a screen reader reads --> |
+| Open dialog                 | `dialog, Välj ett datum` (Choose a date) → heading → `grid, oktober 2026` (October 2026) → the typed day, `selected` | none                   | `date-picker.test.tsx › read aloud › reads the open dialog by its title, then the grid and the typed day as selected`         | <!-- kv-lang-ok: the sv strings a screen reader reads --> |
+| A day chosen                | `polite: torsdag 15 oktober 2026 vald` (Thursday 15 October 2026 selected)                                           | polite                 | `date-picker.test.tsx › read aloud › says "{date} vald" as a polite announcement when a day is chosen`                        | <!-- kv-lang-ok: the sv strings a screen reader reads --> |
+| Closed with Escape or Close | nothing                                                                                                              | none                   | `date-picker.test.tsx › announcements › closing with Escape announces nothing` and `… › closing with Close announces nothing` |
 
 The phrases are the virtual screen reader's approximation, not NVDA or JAWS wording, and do not prove modality or focus containment (the component tests do).
 
@@ -86,7 +88,7 @@ The phrases are the virtual screen reader's approximation, not NVDA or JAWS word
 - **Keep the typed field.** DatePicker never replaces it: typing always works, and it keeps `autocomplete` (1.3.5 Identify Input Purpose (AA)) and avoids dragging (2.5.7 Dragging Movements (AA)). A DateInput stays in a `Fieldset` with a legend, help text with an example, and an error.
 - **Bridge the value.** `value={dateInputValueToIsoDate(boxes)}` (or `maskedDateToIsoDate(text, locale)`) in, and `onValueChange={(date) => setBoxes(isoDateToDateInputValue(date))}` out. Validate the field yourself (`checks.date`, with its `range`).
 - **Say the range.** Pass `minimum` and `maximum` and put them in the field's help text too (3.3.2 Labels or Instructions (A)): the dialog's range hint is only visible once it is open.
-- **Name the task.** Replace the title with the question ("Välj dag för ditt besök").
+- **Name the task.** Replace the title with the question ("Choose the day of your visit").
 - **Put the trigger inside the date's row.** The Popup can sit in a page `<form>`: none of its buttons submits it (`date-picker.test.tsx › a DatePicker inside a form submits nothing when its buttons are pressed`).
 - **Not for** a date of birth or any date far from today: type it. **Not when many days are unavailable:** use radio buttons.
 - Everything on the Calendar page and the Dialog page applies too.

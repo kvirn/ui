@@ -34,23 +34,23 @@ Dev warnings (English, development only, never shown to users):
 ```tsx
 import { Link, Navigation } from '@kvirn-ui/react'
 
-;<Navigation.Root label="Huvudmeny">
+;<Navigation.Root label="Main menu">
   <Navigation.List>
     <Navigation.Item>
       <Link.Root href="/start">Start</Link.Root>
     </Navigation.Item>
     <Navigation.Item>
-      <Link.Root href="/bygga-och-bo">Bygga och bo</Link.Root>
+      <Link.Root href="/building-and-living">Building and living</Link.Root>
       <Navigation.List>
         <Navigation.Item>
-          <Link.Root href="/bygga-och-bo/bygglov" current="page">
-            Bygglov
+          <Link.Root href="/building-and-living/building-permit" current="page">
+            Building permit
           </Link.Root>
         </Navigation.Item>
       </Navigation.List>
     </Navigation.Item>
     <Navigation.Item>
-      <Link.Root href="/om-oss">Om oss</Link.Root>
+      <Link.Root href="/about-us">About us</Link.Root>
     </Navigation.Item>
   </Navigation.List>
 </Navigation.Root>
@@ -62,13 +62,13 @@ Your part:
 - **The current page.** `current="page"` on exactly one link, from your router's pathname. Navigation doesn't read the router. When the page isn't in the navigation, such as a case page or a menu that stops above it, put `current` on the deepest item shown (GOV.UK's "active" item): it gives `aria-current="true"`, and the navigation still has one current link. Never mark an ancestor of a listed page, because assistive technology would announce "current" more than once. A link inside a `hidden` group never has it, because a hidden link isn't exposed: the deepest item shown takes it.
 - **The trail.** Every ancestor of the current page is drawn as a quiet bold trail, so a user in a long menu sees which branch they are in. The theme finds it with CSS `:has()`, so there is nothing to mark. It is visual only: it is not announced, and the nesting of the lists carries the hierarchy for assistive technology. For an announced path on a deep page, add a Breadcrumb.
 - **Collapsing a group.** Render a group you collapse with `hidden`, and never unmount it: its links stay in the DOM but leave the Tab sequence and the accessibility tree, and the default theme keeps it collapsed. The toggle that opens it is yours: a `Button` with `aria-expanded` and `aria-controls`. Navigation manages no disclosure, and no NavigationMenu component is planned.
-- **A horizontal bar.** `className="kv-navigation--horizontal"` on `Navigation.Root` lays the top level out as a row that wraps, with each item as wide as its label. It is one level: a nested list stays a column under its item. For the pages of a section, use a second `Navigation` with its own name ("I det här avsnittet"). Flyouts and collapsing are not covered.
+- **A horizontal bar.** `className="kv-navigation--horizontal"` on `Navigation.Root` lays the top level out as a row that wraps, with each item as wide as its label. It is one level: a nested list stays a column under its item. For the pages of a section, use a second `Navigation` with its own name ("In this section"). Flyouts and collapsing are not covered.
 - **Two levels at most** on resident pages. Indentation shows the level without colour. A staff or CMS sidebar may go deeper, with the trail showing the way. A menu that collapses and opens is not covered.
-- **A group label.** `Navigation.Label` in a `Navigation.Item`, next to its nested `Navigation.List`, names that list: a screen reader announces "Komponenter, list, 3 items". It is plain text, not a heading and not a link, so it is no Tab stop and never looks like one (quiet `text-muted`, compact type). A list's own `aria-label` or `aria-labelledby` wins. The name is set when the page hydrates, not in server HTML. There is no `Navigation.Group`: the label is only the name. A label with no nested list names nothing and warns in development.
+- **A group label.** `Navigation.Label` in a `Navigation.Item`, next to its nested `Navigation.List`, names that list: a screen reader announces "Components, list, 3 items". It is plain text, not a heading and not a link, so it is no Tab stop and never looks like one (quiet `text-muted`, compact type). A list's own `aria-label` or `aria-labelledby` wins. The name is set when the page hydrates, not in server HTML. There is no `Navigation.Group`: the label is only the name. A label with no nested list names nothing and warns in development.
 
   ```tsx
   <Navigation.Item>
-    <Navigation.Label>Komponenter</Navigation.Label>
+    <Navigation.Label>Components</Navigation.Label>
     <Navigation.List>…</Navigation.List>
   </Navigation.Item>
   ```
@@ -80,7 +80,7 @@ Your part:
 
 ```tsx
 <Navigation.List as="ol">…</Navigation.List>
-<Navigation.Label as="p">Komponenter</Navigation.Label>
+<Navigation.Label as="p">Components</Navigation.Label>
 ```
 
 In a React Server Component, use the named exports `NavigationRoot`, `NavigationList` and `NavigationItem` instead of `Navigation.Root` and so on, because a server component can't dot into a client module.
@@ -101,8 +101,8 @@ A `kv-link--service` link inside an item keeps its own look. In compact density 
 ```tsx
 import { useNavigation } from '@kvirn-ui/react'
 
-function Meny() {
-  const navigation = useNavigation({ label: 'Huvudmeny' })
+function MainMenu() {
+  const navigation = useNavigation({ label: 'Main menu' })
   return (
     <nav {...navigation.rootProps}>
       <ul {...navigation.listProps}>

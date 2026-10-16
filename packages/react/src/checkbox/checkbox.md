@@ -47,7 +47,7 @@ import { Checkbox, Field } from '@kvirn-ui/react'
 
 ;<Field.Root required invalid={errors.declaration !== undefined}>
   <Checkbox name="declaration" checked={declaration} onCheckedChange={setDeclaration} />
-  <Field.Label>Jag intygar att uppgifterna är korrekta</Field.Label>
+  <Field.Label>I confirm that the information is correct</Field.Label>
   <Field.ErrorMessage>{errors.declaration}</Field.ErrorMessage>
 </Field.Root>
 ```
@@ -55,11 +55,11 @@ import { Checkbox, Field } from '@kvirn-ui/react'
 Your part:
 
 - **Put the Checkbox directly in `Field.Root`, before the `Field.Label`,** so the box is at the inline start and the theme's choice layout applies.
-- **Write the label as a sentence that can be answered "yes".** For a declaration or a consent, the label is the whole sentence ("Jag intygar att uppgifterna är korrekta"). Always show a visible label.
+- **Write the label as a sentence that can be answered "yes".** For a declaration or a consent, the label is the whole sentence ("I confirm that the information is correct"). Always show a visible label.
 - **Set `required` on the Field for a single consent or declaration,** so the label has no "(optional)" and the box is `aria-required`; or put `marker="none"` on `Field.Label`. Inside a group, an option never carries an optional marker.
-- **Set `invalid` and render a `Field.ErrorMessage` together,** with text that says what to do ("Bekräfta att uppgifterna är korrekta"). Validate on submit, and move focus to the first invalid control.
+- **Set `invalid` and render a `Field.ErrorMessage` together,** with text that says what to do ("Confirm that the information is correct"). Validate on submit, and move focus to the first invalid control.
 - **A help text for one option** is a `Field.HelpText` in that option's Field, outside the label. It is part of the box's description, so keep it to a short plain sentence with no links.
-- **A checkbox without a visible label** (a row selector in a table, where the row's text is the label) is a standalone `<Checkbox aria-label="Markera ärende 2026-0412" />`, outside a Field. It then has no Field wiring: no id, no `aria-describedby`, no `aria-invalid`. Prefer a Field with a visible `Field.Label` everywhere a person has to read the question. Without a label or an `aria-label`, a dev warning fires (`Checkbox-without-name`).
+- **A checkbox without a visible label** (a row selector in a table, where the row's text is the label) is a standalone `<Checkbox aria-label="Select case 2026-0412" />`, outside a Field. It then has no Field wiring: no id, no `aria-describedby`, no `aria-invalid`. Prefer a Field with a visible `Field.Label` everywhere a person has to read the question. Without a label or an `aria-label`, a dev warning fires (`Checkbox-without-name`).
 - **Own `indeterminate`.** Set it from your data (some, but not all, children are checked), and pass `false` once the user has chosen. Don't use it for a box that was never answered. The first server-rendered paint is unchecked, because the DOM property can only be set after render.
 - **Don't use a checkbox where a [Switch](../switch/switch.md) or a button is meant,** and don't use one for a yes-or-no question that needs both answers: use a RadioGroup.
 - **After `form.reset()`** an uncontrolled box keeps a stale `data-state` until its next change. The theme styles `:checked` and `:indeterminate`, so the look is right. Read the native state, not the attribute, in your own code.
@@ -76,7 +76,7 @@ const allChecked = rows.every((row) => row.selected)
     indeterminate={someChecked && !allChecked}
     onCheckedChange={(checked) => selectAll(checked)}
   />
-  <Field.Label marker="none">Markera alla rader</Field.Label>
+  <Field.Label marker="none">Select all rows</Field.Label>
 </Field.Root>
 ```
 

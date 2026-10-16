@@ -57,10 +57,10 @@ Toggle has no strings of its own and announces nothing: the screen reader reads 
 
 ## Consumer responsibilities
 
-- Give the toggle a visible text label, or an `aria-label` from your own translations for an icon-only toggle (4.1.2 Name, Role, Value, A; 2.5.3 Label in Name, A). **The name must not change with the state:** "Visa karta" (Show map) stays "Visa karta" and never becomes "Dölj karta" (Hide map) when it is on (APG).
+- Give the toggle a visible text label, or an `aria-label` from your own translations for an icon-only toggle (4.1.2 Name, Role, Value, A; 2.5.3 Label in Name, A). **The name must not change with the state:** "Show map" stays "Show map" and never becomes "Hide map" when it is on (APG).
 - Use a Toggle for a choice with a direct, visible effect. A setting that turns something on or off for good is a [Switch](../switch/switch.a11y.md) (saved at once) or a Checkbox, and an answer in a form is a Checkbox or a radio group.
 - With `pressed`, update it in `onPressedChange`, or the toggle never changes.
-- A toggle that changes a list or a result (a filter) needs a status message with the result count, such as "12 träffar" (Swedish for "12 results"), announced through `useAnnouncer` (4.1.3 Status Messages, AA). The press alone tells a screen reader user only that the button is pressed.
+- A toggle that changes a list or a result (a filter) needs a status message with the result count, such as "12 results", announced through `useAnnouncer` (4.1.3 Status Messages, AA). The press alone tells a screen reader user only that the button is pressed.
 - Style `[data-pressed]` and `[aria-pressed='true']`. The pressed state must never be shown by colour alone (1.4.1 Use of Color, A): the default theme fills the button and changes the icon or label colour.
 
 ## Visual / modes

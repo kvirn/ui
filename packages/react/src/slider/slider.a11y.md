@@ -63,8 +63,8 @@ None from the component. On focus a screen reader reads the label, "slider", `ar
 
 ## Consumer responsibilities
 
-- Name the quantity and its unit in the label ("Avstånd i kilometer", Distance in kilometres); never a label that changes with the value.
-- Say the unit in `valueText` ("15 km", "40 procent", 40 percent): a bare number is right only when it has no unit.
+- Name the quantity and its unit in the label ("Distance in kilometres"); never a label that changes with the value.
+- Say the unit in `valueText` ("15 km", "40 percent"): a bare number is right only when it has no unit.
 - State the ends of the range in the help text. Never "Drag the slider" as the only instruction.
 - Never the only way in for an exact number: pair it with a NumberInput beside it, where the NumberInput owns the Field and the Slider has `aria-labelledby`. A value with legal effect is a NumberInput alone. This is a KvirnUI rule for precision and for touch users without keys, not a WCAG requirement: dragging a native range is excepted from 2.5.7 Dragging Movements (AA), and its keys meet 2.1.1 Keyboard (A).
 - Results that update as the value moves are announced once, debounced, through the `Announcer` (4.1.3 Status Messages, AA), never per step. This is your code: the Slider announces nothing itself.

@@ -1,6 +1,6 @@
 # Disclosure
 
-> **Draft** (Plan 0058). This page moves to the docs site once `apps/docs` has a page for it. The accessibility contract is [disclosure.a11y.md](disclosure.a11y.md).
+> **Draft.** This page moves to the docs site once `apps/docs` has a page for it. The accessibility contract is [disclosure.a11y.md](disclosure.a11y.md).
 
 A Disclosure is a button that shows and hides a panel of content (APG Disclosure): opening hours, a "read more", a help text. It holds the open state and wires the button and the panel together. It never moves focus.
 
@@ -17,9 +17,9 @@ A Disclosure is a button that shows and hides a panel of content (APG Disclosure
 import { Disclosure } from '@kvirn-ui/react'
 
 ;<Disclosure.Root>
-  <Disclosure.Trigger>Öppettider</Disclosure.Trigger>
+  <Disclosure.Trigger>Opening hours</Disclosure.Trigger>
   <Disclosure.Panel>
-    <p>Måndag till fredag 10–19.</p>
+    <p>Monday to Friday 10–19.</p>
   </Disclosure.Panel>
 </Disclosure.Root>
 ```
@@ -45,8 +45,8 @@ function Hours() {
   const disclosure = useDisclosure()
   return (
     <>
-      <button {...disclosure.triggerProps}>Öppettider</button>
-      <div {...disclosure.panelProps}>Måndag till fredag 10–19.</div>
+      <button {...disclosure.triggerProps}>Opening hours</button>
+      <div {...disclosure.panelProps}>Monday to Friday 10–19.</div>
     </>
   )
 }

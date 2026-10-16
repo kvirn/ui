@@ -130,7 +130,7 @@ Some choices are made once for a whole site. Set these in your own CSS instead o
 
 ```css
 :root {
-  /* End your own stack with the system one: it covers å ä ö æ ø. */
+  /* End your own stack with the system one: it covers the Nordic letters. */
   --kv-font-family-body: 'Source Sans 3', var(--kv-font-family-system);
   --kv-font-family-heading: 'Merriweather', var(--kv-font-family-system-serif);
   --kv-card-radius-default: var(--kv-radius-md);

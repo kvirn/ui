@@ -6,7 +6,7 @@
 - **Status:** alpha candidate. Accessibility-reviewer APPROVE. Manual AT is `pending`.
 - **Tests:** `switch.test.tsx` next to this file. `switch.stories.tsx` in `apps/storybook/src/components/switch/`.
 
-A Switch is mainly a setting that takes effect at once, with no Save or Send button ("Få meddelanden som sms", Get messages by text message). Submitting it in a plain form also works natively, but in a public-sector e-service form prefer a Checkbox (declaration, consent) or a RadioGroup (yes or no). It is a native input, so the browser supplies the Space key, the label click, form submission, `form.reset()` and `disabled`. Switch adds the `switch` role, the Field's wiring, the part class and `data-state`. It holds no form state: pass `checked` and `onCheckedChange` from your logic, or `defaultChecked` and `name` for a plain form.
+A Switch is mainly a setting that takes effect at once, with no Save or Send button ("Get messages by text message"). Submitting it in a plain form also works natively, but in a public-sector e-service form prefer a Checkbox (declaration, consent) or a RadioGroup (yes or no). It is a native input, so the browser supplies the Space key, the label click, form submission, `form.reset()` and `disabled`. Switch adds the `switch` role, the Field's wiring, the part class and `data-state`. It holds no form state: pass `checked` and `onCheckedChange` from your logic, or `defaultChecked` and `name` for a plain form.
 
 ## Roles, states, properties
 
@@ -19,7 +19,7 @@ A Switch is mainly a setting that takes effect at once, with no Save or Send but
 Rules, tested in `switch.test.tsx`:
 
 - **A native checkbox with the switch role.** `type="checkbox"`, `role="switch"`, class `kv-switch`, no `aria-checked` and no `aria-required`.
-- **Named by its label.** In a Field the label's `for` matches the input's `id`; the accessible name is the label text, with "(optional)" in a standalone Field unless the label has `marker="none"`. The help text describes it.
+- **Named by its label.** In a Field the label's `for` matches the input's `id`; the accessible name is the label text, with the optional marker ("(optional)" in English; each language has its own) in a standalone Field unless the label has `marker="none"`. The help text describes it.
 - **Not required.** `required` is not a prop. A required Field gives no `aria-required` and no `data-required`, and warns once in development: off is a valid answer, and a consent is a Checkbox.
 - **Optional marker.** A Switch whose label shows "(optional)" warns once in development: it makes no sense for a setting. Use `<Field.Label marker="none">`.
 - **`data-state`** is `checked` or `unchecked`. It follows the props when controlled, and the native state after each change when not.
@@ -61,8 +61,8 @@ None from the component. On focus a screen reader reads the label, "switch" and 
 ## Consumer responsibilities
 
 - Put the Switch directly in `Field.Root`, before a `<Field.Label marker="none">`.
-- The label names the setting, a noun phrase that reads correctly with "on" or "off" after it ("Påminnelser via sms", Reminders by text message). Never "På" or "Av" (On or Off) in it, and never a label that changes with the state.
-- A switch takes effect at once: say so ("Ändringar sparas direkt", Changes are saved straight away), keep it enabled and focused while saving, put it back and show an error if the save fails, and never navigate or move focus on change (3.2.2 On Input, A).
+- The label names the setting, a noun phrase that reads correctly with "on" or "off" after it ("Reminders by text message"). Never "On" or "Off" in it, and never a label that changes with the state.
+- A switch takes effect at once: say so ("Changes are saved straight away"), keep it enabled and focused while saving, put it back and show an error if the save fails, and never navigate or move focus on change (3.2.2 On Input, A).
 - A not-available switch is `disabled`, with the reason in the help text, never in a tooltip.
 - Use a Checkbox for an answer sent with a form, a declaration or a consent, and a Toggle for a button with a direct visible effect on the page.
 

@@ -4,7 +4,7 @@
 
 **KvirnUI holds no form state; bring your own form logic.** Switch is a native `<input type="checkbox" role="switch">`. It shows the `checked` you give it and reports changes through `onCheckedChange`. It never copies the state into state of its own, and it doesn't validate.
 
-A Switch is a setting that takes effect at once, with no Save button ("Få meddelanden som sms").
+A Switch is a setting that takes effect at once, with no Save button ("Get messages by text message").
 
 | Use a                               | When                                                                                                                             |
 | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
@@ -51,16 +51,16 @@ import { Field, Switch } from '@kvirn-ui/react'
 
 ;<Field.Root>
   <Switch name="sms" checked={sms} onCheckedChange={setSms} />
-  <Field.Label marker="none">Få meddelanden som sms</Field.Label>
-  <Field.HelpText>Du kan ändra detta när som helst.</Field.HelpText>
+  <Field.Label marker="none">Get messages by text message</Field.Label>
+  <Field.HelpText>You can change this at any time.</Field.HelpText>
 </Field.Root>
 ```
 
 Your part:
 
-- **Put the Switch directly in `Field.Root`, before a `<Field.Label marker="none">`,** so the track is at the inline start, the theme's choice layout applies and the label has no "(optional)".
-- **The label names the setting,** a noun phrase that reads correctly with "on" or "off" after it. Never "På"/"Av" in it, and never a label that changes with the state.
-- **Say that it saves at once** ("Ändringar sparas direkt") and confirm the result through an always-mounted live region (`<output>` or the `Announcer`, 4.1.3). Keep the switch enabled and focused while saving: a disabled element loses focus (2.4.3). If the save fails, put the switch back, show an error and announce it.
+- **Put the Switch directly in `Field.Root`, before a `<Field.Label marker="none">`,** so the track is at the inline start, the theme's choice layout applies and the label has no "(optional)" (English; each language has its own word).
+- **The label names the setting,** a noun phrase that reads correctly with "on" or "off" after it. Never "On"/"Off" in it, and never a label that changes with the state.
+- **Say that it saves at once** ("Changes are saved straight away"). A saved change needs no announcement: the new state is the confirmation. Keep the switch enabled and focused while saving: a disabled element loses focus (2.4.3). If the save fails, put the switch back, show an error and announce it through a live region that is always on the page (the `Announcer`, or an `<output>`; 4.1.3 Status Messages, AA).
 - **Never change context on input** (3.2.2): a switch doesn't navigate, reload or move focus.
 - **A switch that isn't available** is `disabled`, with the reason in the help text.
 - **Prefer a Checkbox or RadioGroup in a submitted e-service form.** A plain form submits switches natively (secondary use), but a "yes or no" answer is a RadioGroup, a declaration is a Checkbox.

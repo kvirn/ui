@@ -259,7 +259,12 @@ interface RawSection {
 }
 
 function splitSections(markdown: string, file: string) {
-  const lines = markdown.split(/\r?\n/)
+  // A comment such as a language marker at the end of a line is for the repository check, not the reader. A line that
+  // is only a marker stays, and `parseBlocks` skips it.
+  const lines = markdown.split(/\r?\n/).map((line) => {
+    const stripped = line.replace(/\|\s*<!--.*?-->\s*(\|\s*)?$/, '|').replace(/\s*<!--.*?-->/g, '')
+    return stripped.trim() === '' ? line : stripped
+  })
   const titleLine = lines.find((line) => /^#\s/.test(line))
   if (titleLine === undefined) {
     throw new ContractError(file, 'has no "# Accessibility contract: <name>" title')

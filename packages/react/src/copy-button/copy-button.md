@@ -1,6 +1,6 @@
 # CopyButton
 
-> **Draft** (Plan 0060). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [copy-button.a11y.md](copy-button.a11y.md).
+> **Alpha candidate.** The accessibility reviewer and assistive-technology tests are still pending. The accessibility contract is [copy-button.a11y.md](copy-button.a11y.md).
 
 A [Button](../button/button.md) that writes a text to the clipboard: a case or payment reference number, a code sample. It is one `<button type="button">`.
 
@@ -21,10 +21,10 @@ import { CopyButton } from '@kvirn-ui/react'
 const numberRef = useRef<HTMLSpanElement>(null)
 
 <p>
-  Ditt ärendenummer är <span ref={numberRef}>PK-2026-004217</span>.
+  Your case number is <span ref={numberRef}>PK-2026-004217</span>.
 </p>
 <CopyButton text="PK-2026-004217" textRef={numberRef}>
-  Kopiera ärendenumret
+  Copy the case number
 </CopyButton>
 ```
 

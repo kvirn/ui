@@ -24,11 +24,11 @@ A small table that never changes needs no TanStack Table. Every part is the plai
 import { Table } from '@kvirn-ui/react'
 
 ;<Table.Root>
-  <Table.Caption>Avgifter</Table.Caption>
+  <Table.Caption>Fees</Table.Caption>
   <Table.Head>
     <Table.Row>
-      <Table.ColumnHeader>Tjänst</Table.ColumnHeader>
-      <Table.ColumnHeader>Avgift</Table.ColumnHeader>
+      <Table.ColumnHeader>Service</Table.ColumnHeader>
+      <Table.ColumnHeader>Fee</Table.ColumnHeader>
     </Table.Row>
   </Table.Head>
   <Table.Body>
@@ -67,9 +67,9 @@ const features = tableFeatures({
 })
 const column = createColumnHelper<typeof features, Case>()
 const columns = column.columns([
-  column.accessor('name', { header: 'Namn', sortFn: 'locale' }),
-  column.accessor('caseNumber', { header: 'Ärendenummer' }),
-  column.accessor('received', { header: 'Inkom', cell: (info) => formatDate(info.getValue()) }),
+  column.accessor('name', { header: 'Name', sortFn: 'locale' }),
+  column.accessor('caseNumber', { header: 'Case number' }),
+  column.accessor('received', { header: 'Received', cell: (info) => formatDate(info.getValue()) }),
 ])
 
 function Cases({ data }: { data: Case[] }) {
@@ -77,7 +77,7 @@ function Cases({ data }: { data: Case[] }) {
   return (
     <Table.ScrollRegion table={cases}>
       <Table.Root table={cases}>
-        <Table.Caption>Öppna ärenden</Table.Caption>
+        <Table.Caption>Open cases</Table.Caption>
         <Table.Head>
           {cases.table.getHeaderGroups().map((headerGroup) => (
             <Table.Row key={headerGroup.id} headerGroup={headerGroup}>
@@ -119,19 +119,19 @@ What is supported is what `@kvirn-ui/react` exports: sorting, row selection, exp
 
 ## Sorting
 
-A sortable column's header holds a `Table.SortButton`: the header text and a sort icon that is decorative. Its state is `aria-sort` on the column header, on the sorted column only, and `data-sort` for the theme. Each press sorts by that column, or changes its direction, and says so politely: "Sorterad efter Namn, stigande." The cycle is the first direction for the column's data, the other, then none.
+A sortable column's header holds a `Table.SortButton`: the header text and a sort icon that is decorative. Its state is `aria-sort` on the column header, on the sorted column only, and `data-sort` for the theme. Each press sorts by that column, or changes its direction, and says so politely: "Sorted by Name, ascending." (the English text; each language has its own). The cycle is the first direction for the column's data, the other, then none.
 
 **One column at a time.** Multi-sort needs Shift+click, a key the table pattern doesn't define, so it is off and can't be turned on.
 
-**Sort with the locale.** TanStack's own sort functions compare code points, so "Åsa" comes before "Zack" in a table in Swedish, where å comes after z. `createLocaleSortFn(locale)` sorts with `Intl.Collator`: å, ä and ö after z in Swedish, Finnish and Norwegian, case ignored, and "Ärende 2" before "Ärende 10". Register it under a name in `sortFns` and name it in the columns that hold text.
+**Sort with the locale.** TanStack's own sort functions compare code points, so "Åsa" comes before "Zack" in a table in Swedish, where å comes after z. `createLocaleSortFn(locale)` sorts with `Intl.Collator`: å, ä and ö after z in Swedish, Finnish and Norwegian, case ignored, and "Case 2" before "Case 10". Register it under a name in `sortFns` and name it in the columns that hold text. <!-- kv-lang-ok: names å, ä and ö where the doc describes Swedish collation -->
 
 ## Selection
 
 Add `rowSelectionFeature`, a `Table.SelectCheckbox` in each row and a `Table.SelectAllCheckbox` in the header. They are native checkboxes.
 
-- **Each checkbox is named by its row:** "Välj Anna Svensson". The name is "Välj" and the row header cell, so choose a `rowHeader`. Without one the name is "Välj rad 3".
+- **Each checkbox is named by its row:** "Select Anna Svensson" in English. The name is "Select" and the row header cell, so choose a `rowHeader`. Without one the name is "Select row 3".
 - **A selected row has `data-selected`** for styling and never `aria-selected`, which a row in a table can't have. The checkbox says whether it is selected.
-- **Select-all is indeterminate** while some rows are selected, and toggling it says how many rows are selected: "12 rader markerade." It selects every row of the table, including the rows on other pages, so say that near a paginated table, or change `messages.selectAllRows`.
+- **Select-all is indeterminate** while some rows are selected, and toggling it says how many rows are selected: "12 rows selected." It selects every row of the table, including the rows on other pages, so say that near a paginated table, or change `messages.selectAllRows`.
 
 Selection is state like any other in TanStack Table. Give `useTable` a `getRowId` that returns a stable id, so a selection survives a sort or a filter, and read it with `cases.table.getSelectedRowIds()`.
 
@@ -157,16 +157,16 @@ Add `rowExpandingFeature` and `getRowCanExpand: () => true`. Put a `Table.Expand
 </Table.Body>
 ```
 
-The button shows the text "Detaljer" and a chevron that points down while the details are hidden and up while they are shown. It has `aria-expanded` and, while the details are shown, `aria-controls`. Its name is its text and the row header ("Detaljer Anna Svensson"), so every button in the list has its own name, and it stays the same open and closed: only `aria-expanded` changes. With no `rowHeader` the name is the text and the row's number ("Detaljer rad 3"), which still starts with the visible text. Give the button your own children and they are the name instead (with the row header after them), so with no `rowHeader` make them different on each row, or give it an `aria-label`. Give the expand column a header with the same text visually hidden (`<span className="kv-table-visually-hidden">{cases.expandButtonText}</span>`), so it isn't an empty header. Put the column first, after the checkbox column: on a small screen the first columns are the ones in view. The detail row has one cell that spans every column, and is rendered only while the row is expanded. Expanding can't be combined with `virtualize`.
+The button shows the text "Details" (in English) and a chevron that points down while the details are hidden and up while they are shown. It has `aria-expanded` and, while the details are shown, `aria-controls`. Its name is its text and the row header ("Details Anna Svensson"), so every button in the list has its own name, and it stays the same open and closed: only `aria-expanded` changes. With no `rowHeader` the name is the text and the row's number ("Details row 3"), which still starts with the visible text. Give the button your own children and they are the name instead (with the row header after them), so with no `rowHeader` make them different on each row, or give it an `aria-label`. Give the expand column a header with the same text visually hidden (`<span className="kv-table-visually-hidden">{cases.expandButtonText}</span>`), so it isn't an empty header. Put the column first, after the checkbox column: on a small screen the first columns are the ones in view. The detail row has one cell that spans every column, and is rendered only while the row is expanded. Expanding can't be combined with `virtualize`.
 
 ## Filtering and pagination
 
 Add `columnFilteringFeature` with `filteredRowModel: createFilteredRowModel()`, and `rowPaginationFeature` with `paginatedRowModel: createPaginatedRowModel()`. The filter and the page controls are your own: `cases.table.setColumnFilters(…)`, `cases.table.nextPage()`.
 
-- **A filter change is announced** after 500 ms without another one, with the number of rows left: "3 rader." A filter that leaves nothing shows `Table.Empty`. Replace its text with something useful.
+- **A filter change is announced** after 500 ms without another one, with the number of rows left: "3 rows." A filter that leaves nothing shows `Table.Empty`. Replace its text with something useful.
 - **Search box.** Add `columnFilteringFeature` (a requirement of the global filter), `globalFilteringFeature` and `filteredRowModel: createFilteredRowModel()`. Put a labelled `TextInput type="search"` in a `<search>` landmark and call `table.setGlobalFilter(value)` from `onValueChange`. A page that also has a site search should name this one (for example `aria-labelledby` on the field's label). The row count is announced as for any filter, and `Table.Empty` says what to do when nothing matches. See the Search story: `SearchCases`.
-- **Choosing columns.** Add `columnVisibilityFeature`. Render a `Fieldset.Root group` with a `Fieldset.Legend` ("Visa kolumner") and one `Checkbox` with a `Field.Label` for each `table.getAllLeafColumns()` column that `getCanHide()`, with `checked={column.getIsVisible()}` and `onCheckedChange={(checked) => column.toggleVisibility(checked)}`. Give the identifier column `enableHiding: false`, so the rows keep a row header. Draw `row.getVisibleCells()` in the body. Nothing is announced: the change is the user's own. See the Column visibility story: `ColumnVisibilityCases`.
-- **Pagination is the recommended answer to a large table.** Each page is its own small table. Say where the user is, in the caption or in a status near the controls ("Rader 21–40 av 312"), and keep the page controls after the table so they come in the Tab order where people look for them. A Pagination component is planned for M3.
+- **Choosing columns.** Add `columnVisibilityFeature`. Render a `Fieldset.Root group` with a `Fieldset.Legend` ("Show columns") and one `Checkbox` with a `Field.Label` for each `table.getAllLeafColumns()` column that `getCanHide()`, with `checked={column.getIsVisible()}` and `onCheckedChange={(checked) => column.toggleVisibility(checked)}`. Give the identifier column `enableHiding: false`, so the rows keep a row header. Draw `row.getVisibleCells()` in the body. Nothing is announced: the change is the user's own. See the Column visibility story: `ColumnVisibilityCases`.
+- **Pagination is the recommended answer to a large table.** Each page is its own small table. Say where the user is, in the caption or in a status near the controls ("Rows 21–40 of 312"), and keep the page controls after the table so they come in the Tab order where people look for them. A Pagination component is planned for M3.
 
 ## Large data
 
@@ -205,7 +205,7 @@ Put the table in `Table.ScrollRegion`. A data table that needs two dimensions is
 **Name the region.** While it is a region it needs a name (WCAG 4.1.2). With `table={cases}` and a `Table.Caption` the caption names it. A table with no caption has no name to give it, so name the region yourself, with `aria-labelledby` pointing at a visible heading or with `aria-label`; without a name a development warning says so once the region is one. Name the table the same way, with `aria-labelledby` on `Table.Root`. A caption, or a heading elsewhere in the same document or shadow root, both work.
 
 ```tsx
-<Heading as="h2" id="fees-heading">Avgifter</Heading>
+<Heading as="h2" id="fees-heading">Fees</Heading>
 <Table.ScrollRegion aria-labelledby="fees-heading">
   <Table.Root aria-labelledby="fees-heading">…</Table.Root>
 </Table.ScrollRegion>
@@ -219,8 +219,8 @@ Don't turn rows into cards with `display: block` on cells: some browsers then dr
 
 ## States
 
-- **Loading.** `isLoading` sets `aria-busy="true"` and `data-busy` on the table and announces "Laddar rader." Rows already on screen stay at full contrast, and the head gets a static hatched bar, so the table never looks dimmed. A first load with no rows yet shows "Laddar rader." in the empty row instead of the empty text, so the table never says there is nothing while rows are on their way. A reload with rows is the one case where words matter: show the status near the table, such as in the caption or an `Alert.Info`.
-- **Empty.** `Table.Empty` is one row with one cell that spans every column, shown when there are no rows. Its text is "Det finns inga rader att visa." Pass children to say something useful: why, and what to do next.
+- **Loading.** `isLoading` sets `aria-busy="true"` and `data-busy` on the table and announces "Loading rows." (in English). Rows already on screen stay at full contrast, and the head gets a static hatched bar, so the table never looks dimmed. A first load with no rows yet shows "Loading rows." in the empty row instead of the empty text, so the table never says there is nothing while rows are on their way. A reload with rows is the one case where words matter: show the status near the table, such as in the caption or an `Alert.Info`.
+- **Empty.** `Table.Empty` is one row with one cell that spans every column, shown when there are no rows. Its English text is "No rows to show." Pass children to say something useful: why, and what to do next.
 
 ## Announcements
 

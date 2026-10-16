@@ -19,10 +19,10 @@ A Popover is a small floating panel that a button opens: a hint, a short form, a
 import { Popover } from '@kvirn-ui/react'
 
 ;<Popover.Root>
-  <Popover.Trigger>Om tjänsten</Popover.Trigger>
-  <Popover.Popup aria-label="Om tjänsten">
-    <p>Tjänsten drivs av kommunen och är öppen dygnet runt.</p>
-    <Popover.Close>Stäng</Popover.Close>
+  <Popover.Trigger>About the service</Popover.Trigger>
+  <Popover.Popup aria-label="About the service">
+    <p>The service is run by the municipality and is open around the clock.</p>
+    <Popover.Close>Close</Popover.Close>
   </Popover.Popup>
 </Popover.Root>
 ```
@@ -45,7 +45,7 @@ import { Popover } from '@kvirn-ui/react'
 | `padding`                     | `8`              | The space kept to the edge of the viewport, in pixels                                                                                                                                                                                  |
 | `matchAnchorWidth`            | `false`          | Make the popup exactly as wide as the trigger                                                                                                                                                                                          |
 
-`Popover.Trigger` and `Popover.Close` take `as`, a component such as `Button` that gets the other props as plain props (`<Popover.Trigger as={Button} aria-label="Hjälp">`). `Popover.Popup` takes `as="section"`. Every part merges `className`, `style`, handlers and refs with its own.
+`Popover.Trigger` and `Popover.Close` take `as`, a component such as `Button` that gets the other props as plain props (`<Popover.Trigger as={Button} aria-label="Help">`). `Popover.Popup` takes `as="section"`. Every part merges `className`, `style`, handlers and refs with its own.
 
 ## Hook
 
@@ -56,9 +56,9 @@ function Help() {
   const popover = usePopover({ placement: 'bottom-end' })
   return (
     <>
-      <button {...popover.triggerProps}>Hjälp</button>
-      <div {...popover.popupProps} aria-label="Hjälp">
-        <button {...popover.closeProps}>Stäng</button>
+      <button {...popover.triggerProps}>Help</button>
+      <div {...popover.popupProps} aria-label="Help">
+        <button {...popover.closeProps}>Close</button>
       </div>
     </>
   )

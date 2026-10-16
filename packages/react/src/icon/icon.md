@@ -57,7 +57,7 @@ import { Button, Icon } from '@kvirn-ui/react'
 
 <Icon name="search" />
 <Icon name="warning" label={messages.warning} size="24" />
-<Button><Icon name="add" />Lägg till</Button>
+<Button><Icon name="add" />Add</Button>
 ```
 
 The 25 cap is for this set only. The Map (`mapIcons` in `@kvirn-ui/map`, with the default marker pin) and the rich text editor (`richTextIconNames` in `@kvirn-ui/rich-text`) draw their own icons in the same style, outside the cap. The docs Icon page shows all three sets.
@@ -125,7 +125,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 ```tsx
 // Anywhere, server components included: the name is a string.
 <Icon name="delete" />
-<Icon name="logo" label="Kvirnby kommun" size="48" />
+<Icon name="logo" label="Kvirnby municipality" size="48" />
 <Icon name="delte" /> // type error, and a warning in development
 ```
 
@@ -154,8 +154,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
 An icon in a Button takes the Button's colour and lines up with its text. Put it before or after the text: the order in the markup is the order on screen, and right-to-left text flips it.
 
 ```tsx
-<Button><Icon name="add" />Lägg till</Button>
-<Button>Nästa<Icon name="arrow-forward" /></Button>
+<Button><Icon name="add" />Add</Button>
+<Button>Next<Icon name="arrow-forward" /></Button>
 
 // Icon-only: the name goes on the Button, from your translations. The icon stays decorative.
 <Button className="kv-button--icon-only" aria-label={messages.close}>

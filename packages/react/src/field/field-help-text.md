@@ -2,7 +2,7 @@
 
 > **Draft** (Plan 0017). The accessibility contract is [field.a11y.md](field.a11y.md), shared with Field. The Field it sits in is described in [field.md](field.md).
 
-A short instruction under a control that helps while typing: a format, an example or a limit, such as "12 siffror, ÅÅÅÅMMDD-NNNN". Use it inside a [Field](field.md), or as `Fieldset.HelpText`, `RadioGroup.HelpText` and `CheckboxGroup.HelpText` under a group. Text the user must read before answering is a description: write a `Field.Prose` above the control instead.
+A short instruction under a control that helps while typing: a format, an example or a limit, such as "12 digits, YYYYMMDD-NNNN". Use it inside a [Field](field.md), or as `Fieldset.HelpText`, `RadioGroup.HelpText` and `CheckboxGroup.HelpText` under a group. Text the user must read before answering is a description: write a `Field.Prose` above the control instead.
 
 - **Under the control, in 14px.** A help text never goes above the control: a dev warning (`help-text-before-control`) fires when it does.
 - **Plain text.** The accessible description is the text content, so a heading, list or link inside it loses its structure for a screen-reader user, and a link in it can't be followed from there. Keep it to one or two short sentences or a format example. Anything with structure is a `Field.Prose`.

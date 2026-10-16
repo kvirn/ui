@@ -27,18 +27,18 @@ Native tab order. No key is intercepted.
 
 | Key       | Context            | Action                                                                                           | Test                                                                                                           |
 | --------- | ------------------ | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| Tab       | page load or start | Focuses the skip link (it shows in flow: the `Default` story)                                    | `skip-link.test.tsx › SkipLink keyboard › the first Tab stop is the skip link`                                 |
-| Tab       | on the skip link   | Moves to the next stop (the wordmark), the link hides again                                      | `skip-link.test.tsx › SkipLink keyboard › Tab leaves the skip link for the next stop`                          |
+| Tab       | page load or start | Focuses the skip link. It becomes visible at the top of the page                                 | `skip-link.test.tsx › SkipLink keyboard › the first Tab stop is the skip link`                                 |
+| Tab       | on the skip link   | Moves to the next focusable element, and the skip link hides again                               | `skip-link.test.tsx › SkipLink keyboard › Tab leaves the skip link for the next stop`                          |
 | Shift+Tab | on the skip link   | Leaves the page content backwards (browser UI)                                                   | `skip-link.test.tsx › SkipLink keyboard › Shift+Tab from the skip link leaves the document`                    |
 | Enter     | on the skip link   | Focuses the target (`tabindex="-1"` added if it was not focusable); the next Tab continues in it | `skip-link.test.tsx › SkipLink keyboard › Enter moves focus to the target and the next Tab continues after it` |
 | Space     | on the skip link   | Not handled (a link; the page scrolls natively)                                                  | `skip-link.test.tsx › SkipLink keyboard › Space is not handled`                                                |
 
-The visible state is proved in the `Default` story, where the theme is loaded: hidden before Tab, shown in flow while focused, hidden after Tab.
+The visible state is proved in a story test that loads the default theme: hidden before Tab, shown in the page flow while focused, hidden after Tab.
 
 ## Focus management
 
 - Initial focus: not moved. The link is a Tab stop and nothing else.
-- On activation: focus moves to the target element. The click handler does not cancel the browser's own jump (`preventDefault` is not called), so the page still scrolls to the target, with the page's `scroll-padding-top`. Without JavaScript the jump still works, and so does the place the browser continues Tab from.
+- On activation: focus moves to the target element. The click handler does not call `preventDefault`, so the browser still makes its own jump to the target. The code shows this; no test checks it.
 - A target made focusable has `tabindex="-1"` until it loses focus (`SkipLink target › a target without tabindex gets tabindex -1 until it loses focus, then it is removed`). A target already focusable is left alone (`a target that is already focusable is left alone`, `a target with its own tabindex -1 keeps it after blur`).
 - Trap: no. Restore to: not applicable.
 
@@ -71,13 +71,13 @@ It reflows with the page (reviewed in the stories, not yet automated (1.4.10 Ref
 
 ## WCAG SCs covered
 
-- 2.4.1 Bypass Blocks (A): the link jumps to the main content (`Enter moves focus to the target…`).
+- 2.4.1 Bypass Blocks (A): the link jumps to the main content (`SkipLink keyboard › Enter moves focus to the target and the next Tab continues after it`).
 - 2.4.3 Focus Order (A): first stop; the next Tab continues in the target.
-- 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA): visible and in flow while focused (`Default` story).
+- 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA): visible and in the page flow while focused (the story test with the theme loaded).
 - 1.4.1 Use of Color (A): the link is underlined, so colour is not the only cue (a theme property, not a test).
 - 3.1.2 Language of Parts (AA): a custom label in another language is marked by the consumer (see Consumer responsibilities).
 - 2.5.8 Target Size (Minimum) (AA), 1.4.10 Reflow (AA), 1.4.3 Contrast (Minimum) (AA) and 1.4.11 Non-text Contrast (AA): the default theme; the contrast is measured by an automated check.
-- 4.1.2 Name, Role, Value (A): `link` named by its text (`the name is the default label…`, axe tests).
+- 4.1.2 Name, Role, Value (A): `link` named by its text (`SkipLink name and attributes › the name is the default label, rendered as text with no ARIA added`, and the axe tests).
 
 ## AT test record
 
@@ -98,5 +98,5 @@ It reflows with the page (reviewed in the stories, not yet automated (1.4.10 Ref
 
 ## Known issues
 
-- The Finnish, Norwegian Bokmål and Norwegian Nynorsk texts are drafts. A native speaker still has to review them.
+- The Finnish, Norwegian Bokmål and Norwegian Nynorsk texts are drafts. A native speaker still has to review them. <!-- kv-lang-ok: the language name Bokmål -->
 - Safari (WebKit): it isn't yet known whether the focus ring shows on the target after someone presses Enter on the link. This is not automated, and the manual check is `pending`. In Safari, Tab only reaches links when "Press Tab to highlight each item" is on (or with Option+Tab), so test with that setting on. Don't hide the ring on `[tabindex="-1"]`.

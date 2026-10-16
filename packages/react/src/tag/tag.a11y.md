@@ -1,7 +1,7 @@
 # Accessibility contract: Tag and TagGroup
 
 - **APG pattern:** none. APG has no chip or tag pattern, so no key is invented. A removable tag is a native `<button>`: the [APG Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/) keys apply (Enter, Space) and nothing else.
-- **Deviations:** none. Delete and Backspace are not taken on a remove button: that is not an APG deviation (APG defines nothing for a chip), see the `keyboard` skill.
+- **Deviations:** none. Delete and Backspace are not taken on a remove button: that is not an APG deviation (APG defines nothing for a chip).
 - **Native elements used:** `<ul role="list">` with `<li>` items, `<button type="button">`, `<span>`, `<p>`.
 - **Status:** alpha candidate. Accessibility-reviewer pending, manual AT is `pending`.
 - **Tests:** `tag.test.tsx` next to this file. `tag.stories.tsx` in `apps/storybook/src/components/tag/`. Design: `docs/design/tag-and-filters.md`.
@@ -62,7 +62,7 @@ The live region keeps only the last message, so the filter pattern sets `announc
 
 ## Consumer responsibilities
 
-- **Words, always.** A tag says its fact in text: `År: 2025`, not `2025`, so it is clear out of context (`filters.appliedValue`).
+- **Words, always.** A tag says its fact in text: `Year: 2025`, not `2025`, so it is clear out of context (`filters.appliedValue`).
 - **Keep the visible text and the name equal.** Pass `label` when `children` is richer than a string (2.5.3).
 - **Change the tags in `onRemove`, synchronously.** Announce a combined message, as the "Filter a list" pattern does, when other content changes with the removal (4.1.3).
 - **Selectable filters are checkboxes** (CheckboxGroup), not a tag state. A Badge is never put in a TagGroup.

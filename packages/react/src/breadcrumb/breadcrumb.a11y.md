@@ -49,7 +49,7 @@ Native tab order. No key is intercepted, and the arrow keys do nothing.
 | ----- | ------------------ | ---------- |
 | none  | none               | –          |
 
-The landmark name is the only string: `breadcrumb.label` (en `You are here`, sv `Du är här` (You are here), fi `Olet tässä` (You are here)). Override it with `label`, `messages` or a provider. The current page's `aria-current="page"` is read with its text.
+The landmark name is the only string: `breadcrumb.label` (en `You are here`; sv `Du är här` and fi `Olet tässä` mean the same). Override it with `label`, `messages` or a provider. The current page's `aria-current="page"` is read with its text. <!-- kv-lang-ok: the sv and fi catalog strings -->
 
 ## Consumer responsibilities
 

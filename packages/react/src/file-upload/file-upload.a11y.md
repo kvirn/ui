@@ -81,7 +81,7 @@ Rules, tested in `file-upload.test.tsx`:
 
 ## Announcements
 
-Everything goes through the shared Announcer, politely. One sentence per batch, built by FileUpload's buffer, so a second call never replaces the first. The buffer is shared by every FileUpload on the same Announcer, merges calls less than about 150 ms apart, drops held sentences for a file that was removed, retried or cancelled, and names the Field label when several FileUploads are mounted (`fileUpload.announcementForField`, "Bilagor: ...", Swedish for "Attachments: ...").
+Everything goes through the shared Announcer, politely. One sentence per batch, built by FileUpload's buffer, so a second call never replaces the first. The buffer is shared by every FileUpload on the same Announcer, merges calls less than about 150 ms apart, drops held sentences for a file that was removed, retried or cancelled, and names the Field label when several FileUploads are mounted (`fileUpload.announcementForField`, for example "Attachments: 2 files added.").
 
 | Event                                                                                                                              | Message key (i18n)                                                                                                  | Politeness                                |
 | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |

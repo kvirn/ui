@@ -80,7 +80,7 @@ Opening is announced by the focus move: the screen reader reads the role and the
 ## Consumer responsibilities
 
 - **Name the dialog:** a `Dialog.Title` (the question the buttons answer, or a verb phrase for a task: never "Are you sure?"), or `aria-label`. A development warning fires without one (4.1.2).
-- **Say what each button does** with verb and object ("Spara numret", Swedish for "Save the number"), never "OK" or "Ja" (Swedish for "Yes"). One primary action, first in the DOM.
+- **Say what each button does** with verb and object ("Save the number"), never "OK" or "Yes". One primary action, first in the DOM.
 - **Give a Trigger, or `finalFocusRef`.** A dialog opened by a timer, with focus on `body`, has nowhere to return to.
 - **Keeps what was typed.** The content stays mounted while the dialog is closed, so reopening it to finish the same task shows what was entered, with nothing typed twice (supports 3.3.7 Redundant Entry (A)). To start fresh, render `Dialog.Root` conditionally. A backdrop press does nothing by default, so no one loses input by accident. Tested in `dialog.test.tsx › what was typed is still there when the dialog is closed with Escape and opened again`.
 - **Opening on page load is for system messages only** (a session timeout). Use a page for a multi-step form or long reading.

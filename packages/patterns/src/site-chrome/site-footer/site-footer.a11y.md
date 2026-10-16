@@ -3,7 +3,7 @@
 - **APG pattern:** none: native landmarks, [DefinitionList](../../../../react/src/definition-list/definition-list.a11y.md), [Address](../../../../react/src/address/address.a11y.md) and the [List](../../../../react/src/list/list.a11y.md).
 - **Deviations:** none
 - **Native elements used:** `<footer>` (contentinfo), `<h2>`, `<dl>`, `<address>`, `<nav aria-labelledby>`, `<ul>`, `<a href>`.
-- **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
+- **Status:** alpha candidate. Manual AT is `pending`.
 - **Tests:** the pattern adds no behaviour: the shipped parts' tests prove the links and `site-footer.stories.tsx` (axe, every theme) the composition. `site-footer.stories.tsx` in `apps/storybook/src/patterns/site-chrome/`.
 
 ## Roles, states, properties
@@ -44,11 +44,11 @@ None.
 
 ## Consumer responsibilities
 
-- The organisation line, the contact details and the headings of your own groups (`Följ Kvirnby`) are the site's text, written as children. Give each `nav` an `aria-labelledby` that points at its `Heading`, with an `id` of your own.
+- The organisation line, the contact details and the headings of your own groups (`Follow Kvirnby`) are the site's text, written as children. Give each `nav` an `aria-labelledby` that points at its `Heading`, with an `id` of your own.
 
 ## Visual / modes
 
-- Focus indicator: the token ring on every link and button.
+- Focus indicator: every link and button shows the theme's focus ring.
 - Target size: at least 24px (2.5.8).
 - forced-colors behaviour: sections keep a `CanvasText` border; links are `LinkText`.
 - reduced-motion behaviour: nothing animates.
@@ -56,7 +56,7 @@ None.
 
 ## WCAG SCs covered
 
-1.3.1, 1.4.10, 2.4.1, 2.4.4, 2.5.8, 3.1.1.
+1.3.1 Info and Relationships (A), 1.4.10 Reflow (AA), 2.4.1 Bypass Blocks (A), 2.4.4 Link Purpose (In Context) (A), 2.5.8 Target Size (Minimum) (AA).
 
 ## AT test record
 

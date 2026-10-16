@@ -57,15 +57,15 @@ The arrow keys, Home and End do nothing on a checkbox (native). Clicking the lab
 
 ## Announcements
 
-None. Nothing is live. On focus a screen reader reads the label, "checkbox", the checked or "mixed" state, "required" when `aria-required` is set, and the description: the option's help text, then the error when the standalone checkbox is invalid, after the error prefix ("Error:" in English, "Fel:" in Swedish).
+None. Nothing is live. On focus a screen reader reads the label, "checkbox", the checked or "mixed" state, "required" when `aria-required` is set, and the description: the option's help text, then the error when the standalone checkbox is invalid, after the error prefix ("Error:" in English; each language has its own prefix).
 
 ## Consumer responsibilities
 
 - Put the Checkbox directly in `Field.Root`, before the `Field.Label`, so the box is at the inline start and the theme's choice layout applies.
-- A visible label always. The label is the whole sentence for a declaration ("Jag intygar att uppgifterna är korrekta", Swedish for "I confirm that the information is correct"), written so it can be answered "yes".
+- A visible label always. The label is the whole sentence for a declaration ("I confirm that the information is correct"), written so it can be answered "yes".
 - For a single consent or declaration, set `required` on the Field, so the label has no "(optional)" and the field is `aria-required`; or `marker="none"`.
 - Own `indeterminate`: set it from your data (some, not all, children are checked) and pass `false` once the user has chosen. Don't use it for a checkbox that was never answered.
-- Validate and set `invalid` yourself; render a Field.ErrorMessage that says what to do ("Bekräfta att uppgifterna är korrekta", Swedish for "Confirm that the information is correct").
+- Validate and set `invalid` yourself; render a Field.ErrorMessage that says what to do ("Confirm that the information is correct").
 - On a failed send, move focus to the ErrorSummary or to the first invalid field. The Checkbox's error is not live and is read only when the box gets focus (3.3.1 Error Identification (A), 4.1.3 Status Messages (AA)).
 - Don't use a checkbox where a [Switch](/components/switch) or a button is meant (a setting that is saved at once is a Switch), and don't use one for "yes or no" questions that need both answers: use a [RadioGroup](/components/radio-group).
 

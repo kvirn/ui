@@ -4,10 +4,10 @@
 
 **KvirnUI holds no form state; bring your own form logic.** RadioGroup renders the value you give it and reports the radio the user chose through `onValueChange`. It never stores the selection (the one exception is UI state for a `RadioGroup.Reveal`, below), and it doesn't validate.
 
-A RadioGroup is one question with exactly one answer: "Hur länge behöver du tillståndet?" with 1, 6 or 12 månader. It groups native radios under a legend, with an optional description, help text and error. For several answers that can all be true, use a [CheckboxGroup](../checkbox-group/checkbox-group.md). For a single yes-or-no answer, use a [Checkbox](../checkbox/checkbox.md). For a choice from a long list, use a [Listbox](../listbox/listbox.md).
+A RadioGroup is one question with exactly one answer: "How long do you need the permit?" with 1, 6 or 12 months. It groups native radios under a legend, with an optional description, help text and error. For several answers that can all be true, use a [CheckboxGroup](../checkbox-group/checkbox-group.md). For a single yes-or-no answer, use a [Checkbox](../checkbox/checkbox.md). For a choice from a long list, use a [Listbox](../listbox/listbox.md).
 
 - `RadioGroup.Root` renders the native `<fieldset>` and acts as a [Fieldset](../fieldset/fieldset.md) with `group` set, instead of `role="radiogroup"`. The `RadioGroup.Legend` is its accessible name.
-- Each option is a `RadioGroup.Radio` with a `value`, directly in its own [Field.Root](../field/field.md), before the `Field.Label`. The group gives it a shared `name` (generated when you give none, so the browser groups them), its checked state from `value`, and reports the change. A Field inside a group has no "(optional)" marker: the marker belongs to the question, so the legend ends with "(valfritt)" when the group isn't `required`.
+- Each option is a `RadioGroup.Radio` with a `value`, directly in its own [Field.Root](../field/field.md), before the `Field.Label`. The group gives it a shared `name` (generated when you give none, so the browser groups them), its checked state from `value`, and reports the change. A Field inside a group has no optional marker: the marker belongs to the question, so the legend ends with the optional text (in `en`, "(optional)") when the group isn't `required`.
 - **Controlled:** pass `value` (the checked radio's value, or `null` for none) and `onValueChange(value, { reason: 'input', event })`. **Uncontrolled:** pass `defaultValue` and `name`, and the browser keeps the state until a form submit reads it.
 - The browser does the keys. The group is one Tab stop, and the arrow keys move focus and check, mirrored in right-to-left. No key handler is added.
 - **A radio never gets `aria-invalid`.** ARIA doesn't support it on `radio`. An invalid group marks every radio with `data-invalid` for the theme, and the group's error reaches users through the fieldset's description.
@@ -77,20 +77,20 @@ import { Field, RadioGroup } from '@kvirn-ui/react'
   required
   invalid={errors.duration !== undefined}
 >
-  <RadioGroup.Legend>Hur länge behöver du tillståndet?</RadioGroup.Legend>
+  <RadioGroup.Legend>How long do you need the permit?</RadioGroup.Legend>
   <RadioGroup.Prose>
-    <p>Välj en. Tillståndet gäller från dagen du ansöker.</p>
+    <p>Choose one. The permit applies from the day you apply.</p>
   </RadioGroup.Prose>
   <Field.Root>
     <RadioGroup.Radio value="1" />
-    <Field.Label>1 månad</Field.Label>
+    <Field.Label>1 month</Field.Label>
   </Field.Root>
   <Field.Root>
     <RadioGroup.Radio value="12" />
-    <Field.Label>12 månader</Field.Label>
-    <Field.HelpText>Billigast per månad.</Field.HelpText>
+    <Field.Label>12 months</Field.Label>
+    <Field.HelpText>Cheapest per month.</Field.HelpText>
   </Field.Root>
-  <RadioGroup.HelpText>Du kan ansöka om förlängning senare.</RadioGroup.HelpText>
+  <RadioGroup.HelpText>You can apply for an extension later.</RadioGroup.HelpText>
   <RadioGroup.ErrorMessage>{errors.duration}</RadioGroup.ErrorMessage>
 </RadioGroup.Root>
 ```
@@ -106,7 +106,7 @@ Your part:
 - **Don't do anything harmful or slow on `change`.** The arrow keys check the radio they move to, so a keyboard user changes the answer just by moving (WCAG 3.2.2). Don't navigate or submit from `onValueChange`.
 - **A description and a help text are text.** The accessible description is the text content, so a heading, list or link inside it loses its structure for a screen-reader user. Keep a help text to one or two short sentences with no links. A help text for a single option is a `Field.HelpText` in that option's Field.
 - **Set `invalid` and render a `RadioGroup.ErrorMessage` together,** with text that says what's wrong and how to fix it. Because a radio has no `aria-invalid`, the error message is the only thing that tells a screen-reader user. On submit, move focus to the first radio of the group, since the group never moves focus.
-- **A required group isn't announced as required.** `aria-required` isn't supported on `group` or `radio`, so `required` only removes "(valfritt)" from the legend and sets `data-required`. Say what is required in the legend or the description. The assistive-technology test run decides whether a fallback is needed.
+- **A required group isn't announced as required.** `aria-required` isn't supported on `group` or `radio`, so `required` only removes the optional text (in `en`, "(optional)") from the legend and sets `data-required`. Say what is required in the legend or the description. The assistive-technology test run decides whether a fallback is needed.
 - **A radio has no focus state of its own** (no `data-focus-visible`). A re-render while a radio has focus makes React write its `name` again, and Chromium then stops treating the group as one Tab stop, so style focus with `:focus-visible`.
 - **An "Other, please specify" field is a `RadioGroup.Reveal`.** Put `<RadioGroup.Reveal value="other">` with a `Field.Root` and a `TextInput` right after the "Other" radio's `Field.Root`. It is `hidden` until that radio is checked, focus stays on the radio (Tab then reaches the field), the radio gets `aria-controls`, and a polite announcement says a field appeared. It is never unmounted, so the typed text survives switching options and a plain form still submits it: ignore or clear it when another option is chosen. An uncontrolled group goes back to `defaultValue` on a form reset.
 - **A Field in a Reveal is its own question.** It keeps its optional marker and required state, and its help text is its own description, not the group's.
@@ -129,7 +129,7 @@ function Duration({
   const group = useRadioGroup({ value, onValueChange: setValue })
   return (
     <fieldset {...fieldset.fieldsetProps}>
-      <legend {...fieldset.legendProps}>Hur länge behöver du tillståndet?</legend>
+      <legend {...fieldset.legendProps}>How long do you need the permit?</legend>
       <input type="radio" value="1" {...group.getRadioProps('1')} />
       <input type="radio" value="12" {...group.getRadioProps('12')} />
     </fieldset>

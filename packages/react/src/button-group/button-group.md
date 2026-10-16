@@ -44,9 +44,9 @@ Keyed `button-group-*`, English, for the developer only: a group in a Toolbar wi
 ```tsx
 import { Button, ButtonGroup } from '@kvirn-ui/react'
 
-;<ButtonGroup aria-label="Ärendet">
-  <Button className="kv-button--primary">Skicka</Button>
-  <Button>Spara utkast</Button>
+;<ButtonGroup aria-label="Case actions">
+  <Button className="kv-button--primary">Send</Button>
+  <Button>Save draft</Button>
 </ButtonGroup>
 ```
 
@@ -55,8 +55,8 @@ A Card footer needs no name:
 ```tsx
 <Card.Footer>
   <ButtonGroup>
-    <Button className="kv-button--primary">Ansök</Button>
-    <Button>Läs mer</Button>
+    <Button className="kv-button--primary">Apply</Button>
+    <Button>Read more</Button>
   </ButtonGroup>
 </Card.Footer>
 ```
@@ -64,13 +64,13 @@ A Card footer needs no name:
 A joined strip, as in a segmented control:
 
 ```tsx
-<ButtonGroup className="kv-button-group--attached" aria-label="Textstil">
-  <Toggle>Fet</Toggle>
-  <Toggle>Kursiv</Toggle>
+<ButtonGroup className="kv-button-group--attached" aria-label="Text style">
+  <Toggle>Bold</Toggle>
+  <Toggle>Italic</Toggle>
 </ButtonGroup>
 ```
 
-A name should say what the buttons are, not "Grupp". With several groups on a page, each name differs. If the group has a heading above it, point `aria-labelledby` at it instead of repeating the words.
+A name should say what the buttons are, not "Group". With several groups on a page, each name differs. If the group has a heading above it, point `aria-labelledby` at it instead of repeating the words.
 
 ## Hook
 
@@ -80,7 +80,7 @@ import { useButtonGroup } from '@kvirn-ui/react'
 function Actions() {
   const group = useButtonGroup({ isNamed: true })
   return (
-    <div {...group.groupProps} aria-label="Ärendet">
+    <div {...group.groupProps} aria-label="Case actions">
       …
     </div>
   )

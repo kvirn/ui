@@ -32,9 +32,9 @@ The parent headings of the current one get no attribute: the trail is a visual r
 
 | Message key             | Says by default | In `sv`          |
 | ----------------------- | --------------- | ---------------- |
-| `tableOfContents.label` | On this page    | På den här sidan |
+| `tableOfContents.label` | On this page    | På den här sidan | <!-- kv-lang-ok: the sv catalog string in the message table --> |
 
-It names the landmark when you give no `aria-labelledby`. Override it per provider, or per instance with `messages={{ label: 'Innehåll' }}`. An `aria-label` of your own wins over it.
+It names the landmark when you give no `aria-labelledby`. Override it per provider, or per instance with `messages={{ label: 'Contents' }}`. An `aria-label` of your own wins over it.
 
 Dev warnings (English, development only, never shown to users):
 
@@ -49,14 +49,14 @@ Dev warnings (English, development only, never shown to users):
 import { Heading, TableOfContents } from '@kvirn-ui/react'
 
 const items = [
-  { id: 'avgift', label: 'Avgift', level: 2 },
-  { id: 'avgift-bostad', label: 'Bostäder', level: 3 },
-  { id: 'ansok', label: 'Så ansöker du', level: 2 },
+  { id: 'fee', label: 'Fee', level: 2 },
+  { id: 'fee-housing', label: 'Housing', level: 3 },
+  { id: 'apply', label: 'How to apply', level: 2 },
 ]
 
 ;<>
   <Heading as="h2" size="heading-4" id="contents-title">
-    På den här sidan
+    On this page
   </Heading>
   <TableOfContents.Root aria-labelledby="contents-title" offset={64} items={items} />
 </>
@@ -108,7 +108,7 @@ The function replaces the list: draw a list of nodes with an item and a link for
 
 ```tsx
 <TableOfContents.List as="ol">…</TableOfContents.List>
-<TableOfContents.Root items={items} id="innehall" />
+<TableOfContents.Root items={items} id="contents" />
 ```
 
 Only the List takes `as` (`ul` or `ol`, a string, so it works from a Server Component): a tag outside the list is a type error and, from JS, warns once in development and renders a `<ul>`. Root is always the `<nav>` landmark, Item an `<li>` and Link an `<a>` with its `href`. In a React Server Component, use the named exports `TableOfContentsRoot`, `TableOfContentsList`, `TableOfContentsItem` and `TableOfContentsLink` instead of `TableOfContents.Root` and so on, because a server component can't dot into a client module.
@@ -128,7 +128,7 @@ In compact density (`kv-compact`) the rows are 32px, never below 24px (2.5.8).
 ```tsx
 import { useTableOfContents } from '@kvirn-ui/react'
 
-function Innehall() {
+function Contents() {
   const contents = useTableOfContents({ items, offset: 64, labelledBy: 'contents-title' })
   return (
     <nav {...contents.rootProps}>

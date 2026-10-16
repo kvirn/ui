@@ -1,6 +1,6 @@
 # DateRangePicker
 
-> **Draft** (Plan 0089). This page moves to the docs site. The accessibility contract is [date-range-picker.a11y.md](date-range-picker.a11y.md) and the design spec is [docs/design/date-range.md](../../../../docs/design/date-range.md).
+> **Draft.** This page moves to the docs site. The accessibility contract is [date-range-picker.a11y.md](date-range-picker.a11y.md) and the design spec is [docs/design/date-range.md](../../../../docs/design/date-range.md).
 
 One "Choose dates" button after a **From** and a **To** date. It opens a modal dialog holding a range [Calendar](../calendar/calendar.md): two months side by side from 64rem, one below. A stay, a leave or a closure can be picked in two presses instead of typed. **Typing always works**: DateRangePicker is an add-on to two typed fields, never the only way to give a range.
 
@@ -14,7 +14,7 @@ One "Choose dates" button after a **From** and a **To** date. It opens a modal d
 ## How it works
 
 - **Controlled only.** The picker holds no date. Pass the fields' range as `value` (`{ start, end }`, `YYYY-MM-DD`, `''` for an empty end) and write the chosen range back in `onValueChange`, which is called **once**, when the end is chosen. The bridge functions work per end: `maskedDateToIsoDate` and `isoDateToMaskedDate` for `masks.date()`, `dateInputValueToIsoDate` and `isoDateToDateInputValue` for DateInput's `{ year, month, day }`.
-- **Two presses.** The first press sets the start, the second the end (Enter, Space or a click). The step line in the dialog says which is next, and the first press is announced: "Startdatum fredag 16 oktober 2026. Välj slutdatum."
+- **Two presses.** The first press sets the start, the second the end (Enter, Space or a click). The step line in the dialog says which is next, and the first press is announced: "Start date Friday 16 October 2026. Choose the end date."
 - **The end closes the dialog at once,** fills both fields, returns focus to the trigger (else the first box of the group around it) and says "{start} to {end} selected, {length}" on the page, after the dialog has closed. There is no Done button.
 - **A day that can't be the end starts a new range:** before the start, too short, too long, or past an unavailable day. It becomes the new start, and the day's own name said why before it was pressed. The first field never gets a day the user did not press as a start.
 - **Escape and Close discard the half-chosen range.** Both fields stay as they were and the next opening starts from the typed range.

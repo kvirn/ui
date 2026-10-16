@@ -10,8 +10,8 @@ Put it directly after the page heading, as its own element. Never inside the `h1
 import { Heading, Stack, Stepper } from '@kvirn-ui/react'
 
 ;<Stack className="kv-stack--gap-2">
-  <Heading as="h1">Vilket fordon gäller ansökan?</Heading>
-  <Stepper current={2} total={5} name="Fordonet" />
+  <Heading as="h1">Which vehicle does the application apply to?</Heading>
+  <Stepper current={2} total={5} name="Your vehicle" />
 </Stack>
 ```
 
@@ -22,7 +22,7 @@ import { Heading, Stack, Stepper } from '@kvirn-ui/react'
 
 ## Wording
 
-`name` is short and in plain words: "Your vehicle", "Check and send". The text wraps and hyphenates, so a long name is never cut. Each locale owns its word order: Finnish writes "Vaihe 2/5: Ajoneuvosi".
+`name` is short and in plain words: "Your vehicle", "Check and send". The text wraps and hyphenates, so a long name is never cut. Each locale owns its word order: Finnish writes "Vaihe 2/5: Ajoneuvosi". <!-- kv-lang-ok: the fi catalog string -->
 
 ## API
 

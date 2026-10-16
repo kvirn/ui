@@ -2,7 +2,7 @@
 
 > **Draft** (Plan 0024). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [kbd.a11y.md](kbd.a11y.md).
 
-A key in running text: `Du kan flytta mellan fälten med` <kbd>Tab</kbd>. It renders the native `<kbd>`.
+A key in running text: `You can move between the fields with` <kbd>Tab</kbd>. It renders the native `<kbd>`.
 
 - One part: `Kbd`, also `useKbd()`. It renders `<kbd class="kv-kbd">`, and no role, ARIA, text or strings.
 - One key per `Kbd`. For a combination, nest them: `<Kbd><Kbd>Ctrl</Kbd>+<Kbd>C</Kbd></Kbd>`. The theme draws each key and leaves the outer one plain.
@@ -18,7 +18,7 @@ A key in running text: `Du kan flytta mellan fälten med` <kbd>Tab</kbd>. It ren
 import { Kbd } from '@kvirn-ui/react'
 
 ;<p>
-  Du kan flytta mellan fälten i formuläret med <Kbd>Tab</Kbd>.
+  You can move between the fields in the form with <Kbd>Tab</Kbd>.
 </p>
 
 // A combination

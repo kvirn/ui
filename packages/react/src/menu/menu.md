@@ -23,20 +23,20 @@ The browser puts the menu in the **top layer**, so no ancestor's `overflow` clip
 import { Menu } from '@kvirn-ui/react'
 
 ;<Menu.Root onOpenChange={(open, { reason }) => {}}>
-  <Menu.Trigger>Åtgärder</Menu.Trigger>
+  <Menu.Trigger>Actions</Menu.Trigger>
   <Menu.Popup>
-    <Menu.Item onSelect={() => print()}>Skriv ut</Menu.Item>
-    <Menu.Item disabled>Dela</Menu.Item>
+    <Menu.Item onSelect={() => print()}>Print</Menu.Item>
+    <Menu.Item disabled>Share</Menu.Item>
     <Menu.Separator />
     <Menu.Group>
-      <Menu.GroupLabel>Visa</Menu.GroupLabel>
+      <Menu.GroupLabel>Show</Menu.GroupLabel>
       <Menu.CheckboxItem checked={grid} onCheckedChange={setGrid}>
-        Rutnät
+        Grid
       </Menu.CheckboxItem>
     </Menu.Group>
-    <Menu.RadioGroup value={sort} onValueChange={setSort} aria-label="Sortera">
-      <Menu.RadioItem value="name">Namn</Menu.RadioItem>
-      <Menu.RadioItem value="date">Datum</Menu.RadioItem>
+    <Menu.RadioGroup value={sort} onValueChange={setSort} aria-label="Sort">
+      <Menu.RadioItem value="name">Name</Menu.RadioItem>
+      <Menu.RadioItem value="date">Date</Menu.RadioItem>
     </Menu.RadioGroup>
   </Menu.Popup>
 </Menu.Root>
@@ -69,14 +69,14 @@ function Actions() {
   const [current, setCurrent] = useState<string>()
   return (
     <>
-      <button {...menu.triggerProps}>Åtgärder</button>
+      <button {...menu.triggerProps}>Actions</button>
       <div {...menu.popupProps}>
         <button
           {...menu.getItemProps('item', { isCurrent: current === 'print' })}
           onFocus={() => setCurrent('print')}
           onBlur={() => setCurrent(undefined)}
         >
-          Skriv ut
+          Print
         </button>
       </div>
     </>

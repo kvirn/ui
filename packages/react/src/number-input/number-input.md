@@ -7,7 +7,7 @@ A quantity or an amount in a form: how many children live with you, the monthly 
 - Renders a native `<input type="text">` with the number mask by default (`mask={false}` turns it off, another `mask` replaces it), the keypad that fits (`inputmode`), `spellcheck="false"` and the classes `kv-input kv-input--numeric`. Your `className` joins them.
 - A text box, not a spin button: the arrow keys move the caret and never step the value, and there are no spinner buttons. It never uses `type="number"`, which changes on the mouse wheel, drops leading zeros, rounds silently and reads the decimal mark by the browser's language.
 - Inside a [Field](../field/field.md) it takes its `id`, `aria-describedby`, `aria-invalid`, `aria-required` and `disabled` from it. Outside a Field it needs `aria-label` or `aria-labelledby`: a dev warning says so.
-- With the default number mask, a character it can't take is left out and announced politely, for example "Här kan du bara skriva siffror." With `mask={false}` nothing is left out and nothing is announced. Paste and autofill still work: "1 250,50", "1250.50" and " 2 " are all read.
+- With the default number mask, a character it can't take is left out and announced politely, for example "Only digits can be entered here." With `mask={false}` nothing is left out and nothing is announced. Paste and autofill still work: "1 250,50", "1250.50" and " 2 " are all read.
 - **Reported, never enforced.** `min` and `max` become `details.isWithinRange` in `onValueChange`. The value is never clamped or corrected, and `min` and `max` aren't written as attributes, because they're invalid on a text input. Your form validates and writes the message.
 - **KvirnUI holds no form state; bring your own form logic.** It renders the `value` you give it and reports changes through `onValueChange`, or keeps the value in the native input for a plain form.
 - Headless: no CSS. With `@kvirn-ui/theme/theme.css` imported it is styled.
@@ -64,7 +64,7 @@ A width class is a help text, never a limit: no `maxlength` comes from it.
 
 ### Strings
 
-NumberInput has no strings of its own. The number mask, and a custom `mask`, use the mask's three messages, in all five locales (`mask={false}` uses none): `characterNotAllowed` ("Här kan du bara skriva siffror."), `maximumDecimals` ("Du kan inte skriva fler decimaler.", when a digit is past `decimals`) and `maximumLength` ("Du har skrivit alla 3 tecken.", for other masks). Override them per provider, or per instance with `messages={{ characterNotAllowed: () => '…' }}`. `announceRejections={false}` turns the announcements off, for example when you show your own message. **The `KvirnProvider` is required for announcements and for the page's decimal mark:** without one the mask still works in English, nothing is announced, and a development warning says so once.
+NumberInput has no strings of its own. The number mask, and a custom `mask`, use the mask's three messages, in all five locales (`mask={false}` uses none): `characterNotAllowed` ("Only digits can be entered here."), `maximumDecimals` ("No more decimals can be entered here.", when a digit is past `decimals`) and `maximumLength` ("You’ve entered all 3 characters.", for other masks). Override them per provider, or per instance with `messages={{ characterNotAllowed: () => '…' }}`. `announceRejections={false}` turns the announcements off, for example when you show your own message. **The `KvirnProvider` is required for announcements and for the page's decimal mark:** without one the mask still works in English, nothing is announced, and a development warning says so once.
 
 ### Your own element
 
@@ -94,21 +94,21 @@ The number mask is the default, because a NumberInput that takes letters would b
 import { Field, NumberInput } from '@kvirn-ui/react'
 
 ;<Field.Root required>
-  <Field.Label>Hur många barn bor hos dig?</Field.Label>
+  <Field.Label>How many children live with you?</Field.Label>
   <NumberInput name="children" min={0} max={12} className="kv-input--width-2" />
-  <Field.HelpText>Ett heltal från 0 till 12, till exempel 2.</Field.HelpText>
+  <Field.HelpText>A whole number from 0 to 12, for example 2.</Field.HelpText>
 </Field.Root>
 ```
 
 ## Amounts
 
-With `decimals`, a number has a decimal mark that is a comma in some languages and a point in others, so the help text says it with an example (3.3.2). A NumberInput with `decimals` above 0 in a Field with no help text warns. Leave the currency sign out of the box and say it in the label or the help text ("Skriv beloppet utan valutatecken, till exempel 1 250,50."): a sign typed anyway is a letter to the mask and is left out.
+With `decimals`, a number has a decimal mark that is a comma in some languages and a point in others, so the help text says it with an example (3.3.2). The examples show the comma of a Swedish page; on an English page the mark is a point. A NumberInput with `decimals` above 0 in a Field with no help text warns. Leave the currency sign out of the box and say it in the label or the help text ("Enter the amount without a currency sign, for example 1 250,50."): a sign typed anyway is a letter to the mask and is left out.
 
 ```tsx
 <Field.Root required>
-  <Field.Label>Hur mycket hyra betalar du per månad?</Field.Label>
+  <Field.Label>How much rent do you pay per month?</Field.Label>
   <NumberInput name="rent" decimals={2} grouping min={0} className="kv-input--width-10" />
-  <Field.HelpText>Skriv beloppet utan valutatecken, till exempel 1 250,50.</Field.HelpText>
+  <Field.HelpText>Enter the amount without a currency sign, for example 1 250,50.</Field.HelpText>
 </Field.Root>
 ```
 
@@ -118,12 +118,12 @@ A unit ("kr", "%", "km") goes in an [InputGroup](../input-group/input-group.md) 
 
 ```tsx
 <Field.Root required>
-  <Field.Label>Månadshyra i kronor</Field.Label>
+  <Field.Label>Monthly rent in kronor</Field.Label>
   <InputGroup.Root>
     <NumberInput name="rent" grouping className="kv-input--width-10" />
     <InputGroup.Addon>kr</InputGroup.Addon>
   </InputGroup.Root>
-  <Field.HelpText>Till exempel 8 450</Field.HelpText>
+  <Field.HelpText>For example 8 450</Field.HelpText>
 </Field.Root>
 ```
 
@@ -133,16 +133,16 @@ A unit ("kr", "%", "km") goes in an [InputGroup](../input-group/input-group.md) 
 
 ```tsx
 <Field.Root required invalid={!isWithinRange}>
-  <Field.Label>Hur många barn bor hos dig?</Field.Label>
+  <Field.Label>How many children live with you?</Field.Label>
   <NumberInput
     name="children"
     min={0}
     max={12}
     onValueChange={(value, details) => setIsWithinRange(details.isWithinRange !== false)}
   />
-  <Field.HelpText>Ett heltal från 0 till 12, till exempel 2.</Field.HelpText>
+  <Field.HelpText>A whole number from 0 to 12, for example 2.</Field.HelpText>
   <Field.ErrorMessage>
-    Ange antalet barn som ett tal från 0 till 12, till exempel 2
+    Enter the number of children as a number from 0 to 12, for example 2
   </Field.ErrorMessage>
 </Field.Root>
 ```
@@ -161,7 +161,7 @@ Parse `details.unmaskedValue` (the machine form `1250.5`), never the shown value
 <form.Field name="rent">
   {(field) => (
     <Field.Root invalid={!field.state.meta.isValid} required>
-      <Field.Label>Hur mycket hyra betalar du per månad?</Field.Label>
+      <Field.Label>How much rent do you pay per month?</Field.Label>
       <NumberInput
         name={field.name}
         decimals={2}
@@ -169,7 +169,9 @@ Parse `details.unmaskedValue` (the machine form `1250.5`), never the shown value
         onValueChange={(value, details) => field.handleChange(details.unmaskedValue ?? '')}
         onBlur={field.handleBlur}
       />
-      <Field.HelpText>Skriv beloppet utan valutatecken, till exempel 1 250,50.</Field.HelpText>
+      <Field.HelpText>
+        Enter the amount without a currency sign, for example 1 250,50.
+      </Field.HelpText>
       <Field.ErrorMessage>{field.state.meta.errors.join(', ')}</Field.ErrorMessage>
     </Field.Root>
   )}

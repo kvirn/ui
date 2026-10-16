@@ -21,15 +21,15 @@ There is no `render` prop and no `asChild`.
 import { Link, Section, Tooltip } from '@kvirn-ui/react'
 
 // Tag: a landmark instead of a div, named by its heading.
-<Section as="aside" aria-labelledby="kontakt">
-  <h2 id="kontakt">Kontakta oss</h2>
+<Section as="aside" aria-labelledby="contact">
+  <h2 id="contact">Contact us</h2>
 </Section>
 
 // Component: your design system's button on the trigger. Its props are props of the Trigger.
-<Tooltip.Trigger as={AcmeButton} tone="quiet" aria-label="Skriv ut">…</Tooltip.Trigger>
+<Tooltip.Trigger as={AcmeButton} tone="quiet" aria-label="Print">…</Tooltip.Trigger>
 
 // `as="a"` on a Link bypasses the router you registered, for one link.
-<Link.Root href="/blankett.pdf" download as="a">Blankett (PDF)</Link.Root>
+<Link.Root href="/form.pdf" download as="a">Form (PDF)</Link.Root>
 ```
 
 A tag outside the part's list is a type error. From JavaScript it logs `as-not-allowed:<part>:<tag>` once in development and the part renders its default element. The allowed tags are on each component's Docs page, because a tag changes the outline or the semantics (1.3.1, 4.1.2).
@@ -64,7 +64,7 @@ import { mergeProps, useButton } from '@kvirn-ui/react'
 
 function SaveButton() {
   const button = useButton()
-  return <AcmeButton {...mergeProps({ tone: 'quiet' }, button.buttonProps)}>Spara</AcmeButton>
+  return <AcmeButton {...mergeProps({ tone: 'quiet' }, button.buttonProps)}>Save</AcmeButton>
 }
 ```
 
@@ -91,7 +91,7 @@ mergeProps(
 // With a hook: your props first, the hook's last.
 function SaveButton() {
   const button = useButton()
-  return <button {...mergeProps({ className: 'acme-save' }, button.buttonProps)}>Spara</button>
+  return <button {...mergeProps({ className: 'acme-save' }, button.buttonProps)}>Save</button>
 }
 ```
 

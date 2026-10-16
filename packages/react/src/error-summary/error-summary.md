@@ -1,14 +1,14 @@
 # ErrorSummary
 
-> **Draft** (Plan 0063). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [error-summary.a11y.md](error-summary.a11y.md), and the decisions are in [Plan 0063](../../../../docs/design/plans/0063-summary-list-and-error-summary.md).
+> **Draft.** This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [error-summary.a11y.md](error-summary.a11y.md).
 
 The problems of a failed submit, at the top of the form, each a link to its field. Focus moves to the summary once, so the screen reader reads it and a keyboard user starts at the list. It is an [Alert.Danger](../alert/alert.md): the colour, icon and status word agree with every other danger message.
 
 - Five parts: `ErrorSummary.Root`, `.Title` (an `h2`, or `as="h3"` to `"h6"`), `.List` (`<ul>`, or `as="ol"`), `.Item` (`<li>`) and `.Link` (`<a href="#controlId">`). Also exported as `ErrorSummaryRoot`, `ErrorSummaryTitle`, `ErrorSummaryList`, `ErrorSummaryItem` and `ErrorSummaryLink`.
 - **Focus is the announcement.** The root is `tabindex="-1"` and takes focus on mount and whenever `focusKey` changes. It is a named `group`, not `role="alert"` and not a live region, so nothing is read twice.
 - **A link moves focus to the control** and scrolls its label (or its group's legend) into view. `href="#id"` stays the real address: a modified click, and a link whose control is missing, go to the browser.
-- The Title defaults to `errorSummary.title` ("Det finns ett problem"), after the status word ("Fel:").
-- With `prefixDocumentTitle`, the page title gets `errorSummary.titlePrefix` ("Fel:") while the summary is shown.
+- The Title defaults to `errorSummary.title` ("There is a problem"), after the status word ("Error:").
+- With `prefixDocumentTitle`, the page title gets `errorSummary.titlePrefix` ("Error:") while the summary is shown.
 - Headless: no CSS. Classes `kv-error-summary` (with `kv-alert kv-alert--danger` from the Alert), `kv-error-summary-list`, `kv-error-summary-item` and `kv-link kv-error-summary-link`.
 
 ## Component
@@ -29,10 +29,10 @@ import { ErrorSummary, Field, TextInput } from '@kvirn-ui/react'
       </ErrorSummary.List>
     </ErrorSummary.Root>
   )}
-  <h1>Ansök om parkeringstillstånd</h1>
+  <h1>Apply for a parking permit</h1>
   <form onSubmit={handleSubmit}>
     <Field.Root controlId="email" invalid={emailError !== undefined}>
-      <Field.Label>E-post</Field.Label>
+      <Field.Label>Email</Field.Label>
       <TextInput />
       <Field.ErrorMessage>{emailError}</Field.ErrorMessage>
     </Field.Root>
@@ -45,7 +45,7 @@ Your part:
 - **Render it only after a failed submit,** before the step caption and the `h1`, and remove it when there are no errors. Never update it while the user types.
 - **Pass the submit count as `focusKey`,** so a second failed submit moves focus again while the summary is already on screen.
 - **`controlId` is the control's id:** the Field's `controlId`, or for a group of radios or checkboxes, the first option's id.
-- **Write each link like the field's own error,** with what to do ("Ange din e-postadress"). The field keeps its message under the control (3.3.1).
+- **Write each link like the field's own error,** with what to do ("Enter your email address"). The field keeps its message under the control (3.3.1).
 - **Keep `scroll-padding`** above a sticky header and under the on-screen keyboard (2.4.11).
 - **A router owns `document.title`?** Leave `prefixDocumentTitle` off and add the prefix there.
 

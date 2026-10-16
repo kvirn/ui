@@ -64,7 +64,7 @@ Link announces nothing. The new-tab notice is part of the link's accessible name
 
 | Key                 | Part              | en                     | sv                      |
 | ------------------- | ----------------- | ---------------------- | ----------------------- |
-| `link.newTabNotice` | Link.NewTabNotice | `(opens in a new tab)` | `(öppnas i en ny flik)` |
+| `link.newTabNotice` | Link.NewTabNotice | `(opens in a new tab)` | `(öppnas i en ny flik)` | <!-- kv-lang-ok: the sv catalog string in the message table --> |
 
 Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root messages>` (or `useLink({ messages })`), then the nearest provider's `messages` and its ancestors, then built-in `en`. An empty or whitespace-only value falls through to the next level, with a dev warning. Tests: `link.test.tsx › new-tab notice`.
 

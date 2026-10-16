@@ -6,7 +6,7 @@
 - **Status:** alpha. Gates 1–6 pass (accessibility-reviewer APPROVE, 2026-09-30). Manual AT is `pending`.
 - **Tests:** `kvirn-provider.test.tsx` and `use-theme.test.tsx` next to this file. `kvirn-provider.stories.tsx` in `apps/storybook/src/components/provider/`.
 
-The provider's contract is about what it guarantees for other components (Plan 0002):
+The provider's contract is about what it guarantees for other components:
 
 - `lang` and `dir` are available as `useLocale().localeProps` wherever the locale changes (3.1.2). The provider renders no element that can carry `lang`, so the consumer spreads `localeProps` on the element that starts a section in another language, and sets `<html lang dir>` for the page language itself (3.1.1).
 - Every visible and announced component string comes from `messages`, resolved as instance `messages`, then the nearest provider and its ancestors, then built-in `en` (hard rule 4). An empty or whitespace-only override falls through to the next level, so an accessible name is never empty (4.1.2).
@@ -60,11 +60,11 @@ The outermost provider hosts the shared Announcer's live regions (`announcer.a11
 
 ### Message keys
 
-The provider has no strings of its own. It resolves every component's keys. Plan 0002 adds the first key to the catalog so resolution is tested against real types:
+The provider has no strings of its own. It resolves every component's keys. Each component's contract lists its own keys. The provider's tests resolve this one against the real catalog types:
 
-| Key                 | Used by (owner)  | en                     |
-| ------------------- | ---------------- | ---------------------- |
-| `link.newTabNotice` | Link (Plan 0003) | `(opens in a new tab)` |
+| Key                 | Used by (owner) | en                     |
+| ------------------- | --------------- | ---------------------- |
+| `link.newTabNotice` | Link            | `(opens in a new tab)` |
 
 ## Consumer responsibilities
 

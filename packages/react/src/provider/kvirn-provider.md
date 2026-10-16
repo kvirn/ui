@@ -215,7 +215,7 @@ function Payment({ date, amount }: { date: string; amount: number }) {
 | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `format.number(value, options?)` | `Intl.NumberFormat`: decimals, percent, currency (`{ style: 'currency', currency: 'SEK' }`) and units                        |
 | `format.date(value, options?)`   | `Intl.DateTimeFormat`: `{ dateStyle: 'long' }`, `{ timeStyle: 'short' }`, `{ month: 'long' }`. See below for what a value is |
-| `format.list(items, options?)`   | `Intl.ListFormat`: `sv, fi och en`, or `{ type: 'disjunction' }` for "or"                                                    |
+| `format.list(items, options?)`   | `Intl.ListFormat`: `sv, fi, and en` in `en`, or `{ type: 'disjunction' }` for "or"                                           |
 | `format.plural(count, forms)`    | The form for the locale's plural rules: `{ one, other }`, and `zero` for exactly 0                                           |
 
 - **An instant** (a `Date` or milliseconds) is shown in the provider's `timeZone`, or in UTC when there is none, with a development warning the first time (`date-without-time-zone`). `options.timeZone` wins. In the UTC fallback a time is written with its zone name, but a date-only instant (`dateStyle` alone, or no options) has no label and can show the neighbouring day to a reader in another zone: for a calendar date use the `YYYY-MM-DD` string form. Set `timeZone` on the provider, the same on the server and in the browser.
@@ -237,8 +237,8 @@ Only the catalogs you import are bundled.
 
 Resolution order, first match wins:
 
-1. Children of a visible text part, for example `<Link.NewTabNotice>(nytt fönster)</Link.NewTabNotice>`.
-2. The component's own `messages` prop, for example `<Link.Root messages={{ newTabNotice: '(nytt fönster)' }}>`.
+1. Children of a visible text part, for example `<Link.NewTabNotice>(new window)</Link.NewTabNotice>`.
+2. The component's own `messages` prop, for example `<Link.Root messages={{ newTabNotice: '(new window)' }}>`.
 3. The nearest provider's `messages`, then its ancestors'.
 4. Built-in English. In development, you get a console warning when this happens under a non-English locale.
 
@@ -248,18 +248,18 @@ Resolution order, first match wins:
 
 ```tsx
 import { defineMessages } from '@kvirn-ui/i18n'
-import { sv } from '@kvirn-ui/i18n/sv'
+import { en } from '@kvirn-ui/i18n/en'
 
-const messages = defineMessages(sv, {
-  link: { newTabNotice: '(öppnas i nytt fönster)' },
+const messages = defineMessages(en, {
+  link: { newTabNotice: '(opens in a new window)' },
 })
 ```
 
 A nested provider with a partial object changes only its section:
 
 ```tsx
-<KvirnProvider locale="sv-SE" messages={messages}>
-  <KvirnProvider messages={{ link: { newTabNotice: '(extern tjänst, ny flik)' } }}>
+<KvirnProvider locale="en-GB" messages={messages}>
+  <KvirnProvider messages={{ link: { newTabNotice: '(external service, new tab)' } }}>
     {/* only this section */}
   </KvirnProvider>
 </KvirnProvider>
@@ -274,7 +274,7 @@ A nested provider with a partial object changes only its section:
 Any key can be a function, so strings can come from your translation system. The provider re-renders when you pass new messages, for example after a language change:
 
 ```tsx
-const messages = defineMessages(sv, {
+const messages = defineMessages(en, {
   link: { newTabNotice: () => t('kvirn.link.newTabNotice') },
 })
 ```
@@ -283,7 +283,7 @@ Keys with parameters are always functions. They receive their values and a `form
 
 ```ts
 resultCount: ({ count }, format) =>
-  format.plural(count, { one: '1 träff', other: `${format.number(count)} träffar` })
+  format.plural(count, { one: '1 hit', other: `${format.number(count)} hits` })
 ```
 
 ## Theme preference
@@ -316,9 +316,9 @@ import { useTheme } from '@kvirn-ui/react'
 import type { ColorSchemePreference } from '@kvirn-ui/react'
 
 const colorSchemeOptions: { value: ColorSchemePreference; label: string }[] = [
-  { value: 'light', label: 'Ljust' },
-  { value: 'dark', label: 'Mörkt' },
-  { value: 'system', label: 'Följ systemet' },
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
+  { value: 'system', label: 'Follow system' },
 ]
 
 export function ColorSchemeSwitcher() {
@@ -326,7 +326,7 @@ export function ColorSchemeSwitcher() {
 
   return (
     <fieldset>
-      <legend>Färgschema</legend>
+      <legend>Colour scheme</legend>
       {colorSchemeOptions.map((option) => (
         <label key={option.value}>
           <input

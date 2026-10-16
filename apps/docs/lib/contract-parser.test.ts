@@ -21,6 +21,13 @@ const contractFiles = ['react', 'rich-text', 'patterns', 'map']
   .filter((path) => !knownUnparsed.some((name) => path.endsWith(`/${name}`)))
 
 describe('parseContract', () => {
+  test('an HTML comment never reaches the rendered contract', () => {
+    const shown = contractFiles.filter((path) =>
+      JSON.stringify(parseContract(readFileSync(path, 'utf8'), path)).includes('<!--'),
+    )
+    expect(shown.map((path) => relative(repositoryRoot, path))).toEqual([])
+  })
+
   test('every accessibility contract parses, so the page can render it', () => {
     expect(contractFiles.length).toBeGreaterThan(0)
     const problems = contractFiles.flatMap((path) => {

@@ -1,5 +1,5 @@
 // "Show code" and the Docs description show what an adopter writes. A story that
-// renders a fixture component would otherwise show `<DeadlineAlert locale="sv" />`, which
+// renders a fixture component would otherwise show `<DeadlineAlert locale="en" />`, which
 // says nothing about the component. These helpers show the fixture's own source instead, so the
 // code on the page is the code that renders the example and cannot drift from it.
 
@@ -83,6 +83,7 @@ export function usageGuide(raw: string): string {
   })
   return kept
     .join('\n')
+    .replaceAll(/[ \t]*<!--.*?-->/g, '')
     .replaceAll(/\n{3,}/g, '\n\n')
     .trim()
 }

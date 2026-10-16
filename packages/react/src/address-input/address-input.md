@@ -41,25 +41,25 @@ What the parts do on their own:
 import { AddressInput, Field, Fieldset } from '@kvirn-ui/react'
 
 ;<Fieldset.Root invalid={errors.address !== undefined}>
-  <Fieldset.Legend>Din adress</Fieldset.Legend>
+  <Fieldset.Legend>Your address</Fieldset.Legend>
   <AddressInput.Root country="SE">
     <Field.Root controlId="address-line1" required invalid={errors.line1 !== undefined}>
-      <Field.Label>Gatuadress</Field.Label>
+      <Field.Label>Street address</Field.Label>
       <AddressInput.Line1 name="line1" />
       <Field.ErrorMessage>{errors.line1}</Field.ErrorMessage>
     </Field.Root>
     <Field.Root controlId="address-line2">
-      <Field.Label>Adressrad 2</Field.Label>
+      <Field.Label>Address line 2</Field.Label>
       <AddressInput.Line2 name="line2" />
-      <Field.HelpText>Till exempel c/o och ett namn</Field.HelpText>
+      <Field.HelpText>For example c/o and a name</Field.HelpText>
     </Field.Root>
     <Field.Root controlId="address-postal-code" required>
-      <Field.Label>Postnummer</Field.Label>
+      <Field.Label>Postal code</Field.Label>
       <AddressInput.PostalCode name="postalCode" />
-      <Field.HelpText>Till exempel 123 45</Field.HelpText>
+      <Field.HelpText>For example 123 45</Field.HelpText>
     </Field.Root>
     <Field.Root controlId="address-city" required>
-      <Field.Label>Postort</Field.Label>
+      <Field.Label>City</Field.Label>
       <AddressInput.City name="city" />
     </Field.Root>
   </AddressInput.Root>
@@ -69,7 +69,7 @@ import { AddressInput, Field, Fieldset } from '@kvirn-ui/react'
 
 Your part:
 
-- **Write the labels, the postal code's example in the country's form, and the errors.** A postal code error repeats the format ("Ange ett postnummer med 5 siffror, till exempel 123 45").
+- **Write the labels, the postal code's example in the country's form, and the errors.** A postal code error repeats the format ("Enter a postal code with 5 digits, for example 123 45").
 - **Errors per part** in its Field (`invalid` and `Field.ErrorMessage`); `Fieldset.ErrorMessage` only for a whole-address error ("We couldn't find this address"), linked from an `ErrorSummary` to Line1.
 - **Keep the order**: street, line 2, postal code, city. c/o goes on line 2, where autofill stores it.
 - **A country control** is your own Field with `autoComplete="country"` in the Root; pass its value as `country`.
@@ -85,10 +85,10 @@ function Address() {
   const address = useAddressInput({ country: 'SE' })
   return (
     <Fieldset.Root>
-      <Fieldset.Legend>Din adress</Fieldset.Legend>
+      <Fieldset.Legend>Your address</Fieldset.Legend>
       <div {...address.rootProps}>
         <Field.Root>
-          <Field.Label>Postnummer</Field.Label>
+          <Field.Label>Postal code</Field.Label>
           <TextInput {...address.getInputProps('postalCode')} mask={address.postalCodeMask} />
         </Field.Root>
       </div>

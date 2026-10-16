@@ -2,7 +2,7 @@
 
 > **Draft** (Plan 0075). This page moves to the docs site once `apps/docs` has a page for it. The accessibility contract is [tag.a11y.md](tag.a11y.md). The design is `docs/design/tag-and-filters.md`.
 
-A short fact in words, such as an applied filter: `År: 2025`. It is either static text or one removable button, the whole chip.
+A short fact in words, such as an applied filter: `Year: 2025`. It is either static text or one removable button, the whole chip.
 
 - `Tag.Root` is an `<li>`. Put a `Tag.Label` (static text) or a `Tag.Remove` (the button) in it.
 - `Tag.Remove` is one `<button type="button">` named `Remove {label}` by `tag.remove`. The name contains the visible text (2.5.3). Pass `label` when `children` is not a string.
@@ -20,7 +20,7 @@ A short fact in words, such as an applied filter: `År: 2025`. It is either stat
 import { Tag, TagGroup } from '@kvirn-ui/react'
 
 ;<TagGroup.Root>
-  <TagGroup.Label>Valda filter</TagGroup.Label>
+  <TagGroup.Label>Selected filters</TagGroup.Label>
   <TagGroup.List>
     {filters.map((filter) => (
       <Tag.Root key={filter}>
@@ -28,7 +28,7 @@ import { Tag, TagGroup } from '@kvirn-ui/react'
       </Tag.Root>
     ))}
   </TagGroup.List>
-  <TagGroup.Empty>Inga filter valda</TagGroup.Empty>
+  <TagGroup.Empty>No filters selected</TagGroup.Empty>
   <TagGroup.ClearAll onClear={clearFilters} />
 </TagGroup.Root>
 ```
@@ -39,9 +39,9 @@ import { Tag, TagGroup } from '@kvirn-ui/react'
 import { useTagGroup } from '@kvirn-ui/react'
 
 const group = useTagGroup({ announceRemoval: false })
-<span id={group.labelId} ref={group.labelRef}>Valda filter</span>
+<span id={group.labelId} ref={group.labelRef}>Selected filters</span>
 <ul role="list" ref={group.listRef} aria-labelledby={group.labelId}>…</ul>
-// In each remove button's onClick: group.prepareRemoval(event.currentTarget, 'År: 2025'), then change your state.
+// In each remove button's onClick: group.prepareRemoval(event.currentTarget, 'Year: 2025'), then change your state.
 // Mark the button with data-kv-tag-remove so the group finds it.
 ```
 
@@ -49,7 +49,7 @@ const group = useTagGroup({ announceRemoval: false })
 
 1. **Filters are form values.** Checkboxes in a `CheckboxGroup` under a legend, one `<form aria-labelledby>` with the heading `filters.heading`. A long facet (over about ten options) is a Combobox `multiple`, one-of-many is a RadioGroup. Keep the filters in the URL (GET), so Back, sharing and no JavaScript work, and add a `filters.apply` submit after the last option for the no-JS case.
 2. **No Apply button with JavaScript.** The results change in place and focus does not move (3.2.2). Pagination goes back to page 1 on any change.
-3. **Applied filters are tags** between the filters and the results: a `TagGroup` labelled `filters.applied`, tag text `filters.appliedValue` (`År: 2025`), and Clear all.
+3. **Applied filters are tags** between the filters and the results: a `TagGroup` labelled `filters.applied`, tag text `filters.appliedValue` (`Year: 2025`), and Clear all.
 4. **One combined announcement** per change, polite, after the results settle: `filters.resultCount` for a tick, `filters.removedResultCount` for a removal, `filters.clearedResultCount` for Clear all. Set `announceRemoval={false}` on the group so the removal message is not replaced by, or does not replace, the count. The visible count heading says the same.
 5. **Dead ends.** No results: `filters.noResults` and `filters.noResultsHint`, with the applied row and Clear all still in view. Loading over a second: a visible `filters.loading` and `aria-busy="true"` on the results list. A failed update: an inline `Alert` with `filters.loadFailed` and `filters.retry`, the filters and old results kept.
 6. **Layout.** Reading order is Tab order: filters, applied row, sort, results, pagination. Below 64rem a Disclosure would hold the filters, open from 64rem: Disclosure has no such option yet, so lay the filters out in the page (the story does) and open this as a decision.

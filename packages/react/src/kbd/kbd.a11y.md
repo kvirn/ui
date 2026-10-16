@@ -68,7 +68,7 @@ Headless: Kbd ships no CSS. With the default theme, `kv-kbd` (and a bare `kbd` i
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships (A): keyboard input is marked up as `<kbd>` and not as styled text (`kbd.test.tsx › renders a kbd, no role…`).
+- 1.3.1 Info and Relationships (A): keyboard input is marked up as `<kbd>` and not as styled text (`kbd.test.tsx › renders a kbd, no role or ARIA, and passes attributes and the ref through`).
 - 1.4.3 Contrast (Minimum) (AA): the key's text is dark enough on its background, checked automatically in the default theme.
 - 1.4.4 Resize Text (AA): the size follows the browser's text size.
 

@@ -13,24 +13,24 @@ import { Button, Progress } from '@kvirn-ui/react'
 
 ;<div className="kv-button-group">
   <Button type="submit" busy={isSending}>
-    Skicka ansökan
+    Submit application
   </Button>
   {isSending ? (
     // The busy Button already shows the spinner: no Progress.Indicator beside it.
-    <Progress.Root label="Skickar din ansökan.">
+    <Progress.Root label="Sending your application.">
       <Progress.Label />
     </Progress.Root>
   ) : null}
 </div>
 
 // An unknown wait on its own: the spinner, then the words.
-;<Progress.Root label="Hämtar dina ärenden.">
+;<Progress.Root label="Fetching your cases.">
   <Progress.Indicator />
   <Progress.Label />
 </Progress.Root>
 
 // A known value adds the bar and the percent.
-;<Progress.Root label="Exporterar ärenden." value={percent}>
+;<Progress.Root label="Exporting cases." value={percent}>
   <Progress.Label />
   <Progress.Bar />
 </Progress.Root>
@@ -40,7 +40,7 @@ import { Button, Progress } from '@kvirn-ui/react'
 
 ## Wording
 
-Name the thing and the action, and end with a full stop: "Hämtar dina ärenden.", never "Laddar…" or "Vänta". No ellipsis, no tech words.
+Name the thing and the action, and end with a full stop: "Fetching your cases.", never "Loading…" or "Wait". No ellipsis, no tech words.
 
 ## API
 
@@ -66,11 +66,11 @@ Parts: `Progress.Root` (`kv-progress`, `data-state`, `data-determinate`), `Progr
 ```tsx
 <div className="kv-empty-state">
   <Heading as="h2" className="kv-empty-state-title">
-    Du har inga ärenden än
+    You have no cases yet
   </Heading>
-  <p className="kv-empty-state-body">När du ansöker om något visas det här.</p>
+  <p className="kv-empty-state-body">When you apply for something, it shows up here.</p>
   <div className="kv-button-group">
-    <Button className="kv-button--primary">Starta en ansökan</Button>
+    <Button className="kv-button--primary">Start an application</Button>
   </div>
 </div>
 ```

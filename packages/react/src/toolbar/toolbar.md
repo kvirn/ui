@@ -49,7 +49,7 @@ Toolbar has no strings of its own and announces nothing. Every name is yours, fr
 
 ### `as`
 
-`Toolbar.Root` takes `as="section"` (default `div`); it keeps the role, the class and the keys. `Toolbar.Item` takes `as`, a component or tag that is focusable by itself: `<Toolbar.Item as={Popover.Trigger}>` makes a Popover trigger an item, and its props are plain props of the item (`<Toolbar.Item as={Listbox.Trigger} aria-label="Texttyp" />`). The toolbar's `tabindex` wins over the target's own. `disabled` on a `Toolbar.Item` sets `aria-disabled="true"` and `data-disabled`, and blocks a click, Enter and Space, also for the target's own handlers. To give a `Toolbar.Item` and another part (a `Tooltip.Trigger`) each their own `as`, put one of them in a small component of yours.
+`Toolbar.Root` takes `as="section"` (default `div`); it keeps the role, the class and the keys. `Toolbar.Item` takes `as`, a component or tag that is focusable by itself: `<Toolbar.Item as={Popover.Trigger}>` makes a Popover trigger an item, and its props are plain props of the item (`<Toolbar.Item as={Listbox.Trigger} aria-label="Text type" />`). The toolbar's `tabindex` wins over the target's own. `disabled` on a `Toolbar.Item` sets `aria-disabled="true"` and `data-disabled`, and blocks a click, Enter and Space, also for the target's own handlers. To give a `Toolbar.Item` and another part (a `Tooltip.Trigger`) each their own `as`, put one of them in a small component of yours.
 
 ### Development warnings
 
@@ -60,18 +60,18 @@ Keyed `toolbar-*` and `button-group-*`, English, for the developer only: a toolb
 ```tsx
 import { Icon, Toolbar } from '@kvirn-ui/react'
 
-;<Toolbar.Root aria-label="Formatering" aria-controls={editorId}>
-  <Toolbar.Group aria-label="Historik">
+;<Toolbar.Root aria-label="Formatting" aria-controls={editorId}>
+  <Toolbar.Group aria-label="History">
     <Toolbar.Button onClick={undo} disabled={!canUndo}>
-      Ångra
+      Undo
     </Toolbar.Button>
     <Toolbar.Button onClick={redo} disabled={!canRedo}>
-      Gör om
+      Redo
     </Toolbar.Button>
   </Toolbar.Group>
-  <Toolbar.Group aria-label="Textstil">
+  <Toolbar.Group aria-label="Text style">
     <Toolbar.Toggle pressed={isBold} onPressedChange={setIsBold}>
-      Fet
+      Bold
     </Toolbar.Toggle>
   </Toolbar.Group>
 </Toolbar.Root>
@@ -82,7 +82,7 @@ An icon-only control takes `kv-button--icon-only` and an `aria-label`, and a too
 ```tsx
 <Toolbar.Toggle
   className="kv-button--icon-only"
-  aria-label="Fetstil"
+  aria-label="Bold"
   pressed={isBold}
   onPressedChange={setIsBold}
 >
@@ -94,12 +94,12 @@ A control that opens something goes in with `Toolbar.Item` and `as`. Render its 
 
 ```tsx
 <Popover.Root>
-  <Toolbar.Item as={Popover.Trigger}>Länk</Toolbar.Item>
-  <Popover.Popup aria-label="Lägg till länk">…</Popover.Popup>
+  <Toolbar.Item as={Popover.Trigger}>Link</Toolbar.Item>
+  <Popover.Popup aria-label="Add link">…</Popover.Popup>
 </Popover.Root>
 ```
 
-Pitfalls: a plain `<Button>` inside the toolbar is an ordinary Tab stop and is skipped by the arrows, so use `Toolbar.Button`. A text field as an item keeps the arrow keys, Home and End for its caret, so don't put one in unless it is the point. Keep a disabled control focusable (the default), and set `focusableWhenDisabled={false}` only when the whole toolbar is disabled: a natively disabled control can't take focus, so the toolbar picks the first control that can, and leaves the Tab order when there is none. Disable a Listbox on its own Root, not on the `Toolbar.Item`. To keep a text field in the toolbar from being changed, make it `readOnly`: `disabled` on a `Toolbar.Item` stops Enter, Space and clicks, but a text `<input>` stays editable. Where focus goes after a command is a decision for the component built on the toolbar: here, it stays on the button, so a keyboard user can press Fet and then Kursiv.
+Pitfalls: a plain `<Button>` inside the toolbar is an ordinary Tab stop and is skipped by the arrows, so use `Toolbar.Button`. A text field as an item keeps the arrow keys, Home and End for its caret, so don't put one in unless it is the point. Keep a disabled control focusable (the default), and set `focusableWhenDisabled={false}` only when the whole toolbar is disabled: a natively disabled control can't take focus, so the toolbar picks the first control that can, and leaves the Tab order when there is none. Disable a Listbox on its own Root, not on the `Toolbar.Item`. To keep a text field in the toolbar from being changed, make it `readOnly`: `disabled` on a `Toolbar.Item` stops Enter, Space and clicks, but a text `<input>` stays editable. Where focus goes after a command is a decision for the component built on the toolbar: here, it stays on the button, so a keyboard user can press Bold and then Italic.
 
 ## Hook
 
@@ -109,8 +109,8 @@ import { mergeProps, useToolbar } from '@kvirn-ui/react'
 function Actions() {
   const toolbar = useToolbar({ orientation: 'horizontal', loop: true })
   return (
-    <div {...toolbar.toolbarProps} aria-label="Åtgärder">
-      {['spara', 'skriv ut', 'dela'].map((name) => (
+    <div {...toolbar.toolbarProps} aria-label="Actions">
+      {['save', 'print', 'share'].map((name) => (
         <button type="button" key={name} {...toolbar.getItemProps(name)}>
           {name}
         </button>

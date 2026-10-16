@@ -74,9 +74,9 @@ Opening is announced by the focus move: role "alertdialog", the name, and the de
 
 ## Consumer responsibilities
 
-- **Title:** the question the buttons answer ("Vill du ta bort utkastet?", in English "Do you want to delete the draft?"). Never "Are you sure?", "Warning" or "Confirm".
+- **Title:** the question the buttons answer ("Do you want to delete the draft?"). Never "Are you sure?", "Warning" or "Confirm".
 - **Description:** the consequence, and whether it can be undone, in one or two short sentences. Required.
-- **Buttons:** verb and object ("Ta bort utkastet", "Behåll utkastet", in English "Delete the draft", "Keep the draft"). The primary action first in the DOM. Never "OK", "Ja" (yes) or "Nej" (no). Avoid "Avbryt" (Cancel) when it could mean cancelling the whole application: say what is kept ("Behåll utkastet").
+- **Buttons:** verb and object ("Delete the draft", "Keep the draft"). The primary action first in the DOM. Never "OK", "Yes" or "No". Avoid "Cancel" when it could mean cancelling the whole application: say what is kept ("Keep the draft").
 - **Set `initialFocusRef`** to the safe action when something is destroyed, or to the primary action when nothing is.
 - **Escape must never destroy.** Answer `escape` with the cancel outcome.
 - **Close it** with `AlertDialog.Close`, or from your own buttons by setting `open` to `false` (controlled). Move focus where the pattern says if the trigger is gone.

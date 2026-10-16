@@ -8,8 +8,8 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 - **Foundation** is what everything is built on: the colours, type, spacing, prose and theming of `theme.css`, read live from the page, and the provider, `KvirnProvider`.
 - **Components** are the headless components, one set of stories each, grouped as on the docs site: Actions, Content, Layout, Navigation, Forms, Choice and overlays, and Data and behaviour. Each component has a **Docs** page with its props table and every story.
-- **Patterns** are composed from components, in the site chrome. They use Kvirnby kommun, a fictional municipality. They are added as they are built.
-- **Content types** are composed from components, in the site chrome. They use Kvirnby kommun, a fictional municipality. They are added as they are built.
+- **Patterns** are parts of a public website, such as the header, footer and search, built from components. They use Kvirnby, a fictional municipality. They are added as they are built.
+- **Content types** are whole pages, such as a news article or a form page, built from components and patterns. They also use Kvirnby.
 
 Every story is styled by the default theme, `@kvirn-ui/theme/theme.css`, as described in `DESIGN.md`. The components themselves ship no CSS. The theme styles the classes they render, such as `kv-button`, their state attributes, such as `data-disabled`, and variant classes you add yourself, such as `kv-button--primary`.
 
@@ -19,7 +19,7 @@ Every story is styled by the default theme, `@kvirn-ui/theme/theme.css`, as desc
 - **Contrast** selects standard or more contrast.
 - **Locale** changes the component strings.
 - **Direction** switches between left-to-right and right-to-left.
-- **Forced colors** only marks a story. Real emulation runs in the `chromium-forced-colors` end-to-end project.
+- **Forced colors** only marks a story. Real emulation runs in the opt-in `storybook-forced-colors` test project, which covers the Button stories only.
 
 Mode and Contrast select the theme through the theme store, as a user’s choice would. The `KvirnProvider` stories drive the theme store themselves, so these two toolbars don’t change them.
 
@@ -28,11 +28,11 @@ A Docs page shows several stories in one document. Each story keeps its own lang
 ## What the tests check
 
 - axe runs on every story, and a violation fails `vp test run`. Every story runs four times, once in each theme: light, dark, light with more contrast and dark with more contrast. The exceptions are the `KvirnProvider` stories, which select their own theme, and stories pinned to one theme, which say why. The Mode and Contrast toolbars are for exploring.
-- axe can’t check hover, pressed, forced colours or reading order. Check those by hand, or in the end-to-end tests. A failing check is fixed in the theme or the component, never by turning off a rule.
+- axe can’t check hover, pressed, forced colours or reading order. Check those by hand. A failing check is fixed in the theme or the component, never by turning off a rule.
 
 ## Where the contracts are
 
-Each component’s accessibility contract is in `packages/react/src/<name>/<name>.a11y.md`. The visual rules are in `DESIGN.md`, the theme in `packages/theme/theme.css` and the design specs in `docs/design/`.
+Each component’s accessibility contract sits next to its code, for example `packages/react/src/<name>/<name>.a11y.md`. The visual rules are in `DESIGN.md`, the theme in `packages/theme/theme.css` and the design specs in `docs/design/`.
 
 ## Manual assistive-technology testing
 

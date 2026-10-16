@@ -89,7 +89,7 @@ Menu has no strings of its own and announces nothing: `aria-expanded` tells a sc
 - **Name a `RadioGroup` and a `Group`:** a `GroupLabel` or `aria-label` (1.3.1 Info and Relationships (A)).
 - **Give an item with non-text content a `textValue`** so typeahead has a label.
 - **A single action is a button,** not a menu with one item.
-- **Don't hide the only way to do something** in a menu without a visible hint that it exists: the trigger names it ("Åtgärder", Swedish for "Actions").
+- **Don't hide the only way to do something** in a menu without a visible hint that it exists: the trigger names it ("Actions").
 - **Move focus yourself when an item opens a Dialog,** or let the Dialog do it: a Dialog with no Trigger of its own that an item opened returns focus to the menu's trigger once the menu has closed.
 - Everything in `button.a11y.md` applies to the trigger.
 

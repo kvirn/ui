@@ -19,7 +19,7 @@ import { Calendar } from '@kvirn-ui/react'
   minimum="2026-10-01"
   maximum="2026-12-31"
   isDateUnavailable={(day) => closedDays.has(day)}
-  getDateDescription={(day) => (closedDays.has(day) ? 'Återvinningen stängd' : undefined)}
+  getDateDescription={(day) => (closedDays.has(day) ? 'Recycling centre closed' : undefined)}
 >
   <Calendar.PreviousMonth />
   <Calendar.Heading />
@@ -61,7 +61,7 @@ A Calendar is a page section you can render anywhere, next to a typed field or t
 - An unavailable day between the ends blocks the range; `allowUnavailableInRange` lets it pass (leave across a holiday). The day itself stays unavailable.
 - `selects="start"` and `selects="end"` are the two Calendars of a from/to pair sharing one `value`. Give each Grid your own visible heading with `aria-labelledby` ("End date, oktober 2026"). An impossible end of the end Calendar is `aria-disabled` with its reason; the end Calendar follows the start's month. The RangeFromToPair story shows both.
 - `visibleMonths={2}` is a maximum: two months from 64rem wide, one below it and on the server (the Calendar reads the viewport itself), so it never breaks 320px. The two grids are one Tab stop. Render `<Calendar.Heading offset={1} />` and `<Calendar.Grid offset={1} />`: they render nothing while one month shows.
-- The RangeHint lines (the limits, the span, the next step) describe the grid. The start press, a restart and the finished range are announced politely; a preview of the end is drawn only, and each candidate's name carries its length ("7 dagar"). `aria-selected` is on every day in the range with `aria-multiselectable` on the grid; screen reader behaviour is a manual AT question.
+- The RangeHint lines (the limits, the span, the next step) describe the grid. The start press, a restart and the finished range are announced politely; a preview of the end is drawn only, and each candidate's name carries its length ("7 days"). `aria-selected` is on every day in the range with `aria-multiselectable` on the grid; screen reader behaviour is a manual AT question.
 - Day state for CSS: `data-range-start`, `data-range-end`, `data-in-range`, `data-preview`, `data-preview-end`.
 
 ## API

@@ -19,10 +19,11 @@ A OneTimeCode shows a code sent by text message or email, or made by an authenti
 import { Field, OneTimeCode } from '@kvirn-ui/react'
 
 ;<Field.Root invalid={codeError !== undefined}>
-  <Field.Label>Kod från sms:et</Field.Label>
+  <Field.Label>Code from the text message</Field.Label>
   <Field.Prose>
     <p>
-      Koden har 8 tecken i två grupper om 4. Du hittar den i sms:et som vi just skickade till dig.
+      The code has 8 characters in two groups of 4. You find it in the text message we just sent
+      you.
     </p>
   </Field.Prose>
   <OneTimeCode.Root
@@ -60,7 +61,7 @@ import { Field, OneTimeCode } from '@kvirn-ui/react'
 | `&`    | A letter or digit, in upper case: a typed `a` becomes `A`           |
 | `-`    | A separator, drawn between two boxes. Not part of the unmasked code |
 
-- Every symbol is ASCII only: `å`, `ø` and `đ` aren't letters in a code (a code is an identifier, not a name).
+- Every symbol is ASCII only: `å`, `ø` and `đ` aren't letters in a code (a code is an identifier, not a name). <!-- kv-lang-ok: names å and ø -->
 - **A pattern that isn't valid throws a `RangeError` that names the character and its position:** an unknown character (a space, a `\`, a lower-case `x`), a `-` first, last or doubled, or no character symbol. A pattern is a literal in your code, so it fails in development.
 - **The value includes the dash:** `****-****` holds `abcd-1234`, as the boxes and the message show it. The mask puts the dash in as the first character of the next group is placed, accepts a typed `-` once, and drops dashes and spaces from pasted text. `onValueChange` details and `onComplete`'s second argument carry the `unmaskedValue` (`abcd1234`) for a service that wants the plain code.
 - **Render one `OneTimeCode.Slot` per position of the pattern, the dashes included:** `index` is the position in the pattern, which is also the position in the value. A slot for a `-` is a separator: it shows `-`, is `aria-hidden`, and is never filled, active or selected.
@@ -70,7 +71,7 @@ import { Field, OneTimeCode } from '@kvirn-ui/react'
 
 ### Your part
 
-- **The label says where the code is,** in the user's words: "Kod från sms:et", "Code from your authenticator app". Not "OTP", "verification code" or "PIN".
+- **The label says where the code is,** in the user's words: "Code from the text message", "Code from your authenticator app". Not "OTP", "verification code" or "PIN".
 - **The description (a `Field.Prose`) is above the boxes and says how long the code is, how it is grouped, and where to find it** ("The code has 8 characters in two groups of 4"). The boxes are hidden from screen readers and disappear in the fallback, so the description is the only place they learn the length and the groups (3.3.2). Screen readers read the dash in the value ("A B C D dash 1 2 3 4"). A dev warning fires without a help text (a `Field.Prose` in the Field).
 - **Errors say what's wrong and how to fix it,** under the row: "Enter all 6 digits of the code", "The code doesn't match the one we sent. Check the text message and enter the code again." Never blame. **Keep the code in the field after a wrong-code error,** so the user can compare it with the message and fix one digit.
 - **Keep a Continue button.** `onComplete` can verify early, but say so in the help text ("We check the code as soon as you have entered all 6 digits", 3.2.2) and never remove the button.

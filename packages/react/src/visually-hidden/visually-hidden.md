@@ -2,7 +2,7 @@
 
 > **Draft** (Plan 0054). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [visually-hidden.a11y.md](visually-hidden.a11y.md).
 
-Text for screen readers that is not drawn, such as `, 3 resultat` after a visible `Sökträffar`.
+Text for screen readers that is not drawn, such as `, 3 results` after a visible `Search results`.
 
 - One part: `VisuallyHidden`, also `useVisuallyHidden()`. It renders `<span class="kv-visually-hidden">`, and no role, ARIA, text or strings.
 - The text stays in the accessibility tree: it is read and found. It is clipped, never `display: none`.
@@ -16,11 +16,11 @@ Text for screen readers that is not drawn, such as `, 3 resultat` after a visibl
 import { VisuallyHidden } from '@kvirn-ui/react'
 
 ;<p>
-  Sökträffar<VisuallyHidden>, 3 resultat</VisuallyHidden>
+  Search results<VisuallyHidden>, 3 results</VisuallyHidden>
 </p>
 
 // A heading nobody sees
-<VisuallyHidden as="h2">Meny</VisuallyHidden>
+<VisuallyHidden as="h2">Menu</VisuallyHidden>
 ```
 
 ## Hook
@@ -29,7 +29,7 @@ import { VisuallyHidden } from '@kvirn-ui/react'
 import { useVisuallyHidden } from '@kvirn-ui/react'
 
 const { visuallyHiddenProps } = useVisuallyHidden()
-<span {...visuallyHiddenProps}>, 3 resultat</span>
+<span {...visuallyHiddenProps}>, 3 results</span>
 ```
 
 ## Accessibility

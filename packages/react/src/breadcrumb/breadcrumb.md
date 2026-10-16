@@ -6,7 +6,7 @@ A trail from the home page down to the page you are on: where you are, and the w
 
 ## API
 
-- `Breadcrumb.Root` is a `<nav>` named by the message `breadcrumb.label` (`Du är här`), or by `label`. `Breadcrumb.List` is an `<ol>`, `Breadcrumb.Item` an `<li>`.
+- `Breadcrumb.Root` is a `<nav>` named by the message `breadcrumb.label` (`You are here`), or by `label`. `Breadcrumb.List` is an `<ol>`, `Breadcrumb.Item` an `<li>`.
 - `Breadcrumb.Link` is a link to a level above, a thin wrapper over `Link.Root`: a native `<a href>` rendered by your registered router link (Next.js, TanStack Router), with the same props and `ref`.
 - `Breadcrumb.Current` is the last item: the page you are on as text, `aria-current="page"`, never a link to itself.
 - The separators are drawn by the theme and never read by a screen reader. `variant="slash"` swaps the chevron for a slash. `separator` takes your own element, for example an `<Icon>`: it is rendered in every item (the theme hides the first one, and a custom theme must too), hidden from screen readers, so it must be decoration. The built-in `chevron-forward` mirrors itself in RTL; a registered or own icon needs `mirrorInRtl`. The trail wraps at a narrow width and never collapses into "…": a hidden level is a hidden way out.
@@ -25,10 +25,10 @@ import { Breadcrumb } from '@kvirn-ui/react'
       <Breadcrumb.Link href="/">Start</Breadcrumb.Link>
     </Breadcrumb.Item>
     <Breadcrumb.Item>
-      <Breadcrumb.Link href="/barn">Barn och utbildning</Breadcrumb.Link>
+      <Breadcrumb.Link href="/children">Children and education</Breadcrumb.Link>
     </Breadcrumb.Item>
     <Breadcrumb.Item>
-      <Breadcrumb.Current>Förskola</Breadcrumb.Current>
+      <Breadcrumb.Current>Preschool</Breadcrumb.Current>
     </Breadcrumb.Item>
   </Breadcrumb.List>
 </Breadcrumb.Root>
@@ -50,7 +50,7 @@ const breadcrumb = useBreadcrumb()
 <nav {...breadcrumb.rootProps}>
   <ol {...breadcrumb.listProps}>
     <li {...breadcrumb.itemProps}><a href="/">Start</a></li>
-    <li {...breadcrumb.itemProps}><span {...breadcrumb.currentProps}>Förskola</span></li>
+    <li {...breadcrumb.itemProps}><span {...breadcrumb.currentProps}>Preschool</span></li>
   </ol>
 </nav>
 ```

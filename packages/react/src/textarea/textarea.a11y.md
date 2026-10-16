@@ -21,8 +21,8 @@ Textarea is the multi-line text control of a Field (see the Field page). It is a
 With `maxLength` and `characterCount`, Textarea renders a `CharacterCount` right after the box. `useTextarea` with `CharacterCount` serves your own markup.
 
 - **Limit:** `maxLength` is the limit and is not written as the native attribute. A paste of any length is kept whole. Without `characterCount`, `maxLength` passes through as the native attribute.
-- **Text:** while empty, `characterCount.limit` (in Swedish "Du kan skriva högst 500 tecken.", in English "You can enter up to 500 characters."). While typing, `characterCount.remaining` ("Du har 120 tecken kvar.", in English "You have 120 characters remaining."). Over the limit, `characterCount.over` ("Du har 12 tecken för mycket.", in English "You have 12 characters too many.") with the `warning` icon and weight 600, never `danger`: before submit it is not an error.
-- **Counting:** characters as the user sees them (grapheme clusters, `Intl.Segmenter`), so `å` typed as `a` plus a combining ring, or an emoji, counts as one, and a line break counts as one. `countCharacters={(value) => number}` replaces it when the server counts differently: count the same way on both sides.
+- **Text:** while empty, `characterCount.limit` ("You can enter up to 500 characters."). While typing, `characterCount.remaining` ("You have 120 characters remaining."). Over the limit, `characterCount.over` ("You have 12 characters too many.") with the `warning` icon and weight 600, never `danger`: before submit it is not an error.
+- **Counting:** characters as the user sees them (grapheme clusters, `Intl.Segmenter`), so a letter typed as a base letter plus a combining accent, or an emoji, counts as one, and a line break counts as one. `countCharacters={(value) => number}` replaces it when the server counts differently: count the same way on both sides.
 - **Over the limit is a warning:** nothing blocks typing or paste, and nothing is marked `aria-invalid`. The form decides on submit and writes a Field.ErrorMessage that names the fix. `data-over` is on the count and on the Textarea.
 - **`onValueChange(value, details)`** gets `details.length`, `details.limit` and `details.isOverLimit` with `characterCount`.
 - **No limit, no count:** `characterCount` without `maxLength` warns once in development and renders nothing.
@@ -79,7 +79,7 @@ Only changes made while the box has focus are announced: a text set from code (a
 - Never use the placeholder as the label (3.3.2 Labels or Instructions, A). Put an example in the help text or the description, not in the box.
 - Set `autoComplete` where a token exists for the question (1.3.5 Identify Input Purpose, AA), and never block paste.
 - Raise the limit before you add a count: a count is for a limit the user can plausibly hit. Say the limit in the description or label only if the count is off, and never as the only place it appears.
-- Count the same way on both sides: pass `countCharacters` with the server's rule when it differs from what the user sees. Over the limit is a warning in the UI, so validate on submit and write a Field.ErrorMessage that names the field and the fix ("Beskrivningen kan vara högst 500 tecken. Ta bort 12 tecken.", in English "The description can be at most 500 characters. Remove 12 characters.").
+- Count the same way on both sides: pass `countCharacters` with the server's rule when it differs from what the user sees. Over the limit is a warning in the UI, so validate on submit and write a Field.ErrorMessage that names the field and the fix ("The description can be at most 500 characters. Remove 12 characters.").
 - With `characterCount`, pass `value` when you set the text from code (a draft restored, a form reset by your library): an uncontrolled box counts what is typed, follows a native form reset and reads the value the browser restored on load and on `pageshow`, but not a value you write to the element directly later.
 - In your own markup, outside a Field, pass `CharacterCount` an `id` and list it in your control's `aria-describedby`: nothing else links it to the box (1.3.1 Info and Relationships, A; 4.1.2 Name, Role, Value, A).
 - A long answer is the worst thing to lose: warn before a session timeout (2.2.1 Timing Adjustable, A) and, for staff tools, save drafts.
@@ -131,7 +131,7 @@ Only changes made while the box has focus are announced: a text set from code (a
 | JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
 | Dragon / Voice Control                   | pending     | pending     | pending |       |
 
-Research questions for the AT run: is the count read once with the value when the box gets focus, and not read again by the polite announcement at the same moment? Is a pause of 500 ms right, or does it interrupt a slow typist? Is "tecken för mycket" (too many characters) understood as a warning without a visual cue? Does Dragon dictate a long text without the count lagging?
+Research questions for the AT run: is the count read once with the value when the box gets focus, and not read again by the polite announcement at the same moment? Is a pause of 500 ms right, or does it interrupt a slow typist? Is "too many characters" understood as a warning without a visual cue? Does Dragon dictate a long text without the count lagging?
 
 ## Known issues
 

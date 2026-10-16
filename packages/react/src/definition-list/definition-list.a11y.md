@@ -57,7 +57,7 @@ None. It is static content.
 
 - **Every row has a Term.** The Change link's name is built from it.
 - **A Change link goes to where the answer is changed** (`href`), not `history.back()`, and returns to the page after saving (3.3.7 Redundant Entry, A, asks you not to make people re-enter what they gave).
-- **A Description with no answer says so** ("Ej angivet", Swedish for "Not provided"), never an empty `<dd>`.
+- **A Description with no answer says so** ("Not provided"), never an empty `<dd>`.
 - **Headings** for a list of lists are yours: the component renders none.
 - **Don't put a `Field` inside a row**: it is for display, not for editing.
 

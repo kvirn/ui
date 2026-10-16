@@ -23,9 +23,9 @@ A phone number in a form. A native `<input type="tel">` with the attributes a ph
 
 **Country.** `country` (controlled, ISO 3166-1 alpha-2) wins, then `defaultCountry` and the user's choice, then the provider's `country`, then the country the locale implies: the same resolution the masks use. Without any, the select shows an empty option. `onCountryChange(country, { reason: 'input', event, callingCode })`. Changing the country never rewrites the typed number, and nothing prefixes it with the calling code: typing `+358` while Sweden is selected changes nothing.
 
-**Options.** `Sverige (+46)`: the country's name in the page's language (`Intl.DisplayNames`, the ISO code when unsupported) and its calling code, the resolved country first and the rest alphabetical. No flags. `callingCodeFor(country)` and `callingCodeCountries` are in `@kvirn-ui/core`.
+**Options.** `Sweden (+46)` on an English page: the country's name in the page's language (`Intl.DisplayNames`, the ISO code when unsupported) and its calling code, the resolved country first and the rest alphabetical. No flags. `callingCodeFor(country)` and `callingCodeCountries` are in `@kvirn-ui/core`.
 
-**Name.** `PhoneInput.Country` has no text: put it in its own `Field.Root` with a `Field.Label` ("Land"), or give it `aria-label`. If it is in the same Field as the number (a `PhoneInput.Root` inside one Field), it takes only `aria-label` and the disabled state from it, never its id or error. A Fieldset legend around both names the pair.
+**Name.** `PhoneInput.Country` has no text: put it in its own `Field.Root` with a `Field.Label` ("Country"), or give it `aria-label`. If it is in the same Field as the number (a `PhoneInput.Root` inside one Field), it takes only `aria-label` and the disabled state from it, never its id or error. A Fieldset legend around both names the pair.
 
 `onValueChange(value, details)`: `value` is the text as shown. `details` is TextInput's: `reason` (always `'input'`) and `event`, with a `mask` also `unmaskedValue`, `isComplete` and `rejected`, and always `country` and `callingCode` (digits, `46`) of the Root's country.
 
@@ -66,10 +66,10 @@ Keyed `phone-input-*`, English, for the developer only: no accessible name (`pho
 
 ```tsx
 <Field.Root controlId="phone" required invalid={errors.phone !== undefined}>
-  <Field.Label>Telefonnummer</Field.Label>
+  <Field.Label>Phone number</Field.Label>
   <PhoneInput.Number name="phone" value={phone} onValueChange={setPhone} />
   <Field.HelpText>
-    Om numret inte är svenskt, börja med landsnumret, till exempel +358.
+    If the number is not Swedish, start with the country code, for example +358.
   </Field.HelpText>
   <Field.ErrorMessage>{errors.phone}</Field.ErrorMessage>
 </Field.Root>
@@ -79,14 +79,14 @@ With a calling-code select:
 
 ```tsx
 <Fieldset.Root>
-  <Fieldset.Legend>Telefonnummer</Fieldset.Legend>
+  <Fieldset.Legend>Phone number</Fieldset.Legend>
   <PhoneInput.Root>
     <Field.Root>
-      <Field.Label>Land</Field.Label>
+      <Field.Label>Country</Field.Label>
       <PhoneInput.Country name="phoneCountry" />
     </Field.Root>
     <Field.Root required>
-      <Field.Label>Nummer</Field.Label>
+      <Field.Label>Number</Field.Label>
       <PhoneInput.Number name="phone" />
     </Field.Root>
   </PhoneInput.Root>

@@ -66,7 +66,7 @@ Escape and the typed characters are not handled, and there is no typeahead (APG 
 ## Consumer responsibilities
 
 - **Name the list** with `aria-label` from your translations, or `aria-labelledby`, when a page has more than one set of tabs, so a screen reader user can tell them apart.
-- **Keep the labels short**, and in the same register ("Uppgifter", "Historik"). A long label wraps inside its tab and never scrolls the list sideways (1.4.10).
+- **Keep the labels short**, and in the same register ("Details", "History"). A long label wraps inside its tab and never scrolls the list sideways (1.4.10).
 - **Give every tab a panel and every panel a tab,** with the same `value`, and give `value` or `defaultValue` the value of a tab. Render every `Tabs.Panel`: do not unmount the ones that aren't selected, because the tab's `aria-controls` would point at nothing. For lazy content, render a panel's children only while its tab is selected, using your own `value`.
 - **Use `activationMode="manual"` only for slow panels.** Otherwise keep the default.
 - **Pass `tabIndex={-1}` to a panel that starts with a focusable element** (a link, a button or a field), so Tab goes straight to it and the panel is not a redundant stop. A panel with only text keeps its `tabindex="0"`.

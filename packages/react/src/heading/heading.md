@@ -16,21 +16,21 @@ A heading with its element as a required `as` prop, and its look as an optional 
 ```tsx
 import { Heading, Prose, Section } from '@kvirn-ui/react'
 
-;<Section as="aside" aria-labelledby="kontakt">
+;<Section as="aside" aria-labelledby="contact">
   <Prose>
-    <Heading as="h2" id="kontakt">
-      Kontakta oss
+    <Heading as="h2" id="contact">
+      Contact us
     </Heading>
-    <p>Vi svarar vardagar 9–16.</p>
+    <p>We answer on weekdays 9–16.</p>
   </Prose>
 </Section>
 
 // The page title as display, and a card's title as an h3 set as heading-2.
-<Heading as="h1" size="display">Välkommen till Kvirnby</Heading>
-<Heading as="h3" size="heading-2">Sophämtning</Heading>
+<Heading as="h1" size="display">Welcome to Kvirnby</Heading>
+<Heading as="h3" size="heading-2">Waste collection</Heading>
 
 // All six levels have a look of their own: h4 is heading-4, h5 is heading-5 and h6 is heading-6.
-<Heading as="h4">Öppettider</Heading>
+<Heading as="h4">Opening hours</Heading>
 ```
 
 ## Hook
@@ -39,11 +39,11 @@ import { Heading, Prose, Section } from '@kvirn-ui/react'
 import { useHeading } from '@kvirn-ui/react'
 
 const heading = useHeading({ level: 3, size: 'heading-2' })
-<h3 {...heading.rootProps}>Sophämtning</h3>
+<h3 {...heading.rootProps}>Waste collection</h3>
 
 // A fieldset's legend that looks like a heading: your element, the hook's classes.
 const legend = useHeading({ level: 2 })
-<legend {...legend.rootProps}>Kontaktuppgifter</legend>
+<legend {...legend.rootProps}>Contact details</legend>
 ```
 
 ## Accessibility

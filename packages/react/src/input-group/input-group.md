@@ -4,7 +4,7 @@
 
 **KvirnUI holds no form state; bring your own form logic.** InputGroup renders what it's given. It keeps no value and doesn't validate: the value lives in your form state, or in the native input.
 
-An InputGroup puts a unit, a symbol, a decorative icon or a Button **inside the input's box**: "kr" after a rent, "%" after a percentage, a search icon before a query, a "Rensa" Button after it.
+An InputGroup puts a unit, a symbol, a decorative icon or a Button **inside the input's box**: "kr" after a rent, "%" after a percentage, a search icon before a query, a "Clear" Button after it.
 
 - Three parts: `InputGroup.Root` (`<div>`, the box), `InputGroup.Input` (a `TextInput`, laid out by the box) and `InputGroup.Addon` (`<span>`, a unit or an icon). Each is also exported on its own (`InputGroupRoot`, `InputGroupInput`, `InputGroupAddon`), which is the form to import in a React Server Component, and the hook is `useInputGroup`.
 - The Root looks exactly like a TextInput: same height, edge, radius, fill and states. It takes `data-invalid` and `data-disabled` from the nearest Field, and `data-focus-visible` while the Input has keyboard focus, so the focus ring goes around the whole box. The Input inside has no edge or ring of its own.
@@ -34,7 +34,7 @@ An InputGroup puts a unit, a symbol, a decorative icon or a Button **inside the 
 import { Field, InputGroup } from '@kvirn-ui/react'
 
 ;<Field.Root invalid={errors.rent !== undefined} required>
-  <Field.Label>Månadshyra i kronor</Field.Label>
+  <Field.Label>Monthly rent in kronor</Field.Label>
   <InputGroup.Root>
     <InputGroup.Input
       name="rent"
@@ -46,7 +46,7 @@ import { Field, InputGroup } from '@kvirn-ui/react'
     <InputGroup.Addon>kr</InputGroup.Addon>
   </InputGroup.Root>
   <Field.Prose>
-    <p>Till exempel 8 450</p>
+    <p>For example 8 450</p>
   </Field.Prose>
   <Field.ErrorMessage>{errors.rent}</Field.ErrorMessage>
 </Field.Root>
@@ -63,7 +63,7 @@ const [query, setQuery] = useState('')
 const inputRef = useRef<HTMLInputElement>(null)
 
 <Field.Root>
-  <Field.Label marker="none">Sök bland e-tjänster</Field.Label>
+  <Field.Label marker="none">Search among e-services</Field.Label>
   <InputGroup.Root>
     <InputGroup.Addon>
       <Icon name="search" size="20" />
@@ -76,28 +76,28 @@ const inputRef = useRef<HTMLInputElement>(null)
           inputRef.current?.focus()
         }}
       >
-        Rensa
+        Clear
       </Button>
     )}
   </InputGroup.Root>
 </Field.Root>
 ```
 
-- A text Button's name is its visible text. An icon-only Button (`className="kv-button--icon-only"`) needs an `aria-label` from your translations: "Rensa sökningen".
+- A text Button's name is its visible text. An icon-only Button (`className="kv-button--icon-only"`) needs an `aria-label` from your translations: "Clear the search".
 - The theme hides the native clear button of the search input only when the group has a Button, so there are never two.
 - Disable the Button when the Field is disabled, and leave it out of a read-only group.
-- The show-password and calendar behaviours themselves aren't part of InputGroup: a DatePicker (M4) will put its named calendar Button in the same place.
+- A show-password or calendar action is not part of InputGroup. If you need one, put a named Button directly in the Root, as above.
 
 ### A search bar: a field and a submit Button
 
-A submit Button doesn't go in the box: the box holds an in-field action such as Rensa. For the site's search bar, put the `TextInput` and the submit `Button` side by side in an attached `ButtonGroup` (`className="kv-button-group--attached"`, unnamed, so it adds no group role): one strip, each control with its own edge and focus ring. The [Site search](?path=/docs/patterns-site-chrome-site-search--docs) pattern (`@kvirn-ui/patterns`) renders exactly this inside a `<search>` landmark and a GET form; the Search story shows the code.
+A submit Button doesn't go in the box: the box holds an in-field action such as Clear. For the site's search bar, put the `TextInput` and the submit `Button` side by side in an attached `ButtonGroup` (`className="kv-button-group--attached"`, unnamed, so it adds no group role): one strip, each control with its own edge and focus ring. The [Site search](?path=/docs/patterns-site-chrome-site-search--docs) pattern (`@kvirn-ui/patterns`) renders exactly this inside a `<search>` landmark and a GET form; the Search story shows the code.
 
 ### Your part
 
-- **The label says the unit.** "Månadshyra i kronor", not "Månadshyra" with a "kr" Addon. If the label can't say it, a description (a `Prose`) above the control does.
-- **Addon text is a symbol or a widely known abbreviation,** at most 4 characters: `kr`, `€`, `%`, `km`, `m²`. Never a word or a phrase ("per månad" goes in the label). Every Addon string comes from your translations.
+- **The label says the unit.** "Monthly rent in kronor", not "Monthly rent" with a "kr" Addon. If the label can't say it, a description (a `Prose`) above the control does.
+- **Addon text is a symbol or a widely known abbreviation,** at most 4 characters: `kr`, `€`, `%`, `km`, `m²`. Never a word or a phrase ("per month" goes in the label). Every Addon string comes from your translations.
 - **One Addon per side at most.** A start Addon and an end Addon, or an Addon and a Button, are fine.
-- **An icon Addon is decorative.** A calendar icon opens nothing until a date picker exists, so clicking it only focuses the Input. It repeats what the label says, and never looks like it does something it doesn't. Don't set `inputMode="numeric"` on a date field with separators.
+- **An icon Addon is decorative.** An icon Addon opens nothing: clicking it only focuses the Input. It repeats what the label says, and never looks like it does something it doesn't. Don't set `inputMode="numeric"` on a date field with separators.
 - **Don't put focusable content in an Addon.** A dev warning says so. Put a Button directly in the Root.
 - **Width classes stay on the Input** (`kv-input--width-10`). The Root fits around the Input and its Addons. Without a width class the Root is full width.
 - **Compact density** (`kv-compact` from 64rem) gives a 32px box and a 32px Button. Values and units stay 16px.

@@ -24,10 +24,10 @@ A status message in the content: something people need to know now, or the resul
 | `Alert.Actions`                                 | `<div class="kv-alert-actions">`                                                 | `as` (`div`, `section`), `ref`                                                                                                                                                                   |
 | `Alert.Close`                                   | `<button type="button" class="kv-alert-close">` with the decorative `close` icon | `onClick` (never called while `disabled`), `disabled`, `messages` (`{ close }`), `children` (visible text replaces the icon and the `aria-label`), `ref`, any `<button>` attribute except `type` |
 
-| Message key (`messages.alert`)                                 | Default (sv)            | Used by                                                       |
-| -------------------------------------------------------------- | ----------------------- | ------------------------------------------------------------- |
-| `infoPrefix`, `successPrefix`, `warningPrefix`, `dangerPrefix` | Information:, Klart:, … | The status word of each ready-made root                       |
-| `close`                                                        | Stäng meddelandet       | `Alert.Close`'s accessible name. Per provider, root or button |
+| Message key (`messages.alert`)                                 | Default (en)              | Used by                                                       |
+| -------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------- |
+| `infoPrefix`, `successPrefix`, `warningPrefix`, `dangerPrefix` | Information:, Success:, … | The status word of each ready-made root                       |
+| `close`                                                        | Close message             | `Alert.Close`'s accessible name. Per provider, root or button |
 
 | State attribute      | When                             |
 | -------------------- | -------------------------------- |
@@ -41,12 +41,12 @@ import { Button, Alert } from '@kvirn-ui/react'
 
 // Present when the page loads: no announce, no role, no focus. It's content.
 ;<Alert.Warning>
-  <Alert.Title>Ditt parkeringstillstånd går ut den 12 november 2026</Alert.Title>
+  <Alert.Title>Your parking permit expires on 12 November 2026</Alert.Title>
   <Alert.Body>
-    <p>Förnya det senast den 5 november.</p>
+    <p>Renew it by 5 November at the latest.</p>
   </Alert.Body>
   <Alert.Actions>
-    <Button>Förnya tillståndet</Button>
+    <Button>Renew the permit</Button>
   </Alert.Actions>
 </Alert.Warning>
 
@@ -54,9 +54,9 @@ import { Button, Alert } from '@kvirn-ui/react'
 {
   failed ? (
     <Alert.Danger announce="polite">
-      <Alert.Title>Vi kunde inte skicka din ansökan</Alert.Title>
+      <Alert.Title>We could not send your application</Alert.Title>
       <Alert.Body>
-        <p>Det blev fel hos oss. Dina svar är sparade. Försök igen om några minuter.</p>
+        <p>Something went wrong on our side. Your answers are saved. Try again in a few minutes.</p>
       </Alert.Body>
     </Alert.Danger>
   ) : null
@@ -65,14 +65,14 @@ import { Button, Alert } from '@kvirn-ui/react'
 
 Each ready-made root renders four things from one internal table:
 
-| Root            | Class               | Icon (shape)           | Status word key (sv)              |
+| Root            | Class               | Icon (shape)           | Status word key (en)              |
 | --------------- | ------------------- | ---------------------- | --------------------------------- |
 | `Alert.Info`    | `kv-alert--info`    | `info` (a square)      | `alert.infoPrefix` (Information:) |
-| `Alert.Success` | `kv-alert--success` | `success` (a circle)   | `alert.successPrefix` (Klart:)    |
-| `Alert.Warning` | `kv-alert--warning` | `warning` (a triangle) | `alert.warningPrefix` (Varning:)  |
-| `Alert.Danger`  | `kv-alert--danger`  | `error` (an octagon)   | `alert.dangerPrefix` (Fel:)       |
+| `Alert.Success` | `kv-alert--success` | `success` (a circle)   | `alert.successPrefix` (Success:)  |
+| `Alert.Warning` | `kv-alert--warning` | `warning` (a triangle) | `alert.warningPrefix` (Warning:)  |
+| `Alert.Danger`  | `kv-alert--danger`  | `error` (an octagon)   | `alert.dangerPrefix` (Error:)     |
 
-The colour (CSS on the class), the icon and the status word therefore can't disagree. The word starts the Title, so heading navigation reads "Varning: Ditt parkeringstillstånd går ut …". The default theme hides it visually, as it does for a field's "Fel:". Override the word per instance (`messages={{ dangerPrefix: 'Viktigt:' }}`) or per provider (`messages.alert`), the usual order. An override changes the word, never which status it belongs to.
+The colour (CSS on the class), the icon and the status word therefore can't disagree. The word starts the Title, so heading navigation reads "Warning: Your parking permit expires …". The default theme hides it visually, as it does for a field's "Error:". Override the word per instance (`messages={{ dangerPrefix: 'Important:' }}`) or per provider (`messages.alert`), the usual order. An override changes the word, never which status it belongs to.
 
 ### Pick the status
 
@@ -105,7 +105,7 @@ const ResultAlert = alertFor[result.variant]
 
 - A required heading. **You choose the level** (1.3.1, 2.4.6): one level below the heading of the part of the page it's in, so usually `h2` directly under the page's `h1`, `h3` inside a section with an `h2`. Never skip levels. `as="h3"` changes it.
 - For one sentence that needs no heading (a consequence next to the Send button), render a paragraph: `<Alert.Title as="p">`. The status word is still first.
-- Write the outcome in the user's words ("Vi kunde inte skicka din ansökan"), never only "Fel". The Body says what to do and by when. At most two actions, with verbs ("Försök igen"). One alert per region at a time.
+- Write the outcome in the user's words ("We could not send your application"), never only "Error". The Body says what to do and by when. At most two actions, with verbs ("Try again"). One alert per region at a time.
 - A root with no Title warns in development: the Title holds the status word and names the message.
 
 ### Announcing
@@ -149,16 +149,16 @@ The close button is at least 24 by 24 CSS px (the control size, 44px, or 32px in
 
 ### Dismissing
 
-`Alert.Close` is optional. Put it last in the root: it is then the last Tab stop of the alert, and the theme shows it at the inline end of the first line. It is a native `<button type="button">` with the decorative `close` icon, named by `alert.close` ("Stäng meddelandet"). Override the name per provider, per alert (`messages` on the root) or per button (`messages` on `Alert.Close`), the usual order. A visible label of your own goes in its children and then names the button.
+`Alert.Close` is optional. Put it last in the root: it is then the last Tab stop of the alert, and the theme shows it at the inline end of the first line. It is a native `<button type="button">` with the decorative `close` icon, named by `alert.close` ("Close message"). Override the name per provider, per alert (`messages` on the root) or per button (`messages` on `Alert.Close`), the usual order. A visible label of your own goes in its children and then names the button.
 
 ```tsx
 const heading = useRef<HTMLHeadingElement>(null)
 const [isShown, setIsShown] = useState(true)
 
-<h2 ref={heading} tabIndex={-1}>Dina ärenden</h2>
+<h2 ref={heading} tabIndex={-1}>Your cases</h2>
 {isShown ? (
   <Alert.Info>
-    <Alert.Title as="h3">Tjänsten är långsammare än vanligt i dag</Alert.Title>
+    <Alert.Title as="h3">The service is slower than usual today</Alert.Title>
     <Alert.Close
       onClick={() => {
         setIsShown(false)
@@ -181,7 +181,7 @@ The default `<div>` isn't a landmark. For one site-wide alert only (a service ou
 
 ```tsx
 <Alert.Danger as="section" aria-labelledby={titleId}>
-  <Alert.Title id={titleId}>Tjänsten är nere</Alert.Title>
+  <Alert.Title id={titleId}>The service is down</Alert.Title>
 </Alert.Danger>
 ```
 
@@ -202,7 +202,7 @@ function PermitNotice() {
     <div {...alert.rootProps}>
       <Icon {...alert.iconProps} />
       <h2 {...alert.titleProps}>
-        <span {...alert.statusProps} /> Ditt tillstånd går ut
+        <span {...alert.statusProps} /> Your permit expires
       </h2>
       <div {...alert.bodyProps}>…</div>
     </div>

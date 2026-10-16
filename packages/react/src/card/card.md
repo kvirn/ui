@@ -16,22 +16,22 @@ import { Button, Card, Link } from '@kvirn-ui/react'
 
 // A card without parts: the Root pads itself. A sidebar text block is a Section, not a Card.
 <Card.Root as="article" className="kv-prose">
-  <h2>Sophämtning</h2>
-  <p>Matavfall och restavfall töms varannan vecka.</p>
+  <h2>Waste collection</h2>
+  <p>Food waste and residual waste are collected every other week.</p>
 </Card.Root>
 
 // Image, heading, text and actions.
 <Card.Root>
   <Card.Header className="kv-card-header--padding-none">
-    <img src="/sophamtning.jpg" alt="" />
+    <img src="/waste-collection.jpg" alt="" />
   </Card.Header>
   <Card.Body className="kv-prose">
-    <h2>Sophämtning vid Storgatan 12</h2>
-    <p>Matavfall och restavfall töms varannan vecka.</p>
+    <h2>Waste collection at Storgatan 12</h2>
+    <p>Food waste and residual waste are collected every other week.</p>
   </Card.Body>
   <Card.Footer className="kv-button-group">
-    <Button className="kv-button--primary">Beställ extra tömning</Button>
-    <Button>Pausa hämtningen</Button>
+    <Button className="kv-button--primary">Order an extra collection</Button>
+    <Button>Pause the collection</Button>
   </Card.Footer>
 </Card.Root>
 
@@ -40,9 +40,9 @@ import { Button, Card, Link } from '@kvirn-ui/react'
   <Card.Root as="li">
     <Card.Body className="kv-prose">
       <h3>
-        <Link.Root href="/nyheter/atervinning">Nya öppettider på återvinningscentralen</Link.Root>
+        <Link.Root href="/news/recycling">New opening hours at the recycling centre</Link.Root>
       </h3>
-      <p>Från 1 november har återvinningscentralen öppet till kl. 19 på vardagar.</p>
+      <p>From 1 November the recycling centre is open until 7 pm on weekdays.</p>
     </Card.Body>
   </Card.Root>
 </ul>
@@ -53,7 +53,7 @@ Your part:
 - **The heading** goes at the top of `Card.Body` (or the Root), at the level your page outline needs. A Header is for media, or for a title row that needs a divider.
 - **Images** that only decorate get `alt=""`. That's most card images, when the heading names the topic.
 - **One link per card**, in the heading, with text that makes sense on its own. No "Read more", and no second link on the image. Navigation is a Link, actions are Buttons, and there's one primary action per view.
-- **Lists.** A list of cards is a `<ul role="list">` with each card rendered as `<li>` (`as="li"`), so screen readers announce "list, 3 items". The default theme draws no marker on a card, and Safari (VoiceOver) drops the list semantics of a list without visible markers unless it has `role="list"` (1.3.1). The repository's lint allows `role="list"` on a `ul` (`no-redundant-roles` is relaxed for that pair only): in Safari it isn't redundant.
+- **Lists.** A list of cards is a `<ul role="list">` with each card rendered as `<li>` (`as="li"`), so screen readers announce "list, 3 items". The default theme draws no marker on a card, and Safari (VoiceOver) drops the list semantics of a list without visible markers unless it has `role="list"` (1.3.1). A lint rule that calls `role="list"` on a `ul` redundant is wrong here: in Safari it isn't.
 - **Landmarks** only for a region a user would want to jump to: `<section aria-labelledby>` or `<aside aria-labelledby>`. Never make every card in a list a landmark.
 - **Parts are direct children** of the Root. A wrapper between them breaks the default theme's padding, and an empty part still has padding: don't render it.
 
@@ -76,7 +76,7 @@ Without a modifier class, a card gets the default: `surface-raised`, the `lg` ra
 
 ```tsx
 <Card.Root as="article">…</Card.Root>
-<Card.Root as="li" className="nyhet">…</Card.Root>
+<Card.Root as="li" className="news-item">…</Card.Root>
 ```
 
 `as` is a string, so it works from a Server Component. A tag outside the list is a type error and, from JS, warns once in development and renders a `<div>`. A `className` prop joins the part's class instead of replacing it, so the theme keeps styling the card. For any other element, use `useCard`.
@@ -92,7 +92,7 @@ function ContactCard() {
   return (
     <section {...card.rootProps} aria-labelledby={headingId}>
       <div {...card.bodyProps}>
-        <h2 id={headingId}>Kontakta oss</h2>
+        <h2 id={headingId}>Contact us</h2>
       </div>
     </section>
   )

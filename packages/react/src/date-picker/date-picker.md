@@ -1,6 +1,6 @@
 # DatePicker
 
-> **Draft** (Plan 0084). This page moves to the docs site. The accessibility contract is [date-picker.a11y.md](date-picker.a11y.md) and the design spec is [docs/design/date-picker-and-calendar.md](../../../../docs/design/date-picker-and-calendar.md).
+> **Alpha candidate.** The accessibility reviewer and assistive-technology tests are still pending. The accessibility contract is [date-picker.a11y.md](date-picker.a11y.md).
 
 A "Choose date" button next to a typed date. It opens a modal dialog holding a [Calendar](../calendar/calendar.md), so a day near today (a booking, a start date, "last Thursday") can be picked instead of typed. **Typing always works**: DatePicker is an add-on to a [DateInput](../date-input/date-input.md) or to one `masks.date()` field, never the only way to give a date.
 

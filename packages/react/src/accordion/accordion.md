@@ -6,7 +6,7 @@ An Accordion is a list of questions or sections, each a heading with a button th
 
 - Five parts: `Accordion.Root` (`<div>`), `Accordion.Item` (`<div>`, owns one disclosure's state), `Accordion.Heading` (`<h1>` to `<h6>` by the required `level`), `Accordion.Trigger` (`<button>`) and `Accordion.Panel` (`<div>`, `hidden` while closed). Each is also exported on its own (`AccordionRoot`, …), and the hook is `useAccordion`, used with one `useDisclosure()` per item.
 - **Pick the heading level for the page's outline.** It is required: Accordion can't know where it sits.
-- **Every trigger is a Tab stop.** The arrow keys, Home and End are not handled (APG makes them optional): Plan 0058.
+- **Every trigger is a Tab stop.** The arrow keys, Home and End are not handled (APG makes them optional).
 - **`region` on a panel is opt-in.** APG advises landmarks for about six panels or fewer.
 - The theme draws hairlines between items, the trigger as a full-width row, and a chevron at the inline end. Without it the parts carry `kv-accordion`, `kv-accordion-item`, `kv-accordion-heading`, `kv-accordion-trigger`, `kv-accordion-panel` and `data-open`.
 
@@ -18,9 +18,9 @@ import { Accordion } from '@kvirn-ui/react'
 ;<Accordion.Root>
   <Accordion.Item>
     <Accordion.Heading level={3}>
-      <Accordion.Trigger>Hur ansöker jag?</Accordion.Trigger>
+      <Accordion.Trigger>How do I apply?</Accordion.Trigger>
     </Accordion.Heading>
-    <Accordion.Panel>Du ansöker på Mina sidor.</Accordion.Panel>
+    <Accordion.Panel>You apply on My pages.</Accordion.Panel>
   </Accordion.Item>
 </Accordion.Root>
 ```

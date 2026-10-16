@@ -1,6 +1,6 @@
 # Combobox
 
-> **Draft** (Plan 0022). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [combobox.a11y.md](combobox.a11y.md), and the decisions are in the overlays-and-lists skill.
+> **Alpha candidate.** The accessibility reviewer and assistive-technology tests are still pending. The accessibility contract is [combobox.a11y.md](combobox.a11y.md).
 
 Choosing one option from a long list, or several, by typing to filter it. The user types a few letters, the list shrinks to what contains them, and they choose with the arrow keys and Enter, or with a press. The value is one of the options, never the text.
 
@@ -17,7 +17,7 @@ interface Municipality {
 }
 
 ;<Field.Root required>
-  <Field.Label>Kommun</Field.Label>
+  <Field.Label>Municipality</Field.Label>
   <Combobox.Root
     items={municipalities}
     itemToString={(municipality) => municipality.name}
@@ -44,9 +44,9 @@ interface Municipality {
 - **Put the input in a `Combobox.Control` with a `Combobox.Toggle` and a `Combobox.Clear`.** That is the default way to build it: a bare input looks like a plain text field, and a click on it opens nothing, so a user who doesn't know to type has no sign that there is a list. The Toggle (a chevron) says there is one and opens it. A bare `Combobox.Input` is the minimal variant, for when the question itself says to type.
 - **DOM focus stays on the input.** The input is a native `<input role="combobox">`, named by the Field's label, and the highlighted option is `aria-activedescendant`. Opening never moves focus.
 - **No option is highlighted until the user presses ArrowDown or ArrowUp.** So Enter never chooses something the user didn't move to. With nothing highlighted, Enter keeps its native meaning and a form can submit.
-- **The typed text is never cleared silently.** Text that matches no option stays in the field and the value is `null`. Say what to do in your own validation ("Välj ett alternativ i listan"). Choosing an option puts its text in the input, and only the Clear button empties it (with several choices it empties the typed text only).
+- **The typed text is never cleared silently.** Text that matches no option stays in the field and the value is `null`. Say what to do in your own validation ("Choose an option in the list"). Choosing an option puts its text in the input, and only the Clear button empties it (with several choices it empties the typed text only).
 - **Typing never moves focus or changes the page.** The popup opens and the list filters, and that is all.
-- **The result count is announced** ("5 resultat"), once the user has stopped typing, and so are "no results" and "loading". The highlighted option is never announced by KvirnUI: the screen reader reads it. This needs a `KvirnProvider`, which renders the live regions.
+- **The result count is announced** ("5 results"), once the user has stopped typing, and so are "no results" and "loading". The highlighted option is never announced by KvirnUI: the screen reader reads it. This needs a `KvirnProvider`, which renders the live regions.
 
 ## Root
 
@@ -76,9 +76,9 @@ interface Municipality {
 - **`Combobox.Input`**: the text field. Typing filters the list and opens the popup, and a click on it doesn't open anything. Outside a Field give it `aria-label` or `aria-labelledby`.
 - **`Combobox.Popup`, `List`, `Option`, `Group`, `GroupLabel`, `Empty`**: the Listbox's parts, shared. The popup is a role-less `<div popover="manual">` in the top layer, placed under the input, and a press in it never takes focus from the input. The `Combobox.List` inside it is the `role="listbox"` (named by the Field's label, or your `aria-label` on the List) and the part that scrolls. Options render only while the popup is open. `Combobox.Empty` says "No results" (or "Loading results") in the locale when nothing matches, as plain text beside the hidden list; the input then reports `aria-expanded="false"`. Annotate the item in the `Combobox.List` function to type it.
 - **`Combobox.Control`**: the box around the input and its buttons, recommended (see above). The popup is placed against it, and the default theme draws the field's edge and focus ring on it.
-- **`Combobox.Toggle`**: a button, recommended, that opens and closes the popup, named "Visa alternativ". It is not a tab stop: ArrowDown and Alt+ArrowDown do the same from the keyboard.
-- **`Combobox.Clear`**: an optional button that empties the text and, with one choice, the value, named "Rensa". With several choices it empties the typed text only: each chosen value is removed with its own remove button. It shows only while there is something to clear, and it is not a tab stop. It is the only thing that empties the text.
-- **`Combobox.ValueList`, `Combobox.Value`**: for `multiple`. A `<ul>` before the input with one `<li>` per chosen value. Each is a Tag chip: one button that holds the text and a cross, named "Ta bort Stockholm", so pressing the text removes the value too. After a removal focus goes to the next remove button, else the previous one, else the input. Backspace in the empty input removes nothing.
+- **`Combobox.Toggle`**: a button, recommended, that opens and closes the popup, named "Show options". It is not a tab stop: ArrowDown and Alt+ArrowDown do the same from the keyboard.
+- **`Combobox.Clear`**: an optional button that empties the text and, with one choice, the value, named "Clear". With several choices it empties the typed text only: each chosen value is removed with its own remove button. It shows only while there is something to clear, and it is not a tab stop. It is the only thing that empties the text.
+- **`Combobox.ValueList`, `Combobox.Value`**: for `multiple`. A `<ul>` before the input with one `<li>` per chosen value. Each is a Tag chip: one button that holds the text and a cross, named "Remove Stockholm", so pressing the text removes the value too. After a removal focus goes to the next remove button, else the previous one, else the input. Backspace in the empty input removes nothing.
 - **`useCombobox(options)`** returns `controlProps`, `inputProps`, `toggleProps`, `clearProps`, `valueListProps`, `getValueProps(value)`, `getRemoveButtonProps(value)`, `popupProps`, `listProps`, `emptyProps`, `getOptionProps(entry)`, `getGroupProps(section)`, `getGroupLabelProps(section)`, `hiddenInputs`, `entries`, `sections`, `selectedValues`, `isOpen`, `inputValue` and the Field's `isInvalid`, `isRequired`, `isDisabled`, for your own markup.
 
 Every part renders exactly one element and takes your own `className`, `ref` and handlers (merged with its own), and has a stable class: `kv-combobox-control`, `kv-combobox-input`, `kv-combobox-toggle`, `kv-combobox-clear`, `kv-tag-group-list` and `kv-tag` and `kv-tag-remove` (the chips, as in Tag; the old `kv-combobox-value-list`, `kv-combobox-value`, `kv-combobox-value-label` and `kv-combobox-value-remove` stay as aliases for one minor version, then go), and the Listbox's `kv-listbox-popup`, `kv-listbox-list`, `kv-listbox-option`, `kv-listbox-group`, `kv-listbox-group-label` and `kv-listbox-empty`. State is in `data-open`, `data-active`, `data-selected`, `data-disabled`, `data-loading` and `data-placement`. With `@kvirn-ui/theme/theme.css` imported, the input looks like an Input and the popup like the Listbox's; headless, it is unstyled.

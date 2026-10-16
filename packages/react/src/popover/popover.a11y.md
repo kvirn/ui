@@ -77,7 +77,7 @@ Popover has no strings of its own and announces nothing: `aria-expanded` changes
 
 ## Consumer responsibilities
 
-- **Name the popup.** Its role is `dialog`: give it `aria-label`, or `aria-labelledby` pointing at a heading inside it (4.1.2 Name, Role, Value, A). A development warning appears without one. Use the trigger's wording ("Om tjänsten") or a heading, never "popup".
+- **Name the popup.** Its role is `dialog`: give it `aria-label`, or `aria-labelledby` pointing at a heading inside it (4.1.2 Name, Role, Value, A). A development warning appears without one. Use the trigger's wording ("About the service") or a heading, never "popup".
 - **Name the trigger** with visible text, or `aria-label` from your translations for an icon-only button (4.1.2 Name, Role, Value, A; 2.5.3 Label in Name, A: the name contains the visible label).
 - **Render the Popup right after the Trigger,** in the same parent, so Tab goes from the trigger into the popup and back (2.4.3 Focus Order, A). The popup's place in the DOM is its place in the Tab order, wherever it is drawn.
 - **Don't hide essential information in a popover that only opens on hover or focus.** This one opens on press. A hover or focus card is a Tooltip, with its own contract (1.4.13 Content on Hover or Focus, AA).

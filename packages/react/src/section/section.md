@@ -7,7 +7,7 @@ A plain container for a region of the page, such as a sidebar or a band of conte
 - One part: `Section` (also exported as `SectionRoot`; `Section.Root` still works but is deprecated), one `<div class="kv-section">`. No Header, Body or Footer, no title and no behaviour.
 - No role, no ARIA, no text and no strings. Children are whatever you pass, with their own semantics and focus order.
 - `as` changes the element: `div` (default), `section`, `aside`, `nav`, `footer`, `header`, `article` or `li`.
-- Headless: no CSS. The part renders its stable class `kv-section`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, it's styled, and you choose with modifier classes: `kv-section--canvas` and `kv-section--padding-sm`.
+- Headless: no CSS. The part renders its stable class `kv-section`, and your `className` joins it. With `@kvirn-ui/theme/theme.css` imported, it's styled, and you choose with modifier classes such as `kv-section--canvas` and `kv-section--padding-sm`.
 - Section is elevation level 1 (a region of the page). A [Card](../card/card.md) is level 2 (an object on the page). This `Section` is not the `Section` part of `Disclosure` or `Tabs`, which belongs to those components.
 
 ## Component
@@ -16,15 +16,15 @@ A plain container for a region of the page, such as a sidebar or a band of conte
 import { Link, Section } from '@kvirn-ui/react'
 
 // A sidebar: a named complementary landmark.
-<Section as="aside" aria-labelledby="kontakt" className="kv-section--padding-lg kv-prose">
-  <h2 id="kontakt">Kontakta oss</h2>
-  <p>Vi svarar vardagar 9–16.</p>
-  <p><Link.Root href="/kontakt">Mejla kundcenter</Link.Root></p>
+<Section as="aside" aria-labelledby="contact" className="kv-section--padding-lg kv-prose">
+  <h2 id="contact">Contact us</h2>
+  <p>We answer on weekdays, 9:00 to 16:00.</p>
+  <p><Link.Root href="/contact">Email customer service</Link.Root></p>
 </Section>
 
 // A band of related content: no landmark, a visual region only.
 <Section>
-  <h2>Nyheter</h2>
+  <h2>News</h2>
   …
 </Section>
 
@@ -58,8 +58,8 @@ Without a modifier class, a section is `surface`, square, with `md` padding and 
 ### `as`
 
 ```tsx
-<Section as="aside" aria-labelledby="kontakt">…</Section>
-<Section as="li" className="nyhet">…</Section>
+<Section as="aside" aria-labelledby="contact">…</Section>
+<Section as="li" className="news-item">…</Section>
 ```
 
 `as` is a string, so it works from a Server Component. A tag outside the list is a type error and, from JS, warns once in development and renders a `<div>`. A `className` prop joins `kv-section` instead of replacing it, so the theme keeps styling the section. For any other element, use `useSection` (below).
@@ -72,7 +72,7 @@ import { useSection } from '@kvirn-ui/react'
 function CaseNavigation() {
   const section = useSection()
   return (
-    <nav {...section.rootProps} aria-label="Ärenden">
+    <nav {...section.rootProps} aria-label="Cases">
       …
     </nav>
   )

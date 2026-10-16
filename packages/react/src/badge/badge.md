@@ -2,7 +2,7 @@
 
 > **Draft** (Plan 0059). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [badge.a11y.md](badge.a11y.md).
 
-A short status or category in words: `Beviljad`, `Pre-alpha`, `Nyheter`. It renders a `<span>`.
+A short status or category in words: `Granted`, `Pre-alpha`, `News`. It renders a `<span>`.
 
 - One part: `Badge`, also `useBadge()`. It renders `<span class="kv-badge">`, and no role, ARIA, text or strings.
 - `variant`: `neutral` (default), `primary`, `info`, `success`, `warning` or `danger`. The class is `kv-badge--<variant>`. Always say the status in words: the colour is only a second cue.
@@ -17,7 +17,7 @@ A short status or category in words: `Beviljad`, `Pre-alpha`, `Nyheter`. It rend
 import { Badge } from '@kvirn-ui/react'
 
 ;<h3>
-  Bygglov Storgatan 4 <Badge variant="success">Beviljad</Badge>
+  Building permit Storgatan 4 <Badge variant="success">Granted</Badge>
 </h3>
 ```
 
@@ -27,7 +27,7 @@ import { Badge } from '@kvirn-ui/react'
 import { useBadge } from '@kvirn-ui/react'
 
 const badge = useBadge({ variant: 'warning' })
-<span {...badge.rootProps}>Väntar</span>
+<span {...badge.rootProps}>Pending</span>
 ```
 
 ## Accessibility
