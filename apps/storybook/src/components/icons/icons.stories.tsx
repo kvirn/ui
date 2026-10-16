@@ -38,7 +38,7 @@ const colorStyle = (color: IconLibraryArgs['color']) =>
   color === 'current' ? undefined : { color: `var(--kv-color-${color})` }
 
 const meta = {
-  title: 'Components/Content/Icon library',
+  title: 'Icons/Library',
   args: { name: iconNames[0], size: '20', color: 'current', label: '' },
   argTypes: {
     name: { control: 'select', options: iconNames, description: 'An icon from the library.' },
@@ -55,7 +55,8 @@ const meta = {
     },
     label: {
       control: 'text',
-      description: 'Makes the icon an image with this name. Empty means decorative.',
+      description:
+        'Makes the icon an image with this name. Empty means decorative. A meaningful icon is at least 20px (icon.md §6.1): use size 20 or larger with a label.',
     },
   },
   decorators: [

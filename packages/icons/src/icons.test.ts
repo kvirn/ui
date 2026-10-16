@@ -1,8 +1,7 @@
-import { existsSync, readdirSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vite-plus/test'
-import { camelCase, parseIcon } from '../scripts/generate.mjs'
-import { allIcons, iconNames } from './all.ts'
+import { buildOutputs, camelCase, parseIcon, readMirrorList } from '../scripts/generate.mjs'
 
 const byName = (left: string, right: string) => left.localeCompare(right)
 const packageRoot = join(import.meta.dirname, '..')
@@ -15,12 +14,10 @@ const svgWith = (body: string, rootExtra = '') =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"${rootExtra}>${body}</svg>`
 
 describe('@kvirn-ui/icons', () => {
-  it('has a generated module and an allIcons entry for every svg', () => {
-    for (const name of sourceNames) {
-      expect(existsSync(join(packageRoot, `src/icons/${name}.ts`))).toBe(true)
+  it('has generated files that match what the generator writes from the svg files', () => {
+    for (const [path, text] of buildOutputs(join(packageRoot, 'svg'), readMirrorList())) {
+      expect(readFileSync(join(packageRoot, path), 'utf8')).toBe(text)
     }
-    expect(Object.keys(allIcons).sort(byName)).toEqual(sourceNames)
-    expect([...iconNames].sort(byName)).toEqual(sourceNames)
   })
 
   it('has no stale generated module', () => {

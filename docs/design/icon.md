@@ -193,14 +193,14 @@ Per breakpoint: icons don't change size with the viewport, only with the root fo
 
 **Grid**
 
-| Rule          | Value                                                                                                                                                                 |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Live area     | 20×20, from 2 to 22. Every painted edge, including the half stroke (0.75) and the round caps and joins, stays inside it. So stroke centrelines stay within 2.75–21.25 |
-| Coordinates   | On a 0.25 grid. Horizontal and vertical centrelines on whole or half units                                                                                            |
-| Centre        | Centre the painted bounding box on 12,12. Optical nudges of up to 0.5 are allowed, and are noted in the table below                                                   |
-| Angles        | 45° and 90°. Chevron and arrow heads are 90° (arms at 45°)                                                                                                            |
-| Corner radius | 2 on containers (squares, pages, frames, trays). 1 on small inner corners (bin handle, bin foot)                                                                      |
-| Open ends     | Always round caps. No flat ends                                                                                                                                       |
+| Rule          | Value                                                                                                                                                                                                                        |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Live area     | 20×20, from 2 to 22. Every painted edge, including the half stroke (0.75) and the round caps and joins, stays inside it. So stroke centrelines stay within 2.75–21.25                                                        |
+| Coordinates   | On a 0.25 grid. Horizontal and vertical centrelines on whole or half units                                                                                                                                                   |
+| Centre        | Centre the painted bounding box on 12,12. Optical nudges of up to 0.5 are allowed, and are noted in the table below                                                                                                          |
+| Angles        | 45° and 90°. Chevron and arrow heads are 90° (arms at 45°). Other angles only for the named parts in `docs/design/icon-library.md` §2 (maintainer, 2026-10-16), at slopes of 2:1, 1:1 or 1:2 with endpoints on the 0.25 grid |
+| Corner radius | 2 on containers (squares, pages, frames, trays). 1 on small inner corners (bin handle, bin foot)                                                                                                                             |
+| Open ends     | Always round caps. No flat ends                                                                                                                                                                                              |
 
 **Keylines** (stroke centrelines, outer painted size in brackets). The circle is largest because it covers the least area, and the triangle uses the full width because its area is the smallest. That gives equal optical weight.
 
@@ -222,9 +222,10 @@ Per breakpoint: icons don't change size with the viewport, only with the root fo
 | A glyph and its container's inner edge | ≥ 2 units. ≥ 1.5 at the triangle's apex | 1.33px  | ≥ 1.5 units |
 
 - Strokes either **join** (meet at a shared point, or cross) or **keep the gap**. No near-misses, because they fill in at 16px.
-- The set is designed for stroke 1.5, and holds from 1 to 2. Lucide's default of 2 fits. Outside that range it's the adopter's choice.
+- The set is designed for stroke 1.5, and holds from 1 to 2 at 20px and up. At 16px it is proved at 1.5: at stroke 2 the globe and the document's text lines fill in. Lucide's default of 2 fits at 20px and up. Outside that range it's the adopter's choice.
+- **A meaningful or status icon is at least 20px** (maintainer, 2026-10-16). At 16px, horizontal and vertical strokes fall on pixel boundaries and render as half-grey rows (about 3.5:1 for `text` on `surface`, below 3:1 for `text-muted`), so 16px is for decorative icons beside text.
 
-**Construction** (starting coordinates; the gap rules above are the test):
+**Construction** (starting coordinates; the gap rules above are the test). _This table describes today's built-ins in `@kvirn-ui/react`. The library's redrawn 25 and the parts kit are in `docs/design/icon-library.md` §2 and the SVG files, which win until the built-ins are synced (Plan 0124)._
 
 | Icon            | Construction                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

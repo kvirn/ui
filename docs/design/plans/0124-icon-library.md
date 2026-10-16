@@ -32,6 +32,7 @@ Taken during implementation (lead, 2026-10-16):
 - Engineer decisions: `delete` is reserved, so its module exports `deleteIcon` (registry key stays `'delete'`); a hand-written `src/create-icon.ts` wraps shapes like `createBuiltInIcon`; the generator's root `<svg>` check is strict (viewBox, fill, stroke, stroke-width, linecap, linejoin exact; only `xmlns` extra); `all.ts` also exports `LibraryIconName`; stories reuse `kv-story-icon-gallery` and `kv-story-icon-cell` from `preview.css`; devDependencies `react`, `@types/react`, `vite-plus` are existing catalog entries, no new dependency. `packages/icons` added to the node test project glob (`vite.config.ts:262`).
 - Maintainer, 2026-10-16: ink density is a per-class band (open glyph, object) of ±40% and a warning, not a gate; single segments and dots are exempt from the originality grep; the landscape keyline (x 3–21, y 5–19) joins `icon.md` §6.1; syncing the react built-ins to the redrawn 25 is a separate later change.
 - Generator emits `vp fmt`-stable text (100 columns); `scripts/generate.d.mts` types it for the test.
+- Maintainer, 2026-10-16 (after the design review): a meaningful or status icon is 20px or larger and 16px is decorative only; other angles than 45/90 only for named kit parts at 2:1, 1:1 or 1:2 slopes (`icon.md` §6.1). Label keys are camelCase (`icons.chevronDown`); trigger-part chevrons and arrows have no default label; `external` uses `link.newTabNotice`. Story colours follow `icon.md` §6.3 (no `secondary`).
 - `"."` exports named icons (tree-shakeable); `"./all"` exports `allIcons` and `iconNames` for registries and galleries.
 
 Pending (maintainer): add `vp run icons:check` (drawing-rule checker, §Tasks 3) as a gate and to CI. A new gate is the maintainer's call.
@@ -82,7 +83,7 @@ One label key per icon that may be used meaningfully, `icons.<name>` in all 5 lo
 Batches are 8–12 icons of one family. Parallel briefs never touch the same file: `iconographer` owns `svg/` and the spec, `component-engineer` owns everything else.
 
 - [ ] 1. **Library spec** (`iconographer` → `ux-designer` review): `docs/design/icon-library.md` with the parts kit, optical rules, file format, the inventory of 150+ names across the families in the skill's taxonomy, cut to what components and e-services need. Maintainer approves the inventory.
-- [x] 2. **Package scaffold** (`component-engineer`): `packages/icons` in the workspace, AGENTS.md repo map and `docs/architecture.md` line, generator from `svg/*.svg` to typed modules, subpath exports, `sideEffects: false`, import check that nothing outside the package is pulled in.
+- [~] 2. **Package scaffold** (done: package, generator, subpath exports, test; open: AGENTS.md repo-map line, `docs/architecture.md` line, "nothing outside the package" import check) (`component-engineer`): `packages/icons` in the workspace, AGENTS.md repo map and `docs/architecture.md` line, generator from `svg/*.svg` to typed modules, subpath exports, `sideEffects: false`, import check that nothing outside the package is pulled in.
 - [ ] 3. **Checker and contact sheet** (`component-engineer`): script that fails on the §6.1 rules (allow-listed elements, forbidden attributes, 0.25 grid, live area, angles) and renders a contact sheet at 16/20/24/32 in light, dark and greyscale. Wire as `vp run icons:check` once approved.
 - [~] 4. **Pilot batch** (25 built-ins redrawn and in Storybook; Family 1 and review pending) (`iconographer`): the 25 built-ins re-expressed as SVG files (proves the pipeline reproduces today's drawings), then Family 1 (direction, 14). `ux-designer` reviews the contact sheet; drift decisions made before scaling.
 - [ ] 5. **Batches** (`iconographer`, one family per spawn, contact sheet regenerated and compared against the pilot after each): actions, status, controls, documents, communication, people, time, places, money and case handling, health and social care, learning and work, mobility and environment, safety and civic, language and access, data.
@@ -97,7 +98,7 @@ Batches are 8–12 icons of one family. Parallel briefs never touch the same fil
 
 ## Tests
 
-Behaviour and requirements only. The package test: every file in `svg/` becomes a module, no duplicate names, every name has an inventory row and a label key, every entry has a mirror decision. The rule checker (Task 3) proves the drawing rules. The gallery story proves axe and RTL. Visual weight and recognition are judged on the contact sheet by a person, not asserted.
+Behaviour and requirements only. The pilot covers: generated modules in sync, no stale modules, `parseIcon` rejections; the inventory/label-key/mirror-decision tests arrive with the inventory (Tasks 1 and 7). The package test: every file in `svg/` becomes a module, no duplicate names, every name has an inventory row and a label key, every entry has a mirror decision. The rule checker (Task 3) proves the drawing rules. The gallery story proves axe and RTL. Visual weight and recognition are judged on the contact sheet by a person, not asserted.
 
 ## Risks
 

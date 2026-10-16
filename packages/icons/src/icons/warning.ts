@@ -4,6 +4,6 @@ import type { IconRegistryEntry } from '@kvirn-ui/react'
 
 export const warning: IconRegistryEntry = createIcon([
   ['path', { d: 'M12 3.25l9.25 17h-18.5Z' }],
-  ['path', { d: 'M12 10v3' }],
-  ['path', { d: 'M12 16.5h.01' }],
+  ['path', { d: 'M12 9.75v3.5' }],
+  ['path', { d: 'M12 16.75h.01' }],
 ])

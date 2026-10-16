@@ -275,6 +275,8 @@ const preview: Preview = {
             'Data and behaviour',
           ],
           'Patterns',
+          'Icons',
+          'Map',
           'Content types',
           '*',
         ],

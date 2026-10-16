@@ -26,13 +26,13 @@ import { ManyPlacesDemo } from './map-many.fixture.tsx'
 import type { ManyPlacesDemoProps } from './map-many.fixture.tsx'
 import { RichPopupDemo } from './map-rich-popup.tsx'
 
-// Components/Map: the viewport, markers, controls and place list (contract: map.a11y.md). Default
+// Map: the viewport, markers, controls and place list (contract: map.a11y.md). Default
 // is the plain map, like the docs site; each customization has its own story and Everything has
 // them all. Default and CustomBaseMapSwitch load real OpenStreetMap, Esri and OpenTopoMap tiles,
 // so they are tagged `!test`. The other stories use a plain background style: no network call.
 
 const meta = {
-  title: 'Components/Map',
+  title: 'Map',
   component: Map.Root,
   args: {
     label: 'Map of preschools',

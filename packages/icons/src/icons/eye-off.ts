@@ -3,7 +3,9 @@ import { createIcon } from '../create-icon.ts'
 import type { IconRegistryEntry } from '@kvirn-ui/react'
 
 export const eyeOff: IconRegistryEntry = createIcon([
+  ['path', { d: 'M4.5 4.5l2.75 2.75' }],
   ['path', { d: 'M4.25 9.5a9.48 9.48 0 0 0-1.25 2.5 9.48 9.48 0 0 0 9.5 6.5' }],
   ['path', { d: 'M11.5 5.5a9.48 9.48 0 0 1 9.5 6.5 9.48 9.48 0 0 1-1.25 2.5' }],
-  ['path', { d: 'M4.5 4.5l15 15' }],
+  ['path', { d: 'M12 9a3 3 0 0 1 0 6 3 3 0 0 1 0-6Z' }],
+  ['path', { d: 'M16.75 16.75l2.75 2.75' }],
 ])
