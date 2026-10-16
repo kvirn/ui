@@ -208,6 +208,8 @@ One file per icon, `packages/icons/svg/<name>.svg`, kebab-case, two-space indent
 
 ## 6. Inventory
 
+> Aliases and categories are owned by `packages/icons/catalog.json` (readable view: `docs/design/icon-catalog.md`). Where an alias in this table differs, the catalogue wins; this table owns the drawing facts (keyline, ink class, RTL reason, status).
+
 Status: `drawn` = render matrix viewed, measured, pairs and originality checked by the drawing spawn (pilot and batch 2, 2026-10-16). Recognition testing with residents: **pending** for every row. Ink class: `open`, `lines`, `dots` or `object` (§7); the density band is judged within the class. Labels are noun phrases (§7 of `icon.md`) and proposals, keys camelCase (`icons.<camelName>`); the engineer adds the five locales. **None:** the icon is a part of a control or link that carries the name, so it is always decorative; where that control already has a key it is in brackets.
 
 Mirrors in RTL (14, as in `mirror-in-rtl.json`): `chevron-back`, `chevron-forward`, `arrow-back`, `arrow-forward`, `external`, `quote`, `bullet-list`, `numbered-list`, `indent`, `outdent`, `align-start`, `align-end`, `undo`, `redo`. No badged icon mirrors.
