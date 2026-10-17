@@ -280,6 +280,23 @@ export const sv = {
   },
   tableOfContents: { label: 'På den här sidan' },
   skipLink: { label: 'Hoppa till huvudinnehållet' },
+  skipPanel: {
+    skipToLabel: 'Hoppa till',
+    mainContent: 'Huvudinnehåll',
+    shortcutsLabel: 'Kortkommandon',
+    actionsLabel: 'Snabblänkar',
+    arrowHint: 'Använd upp- och nedpilarna för att flytta mellan alternativen.',
+    reopenHint: 'Tryck på {keys} för att öppna listan igen.',
+  },
+  keys: {
+    shift: 'Skift',
+    alt: 'Alt',
+    option: 'Option',
+    control: 'Ctrl',
+    command: 'Kommando',
+    meta: 'Meta',
+    joiner: '+',
+  },
   breadcrumb: { label: 'Du är här' },
   pagination: {
     label: 'Sidor',

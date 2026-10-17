@@ -47,6 +47,18 @@ export const navigationPreviews: Record<string, ReactNode> = {
       <Bar x={32} y={68.5} width={60} />
     </Drawing>
   ),
+  'skip-panel': (
+    <Drawing>
+      <Rect x={16} y={12} width={128} height={76} radius={6} />
+      <Rect x={24} y={18} width={72} height={44} radius={5} tone="fill" />
+      <Pill x={30} y={24} width={52} height={12} tone="key" />
+      <Bar x={38} y={28.5} width={32} tone="fill" />
+      <Bar x={32} y={44} width={44} />
+      <Bar x={32} y={52} width={30} />
+      <Rect x={104} y={44} width={28} height={10} radius={3} tone="slot" />
+      <Rect x={24} y={68} width={112} height={14} radius={4} tone="fill" />
+    </Drawing>
+  ),
   stepper: (
     <Drawing>
       <Bar x={20} y={30} width={70} height={5} />

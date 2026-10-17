@@ -55,6 +55,7 @@ import * as routeFocus from '../content/route-focus.api.ts'
 import * as scrollArea from '../content/scroll-area.api.ts'
 import * as section from '../content/section.api.ts'
 import * as skipLink from '../content/skip-link.api.ts'
+import * as skipPanel from '../content/skip-panel.api.ts'
 import * as slider from '../content/slider.api.ts'
 import * as stack from '../content/stack.api.ts'
 import * as stepper from '../content/stepper.api.ts'
@@ -130,6 +131,7 @@ const apiModules: Readonly<Record<string, object>> = {
   'scroll-area': scrollArea,
   section,
   'skip-link': skipLink,
+  'skip-panel': skipPanel,
   slider,
   stack,
   stepper,

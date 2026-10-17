@@ -1,0 +1,137 @@
+# Accessibility contract: SkipPanel
+
+- **APG pattern:** none. WCAG technique G1 (a link at the top to skip to the main content) with C7 (hide it until it has focus), as SkipLink.
+- **Deviations:** the whole panel is one Tab stop with arrow keys between its items (a roving tabindex, as the APG toolbar), so a keyboard user passes it in one Tab. This is an APG practice deviation, approved by the maintainer on 2026-10-18; the `keyboard` skill is updated in the same change. No dialog, menu or landmark role, no headings, no live region.
+- **Native elements used:** `<div>`, `<ul>`, `<li>`, `<a href="#id">`, `<button>`, `<kbd>` (through Kbd), `<p>`.
+- **Status:** in progress. Accessibility-reviewer pending. Manual AT is `pending`.
+- **Tests:** `skip-panel.test.tsx` next to this file; `shortcut.test.ts` in `packages/core/src/shortcut/`. Stories in `apps/storybook/src/components/skip-panel/`, where `theme.css` is loaded and the visible state is proved.
+
+SkipPanel is a list of links and buttons that is one Tab stop, with arrow keys between its items, first in the body. Shortcuts are page-wide chords the consumer supplies; there are no defaults.
+
+## Roles, states, properties
+
+| Part        | Element / role                          | ARIA                                 | Notes                                                                                                                                                                 |
+| ----------- | --------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Root        | `<div class="kv-skip-panel">`           | none                                 | `data-collapsed` after Escape on the floating list, `data-reopened` while opened by the reopen shortcut.                                                              |
+| Group       | `<div role="group">`                    | `aria-labelledby` → Label            | Named by visible text, not a heading                                                                                                                                  |
+| Label       | `<span>`                                | none                                 | `skipPanel.skipToLabel`, `skipPanel.shortcutsLabel`, or `skipPanel.actionsLabel` when shortcuts are off                                                               |
+| List / Item | `<ul role="list">` / `<li>`             | none                                 | `role="list"` because list-style none drops the role in WebKit                                                                                                        |
+| Link        | `<a href>`                              | `aria-describedby` on the first Link | The first Link is described by the Hint's arrow sentence. Focuses its target, as SkipLink. Text `skipPanel.mainContent` or children                                   |
+| Shortcut    | `<button type="button">` or `as` a link | `aria-keyshortcuts="Alt+Shift+S"`    | Name is its text then the key caps ("Search Alt+Shift+S"), no `aria-label` (2.5.3). Key caps and `aria-keyshortcuts` are removed when `shortcutsEnabled` is false     |
+| Hint        | `<p>` holding a `<span id>`             | none                                 | The arrow sentence in a `<span id>`, which the first Link's `aria-describedby` points at; then the reopen sentence only with a `reopenShortcut` and shortcuts enabled |
+
+## Keyboard
+
+- **Focus strategy:** roving tabindex (one item has `tabindex="0"`, the others `-1`; it resets to the first Link when focus leaves Root)
+- **Selection follows focus:** n/a
+- **Arrows wrap:** no (ArrowDown/ArrowUp, Home and End, vertical, across all groups in DOM order)
+- **Shortcuts:** consumer-supplied chords, bound on the document while Root is mounted and `shortcutsEnabled`. Opt-in: no defaults, and `shortcutsEnabled={false}` adds no listener.
+
+| Key                              | Context                                       | Action                                                                                                                                                             | Test                                                                                                                                  |
+| -------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Tab                              | page load                                     | Focuses the first Link (`aria-describedby` → the arrow sentence); the card appears                                                                                 | `skip-panel.test.tsx › SkipPanel keyboard › Tab on page load focuses the first Link`                                                  |
+| Tab                              | any item                                      | Leaves the panel for the page's next stop; the card hides                                                                                                          | `skip-panel.test.tsx › SkipPanel keyboard › Tab from any item leaves the panel for the page’s next stop`                              |
+| ArrowDown / ArrowUp              | on an item inside Root                        | Next / previous item across all groups, in DOM order; `preventDefault` only when handled (not flipped in RTL: the test is `… › the arrows are not flipped in RTL`) | `skip-panel.test.tsx › SkipPanel keyboard › ArrowDown and ArrowUp move across both groups in order`                                   |
+| ArrowLeft / ArrowRight           | on an item                                    | Not handled, in LTR and RTL                                                                                                                                        | `skip-panel.test.tsx › SkipPanel keyboard › the arrows are not flipped in RTL`                                                        |
+| ArrowDown / ArrowUp              | first / last item                             | Stay on the item (no wrap)                                                                                                                                         | `skip-panel.test.tsx › SkipPanel keyboard › the arrows do not wrap`                                                                   |
+| Home / End                       | on an item inside Root                        | First / last item                                                                                                                                                  | `skip-panel.test.tsx › SkipPanel keyboard › Home and End go to the first and last item`                                               |
+| ArrowDown / ArrowUp              | on a collapsed card                           | Still move; the focused item shows alone                                                                                                                           | `skip-panel.test.tsx › SkipPanel keyboard › the arrows still move on a collapsed card`                                                |
+| ArrowDown / ArrowUp / Home / End | outside Root                                  | Not handled                                                                                                                                                        | `skip-panel.test.tsx › SkipPanel keyboard › the arrows are not handled outside the card`                                              |
+| (roving tabindex)                | focus leaves Root                             | The first Link is the Tab stop again, so the next entry starts at the first Link                                                                                   | `skip-panel.test.tsx › SkipPanel keyboard › only one item is a Tab stop, and it is the first Link again after focus leaves`           |
+| Shift+Tab                        | first item                                    | Leaves the document (native); the card hides                                                                                                                       | `skip-panel.test.tsx › SkipPanel keyboard › Shift+Tab from the first item leaves the document`                                        |
+| Shift+Tab                        | any later item                                | Leaves the document backwards (native); the card hides                                                                                                             | `skip-panel.test.tsx › SkipPanel keyboard › Shift+Tab from a later item leaves the document backwards`                                |
+| Enter                            | Link                                          | Focuses the target (`tabindex=-1` until blur)                                                                                                                      | `skip-panel.test.tsx › SkipPanel keyboard › Enter on a Link focuses the target`                                                       |
+| Enter                            | Shortcut (button)                             | Runs its action                                                                                                                                                    | `skip-panel.test.tsx › SkipPanel keyboard › Enter on a Shortcut button runs its action`                                               |
+| Enter                            | Shortcut (link)                               | Follows the link                                                                                                                                                   | `skip-panel.test.tsx › SkipPanel keyboard › Enter on a Shortcut link follows the link`                                                |
+| Space                            | Shortcut (button)                             | Runs its action (native)                                                                                                                                           | `skip-panel.test.tsx › SkipPanel keyboard › Space on a Shortcut button runs its action`                                               |
+| Space                            | Link                                          | Not handled (native)                                                                                                                                               | `skip-panel.test.tsx › SkipPanel keyboard › Space on a Link is not handled`                                                           |
+| Escape                           | floating, reached by Tab                      | Sets `data-collapsed`; only the focused item stays visible; focus doesn't move; resets when focus leaves Root (1.4.13)                                             | `skip-panel.test.tsx › SkipPanel keyboard › Escape on the floating card reached by Tab collapses it, focus stays, and leaving resets` |
+| Escape                           | opened by `reopenShortcut`                    | Closes; focus returns to the element focused before                                                                                                                | `skip-panel.test.tsx › SkipPanel keyboard › Escape on a card opened by the reopen shortcut closes it and focus returns`               |
+| Escape                           | opened by `reopenShortcut`, element gone      | Focus goes to the first Link's target, never `body`                                                                                                                | `skip-panel.test.tsx › SkipPanel keyboard › Escape focuses the first Link’s target when the element focused before is gone`           |
+| `reopenShortcut`                 | anywhere except editable, enabled             | Stores the focused element, focuses the first Link; the card shows                                                                                                 | `skip-panel.test.tsx › SkipPanel keyboard › the reopen shortcut stores the focused element and focuses the first Link`                |
+| a Shortcut's chord               | anywhere except editable, enabled             | Activates that row (`element.click()`)                                                                                                                             | `skip-panel.test.tsx › SkipPanel keyboard › a Shortcut’s chord activates its row`                                                     |
+| a Shortcut's chord               | anywhere except editable, enabled             | The browser's own action is prevented                                                                                                                              | `skip-panel.test.tsx › SkipPanel keyboard › a Shortcut’s chord prevents the browser’s own action`                                     |
+| any chord                        | editable target                               | Not handled                                                                                                                                                        | `skip-panel.test.tsx › SkipPanel keyboard › a chord is not handled in an editable target`                                             |
+| any chord                        | AltGr                                         | Not handled                                                                                                                                                        | `skip-panel.test.tsx › SkipPanel keyboard › a chord is not handled with AltGr`                                                        |
+| any chord                        | extra Ctrl or Meta                            | Not handled                                                                                                                                                        | `skip-panel.test.tsx › SkipPanel keyboard › a chord is not handled with an extra Ctrl or Meta`                                        |
+| any chord                        | `shortcutsEnabled` false                      | Not handled; no listener                                                                                                                                           | `skip-panel.test.tsx › SkipPanel keyboard › no chord is handled while shortcutsEnabled is false`                                      |
+| any chord                        | inert subtree                                 | Not handled                                                                                                                                                        | `skip-panel.test.tsx › SkipPanel chords › no chord is handled inside an inert subtree`                                                |
+| any chord                        | open modal dialog that doesn't hold the card  | Not handled                                                                                                                                                        | `skip-panel.test.tsx › SkipPanel chords › no chord is handled while a modal dialog that does not hold the card is open`               |
+| any chord                        | Apple platform, AltGraph reported with Option | Handled (Apple keyboards have no AltGr)                                                                                                                            | `skip-panel.test.tsx › SkipPanel chords › on Apple platforms AltGraph reported with Option does not reject the chord`                 |
+
+The visible state (hidden before Tab, shown while focused, hidden after, not covering the next focused element) is proved in the stories with the theme loaded.
+
+## Focus management
+
+- Initial focus: not moved.
+- The reopen shortcut stores the focused element outside Root (never `body`) and focuses the first Link. Escape restores it, or focuses the first Link's target if it is gone or was `body`. The stored element is forgotten when focus leaves the card (`SkipPanel keyboard › the element to return to is forgotten when focus leaves the card`, `… › Escape after the reopen shortcut from nothing focused goes to the first Link’s target, never body`).
+- Pressing a row with the mouse keeps focus in the card, because Safari and Firefox on macOS don't focus a button on mousedown and the card would hide before the click (`SkipPanel keyboard › pressing a row with the mouse keeps focus in the card`).
+- Trap: no. Hidden by clipping (the card is cut to nothing but stays on the page, WCAG technique C7), never `display: none`.
+
+## Announcements
+
+| Event | Message key (i18n) | Politeness |
+| ----- | ------------------ | ---------- |
+| none  | none               | –          |
+
+The focus moves announce. Strings: `skipPanel.*` and `keys.*`. The Finnish, Norwegian Bokmål and Nynorsk key-cap names are drafts. <!-- kv-lang-ok: the language names -->
+
+### Read aloud
+
+Approximated by `@kvirn-ui/testing`'s `readAloud` and `readAnnouncements`, with the English (`en`) texts; not NVDA or JAWS output. AT `pending`. The focus moves (reopen chord, Escape after reopen, arrows) are spoken by the element that receives focus, with no live region.
+
+| State or action               | Expected phrase(s) as read aloud                                                                                  | Live region politeness | Test                                                                                                                              |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Tab on page load              | `group, Skip to`, then `link, Main content`                                                                       | none                   | `skip-panel.test.tsx › SkipPanel read aloud › reads the skip group named by its Label, then its links`                            |
+| The first Link                | `link, Main content, Use the up and down arrow keys to move between items.`                                       | none                   | `skip-panel.test.tsx › SkipPanel read aloud › reads the first Link with the arrow-key description`                                |
+| Arrow to a Shortcut button    | `button, Search Alt+Shift+S, key shortcuts Alt+Shift+S`, in `group, Keyboard shortcuts`                           | none                   | `skip-panel.test.tsx › SkipPanel read aloud › reads a Shortcut button with its key caps and its chord`                            |
+| A Shortcut rendered as a link | `link, My cases Alt+Shift+M, key shortcuts Alt+Shift+M`                                                           | none                   | `skip-panel.test.tsx › SkipPanel read aloud › reads a Shortcut link with its key caps and its chord`                              |
+| `shortcutsEnabled` false      | `group, Quick links`, then `button, Search` (no chord)                                                            | none                   | `skip-panel.test.tsx › SkipPanel read aloud › with shortcutsEnabled false the group is Quick links and the button has no chord`   |
+| The Hint in browse mode       | paragraph: `Use the up and down arrow keys to move between items. Press Alt + Shift + K to open this list again.` | none                   | `skip-panel.test.tsx › SkipPanel read aloud › reads the Hint as a paragraph with the chord`                                       |
+| No Hint mounted               | the first Link has no description (and a development warning)                                                     | none                   | `skip-panel.test.tsx › SkipPanel read aloud › without a Hint the first Link has no description and a development warning says so` |
+| Escape collapse               | nothing spoken                                                                                                    | none                   | `skip-panel.test.tsx › SkipPanel read aloud › Escape collapsing the card announces nothing`                                       |
+
+## Consumer responsibilities
+
+- **Put it first in the body,** before the header; give each target an id. QuickExit comes before it when both are on a page.
+- **Keep it short.** The panel is one Tab stop, but a long list is slow to arrow through: at most 6 items in total, with at most 3 Links and at most 5 Shortcuts (the default theme is sized for this). For one link, use SkipLink.
+- **Add a "Keyboard help" item** that links to the keyboard section of your accessibility statement, for example `<SkipPanel.Link href="/accessibility#keyboard">Keyboard help</SkipPanel.Link>`: it tells people who don't know the arrow keys where the rest of the shortcuts are.
+- **Put `<SkipPanel.Hint />` inside Root.** The first Link is described by it; without it a development warning says so.
+- **Above a sticky header:** the floating card has `z-index: 1000`. Override the `kv-skip-panel` z-index if your header sits higher.
+- **Pick chords with Alt or Option plus Shift and a letter.** Never a bare letter (2.1.4), never Ctrl+Alt (AltGr), never `/` (no such key on Nordic layouts). Windows' layout switch (Alt+Shift) can intercept some, and Firefox on Windows uses Alt+Shift+letter for HTML access keys.
+- **Offer the off switch:** wire `shortcutsEnabled` to a setting. 2.1.4 Character Key Shortcuts (A) covers only shortcuts made of printable characters, so Alt and Ctrl chords are outside it, but a bare letter is in scope. The switch is still offered because chords clash with the browser, the screen reader and the layout.
+- **A custom label in another language** is marked by the consumer (3.1.2).
+
+## Visual / modes
+
+Headless: no CSS. The theme clips the card (cuts it to an empty box, so it stays reachable by keyboard) until `:focus-within`, floats it over the page and hides it on focus-out so it never covers the next focused element (2.4.11).
+
+## WCAG SCs covered
+
+1.3.1 Info and Relationships (A), 1.4.10 Reflow (AA), 1.4.13 Content on Hover or Focus (AA), 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A), 2.1.4 Character Key Shortcuts (A), 2.4.1 Bypass Blocks (A), 2.4.3 Focus Order (A), 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA), 2.5.3 Label in Name (A), 2.5.8 Target Size (Minimum) (AA), 3.2.1 On Focus (A), 3.2.3 Consistent Navigation (AA), 4.1.2 Name, Role, Value (A). The behaviour ones are proved by the tests above and the axe tests; the visual ones by the stories.
+
+## AT test record
+
+| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
+| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**             |             |             |         |       |
+| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
+| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
+| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
+| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
+| Narrator + Edge + Windows                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)**  |             |             |         |       |
+| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
+| Dragon / Voice Control                   | pending     | pending     | pending |       |
+
+## Known issues
+
+- Touch screen-reader users (VoiceOver on iOS, TalkBack) also hear the arrow sentence, which does not apply to them. The maintainer accepted this.
+- In browse mode a screen reader reads every item with its own arrow keys, which matches the arrow hint. Whether it also announces the description on the first Link is not known. Manual check `pending`.
+- Before the page hydrates, the server HTML has no roving tabindex, so every item is a Tab stop until the script runs.
+- Whether Alt+Shift+letter reaches the page under NVDA and JAWS (browse and focus mode), Firefox, and Windows with two input layouts is not known. Manual check `pending`.
+- How screen readers read the group names and the nested Kbd is not known. Manual check `pending`.
+- Screen-reader users who read from the top of the page hear the whole panel before the content, because the card is cut to nothing visually but still in the page (C7). They can jump to the main landmark or the h1.

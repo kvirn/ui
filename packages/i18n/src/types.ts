@@ -444,6 +444,34 @@ export interface KvirnMessages {
      */
     label: TextMessage
   }
+  skipPanel: {
+    /** The first group's Label: where the links go, for example `Hoppa till`. Owned by SkipPanel (Plan 0132). */
+    skipToLabel: TextMessage
+    /** The default text of `SkipPanel.Link`, for example `Huvudinnehåll`. It follows the Label, so it reads "Hoppa till Huvudinnehåll". */
+    mainContent: TextMessage
+    /** The second group's Label while shortcuts are on, for example `Kortkommandon`. */
+    shortcutsLabel: TextMessage
+    /** The second group's Label while shortcuts are off, for example `Snabblänkar`. */
+    actionsLabel: TextMessage
+    /** The Hint's first sentence, and the description of the first Link. */
+    arrowHint: TextMessage
+    /** The Hint sentence. `{keys}` is replaced by the key caps of the reopen shortcut. */
+    reopenHint: TextMessage
+  }
+  keys: {
+    /** Key cap names (Plan 0132). A native speaker's review is pending. */
+    shift: TextMessage
+    alt: TextMessage
+    /** Alt on Apple platforms. */
+    option: TextMessage
+    control: TextMessage
+    /** Meta: Command on Apple platforms. */
+    command: TextMessage
+    /** Meta outside Apple platforms (the Windows or Linux key). */
+    meta: TextMessage
+    /** Between the key caps of one chord. */
+    joiner: TextMessage
+  }
   breadcrumb: {
     /**
      * The accessible name of the breadcrumb landmark, for example `Du är här`. It says what the

@@ -271,6 +271,23 @@ export const en = {
   },
   tableOfContents: { label: 'On this page' },
   skipLink: { label: 'Skip to main content' },
+  skipPanel: {
+    skipToLabel: 'Skip to',
+    mainContent: 'Main content',
+    shortcutsLabel: 'Keyboard shortcuts',
+    actionsLabel: 'Quick links',
+    arrowHint: 'Use the up and down arrow keys to move between items.',
+    reopenHint: 'Press {keys} to open this list again.',
+  },
+  keys: {
+    shift: 'Shift',
+    alt: 'Alt',
+    option: 'Option',
+    control: 'Ctrl',
+    command: 'Command',
+    meta: 'Meta',
+    joiner: '+',
+  },
   breadcrumb: { label: 'You are here' },
   pagination: {
     label: 'Pages',

@@ -62,6 +62,14 @@ Limits: built on `@guidepup/virtual-screen-reader` (MIT, optional peer of the `/
 
 A blocking finding from `accessibility-reviewer` is fixed, or waived with the maintainer's approval and a note in the plan. An AT matrix row (`docs/accessibility.md`) passes only with an agent check proved by re-runnable tests and a human check on the real AT. Agents never write or claim the human check.
 
+Approved trade-offs:
+
+- **SkipPanel floats** (maintainer, 2026-10-17/18, Plan 0132). The card covers the page while focus is inside it, unlike SkipLink, which stays in the flow. It is acceptable only with these rules, each tested:
+  - Escape collapses it to the focused item (1.4.13).
+  - It hides on focusout, so it never covers the next focused element (2.4.11).
+  - It is fixed only from 40rem × 36rem (1.4.10).
+  - SkipPanel has no in-flow variant: for an in-flow skip, use SkipLink.
+
 ## Review mode
 
 When reviewing a diff, go through [wcag-22-checklist.md](references/wcag-22-checklist.md) and report findings as `file:line — defect — SC — affected users — fix`. Only flag real failures as blocking. The checklist is exhaustive for WCAG 2.2 A and AA (55 SC): every row is answered Pass, Fail or N/A with a reason, and rows only a person can decide (`manual AT`) are reported `pending`, never Pass.

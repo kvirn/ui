@@ -281,6 +281,23 @@ export const nb = {
   },
   tableOfContents: { label: 'På denne siden' },
   skipLink: { label: 'Gå til hovedinnhold' },
+  skipPanel: {
+    skipToLabel: 'Gå til',
+    mainContent: 'Hovedinnhold',
+    shortcutsLabel: 'Hurtigtaster',
+    actionsLabel: 'Hurtiglenker',
+    arrowHint: 'Bruk opp- og ned-piltastene for å bytte mellom valgene.',
+    reopenHint: 'Trykk {keys} for å åpne denne listen igjen.',
+  },
+  keys: {
+    shift: 'Skift',
+    alt: 'Alt',
+    option: 'Option',
+    control: 'Ctrl',
+    command: 'Kommando',
+    meta: 'Meta',
+    joiner: '+',
+  },
   breadcrumb: { label: 'Du er her' },
   pagination: {
     label: 'Sider',

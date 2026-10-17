@@ -287,6 +287,23 @@ export const fi = {
   },
   tableOfContents: { label: 'Tällä sivulla' },
   skipLink: { label: 'Siirry pääsisältöön' },
+  skipPanel: {
+    skipToLabel: 'Siirry kohtaan',
+    mainContent: 'Pääsisältö',
+    shortcutsLabel: 'Pikanäppäimet',
+    actionsLabel: 'Pikalinkit',
+    arrowHint: 'Siirry kohteiden välillä ylä- ja alanuolinäppäimillä.',
+    reopenHint: 'Avaa tämä luettelo uudelleen painamalla {keys}.',
+  },
+  keys: {
+    shift: 'Vaihto',
+    alt: 'Alt',
+    option: 'Optio',
+    control: 'Ctrl',
+    command: 'Komento',
+    meta: 'Meta',
+    joiner: '+',
+  },
   breadcrumb: { label: 'Olet tässä' },
   pagination: {
     label: 'Sivut',

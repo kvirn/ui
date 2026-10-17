@@ -229,6 +229,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'A link that is the first stop when you press Tab, so keyboard and screen reader users can jump past the header to the main content.',
       ),
       component(
+        'SkipPanel',
+        'skip-panel',
+        'A list at the top of the page, shown when someone first presses Tab, with links that skip to the main content, the menu or the search, and the keyboard shortcuts the site offers.',
+      ),
+      component(
         'Stepper',
         'stepper',
         'Says where the user is in a multi-page form, as one line of text: “Step 2 of 5: Your vehicle”.',

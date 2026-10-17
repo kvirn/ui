@@ -655,3 +655,11 @@ body {
 .docs-icon-item p {
   margin: 0;
 }
+
+/* A SkipPanel example: the panel is out of the flow, so the frame holds it (contain: layout makes the
+ * frame the containing block of absolute and fixed children) and is tall enough to show it. */
+.docs-skip-panel-example {
+  position: relative;
+  contain: layout;
+  min-block-size: 20rem;
+}

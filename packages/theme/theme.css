@@ -80,6 +80,7 @@
  *  8m. List          kv-list: the one native list, with no marker, bullets or numbers
  *  8c. Tooltip       kv-tooltip: a name and a shortcut for a control, level 3
  *  8d. Visually hidden and skip link  kv-visually-hidden, kv-skip-link: hidden until focused
+ *  8d2. Skip panel   kv-skip-panel: a panel of skip links and shortcuts, hidden until focus is inside
  *  8f. Code block      kv-code-block: a labelled code sample that wraps, and its copy button
  *  8e. Badge         kv-badge: a status or category in words, by role class
  *  8g. Tag           kv-tag, kv-tag-group: a static or removable chip and the applied-filters row
@@ -2726,6 +2727,7 @@
           .kv-link-new-tab-notice,
           .kv-link-icon,
           .kv-skip-link,
+          .kv-skip-panel,
           .kv-visually-hidden,
           .kv-disclosure-trigger,
           .kv-accordion-heading,
@@ -3766,6 +3768,177 @@
     }
 
     :where(.kv-skip-link:focus-visible, [tabindex='-1']:focus-visible) {
+      outline-color: Highlight;
+    }
+  }
+
+  /* 8d2. Skip panel ----------------------------------------------------------------------------
+   * <SkipPanel.Root> renders <div class="kv-skip-panel"> of groups, each a label and a list of
+   * links or shortcut rows, then a hint. State: data-collapsed (Escape on the floating card: only
+   * the focused item shows) and data-reopened. It has one look and no variant: a skip in the flow of
+   * the page is the plain kv-skip-link above.
+   *
+   * Hidden is the clip rule of 8d, never display: none or visibility: hidden, so the links stay in
+   * the accessibility tree and focusable. It shows while focus is inside (:focus-within). No fade: a
+   * fade would delay the visible focus (2.4.7).
+   *
+   * It floats and is a level 3 popup (surface-raised, a 1px border-subtle edge, the popup
+   * shadow, radius-xl). From 40rem wide and 36rem high it is fixed at the top inline-start; below
+   * either (320px, 400% zoom) it sits at the top of the document, so page scroll reaches every item
+   * and the card has no scrollbar of its own (1.4.10, 2.4.11). 36rem fits the six-stop cap with
+   * 1.4.12 spacing.
+   *
+   * Rows: a link is underlined at rest; a shortcut is a button in the link look (underlined on
+   * hover) with its key caps (kv-kbd, 8b) at the inline end, wrapping under the text when narrow.
+   * Forced colours: Canvas, a CanvasText edge, LinkText rows and a Highlight ring. */
+  :where(.kv-skip-panel) {
+    box-sizing: border-box;
+    position: absolute;
+    inset-block-start: var(--kv-space-2);
+    inset-inline: var(--kv-space-2);
+    /* Above sticky headers and the quick-exit row; no stacking token exists, a site overrides this. */
+    z-index: 1000;
+    padding: var(--kv-space-2);
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-xl);
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-shadow-popup);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    font-weight: var(--kv-font-body-weight);
+    line-height: var(--kv-font-body-line-height);
+    letter-spacing: normal;
+  }
+
+  @media (min-width: 40rem) and (min-height: 36rem) {
+    :where(.kv-skip-panel) {
+      position: fixed;
+      inset-inline-end: auto;
+      inline-size: max-content;
+      max-inline-size: calc(100% - 2 * var(--kv-space-2));
+    }
+  }
+
+  :where(.kv-skip-panel__list) {
+    display: grid;
+    gap: var(--kv-space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :where(.kv-skip-panel__group + .kv-skip-panel__group) {
+    margin-block-start: var(--kv-space-3);
+    padding-block-start: var(--kv-space-3);
+    border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  }
+
+  :where(.kv-skip-panel__label) {
+    display: block;
+    margin-block-end: var(--kv-space-2);
+    padding-inline: var(--kv-space-2);
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-label-size);
+    font-weight: var(--kv-font-label-weight);
+    line-height: var(--kv-font-label-line-height);
+  }
+
+  :where(.kv-skip-panel__link, .kv-skip-panel__shortcut) {
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: var(--kv-space-4);
+    inline-size: 100%;
+    min-block-size: var(--kv-control-min-block-size);
+    margin: 0;
+    padding-block: 0;
+    padding-inline: var(--kv-space-2);
+    border: 0;
+    border-radius: var(--kv-radius-sm);
+    background-color: transparent;
+    color: var(--kv-color-link);
+    font: inherit;
+    text-align: start;
+    text-decoration-thickness: var(--kv-link-underline-thickness);
+    text-underline-offset: var(--kv-link-underline-offset);
+    cursor: pointer;
+  }
+
+  :where(.kv-skip-panel__link) {
+    text-decoration-line: underline;
+  }
+
+  :where(.kv-skip-panel__shortcut) {
+    text-decoration-line: none;
+  }
+
+  :where(.kv-skip-panel__link, .kv-skip-panel__shortcut):is(:hover, :active) {
+    color: var(--kv-color-link-hover);
+    text-decoration-line: underline;
+    text-decoration-thickness: var(--kv-link-underline-thickness-hover);
+  }
+
+  :where(.kv-skip-panel__link, .kv-skip-panel__shortcut):focus-visible {
+    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
+    outline-offset: var(--kv-focus-ring-offset);
+  }
+
+  :where(.kv-skip-panel__hint) {
+    margin: 0;
+    margin-block-start: var(--kv-space-3);
+    padding-inline: var(--kv-space-2);
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-small-size);
+    font-weight: var(--kv-font-body-small-weight);
+    line-height: var(--kv-font-body-small-line-height);
+  }
+
+  /* Collapsed: the frame wraps the focused item only. The groups give up their divider and gap. */
+  :where(.kv-skip-panel[data-collapsed] .kv-skip-panel__group) {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  /* Last, so the clip wins over every rule above. */
+  :where(
+    .kv-skip-panel:not(:focus-within),
+    .kv-skip-panel[data-collapsed] :is(.kv-skip-panel__label, .kv-skip-panel__hint),
+    .kv-skip-panel[data-collapsed] .kv-skip-panel__item:not(:focus-within)
+  ) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    min-block-size: 0;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (forced-colors: active) {
+    :where(.kv-skip-panel) {
+      border-color: CanvasText;
+      background-color: Canvas;
+      box-shadow: none;
+      color: CanvasText;
+    }
+
+    :where(.kv-skip-panel__group + .kv-skip-panel__group) {
+      border-block-start-color: CanvasText;
+    }
+
+    :where(.kv-skip-panel__link, .kv-skip-panel__shortcut) {
+      color: LinkText;
+      text-decoration-line: underline;
+    }
+
+    :where(.kv-skip-panel__link, .kv-skip-panel__shortcut):focus-visible {
       outline-color: Highlight;
     }
   }

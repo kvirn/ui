@@ -409,6 +409,36 @@ export type {
   UseSkipLinkOptions,
   UseSkipLinkResult,
 } from './skip-link/use-skip-link.ts'
+export {
+  SkipPanel,
+  SkipPanelGroup,
+  SkipPanelHint,
+  SkipPanelItem,
+  SkipPanelLabel,
+  SkipPanelLink,
+  SkipPanelList,
+  SkipPanelRoot,
+  SkipPanelShortcut,
+} from './skip-panel/skip-panel.tsx'
+export type {
+  SkipPanelLabelProps,
+  SkipPanelLinkProps,
+  SkipPanelRootComponentProps,
+  SkipPanelShortcutProps,
+} from './skip-panel/skip-panel.tsx'
+export {
+  useSkipPanel,
+  useSkipPanelGroup,
+  useSkipPanelHint,
+  useSkipPanelLink,
+  useSkipPanelShortcut,
+} from './skip-panel/use-skip-panel.ts'
+export type {
+  SkipPanelPartProps,
+  UseSkipPanelOptions,
+  UseSkipPanelResult,
+} from './skip-panel/use-skip-panel.ts'
+export type { SkipPanelContextValue } from './skip-panel/skip-panel-context.ts'
 export { VisuallyHidden } from './visually-hidden/visually-hidden.tsx'
 export type { VisuallyHiddenProps } from './visually-hidden/visually-hidden.tsx'
 export { useVisuallyHidden } from './visually-hidden/use-visually-hidden.ts'
