@@ -16,7 +16,6 @@ import {
 } from '@kvirn-ui/react'
 import type { UseFormatResult } from '@kvirn-ui/react'
 import type { BuiltInIconName, IconName } from '@kvirn-ui/react'
-import { builtInIcons } from '../../../../../packages/react/src/icon/built-in-icons.tsx'
 import { Warning as PhosphorWarning } from '@phosphor-icons/react'
 import { ArrowRight, MapPin, Search, Trash2, X as LucideClose } from 'lucide-react'
 import { useCallback, useState } from 'react'
@@ -30,26 +29,43 @@ import { createPortal } from 'react-dom'
 
 export type IconFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'en'
 
-/**
- * Every built-in icon, in the order of the design spec (§4.1). Read from `builtInIcons`, the
- * package's own set, so the gallery can't drift from it: a new icon shows up here, and in the
- * gallery, with no edit. The set is not a public export, so this is the one place a fixture
- * reads the package source by relative path.
- */
-export const builtInIconNames = Object.keys(builtInIcons) as BuiltInIconName[]
+/** The names `<Icon name>` finds with no provider, in the design spec's order (§4.1). */
+export const builtInIconNames = [
+  'chevron-down',
+  'chevron-up',
+  'chevron-back',
+  'chevron-forward',
+  'arrow-back',
+  'arrow-forward',
+  'external',
+  'close',
+  'menu',
+  'search',
+  'add',
+  'check',
+  'info',
+  'success',
+  'warning',
+  'error',
+  'calendar',
+  'upload',
+  'download',
+  'document',
+  'delete',
+  'language',
+  'eye',
+  'eye-off',
+  'copy',
+] as const satisfies readonly BuiltInIconName[]
 
-/** The built-ins whose entry sets `mirrorInRtl`: the horizontal-direction icons, flipped in RTL (§4.1). */
-export const mirroredIconNames = builtInIconNames.filter((name) => {
-  const entry = builtInIcons[name]
-  return (
-    typeof entry === 'object' &&
-    entry !== null &&
-    'mirrorInRtl' in entry &&
-    entry.mirrorInRtl === true
-  )
-})
-
-export const isMirroredIcon = (name: BuiltInIconName): boolean => mirroredIconNames.includes(name)
+/** The default icons that flip in RTL: the horizontal-direction ones (§4.1). */
+export const mirroredIconNames = [
+  'chevron-back',
+  'chevron-forward',
+  'arrow-back',
+  'arrow-forward',
+  'external',
+] as const satisfies readonly BuiltInIconName[]
 
 export type StatusKind = 'info' | 'success' | 'warning' | 'error'
 export const statusKinds = [

@@ -13,8 +13,9 @@ import { Button } from '../button/button.tsx'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import type { KvirnProviderProps } from '../provider/kvirn-provider.tsx'
-import { builtInIconNames } from './built-in-icons.tsx'
-import type { BuiltInIconName } from './built-in-icons.tsx'
+import { allIcons } from '@kvirn-ui/icons/all'
+import { defaultIcons } from './default-icons.ts'
+import type { BuiltInIconName } from './default-icons.ts'
 import { Icon } from './icon.tsx'
 import type { IconProps } from './icon.tsx'
 import { defineIcons } from './icon-registry.ts'
@@ -46,6 +47,8 @@ const libraryIcons = defineIcons({
   'heroicons-trash': TrashIcon,
   'phosphor-trash': PhosphorTrash,
   'arrow-next': { component: ArrowRight, mirrorInRtl: true },
+  'data-search': allIcons['search'],
+  'data-arrow': allIcons['arrow-forward'],
 })
 
 type LibraryIconName = keyof typeof libraryIcons
@@ -64,6 +67,7 @@ function RegisteredIcon({
 }
 
 const firstBuiltInName: BuiltInIconName = 'close'
+const builtInIconNames = Object.keys(defaultIcons) as BuiltInIconName[]
 
 function svgIn(container: HTMLElement): SVGSVGElement {
   const svg = container.querySelector('svg')
@@ -113,7 +117,7 @@ describe('built-in icons', () => {
     ])
   })
 
-  test('only the five horizontal-direction icons mirror in RTL', async () => {
+  test('the icons that mirror in RTL are the ones the library flags', async () => {
     const { container } = await render(
       <>
         {builtInIconNames.map((name) => (
@@ -124,27 +128,15 @@ describe('built-in icons', () => {
     const mirrored = [...container.querySelectorAll('svg[data-mirror-in-rtl]')].map((svg) =>
       svg.getAttribute('data-name'),
     )
-    expect(mirrored).toEqual([
+    const flagged = builtInIconNames.filter((name) => defaultIcons[name].mirrorInRtl === true)
+    expect(mirrored).toEqual(flagged)
+    expect(flagged).toEqual([
       'chevron-back',
       'chevron-forward',
       'arrow-back',
       'arrow-forward',
       'external',
     ])
-  })
-
-  test('shapes set no attributes of their own, so every prop reaches every stroke', async () => {
-    const { container } = await render(
-      <>
-        {builtInIconNames.map((name) => (
-          <Icon key={name} name={name} />
-        ))}
-      </>,
-    )
-    for (const shape of container.querySelectorAll('svg *')) {
-      expect(shape.tagName).toBe('path')
-      expect(shape.getAttributeNames()).toEqual(['d'])
-    }
   })
 
   test.each(builtInIconNames)('%s renders without a provider, decorative', async (name) => {
@@ -159,6 +151,34 @@ describe('built-in icons', () => {
   test('are drawn in currentColor, so they follow the text colour', async () => {
     const svg = svgIn((await render(<Icon name={firstBuiltInName} />)).container)
     expect(svg.getAttribute('stroke')).toBe('currentColor')
+  })
+
+  test('an IconData entry renders its shapes, and a component entry renders the component', async () => {
+    const dataSvg = await renderIcon(<RegisteredIcon name="data-search" />)
+    expect(dataSvg.querySelectorAll('path, line, circle').length).toBeGreaterThan(0)
+    const componentSvg = await renderIcon(<RegisteredIcon name="lucide-trash" />)
+    expect(componentSvg.classList.contains('lucide-trash-2')).toBe(true)
+  })
+
+  test('an IconData entry with mirrorInRtl mirrors', async () => {
+    const svg = await renderIcon(<RegisteredIcon name="data-arrow" />)
+    expect(svg.hasAttribute('data-mirror-in-rtl')).toBe(true)
+  })
+
+  test('an icon renders a component or data', async () => {
+    const svg = await renderIcon(<Icon icon={Trash2} />)
+    expect(svg.classList.contains('lucide-trash-2')).toBe(true)
+    const dataSvg = svgIn((await render(<Icon icon={allIcons['search']} />)).container)
+    expect(dataSvg.getAttribute('viewBox')).toBe('0 0 24 24')
+  })
+
+  test('the icon option of useIcon beats the name', async () => {
+    function Probe() {
+      const icon = useIcon({ name: 'close', icon: Trash2 })
+      return <span data-same={String(icon.component === Trash2)} />
+    }
+    const { container } = await render(<Probe />)
+    expect(container.querySelector('span')?.getAttribute('data-same')).toBe('true')
   })
 
   test('an app registration with the same name replaces a built-in', async () => {

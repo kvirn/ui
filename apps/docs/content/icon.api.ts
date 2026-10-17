@@ -4,7 +4,7 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
 export type IconDocumentedProps = Pick<
   IconProps,
-  'name' | 'icon' | 'as' | 'children' | 'size' | 'label' | 'mirrorInRtl'
+  'name' | 'icon' | 'as' | 'children' | 'size' | 'label' | 'variant' | 'mirrorInRtl'
 >
 
 export const iconRows = propRows<IconDocumentedProps>({
@@ -15,10 +15,10 @@ export const iconRows = propRows<IconDocumentedProps>({
       'A built-in icon, or one registered with defineIcons in a KvirnProvider. Give one of name, icon, as or children.',
   },
   icon: {
-    type: 'IconComponent',
+    type: 'IconRegistryEntry',
     default: '–',
     description:
-      'A component from an icon library, or your own: icon={Search}. It needs no registration. Icon’s size and label replace the component’s own, and className is joined with it.',
+      'An icon from @kvirn-ui/icons, or a component: icon={search} or icon={Search}. It needs no registration. Icon’s size and label replace the component’s own, and className is joined with it.',
   },
   as: {
     type: 'ElementType',
@@ -42,6 +42,12 @@ export const iconRows = propRows<IconDocumentedProps>({
     default: '–',
     description:
       'Makes the icon an image (role="img") with this name, from your translations. Leave it out when text next to the icon says the same: the icon is then hidden from assistive technology.',
+  },
+  variant: {
+    type: "'primary' | 'secondary' | 'accent' | 'muted' | 'info' | 'success' | 'warning' | 'danger'",
+    default: '–',
+    description:
+      'A colour from the theme, set with the class kv-icon--<variant>. Without one the icon keeps the text colour around it. It decorates: words carry the meaning, never the colour alone.',
   },
   mirrorInRtl: {
     type: 'boolean',
@@ -83,11 +89,21 @@ export const useIconHook: ApiHook = {
       default: '–',
       description: 'A built-in or registered icon, to get its component.',
     },
+    icon: {
+      type: 'IconRegistryEntry',
+      default: '–',
+      description: 'An icon from @kvirn-ui/icons, or a component, used instead of a name.',
+    },
     size: { type: 'IconSize', default: '20', description: 'The size in pixels, as a string.' },
     label: {
       type: 'string',
       default: '–',
       description: 'Makes the icon an image with this name. Without it the icon is decorative.',
+    },
+    variant: {
+      type: "'primary' | 'secondary' | 'accent' | 'muted' | 'info' | 'success' | 'warning' | 'danger'",
+      default: '–',
+      description: 'A colour from the theme, set with the class kv-icon--<variant>.',
     },
     mirrorInRtl: {
       type: 'boolean',
@@ -106,7 +122,7 @@ export const useIconHook: ApiHook = {
       type: 'IconComponent | undefined',
       default: '–',
       description:
-        'The registered or built-in component for name. Undefined without a name, or for an unknown one.',
+        'The registered or built-in component for name or icon. Undefined without either, or for an unknown name.',
     },
     isDecorative: {
       type: 'boolean',

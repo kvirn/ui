@@ -12,7 +12,6 @@ export default function Page() {
       contract={readContract('icon')}
       sources={{
         default: readExampleSource('icon/default.tsx'),
-        'built-in-set': readExampleSource('icon/built-in-set.tsx'),
         'with-label': readExampleSource('icon/with-label.tsx'),
         sizes: readExampleSource('icon/sizes.tsx'),
         'own-component': readExampleSource('icon/own-component.tsx'),

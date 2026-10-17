@@ -1,6 +1,8 @@
 import type { ComponentType, Ref } from 'react'
+import type { IconData } from '@kvirn-ui/icons'
+import { createIconComponent } from '@kvirn-ui/icons/react'
 import type { Register } from '../provider/register.ts'
-import type { BuiltInIconName } from './built-in-icons.tsx'
+import type { BuiltInIconName } from './default-icons.ts'
 
 /**
  * What Icon passes to an icon component: attributes for the root `<svg>`, and a ref.
@@ -24,8 +26,9 @@ export interface IconComponentProps {
  */
 export type IconComponent = ComponentType<IconComponentProps>
 
-/** One registry entry: the component, or the component with options. */
+/** One registry entry: drawing data from `@kvirn-ui/icons`, a component, or a component with options. */
 export type IconRegistryEntry =
+  | IconData
   | IconComponent
   | {
       component: IconComponent
@@ -74,6 +77,12 @@ export function readIconEntry(entry: IconRegistryEntry): {
   component: IconComponent
   mirrorInRtl: boolean | undefined
 } {
+  if (typeof entry === 'object' && 'shapes' in entry) {
+    return {
+      component: createIconComponent(entry),
+      mirrorInRtl: entry.mirrorInRtl,
+    }
+  }
   return typeof entry === 'object' && 'component' in entry
     ? { component: entry.component, mirrorInRtl: entry.mirrorInRtl }
     : { component: entry, mirrorInRtl: undefined }

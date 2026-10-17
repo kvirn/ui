@@ -56,7 +56,8 @@
   },
   "dependencies": {
     "@kvirn-ui/core": "workspace:*",
-    "@kvirn-ui/i18n": "workspace:*"
+    "@kvirn-ui/i18n": "workspace:*",
+    "@kvirn-ui/icons": "workspace:*"
   },
   "devDependencies": {
     "@heroicons/react": "catalog:",

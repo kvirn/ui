@@ -7,7 +7,6 @@ import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import { iconAttributes, iconRows, useIconHook } from '../content/icon.api.ts'
-import { BuiltInSet } from '../examples/icon/built-in-set.tsx'
 import { DefaultIcon } from '../examples/icon/default.tsx'
 import { MapSet } from '../examples/icon/map-set.tsx'
 import { MirrorInRtl } from '../examples/icon/mirror-in-rtl.tsx'
@@ -20,7 +19,6 @@ import type { Contract } from '../lib/contract-parser.ts'
 
 export type IconExampleSources = Record<
   | 'default'
-  | 'built-in-set'
   | 'map-set'
   | 'rich-text-set'
   | 'with-label'
@@ -73,8 +71,8 @@ export function IconPage({
             warning.
           </li>
           <li>
-            Draw it from the built-in set, from a component of your own icon library, or from your
-            own shapes.
+            Draw it from the icon library, from a component of your own icon set, or from your own
+            shapes.
           </li>
           <li>
             Give it a name only when no text beside it says the same thing, and never let it be the
@@ -94,15 +92,11 @@ export function IconPage({
       }
       useCases={
         <>
-          <UseCase
-            id="built-in-set"
-            title="Pick an icon from the built-in set"
-            why="Start here. The set covers the common actions and statuses. You pass the name shown beside each icon, and the icon stays hidden from assistive technology until you give it a label."
-            code={sources['built-in-set']}
-            propsUsed={[{ part: 'Icon', prop: 'name' }]}
-          >
-            <BuiltInSet />
-          </UseCase>
+          <p>
+            The components use icons by name, such as <code>close</code>, <code>chevron-down</code>{' '}
+            and <code>search</code>. These come from the icon library. To pick an icon for your own
+            use, look through all of them on the <Link href="/components/icons">Icons page</Link>.
+          </p>
           <UseCase
             id="map-set"
             title="The Map’s icons"
@@ -111,7 +105,7 @@ export function IconPage({
                 The map package draws its own icons: the default marker pin and the control arrows.
                 Pass one with <code>icon</code>, or register them with <code>defineIcons</code>.
                 They come from <code>mapIcons</code> in <code>@kvirn-ui/map</code>, and they are not
-                part of the built-in set.
+                part of the icon library.
               </>
             }
             code={sources['map-set']}
@@ -126,7 +120,7 @@ export function IconPage({
               <>
                 The editor draws its toolbar icons with <code>RichTextEditor.Icon</code>, from the
                 names in <code>richTextIconNames</code> in <code>@kvirn-ui/rich-text</code>. They
-                are not part of the built-in set.
+                are not part of the icon library.
               </>
             }
             code={sources['rich-text-set']}
@@ -190,7 +184,7 @@ export function IconPage({
             title="An arrow in right-to-left text"
             why={
               <>
-                In right-to-left text the built-in arrows, chevrons and the external-link icon are
+                In right-to-left text the library’s arrows, chevrons and the external-link icon are
                 flipped by the default theme, so “next” still points forward. Set{' '}
                 <code>mirrorInRtl</code> yourself on a directional icon of your own.
               </>

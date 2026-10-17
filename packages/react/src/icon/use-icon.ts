@@ -1,9 +1,9 @@
 import { useContext, useMemo } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { KvirnConfigContext } from '../provider/provider-context.ts'
-import { builtInIcons } from './built-in-icons.tsx'
+import { defaultIcons } from './default-icons.ts'
 import { readIconEntry } from './icon-registry.ts'
-import type { IconComponent, IconName } from './icon-registry.ts'
+import type { IconComponent, IconName, IconRegistryEntry } from './icon-registry.ts'
 
 /**
  * The size in pixels, as a string: `'20'` is 1.25rem. The theme turns it into rem with a class,
@@ -47,6 +47,8 @@ export interface IconDefaults {
 export interface UseIconOptions extends IconDefaults {
   /** A built-in or registered icon. */
   name?: IconName | undefined
+  /** A drawing from `@kvirn-ui/icons` or a component, used instead of a name. It needs no registration. */
+  icon?: IconRegistryEntry | undefined
   /**
    * Makes the icon an image with this name, from your own translations. Leave it
    * out when text next to the icon says the same thing: the icon is then hidden from
@@ -83,7 +85,7 @@ export interface IconPartProps {
 
 export interface UseIconResult {
   iconProps: IconPartProps
-  /** The registered or built-in component for `name`. `undefined` without a name, or for an unknown one. */
+  /** The registered or built-in component for `name` or `icon`. `undefined` without either, or for an unknown name. */
   component: IconComponent | undefined
   /** `true` unless the icon has a `label`. */
   isDecorative: boolean
@@ -128,6 +130,7 @@ const iconVariants: readonly string[] = [
  */
 export function useIcon({
   name,
+  icon,
   size,
   label,
   variant,
@@ -137,15 +140,19 @@ export function useIcon({
   // Own properties only: `name="constructor"` must not find `Object.prototype.constructor`.
   const appEntry = name !== undefined && Object.hasOwn(icons, name) ? icons[name] : undefined
   const builtInEntry =
-    name !== undefined && Object.hasOwn(builtInIcons, name) ? builtInIcons[name] : undefined
-  const entryToUse = appEntry ?? builtInEntry
+    name !== undefined && Object.hasOwn(defaultIcons, name)
+      ? (defaultIcons as Readonly<Record<string, IconRegistryEntry>>)[name]
+      : undefined
+  const entryToUse = icon ?? appEntry ?? builtInEntry
   const entry = entryToUse === undefined ? undefined : readIconEntry(entryToUse)
   // Mirroring belongs to the name: a plain override of a built-in keeps the built-in's.
   const entryMirrorInRtl =
     entry?.mirrorInRtl ??
-    (builtInEntry === undefined ? undefined : readIconEntry(builtInEntry).mirrorInRtl)
+    (icon !== undefined || builtInEntry === undefined
+      ? undefined
+      : readIconEntry(builtInEntry).mirrorInRtl)
 
-  if (name !== undefined && entry === undefined) {
+  if (name !== undefined && icon === undefined && entry === undefined) {
     warnOnce(
       `unknown-icon:${name}`,
       `<Icon name="${name}"> isn't a built-in icon or registered in a KvirnProvider, so it renders an empty <svg>. Add it with defineIcons and pass the registry to <KvirnProvider icons>.`,

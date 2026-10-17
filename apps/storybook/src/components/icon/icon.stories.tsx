@@ -21,7 +21,6 @@ import {
   HeroiconsOneOff,
   HeroiconsRegistered,
   isIconFixtureLocale,
-  isMirroredIcon,
   LibraryIcons,
   LucideOneOff,
   LucideRegistered,
@@ -39,7 +38,7 @@ import {
 import type { BuiltInIconName, IconName, IconProps } from '@kvirn-ui/react'
 import type { IconFixtureLocale } from './icon.fixture.tsx'
 
-// Components/Icon: the headless Icon and the built-in set, styled by @kvirn-ui/theme/theme.css
+// Components/Icon: the headless Icon and the default icons, styled by @kvirn-ui/theme/theme.css
 // (design spec docs/design/icon.md §6.6). The keyboard rows are proved in icon.test.tsx, so the
 // play functions only read. RTL mirroring is proven by the `data-mirror-in-rtl` plays of RTL and
 // LibraryIconsViaTheRegistry, and by icon.test.tsx.
@@ -115,7 +114,11 @@ const meta = {
   ],
   parameters: {
     a11yContract: contract,
-    docs: { description: { component: usageGuide(guide) } },
+    docs: {
+      description: {
+        component: `${usageGuide(guide)}\n\nThe full icon set is in [Icons/Library](?path=/docs/icons-library--docs).`,
+      },
+    },
   },
 } satisfies Meta<IconArgs>
 
@@ -131,61 +134,6 @@ export const Default: Story = {
     await expect(svg).not.toBeNull()
     await expect(svg).toHaveAttribute('aria-hidden', 'true')
     await expect(svg).toHaveClass('kv-icon--size-20')
-    await expect(canvas.queryByRole('img')).toBeNull()
-  },
-}
-
-/**
- * Every built-in icon, read from the package's own set, so none is missing: its name as text,
- * the drawing at sizes 16, 20 and 24, and whether it flips in right-to-left text (the five
- * directional ones do). The drawings are decorative, and the name is what a screen reader reads.
- */
-export const BuiltInSet: Story = {
-  render: (_args, { globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    return (
-      <>
-        <ul className="kv-story-icon-gallery">
-          {builtInIconNames.map((name) => (
-            <li key={name} className="kv-story-icon-cell" data-testid={iconNamed(name)}>
-              <span className="kv-story-icon-row">
-                <Icon name={name} size="16" />
-                <Icon name={name} size="20" />
-                <Icon name={name} size="24" />
-              </span>
-              <code>{name}</code>
-              <span>
-                {isMirroredIcon(name) ? text.gallery.mirrors : text.gallery.doesNotMirror}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </>
-    )
-  },
-  play: async ({ canvas }) => {
-    const { text } = textsFor('en')
-    const cells = within(canvas.getByRole('list')).getAllByRole('listitem')
-    await expect(cells).toHaveLength(builtInIconNames.length)
-    for (const [index, cell] of cells.entries()) {
-      const name = builtInIconNames[index]
-      if (name === undefined) {
-        continue
-      }
-      // The name is the text, and the three drawings are decorative.
-      await expect(within(cell).getByText(name)).toBeVisible()
-      await expect(
-        within(cell).getByText(
-          isMirroredIcon(name) ? text.gallery.mirrors : text.gallery.doesNotMirror,
-        ),
-      ).toBeVisible()
-      const icons = cell.querySelectorAll('svg')
-      await expect(icons).toHaveLength(3)
-      for (const icon of icons) {
-        await expect(icon).toHaveAttribute('aria-hidden', 'true')
-        await expect(icon.hasAttribute('data-mirror-in-rtl')).toBe(isMirroredIcon(name))
-      }
-    }
     await expect(canvas.queryByRole('img')).toBeNull()
   },
 }
@@ -772,7 +720,7 @@ export const Heroicons: Story = {
 }
 
 /**
- * Registered over the built-ins, a library's drawing replaces the built-in one for every
+ * Registered over the defaults, a library's drawing replaces the built-in one for every
  * component, with the same `size` and `color`. A plain component under `arrow-forward` still
  * mirrors in right-to-left text, because mirroring belongs to the name (design spec §4.2).
  */

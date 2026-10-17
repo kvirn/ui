@@ -2,9 +2,9 @@
 
 > **Draft** (Plan 0009). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [icon.a11y.md](icon.a11y.md), and the design spec is [docs/design/icon.md](../../../../docs/design/icon.md).
 
-One component for every icon: the built-in set, your own SVGs, and icons from libraries such as Lucide, Heroicons and Phosphor. There are three routes, and you can mix them:
+One component for every icon: the default icons from the icon library, your own SVGs, and icons from libraries such as Lucide, Heroicons and Phosphor. There are three routes, and you can mix them:
 
-- **`icon`** for one icon from a library: `<Icon icon={Search} />`. No setup.
+- **`icon`** for one icon from a library: `<Icon icon={Search} />`. No setup. It also takes an icon from `@kvirn-ui/icons` directly: `<Icon icon={add} />` with `import { add } from '@kvirn-ui/icons'`.
 - **`name`** for icons you use everywhere: register them once in `KvirnProvider`, then write `<Icon name="close" />`.
 - **`as`** (or children) for a one-off icon of your own, such as a municipality's mark.
 
@@ -12,45 +12,17 @@ Icon's `size` and `label` replace the library component's own in every route tha
 
 - **Decorative by default** (`aria-hidden="true"`). Give it a `label` from your translations when no text next to it says the same thing, and it becomes an image with that name.
 - **`size` is the pixel size, as a string.** `<Icon size="20" />` (the default) is 20px at the default root font size: the theme turns it into `1.25rem` with the class `kv-icon--size-20`, so it follows the user's root font size and not the text around it. The sizes are `'12'`, `'14'`, `'16'`, `'20'`, `'24'`, `'28'`, `'32'`, `'40'`, `'48'`, `'56'`, `'64'`, `'80'` and `'96'`. A number or a CSS length (`'48px'`) is a type error: another size is a class you add (`<Icon className="my-icon" />`).
-- **Colour is the text colour** (`currentColor`) unless you pass a `variant`, so an icon in a primary Button is white without extra CSS. `variant` is `'primary'`, `'secondary'`, `'accent'`, `'muted'`, `'info'`, `'success'`, `'warning'` or `'danger'` and adds `kv-icon--<variant>`; an unknown value warns once and adds nothing. It decorates: a status icon always comes with the status in words, and the variant never changes the icon's name. Icon has no colour or stroke props. The built-in set draws a 1.5 stroke; the classes `kv-icon--stroke-1`, `kv-icon--stroke-1-5` and `kv-icon--stroke-2` set another one (a meaningful icon is at least `'20'`, and `'24'` with `stroke-1`). Any other colour is a class of your own.
+- **Colour is the text colour** (`currentColor`) unless you pass a `variant`, so an icon in a primary Button is white without extra CSS. `variant` is `'primary'`, `'secondary'`, `'accent'`, `'muted'`, `'info'`, `'success'`, `'warning'` or `'danger'` and adds `kv-icon--<variant>`; an unknown value warns once and adds nothing. It decorates: a status icon always comes with the status in words, and the variant never changes the icon's name. Icon has no colour or stroke props. The library icons draw a 1.5 stroke; the classes `kv-icon--stroke-1`, `kv-icon--stroke-1-5` and `kv-icon--stroke-2` set another one (a meaningful icon is at least `'20'`, and `'24'` with `stroke-1`). Any other colour is a class of your own.
 - **Attributes, never inline `style`,** so icons work under a strict Content-Security-Policy, and your CSS can still override them.
 - Headless: no CSS. The `<svg>` gets `class="kv-icon kv-icon--size-20"` (the size class, and `kv-icon--<variant>` with a variant), `width` and `height` in rem, and `data-mirror-in-rtl` for a directional icon.
 
-## Built-in icons
+## Default icons
 
-These work with no setup:
+These 25 names work with no setup. They are icons from [`@kvirn-ui/icons`](../../../icons), the icon library, and the page **Icons/Library** in Storybook (and the Icons page on the docs site) shows all of them and the rest of the library. The drawings are decorative: the name is the text beside each.
 
-The Storybook page **Components/Content/Icon › Built In Set** shows every one of them, generated from the set itself. The drawings are decorative: the name is the text beside each.
+`chevron-down`, `chevron-up`, `chevron-back`, `chevron-forward`, `arrow-back`, `arrow-forward`, `external`, `close`, `menu`, `search`, `add`, `check`, `info`, `success`, `warning`, `error`, `calendar`, `upload`, `download`, `document`, `delete`, `language`, `eye`, `eye-off`, `copy`.
 
-| Name              | Use                                       | Mirrors in right-to-left text |
-| ----------------- | ----------------------------------------- | ----------------------------- |
-| `chevron-down`    | Opens a section or a menu, or points down | no                            |
-| `chevron-up`      | Closes a section, or points up            | no                            |
-| `chevron-back`    | Back or previous in reading direction     | yes                           |
-| `chevron-forward` | Forward or next in reading direction      | yes                           |
-| `arrow-back`      | Back to the previous page or step         | yes                           |
-| `arrow-forward`   | Continue to the next page or step         | yes                           |
-| `external`        | A link that leaves the site               | yes                           |
-| `close`           | Closes a dialog, a panel or a message     | no                            |
-| `menu`            | Opens the navigation menu                 | no                            |
-| `search`          | Search                                    | no                            |
-| `add`             | Adds an item                              | no                            |
-| `check`           | Done or selected                          | no                            |
-| `info`            | Information (a square)                    | no                            |
-| `success`         | Success (a circle)                        | no                            |
-| `warning`         | Warning (a triangle)                      | no                            |
-| `error`           | Error (an octagon)                        | no                            |
-| `calendar`        | A date or a date picker                   | no                            |
-| `upload`          | Sends a file                              | no                            |
-| `download`        | Downloads a file                          | no                            |
-| `document`        | A document or a file                      | no                            |
-| `delete`          | Removes an item                           | no                            |
-| `language`        | Changes the language                      | no                            |
-| `eye`             | Shows a hidden value, such as a password  | no                            |
-| `eye-off`         | Hides a shown value                       | no                            |
-| `copy`            | Copies content to the clipboard           | no                            |
-
-They're original outline drawings in the style of Heroicons, on a 24 grid with a 1.5 stroke. The four status icons differ in shape, not only colour: info a square, success a circle, warning a triangle, error an octagon. The five that say "yes" in the table flip in right-to-left text. KvirnUI's own components use these names, so when you register an icon under the same name, every component uses yours. A plain override keeps the built-in's mirroring.
+The four status icons differ in shape, not only colour. The five directional ones (`chevron-back`, `chevron-forward`, `arrow-back`, `arrow-forward`, `external`) flip in right-to-left text, because the library marks them with `mirrorInRtl`. KvirnUI's own components use these names, so when you register an icon under the same name, every component uses yours. A plain override keeps the default icon's mirroring.
 
 ```tsx
 import { Button, Icon } from '@kvirn-ui/react'
@@ -60,7 +32,7 @@ import { Button, Icon } from '@kvirn-ui/react'
 <Button><Icon name="add" />Add</Button>
 ```
 
-The 25 cap is for this set only. The Map (`mapIcons` in `@kvirn-ui/map`, with the default marker pin) and the rich text editor (`richTextIconNames` in `@kvirn-ui/rich-text`) draw their own icons in the same style, outside the cap. The docs Icon page shows all three sets.
+Any other icon from `@kvirn-ui/icons` works too: pass it to `icon` (below) or register it under a name. The Map (`mapIcons` in `@kvirn-ui/map`, with the default marker pin) and the rich text editor (`richTextIconNames` in `@kvirn-ui/rich-text`) have their own icons.
 
 ## A library icon: `icon`
 
@@ -94,7 +66,7 @@ import { MapPinIcon } from '@heroicons/react/24/outline'
 import MunicipalityLogo from './logo.svg?react'
 
 export const icons = defineIcons({
-  'arrow-forward': { component: ArrowRight, mirrorInRtl: true }, // replaces the built-in
+  'arrow-forward': { component: ArrowRight, mirrorInRtl: true }, // replaces the default icon
   delete: Trash2,
   location: MapPinIcon, // libraries can be mixed
   logo: MunicipalityLogo,
@@ -129,24 +101,24 @@ export function Providers({ children }: { children: React.ReactNode }) {
 <Icon name="delte" /> // type error, and a warning in development
 ```
 
-- An entry is a component, or `{ component, mirrorInRtl }`. `mirrorInRtl: false` turns off the flip a built-in name has (`arrow-forward`), and `mirrorInRtl` on an `<Icon>` wins over the entry. A component must forward its ref and spread SVG props onto one `<svg>`. Lucide, Heroicons, Phosphor and SVGR output all do.
+- An entry is icon data (an icon from `@kvirn-ui/icons`), a component, or `{ component, mirrorInRtl }`. `mirrorInRtl: false` turns off the flip a default name has (`arrow-forward`), and `mirrorInRtl` on an `<Icon>` wins over the entry. A component must forward its ref and spread SVG props onto one `<svg>`. Lucide, Heroicons, Phosphor and SVGR output all do.
 - A nested `KvirnProvider` adds icons and replaces names, over its parent's. `iconDefaults` (`size`) merges field by field.
-- Which value wins, lowest first: the icon's own defaults, the built-in's mirroring for that name, `iconDefaults`, your entry, then the props on `<Icon>`.
+- Which value wins, lowest first: the icon's own defaults, the default icon's mirroring for that name, `iconDefaults`, your entry, then the props on `<Icon>`.
 - An unknown name renders an empty `<svg>` at the right size and warns once in development.
 - Every registered icon is in the bundle that holds the provider. Register the icons the app uses, and use `as` for a rare one.
 
 ## Props
 
-| Prop          | Type                                                         | Default                                    |
-| ------------- | ------------------------------------------------------------ | ------------------------------------------ |
-| `name`        | `IconName`: a built-in or registered name                    | –                                          |
-| `icon`        | `IconComponent`: a Lucide, Heroicons or other icon component | –                                          |
-| `size`        | `IconSize`: a pixel string, `'12'` to `'96'`                 | `iconDefaults.size`, else `'20'`           |
-| `variant`     | `IconVariant`: the colour class, see Colour above            | none (`currentColor`); no provider default |
-| `label`       | `string`                                                     | none: decorative                           |
-| `mirrorInRtl` | `boolean`                                                    | the entry's, else `false`                  |
-| `as`          | a component that draws the icon, for a one-off icon          | –                                          |
-| `children`    | your own shapes, with Icon as the `<svg>`                    | –                                          |
+| Prop          | Type                                                                             | Default                                    |
+| ------------- | -------------------------------------------------------------------------------- | ------------------------------------------ |
+| `name`        | `IconName`: a default or registered name                                         | –                                          |
+| `icon`        | `IconRegistryEntry`: a library icon, a Lucide, Heroicons or other icon component | –                                          |
+| `size`        | `IconSize`: a pixel string, `'12'` to `'96'`                                     | `iconDefaults.size`, else `'20'`           |
+| `variant`     | `IconVariant`: the colour class, see Colour above                                | none (`currentColor`); no provider default |
+| `label`       | `string`                                                                         | none: decorative                           |
+| `mirrorInRtl` | `boolean`                                                                        | the entry's, else `false`                  |
+| `as`          | a component that draws the icon, for a one-off icon                              | –                                          |
+| `children`    | your own shapes, with Icon as the `<svg>`                                        | –                                          |
 
 `name`, `icon`, `as` and `children` are exclusive: the types forbid two, and in development, two together warn once. Other SVG attributes, such as `className` or `viewBox`, pass through. `aria-label`, `aria-hidden` and `role` can't be passed: `label` sets them.
 

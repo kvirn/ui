@@ -5,7 +5,7 @@ import { warnOnce } from '../dev/dev-warning.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
 import { renderPart } from '../render/render-part.ts'
-import type { IconComponent, IconName } from './icon-registry.ts'
+import type { IconName, IconRegistryEntry } from './icon-registry.ts'
 import { useIcon } from './use-icon.ts'
 import type { UseIconOptions } from './use-icon.ts'
 
@@ -38,7 +38,7 @@ interface IconBaseProps
       | 'aria-labelledby'
       | 'aria-describedby'
     >,
-    Omit<UseIconOptions, 'name'> {
+    Omit<UseIconOptions, 'name' | 'icon'> {
   ref?: Ref<SVGSVGElement> | undefined
 }
 
@@ -53,10 +53,11 @@ interface IconByNameProps {
 interface IconByComponentProps {
   name?: never
   /**
-   * A component from an icon library, or your own: `icon={Search}`. It needs no registration.
-   * Icon's `size` and `label` replace the component's own, and `className` is joined with it.
+   * A drawing from `@kvirn-ui/icons` (`icon={search}`) or a component from another icon library,
+   * or your own (`icon={Search}`). It needs no registration. Icon's `size` and `label` replace
+   * the component's own, and `className` is joined with it.
    */
-  icon: IconComponent
+  icon: IconRegistryEntry
   as?: never
   children?: never
 }
@@ -100,7 +101,7 @@ const unknownNameProps = Object.freeze({ viewBox: '0 0 24 24' })
  */
 export function Icon({
   name,
-  icon: iconComponent,
+  icon: iconEntry,
   size,
   label,
   variant,
@@ -110,12 +111,12 @@ export function Icon({
   ref,
   ...otherProps
 }: IconProps): ReactElement {
-  const icon = useIcon({ name, size, label, variant, mirrorInRtl })
+  const icon = useIcon({ name, icon: iconEntry, size, label, variant, mirrorInRtl })
   const elementRef = useMergedRef(ref, null)
 
   const sources = [
     name !== undefined && 'name',
-    iconComponent !== undefined && 'icon',
+    iconEntry !== undefined && 'icon',
     as !== undefined && 'as',
     children !== undefined && 'children',
   ].filter((source) => source !== false)
@@ -132,11 +133,13 @@ export function Icon({
   // An unknown name's empty placeholder keeps the icon's box: without a viewBox, CSS such as
   // `block-size: auto` would give it a replaced element's default height.
   const placeholderProps =
-    name !== undefined && icon.component === undefined ? unknownNameProps : {}
+    name !== undefined && iconEntry === undefined && icon.component === undefined
+      ? unknownNameProps
+      : {}
 
   return renderPart({
     as,
-    defaultElement: iconComponent ?? icon.component ?? 'svg',
+    defaultElement: icon.component ?? 'svg',
     partProps: {
       ...mergeProps(otherProps, placeholderProps, icon.iconProps),
       ...(children === undefined ? {} : { children }),

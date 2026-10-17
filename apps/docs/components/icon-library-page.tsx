@@ -61,6 +61,27 @@ export function IconLibraryPage() {
           names, so pick one for its meaning, not its look.
         </li>
       </ul>
+      <h2 id="without-kvirnui">Use them without KvirnUI</h2>
+      <p>
+        The package depends on nothing else. Each icon is plain drawing data, so any app can use it.
+        For React, <code>@kvirn-ui/icons/react</code> has a small <code>SvgIcon</code> component
+        that works in a Server Component too (React is the only thing it needs):
+      </p>
+      <pre>
+        <code>{`import { search } from '@kvirn-ui/icons'
+import { SvgIcon } from '@kvirn-ui/icons/react'
+
+<SvgIcon icon={search} />                  // decorative: hidden from screen readers
+<SvgIcon icon={search} title="Search" />   // named: an image with an accessible name`}</code>
+      </pre>
+      <p>
+        Keep <code>currentColor</code>, the default, so the icon follows the text colour and
+        high-contrast modes. Do not hard-code a <code>fill</code> or <code>stroke</code>.
+      </p>
+      <p>
+        <code>SvgIcon</code> does not flip icons in right-to-left text. Each icon says whether it
+        should, and your code decides.
+      </p>
       <h2 id="all-icons">All icons</h2>
       <IconLibrary categories={categories} />
     </DocsPage>

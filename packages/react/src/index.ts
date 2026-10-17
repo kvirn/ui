@@ -621,7 +621,7 @@ export type {
   IconRegistry,
   IconRegistryEntry,
 } from './icon/icon-registry.ts'
-export type { BuiltInIconName } from './icon/built-in-icons.tsx'
+export type { BuiltInIconName } from './icon/default-icons.ts'
 export { checks, masks } from '@kvirn-ui/core'
 export type {
   CheckResult,

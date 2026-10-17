@@ -20,7 +20,6 @@ const allowedShapes = {
   ellipse: ['cx', 'cy', 'rx', 'ry'],
   rect: ['x', 'y', 'width', 'height', 'rx', 'ry'],
 }
-const reactProperties = { 'stroke-dasharray': 'strokeDasharray' }
 const reservedWords = new Set(['delete', 'new', 'default', 'import', 'export', 'switch', 'return'])
 const kebabName = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/
 
@@ -100,9 +99,11 @@ const quote = (text) => `'${text.replaceAll('\\', '\\\\').replaceAll("'", "\\'")
 // The text matches what `vp fmt` prints (100 columns), so formatting generated files changes nothing.
 const printWidth = 100
 
+const propertyKey = (key) => (/^[A-Za-z_$][\w$]*$/.test(key) ? key : quote(key))
+
 function shapeText([tag, attributes], indent) {
   const entries = Object.entries(attributes).map(
-    ([key, value]) => `${reactProperties[key] ?? key}: ${quote(value)}`,
+    ([key, value]) => `${propertyKey(key)}: ${quote(value)}`,
   )
   const inline = `[${quote(tag)}, { ${entries.join(', ')} }]`
   if (indent.length + inline.length + 1 <= printWidth) return inline
@@ -114,22 +115,20 @@ function shapeText([tag, attributes], indent) {
   return `[\n${indent}  ${quote(tag)},\n${objectText}\n${indent}]`
 }
 
-function callText(shapes, indent, prefix, suffix) {
-  const inline = `${indent}${prefix}createIcon([${shapes.map((shape) => shapeText(shape, indent)).join(', ')}])${suffix}`
+function shapesText(shapes) {
+  const inline = `  shapes: [${shapeText(shapes[0], '  ')}],`
   if (shapes.length === 1 && inline.length <= printWidth) return inline
-  const lines = shapes.map((shape) => `${indent}  ${shapeText(shape, `${indent}  `)},`).join('\n')
-  return `${indent}${prefix}createIcon([\n${lines}\n${indent}])${suffix}`
+  const lines = shapes.map((shape) => `    ${shapeText(shape, '    ')},`).join('\n')
+  return `  shapes: [\n${lines}\n  ],`
 }
 
 function moduleText(name, shapes, mirrored) {
-  const declaration = `export const ${camelCase(name)}: IconRegistryEntry = `
-  const body = mirrored
-    ? `${declaration}{\n${callText(shapes, '  ', 'component: ', ',')}\n  mirrorInRtl: true,\n}`
-    : callText(shapes, '', declaration, '')
-  return `${header}import { createIcon } from '../create-icon.ts'
-import type { IconRegistryEntry } from '@kvirn-ui/react'
+  const mirror = mirrored ? '\n  mirrorInRtl: true,' : ''
+  return `${header}import type { IconData } from '../icon-data.ts'
 
-${body}
+export const ${camelCase(name)}: IconData = {
+${shapesText(shapes)}${mirror}
+}
 `
 }
 
@@ -154,7 +153,7 @@ export function buildOutputs(svgDirectory, mirrorInRtl) {
   }
   outputs.set(
     'src/index.ts',
-    `${header}${names.map((name) => `export { ${camelCase(name)} } from './icons/${name}.ts'`).join('\n')}\n`,
+    `${header}export type { IconData, IconShape } from './icon-data.ts'\n${names.map((name) => `export { ${camelCase(name)} } from './icons/${name}.ts'`).join('\n')}\n`,
   )
   outputs.set(
     'src/all.ts',

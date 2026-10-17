@@ -4,9 +4,9 @@
 - **Deviations:** none
 - **Native elements used:** `<svg>`. Icon is never interactive.
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
-- **Tests:** `icon.test.tsx` next to this file, and the icon-only rows in `button.test.tsx`. `icon.stories.tsx` in `apps/storybook/src/components/icon/`.
+- **Tests:** `icon.test.tsx` and `svg-icon.test.tsx` next to this file, and the icon-only rows in `button.test.tsx`. `icon.stories.tsx` in `apps/storybook/src/components/icon/`.
 
-An icon is decorative by default: text next to it already says what it means, so it's hidden from assistive technology. With a `label`, it's an image with that name. Icons come from the built-in set, from the app's registry (`KvirnProvider icons`), from a component reference (`icon`), or from `as` (your own component) and children for one-offs. Every route renders the same attributes: hidden unless there is a `label`, and Icon's `aria-hidden` replaces a library's own. With `as`, the component gets the props as plain props, and Icon's `aria-hidden`, `role` and `aria-label` win over any of the same name: it must spread them on its `<svg>` and take a `ref`. Icon's own options (`size`, `label`) do not reach it under their own names. **Allowed elements:** none to list: `as` is a component that draws an `<svg>`.
+An icon is decorative by default: text next to it already says what it means, so it's hidden from assistive technology. With a `label`, it's an image with that name. Icons come from the default icons in the icon library, from the app's registry (`KvirnProvider icons`), from a component reference (`icon`), or from `as` (your own component) and children for one-offs. Every route is hidden unless there is a `label`, and Icon's `aria-hidden` replaces a library's own. An icon drawn from icon data also carries `focusable="false"` when decorative. With `as`, the component gets the props as plain props, and Icon's `aria-hidden`, `role` and `aria-label` win over any of the same name: it must spread them on its `<svg>` and take a `ref`. Icon's own options (`size`, `label`) do not reach it under their own names. **Allowed elements:** none to list: `as` is a component that draws an `<svg>`.
 
 ## Roles, states, properties
 
@@ -18,6 +18,30 @@ An icon is decorative by default: text next to it already says what it means, so
 |      | `data-mirror-in-rtl`          | none                                                 | State for CSS: whether the icon flips in right-to-left text                                                                                                                                                                                                                                                                                                                                                                   |
 
 `useIcon` gives the same `iconProps`, and the component for a name, for your own `<svg>`.
+
+## SvgIcon (`@kvirn-ui/icons/react`)
+
+The standalone component for apps without KvirnUI. It has no hooks or context and takes `icon` (icon data), `size` and `title`, plus SVG props.
+
+| Route                                                  | ARIA                                                 | Notes                                                       |
+| ------------------------------------------------------ | ---------------------------------------------------- | ----------------------------------------------------------- |
+| Decorative (no name)                                   | `aria-hidden="true"`, `focusable="false"`, no `role` | Default                                                     |
+| `aria-label`, `aria-labelledby` or `title` (non-empty) | `role="img"`, named, no `aria-hidden`                | `title` is a `<title>` child; `aria-labelledby` names by id |
+| An empty string for any of the three                   | `aria-hidden="true"`, `focusable="false"`, no `role` | An empty name is no name: the icon stays decorative         |
+
+No keyboard stops: Tab and Shift+Tab never reach an `<svg>` (`focusable="false"`). WCAG 1.1.1 Non-text Content (A), 4.1.2 Name, Role, Value (A).
+
+### Read aloud
+
+Approximated by `@kvirn-ui/testing`'s `readAloud` (English); not NVDA or JAWS output. AT `pending`.
+
+| State or action                   | Expected phrase(s) as read aloud | Live region politeness | Test                                                                                     |
+| --------------------------------- | -------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------- |
+| Decorative                        | nothing                          | none                   | `svg-icon.test.tsx › a decorative icon is not read aloud`                                |
+| `aria-label="Add"`                | `image, Add`                     | none                   | `svg-icon.test.tsx › an icon with an aria-label is read as an image with that name`      |
+| `aria-labelledby` a label element | `image, Add`                     | none                   | `svg-icon.test.tsx › an icon with an aria-labelledby is read as an image with that name` |
+| `title="Add"`                     | `image, Add`                     | none                   | `svg-icon.test.tsx › an icon with a title is read as an image with that name`            |
+| Empty `aria-label`                | nothing                          | none                   | `svg-icon.test.tsx › an empty name stays decorative and is not read aloud`               |
 
 ## Keyboard
 
@@ -60,7 +84,7 @@ Icon has no strings of its own. A `label` comes from your own translations, or f
 - Focus indicator: not applicable. Icon is never focusable.
 - Target size: not applicable. An icon-only button's target is the Button's: the default theme makes an icon-only button square and larger than the 24 by 24 pixel minimum (2.5.8 Target Size (Minimum), AA).
 - Forced colours: icons draw in the text colour (`currentColor`), which follows the system colour. The default theme turns an explicit `fill`, `stroke` or `color` on `.kv-icon` (set by your own CSS) into `currentColor` in forced-colours mode, so a hard-coded colour can't vanish. Colours on child shapes are kept, so forced-colours contrast for a multi-colour, meaningful SVG is the consumer's job. Icon has no `fill` or `stroke` option: a one-off SVG sets `fill="currentColor"` on its own shapes, or it draws black in forced colours.
-- Reduced motion: icons do not move.
+- Reduced motion: icons do not move. The one exception is the `spinner` icon with the consumer-added class `kv-animate-spinner`: it crawls only under `prefers-reduced-motion: no-preference`, and the app owns the 2.2.2 Pause, Stop, Hide control (the stop CSS is on the Theming page, "Moving indicators and WCAG 2.2.2").
 - Text resize and reflow: icon sizes are in rem (`width` and `height`, plus a `kv-icon--size-<px>` class), so they scale with browser zoom and the user's root font size, not with the surrounding text. 1.4.4 Resize Text (AA) holds because text resizes and icons aren't text. The largest icon is 6rem, so no horizontal scrolling is expected at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA). An automated test checks that the default size, 20, is 1.25rem.
 
 ## WCAG SCs covered

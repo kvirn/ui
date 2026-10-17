@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vite-plus/test'
+import { allIcons } from './all.ts'
 import { buildOutputs, camelCase, parseIcon, readMirrorList } from '../scripts/generate.mjs'
 
 const byName = (left: string, right: string) => left.localeCompare(right)
@@ -37,7 +38,9 @@ describe('@kvirn-ui/icons', () => {
   })
 
   it('has no stale generated module', () => {
+    // `.d.ts` files are what a dependent's type build emits next to the source (git-ignored).
     const modules = readdirSync(join(packageRoot, 'src/icons'))
+      .filter((file) => !file.endsWith('.d.ts'))
       .map((file) => file.slice(0, -'.ts'.length))
       .sort(byName)
     expect(modules).toEqual(sourceNames)
@@ -93,6 +96,13 @@ describe('@kvirn-ui/icons', () => {
 
   it('marks mirrorInRtl exactly for the icons in mirror-in-rtl.json', () => {
     const flagged = catalog.icons.filter((icon) => icon.mirrorInRtl).map((icon) => icon.name)
+    expect(flagged.sort(byName)).toEqual([...mirrorList].sort(byName))
+  })
+
+  it('marks mirrorInRtl on exactly the icon modules listed in mirror-in-rtl.json', () => {
+    const flagged = Object.entries(allIcons)
+      .filter(([, icon]) => (icon as { mirrorInRtl?: boolean }).mirrorInRtl)
+      .map(([name]) => name)
     expect(flagged.sort(byName)).toEqual([...mirrorList].sort(byName))
   })
 

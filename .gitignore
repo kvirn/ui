@@ -42,6 +42,7 @@ __screenshots__
 # Declaration files emitted next to the sources by a tsc run without noEmit
 packages/core/src/**/*.d.ts
 packages/i18n/src/**/*.d.ts
+packages/icons/src/**/*.d.ts
 packages/react/src/**/*.d.ts
 
 # Vitest browser-mode failure screenshots

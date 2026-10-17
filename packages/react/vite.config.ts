@@ -6,7 +6,15 @@ type PackConfig = Extract<NonNullable<UserConfig['pack']>, { entry?: unknown }>
 
 const shared = {
   ...packPreset,
-  deps: { neverBundle: ['react', 'react-dom', '@kvirn-ui/core', /^@kvirn-ui\/i18n(\/|$)/] },
+  deps: {
+    neverBundle: [
+      'react',
+      'react-dom',
+      '@kvirn-ui/core',
+      /^@kvirn-ui\/i18n(\/|$)/,
+      /^@kvirn-ui\/icons(\/|$)/,
+    ],
+  },
   // A banner restores the directive on every output file, so rolldown's per-source-file warning is noise.
   inputOptions: {
     onLog(level, log, handler) {
