@@ -16,6 +16,8 @@ Everything else needs a **commercial licence**. That includes any use by or for 
 
 The code is published under the **GNU Affero General Public License, version 3** ([LICENSE](LICENSE), SPDX `AGPL-3.0-only`). As an additional permission under section 7: if you use KvirnUI solely for personal use as described above, you need not license your own work under the AGPL, and you need not offer its source to users, including over a network (sections 5(c), 6 and 13). The AGPL still applies to KvirnUI itself and to your modifications of it: keep the notices, and offer the source of those modifications.
 
+**One exception:** `@kvirn-ui/icons` is published under the MIT License ([packages/icons/LICENSE](packages/icons/LICENSE)) and is free for any use, commercial and public-sector use included.
+
 Contact: magnus@vike.se · https://ui.kvirn.com
 
 ## Contributions

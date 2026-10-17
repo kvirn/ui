@@ -55,7 +55,7 @@ export type {
   MapSkipProps,
   MapViewportProps,
 } from './map.tsx'
-export { mapIcons } from './map-icons.tsx'
+export { mapIcons } from './map-icons.ts'
 export { useMap } from './use-map.ts'
 export type {
   MapGestureHint,

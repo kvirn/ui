@@ -72,7 +72,7 @@ Three floating surfaces in one centred stack, no panel: the **zoom pill** (plus 
 
 ### Markers and clusters
 
-- **Marker:** one native button, 44px target. The default content is a teardrop pin in `primary` with a `canvas` edge, its tip on the place. When the consumer gives children the marker is a 1.5rem `primary` disc with a 1rem icon (`on-primary`). The halo carries either. Selected and `data-highlighted` change the edge and add a shadow; neither is colour alone. `kv-map-marker-label` draws a visible name as a chip under the mark.
+- **Marker:** one native button, 44px target. The default content is the library `pin` in `primary` with a `canvas` edge, 2.25rem tall so the head is at least 24px, its tip on the place. When the consumer gives children the marker is a 1.5rem `primary` disc with a 1rem icon (`on-primary`). The halo carries either. Selected and `data-highlighted` change the edge and add a shadow; neither is colour alone. `kv-map-marker-label` draws a visible name as a chip under the mark.
 - **Cluster:** a plate wider than a disc, `surface-raised`, 2px `text` edge, the count in tabular figures, 44px minimum. When its layer has an `icon`, the icon is drawn before the count (decorative; the name still carries the layer), so layers differ by shape as well as by colour (1.4.1). A `cluster` render function replaces it. `aria-expanded` while its popup is open.
 - Position comes from `--kv-map-x` and `--kv-map-y`, which the library sets; consumer CSS leaves them alone. Layers cluster separately, so markers of different layers can still touch; a same-layer cluster centre stays about 44px or more from the next (radius 64).
 

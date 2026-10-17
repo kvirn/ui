@@ -71,4 +71,4 @@ Project docs: [docs/](docs/README.md). Rules for humans and agents: [AGENTS.md](
 
 ## License
 
-Free for personal use. Any other use needs a commercial licence. The code is published under the [AGPL-3.0](LICENSE) © KvirnUI. Read [LICENSING.md](LICENSING.md). Contact: magnus@vike.se.
+Free for personal use. Any other use needs a commercial licence. The code is published under the [AGPL-3.0](LICENSE) © KvirnUI. Read [LICENSING.md](LICENSING.md). The icon package `@kvirn-ui/icons` is the exception: it is [MIT](packages/icons/LICENSE) and free for any use. Contact: magnus@vike.se.

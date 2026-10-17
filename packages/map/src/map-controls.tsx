@@ -1,16 +1,11 @@
+import { arrowEast, arrowNorth, arrowSouth, arrowWest, remove } from '@kvirn-ui/icons'
+import type { IconData } from '@kvirn-ui/icons'
 import { Icon, Tooltip } from '@kvirn-ui/react'
-import type { IconComponent, IconName } from '@kvirn-ui/react'
+import type { IconName } from '@kvirn-ui/react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { joinClassNames } from './class-names.ts'
 import { useMapContext } from './map-context.ts'
 import { useMapOverlayRef } from './map-overlay.tsx'
-import {
-  ArrowDownIcon,
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  ArrowUpIcon,
-  RemoveIcon,
-} from './map-icons.tsx'
 
 function ControlButton({
   label,
@@ -20,7 +15,7 @@ function ControlButton({
   className,
 }: {
   label: string
-  icon: IconName | IconComponent
+  icon: IconName | IconData
   disabled?: boolean
   onPress: () => void
   className?: string
@@ -68,7 +63,7 @@ export function MapControls({
         />
         <ControlButton
           label={messages.zoomOut}
-          icon={RemoveIcon}
+          icon={remove}
           disabled={!map.canZoomOut}
           onPress={map.zoomOut}
         />
@@ -77,25 +72,25 @@ export function MapControls({
         <ControlButton
           label={messages.panNorth}
           className="kv-map-pan-north"
-          icon={ArrowUpIcon}
+          icon={arrowNorth}
           onPress={() => map.pan('north')}
         />
         <ControlButton
           label={messages.panWest}
           className="kv-map-pan-west"
-          icon={ArrowLeftIcon}
+          icon={arrowWest}
           onPress={() => map.pan('west')}
         />
         <ControlButton
           label={messages.panEast}
           className="kv-map-pan-east"
-          icon={ArrowRightIcon}
+          icon={arrowEast}
           onPress={() => map.pan('east')}
         />
         <ControlButton
           label={messages.panSouth}
           className="kv-map-pan-south"
-          icon={ArrowDownIcon}
+          icon={arrowSouth}
           onPress={() => map.pan('south')}
         />
       </div>

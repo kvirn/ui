@@ -102,10 +102,10 @@ export function IconPage({
             title="The Map’s icons"
             why={
               <>
-                The map package draws its own icons: the default marker pin and the control arrows.
-                Pass one with <code>icon</code>, or register them with <code>defineIcons</code>.
-                They come from <code>mapIcons</code> in <code>@kvirn-ui/map</code>, and they are not
-                part of the icon library.
+                The map package draws the default marker pin and the control arrows with icons from{' '}
+                <code>@kvirn-ui/icons</code>. Pass one with <code>icon</code>, or register them with{' '}
+                <code>defineIcons</code>. <code>mapIcons</code> in <code>@kvirn-ui/map</code> lists
+                them by name.
               </>
             }
             code={sources['map-set']}
@@ -120,7 +120,7 @@ export function IconPage({
               <>
                 The editor draws its toolbar icons with <code>RichTextEditor.Icon</code>, from the
                 names in <code>richTextIconNames</code> in <code>@kvirn-ui/rich-text</code>. They
-                are not part of the icon library.
+                are icons from <code>@kvirn-ui/icons</code>.
               </>
             }
             code={sources['rich-text-set']}

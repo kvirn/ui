@@ -67,7 +67,7 @@ Messages (`messages`, per instance, or the provider's `map` catalog): `roleDescr
 
 ### Customizing markers, clusters and layers
 
-A marker shows a solid map pin by default, its tip on the place's position, so a map works with no customization. Any `children` of `Map.Markers` replace the pin, also a function that returns `null`. The pin is decorative (`aria-hidden`): the button is still named from the place. `mapIcons` from `@kvirn-ui/map` lists the Map's own icons (`marker`, `locate`, `remove` and the four arrows) for `<Icon icon>` or the `icons` of `KvirnProvider`.
+A marker shows a solid map pin by default (2.25rem tall, the head at least 24px), its tip on the place's position, so a map works with no customization. Any `children` of `Map.Markers` replace the pin, also a function that returns `null`. The pin is decorative (`aria-hidden`): the button is still named from the place. `mapIcons` from `@kvirn-ui/map` lists the Map's own icons (`marker`, `locate`, `remove` and the four arrows) for `<Icon icon>` or the `icons` of `KvirnProvider`.
 
 Keep one record from layer id to icon and use it twice, so a layer looks the same on the map and in `Map.Layers`:
 

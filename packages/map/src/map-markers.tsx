@@ -5,7 +5,7 @@ import type { ComponentPropsWithRef, CSSProperties, KeyboardEvent, ReactNode } f
 import { joinClassNames } from './class-names.ts'
 import { hasModifier } from './has-modifier.ts'
 import { useMapContext } from './map-context.ts'
-import { MarkerIcon } from './map-icons.tsx'
+import { pin } from '@kvirn-ui/icons'
 import { useMapFrame } from './use-map-frame.ts'
 
 export interface MapMarkerProps<Data = unknown> extends ComponentPropsWithRef<'button'> {
@@ -56,7 +56,7 @@ export function MapMarker<Data = unknown>({
         map.keepClear(event.currentTarget)
       }}
     >
-      {children === undefined ? <Icon icon={MarkerIcon} className="kv-map-marker-pin" /> : children}
+      {children === undefined ? <Icon icon={pin} className="kv-map-marker-pin" /> : children}
     </button>
   )
 }

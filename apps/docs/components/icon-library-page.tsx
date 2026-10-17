@@ -28,6 +28,12 @@ export function IconLibraryPage() {
       title="Icons"
       lead={`${iconCount} outline icons in ${categories.length} groups, drawn for public-sector services. Each one is hidden from screen readers unless you give it a name.`}
     >
+      <p>
+        <strong>What is not done yet.</strong> The {iconCount} icons are drawn and checked by tests
+        and agents. Recognition tests, a native-speaker review of the labels (Swedish, Finnish,
+        Norwegian Bokmål, Norwegian Nynorsk and English), checks with real assistive technology and
+        a sensitivity review have not been done yet.
+      </p>
       <h2 id="use-them">How to use them</h2>
       <p>
         The icons are in the <code>@kvirn-ui/icons</code> package. Register the whole set once, and
@@ -63,9 +69,10 @@ export function IconLibraryPage() {
       </ul>
       <h2 id="without-kvirnui">Use them without KvirnUI</h2>
       <p>
-        The package depends on nothing else. Each icon is plain drawing data, so any app can use it.
-        For React, <code>@kvirn-ui/icons/react</code> has a small <code>SvgIcon</code> component
-        that works in a Server Component too (React is the only thing it needs):
+        The icons are free for any use, commercial and public-sector use included, under the MIT
+        licence. The package depends on nothing else. Each icon is plain drawing data, so any app
+        can use it. For React, <code>@kvirn-ui/icons/react</code> has a small <code>SvgIcon</code>{' '}
+        component that works in a Server Component too (React is the only thing it needs):
       </p>
       <pre>
         <code>{`import { search } from '@kvirn-ui/icons'

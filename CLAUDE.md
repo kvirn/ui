@@ -12,7 +12,7 @@
   - `test-runner` (Sonnet, low effort, no CLAUDE.md): one scoped gate, a verdict in a few lines. For triage (real, flaky, pre-existing) and to keep raw test output out of this context.
   - `docs-writer` (Sonnet, high effort): audits and rewrites docs-site component pages against the `docs-pages` template, 1–3 components per spawn. Relay its `ASK` block to `accessibility-reviewer` or `ux-designer` (one spawn per batch of questions), then continue it with SendMessage and the answers.
   - `accessibility-reviewer` and `ux-designer` (Opus, high effort): judgement work, once per change. `Plan` stays on Opus.
-  - `iconographer` (Opus, high effort): draws or revises built-in icons from the keylines in `docs/design/icon.md`, looks at them at 16/20/24px, and records them in that spec. It writes `shapes` entries in `built-in-icons.tsx` only when the brief says so; `component-engineer` adds the type, tests, stories and locales.
+  - `iconographer` (Opus, high effort): draws or revises library icons from the keylines in `docs/design/icon.md`, looks at them at 16/20/24px, and records them in that spec. It writes SVGs in `packages/icons/svg/` and, when the brief says so, the mirror list; `component-engineer` runs the generator and adds the tests, stories and locales.
   - Do a change you can make in one or two Edits yourself: spawning costs more than it saves. Don't upgrade a model without a reason. 2–3 parallel subagents at most.
 - Briefs. A subagent explores only what the brief leaves out, so give it everything, from scout's facts:
 
