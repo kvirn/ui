@@ -1,5 +1,6 @@
 import { Map, useMapState } from '@kvirn-ui/map'
 import type { MapPlace } from '@kvirn-ui/map'
+import { arrowForward, info } from '@kvirn-ui/icons'
 import { Icon } from '@kvirn-ui/react'
 import type { ReactElement } from 'react'
 import { useProvider } from './map.fixture.tsx'
@@ -183,7 +184,7 @@ function VenueActions(): ReactElement | null {
         className="kv-button kv-button--primary"
         href={`https://www.openstreetmap.org/directions?to=${latitude}%2C${longitude}`}
       >
-        <Icon name="arrow-forward" size="16" />
+        <Icon icon={arrowForward} size="16" />
         Directions
       </a>
       <a className="kv-button" href={venue.data.website}>
@@ -206,7 +207,7 @@ export function RichPopupDemo({ offline = false, ...mapProps }: MapDemoProps): R
     >
       <Map.Skip />
       <Map.Viewport>
-        <Map.Markers>{() => <Icon name="info" size="16" />}</Map.Markers>
+        <Map.Markers>{() => <Icon icon={info} size="16" />}</Map.Markers>
         <Map.Controls />
         <Map.Attribution />
       </Map.Viewport>

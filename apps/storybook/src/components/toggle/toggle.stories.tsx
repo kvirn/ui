@@ -1,4 +1,5 @@
 import { Card, Icon, Section, Toggle } from '@kvirn-ui/react'
+import { eye } from '@kvirn-ui/icons'
 import contract from '../../../../../packages/react/src/toggle/toggle.a11y.md?raw'
 import guide from '../../../../../packages/react/src/toggle/toggle.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -153,10 +154,23 @@ export const Controlled: Story = {
  * translations. Use it only where everyone knows the icon.
  */
 export const IconOnly: Story = {
+  parameters: {
+    docs: {
+      source: {
+        code: `import { eye } from '@kvirn-ui/icons'
+
+<Toggle className="kv-button--icon-only" aria-label="Show password">
+  <Icon icon={eye} />
+</Toggle>`,
+        language: 'tsx',
+        type: 'code',
+      },
+    },
+  },
   args: {
     className: 'kv-button--icon-only',
     'aria-label': text.showPassword,
-    children: <Icon name="eye" />,
+    children: <Icon icon={eye} />,
   },
   play: async ({ canvas, userEvent }) => {
     const toggle = canvas.getByRole('button', { name: text.showPassword })

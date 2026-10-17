@@ -1,4 +1,5 @@
 'use client'
+import { arrowBack } from '@kvirn-ui/icons'
 import { PageFrame } from '@kvirn-ui/patterns'
 import {
   Button,
@@ -61,7 +62,7 @@ export function FeedbackForm({ locale }: { locale: ReferenceLocale }) {
         <Stack className="kv-stack--gap-8">
           <Link href={`/reference/${locale}/accessibility`}>
             <Link.Icon>
-              <Icon name="arrow-back" size="24" />
+              <Icon icon={arrowBack} size="24" />
             </Link.Icon>
             {text.back}
           </Link>

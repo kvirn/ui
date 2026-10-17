@@ -1,4 +1,5 @@
 import { Button, Field, Icon, InputGroup } from '@kvirn-ui/react'
+import { close, search } from '@kvirn-ui/icons'
 import { useRef, useState } from 'react'
 import { textsFor } from '../form/form.fixture.tsx'
 import type { FormLocale } from '../form/form.fixture.tsx'
@@ -31,7 +32,7 @@ export function SearchBoxWithClear({
         <Field.Label marker="none">{text.searchServices}</Field.Label>
         <InputGroup.Root>
           <InputGroup.Addon>
-            <Icon name="search" size="20" />
+            <Icon icon={search} size="20" />
           </InputGroup.Addon>
           <InputGroup.Input
             ref={inputRef}
@@ -79,7 +80,7 @@ export function SearchBoxWithIconOnlyClear({
         <Field.Label marker="none">{text.searchServices}</Field.Label>
         <InputGroup.Root>
           <InputGroup.Addon>
-            <Icon name="search" size="20" />
+            <Icon icon={search} size="20" />
           </InputGroup.Addon>
           <InputGroup.Input
             ref={inputRef}
@@ -99,7 +100,7 @@ export function SearchBoxWithIconOnlyClear({
                 inputRef.current?.focus()
               }}
             >
-              <Icon name="close" size="20" />
+              <Icon icon={close} size="20" />
             </Button>
           )}
         </InputGroup.Root>

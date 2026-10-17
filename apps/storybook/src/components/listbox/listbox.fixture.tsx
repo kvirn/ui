@@ -1,4 +1,5 @@
 // kv-lang-ok-file: per-locale story texts (the toolbar locale selects the table), and municipality names with å, ä and ö for the type-ahead and collation examples
+import { document as documentIcon } from '@kvirn-ui/icons'
 import { Button, Card, Field, Icon, Listbox } from '@kvirn-ui/react'
 import { useMemo, useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
@@ -658,7 +659,7 @@ export function RichMunicipalities({ locale }: { locale: FormLocale }) {
               {(municipality: Municipality) => (
                 <Listbox.Option item={municipality}>
                   <Listbox.OptionIcon>
-                    <Icon name="document" />
+                    <Icon icon={documentIcon} />
                   </Listbox.OptionIcon>
                   <Listbox.OptionText>{municipality.name}</Listbox.OptionText>
                   <Listbox.OptionDescription>{municipality.county}</Listbox.OptionDescription>
@@ -697,7 +698,7 @@ export function OwnMarkupMunicipalities({ locale }: { locale: FormLocale }) {
               {(chosen: readonly Municipality[]) =>
                 chosen.map((municipality) => (
                   <span key={municipality.code} style={{ display: 'inline-flex', gap: '0.5rem' }}>
-                    <Icon name="document" />
+                    <Icon icon={documentIcon} />
                     {municipality.name}
                   </span>
                 ))
@@ -709,7 +710,7 @@ export function OwnMarkupMunicipalities({ locale }: { locale: FormLocale }) {
               {(municipality: Municipality) => (
                 <Listbox.Option item={municipality}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <Icon name="document" />
+                    <Icon icon={documentIcon} />
                     <div>
                       <strong>{municipality.name}</strong>
                       <div>{municipality.county}</div>

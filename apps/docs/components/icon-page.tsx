@@ -1,12 +1,14 @@
 import { Link } from '@kvirn-ui/react'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
+import { CodeBlock } from './code-block.tsx'
 import { ComponentPage } from './component-page.tsx'
 import { ContractSectionsView, contractSectionList } from './contract-sections-view.tsx'
 import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import { iconAttributes, iconRows, useIconHook } from '../content/icon.api.ts'
+import { ByName } from '../examples/icon/by-name.tsx'
 import { DefaultIcon } from '../examples/icon/default.tsx'
 import { MapSet } from '../examples/icon/map-set.tsx'
 import { MirrorInRtl } from '../examples/icon/mirror-in-rtl.tsx'
@@ -19,6 +21,7 @@ import type { Contract } from '../lib/contract-parser.ts'
 
 export type IconExampleSources = Record<
   | 'default'
+  | 'by-name'
   | 'map-set'
   | 'rich-text-set'
   | 'with-label'
@@ -42,8 +45,9 @@ const parts: ApiPart[] = [
         <code>stroke</code>, <code>strokeWidth</code>, <code>tabIndex</code>, <code>onClick</code>,{' '}
         <code>aria-labelledby</code> and <code>aria-describedby</code>. An icon can’t be focused or
         pressed, and its name comes only from <code>label</code>: put focus and press on the Button
-        or Link around it. Register your own names with <code>defineIcons</code> and the{' '}
-        <code>icons</code> prop of <code>KvirnProvider</code>. The default theme is described on{' '}
+        or Link around it. Pass an icon from <code>@kvirn-ui/icons</code> as <code>icon</code>, or
+        register more names with <code>defineIcons</code> and the <code>icons</code> prop of{' '}
+        <code>KvirnProvider</code>. The default theme is described on{' '}
         <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
@@ -71,8 +75,8 @@ export function IconPage({
             warning.
           </li>
           <li>
-            Draw it from the icon library, from a component of your own icon set, or from your own
-            shapes.
+            Draw it from the icon library (<code>@kvirn-ui/icons</code>), from a component of
+            another icon set, or from your own shapes.
           </li>
           <li>
             Give it a name only when no text beside it says the same thing, and never let it be the
@@ -93,10 +97,46 @@ export function IconPage({
       useCases={
         <>
           <p>
-            The components use icons by name, such as <code>close</code>, <code>chevron-down</code>{' '}
-            and <code>search</code>. These come from the icon library. To pick an icon for your own
-            use, look through all of them on the <Link href="/components/icons">Icons page</Link>.
+            The icon library is the package <code>@kvirn-ui/icons</code>. Import the icons you use
+            and pass each one as <code>icon</code>. You then ship only those icons.
           </p>
+          <CodeBlock
+            code={`import { search } from '@kvirn-ui/icons'
+
+<Icon icon={search} />`}
+          />
+          <p>
+            Export names are in camelCase (words joined, each new word starting with a capital
+            letter) and have no “Icon” suffix, such as <code>chevronDown</code>. Two end in “Icon”,{' '}
+            <code>deleteIcon</code> and <code>newIcon</code>, because the plain words are reserved
+            in JavaScript. To pick an icon, look through all of them on the{' '}
+            <Link href="/components/icons">Icons page</Link>.
+          </p>
+          <UseCase
+            id="by-name"
+            title="An icon by name"
+            why={
+              <>
+                KvirnUI’s own components draw 25 icons, such as <code>close</code>,{' '}
+                <code>search</code>, <code>download</code> and <code>calendar</code>. They are
+                library icons too, and they work as a plain name with no import and no setup. Names
+                you register in <code>KvirnProvider</code> (see{' '}
+                <Link href="/components/kvirn-provider">KvirnProvider</Link>) work the same way, and
+                you can register icons from the library, from Lucide or from another set.
+              </>
+            }
+            code={sources['by-name']}
+            propsUsed={[{ part: 'Icon', prop: 'name' }]}
+            note={
+              <Note kind="tip">
+                Registering the whole set from <code>@kvirn-ui/icons/all</code> adds every icon to
+                your bundle (the code you send to the browser). Register only the names you need, or
+                import an icon and pass it as <code>icon</code>.
+              </Note>
+            }
+          >
+            <ByName />
+          </UseCase>
           <UseCase
             id="map-set"
             title="The Map’s icons"
@@ -154,7 +194,7 @@ export function IconPage({
           </UseCase>
           <UseCase
             id="library-icon"
-            title="An icon from a library, or of your own"
+            title="An icon from another library, or of your own"
             why="Pass a component that spreads SVG props onto one svg and forwards its ref, such as one from Lucide, Heroicons or Phosphor, or your own. It needs no registration."
             code={sources['own-component']}
             propsUsed={[{ part: 'Icon', prop: 'icon' }]}
@@ -184,9 +224,10 @@ export function IconPage({
             title="An arrow in right-to-left text"
             why={
               <>
-                In right-to-left text the library’s arrows, chevrons and the external-link icon are
-                flipped by the default theme, so “next” still points forward. Set{' '}
-                <code>mirrorInRtl</code> yourself on a directional icon of your own.
+                In right-to-left text the default theme flips the library’s arrows, chevrons and the
+                external-link icon, so “next” still points forward. The library marks them, so you
+                set nothing on them. Set <code>mirrorInRtl</code> yourself on a directional icon of
+                your own.
               </>
             }
             code={sources['mirror-in-rtl']}

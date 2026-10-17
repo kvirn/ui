@@ -1,20 +1,16 @@
 'use client'
+import { book, playground, swimmingPool } from '@kvirn-ui/icons'
+import type { IconData } from '@kvirn-ui/icons'
 import { Map } from '@kvirn-ui/map'
 import { Field, Icon, Switch } from '@kvirn-ui/react'
-import type { SVGProps } from 'react'
 import { useMapTexts } from './texts.ts'
 import { DocsMap } from './use-docs-provider.tsx'
 
-// Your own icons: any component that takes the SVG props. One shape per layer, so colour is never alone.
-const draw = (path: string) => (props: SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" {...props}>
-    <path d={path} />
-  </svg>
-)
-const layerIcons: Record<string, ReturnType<typeof draw>> = {
-  playgrounds: draw('M2 14 8 3l6 11M5 10h6'),
-  libraries: draw('M2 3h5v10H2zM9 3h5v10H9z'),
-  pools: draw('M1 6c2-2 3 2 5 0s3 2 5 0 3 2 4 0M1 11c2-2 3 2 5 0s3 2 5 0 3 2 4 0'),
+// One icon per layer, so colour is never the only difference between the kinds of place.
+const layerIcons: Record<string, IconData> = {
+  playgrounds: playground,
+  libraries: book,
+  pools: swimmingPool,
 }
 
 function LayerIcon({ layer }: { layer: string | undefined }) {

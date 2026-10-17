@@ -1,4 +1,5 @@
 'use client'
+import { search } from '@kvirn-ui/icons'
 import { Button, Field, Icon, InputGroup } from '@kvirn-ui/react'
 import { useRef, useState } from 'react'
 import { useInputGroupTexts } from './texts.ts'
@@ -12,7 +13,7 @@ export function SearchWithClear() {
       <Field.Label marker="none">{texts.searchLabel}</Field.Label>
       <InputGroup.Root>
         <InputGroup.Addon>
-          <Icon name="search" size="20" />
+          <Icon icon={search} size="20" />
         </InputGroup.Addon>
         <InputGroup.Input
           ref={inputRef}

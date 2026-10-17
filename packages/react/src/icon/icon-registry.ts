@@ -42,11 +42,11 @@ export type IconRegistry = Readonly<Record<string, IconRegistryEntry>>
 /** The icons a `Register`-shaped interface names, or none. */
 export type IconsOf<Registration> = Registration extends { icons: infer Icons } ? Icons : {}
 
-/** The icon names a `Register`-shaped interface allows: the built-in set plus its own. */
+/** The icon names a `Register`-shaped interface allows: the default set plus its own. */
 export type IconNameOf<Registration> = BuiltInIconName | (keyof IconsOf<Registration> & string)
 
 /**
- * A name `<Icon name>` accepts: a built-in icon, or one the app registered.
+ * A name `<Icon name>` accepts: a default icon, or one the app registered.
  *
  * ```ts
  * declare module '@kvirn-ui/react' {

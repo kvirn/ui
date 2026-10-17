@@ -1,14 +1,15 @@
 'use client'
+import { arrowBack, arrowForward, document as documentIcon } from '@kvirn-ui/icons'
 import { Icon, Toolbar, Tooltip } from '@kvirn-ui/react'
 import { useTooltipTexts } from './texts.ts'
 
 export function IconToolbar() {
   const { texts } = useTooltipTexts()
   const tools = [
-    { name: texts.undo, icon: 'arrow-back' },
-    { name: texts.redo, icon: 'arrow-forward' },
-    { name: texts.print, icon: 'document' },
-  ] as const
+    { name: texts.undo, icon: arrowBack },
+    { name: texts.redo, icon: arrowForward },
+    { name: texts.print, icon: documentIcon },
+  ]
   return (
     <Toolbar.Root aria-label={texts.group}>
       {tools.map((tool) => (
@@ -18,7 +19,7 @@ export function IconToolbar() {
             className="kv-button--icon-only"
             aria-label={tool.name}
           >
-            <Icon name={tool.icon} />
+            <Icon icon={tool.icon} />
           </Tooltip.Trigger>
           <Tooltip.Popup>
             <Tooltip.Name>{tool.name}</Tooltip.Name>

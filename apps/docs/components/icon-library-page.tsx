@@ -36,17 +36,49 @@ export function IconLibraryPage() {
       </p>
       <h2 id="use-them">How to use them</h2>
       <p>
-        The icons are in the <code>@kvirn-ui/icons</code> package. Register the whole set once, and
-        then draw any icon by its name with the <Link href="/components/icon">Icon</Link> component:
+        The icons are in the <code>@kvirn-ui/icons</code> package. Import the ones you use and pass
+        each to the <Link href="/components/icon">Icon</Link> component as <code>icon</code>. This
+        works with or without a <code>KvirnProvider</code>, and you ship only the icons you import
+        (your bundle, the code you send to the browser):
       </p>
       <pre>
-        <code>{`<KvirnProvider icons={allIcons}>
-  <Icon name="search" />
+        <code>{`import { search } from '@kvirn-ui/icons'
+
+<Icon icon={search} />`}</code>
+      </pre>
+      <p>
+        The list below shows each name in kebab-case, such as <code>chevron-down</code>. The import
+        is the same name in camelCase, such as <code>chevronDown</code>. Two names end in “Icon”,{' '}
+        <code>deleteIcon</code> and <code>newIcon</code>, because <code>delete</code> and{' '}
+        <code>new</code> are reserved words in JavaScript.
+      </p>
+      <p>
+        The 25 icons that KvirnUI’s own components draw also work by name, with no import and no
+        provider: <code>&lt;Icon name=&quot;close&quot; /&gt;</code>. They are{' '}
+        <code>chevron-down</code>, <code>chevron-up</code>, <code>chevron-back</code>,{' '}
+        <code>chevron-forward</code>, <code>arrow-back</code>, <code>arrow-forward</code>,{' '}
+        <code>external</code>, <code>close</code>, <code>menu</code>, <code>search</code>,{' '}
+        <code>add</code>, <code>check</code>, <code>info</code>, <code>success</code>,{' '}
+        <code>warning</code>, <code>error</code>, <code>calendar</code>, <code>upload</code>,{' '}
+        <code>download</code>, <code>document</code>, <code>delete</code>, <code>language</code>,{' '}
+        <code>eye</code>, <code>eye-off</code> and <code>copy</code>.
+      </p>
+      <p>
+        To use other icons by name, register them once in <code>KvirnProvider</code>. You can also
+        register icons from Lucide or another set there.
+      </p>
+      <pre>
+        <code>{`import { bus, cityHall } from '@kvirn-ui/icons'
+
+const icons = defineIcons({ bus, 'city-hall': cityHall })
+
+<KvirnProvider icons={icons}>
+  <Icon name="bus" />
 </KvirnProvider>`}</code>
       </pre>
       <p>
-        <code>allIcons</code> comes from <code>@kvirn-ui/icons/all</code>. To ship only the icons
-        you use, import them one by one from <code>@kvirn-ui/icons</code> and register those.
+        <code>allIcons</code> from <code>@kvirn-ui/icons/all</code> registers the whole set, but it
+        adds every icon to your bundle. Register only the ones you need.
       </p>
       <ul>
         <li>
@@ -58,8 +90,8 @@ export function IconLibraryPage() {
           at 20 pixels or larger: 16 pixels is for decoration only.
         </li>
         <li>
-          Icons that point along the reading direction flip in right-to-left text. The list marks
-          them.
+          With the <code>Icon</code> component, icons that point along the reading direction flip in
+          right-to-left text. The list marks them.
         </li>
         <li>
           Variants such as <code>-add</code>, <code>-remove</code> and <code>-off</code> share their

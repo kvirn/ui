@@ -1,4 +1,5 @@
 import { en } from '@kvirn-ui/i18n/en'
+import { arrowBack } from '@kvirn-ui/icons'
 import {
   Alert,
   Button,
@@ -153,7 +154,7 @@ function EnquiryForm({
     <Stack className="kv-stack--gap-8">
       <Link.Root href="#back">
         <Link.Icon>
-          <Icon name="arrow-back" size="24" />
+          <Icon icon={arrowBack} size="24" />
         </Link.Icon>
         Back
       </Link.Root>

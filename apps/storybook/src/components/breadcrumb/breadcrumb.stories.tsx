@@ -1,4 +1,5 @@
 // kv-lang-ok-file: Reflow320 is the long Finnish compound hard case under locale fi
+import { chevronForward } from '@kvirn-ui/icons'
 import { Breadcrumb, Icon } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/breadcrumb/breadcrumb.a11y.md?raw'
 import guide from '../../../../../packages/react/src/breadcrumb/breadcrumb.md?raw'
@@ -85,7 +86,20 @@ export const Slash: Story = {
 
 /** Your own separator, here an Icon: hidden from screen readers, and the first item has none. */
 export const CustomSeparator: Story = {
-  args: { separator: <Icon name="chevron-forward" /> },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { chevronForward } from '@kvirn-ui/icons'
+
+<Breadcrumb.Root label="You are here" separator={<Icon icon={chevronForward} />}>
+  …
+</Breadcrumb.Root>`,
+        language: 'tsx',
+        type: 'code',
+      },
+    },
+  },
+  args: { separator: <Icon icon={chevronForward} /> },
   play: async ({ canvas, canvasElement }) => {
     const separators = canvasElement.querySelectorAll('.kv-breadcrumb-separator')
     await expect(separators).toHaveLength(3)
@@ -218,7 +232,7 @@ export const RTLVariants: Story = {
   render: (args) => (
     <>
       <Breadcrumb.Root {...args} />
-      <Breadcrumb.Root label="Icon separator" separator={<Icon name="chevron-forward" />}>
+      <Breadcrumb.Root label="Icon separator" separator={<Icon icon={chevronForward} />}>
         {shortTrail}
       </Breadcrumb.Root>
     </>
@@ -239,7 +253,7 @@ export const ForcedColors: Story = {
       <Breadcrumb.Root
         {...args}
         label="Icon separator"
-        separator={<Icon name="chevron-forward" />}
+        separator={<Icon icon={chevronForward} />}
       />
     </>
   ),

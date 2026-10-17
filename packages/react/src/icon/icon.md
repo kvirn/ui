@@ -5,7 +5,7 @@
 One component for every icon: the default icons from the icon library, your own SVGs, and icons from libraries such as Lucide, Heroicons and Phosphor. There are three routes, and you can mix them:
 
 - **`icon`** for one icon from a library: `<Icon icon={Search} />`. No setup. It also takes an icon from `@kvirn-ui/icons` directly: `<Icon icon={add} />` with `import { add } from '@kvirn-ui/icons'`.
-- **`name`** for icons you use everywhere: register them once in `KvirnProvider`, then write `<Icon name="close" />`.
+- **`name`** for the 25 default icons, which need no setup, and for icons you register once in `KvirnProvider`: `<Icon name="close" />`.
 - **`as`** (or children) for a one-off icon of your own, such as a municipality's mark.
 
 Icon's `size` and `label` replace the library component's own in every route that draws a component, so you never size an icon on the component itself. `className` is joined with the component's own classes.
@@ -34,9 +34,18 @@ import { Button, Icon } from '@kvirn-ui/react'
 
 Any other icon from `@kvirn-ui/icons` works too: pass it to `icon` (below) or register it under a name. The Map (`mapIcons` in `@kvirn-ui/map`, with the default marker pin) and the rich text editor (`richTextIconNames` in `@kvirn-ui/rich-text`) have their own icons.
 
-## A library icon: `icon`
+## An icon: `icon`
 
-Pass the component, not an element. It needs no registration. A component can't cross from a server component to a client one, so use `icon` in a client component, and `name` (a string) in a server component.
+For an icon from `@kvirn-ui/icons`, import it by name (camelCase, with no `Icon` suffix, such as `chevronDown`; `deleteIcon` and `newIcon` end in `Icon` because the plain words are reserved) and pass it. Your bundle holds only the icons you import.
+
+```tsx
+import { Icon } from '@kvirn-ui/react'
+import { search } from '@kvirn-ui/icons'
+
+;<Icon icon={search} label={messages.search} />
+```
+
+For an icon from another library, pass the component, not an element. It needs no registration. A component can't cross from a server component to a client one, so use `icon` in a client component, and `name` (a string) in a server component.
 
 ```tsx
 import { Icon } from '@kvirn-ui/react'
@@ -49,7 +58,7 @@ import { Search } from 'lucide-react'
 
 - It takes any component that spreads SVG props onto one `<svg>` and forwards its ref (`IconComponent`): Lucide, Heroicons, Phosphor, SVGR output, or your own. A component that doesn't fit is a type error.
 - Icon passes `width`, `height`, `className` (joined with the component's own), `aria-*` and `role` to it, and they win over the library's own defaults (Lucide's 24px size, Heroicons' `aria-hidden`).
-- `icon` doesn't mirror in right-to-left text by default. Set `mirrorInRtl` on the Icon, or register the icon under a name with `{ component, mirrorInRtl: true }`, which is the better place for a direction.
+- A component passed to `icon` doesn't mirror in right-to-left text by default. Set `mirrorInRtl` on the Icon, or register the icon under a name with `{ component, mirrorInRtl: true }`, which is the better place for a direction. An icon from `@kvirn-ui/icons` carries its own `mirrorInRtl` flag, so an arrow or chevron from the library flips with no prop.
 - A library draws its own stroke (Lucide's 2). To change it, register a wrapper component of your own that sets it, then use the name.
 - `IconProps` is a union of four forms (`name`, `icon`, `as` or children). A wrapper that types its props as `Omit<IconProps, K>` flattens the union, so it must omit `name | icon | as | children` together (or use a distributive `Omit`), then pass the one form it wants.
 

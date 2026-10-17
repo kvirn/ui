@@ -45,7 +45,7 @@ export interface IconDefaults {
 }
 
 export interface UseIconOptions extends IconDefaults {
-  /** A built-in or registered icon. */
+  /** A default or registered icon. */
   name?: IconName | undefined
   /** A drawing from `@kvirn-ui/icons` or a component, used instead of a name. It needs no registration. */
   icon?: IconRegistryEntry | undefined
@@ -61,7 +61,7 @@ export interface UseIconOptions extends IconDefaults {
    */
   variant?: IconVariant | undefined
   /**
-   * Flip the icon in right-to-left text. Default: the registry entry's, else the built-in icon's
+   * Flip the icon in right-to-left text. Default: the registry entry's, else the default icon's
    * of the same name, else `false`.
    */
   mirrorInRtl?: boolean | undefined
@@ -85,7 +85,7 @@ export interface IconPartProps {
 
 export interface UseIconResult {
   iconProps: IconPartProps
-  /** The registered or built-in component for `name` or `icon`. `undefined` without either, or for an unknown name. */
+  /** The registered or default component for `name` or `icon`. `undefined` without either, or for an unknown name. */
   component: IconComponent | undefined
   /** `true` unless the icon has a `label`. */
   isDecorative: boolean
@@ -145,7 +145,7 @@ export function useIcon({
       : undefined
   const entryToUse = icon ?? appEntry ?? builtInEntry
   const entry = entryToUse === undefined ? undefined : readIconEntry(entryToUse)
-  // Mirroring belongs to the name: a plain override of a built-in keeps the built-in's.
+  // Mirroring belongs to the name: a plain override of a default keeps the default's.
   const entryMirrorInRtl =
     entry?.mirrorInRtl ??
     (icon !== undefined || builtInEntry === undefined
@@ -155,7 +155,7 @@ export function useIcon({
   if (name !== undefined && icon === undefined && entry === undefined) {
     warnOnce(
       `unknown-icon:${name}`,
-      `<Icon name="${name}"> isn't a built-in icon or registered in a KvirnProvider, so it renders an empty <svg>. Add it with defineIcons and pass the registry to <KvirnProvider icons>.`,
+      `<Icon name="${name}"> isn't a default icon or registered in a KvirnProvider, so it renders an empty <svg>. Add it with defineIcons and pass the registry to <KvirnProvider icons>.`,
     )
   }
 

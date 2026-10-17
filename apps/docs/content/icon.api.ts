@@ -12,7 +12,7 @@ export const iconRows = propRows<IconDocumentedProps>({
     type: 'IconName',
     default: '–',
     description:
-      'A built-in icon, or one registered with defineIcons in a KvirnProvider. Give one of name, icon, as or children.',
+      'One of the 25 default icon names, such as close or search, or a name registered with defineIcons in a KvirnProvider. Give one of name, icon, as or children.',
   },
   icon: {
     type: 'IconRegistryEntry',
@@ -53,7 +53,7 @@ export const iconRows = propRows<IconDocumentedProps>({
     type: 'boolean',
     default: 'the entry’s, else false',
     description:
-      'Flips the icon in right-to-left text. Defaults to the registry entry’s, else the built-in icon’s of the same name, else false. Only for arrows and chevrons.',
+      'Flips the icon in right-to-left text. Defaults to the registry entry’s, else the default icon’s of the same name, else false. Only for arrows and chevrons.',
   },
 })
 
@@ -87,7 +87,7 @@ export const useIconHook: ApiHook = {
     name: {
       type: 'IconName',
       default: '–',
-      description: 'A built-in or registered icon, to get its component.',
+      description: 'A default or registered icon name, to get its component.',
     },
     icon: {
       type: 'IconRegistryEntry',
@@ -122,7 +122,7 @@ export const useIconHook: ApiHook = {
       type: 'IconComponent | undefined',
       default: '–',
       description:
-        'The registered or built-in component for name or icon. Undefined without either, or for an unknown name.',
+        'The component for name or icon, whether the name is a default or a registered one. Undefined without either, or for an unknown name.',
     },
     isDecorative: {
       type: 'boolean',

@@ -83,7 +83,7 @@ export interface KvirnProviderProps {
   linkComponent?: RegisteredLinkComponent | undefined
   /**
    * Icons for `<Icon name>`, from `defineIcons`. Merged over the parent provider's
-   * by name, and over the built-in set: a name registered here replaces a built-in icon.
+   * by name, and over the default icons: a name registered here replaces a default icon.
    * Register the registry's type for checked names.
    */
   icons?: IconRegistry | undefined

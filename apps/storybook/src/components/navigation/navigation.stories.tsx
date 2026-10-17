@@ -1,4 +1,5 @@
 import { fi } from '@kvirn-ui/i18n/fi'
+import { arrowForward } from '@kvirn-ui/icons'
 import { Icon, Link, Navigation } from '@kvirn-ui/react'
 import { InLanguage } from '../../fixture-language.tsx'
 import contract from '../../../../../packages/react/src/navigation/navigation.a11y.md?raw'
@@ -429,7 +430,7 @@ export const WithServiceLink: Story = {
         <Navigation.Item>
           <Link.Root href="#ansok" className="kv-link--service">
             <Link.Icon>
-              <Icon name="arrow-forward" size="24" />
+              <Icon icon={arrowForward} size="24" />
             </Link.Icon>
             Apply for a building permit
           </Link.Root>

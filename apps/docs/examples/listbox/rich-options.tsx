@@ -1,4 +1,5 @@
 'use client'
+import { document as documentIcon } from '@kvirn-ui/icons'
 import { Field, Icon, Listbox } from '@kvirn-ui/react'
 import { findMunicipality } from './data.ts'
 import type { Municipality } from './data.ts'
@@ -29,7 +30,7 @@ export function RichOptionsListbox() {
             {(municipality: Municipality) => (
               <Listbox.Option item={municipality}>
                 <Listbox.OptionIcon>
-                  <Icon name="document" />
+                  <Icon icon={documentIcon} />
                 </Listbox.OptionIcon>
                 <Listbox.OptionText>{municipality.name}</Listbox.OptionText>
                 <Listbox.OptionDescription>{municipality.county}</Listbox.OptionDescription>

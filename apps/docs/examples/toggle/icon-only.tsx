@@ -1,4 +1,5 @@
 'use client'
+import { eye } from '@kvirn-ui/icons'
 import { Icon, Toggle } from '@kvirn-ui/react'
 import { useId, useState } from 'react'
 import { useToggleTexts } from './texts.ts'
@@ -17,7 +18,7 @@ export function IconOnly() {
         pressed={isShown}
         onPressedChange={setIsShown}
       >
-        <Icon name="eye" />
+        <Icon icon={eye} />
       </Toggle>
     </div>
   )

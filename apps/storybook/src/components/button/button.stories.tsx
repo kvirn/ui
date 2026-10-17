@@ -1,4 +1,5 @@
 import { Button, ButtonGroup, Card, Field, Icon, Section, TextInput } from '@kvirn-ui/react'
+import { add, arrowForward, chevronDown, close } from '@kvirn-ui/icons'
 import type { ButtonProps } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/button/button.a11y.md?raw'
 import guide from '../../../../../packages/react/src/button/button.md?raw'
@@ -174,7 +175,7 @@ export const IconAtStart: Story = {
   args: {
     children: (
       <>
-        <Icon name="add" />
+        <Icon icon={add} />
         {fixtureText.addChild}
       </>
     ),
@@ -192,7 +193,7 @@ export const IconAtEnd: Story = {
     children: (
       <>
         {fixtureText.continue}
-        <Icon name="arrow-forward" />
+        <Icon icon={arrowForward} />
       </>
     ),
   },
@@ -207,10 +208,23 @@ export const IconAtEnd: Story = {
  * translations) and the icon stays decorative. Use it only for actions everyone knows.
  */
 export const IconOnly: Story = {
+  parameters: {
+    docs: {
+      source: {
+        code: `import { close } from '@kvirn-ui/icons'
+
+<Button className="kv-button--icon-only" aria-label="Close">
+  <Icon icon={close} />
+</Button>`,
+        language: 'tsx',
+        type: 'code',
+      },
+    },
+  },
   args: {
     className: 'kv-button--icon-only',
     'aria-label': fixtureText.close,
-    children: <Icon name="close" />,
+    children: <Icon icon={close} />,
   },
   play: async ({ canvas }) => {
     const button = canvas.getByRole('button', { name: fixtureText.close })
@@ -230,7 +244,7 @@ export const LinkLook: Story = {
     <ButtonGroup>
       <Button className="kv-button--link" aria-expanded="false">
         {fixtureText.settings}
-        <Icon name="chevron-down" />
+        <Icon icon={chevronDown} />
       </Button>
       <Button className="kv-button--link" disabled>
         {fixtureText.settings}

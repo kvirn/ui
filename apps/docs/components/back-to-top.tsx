@@ -1,4 +1,5 @@
 'use client'
+import { chevronUp } from '@kvirn-ui/icons'
 import { Button, Icon } from '@kvirn-ui/react'
 import { useEffect, useState } from 'react'
 import type { RefObject } from 'react'
@@ -40,7 +41,7 @@ export function BackToTop({ mainRef }: { mainRef: RefObject<HTMLElement | null> 
       onClick={goToTop}
     >
       {text.backToTop}
-      <Icon name="chevron-up" />
+      <Icon icon={chevronUp} />
     </Button>
   )
 }

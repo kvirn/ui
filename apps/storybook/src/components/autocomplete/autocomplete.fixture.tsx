@@ -1,4 +1,5 @@
 // kv-lang-ok-file: Swedish street names prove Swedish collation (å, ä, ö), and the per-locale fixture text sets
+import { document as documentIcon } from '@kvirn-ui/icons'
 import { Autocomplete, Button, Card, Field, Icon } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
@@ -187,7 +188,7 @@ export function RichSuggestionsExample({ locale }: { locale: FormLocale }) {
               {(street: (typeof richStreets)[number]) => (
                 <Autocomplete.Option item={street}>
                   <Autocomplete.OptionIcon>
-                    <Icon name="document" />
+                    <Icon icon={documentIcon} />
                   </Autocomplete.OptionIcon>
                   <Autocomplete.OptionText>{street.name}</Autocomplete.OptionText>
                   <Autocomplete.OptionDescription>{street.district}</Autocomplete.OptionDescription>

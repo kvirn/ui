@@ -1,4 +1,5 @@
 import { Alert, Card, Icon, KvirnProvider, useFormat } from '@kvirn-ui/react'
+import { info } from '@kvirn-ui/icons'
 import contract from '../../../../../packages/react/src/alert/alert.a11y.md?raw'
 import guide from '../../../../../packages/react/src/alert/alert.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -354,7 +355,7 @@ export const BringYourOwn: Story = {
     const { text } = textsFor(localeOf(globals))
     return (
       <Alert.Root className="kv-story-my-notice" data-testid="own">
-        <Icon name="info" className="kv-alert-icon" />
+        <Icon icon={info} className="kv-alert-icon" />
         <Alert.Title>
           <span className="kv-alert-status">{text.ownStatus.word}</span> {text.sample.title}
         </Alert.Title>

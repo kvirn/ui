@@ -1,4 +1,5 @@
 'use client'
+import { check, copy, warning } from '@kvirn-ui/icons'
 import { Button, Icon, Tooltip, useAnnouncer } from '@kvirn-ui/react'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { RefObject } from 'react'
@@ -74,7 +75,7 @@ export function CodeCopyButton({ onCopy }: { onCopy: () => Promise<void> }) {
           void onCopy()
         }}
       >
-        <Icon name="copy" size="20" />
+        <Icon icon={copy} size="20" />
         <span className="docs-code-copy-label">{text.copy}</span>
       </Tooltip.Trigger>
       <Tooltip.Popup>
@@ -91,7 +92,7 @@ export function CodeStatus({ status }: { status: CopyStatus }) {
   }
   return (
     <p className="docs-code-status">
-      <Icon name={status === 'copied' ? 'check' : 'warning'} />
+      <Icon icon={status === 'copied' ? check : warning} />
       {status === 'copied' ? text.copied : text.copyFailed}
     </p>
   )

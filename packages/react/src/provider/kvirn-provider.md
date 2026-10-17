@@ -19,7 +19,7 @@ What runs on the server and what in the browser, the `as` rules and the other fr
 | `locale`, `dir`, `country`, `timeZone`, `weekStart`, `theme` defaults, `toast`, `iconDefaults`, `children` | Passes                  | Strings, numbers and plain objects                                                                           |
 | `messages`                                                                                                 | Client file             | Catalogs hold functions (`resultCount: ({ count }) => …`), which can't be serialised                         |
 | `linkComponent`                                                                                            | Client file             | `next/link` is a plain server wrapper on the server, not a client reference, so import it in a client module |
-| `icons`                                                                                                    | Client file             | Components made by `defineIcons`, which comes from the client entry                                          |
+| `icons`                                                                                                    | Client file             | A registry made by `defineIcons`, which comes from the client entry and can hold components                  |
 | `theme.storage` adapter                                                                                    | Client file             | An object of functions                                                                                       |
 | `env`                                                                                                      | Client file             | A window and a document                                                                                      |
 
@@ -32,7 +32,7 @@ import { KvirnProvider } from '@kvirn-ui/react'
 import type { KvirnProviderProps } from '@kvirn-ui/react'
 import { sv } from '@kvirn-ui/i18n/sv'
 import NextLink from 'next/link'
-import { icons } from './icons' // a 'use client' module that calls defineIcons
+import { icons } from './icons' // a 'use client' module that calls defineIcons for your extra icon names
 
 export function AppKvirnProvider(
   props: Omit<KvirnProviderProps, 'messages' | 'linkComponent' | 'icons' | 'env'>,
@@ -157,7 +157,7 @@ Without the augmentation, `linkComponent` only accepts `'a'`, and link props are
 
 ## Icons: `icons` and `iconDefaults`
 
-Register your icons once, so `<Icon name>` works everywhere and names are checked. The registry holds components, so it lives in a client module next to this setup. See [Icon](../icon/icon.md#registering-icons).
+The 25 default icon names, such as `close` and `search`, work with no setup. Register any other icons once, so `<Icon name>` finds them everywhere and names are checked. The registry can hold icons from `@kvirn-ui/icons`, or from Lucide or another set. It can hold components, so it lives in a client module next to this setup. See [Icon](../icon/icon.md#registering-icons).
 
 ```tsx
 <KvirnProvider icons={icons} iconDefaults={{ size: '24' }}>
@@ -450,7 +450,7 @@ The layout under [Next.js](#nextjs-app-router) uses it.
 | `timeZone`      | `string` (IANA)                                     | The parent's, or UTC                                                                                            |
 | `weekStart`     | `1` to `7` (ISO weekday, 1 is Monday)               | The parent's, else the locale's when it names a region (`en-US` is `7`), else `1`                               |
 | `linkComponent` | `RegisteredLinkComponent`                           | `'a'`, or the parent's                                                                                          |
-| `icons`         | `IconRegistry`, from `defineIcons`                  | The built-in icons, then the parent's, merged by name ([Icon](../icon/icon.md))                                 |
+| `icons`         | `IconRegistry`, from `defineIcons`                  | The 25 default icons, then the parent's, merged by name ([Icon](../icon/icon.md))                               |
 | `iconDefaults`  | `IconDefaults` (`size`)                             | The parent's, merged by field                                                                                   |
 | `theme`         | `ThemeOptions`                                      | Outermost provider only                                                                                         |
 | `toast`         | `{ limit?, autoDismiss? }`                          | First provider on the page only: `limit` 10, `autoDismiss` `false` or milliseconds ([Toast](../toast/toast.md)) |

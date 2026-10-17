@@ -49,8 +49,9 @@ const providerRows = propRows<KvirnProviderProps>({
   },
   icons: {
     type: 'IconRegistry',
-    default: "The built-in icons, then the parent's",
-    description: 'Icons for <Icon name>, from defineIcons. Merged by name.',
+    default: "The 25 default icons, then the parent's",
+    description:
+      'More names for <Icon name>, from defineIcons: icons from @kvirn-ui/icons, or from Lucide or others. The 25 default names need none. Merged by name.',
   },
   iconDefaults: {
     type: 'IconDefaults',
@@ -137,7 +138,7 @@ import { KvirnProvider } from '@kvirn-ui/react'
 import type { KvirnProviderProps } from '@kvirn-ui/react'
 import { sv } from '@kvirn-ui/i18n/sv'
 import NextLink from 'next/link'
-import { icons } from './icons' // a 'use client' module that calls defineIcons
+import { icons } from './icons' // a 'use client' module that calls defineIcons for the extra icon names you want
 
 export function AppKvirnProvider(
   props: Omit<KvirnProviderProps, 'messages' | 'linkComponent' | 'icons' | 'env'>,
@@ -340,8 +341,8 @@ export function KvirnProviderPage() {
                   the server, not a client reference, so import it in a client module.
                 </li>
                 <li>
-                  <code>icons</code>: components made by <code>defineIcons</code>, which comes from
-                  the client entry.
+                  <code>icons</code>: a registry made by <code>defineIcons</code>, which comes from
+                  the client entry. It can hold components, so it lives in a client module.
                 </li>
                 <li>
                   <code>theme.storage</code>: an adapter is an object of functions.
@@ -500,9 +501,15 @@ export function KvirnProviderPage() {
               </p>
               <Sub {...icons} />
               <p>
-                Pass a registry made by <code>defineIcons</code> as <code>icons</code>, and set a a
-                default size with <code>iconDefaults</code>. A nested provider merges the registry
-                by name and the default by field. See <Link href="/components/icon">Icon</Link>.
+                The 25 default icon names, such as <code>close</code> and <code>search</code>, work
+                with no setup. To use other names, pass a registry made by <code>defineIcons</code>{' '}
+                as <code>icons</code>. It can hold icons from <code>@kvirn-ui/icons</code>, or from
+                Lucide or another library. Registering the whole set from{' '}
+                <code>@kvirn-ui/icons/all</code> adds every icon to your bundle, so register only
+                the ones you need. You can also skip names and pass an icon straight to{' '}
+                <code>Icon</code>. Set a default size with <code>iconDefaults</code>. A nested
+                provider merges the registry by name and the default size by field. See{' '}
+                <Link href="/components/icon">Icon</Link>.
               </p>
               <Sub {...typedRegistration} />
               <p>

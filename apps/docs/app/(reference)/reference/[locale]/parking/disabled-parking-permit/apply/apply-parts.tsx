@@ -1,4 +1,5 @@
 'use client'
+import { arrowBack } from '@kvirn-ui/icons'
 import { PageFrame } from '@kvirn-ui/patterns'
 import {
   Alert,
@@ -32,7 +33,7 @@ function BackLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Link.Root href={href}>
       <Link.Icon>
-        <Icon name="arrow-back" size="24" />
+        <Icon icon={arrowBack} size="24" />
       </Link.Icon>
       {children}
     </Link.Root>

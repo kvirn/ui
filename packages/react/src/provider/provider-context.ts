@@ -32,7 +32,7 @@ export interface KvirnConfig {
   messageLayers: readonly PartialMessages[]
   format: MessageFormatter
   linkComponent: LinkComponentOrAnchor<RegisteredLinkComponent>
-  /** Every provider's icons, the nearest winning per name. Built-in icons are added by `useIcon`. */
+  /** Every provider's icons, the nearest winning per name. Default icons are added by `useIcon`. */
   icons: IconRegistry
   /** Every provider's icon defaults, the nearest winning per field. */
   iconDefaults: IconDefaults
@@ -40,7 +40,7 @@ export interface KvirnConfig {
   env: Env | undefined
 }
 
-/** What components get without a provider: `en`, `ltr`, UTC, `<a>`, built-in icons. */
+/** What components get without a provider: `en`, `ltr`, UTC, `<a>`, default icons. */
 export const defaultKvirnConfig: KvirnConfig = {
   locale: 'en',
   dir: 'ltr',

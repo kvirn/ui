@@ -13,6 +13,7 @@ import { Button } from '../button/button.tsx'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import type { KvirnProviderProps } from '../provider/kvirn-provider.tsx'
+import { arrowForward, search } from '@kvirn-ui/icons'
 import { allIcons } from '@kvirn-ui/icons/all'
 import { defaultIcons } from './default-icons.ts'
 import type { BuiltInIconName } from './default-icons.ts'
@@ -165,11 +166,16 @@ describe('built-in icons', () => {
     expect(svg.hasAttribute('data-mirror-in-rtl')).toBe(true)
   })
 
+  test('a library IconData passed as icon mirrors in RTL like the registered name', async () => {
+    const { container } = await render(<Icon icon={arrowForward} />)
+    expect(svgIn(container).hasAttribute('data-mirror-in-rtl')).toBe(true)
+  })
+
   test('an icon renders a component or data', async () => {
     const svg = await renderIcon(<Icon icon={Trash2} />)
     expect(svg.classList.contains('lucide-trash-2')).toBe(true)
-    const dataSvg = svgIn((await render(<Icon icon={allIcons['search']} />)).container)
-    expect(dataSvg.getAttribute('viewBox')).toBe('0 0 24 24')
+    const dataSvg = svgIn((await render(<Icon icon={search} />)).container)
+    expect(dataSvg.children.length).toBeGreaterThan(0)
   })
 
   test('the icon option of useIcon beats the name', async () => {

@@ -19,29 +19,15 @@ An icon is decorative by default: text next to it already says what it means, so
 
 `useIcon` gives the same `iconProps`, and the component for a name, for your own `<svg>`.
 
-## SvgIcon (`@kvirn-ui/icons/react`)
+### SvgIcon (`@kvirn-ui/icons/react`)
 
-The standalone component for apps without KvirnUI. It has no hooks or context and takes `icon` (icon data), `size` and `title`, plus SVG props.
+The standalone component for apps without KvirnUI. It has no hooks or context and takes `icon` (icon data), `size` and `title`, plus SVG props. Its roles:
 
-| Route                                                  | ARIA                                                 | Notes                                                       |
-| ------------------------------------------------------ | ---------------------------------------------------- | ----------------------------------------------------------- |
-| Decorative (no name)                                   | `aria-hidden="true"`, `focusable="false"`, no `role` | Default                                                     |
-| `aria-label`, `aria-labelledby` or `title` (non-empty) | `role="img"`, named, no `aria-hidden`                | `title` is a `<title>` child; `aria-labelledby` names by id |
-| An empty string for any of the three                   | `aria-hidden="true"`, `focusable="false"`, no `role` | An empty name is no name: the icon stays decorative         |
+- Decorative (no name): `aria-hidden="true"`, `focusable="false"`, no `role`. This is the default.
+- `aria-label`, `aria-labelledby` or a non-empty `title`: `role="img"`, named, no `aria-hidden`. `title` is a `<title>` child; `aria-labelledby` names by id.
+- An empty string for any of the three: an empty name is no name, so the icon stays decorative.
 
 No keyboard stops: Tab and Shift+Tab never reach an `<svg>` (`focusable="false"`). WCAG 1.1.1 Non-text Content (A), 4.1.2 Name, Role, Value (A).
-
-### Read aloud
-
-Approximated by `@kvirn-ui/testing`'s `readAloud` (English); not NVDA or JAWS output. AT `pending`.
-
-| State or action                   | Expected phrase(s) as read aloud | Live region politeness | Test                                                                                     |
-| --------------------------------- | -------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------- |
-| Decorative                        | nothing                          | none                   | `svg-icon.test.tsx › a decorative icon is not read aloud`                                |
-| `aria-label="Add"`                | `image, Add`                     | none                   | `svg-icon.test.tsx › an icon with an aria-label is read as an image with that name`      |
-| `aria-labelledby` a label element | `image, Add`                     | none                   | `svg-icon.test.tsx › an icon with an aria-labelledby is read as an image with that name` |
-| `title="Add"`                     | `image, Add`                     | none                   | `svg-icon.test.tsx › an icon with a title is read as an image with that name`            |
-| Empty `aria-label`                | nothing                          | none                   | `svg-icon.test.tsx › an empty name stays decorative and is not read aloud`               |
 
 ## Keyboard
 
@@ -69,6 +55,18 @@ An icon that does something belongs inside a `Button` or `Link`, which is the fo
 
 Icon has no strings of its own. A `label` comes from your own translations, or for a library icon that stands alone from `useIconLabel(name)`: the `icons.<name>` message, overridable per provider and per instance (`messages` argument). It returns `undefined` for an icon without a label key, which stays decorative. A label is never applied silently: `Icon` does not read it by itself (`use-icon-label.test.tsx`).
 
+### Read aloud
+
+Approximated by `@kvirn-ui/testing`'s `readAloud` (English); not NVDA or JAWS output. AT `pending`.
+
+| State or action                   | Expected phrase(s) as read aloud | Live region politeness | Test                                                                                     |
+| --------------------------------- | -------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------- |
+| Decorative                        | nothing                          | none                   | `svg-icon.test.tsx › a decorative icon is not read aloud`                                |
+| `aria-label="Add"`                | `image, Add`                     | none                   | `svg-icon.test.tsx › an icon with an aria-label is read as an image with that name`      |
+| `aria-labelledby` a label element | `image, Add`                     | none                   | `svg-icon.test.tsx › an icon with an aria-labelledby is read as an image with that name` |
+| `title="Add"`                     | `image, Add`                     | none                   | `svg-icon.test.tsx › an icon with a title is read as an image with that name`            |
+| Empty `aria-label`                | nothing                          | none                   | `svg-icon.test.tsx › an empty name stays decorative and is not read aloud`               |
+
 ## Consumer responsibilities
 
 - Give an icon that carries meaning on its own a `label` (1.1.1 Non-text Content, A): a status icon with no text beside it, say. Give it a `label` only when no text next to it says the same thing: an icon with a label next to the same text is read twice. A decorative icon needs none.
@@ -77,7 +75,7 @@ Icon has no strings of its own. A `label` comes from your own translations, or f
 - Never convey status by an icon's colour alone: the status icons differ in shape, and status always comes with text (1.4.1 Use of Color, A).
 - Give a meaningful icon (one with a `label`) at least 3:1 contrast against its background (1.4.11 Non-text Contrast, AA). `currentColor` follows the text colour, which already has at least 4.5:1 contrast in the default theme, and every variant is measured at 3:1 or more on canvas, surface and surface-raised in all four themes (`iconVariantPairs`).
 - Set `mirrorInRtl` only on directional icons (arrows, chevrons), never on a tick, a logo or anything with text in it.
-- Register icons that forward their ref and spread SVG props onto one `<svg>`.
+- Register or pass components that forward their ref and spread SVG props onto one `<svg>`. An icon from `@kvirn-ui/icons` is plain data and needs nothing.
 
 ## Visual / modes
 

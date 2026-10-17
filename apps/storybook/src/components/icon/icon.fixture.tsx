@@ -6,6 +6,33 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline'
 import {
+  add,
+  arrowBack,
+  arrowForward,
+  calendar,
+  check,
+  chevronBack,
+  chevronDown,
+  chevronForward,
+  chevronUp,
+  close,
+  copy,
+  deleteIcon,
+  document as documentIcon,
+  download,
+  error,
+  external,
+  eye,
+  eyeOff,
+  info,
+  language,
+  menu,
+  search,
+  success,
+  upload,
+  warning,
+} from '@kvirn-ui/icons'
+import {
   Alert,
   Button,
   ButtonGroup,
@@ -15,7 +42,7 @@ import {
   useFormat,
 } from '@kvirn-ui/react'
 import type { UseFormatResult } from '@kvirn-ui/react'
-import type { BuiltInIconName, IconName } from '@kvirn-ui/react'
+import type { IconName } from '@kvirn-ui/react'
 import { Warning as PhosphorWarning } from '@phosphor-icons/react'
 import { ArrowRight, MapPin, Search, Trash2, X as LucideClose } from 'lucide-react'
 import { useCallback, useState } from 'react'
@@ -29,43 +56,45 @@ import { createPortal } from 'react-dom'
 
 export type IconFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'en'
 
-/** The names `<Icon name>` finds with no provider, in the design spec's order (§4.1). */
-export const builtInIconNames = [
-  'chevron-down',
-  'chevron-up',
-  'chevron-back',
-  'chevron-forward',
-  'arrow-back',
-  'arrow-forward',
-  'external',
-  'close',
-  'menu',
-  'search',
-  'add',
-  'check',
-  'info',
-  'success',
-  'warning',
-  'error',
-  'calendar',
-  'upload',
-  'download',
-  'document',
-  'delete',
-  'language',
-  'eye',
-  'eye-off',
-  'copy',
-] as const satisfies readonly BuiltInIconName[]
+/** The library icons the main story offers, by the name its control shows (design spec §4.1). */
+export const libraryIconChoices = {
+  'chevron-down': chevronDown,
+  'chevron-up': chevronUp,
+  'chevron-back': chevronBack,
+  'chevron-forward': chevronForward,
+  'arrow-back': arrowBack,
+  'arrow-forward': arrowForward,
+  external,
+  close,
+  menu,
+  search,
+  add,
+  check,
+  info,
+  success,
+  warning,
+  error,
+  calendar,
+  upload,
+  download,
+  document: documentIcon,
+  delete: deleteIcon,
+  language,
+  eye,
+  'eye-off': eyeOff,
+  copy,
+}
 
-/** The default icons that flip in RTL: the horizontal-direction ones (§4.1). */
-export const mirroredIconNames = [
-  'chevron-back',
-  'chevron-forward',
-  'arrow-back',
-  'arrow-forward',
-  'external',
-] as const satisfies readonly BuiltInIconName[]
+export const libraryIconNames = Object.keys(libraryIconChoices)
+
+/** The icons that flip in RTL: the horizontal-direction ones (§4.1). */
+export const mirroredIcons = [
+  { name: 'chevron-back', icon: chevronBack },
+  { name: 'chevron-forward', icon: chevronForward },
+  { name: 'arrow-back', icon: arrowBack },
+  { name: 'arrow-forward', icon: arrowForward },
+  { name: 'external', icon: external },
+]
 
 export type StatusKind = 'info' | 'success' | 'warning' | 'error'
 export const statusKinds = [
@@ -416,31 +445,31 @@ function buttonsRow(locale: IconFixtureLocale, className?: string) {
     <>
       <ButtonGroup>
         <Button className={className}>
-          <Icon name="add" />
+          <Icon icon={add} />
           {text.button.addChild}
         </Button>
         <Button className={className}>
           {text.button.continue}
-          <Icon name="arrow-forward" />
+          <Icon icon={arrowForward} />
         </Button>
         <Button
           className={joinClasses('kv-button--icon-only', className)}
           aria-label={text.button.close}
         >
-          <Icon name="close" />
+          <Icon icon={close} />
         </Button>
         <Button
           className={joinClasses('kv-button--icon-only', className)}
           aria-label={text.button.search}
         >
-          <Icon name="search" />
+          <Icon icon={search} />
         </Button>
         {/* Shows the icon's size and placement only; the docs site pairs Copy with a Tooltip. */}
         <Button
           className={joinClasses('kv-button--icon-only', className)}
           aria-label={text.button.copy}
         >
-          <Icon name="copy" />
+          <Icon icon={copy} />
         </Button>
       </ButtonGroup>
     </>
@@ -454,21 +483,21 @@ function disabledButtonsRow(locale: IconFixtureLocale) {
     <>
       <ButtonGroup>
         <Button disabled>
-          <Icon name="add" />
+          <Icon icon={add} />
           {text.button.addChild}
         </Button>
         <Button disabled>
           {text.button.continue}
-          <Icon name="arrow-forward" />
+          <Icon icon={arrowForward} />
         </Button>
         <Button className="kv-button--icon-only" aria-label={text.button.close} disabled>
-          <Icon name="close" />
+          <Icon icon={close} />
         </Button>
         <Button className="kv-button--icon-only" aria-label={text.button.search} disabled>
-          <Icon name="search" />
+          <Icon icon={search} />
         </Button>
         <Button className="kv-button--icon-only" aria-label={text.button.copy} disabled>
-          <Icon name="copy" />
+          <Icon icon={copy} />
         </Button>
       </ButtonGroup>
     </>
@@ -514,23 +543,23 @@ export function moreButtons(locale: IconFixtureLocale) {
     <>
       <ButtonGroup>
         <Button>
-          <Icon name="delete" />
+          <Icon icon={deleteIcon} />
           {text.button.removeFile(exampleFileName)}
         </Button>
         <Button>
-          <Icon name="eye" />
+          <Icon icon={eye} />
           {text.button.showPassword}
         </Button>
         <Button>
-          <Icon name="eye-off" />
+          <Icon icon={eyeOff} />
           {text.button.hidePassword}
         </Button>
         <Button>
-          <Icon name="menu" />
+          <Icon icon={menu} />
           {text.button.menu}
         </Button>
         <Button>
-          <Icon name="language" />
+          <Icon icon={language} />
           <span lang="sv">{text.language.current}</span>
         </Button>
       </ButtonGroup>
@@ -545,11 +574,11 @@ export function narrowButtons() {
     <div className="kv-story-narrow" lang="fi" data-testid="narrow-buttons">
       <ButtonGroup>
         <Button className="kv-button--primary" data-testid="download-button">
-          <Icon name="download" />
+          <Icon icon={download} />
           {text.button.download}
         </Button>
         <Button className="kv-button--icon-only" aria-label={text.button.close}>
-          <Icon name="close" />
+          <Icon icon={close} />
         </Button>
       </ButtonGroup>
     </div>
@@ -581,7 +610,7 @@ export function LucideOneOff({ locale }: IconFixtureProps) {
 /**
  * Lucide, registered: `<Icon name>` and every KvirnUI component use Lucide's drawings. Call
  * `defineIcons` once at module level in your app, next to the provider: a library's drawings
- * replace the built-in ones of the same names, and Lucide draws its own 2 stroke. Names that aren't built in need `Register` (see the Icon guide).
+ * replace the default ones of the same names, and Lucide draws its own 2 stroke. Names that aren't default need `Register` (see the Icon guide).
  */
 export function LucideRegistered({ locale }: IconFixtureProps) {
   const { text } = textsFor(locale)
@@ -657,10 +686,10 @@ export function HeroiconsRegistered({ locale }: IconFixtureProps) {
 }
 
 /**
- * Registered over the built-ins, a library's drawing replaces the built-in one for every
+ * Registered over the default icons, a library's drawing replaces the default one for every
  * component, with the same `size` and `color`. A plain component under `arrow-forward` still
  * mirrors in right-to-left text, because mirroring belongs to the name (design spec §4.2).
- * `logo` isn't built in: an app adds it by augmenting `Register`, so this story casts the name.
+ * `logo` isn't a default icon: an app adds it by augmenting `Register`, so this story casts the name.
  */
 export function LibraryIcons({ locale }: IconFixtureProps) {
   const { text } = textsFor(locale)
@@ -716,7 +745,7 @@ export function LibraryIcons({ locale }: IconFixtureProps) {
 
 /**
  * What a registry can say and what an instance can override. An entry `{ component,
- * mirrorInRtl }` sets the direction per name (here `false` turns the built-in arrow's flip off),
+ * mirrorInRtl }` sets the direction per name (here `false` turns the default arrow's flip off),
  * and `mirrorInRtl` on an Icon wins over the entry. `iconDefaults.size` sizes every Icon below,
  * and a nested provider adds icons and replaces fields, over its parent's.
  */
@@ -769,16 +798,16 @@ export function UnstyledIcons({ locale }: IconFixtureProps) {
         <p>
           {(['16', '20', '24'] as const).map((size) => (
             <span key={size} style={{ color: 'var(--kv-color-success)' }}>
-              <Icon name="check" size={size} />
+              <Icon icon={check} size={size} />
             </span>
           ))}
         </p>
         <p>
-          <Icon name="arrow-forward" size="24" />
+          <Icon icon={arrowForward} size="24" />
         </p>
         <p>
           <Button aria-label={text.button.close}>
-            <Icon name="close" />
+            <Icon icon={close} />
           </Button>
         </p>
       </ShadowIsland>

@@ -1,5 +1,6 @@
 'use client'
 import { Button, Icon } from '@kvirn-ui/react'
+import { chevronDown, chevronUp } from '@kvirn-ui/icons'
 import type { ReactNode } from 'react'
 
 /**
@@ -29,7 +30,7 @@ export function DocsDisclosure({
       {...otherProps}
     >
       {children}
-      <Icon name={isOpen ? 'chevron-up' : 'chevron-down'} />
+      <Icon icon={isOpen ? chevronUp : chevronDown} />
     </Button>
   )
 }

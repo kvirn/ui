@@ -1,4 +1,5 @@
 import { Heading, Icon, Link, List } from '@kvirn-ui/react'
+import { external } from '@kvirn-ui/icons'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import contract from '../../../../../packages/patterns/src/navigation-and-promotion/link-list/link-list.a11y.md?raw'
 import type { ReactNode } from 'react'
@@ -110,7 +111,7 @@ export const LinkToAnotherSite: Story = {
       <List.Item>
         <Link.Root href="https://example.org/" target="_blank">
           <Link.Icon>
-            <Icon name="external" />
+            <Icon icon={external} />
           </Link.Icon>
           The national agency&apos;s guide
           <Link.NewTabNotice />

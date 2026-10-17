@@ -31,7 +31,7 @@ export interface BreadcrumbRootProps extends BreadcrumbPartComponentProps {
   /**
    * Your own separator, for example an `<Icon>`, rendered in every item (the theme hides the
    * first one, and a custom theme must too). It is decoration and hidden from assistive
-   * technology, so it must not carry a name or be interactive. The built-in `chevron-forward`
+   * technology, so it must not carry a name or be interactive. The default `chevron-forward`
    * mirrors itself in RTL; a registered or own icon needs `mirrorInRtl`.
    */
   separator?: ReactNode

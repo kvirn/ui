@@ -3,6 +3,8 @@ import { defineExampleTexts } from '../../components/local-example-texts.ts'
 export const useIconTexts = defineExampleTexts({
   en: {
     addChild: 'Add another child',
+    downloadForm: 'Download the parking permit form (PDF)',
+    bookTime: 'Book a time at the service point',
     language: 'Language',
     currentLanguage: 'Svenska',
     house: 'Home',

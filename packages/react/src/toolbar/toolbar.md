@@ -77,7 +77,7 @@ import { Icon, Toolbar } from '@kvirn-ui/react'
 </Toolbar.Root>
 ```
 
-An icon-only control takes `kv-button--icon-only` and an `aria-label`, and a tooltip where the toolbar's users might not know the icons (`bold` is an icon you register with `defineIcons`):
+An icon-only control takes `kv-button--icon-only` and an `aria-label`, and a tooltip where the toolbar's users might not know the icons (`bold` is an icon from `@kvirn-ui/icons`: `import { bold } from '@kvirn-ui/icons'`):
 
 ```tsx
 <Toolbar.Toggle
@@ -86,7 +86,7 @@ An icon-only control takes `kv-button--icon-only` and an `aria-label`, and a too
   pressed={isBold}
   onPressedChange={setIsBold}
 >
-  <Icon name="bold" />
+  <Icon icon={bold} />
 </Toolbar.Toggle>
 ```
 

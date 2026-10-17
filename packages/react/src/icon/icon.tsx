@@ -43,7 +43,7 @@ interface IconBaseProps
 }
 
 interface IconByNameProps {
-  /** A built-in or registered icon. */
+  /** A default or registered icon. */
   name: IconName
   icon?: never
   as?: never
@@ -90,7 +90,7 @@ export type IconProps = IconBaseProps &
 const unknownNameProps = Object.freeze({ viewBox: '0 0 24 24' })
 
 /**
- * An icon: built-in, registered by name in `KvirnProvider`, a library component (`icon`), or
+ * An icon: default, registered by name in `KvirnProvider`, a library component (`icon`), or
  * your own SVG (contract: icon.a11y.md). Decorative unless it has a `label`.
  *
  * @example
