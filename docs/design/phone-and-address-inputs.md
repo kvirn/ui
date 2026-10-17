@@ -262,3 +262,8 @@ Field wiring, errors, ErrorSummary links and mask keys are already proved by Fie
 4. Postal-code masks for DK and IS (`MaskCountry` is SE, FI, NO only): later?
 5. Fiction-range example phone numbers for FI and NO: which ranges are reserved?
 6. Phone extensions ("ankn. 123"): letters are left out today. A separate field in the docs, or accept them?
+
+## Open questions for the manual AT run
+
+- PhoneInput: is a number that stays as the user wrote it read the same on returning to the field? Does `inputmode="tel"` bring up the phone keypad with VoiceOver and TalkBack, and does autofill fill the full number including `+46`?
+- AddressInput: do magnifier users find the city beside the postal code? Does autofill fill all four boxes at once on iOS and Android?

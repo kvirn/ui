@@ -56,7 +56,7 @@ function CountryAndNumber({
   return (
     <PhoneInput.Root {...rootProps}>
       <Field.Root controlId={`${controlId}-country`} disabled={disabled}>
-        <Field.Label>{text.countryLabel}</Field.Label>
+        <Field.Label marker="none">{text.countryLabel}</Field.Label>
         <PhoneInput.Country name="phoneCountry" />
       </Field.Root>
       <Field.Root controlId={controlId} required={required} invalid={invalid} disabled={disabled}>

@@ -55,7 +55,7 @@ List renders no text, so it has no message keys.
 
 ## Visual / modes
 
-Headless: List ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-list` is a grid with a `space` gap, no marker and no indent. `bullet` and `decimal` draw outside markers in the text colour, indented in rem (1.4.4). Target size and the focus indicator belong to the links inside. forced-colors: markers use the text colour, which the system maps. Motion: none.
+Headless: List ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-list` stacks the items with a gap between them, with no marker and no indent. `bullet` and `decimal` draw outside markers in the text colour, indented in rem (1.4.4). Target size and the focus indicator belong to the links inside. forced-colors: markers use the text colour, which the system maps. Motion: none.
 
 ## WCAG SCs covered
 

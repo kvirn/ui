@@ -26,7 +26,7 @@ describe('PhoneInput.Number', () => {
   test('sets type tel, inputmode tel, dir ltr and autocomplete tel, and yours wins', async () => {
     await render(
       <>
-        <PhoneInput.Number aria-label="Telefonnummer" />
+        <PhoneInput.Number aria-label="Phone number" />
         <PhoneInput.Number
           aria-label="Another person’s number"
           autoComplete="off"
@@ -34,7 +34,7 @@ describe('PhoneInput.Number', () => {
         />
       </>,
     )
-    const own = page.getByRole('textbox', { name: 'Telefonnummer' })
+    const own = page.getByRole('textbox', { name: 'Phone number' })
     await expect.element(own).toHaveAttribute('type', 'tel')
     await expect.element(own).toHaveAttribute('inputmode', 'tel')
     await expect.element(own).toHaveAttribute('spellcheck', 'false')
@@ -57,11 +57,11 @@ describe('PhoneInput.Number', () => {
       const onValueChange = vi.fn<(value: string) => void>()
       await render(
         <>
-          <PhoneInput.Number aria-label="Telefonnummer" mask={mask} onValueChange={onValueChange} />
+          <PhoneInput.Number aria-label="Phone number" mask={mask} onValueChange={onValueChange} />
           <button type="button">Next</button>
         </>,
       )
-      const input = page.getByRole('textbox', { name: 'Telefonnummer' })
+      const input = page.getByRole('textbox', { name: 'Phone number' })
       await userEvent.type(input, '+46 (0)70-174 06 05')
       await expect.element(input).toHaveValue('+46 (0)70-174 06 05')
       expect(onValueChange.mock.lastCall?.[0]).toBe('+46 (0)70-174 06 05')
@@ -69,6 +69,26 @@ describe('PhoneInput.Number', () => {
       await expect.element(input).toHaveValue('070 - 174 06 05')
       await userEvent.tab()
       await expect.element(input).toHaveValue('070 - 174 06 05')
+    },
+  )
+
+  test.each([
+    ['the default', undefined],
+    ['the telephone mask', 'telephone'],
+  ] as const)(
+    'a paste event is not cancelled and inserted text is kept as written; insertText stands in for the browser’s paste (%s)',
+    async (_name, mask) => {
+      await render(<PhoneInput.Number aria-label="Phone number" mask={mask} />)
+      const input = page.getByRole('textbox', { name: 'Phone number' })
+      const element = input.element() as HTMLInputElement
+      element.focus()
+      const clipboardData = new DataTransfer()
+      clipboardData.setData('text/plain', '+46 (0)70-174 06 05')
+      const paste = new ClipboardEvent('paste', { bubbles: true, cancelable: true, clipboardData })
+      element.dispatchEvent(paste)
+      expect(paste.defaultPrevented).toBe(false)
+      document.execCommand('insertText', false, '+46 (0)70-174 06 05')
+      await expect.element(input).toHaveValue('+46 (0)70-174 06 05')
     },
   )
 

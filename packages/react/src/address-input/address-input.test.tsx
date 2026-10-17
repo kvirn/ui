@@ -62,7 +62,7 @@ describe('autocomplete tokens (1.3.5)', () => {
     await expect.element(city()).toHaveAttribute('autocomplete', 'address-level2')
     // Line 2's own `off` wins over the Root's missing prefix, and the text lines are not spell-checked.
     await expect.element(line2()).toHaveAttribute('autocomplete', 'off')
-    for (const line of [street(), city()]) {
+    for (const line of [street(), line2(), city()]) {
       await expect.element(line).toHaveAttribute('spellcheck', 'false')
       await expect.element(line).toHaveAttribute('autocorrect', 'off')
     }
@@ -80,6 +80,21 @@ describe('autocomplete tokens (1.3.5)', () => {
 })
 
 describe('postal code', () => {
+  test('paste is never cancelled in any box, and a pasted postal code takes the country’s mask', async () => {
+    await render(<Address country="SE" />)
+    for (const box of [street(), line2(), postalCode(), city()]) {
+      const element = box.element() as HTMLInputElement
+      element.focus()
+      const clipboardData = new DataTransfer()
+      clipboardData.setData('text/plain', '12345')
+      const paste = new ClipboardEvent('paste', { bubbles: true, cancelable: true, clipboardData })
+      element.dispatchEvent(paste)
+      expect(paste.defaultPrevented).toBe(false)
+    }
+    await userEvent.fill(postalCode(), '12345')
+    await expect.element(postalCode()).toHaveValue('123 45')
+  })
+
   test('follows the Root’s country: SE groups the digits, DE keeps letters with no mask', async () => {
     const { rerender } = await render(<Address country="SE" />)
     await userEvent.type(postalCode(), '12345')
