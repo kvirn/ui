@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Framework-agnostic state and interaction logic for KvirnUI.",
   "homepage": "https://ui.kvirn.com",
-  "license": "AGPL-3.0-only",
+  "license": "BUSL-1.1",
   "author": "KvirnUI <magnus@vike.se> (https://ui.kvirn.com)",
   "files": [
     "dist",

@@ -131,7 +131,7 @@ export const homeMessages = {
     },
     licence: {
       heading: 'The licence in plain words',
-      body: 'Free for personal use. Any other use needs a commercial licence, which also covers support. The code is published under the AGPL-3.0, so it stays readable by any auditor and available whatever happens to us.',
+      body: 'Free for personal use. Any other production use needs a commercial licence, which also covers support. The source is open to read, test and try. It is published under the Business Source License, and each version becomes AGPL-3.0 four years after release, so an auditor can always read it and it stays available whatever happens to us.',
       link: 'Ask about the licence',
       subject: 'KvirnUI licence',
     },

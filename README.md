@@ -29,7 +29,6 @@ Version 0.0.0, pre-alpha. True today: more than 70 components, five locales, lig
 | `@kvirn-ui/rich-text` | Rich text editor on Tiptap (peer dependencies)                                |
 | `@kvirn-ui/i18n`      | Locale strings for sv, fi, nb, nn and en                                      |
 | `@kvirn-ui/theme`     | Optional default theme: one readable `theme.css` you import, override or copy |
-| `@kvirn-ui/testing`   | a11y test helpers for Vitest                                                  |
 | `@kvirn-ui/blocks`    | Planned: copy-in styled patterns for public-sector UIs                        |
 
 ## Quick look
@@ -71,4 +70,4 @@ Project docs: [docs/](docs/README.md). Rules for humans and agents: [AGENTS.md](
 
 ## License
 
-Free for personal use. Any other use needs a commercial licence. The code is published under the [AGPL-3.0](LICENSE) © KvirnUI. Read [LICENSING.md](LICENSING.md). The icon package `@kvirn-ui/icons` is the exception: it is [MIT](packages/icons/LICENSE) and free for any use. Contact: magnus@vike.se.
+Free for personal use. Any other production use needs a commercial licence. The source is open to read, test and try, under the [Business Source License 1.1](LICENSE) © Kvirn UI (source-available, not open source); each version becomes AGPL-3.0 four years after release. Read [LICENSING.md](LICENSING.md). The icon package `@kvirn-ui/icons` is the exception: it is [MIT](packages/icons/LICENSE) and free for any use. Contact: magnus@vike.se.

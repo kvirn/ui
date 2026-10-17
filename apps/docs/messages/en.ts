@@ -633,7 +633,8 @@ export const messages = {
       },
     },
     footer: {
-      licence: 'KvirnUI is free for personal use. Any other use needs a commercial licence.',
+      licence:
+        'KvirnUI is free for personal use. Any other production use needs a commercial licence.',
       claim:
         'KvirnUI is designed to meet WCAG 2.2 AA, and tested automatically and by keyboard. Testing with assistive technology is pending.',
       claimLink: 'What this means',
