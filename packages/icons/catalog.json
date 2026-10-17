@@ -682,7 +682,7 @@
       "category": "text-editing",
       "aliases": ["strong"],
       "tags": ["bold", "strong", "heavy", "text style", "formatting"],
-      "meaning": "Make text bold: a heavy bar between two thin text lines.",
+      "meaning": "Make text bold: the letter B.",
       "status": "drawn",
       "mirrorInRtl": false,
       "label": null
@@ -712,7 +712,7 @@
       "category": "text-editing",
       "aliases": ["remove-formatting"],
       "tags": ["clear formatting", "plain text", "remove style", "reset"],
-      "meaning": "Remove all formatting: the heavy bar of bold with a small cross.",
+      "meaning": "Remove all formatting: a heavy bar (a formatted run) with a small cross.",
       "status": "drawn",
       "mirrorInRtl": false,
       "label": null
@@ -762,7 +762,7 @@
       "category": "text-editing",
       "aliases": ["emphasis"],
       "tags": ["italic", "emphasis", "slanted", "text style"],
-      "meaning": "Make text italic: a bar leaning forward between two thin text lines.",
+      "meaning": "Make text italic: the letter I with serifs, leaning forward.",
       "status": "drawn",
       "mirrorInRtl": false,
       "label": null
@@ -832,7 +832,7 @@
       "category": "text-editing",
       "aliases": ["strikethrough"],
       "tags": ["strikethrough", "strike", "cross out", "deleted text"],
-      "meaning": "Strike text through: a word box with a rule through it.",
+      "meaning": "Strike text through: the letter S with a rule through it.",
       "status": "drawn",
       "mirrorInRtl": false,
       "label": null
@@ -852,7 +852,7 @@
       "category": "text-editing",
       "aliases": [],
       "tags": ["underline", "underlined", "text style"],
-      "meaning": "Underline text: a word box with a rule beneath it.",
+      "meaning": "Underline text: the letter U with a rule beneath it.",
       "status": "drawn",
       "mirrorInRtl": false,
       "label": null

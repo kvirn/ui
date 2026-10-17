@@ -3,7 +3,8 @@ import type { IconData } from '../icon-data.ts'
 
 export const strike: IconData = {
   shapes: [
-    ['path', { d: 'M7 8h10a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Z' }],
-    ['path', { d: 'M3 12h18' }],
+    ['path', { d: 'M16 6h-5.75a2.75 2.75 0 0 0 0 5.5' }],
+    ['path', { d: 'M13.25 11.5a3.25 3.25 0 0 1 0 6.5h-5.25' }],
+    ['path', { d: 'M4 11.5h16' }],
   ],
 }

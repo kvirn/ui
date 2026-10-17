@@ -16,7 +16,7 @@ Where facts live: the grid, keylines, gaps, markup rules and the 25 built-ins ar
 2. **Parts before geometry.** Build from the parts kit (container, arm, head, dot, tray, badge cut). A new shape is a proposal to the kit, not a one-off. Two icons that share an idea (every arrow, every document, every person) share the same part, drawn at the same coordinates.
 3. **Equal weight, not equal size.** A circle, a square and a triangle of the same measured size look unequal. Draw to the keylines (circle largest, triangle widest) and prove it by measurement (ink density, below), not by eye.
 4. **Detail is a budget.** At most 4 strokes of content inside a container, and no feature smaller than the gap rule. A detail that fills in at 16px is deleted, not thinned. Fewer parts reads faster.
-5. **Meaning without colour or text.** An icon works in greyscale and in forced colours, holds a single concept, carries no letters or numerals (language-bound, 1.4.5 images of text), and is never the only carrier of information (1.4.1, 1.1.1).
+5. **Meaning without colour or text.** An icon works in greyscale and in forced colours, holds a single concept, carries no letters or numerals (language-bound, 1.4.5 images of text; the one exception is the B/I/U/S letterforms of `bold`, `italic`, `underline` and `strike`, a convention users know from every editor, maintainer 2026-10-17), and is never the only carrier of information (1.4.1, 1.1.1).
 
 ## Process (every icon, every time)
 

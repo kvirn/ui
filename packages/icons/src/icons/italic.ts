@@ -2,9 +2,5 @@
 import type { IconData } from '../icon-data.ts'
 
 export const italic: IconData = {
-  shapes: [
-    ['path', { d: 'M4 5.5h16' }],
-    ['path', { d: 'M8 10h12l-4 4h-12Z' }],
-    ['path', { d: 'M4 18.5h16' }],
-  ],
+  shapes: [['path', { d: 'M12 6h6M15 6l-6 12M6 18h6' }]],
 }

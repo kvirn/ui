@@ -129,24 +129,24 @@ Formatting, lists, alignment, links and code in the rich text editor.
 | `align-center`     | `align-centre`                        | drawn  | –        | no  | none  | Centre the text: four lines, long and short, centred.                                 |
 | `align-end`        | –                                     | drawn  | –        | yes | none  | Align the text to the end: four lines flush to the inline end.                        |
 | `align-start`      | –                                     | drawn  | –        | yes | none  | Align the text to the start: four lines flush to the inline start.                    |
-| `bold`             | `strong`                              | drawn  | –        | no  | none  | Make text bold: a heavy bar between two thin text lines.                              |
+| `bold`             | `strong`                              | drawn  | –        | no  | none  | Make text bold: the letter B.                                                         |
 | `bullet-list`      | `unordered-list`, `list-view`, `list` | drawn  | –        | yes | none  | A bulleted list: three large dots at the inline start, each with a text line.         |
 | `checklist`        | `task-list`                           | drawn  | –        | no  | none  | A list of tasks to tick: two rows, each a small check and a text line.                |
-| `clear-formatting` | `remove-formatting`                   | drawn  | –        | no  | none  | Remove all formatting: the heavy bar of bold with a small cross.                      |
+| `clear-formatting` | `remove-formatting`                   | drawn  | –        | no  | none  | Remove all formatting: a heavy bar (a formatted run) with a small cross.              |
 | `code`             | `inline-code`                         | drawn  | –        | no  | none  | Inline code: a pair of angle brackets.                                                |
 | `code-block`       | –                                     | drawn  | –        | no  | none  | A block of code: small angle brackets inside a landscape frame.                       |
 | `highlight`        | `highlighter`                         | drawn  | –        | no  | none  | Highlight text: a highlighter pen at 45 degrees over a baseline.                      |
 | `indent`           | `indent-increase`                     | drawn  | –        | yes | none  | Increase the indent: four lines, the middle two moved in, a small chevron to the end. |
-| `italic`           | `emphasis`                            | drawn  | –        | no  | none  | Make text italic: a bar leaning forward between two thin text lines.                  |
+| `italic`           | `emphasis`                            | drawn  | –        | no  | none  | Make text italic: the letter I with serifs, leaning forward.                          |
 | `justify`          | `align-justify`                       | drawn  | –        | no  | none  | Justify the text: four equal full-width lines.                                        |
 | `link`             | `hyperlink`                           | drawn  | –        | no  | none  | A link: two chain links on the 45 degree axis.                                        |
 | `link-off`         | `unlink`                              | drawn  | –        | no  | none  | Remove a link: the outer halves of two chain links, parted by a slash.                |
 | `numbered-list`    | `ordered-list`                        | drawn  | –        | yes | none  | A numbered list: rows marked with one, two and three tally ticks.                     |
 | `outdent`          | `indent-decrease`                     | drawn  | –        | yes | none  | Decrease the indent: as indent, the chevron pointing to the inline start.             |
 | `quote`            | `blockquote`                          | drawn  | –        | yes | none  | A quotation block: a bar at the inline start beside three text lines.                 |
-| `strike`           | `strikethrough`                       | drawn  | –        | no  | none  | Strike text through: a word box with a rule through it.                               |
+| `strike`           | `strikethrough`                       | drawn  | –        | no  | none  | Strike text through: the letter S with a rule through it.                             |
 | `text-color`       | `font-color`                          | drawn  | –        | no  | none  | Change the colour of text: an ink drop over a baseline.                               |
-| `underline`        | –                                     | drawn  | –        | no  | none  | Underline text: a word box with a rule beneath it.                                    |
+| `underline`        | –                                     | drawn  | –        | no  | none  | Underline text: the letter U with a rule beneath it.                                  |
 
 ## Tables and data
 

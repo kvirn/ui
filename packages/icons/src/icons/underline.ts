@@ -3,7 +3,7 @@ import type { IconData } from '../icon-data.ts'
 
 export const underline: IconData = {
   shapes: [
-    ['path', { d: 'M7 5h10a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2Z' }],
-    ['path', { d: 'M5 18.5h14' }],
+    ['path', { d: 'M7.5 4.5v7.5a4.5 4.5 0 0 0 9 0v-7.5' }],
+    ['path', { d: 'M6 20h12' }],
   ],
 }

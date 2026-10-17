@@ -3,8 +3,6 @@ import type { IconData } from '../icon-data.ts'
 
 export const bold: IconData = {
   shapes: [
-    ['path', { d: 'M4 5.5h16' }],
-    ['path', { d: 'M6 10h12a2 2 0 0 1 0 4h-12a2 2 0 0 1 0-4Z' }],
-    ['path', { d: 'M4 18.5h16' }],
+    ['path', { d: 'M7.5 11.5h5a2.75 2.75 0 0 0 0-5.5h-5v12h5.75a3.25 3.25 0 0 0 0-6.5h-.75' }],
   ],
 }
