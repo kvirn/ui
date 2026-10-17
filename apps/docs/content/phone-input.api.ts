@@ -17,7 +17,7 @@ export const phoneInputRootRows = propRows<
     type: 'string',
     default: '–',
     description:
-      'Controlled: the country as an ISO 3166-1 alpha-2 code, such as SE. Pair it with onCountryChange, or the select can’t be changed. Without it: defaultCountry and the user’s choice, then the provider’s country, then the country the page’s language implies (Swedish SE, Finnish FI, Norwegian NO).',
+      'Controlled: the country as an ISO 3166-1 alpha-2 code (plus XK for Kosovo), such as SE. Pair it with onCountryChange, or the select can’t be changed. Without it: defaultCountry and the user’s choice, then the provider’s country, then the country the page’s language implies (Swedish SE, Finnish FI, Norwegian NO).',
   },
   defaultCountry: {
     type: 'string',

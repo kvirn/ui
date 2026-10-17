@@ -1,4 +1,4 @@
-// The country calling codes (ITU-T E.164) by ISO 3166-1 alpha-2 code. Pure data: no Intl, no DOM.
+// The country calling codes (ITU-T E.164) by ISO 3166-1 alpha-2 code, plus XK (Kosovo), which ISO has not assigned. VA (Vatican City) is 39: its numbers are dialled as +39 06, not +379. Pure data: no Intl, no DOM.
 
 const callingCodes: Readonly<Record<string, string>> = Object.freeze({
   AD: '376',
