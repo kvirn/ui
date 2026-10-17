@@ -107,6 +107,12 @@ import { genderNonBinary } from './icons/gender-non-binary.ts'
 import { government } from './icons/government.ts'
 import { harbour } from './icons/harbour.ts'
 import { hashtag } from './icons/hashtag.ts'
+import { heading1 } from './icons/heading-1.ts'
+import { heading2 } from './icons/heading-2.ts'
+import { heading3 } from './icons/heading-3.ts'
+import { heading4 } from './icons/heading-4.ts'
+import { heading5 } from './icons/heading-5.ts'
+import { heading6 } from './icons/heading-6.ts'
 import { health } from './icons/health.ts'
 import { healthRecord } from './icons/health-record.ts'
 import { help } from './icons/help.ts'
@@ -367,6 +373,12 @@ export const allIcons = {
   government: government,
   harbour: harbour,
   hashtag: hashtag,
+  'heading-1': heading1,
+  'heading-2': heading2,
+  'heading-3': heading3,
+  'heading-4': heading4,
+  'heading-5': heading5,
+  'heading-6': heading6,
   health: health,
   'health-record': healthRecord,
   help: help,
@@ -627,6 +639,12 @@ export const iconNames = [
   'government',
   'harbour',
   'hashtag',
+  'heading-1',
+  'heading-2',
+  'heading-3',
+  'heading-4',
+  'heading-5',
+  'heading-6',
   'health',
   'health-record',
   'help',

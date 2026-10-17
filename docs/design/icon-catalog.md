@@ -1,6 +1,6 @@
 # Icon catalogue
 
-Every icon of `@kvirn-ui/icons`: **257 icons, all drawn, none planned**. Priority (1 to 3) ordered the drawing until an icon was drawn, and is removed from a drawn icon, so the Priority column is `–` throughout.
+Every icon of `@kvirn-ui/icons`: **263 icons, all drawn, none planned**. Priority (1 to 3) ordered the drawing until an icon was drawn, and is removed from a drawn icon, so the Priority column is `–` throughout.
 
 ## How the catalogue is used
 
@@ -18,7 +18,7 @@ Every icon of `@kvirn-ui/icons`: **257 icons, all drawn, none planned**. Priorit
 | 2   | Actions                        | `actions`              | 16      | 0       | 16      |
 | 3   | Status and feedback            | `status`               | 11      | 0       | 11      |
 | 4   | Interface controls             | `interface`            | 20      | 0       | 20      |
-| 5   | Text editing                   | `text-editing`         | 21      | 0       | 21      |
+| 5   | Text editing                   | `text-editing`         | 27      | 0       | 27      |
 | 6   | Tables and data                | `tables-data`          | 11      | 0       | 11      |
 | 7   | Documents and files            | `documents`            | 16      | 0       | 16      |
 | 8   | Communication                  | `communication`        | 17      | 0       | 17      |
@@ -31,7 +31,7 @@ Every icon of `@kvirn-ui/icons`: **257 icons, all drawn, none planned**. Priorit
 | 15  | Safety, law and civic life     | `safety-civic`         | 10      | 0       | 10      |
 | 16  | Leisure, culture and community | `leisure-culture`      | 10      | 0       | 10      |
 | 17  | Language and access            | `access-language`      | 12      | 0       | 12      |
-|     | **All**                        |                        | **257** | **0**   | **257** |
+|     | **All**                        |                        | **263** | **0**   | **263** |
 
 ## Direction and movement
 
@@ -135,6 +135,12 @@ Formatting, lists, alignment, links and code in the rich text editor.
 | `clear-formatting` | `remove-formatting`                   | drawn  | –        | no  | none  | Remove all formatting: a heavy bar (a formatted run) with a small cross.              |
 | `code`             | `inline-code`                         | drawn  | –        | no  | none  | Inline code: a pair of angle brackets.                                                |
 | `code-block`       | –                                     | drawn  | –        | no  | none  | A block of code: small angle brackets inside a landscape frame.                       |
+| `heading-1`        | `h1`                                  | drawn  | –        | no  | none  | A level 1 heading: the letter H followed by the numeral 1.                            |
+| `heading-2`        | `h2`                                  | drawn  | –        | no  | none  | A level 2 heading: the letter H followed by the numeral 2.                            |
+| `heading-3`        | `h3`                                  | drawn  | –        | no  | none  | A level 3 heading: the letter H followed by the numeral 3.                            |
+| `heading-4`        | `h4`                                  | drawn  | –        | no  | none  | A level 4 heading: the letter H followed by the numeral 4.                            |
+| `heading-5`        | `h5`                                  | drawn  | –        | no  | none  | A level 5 heading: the letter H followed by the numeral 5.                            |
+| `heading-6`        | `h6`                                  | drawn  | –        | no  | none  | A level 6 heading: the letter H followed by the numeral 6.                            |
 | `highlight`        | `highlighter`                         | drawn  | –        | no  | none  | Highlight text: a highlighter pen at 45 degrees over a baseline.                      |
 | `indent`           | `indent-increase`                     | drawn  | –        | yes | none  | Increase the indent: four lines, the middle two moved in, a small chevron to the end. |
 | `italic`           | `emphasis`                            | drawn  | –        | no  | none  | Make text italic: the letter I with serifs, leaning forward.                          |

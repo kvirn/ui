@@ -3,6 +3,11 @@ import {
   bulletList,
   clearFormatting,
   code,
+  heading2,
+  heading3,
+  heading4,
+  heading5,
+  heading6,
   image,
   indent,
   italic,
@@ -35,6 +40,11 @@ const icons = {
   image,
   table,
   'clear-formatting': clearFormatting,
+  'heading-2': heading2,
+  'heading-3': heading3,
+  'heading-4': heading4,
+  'heading-5': heading5,
+  'heading-6': heading6,
 } satisfies Record<string, IconData>
 
 /** The built-in editor icons by name. */

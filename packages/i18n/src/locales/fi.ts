@@ -208,6 +208,8 @@ export const fi = {
     blockHeading2: 'Otsikko 2',
     blockHeading3: 'Otsikko 3',
     blockHeading4: 'Otsikko 4',
+    blockHeading5: 'Otsikko 5',
+    blockHeading6: 'Otsikko 6',
     blockQuote: 'Lainaus',
     blockCode: 'Koodilohko',
     blockMixed: 'Useita tyyppejä',

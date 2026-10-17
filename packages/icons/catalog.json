@@ -738,6 +738,66 @@
       "label": null
     },
     {
+      "name": "heading-1",
+      "category": "text-editing",
+      "aliases": ["h1"],
+      "tags": ["heading 1", "heading level 1", "h1", "title", "block type"],
+      "meaning": "A level 1 heading: the letter H followed by the numeral 1.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "heading-2",
+      "category": "text-editing",
+      "aliases": ["h2"],
+      "tags": ["heading 2", "heading level 2", "h2", "title", "block type"],
+      "meaning": "A level 2 heading: the letter H followed by the numeral 2.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "heading-3",
+      "category": "text-editing",
+      "aliases": ["h3"],
+      "tags": ["heading 3", "heading level 3", "h3", "title", "block type"],
+      "meaning": "A level 3 heading: the letter H followed by the numeral 3.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "heading-4",
+      "category": "text-editing",
+      "aliases": ["h4"],
+      "tags": ["heading 4", "heading level 4", "h4", "title", "block type"],
+      "meaning": "A level 4 heading: the letter H followed by the numeral 4.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "heading-5",
+      "category": "text-editing",
+      "aliases": ["h5"],
+      "tags": ["heading 5", "heading level 5", "h5", "title", "block type"],
+      "meaning": "A level 5 heading: the letter H followed by the numeral 5.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "heading-6",
+      "category": "text-editing",
+      "aliases": ["h6"],
+      "tags": ["heading 6", "heading level 6", "h6", "title", "block type"],
+      "meaning": "A level 6 heading: the letter H followed by the numeral 6.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
       "name": "highlight",
       "category": "text-editing",
       "aliases": ["highlighter"],

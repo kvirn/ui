@@ -200,6 +200,8 @@ export const sv = {
     blockHeading2: 'Rubrik 2',
     blockHeading3: 'Rubrik 3',
     blockHeading4: 'Rubrik 4',
+    blockHeading5: 'Rubrik 5',
+    blockHeading6: 'Rubrik 6',
     blockQuote: 'Citat',
     blockCode: 'Kodblock',
     blockMixed: 'Flera typer',

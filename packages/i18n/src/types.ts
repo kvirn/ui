@@ -340,6 +340,10 @@ export interface KvirnMessages {
     blockHeading3: TextMessage
     /** Only when the configured heading levels include 4. */
     blockHeading4: TextMessage
+    /** Only when the configured heading levels include 5. */
+    blockHeading5: TextMessage
+    /** Only when the configured heading levels include 6. */
+    blockHeading6: TextMessage
     blockQuote: TextMessage
     blockCode: TextMessage
     /** The picker's value when the selection spans different block types. */

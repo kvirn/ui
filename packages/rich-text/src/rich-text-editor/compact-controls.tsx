@@ -11,11 +11,12 @@ import {
   indentListItem,
   outdentListItem,
 } from '../extensions/kvirn-keymap.ts'
-import { applyBlockKey, getBlockKey, useBlockOptions } from './block-format.tsx'
+import { applyBlockKey, blockIconName, getBlockKey, useBlockOptions } from './block-format.tsx'
 import type { BlockKey } from './block-format.tsx'
 import { useToolbarSettings } from './command-controls.tsx'
 import { DefaultControls, hasFormatting, isProvided } from './default-controls.tsx'
 import type { DefaultControlName, DefaultControlsProps } from './default-controls.tsx'
+import { ToolbarIcon } from './icons.tsx'
 import { ImageForm } from './image-control.tsx'
 import { LinkForm } from './link-control.tsx'
 import { useRichTextEditorContext } from './rich-text-editor-context.ts'
@@ -183,11 +184,15 @@ function TextTypeGroup(): ReactElement {
           }
         }}
       >
-        {options.map((option) => (
-          <Menu.RadioItem key={option.key} value={option.key}>
-            {option.label}
-          </Menu.RadioItem>
-        ))}
+        {options.map((option) => {
+          const iconName = blockIconName(option.key)
+          return (
+            <Menu.RadioItem key={option.key} value={option.key}>
+              {iconName === undefined ? null : <ToolbarIcon name={iconName} />}
+              {option.label}
+            </Menu.RadioItem>
+          )
+        })}
       </Menu.RadioGroup>
     </>
   )

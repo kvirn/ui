@@ -191,6 +191,8 @@ export const en = {
     blockHeading2: 'Heading 2',
     blockHeading3: 'Heading 3',
     blockHeading4: 'Heading 4',
+    blockHeading5: 'Heading 5',
+    blockHeading6: 'Heading 6',
     blockQuote: 'Quote',
     blockCode: 'Code block',
     blockMixed: 'Several types',

@@ -41,7 +41,7 @@ const button = (name: string) => page.getByRole('button', { name, exact: true })
 // Tiptap reads the extensions when it creates the editor: keep them stable.
 const withoutUnderline = defaultExtensions({ starterKit: { underline: false } })
 const withoutTables = defaultExtensions({ table: false, image: false })
-const headings234 = defaultExtensions({ heading: { levels: [2, 3, 4] } })
+const headings23 = defaultExtensions({ heading: { levels: [2, 3] } })
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -469,7 +469,19 @@ describe('the block type picker', () => {
   })
 
   test('offers the configured heading levels, a quote and a code block, and no H1', async () => {
-    await render(<Editor extensions={headings234} />)
+    await render(<Editor extensions={headings23} />)
+    await userEvent.click(page.getByRole('combobox', { name: 'Texttyp' }))
+    await vi.waitFor(() => {
+      const options = page
+        .getByRole('option')
+        .elements()
+        .map((element) => element.textContent)
+      expect(options).toEqual(['Vanlig text', 'Rubrik 2', 'Rubrik 3', 'Citat', 'Kodblock'])
+    })
+  })
+
+  test('offers Heading 2 to 6 by default and no H1', async () => {
+    await render(<Editor />)
     await userEvent.click(page.getByRole('combobox', { name: 'Texttyp' }))
     await vi.waitFor(() => {
       const options = page
@@ -481,10 +493,29 @@ describe('the block type picker', () => {
         'Rubrik 2',
         'Rubrik 3',
         'Rubrik 4',
+        'Rubrik 5',
+        'Rubrik 6',
         'Citat',
         'Kodblock',
       ])
     })
+  })
+
+  test.each([5, 6])('choosing Rubrik %i makes that heading level', async (level) => {
+    await render(<Editor defaultValue="<p>Text</p>" />)
+    await userEvent.click(textbox())
+    await userEvent.click(page.getByRole('combobox', { name: 'Texttyp' }))
+    await userEvent.click(page.getByRole('option', { name: `Rubrik ${level}` }))
+    expect(textbox().element().querySelectorAll(`h${level}`)).toHaveLength(1)
+  })
+
+  test('read aloud: a heading option is named by its label alone, with its position in the list', async () => {
+    const { container } = await render(<Editor />)
+    await userEvent.click(page.getByRole('combobox', { name: 'Texttyp' }))
+    await expect.element(page.getByRole('option', { name: 'Rubrik 5' })).toBeVisible()
+    expect(await readAloud(container)).toContain(
+      'option, Rubrik 5, not selected, position 5, set size 8',
+    )
   })
 
   test('says "Flera typer" when the selection spans different types', async () => {
@@ -720,6 +751,9 @@ describe('the compact toolbar', () => {
       'Vanlig text',
       'Rubrik 2',
       'Rubrik 3',
+      'Rubrik 4',
+      'Rubrik 5',
+      'Rubrik 6',
       'Citat',
       'Kodblock',
       'Understrykning',
@@ -874,6 +908,15 @@ describe('the compact toolbar', () => {
     await userEvent.keyboard('{Enter}')
     expect(textbox().element().querySelectorAll('h2')).toHaveLength(1)
     await vi.waitFor(() => expect(document.activeElement).toBe(textbox().element()))
+  })
+
+  test.each([5, 6])('choosing Rubrik %i in the menu makes that heading level', async (level) => {
+    await render(<Editor toolbar={compactToolbar()} defaultValue="<p>Text</p>" />)
+    await userEvent.click(textbox())
+    await userEvent.keyboard('{Alt>}{F10}{/Alt}{End}{Enter}')
+    radioItem(`Rubrik ${level}`).element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(textbox().element().querySelectorAll(`h${level}`)).toHaveLength(1)
   })
 
   test('an unavailable item is focusable, read as unavailable, and Enter does nothing', async () => {
@@ -1074,8 +1117,9 @@ describe('the compact toolbar', () => {
     expect(expanded).toContain('menu, Mer, orientated vertically')
     expect(expanded).toContain('group, Texttyp')
     expect(expanded).toContain('group, Textstil')
-    expect(expanded).toContain('menuitemradio, Vanlig text, checked, position 1, set size 5')
-    expect(expanded).toContain('menuitemradio, Rubrik 2, not checked, position 2, set size 5')
+    expect(expanded).toContain('menuitemradio, Vanlig text, checked, position 1, set size 8')
+    expect(expanded).toContain('menuitemradio, Rubrik 2, not checked, position 2, set size 8')
+    expect(expanded).toContain('menuitemradio, Rubrik 5, not checked, position 5, set size 8')
     expect(expanded).toContain(
       'menuitemcheckbox, Understrykning, checked, key shortcuts Control+U, position 1, set size 3',
     )
@@ -1105,6 +1149,7 @@ describe('richTextIconNames', () => {
   test('lists exactly the icons ToolbarIcon draws, frozen', async () => {
     expect(Object.isFrozen(richTextIconNames)).toBe(true)
     expect(richTextIconNames).toContain('bold')
+    expect(richTextIconNames).toContain('heading-6')
     for (const name of richTextIconNames) {
       const { container } = await render(<ToolbarIcon name={name} />)
       expect(container.querySelectorAll('svg path').length).toBeGreaterThan(0)

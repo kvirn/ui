@@ -12,8 +12,8 @@ import { KvirnKeymap } from './kvirn-keymap.ts'
 
 export interface DefaultExtensionsOptions {
   /**
-   * Heading options, or `false` for no headings. Default: levels 2 and 3. There is no H1: the
-   * page owns it. `{ levels: [2, 3, 4] }` adds a level, and the block picker follows.
+   * Heading options, or `false` for no headings. Default: levels 2 to 6. There is no H1: the
+   * page owns it. `{ levels: [2, 3] }` offers fewer, and the block picker follows.
    */
   heading?: StarterKitOptions['heading'] | undefined
   /**
@@ -98,13 +98,13 @@ function shouldAutoLink(address: string, protocols: ReadonlyArray<string | { sch
 
 /**
  * The extensions a Kvirn editor starts with (design spec §6.6, Plan 0036): StarterKit with
- * headings 2 and 3 and typing rules off, safe links, tables without column dragging, images from
+ * headings 2 to 6 and typing rules off, safe links, tables without column dragging, images from
  * your own origin, and the Kvirn keymap. Every part is configurable or `false`, and you add your
  * own with the ordinary Tiptap API:
  *
  * @example
  * <RichTextEditor.Root
- *   extensions={[...defaultExtensions({ table: false, heading: { levels: [2, 3, 4] } }), Highlight]}
+ *   extensions={[...defaultExtensions({ table: false, heading: { levels: [2, 3] } }), Highlight]}
  * >
  */
 export function defaultExtensions({
@@ -119,7 +119,7 @@ export function defaultExtensions({
 }: DefaultExtensionsOptions = {}): Extensions {
   const extensions: Extensions = [
     StarterKit.configure({
-      heading: heading ?? { levels: [2, 3] },
+      heading: heading ?? { levels: [2, 3, 4, 5, 6] },
       link:
         link === false
           ? false

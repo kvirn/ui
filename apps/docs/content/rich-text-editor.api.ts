@@ -435,9 +435,9 @@ export const contentAttributes: readonly AttributeRow[] = [
 export const defaultExtensionsRows = propRows<DefaultExtensionsOptions>({
   heading: {
     type: 'StarterKitOptions["heading"]',
-    default: '{ levels: [2, 3] }',
+    default: '{ levels: [2, 3, 4, 5, 6] }',
     description:
-      'Heading options, or false for no headings. There is no level 1: the page owns it. { levels: [2, 3, 4] } adds a level and the block picker follows.',
+      'Heading options, or false for no headings. There is no level 1: the page owns it. { levels: [2, 3] } offers fewer levels and the block picker follows.',
   },
   link: {
     type: 'StarterKitOptions["link"]',

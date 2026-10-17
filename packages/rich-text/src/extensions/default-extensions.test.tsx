@@ -37,18 +37,20 @@ function imageAddresses(editor: Editor): string[] {
 const scriptAddress = ['javascript', ':alert(1)'].join('')
 
 describe('headings', () => {
-  test('are levels 2 and 3: the page owns the H1, and H1 and H4 become paragraphs', () => {
-    const editor = create('<h1>One</h1><h2>Two</h2><h3>Three</h3><h4>Four</h4>')
+  test('are levels 2 to 6: the page owns the H1, and H1 becomes a paragraph', () => {
+    const editor = create(
+      '<h1>One</h1><h2>Two</h2><h3>Three</h3><h4>Four</h4><h5>Five</h5><h6>Six</h6>',
+    )
     const html = editor.getHTML()
-    expect(html).toContain('<h2>Two</h2>')
-    expect(html).toContain('<h3>Three</h3>')
+    for (const level of [2, 3, 4, 5, 6]) {
+      expect(html).toContain(`<h${level}>`)
+    }
     expect(html).not.toContain('<h1')
-    expect(html).not.toContain('<h4')
   })
 
   test('the configured levels decide which headings exist', () => {
-    const editor = create('<h4>Four</h4>', { heading: { levels: [2, 3, 4] } })
-    expect(editor.getHTML()).toContain('<h4>Four</h4>')
+    const editor = create('<h4>Four</h4>', { heading: { levels: [2, 3] } })
+    expect(editor.getHTML()).not.toContain('<h4')
   })
 
   test('heading: false leaves headings out', () => {

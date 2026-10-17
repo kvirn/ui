@@ -10,6 +10,8 @@ import {
   ListboxToolbarItem,
   useToolbarSettings,
 } from './command-controls.tsx'
+import { ToolbarIcon } from './icons.tsx'
+import type { RichTextIconName } from './icons.tsx'
 import { useRichTextEditorContext } from './rich-text-editor-context.ts'
 import { useEditorSelector } from './use-editor-selector.ts'
 
@@ -19,6 +21,14 @@ export type BlockKey = 'paragraph' | 'quote' | 'code' | `heading-${number}`
 export interface BlockOption {
   key: BlockKey
   label: string
+}
+
+/** The icon of a heading option; Normal text, Quote and Code block show text only. */
+export function blockIconName(key: BlockKey): RichTextIconName | undefined {
+  const level = Number(key.slice('heading-'.length))
+  return key.startsWith('heading-') && level >= 2 && level <= 6
+    ? (`heading-${level}` as RichTextIconName)
+    : undefined
 }
 
 /** The kind of block a textblock is in, or `undefined` for one the picker doesn't know. */
@@ -96,6 +106,8 @@ export function useBlockOptions(): BlockOption[] {
     2: messages.blockHeading2,
     3: messages.blockHeading3,
     4: messages.blockHeading4,
+    5: messages.blockHeading5,
+    6: messages.blockHeading6,
   }
   const unlabelled = features.headingLevels.filter((level) => headingLabels[level] === undefined)
   const unlabelledLevels = unlabelled.join(', ')
@@ -103,7 +115,7 @@ export function useBlockOptions(): BlockOption[] {
     if (unlabelledLevels !== '') {
       warnOnce(
         'rich-text-editor-heading-level-without-name',
-        `The block picker has no name for heading level ${unlabelledLevels}: it names levels 2 to 4. Use levels 2, 3 and 4 (the page owns the H1, and DESIGN.md stops resident text at h3), or build the picker yourself.`,
+        `The block picker has no name for heading level ${unlabelledLevels}: it names levels 2 to 6. Use levels 2 to 6 (the page owns the H1), or build the picker yourself.`,
       )
     }
   }, [unlabelledLevels])
@@ -191,7 +203,21 @@ export function BlockFormat(): ReactElement {
       >
         {trigger}
         <Listbox.Popup>
-          <Listbox.List>{(option: BlockOption) => <Listbox.Option item={option} />}</Listbox.List>
+          <Listbox.List>
+            {(option: BlockOption) => {
+              const iconName = blockIconName(option.key)
+              return iconName === undefined ? (
+                <Listbox.Option item={option} />
+              ) : (
+                <Listbox.Option item={option}>
+                  <Listbox.OptionIcon>
+                    <ToolbarIcon name={iconName} />
+                  </Listbox.OptionIcon>
+                  <Listbox.OptionText>{option.label}</Listbox.OptionText>
+                </Listbox.Option>
+              )
+            }}
+          </Listbox.List>
         </Listbox.Popup>
       </Listbox.Root>
     </FieldContext>

@@ -202,6 +202,8 @@ export const nb = {
     blockHeading2: 'Overskrift 2',
     blockHeading3: 'Overskrift 3',
     blockHeading4: 'Overskrift 4',
+    blockHeading5: 'Overskrift 5',
+    blockHeading6: 'Overskrift 6',
     blockQuote: 'Sitat',
     blockCode: 'Kodeblokk',
     blockMixed: 'Flere typer',
