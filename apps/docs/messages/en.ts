@@ -463,6 +463,7 @@ export const messages = {
         patterns: 'Patterns',
         contentTypes: 'Content types',
         theming: 'Theming',
+        icons: 'Icons',
       },
       getStarted: 'Get started',
       allComponents: 'All components',
@@ -745,6 +746,50 @@ export const messages = {
     facts: {
       package: 'Package',
       pattern: 'Pattern',
+    },
+    icons: {
+      seeAll: ({ count }: { count: number }) => `See all ${count} icons`,
+      allLead: ({ count }: { count: number }) =>
+        `Search ${count} icons by name or by what they mean, and copy the import line.`,
+      howToUse: 'How to use icons',
+      notDone: 'The icons are not fully reviewed yet.',
+      notDoneLink: 'What is not done yet',
+      searchRegion: 'Icons',
+      searchLabel: 'Search the icons',
+      searchHelp: 'Search by name, other names or meaning, such as “bus”, “payment” or “warning”.',
+      categoryLabel: 'Category',
+      allCategories: 'All categories',
+      submit: 'Show icons',
+      clear: 'Clear the search',
+      count: ({
+        count,
+        query,
+        category,
+      }: {
+        count: number
+        query: string
+        category: string | undefined
+      }) => {
+        const icons = count === 1 ? '1 icon' : `${count} icons`
+        const inCategory = category === undefined ? '' : ` in ${category}`
+        if (query === '') {
+          return `${icons}${inCategory}`
+        }
+        return `${icons}${inCategory} ${count === 1 ? 'matches' : 'match'} “${query}”`
+      },
+      noMatch: ({ query, category }: { query: string; category: string | undefined }) =>
+        category === undefined
+          ? `No icons match “${query}”`
+          : `No icons in ${category} match “${query}”`,
+      noMatchHelp: 'Check the spelling, or try a word for what the icon is for.',
+      allCategoriesLink: 'Search all categories',
+      request: 'Missing an icon? Tell us which one you need.',
+      importLabel: 'Import:',
+      copy: 'Copy',
+      copyHidden: ({ importName }: { importName: string }) => ` import ${importName}`,
+      aliases: ({ list }: { list: string }) => `Also called: ${list}`,
+      flips: 'Flips in right-to-left text.',
+      label: ({ label }: { label: string }) => `Translated label: “${label}”`,
     },
     search: {
       title: 'Search',

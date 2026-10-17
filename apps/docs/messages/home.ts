@@ -110,6 +110,7 @@ export const homeMessages = {
     links: {
       getStarted: 'Get started',
       components: 'Every component',
+      icons: 'Icons',
       theming: 'Theming',
       contact: 'Questions? Talk to us',
     },

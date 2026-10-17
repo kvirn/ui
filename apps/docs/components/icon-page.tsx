@@ -124,7 +124,7 @@ declare module '@kvirn-ui/react' {
             <code>deleteIcon</code> and <code>newIcon</code>, because the plain words are reserved
             in JavaScript. A registered name is the kebab-case word, such as{' '}
             <code>chevron-down</code>. To pick an icon, look through all of them on the{' '}
-            <Link href="/components/icons">Icons page</Link>.
+            <Link href="/icons">Icons page</Link>.
           </p>
           <UseCase
             id="by-name"

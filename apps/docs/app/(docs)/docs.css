@@ -615,13 +615,31 @@ body {
   font-size: var(--kv-font-body-small-size);
 }
 
+/* The gallery spans the article's full width: `.docs-article :is(ul)` would cap it at the prose measure. */
+.docs-article .docs-icon-list {
+  max-inline-size: none;
+}
+
 .docs-icon-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  grid-template-columns: 1fr;
   gap: var(--kv-space-3);
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+/* 1 column to 40rem, 2 to 64rem, 4 from there: the grid's width, not the window's, so it holds at 320px. */
+@container kv-grid (width >= 40rem) {
+  .docs-icon-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container kv-grid (width >= 64rem) {
+  .docs-icon-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .docs-icon-item {

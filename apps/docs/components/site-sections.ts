@@ -150,11 +150,6 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'A heading with its element as a required prop and its look as an optional one.',
       ),
       component('Icon', 'icon', 'A small drawing that supports the text next to it.'),
-      component(
-        'Icons',
-        'icons',
-        'Every icon in the library, with its name, other names and meaning, and a search.',
-      ),
       component('Kbd', 'kbd', 'A key name in running text, drawn as a key.'),
       component(
         'List',
@@ -706,6 +701,8 @@ export const siteSections: readonly SiteSection[] = [
       { href: '/foundation/kvirn-provider', label: text.kvirnProvider },
       { href: '/foundation/locales', label: text.locales },
       { href: '/foundation/rendering', label: text.rendering },
+      { href: '/foundation/theming', label: text.sections.theming },
+      { href: '/foundation/icons', label: text.sections.icons },
     ],
   },
   {
@@ -739,10 +736,10 @@ export const siteSections: readonly SiteSection[] = [
     groups: contentTypeGroups,
   },
   {
-    id: 'theming',
-    label: text.sections.theming,
-    href: '/foundation/theming',
-    pages: [{ href: '/foundation/theming', label: text.sections.theming }],
+    id: 'icons',
+    label: text.sections.icons,
+    href: '/icons',
+    pages: [{ href: '/icons', label: text.sections.icons }],
   },
 ]
 

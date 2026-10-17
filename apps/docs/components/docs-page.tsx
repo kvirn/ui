@@ -43,13 +43,15 @@ const contentsClasses = (hasSidebar: boolean) =>
   ).join(' ')
 
 // The article's column, shared by the pager so it sits under the article, not under a side column.
-const contentColumnClasses = (hasSidebar: boolean) =>
-  hasSidebar
-    ? 'kv-grid-item--md-start-5 kv-grid-item--md-span-8 kv-grid-item--lg-start-4 kv-grid-item--lg-span-7'
-    : 'kv-grid-item--md-span-12 kv-grid-item--lg-span-9'
+const contentColumnClasses = (hasSidebar: boolean, isWide: boolean) =>
+  isWide
+    ? 'kv-grid-item--md-span-12'
+    : hasSidebar
+      ? 'kv-grid-item--md-start-5 kv-grid-item--md-span-8 kv-grid-item--lg-start-4 kv-grid-item--lg-span-7'
+      : 'kv-grid-item--md-span-12 kv-grid-item--lg-span-9'
 
-const articleClasses = (hasSidebar: boolean) =>
-  `docs-article ${contentColumnClasses(hasSidebar)} kv-grid-item--lg-row-start-1`
+const articleClasses = (hasSidebar: boolean, isWide: boolean) =>
+  `docs-article ${contentColumnClasses(hasSidebar, isWide)} kv-grid-item--lg-row-start-1`
 
 /**
  * An article page of the docs: the intro band at the full width of `main` (breadcrumb, `h1`,
@@ -63,6 +65,7 @@ export function DocsPage({
   facts,
   afterFacts,
   contents,
+  wide = false,
   children,
 }: {
   title: string
@@ -70,6 +73,8 @@ export function DocsPage({
   facts?: ReactNode
   afterFacts?: ReactNode
   contents?: ReactNode
+  /** The article spans the whole grid, for a page that is a gallery and has no sidebar or contents. */
+  wide?: boolean
   children?: ReactNode
 }) {
   const { trail, sidebar, pager } = useContext(DocsShellContext)
@@ -106,10 +111,10 @@ export function DocsPage({
           {hasContents ? (
             <GridItem className={contentsClasses(hasSidebar)}>{contents}</GridItem>
           ) : null}
-          <Prose as="article" className={articleClasses(hasSidebar)}>
+          <Prose as="article" className={articleClasses(hasSidebar, wide)}>
             {children}
           </Prose>
-          <GridItem className={contentColumnClasses(hasSidebar)}>{pager}</GridItem>
+          <GridItem className={contentColumnClasses(hasSidebar, wide)}>{pager}</GridItem>
         </GridRoot>
       </Container>
     </>

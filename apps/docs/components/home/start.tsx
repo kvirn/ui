@@ -39,6 +39,7 @@ export function Start() {
           {text.links.getStarted}
         </Link>
         <Link href="/components">{text.links.components}</Link>
+        <Link href="/icons">{text.links.icons}</Link>
         <Link href="/foundation/theming">{text.links.theming}</Link>
         <Link href="#contact">{text.links.contact}</Link>
       </div>
