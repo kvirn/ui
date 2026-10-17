@@ -18,5 +18,5 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0123](0123-english-only-prose.md)      | English-only prose, examples and fixtures              | Done          |
 | [0124](0124-icon-library.md)            | Icon library (`@kvirn-ui/icons`, 257 outline icons)    | Done (agents) |
 | [0125](0125-heading-scale.md)           | Wider heading scale (h1–h6)                            | Done          |
-| [0126](0126-spinner-icon.md)            | The spinner is an icon (`<Icon name="spinner">`)       | In progress   |
+| [0126](0126-spinner-icon.md)            | The spinner is an icon (`<Icon name="spinner">`)       | Done (agents) |
 | [0127](0127-icon-variant-and-stroke.md) | Icon variant, stroke classes, spinner in Icons/Library | Done (agents) |

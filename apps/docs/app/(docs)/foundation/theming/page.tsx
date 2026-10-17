@@ -121,6 +121,11 @@ export default function ThemingPage() {
                 control before the content, keeps the choice itself (a cookie or your user settings)
                 and applies the stop CSS below.
               </p>
+              <p>
+                If your app already uses <code>useTheme().selectMotion(&apos;reduce&apos;)</code>,
+                every indicator stops: it sets <code>data-kv-motion</code> on the page and the
+                library does the rest. The CSS below is for an app that keeps its own control.
+              </p>
               <CodeBlock
                 code={`/* After theme.css. The attribute name is yours: set it on <html> from your control. */
 :root[data-reduce-motion='true'] .kv-spinner,
@@ -128,14 +133,17 @@ export default function ThemingPage() {
 :root[data-reduce-motion='true'] .kv-progress-track,
 :root[data-reduce-motion='true'] .kv-progress-track::before,
 :root[data-reduce-motion='true'] .kv-progress-bar,
+:root[data-reduce-motion='true'] .kv-icon.kv-animate-spinner,
+:root[data-reduce-motion='true'] .kv-icon.kv-animate-spinner > path,
 :root[data-reduce-motion='true'] .kv-table[data-busy] .kv-table-column-header,
 :root[data-reduce-motion='true'] .kv-table[data-busy] .kv-table-head > tr:last-child::after {
   animation: none;
 }`}
               />
               <p>
-                With the animation removed, each indicator shows its rest shape: a three-quarter
-                arc, a hatched track and a plain gradient fill.
+                With the animation removed, each indicator shows its rest shape: a three-quarter arc
+                (the CSS spinner, and the spinner icon with the <code>kv-animate-spinner</code>{' '}
+                class), a hatched track and a plain gradient fill.
               </p>
             </>
           ),

@@ -130,7 +130,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The drawn icon set of @kvirn-ui/icons, registered with `KvirnProvider icons={allIcons}`. Apps that name only the icons they use import them one by one from the package root instead.',
+          'The drawn icon set of @kvirn-ui/icons, registered with `KvirnProvider icons={allIcons}`. Apps that name only the icons they use import them one by one from the package root instead. The 257 icons are drawn and checked by tests and agents. Recognition tests, a native-speaker review of the labels (sv, fi, nb, nn, en), checks with real assistive technology and a sensitivity review are not done yet.',
       },
     },
   },
@@ -387,9 +387,11 @@ export const LoadingSpinner: Story = {
         <section aria-labelledby="spinner-context">
           <h4 id="spinner-context">In context</h4>
           <div className="kv-story-icon-cell">
-            <div className="kv-progress" data-testid="progress-line">
-              <Icon name={spinner} size={size} variant={props.variant} className={animated} />
-              <p className="kv-progress-label">Sending your application</p>
+            <div data-testid="progress-line">
+              <Progress.Root label="Checking your details" delayMilliseconds={0}>
+                <Icon name={spinner} size={size} variant={props.variant} className={animated} />
+                <Progress.Label />
+              </Progress.Root>
             </div>
             <div data-testid="busy-button">
               <Button busy>Send application</Button>
@@ -425,23 +427,31 @@ export const LoadingSpinner: Story = {
       await expect(sizes.getByText(`${size}px`)).toBeVisible()
       await expect(rest.getByText(`${size}px`)).toBeVisible()
     }
-    const animatedSizes = canvas.getByRole('region', { name: 'Sizes' }).querySelectorAll('svg')
-    await expect(animatedSizes).toHaveLength(sizeOptions.length)
-    for (const svg of animatedSizes) {
-      await expect(svg).toHaveClass('kv-animate-spinner')
-    }
-    const stillIcons = canvas.getByRole('region', { name: 'At rest' }).querySelectorAll('svg')
-    await expect(stillIcons).toHaveLength(sizeOptions.length)
-    for (const svg of stillIcons) {
-      await expect(svg).not.toHaveClass('kv-animate-spinner')
+    const spinnerArc = 'path[pathLength="100"][stroke-dasharray="75 25"]'
+    const spinnerIcons = [
+      ...canvas.getByRole('region', { name: 'Sizes' }).querySelectorAll('svg'),
+      ...canvas.getByRole('region', { name: 'At rest' }).querySelectorAll('svg'),
+    ]
+    await expect(spinnerIcons).toHaveLength(sizeOptions.length * 2)
+    for (const svg of spinnerIcons) {
+      await expect(svg).toHaveClass('kv-icon')
+      await expect(svg.querySelector(`:scope > ${spinnerArc}`)).not.toBeNull()
     }
 
-    const line = within(canvas.getByTestId('progress-line'))
-    await expect(line.getByText('Sending your application')).toBeVisible()
-    const lineIcons = canvas.getByTestId('progress-line').querySelectorAll('svg.kv-animate-spinner')
-    await expect(lineIcons).toHaveLength(1)
-    await expect(canvas.getByTestId('progress-line').querySelector('.kv-spinner')).toBeNull()
-    await expectDecorative(canvas, lineIcons)
+    const lineElement = canvas.getByTestId('progress-line')
+    const line = within(lineElement)
+    await expect(line.getByText('Checking your details')).toBeVisible()
+    const progressRoot = lineElement.querySelector('.kv-progress')
+    const lineIcon = lineElement.querySelector('svg.kv-icon')
+    await expect(lineIcon?.parentElement).toBe(progressRoot)
+    await expect(lineIcon?.querySelector(`:scope > ${spinnerArc}`)).not.toBeNull()
+    await expect(
+      lineIcon?.compareDocumentPosition(
+        progressRoot?.querySelector('.kv-progress-label') as Node,
+      ) ?? 0,
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+    await expect(lineElement.querySelector('.kv-spinner')).toBeNull()
+    await expectDecorative(canvas, lineElement.querySelectorAll('svg'))
 
     const busy = canvas.getByTestId('busy-button')
     const button = within(busy).getByRole('button', { name: 'Send application' })

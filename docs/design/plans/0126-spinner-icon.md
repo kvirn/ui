@@ -1,6 +1,6 @@
 # Plan 0126: The spinner is a library icon
 
-- **Status:** In progress (scope narrowed by the maintainer 2026-10-17, see D1)
+- **Status:** Done (agents), 2026-10-17. The four review notes are decided (D5, D7–D9); task 7 done. Open for the maintainer: Firefox/Safari look at the crawl, manual AT
 - **Owner:** lead
 - **Created:** 2026-10-17 · **Target:** alpha
 - **Related:** [loading-indicators.md](../loading-indicators.md) (motion spec, §6 and §8.2), [0124 icon library](0124-icon-library.md), `docs/design/icon.md`, skills `iconography`, `theme-css`
@@ -34,7 +34,7 @@ No focusable part, no keyboard rows. As every Icon: decorative `aria-hidden` wit
 
 ### i18n strings
 
-`icons.spinner` label key in all 5 locales: en "Loading", sv "Laddar", fi "Ladataan", nb "Laster", nn "Lastar".
+`icons.spinner` label key in all 5 locales: en "Loading", sv "Laddar", fi "Ladataan", nb "Laster", nn "Lastar". <!-- kv-lang-ok: the five locale labels are the subject -->
 
 ### Theming surface
 
@@ -47,7 +47,9 @@ Class `kv-animate-spinner` (consumer-added, section 10 of `theme.css`). Reuses `
 - [x] 3 Theme (selector `.kv-icon.kv-animate-spinner > path[pathLength='100']`, direct child, no `<g>`): `.kv-animate-spinner` animation in `theme.css` §10 under `no-preference`, `@property` head/tail for the icon (separate names from the `kv-spinner` ones), `theme:check` green; update the Icon CSS comment. Owner: component-engineer
 - [x] 4 Docs: reconcile `loading-indicators.md` and `icon.md` with D1–D3 (remove data-icon, built-in, migration parts); add the class to `icon.md`/Icon docs page notes. Owner: component-engineer
 - [x] 5 Stories: `Icons/Loading spinner`: Default = `<Icon name="spinner">` with `kv-animate-spinner` and a `size` control with the icon sizes, no wrapper, no words; update the other stories to use the icon where they showed `kv-spinner`, keep the `kv-spinner` comparison. Owner: component-engineer
-- [ ] 6 Gates, accessibility-reviewer, roadmap line. Owner: lead
+- [x] 6 Gates green 2026-10-17; accessibility-reviewer CHANGES REQUIRED on one blocker (docs-site stop CSS lacked `kv-animate-spinner`), fixed the same day; non-blocking notes below. Owner: lead
+
+- [x] 7 Review follow-up (D8, D9, L4): `icons.stories.tsx` `LoadingSpinner` "In context" line → `Progress.Root` with the icon; play per D9; the Theming page "Moving indicators" section names `useTheme().selectMotion('reduce')` before the CSS. No `theme.css` change. Owner: component-engineer
 
 Tasks 2 and 3 are independent files and can run in parallel; 4 and 5 after.
 
@@ -58,13 +60,19 @@ Tasks 2 and 3 are independent files and can run in parallel; 4 and 5 after.
 - D3: the hook is a consumer-added class `kv-animate-spinner` (a choice, so a class, per the maintainer's rule), not `data-icon`. ux-designer's concern that a name-keyed hook would break a replacement icon registered as `spinner` is moot: the consumer adds the class to the icon they mean. Document that it targets the library drawing (`pathLength`, dash).
 - D4: stroke is 1.5 as every icon (ux-designer, thinner than `kv-spinner`'s 2px; `strokeWidth` makes it heavier). Not a token change.
 - D6: `generate.mjs` allows only `d` on `<path>`. Chosen: allow `pathLength` and `stroke-dasharray` there (with a generator test), so the still ¾ arc needs no CSS and the crawl dash works without pixel maths. Rejected: plain SVG + CSS-only dash (full circle without the theme) and the open arc (the dash can't travel round the whole circle). Tooling allowlist, not a gate.
-- D5: the new rule mirrors the `kv-spinner` loops' gate (media query plus `:where(:root:not([data-kv-motion='reduce']))`), so one motion switch stops both. ux-designer's open question 1 (that attribute vs spec L4 "no data-* motion attribute") is outside this plan; noted for the maintainer.
+- D5: the new rule mirrors the `kv-spinner` loops' gate (media query plus `:where(:root:not([data-kv-motion='reduce']))`), so one motion switch stops both. **Kept** (ux-designer, 2026-10-17): `data-kv-motion` is the provider's shipped motion axis (`useTheme().selectMotion`, `kvirn-provider.md` "Theme preference"), documented to stop every animation in the theme, and every loop and transition in `theme.css` uses this gate. Removing it from this rule alone would leave the icon crawling after a user chose less motion. L4's "no `data-*` motion attribute" was the stale text (code is the truth): L4 and "Consumer duty for 2.2.2" now name the provider axis as the first way to stop the loops; the library still ships no control.
 - D6 (maintainer): the generator allows `pathLength` and `stroke-dasharray` (only these) on `<path>`; the module emits `pathLength` and `strokeDasharray`. Root attributes stay locked; a generator test covers allowed and rejected.
+
+- D7 (ux-designer, 2026-10-17): **no `@property` fallback, accepted.** `@property` ships in Chrome 85, Safari 16.4 and Firefox 128. The rule is nested, so engines without nesting drop it and show the still arc; Safari had `@property` (16.4) before nesting (16.5). Only Firefox 117–127 apply the rule without `@property` (a turning full circle), all outside the range in `docs/architecture.md`; Firefox ESR is 115 (no nesting) or 128+. Rejected: `@supports` (`@property` can't be queried in range; `at-rule()` isn't baseline, a proxy feature is guesswork) and keyframing the dash directly (a redesign of the motion for out-of-range engines). `kv-spinner` and the toast timer ring have the same reliance.
+- D8 (ux-designer, 2026-10-17): the story's "In context" wait line is a `Progress.Root` with the icon as a direct child before `Progress.Label`, in place of `Progress.Indicator`, so a copy is announced once and gets the 10 s slow sentence (4.1.3). Not the Announcer directly: Progress already owns a wait's announcement, delay and slow text. Recorded in loading-indicators §5.
+- D9 (ux-designer, 2026-10-17): the play asserts requirements, not the class it passed in. (a) Rest shape and the theme's precondition through the real registry path: each spinner svg has `kv-icon`, and a direct-child `path[pathLength="100"][stroke-dasharray="75 25"]` (never a full circle at rest; D3, D6). (b) In context: the icon is a direct child of the Progress root before the label, and the root has no `.kv-spinner` (one indicator per wait). Attributes and structure only, no computed style or animation (rule 13); the announcement stays proved in `progress.test.tsx`.
 
 ## Risks & open questions
 
 - Two spinners exist until a follow-up plan migrates the components (needs a built-in icon, 25 → 26).
 - Dash animation in the Icon section: confirm `pathLength` on the svg works in Chromium and Firefox in the story.
+- Review 2026-10-17, non-blocking: (1) no `@property` fallback: accepted, D7; (2) the story's status line is not announced: D8, task 7; (3) the play re-reads its own class: D9, task 7; (4) D5 vs L4: D5 kept, L4 corrected.
+- `apps/docs` Theming page "Moving indicators" shows only the own-attribute CSS: task 7 adds the provider way (L4).
 
 ## Testing strategy
 
