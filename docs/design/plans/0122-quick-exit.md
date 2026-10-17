@@ -1,6 +1,6 @@
 # Plan 0122: QuickExit
 
-- **Status:** Built; accessibility-reviewer APPROVE (round 4). Open: docs build (blocked by a Calendar type error), manual AT matrix, usability test of the label, native review of fi/nb/nn
+- **Status:** Built; accessibility-reviewer APPROVE (round 4). Open: manual AT matrix, usability test of the label, native review of fi/nb/nn
 - **Owner:** lead → component-engineer
 - **Created:** 2026-10-15 · **Target:** alpha
 - **Related:** [quick-exit design spec](../quick-exit.md), `docs/design/municipality-reference-site.md:64` ("Exit this page" deferred from v1), GOV.UK "Exit this page"
@@ -102,7 +102,7 @@ fi ("Poistu sivulta"), nb and nn in the same change (`i18n:check`); fi, nb, nn n
 - [x] Browser tests: one named test per contract row, axe in every state (component-engineer)
 - [x] `quick-exit.a11y.md`, `quick-exit.md`, docs page, `keyboard` skill row for Shift ×3 (component-engineer)
 - [x] Gates, then accessibility-reviewer rounds 1–4, APPROVE (lead)
-- [ ] Pending, not agent work: docs build once the Calendar type error is fixed, the manual AT matrix (NVDA/JAWS browse mode, Shift pause, wording), usability test of the label, native review of fi/nb/nn
+- [ ] Pending, not agent work: the manual AT matrix (NVDA/JAWS browse mode, Shift pause, wording), usability test of the label, native review of fi/nb/nn
 - [x] Roadmap line; update the "Out of v1" note in `municipality-reference-site.md` only if the reference site adopts it (lead)
 
 ## Decisions
@@ -133,7 +133,7 @@ fi ("Poistu sivulta"), nb and nn in the same change (`i18n:check`); fi, nb, nn n
 
 - Does `display:none` on `<html>` before navigate suffice for a slow destination? It hides at once and nothing is left to read; not yet seen with a throttled `navigate`.
 - NVDA/JAWS browse mode may pass backwards quick navigation (Shift+H…) as a lone Shift: documented, AT check pending.
-- The docs build is blocked by a pre-existing Calendar type error (`apps/docs/content/calendar.api.ts:93`), so the QuickExit page is not built yet.
+- The Calendar type error (`calendar.api.ts` was missing the `announceChoice` row) is fixed 2026-10-17; the dev-warnings table now has the three `quick-exit-*` rows.
 - Referrer is removed by the anchor policy; the docs say what the consumer still controls (`Referrer-Policy` header).
 - Earlier history entries (the search that led here) remain. The docs say so; they never claim "no trace" (hard rule 8 spirit).
 - Usability testing of the label and the manual AT check are `pending`; agents never claim them.
