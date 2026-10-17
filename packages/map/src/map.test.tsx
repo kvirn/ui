@@ -2,9 +2,9 @@ import { describe, expect, test, vi } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import type { ComponentProps } from 'react'
-import { Icon } from '@kvirn-ui/react'
+import { Icon, KvirnProvider } from '@kvirn-ui/react'
 import { Map } from './map.tsx'
-import { mapIcons } from './map-icons.tsx'
+import { mapIcons } from './map-icons.ts'
 import { createMemoryProvider } from './memory-provider.ts'
 import type { MapPlace } from './index.ts'
 
@@ -494,5 +494,587 @@ describe('Map marker content', () => {
       'arrow-east',
     ])
     expect(Object.isFrozen(mapIcons)).toBe(true)
+  })
+})
+
+const keyboardStyle = `${fixtureStyle}
+  .kv-map-cluster { position: absolute; inset-inline-start: var(--kv-map-x); inset-block-start: var(--kv-map-y); }
+  .kv-map-list-scroll { block-size: 300px; overflow: auto; }
+  .kv-map-cluster-places-scroll { block-size: 224px; overflow: auto; }
+`
+const hotelLayers = [{ id: 'hotels', label: 'Hotell' }]
+
+const placesEast = (count: number, spacing: number, firstOffset = 0, layer?: string) =>
+  Array.from({ length: count }, (_, index): MapPlace => ({
+    id: `place-${index}`,
+    name: `Place ${index}`,
+    position: {
+      ...centre,
+      longitude: centre.longitude + (firstOffset + index * spacing) * degreesPerPixel,
+    },
+    ...(layer ? { layer } : {}),
+  }))
+
+function KeyboardCase({
+  provider = createMemoryProvider(),
+  places = [],
+  layers,
+  clustered = false,
+  markers = false,
+  list = false,
+  controls = false,
+  dir,
+}: {
+  provider?: ReturnType<typeof createMemoryProvider>
+  places?: MapPlace[]
+  layers?: ComponentProps<typeof Map.Root>['layers']
+  clustered?: boolean
+  markers?: boolean
+  list?: boolean
+  controls?: boolean
+  dir?: 'rtl'
+}) {
+  return (
+    <KvirnProvider>
+      <style>{keyboardStyle}</style>
+      <div dir={dir}>
+        <button type="button">Before</button>
+        <Map.Root
+          provider={provider}
+          label="Map"
+          places={places}
+          cluster={clustered}
+          initialView={{ center: centre, zoom }}
+          {...(layers ? { layers } : {})}
+        >
+          <Map.Skip />
+          <Map.Viewport data-testid="viewport" className="fixture-viewport">
+            {markers ? <Map.Markers /> : null}
+            {controls ? <Map.Controls /> : null}
+          </Map.Viewport>
+          {list ? <Map.List /> : null}
+          <Map.Details />
+          <Map.ClusterPopup />
+        </Map.Root>
+        <button type="button">After</button>
+      </div>
+    </KvirnProvider>
+  )
+}
+
+const viewport = () => page.getByTestId('viewport')
+const button = (name: string | RegExp) => page.getByRole('button', { name, exact: true })
+const place = (index: number) => button(`Place ${index}`)
+const settle = () => new Promise((resolve) => setTimeout(resolve, 100))
+
+const currentView = (provider: ReturnType<typeof createMemoryProvider>) => {
+  const view = provider.handle?.getView()
+  if (!view) {
+    throw new Error('The map has not mounted')
+  }
+  return view
+}
+
+async function focusViewport() {
+  await expect.element(viewport()).toHaveAttribute('data-status', 'ready')
+  viewport().element().focus()
+  await expect.element(viewport()).toHaveFocus()
+}
+
+describe('Map keyboard: viewport', () => {
+  test('Tab reaches the skip link and the viewport', async () => {
+    await render(<KeyboardCase places={placesEast(1, 0)} list />)
+    await expect.element(viewport()).toBeVisible()
+    button('Before').element().focus()
+    await userEvent.tab()
+    await expect
+      .element(page.getByRole('link', { name: 'Skip the map, go to the list of places' }))
+      .toHaveFocus()
+    await userEvent.tab()
+    await expect.element(viewport()).toHaveFocus()
+  })
+
+  test('Shift+Tab leaves the viewport backwards', async () => {
+    await render(<KeyboardCase places={placesEast(1, 0)} list />)
+    await focusViewport()
+    await userEvent.tab({ shift: true })
+    await expect
+      .element(page.getByRole('link', { name: 'Skip the map, go to the list of places' }))
+      .toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(button('Before')).toHaveFocus()
+  })
+
+  const panAllWays = async (dir?: 'rtl') => {
+    const provider = createMemoryProvider()
+    await render(<KeyboardCase provider={provider} {...(dir ? { dir } : {})} />)
+    await focusViewport()
+    const start = currentView(provider).center
+    const step = 150 * degreesPerPixel
+    await userEvent.keyboard('{ArrowRight}')
+    await expect
+      .poll(() => currentView(provider).center.longitude)
+      .toBeCloseTo(start.longitude + step, 5)
+    await settle()
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.poll(() => currentView(provider).center.longitude).toBeCloseTo(start.longitude, 5)
+    await settle()
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect
+      .poll(() => currentView(provider).center.longitude)
+      .toBeCloseTo(start.longitude - step, 5)
+    await settle()
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.poll(() => currentView(provider).center.latitude).toBeGreaterThan(start.latitude)
+    await settle()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.poll(() => currentView(provider).center.latitude).toBeCloseTo(start.latitude, 5)
+    await settle()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.poll(() => currentView(provider).center.latitude).toBeLessThan(start.latitude)
+    return { start, end: currentView(provider).center }
+  }
+
+  test('the arrows pan the map', async () => {
+    const { start, end } = await panAllWays()
+    expect(end.longitude).toBeCloseTo(start.longitude - 150 * degreesPerPixel, 5)
+  })
+
+  test('the arrows pan the same way in RTL', async () => {
+    const { start, end } = await panAllWays('rtl')
+    expect(end.longitude).toBeCloseTo(start.longitude - 150 * degreesPerPixel, 5)
+  })
+
+  test('plus zooms in', async () => {
+    const provider = createMemoryProvider()
+    await render(<KeyboardCase provider={provider} />)
+    await focusViewport()
+    await userEvent.keyboard('+')
+    await expect.poll(() => currentView(provider).zoom).toBe(zoom + 1)
+    await settle()
+    await userEvent.keyboard('=')
+    await expect.poll(() => currentView(provider).zoom).toBe(zoom + 2)
+    await settle()
+    await userEvent.keyboard('{Control>}+{/Control}')
+    await settle()
+    expect(currentView(provider).zoom).toBe(zoom + 2)
+  })
+
+  test('minus zooms out', async () => {
+    const provider = createMemoryProvider()
+    await render(<KeyboardCase provider={provider} />)
+    await focusViewport()
+    await userEvent.keyboard('-')
+    await expect.poll(() => currentView(provider).zoom).toBe(zoom - 1)
+    await settle()
+    await userEvent.keyboard('{Control>}-{/Control}')
+    await settle()
+    expect(currentView(provider).zoom).toBe(zoom - 1)
+  })
+
+  test('Escape hides the keyboard hint', async () => {
+    await render(<KeyboardCase />)
+    await focusViewport()
+    const hint = page.getByText('Move the map with the arrow keys. Zoom with + and −.')
+    await expect.element(hint).not.toHaveAttribute('data-dismissed')
+    await userEvent.keyboard('{Escape}')
+    await expect.element(hint).toHaveAttribute('data-dismissed')
+  })
+})
+
+describe('Map keyboard: markers', () => {
+  const threePlaces = placesEast(3, 100)
+
+  test('the markers are one Tab stop', async () => {
+    await render(<KeyboardCase places={threePlaces} markers />)
+    await focusViewport()
+    await expect.element(place(0)).toBeVisible()
+    await userEvent.tab()
+    await expect.element(place(0)).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(button('After')).toHaveFocus()
+  })
+
+  test('the arrows move between the markers', async () => {
+    await render(<KeyboardCase places={threePlaces} markers />)
+    await focusViewport()
+    await userEvent.tab()
+    await expect.element(place(0)).toHaveFocus()
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(place(1)).toHaveFocus()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(place(2)).toHaveFocus()
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(place(0)).toHaveFocus()
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.element(place(2)).toHaveFocus()
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.element(place(1)).toHaveFocus()
+  })
+
+  test('the arrows move between the markers in RTL', async () => {
+    await render(<KeyboardCase places={threePlaces} markers dir="rtl" />)
+    await focusViewport()
+    await userEvent.tab()
+    await expect.element(place(0)).toHaveFocus()
+    await userEvent.keyboard('{ArrowLeft}')
+    await expect.element(place(1)).toHaveFocus()
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(place(0)).toHaveFocus()
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(place(2)).toHaveFocus()
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.element(place(1)).toHaveFocus()
+  })
+
+  test('Home and End move to the first and last marker', async () => {
+    await render(<KeyboardCase places={threePlaces} markers />)
+    await focusViewport()
+    await userEvent.tab()
+    await userEvent.keyboard('{ArrowRight}')
+    await expect.element(place(1)).toHaveFocus()
+    await userEvent.keyboard('{End}')
+    await expect.element(place(2)).toHaveFocus()
+    await userEvent.keyboard('{Home}')
+    await expect.element(place(0)).toHaveFocus()
+  })
+
+  test('Enter and Space open the details', async () => {
+    await render(<KeyboardCase places={threePlaces} markers />)
+    await focusViewport()
+    await userEvent.tab()
+    await expect.element(place(0)).toHaveFocus()
+    for (const key of ['{Enter}', ' ']) {
+      await userEvent.keyboard(key)
+      await expect.element(page.getByRole('dialog')).toBeVisible()
+      await expect.element(page.getByRole('heading', { name: 'Place 0' })).toHaveFocus()
+      await userEvent.keyboard('{Escape}')
+      await expect.element(place(0)).toHaveFocus()
+    }
+  })
+
+  test('clusters and markers share the one Tab stop', async () => {
+    const places = [...placesEast(2, 1, 0, 'hotels'), ...placesEast(1, 0, 300, 'hotels')].map(
+      (entry, index) => ({ ...entry, id: `place-${index}`, name: `Place ${index}` }),
+    )
+    await render(<KeyboardCase places={places} layers={hotelLayers} clustered markers />)
+    await focusViewport()
+    await expect.poll(() => document.querySelectorAll('[data-kv-map-marker]').length).toBe(2)
+    const [first, second] = [...document.querySelectorAll<HTMLElement>('[data-kv-map-marker]')]
+    await userEvent.tab()
+    expect(document.activeElement).toBe(first)
+    await userEvent.keyboard('{ArrowRight}')
+    expect(document.activeElement).toBe(second)
+    await userEvent.keyboard('{ArrowLeft}')
+    await userEvent.tab()
+    await expect.element(button('After')).toHaveFocus()
+  })
+})
+
+describe('Map keyboard: controls', () => {
+  test('the control buttons zoom, pan and reset', async () => {
+    const provider = createMemoryProvider()
+    await render(<KeyboardCase provider={provider} places={placesEast(3, 100)} controls />)
+    await focusViewport()
+    const announced = () =>
+      [...document.querySelectorAll('[aria-live]')].map((element) => element.textContent).join(' ')
+    button('Zoom in').element().focus()
+    await userEvent.keyboard('{Enter}')
+    await expect.poll(() => currentView(provider).zoom).toBe(zoom + 1)
+    await expect.poll(announced, { timeout: 3000 }).toMatch(/\d+ places?( in the map view)?\./)
+    await settle()
+    button('Move the map north').element().focus()
+    await userEvent.keyboard(' ')
+    await expect.poll(() => currentView(provider).center.latitude).toBeGreaterThan(centre.latitude)
+    await settle()
+    button('Whole map').element().focus()
+    await userEvent.keyboard('{Enter}')
+    await expect.poll(() => currentView(provider)).toEqual({ center: centre, zoom })
+  })
+})
+
+describe('Map keyboard: list and details', () => {
+  const onePlace = placesEast(1, 0)
+
+  const openRowFromList = async (key: string) => {
+    await expect.element(place(0)).toBeVisible()
+    place(0).element().focus()
+    await userEvent.keyboard(key)
+  }
+
+  test('a list row opens the details', async () => {
+    await render(<KeyboardCase places={onePlace} list />)
+    for (const key of ['{Enter}', ' ']) {
+      await openRowFromList(key)
+      await expect.element(page.getByRole('dialog')).toBeVisible()
+      await expect.element(page.getByRole('heading', { name: 'Place 0' })).toHaveFocus()
+      await userEvent.keyboard('{Escape}')
+      await expect.element(place(0)).toHaveFocus()
+    }
+  })
+
+  test('Escape closes the details and returns focus', async () => {
+    await render(<KeyboardCase places={onePlace} list />)
+    await openRowFromList('{Enter}')
+    await expect.element(page.getByRole('heading', { name: 'Place 0' })).toHaveFocus()
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(() => page.getByRole('dialog').elements()).toHaveLength(0)
+    await expect.element(place(0)).toHaveFocus()
+  })
+
+  test('Close closes the details and returns focus', async () => {
+    await render(<KeyboardCase places={onePlace} list />)
+    for (const key of ['{Enter}', ' ']) {
+      await openRowFromList('{Enter}')
+      await expect.element(page.getByRole('dialog')).toBeVisible()
+      const close = button(/^Close/)
+      close.element().focus()
+      await userEvent.keyboard(key)
+      await expect.poll(() => page.getByRole('dialog').elements()).toHaveLength(0)
+      await expect.element(place(0)).toHaveFocus()
+    }
+  })
+
+  const openFromMarker = async () => {
+    await render(<KeyboardCase places={onePlace} markers list />)
+    await expect.poll(() => document.querySelectorAll('[data-kv-map-marker]').length).toBe(1)
+    const marker = document.querySelector<HTMLElement>('[data-kv-map-marker]')
+    marker?.focus()
+    await userEvent.keyboard('{Enter}')
+    await expect.element(page.getByRole('heading', { name: 'Place 0' })).toHaveFocus()
+    marker?.removeAttribute('id')
+  }
+
+  test('Escape closes the details and returns focus to the list heading when the opener is gone', async () => {
+    await openFromMarker()
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(() => page.getByRole('dialog').elements()).toHaveLength(0)
+    await expect.element(page.getByRole('heading', { level: 2 })).toHaveFocus()
+  })
+
+  test('Close closes the details and returns focus to the list heading when the opener is gone', async () => {
+    await openFromMarker()
+    button(/^Close/)
+      .element()
+      .focus()
+    await userEvent.keyboard('{Enter}')
+    await expect.poll(() => page.getByRole('dialog').elements()).toHaveLength(0)
+    await expect.element(page.getByRole('heading', { level: 2 })).toHaveFocus()
+  })
+})
+
+describe('Map keyboard: virtualized list', () => {
+  const manyPlaces = placesEast(60, 10, -300)
+  const rowHeight = 72
+
+  async function renderManyAndEnter() {
+    await render(<KeyboardCase places={manyPlaces} list />)
+    await focusViewport()
+    await userEvent.tab()
+    await expect.element(place(0)).toHaveFocus()
+  }
+
+  test('a virtualized list is one Tab stop', async () => {
+    await renderManyAndEnter()
+    await userEvent.tab()
+    await expect.element(button('After')).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(place(0)).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(viewport()).toHaveFocus()
+  })
+
+  test('the arrows move between virtualized rows', async () => {
+    await renderManyAndEnter()
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.element(place(0)).toHaveFocus()
+    for (let index = 1; index <= 25; index += 1) {
+      await userEvent.keyboard('{ArrowDown}')
+      await expect.element(place(index)).toHaveFocus()
+    }
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.element(place(24)).toHaveFocus()
+  })
+
+  test('Home and End move to the first and last virtualized row', async () => {
+    await renderManyAndEnter()
+    await userEvent.keyboard('{End}')
+    await expect.element(place(59)).toHaveFocus()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(place(59)).toHaveFocus()
+    await userEvent.keyboard('{Home}')
+    await expect.element(place(0)).toHaveFocus()
+  })
+
+  test('PageUp and PageDown move by a page of rows', async () => {
+    await renderManyAndEnter()
+    const scroll = document.querySelector('.kv-map-list-scroll') as HTMLElement
+    const pageSize = Math.floor(scroll.clientHeight / rowHeight)
+    expect(pageSize).toBeGreaterThan(1)
+    await userEvent.keyboard('{PageDown}')
+    await expect.element(place(pageSize)).toHaveFocus()
+    await userEvent.keyboard('{PageUp}')
+    await expect.element(place(0)).toHaveFocus()
+  })
+})
+
+describe('Map keyboard: cluster popup', () => {
+  const closePlaces = placesEast(2, 1, 0, 'hotels')
+  const clusterName = 'Hotell: 2 places'
+  const cluster = () => button(clusterName)
+  const popup = () => page.getByRole('dialog', { name: clusterName })
+
+  async function renderCluster() {
+    const screen = await render(
+      <KeyboardCase places={closePlaces} layers={hotelLayers} clustered markers />,
+    )
+    await expect.element(cluster()).toBeVisible()
+    return screen
+  }
+
+  async function openClusterWith(key: string) {
+    cluster().element().focus()
+    await userEvent.keyboard(key)
+    await expect.element(popup()).toBeVisible()
+    await expect.element(page.getByRole('heading', { name: clusterName })).toHaveFocus()
+  }
+
+  test('Enter and Space open the cluster popup', async () => {
+    await renderCluster()
+    for (const key of ['{Enter}', ' ']) {
+      await openClusterWith(key)
+      await expect.element(cluster()).toHaveAttribute('aria-expanded', 'true')
+      await userEvent.keyboard('{Escape}')
+      await expect.element(cluster()).toHaveFocus()
+    }
+  })
+
+  test('Tab moves through the cluster popup', async () => {
+    await renderCluster()
+    await openClusterWith('{Enter}')
+    await userEvent.tab()
+    await expect.element(button(/^Close/)).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(place(0)).toHaveFocus()
+    await userEvent.tab()
+    await expect.element(place(1)).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    await expect.element(place(0)).toHaveFocus()
+    await userEvent.tab()
+    await userEvent.tab()
+    await expect.element(button('After')).toHaveFocus()
+  })
+
+  test('a place in a cluster opens its details', async () => {
+    for (const key of ['{Enter}', ' ']) {
+      const screen = await renderCluster()
+      await openClusterWith('{Enter}')
+      place(0).element().focus()
+      await userEvent.keyboard(key)
+      await expect.poll(() => popup().elements()).toHaveLength(0)
+      await expect.element(page.getByRole('dialog', { name: 'Place 0' })).toBeVisible()
+      await expect.element(page.getByRole('heading', { name: 'Place 0' })).toHaveFocus()
+      await screen.unmount()
+    }
+  })
+
+  test('Escape closes the cluster popup and returns focus', async () => {
+    await renderCluster()
+    await openClusterWith('{Enter}')
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(() => popup().elements()).toHaveLength(0)
+    await expect.element(cluster()).toHaveFocus()
+  })
+
+  test('Close closes the cluster popup and returns focus', async () => {
+    await renderCluster()
+    for (const key of ['{Enter}', ' ']) {
+      await openClusterWith('{Enter}')
+      button(/^Close/)
+        .element()
+        .focus()
+      await userEvent.keyboard(key)
+      await expect.poll(() => popup().elements()).toHaveLength(0)
+      await expect.element(cluster()).toHaveFocus()
+    }
+  })
+
+  test('Escape closes the cluster popup and returns focus to the list heading when the cluster is gone', async () => {
+    await render(<KeyboardCase places={closePlaces} layers={hotelLayers} clustered markers list />)
+    await expect.element(cluster()).toBeVisible()
+    await openClusterWith('{Enter}')
+    cluster().element().removeAttribute('id')
+    await userEvent.keyboard('{Escape}')
+    await expect.poll(() => popup().elements()).toHaveLength(0)
+    await expect.element(page.getByRole('heading', { level: 2 })).toHaveFocus()
+  })
+
+  test('Close closes the cluster popup and returns focus to the list heading when the cluster is gone', async () => {
+    await render(<KeyboardCase places={closePlaces} layers={hotelLayers} clustered markers list />)
+    await expect.element(cluster()).toBeVisible()
+    await openClusterWith('{Enter}')
+    cluster().element().removeAttribute('id')
+    button(/^Close/)
+      .element()
+      .focus()
+    await userEvent.keyboard('{Enter}')
+    await expect.poll(() => popup().elements()).toHaveLength(0)
+    await expect.element(page.getByRole('heading', { level: 2 })).toHaveFocus()
+  })
+})
+
+describe('Map keyboard: virtualized cluster popup', () => {
+  const crowdedPlaces = placesEast(60, 0, 0, 'hotels')
+  const clusterName = 'Hotell: 60 places'
+  const rowHeight = 56
+  const clusterPlace = (index: number) =>
+    page.getByRole('dialog', { name: clusterName }).getByRole('button', {
+      name: `Place ${index}`,
+      exact: true,
+    })
+
+  async function renderCrowdedAndEnterRows() {
+    await render(<KeyboardCase places={crowdedPlaces} layers={hotelLayers} clustered markers />)
+    const cluster = button(clusterName)
+    await expect.element(cluster).toBeVisible()
+    cluster.element().focus()
+    await userEvent.keyboard('{Enter}')
+    await expect.element(page.getByRole('heading', { name: clusterName })).toHaveFocus()
+    await userEvent.tab()
+    await userEvent.tab()
+    await expect.element(clusterPlace(0)).toHaveFocus()
+  }
+
+  test('the arrows move between virtualized rows in the cluster popup', async () => {
+    await renderCrowdedAndEnterRows()
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.element(clusterPlace(0)).toHaveFocus()
+    for (let index = 1; index <= 25; index += 1) {
+      await userEvent.keyboard('{ArrowDown}')
+      await expect.element(clusterPlace(index)).toHaveFocus()
+    }
+    await userEvent.keyboard('{ArrowUp}')
+    await expect.element(clusterPlace(24)).toHaveFocus()
+  })
+
+  test('Home and End move to the first and last virtualized row in the cluster popup', async () => {
+    await renderCrowdedAndEnterRows()
+    await userEvent.keyboard('{End}')
+    await expect.element(clusterPlace(59)).toHaveFocus()
+    await userEvent.keyboard('{ArrowDown}')
+    await expect.element(clusterPlace(59)).toHaveFocus()
+    await userEvent.keyboard('{Home}')
+    await expect.element(clusterPlace(0)).toHaveFocus()
+  })
+
+  test('PageUp and PageDown move by a page of rows in the cluster popup', async () => {
+    await renderCrowdedAndEnterRows()
+    const scroll = document.querySelector('.kv-map-cluster-places-scroll') as HTMLElement
+    const pageSize = Math.floor(scroll.clientHeight / rowHeight)
+    expect(pageSize).toBeGreaterThan(1)
+    await userEvent.keyboard('{PageDown}')
+    await expect.element(clusterPlace(pageSize)).toHaveFocus()
+    await userEvent.keyboard('{PageUp}')
+    await expect.element(clusterPlace(0)).toHaveFocus()
   })
 })
