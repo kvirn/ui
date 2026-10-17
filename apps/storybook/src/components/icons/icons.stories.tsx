@@ -3,9 +3,10 @@ import { Button, Icon, KvirnProvider, Progress } from '@kvirn-ui/react'
 import catalog from '../../../../../packages/icons/catalog.json'
 import mirroredNames from '../../../../../packages/icons/mirror-in-rtl.json'
 import contract from '../../../../../packages/react/src/icon/icon.a11y.md?raw'
-import type { IconName, IconSize, IconVariant } from '@kvirn-ui/react'
+import type { IconSize, IconVariant } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
+import { showSource } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 
 // Components/Content/Icon library: the drawn set in @kvirn-ui/icons, registered through the
@@ -60,6 +61,9 @@ const styleProps = ({ variant, stroke }: Pick<IconLibraryArgs, 'variant' | 'stro
   variant: variant === 'none' ? undefined : variant,
   className: strokeClasses[stroke],
 })
+
+// The galleries show the whole set, not an example, so they have no "Show code".
+const hiddenCatalog = { docs: { canvas: { sourceState: 'none' } } } as const
 
 const groups = catalog.categories.map((category) => ({
   ...category,
@@ -130,7 +134,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The drawn icon set of @kvirn-ui/icons, registered with `KvirnProvider icons={allIcons}`. Apps that name only the icons they use import them one by one from the package root instead. The 257 icons are drawn and checked by tests and agents. Recognition tests, a native-speaker review of the labels (sv, fi, nb, nn, en), checks with real assistive technology and a sensitivity review are not done yet.',
+          'The drawn icon set of @kvirn-ui/icons, registered with `KvirnProvider icons={allIcons}`. Apps that name only the icons they use import them one by one from the package root instead. The 257 icons are drawn and checked by tests and agents. Recognition tests, a native-speaker review of the labels (sv, fi, nb, nn, en), checks with real assistive technology and a sensitivity review are not done yet. Copy a name from the galleries into `<Icon name="…" />`.',
       },
     },
   },
@@ -143,10 +147,11 @@ type Story = StoryObj<IconLibraryArgs>
 export const Default: Story = {
   render: ({ name, size, variant, stroke, label }) => (
     <Icon
-      name={name as IconName}
+      name={name}
       size={size}
       label={label || undefined}
-      {...styleProps({ variant, stroke })}
+      variant={variant === 'none' ? undefined : variant}
+      className={strokeClasses[stroke]}
     />
   ),
   play: async ({ canvasElement, args }) => {
@@ -162,12 +167,13 @@ export const Default: Story = {
 
 /** Every icon in the library, each with its name as text. The drawings are decorative. */
 export const AllIcons: Story = {
+  parameters: hiddenCatalog,
   argTypes: { name: { control: false }, label: { control: false } },
   render: ({ size, variant, stroke }) => (
     <ul role="list" className="kv-story-icon-gallery">
       {iconNames.map((name) => (
         <li key={name} className="kv-story-icon-cell">
-          <Icon name={name as IconName} size={size} {...styleProps({ variant, stroke })} />
+          <Icon name={name} size={size} {...styleProps({ variant, stroke })} />
           <code>{name}</code>
         </li>
       ))}
@@ -192,7 +198,7 @@ export const AllIcons: Story = {
   },
 }
 
-const variantIcons: Partial<Record<(typeof variants)[number], IconName>> = {
+const variantIcons: Partial<Record<(typeof variants)[number], string>> = {
   info: 'info',
   success: 'success',
   warning: 'warning',
@@ -204,6 +210,7 @@ const variantIcons: Partial<Record<(typeof variants)[number], IconName>> = {
  * the default, which follows the text colour. Rows at stroke 1, 1.5 and 2.
  */
 export const Variants: Story = {
+  parameters: hiddenCatalog,
   argTypes: { name: { control: false }, variant: { control: false }, label: { control: false } },
   render: ({ name, size }) => (
     <div>
@@ -214,7 +221,7 @@ export const Variants: Story = {
             {['none', ...variants].map((variant) => (
               <li key={variant} className="kv-story-icon-cell">
                 <Icon
-                  name={(variantIcons[variant as keyof typeof variantIcons] ?? name) as IconName}
+                  name={variantIcons[variant as keyof typeof variantIcons] ?? name}
                   size={size}
                   {...styleProps({ variant: variant as IconLibraryArgs['variant'], stroke })}
                 />
@@ -252,6 +259,7 @@ function categoryStory(categoryId: string): Story {
   const group = groups.find((candidate) => candidate.id === categoryId)!
   return {
     name: group.title,
+    parameters: hiddenCatalog,
     argTypes: { name: { control: false }, label: { control: false } },
     render: ({ size, variant, stroke }) => (
       <section aria-labelledby={`icon-category-${group.id}`}>
@@ -262,7 +270,7 @@ function categoryStory(categoryId: string): Story {
         <ul role="list" className="kv-story-icon-gallery">
           {group.icons.map((icon) => (
             <li key={icon.name} className="kv-story-icon-cell">
-              <Icon name={icon.name as IconName} size={size} {...styleProps({ variant, stroke })} />
+              <Icon name={icon.name} size={size} {...styleProps({ variant, stroke })} />
               <code>{icon.name}</code>
               {icon.mirrorInRtl ? <small>mirrors in RTL</small> : null}
             </li>
@@ -307,13 +315,14 @@ export const LanguageAndAccess: Story = categoryStory('access-language')
 
 /** Right to left: the icons that point along the reading direction flip, the rest keep their drawing. */
 export const Rtl: Story = {
+  parameters: hiddenCatalog,
   globals: { dir: 'rtl', locale: 'en' },
   argTypes: { name: { control: false }, label: { control: false } },
   render: ({ size, variant, stroke }) => (
     <ul role="list" className="kv-story-icon-gallery">
       {mirroredNames.map((name) => (
         <li key={name} className="kv-story-icon-cell">
-          <Icon name={name as IconName} size={size} {...styleProps({ variant, stroke })} />
+          <Icon name={name} size={size} {...styleProps({ variant, stroke })} />
           <code>{name}</code>
           <small>mirrors in RTL</small>
         </li>
@@ -335,7 +344,7 @@ export const Rtl: Story = {
   },
 }
 
-const spinner = 'spinner' as IconName
+const spinner = 'spinner'
 
 const expectDecorative = async (
   canvas: { queryByRole: (role: string) => unknown },
@@ -355,6 +364,7 @@ const expectDecorative = async (
  * toast use the CSS `kv-spinner`, not this icon.
  */
 export const LoadingSpinner: Story = {
+  parameters: hiddenCatalog,
   argTypes: { name: { control: false }, label: { control: false } },
   render: ({ size, variant, stroke }) => {
     const props = styleProps({ variant, stroke })
@@ -472,24 +482,27 @@ export const LoadingSpinner: Story = {
   },
 }
 
+function LoadingSpinnerRtlExample() {
+  return (
+    <div className="kv-progress">
+      <Icon name="spinner" size="20" className="kv-animate-spinner" />
+      <p className="kv-progress-label">Loading</p>
+    </div>
+  )
+}
+
 /** Right to left: the icon stays at the inline start, on the right, and does not mirror. */
 export const LoadingSpinnerRtl: Story = {
   globals: { dir: 'rtl', locale: 'en' },
-  argTypes: { name: { control: false }, label: { control: false } },
-  render: ({ size, variant, stroke }) => {
-    const props = styleProps({ variant, stroke })
-    return (
-      <div className="kv-progress">
-        <Icon
-          name={spinner}
-          size={size}
-          variant={props.variant}
-          className={[props.className, 'kv-animate-spinner'].filter(Boolean).join(' ')}
-        />
-        <p className="kv-progress-label">Loading</p>
-      </div>
-    )
+  argTypes: {
+    name: { control: false },
+    label: { control: false },
+    size: { control: false },
+    variant: { control: false },
+    stroke: { control: false },
   },
+  parameters: showSource('icons/icons.stories.tsx', 'LoadingSpinnerRtlExample'),
+  render: () => <LoadingSpinnerRtlExample />,
   play: async ({ canvas, canvasElement }) => {
     await expect(canvas.getByText('Loading')).toBeVisible()
     await expectDecorative(canvas, canvasElement.querySelectorAll('svg'))

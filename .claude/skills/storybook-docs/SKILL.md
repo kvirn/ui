@@ -62,7 +62,7 @@ The `.md`'s other `##` sections (`## Component`, `## \`render\``, `## Strings`, 
 ### 7. Examples: the source is the usage
 
 - Every story after `Default` shows one thing the others don't (see "Stories fill gaps").
-- **"Show code" must be code an adopter can copy**: the real component and parts, real props, no story-only wrappers, no test plumbing. A story rendered inline (`args`, or JSX in `render`) is shown as written. A story rendered by a fixture uses `showSource` (below).
+- **"Show code" must be code an adopter can copy**: the real component and parts, real props, no story-only wrappers, no test plumbing. A story driven by `args` is shown as rendered JSX. A story with its own `render` (inline JSX or a fixture) uses `showSource` (below), or Storybook prints the story object.
 - Use the component the way the docs recommend: the variant class from the theme, a `Field` around a control, `aria-describedby` for a reason. An example never shows a pattern the Notes advise against, unless it's labelled as the thing to avoid.
 - The one-line JSDoc above each story becomes its description: what it shows and when to use it.
 
@@ -147,7 +147,8 @@ Notes in prose: choices, pitfalls, combinations. Code blocks here are for packag
 
 ## "Show code" shows what an adopter writes
 
-- A story that renders the component inline (`args`, or JSX in `render`) needs nothing: Storybook shows that markup.
+- A story driven by `args` through the meta's `render` needs nothing: Storybook prints the rendered JSX. A story with its own `render` and no args does **not**: Storybook prints the whole story object, `play` included. Give it a fixture function and `showSource`.
+- Never put a global `<style>` in a story: the Docs page renders every story in one document, so it restyles all of them. Scope it to a class on the story's own wrapper.
 - A story whose `render` is a **fixture component** (`<DeadlineAlert locale="sv" />`) would show that wrapper, which says nothing. Give it `parameters: showSource('<name>/<name>.fixture.tsx', 'FunctionName', …)`. It shows the fixture function's own source, read from the file, so it can't drift.
 - **The shown function must contain the compound parts.** `Alert.Info` with its Title and Body, `Fieldset.Root` with `DateInput.Root`, `Field.Root` with `TextInput`: all written in the function, readable on its own. A function that renders another local component which holds the real markup (`<BirthDate />`, `<CasesView />`, `<ResultAlert />`) hides the API, so it fails this rule. Inline the parts, or show the function that has them.
 - **No story-only plumbing in the shown code:**

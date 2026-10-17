@@ -5,9 +5,8 @@ import { nn } from '@kvirn-ui/i18n/nn'
 import { sv } from '@kvirn-ui/i18n/sv'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { allIcons } from '../../icons.tsx'
-import { search } from '@kvirn-ui/icons'
 import { mapIcons } from '@kvirn-ui/map'
-import { Button, ButtonGroup, Icon, KvirnProvider, Link, useFormat } from '@kvirn-ui/react'
+import { Icon, KvirnProvider, useFormat } from '@kvirn-ui/react'
 import { richTextIconNames, ToolbarIcon } from '@kvirn-ui/rich-text'
 import contract from '../../../../../packages/react/src/icon/icon.a11y.md?raw'
 import guide from '../../../../../packages/react/src/icon/icon.md?raw'
@@ -17,26 +16,34 @@ import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { providerLocaleOf } from '../form/form.fixture.tsx'
 import {
-  buttonMatrix,
+  ArrowButtons,
+  ButtonsWithIcons,
   collectionDate,
+  ColorVariants,
+  DecorativeAndMeaningfulIcons,
+  FixedIcons,
   HeroiconsOneOff,
   HeroiconsRegistered,
+  IconFromDrawing,
+  IconsInRunningText,
+  IconsInTextButtonAndLink,
   isIconFixtureLocale,
   LibraryIcons,
+  LongFinnishLabel,
   LucideOneOff,
   LucideRegistered,
-  mirroredIcons,
-  moreButtons,
-  MunicipalityMark,
-  SquareMark,
-  narrowButtons,
+  MirroredIcons,
+  MoreButtons,
+  OwnSvgIcons,
   RegistryEntries,
+  ShadowIsland,
+  SizeScaleIcons,
   StatusAlerts,
-  statusKinds,
   textsFor,
+  UnknownNameIcon,
   UnstyledIcons,
 } from './icon.fixture.tsx'
-import type { IconName, IconProps } from '@kvirn-ui/react'
+import type { IconProps } from '@kvirn-ui/react'
 import type { IconFixtureLocale } from './icon.fixture.tsx'
 
 // Components/Icon: the headless Icon and the registered library icons, styled by @kvirn-ui/theme/theme.css
@@ -67,10 +74,8 @@ const meta = {
   args: { iconName: 'search' },
   render: ({ iconName, ...args }) => <Icon name={iconName} {...args} />,
   argTypes: {
-    name: {
-      control: false,
-      description: 'A registered icon, by name: `name="search"`.',
-    },
+    // The `iconName` control below is shown as `name`: one row, with the picker.
+    name: { control: false, table: { disable: true } },
     iconName: {
       name: 'name',
       control: 'select',
@@ -78,7 +83,12 @@ const meta = {
       description:
         'The name of a registered icon from `@kvirn-ui/icons`. Without a registration, pass the drawing as `icon={search}` instead. Mirrors in RTL when the drawing is directional.',
     },
-    icon: { control: false, table: { disable: true } },
+    icon: {
+      control: false,
+      description:
+        'A drawing from `@kvirn-ui/icons` or a component, with no registration: `icon={search}`. With `name` too, a registered `name` wins and `icon` is the fallback.',
+      table: { type: { summary: 'IconRegistryEntry' } },
+    },
     size: {
       control: 'select',
       options: sizeOptions,
@@ -88,6 +98,28 @@ const meta = {
       control: 'text',
       description:
         'Makes the icon an image with this name. Leave it out when text next to the icon says the same.',
+    },
+    variant: {
+      control: 'select',
+      options: [
+        undefined,
+        'primary',
+        'secondary',
+        'accent',
+        'muted',
+        'info',
+        'success',
+        'warning',
+        'danger',
+      ],
+      description:
+        'The colour, from the theme: adds `kv-icon--<variant>`. Without it the icon follows the text colour. It decorates and never replaces words or changes the name.',
+    },
+    className: {
+      control: 'select',
+      options: [undefined, 'kv-icon--stroke-1', 'kv-icon--stroke-1-5', 'kv-icon--stroke-2'],
+      description:
+        "Joins the component's own classes. The theme styles the stroke classes `kv-icon--stroke-1`, `kv-icon--stroke-1-5` and `kv-icon--stroke-2` (the library draws 1.5).",
     },
     mirrorInRtl: {
       control: 'boolean',
@@ -131,15 +163,22 @@ const meta = {
 export default meta
 type Story = StoryObj<IconArgs>
 
-const iconNamed = (name: string): string => `icon-${name}`
+const hiddenCatalog = { docs: { canvas: { sourceState: 'none' } } } as const
 
 /** The default size is `'20'`, 1.25rem. With no `label`, an icon is decorative: hidden from AT. */
 export const Default: Story = {
   parameters: {
     docs: {
       source: {
-        transform: (_code: string, { args }: { args: Record<string, unknown> }) =>
-          `<Icon name="${String(args['iconName'])}" />`,
+        // The controls drive `iconName`, which isn't an Icon prop: print what an adopter writes.
+        transform: (_code: string, { args }: { args: Record<string, unknown> }) => {
+          const props = Object.entries(args)
+            .filter(([key, value]) => key !== 'iconName' && value !== undefined && value !== '')
+            .map(([key, value]) =>
+              typeof value === 'string' ? ` ${key}="${value}"` : ` ${key}={${String(value)}}`,
+            )
+          return `<Icon name="${String(args['iconName'])}"${props.join('')} />`
+        },
       },
     },
   },
@@ -157,7 +196,8 @@ export const Default: Story = {
  * which is the route for code that renders outside a provider.
  */
 export const WithoutRegistration: Story = {
-  render: () => <Icon icon={search} />,
+  parameters: showSource('icon/icon.fixture.tsx', 'IconFromDrawing'),
+  render: () => <IconFromDrawing />,
   play: async ({ canvasElement }) => {
     const svg = canvasElement.querySelector('svg')
     await expect(svg).toHaveAttribute('aria-hidden', 'true')
@@ -169,10 +209,11 @@ const mapIconNames = Object.keys(mapIcons) as (keyof typeof mapIcons)[]
 
 /** Every icon the Map draws, read from `mapIcons`: the default marker pin and the control arrows. */
 export const MapSet: Story = {
+  parameters: hiddenCatalog,
   render: () => (
     <ul className="kv-story-icon-gallery">
       {mapIconNames.map((name) => (
-        <li key={name} className="kv-story-icon-cell" data-testid={iconNamed(`map-${name}`)}>
+        <li key={name} className="kv-story-icon-cell">
           <span className="kv-story-icon-row">
             <Icon icon={mapIcons[name]} size="16" />
             <Icon icon={mapIcons[name]} size="20" />
@@ -204,10 +245,11 @@ export const MapSet: Story = {
 
 /** Every icon the rich text editor draws, read from `richTextIconNames`, so none is missing. */
 export const RichTextSet: Story = {
+  parameters: hiddenCatalog,
   render: () => (
     <ul className="kv-story-icon-gallery">
       {richTextIconNames.map((name) => (
-        <li key={name} className="kv-story-icon-cell" data-testid={iconNamed(`rich-text-${name}`)}>
+        <li key={name} className="kv-story-icon-cell">
           <span className="kv-story-icon-row">
             <ToolbarIcon name={name} />
           </span>
@@ -244,23 +286,21 @@ function sizesBlock(locale: IconFixtureLocale, testId: string) {
   const { text } = textsFor(locale)
   const format = useFormat()
   return (
-    <>
-      <div className="kv-story-icon-sizes" data-testid={testId}>
-        {textStyles.map((style) => (
-          <section key={style.id} aria-label={style.id}>
-            <p>
-              <code>{style.id}</code>
+    <div className="kv-story-icon-sizes" data-testid={testId}>
+      {textStyles.map((style) => (
+        <section key={style.id} aria-label={style.id}>
+          <p>
+            <code>{style.id}</code>
+          </p>
+          {iconSizes.map((size) => (
+            <p key={size} className={`kv-story-text-guide ${style.className}`}>
+              <code>{size}</code> {text.text.collection(collectionDate(format))}{' '}
+              <Icon name="calendar" size={size} />
             </p>
-            {iconSizes.map((size) => (
-              <p key={size} className={`kv-story-text-guide ${style.className}`}>
-                <code>{size}</code> {text.text.collection(collectionDate(format))}{' '}
-                <Icon name="calendar" size={size} />
-              </p>
-            ))}
-          </section>
-        ))}
-      </div>
-    </>
+          ))}
+        </section>
+      ))}
+    </div>
   )
 }
 
@@ -285,16 +325,15 @@ const sizeScale = [
  * `kv-icon--size-<px>`. Another size is a class you add, never a prop.
  */
 export const SizeScale: Story = {
-  render: () => (
-    <ul className="kv-story-inline-list">
-      {sizeScale.map((size) => (
-        <li key={size} className="kv-story-icon-row">
-          <Icon name="info" size={size} />
-          <code>{`'${size}'`}</code>
-        </li>
-      ))}
-    </ul>
-  ),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-icon-row">
+        <Story />
+      </div>
+    ),
+  ],
+  parameters: showSource('icon/icon.fixture.tsx', 'SizeScaleIcons'),
+  render: () => <SizeScaleIcons />,
   play: async ({ canvasElement }) => {
     for (const size of sizeScale) {
       const icon = canvasElement.querySelector(`svg.kv-icon--size-${size}`)
@@ -308,8 +347,10 @@ export const SizeScale: Story = {
 /**
  * Sizes 16, 20, 24 and 32 inline in three text styles. A size is rem, so it follows the root font
  * size and not the text; the lines mark the baseline and the capital height. Below, the same at 200%.
+ * A review aid for the alignment, so it has no code: the code is `<Icon name="calendar" size="16" />`.
  */
 export const SizesNextToText: Story = {
+  parameters: hiddenCatalog,
   render: (_args, { globals }) => (
     <>
       {sizesBlock(localeOf(globals), 'sizes-body')}
@@ -334,32 +375,34 @@ export const SizesNextToText: Story = {
  * is square. A long Finnish label wraps next to its icon.
  */
 export const InButtons: Story = {
-  render: (_args, { globals }) => {
-    const locale = localeOf(globals)
-    return (
-      <>
-        <section className="kv-story-section" aria-label="kv-button">
-          {buttonMatrix(locale)}
-        </section>
-        <section className="kv-story-section kv-compact" aria-label="kv-compact">
-          {buttonMatrix(locale)}
-        </section>
-        <section className="kv-story-section" aria-label="more">
-          {moreButtons(locale)}
-        </section>
-        <section className="kv-story-section" aria-label="kv-button-group">
-          {narrowButtons()}
-        </section>
-      </>
-    )
-  },
+  parameters: showSource(
+    'icon/icon.fixture.tsx',
+    'ButtonsWithIcons',
+    'MoreButtons',
+    'LongFinnishLabel',
+  ),
+  render: () => (
+    <>
+      <section className="kv-story-section" aria-label="comfortable">
+        <ButtonsWithIcons />
+      </section>
+      <section className="kv-story-section kv-compact" aria-label="compact">
+        <ButtonsWithIcons />
+      </section>
+      <section className="kv-story-section" aria-label="more">
+        <MoreButtons />
+      </section>
+      <section className="kv-story-section" aria-label="narrow">
+        <div className="kv-story-narrow">
+          <LongFinnishLabel />
+        </div>
+      </section>
+    </>
+  ),
   play: async ({ canvas, canvasElement }) => {
-    const { text } = textsFor('en')
-    // Four groups in two densities.
-    const closeButtons = canvas.getAllByRole('button', { name: text.button.close })
-    await expect(closeButtons).toHaveLength(8)
-    await expect(canvas.getAllByRole('button', { name: text.button.search })).toHaveLength(8)
-    await expect(canvas.getAllByRole('button', { name: text.button.copy })).toHaveLength(8)
+    await expect(canvas.getAllByRole('button', { name: 'Close' })).toHaveLength(8)
+    await expect(canvas.getAllByRole('button', { name: 'Search' })).toHaveLength(2)
+    await expect(canvas.getAllByRole('button', { name: 'Copy' })).toHaveLength(2)
     for (const button of canvasElement.querySelectorAll('.kv-button--icon-only')) {
       // The name is the button's, and the icon is its only child, hidden from AT.
       await expect(button.children).toHaveLength(1)
@@ -367,9 +410,9 @@ export const InButtons: Story = {
       await expect(button.querySelector(':scope > svg')).toHaveAttribute('aria-hidden', 'true')
     }
     // DOM order is start and end: the icon comes first in one button, last in the other.
-    const addChild = canvas.getAllByRole('button', { name: text.button.addChild })[0]
+    const addChild = canvas.getAllByRole('button', { name: 'Add another child' })[0]
     await expect(addChild?.firstElementChild).toBe(addChild?.querySelector('svg'))
-    const next = canvas.getAllByRole('button', { name: text.button.continue })[0]
+    const next = canvas.getAllByRole('button', { name: 'Continue' })[0]
     await expect(next?.lastElementChild).toBe(next?.querySelector('svg'))
     await expect(
       // kv-lang-ok: Finnish locale story
@@ -385,61 +428,48 @@ export const InButtons: Story = {
  */
 export const StatusWithText: Story = {
   parameters: showSource('icon/icon.fixture.tsx', 'StatusAlerts'),
-  render: (_args, { globals }) => {
-    const locale = localeOf(globals)
-    return (
-      <div className="kv-story-columns">
-        <StatusAlerts locale={locale} />
-        <div className="kv-story-greyscale" data-testid="greyscale">
-          <StatusAlerts locale={locale} />
+  render: () => (
+    <div className="kv-story-columns">
+      <div className="kv-story-status-lines">
+        <StatusAlerts />
+      </div>
+      <div className="kv-story-greyscale">
+        <div className="kv-story-status-lines">
+          <StatusAlerts />
         </div>
       </div>
-    )
-  },
+    </div>
+  ),
   play: async ({ canvas }) => {
-    const { text } = textsFor('en')
-    for (const status of statusKinds) {
+    for (const word of ['Good to know', 'Done', 'Warning', 'Error']) {
       // Two copies of each alert, and the status word is its title (after the alert's own
       // status prefix in the accessible name).
       await expect(
-        canvas.getAllByRole('heading', {
-          name: (name) => name.endsWith(text.status[status].word),
-        }),
+        canvas.getAllByRole('heading', { name: (name) => name.endsWith(word) }),
       ).toHaveLength(2)
     }
   },
 }
 
-/** Inherited colour, then the text colour of a wrapper set to each token an icon may use (design spec §6.3). */
+/** Inherited colour, then each `variant` an icon may use (design spec §6.3). */
 export const Colors: Story = {
-  render: () => (
-    <ul className="kv-story-inline-list">
-      <li className="kv-story-icon-row">
-        <Icon name="info" size="24" />
-        <code>inherited</code>
-      </li>
-      {(
-        [
-          'text-muted',
-          'danger',
-          'success',
-          'warning',
-          'primary',
-        ] as const satisfies readonly string[]
-      ).map((token) => (
-        <li key={token} className="kv-story-icon-row">
-          <span style={{ color: `var(--kv-color-${token})` }} data-token={token}>
-            <Icon name="info" size="24" />
-          </span>
-          <code>{token}</code>
-        </li>
-      ))}
-    </ul>
-  ),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-icon-row">
+        <Story />
+      </div>
+    ),
+  ],
+  parameters: showSource('icon/icon.fixture.tsx', 'ColorVariants'),
+  render: () => <ColorVariants />,
   play: async ({ canvasElement }) => {
     const icons = canvasElement.querySelectorAll('svg')
     await expect(icons).toHaveLength(6)
     await expect(icons[0]?.hasAttribute('color')).toBe(false)
+    await expect(icons[0]?.getAttribute('class')).not.toMatch(/kv-icon--(muted|danger|primary)/)
+    for (const [index, variant] of ['muted', 'danger', 'success', 'warning', 'primary'].entries()) {
+      await expect(icons[index + 1]).toHaveClass(`kv-icon--${variant}`)
+    }
   },
 }
 
@@ -448,40 +478,21 @@ export const Colors: Story = {
  * `label` is an image with that name, from your own translations.
  */
 export const DecorativeAndMeaningful: Story = {
-  render: (_args, { globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const format = useFormat()
-    return (
-      <>
-        <div className="kv-story-columns">
-          <div className="kv-story-panel">
-            <p>
-              <Icon name="calendar" /> {text.text.collection(collectionDate(format))}
-            </p>
-          </div>
-          <div className="kv-story-panel">
-            <p>
-              <Icon as={MunicipalityMark} size="48" label={text.label.logo} />
-            </p>
-            <p>
-              <output data-testid="accessible-name" />
-            </p>
-          </div>
-        </div>
-      </>
-    )
-  },
+  decorators: [
+    (Story) => (
+      <div className="kv-story-columns">
+        <Story />
+      </div>
+    ),
+  ],
+  parameters: showSource('icon/icon.fixture.tsx', 'DecorativeAndMeaningfulIcons'),
+  render: () => <DecorativeAndMeaningfulIcons />,
   play: async ({ canvas, canvasElement }) => {
-    const { text } = textsFor('en')
-    const logo = canvas.getByRole('img', { name: text.label.logo })
+    const logo = canvas.getByRole('img', { name: 'Exempelby municipality' })
     await expect(logo).not.toHaveAttribute('aria-hidden')
     // Only the logo is in the accessibility tree: the calendar icon is hidden.
     await expect(canvas.getAllByRole('img')).toHaveLength(1)
     await expect(canvasElement.querySelectorAll('svg[aria-hidden="true"]')).toHaveLength(1)
-    // Print the name the tree gives it.
-    const printout = canvas.getByTestId('accessible-name')
-    printout.textContent = logo.getAttribute('aria-label')
-    await expect(printout).toHaveTextContent(text.label.logo)
   },
 }
 
@@ -491,61 +502,33 @@ export const DecorativeAndMeaningful: Story = {
  */
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en' },
-  render: () => {
-    const { text } = textsFor('en')
-    return (
-      <>
-        <div className="kv-story-columns">
-          <ul className="kv-story-icon-strip" data-testid="mirrors">
-            {mirroredIcons.map((name) => (
-              <li key={name} className="kv-story-icon-cell">
-                <Icon name={name} size="24" />
-                <code>{name}</code>
-                <span>{text.gallery.mirrors}</span>
-              </li>
-            ))}
-          </ul>
-          <ul className="kv-story-icon-strip" data-testid="stays">
-            {(['check', 'search', 'chevron-down'] as const).map((name) => (
-              <li key={name} className="kv-story-icon-cell">
-                <Icon name={name} size="24" />
-                <code>{name}</code>
-                <span>{text.gallery.doesNotMirror}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <ButtonGroup className="kv-story-section">
-          <Button className="kv-button--primary">
-            {text.button.continue}
-            <Icon name="arrow-forward" />
-          </Button>
-        </ButtonGroup>
-        <nav className="kv-story-section kv-button-group" aria-label="Pagination">
-          <Button>
-            <Icon name="chevron-back" />
-            {text.pagination.previous}
-          </Button>
-          <Button>
-            {text.pagination.next}
-            <Icon name="chevron-forward" />
-          </Button>
-        </nav>
-      </>
-    )
-  },
+  parameters: showSource('icon/icon.fixture.tsx', 'MirroredIcons', 'FixedIcons', 'ArrowButtons'),
+  render: () => (
+    <>
+      <div className="kv-story-columns">
+        <section className="kv-story-icon-row" aria-label="mirrors">
+          <MirroredIcons />
+        </section>
+        <section className="kv-story-icon-row" aria-label="stays">
+          <FixedIcons />
+        </section>
+      </div>
+      <div className="kv-story-section">
+        <ArrowButtons />
+      </div>
+    </>
+  ),
   play: async ({ canvas }) => {
-    const { text } = textsFor('en')
-    const mirrors = canvas.getByTestId('mirrors').querySelectorAll('svg')
-    await expect(mirrors).toHaveLength(mirroredIcons.length)
+    const mirrors = canvas.getByRole('region', { name: 'mirrors' }).querySelectorAll('svg')
+    await expect(mirrors).toHaveLength(5)
     for (const icon of mirrors) {
       await expect(icon).toHaveAttribute('data-mirror-in-rtl')
     }
-    for (const icon of canvas.getByTestId('stays').querySelectorAll('svg')) {
+    for (const icon of canvas.getByRole('region', { name: 'stays' }).querySelectorAll('svg')) {
       await expect(icon).not.toHaveAttribute('data-mirror-in-rtl')
     }
-    await expect(canvas.getByRole('button', { name: text.button.continue })).toBeVisible()
-    await expect(canvas.getByRole('button', { name: text.pagination.next })).toBeVisible()
+    await expect(canvas.getByRole('button', { name: 'Continue' })).toBeVisible()
+    await expect(canvas.getByRole('button', { name: 'Next' })).toBeVisible()
   },
 }
 
@@ -555,19 +538,28 @@ export const RTL: Story = {
  * and changes only the fields it sets. The row is right to left.
  */
 export const RegistryEntriesAndDefaults: Story = {
+  globals: { dir: 'rtl', locale: 'en' },
   parameters: showSource('icon/icon.fixture.tsx', 'RegistryEntries'),
+  decorators: [
+    (Story) => (
+      <div className="kv-story-icon-row">
+        <Story />
+      </div>
+    ),
+  ],
   render: () => <RegistryEntries />,
-  play: async ({ canvas }) => {
-    const iconIn = (testId: string) => canvas.getByTestId(testId).querySelector('svg')
-    await expect(iconIn('entry-says-no-flip')).not.toHaveAttribute('data-mirror-in-rtl')
-    await expect(iconIn('instance-flips')).toHaveAttribute('data-mirror-in-rtl')
+  play: async ({ canvasElement }) => {
+    const [entryNoFlip, instanceFlips, defaultSize, ownSize, nestedDelete, nestedKeepsParent] =
+      canvasElement.querySelectorAll('svg')
+    await expect(entryNoFlip).not.toHaveAttribute('data-mirror-in-rtl')
+    await expect(instanceFlips).toHaveAttribute('data-mirror-in-rtl')
     // iconDefaults.size is '24' (1.5rem) until an icon sets its own.
-    await expect(iconIn('default-size')).toHaveAttribute('width', '1.5rem')
-    await expect(iconIn('own-size')).toHaveAttribute('width', '1rem')
+    await expect(defaultSize).toHaveAttribute('width', '1.5rem')
+    await expect(ownSize).toHaveAttribute('width', '1rem')
     // The nested provider adds `delete` and its stroke, keeps the parent's size and `search`.
-    await expect(iconIn('nested-delete')).toHaveAttribute('width', '1.5rem')
-    await expect(iconIn('nested-keeps-parent')).toHaveAttribute('width', '1.5rem')
-    await expect(iconIn('nested-keeps-parent')).toHaveClass('lucide-search')
+    await expect(nestedDelete).toHaveAttribute('width', '1.5rem')
+    await expect(nestedKeepsParent).toHaveAttribute('width', '1.5rem')
+    await expect(nestedKeepsParent).toHaveClass('lucide-search')
   },
 }
 
@@ -577,11 +569,8 @@ export const RegistryEntriesAndDefaults: Story = {
  * shows what a typo does (the layout holds, nothing is drawn), not code to copy.
  */
 export const UnknownName: Story = {
-  render: () => (
-    <p>
-      Save <Icon name={'delte' as IconName} size="24" />
-    </p>
-  ),
+  parameters: showSource('icon/icon.fixture.tsx', 'UnknownNameIcon'),
+  render: () => <UnknownNameIcon />,
   play: async ({ canvasElement }) => {
     const icon = canvasElement.querySelector('svg')
     await expect(icon).toHaveAttribute('aria-hidden', 'true')
@@ -591,58 +580,28 @@ export const UnknownName: Story = {
   },
 }
 
-/** Colours that a theme would otherwise leave to the author: hard-coded and from a token. */
-const hardCodedRed = '#c00'
-
 /**
- * Icons in a wrapper whose text colour is a hard-coded red, and in one that uses a token, in
- * text, in a Button and in a Link. In forced colours the system colour wins, so they can't vanish.
+ * Icons in text, in a Button and in a Link, with a hard-coded red colour set on the plain icons, next to one with `variant="danger"`. In forced colours the system colour
+ * wins, so they can't vanish.
  */
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active' },
-  render: (_args, { globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const colors = [
-      ['color', hardCodedRed],
-      ['token', 'var(--kv-color-danger)'],
-    ] as const
-    return (
-      <>
-        <div data-testid="forced">
-          {colors.map(([prop, color]) => (
-            <div
-              key={prop}
-              className="kv-story-section kv-story-icon-row"
-              data-testid={`forced-${prop}`}
-            >
-              <code>{prop}</code>
-              <p>
-                <span style={{ color }}>
-                  <Icon name="warning" />
-                </span>{' '}
-                {text.status.warning.word}
-              </p>
-              <Button>
-                <span style={{ color }}>
-                  <Icon name="add" />
-                </span>
-                {text.button.addChild}
-              </Button>
-              <Link.Root href="#guide">
-                <span style={{ color }}>
-                  <Icon name="external" />
-                </span>{' '}
-                {text.text.guide}
-              </Link.Root>
-            </div>
-          ))}
-        </div>
-      </>
-    )
-  },
-  play: async ({ canvas }) => {
-    await expect(canvas.getAllByRole('button')).toHaveLength(2)
-    await expect(canvas.getAllByRole('link')).toHaveLength(2)
+  decorators: [
+    (Story) => (
+      <div className="kv-story-hard-coded-icons">
+        <style>
+          {'.kv-story-hard-coded-icons .kv-icon:not(.kv-icon--danger) { color: #c00; }'}
+        </style>
+        <Story />
+      </div>
+    ),
+  ],
+  parameters: showSource('icon/icon.fixture.tsx', 'IconsInTextButtonAndLink'),
+  render: () => <IconsInTextButtonAndLink />,
+  play: async ({ canvas, canvasElement }) => {
+    await expect(canvas.getAllByRole('button')).toHaveLength(1)
+    await expect(canvas.getAllByRole('link')).toHaveLength(1)
+    await expect(canvasElement.querySelectorAll('svg.kv-icon--danger')).toHaveLength(3)
   },
 }
 
@@ -651,32 +610,20 @@ export const ForcedColors: Story = {
  * without. An SVGR-style component stands in for an imported `.svg` file.
  */
 export const YourOwnSvg: Story = {
-  render: (_args, { globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    return (
-      <>
-        <ul className="kv-story-inline-list">
-          <li>
-            <Icon viewBox="0 0 24 24" size="24">
-              <path d="M5 12h14M12 5v14" fill="none" stroke="currentColor" strokeWidth={1.5} />
-            </Icon>
-          </li>
-          <li>
-            <Icon as={MunicipalityMark} size="24" label={text.label.logo} />
-          </li>
-          <li>
-            <Icon as={SquareMark} size="24" />
-          </li>
-        </ul>
-      </>
-    )
-  },
+  decorators: [
+    (Story) => (
+      <div className="kv-story-icon-row">
+        <Story />
+      </div>
+    ),
+  ],
+  parameters: showSource('icon/icon.fixture.tsx', 'OwnSvgIcons'),
+  render: () => <OwnSvgIcons />,
   play: async ({ canvas, canvasElement }) => {
-    const { text } = textsFor('en')
     await expect(canvasElement.querySelectorAll('svg')).toHaveLength(3)
     // Only the one with a label is an image.
     await expect(canvas.getAllByRole('img')).toHaveLength(1)
-    await expect(canvas.getByRole('img', { name: text.label.logo })).toBeVisible()
+    await expect(canvas.getByRole('img', { name: 'Exempelby municipality' })).toBeVisible()
   },
 }
 
@@ -690,14 +637,15 @@ export const YourOwnSvg: Story = {
  */
 export const Lucide: Story = {
   parameters: showSource('icon/icon.fixture.tsx', 'LucideOneOff', 'LucideRegistered'),
-  render: (_args, { globals }) => (
+  render: () => (
     <>
-      <LucideOneOff locale={localeOf(globals)} />
-      <LucideRegistered locale={localeOf(globals)} />
+      <div className="kv-story-icon-row">
+        <LucideOneOff />
+      </div>
+      <LucideRegistered />
     </>
   ),
   play: async ({ canvas, canvasElement }) => {
-    const { text } = textsFor('en')
     const icons = canvasElement.querySelectorAll('svg')
     await expect(icons).toHaveLength(5)
     // The one-off icons: Icon's size wins over Lucide's 24, and only the labelled one is an image.
@@ -705,12 +653,12 @@ export const Lucide: Story = {
     await expect(icons[0]).toHaveAttribute('width', '1.25rem')
     await expect(icons[1]).toHaveAttribute('width', '1.5rem')
     await expect(icons[2]).toHaveAttribute('aria-hidden', 'true')
-    await expect(canvas.getByRole('img', { name: text.button.search })).toBeVisible()
+    await expect(canvas.getByRole('img', { name: 'Search' })).toBeVisible()
     // The registry: the same names, Lucide's drawings, decorative next to the button text.
     await expect(icons[3]).toHaveClass('lucide-search')
     await expect(icons[4]).toHaveClass('lucide-arrow-right')
     await expect(icons[4]).toHaveAttribute('data-mirror-in-rtl')
-    await expect(canvas.getByRole('button', { name: text.button.search })).toBeVisible()
+    await expect(canvas.getByRole('button', { name: 'Search' })).toBeVisible()
   },
 }
 
@@ -723,14 +671,15 @@ export const Lucide: Story = {
  */
 export const Heroicons: Story = {
   parameters: showSource('icon/icon.fixture.tsx', 'HeroiconsOneOff', 'HeroiconsRegistered'),
-  render: (_args, { globals }) => (
+  render: () => (
     <>
-      <HeroiconsOneOff locale={localeOf(globals)} />
-      <HeroiconsRegistered locale={localeOf(globals)} />
+      <div className="kv-story-icon-row">
+        <HeroiconsOneOff />
+      </div>
+      <HeroiconsRegistered />
     </>
   ),
   play: async ({ canvas, canvasElement }) => {
-    const { text } = textsFor('en')
     const icons = canvasElement.querySelectorAll('svg')
     await expect(icons).toHaveLength(5)
     await expect(icons[0]).toHaveAttribute('data-slot', 'icon')
@@ -739,10 +688,10 @@ export const Heroicons: Story = {
     await expect(icons[2]).toHaveAttribute('aria-hidden', 'true')
     // Heroicons' own aria-hidden is gone once there is a label.
     await expect(icons[0]).not.toHaveAttribute('aria-hidden')
-    await expect(canvas.getByRole('img', { name: text.button.search })).toBeVisible()
+    await expect(canvas.getByRole('img', { name: 'Search' })).toBeVisible()
     await expect(icons[3]).toHaveAttribute('data-slot', 'icon')
     await expect(icons[4]).toHaveAttribute('data-mirror-in-rtl')
-    await expect(canvas.getByRole('button', { name: text.button.search })).toBeVisible()
+    await expect(canvas.getByRole('button', { name: 'Search' })).toBeVisible()
   },
 }
 
@@ -750,21 +699,37 @@ export const Heroicons: Story = {
  * Registered over the library's icons, another library's drawing replaces the name's icon for every
  * component, with the same `size` and `color`. A plain component carries no direction, so
  * `arrow-forward` is registered as `{ component, mirrorInRtl: true }` to keep flipping (design spec §4.2).
+ * The first row is the library's own drawings, the second the registered ones.
  */
 export const LibraryIconsViaTheRegistry: Story = {
   parameters: showSource('icon/icon.fixture.tsx', 'LibraryIcons'),
-  render: (_args, { globals }) => <LibraryIcons locale={localeOf(globals)} />,
+  render: () => (
+    <>
+      <section className="kv-story-icon-row" aria-label="Library">
+        <Icon name="close" size="24" variant="primary" />
+        <Icon name="delete" size="24" variant="primary" />
+        <Icon name="warning" size="24" variant="primary" />
+        <Icon name="arrow-forward" size="24" variant="primary" />
+      </section>
+      <section className="kv-story-icon-row kv-story-section" aria-label="Registered">
+        <LibraryIcons />
+      </section>
+    </>
+  ),
   play: async ({ canvas }) => {
-    for (const name of ['close', 'delete', 'warning', 'arrow-forward']) {
-      const library = canvas.getByTestId(`library-${name}`).querySelector('svg')
-      const registered = canvas.getByTestId(`registered-${name}`).querySelector('svg')
+    const library = canvas.getByRole('region', { name: 'Library' }).querySelectorAll('svg')
+    const registered = canvas.getByRole('region', { name: 'Registered' }).querySelectorAll('svg')
+    await expect(library).toHaveLength(4)
+    for (const [index, libraryIcon] of library.entries()) {
+      const registeredIcon = registered[index]
       // Same props, another drawing: the other library's shapes replace the library's.
-      await expect(registered?.innerHTML).not.toBe(library?.innerHTML)
+      await expect(registeredIcon?.innerHTML).not.toBe(libraryIcon.innerHTML)
       // The libraries turn `color` into their own stroke or fill, so the size is the check.
-      await expect(registered).toHaveAttribute('width', '1.5rem')
+      await expect(registeredIcon).toHaveAttribute('width', '1.5rem')
     }
-    await expect(canvas.getByRole('img', { name: textsFor('en').text.label.logo })).toBeVisible()
-    await expect(canvas.getByTestId('overridden-arrow')).toHaveAttribute('data-mirror-in-rtl')
+    await expect(canvas.getByRole('img', { name: 'Exempelby municipality' })).toBeVisible()
+    const button = canvas.getByRole('button', { name: 'Continue' })
+    await expect(button.querySelector('svg')).toHaveAttribute('data-mirror-in-rtl')
   },
 }
 
@@ -777,44 +742,33 @@ export const InRunningTextAndLinks: Story = {
       </div>
     ),
   ],
-  render: (_args, { globals }) => {
-    const { text } = textsFor(localeOf(globals))
-    const format = useFormat()
-    return (
-      <>
-        <>
-          <p>
-            <Icon name="calendar" size="16" /> {text.text.collection(collectionDate(format))}
-          </p>
-          <p>
-            <Link.Root href="https://www.digg.se/" target="_blank">
-              {text.text.guide} <Link.NewTabNotice /> <Icon name="external" size="16" />
-            </Link.Root>
-          </p>
-        </>
-      </>
-    )
-  },
+  parameters: showSource('icon/icon.fixture.tsx', 'IconsInRunningText'),
+  render: () => <IconsInRunningText />,
   play: async ({ canvas }) => {
-    const { text } = textsFor('en')
     // The new-tab notice is part of the link's name. The icon adds nothing.
     await expect(
-      canvas.getByRole('link', { name: `${text.text.guide} (opens in a new tab)` }),
+      canvas.getByRole('link', { name: 'Read the guide (opens in a new tab)' }),
     ).toBeVisible()
     await expectNoHorizontalOverflow(canvas.getByTestId('narrow'))
   },
 }
 
 /**
- * Without the theme (here: in a shadow root, where `theme.css` doesn't reach): sizes and
- * colours still work, because they are attributes. Alignment, mirroring and the icon-only
+ * Without the theme (here: in a shadow root, where `theme.css` doesn't reach): sizes still
+ * work, because they are attributes. Colour, alignment, mirroring and the icon-only
  * square need the theme, or your own CSS for `[data-mirror-in-rtl]`.
  */
 export const Unstyled: Story = {
   parameters: showSource('icon/icon.fixture.tsx', 'UnstyledIcons'),
-  render: (_args, { globals }) => <UnstyledIcons locale={localeOf(globals)} />,
+  render: () => (
+    <ShadowIsland dir="rtl">
+      <UnstyledIcons />
+    </ShadowIsland>
+  ),
   play: async ({ canvasElement }) => {
-    const root = canvasElement.querySelector('[data-testid="unstyled"]')?.shadowRoot
+    const root = [...canvasElement.querySelectorAll('div')].find(
+      (host) => host.shadowRoot !== null,
+    )?.shadowRoot
     await expect(root).not.toBeNull()
     const icons = root?.querySelectorAll('svg') ?? []
     await expect(icons).toHaveLength(5)

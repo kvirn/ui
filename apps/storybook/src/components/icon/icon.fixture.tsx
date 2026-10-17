@@ -1,21 +1,13 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
+import { search } from '@kvirn-ui/icons'
 import {
   ArrowRightIcon,
   MagnifyingGlassIcon,
   MapPinIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
-import {
-  Alert,
-  Button,
-  ButtonGroup,
-  defineIcons,
-  Icon,
-  KvirnProvider,
-  useFormat,
-} from '@kvirn-ui/react'
+import { Alert, Button, ButtonGroup, defineIcons, Icon, KvirnProvider, Link } from '@kvirn-ui/react'
 import type { UseFormatResult } from '@kvirn-ui/react'
-import type { IconName } from '@kvirn-ui/react'
 import { Warning as PhosphorWarning } from '@phosphor-icons/react'
 import { ArrowRight, MapPin, Search, Trash2, X as LucideClose } from 'lucide-react'
 import { useCallback, useState } from 'react'
@@ -29,201 +21,28 @@ import { createPortal } from 'react-dom'
 
 export type IconFixtureLocale = 'sv' | 'fi' | 'nb' | 'nn' | 'en'
 
-/** The icons that flip in RTL: the horizontal-direction ones (§4.1). */
-export const mirroredIcons = [
-  'chevron-back',
-  'chevron-forward',
-  'arrow-back',
-  'arrow-forward',
-  'external',
-] as const
-
-export type StatusKind = 'info' | 'success' | 'warning' | 'error'
-export const statusKinds = [
-  'info',
-  'success',
-  'warning',
-  'error',
-] as const satisfies readonly StatusKind[]
-
-interface StatusText {
-  /** The visible status word, such as "Warning". */
-  word: string
-  /** The status line. Only the error line has an example. */
-  line: (example: string) => string
-}
-
 interface IconTexts {
-  button: {
-    addChild: string
-    continue: string
-    download: string
-    close: string
-    search: string
-    copy: string
-    menu: string
-    removeFile: (fileName: string) => string
-    showPassword: string
-    hidePassword: string
-  }
-  status: Record<StatusKind, StatusText>
-  text: {
-    collection: (date: ReactNode) => ReactNode
-    guide: string
-  }
-  label: { logo: string }
-  language: { current: string }
-  gallery: { mirrors: string; doesNotMirror: string }
-  pagination: { previous: string; next: string }
+  text: { collection: (date: ReactNode) => ReactNode }
 }
 
 const en: IconTexts = {
-  button: {
-    addChild: 'Add another child',
-    continue: 'Continue',
-    download: 'Download the decision as a PDF',
-    close: 'Close',
-    search: 'Search',
-    copy: 'Copy',
-    menu: 'Menu',
-    removeFile: (fileName) => `Remove ${fileName}`,
-    showPassword: 'Show password',
-    hidePassword: 'Hide password',
-  },
-  status: {
-    error: { word: 'Error', line: (example) => `Enter the date in the format ${example}.` },
-    warning: { word: 'Warning', line: () => 'Your session ends in 5 minutes.' },
-    success: { word: 'Done', line: () => 'Your application has been sent.' },
-    info: { word: 'Good to know', line: () => 'We answer within 2 working days.' },
-  },
-  text: {
-    collection: (date) => <>Your next collection is on {date}.</>,
-    guide: 'Read the guide',
-  },
-  label: { logo: 'Exempelby municipality' },
-  language: { current: 'Svenska' },
-  gallery: { mirrors: 'Mirrors in RTL', doesNotMirror: 'Doesn’t mirror in RTL' },
-  pagination: { previous: 'Previous', next: 'Next' },
+  text: { collection: (date) => <>Your next collection is on {date}.</> },
 }
 
 const sv: IconTexts = {
-  button: {
-    addChild: 'Lägg till ett barn till',
-    continue: 'Fortsätt',
-    download: 'Ladda ner beslutet som pdf',
-    close: 'Stäng',
-    search: 'Sök',
-    copy: 'Kopiera',
-    menu: 'Meny',
-    removeFile: (fileName) => `Ta bort ${fileName}`,
-    showPassword: 'Visa lösenord',
-    hidePassword: 'Dölj lösenord',
-  },
-  status: {
-    error: { word: 'Fel', line: (example) => `Ange datumet i formatet ${example}.` },
-    warning: { word: 'Varning', line: () => 'Din session avslutas om 5 minuter.' },
-    success: { word: 'Klart', line: () => 'Din ansökan har skickats.' },
-    info: { word: 'Bra att veta', line: () => 'Vi svarar inom 2 arbetsdagar.' },
-  },
-  text: {
-    collection: (date) => <>Nästa tömning är {date}.</>,
-    guide: 'Läs guiden',
-  },
-  label: { logo: 'Exempelby kommun' },
-  language: { current: 'Svenska' },
-  gallery: { mirrors: 'Speglas vid RTL', doesNotMirror: 'Speglas inte vid RTL' },
-  pagination: { previous: 'Föregående', next: 'Nästa' },
+  text: { collection: (date) => <>Nästa tömning är {date}.</> },
 }
 
-/** Designer drafts (docs/design/icon.md §4.3), for length checks. */
 const fi: IconTexts = {
-  button: {
-    addChild: 'Lisää toinen lapsi',
-    continue: 'Jatka',
-    download: 'Lataa päätös PDF-tiedostona',
-    close: 'Sulje',
-    search: 'Hae',
-    copy: 'Kopioi',
-    menu: 'Valikko',
-    removeFile: (fileName) => `Poista tiedosto ${fileName}`,
-    showPassword: 'Näytä salasana',
-    hidePassword: 'Piilota salasana',
-  },
-  status: {
-    error: { word: 'Virhe', line: (example) => `Anna päivämäärä muodossa ${example}.` },
-    warning: { word: 'Varoitus', line: () => 'Istuntosi päättyy 5 minuutin kuluttua.' },
-    success: { word: 'Valmis', line: () => 'Hakemuksesi on lähetetty.' },
-    info: { word: 'Hyvä tietää', line: () => 'Vastaamme kahden arkipäivän kuluessa.' },
-  },
-  text: {
-    collection: (date) => <>Seuraava tyhjennys on {date}.</>,
-    guide: 'Lue ohje',
-  },
-  label: { logo: 'Exempelbyn kunta' },
-  language: { current: 'Svenska' },
-  gallery: {
-    mirrors: 'Peilataan oikealta vasemmalle -suunnassa',
-    doesNotMirror: 'Ei peilata oikealta vasemmalle -suunnassa',
-  },
-  pagination: { previous: 'Edellinen', next: 'Seuraava' },
+  text: { collection: (date) => <>Seuraava tyhjennys on {date}.</> },
 }
 
 const nb: IconTexts = {
-  button: {
-    addChild: 'Legg til et barn til',
-    continue: 'Gå videre',
-    download: 'Last ned vedtaket som PDF',
-    close: 'Lukk',
-    search: 'Søk',
-    copy: 'Kopier',
-    menu: 'Meny',
-    removeFile: (fileName) => `Fjern ${fileName}`,
-    showPassword: 'Vis passord',
-    hidePassword: 'Skjul passord',
-  },
-  status: {
-    error: { word: 'Feil', line: (example) => `Skriv datoen i formatet ${example}.` },
-    warning: { word: 'Advarsel', line: () => 'Økten din avsluttes om 5 minutter.' },
-    success: { word: 'Ferdig', line: () => 'Søknaden din er sendt.' },
-    info: { word: 'Greit å vite', line: () => 'Vi svarer innen 2 arbeidsdager.' },
-  },
-  text: {
-    collection: (date) => <>Neste tømming er {date}.</>,
-    guide: 'Les veiledningen',
-  },
-  label: { logo: 'Eksempelby kommune' },
-  language: { current: 'Svenska' },
-  gallery: { mirrors: 'Speiles i RTL', doesNotMirror: 'Speiles ikke i RTL' },
-  pagination: { previous: 'Forrige', next: 'Neste' },
+  text: { collection: (date) => <>Neste tømming er {date}.</> },
 }
 
 const nn: IconTexts = {
-  button: {
-    addChild: 'Legg til eit barn til',
-    continue: 'Gå vidare',
-    download: 'Last ned vedtaket som PDF',
-    close: 'Lukk',
-    search: 'Søk',
-    copy: 'Kopier',
-    menu: 'Meny',
-    removeFile: (fileName) => `Fjern ${fileName}`,
-    showPassword: 'Vis passord',
-    hidePassword: 'Skjul passord',
-  },
-  status: {
-    error: { word: 'Feil', line: (example) => `Skriv datoen i formatet ${example}.` },
-    warning: { word: 'Åtvaring', line: () => 'Økta di blir avslutta om 5 minutt.' },
-    success: { word: 'Ferdig', line: () => 'Søknaden din er send.' },
-    info: { word: 'Greitt å vite', line: () => 'Vi svarer innan 2 arbeidsdagar.' },
-  },
-  text: {
-    collection: (date) => <>Neste tømming er {date}.</>,
-    guide: 'Les rettleiinga',
-  },
-  label: { logo: 'Eksempelby kommune' },
-  language: { current: 'Svenska' },
-  gallery: { mirrors: 'Blir spegla i RTL', doesNotMirror: 'Blir ikkje spegla i RTL' },
-  pagination: { previous: 'Førre', next: 'Neste' },
+  text: { collection: (date) => <>Neste tømming er {date}.</> },
 }
 
 const iconTexts: Record<IconFixtureLocale, IconTexts | undefined> = {
@@ -257,7 +76,6 @@ export function textsFor(locale: IconFixtureLocale): ResolvedTexts {
 
 // Fixed instants, so stories and tests are deterministic. Formatted in UTC.
 const nextCollection = new Date(Date.UTC(2026, 9, 14))
-const exampleDeadline = new Date(Date.UTC(2026, 11, 31))
 
 /** The next collection: a `<time>`, in the locale's long date format. */
 export function collectionDate(format: UseFormatResult) {
@@ -265,57 +83,37 @@ export function collectionDate(format: UseFormatResult) {
   return <time dateTime={nextCollection.toISOString().slice(0, 10)}>{text}</time>
 }
 
-/** `31.12.2026` in fi and nb, `2026-12-31` in sv: the date format the error line asks for. */
-const exampleDate = (format: UseFormatResult): string =>
-  format.date(exampleDeadline, {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    timeZone: 'UTC',
-  })
-
-export const exampleFileName = 'beslut.pdf'
-
-export interface IconFixtureProps {
-  locale: IconFixtureLocale
-}
-
 /**
  * The four status alerts: the icon comes from the component, and the status word is the
  * title, so the shapes never carry the meaning alone (1.4.1).
  */
-export function StatusAlerts({ locale }: IconFixtureProps) {
-  const { text } = textsFor(locale)
-  const format = useFormat()
-  const { info, success, warning, error } = text.status
+export function StatusAlerts() {
   return (
     <>
-      <div className="kv-story-status-lines">
-        <Alert.Info>
-          <Alert.Title>{info.word}</Alert.Title>
-          <Alert.Body>
-            <p>{info.line(exampleDate(format))}</p>
-          </Alert.Body>
-        </Alert.Info>
-        <Alert.Success>
-          <Alert.Title>{success.word}</Alert.Title>
-          <Alert.Body>
-            <p>{success.line(exampleDate(format))}</p>
-          </Alert.Body>
-        </Alert.Success>
-        <Alert.Warning>
-          <Alert.Title>{warning.word}</Alert.Title>
-          <Alert.Body>
-            <p>{warning.line(exampleDate(format))}</p>
-          </Alert.Body>
-        </Alert.Warning>
-        <Alert.Danger>
-          <Alert.Title>{error.word}</Alert.Title>
-          <Alert.Body>
-            <p>{error.line(exampleDate(format))}</p>
-          </Alert.Body>
-        </Alert.Danger>
-      </div>
+      <Alert.Info>
+        <Alert.Title>Good to know</Alert.Title>
+        <Alert.Body>
+          <p>We answer within 2 working days.</p>
+        </Alert.Body>
+      </Alert.Info>
+      <Alert.Success>
+        <Alert.Title>Done</Alert.Title>
+        <Alert.Body>
+          <p>Your application has been sent.</p>
+        </Alert.Body>
+      </Alert.Success>
+      <Alert.Warning>
+        <Alert.Title>Warning</Alert.Title>
+        <Alert.Body>
+          <p>Your session ends in 5 minutes.</p>
+        </Alert.Body>
+      </Alert.Warning>
+      <Alert.Danger>
+        <Alert.Title>Error</Alert.Title>
+        <Alert.Body>
+          <p>Enter the date in the format 31.12.2026.</p>
+        </Alert.Body>
+      </Alert.Danger>
     </>
   )
 }
@@ -377,149 +175,113 @@ export function ShadowIsland({
   )
 }
 
-const joinClasses = (...classNames: (string | undefined)[]): string =>
-  classNames.filter((className) => className !== undefined).join(' ')
-
-/** The icon in the right place: start, end or alone. Names come from the fixture. */
-function buttonsRow(locale: IconFixtureLocale, className?: string) {
-  const { text } = textsFor(locale)
-  return (
-    <>
-      <ButtonGroup>
-        <Button className={className}>
-          <Icon name="add" />
-          {text.button.addChild}
-        </Button>
-        <Button className={className}>
-          {text.button.continue}
-          <Icon name="arrow-forward" />
-        </Button>
-        <Button
-          className={joinClasses('kv-button--icon-only', className)}
-          aria-label={text.button.close}
-        >
-          <Icon name="close" />
-        </Button>
-        <Button
-          className={joinClasses('kv-button--icon-only', className)}
-          aria-label={text.button.search}
-        >
-          <Icon name="search" />
-        </Button>
-        {/* Shows the icon's size and placement only; the docs site pairs Copy with a Tooltip. */}
-        <Button
-          className={joinClasses('kv-button--icon-only', className)}
-          aria-label={text.button.copy}
-        >
-          <Icon name="copy" />
-        </Button>
-      </ButtonGroup>
-    </>
-  )
-}
-
-/** The same row disabled. A disabled button's icon takes the muted text colour. */
-function disabledButtonsRow(locale: IconFixtureLocale) {
-  const { text } = textsFor(locale)
-  return (
-    <>
-      <ButtonGroup>
-        <Button disabled>
-          <Icon name="add" />
-          {text.button.addChild}
-        </Button>
-        <Button disabled>
-          {text.button.continue}
-          <Icon name="arrow-forward" />
-        </Button>
-        <Button className="kv-button--icon-only" aria-label={text.button.close} disabled>
-          <Icon name="close" />
-        </Button>
-        <Button className="kv-button--icon-only" aria-label={text.button.search} disabled>
-          <Icon name="search" />
-        </Button>
-        <Button className="kv-button--icon-only" aria-label={text.button.copy} disabled>
-          <Icon name="copy" />
-        </Button>
-      </ButtonGroup>
-    </>
-  )
-}
-
-const buttonGroups = [
-  { id: 'secondary', className: undefined, label: 'kv-button' },
-  { id: 'primary', className: 'kv-button--primary', label: 'kv-button--primary' },
-  { id: 'danger', className: 'kv-button--danger', label: 'kv-button--danger' },
-] as const
-
 /**
- * Icon at the start, icon at the end and icon-only, in secondary, primary, danger and
- * disabled. The group names are class names, so they aren't translated. Called as a function
- * in the story, so "Show code" shows the Buttons.
+ * Icon at the start, icon at the end and icon-only, in secondary, primary, danger and disabled.
+ * An icon-only button is named by its `aria-label`.
  */
-export function buttonMatrix(locale: IconFixtureLocale) {
+export function ButtonsWithIcons() {
   return (
-    <div className="kv-story-states">
-      {buttonGroups.map((group) => (
-        <div key={group.id} className="kv-story-state">
-          <p>
-            <code>{group.label}</code>
-          </p>
-          {buttonsRow(locale, group.className)}
-        </div>
-      ))}
-      <div className="kv-story-state">
-        <p>
-          <code>disabled</code>
-        </p>
-        {disabledButtonsRow(locale)}
-      </div>
-    </div>
+    <>
+      <ButtonGroup>
+        <Button>
+          <Icon name="add" />
+          Add another child
+        </Button>
+        <Button>
+          Continue
+          <Icon name="arrow-forward" />
+        </Button>
+        <Button className="kv-button--icon-only" aria-label="Close">
+          <Icon name="close" />
+        </Button>
+        <Button className="kv-button--icon-only" aria-label="Search">
+          <Icon name="search" />
+        </Button>
+        <Button className="kv-button--icon-only" aria-label="Copy">
+          <Icon name="copy" />
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup>
+        <Button className="kv-button--primary">
+          <Icon name="add" />
+          Add another child
+        </Button>
+        <Button className="kv-button--primary">
+          Continue
+          <Icon name="arrow-forward" />
+        </Button>
+        <Button className="kv-button--primary kv-button--icon-only" aria-label="Close">
+          <Icon name="close" />
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup>
+        <Button className="kv-button--danger">
+          <Icon name="delete" />
+          Delete application
+        </Button>
+        <Button className="kv-button--danger">
+          Continue
+          <Icon name="arrow-forward" />
+        </Button>
+        <Button className="kv-button--danger kv-button--icon-only" aria-label="Close">
+          <Icon name="close" />
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup>
+        <Button disabled>
+          <Icon name="add" />
+          Add another child
+        </Button>
+        <Button disabled>
+          Continue
+          <Icon name="arrow-forward" />
+        </Button>
+        <Button className="kv-button--icon-only" aria-label="Close" disabled>
+          <Icon name="close" />
+        </Button>
+      </ButtonGroup>
+    </>
   )
 }
 
 /** More actions with an icon at the start: remove a file, the password toggle, menu, language. */
-export function moreButtons(locale: IconFixtureLocale) {
-  const { text } = textsFor(locale)
+export function MoreButtons() {
   return (
-    <>
-      <ButtonGroup>
-        <Button>
-          <Icon name="delete" />
-          {text.button.removeFile(exampleFileName)}
-        </Button>
-        <Button>
-          <Icon name="eye" />
-          {text.button.showPassword}
-        </Button>
-        <Button>
-          <Icon name="eye-off" />
-          {text.button.hidePassword}
-        </Button>
-        <Button>
-          <Icon name="menu" />
-          {text.button.menu}
-        </Button>
-        <Button>
-          <Icon name="language" />
-          <span lang="sv">{text.language.current}</span>
-        </Button>
-      </ButtonGroup>
-    </>
+    <ButtonGroup>
+      <Button>
+        <Icon name="delete" />
+        Remove decision.pdf
+      </Button>
+      <Button>
+        <Icon name="eye" />
+        Show password
+      </Button>
+      <Button>
+        <Icon name="eye-off" />
+        Hide password
+      </Button>
+      <Button>
+        <Icon name="menu" />
+        Menu
+      </Button>
+      <Button>
+        <Icon name="language" />
+        <span lang="sv">Svenska</span>
+      </Button>
+    </ButtonGroup>
   )
 }
 
-/** A long Finnish label next to its icon, in a narrow column: the label wraps, the icon stays. */
-export function narrowButtons() {
-  const { text } = textsFor('fi')
+/** A long Finnish label next to its icon: the label wraps, the icon stays. */
+export function LongFinnishLabel() {
   return (
-    <div className="kv-story-narrow" lang="fi" data-testid="narrow-buttons">
+    <div lang="fi">
       <ButtonGroup>
-        <Button className="kv-button--primary" data-testid="download-button">
+        <Button className="kv-button--primary">
           <Icon name="download" />
-          {text.button.download}
+          Lataa päätös PDF-tiedostona
         </Button>
-        <Button className="kv-button--icon-only" aria-label={text.button.close}>
+        <Button className="kv-button--icon-only" aria-label="Sulje">
           <Icon name="close" />
         </Button>
       </ButtonGroup>
@@ -527,24 +289,61 @@ export function narrowButtons() {
   )
 }
 
-/** Lucide, one-off: pass the component as `icon`. Icon's own props replace Lucide's. */
-export function LucideOneOff({ locale }: IconFixtureProps) {
-  const { text } = textsFor(locale)
+/** The icons that flip in RTL: the horizontal-direction ones (design spec §4.1). */
+export function MirroredIcons() {
   return (
     <>
-      <ul className="kv-story-inline-list">
-        <li>
-          <Icon icon={Search} label={text.button.search} />
-        </li>
-        <li>
-          <span style={{ color: 'var(--kv-color-primary)' }}>
-            <Icon icon={MapPin} size="24" />
-          </span>
-        </li>
-        <li>
-          <Icon icon={Trash2} />
-        </li>
-      </ul>
+      <Icon name="chevron-back" size="24" />
+      <Icon name="chevron-forward" size="24" />
+      <Icon name="arrow-back" size="24" />
+      <Icon name="arrow-forward" size="24" />
+      <Icon name="external" size="24" />
+    </>
+  )
+}
+
+/** Icons that keep their drawing in RTL. */
+export function FixedIcons() {
+  return (
+    <>
+      <Icon name="check" size="24" />
+      <Icon name="search" size="24" />
+      <Icon name="chevron-down" size="24" />
+    </>
+  )
+}
+
+/** A Button with the arrow at its end, and a pagination-like row, point the right way. */
+export function ArrowButtons() {
+  return (
+    <>
+      <ButtonGroup>
+        <Button className="kv-button--primary">
+          Continue
+          <Icon name="arrow-forward" />
+        </Button>
+      </ButtonGroup>
+      <nav className="kv-button-group" aria-label="Pagination">
+        <Button>
+          <Icon name="chevron-back" />
+          Previous
+        </Button>
+        <Button>
+          Next
+          <Icon name="chevron-forward" />
+        </Button>
+      </nav>
+    </>
+  )
+}
+
+/** Lucide, one-off: pass the component as `icon`. Icon's own props replace Lucide's. */
+export function LucideOneOff() {
+  return (
+    <>
+      <Icon icon={Search} label="Search" />
+      <Icon icon={MapPin} size="24" variant="primary" />
+      <Icon icon={Trash2} />
     </>
   )
 }
@@ -554,76 +353,59 @@ export function LucideOneOff({ locale }: IconFixtureProps) {
  * `defineIcons` once at module level in your app, next to the provider: a library's drawings
  * replace the library's drawings of the same names, and Lucide draws its own 2 stroke. Names that `@kvirn-ui/icons` doesn't have need `Register` (see the Icon guide).
  */
-export function LucideRegistered({ locale }: IconFixtureProps) {
-  const { text } = textsFor(locale)
+export function LucideRegistered() {
   const icons = defineIcons({
     search: Search,
     delete: Trash2,
     'arrow-forward': { component: ArrowRight, mirrorInRtl: true },
   })
   return (
-    <>
-      <KvirnProvider icons={icons}>
-        <ButtonGroup>
-          <Button>
-            <Icon name="search" />
-            {text.button.search}
-          </Button>
-          <Button>
-            {text.button.continue}
-            <Icon name="arrow-forward" />
-          </Button>
-        </ButtonGroup>
-      </KvirnProvider>
-    </>
+    <KvirnProvider icons={icons}>
+      <ButtonGroup>
+        <Button>
+          <Icon name="search" />
+          Search
+        </Button>
+        <Button>
+          Continue
+          <Icon name="arrow-forward" />
+        </Button>
+      </ButtonGroup>
+    </KvirnProvider>
   )
 }
 
 /** Heroicons, one-off: pass the component as `icon`. A `label` removes Heroicons' `aria-hidden`. */
-export function HeroiconsOneOff({ locale }: IconFixtureProps) {
-  const { text } = textsFor(locale)
+export function HeroiconsOneOff() {
   return (
     <>
-      <ul className="kv-story-inline-list">
-        <li>
-          <Icon icon={MagnifyingGlassIcon} label={text.button.search} />
-        </li>
-        <li>
-          <span style={{ color: 'var(--kv-color-primary)' }}>
-            <Icon icon={MapPinIcon} size="24" />
-          </span>
-        </li>
-        <li>
-          <Icon icon={TrashIcon} />
-        </li>
-      </ul>
+      <Icon icon={MagnifyingGlassIcon} label="Search" />
+      <Icon icon={MapPinIcon} size="24" variant="primary" />
+      <Icon icon={TrashIcon} />
     </>
   )
 }
 
 /** Heroicons, registered: `<Icon name>` and every KvirnUI component use Heroicons' drawings. */
-export function HeroiconsRegistered({ locale }: IconFixtureProps) {
-  const { text } = textsFor(locale)
+export function HeroiconsRegistered() {
   const icons = defineIcons({
     search: MagnifyingGlassIcon,
     delete: TrashIcon,
     'arrow-forward': { component: ArrowRightIcon, mirrorInRtl: true },
   })
   return (
-    <>
-      <KvirnProvider icons={icons}>
-        <ButtonGroup>
-          <Button>
-            <Icon name="search" />
-            {text.button.search}
-          </Button>
-          <Button>
-            {text.button.continue}
-            <Icon name="arrow-forward" />
-          </Button>
-        </ButtonGroup>
-      </KvirnProvider>
-    </>
+    <KvirnProvider icons={icons}>
+      <ButtonGroup>
+        <Button>
+          <Icon name="search" />
+          Search
+        </Button>
+        <Button>
+          Continue
+          <Icon name="arrow-forward" />
+        </Button>
+      </ButtonGroup>
+    </KvirnProvider>
   )
 }
 
@@ -631,11 +413,10 @@ export function HeroiconsRegistered({ locale }: IconFixtureProps) {
  * Registered over the library's icons, another library's drawing replaces the name's icon for
  * every component, with the same `size` and `color`. A plain component carries no direction, so
  * `arrow-forward` is registered as `{ component, mirrorInRtl: true }` to keep flipping in
- * right-to-left text (design spec §4.2).
- * `logo` isn't in `@kvirn-ui/icons`: an app adds it by augmenting `Register`, so this story casts the name.
+ * right-to-left text (design spec §4.2). `logo` isn't in `@kvirn-ui/icons`: an app adds it with
+ * its own entry.
  */
-export function LibraryIcons({ locale }: IconFixtureProps) {
-  const { text } = textsFor(locale)
+export function LibraryIcons() {
   const icons = defineIcons({
     close: LucideClose,
     delete: TrashIcon,
@@ -643,46 +424,18 @@ export function LibraryIcons({ locale }: IconFixtureProps) {
     'arrow-forward': { component: ArrowRight, mirrorInRtl: true },
     logo: MunicipalityMark,
   })
-  const overridden = ['close', 'delete', 'warning', 'arrow-forward'] as const
   return (
-    <>
-      <div>
-        <ul className="kv-story-icon-strip" data-testid="registry">
-          {overridden.map((name) => (
-            <li key={name} className="kv-story-icon-cell">
-              <span className="kv-story-icon-row" data-testid={`library-${name}`}>
-                <span style={{ color: 'var(--kv-color-primary)' }}>
-                  <Icon name={name} size="24" />
-                </span>
-                <code>{name}</code>
-              </span>
-              <KvirnProvider icons={icons}>
-                <span className="kv-story-icon-row" data-testid={`registered-${name}`}>
-                  <span style={{ color: 'var(--kv-color-primary)' }}>
-                    <Icon name={name} size="24" />
-                  </span>
-                  <code>{name}</code>
-                </span>
-              </KvirnProvider>
-            </li>
-          ))}
-          <li className="kv-story-icon-cell">
-            <KvirnProvider icons={icons}>
-              <Icon name={'logo' as IconName} size="24" label={text.label.logo} />
-            </KvirnProvider>
-            <code>logo</code>
-          </li>
-        </ul>
-        <div dir="rtl">
-          <KvirnProvider icons={icons}>
-            <Button>
-              {text.button.continue}
-              <Icon name="arrow-forward" data-testid="overridden-arrow" />
-            </Button>
-          </KvirnProvider>
-        </div>
-      </div>
-    </>
+    <KvirnProvider icons={icons}>
+      <Icon name="close" size="24" variant="primary" />
+      <Icon name="delete" size="24" variant="primary" />
+      <Icon name="warning" size="24" variant="primary" />
+      <Icon name="arrow-forward" size="24" variant="primary" />
+      <Icon name="logo" size="24" label="Exempelby municipality" />
+      <Button>
+        Continue
+        <Icon name="arrow-forward" />
+      </Button>
+    </KvirnProvider>
   )
 }
 
@@ -699,61 +452,152 @@ export function RegistryEntries() {
   })
   const nestedIcons = defineIcons({ delete: Trash2 })
   return (
-    <>
-      <KvirnProvider icons={icons} iconDefaults={{ size: '24' }}>
-        <ul className="kv-story-inline-list" dir="rtl">
-          <li data-testid="entry-says-no-flip">
-            <Icon name="arrow-forward" />
-          </li>
-          <li data-testid="instance-flips">
-            <Icon name="arrow-forward" mirrorInRtl />
-          </li>
-          <li data-testid="default-size">
-            <Icon name="search" />
-          </li>
-          <li data-testid="own-size">
-            <Icon name="search" size="16" />
-          </li>
-          <KvirnProvider icons={nestedIcons}>
-            <li data-testid="nested-delete">
-              <Icon name="delete" />
-            </li>
-            <li data-testid="nested-keeps-parent">
-              <Icon name="search" />
-            </li>
-          </KvirnProvider>
-        </ul>
+    <KvirnProvider icons={icons} iconDefaults={{ size: '24' }}>
+      <Icon name="arrow-forward" />
+      <Icon name="arrow-forward" mirrorInRtl />
+      <Icon name="search" />
+      <Icon name="search" size="16" />
+      <KvirnProvider icons={nestedIcons}>
+        <Icon name="delete" />
+        <Icon name="search" />
       </KvirnProvider>
-    </>
+    </KvirnProvider>
   )
 }
 
 /**
- * Without the theme: the icons render in a shadow root, where `theme.css` doesn't reach.
- * `ShadowIsland` stands in for a page that doesn't load the theme, so only the Icon and Button
- * inside it are what you write.
+ * Without the theme: sizes and colours are attributes, so they work. The story renders this in a
+ * shadow root, where `theme.css` doesn't reach, like a page that doesn't load the theme.
  */
-export function UnstyledIcons({ locale }: IconFixtureProps) {
-  const { text } = textsFor(locale)
+export function UnstyledIcons() {
   return (
     <>
-      <ShadowIsland data-testid="unstyled" dir="rtl">
-        <p>
-          {(['16', '20', '24'] as const).map((size) => (
-            <span key={size} style={{ color: 'var(--kv-color-success)' }}>
-              <Icon name="check" size={size} />
-            </span>
-          ))}
-        </p>
-        <p>
-          <Icon name="arrow-forward" size="24" />
-        </p>
-        <p>
-          <Button aria-label={text.button.close}>
-            <Icon name="close" />
-          </Button>
-        </p>
-      </ShadowIsland>
+      <p>
+        <Icon name="check" size="16" />
+        <Icon name="check" size="20" />
+        <Icon name="check" size="24" />
+      </p>
+      <p>
+        <Icon name="arrow-forward" size="24" />
+      </p>
+      <p>
+        <Button aria-label="Close">
+          <Icon name="close" />
+        </Button>
+      </p>
+    </>
+  )
+}
+
+/** No registration: pass the drawing from `@kvirn-ui/icons` as `icon`. */
+export function IconFromDrawing() {
+  return <Icon icon={search} />
+}
+
+/** `size` is the pixel size as a string. */
+export function SizeScaleIcons() {
+  return (
+    <>
+      <Icon name="info" size="12" />
+      <Icon name="info" size="14" />
+      <Icon name="info" size="16" />
+      <Icon name="info" size="20" />
+      <Icon name="info" size="24" />
+      <Icon name="info" size="28" />
+      <Icon name="info" size="32" />
+      <Icon name="info" size="40" />
+      <Icon name="info" size="48" />
+      <Icon name="info" size="56" />
+      <Icon name="info" size="64" />
+      <Icon name="info" size="80" />
+      <Icon name="info" size="96" />
+    </>
+  )
+}
+
+/** Inherited colour, then each `variant`. */
+export function ColorVariants() {
+  return (
+    <>
+      <Icon name="info" size="24" />
+      <Icon name="info" size="24" variant="muted" />
+      <Icon name="info" size="24" variant="danger" />
+      <Icon name="info" size="24" variant="success" />
+      <Icon name="info" size="24" variant="warning" />
+      <Icon name="info" size="24" variant="primary" />
+    </>
+  )
+}
+
+/** Decorative next to text that says the same, and an image with a `label`. */
+export function DecorativeAndMeaningfulIcons() {
+  return (
+    <>
+      <p>
+        <Icon name="calendar" /> Your next collection is on{' '}
+        <time dateTime="2026-10-14">14 October 2026</time>.
+      </p>
+      <p>
+        <Icon as={MunicipalityMark} size="48" label="Exempelby municipality" />
+      </p>
+    </>
+  )
+}
+
+/** A name that isn't registered: an empty, decorative `<svg>` at the right size. */
+export function UnknownNameIcon() {
+  return (
+    <p>
+      Save <Icon name="delte" size="24" />
+    </p>
+  )
+}
+
+/** Icons in text, in a Button and in a Link. */
+export function IconsInTextButtonAndLink() {
+  return (
+    <>
+      <p>
+        <Icon name="warning" /> Warning <Icon name="warning" variant="danger" /> Warning
+      </p>
+      <Button>
+        <Icon name="add" />
+        Add another child
+        <Icon name="add" variant="danger" />
+      </Button>
+      <Link.Root href="#guide">
+        <Icon name="external" /> Read the guide <Icon name="external" variant="danger" />
+      </Link.Root>
+    </>
+  )
+}
+
+/** Your own SVG: `children` with a `viewBox`, and `as` with a component. */
+export function OwnSvgIcons() {
+  return (
+    <>
+      <Icon viewBox="0 0 24 24" size="24">
+        <path d="M5 12h14M12 5v14" fill="none" stroke="currentColor" strokeWidth={1.5} />
+      </Icon>
+      <Icon as={MunicipalityMark} size="24" label="Exempelby municipality" />
+      <Icon as={SquareMark} size="24" />
+    </>
+  )
+}
+
+/** An icon in running text, and in a link that opens a new tab: the icon after the notice. */
+export function IconsInRunningText() {
+  return (
+    <>
+      <p>
+        <Icon name="calendar" size="16" /> Your next collection is on{' '}
+        <time dateTime="2026-10-14">14 October 2026</time>.
+      </p>
+      <p>
+        <Link.Root href="https://www.digg.se/" target="_blank">
+          Read the guide <Link.NewTabNotice /> <Icon name="external" size="16" />
+        </Link.Root>
+      </p>
     </>
   )
 }
