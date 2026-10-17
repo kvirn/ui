@@ -100,7 +100,7 @@ declare module '@kvirn-ui/react' {
 }
 ```
 
-Without the augmentation, `LinkProps` falls back to `<a>` props and `IconName` is the 25 default icon names (`BuiltInIconName`, drawn by `@kvirn-ui/icons`). A registered link component must forward its ref and render an `<a>` (a dev warning fires otherwise), and a Link always renders a native `<a href>`.
+Without the augmentation, `LinkProps` falls back to `<a>` props and `IconName` is `string` (there are no default icons; a name resolves only what the app registers). A registered link component must forward its ref and render an `<a>` (a dev warning fires otherwise), and a Link always renders a native `<a href>`.
 
 ### Shared part vocabulary
 

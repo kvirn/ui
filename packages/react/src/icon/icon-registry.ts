@@ -2,7 +2,6 @@ import type { ComponentType, Ref } from 'react'
 import type { IconData } from '@kvirn-ui/icons'
 import { createIconComponent } from '@kvirn-ui/icons/react'
 import type { Register } from '../provider/register.ts'
-import type { BuiltInIconName } from './default-icons.ts'
 
 /**
  * What Icon passes to an icon component: attributes for the root `<svg>`, and a ref.
@@ -42,11 +41,13 @@ export type IconRegistry = Readonly<Record<string, IconRegistryEntry>>
 /** The icons a `Register`-shaped interface names, or none. */
 export type IconsOf<Registration> = Registration extends { icons: infer Icons } ? Icons : {}
 
-/** The icon names a `Register`-shaped interface allows: the default set plus its own. */
-export type IconNameOf<Registration> = BuiltInIconName | (keyof IconsOf<Registration> & string)
+/** The icon names a `Register`-shaped interface allows: its registered names, else any string. */
+export type IconNameOf<Registration> = Registration extends { icons: infer Icons }
+  ? keyof Icons & string
+  : string
 
 /**
- * A name `<Icon name>` accepts: a default icon, or one the app registered.
+ * A name `<Icon name>` accepts: one the app registered, or any string until it registers icons.
  *
  * ```ts
  * declare module '@kvirn-ui/react' {

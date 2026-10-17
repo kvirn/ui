@@ -1,7 +1,6 @@
-import { arrowEast, arrowNorth, arrowSouth, arrowWest, remove } from '@kvirn-ui/icons'
-import type { IconData } from '@kvirn-ui/icons'
+import { add, arrowEast, arrowNorth, arrowSouth, arrowWest, remove } from '@kvirn-ui/icons'
 import { Icon, Tooltip } from '@kvirn-ui/react'
-import type { IconName } from '@kvirn-ui/react'
+import type { IconName, IconRegistryEntry } from '@kvirn-ui/react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { joinClassNames } from './class-names.ts'
 import { useMapContext } from './map-context.ts'
@@ -9,13 +8,15 @@ import { useMapOverlayRef } from './map-overlay.tsx'
 
 function ControlButton({
   label,
+  name,
   icon,
   disabled,
   onPress,
   className,
 }: {
   label: string
-  icon: IconName | IconData
+  name?: IconName
+  icon: IconName | IconRegistryEntry
   disabled?: boolean
   onPress: () => void
   className?: string
@@ -29,7 +30,11 @@ function ControlButton({
         aria-disabled={disabled ? true : undefined}
         onClick={onPress}
       >
-        {typeof icon === 'string' ? <Icon name={icon} /> : <Icon icon={icon} />}
+        {typeof icon === 'string' ? (
+          <Icon name={icon} />
+        ) : (
+          <Icon {...(name ? { name } : {})} icon={icon} />
+        )}
       </Tooltip.Trigger>
       <Tooltip.Popup>
         <Tooltip.Name>{label}</Tooltip.Name>
@@ -57,12 +62,14 @@ export function MapControls({
       <div className="kv-map-zoom">
         <ControlButton
           label={messages.zoomIn}
-          icon="add"
+          name="add"
+          icon={add}
           disabled={!map.canZoomIn}
           onPress={map.zoomIn}
         />
         <ControlButton
           label={messages.zoomOut}
+          name="remove"
           icon={remove}
           disabled={!map.canZoomOut}
           onPress={map.zoomOut}
@@ -72,24 +79,28 @@ export function MapControls({
         <ControlButton
           label={messages.panNorth}
           className="kv-map-pan-north"
+          name="arrow-north"
           icon={arrowNorth}
           onPress={() => map.pan('north')}
         />
         <ControlButton
           label={messages.panWest}
           className="kv-map-pan-west"
+          name="arrow-west"
           icon={arrowWest}
           onPress={() => map.pan('west')}
         />
         <ControlButton
           label={messages.panEast}
           className="kv-map-pan-east"
+          name="arrow-east"
           icon={arrowEast}
           onPress={() => map.pan('east')}
         />
         <ControlButton
           label={messages.panSouth}
           className="kv-map-pan-south"
+          name="arrow-south"
           icon={arrowSouth}
           onPress={() => map.pan('south')}
         />

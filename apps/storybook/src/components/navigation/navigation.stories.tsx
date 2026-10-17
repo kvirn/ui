@@ -1,5 +1,4 @@
 import { fi } from '@kvirn-ui/i18n/fi'
-import { arrowForward } from '@kvirn-ui/icons'
 import { Icon, Link, Navigation } from '@kvirn-ui/react'
 import { InLanguage } from '../../fixture-language.tsx'
 import contract from '../../../../../packages/react/src/navigation/navigation.a11y.md?raw'
@@ -20,6 +19,7 @@ import {
   StaffNavigation,
   UnlistedPageNavigation,
 } from './navigation.fixture.tsx'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Components/Navigation: the headless Navigation, styled by @kvirn-ui/theme/theme.css (design
 // specs docs/design/navigation.md and docs/design/navigation-link-options.md). Their play
@@ -70,6 +70,7 @@ const meta = {
   globals: { locale: 'en' },
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
   decorators: [
+    withLibraryIcons,
     (Story, { args, parameters }) => (
       <div
         className={surfaceClassName(parameters, args.className)}
@@ -430,7 +431,7 @@ export const WithServiceLink: Story = {
         <Navigation.Item>
           <Link.Root href="#ansok" className="kv-link--service">
             <Link.Icon>
-              <Icon icon={arrowForward} size="24" />
+              <Icon name="arrow-forward" size="24" />
             </Link.Icon>
             Apply for a building permit
           </Link.Root>

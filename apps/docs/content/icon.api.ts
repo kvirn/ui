@@ -12,13 +12,13 @@ export const iconRows = propRows<IconDocumentedProps>({
     type: 'IconName',
     default: '–',
     description:
-      'One of the 25 default icon names, such as close or search, or a name registered with defineIcons in a KvirnProvider. Give one of name, icon, as or children.',
+      'A name you registered with defineIcons in a KvirnProvider, such as close or search. Give one of name, icon, as or children. Together with icon, a registered name wins over the icon.',
   },
   icon: {
     type: 'IconRegistryEntry',
     default: '–',
     description:
-      'An icon from @kvirn-ui/icons, or a component: icon={search} or icon={Search}. It needs no registration. Icon’s size and label replace the component’s own, and className is joined with it.',
+      'A drawing from @kvirn-ui/icons, or a component: icon={search} or icon={Search}. It needs no registration, and a registered name wins over it. Icon’s size and label replace the component’s own, and className is joined with it.',
   },
   as: {
     type: 'ElementType',
@@ -53,7 +53,7 @@ export const iconRows = propRows<IconDocumentedProps>({
     type: 'boolean',
     default: 'the entry’s, else false',
     description:
-      'Flips the icon in right-to-left text. Defaults to the registry entry’s, else the default icon’s of the same name, else false. Only for arrows and chevrons.',
+      'Flips the icon in right-to-left text. Defaults to the registry entry’s, else the icon data’s, else false. Only for arrows and chevrons.',
   },
 })
 
@@ -87,7 +87,7 @@ export const useIconHook: ApiHook = {
     name: {
       type: 'IconName',
       default: '–',
-      description: 'A default or registered icon name, to get its component.',
+      description: 'A registered icon name, to get its component.',
     },
     icon: {
       type: 'IconRegistryEntry',

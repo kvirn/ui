@@ -44,6 +44,7 @@ import {
   VirtualizedPlaces,
   extraTextsFor,
 } from './listbox.fixture.tsx'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Components/Form/Listbox: the stylable popup (Listbox.Root, Trigger, Value, Popup, List, Option,
 // Group, Empty), the APG select-only combobox (contract: listbox.a11y.md). Listbox.Root
@@ -139,6 +140,7 @@ const meta = {
   args: { onValueChange: logChange('onValueChange') },
   globals: { locale: 'en' },
   decorators: [
+    withLibraryIcons,
     (Story) => (
       <div className="kv-story-form">
         <Story />

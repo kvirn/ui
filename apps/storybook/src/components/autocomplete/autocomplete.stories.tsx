@@ -38,6 +38,7 @@ import {
   autocompleteTextsFor,
   streets,
 } from './autocomplete.fixture.tsx'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Components/Form/Autocomplete: Autocomplete.Root, Control, Input, Toggle, Clear and the popup
 // parts it shares with the Combobox and the Listbox (contract: autocomplete.a11y.md).
@@ -142,6 +143,7 @@ const meta = {
   },
   globals: { locale: 'sv' },
   decorators: [
+    withLibraryIcons,
     (Story) => (
       <div className="kv-story-form">
         <Story />

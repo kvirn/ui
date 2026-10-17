@@ -1,5 +1,4 @@
 import { Alert, Card, Icon, KvirnProvider, useFormat } from '@kvirn-ui/react'
-import { info } from '@kvirn-ui/icons'
 import contract from '../../../../../packages/react/src/alert/alert.a11y.md?raw'
 import guide from '../../../../../packages/react/src/alert/alert.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -28,6 +27,7 @@ import {
   withAlertLocale,
 } from './alert.fixture.tsx'
 import type { AlertFixtureLocale } from './alert.fixture.tsx'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Components/Alert: the headless Alert, styled by @kvirn-ui/theme/theme.css
 // (design spec docs/design/alert.md). The Keyboard story is the dismissible example: the optional
@@ -62,7 +62,7 @@ const meta = {
     },
   },
   globals: { locale: 'en' },
-  decorators: [withAlertColumn, withAlertLocale],
+  decorators: [withLibraryIcons, withAlertColumn, withAlertLocale],
   parameters: { a11yContract: contract, docs: { description: { component: description } } },
 } satisfies Meta<typeof Alert.Info>
 
@@ -355,7 +355,7 @@ export const BringYourOwn: Story = {
     const { text } = textsFor(localeOf(globals))
     return (
       <Alert.Root className="kv-story-my-notice" data-testid="own">
-        <Icon icon={info} className="kv-alert-icon" />
+        <Icon name="info" className="kv-alert-icon" />
         <Alert.Title>
           <span className="kv-alert-status">{text.ownStatus.word}</span> {text.sample.title}
         </Alert.Title>

@@ -1,5 +1,7 @@
 import type { AnnouncerPoliteness } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { error, info, success, warning } from '@kvirn-ui/icons'
+import type { IconData } from '@kvirn-ui/icons'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import type { RefCallback } from 'react'
 import { useQuietAnnouncer, warnAnnouncerMissing } from '../announcer/use-announcer.ts'
@@ -8,6 +10,8 @@ import { useMessages } from '../provider/use-messages.ts'
 
 /** The four statuses. Chosen by the component you render, never by a prop. */
 export type AlertVariant = 'info' | 'success' | 'warning' | 'danger'
+
+const statusIcons = { info, success, warning, error } as const
 
 /**
  * The one table: a status's class, icon and status word key. The ready-made roots and
@@ -107,9 +111,13 @@ export interface AlertClosePartProps {
   'aria-label': string
 }
 
-/** Spread on `<Icon>`: `<Icon {...alert.iconProps} />`. Decorative: the status is text. */
+/**
+ * Spread on `<Icon>`: `<Icon {...alert.iconProps} />`. Decorative: the status is text. The `icon`
+ * draws with no registry, and a registered `name` replaces it.
+ */
 export interface AlertIconPartProps {
   name: 'info' | 'success' | 'warning' | 'error'
+  icon: IconData
   className: 'kv-alert-icon'
 }
 
@@ -284,7 +292,13 @@ export function useAlert({ variant, announce, messages }: UseAlertOptions = {}):
       actionsProps: { className: 'kv-alert-actions' },
       closeProps: { className: 'kv-alert-close', type: 'button', 'aria-label': closeName },
       iconProps:
-        status === undefined ? undefined : { name: status.iconName, className: 'kv-alert-icon' },
+        status === undefined
+          ? undefined
+          : {
+              name: status.iconName,
+              icon: statusIcons[status.iconName],
+              className: 'kv-alert-icon',
+            },
       statusProps:
         word === undefined ? undefined : { className: 'kv-alert-status', children: word },
     }

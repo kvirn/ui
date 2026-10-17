@@ -2,10 +2,10 @@
 
 > **Draft** (Plan 0009). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [icon.a11y.md](icon.a11y.md), and the design spec is [docs/design/icon.md](../../../../docs/design/icon.md).
 
-One component for every icon: the default icons from the icon library, your own SVGs, and icons from libraries such as Lucide, Heroicons and Phosphor. There are three routes, and you can mix them:
+One component for every icon: icons from the icon library, your own SVGs, and icons from libraries such as Lucide, Heroicons and Phosphor. There are three routes, and you can mix them:
 
 - **`icon`** for one icon from a library: `<Icon icon={Search} />`. No setup. It also takes an icon from `@kvirn-ui/icons` directly: `<Icon icon={add} />` with `import { add } from '@kvirn-ui/icons'`.
-- **`name`** for the 25 default icons, which need no setup, and for icons you register once in `KvirnProvider`: `<Icon name="close" />`.
+- **`name`** for icons you register once in `KvirnProvider`: `<Icon name="close" />`. Register first: nothing is built in.
 - **`as`** (or children) for a one-off icon of your own, such as a municipality's mark.
 
 Icon's `size` and `label` replace the library component's own in every route that draws a component, so you never size an icon on the component itself. `className` is joined with the component's own classes.
@@ -16,23 +16,23 @@ Icon's `size` and `label` replace the library component's own in every route tha
 - **Attributes, never inline `style`,** so icons work under a strict Content-Security-Policy, and your CSS can still override them.
 - Headless: no CSS. The `<svg>` gets `class="kv-icon kv-icon--size-20"` (the size class, and `kv-icon--<variant>` with a variant), `width` and `height` in rem, and `data-mirror-in-rtl` for a directional icon.
 
-## Default icons
+## Icons come from your app
 
-These 25 names work with no setup. They are icons from [`@kvirn-ui/icons`](../../../icons), the icon library, and the page **Icons/Library** in Storybook (and the Icons page on the docs site) shows all of them and the rest of the library. The drawings are decorative: the name is the text beside each.
+`@kvirn-ui/react` has no default icons, so an app bundles only the icons it imports. Every `name` is one you register once in `KvirnProvider` (below), and `icon` draws a drawing or component with no registration. [`@kvirn-ui/icons`](../../../icons) is the icon library: the page **Icons/Library** in Storybook (and the Icons page on the docs site) shows all of it. The drawings are decorative: the name is the text beside each.
 
-`chevron-down`, `chevron-up`, `chevron-back`, `chevron-forward`, `arrow-back`, `arrow-forward`, `external`, `close`, `menu`, `search`, `add`, `check`, `info`, `success`, `warning`, `error`, `calendar`, `upload`, `download`, `document`, `delete`, `language`, `eye`, `eye-off`, `copy`.
-
-The four status icons differ in shape, not only colour. The five directional ones (`chevron-back`, `chevron-forward`, `arrow-back`, `arrow-forward`, `external`) flip in right-to-left text, because the library marks them with `mirrorInRtl`. KvirnUI's own components use these names, so when you register an icon under the same name, every component uses yours. A plain override keeps the default icon's mirroring.
+Directional icons (`chevron-back`, `chevron-forward`, `arrow-back`, `arrow-forward`, `external`) flip in right-to-left text, because the library marks them with `mirrorInRtl`. Every KvirnUI component imports its own icon from `@kvirn-ui/icons` and passes it with its name (`<Icon name="close" icon={close} />`). So when you register an icon under that name (`close`, `chevron-down`, `info`, and so on), every component uses yours. Mirroring belongs to the name: your entry's `mirrorInRtl` wins, else your entry keeps the flip of the icon it replaces, so a plain `ArrowRight` registered as `arrow-forward` still flips in a component. A bare `<Icon name>` of a plain component doesn't flip unless its entry says `mirrorInRtl: true`.
 
 ```tsx
 import { Button, Icon } from '@kvirn-ui/react'
+import { search } from '@kvirn-ui/icons'
 
-<Icon name="search" />
-<Icon name="warning" label={messages.warning} size="24" />
+<Icon name="search" />                              // registered once in KvirnProvider
+<Icon icon={search} label={messages.search} />      // no registration
+<Icon name="close" icon={close} />                  // the registered "close" wins, else the import
 <Button><Icon name="add" />Add</Button>
 ```
 
-Any other icon from `@kvirn-ui/icons` works too: pass it to `icon` (below) or register it under a name. The Map (`mapIcons` in `@kvirn-ui/map`, with the default marker pin) and the rich text editor (`richTextIconNames` in `@kvirn-ui/rich-text`) have their own icons.
+The Map (`mapIcons` in `@kvirn-ui/map`, with the default marker pin) and the rich text editor (`richTextIconNames` in `@kvirn-ui/rich-text`) have their own icons.
 
 ## An icon: `icon`
 
@@ -75,7 +75,7 @@ import { MapPinIcon } from '@heroicons/react/24/outline'
 import MunicipalityLogo from './logo.svg?react'
 
 export const icons = defineIcons({
-  'arrow-forward': { component: ArrowRight, mirrorInRtl: true }, // replaces the default icon
+  'arrow-forward': { component: ArrowRight, mirrorInRtl: true }, // replaces the library's arrow in every component
   delete: Trash2,
   location: MapPinIcon, // libraries can be mixed
   logo: MunicipalityLogo,
@@ -110,9 +110,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 <Icon name="delte" /> // type error, and a warning in development
 ```
 
-- An entry is icon data (an icon from `@kvirn-ui/icons`), a component, or `{ component, mirrorInRtl }`. `mirrorInRtl: false` turns off the flip a default name has (`arrow-forward`), and `mirrorInRtl` on an `<Icon>` wins over the entry. A component must forward its ref and spread SVG props onto one `<svg>`. Lucide, Heroicons, Phosphor and SVGR output all do.
+- An entry is icon data (an icon from `@kvirn-ui/icons`), a component, or `{ component, mirrorInRtl }`. `mirrorInRtl: false` turns off the flip an icon from the library has (`arrow-forward`), and `mirrorInRtl` on an `<Icon>` wins over the entry. A component must forward its ref and spread SVG props onto one `<svg>`. Lucide, Heroicons, Phosphor and SVGR output all do.
 - A nested `KvirnProvider` adds icons and replaces names, over its parent's. `iconDefaults` (`size`) merges field by field.
-- Which value wins, lowest first: the icon's own defaults, the default icon's mirroring for that name, `iconDefaults`, your entry, then the props on `<Icon>`.
+- Which value wins, lowest first: the icon's own defaults, the icon data's `mirrorInRtl`, `iconDefaults`, your entry, then the props on `<Icon>`.
 - An unknown name renders an empty `<svg>` at the right size and warns once in development.
 - Every registered icon is in the bundle that holds the provider. Register the icons the app uses, and use `as` for a rare one.
 
@@ -120,7 +120,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 | Prop          | Type                                                                             | Default                                    |
 | ------------- | -------------------------------------------------------------------------------- | ------------------------------------------ |
-| `name`        | `IconName`: a default or registered name                                         | –                                          |
+| `name`        | `IconName`: a registered name, else any string                                   | –                                          |
 | `icon`        | `IconRegistryEntry`: a library icon, a Lucide, Heroicons or other icon component | –                                          |
 | `size`        | `IconSize`: a pixel string, `'12'` to `'96'`                                     | `iconDefaults.size`, else `'20'`           |
 | `variant`     | `IconVariant`: the colour class, see Colour above                                | none (`currentColor`); no provider default |
@@ -129,7 +129,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 | `as`          | a component that draws the icon, for a one-off icon                              | –                                          |
 | `children`    | your own shapes, with Icon as the `<svg>`                                        | –                                          |
 
-`name`, `icon`, `as` and `children` are exclusive: the types forbid two, and in development, two together warn once. Other SVG attributes, such as `className` or `viewBox`, pass through. `aria-label`, `aria-hidden` and `role` can't be passed: `label` sets them.
+`name`, `icon`, `as` and `children` are exclusive: the types forbid two, and in development, two together warn once. The one pair that is allowed is `name` with `icon`: a registered name wins, else the `icon` draws, and nothing warns. It is how a library component lets your registry swap its icon, and how you can do the same. Other SVG attributes, such as `className` or `viewBox`, pass through. `aria-label`, `aria-hidden` and `role` can't be passed: `label` sets them.
 
 ## Labels for library icons
 

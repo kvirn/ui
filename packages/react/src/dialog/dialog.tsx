@@ -4,6 +4,7 @@ import type { ComponentPropsWithRef, ElementType, ReactElement, ReactNode } from
 import { Announcer } from '../announcer/announcer.tsx'
 import { AnnouncerContext } from '../announcer/announcer-context.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
+import { close } from '@kvirn-ui/icons'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
@@ -263,7 +264,7 @@ export function DialogClose({
     partProps: {
       ...mergeProps(hasVisibleText ? ownProps : { ...ownProps, 'aria-label': name }, otherProps),
       ref: mergedRef,
-      children: hasVisibleText ? children : <Icon name="close" />,
+      children: hasVisibleText ? children : <Icon name="close" icon={close} />,
     },
   })
 }

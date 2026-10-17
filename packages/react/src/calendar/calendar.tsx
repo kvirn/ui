@@ -2,6 +2,7 @@
 import { Fragment, useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
+import { chevronBack, chevronForward } from '@kvirn-ui/icons'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { Tooltip } from '../tooltip/tooltip.tsx'
@@ -170,13 +171,23 @@ function useStepButton(
 
 /** Shows the month before. `aria-disabled` at the start of the range, and still focusable. */
 export function CalendarPreviousMonth(props: CalendarStepButtonProps): ReactElement | null {
-  return useStepButton('PreviousMonth', 'previousMonthProps', props, <Icon name="chevron-back" />)
+  return useStepButton(
+    'PreviousMonth',
+    'previousMonthProps',
+    props,
+    <Icon name="chevron-back" icon={chevronBack} />,
+  )
 }
 CalendarPreviousMonth.displayName = 'Calendar.PreviousMonth'
 
 /** Shows the month after. `aria-disabled` at the end of the range, and still focusable. */
 export function CalendarNextMonth(props: CalendarStepButtonProps): ReactElement | null {
-  return useStepButton('NextMonth', 'nextMonthProps', props, <Icon name="chevron-forward" />)
+  return useStepButton(
+    'NextMonth',
+    'nextMonthProps',
+    props,
+    <Icon name="chevron-forward" icon={chevronForward} />,
+  )
 }
 CalendarNextMonth.displayName = 'Calendar.NextMonth'
 
@@ -187,8 +198,8 @@ export function CalendarPreviousYear(props: CalendarStepButtonProps): ReactEleme
     'previousYearProps',
     props,
     <>
-      <Icon name="chevron-back" />
-      <Icon name="chevron-back" />
+      <Icon name="chevron-back" icon={chevronBack} />
+      <Icon name="chevron-back" icon={chevronBack} />
     </>,
   )
 }
@@ -201,8 +212,8 @@ export function CalendarNextYear(props: CalendarStepButtonProps): ReactElement |
     'nextYearProps',
     props,
     <>
-      <Icon name="chevron-forward" />
-      <Icon name="chevron-forward" />
+      <Icon name="chevron-forward" icon={chevronForward} />
+      <Icon name="chevron-forward" icon={chevronForward} />
     </>,
   )
 }

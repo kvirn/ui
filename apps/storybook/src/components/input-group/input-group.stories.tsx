@@ -1,5 +1,4 @@
 import { Button, ButtonGroup, Card, Field, Icon, InputGroup, TextInput } from '@kvirn-ui/react'
-import { calendar, search } from '@kvirn-ui/icons'
 import contract from '../../../../../packages/react/src/input-group/input-group.a11y.md?raw'
 import guide from '../../../../../packages/react/src/input-group/input-group.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -8,6 +7,7 @@ import { showSource, usageGuide } from '../../docs-source.ts'
 import { localeOf, textsFor, withFormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { SearchBoxWithClear, SearchBoxWithIconOnlyClear } from './input-group.fixture.tsx'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Components/Form/InputGroup: a TextInput with a unit, a symbol, a decorative icon or a button
 // inside its box (design spec docs/design/form-fields.md §6.13). InputGroup.Root is
@@ -47,6 +47,7 @@ const meta = {
   },
   globals: { locale: 'en' },
   decorators: [
+    withLibraryIcons,
     (Story) => (
       <div className="kv-story-form">
         <Story />
@@ -191,7 +192,7 @@ export const SearchIcon: Story = {
           <Field.Label marker="none">{text.searchServices}</Field.Label>
           <InputGroup.Root>
             <InputGroup.Addon>
-              <Icon icon={search} size="20" />
+              <Icon name="search" size="20" />
             </InputGroup.Addon>
             <InputGroup.Input
               type="search"
@@ -339,7 +340,7 @@ export const CalendarIcon: Story = {
               className="kv-input--width-10 kv-input--numeric"
             />
             <InputGroup.Addon>
-              <Icon icon={calendar} size="20" />
+              <Icon name="calendar" size="20" />
             </InputGroup.Addon>
           </InputGroup.Root>
           <Field.HelpText>{text.visitDateExample}</Field.HelpText>
@@ -482,7 +483,7 @@ export const Disabled: Story = {
             <Field.Label marker="none">{text.searchServices}</Field.Label>
             <InputGroup.Root>
               <InputGroup.Addon>
-                <Icon icon={search} size="20" />
+                <Icon name="search" size="20" />
               </InputGroup.Addon>
               <InputGroup.Input
                 type="search"
@@ -643,7 +644,7 @@ export const Compact: Story = {
             <Field.Label marker="none">{text.searchServices}</Field.Label>
             <InputGroup.Root>
               <InputGroup.Addon>
-                <Icon icon={search} size="20" />
+                <Icon name="search" size="20" />
               </InputGroup.Addon>
               <InputGroup.Input
                 type="search"
@@ -746,7 +747,7 @@ export const ForcedColors: Story = {
             <Field.Label marker="none">{text.searchServices}</Field.Label>
             <InputGroup.Root>
               <InputGroup.Addon>
-                <Icon icon={search} size="20" />
+                <Icon name="search" size="20" />
               </InputGroup.Addon>
               <InputGroup.Input
                 type="search"

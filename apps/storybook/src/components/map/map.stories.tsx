@@ -25,6 +25,7 @@ import {
 import { ManyPlacesDemo } from './map-many.fixture.tsx'
 import type { ManyPlacesDemoProps } from './map-many.fixture.tsx'
 import { RichPopupDemo } from './map-rich-popup.tsx'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Map: the viewport, markers, controls and place list (contract: map.a11y.md). Default
 // is the plain map, like the docs site; each customization has its own story and Everything has
@@ -145,6 +146,7 @@ const meta = {
   },
   // The map announces the places in view and a changed map type through the provider's live region.
   decorators: [
+    withLibraryIcons,
     (Story) => (
       <KvirnProvider locale="en" messages={en}>
         <Story />

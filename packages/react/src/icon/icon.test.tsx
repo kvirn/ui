@@ -13,10 +13,8 @@ import { Button } from '../button/button.tsx'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import type { KvirnProviderProps } from '../provider/kvirn-provider.tsx'
-import { arrowForward, search } from '@kvirn-ui/icons'
+import { arrowForward, close, search } from '@kvirn-ui/icons'
 import { allIcons } from '@kvirn-ui/icons/all'
-import { defaultIcons } from './default-icons.ts'
-import type { BuiltInIconName } from './default-icons.ts'
 import { Icon } from './icon.tsx'
 import type { IconProps } from './icon.tsx'
 import { defineIcons } from './icon-registry.ts'
@@ -67,9 +65,6 @@ function RegisteredIcon({
   return <Icon {...otherProps} name={name as IconName} />
 }
 
-const firstBuiltInName: BuiltInIconName = 'close'
-const builtInIconNames = Object.keys(defaultIcons) as BuiltInIconName[]
-
 function svgIn(container: HTMLElement): SVGSVGElement {
   const svg = container.querySelector('svg')
   if (svg === null) {
@@ -87,70 +82,9 @@ async function renderIcon(element: ReactElement, providerProps: KvirnProviderPro
   return svgIn(container)
 }
 
-describe('built-in icons', () => {
-  test('the set is the 25 icons of the design spec, in its order', () => {
-    expect(builtInIconNames).toEqual([
-      'chevron-down',
-      'chevron-up',
-      'chevron-back',
-      'chevron-forward',
-      'arrow-back',
-      'arrow-forward',
-      'external',
-      'close',
-      'menu',
-      'search',
-      'add',
-      'check',
-      'info',
-      'success',
-      'warning',
-      'error',
-      'calendar',
-      'upload',
-      'download',
-      'document',
-      'delete',
-      'language',
-      'eye',
-      'eye-off',
-      'copy',
-    ])
-  })
-
-  test('the icons that mirror in RTL are the ones the library flags', async () => {
-    const { container } = await render(
-      <>
-        {builtInIconNames.map((name) => (
-          <Icon key={name} name={name} data-name={name} />
-        ))}
-      </>,
-    )
-    const mirrored = [...container.querySelectorAll('svg[data-mirror-in-rtl]')].map((svg) =>
-      svg.getAttribute('data-name'),
-    )
-    const flagged = builtInIconNames.filter((name) => defaultIcons[name].mirrorInRtl === true)
-    expect(mirrored).toEqual(flagged)
-    expect(flagged).toEqual([
-      'chevron-back',
-      'chevron-forward',
-      'arrow-back',
-      'arrow-forward',
-      'external',
-    ])
-  })
-
-  test.each(builtInIconNames)('%s renders without a provider, decorative', async (name) => {
-    const { container } = await render(<Icon name={name} />)
-    const svg = svgIn(container)
-    expect(svg.getAttribute('viewBox')).toBe('0 0 24 24')
-    expect(svg.getAttribute('aria-hidden')).toBe('true')
-    expect(svg.children.length).toBeGreaterThan(0)
-    expect(consoleWarn).not.toHaveBeenCalled()
-  })
-
+describe('icon sources', () => {
   test('are drawn in currentColor, so they follow the text colour', async () => {
-    const svg = svgIn((await render(<Icon name={firstBuiltInName} />)).container)
+    const svg = svgIn((await render(<Icon icon={close} />)).container)
     expect(svg.getAttribute('stroke')).toBe('currentColor')
   })
 
@@ -166,7 +100,7 @@ describe('built-in icons', () => {
     expect(svg.hasAttribute('data-mirror-in-rtl')).toBe(true)
   })
 
-  test('a library IconData passed as icon mirrors in RTL like the registered name', async () => {
+  test('mirrorInRtl comes from IconData', async () => {
     const { container } = await render(<Icon icon={arrowForward} />)
     expect(svgIn(container).hasAttribute('data-mirror-in-rtl')).toBe(true)
   })
@@ -178,20 +112,37 @@ describe('built-in icons', () => {
     expect(dataSvg.children.length).toBeGreaterThan(0)
   })
 
-  test('the icon option of useIcon beats the name', async () => {
+  test('an unregistered name with an icon renders the icon without a warning', async () => {
+    const { container } = await render(<Icon name="unregistered" icon={search} />)
+    expect(svgIn(container).children.length).toBeGreaterThan(0)
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('a registered name wins over the icon prop', async () => {
+    const svg = await renderIcon(<Icon name="lucide-trash" icon={search} />)
+    expect(svg.classList.contains('lucide-trash-2')).toBe(true)
+    expect(consoleWarn).not.toHaveBeenCalled()
+  })
+
+  test('a plain registered component under a name keeps the mirroring of the icon it replaces', async () => {
+    const { container } = await render(
+      <KvirnProvider icons={{ 'arrow-forward': Trash2 }}>
+        <Icon name="arrow-forward" icon={arrowForward} />
+      </KvirnProvider>,
+    )
+    const svg = svgIn(container)
+    expect(svg.classList.contains('lucide-trash-2')).toBe(true)
+    expect(svg.hasAttribute('data-mirror-in-rtl')).toBe(true)
+  })
+
+  test('the icon option of useIcon is used when the name is not registered', async () => {
     function Probe() {
-      const icon = useIcon({ name: 'close', icon: Trash2 })
+      const icon = useIcon({ name: 'unregistered', icon: Trash2 })
       return <span data-same={String(icon.component === Trash2)} />
     }
     const { container } = await render(<Probe />)
     expect(container.querySelector('span')?.getAttribute('data-same')).toBe('true')
-  })
-
-  test('an app registration with the same name replaces a built-in', async () => {
-    const svg = await renderIcon(<Icon name={firstBuiltInName} />, {
-      icons: defineIcons({ [firstBuiltInName]: Trash2 }),
-    })
-    expect(svg.classList.contains('lucide')).toBe(true)
+    expect(consoleWarn).not.toHaveBeenCalled()
   })
 })
 
@@ -247,25 +198,7 @@ describe('registry', () => {
     expect(fromProp?.hasAttribute('data-mirror-in-rtl')).toBe(true)
   })
 
-  test("a plain override of a built-in name keeps the built-in's mirroring", async () => {
-    const { container } = await render(
-      <KvirnProvider
-        icons={defineIcons({
-          'arrow-forward': ArrowRight,
-          'chevron-forward': { component: ArrowRight, mirrorInRtl: false },
-        })}
-      >
-        <Icon name="arrow-forward" />
-        <Icon name="chevron-forward" />
-      </KvirnProvider>,
-    )
-    const [plain, explicit] = container.querySelectorAll('svg')
-    expect(plain?.classList.contains('lucide')).toBe(true)
-    expect(plain?.hasAttribute('data-mirror-in-rtl')).toBe(true)
-    expect(explicit?.hasAttribute('data-mirror-in-rtl')).toBe(false)
-  })
-
-  test('an unknown name renders an empty, sized, hidden <svg> and warns once', async () => {
+  test('an unknown name with no icon warns and renders an empty decorative svg', async () => {
     const unknownName = 'not-registered' as IconName
     const { container } = await render(
       <>
@@ -465,13 +398,13 @@ describe('keyboard', () => {
   function IconsAmongStops() {
     return (
       <>
-        <Icon name={firstBuiltInName} label="Close" />
+        <Icon icon={close} label="Close" />
         <Button>
-          <Icon name={firstBuiltInName} />
+          <Icon icon={close} />
           Radera
         </Button>
         <a href="#ansok">
-          Apply <Icon name={firstBuiltInName} />
+          Apply <Icon icon={close} />
         </a>
       </>
     )
@@ -517,8 +450,8 @@ describe('accessibility', () => {
     },
   )
 
-  test('a built-in icon with a label is an image with that name', async () => {
-    await render(<Icon name={firstBuiltInName} label="Close" />)
+  test('an icon with a label is an image with that name', async () => {
+    await render(<Icon icon={close} label="Close" />)
     await expect.element(page.getByRole('img', { name: 'Close' })).toBeVisible()
   })
 
@@ -692,7 +625,6 @@ describe('icon prop: a component reference (Plan 0044)', () => {
 describe('exclusive name, icon, as and children (Plan 0044)', () => {
   // The types forbid these pairs, so the props are built untyped, as JavaScript or a cast would.
   const pairs: ReadonlyArray<readonly [string, string, Record<string, unknown>]> = [
-    ['name, icon', 'name+icon', { name: 'close', icon: Trash2 }],
     ['name, as', 'name+as', { name: 'close', as: TrashIcon }],
     ['name, children', 'name+children', { name: 'close', children: <path d="M5 12h14" /> }],
     ['icon, as', 'icon+as', { icon: Trash2, as: TrashIcon }],
@@ -717,16 +649,17 @@ describe('exclusive name, icon, as and children (Plan 0044)', () => {
     ).toHaveLength(1)
   })
 
-  test('one source alone never warns', async () => {
+  test('one source alone never warns, and name with icon is one source', async () => {
     await render(
-      <>
-        <Icon name="close" />
+      <KvirnProvider icons={libraryIcons}>
+        <Icon name="lucide-trash" />
+        <Icon name="lucide-trash" icon={search} />
         <Icon icon={Trash2} />
         <Icon as={TrashIcon} />
         <Icon viewBox="0 0 24 24">
           <path d="M5 12h14" />
         </Icon>
-      </>,
+      </KvirnProvider>,
     )
     expect(consoleWarn).not.toHaveBeenCalled()
   })
@@ -762,15 +695,15 @@ describe('useIcon', () => {
 })
 
 describe('types', () => {
-  test('built-in names type-check without a registration', () => {
-    expectTypeOf<BuiltInIconName>().toExtend<IconName>()
-    expectTypeOf<'not-an-icon'>().not.toExtend<IconName>()
+  test('IconName is string without a registration', () => {
+    expectTypeOf<IconName>().toEqualTypeOf<string>()
+    expectTypeOf<IconNameOf<{}>>().toEqualTypeOf<string>()
   })
 
   test('a registration adds its names', () => {
     type Registered = IconNameOf<{ icons: typeof libraryIcons }>
     expectTypeOf<'lucide-trash'>().toExtend<Registered>()
-    expectTypeOf<BuiltInIconName>().toExtend<Registered>()
+    expectTypeOf<'close'>().not.toExtend<Registered>()
     expectTypeOf<'lucide-trsh'>().not.toExtend<Registered>()
     expectTypeOf<IconsOf<{}>>().toEqualTypeOf<{}>()
   })
@@ -807,9 +740,9 @@ describe('types', () => {
   })
 
   test('name, icon, as and children are exclusive', () => {
-    expectTypeOf<{ name: BuiltInIconName; as: ElementType }>().not.toExtend<IconProps>()
-    expectTypeOf<{ name: BuiltInIconName; children: ReactNode }>().not.toExtend<IconProps>()
-    expectTypeOf<{ name: BuiltInIconName; icon: IconComponent }>().not.toExtend<IconProps>()
+    expectTypeOf<{ name: IconName; as: ElementType }>().not.toExtend<IconProps>()
+    expectTypeOf<{ name: IconName; children: ReactNode }>().not.toExtend<IconProps>()
+    expectTypeOf<{ name: IconName; icon: IconComponent }>().toExtend<IconProps>()
     expectTypeOf<{ icon: IconComponent; as: ElementType }>().not.toExtend<IconProps>()
     expectTypeOf<{ icon: IconComponent; children: ReactNode }>().not.toExtend<IconProps>()
     expectTypeOf<{ as: ElementType; children: ReactNode }>().not.toExtend<IconProps>()

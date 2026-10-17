@@ -524,6 +524,7 @@ function KeyboardCase({
   list = false,
   controls = false,
   dir,
+  icons,
 }: {
   provider?: ReturnType<typeof createMemoryProvider>
   places?: MapPlace[]
@@ -533,9 +534,10 @@ function KeyboardCase({
   list?: boolean
   controls?: boolean
   dir?: 'rtl'
+  icons?: ComponentProps<typeof KvirnProvider>['icons']
 }) {
   return (
-    <KvirnProvider>
+    <KvirnProvider icons={icons}>
       <style>{keyboardStyle}</style>
       <div dir={dir}>
         <button type="button">Before</button>
@@ -790,6 +792,34 @@ describe('Map keyboard: controls', () => {
     button('Whole map').element().focus()
     await userEvent.keyboard('{Enter}')
     await expect.poll(() => currentView(provider)).toEqual({ center: centre, zoom })
+  })
+})
+
+describe('Map controls icons', () => {
+  test('the map controls draw their icons with no registry', async () => {
+    await render(
+      <KeyboardCase provider={createMemoryProvider()} places={placesEast(1, 0)} controls />,
+    )
+    const icon = button('Move the map north').element().querySelector('svg')
+    expect(icon?.querySelector('path, circle, line, polyline')).not.toBeNull()
+  })
+})
+
+describe('Map controls registered icons', () => {
+  test('a registered name replaces a map control icon', async () => {
+    const Replacement = (props: ComponentProps<'svg'>) => (
+      <svg {...props} data-testid="replacement" />
+    )
+    await render(
+      <KeyboardCase
+        provider={createMemoryProvider()}
+        places={placesEast(1, 0)}
+        controls
+        icons={{ add: Replacement }}
+      />,
+    )
+    expect(button('Zoom in').element().querySelector('[data-testid="replacement"]')).not.toBeNull()
+    expect(button('Zoom out').element().querySelector('[data-testid="replacement"]')).toBeNull()
   })
 })
 

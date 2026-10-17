@@ -13,6 +13,7 @@ export default function Page() {
       sources={{
         default: readExampleSource('icon/default.tsx'),
         'by-name': readExampleSource('icon/by-name.tsx'),
+        'by-import': readExampleSource('icon/by-import.tsx'),
         'with-label': readExampleSource('icon/with-label.tsx'),
         sizes: readExampleSource('icon/sizes.tsx'),
         'own-component': readExampleSource('icon/own-component.tsx'),

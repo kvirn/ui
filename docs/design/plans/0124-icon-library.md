@@ -18,11 +18,11 @@ A public-sector icon library of 150+ outline icons that look drawn by one hand: 
 
 ## Decisions (maintainer, 2026-10-16)
 
-| Question | Chosen                                                                                            | Why                                                                                        |
-| -------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Home     | New package `@kvirn-ui/icons`, one module per icon. The 25 built-ins stay in react as base layer. | Tree-shaking; 150 path strings don't belong in every consumer's react bundle; own gallery. |
-| Source   | `packages/icons/svg/<name>.svg` plus a generator (no dependency) emitting typed modules.          | The designer reviews real SVGs and a contact sheet; the checker can read files.            |
-| Variants | Outline only, 24 grid.                                                                            | One weight rule is the smallest surface to keep consistent. Fix 16px by redrawing.         |
+| Question | Chosen                                                                                                                                                                            | Why                                                                                        |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Home     | New package `@kvirn-ui/icons`, one module per icon. The 25 built-ins stay in react as base layer. (Superseded by Plan 0128: react draws nothing; the defaults are library icons.) | Tree-shaking; 150 path strings don't belong in every consumer's react bundle; own gallery. |
+| Source   | `packages/icons/svg/<name>.svg` plus a generator (no dependency) emitting typed modules.                                                                                          | The designer reviews real SVGs and a contact sheet; the checker can read files.            |
+| Variants | Outline only, 24 grid.                                                                                                                                                            | One weight rule is the smallest surface to keep consistent. Fix 16px by redrawing.         |
 
 Taken during implementation (lead, 2026-10-16):
 

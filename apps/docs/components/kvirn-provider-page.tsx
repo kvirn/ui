@@ -28,7 +28,7 @@ const providerRows = propRows<KvirnProviderProps>({
   },
   messages: {
     type: 'PartialMessages',
-    default: 'Inherited, then built-in en',
+    default: 'Inherited, then English',
     description: 'A catalog or a partial override of the texts.',
   },
   timeZone: {
@@ -49,9 +49,9 @@ const providerRows = propRows<KvirnProviderProps>({
   },
   icons: {
     type: 'IconRegistry',
-    default: "The 25 default icons, then the parent's",
+    default: "The parent's",
     description:
-      'More names for <Icon name>, from defineIcons: icons from @kvirn-ui/icons, or from Lucide or others. The 25 default names need none. Merged by name.',
+      'The names for <Icon name>, from defineIcons: icons from @kvirn-ui/icons, or from Lucide or others. KvirnUI draws no icon by name until you register it. Merged by name.',
   },
   iconDefaults: {
     type: 'IconDefaults',
@@ -501,13 +501,14 @@ export function KvirnProviderPage() {
               </p>
               <Sub {...icons} />
               <p>
-                The 25 default icon names, such as <code>close</code> and <code>search</code>, work
-                with no setup. To use other names, pass a registry made by <code>defineIcons</code>{' '}
-                as <code>icons</code>. It can hold icons from <code>@kvirn-ui/icons</code>, or from
-                Lucide or another library. Registering the whole set from{' '}
-                <code>@kvirn-ui/icons/all</code> adds every icon to your bundle, so register only
-                the ones you need. You can also skip names and pass an icon straight to{' '}
-                <code>Icon</code>. Set a default size with <code>iconDefaults</code>. A nested
+                KvirnUI draws no icon by name until you register it. To draw icons by name, such as{' '}
+                <code>close</code> and <code>search</code>, pass a registry made by{' '}
+                <code>defineIcons</code> as <code>icons</code>. A registered name also replaces that
+                icon in KvirnUI’s own components. It can hold icons from{' '}
+                <code>@kvirn-ui/icons</code>, or from Lucide or another library. Registering the
+                whole set from <code>@kvirn-ui/icons/all</code> adds every icon to your bundle, so
+                register only the ones you need. You can also skip names and pass an icon straight
+                to <code>Icon</code>. Set a default size with <code>iconDefaults</code>. A nested
                 provider merges the registry by name and the default size by field. See{' '}
                 <Link href="/components/icon">Icon</Link>.
               </p>

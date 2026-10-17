@@ -1,5 +1,4 @@
 // kv-lang-ok-file: Reflow320 is the long Finnish compound hard case under locale fi
-import { chevronForward } from '@kvirn-ui/icons'
 import { Breadcrumb, Icon } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/breadcrumb/breadcrumb.a11y.md?raw'
 import guide from '../../../../../packages/react/src/breadcrumb/breadcrumb.md?raw'
@@ -8,6 +7,7 @@ import { expect, userEvent } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { withLocale } from './breadcrumb.fixture.tsx'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Components/Breadcrumb: the headless Breadcrumb, styled by @kvirn-ui/theme/theme.css (brief B4 in
 // docs/design/municipality-reference-site.md). The landmark's name is the library's own string and
@@ -49,7 +49,7 @@ const meta = {
       </Breadcrumb.List>
     ),
   },
-  decorators: [withLocale],
+  decorators: [withLibraryIcons, withLocale],
   globals: { locale: 'en' },
   parameters: {
     a11yContract: contract,
@@ -89,9 +89,7 @@ export const CustomSeparator: Story = {
   parameters: {
     docs: {
       source: {
-        code: `import { chevronForward } from '@kvirn-ui/icons'
-
-<Breadcrumb.Root label="You are here" separator={<Icon icon={chevronForward} />}>
+        code: `<Breadcrumb.Root label="You are here" separator={<Icon name="chevron-forward" />}>
   …
 </Breadcrumb.Root>`,
         language: 'tsx',
@@ -99,7 +97,7 @@ export const CustomSeparator: Story = {
       },
     },
   },
-  args: { separator: <Icon icon={chevronForward} /> },
+  args: { separator: <Icon name="chevron-forward" /> },
   play: async ({ canvas, canvasElement }) => {
     const separators = canvasElement.querySelectorAll('.kv-breadcrumb-separator')
     await expect(separators).toHaveLength(3)
@@ -232,7 +230,7 @@ export const RTLVariants: Story = {
   render: (args) => (
     <>
       <Breadcrumb.Root {...args} />
-      <Breadcrumb.Root label="Icon separator" separator={<Icon icon={chevronForward} />}>
+      <Breadcrumb.Root label="Icon separator" separator={<Icon name="chevron-forward" />}>
         {shortTrail}
       </Breadcrumb.Root>
     </>
@@ -253,7 +251,7 @@ export const ForcedColors: Story = {
       <Breadcrumb.Root
         {...args}
         label="Icon separator"
-        separator={<Icon icon={chevronForward} />}
+        separator={<Icon name="chevron-forward" />}
       />
     </>
   ),

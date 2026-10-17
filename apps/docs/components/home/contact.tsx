@@ -1,5 +1,4 @@
 'use client'
-import { arrowForward } from '@kvirn-ui/icons'
 import { CardBody, CardRoot, Grid, Heading, Icon, Link, LinkIcon, Stack } from '@kvirn-ui/react'
 import { homeMessages } from '../../messages/home.ts'
 import { Band } from './band.tsx'
@@ -26,7 +25,7 @@ export function Contact() {
                 <p>
                   <Link href="/contact" className="kv-link--service">
                     <LinkIcon>
-                      <Icon icon={arrowForward} size="24" />
+                      <Icon name="arrow-forward" size="24" />
                     </LinkIcon>
                     {card.link}
                   </Link>

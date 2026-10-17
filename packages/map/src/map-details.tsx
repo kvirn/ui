@@ -1,3 +1,4 @@
+import { close } from '@kvirn-ui/icons'
 import { Icon } from '@kvirn-ui/react'
 import type { MapPlace } from '@kvirn-ui/core'
 import { createContext, useContext } from 'react'
@@ -173,7 +174,7 @@ export function MapDetailsClose({
         }
       }}
     >
-      {children ?? <Icon name="close" />}
+      {children ?? <Icon name="close" icon={close} />}
     </button>
   )
 }

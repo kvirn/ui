@@ -1,5 +1,4 @@
 'use client'
-import { arrowForward } from '@kvirn-ui/icons'
 import { Heading, Icon, Link, LinkIcon } from '@kvirn-ui/react'
 import { homeMessages } from '../../messages/home.ts'
 import { Band } from './band.tsx'
@@ -18,7 +17,7 @@ export function Hero() {
       <div className="home-actions">
         <Link href="/docs" className="kv-link--service">
           <LinkIcon>
-            <Icon icon={arrowForward} size="24" />
+            <Icon name="arrow-forward" size="24" />
           </LinkIcon>
           {text.start}
         </Link>

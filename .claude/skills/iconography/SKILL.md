@@ -1,6 +1,6 @@
 ---
 name: iconography
-description: The craft of drawing KvirnUI's icons - one system for 150+ outline SVGs on a 24 grid: the parts kit, stroke and corner rules, optical balance, detail budget, metaphor and naming, accessibility of an icon (small sizes, forced colours, RTL, meaning without colour), drawing in families, and the render-and-compare process that proves a set looks like one hand drew it. Use when you draw, revise, name, review or inventory an icon. The grid, keylines and the 25 built-ins are in docs/design/icon.md section 6.1; the library system is in docs/design/icon-library.md.
+description: The craft of drawing KvirnUI's icons - one system for 150+ outline SVGs on a 24 grid: the parts kit, stroke and corner rules, optical balance, detail budget, metaphor and naming, accessibility of an icon (small sizes, forced colours, RTL, meaning without colour), drawing in families, and the render-and-compare process that proves a set looks like one hand drew it. Use when you draw, revise, name, review or inventory an icon. The grid, keylines and the drawing rules are in docs/design/icon.md section 6.1; the library system is in docs/design/icon-library.md.
 when_to_use: new icon, icon set, SVG icon, redraw an icon, icon looks off, icon too detailed, icon metaphor, icon naming, icon family, contact sheet, icon review, pictogram, RTL mirroring of an icon, 16px legibility, stroke weight, optical alignment
 ---
 
@@ -8,7 +8,7 @@ when_to_use: new icon, icon set, SVG icon, redraw an icon, icon looks off, icon 
 
 Icons here are a language, not decoration. A resident meets one once, at 16px, under stress, in Windows Contrast Themes or a second language. **If an icon needs decoding, redraw it or drop it.** Consistency is the feature: 150 icons must look like one hand drew them in one afternoon.
 
-Where facts live: the grid, keylines, gaps, markup rules and the 25 built-ins are `docs/design/icon.md` §6.1 (don't restate them, read them). The library's parts kit, taxonomy and inventory are `docs/design/icon-library.md`. How to _decide and check_ is this skill. How an icon is rendered, registered and mirrored is `packages/react/src/icon/icon.md`.
+Where facts live: the grid, keylines, gaps, markup rules (first written for the 25 icons the components draw) are `docs/design/icon.md` §6.1 (don't restate them, read them). The library's parts kit, taxonomy and inventory are `docs/design/icon-library.md`. How to _decide and check_ is this skill. How an icon is rendered, registered and mirrored is `packages/react/src/icon/icon.md`.
 
 ## The five laws
 

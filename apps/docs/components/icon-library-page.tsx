@@ -36,10 +36,10 @@ export function IconLibraryPage() {
       </p>
       <h2 id="use-them">How to use them</h2>
       <p>
-        The icons are in the <code>@kvirn-ui/icons</code> package. Import the ones you use and pass
-        each to the <Link href="/components/icon">Icon</Link> component as <code>icon</code>. This
-        works with or without a <code>KvirnProvider</code>, and you ship only the icons you import
-        (your bundle, the code you send to the browser):
+        The icons are in the <code>@kvirn-ui/icons</code> package. KvirnUI has no icons of its own
+        to fall back on: you import the ones you use, so you ship only those (your bundle, the code
+        you send to the browser). Pass an icon to the <Link href="/components/icon">Icon</Link>{' '}
+        component as <code>icon</code>, with or without a <code>KvirnProvider</code>:
       </p>
       <pre>
         <code>{`import { search } from '@kvirn-ui/icons'
@@ -53,18 +53,7 @@ export function IconLibraryPage() {
         <code>new</code> are reserved words in JavaScript.
       </p>
       <p>
-        The 25 icons that KvirnUI’s own components draw also work by name, with no import and no
-        provider: <code>&lt;Icon name=&quot;close&quot; /&gt;</code>. They are{' '}
-        <code>chevron-down</code>, <code>chevron-up</code>, <code>chevron-back</code>,{' '}
-        <code>chevron-forward</code>, <code>arrow-back</code>, <code>arrow-forward</code>,{' '}
-        <code>external</code>, <code>close</code>, <code>menu</code>, <code>search</code>,{' '}
-        <code>add</code>, <code>check</code>, <code>info</code>, <code>success</code>,{' '}
-        <code>warning</code>, <code>error</code>, <code>calendar</code>, <code>upload</code>,{' '}
-        <code>download</code>, <code>document</code>, <code>delete</code>, <code>language</code>,{' '}
-        <code>eye</code>, <code>eye-off</code> and <code>copy</code>.
-      </p>
-      <p>
-        To use other icons by name, register them once in <code>KvirnProvider</code>. You can also
+        To use icons by name, register them once in <code>KvirnProvider</code>. You can also
         register icons from Lucide or another set there.
       </p>
       <pre>

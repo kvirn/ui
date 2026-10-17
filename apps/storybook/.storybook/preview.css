@@ -498,7 +498,7 @@ body {
   --kv-alert-accent: var(--kv-color-primary);
 }
 
-/* Components/Icon: the built-in set as a grid of cells, 2 columns at 320px and 6 at 64rem. */
+/* Components/Icon: the library set as a grid of cells, 2 columns at 320px and 6 at 64rem. */
 .kv-story-icon-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));

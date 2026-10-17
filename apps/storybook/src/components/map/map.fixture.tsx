@@ -1,4 +1,3 @@
-import { info } from '@kvirn-ui/icons'
 import { Map, useMapState } from '@kvirn-ui/map'
 import type { MapPlace, MapProvider, MapRootProps, MapView } from '@kvirn-ui/map'
 import { maplibre, rasterStyle } from '@kvirn-ui/map/maplibre'
@@ -369,7 +368,7 @@ export function MapOwnListDemo({ offline = false, ...mapProps }: MapDemoProps) {
     <Map.Root provider={provider} {...mapProps} cluster={false}>
       <Map.Skip href={`#${ownListHeadingId}`} />
       <Map.Viewport>
-        <Map.Markers>{() => <Icon icon={info} size="16" />}</Map.Markers>
+        <Map.Markers>{() => <Icon name="info" size="16" />}</Map.Markers>
         <Map.Controls />
         <Map.Attribution />
       </Map.Viewport>
@@ -386,7 +385,7 @@ export function MapSelectSwitchDemo({ offline = false, ...mapProps }: MapDemoPro
     <Map.Root provider={provider} {...mapProps} cluster={false}>
       <Map.Skip />
       <Map.Viewport>
-        <Map.Markers>{() => <Icon icon={info} size="16" />}</Map.Markers>
+        <Map.Markers>{() => <Icon name="info" size="16" />}</Map.Markers>
         <Map.Controls />
         <Map.Attribution />
       </Map.Viewport>
@@ -403,7 +402,7 @@ export function CustomPopupDemo({ offline = false, ...mapProps }: MapDemoProps) 
     <Map.Root provider={provider} {...mapProps} cluster={false}>
       <Map.Skip />
       <Map.Viewport>
-        <Map.Markers>{() => <Icon icon={info} size="16" />}</Map.Markers>
+        <Map.Markers>{() => <Icon name="info" size="16" />}</Map.Markers>
         <Map.Controls />
         <Map.Attribution />
       </Map.Viewport>
@@ -427,7 +426,7 @@ export function MapRenderFunctionPopupDemo({ offline = false, ...mapProps }: Map
     <Map.Root provider={provider} {...mapProps} cluster={false}>
       <Map.Skip />
       <Map.Viewport>
-        <Map.Markers>{() => <Icon icon={info} size="16" />}</Map.Markers>
+        <Map.Markers>{() => <Icon name="info" size="16" />}</Map.Markers>
         <Map.Controls />
         <Map.Attribution />
       </Map.Viewport>

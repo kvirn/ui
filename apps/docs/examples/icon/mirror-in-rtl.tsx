@@ -1,5 +1,4 @@
 'use client'
-import { arrowForward } from '@kvirn-ui/icons'
 import { Icon } from '@kvirn-ui/react'
 import { useIconTexts } from './texts.ts'
 
@@ -8,10 +7,10 @@ export function MirrorInRtl() {
   return (
     <div>
       <p>
-        {texts.nextLeftToRight} <Icon icon={arrowForward} />
+        {texts.nextLeftToRight} <Icon name="arrow-forward" />
       </p>
       <p dir="rtl">
-        {texts.nextRightToLeft} <Icon icon={arrowForward} />
+        {texts.nextRightToLeft} <Icon name="arrow-forward" />
       </p>
     </div>
   )

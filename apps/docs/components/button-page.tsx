@@ -163,9 +163,7 @@ export function ButtonPage({
                 kind="recipe"
                 more={
                   <CodeBlock
-                    code={`import { close } from '@kvirn-ui/icons'
-
-<Button aria-label={messages.close}><Icon icon={close} /></Button>`}
+                    code={`<Button aria-label={messages.close}><Icon name="close" /></Button>`}
                   />
                 }
               >

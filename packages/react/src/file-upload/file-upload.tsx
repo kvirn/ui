@@ -17,6 +17,14 @@ import { FieldContext } from '../field/field-context.ts'
 import { useDescriptionPart } from '../field/use-description-part.ts'
 import { joinIds } from '../field/field-state.ts'
 import { useFocusVisible } from '../focus-visible/use-focus-visible.ts'
+import {
+  deleteIcon,
+  document as documentIcon,
+  error,
+  success,
+  upload,
+  warning,
+} from '@kvirn-ui/icons'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
@@ -275,7 +283,7 @@ export function FileUploadTrigger({
     // name starts with the visible text whatever the engine does with a button that names itself.
     children: (
       <>
-        {children === undefined ? <Icon name="upload" size="20" /> : null}
+        {children === undefined ? <Icon name="upload" icon={upload} size="20" /> : null}
         <span id={fileUpload?.triggerTextId}>{children ?? fileUpload?.triggerText}</span>
       </>
     ),
@@ -425,7 +433,7 @@ export function FileUploadRejections({
     children ?? (
       <>
         <p>
-          <Icon name="error" size="20" />
+          <Icon name="error" icon={error} size="20" />
           <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span>{' '}
           {fileUpload.messages.rejectedHeading({ count: fileUpload.rejections.length })}
         </p>
@@ -609,7 +617,7 @@ export function FileUploadPreview({
           ...mergeProps(otherProps, { className: 'kv-file-upload-preview' }),
           ref: mergedRef,
         },
-        children ?? <Icon name="document" size="24" />,
+        children ?? <Icon name="document" icon={documentIcon} size="24" />,
       )
 }
 FileUploadPreview.displayName = 'FileUpload.Preview'
@@ -700,8 +708,12 @@ export function FileUploadStatus({
     return null
   }
   const { item } = itemContext
-  const icon =
-    item.status === 'complete' ? 'success' : item.status === 'cancelled' ? 'warning' : undefined
+  const statusIcon =
+    item.status === 'complete'
+      ? ({ name: 'success', icon: success } as const)
+      : item.status === 'cancelled'
+        ? ({ name: 'warning', icon: warning } as const)
+        : undefined
 
   return createElement(
     'p',
@@ -710,7 +722,7 @@ export function FileUploadStatus({
       ref: mergedRef,
     },
     <>
-      {icon === undefined ? null : <Icon name={icon} size="16" />}
+      {statusIcon === undefined ? null : <Icon {...statusIcon} size="16" />}
       {children ?? fileUpload.getItemStatusText(item)}
     </>,
   )
@@ -786,7 +798,7 @@ export function FileUploadItemError({
       ref: mergedRef,
     },
     <>
-      <Icon name="error" size="20" />
+      <Icon name="error" icon={error} size="20" />
       <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span>{' '}
       {children ?? fileUpload.getItemErrorText(itemContext.item)}
     </>,
@@ -862,7 +874,7 @@ function ItemButton({
     },
     children ?? (
       <>
-        {kind === 'remove' ? <Icon name="delete" size="20" /> : null}
+        {kind === 'remove' ? <Icon name="delete" icon={deleteIcon} size="20" /> : null}
         {visibleText}
       </>
     ),

@@ -1,5 +1,4 @@
 import { Button, ButtonGroup, Card, Field, Icon, Section, TextInput } from '@kvirn-ui/react'
-import { add, arrowForward, chevronDown, close } from '@kvirn-ui/icons'
 import type { ButtonProps } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/button/button.a11y.md?raw'
 import guide from '../../../../../packages/react/src/button/button.md?raw'
@@ -10,6 +9,7 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { ApplicationForm, ChangeAddressForm } from './button.fixture.tsx'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Components/Button: the headless Button, styled by @kvirn-ui/theme/theme.css.
 // The keyboard contract is proved in button.test.tsx, so the play functions only read.
@@ -172,10 +172,11 @@ export const Danger: Story = {
 
 /** An icon before the text. The order in the markup is the order on screen, and RTL flips it. */
 export const IconAtStart: Story = {
+  decorators: [withLibraryIcons],
   args: {
     children: (
       <>
-        <Icon icon={add} />
+        <Icon name="add" />
         {fixtureText.addChild}
       </>
     ),
@@ -188,12 +189,13 @@ export const IconAtStart: Story = {
 
 /** An icon after the text, here a primary "continue" with an arrow that mirrors in RTL. */
 export const IconAtEnd: Story = {
+  decorators: [withLibraryIcons],
   args: {
     className: 'kv-button--primary',
     children: (
       <>
         {fixtureText.continue}
-        <Icon icon={arrowForward} />
+        <Icon name="arrow-forward" />
       </>
     ),
   },
@@ -208,13 +210,12 @@ export const IconAtEnd: Story = {
  * translations) and the icon stays decorative. Use it only for actions everyone knows.
  */
 export const IconOnly: Story = {
+  decorators: [withLibraryIcons],
   parameters: {
     docs: {
       source: {
-        code: `import { close } from '@kvirn-ui/icons'
-
-<Button className="kv-button--icon-only" aria-label="Close">
-  <Icon icon={close} />
+        code: `<Button className="kv-button--icon-only" aria-label="Close">
+  <Icon name="close" />
 </Button>`,
         language: 'tsx',
         type: 'code',
@@ -224,7 +225,7 @@ export const IconOnly: Story = {
   args: {
     className: 'kv-button--icon-only',
     'aria-label': fixtureText.close,
-    children: <Icon icon={close} />,
+    children: <Icon name="close" />,
   },
   play: async ({ canvas }) => {
     const button = canvas.getByRole('button', { name: fixtureText.close })
@@ -240,11 +241,12 @@ export const IconOnly: Story = {
  * going on a step or a destructive action.
  */
 export const LinkLook: Story = {
+  decorators: [withLibraryIcons],
   render: () => (
     <ButtonGroup>
       <Button className="kv-button--link" aria-expanded="false">
         {fixtureText.settings}
-        <Icon icon={chevronDown} />
+        <Icon name="chevron-down" />
       </Button>
       <Button className="kv-button--link" disabled>
         {fixtureText.settings}

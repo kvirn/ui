@@ -1,21 +1,20 @@
 'use client'
-import { book, playground, swimmingPool } from '@kvirn-ui/icons'
-import type { IconData } from '@kvirn-ui/icons'
 import { Map } from '@kvirn-ui/map'
 import { Field, Icon, Switch } from '@kvirn-ui/react'
+import type { IconName } from '@kvirn-ui/react'
 import { useMapTexts } from './texts.ts'
 import { DocsMap } from './use-docs-provider.tsx'
 
 // One icon per layer, so colour is never the only difference between the kinds of place.
-const layerIcons: Record<string, IconData> = {
-  playgrounds: playground,
-  libraries: book,
-  pools: swimmingPool,
+const layerIcons: Record<string, IconName> = {
+  playgrounds: 'playground',
+  libraries: 'book',
+  pools: 'swimming-pool',
 }
 
 function LayerIcon({ layer }: { layer: string | undefined }) {
   const icon = layerIcons[layer ?? '']
-  return icon ? <Icon icon={icon} size="16" /> : null
+  return icon ? <Icon name={icon} size="16" /> : null
 }
 
 const initialView = { center: { longitude: 18.07, latitude: 59.328 }, zoom: 13 }

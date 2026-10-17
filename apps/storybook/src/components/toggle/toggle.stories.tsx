@@ -1,5 +1,4 @@
 import { Card, Icon, Section, Toggle } from '@kvirn-ui/react'
-import { eye } from '@kvirn-ui/icons'
 import contract from '../../../../../packages/react/src/toggle/toggle.a11y.md?raw'
 import guide from '../../../../../packages/react/src/toggle/toggle.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
@@ -7,6 +6,7 @@ import { useState } from 'react'
 import { expect, fn, waitFor } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Components/Toggle: a button that is on or off, styled by @kvirn-ui/theme/theme.css (contract:
 // toggle.a11y.md).
@@ -92,6 +92,7 @@ const meta = {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
   },
+  decorators: [withLibraryIcons],
 } satisfies Meta<typeof Toggle>
 
 export default meta
@@ -157,10 +158,8 @@ export const IconOnly: Story = {
   parameters: {
     docs: {
       source: {
-        code: `import { eye } from '@kvirn-ui/icons'
-
-<Toggle className="kv-button--icon-only" aria-label="Show password">
-  <Icon icon={eye} />
+        code: `<Toggle className="kv-button--icon-only" aria-label="Show password">
+  <Icon name="eye" />
 </Toggle>`,
         language: 'tsx',
         type: 'code',
@@ -170,7 +169,7 @@ export const IconOnly: Story = {
   args: {
     className: 'kv-button--icon-only',
     'aria-label': text.showPassword,
-    children: <Icon icon={eye} />,
+    children: <Icon name="eye" />,
   },
   play: async ({ canvas, userEvent }) => {
     const toggle = canvas.getByRole('button', { name: text.showPassword })

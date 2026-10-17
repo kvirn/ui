@@ -1,5 +1,6 @@
 'use client'
 
+import { arrowBack } from '@kvirn-ui/icons'
 import {
   Alert,
   Button,
@@ -147,7 +148,7 @@ export function FormPage({ state = 'empty', failNextSend = false }: FormPageProp
       <Container size="form">
         <Link.Root href="#accessibility">
           <Link.Icon>
-            <Icon name="arrow-back" size="24" />
+            <Icon name="arrow-back" icon={arrowBack} size="24" />
           </Link.Icon>
           Back to accessibility
         </Link.Root>

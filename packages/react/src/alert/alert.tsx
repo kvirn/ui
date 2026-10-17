@@ -1,6 +1,7 @@
 'use client'
 import type { AnnouncerPoliteness } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
+import { close } from '@kvirn-ui/icons'
 import { useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { useButton } from '../button/use-button.ts'
@@ -291,7 +292,7 @@ export function AlertClose({
       )}
       ref={ref}
     >
-      {hasVisibleText ? children : <Icon name="close" />}
+      {hasVisibleText ? children : <Icon name="close" icon={close} />}
     </button>
   )
 }

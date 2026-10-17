@@ -5,6 +5,8 @@
 - **Plan:** Plan 0009
 - **Type:** component default styling + built-in asset set + DESIGN.md rule change
 
+> **Superseded (Plan 0130, 2026-10-17).** There are no default icons. Every icon is a `@kvirn-ui/icons` import; a component passes `name` and `icon` together, and `name` alone resolves only what the app registers. Examples use `<Icon name>` against a registry. The 25 below are the icons KvirnUI's components draw, not a built-in set. The keylines and drawing rules (§6) still apply to the library, and so does §4.2: mirroring belongs to the name, so a plain component registered over a component's directional icon keeps its flip.
+>
 > **Superseded in part (Plan 0128, 2026-10-17).** `@kvirn-ui/react` draws nothing. The "built-in set" below is now the 25 default names (`BuiltInIconName`), imported from `@kvirn-ui/icons` in `packages/react/src/icon/default-icons.ts`; the library's drawings replace the ones described here (library rules: `docs/design/icon-library.md`). Docs and Storybook import icons explicitly (`<Icon icon={add} />`); `name` resolves the 25 defaults and anything registered through `KvirnProvider icons`. Read "built-in" below as "default".
 
 The API is decided in the Icon API decision and Plan 0009: a typed name registry in `KvirnProvider`, attributes on the root `<svg>`, a size scale (changed 2026-10-04, see the note below), and decorative by default. The maintainer has also decided (2026-10-01) that `@kvirn-ui/react` ships a **built-in set** as the registry's base layer. It's drawn in the Heroicons outline style, but every drawing is original. An app that registers the same name replaces the built-in.

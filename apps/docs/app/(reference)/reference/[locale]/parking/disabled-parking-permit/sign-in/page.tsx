@@ -11,7 +11,6 @@ import {
   LinkRoot,
   Stack,
 } from '@kvirn-ui/react'
-import { arrowBack } from '@kvirn-ui/icons'
 import { PageFrameMain } from '@kvirn-ui/patterns'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -45,7 +44,7 @@ export default async function ReferenceDisabledParkingPermitSignInPage({
         <Stack className="kv-stack--gap-8">
           <LinkRoot href={href('parking/disabled-parking-permit')}>
             <LinkIcon>
-              <Icon icon={arrowBack} size="24" />
+              <Icon name="arrow-back" size="24" />
             </LinkIcon>
             {text.back}
           </LinkRoot>

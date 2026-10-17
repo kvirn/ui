@@ -1,5 +1,4 @@
 'use client'
-import { arrowForward } from '@kvirn-ui/icons'
 import { Grid, Heading, Icon, Link, LinkIcon, Stack } from '@kvirn-ui/react'
 import { homeMessages } from '../../messages/home.ts'
 import { CodeBlock } from '../code-block.tsx'
@@ -35,7 +34,7 @@ export function Start() {
       <div className="home-actions">
         <Link href="/docs" className="kv-link--service">
           <LinkIcon>
-            <Icon icon={arrowForward} size="24" />
+            <Icon name="arrow-forward" size="24" />
           </LinkIcon>
           {text.links.getStarted}
         </Link>

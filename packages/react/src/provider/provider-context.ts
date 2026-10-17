@@ -40,7 +40,7 @@ export interface KvirnConfig {
   env: Env | undefined
 }
 
-/** What components get without a provider: `en`, `ltr`, UTC, `<a>`, default icons. */
+/** What components get without a provider: `en`, `ltr`, UTC, `<a>`, no icons. */
 export const defaultKvirnConfig: KvirnConfig = {
   locale: 'en',
   dir: 'ltr',

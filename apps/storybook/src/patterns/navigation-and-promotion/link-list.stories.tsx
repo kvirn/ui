@@ -1,11 +1,11 @@
 import { Heading, Icon, Link, List } from '@kvirn-ui/react'
-import { external } from '@kvirn-ui/icons'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import contract from '../../../../../packages/patterns/src/navigation-and-promotion/link-list/link-list.a11y.md?raw'
 import type { ReactNode } from 'react'
 import { expect, userEvent } from 'storybook/test'
 import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
 import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns-story-support.tsx'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Patterns/Navigation and promotion/Link list and related links (docs/design/storybook-patterns-t5.md S15).
 // Story-only: one recipe, a heading and a List of links, used for "other ways to contact us" and for "Related pages".
@@ -26,6 +26,7 @@ const meta = {
     docs: { description: { component: description } },
     viewport: { options: chromeViewports },
   },
+  decorators: [withLibraryIcons],
 } satisfies Meta
 
 export default meta
@@ -111,7 +112,7 @@ export const LinkToAnotherSite: Story = {
       <List.Item>
         <Link.Root href="https://example.org/" target="_blank">
           <Link.Icon>
-            <Icon icon={external} />
+            <Icon name="external" />
           </Link.Icon>
           The national agency&apos;s guide
           <Link.NewTabNotice />

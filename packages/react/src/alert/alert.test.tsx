@@ -11,6 +11,7 @@ import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
+import { close, error, info, success, warning } from '@kvirn-ui/icons'
 import { Icon } from '../icon/icon.tsx'
 import { KvirnProvider } from '../provider/kvirn-provider.tsx'
 import {
@@ -35,6 +36,8 @@ import type {
 } from './alert.tsx'
 import { useAlert } from './use-alert.ts'
 import type { AlertVariant, UseAlertOptions, UseAlertResult } from './use-alert.ts'
+
+const statusIcons = { info, success, warning, error }
 
 // Contract: alert.a11y.md.
 
@@ -142,7 +145,7 @@ describe('rendering', () => {
           <Root data-testid="alert">
             <Alert.Title>Your application was not sent</Alert.Title>
           </Root>
-          <Icon name={iconName} data-testid="expected-icon" />
+          <Icon icon={statusIcons[iconName]} data-testid="expected-icon" />
         </main>,
       )
       const root = page.getByTestId('alert').element()
@@ -411,7 +414,7 @@ describe('rendering', () => {
       <main>
         <h1>My pages</h1>
         <Alert.Root className="my-notice">
-          <Icon name="info" className="kv-alert-icon" />
+          <Icon icon={info} className="kv-alert-icon" />
           <Alert.Title>
             <span className="kv-alert-status">Notice:</span> The office is closed on Friday
           </Alert.Title>
@@ -987,13 +990,20 @@ describe('useAlert', () => {
     })
   })
 
+  test('useAlert iconProps draws the status icon without a registry', async () => {
+    await render(<HookAlert options={{ variant: 'success' }} />)
+    const svg = page.getByTestId('alert').element().querySelector('svg')
+    expect(svg?.children.length).toBeGreaterThan(0)
+    expect(warnings()).toEqual([])
+  })
+
   test.each(statuses)(
     'with variant "$variant" it returns the class, the icon and the word of Alert.$variant',
     async ({ variant, className, iconName, word }) => {
       await render(
         <main>
           <HookAlert options={{ variant }} />
-          <Icon name={iconName} data-testid="expected-icon" />
+          <Icon icon={statusIcons[iconName]} data-testid="expected-icon" />
         </main>,
       )
       const root = page.getByTestId('alert').element()
@@ -1078,7 +1088,7 @@ describe('Alert.Close', () => {
           <Alert.Title>Title</Alert.Title>
           <Alert.Close />
         </Alert.Info>
-        <Icon name="close" data-testid="expected-close-icon" />
+        <Icon icon={close} data-testid="expected-close-icon" />
       </main>,
     )
     const button = page.getByRole('button', { name: 'Close message' })

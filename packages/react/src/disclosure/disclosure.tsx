@@ -2,6 +2,7 @@
 import { useContext, useEffect } from 'react'
 import type { ComponentPropsWithRef, MouseEvent, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
+import { chevronDown, chevronUp } from '@kvirn-ui/icons'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
@@ -103,7 +104,11 @@ export function DisclosureTrigger({
       ref={ref}
     >
       {children}
-      <Icon name={isOpen ? 'chevron-up' : 'chevron-down'} className="kv-disclosure-icon" />
+      {isOpen ? (
+        <Icon name="chevron-up" icon={chevronUp} className="kv-disclosure-icon" />
+      ) : (
+        <Icon name="chevron-down" icon={chevronDown} className="kv-disclosure-icon" />
+      )}
     </button>
   )
 }

@@ -1,5 +1,4 @@
 import type { KvirnMessages } from '@kvirn-ui/i18n'
-import { arrowForward } from '@kvirn-ui/icons'
 import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { nb } from '@kvirn-ui/i18n/nb'
@@ -15,6 +14,7 @@ import { InLanguage } from '../../fixture-language.tsx'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import { AppRoot, RoutedLinkList, RouterAndPlainLinks } from './link.fixture.tsx'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Components/Link: the headless Link, styled by @kvirn-ui/theme/theme.css.
 // The keyboard contract is proved in link.test.tsx, so the play functions only read. A list of
@@ -46,6 +46,7 @@ const meta = {
   globals: { locale: 'en' },
   // Library strings follow the locale toolbar, like an app's provider would.
   decorators: [
+    withLibraryIcons,
     (Story, { globals }) => {
       const locale = String(globals['locale'] ?? 'sv')
       return (
@@ -240,7 +241,7 @@ export const Service: Story = {
     children: (
       <>
         <Link.Icon>
-          <Icon icon={arrowForward} size="24" />
+          <Icon name="arrow-forward" size="24" />
         </Link.Icon>
         Apply for a building permit <Link.NewTabNotice />
       </>
@@ -266,7 +267,7 @@ export const ServiceLongFinnishText: Story = {
     children: (
       <>
         <Link.Icon>
-          <Icon icon={arrowForward} size="24" />
+          <Icon name="arrow-forward" size="24" />
         </Link.Icon>
         {/* kv-lang-ok: Finnish locale story */}
         Hae rakennuslupaa sähköisesti
@@ -477,7 +478,7 @@ export const ForcedColors: Story = {
       <p>
         <Link.Root href="#building-permits" className="kv-link--service">
           <Link.Icon>
-            <Icon icon={arrowForward} size="24" />
+            <Icon name="arrow-forward" size="24" />
           </Link.Icon>
           Start the e-service
         </Link.Root>

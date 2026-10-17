@@ -1,5 +1,4 @@
 import { en } from '@kvirn-ui/i18n/en'
-import { arrowBack } from '@kvirn-ui/icons'
 import {
   Alert,
   Button,
@@ -22,6 +21,7 @@ import { inDocsFrame } from '../../components/error-summary/error-summary.fixtur
 import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
 import { chromeViewports, narrowGlobals, wideGlobals } from '../patterns-story-support.tsx'
 import contract from '../../../../../packages/patterns/src/search-and-forms/form-with-error-summary/form-with-error-summary.a11y.md?raw'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Patterns/Search and forms/Form with error summary (docs/design/storybook-patterns-t5.md S7).
 // Story-only: the parts are shipped, the form's state is the app's. A whole page of it is the
@@ -50,6 +50,7 @@ const meta = {
     },
     viewport: { options: chromeViewports },
   },
+  decorators: [withLibraryIcons],
 } satisfies Meta
 
 export default meta
@@ -154,7 +155,7 @@ function EnquiryForm({
     <Stack className="kv-stack--gap-8">
       <Link.Root href="#back">
         <Link.Icon>
-          <Icon icon={arrowBack} size="24" />
+          <Icon name="arrow-back" size="24" />
         </Link.Icon>
         Back
       </Link.Root>

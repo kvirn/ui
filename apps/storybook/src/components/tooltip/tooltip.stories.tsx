@@ -15,6 +15,7 @@ import {
   TooltipAtTheTop,
   TooltipInAPopover,
 } from './tooltip.fixture.tsx'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Components/Tooltip: a name and a shortcut for a control, shown on hover and keyboard focus
 // (APG Tooltip, contract: tooltip.a11y.md), styled by @kvirn-ui/theme/theme.css.
@@ -101,6 +102,7 @@ const meta = {
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
   },
+  decorators: [withLibraryIcons],
 } satisfies Meta<typeof Tooltip.Root>
 
 export default meta

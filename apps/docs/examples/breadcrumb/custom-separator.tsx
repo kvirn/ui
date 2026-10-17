@@ -1,12 +1,11 @@
 'use client'
-import { chevronForward } from '@kvirn-ui/icons'
 import { Breadcrumb, Icon } from '@kvirn-ui/react'
 import { useBreadcrumbTexts } from './texts.ts'
 
 export function CustomSeparator() {
   const { texts } = useBreadcrumbTexts()
   return (
-    <Breadcrumb.Root label={texts.separatorLabel} separator={<Icon icon={chevronForward} />}>
+    <Breadcrumb.Root label={texts.separatorLabel} separator={<Icon name="chevron-forward" />}>
       <Breadcrumb.List>
         <Breadcrumb.Item>
           <Breadcrumb.Link href="#start">{texts.start}</Breadcrumb.Link>

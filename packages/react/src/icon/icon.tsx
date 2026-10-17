@@ -43,7 +43,7 @@ interface IconBaseProps
 }
 
 interface IconByNameProps {
-  /** A default or registered icon. */
+  /** An icon registered in `KvirnProvider`. */
   name: IconName
   icon?: never
   as?: never
@@ -51,7 +51,8 @@ interface IconByNameProps {
 }
 
 interface IconByComponentProps {
-  name?: never
+  /** With `icon`: a registered `name` wins, else the `icon` draws. How a library component lets an app swap its icon. */
+  name?: IconName
   /**
    * A drawing from `@kvirn-ui/icons` (`icon={search}`) or a component from another icon library,
    * or your own (`icon={Search}`). It needs no registration. Icon's `size` and `label` replace
@@ -90,7 +91,7 @@ export type IconProps = IconBaseProps &
 const unknownNameProps = Object.freeze({ viewBox: '0 0 24 24' })
 
 /**
- * An icon: default, registered by name in `KvirnProvider`, a library component (`icon`), or
+ * An icon: registered by name in `KvirnProvider`, a drawing or component (`icon`), or
  * your own SVG (contract: icon.a11y.md). Decorative unless it has a `label`.
  *
  * @example
@@ -116,7 +117,8 @@ export function Icon({
 
   const sources = [
     name !== undefined && 'name',
-    iconEntry !== undefined && 'icon',
+    // `name` with `icon` is the swap pair, one source: the registry, else the icon.
+    iconEntry !== undefined && name === undefined && 'icon',
     as !== undefined && 'as',
     children !== undefined && 'children',
   ].filter((source) => source !== false)
@@ -125,7 +127,7 @@ export function Icon({
     if (givenSources.includes(',')) {
       warnOnce(
         `icon-exclusive-props:${givenSources}`,
-        `<Icon> got ${givenSources} together, and it can draw only one. Which one wins is not a contract, so the icon may change. Give name (a registered icon), icon (a component), as (your own component) or children, not several.`,
+        `<Icon> got ${givenSources} together, and it can draw only one. Which one wins is not a contract, so the icon may change. Give name (a registered icon), icon (a drawing or component), as (your own component) or children, not several.`,
       )
     }
   }, [givenSources])

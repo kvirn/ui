@@ -41,6 +41,7 @@ import {
   comboboxTextsFor,
   municipalities,
 } from './combobox.fixture.tsx'
+import { withLibraryIcons } from '../../icons.tsx'
 
 // Components/Form/Combobox: Combobox.Root, Control, Input, Toggle, Clear, ValueList, Value and the
 // popup parts it shares with the Listbox (contract: combobox.a11y.md). The Docs page
@@ -148,6 +149,7 @@ const meta = {
   },
   globals: { locale: 'sv' },
   decorators: [
+    withLibraryIcons,
     (Story) => (
       <div className="kv-story-form">
         <Story />

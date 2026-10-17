@@ -51,7 +51,7 @@ export type LinkIconProps = AsTag<
   (typeof iconTags)[number],
   'span',
   {
-    /** The icon: `<Icon name="arrow-forward" size="24" />`, or any decorative SVG. */
+    /** The icon: `<Icon icon={arrowForward} size="24" />`, or any decorative SVG. */
     children?: ReactNode
   }
 >
@@ -172,7 +172,7 @@ LinkIcon.displayName = 'Link.Icon'
  *   Digg <Link.NewTabNotice />
  * </Link.Root>
  * <Link.Root href="/permit" className="kv-link--service">
- *   <Link.Icon><Icon name="arrow-forward" size="24" /></Link.Icon>
+ *   <Link.Icon><Icon icon={arrowForward} size="24" /></Link.Icon>
  *   Apply for a building permit
  * </Link.Root>
  */

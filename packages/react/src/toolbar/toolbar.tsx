@@ -108,7 +108,7 @@ function useToolbarItem(part: string): ToolbarItemRegistration {
  * <Toolbar.Root aria-label="Formatting" aria-controls={editorId}>
  *   <Toolbar.Group aria-label="Text style">
  *     <Toolbar.Toggle aria-label="Bold" pressed={isBold} onPressedChange={setIsBold}>
- *       <Icon name="bold" />
+ *       <Icon icon={bold} />
  *     </Toolbar.Toggle>
  *   </Toolbar.Group>
  * </Toolbar.Root>

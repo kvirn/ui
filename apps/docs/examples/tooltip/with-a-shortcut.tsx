@@ -1,5 +1,4 @@
 'use client'
-import { arrowBack } from '@kvirn-ui/icons'
 import { Button, Icon, Kbd, Tooltip } from '@kvirn-ui/react'
 import { useTooltipTexts } from './texts.ts'
 
@@ -13,7 +12,7 @@ export function WithAShortcut() {
         aria-label={texts.undo}
         aria-keyshortcuts="Control+Z"
       >
-        <Icon icon={arrowBack} />
+        <Icon name="arrow-back" />
       </Tooltip.Trigger>
       <Tooltip.Popup>
         <Tooltip.Name>{texts.undo}</Tooltip.Name>

@@ -551,6 +551,9 @@ importers:
       '@kvirn-ui/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@kvirn-ui/icons':
+        specifier: workspace:*
+        version: link:../icons
       '@kvirn-ui/react':
         specifier: workspace:*
         version: link:../react

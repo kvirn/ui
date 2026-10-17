@@ -22,6 +22,7 @@ import {
 } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
+import { chevronDown, chevronUp } from '@kvirn-ui/icons'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
@@ -705,11 +706,16 @@ export function TableExpandButton<TFeatures extends TableFeatures, TData extends
         children: isEmptyContent(children) ? (
           <>
             {table?.expandButtonText}
-            <Icon
-              name={isExpanded ? 'chevron-up' : 'chevron-down'}
-              size="20"
-              className="kv-table-expand-icon"
-            />
+            {isExpanded ? (
+              <Icon name="chevron-up" icon={chevronUp} size="20" className="kv-table-expand-icon" />
+            ) : (
+              <Icon
+                name="chevron-down"
+                icon={chevronDown}
+                size="20"
+                className="kv-table-expand-icon"
+              />
+            )}
           </>
         ) : (
           children

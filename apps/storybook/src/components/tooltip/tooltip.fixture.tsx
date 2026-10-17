@@ -1,5 +1,4 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
-import { arrowBack, arrowForward, document as documentIcon, search } from '@kvirn-ui/icons'
 import { Button, Icon, Kbd, Popover, Toolbar, Tooltip } from '@kvirn-ui/react'
 import type { TooltipRootProps } from '@kvirn-ui/react'
 import type { ComponentPropsWithRef, CSSProperties } from 'react'
@@ -61,7 +60,7 @@ export function SearchButton(props: Omit<TooltipRootProps, 'children'>) {
   return (
     <Tooltip.Root {...props}>
       <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Search">
-        <Icon icon={search} />
+        <Icon name="search" />
       </Tooltip.Trigger>
       <Tooltip.Popup>
         <Tooltip.Name>Search</Tooltip.Name>
@@ -106,7 +105,7 @@ export function PrintButton(props: Omit<TooltipRootProps, 'children'>) {
   return (
     <Tooltip.Root {...props}>
       <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Print">
-        <Icon icon={documentIcon} />
+        <Icon name="document" />
       </Tooltip.Trigger>
       <Tooltip.Popup>Opens a print view in a new window</Tooltip.Popup>
     </Tooltip.Root>
@@ -135,7 +134,7 @@ export function TextToolbar() {
             aria-label="Undo"
             aria-keyshortcuts="Control+Z"
           >
-            <Icon icon={arrowBack} />
+            <Icon name="arrow-back" />
           </Tooltip.Trigger>
           <Tooltip.Popup>
             <Tooltip.Name>Undo</Tooltip.Name>
@@ -154,7 +153,7 @@ export function TextToolbar() {
             aria-label="Redo"
             aria-keyshortcuts="Control+Y"
           >
-            <Icon icon={arrowForward} />
+            <Icon name="arrow-forward" />
           </Tooltip.Trigger>
           <Tooltip.Popup>
             <Tooltip.Name>Redo</Tooltip.Name>
@@ -227,7 +226,7 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
               aria-label={text.undo}
               aria-keyshortcuts="Control+Z"
             >
-              <Icon icon={arrowBack} />
+              <Icon name="arrow-back" />
             </Tooltip.Trigger>
             <Tooltip.Popup>
               <Tooltip.Name>{text.undo}</Tooltip.Name>
@@ -246,7 +245,7 @@ export function FormattingToolbar({ locale }: { locale: 'sv' | 'en' }) {
               aria-label={text.redo}
               aria-keyshortcuts="Control+Y"
             >
-              <Icon icon={arrowForward} />
+              <Icon name="arrow-forward" />
             </Tooltip.Trigger>
             <Tooltip.Popup>
               <Tooltip.Name>{text.redo}</Tooltip.Name>
@@ -335,7 +334,7 @@ export function TooltipInAPopover() {
       <Popover.Popup aria-label="More actions" style={popoverStyle}>
         <Tooltip.Root>
           <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Copy">
-            <Icon icon={documentIcon} />
+            <Icon name="document" />
           </Tooltip.Trigger>
           <Tooltip.Popup>
             <Tooltip.Name>Copy</Tooltip.Name>
@@ -360,7 +359,7 @@ export function LongTooltip(props: Omit<TooltipRootProps, 'children'>) {
   return (
     <Tooltip.Root {...props}>
       <Tooltip.Trigger as={Button} className="kv-button--icon-only" aria-label="Tulosta">
-        <Icon icon={documentIcon} />
+        <Icon name="document" />
       </Tooltip.Trigger>
       <Tooltip.Popup>
         Avaa tulostusnäkymän uuteen ikkunaan, josta voit tulostaa tai tallentaa sivun PDF-tiedostona
@@ -383,7 +382,7 @@ export function TooltipAtTheTop(props: Omit<TooltipRootProps, 'children'>) {
         aria-label="Search"
         style={{ position: 'fixed', insetBlockStart: 8, insetInlineStart: 8 }}
       >
-        <Icon icon={search} />
+        <Icon name="search" />
       </Tooltip.Trigger>
       <Tooltip.Popup>
         <Tooltip.Name>Search</Tooltip.Name>

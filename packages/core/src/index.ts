@@ -503,3 +503,11 @@ export type {
   ShiftSequenceOptions,
   ShiftSequenceResult,
 } from './quick-exit/shift-sequence.ts'
+export { matchShortcut, shortcutKeys, toAriaKeyShortcuts } from './shortcut/shortcut.ts'
+export type {
+  Shortcut,
+  ShortcutKey,
+  ShortcutKeyEvent,
+  ShortcutKeysOptions,
+  ShortcutModifierName,
+} from './shortcut/shortcut.ts'

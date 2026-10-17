@@ -7,6 +7,7 @@ import { readText } from '../alert/use-alert.ts'
 import { Alert } from '../alert/alert.tsx'
 import { useQuietAnnouncer } from '../announcer/use-announcer.ts'
 import { Button } from '../button/button.tsx'
+import { close } from '@kvirn-ui/icons'
 import { Icon } from '../icon/icon.tsx'
 import { useDismissableLayer } from '../popup/use-dismissable-layer.ts'
 import { useEnv } from '../provider/use-env.ts'
@@ -40,7 +41,7 @@ function ToastClose({ timer, onClick }: ToastCloseProps) {
   }
   return (
     <button {...alert.closeProps} onClick={onClick}>
-      <Icon name="close" />
+      <Icon name="close" icon={close} />
       {timer === undefined ? null : (
         // Decorative: the time left is never announced. A new run restarts the animation, and
         // Close keeps its element and focus.

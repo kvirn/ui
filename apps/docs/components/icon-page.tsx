@@ -8,6 +8,7 @@ import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import { iconAttributes, iconRows, useIconHook } from '../content/icon.api.ts'
+import { ByImport } from '../examples/icon/by-import.tsx'
 import { ByName } from '../examples/icon/by-name.tsx'
 import { DefaultIcon } from '../examples/icon/default.tsx'
 import { MapSet } from '../examples/icon/map-set.tsx'
@@ -22,6 +23,7 @@ import type { Contract } from '../lib/contract-parser.ts'
 export type IconExampleSources = Record<
   | 'default'
   | 'by-name'
+  | 'by-import'
   | 'map-set'
   | 'rich-text-set'
   | 'with-label'
@@ -45,10 +47,10 @@ const parts: ApiPart[] = [
         <code>stroke</code>, <code>strokeWidth</code>, <code>tabIndex</code>, <code>onClick</code>,{' '}
         <code>aria-labelledby</code> and <code>aria-describedby</code>. An icon can’t be focused or
         pressed, and its name comes only from <code>label</code>: put focus and press on the Button
-        or Link around it. Pass an icon from <code>@kvirn-ui/icons</code> as <code>icon</code>, or
-        register more names with <code>defineIcons</code> and the <code>icons</code> prop of{' '}
-        <code>KvirnProvider</code>. The default theme is described on{' '}
-        <Link href="/foundation/theming">Theming</Link>.
+        or Link around it. Register the icons you use once with <code>defineIcons</code> and the{' '}
+        <code>icons</code> prop of <code>KvirnProvider</code>, then draw them by name, or pass an
+        icon from <code>@kvirn-ui/icons</code> as <code>icon</code>. The default theme is described
+        on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: iconRows,
@@ -97,19 +99,31 @@ export function IconPage({
       useCases={
         <>
           <p>
-            The icon library is the package <code>@kvirn-ui/icons</code>. Import the icons you use
-            and pass each one as <code>icon</code>. You then ship only those icons.
+            KvirnUI has no icons of its own to fall back on. The icon library is the package{' '}
+            <code>@kvirn-ui/icons</code>, and you bundle only the icons you import. Register the
+            ones you want to draw by name once, in <code>KvirnProvider</code>. Register their types
+            too, so a misspelt name is a type error:
           </p>
           <CodeBlock
-            code={`import { search } from '@kvirn-ui/icons'
+            code={`import { close, search } from '@kvirn-ui/icons'
+import { defineIcons, KvirnProvider } from '@kvirn-ui/react'
 
-<Icon icon={search} />`}
+export const icons = defineIcons({ close, search })
+
+declare module '@kvirn-ui/react' {
+  interface Register {
+    icons: typeof icons
+  }
+}
+
+<KvirnProvider icons={icons}>{children}</KvirnProvider>`}
           />
           <p>
             Export names are in camelCase (words joined, each new word starting with a capital
             letter) and have no “Icon” suffix, such as <code>chevronDown</code>. Two end in “Icon”,{' '}
             <code>deleteIcon</code> and <code>newIcon</code>, because the plain words are reserved
-            in JavaScript. To pick an icon, look through all of them on the{' '}
+            in JavaScript. A registered name is the kebab-case word, such as{' '}
+            <code>chevron-down</code>. To pick an icon, look through all of them on the{' '}
             <Link href="/components/icons">Icons page</Link>.
           </p>
           <UseCase
@@ -117,12 +131,9 @@ export function IconPage({
             title="An icon by name"
             why={
               <>
-                KvirnUI’s own components draw 25 icons, such as <code>close</code>,{' '}
-                <code>search</code>, <code>download</code> and <code>calendar</code>. They are
-                library icons too, and they work as a plain name with no import and no setup. Names
-                you register in <code>KvirnProvider</code> (see{' '}
-                <Link href="/components/kvirn-provider">KvirnProvider</Link>) work the same way, and
-                you can register icons from the library, from Lucide or from another set.
+                Once an icon is registered, <code>name</code> draws it anywhere below the provider,
+                with nothing to import. A name you did not register draws an empty icon and warns in
+                development.
               </>
             }
             code={sources['by-name']}
@@ -130,13 +141,33 @@ export function IconPage({
             note={
               <Note kind="tip">
                 Registering the whole set from <code>@kvirn-ui/icons/all</code> adds every icon to
-                your bundle (the code you send to the browser). Register only the names you need, or
-                import an icon and pass it as <code>icon</code>.
+                your bundle (the code you send to the browser). Register only the names you need.
               </Note>
             }
           >
             <ByName />
           </UseCase>
+          <UseCase
+            id="by-import"
+            title="An icon without registering it"
+            why="Where there is no provider to register in, or for one icon you draw once, import it and pass it as icon. Only the icons you import reach your bundle."
+            code={sources['by-import']}
+            propsUsed={[{ part: 'Icon', prop: 'icon' }]}
+          >
+            <ByImport />
+          </UseCase>
+          <p>
+            KvirnUI’s own components pass both: <code>name=&quot;close&quot;</code> and the{' '}
+            <code>close</code> drawing as <code>icon</code>. A name you register wins over the
+            drawing, so registering <code>close</code> changes it in every KvirnUI component at
+            once, such as a Toast, a Dialog or a Tag:
+          </p>
+          <CodeBlock
+            code={`import { defineIcons } from '@kvirn-ui/react'
+import { Cross } from 'your-icon-library'
+
+export const icons = defineIcons({ close: Cross })`}
+          />
           <UseCase
             id="map-set"
             title="The Map’s icons"

@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { referenceMessages } from '../../../../messages/reference.ts'
 import type { ReferenceLocale } from '../../../../messages/reference.ts'
+import { icons } from '../../../../lib/icons.ts'
 import { SessionTimeout } from './session-timeout.tsx'
 import { SiteLayout } from './site-layout.tsx'
 import { TransactionLayout } from './transaction-layout.tsx'
@@ -82,6 +83,7 @@ export function ReferenceShell({
       timeZone="UTC"
       theme={theme}
       linkComponent={NextLink}
+      icons={icons}
     >
       <ReferenceFrame locale={locale}>{children}</ReferenceFrame>
     </KvirnProvider>

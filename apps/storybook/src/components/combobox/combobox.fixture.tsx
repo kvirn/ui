@@ -1,5 +1,4 @@
 // kv-lang-ok-file: Swedish municipality names prove Swedish collation (å, ä, ö), and the per-locale fixture text sets
-import { document as documentIcon } from '@kvirn-ui/icons'
 import { Button, Card, Combobox, Field, Icon } from '@kvirn-ui/react'
 import { useState } from 'react'
 import { choiceTextsFor } from '../form/choice.fixture.tsx'
@@ -835,7 +834,7 @@ export function RichOptionsExample({ locale }: { locale: FormLocale }) {
               {(municipality: Municipality) => (
                 <Combobox.Option item={municipality}>
                   <Combobox.OptionIcon>
-                    <Icon icon={documentIcon} />
+                    <Icon name="document" />
                   </Combobox.OptionIcon>
                   <Combobox.OptionText>{municipality.name}</Combobox.OptionText>
                   <Combobox.OptionDescription>{municipality.county}</Combobox.OptionDescription>

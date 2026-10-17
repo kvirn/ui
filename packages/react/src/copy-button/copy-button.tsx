@@ -1,6 +1,7 @@
 'use client'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import type { ReactElement } from 'react'
+import { check, warning } from '@kvirn-ui/icons'
 import { Icon } from '../icon/icon.tsx'
 import { Button } from '../button/button.tsx'
 import type { ButtonProps } from '../button/button.tsx'
@@ -70,7 +71,11 @@ export function CopyButton({
       </Button>
       {showStatus && statusText !== null ? (
         <span className="kv-copy-status" data-status={status}>
-          <Icon name={status === 'copied' ? 'check' : 'warning'} />
+          {status === 'copied' ? (
+            <Icon name="check" icon={check} />
+          ) : (
+            <Icon name="warning" icon={warning} />
+          )}
           {statusText}
         </span>
       ) : null}

@@ -5,6 +5,7 @@ import NextLink from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createContext, useContext, useState } from 'react'
 import { SiteShell } from '../../components/site-shell.tsx'
+import { icons } from '../../lib/icons.ts'
 
 type AutoDismiss = false | number
 
@@ -26,7 +27,7 @@ export function AppKvirnProvider({
   const pathname = usePathname()
   const [autoDismiss, setAutoDismiss] = useState<AutoDismiss>(false)
   return (
-    <KvirnProvider {...props} linkComponent={NextLink} toast={{ autoDismiss }}>
+    <KvirnProvider {...props} icons={icons} linkComponent={NextLink} toast={{ autoDismiss }}>
       <AutoDismissContext value={[autoDismiss, setAutoDismiss]}>
         <SiteShell pathname={pathname}>{children}</SiteShell>
       </AutoDismissContext>

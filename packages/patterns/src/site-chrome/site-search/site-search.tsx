@@ -1,5 +1,6 @@
 'use client'
 
+import { search } from '@kvirn-ui/icons'
 import { Button, ButtonGroup, Field, Icon, TextInput, mergeProps } from '@kvirn-ui/react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 
@@ -35,7 +36,7 @@ export function SiteSearch({
         <ButtonGroup className="kv-button-group--attached">
           <Field.Root className="kv-site-search-field">
             <Field.Label marker="none">{label}</Field.Label>
-            <Icon name="search" size="20" className="kv-site-search-icon" />
+            <Icon name="search" icon={search} size="20" className="kv-site-search-icon" />
             <TextInput type="search" name={name} defaultValue={defaultValue} autoComplete="off" />
           </Field.Root>
           <Button type="submit">{children}</Button>

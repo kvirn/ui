@@ -3,6 +3,7 @@ import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { createElement, useContext, useEffect, useLayoutEffect, useMemo } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
+import { error } from '@kvirn-ui/icons'
 import { Icon } from '../icon/icon.tsx'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
@@ -217,7 +218,7 @@ export function FieldErrorMessage({
 
   return (
     <p {...mergeProps(otherProps, partProps)} ref={mergedRef}>
-      <Icon name="error" size="20" />
+      <Icon name="error" icon={error} size="20" />
       <span className="kv-field-error-prefix">{fieldMessages.errorPrefix}</span> {children}
     </p>
   )

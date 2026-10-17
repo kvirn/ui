@@ -1,7 +1,6 @@
 import { useContext, useMemo } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { KvirnConfigContext } from '../provider/provider-context.ts'
-import { defaultIcons } from './default-icons.ts'
 import { readIconEntry } from './icon-registry.ts'
 import type { IconComponent, IconName, IconRegistryEntry } from './icon-registry.ts'
 
@@ -45,9 +44,9 @@ export interface IconDefaults {
 }
 
 export interface UseIconOptions extends IconDefaults {
-  /** A default or registered icon. */
+  /** An icon registered in `KvirnProvider`. */
   name?: IconName | undefined
-  /** A drawing from `@kvirn-ui/icons` or a component, used instead of a name. It needs no registration. */
+  /** A drawing from `@kvirn-ui/icons` or a component. It needs no registration, and a registered `name` wins over it. */
   icon?: IconRegistryEntry | undefined
   /**
    * Makes the icon an image with this name, from your own translations. Leave it
@@ -61,8 +60,8 @@ export interface UseIconOptions extends IconDefaults {
    */
   variant?: IconVariant | undefined
   /**
-   * Flip the icon in right-to-left text. Default: the registry entry's, else the default icon's
-   * of the same name, else `false`.
+   * Flip the icon in right-to-left text. Default: the registry entry's, else the icon data's
+   * `mirrorInRtl`, else `false`.
    */
   mirrorInRtl?: boolean | undefined
 }
@@ -85,7 +84,7 @@ export interface IconPartProps {
 
 export interface UseIconResult {
   iconProps: IconPartProps
-  /** The registered or default component for `name` or `icon`. `undefined` without either, or for an unknown name. */
+  /** The component for a registered `name`, else for `icon`. `undefined` without either, or for an unknown name. */
   component: IconComponent | undefined
   /** `true` unless the icon has a `label`. */
   isDecorative: boolean
@@ -139,23 +138,18 @@ export function useIcon({
   const { icons, iconDefaults } = useContext(KvirnConfigContext)
   // Own properties only: `name="constructor"` must not find `Object.prototype.constructor`.
   const appEntry = name !== undefined && Object.hasOwn(icons, name) ? icons[name] : undefined
-  const builtInEntry =
-    name !== undefined && Object.hasOwn(defaultIcons, name)
-      ? (defaultIcons as Readonly<Record<string, IconRegistryEntry>>)[name]
-      : undefined
-  const entryToUse = icon ?? appEntry ?? builtInEntry
+  const entryToUse = appEntry ?? icon
   const entry = entryToUse === undefined ? undefined : readIconEntry(entryToUse)
-  // Mirroring belongs to the name: a plain override of a default keeps the default's.
+  // Mirroring belongs to the name: a plain component registered over a component's directional
+  // icon keeps that icon's flip, or an override would silently point backwards in RTL.
   const entryMirrorInRtl =
     entry?.mirrorInRtl ??
-    (icon !== undefined || builtInEntry === undefined
-      ? undefined
-      : readIconEntry(builtInEntry).mirrorInRtl)
+    (appEntry !== undefined && icon !== undefined ? readIconEntry(icon).mirrorInRtl : undefined)
 
   if (name !== undefined && icon === undefined && entry === undefined) {
     warnOnce(
       `unknown-icon:${name}`,
-      `<Icon name="${name}"> isn't a default icon or registered in a KvirnProvider, so it renders an empty <svg>. Add it with defineIcons and pass the registry to <KvirnProvider icons>.`,
+      `<Icon name="${name}"> isn't registered in a KvirnProvider, so it renders an empty <svg>. Add it with defineIcons and pass the registry to <KvirnProvider icons>, or pass the drawing as icon.`,
     )
   }
 

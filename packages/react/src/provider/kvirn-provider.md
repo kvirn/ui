@@ -153,11 +153,11 @@ declare module '@kvirn-ui/react' {
 }
 ```
 
-Without the augmentation, `linkComponent` only accepts `'a'`, and link props are native `<a>` props. The registered component must forward its ref and render an `<a>`. `icons` is the registry you pass to `<KvirnProvider icons>` (see below): registering its type adds your names to `IconName`, so a misspelt `<Icon name>` is a type error. Both keys are optional and independent.
+Without the augmentation, `linkComponent` only accepts `'a'`, and link props are native `<a>` props. The registered component must forward its ref and render an `<a>`. `icons` is the registry you pass to `<KvirnProvider icons>` (see below): registering its type limits `IconName` to your names, so a misspelt `<Icon name>` is a type error. Without it, any string is accepted. Both keys are optional and independent.
 
 ## Icons: `icons` and `iconDefaults`
 
-The 25 default icon names, such as `close` and `search`, work with no setup. Register any other icons once, so `<Icon name>` finds them everywhere and names are checked. The registry can hold icons from `@kvirn-ui/icons`, or from Lucide or another set. It can hold components, so it lives in a client module next to this setup. See [Icon](../icon/icon.md#registering-icons).
+There are no default icons. Register the icons you use once, so `<Icon name>` finds them everywhere and names are checked. A name such as `close` or `chevron-down` also replaces the icon KvirnUI's own components draw. The registry can hold icons from `@kvirn-ui/icons`, or from Lucide or another set. It can hold components, so it lives in a client module next to this setup. See [Icon](../icon/icon.md#registering-icons).
 
 ```tsx
 <KvirnProvider icons={icons} iconDefaults={{ size: '24' }}>
@@ -450,7 +450,7 @@ The layout under [Next.js](#nextjs-app-router) uses it.
 | `timeZone`      | `string` (IANA)                                     | The parent's, or UTC                                                                                            |
 | `weekStart`     | `1` to `7` (ISO weekday, 1 is Monday)               | The parent's, else the locale's when it names a region (`en-US` is `7`), else `1`                               |
 | `linkComponent` | `RegisteredLinkComponent`                           | `'a'`, or the parent's                                                                                          |
-| `icons`         | `IconRegistry`, from `defineIcons`                  | The 25 default icons, then the parent's, merged by name ([Icon](../icon/icon.md))                               |
+| `icons`         | `IconRegistry`, from `defineIcons`                  | None, or the parent's, merged by name ([Icon](../icon/icon.md))                                                 |
 | `iconDefaults`  | `IconDefaults` (`size`)                             | The parent's, merged by field                                                                                   |
 | `theme`         | `ThemeOptions`                                      | Outermost provider only                                                                                         |
 | `toast`         | `{ limit?, autoDismiss? }`                          | First provider on the page only: `limit` 10, `autoDismiss` `false` or milliseconds ([Toast](../toast/toast.md)) |
