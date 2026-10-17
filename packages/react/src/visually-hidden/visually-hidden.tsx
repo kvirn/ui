@@ -24,7 +24,7 @@ export type VisuallyHiddenProps = AsTag<(typeof visuallyHiddenTags)[number], 'sp
  * <p>Search results<VisuallyHidden>, 3 results</VisuallyHidden></p>
  *
  * @example
- * <VisuallyHidden as="h2">Meny</VisuallyHidden>
+ * <VisuallyHidden as="h2">Menu</VisuallyHidden>
  */
 export function VisuallyHidden({ as, ref, ...otherProps }: VisuallyHiddenProps): ReactElement {
   const { visuallyHiddenProps } = useVisuallyHidden()

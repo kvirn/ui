@@ -19,7 +19,7 @@ import { Link, List } from '@kvirn-ui/react'
       <Link.Root href="/building-permits">Building permits</Link.Root>
     </List.Item>
     <List.Item>
-      <Link.Root href="/avfall">Waste and recycling</Link.Root>
+      <Link.Root href="/waste">Waste and recycling</Link.Root>
     </List.Item>
   </List.Root>
 </nav>

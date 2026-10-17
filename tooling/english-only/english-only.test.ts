@@ -11,7 +11,7 @@ const repositoryRoot = fileURLToPath(new URL('../..', import.meta.url))
 // Paths that still hold unswept text, as file paths or directory prefixes (ending in "/"). Each
 // sweep batch removes its entry, and an entry that no longer matches an offender fails the test,
 // so the list only shrinks. It is empty when plan 0123 is done.
-const pending = []
+const pending: string[] = []
 
 function isPending(file: string): boolean {
   return pending.some((entry) => file === entry || (entry.endsWith('/') && file.startsWith(entry)))

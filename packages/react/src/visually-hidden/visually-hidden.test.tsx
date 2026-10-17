@@ -75,7 +75,7 @@ describe('VisuallyHidden', () => {
     await render(
       <>
         <VisuallyHidden as="h2" data-testid="heading">
-          Meny
+          Menu
         </VisuallyHidden>
         <VisuallyHidden as="div" data-testid="div">
           Search
@@ -84,14 +84,14 @@ describe('VisuallyHidden', () => {
     )
     expect(page.getByTestId('heading').element().tagName).toBe('H2')
     expect(page.getByTestId('div').element().tagName).toBe('DIV')
-    await expect.element(page.getByRole('heading', { name: 'Meny', level: 2 })).toBeInTheDocument()
+    await expect.element(page.getByRole('heading', { name: 'Menu', level: 2 })).toBeInTheDocument()
   })
 
   test('an element outside the allowed list warns once and renders a span', async () => {
     const notAllowed = 'h1' as 'span'
     await render(
       <VisuallyHidden as={notAllowed} data-testid="hidden">
-        Meny
+        Menu
       </VisuallyHidden>,
     )
     expect(page.getByTestId('hidden').element().tagName).toBe('SPAN')

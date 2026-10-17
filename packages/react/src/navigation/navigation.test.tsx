@@ -152,7 +152,7 @@ describe('rendering', () => {
         ref={rootRef}
         label="Main menu"
         id="huvudmeny"
-        className="min-meny"
+        className="my-menu"
         data-testid="root"
       >
         <Navigation.List ref={listRef} className="my-list" data-testid="list">
@@ -164,7 +164,7 @@ describe('rendering', () => {
     )
     const root = page.getByTestId('root')
     await expect.element(root).toHaveAttribute('id', 'huvudmeny')
-    await expect.element(root).toHaveClass('kv-navigation', 'min-meny')
+    await expect.element(root).toHaveClass('kv-navigation', 'my-menu')
     expect(rootRef.current).toBe(root.element())
     expect(listRef.current).toBe(page.getByTestId('list').element())
     const item = page.getByTestId('item')

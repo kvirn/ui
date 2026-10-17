@@ -39,7 +39,7 @@ const areas = [
   ['Bromma', '168 67'],
 ] as const
 
-const fuelNames = ['Nordtank', 'Roadside', 'Energia', 'Fuel stop', 'Lakeside Fuel']
+const fuelNames = ['Nordtank', 'Roadside', 'Energy', 'Fuel stop', 'Lakeside Fuel']
 const hotelNames = [
   'Hotel Strandvik',
   'Hotel Lakesound',

@@ -1,5 +1,6 @@
 ---
 name: regulations
+# kv-lang-ok: national statute names
 description: EU and Nordic accessibility/digital regulation guidance for KvirnUI — WAD, EAA, EN 301 549, DOS-lagen (SE), Laki digitaalisten palvelujen tarjoamisesta (FI), forskrift om universell utforming av IKT (NO), GDPR, CRA. Use when writing any claim about compliance, conformance reports, accessibility-statement or feedback/consent blocks, docs-site copy, or when adding third-party services or dependencies.
 when_to_use: compliance claim, marketing copy, accessibility statement, tillgänglighetsredogörelse, saavutettavuusseloste, tilgjengelighetserklæring, cookie consent, SBOM, security policy, new dependency or external service # kv-lang-ok: national legal terms for the accessibility statement
 ---

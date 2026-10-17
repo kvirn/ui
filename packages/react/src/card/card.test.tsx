@@ -235,7 +235,7 @@ describe('as', () => {
       <main>
         <Card.Root as="article">
           <Card.Body data-own="">
-            <h2>Nyheter</h2>
+            <h2>News</h2>
           </Card.Body>
         </Card.Root>
       </main>,
@@ -243,7 +243,7 @@ describe('as', () => {
     const card = page.getByRole('article')
     const body = card.element().firstElementChild
     expect(body?.hasAttribute('data-own')).toBe(true)
-    await expect.element(page.getByRole('heading', { name: 'Nyheter', level: 2 })).toBeVisible()
+    await expect.element(page.getByRole('heading', { name: 'News', level: 2 })).toBeVisible()
     await expectNoA11yViolations(container)
   })
 

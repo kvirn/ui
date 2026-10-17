@@ -299,7 +299,7 @@ describe('Tag announcements', () => {
 test('has no axe violations with tags, and with none', async () => {
   const { container } = await render(
     <main>
-      <h1>Nyheter</h1>
+      <h1>News</h1>
       <Filters />
     </main>,
   )

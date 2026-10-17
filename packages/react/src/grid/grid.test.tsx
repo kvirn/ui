@@ -135,7 +135,7 @@ describe('as', () => {
   test('Item renders nav, aside and main and keeps the class', async () => {
     await render(
       <Grid.Root>
-        <Grid.Item as="nav" aria-label="Meny" data-testid="nav" />
+        <Grid.Item as="nav" aria-label="Menu" data-testid="nav" />
         <Grid.Item as="aside" aria-label="Relaterat" data-testid="aside" />
         <Grid.Item as="main" data-testid="main" />
       </Grid.Root>,

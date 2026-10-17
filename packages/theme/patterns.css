@@ -11,7 +11,7 @@
  * Sections:
  *   P1. Page frame        kv-page-frame: the skip link, banner, main and contentinfo of a page
  *   P1a. Page header      kv-page-header: the intro band of a page, breadcrumb, h1, lead, facts
- *   P2. Site header       kv-site-header, its rows, the Meny and the plain main navigation
+ *   P2. Site header       kv-site-header, its rows, the Menu and the plain main navigation
  *   P2a. Primary header   kv-site-header--primary: the same parts as three primary bands
  *   P2b. Application logo kv-application-logo: the link to the start page, mark, name, slogan
  *   P2c. Site search      kv-site-search: the search landmark, field and button as one strip
@@ -120,8 +120,8 @@
 
 /* P2. Site header -------------------------------------------------------------------------------
  * A canvas Section (level 1). Below 64rem its rows are the application logo and language links,
- * shortcuts, search, then a full-width Meny row whose panel opens in flow and pushes the page down. From
- * 64rem the Meny button is gone and the navigation is always shown as a row. */
+ * shortcuts, search, then a full-width Menu row whose panel opens in flow and pushes the page down. From
+ * 64rem the Menu button is gone and the navigation is always shown as a row. */
 .kv-section.kv-site-header {
   /* The mega menu panel is positioned against the header, in the document: not fixed, not sticky. */
   position: relative;
@@ -156,7 +156,7 @@
   max-inline-size: 28rem;
 }
 
-/* The Meny: a quiet full-width row, with its chevron at the inline end. */
+/* The Menu: a quiet full-width row, with its chevron at the inline end. */
 .kv-disclosure-trigger.kv-site-header-menu-trigger {
   display: flex;
   justify-content: space-between;
@@ -172,7 +172,7 @@
   padding-block: var(--kv-space-2) 0;
 }
 
-/* The main navigation in the Meny panel is a column, as any list of links. */
+/* The main navigation in the Menu panel is a column, as any list of links. */
 @media (width < 64rem) {
   .kv-mega-menu.kv-navigation--horizontal > .kv-navigation-list {
     flex-direction: column;
@@ -186,7 +186,7 @@
     margin-inline-start: auto;
   }
 
-  /* Meny is gone. The panel is rendered open from 64rem, never `hidden`: reset.css hides
+  /* Menu is gone. The panel is rendered open from 64rem, never `hidden`: reset.css hides
    * `[hidden]` with !important in an earlier layer, which no rule here could beat. */
   .kv-disclosure-trigger.kv-site-header-menu-trigger {
     display: none;

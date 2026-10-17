@@ -67,7 +67,7 @@ No keyboard change. WCAG: 1.3.1 (level stays semantic; `.kv-heading` size is ind
 - Header-primary logo name is pinned to its literal 1.375rem / 1.75rem (it followed heading-2 / heading-1); the other logo, calendar and map titles use body size. My brief first sent all three to body size and shrank the header logo; fixed.
 - Side effects, recorded: the dialog title moves from weight 500 to 600 (heading-3 tokens); two `level={n}` → `as="hN"` doc fixes (`packages/theme/README.md:44`, the theme.css heading comment) were included; standalone `.kv-heading` (heading-4 look) grows 16 → 20px; the fieldset legend heading follows h1 (36px, 30px mobile) and wraps.
 - Reviewer (accessibility-reviewer): APPROVE, conditional on green tests and axe. Non-blocking doc drift fixed by a follow-up docs pass.
-- display/h1 keep line height 1.2 so Å clears the line above.
+- display/h1 keep line height 1.2 so tall accents clear the line above.
 
 ## Risks & open questions
 

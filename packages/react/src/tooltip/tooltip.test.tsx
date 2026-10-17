@@ -265,8 +265,8 @@ describe('the tooltip layer and a Popover underneath', () => {
       <>
         <p>Text outside</p>
         <Popover.Root defaultOpen onOpenChange={onOpenChange}>
-          <Popover.Trigger style={buttonStyle}>Meny</Popover.Trigger>
-          <Popover.Popup aria-label="Meny">
+          <Popover.Trigger style={buttonStyle}>Menu</Popover.Trigger>
+          <Popover.Popup aria-label="Menu">
             <Tooltip.Root>
               <Tooltip.Trigger aria-label="Bold" style={buttonStyle}>
                 B

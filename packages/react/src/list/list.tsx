@@ -23,7 +23,7 @@ export type ListItemProps = ComponentPropsWithRef<'li'>
  * @example
  * <List.Root>
  *   <List.Item><Link.Root href="/building-permit">Building permit</Link.Root></List.Item>
- *   <List.Item><Link.Root href="/avfall">Avfall</Link.Root></List.Item>
+ *   <List.Item><Link.Root href="/waste">Waste</Link.Root></List.Item>
  * </List.Root>
  */
 export function ListRoot({ as, ...otherProps }: ListRootProps): ReactElement {

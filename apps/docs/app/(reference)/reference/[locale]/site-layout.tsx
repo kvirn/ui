@@ -125,7 +125,7 @@ export function ReferenceFooter({ locale }: { locale: ReferenceLocale }) {
 
 /**
  * T1, the site shell: the banner (the notice row, brand, language links, shortcuts, search and the
- * mega main menu behind "Meny"), an optional site alert, the page, and the footer. The search box
+ * mega main menu behind "Menu"), an optional site alert, the page, and the footer. The search box
  * leads to the search results page.
  */
 export function SiteLayout({

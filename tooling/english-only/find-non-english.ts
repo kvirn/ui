@@ -72,6 +72,14 @@ const englishToo = new Set<string>([
   'kalender',
   'information',
   'menu',
+  // English words and CSS or code values that the icon labels spell the same in a Nordic language
+  // ("auto" is a CSS value, "post" and "brand" and "handling" and "journal" are plain English).
+  'auto',
+  'brand',
+  'handling',
+  'journal',
+  'post',
+  'schema',
 ])
 
 // Public-sector nouns found in fixtures that the catalogs do not carry.

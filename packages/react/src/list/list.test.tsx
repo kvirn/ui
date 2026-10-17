@@ -14,7 +14,7 @@ test('renders a ul or an ol with li items and keeps its class next to a consumer
         <List.Item>
           <Link.Root href="#building-permit">Building permit</Link.Root>
         </List.Item>
-        <List.Item>Avfall</List.Item>
+        <List.Item>Waste</List.Item>
       </List.Root>
       <List.Root as="ol" data-testid="ordered">
         <List.Item>Apply</List.Item>
@@ -29,6 +29,9 @@ test('renders a ul or an ol with li items and keeps its class next to a consumer
   await expect.element(unordered).toHaveClass('kv-list', 'kv-list--gap-8', 'annat')
   await expect.element(unordered).toHaveAttribute('id', 'tjanster')
   await expectNoA11yViolations(container)
+  for (const list of [unordered, page.getByTestId('ordered')]) {
+    expect(list.element().hasAttribute('tabindex')).toBe(false)
+  }
 })
 
 test('always has role="list", and a consumer role wins', async () => {

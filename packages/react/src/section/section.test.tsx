@@ -55,7 +55,7 @@ describe('rendering', () => {
     await render(
       <main>
         <Section data-testid="section">
-          <h2>Nyheter</h2>
+          <h2>News</h2>
         </Section>
         <ContactSection />
       </main>,
@@ -79,7 +79,7 @@ describe('rendering', () => {
     await render(
       <main>
         <Section>
-          <h2>Nyheter</h2>
+          <h2>News</h2>
         </Section>
       </main>,
     )
@@ -153,7 +153,7 @@ describe('rendering', () => {
         <h1>Building permit</h1>
         <ContactSection />
         <Section>
-          <h2>Nyheter</h2>
+          <h2>News</h2>
           <ul>
             <Card.Root as="li">New opening hours</Card.Root>
             <Card.Root as="li">Winter road maintenance</Card.Root>
@@ -161,7 +161,7 @@ describe('rendering', () => {
         </Section>
       </main>,
     )
-    await expect.element(page.getByRole('heading', { name: 'Nyheter', level: 2 })).toBeVisible()
+    await expect.element(page.getByRole('heading', { name: 'News', level: 2 })).toBeVisible()
     await expectNoA11yViolations(container)
   })
 })
@@ -232,7 +232,7 @@ describe('as', () => {
       const headingId = useId()
       return (
         <Section as="section" aria-labelledby={headingId}>
-          <h2 id={headingId}>Nyheter</h2>
+          <h2 id={headingId}>News</h2>
         </Section>
       )
     }
@@ -241,7 +241,7 @@ describe('as', () => {
         <NewsBand />
       </main>,
     )
-    await expect.element(page.getByRole('region', { name: 'Nyheter' })).toBeVisible()
+    await expect.element(page.getByRole('region', { name: 'News' })).toBeVisible()
     await expectNoA11yViolations(container)
   })
 

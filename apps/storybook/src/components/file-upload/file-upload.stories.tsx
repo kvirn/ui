@@ -223,7 +223,7 @@ export const Default: Story = {
 export const SingleFile: Story = {
   args: { multiple: false, accept: '.pdf' },
   play: async ({ canvasElement }) => {
-    await choose(canvasElement, makeFile('intyg.pdf'))
+    await choose(canvasElement, makeFile('certificate.pdf'))
     await choose(canvasElement, makeFile('new-certificate.pdf', 30_000))
     await expect(itemsOf(canvasElement)).toHaveLength(1)
     await expect(itemsOf(canvasElement)[0]).toHaveTextContent('new-certificate.pdf')
@@ -241,8 +241,8 @@ export const WithFiles: Story = {
     await choose(
       canvasElement,
       makeFile('medical-certificate.pdf', 240_000),
-      makeFile('kvitto-1.jpg', 1_800_000, 'image/jpeg'),
-      makeFile('kvitto-2.jpg', 2_400_000, 'image/jpeg'),
+      makeFile('receipt-1.jpg', 1_800_000, 'image/jpeg'),
+      makeFile('receipt-2.jpg', 2_400_000, 'image/jpeg'),
     )
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(3))
     for (const item of itemsOf(canvasElement)) {
@@ -347,10 +347,10 @@ export const RejectedForOtherReasons: Story = {
       canvasElement,
       makeFile('liten.pdf', 500),
       folder,
-      makeFile('mitt intyg.pdf', 20_000),
+      makeFile('my certificate.pdf', 20_000),
       kept,
       kept,
-      makeFile('kvitto.pdf', 20_000),
+      makeFile('receipt.pdf', 20_000),
       makeFile('extra.pdf', 20_000),
     )
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(2))
@@ -454,7 +454,7 @@ export const WithPreview: Story = {
   render: (args, { globals }) => <AttachmentsWithPreviews {...args} locale={localeOf(globals)} />,
   args: { multiple: true },
   play: async ({ canvasElement }) => {
-    await choose(canvasElement, makeImage('foto.png'), makeFile('intyg.pdf'))
+    await choose(canvasElement, makeImage('foto.png'), makeFile('certificate.pdf'))
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(2))
     for (const image of canvasElement.querySelectorAll('li img')) {
       await expect(image).toHaveAttribute('alt', '')
@@ -469,7 +469,7 @@ export const ManyFiles: Story = {
     await choose(
       canvasElement,
       ...Array.from({ length: 12 }, (_, index) =>
-        makeFile(`kvitto-${index + 1}.pdf`, 1_000 + index),
+        makeFile(`receipt-${index + 1}.pdf`, 1_000 + index),
       ),
     )
     await waitFor(() => expect(itemsOf(canvasElement)).toHaveLength(12))
