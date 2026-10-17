@@ -131,6 +131,12 @@ export const calendarRootRows = propRows<CalendarRootDocumentedProps>({
     default: '–',
     description: 'Range only. The most days, counting both ends. A booking of 14 nights is 15.',
   },
+  announceChoice: {
+    type: 'boolean',
+    default: 'true',
+    description:
+      'Announce the press that completes a choice: the day, or the finished range. Set false when something else says it, as a picker does. The month is still announced.',
+  },
   allowUnavailableInRange: {
     type: 'boolean',
     default: 'false',
@@ -278,6 +284,7 @@ export const useCalendarHook: ApiHook = {
     minimumDays: calendarRootRows.minimumDays,
     maximumDays: calendarRootRows.maximumDays,
     allowUnavailableInRange: calendarRootRows.allowUnavailableInRange,
+    announceChoice: calendarRootRows.announceChoice,
   }),
   result: propRows<UseCalendarResult>({
     rootProps: {
