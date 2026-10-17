@@ -17,6 +17,15 @@ export const contentPreviews: Record<string, ReactNode> = {
       <Path d="M122 86 l4 4 l4 -4" />
     </Drawing>
   ),
+  address: (
+    <Drawing>
+      <Bar x={40} y={22} width={50} height={5} />
+      <Bar x={40} y={36} width={78} />
+      <Bar x={40} y={48} width={52} />
+      <Bar x={40} y={64} width={64} tone="key" />
+      <Bar x={40} y={76} width={82} tone="key" />
+    </Drawing>
+  ),
   alert: (
     <Drawing>
       <Rect x={20} y={28} width={120} height={44} radius={6} tone="fill" />
@@ -86,6 +95,16 @@ export const contentPreviews: Record<string, ReactNode> = {
       <Rect x={52} y={26} width={56} height={46} radius={8} tone="fill" />
       <Rect x={58} y={32} width={44} height={28} radius={5} />
       <Bar x={72} y={44.5} width={16} height={4} tone="key" />
+    </Drawing>
+  ),
+  list: (
+    <Drawing>
+      <Circle cx={36} cy={26} radius={3} tone="fill" />
+      <Bar x={48} y={24} width={70} tone="key" />
+      <Circle cx={36} cy={50} radius={3} tone="fill" />
+      <Bar x={48} y={48} width={54} tone="key" />
+      <Circle cx={36} cy={74} radius={3} tone="fill" />
+      <Bar x={48} y={72} width={62} tone="key" />
     </Drawing>
   ),
   progress: (

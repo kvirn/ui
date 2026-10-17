@@ -1,5 +1,7 @@
 import { readContract } from './contract.ts'
 import * as accordion from '../content/accordion.api.ts'
+import * as addressInput from '../content/address-input.api.ts'
+import * as address from '../content/address.api.ts'
 import * as alertDialog from '../content/alert-dialog.api.ts'
 import * as alert from '../content/alert.api.ts'
 import * as announcer from '../content/announcer.api.ts'
@@ -33,6 +35,7 @@ import * as icon from '../content/icon.api.ts'
 import * as inputGroup from '../content/input-group.api.ts'
 import * as kbd from '../content/kbd.api.ts'
 import * as link from '../content/link.api.ts'
+import * as list from '../content/list.api.ts'
 import * as listbox from '../content/listbox.api.ts'
 import * as map from '../content/map.api.ts'
 import * as menu from '../content/menu.api.ts'
@@ -40,6 +43,7 @@ import * as navigation from '../content/navigation.api.ts'
 import * as numberInput from '../content/number-input.api.ts'
 import * as oneTimeCode from '../content/one-time-code.api.ts'
 import * as pagination from '../content/pagination.api.ts'
+import * as phoneInput from '../content/phone-input.api.ts'
 import * as popover from '../content/popover.api.ts'
 import * as progress from '../content/progress.api.ts'
 import * as prose from '../content/prose.api.ts'
@@ -71,6 +75,8 @@ import * as visuallyHidden from '../content/visually-hidden.api.ts'
 // static map bundles the same under Next and Vitest. The test fails if a new api file is missing here.
 const apiModules: Readonly<Record<string, object>> = {
   accordion,
+  'address-input': addressInput,
+  address,
   'alert-dialog': alertDialog,
   alert,
   announcer,
@@ -104,12 +110,14 @@ const apiModules: Readonly<Record<string, object>> = {
   'input-group': inputGroup,
   kbd,
   link,
+  list,
   listbox,
   map,
   menu,
   navigation,
   'number-input': numberInput,
   'one-time-code': oneTimeCode,
+  'phone-input': phoneInput,
   pagination,
   popover,
   progress,

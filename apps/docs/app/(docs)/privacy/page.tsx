@@ -74,15 +74,15 @@ export default function PrivacyPage() {
           id: 'rights',
           label: text.rights.label,
           content: (
-            <p>
-              {text.rights.body} <Link href={text.rights.imyHref}>{text.rights.imy}</Link>
-            </p>
+            <>
+              <p>
+                {text.rights.body} <Link href={text.rights.imyHref}>{text.rights.imy}</Link>
+              </p>
+              <p>
+                {text.updated.label}: {text.updated.date}
+              </p>
+            </>
           ),
-        },
-        {
-          id: 'updated',
-          label: text.updated.label,
-          content: <p>{text.updated.date}</p>,
         },
       ]}
     />

@@ -34,6 +34,17 @@ function DayGrid({
 }
 
 export const formsPreviews: Record<string, ReactNode> = {
+  'address-input': (
+    <Drawing>
+      <Rect x={20} y={12} width={120} height={20} />
+      <Rect x={20} y={38} width={120} height={20} />
+      <Rect x={20} y={64} width={38} height={20} />
+      <Rect x={66} y={64} width={74} height={20} />
+      <Bar x={28} y={20.5} width={50} tone="key" />
+      <Bar x={28} y={72.5} width={22} tone="key" />
+      <Bar x={74} y={72.5} width={40} tone="key" />
+    </Drawing>
+  ),
   calendar: (
     <Drawing>
       <Rect x={26} y={8} width={108} height={84} radius={6} />
@@ -155,6 +166,15 @@ export const formsPreviews: Record<string, ReactNode> = {
       <Bar x={16} y={48.5} width={8} tone="key" />
       <Bar x={40} y={48.5} width={8} tone="key" />
       <Bar x={64} y={48.5} width={8} tone="key" />
+    </Drawing>
+  ),
+  'phone-input': (
+    <Drawing>
+      <Rect x={14} y={32} width={40} height={36} />
+      <Path d="M36 48 l4 4 l4 -4" />
+      <Bar x={22} y={48.5} width={10} tone="key" />
+      <Rect x={62} y={32} width={84} height={36} />
+      <Bar x={72} y={48.5} width={52} tone="key" />
     </Drawing>
   ),
   slider: (

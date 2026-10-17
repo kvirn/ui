@@ -115,6 +115,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'A list of questions or sections, each with a heading and a button that opens its answer.',
       ),
       component(
+        'Address',
+        'address',
+        'Contact details for the page or the article around it, as the native address element.',
+      ),
+      component(
         'Alert',
         'alert',
         'A status message in the content: something people need to know now, or the result of what they just did.',
@@ -151,6 +156,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'Every icon in the library, with its name, other names and meaning, and a search.',
       ),
       component('Kbd', 'kbd', 'A key name in running text, drawn as a key.'),
+      component(
+        'List',
+        'list',
+        'A short list of links or items, with or without bullets or numbers, as the native list.',
+      ),
       component(
         'Progress',
         'progress',
@@ -249,6 +259,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
     id: 'forms',
     label: groupText.forms,
     pages: [
+      component(
+        'AddressInput',
+        'address-input',
+        'A postal address in separate boxes (street, line 2, postal code and city), each with its autofill purpose set.',
+      ),
       component('Autocomplete', 'autocomplete', 'A text field that suggests as the user types.'),
       component(
         'Checkbox',
@@ -311,6 +326,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'OneTimeCode',
         'one-time-code',
         'A field for a code sent to the user by text message, email or an authenticator app.',
+      ),
+      component(
+        'PhoneInput',
+        'phone-input',
+        'A box for a phone number, with an optional select for the country calling code.',
       ),
       component(
         'RadioGroup',
