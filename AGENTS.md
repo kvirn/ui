@@ -14,7 +14,7 @@ packages/react     useX hooks + X.Root/X.Trigger components
 packages/rich-text the rich text editor on Tiptap (peers). The only package that imports @tiptap/*
 packages/i18n      sv fi nb nn en
 packages/theme     theme.css: --kv-* palette + tokens, default styles (opt-in)
-packages/testing   a11y test helpers
+packages/testing   a11y test helpers (private: maintainers and contributors only, never published)
 packages/icons     the icon library: outline SVGs on one 24 grid, generated to modules, `catalog.json` is the source of truth, public, depends on nothing; human review checks pending
 packages/patterns  site patterns and content types on react + theme classes, zero CSS, private until reviewed
 tooling/           repo checks (commit messages, keyboard docs, Foundation docs, raw colours), shared tsconfig and vite presets

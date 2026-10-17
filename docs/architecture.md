@@ -11,7 +11,7 @@ packages/rich-text @kvirn-ui/rich-text the rich text editor, on Tiptap (peers)
 packages/map       @kvirn-ui/map      Map and AddressSearch; engine adapters on optional peers (maplibre-gl, leaflet), no default tile or geocoder URL
 packages/i18n      @kvirn-ui/i18n     message catalogs
 packages/theme     @kvirn-ui/theme    theme.css: role scales, semantic tokens, component styles
-packages/testing   @kvirn-ui/testing  a11y test helpers (dev only); `/read-aloud` needs an optional peer
+packages/testing   @kvirn-ui/testing  a11y test helpers (private: for maintainers and contributors, never published); `/read-aloud` needs an optional peer
 packages/icons     @kvirn-ui/icons    257 outline icons, one module each (public, no dependencies; human review checks pending); `svg/` and `catalog.json` are the source, a generator writes `src/`
 packages/patterns  @kvirn-ui/patterns site patterns, content types and fixtures (private until reviewed; `/fixtures` entry)
 tooling/           repo checks (commit messages, keyboard docs, Foundation docs, raw colours), shared tsconfig + vite presets
