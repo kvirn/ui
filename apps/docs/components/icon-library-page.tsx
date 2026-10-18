@@ -29,9 +29,15 @@ export const iconCount = categories.reduce((total, category) => total + category
 export function IconLibraryPage({
   query,
   category,
+  variant,
+  size,
+  stroke,
 }: {
   query: string
   category: string | undefined
+  variant?: string | undefined
+  size?: string | undefined
+  stroke?: string | undefined
 }) {
   return (
     <DocsPage
@@ -58,6 +64,9 @@ export function IconLibraryPage({
         categories={categories}
         initialQuery={query}
         initialCategory={categories.find(({ id }) => id === category)?.id ?? 'all'}
+        initialVariant={variant}
+        initialSize={size}
+        initialStroke={stroke}
       />
     </DocsPage>
   )

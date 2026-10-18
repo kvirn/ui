@@ -811,6 +811,45 @@ export const messages = {
       aliases: ({ list }: { list: string }) => `Also called: ${list}`,
       flips: 'Flips in right-to-left text',
       label: ({ label }: { label: string }) => `Translated label: “${label}”`,
+      customize: 'Customize the preview',
+      customizeNow: ({ settings }: { settings: string }) => `(now: ${settings})`,
+      settingsSummary: ({
+        colour,
+        size,
+        stroke,
+      }: {
+        colour: string
+        size: string
+        stroke: string
+      }) => `${colour}, ${size} px, stroke ${stroke}`,
+      textColour: 'text colour',
+      previewLegend: 'Preview',
+      previewNote: 'Changes the drawings on this page only. Copy still copies the import line.',
+      variantLegend: 'Colour',
+      variantDefault: 'Text (default)',
+      variants: {
+        primary: 'Primary',
+        secondary: 'Secondary',
+        accent: 'Accent',
+        muted: 'Muted',
+        info: 'Info',
+        success: 'Success',
+        warning: 'Warning',
+        danger: 'Danger',
+      },
+      sizeLegend: 'Size in pixels',
+      strokeLegend: 'Stroke width',
+      strokeDefault: '1.5 (default)',
+      props: 'Props for these settings:',
+      usage: ({ size, variant, stroke }: { size: string; variant: string; stroke: string }) =>
+        [
+          `size="${size}"`,
+          variant === '' ? '' : `variant="${variant}"`,
+          stroke === '' ? '' : `className="kv-icon--stroke-${stroke}"`,
+        ]
+          .filter(Boolean)
+          .join(' '),
+      resetPreview: 'Reset the preview',
     },
     search: {
       title: 'Search',

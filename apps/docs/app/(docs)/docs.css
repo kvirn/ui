@@ -623,16 +623,23 @@ body {
 .docs-icon-list {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--kv-space-3);
+  gap: var(--kv-space-6);
+  --kv-card-padding-default: var(--kv-space-5);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* 1 column to 40rem, 2 to 64rem, 4 from there: the grid's width, not the window's, so it holds at 320px. */
+/* 1 column to 40rem, then 2, 3 (from 48rem) and 4 (from 64rem): the grid's width, not the window's, so it holds at 320px. */
 @container kv-grid (width >= 40rem) {
   .docs-icon-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container kv-grid (width >= 48rem) {
+  .docs-icon-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -642,18 +649,303 @@ body {
   }
 }
 
-.docs-icon-item {
-  display: flex;
-  align-items: start;
-  gap: var(--kv-space-3);
-  margin: 0;
-  padding: var(--kv-space-3);
-  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
-  border-radius: var(--kv-radius-md);
+/* Search, Category and the preview settings (docs-icon-gallery-cards.md §12, prototype F3). */
+.docs-icon-controls {
+  display: grid;
+  gap: var(--kv-space-5);
+  margin-block-end: var(--kv-space-8);
+  padding: var(--kv-space-5);
+  border: var(--kv-border-width) solid transparent;
+  border-radius: var(--kv-radius-lg);
+  background-color: var(--kv-color-surface);
 }
 
-.docs-icon-item p {
+.docs-icon-controls :is(.kv-field, .kv-fieldset) {
+  margin-block: 0;
+}
+
+.docs-icon-controls :is(.kv-input, .kv-listbox-native) {
+  inline-size: 100%;
+}
+
+.docs-icon-controls-row {
+  display: grid;
+  gap: var(--kv-space-4);
+}
+
+@container kv-grid (width >= 40rem) {
+  .docs-icon-controls-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .docs-icon-submit {
+    grid-column: 1 / -1;
+  }
+}
+
+@container kv-grid (width >= 64rem) {
+  .docs-icon-controls-row {
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, 18rem) auto;
+    align-items: start;
+  }
+
+  .docs-icon-submit {
+    grid-column: auto;
+    margin-block-start: calc(
+      var(--kv-control-font-size) * var(--kv-control-line-height) + var(--kv-field-gap)
+    );
+  }
+
+  .docs-icon-setting-groups {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1.25fr) minmax(0, 1fr);
+    column-gap: var(--kv-space-8);
+  }
+}
+
+.docs-icon-customize {
+  padding-block-start: var(--kv-space-3);
+  border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+}
+
+.docs-icon-customize > summary {
+  flex-wrap: wrap;
+  column-gap: var(--kv-space-2);
+  list-style: none;
+}
+
+.docs-icon-customize > summary::-webkit-details-marker {
+  display: none;
+}
+
+.docs-icon-customize > summary .docs-icon-chevron-up,
+.docs-icon-customize[open] > summary .docs-icon-chevron-down {
+  display: none;
+}
+
+.docs-icon-customize[open] > summary .docs-icon-chevron-up {
+  display: inline;
+}
+
+.docs-icon-now {
+  color: var(--kv-color-text-muted);
+}
+
+.docs-icon-settings {
+  display: grid;
+  gap: var(--kv-space-3);
+  padding-block: var(--kv-space-4) var(--kv-space-2);
+  padding-inline: var(--kv-space-2);
+}
+
+.docs-icon-setting-groups {
+  display: grid;
+  gap: var(--kv-space-4);
+}
+
+.docs-icon-options {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--kv-space-5);
+}
+
+.docs-icon-options > .kv-field {
   margin: 0;
+}
+
+/* Colour is never alone: the name follows the swatch. Forced colours drop the fill, so the edge keeps the dot. */
+.docs-icon-swatch {
+  display: inline-block;
+  box-sizing: border-box;
+  inline-size: 1rem;
+  block-size: 1rem;
+  margin-inline-end: var(--kv-space-2);
+  border: var(--kv-border-width) solid currentColor;
+  border-radius: 50%;
+  background-color: currentColor;
+  vertical-align: -0.125rem;
+}
+
+.docs-article .docs-icon-controls p.docs-icon-usage {
+  max-inline-size: none;
+  margin: 0;
+  font-size: var(--kv-font-body-small-size);
+  line-height: var(--kv-font-body-small-line-height);
+}
+
+.docs-icon-usage code {
+  overflow-wrap: anywhere;
+}
+
+.docs-icon-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kv-space-4);
+  margin: 0;
+  padding-block: var(--kv-space-6);
+}
+
+.docs-article .docs-icon-item p {
+  max-inline-size: none;
+  margin: 0;
+}
+
+.docs-icon-preview {
+  position: relative;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  min-block-size: calc(2 * var(--kv-space-16));
+  padding-block: var(--kv-space-8);
+  border-radius: var(--kv-radius-md);
+  background-color: var(--kv-color-surface);
+  color: var(--kv-color-text);
+}
+
+.docs-icon-tools {
+  position: absolute;
+  inset-block-start: var(--kv-space-2);
+  inset-inline-end: var(--kv-space-2);
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: var(--kv-space-2);
+}
+
+.docs-icon-copy {
+  flex: none;
+  justify-content: center;
+  padding-inline: 0;
+  inline-size: var(--kv-button-min-block-size, var(--kv-control-min-block-size));
+}
+
+.docs-icon-copy .docs-icon-copy-done,
+.docs-icon-copy[data-status='copied'] .docs-icon-copy-idle {
+  display: none;
+}
+
+.docs-icon-copy[data-status='copied'] .docs-icon-copy-done {
+  display: inline;
+}
+
+.docs-icon-copy-label {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.docs-icon-copy-status {
+  display: none;
+  align-items: center;
+  min-block-size: var(--kv-control-min-block-size);
+  padding-inline: var(--kv-space-2);
+  border-radius: var(--kv-radius-sm);
+  background-color: var(--kv-color-surface);
+  color: var(--kv-color-text);
+  font-size: var(--kv-font-body-small-size);
+  line-height: var(--kv-font-body-small-line-height);
+}
+
+/* Touch has no Tooltip, so the words show beside the icon and the drawing sits below the button (docs-icon-gallery-cards.md §4). */
+@media (hover: none) and (pointer: coarse) {
+  .docs-icon-copy {
+    inline-size: auto;
+    padding-inline: var(--kv-space-3);
+    gap: var(--kv-space-2);
+  }
+
+  .docs-icon-copy-label {
+    position: static;
+    inline-size: auto;
+    block-size: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+
+  .docs-icon-preview {
+    padding-block-start: calc(var(--kv-control-min-block-size) + var(--kv-space-4));
+  }
+
+  .docs-icon-copy-status {
+    display: flex;
+  }
+}
+
+.docs-icon-copy-failed {
+  display: grid;
+  gap: var(--kv-space-2);
+}
+
+.docs-icon-copy-failed[hidden] {
+  display: none;
+}
+
+.docs-icon-copy-failed p {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--kv-space-2);
+}
+
+.docs-icon-copy-failed .kv-icon {
+  flex: none;
+  margin-block-start: 0.125rem;
+}
+
+.docs-icon-copy-failed code {
+  display: block;
+  padding: var(--kv-space-2);
+  border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  border-radius: var(--kv-radius-sm);
+  background-color: var(--kv-color-surface);
+  font-family: var(--kv-font-family-mono);
+  font-size: var(--kv-font-body-small-size);
+  overflow-wrap: anywhere;
+}
+
+.docs-icon-title {
+  display: grid;
+  gap: var(--kv-space-1);
+}
+
+.docs-article .docs-icon-title :is(h3, p) {
+  margin: 0;
+  font-family: var(--kv-font-family-mono);
+  font-size: var(--kv-font-code-size);
+  line-height: var(--kv-font-body-line-height);
+  hyphens: none;
+  overflow-wrap: anywhere;
+}
+
+.docs-icon-title code {
+  padding: 0;
+  background: none;
+  font: inherit;
+}
+
+.docs-article .docs-icon-title h3 {
+  font-weight: 600;
+  color: var(--kv-color-text);
+}
+
+.docs-icon-title p {
+  color: var(--kv-color-text-muted);
+}
+
+.docs-icon-meta {
+  display: grid;
+  gap: var(--kv-space-1);
+  color: var(--kv-color-text-muted);
+  font-size: var(--kv-font-body-small-size);
+  line-height: var(--kv-font-body-small-line-height);
+}
+
+@media (forced-colors: active) {
+  .docs-icon-copy-status,
+  .docs-icon-copy-failed code {
+    border: var(--kv-border-width) solid CanvasText;
+  }
 }
 
 /* A SkipPanel example: the panel is out of the flow, so the frame holds it (contain: layout makes the
