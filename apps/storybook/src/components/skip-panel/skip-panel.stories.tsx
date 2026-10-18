@@ -8,6 +8,7 @@ import {
   SkipPanelReopened,
   SkipPanelRtl,
   SkipPanelShortcutsDisabled,
+  SkipPanelWithHelpLink,
   SkipPanelWithShortcuts,
 } from './skip-panel.fixture.tsx'
 import contract from '../../../../../packages/react/src/skip-panel/skip-panel.a11y.md?raw'
@@ -142,6 +143,20 @@ export const WithShortcuts: Story = {
     await userEvent.keyboard('{Alt>}{Shift>}c{/Shift}{/Alt}')
     await expect(contact).toHaveFocus()
     await expectHidden(panel)
+  }),
+}
+
+/** The Search row shows Command+K on Apple and Ctrl+K elsewhere (`mod`). The help link is the last item, reached by the arrow keys. */
+export const WithHelpLink: Story = {
+  parameters: showSource('skip-panel/skip-panel.fixture.tsx', 'SkipPanelWithHelpLink'),
+  render: () => <SkipPanelWithHelpLink />,
+  play: playUnlessDocs(async ({ canvasElement }) => {
+    const panel = panelOf(canvasElement)
+    const helpLink = within(panel).getByRole('link', { name: 'Keyboard help and settings' })
+    await userEvent.tab()
+    await userEvent.keyboard('{End}')
+    await expect(helpLink).toHaveFocus()
+    await expectShown(helpLink)
   }),
 }
 

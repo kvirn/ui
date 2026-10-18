@@ -412,6 +412,7 @@ export type {
 export {
   SkipPanel,
   SkipPanelGroup,
+  SkipPanelHelpLink,
   SkipPanelHint,
   SkipPanelItem,
   SkipPanelLabel,
@@ -421,6 +422,7 @@ export {
   SkipPanelShortcut,
 } from './skip-panel/skip-panel.tsx'
 export type {
+  SkipPanelHelpLinkProps,
   SkipPanelLabelProps,
   SkipPanelLinkProps,
   SkipPanelRootComponentProps,
@@ -429,12 +431,16 @@ export type {
 export {
   useSkipPanel,
   useSkipPanelGroup,
+  useSkipPanelHelpLink,
   useSkipPanelHint,
   useSkipPanelLink,
   useSkipPanelShortcut,
 } from './skip-panel/use-skip-panel.ts'
 export type {
+  SkipPanelHelpLinkPartProps,
   SkipPanelPartProps,
+  UseSkipPanelHelpLinkOptions,
+  UseSkipPanelHelpLinkResult,
   UseSkipPanelOptions,
   UseSkipPanelResult,
 } from './skip-panel/use-skip-panel.ts'

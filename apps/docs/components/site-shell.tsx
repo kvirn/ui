@@ -1,8 +1,9 @@
 'use client'
 import { ApplicationLogo, SiteHeader, SiteSearch } from '@kvirn-ui/patterns'
-import { Badge, Link, Navigation, SkipLink, TopBar, useRouteFocus } from '@kvirn-ui/react'
-import { useEffect, useRef, useState } from 'react'
-import type { ReactNode, RefObject } from 'react'
+import { Badge, Link, Navigation, SkipPanel, TopBar, useRouteFocus } from '@kvirn-ui/react'
+import { useRef, useState } from 'react'
+import type { ReactNode } from 'react'
+import { useShortcutsSetting } from '../lib/shortcuts-setting.ts'
 import { messages } from '../messages/en.ts'
 import { BackToTop } from './back-to-top.tsx'
 import { DocsDisclosure } from './docs-disclosure.tsx'
@@ -26,68 +27,13 @@ import { SiteToolLink } from './site-tool-link.tsx'
 
 const text = messages.docs
 
-const nonTextInputTypes = new Set([
-  'button',
-  'checkbox',
-  'color',
-  'file',
-  'image',
-  'radio',
-  'range',
-  'reset',
-  'submit',
-])
-
-const takesText = (element: Element) =>
-  element instanceof HTMLTextAreaElement ||
-  element instanceof HTMLSelectElement ||
-  (element instanceof HTMLElement && element.isContentEditable) ||
-  (element instanceof HTMLInputElement && !nonTextInputTypes.has(element.type))
-
-/**
- * Ctrl+K (Cmd+K on Apple) goes to the search box (maintainer's decision 2026-10-12, keyboard skill
- * rule 7). Ctrl+K is "delete to end of line" in a Mac text field, so Apple platforms take Cmd only.
- * It stays out of the way of text entry, where Mod+K is "insert link".
- */
-function useSearchShortcut(searchRef: RefObject<HTMLElement | null>) {
-  useEffect(() => {
-    const input = searchRef.current?.querySelector('input')
-    if (input === null || input === undefined) {
-      return
-    }
-    const isApple = /Mac|iPhone|iPad|iPod/.test(navigator.platform)
-    input.setAttribute('aria-keyshortcuts', isApple ? 'Meta+K' : 'Control+K')
-    const onKeyDown = (event: KeyboardEvent) => {
-      const isK = event.key.toLowerCase() === 'k' || event.code === 'KeyK'
-      const hasModifier = isApple
-        ? event.metaKey && !event.ctrlKey
-        : event.ctrlKey && !event.metaKey
-      if (event.defaultPrevented || !isK || !hasModifier || event.shiftKey || event.altKey) {
-        return
-      }
-      const target = document.activeElement
-      if (target !== null && target !== input && takesText(target)) {
-        return
-      }
-      event.preventDefault()
-      input.focus()
-      input.select()
-    }
-    document.addEventListener('keydown', onKeyDown)
-    return () => {
-      document.removeEventListener('keydown', onKeyDown)
-      input.removeAttribute('aria-keyshortcuts')
-    }
-  }, [searchRef])
-}
-
 const sidebarId = 'docs-sidebar'
 const siteNavigationId = 'site-navigation'
 // GitHub stays in the footer's Project list only.
 const topBarTools = siteTools.filter((tool) => tool.id !== 'github')
 
 /**
- * The docs site shell (docs-shell-mega-menu.md §5): two skip links, the primary Site header from
+ * The docs site shell (docs-shell-mega-menu.md §5): the skip panel, the primary Site header from
  * `@kvirn-ui/patterns` (a TopBar with Latest and Tools, and a masthead with the mark and name, the
  * Site menu with its mega panels, and the search), main and the footer. The header is not sticky;
  * the contents list (from 64rem) and the Back to top button are. The root's `scroll-padding` keeps
@@ -119,7 +65,12 @@ export function SiteShell({
   const mainRef = useRef<HTMLElement>(null)
   useRouteFocus({ key: pathname, containerRef: mainRef })
   const searchRef = useRef<HTMLElement>(null)
-  useSearchShortcut(searchRef)
+  const [shortcutsEnabled] = useShortcutsSetting()
+  const focusSearch = () => {
+    const input = searchRef.current?.querySelector('input')
+    input?.focus()
+    input?.select()
+  }
 
   const { previous, next } = pagerPages(visibleSections, pathname)
   const shellParts = {
@@ -149,8 +100,38 @@ export function SiteShell({
 
   return (
     <>
-      <SkipLink href="#main" />
-      <SkipLink href={`#${siteNavigationId}`}>{text.skipLinks.navigation}</SkipLink>
+      <SkipPanel.Root
+        reopenShortcut={{ key: 'k', alt: true, shift: true }}
+        shortcutsEnabled={shortcutsEnabled}
+      >
+        <SkipPanel.Group>
+          <SkipPanel.Label />
+          <SkipPanel.List>
+            <SkipPanel.Item>
+              <SkipPanel.Link href="#main" />
+            </SkipPanel.Item>
+            <SkipPanel.Item>
+              <SkipPanel.Link href={`#${siteNavigationId}`}>
+                {text.skipPanel.navigation}
+              </SkipPanel.Link>
+            </SkipPanel.Item>
+          </SkipPanel.List>
+        </SkipPanel.Group>
+        <SkipPanel.Group>
+          <SkipPanel.Label kind="shortcuts" />
+          <SkipPanel.List>
+            <SkipPanel.Item>
+              <SkipPanel.Shortcut shortcut={{ key: 'k', mod: true }} onClick={focusSearch}>
+                {text.skipPanel.search}
+              </SkipPanel.Shortcut>
+            </SkipPanel.Item>
+            <SkipPanel.Item>
+              <SkipPanel.HelpLink href="/accessibility-settings#shortcuts" />
+            </SkipPanel.Item>
+          </SkipPanel.List>
+        </SkipPanel.Group>
+        <SkipPanel.Hint />
+      </SkipPanel.Root>
       <SiteHeader.Root variant="primary">
         <TopBar>
           <Link href="/docs#status">{text.header.latest({ status: text.header.status })}</Link>

@@ -457,6 +457,8 @@ export interface KvirnMessages {
     arrowHint: TextMessage
     /** The Hint sentence. `{keys}` is replaced by the key caps of the reopen shortcut. */
     reopenHint: TextMessage
+    /** The default text of `SkipPanel.HelpLink`, for example `Hjälp och inställningar för tangentbord`. */
+    helpLink: TextMessage
   }
   keys: {
     /** Key cap names (Plan 0132). A native speaker's review is pending. */

@@ -294,6 +294,7 @@ export const fi = {
     actionsLabel: 'Pikalinkit',
     arrowHint: 'Siirry kohteiden välillä ylä- ja alanuolinäppäimillä.',
     reopenHint: 'Avaa tämä luettelo uudelleen painamalla {keys}.',
+    helpLink: 'Näppäimistön ohje ja asetukset',
   },
   keys: {
     shift: 'Vaihto',

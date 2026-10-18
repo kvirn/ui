@@ -3,11 +3,14 @@ import type { ApiPart } from './api-block.tsx'
 import { ApiBlock } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
 import { ContractSectionsView, contractSectionList } from './contract-sections-view.tsx'
+import { CodeBlock } from './code-block.tsx'
 import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
 import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
+  skipPanelHelpLinkAttributes,
+  skipPanelHelpLinkRows,
   skipPanelLabelRows,
   skipPanelLinkAttributes,
   skipPanelLinkRows,
@@ -16,6 +19,7 @@ import {
   skipPanelShortcutAttributes,
   skipPanelShortcutRows,
   useSkipPanelGroupHook,
+  useSkipPanelHelpLinkHook,
   useSkipPanelHintHook,
   useSkipPanelHook,
   useSkipPanelLinkHook,
@@ -31,6 +35,10 @@ export type SkipPanelExampleSources = Record<
   'default' | 'shortcuts' | 'reopen' | 'turn-off',
   string
 >
+
+const modRecipe = `<SkipPanel.Shortcut shortcut={{ key: 'k', mod: true }} onClick={focusSearch}>
+  Search
+</SkipPanel.Shortcut>`
 
 const parts: ApiPart[] = [
   {
@@ -107,15 +115,30 @@ const parts: ApiPart[] = [
     attributes: skipPanelShortcutAttributes,
   },
   {
+    name: 'SkipPanel.HelpLink',
+    renders: (
+      <>
+        <code>&lt;a href&gt;</code> that goes last in the list, to the page where a visitor reads
+        about the shortcuts and turns them off. It follows its address as any link does and moves no
+        focus. The Up and Down arrow keys reach it, but it is not a Tab stop of its own. It stays in
+        the list when <code>shortcutsEnabled</code> is <code>false</code>, so a visitor can turn the
+        shortcuts back on. Its default text is “Keyboard help and settings”. It takes every
+        attribute of an <code>&lt;a&gt;</code> and passes <code>ref</code> to it.
+      </>
+    ),
+    props: skipPanelHelpLinkRows,
+    attributes: skipPanelHelpLinkAttributes,
+  },
+  {
     name: 'SkipPanel.Hint',
     renders: (
       <>
         <code>&lt;p&gt;</code> that always renders the arrow sentence, “Use the up and down arrow
         keys to move between items.” The first link is described by it, so a screen reader reads it
-        when focus arrives. With a <code>reopenShortcut</code> and shortcuts on, it adds “Press
-        Alt+Shift+K to open this list again.” Always put one inside the Root: without it a
-        development warning says the first link has no description. It takes every attribute of a{' '}
-        <code>&lt;p&gt;</code>.
+        when focus arrives. With a <code>reopenShortcut</code> and shortcuts on, it adds a second
+        sentence, such as “Press Alt+Shift+K to open this list again.” Always put one inside the
+        Root: without it a development warning says the first link has no description. It takes
+        every attribute of a <code>&lt;p&gt;</code>.
       </>
     ),
   },
@@ -191,9 +214,10 @@ export function SkipPanelPage({
                 field. “My cases” is a link: here it points to the same page, and on your site it is
                 the address of the cases page or your router’s link component. Press the keys
                 anywhere on the page, except in a text field, and the row does the same as when you
-                press it. A “Keyboard help” item at the end links to the keyboard section of the
-                accessibility statement, where the rest of the shortcuts are explained. On your site
-                it points to that page, such as <code>/accessibility#keyboard</code>.
+                press it. A help link goes last. It leads to the page where a visitor can read about
+                the shortcuts and turn them off. Here it points to a place on the same page. On your
+                site it points to that page, such as <code>/accessibility-settings#shortcuts</code>.
+                Its text comes from the library, and you can replace it.
               </>
             }
             code={sources['shortcuts']}
@@ -201,14 +225,16 @@ export function SkipPanelPage({
               { part: 'SkipPanel.Label', prop: 'kind' },
               { part: 'SkipPanel.Shortcut', prop: 'shortcut' },
               { part: 'SkipPanel.Shortcut', prop: 'as' },
+              { part: 'SkipPanel.HelpLink', prop: 'href' },
             ]}
             note={
               <Note kind="reminder">
-                Make every chord Alt (Option on a Mac) plus Shift plus a letter. A bare letter would
-                fire while someone types or uses speech input. It would also fall under 2.1.4
-                Character Key Shortcuts (Level A), which asks for a way to turn it off, change it or
-                limit it to when its control has focus. In development, a warning flags a bare
-                letter and Ctrl with Alt.
+                Make every chord Alt (Option on a Mac) plus Shift plus a letter, or use{' '}
+                <code>mod</code> with a letter. A bare letter would fire while someone types or uses
+                speech input. It would also fall under 2.1.4 Character Key Shortcuts (Level A),
+                which asks for a way to turn it off, change it or limit it to when its control has
+                focus. In development, a warning flags a bare letter, Ctrl with Alt, and{' '}
+                <code>mod</code> together with <code>ctrl</code> or <code>meta</code>.
               </Note>
             }
           >
@@ -245,17 +271,20 @@ export function SkipPanelPage({
                 A shortcut can clash with the keys of a screen reader, the browser or the system.
                 Connect <code>shortcutsEnabled</code> to a setting. When it is off, no chord works,
                 the key names disappear and the second group’s label changes from “Keyboard
-                shortcuts” to “Quick links”. The rows stay in the list.
+                shortcuts” to “Quick links”. The rows stay in the list. A <code>HelpLink</code>{' '}
+                stays too, so a visitor who turned the shortcuts off can find the page that turns
+                them on again.
               </>
             }
             code={sources['turn-off']}
             propsUsed={[{ part: 'SkipPanel.Root', prop: 'shortcutsEnabled' }]}
             note={
               <Note kind="reminder">
-                Offer a setting that turns the shortcuts off, and keep it where people can find it.
-                2.1.4 Character Key Shortcuts (Level A) asks for this for shortcuts that are only
-                printable characters. Alt chords fall outside that rule, but the setting still helps
-                when they clash.
+                Offer a setting that turns the shortcuts off, and keep it where people can find it:
+                link to it with a <code>HelpLink</code>. 2.1.4 Character Key Shortcuts (Level A)
+                asks for this for shortcuts that are only printable characters. Alt and Ctrl chords
+                fall outside that rule, but the setting still helps when they clash with a screen
+                reader or the browser.
               </Note>
             }
           >
@@ -272,7 +301,17 @@ export function SkipPanelPage({
                 Give every skip link a target with the id it points to. If the id is missing, the
                 link goes nowhere and people using a keyboard must still tab through the whole
                 header (2.4.1 Bypass Blocks, Level A). Always put a Hint inside the Root: it tells
-                people about the arrow keys, and a development warning flags a missing one.
+                people about the arrow keys, and a development warning flags a missing one. Add a{' '}
+                <code>HelpLink</code> to a page where visitors can turn the shortcuts off, because
+                chords can clash with a screen reader (2.1.4 Character Key Shortcuts).
+              </Note>
+            ),
+            keyboard: (
+              <Note kind="recipe" more={<CodeBlock code={modRecipe} />}>
+                For a chord with Ctrl on Windows and Command on a Mac, set <code>mod</code> instead
+                of writing both. Command+K or Ctrl+K opens the row, and the key names and{' '}
+                <code>aria-keyshortcuts</code> change to match. The other system’s key does not
+                work. Check that the chord does not clash with your browser or screen reader.
               </Note>
             ),
             'known-issues': (
@@ -296,6 +335,7 @@ export function SkipPanelPage({
             useSkipPanelGroupHook,
             useSkipPanelLinkHook,
             useSkipPanelShortcutHook,
+            useSkipPanelHelpLinkHook,
             useSkipPanelHintHook,
           ]}
           strings={
@@ -323,6 +363,10 @@ export function SkipPanelPage({
                       'The name of the second group instead of shortcutsLabel while shortcutsEnabled is false.',
                   },
                   {
+                    key: 'helpLink',
+                    meaning: 'The HelpLink’s visible text, when you give it no children.',
+                  },
+                  {
                     key: 'arrowHint',
                     meaning: 'The Hint’s first sentence. The first link is described by it.',
                   },
@@ -340,7 +384,8 @@ export function SkipPanelPage({
                   { key: 'alt', meaning: 'The name of the Alt key.' },
                   { key: 'option', meaning: 'The name of the Alt key on Apple platforms.' },
                   { key: 'control', meaning: 'The name of the Ctrl key.' },
-                  { key: 'command', meaning: 'The name of the Meta key.' },
+                  { key: 'command', meaning: 'The name of the Meta key on Apple platforms.' },
+                  { key: 'meta', meaning: 'The name of the Meta key on other platforms.' },
                   { key: 'joiner', meaning: 'The text between key names.' },
                 ]}
               >

@@ -1,8 +1,11 @@
 import type {
+  SkipPanelHelpLinkProps,
   SkipPanelLabelProps,
   SkipPanelLinkProps,
   SkipPanelRootComponentProps,
   SkipPanelShortcutProps,
+  UseSkipPanelHelpLinkOptions,
+  UseSkipPanelHelpLinkResult,
   UseSkipPanelOptions,
   UseSkipPanelResult,
   useSkipPanelGroup,
@@ -13,7 +16,8 @@ import type {
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-const chordType = '{ key: string; alt?: boolean; shift?: boolean; ctrl?: boolean; meta?: boolean }'
+const chordType =
+  '{ key: string; mod?: boolean; alt?: boolean; shift?: boolean; ctrl?: boolean; meta?: boolean }'
 
 type UseSkipPanelLinkOptions = Parameters<typeof useSkipPanelLink>[0]
 type UseSkipPanelShortcutOptions = Parameters<typeof useSkipPanelShortcut>[0]
@@ -35,7 +39,7 @@ export const skipPanelRootRows = propRows<SkipPanelRootDocumentedProps>({
     type: 'boolean',
     default: 'true',
     description:
-      'false adds no keyboard listener, so no chord works, including reopenShortcut. It removes the key names from the rows and the aria-keyshortcuts attribute, and the Hint is not rendered. The rows stay in the list as links and buttons.',
+      'false adds no keyboard listener, so no chord works, including reopenShortcut. It removes the key names from the rows and the aria-keyshortcuts attribute, and the Hint drops its sentence about the reopen keys. The rows and the HelpLink stay in the list as links and buttons.',
   },
 })
 
@@ -130,7 +134,7 @@ export const skipPanelShortcutRows = propRows<SkipPanelShortcutDocumentedProps>(
   shortcut: {
     type: chordType,
     description:
-      'The chord, such as { key: "s", alt: true, shift: true } for Alt+Shift+S. Pressing it anywhere on the page, except in a text field, runs this row (it clicks the button or the link). Use Alt or Option with Shift and a letter. Never a bare letter, and never Ctrl with Alt. A development warning flags both.',
+      'The chord, such as { key: "s", alt: true, shift: true } for Alt+Shift+S. Pressing it anywhere on the page, except in a text field, runs this row (it clicks the button or the link). Use Alt or Option with Shift and a letter, or mod with a letter. mod: true means Command on Apple platforms and Ctrl elsewhere, so { key: "k", mod: true } is Command+K on a Mac and Ctrl+K on other systems; the other system’s key does not match. Never a bare letter, and never Ctrl with Alt. A development warning flags both, and it flags mod together with ctrl or meta.',
   },
   children: {
     type: 'ReactNode',
@@ -154,9 +158,47 @@ export const skipPanelShortcutAttributes: readonly AttributeRow[] = [
   },
   {
     name: 'aria-keyshortcuts',
-    values: '"Alt+Shift+S"',
+    values: '"Alt+Shift+S", "Meta+K" or "Control+K"',
     meaning:
-      'The chord in the form the ARIA specification uses. It is removed while shortcutsEnabled is false.',
+      'The chord in the form the ARIA specification uses. A mod chord is Meta+K on Apple platforms and Control+K elsewhere. It is removed while shortcutsEnabled is false.',
+  },
+]
+
+export type SkipPanelHelpLinkDocumentedProps = Pick<
+  SkipPanelHelpLinkProps,
+  'href' | 'children' | 'messages' | 'as'
+>
+
+export const skipPanelHelpLinkRows = propRows<SkipPanelHelpLinkDocumentedProps>({
+  href: {
+    type: 'string',
+    description:
+      'The address of the page where a visitor reads about the shortcuts and turns them off, such as "/accessibility-settings#shortcuts". The link follows it as any link does. It does not move focus to a target on the same page.',
+  },
+  children: {
+    type: 'ReactNode',
+    default: 'the message skipPanel.helpLink',
+    description:
+      'Your own text. It replaces the message, so you set its language: mark it if it differs from the page.',
+  },
+  messages: {
+    type: "Partial<KvirnMessages['skipPanel']>",
+    default: '–',
+    description: 'Overrides the message for this link: { helpLink: "Shortcut settings" }.',
+  },
+  as: {
+    type: 'ElementType',
+    default: "'a'",
+    description:
+      'Changes the element to your router’s link component. It must render an <a href> and forward its ref.',
+  },
+})
+
+export const skipPanelHelpLinkAttributes: readonly AttributeRow[] = [
+  {
+    name: 'kv-skip-panel__help-link',
+    values: 'always',
+    meaning: 'The part class.',
   },
 ]
 
@@ -290,12 +332,37 @@ export const useSkipPanelShortcutHook: ApiHook = {
       type: '{ key, text }[]',
       default: '–',
       description:
-        'The key names in order, such as Alt, Shift, S. Option replaces Alt on Apple platforms. Empty while shortcuts are off.',
+        'The key names in order, such as Alt, Shift, S. Option replaces Alt on Apple platforms. A mod chord gives Command on Apple platforms and Ctrl elsewhere. Empty while shortcuts are off.',
     },
     joiner: {
       type: 'string',
       default: '–',
       description: 'The message keys.joiner, which goes between the key names.',
+    },
+  }),
+}
+
+export const useSkipPanelHelpLinkHook: ApiHook = {
+  name: 'useSkipPanelHelpLink',
+  intro:
+    'It makes the link an item of the arrow-key set that is not a Tab stop of its own. It does not move focus to a target. It works while shortcutsEnabled is false.',
+  options: propRows<UseSkipPanelHelpLinkOptions>({
+    messages: {
+      type: "Partial<KvirnMessages['skipPanel']>",
+      default: '–',
+      description: 'Overrides the message skipPanel.helpLink for this link.',
+    },
+  }),
+  result: propRows<UseSkipPanelHelpLinkResult>({
+    helpLinkProps: {
+      type: '{ className }',
+      default: '–',
+      description: 'Spread on an <a href> that you render.',
+    },
+    label: {
+      type: 'string',
+      default: '–',
+      description: 'The message skipPanel.helpLink: the default text of the link.',
     },
   }),
 }

@@ -41,9 +41,7 @@ export function Shortcuts() {
               </SkipPanel.Shortcut>
             </SkipPanel.Item>
             <SkipPanel.Item>
-              <SkipPanel.Link href="#skip-panel-shortcuts-keyboard-help">
-                {texts.keyboardHelpLabel}
-              </SkipPanel.Link>
+              <SkipPanel.HelpLink href="#skip-panel-shortcuts-keyboard-help" />
             </SkipPanel.Item>
           </SkipPanel.List>
         </SkipPanel.Group>

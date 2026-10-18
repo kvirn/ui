@@ -274,7 +274,7 @@ export const messages = {
       searchLabel: 'Search the documentation',
       searchButton: 'Search',
     },
-    skipLinks: { navigation: 'Skip to site navigation' },
+    skipPanel: { navigation: 'Site navigation', search: 'Search' },
     backToTop: 'Back to top',
     /** Text in `**double asterisks**` is a menu or button name, shown in bold. */
     accessibility: {
@@ -311,7 +311,8 @@ export const messages = {
           },
           {
             keys: [['arrows']],
-            action: 'Move and choose in a group of options, such as Display. Elsewhere, scroll.',
+            action:
+              'Move and choose in a group of options, such as Display, and between the items of the skip list. Elsewhere, scroll.',
           },
           {
             keys: [['enter'], ['space']],
@@ -335,14 +336,27 @@ export const messages = {
           },
           {
             keys: [['ctrl', 'K']],
-            action: 'Go to the search box. On a Mac, press Command and K instead.',
+            action:
+              'Go to the search box. On a Mac, press Command and K instead. It does not work while you type in a field.',
+          },
+          {
+            keys: [['alt', 'shift', 'K']],
+            action:
+              'Open the skip list again from anywhere on the page. On a Mac, press Option, Shift and K instead. It does not work while you type in a field.',
           },
         ],
         noShortcuts:
-          'This site has no single-key shortcuts, so typing, speech input and screen reader keys never set anything off by accident. The search shortcut always needs a modifier key.',
+          'This site has no single-key shortcuts, so typing, speech input and screen reader keys never set anything off by accident. The two shortcuts, Ctrl or Command with K and Alt with Shift and K, always use modifier keys. You can turn both off in the Keyboard shortcuts card above.',
         componentsBefore:
           'Each component page has a Keyboard section with every key that component uses. Start at',
         componentsLink: 'Components',
+        shortcuts: {
+          heading: 'Keyboard shortcuts',
+          intro:
+            'Press Tab once when a page opens to see the skip list. It has links that jump to the main content and the site navigation, and a Search shortcut. Press Ctrl and K (Command and K on a Mac) to go to the search box, and Alt, Shift and K (Option, Shift and K on a Mac) to open the list again.',
+          why: 'Other software, such as a screen reader or voice control, may use the same keys. If they clash, turn the shortcuts off here. The skip list and its links keep working, and the choice stays on this device.',
+          switchLabel: 'Keyboard shortcuts on this site',
+        },
       },
       keys: {
         and: 'and',
@@ -353,13 +367,16 @@ export const messages = {
         space: 'Space',
         escape: 'Escape',
         ctrl: 'Ctrl',
+        alt: 'Alt',
         command: 'Command',
         option: 'Option',
         arrows: 'Arrow keys',
       },
       skip: {
-        heading: 'Skip links',
-        body: 'Press Tab once when a page opens. A link appears at the top: Skip to main content. Press Tab again for Skip to site navigation. Press Enter to jump.',
+        heading: 'Skip list',
+        body: 'Press Tab once when a page opens. A small list appears at the top. Under “Skip to” it has two links, Main content and Site navigation. Under “Keyboard shortcuts” it has a Search row. Use the Up and Down arrow keys to move between the items, and press Enter to choose one. Press Tab again to leave the list. The last item, Keyboard help and settings, opens this page at the card where you can turn the shortcuts off. When the shortcuts are off, the Search row stays in the list, but its keys no longer work.',
+        cardBefore: 'Go to the',
+        cardLink: 'Keyboard shortcuts card',
       },
       zoom: {
         heading: 'Zoom and text size',

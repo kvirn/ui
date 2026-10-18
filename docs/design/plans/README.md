@@ -25,4 +25,5 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0130](0130-icon-name-registry-only.md)     | No default icons; `name` resolves only the app's registry        | Done (agents) |
 | [0131](0131-letterform-text-style-icons.md) | Bold, italic, underline, strike icons as B/I/U/S letterforms     | Done (agents) |
 | [0132](0132-skip-panel.md)                  | SkipPanel (floating skip panel with keyboard shortcuts)          | Done (agents) |
+| [0135](0135-skip-panel-docs-site.md)        | SkipPanel on the docs site, HelpLink, `mod`, shortcuts setting   | In progress   |
 | [0133](0133-heading-levels.md)              | Heading icons H1–H6; levels 2–6 in the text type picker          | Done (agents) |

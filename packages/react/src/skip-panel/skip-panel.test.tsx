@@ -39,10 +39,12 @@ function Page({
   onSearch = () => {},
   options = { reopenShortcut: reopenChord },
   withCases = true,
+  withHelpLink = false,
 }: {
   onSearch?: () => void
   options?: UseSkipPanelOptions
   withCases?: boolean
+  withHelpLink?: boolean
 }) {
   return (
     <>
@@ -76,6 +78,13 @@ function Page({
             ) : null}
           </SkipPanel.List>
         </SkipPanel.Group>
+        {withHelpLink ? (
+          <SkipPanel.List>
+            <SkipPanel.Item>
+              <SkipPanel.HelpLink href="#help" />
+            </SkipPanel.Item>
+          </SkipPanel.List>
+        ) : null}
         <SkipPanel.Hint />
       </SkipPanel.Root>
       <header>
@@ -89,6 +98,7 @@ function Page({
         <h1>Home</h1>
         <a href="/fees">Fees</a>
         <section id="cases" />
+        <section id="help" />
       </main>
     </>
   )
@@ -101,6 +111,38 @@ function dispatchKey(init: KeyboardEventInit): KeyboardEvent {
   const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init })
   document.body.dispatchEvent(event)
   return event
+}
+
+const appleWindow = new Proxy(window, {
+  get(target, property) {
+    if (property === 'navigator') {
+      return { platform: 'MacIntel' }
+    }
+    const value = Reflect.get(target, property, target)
+    return typeof value === 'function' ? value.bind(target) : value
+  },
+})
+
+function ModPage({
+  onSearch = () => {},
+  apple = false,
+}: {
+  onSearch?: () => void
+  apple?: boolean
+}) {
+  const page = (
+    <SkipPanel.Root>
+      <SkipPanel.Shortcut shortcut={{ key: 'k', mod: true }} onClick={onSearch}>
+        Search
+      </SkipPanel.Shortcut>
+      <SkipPanel.Hint />
+    </SkipPanel.Root>
+  )
+  return apple ? (
+    <KvirnProvider env={{ window: appleWindow, document }}>{page}</KvirnProvider>
+  ) : (
+    page
+  )
 }
 
 const root = () => document.querySelector<HTMLElement>('.kv-skip-panel')!
@@ -218,6 +260,38 @@ describe('SkipPanel keyboard', () => {
     expect(stops()).toEqual(['Main content'])
     await userEvent.tab({ shift: true })
     expect(document.activeElement?.textContent).toBe('Main content')
+  })
+
+  test('ArrowDown and End reach the HelpLink, the last item', async () => {
+    await render(<Page withHelpLink />)
+    await userEvent.tab()
+    await userEvent.keyboard('{End}')
+    expect(document.activeElement).toBe(
+      page.getByRole('link', { name: 'Keyboard help and settings' }).element(),
+    )
+    await userEvent.keyboard('{Home}{ArrowDown}{ArrowDown}{ArrowDown}{ArrowDown}')
+    expect(document.activeElement?.textContent).toBe('Keyboard help and settings')
+  })
+
+  test('the HelpLink is not a Tab stop but is reached by the arrows', async () => {
+    await render(<Page withHelpLink />)
+    const helpLink = page.getByRole('link', { name: 'Keyboard help and settings' }).element()
+    expect(helpLink.getAttribute('tabindex')).toBe('-1')
+    await userEvent.tab()
+    await userEvent.tab()
+    expect(root().contains(document.activeElement)).toBe(false)
+    await userEvent.tab({ shift: true })
+    await userEvent.keyboard('{End}')
+    expect(document.activeElement).toBe(helpLink)
+    expect(helpLink.getAttribute('tabindex')).toBe('0')
+  })
+
+  test('Enter on the HelpLink follows the link', async () => {
+    await render(<Page withHelpLink />)
+    page.getByRole('link', { name: 'Keyboard help and settings' }).element().focus()
+    await userEvent.keyboard('{Enter}')
+    expect(window.location.hash).toBe('#help')
+    window.location.hash = ''
   })
 
   test('Enter on a Link focuses the target', async () => {
@@ -425,6 +499,47 @@ describe('SkipPanel keyboard', () => {
   })
 })
 
+describe('SkipPanel mod chords', () => {
+  test('a mod chord is Command+K on Apple platforms', async () => {
+    const onSearch = vi.fn<() => void>()
+    await render(<ModPage apple onSearch={onSearch} />)
+    const event = dispatchKey({ key: 'k', code: 'KeyK', metaKey: true })
+    expect(onSearch).toHaveBeenCalledTimes(1)
+    expect(event.defaultPrevented).toBe(true)
+    dispatchKey({ key: 'k', code: 'KeyK', ctrlKey: true })
+    expect(onSearch).toHaveBeenCalledTimes(1)
+  })
+
+  test('a mod chord is Ctrl+K on other platforms', async () => {
+    const onSearch = vi.fn<() => void>()
+    await render(<ModPage onSearch={onSearch} />)
+    dispatchKey({ key: 'k', code: 'KeyK', ctrlKey: true })
+    expect(onSearch).toHaveBeenCalledTimes(1)
+    dispatchKey({ key: 'k', code: 'KeyK', metaKey: true })
+    expect(onSearch).toHaveBeenCalledTimes(1)
+  })
+
+  test('a mod chord is not handled with Alt or Shift', async () => {
+    const onSearch = vi.fn<() => void>()
+    await render(<ModPage onSearch={onSearch} />)
+    dispatchKey({ key: 'k', code: 'KeyK', ctrlKey: true, altKey: true })
+    dispatchKey({ key: 'K', code: 'KeyK', ctrlKey: true, shiftKey: true })
+    expect(onSearch).not.toHaveBeenCalled()
+  })
+
+  test('a mod chord shows Command and Meta+K on Apple platforms and Ctrl and Control+K elsewhere', async () => {
+    const apple = await render(<ModPage apple />)
+    let search = page.getByRole('button', { name: /^Search/ }).element()
+    expect(search.getAttribute('aria-keyshortcuts')).toBe('Meta+K')
+    expect(search.textContent).toContain('Command')
+    await apple.unmount()
+    await render(<ModPage />)
+    search = page.getByRole('button', { name: /^Search/ }).element()
+    expect(search.getAttribute('aria-keyshortcuts')).toBe('Control+K')
+    expect(search.textContent).toContain('Ctrl')
+  })
+})
+
 describe('SkipPanel roving tabindex', () => {
   test('an item that mounts later is not an extra Tab stop', async () => {
     function Late({ show }: { show: boolean }) {
@@ -498,15 +613,6 @@ describe('SkipPanel chords', () => {
 
   test('on Apple platforms AltGraph reported with Option does not reject the chord', async () => {
     const onSearch = vi.fn<() => void>()
-    const appleWindow = new Proxy(window, {
-      get(target, property) {
-        if (property === 'navigator') {
-          return { platform: 'MacIntel' }
-        }
-        const value = Reflect.get(target, property, target)
-        return typeof value === 'function' ? value.bind(target) : value
-      },
-    })
     await render(
       <KvirnProvider env={{ window: appleWindow, document }}>
         <Page onSearch={onSearch} />
@@ -576,6 +682,11 @@ describe('SkipPanel read aloud', () => {
     expect(phrases.slice(start + 1, end).join(' ')).toBe(
       'Use the up and down arrow keys to move between items. Press Alt + Shift + K to open this list again.',
     )
+  })
+
+  test('reads the HelpLink as a link with its default text', async () => {
+    const { container } = await render(<Page withHelpLink />)
+    expect(await readAloud(container)).toContain('link, Keyboard help and settings')
   })
 
   test('Escape collapsing the card announces nothing', async () => {
@@ -651,6 +762,44 @@ describe('SkipPanel name and attributes', () => {
     expect(page.getByRole('button', { name: /^Search/ }).element().textContent).toContain('Skift')
   })
 
+  test('the HelpLink is shown while shortcutsEnabled is false', async () => {
+    await render(<Page withHelpLink options={{ shortcutsEnabled: false }} />)
+    await expect
+      .element(page.getByRole('link', { name: 'Keyboard help and settings' }))
+      .toHaveAttribute('href', '#help')
+  })
+
+  test('children and messages replace the HelpLink text', async () => {
+    await render(
+      <SkipPanel.Root>
+        <SkipPanel.HelpLink href="/a">Shortcuts</SkipPanel.HelpLink>
+        <SkipPanel.HelpLink href="/b" messages={{ helpLink: 'Settings' }} />
+        <SkipPanel.Hint />
+      </SkipPanel.Root>,
+    )
+    await expect.element(page.getByRole('link', { name: 'Shortcuts' })).toBeInTheDocument()
+    await expect.element(page.getByRole('link', { name: 'Settings' })).toBeInTheDocument()
+  })
+
+  test('the HelpLink takes as={Component} and receives the class', async () => {
+    function RouterLink({ children, ...anchorProps }: ComponentPropsWithRef<'a'>) {
+      return (
+        <a {...anchorProps} data-router-link="">
+          {children}
+        </a>
+      )
+    }
+    await render(
+      <SkipPanel.Root>
+        <SkipPanel.HelpLink as={RouterLink} href="/shortcuts" />
+        <SkipPanel.Hint />
+      </SkipPanel.Root>,
+    )
+    const link = page.getByRole('link', { name: 'Keyboard help and settings' })
+    await expect.element(link).toHaveAttribute('data-router-link', '')
+    await expect.element(link).toHaveClass('kv-skip-panel__help-link')
+  })
+
   test('messages override the Link text per instance', async () => {
     await render(
       <SkipPanel.Root>
@@ -702,6 +851,16 @@ describe('SkipPanel development warnings', () => {
   test('a Ctrl+Alt chord warns about AltGr', async () => {
     await render(<Page options={{ reopenShortcut: { key: 'k', ctrl: true, alt: true } }} />)
     expect(warnings().some((message) => message.includes('AltGr'))).toBe(true)
+  })
+
+  test('a mod chord with ctrl or meta warns once', async () => {
+    await render(<Page options={{ reopenShortcut: { key: 'k', mod: true, ctrl: true } }} />)
+    expect(warnings().filter((message) => message.includes('mod'))).toHaveLength(1)
+  })
+
+  test('a mod chord alone does not warn', async () => {
+    await render(<ModPage />)
+    expect(warnings()).toEqual([])
   })
 
   test('good chords do not warn', async () => {

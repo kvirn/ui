@@ -288,6 +288,7 @@ export const nn = {
     actionsLabel: 'Snøgglenkjer',
     arrowHint: 'Bruk opp- og ned-piltastane for å byte mellom vala.',
     reopenHint: 'Trykk {keys} for å opne lista igjen.',
+    helpLink: 'Tastaturhjelp og innstillingar',
   },
   keys: {
     shift: 'Skift',

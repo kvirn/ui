@@ -13,6 +13,7 @@ import { SkipPanelContext } from './skip-panel-context.ts'
 import {
   useSkipPanel,
   useSkipPanelGroup,
+  useSkipPanelHelpLink,
   useSkipPanelHint,
   useSkipPanelLink,
   useSkipPanelShortcut,
@@ -226,6 +227,46 @@ export function SkipPanelShortcut({
 }
 SkipPanelShortcut.displayName = 'SkipPanel.Shortcut'
 
+interface SkipPanelHelpLinkOwnProps {
+  href: string
+  /** Your own text. Replaces the message `skipPanel.helpLink`. */
+  children?: ReactNode
+  messages?: Partial<KvirnMessages['skipPanel']> | undefined
+}
+
+export type SkipPanelHelpLinkProps<Component extends ElementType = 'a'> = AsComponent<
+  Component,
+  SkipPanelHelpLinkOwnProps
+>
+
+/**
+ * The link to your keyboard help and settings, last in the list. It follows its `href` natively
+ * and is shown while `shortcutsEnabled` is false, so a visitor can turn shortcuts back on.
+ */
+export function SkipPanelHelpLink<Component extends ElementType = 'a'>(
+  props: SkipPanelHelpLinkProps<Component>,
+): ReactElement
+export function SkipPanelHelpLink({
+  as,
+  messages,
+  children,
+  ref,
+  ...otherProps
+}: SkipPanelHelpLinkProps<'a'>): ReactElement {
+  const { helpLinkProps, label } = useSkipPanelHelpLink({ messages })
+  const elementRef = useMergedRef(ref, null)
+  return renderPart({
+    as,
+    defaultElement: 'a',
+    partProps: {
+      ...mergeProps(otherProps, helpLinkProps),
+      ref: elementRef,
+      children: children ?? label,
+    },
+  })
+}
+SkipPanelHelpLink.displayName = 'SkipPanel.HelpLink'
+
 /** The arrow-key sentence, then "Press Alt + Shift + K to open this list again." with a `reopenShortcut`. */
 export function SkipPanelHint({
   ref,
@@ -272,5 +313,6 @@ export const SkipPanel = {
   Item: SkipPanelItem,
   Link: SkipPanelLink,
   Shortcut: SkipPanelShortcut,
+  HelpLink: SkipPanelHelpLink,
   Hint: SkipPanelHint,
 } as const

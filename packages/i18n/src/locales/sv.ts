@@ -287,6 +287,7 @@ export const sv = {
     actionsLabel: 'Snabblänkar',
     arrowHint: 'Använd upp- och nedpilarna för att flytta mellan alternativen.',
     reopenHint: 'Tryck på {keys} för att öppna listan igen.',
+    helpLink: 'Hjälp och inställningar för tangentbord',
   },
   keys: {
     shift: 'Skift',

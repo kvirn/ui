@@ -22,6 +22,7 @@ import {
 import { Fragment } from 'react'
 import { messages } from '../messages/en.ts'
 import { PageWithContents } from './page-contents.tsx'
+import { ShortcutsSettingCard } from './shortcuts-setting-card.tsx'
 
 const text = messages.docs.accessibility
 
@@ -119,6 +120,7 @@ const keyboard = (
         </TableBody>
       </TableRoot>
     </TableScrollRegion>
+    <ShortcutsSettingCard />
     <p>{text.keyboard.noShortcuts}</p>
     <p>
       {text.keyboard.componentsBefore}{' '}
@@ -127,7 +129,14 @@ const keyboard = (
   </>
 )
 
-const skipLinks = <p>{text.skip.body}</p>
+const skipList = (
+  <>
+    <p>{text.skip.body}</p>
+    <p>
+      {text.skip.cardBefore} <Link href="#shortcuts">{text.skip.cardLink}</Link>.
+    </p>
+  </>
+)
 
 const zoom = (
   <>
@@ -236,7 +245,7 @@ export function AccessibilitySettingsPage() {
       sections={[
         { id: 'display', label: text.display.heading, content: display },
         { id: 'keyboard', label: text.keyboard.heading, content: keyboard },
-        { id: 'skip-links', label: text.skip.heading, content: skipLinks },
+        { id: 'skip-list', label: text.skip.heading, content: skipList },
         { id: 'zoom', label: text.zoom.heading, content: zoom },
         { id: 'device', label: text.device.heading, content: device },
         { id: 'report', label: text.report.heading, content: report },

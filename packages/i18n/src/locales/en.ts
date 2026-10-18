@@ -278,6 +278,7 @@ export const en = {
     actionsLabel: 'Quick links',
     arrowHint: 'Use the up and down arrow keys to move between items.',
     reopenHint: 'Press {keys} to open this list again.',
+    helpLink: 'Keyboard help and settings',
   },
   keys: {
     shift: 'Shift',

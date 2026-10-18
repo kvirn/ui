@@ -78,7 +78,55 @@ describe('matchShortcut', () => {
   })
 })
 
+describe('matchShortcut with mod', () => {
+  const modK: Shortcut = { key: 'k', mod: true }
+  const press = (overrides: Partial<ShortcutKeyEvent>) =>
+    keydown({ key: 'k', code: 'KeyK', altKey: false, shiftKey: false, ...overrides })
+
+  test('mod is Command on Apple platforms', () => {
+    expect(matchShortcut(press({ metaKey: true }), modK, { apple: true })).toBe(true)
+  })
+
+  test('mod is Ctrl outside Apple platforms', () => {
+    expect(matchShortcut(press({ ctrlKey: true }), modK, { apple: false })).toBe(true)
+  })
+
+  test('mod is Ctrl when no platform is given', () => {
+    expect(matchShortcut(press({ ctrlKey: true }), modK)).toBe(true)
+  })
+
+  test('mod does not match the other platform’s modifier', () => {
+    expect(matchShortcut(press({ ctrlKey: true }), modK, { apple: true })).toBe(false)
+    expect(matchShortcut(press({ metaKey: true }), modK, { apple: false })).toBe(false)
+  })
+
+  test('mod matches the physical key on a non-Latin layout', () => {
+    const cyrillic = press({ key: 'л', code: 'KeyK', ctrlKey: true }) // kv-lang-ok: the Cyrillic layout character
+    expect(matchShortcut(cyrillic, modK, { apple: false })).toBe(true)
+  })
+
+  test('mod does not match the physical key when a Latin layout puts another letter there', () => {
+    const dvorak = press({ key: 'v', code: 'KeyK', ctrlKey: true })
+    expect(matchShortcut(dvorak, modK, { apple: false })).toBe(false)
+  })
+
+  test('mod does not match with both modifiers, Alt or Shift', () => {
+    for (const apple of [true, false]) {
+      const both = press({ ctrlKey: true, metaKey: true })
+      expect(matchShortcut(both, modK, { apple })).toBe(false)
+      const modifier = apple ? { metaKey: true } : { ctrlKey: true }
+      expect(matchShortcut(press({ ...modifier, altKey: true }), modK, { apple })).toBe(false)
+      expect(matchShortcut(press({ ...modifier, shiftKey: true }), modK, { apple })).toBe(false)
+    }
+  })
+})
+
 describe('toAriaKeyShortcuts', () => {
+  test('writes a mod chord as Meta+K on Apple platforms and Control+K elsewhere', () => {
+    expect(toAriaKeyShortcuts({ key: 'k', mod: true }, { apple: true })).toBe('Meta+K')
+    expect(toAriaKeyShortcuts({ key: 'k', mod: true }, { apple: false })).toBe('Control+K')
+  })
+
   test('writes Alt+Shift+S', () => {
     expect(toAriaKeyShortcuts(altShiftS)).toBe('Alt+Shift+S')
   })
@@ -95,6 +143,17 @@ describe('toAriaKeyShortcuts', () => {
 })
 
 describe('shortcutKeys', () => {
+  test('names a mod chord Command on Apple platforms and Ctrl elsewhere', () => {
+    expect(shortcutKeys({ key: 'k', mod: true }, { apple: true })).toEqual([
+      { type: 'modifier', name: 'command' },
+      { type: 'key', label: 'K' },
+    ])
+    expect(shortcutKeys({ key: 'k', mod: true }, { apple: false })).toEqual([
+      { type: 'modifier', name: 'control' },
+      { type: 'key', label: 'K' },
+    ])
+  })
+
   const full: Shortcut = { key: 'k', meta: true, shift: true, alt: true, ctrl: true }
 
   test('orders the key caps Ctrl, Alt, Shift, Meta, key outside Apple platforms', () => {

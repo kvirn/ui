@@ -74,6 +74,11 @@ export interface SkipPanelShortcutPartProps {
   'aria-keyshortcuts'?: string
 }
 
+/** Spread on the HelpLink's `<a>`. */
+export interface SkipPanelHelpLinkPartProps {
+  className: 'kv-skip-panel__help-link'
+}
+
 export interface SkipPanelHintPartProps {
   className: 'kv-skip-panel__hint'
 }
@@ -151,7 +156,7 @@ function isModal(dialog: Element): boolean {
   }
 }
 
-const itemSelector = '.kv-skip-panel__link, .kv-skip-panel__shortcut'
+const itemSelector = '.kv-skip-panel__link, .kv-skip-panel__shortcut, .kv-skip-panel__help-link'
 
 // Roving tabindex by attribute: the parts render none, so the first render has no stop to lose.
 function syncItems(root: HTMLElement, stop: HTMLElement | null, describedById: string | undefined) {
@@ -182,20 +187,27 @@ function isBlocked(env: Env, root: HTMLElement): boolean {
   )
 }
 
-function warnAboutShortcut(shortcut: Shortcut): void {
-  const written = toAriaKeyShortcuts(shortcut)
+function warnAboutShortcut(shortcut: Shortcut, apple: boolean): void {
+  const written = toAriaKeyShortcuts(shortcut, { apple })
   if (
     shortcut.key.length === 1 &&
     shortcut.alt !== true &&
     shortcut.ctrl !== true &&
-    shortcut.meta !== true
+    shortcut.meta !== true &&
+    shortcut.mod !== true
   ) {
     warnOnce(
       `skip-panel-bare-shortcut:${written}`,
       `SkipPanel shortcut ${written} is a single character with no Alt, Ctrl or Meta, so it fires while someone types or uses speech input (2.1.4). Add a modifier.`,
     )
   }
-  if (shortcut.ctrl === true && shortcut.alt === true) {
+  if (shortcut.mod === true && (shortcut.ctrl === true || shortcut.meta === true)) {
+    warnOnce(
+      `skip-panel-mod-shortcut:${written}`,
+      `SkipPanel shortcut ${written} has mod and also ctrl or meta, so it asks for the same modifier twice or for both. Use mod alone: it is Command on Apple and Ctrl elsewhere.`,
+    )
+  }
+  if ((shortcut.ctrl === true || (shortcut.mod === true && !apple)) && shortcut.alt === true) {
     warnOnce(
       `skip-panel-altgr-shortcut:${written}`,
       `SkipPanel shortcut ${written} is Ctrl+Alt, which is AltGr on Windows and types characters on Nordic layouts, so it never fires there. Use Alt+Shift.`,
@@ -249,14 +261,14 @@ export function useSkipPanel({
 
   const registerShortcut = useCallback<SkipPanelContextValue['registerShortcut']>(
     (shortcut, elementRef) => {
-      warnAboutShortcut(shortcut)
+      warnAboutShortcut(shortcut, apple)
       const entry = { shortcut, elementRef }
       registry.current.add(entry)
       return () => {
         registry.current.delete(entry)
       }
     },
-    [],
+    [apple],
   )
 
   const arrowHintId = `${useId()}-arrow-hint`
@@ -285,7 +297,7 @@ export function useSkipPanel({
     if (hintCount.current === 0) {
       warnOnce(
         'skip-panel-hint-missing',
-        'SkipPanel has no SkipPanel.Hint, so the first link has no description of the arrow keys and keyboard users are not told that the arrow keys move between items (2.1.1). Put <SkipPanel.Hint /> inside Root.',
+        'SkipPanel has no SkipPanel.Hint, so the first link has no description of the arrow keys and keyboard users are not told that the arrow keys move between items. Put <SkipPanel.Hint /> inside Root.',
       )
     }
   }, [])
@@ -296,10 +308,10 @@ export function useSkipPanel({
   })
 
   const reopenWritten =
-    reopenShortcut === undefined ? undefined : toAriaKeyShortcuts(reopenShortcut)
+    reopenShortcut === undefined ? undefined : toAriaKeyShortcuts(reopenShortcut, { apple })
   useEffect(() => {
     if (reopenShortcut !== undefined) {
-      warnAboutShortcut(reopenShortcut)
+      warnAboutShortcut(reopenShortcut, apple)
     }
     // Keyed by the written chord: an inline object is new on every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -329,7 +341,7 @@ export function useSkipPanel({
         return
       }
       const reopen = latest.current.reopenShortcut
-      if (reopen !== undefined && matchShortcut(keyEvent, reopen)) {
+      if (reopen !== undefined && matchShortcut(keyEvent, reopen, { apple })) {
         const firstLink = root.querySelector<HTMLElement>('.kv-skip-panel__link')
         if (firstLink === null) {
           return
@@ -348,7 +360,7 @@ export function useSkipPanel({
         return
       }
       for (const entry of registry.current) {
-        if (matchShortcut(keyEvent, entry.shortcut)) {
+        if (matchShortcut(keyEvent, entry.shortcut, { apple })) {
           event.preventDefault()
           entry.elementRef.current?.click()
           return
@@ -573,7 +585,8 @@ export function useSkipPanelShortcut({
   const context = useContext(SkipPanelContext)
   const registerShortcut = context?.registerShortcut
   const enabled = context?.shortcutsEnabled === true
-  const written = toAriaKeyShortcuts(shortcut)
+  const apple = context?.apple === true
+  const written = toAriaKeyShortcuts(shortcut, { apple })
   useEffect(() => {
     if (!enabled || registerShortcut === undefined) {
       return
@@ -617,5 +630,27 @@ export function useSkipPanelHint(): UseSkipPanelHintResult {
     hintProps: { className: 'kv-skip-panel__hint' },
     arrowHint: { id: context?.arrowHintId, text: skipPanelMessages.arrowHint },
     sentence: keys.keys.length === 0 ? undefined : { before, after },
+  }
+}
+
+export interface UseSkipPanelHelpLinkOptions {
+  messages?: Partial<KvirnMessages['skipPanel']> | undefined
+}
+
+export interface UseSkipPanelHelpLinkResult {
+  helpLinkProps: SkipPanelHelpLinkPartProps
+  /** The message `skipPanel.helpLink`: the default text of the link. */
+  label: string
+}
+
+/** The HelpLink's props: an item in the roving set that follows its `href` natively. */
+export function useSkipPanelHelpLink({
+  messages,
+}: UseSkipPanelHelpLinkOptions = {}): UseSkipPanelHelpLinkResult {
+  const skipPanelMessages = useMessages('skipPanel', messages)
+  useItemSync()
+  return {
+    helpLinkProps: { className: 'kv-skip-panel__help-link' },
+    label: skipPanelMessages.helpLink,
   }
 }

@@ -3844,7 +3844,7 @@
     line-height: var(--kv-font-label-line-height);
   }
 
-  :where(.kv-skip-panel__link, .kv-skip-panel__shortcut) {
+  :where(.kv-skip-panel__link, .kv-skip-panel__help-link, .kv-skip-panel__shortcut) {
     box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
@@ -3867,7 +3867,7 @@
     cursor: pointer;
   }
 
-  :where(.kv-skip-panel__link) {
+  :where(.kv-skip-panel__link, .kv-skip-panel__help-link) {
     text-decoration-line: underline;
   }
 
@@ -3875,13 +3875,16 @@
     text-decoration-line: none;
   }
 
-  :where(.kv-skip-panel__link, .kv-skip-panel__shortcut):is(:hover, :active) {
+  :where(.kv-skip-panel__link, .kv-skip-panel__help-link, .kv-skip-panel__shortcut):is(
+    :hover,
+    :active
+  ) {
     color: var(--kv-color-link-hover);
     text-decoration-line: underline;
     text-decoration-thickness: var(--kv-link-underline-thickness-hover);
   }
 
-  :where(.kv-skip-panel__link, .kv-skip-panel__shortcut):focus-visible {
+  :where(.kv-skip-panel__link, .kv-skip-panel__help-link, .kv-skip-panel__shortcut):focus-visible {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: var(--kv-focus-ring-offset);
   }
@@ -3933,12 +3936,16 @@
       border-block-start-color: CanvasText;
     }
 
-    :where(.kv-skip-panel__link, .kv-skip-panel__shortcut) {
+    :where(.kv-skip-panel__link, .kv-skip-panel__help-link, .kv-skip-panel__shortcut) {
       color: LinkText;
       text-decoration-line: underline;
     }
 
-    :where(.kv-skip-panel__link, .kv-skip-panel__shortcut):focus-visible {
+    :where(
+      .kv-skip-panel__link,
+      .kv-skip-panel__help-link,
+      .kv-skip-panel__shortcut
+    ):focus-visible {
       outline-color: Highlight;
     }
   }

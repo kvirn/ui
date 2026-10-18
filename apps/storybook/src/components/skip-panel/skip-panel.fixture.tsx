@@ -91,6 +91,53 @@ export function SkipPanelWithShortcuts() {
   )
 }
 
+export function SkipPanelWithHelpLink() {
+  return (
+    <>
+      <SkipPanel.Root reopenShortcut={{ key: 'k', alt: true, shift: true }}>
+        <SkipPanel.Group>
+          <SkipPanel.Label />
+          <SkipPanel.List>
+            <SkipPanel.Item>
+              <SkipPanel.Link href="#with-help-link-main">Main content</SkipPanel.Link>
+            </SkipPanel.Item>
+            <SkipPanel.Item>
+              <SkipPanel.Link href="#with-help-link-navigation">Site navigation</SkipPanel.Link>
+            </SkipPanel.Item>
+          </SkipPanel.List>
+        </SkipPanel.Group>
+        <SkipPanel.Group>
+          <SkipPanel.Label kind="shortcuts" />
+          <SkipPanel.List>
+            <SkipPanel.Item>
+              <SkipPanel.Shortcut
+                shortcut={{ key: 'k', mod: true }}
+                onClick={() => document.getElementById('with-help-link-search')?.focus()}
+              >
+                Search
+              </SkipPanel.Shortcut>
+            </SkipPanel.Item>
+            <SkipPanel.Item>
+              <SkipPanel.HelpLink href="/keyboard-help" />
+            </SkipPanel.Item>
+          </SkipPanel.List>
+        </SkipPanel.Group>
+        <SkipPanel.Hint />
+      </SkipPanel.Root>
+      <nav id="with-help-link-navigation" aria-label="Site">
+        <Link.Root id="with-help-link-home" href="/">
+          Home
+        </Link.Root>{' '}
+        <input id="with-help-link-search" type="search" aria-label="Search the site" />
+      </nav>
+      <main id="with-help-link-main" tabIndex={-1}>
+        <Heading as="h1">Building permits</Heading>
+        <p>Press Tab to show the panel.</p>
+      </main>
+    </>
+  )
+}
+
 export function SkipPanelReopened() {
   return (
     <>

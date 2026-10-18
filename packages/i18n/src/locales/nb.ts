@@ -288,6 +288,7 @@ export const nb = {
     actionsLabel: 'Hurtiglenker',
     arrowHint: 'Bruk opp- og ned-piltastene for å bytte mellom valgene.',
     reopenHint: 'Trykk {keys} for å åpne denne listen igjen.',
+    helpLink: 'Tastaturhjelp og innstillinger',
   },
   keys: {
     shift: 'Skift',
