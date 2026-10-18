@@ -1,6 +1,7 @@
 import { Link } from '@kvirn-ui/react'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
+import { CodeBlock } from './code-block.tsx'
 import { ComponentPage } from './component-page.tsx'
 import { ContractSectionsView, contractSectionList } from './contract-sections-view.tsx'
 import { ExampleFrame } from './example-frame.tsx'
@@ -24,6 +25,7 @@ import {
   useRadioGroupHook,
   useRadioRows,
 } from '../content/radio-group.api.ts'
+import { AnnouncementWordingRadioGroup } from '../examples/radio-group/announcement-wording.tsx'
 import { ControlledRadioGroup } from '../examples/radio-group/controlled.tsx'
 import { DefaultRadioGroup } from '../examples/radio-group/default.tsx'
 import { DisabledOptionRadioGroup } from '../examples/radio-group/disabled-option.tsx'
@@ -33,6 +35,16 @@ import { OtherOptionRadioGroup } from '../examples/radio-group/other-option.tsx'
 import { PlainFormRadioGroup } from '../examples/radio-group/plain-form.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
+const providerWording = `import { defineMessages } from '@kvirn-ui/i18n'
+import { en } from '@kvirn-ui/i18n/en'
+
+// The text it replaces: en.radioGroup.revealShown
+const messages = defineMessages(en, {
+  radioGroup: { revealShown: 'A box for your own words has opened below.' },
+})
+
+<KvirnProvider messages={messages}>{/* your site */}</KvirnProvider>`
+
 export type RadioGroupExampleSources = Record<
   | 'default'
   | 'controlled'
@@ -40,7 +52,8 @@ export type RadioGroupExampleSources = Record<
   | 'option-help-text'
   | 'error-on-submit'
   | 'disabled-option'
-  | 'other-option',
+  | 'other-option'
+  | 'announcement-wording',
   string
 >
 
@@ -92,8 +105,10 @@ const parts: ApiPart[] = [
         <code>&lt;div&gt;</code> that holds what belongs to one radio, such as an “Other, please
         specify” field. Put it right after that radio’s <code>RadioGroup.Option</code>. It is{' '}
         <code>hidden</code> until the radio is checked, is never unmounted, and never moves focus.
-        The radio gets <code>aria-controls</code>, and the appearance is announced politely. The
-        typed text is still submitted by a plain form: ignore or clear it on the server.
+        The radio gets <code>aria-controls</code>. When someone checks the radio, a screen reader
+        says “An input field has appeared below.” politely (see{' '}
+        <Link href="#api-strings">Strings</Link> to change the text). The typed text is still
+        submitted by a plain form: ignore or clear it on the server.
       </>
     ),
     props: radioGroupRevealRows,
@@ -293,6 +308,28 @@ export function RadioGroupPage({
           >
             <OtherOptionRadioGroup />
           </UseCase>
+          <UseCase
+            id="announcement-wording"
+            title="Use your own words for the announcement"
+            why="When someone checks “Other”, a screen reader says that a field has appeared. The default text is in the language of the page. Change it when your service says it differently: once for the whole site in the provider, or for one question on its Reveal."
+            code={sources['announcement-wording']}
+            propsUsed={[
+              { part: 'RadioGroup.Reveal', prop: 'value' },
+              { part: 'RadioGroup.Reveal', prop: 'messages' },
+              { part: 'RadioGroup.Radio', prop: 'value' },
+            ]}
+            note={
+              <Note kind="recipe" more={<CodeBlock language="tsx" code={providerWording} />}>
+                To change it for the whole site, pass the text to the provider, as below. Write it
+                in the language of the page: for another language, start from that language’s
+                catalog instead of <code>en</code>. An empty text is ignored, so the default is
+                used. <Link href="/foundation/locales#per-provider">Locales</Link> explains the
+                rest.
+              </Note>
+            }
+          >
+            <AnnouncementWordingRadioGroup />
+          </UseCase>
         </>
       }
       contract={
@@ -337,19 +374,40 @@ export function RadioGroupPage({
             },
           ]}
           strings={
-            <StringsBlock
-              namespace="field"
-              component="RadioGroup"
-              keys={[
-                { key: 'optional', meaning: 'The legend’s marker when the group is not required.' },
-                {
-                  key: 'errorPrefix',
-                  meaning: 'Read before the error message, so it is not mistaken for help.',
-                },
-              ]}
-            >
-              <p>These are the Field strings, because the legend and the error use them.</p>
-            </StringsBlock>
+            <>
+              <StringsBlock
+                namespace="field"
+                component="RadioGroup"
+                keys={[
+                  {
+                    key: 'optional',
+                    meaning: 'The legend’s marker when the group is not required.',
+                  },
+                  {
+                    key: 'errorPrefix',
+                    meaning: 'Read before the error message, so it is not mistaken for help.',
+                  },
+                ]}
+              >
+                <p>These are the Field strings, because the legend and the error use them.</p>
+              </StringsBlock>
+              <StringsBlock
+                namespace="radioGroup"
+                component="RadioGroup.Reveal"
+                keys={[
+                  {
+                    key: 'revealShown',
+                    meaning:
+                      'Said politely once, when a user checks a radio whose Reveal opens. Not said when the page loads, when the form resets or when your code sets the value.',
+                  },
+                ]}
+              >
+                <p>
+                  This string belongs to <code>RadioGroup.Reveal</code>, so a <code>messages</code>{' '}
+                  prop on the Root does not change it.
+                </p>
+              </StringsBlock>
+            </>
           }
         />
       }

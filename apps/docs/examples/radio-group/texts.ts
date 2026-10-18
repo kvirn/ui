@@ -22,5 +22,6 @@ export const useRadioGroupTexts = defineExampleTexts({
     sourceColleague: 'A colleague',
     sourceOther: 'Other',
     sourceSpecify: 'Please specify',
+    revealShown: 'A box for your own words has opened below.',
   },
 })

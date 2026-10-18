@@ -18,6 +18,7 @@ export default function Page() {
         'error-on-submit': readExampleSource('radio-group/error-on-submit.tsx'),
         'disabled-option': readExampleSource('radio-group/disabled-option.tsx'),
         'other-option': readExampleSource('radio-group/other-option.tsx'),
+        'announcement-wording': readExampleSource('radio-group/announcement-wording.tsx'),
       }}
     />
   )
