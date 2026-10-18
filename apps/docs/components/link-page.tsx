@@ -118,10 +118,7 @@ export function LinkPage({
               </>
             }
             code={sources['new-tab']}
-            propsUsed={[
-              { part: 'Link.Root', prop: 'target' },
-              { part: 'Link.NewTabNotice', prop: 'children' },
-            ]}
+            propsUsed={[{ part: 'Link.Root', prop: 'target' }]}
             note={
               <Note kind="tip">
                 Link does not check that you added the notice: there is no type error and no

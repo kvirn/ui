@@ -59,12 +59,11 @@ const parts: ApiPart[] = [
     name: readyMadeRootName,
     renders: (
       <>
-        {renderedElement} <code>Alert.Info</code>, <code>Alert.Success</code>,{' '}
-        <code>Alert.Warning</code> and <code>Alert.Danger</code> take the same props. Each adds its
-        status class, its icon and the status word that starts the Title, all from one place in the
-        code, so the colour, the icon and the word can’t disagree. Also exported as{' '}
-        <code>AlertInfo</code> and so on. The default theme is described on{' '}
-        <Link href="/foundation/theming">Theming</Link>.
+        {renderedElement} These four ready-made roots take the same props. Each adds its status
+        class, its icon and the status word that starts the Title, all from one place in the code,
+        so the colour, the icon and the word can’t disagree. Also exported as <code>AlertInfo</code>{' '}
+        and so on. The default theme is described on <Link href="/foundation/theming">Theming</Link>
+        .
       </>
     ),
     props: readyMadeRootRows,
@@ -212,7 +211,7 @@ export function AlertPage({
               </>
             }
             code={sources['announced']}
-            propsUsed={[{ part: readyMadeRootName, prop: 'announce' }]}
+            propsUsed={[{ part: readyMadeRootName, label: 'Alert.Success', prop: 'announce' }]}
             note={
               <Note kind="tip">
                 Use <code>assertive</code> (the screen reader says it at once, even if it must

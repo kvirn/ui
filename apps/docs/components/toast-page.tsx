@@ -118,12 +118,9 @@ export function ToastPage({
           <UseCase
             id="auto-close"
             title="Messages that close by themselves"
-            why="With autoDismiss on, a confirmation fades away by itself and a ring on the toast counts down the time left. The timer pauses while you hover or focus the toast, while the tab is hidden and while a dialog is open. A toast with an Undo or any other action never closes by itself, and neither does one the person must act on. Offer it as a user setting, not a fixed choice."
+            why="With autoDismiss on, a confirmation fades away by itself and a ring on the toast counts down the time left. The timer pauses while you hover or focus the toast, while the tab is hidden and while a dialog is open. A toast with an Undo or any other action never closes by itself, and neither does one the person must act on. Offer it as a user setting, not a fixed choice. The switch here changes this site’s own KvirnProvider; in your app you set autoDismiss in its toast prop."
             code={sources['auto-close']}
-            propsUsed={[
-              { part: providerPart.name, prop: 'autoDismiss' },
-              { part: apiHookPart('show', 'options'), label: 'show', prop: 'action' },
-            ]}
+            propsUsed={[{ part: apiHookPart('show', 'options'), label: 'show', prop: 'action' }]}
             note={
               <Note kind="reminder">
                 Never time out an error or anything the person must act on (2.2.1 Timing

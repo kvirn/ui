@@ -465,10 +465,6 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
               </>
             }
             code={sources['clusters']}
-            propsUsed={[
-              { part: 'Map.Root', prop: 'cluster' },
-              { part: 'Map.ClusterPopup', prop: 'children' },
-            ]}
           >
             <PollingStationMap />
           </UseCase>

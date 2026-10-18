@@ -137,7 +137,6 @@ export function InputGroupPage({
             title="An error on the box"
             why="Put the group in a Field with invalid and write the message in the Field. The Field marks the input with aria-invalid and the box takes the invalid edge from it, so the box and the input agree. The focus ring shows on any focus in an invalid box, and the invalid edge stays."
             code={sources['invalid']}
-            propsUsed={[{ part: 'InputGroup.Root', prop: 'invalid' }]}
             note={
               <Note kind="reminder">
                 <code>invalid</code> on the Root changes only the look of the box. Set{' '}

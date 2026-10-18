@@ -11,7 +11,7 @@ import type {
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 
-export const readyMadeRootName = 'Alert.Info'
+export const readyMadeRootName = 'Alert.Info, Alert.Success, Alert.Warning, Alert.Danger'
 
 const rootAsRow = {
   type: "'div' | 'section'",

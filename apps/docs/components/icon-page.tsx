@@ -262,7 +262,6 @@ export const icons = defineIcons({ close: Cross })`}
               </>
             }
             code={sources['mirror-in-rtl']}
-            propsUsed={[{ part: 'Icon', prop: 'mirrorInRtl' }]}
             note={
               <Note kind="tip">
                 Set <code>mirrorInRtl</code> only on icons that point somewhere: arrows and
