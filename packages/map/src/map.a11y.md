@@ -26,7 +26,7 @@ A Map shows places on a camera over a base map, with the same places as a list. 
 | Map.List          | `<h2 tabindex="-1">` (`headingLevel` sets the level) and `<ul role="list">`                                                            | each row's trigger is a `<button aria-expanded aria-controls>`                                                                                                                                                                                                      | The heading states the count (`map.placesInView` or `map.placesAll`). Empty: `map.listEmpty`                                                                                                                                                                                                                                                                                                                                                                                           |
 | Map.Details       | `<dialog open aria-labelledby>` with a heading                                                                                         | Close is named `map.detailsClose` with the title                                                                                                                                                                                                                    | Heading `tabindex="-1"` takes focus on open. A non-modal popup, at every width: above the marker, below when there is no room above, scrolling inside the room it has. It never covers the marker and is never a panel under the map. No focus trap (Tab leaves it). Image: `alt` is the consumer's, `''` when decorative; image, body and address are optional                                                                                                                        |
 
-Each rule below is meant to have a test. Most are still to be written (the Keyboard table shows which have one):
+These are the rules the map follows (the Keyboard table names the test for each key; not every rule below has a test):
 
 - **Equivalent.** Every place in the data is in the list, and the viewport's description states the count (1.1.1, 1.3.1).
 - **Names.** The viewport's name is the consumer's `label` and its role description is `map.roleDescription`.
@@ -123,28 +123,27 @@ Not announced: the map loading, hover, highlight, a drag, and opening details or
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                            |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------ |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                  |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | map.stories.tsx, every story, 4 themes                                                           |
+| Markup and ARIA (roles, names, ids, states)                                | pending     | n/a         | pending | the test has no axe check                                                                        |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 35 rows, each names a test (map.test.tsx › Tab reaches the skip link and the viewport)           |
+| Focus order and management                                                 | pass        | n/a         | pass    | map.test.tsx asserts focus (toHaveFocus); first rule: Tab reaches the skip link and the viewport |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                 |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                  |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                  |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                  |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                  |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                  |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                  |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                  |
 
 ## Known issues
 
-- **The map's translations await native review.** Swedish, Finnish, Norwegian Bokmål and Norwegian Nynorsk texts exist, but a native speaker has not reviewed them yet. Override any text with the `messages` prop or the provider's `map` catalog. Your own map label, layer names and place data are in your language already. <!-- kv-lang-ok: the language name Bokmål -->
+- **Review the translations before you launch.** Have a native speaker review the Swedish, Finnish, Norwegian Bokmål and Norwegian Nynorsk texts before you launch. Override any text with the `messages` prop or the provider's `map` catalog. Your own map label, layer names and place data are in your language already. <!-- kv-lang-ok: the language name Bokmål -->
 - **Markers under the floating cards cannot be pressed there.** Where the Layers or Map type card covers a marker, use the list or the keyboard, which pans the marker clear (2.4.11).
-- **Most keyboard rows have no automated test yet.** The Keyboard table shows which rows name a test and which are pending.
-- **No assistive technology has checked the map.** Every row of the AT test record is pending.
-- **There is no usability test of the layer checkboxes and the pan buttons yet.**
+- **Test with your users and their assistive technology.** A map is hard to make equal for everyone, so check the viewport, the layer checkboxes, the pan buttons and the list with the assistive technology your users have.
 - **Markers of different layers can touch.** Layers cluster separately, so a cluster of one layer can sit on a marker or cluster of another. Every place stays reachable from the keyboard (arrow keys between markers) and in the list.
 - **`cluster={false}` with a large source** puts every place in view on the page as a button. The map warns once in development past 2,000 markers, and does not cap them. Keep clustering on, or turn it off only for small layers.
-- **There is no address search yet.** `GeocoderProvider` is a type only, and no part uses it. A visitor finds a place by the markers, the list and the layers.
+- **The map has no address search.** `GeocoderProvider` is a type only, and no part uses it; to offer address search, build it beside the map with a geocoding service you choose. A visitor finds a place by the markers, the list and the layers.

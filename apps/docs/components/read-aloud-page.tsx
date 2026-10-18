@@ -143,8 +143,7 @@ export function ReadAloudPage({
   return (
     <ComponentPage
       title="ReadAloud"
-      lead="It never starts by itself, and it is not a substitute for a screen reader (software that reads the whole screen aloud). Work on it is blocked: the maintainers are waiting for an update to an npm package (a published JavaScript package) and a re-test."
-      status="in-planning"
+      lead="It never starts by itself, and it is not a substitute for a screen reader (software that reads the whole screen aloud)."
       whenToUse={
         <ul>
           <li>
@@ -256,9 +255,9 @@ export function ReadAloudPage({
           notes={{
             'visual-and-modes': (
               <Note kind="tip">
-                The default theme styles the player but not the sentence highlight yet. The sentence
-                is registered as <code>::highlight(kv-read-aloud)</code>, and nothing paints it
-                until you add that style. The Status text gives the position meanwhile.
+                The default theme styles the player but not the sentence highlight. The sentence is
+                registered as <code>::highlight(kv-read-aloud)</code>, and nothing paints it until
+                you add that style. The Status text gives the position.
               </Note>
             ),
             'known-issues': (

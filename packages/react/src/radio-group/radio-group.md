@@ -1,7 +1,5 @@
 # RadioGroup
 
-> **Draft** (Plan 0013). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [radio-group.a11y.md](radio-group.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md), and the decisions are in the forms skill.
-
 **KvirnUI holds no form state; bring your own form logic.** RadioGroup renders the value you give it and reports the radio the user chose through `onValueChange`. It never stores the selection (the one exception is UI state for a `RadioGroup.Reveal`, below), and it doesn't validate.
 
 A RadioGroup is one question with exactly one answer: "How long do you need the permit?" with 1, 6 or 12 months. It groups native radios under a legend, with an optional description, help text and error. For several answers that can all be true, use a [CheckboxGroup](../checkbox-group/checkbox-group.md). For a single yes-or-no answer, use a [Checkbox](../checkbox/checkbox.md). For a choice from a long list, use a [Listbox](../listbox/listbox.md).

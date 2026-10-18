@@ -211,7 +211,9 @@ describe('roles, names and states', () => {
   })
 
   test('a DateRangePicker inside a form submits nothing when its buttons are pressed', async () => {
-    const onSubmit = vi.fn((event: { preventDefault: () => void }) => event.preventDefault())
+    const onSubmit = vi.fn<(event: { preventDefault: () => void }) => void>((event) =>
+      event.preventDefault(),
+    )
     await render(
       <form onSubmit={onSubmit}>
         <Example />

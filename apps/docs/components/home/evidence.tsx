@@ -39,7 +39,6 @@ export function Evidence({
       <div className="home-actions">
         <Link href="/components">{text.links.components}</Link>
         <Link href="/components/button">{text.links.contract}</Link>
-        <Link href="/docs">{text.links.pending}</Link>
       </div>
     </Band>
   )

@@ -166,29 +166,30 @@ Each row has a named test using `readAloud` or `readAnnouncements` (`@kvirn-ui/t
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                                          |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                                |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | rich-text-editor.stories.tsx, every story, 4 themes                                                                                                            |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | rich-text-editor.test.tsx › the Field’s label names the editable text, a multi-line textbox; expectNoA11yViolations                                            |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 44 rows, each names a test (rich-text-toolbar.test.tsx › Tab goes to the toolbar (one stop), then the text, then the next field; Shift+Tab goes back)          |
+| Focus order and management                                                 | pass        | n/a         | pass    | rich-text-editor.test.tsx asserts focus (toHaveFocus); first rule: Tab goes to the toolbar (one stop), then the text, then the next field; Shift+Tab goes back |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                                               |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                                |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                                |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                                                |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                                |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                                |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                                |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                                |
 
-The matrix must also check: Alt+F10 against NVDA, JAWS, Narrator and VoiceOver; Tab, Shift+Tab and Escape in the text with NVDA and JAWS in focus mode; AltGr characters on Windows with the Swedish, Finnish and Norwegian layouts; VoiceOver joining text across blocks (a Tiptap known issue); the tooltip's shortcut as a description (does a screen reader say it twice next to `aria-keyshortcuts`); and the `Highlight` fill of a pressed toggle in Windows Contrast Themes.
+The matrix must also check: Alt+F10 against NVDA, JAWS and VoiceOver; Tab, Shift+Tab and Escape in the text with NVDA and JAWS in focus mode; AltGr characters on Windows with the Swedish, Finnish and Norwegian layouts; VoiceOver joining text across blocks (a Tiptap known issue); the tooltip's shortcut as a description (does a screen reader say it twice next to `aria-keyshortcuts`); and the `Highlight` fill of a pressed toggle in Windows Contrast Themes.
 
 ## Known issues
 
 - **With `image: false` a pasted image is dropped with no message:** the paste guard is not installed without the Image extension. A text with no image support has nothing to refuse into, but the writer is not told.
-- **Screen reader support for a `contenteditable` varies** across NVDA, JAWS and VoiceOver, and is the biggest risk. Nothing here is claimed until the matrix is run.
+- **Screen reader support for a `contenteditable` varies** across NVDA, JAWS and VoiceOver, and is the biggest risk. Test the editor with your users and their assistive technology.
 - **A pasted link keeps its `target`** (Tiptap parses any declared attribute). Sanitize the output on the server.
-- **The inactive selection** (while focus is on a toolbar button) is the browser's own highlight. The design asks for a `primary-subtle` one, which needs a decoration: not built.
+- **The inactive selection** (while focus is on a toolbar button) is the browser's own highlight.
 - **The link and image popovers anchor to their toolbar button**, also when opened with Control+K, not to the caret.
-- **No upload.** An image is inserted from an address with alt text. A follow-up plan adds upload with FileUpload's validation.
+- **No upload.** An image is inserted from an address with alt text.
 - **Tiptap's injected CSS** is unlayered, so the theme restyles the few rules it must with `!important`.

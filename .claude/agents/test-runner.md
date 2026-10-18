@@ -26,7 +26,7 @@ The changed files or a module name, or the exact command and the failure to tria
 | `packages/theme/**`                                  | `vp run theme:check`                                                                                                                                                |
 | lint or types                                        | `vp check <files>`                                                                                                                                                  |
 
-Cheapest layer first: core, react, stories. One command, wait for it, then the next. A shared file (the React index, `theme.css`, the catalogs) is no reason to sweep: run the modules the change is for and list the rest as sweep candidates.
+Cheapest layer first: core, react, stories. One command, wait for it, then the next. Every command goes through `flock -w 1800 /tmp/kvirn-gate.lock <command>`: parallel runs flake, so never start one without the lock, and never run two yourself at once. A shared file (the React index, `theme.css`, the catalogs) is no reason to sweep: run the modules the change is for and list the rest as sweep candidates.
 
 ## Triage
 

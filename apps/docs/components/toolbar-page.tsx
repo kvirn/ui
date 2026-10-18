@@ -109,7 +109,6 @@ export function ToolbarPage({
     <ComponentPage
       title="Toolbar"
       lead="A control that isn’t available now stays in the arrow-key order, and a screen reader says it is unavailable."
-      status="alpha-candidate"
       pattern="APG Toolbar"
       whenToUse={
         <ul>

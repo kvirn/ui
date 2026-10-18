@@ -69,6 +69,38 @@ export interface Contract {
   announcements: ContractAnnouncements
   /** Rows of a `### Read aloud` table under Announcements, shown even when the section says "None". */
   readAloud: ContractReadAloudRow[]
+  /** Derived from the AT test record (Plan 0139): tier counts and one word. */
+  status: ContractStatus
+}
+
+export type TestTier = 'automated' | 'core' | 'release'
+
+export type TestCell = 'pending' | 'pass' | 'agent-verified' | 'n/a'
+
+/** A row of the AT test record under a tier row, with the cells normalised. */
+export interface TestRecordRow {
+  label: string
+  agent: TestCell
+  human: TestCell
+  result: TestCell
+  notes: string
+}
+
+export type TestRecord = Record<TestTier, TestRecordRow[]>
+
+export interface TierCount {
+  done: number
+  total: number
+  /** Every row is `n/a`: nothing to verify, so the tier never earns a word. */
+  notApplicable: boolean
+  /** At least one row has a human `pass`: a person tested it. */
+  humanPassed: boolean
+}
+
+/** The word is the highest level that holds, and left out until every Automated row is done. */
+export interface ContractStatus {
+  counts: Record<TestTier, TierCount>
+  word: 'Automated' | 'Agent-verified' | 'AT-verified' | 'Release-tested' | undefined
 }
 
 export class ContractError extends Error {
@@ -434,6 +466,113 @@ function knownIssuesIn(blocks: ContractBlock[]): ContractBlock[] {
   return isNone ? [] : blocks
 }
 
+const testCells: readonly string[] = ['pending', 'pass', 'agent-verified', 'n/a']
+
+const tierPrefixes = [
+  ['automated', '**Automated'],
+  ['core', '**Core'],
+  ['release', '**Release'],
+] as const
+
+const doneResult = (row: TestRecordRow) => row.result === 'pass' || row.result === 'n/a'
+const doneAgent = (row: TestRecordRow) =>
+  row.agent === 'pass' || row.agent === 'agent-verified' || row.agent === 'n/a'
+
+/** Pure: the counts and the status word the plan's table (0139 §Derived status) gives. */
+export function deriveStatus(tiers: TestRecord): ContractStatus {
+  const count = (rows: TestRecordRow[]): TierCount => ({
+    done: rows.filter(doneResult).length,
+    total: rows.length,
+    notApplicable: rows.length > 0 && rows.every((row) => row.result === 'n/a'),
+    humanPassed: rows.some((row) => row.human === 'pass'),
+  })
+  const counts = {
+    automated: count(tiers.automated),
+    core: count(tiers.core),
+    release: count(tiers.release),
+  }
+  const all = (tier: TestTier) => counts[tier].total > 0 && counts[tier].done === counts[tier].total
+  const automated = all('automated')
+  const agentVerified =
+    automated && tiers.core.length > 0 && !counts.core.notApplicable && tiers.core.every(doneAgent)
+  const verified = automated && all('core') && counts.core.humanPassed
+  const word = !automated
+    ? undefined
+    : verified && all('release') && counts.release.humanPassed
+      ? 'Release-tested'
+      : verified
+        ? 'AT-verified'
+        : agentVerified
+          ? 'Agent-verified'
+          : 'Automated'
+  return { counts, word }
+}
+
+function parseTestRecord(blocks: ContractBlock[], file: string): TestRecord {
+  const tiers: TestRecord = { automated: [], core: [], release: [] }
+  const table = blocks.find(
+    (block) =>
+      block.type === 'table' && normalisedColumn(block.columns[0] ?? '') === 'at + browser + os',
+  )
+  if (table?.type !== 'table') {
+    return tiers
+  }
+  let current: TestTier | undefined
+  for (const [label = '', agent = '', human = '', result = '', notes = ''] of table.rows) {
+    const tier = tierPrefixes.find(([, prefix]) => label.startsWith(prefix))
+    if (tier !== undefined || label.startsWith('**')) {
+      // A bold row of another name (`**Component-specific**`) counts in the Core tier.
+      current = tier?.[0] ?? 'core'
+      continue
+    }
+    if (current === undefined) {
+      continue
+    }
+    const cells = [agent, human, result].map((cell) =>
+      cell.replaceAll('`', '').trim().toLowerCase(),
+    )
+    for (const [index, cell] of cells.entries()) {
+      if (!testCells.includes(cell)) {
+        throw new ContractError(
+          file,
+          `AT test record row "${label}" has the ${['Agent check', 'Human check', 'Result'][index]} cell "${cell}". Allowed: ${testCells.join(', ')}`,
+        )
+      }
+    }
+    if (cells.includes('n/a') && notes.trim() === '') {
+      throw new ContractError(
+        file,
+        `AT test record row "${label}" is n/a and needs a reason in Notes`,
+      )
+    }
+    const [agentCell, humanCell, resultCell] = cells as TestCell[]
+    const rowError = (message: string) =>
+      new ContractError(file, `AT test record row "${label}" ${message}`)
+    if (resultCell === 'pass') {
+      for (const cell of [agentCell, humanCell]) {
+        if (cell !== 'pass' && cell !== 'n/a') {
+          throw rowError(
+            'has the Result pass but its Agent check and Human check are not both pass or n/a',
+          )
+        }
+      }
+    }
+    if (current === 'automated' && (humanCell !== 'n/a' || cells.includes('agent-verified'))) {
+      throw rowError(
+        'is an Automated row: its Human check must be n/a and agent-verified is not allowed',
+      )
+    }
+    tiers[current].push({
+      label,
+      agent: agentCell ?? 'pending',
+      human: humanCell ?? 'pending',
+      result: resultCell ?? 'pending',
+      notes: notes.trim(),
+    })
+  }
+  return tiers
+}
+
 const accessibilityOrder = [
   ['what-it-does-for-you', 'whatItDoes'],
   ['what-you-need-to-do', 'whatYouNeedToDo'],
@@ -503,6 +642,7 @@ export function parseContract(markdown: string, file: string): Contract {
     knownIssues: knownIssuesIn(blocksOf('Known issues')),
     announcements,
     readAloud: announcementLines === undefined ? [] : parseReadAloud(announcementLines, file),
+    status: deriveStatus(parseTestRecord(blocksOf('AT test record'), file)),
   }
 }
 

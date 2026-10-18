@@ -105,7 +105,7 @@ Results are reported from the store, so auto upload, Retry and `uploadAll()` go 
 - **Check on the server.** A client check is not security: type, size and content are checked again where the file lands. Photos can carry location data, which the server should strip.
 - **Decide whether refused files block the form.** `onFilesReject` reports them as data. The Field's `invalid` and its message are yours.
 - **Write `upload`.** The library sends nothing. Report progress as a fraction from 0 to 1, honour the `signal`, and reject with an error object that has `retryable` and `message` to say more than the neutral text.
-- **Translate your own text** (the label and the description) and put them in a nested `KvirnProvider` with `useLocale().localeProps` on your own element where a locale isn't translated yet (3.1.2 Language of Parts, level AA).
+- **Translate your own text** (the label and the description) and put them in a nested `KvirnProvider` with `useLocale().localeProps` on your own element where a locale isn't translated (3.1.2 Language of Parts, level AA).
 - **Provide the Announcer** (`KvirnProvider`). Without one, nothing is announced and a warning says so.
 - **Don't make people choose a file twice (3.3.7 Redundant Entry, level A).** A browser can't put a file back in a file input after a reload. Either upload on add (`upload`), keep the files on the server and show them again after a failed submit with a way to remove them, or check every field on the client (or submit with `fetch`) so a validation error never reloads the page.
 - **2.2.2 Pause, Stop, Hide (level A).** The indicators (spinner, bar sheen, busy Button, job Toast, FileUpload track, Table busy sweep) move for as long as the wait lasts, which can be more than 5 s. `prefers-reduced-motion: reduce` is honoured and shows a still rest shape, but to meet WCAG 2.2.2 the app must also offer its own visible control that stops moving content (the library ships none) and applies the stop CSS. [Moving indicators and WCAG 2.2.2](/foundation/theming#moving-indicators). The status text and the percent carry the wait.
@@ -144,26 +144,27 @@ Results are reported from the store, so auto upload, Retry and `uploadAll()` go 
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                          |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | file-upload.stories.tsx, every story, 4 themes                                                                                                 |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `file-upload.test.tsx` (axe and role, name and state): `a native button named by its own text then the Field label, with the Field control id` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 11 rows, each names a test in `file-upload.test.tsx`                                                                                           |
+| Focus order and management                                                 | pass        | n/a         | pass    | `file-upload.test.tsx`: `adding files does not move focus`                                                                                     |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                               |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                                |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                |
 
 `pending`. To run before `beta`: NVDA, JAWS, VoiceOver (macOS and iOS), TalkBack and Dragon add several files, hear a refused file, follow an upload, cancel, retry and remove. Include how VoiceOver on macOS reads a polite message that arrives with a focus change, and what focusing an `<li>` reads on iOS and TalkBack.
 
 ## Known issues
 
-- HEIC photos (a photo format iPhones can use): whether Safari converts to JPEG for `accept=".jpg"` in every path needs a device check before `beta`.
+- HEIC photos (a photo format iPhones can use): whether Safari converts to JPEG for `accept=".jpg"` in every path needs a check on your own device.
 - Client-side limits can be bypassed. The server must check again.
 - Under React's `<Activity mode="hidden">` the effect cleanup resets the list and aborts running uploads. Keep a FileUpload mounted while a form is hidden.
 - The Trigger's name is read from the text span and the Field label. The name is asserted in `file-upload.test.tsx › wiring: the Trigger is the one control › a native button named by its own text then the Field label, with the Field control id`. Firefox and WebKit are not run automatically.

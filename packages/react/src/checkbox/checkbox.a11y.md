@@ -90,25 +90,26 @@ None. Nothing is live. On focus a screen reader reads the label, "checkbox", the
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                              |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                    |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | checkbox.stories.tsx, every story, 4 themes                                                                                        |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `checkbox.test.tsx` (axe and role, name and state): `the Field’s label is the name, and the description is the option’s help text` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 6 rows, each names a test in `checkbox.test.tsx`                                                                                   |
+| Focus order and management                                                 | pass        | n/a         | pass    | `checkbox.test.tsx`: `clicking the label text toggles the checkbox and focuses it`                                                 |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                   |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                    |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                    |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                    |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                    |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                    |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                    |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                    |
 
 Questions for the manual testing with assistive technology: is "mixed" announced on an indeterminate checkbox in each screen reader? Is the standalone checkbox's error read after the help text on focus? Does a Voice Control user check the box by saying its visible label?
 
 ## Known issues
 
-- **`indeterminate` can't be server-rendered.** The DOM property is set in a layout effect, so the first paint of server markup is unchecked, and a mixed box looks unchecked until the script runs. The component test covers the client (the DOM property and `data-state`). No automated test checks the drawn mark: it is reviewed by eye, and checked in the manual testing (the Windows Contrast Themes row).
+- **`indeterminate` can't be server-rendered.** The DOM property is set in a layout effect, so the first paint of server markup is unchecked, and a mixed box looks unchecked until the script runs. The component test covers the client (the DOM property and `data-state`). No automated test checks the drawn mark: it is reviewed by eye, so check it in Windows Contrast Themes yourself.
 - **`data-state` after `form.reset()`.** For an uncontrolled checkbox it's updated on change events, not on a form reset. The theme styles `:checked` and `:indeterminate`, so the look is right; read the native state, not the attribute, in your own code.
-- **The check and dash marks are not tested automatically.** They are drawn with `::before` and `clip-path` on the input. The browser tests that checked the marks were removed, so nothing automated shows that Firefox and WebKit (Safari's engine, not run locally) draw them, or that checked and indeterminate differ visibly from unchecked. The marks are reviewed by eye and checked in the manual testing (the Windows Contrast Themes row). A hidden indicator element is the fallback if a browser doesn't draw them.
+- **The check and dash marks are not tested automatically.** They are drawn with `::before` and `clip-path` on the input. The browser tests that checked the marks were removed, so nothing automated shows that Firefox and WebKit (Safari's engine, not run locally) draw them, or that checked and indeterminate differ visibly from unchecked. The marks are reviewed by eye, so check them in Windows Contrast Themes yourself. A hidden indicator element is the fallback if a browser doesn't draw them.

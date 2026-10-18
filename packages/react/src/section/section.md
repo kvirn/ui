@@ -1,7 +1,5 @@
 # Section
 
-> **Draft** (Plan 0018). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [section.a11y.md](section.a11y.md), and the design spec is [docs/design/section.md](../../../../docs/design/section.md).
-
 A plain container for a region of the page, such as a sidebar or a band of content. It renders a `<div>`. To make it a landmark, use `as="section"`, `"aside"` or `"nav"` with a name.
 
 - One part: `Section` (also exported as `SectionRoot`; `Section.Root` still works but is deprecated), one `<div class="kv-section">`. No Header, Body or Footer, no title and no behaviour.

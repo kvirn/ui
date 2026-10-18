@@ -73,7 +73,6 @@ export function TextareaPage({
     <ComponentPage
       title="Textarea"
       lead="With a count, a pasted text is never cut: the box says how many characters are left or over, and the user shortens the text."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

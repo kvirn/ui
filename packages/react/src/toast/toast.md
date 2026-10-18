@@ -1,7 +1,5 @@
 # Toast
 
-> **Draft** (Plan 0071). This page moves to the docs site once `apps/docs` has a Toast page. The accessibility contract is [toast.a11y.md](toast.a11y.md), the design spec is [docs/design/toast.md](../../../../docs/design/toast.md).
-
 > **When not to toast: use an inline Alert first.** A toast is a second channel for a result that is also shown in place. Never for an error, never for something needed to finish a task. `Alert` with `announce` stays the default.
 
 A short status message after something worked, that does not move focus, is heard by screen readers and stays until dismissed by default. With `autoDismiss` a toast goes after the app's chosen time and pauses on hover, focus, a hidden tab and a blurred window. One shared list serves the whole page: the first `KvirnProvider` that mounted is the host (its `toast` options, locale and messages apply, and it renders the region); `useToast()` shows toasts from anywhere below it.

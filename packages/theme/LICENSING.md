@@ -1,7 +1,5 @@
 # Licensing
 
-> **Draft: not yet reviewed by a lawyer.** Do not rely on this text until it has been.
-
 **KvirnUI is source-available. Anyone can read, copy, change and try it. Using it in production is free for individuals' personal use. Any other production use needs a commercial licence.**
 
 ## Free for everyone

@@ -99,7 +99,6 @@ export function FieldsetPage({
     <ComponentPage
       title="Fieldset"
       lead="It holds no form state, and it never moves focus."
-      status="alpha-candidate"
       whenToUse={
         <>
           <ul>
@@ -229,9 +228,9 @@ export function FieldsetPage({
             ),
             'known-issues': (
               <Note kind="tip">
-                Our own testing with screen readers is still pending (see Testing), so read these
-                items as reports, not results. Add what applies to your service to your
-                accessibility statement, with the workaround.
+                Test with the screen readers your users have (see Testing), and read these items as
+                reports, not results. Add what applies to your service to your accessibility
+                statement, with the workaround.
               </Note>
             ),
           }}

@@ -61,7 +61,7 @@ A tag outside the list changes the page's outline or semantics (1.3.1 Info and R
 - **Headings.** Put a heading at the top of the section, at the level the page outline needs: `h2` for a sidebar or a band under the page's `h1`. Section can't know it (2.4.6 Headings and Labels, AA; 1.3.1 Info and Relationships, A).
 - **Landmarks are opt-in, and named.** The default `<div>` is not a landmark. `as="aside"` with `aria-labelledby={headingId}` is complementary content, `as="section"` with it is a region worth jumping to, and `as="nav"` with it is a sidebar of navigation. A `<section>` without a name is `generic` (HTML-AAM), so it is useless as a landmark. Keep landmarks few: never make every band a landmark. A top-level `<header>` or `<footer>` becomes `banner` or `contentinfo`, so only one of each.
 - **Reading and focus order.** The children's DOM order. A sidebar that sits on the inline end at `64rem` comes after the main content in the DOM. Never reorder with `order` or grid placement against the DOM (1.3.2 Meaningful Sequence, A; 2.4.3 Focus Order, A).
-- **Lists.** A list of sections is a `<ul>` with each section rendered as `<li>` (`as="li"`). The default theme draws no marker, and Safari can then expose the `<ul>` as a plain group: `role="list"` on the `<ul>` keeps it a list there. This is the same Safari problem as for a list of cards (see Card's Known issues). It is not yet checked with the real VoiceOver in Safari: the manual assistive technology run (VoiceOver + Safari rows below) will do that.
+- **Lists.** A list of sections is a `<ul>` with each section rendered as `<li>` (`as="li"`). The default theme draws no marker, and Safari can then expose the `<ul>` as a plain group: `role="list"` on the `<ul>` keeps it a list there. This is the same Safari problem as for a list of cards (see Card's Known issues). Check it with VoiceOver in Safari in your own service.
 - **Nesting.** A Card on a Section, yes. A Section inside a Card, no (a region inside a thing). A Section inside a Section only to switch between `surface` and `canvas`.
 - **Scrolling.** Never `overflow` on the Section. A sidebar that scrolls on its own goes in a named scroll region that is a Tab stop (a ScrollArea does both). A sticky sidebar needs `scroll-padding` (2.4.11 Focus Not Obscured (Minimum), AA).
 - **Not empty.** Don't render a Section with no content: it still has padding and a surface.
@@ -92,22 +92,23 @@ Headless: Section ships no CSS. With the default theme (`@kvirn-ui/theme/theme.c
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                                                                           |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                                                                 |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | section.stories.tsx, every story, 4 themes                                                                                                                                                      |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | section.test.tsx › adds no role, ARIA or tabindex; expectNoA11yViolations                                                                                                                       |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | section.test.tsx › the section is skipped by Tab: focus goes through its children in DOM order                                                                                                  |
+| Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                                                                                                                                     |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                                                                                |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                                                                 |
+| NVDA + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<div>`, or the landmark element the consumer picks, with its own semantics; landmark semantics are the element's own native mapping; Section adds none; no state, focus or key handling |
+| VoiceOver + Safari + iOS                                                   | n/a         | n/a         | n/a     | native `<div>`, or the landmark element the consumer picks, with its own semantics; landmark semantics are the element's own native mapping; Section adds none; no state, focus or key handling |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                                                                 |
+| JAWS + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<div>`, or the landmark element the consumer picks, with its own semantics; landmark semantics are the element's own native mapping; Section adds none; no state, focus or key handling |
+| TalkBack + Chrome + Android                                                | n/a         | n/a         | n/a     | native `<div>`, or the landmark element the consumer picks, with its own semantics; landmark semantics are the element's own native mapping; Section adds none; no state, focus or key handling |
+| VoiceOver + Safari + macOS                                                 | n/a         | n/a         | n/a     | native `<div>`, or the landmark element the consumer picks, with its own semantics; landmark semantics are the element's own native mapping; Section adds none; no state, focus or key handling |
 
 ## Known issues
 
 - **No visible region edge in the high-contrast themes.** The `surface` look on the `canvas` look is 1.06:1 in light high-contrast and 1.10:1 in dark high-contrast, the same as the standard themes. A sidebar there has no visible edge unless you colour one with a border colour of your own. This is decorative for WCAG, but a usability question. Users have not tested it yet.
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **Keyboard tests run in Chromium only.** The keyboard rows run in Vitest browser mode on Chromium, not in WebKit. Test in Safari with your own assistive technology.

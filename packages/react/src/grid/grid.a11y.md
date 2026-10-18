@@ -81,30 +81,31 @@ Headless: Grid ships no CSS. With `@kvirn-ui/theme/theme.css` (DESIGN.md, Layout
 - Focus indicator, target size, contrast: not applicable. Grid has no colour, no edge and no control of its own.
 - forced-colors behaviour: not applicable, nothing is drawn.
 - reduced-motion behaviour: no motion.
-- Reflow (1.4.10 Reflow (AA)): a 320px story checks that nothing scrolls sideways. Text spacing (1.4.12 Text Spacing (AA)): checked by reading, since Grid sets no fixed height, `overflow` or clip. An automated check is planned, and until then it stays `pending`.
+- Reflow (1.4.10 Reflow (AA)): a 320px story checks that nothing scrolls sideways. Text spacing (1.4.12 Text Spacing (AA)): checked by reading, since Grid sets no fixed height, `overflow` or clip. No automated check covers it.
 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): a div has no role, and a `ul` or `ol` has `role="list"` (`grid.test.tsx › as › adds role="list" to a ul and an ol Root, and no role to a div`).
 - 1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A): DOM order equals reading and focus order (the keyboard rows).
-- 1.4.10 Reflow (AA): a 320px story checks that nothing scrolls sideways. 1.4.12 Text Spacing (AA): by reading (no fixed height, overflow or clip), with the automated proof still `pending`.
+- 1.4.10 Reflow (AA): a 320px story checks that nothing scrolls sideways. 1.4.12 Text Spacing (AA): by reading (no fixed height, overflow or clip), with no automated proof.
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                           |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                 |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | grid.stories.tsx, every story, 4 themes                                                                         |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `grid.test.tsx` (axe and role, name and state): `adds role="list" to a ul and an ol Root, and no role to a div` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 2 rows, each names a test in `grid.test.tsx`                                                                    |
+| Focus order and management                                                 | pass        | n/a         | pass    | `grid.test.tsx` asserts focus                                                                                   |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                 |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                 |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                 |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                 |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                 |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                 |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                 |
 
 ## Known issues
 

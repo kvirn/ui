@@ -123,7 +123,6 @@ export function QuickExitPage({
     <ComponentPage
       title="QuickExit"
       lead="It swaps this page for a site you choose, so the Back button doesn’t lead straight back to it. It doesn’t clear the browser history."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
@@ -339,8 +338,8 @@ export function QuickExitPage({
                 NVDA, a screen reader for Windows, uses the Shift key to pause speech. Three presses
                 of Shift, each less than five seconds after the last, would then leave the page. In
                 browse mode, the screen reader may also pass on a lone Shift when someone jumps back
-                through headings. This has not been checked on real screen readers yet. If many of
-                your readers use a screen reader, turn the shortcut off. The link stays, and
+                through headings. How a screen reader treats Shift depends on the screen reader. If
+                many of your readers use a screen reader, turn the shortcut off. The link stays, and
                 keyboard and pointer users still reach it.
               </>
             }
@@ -412,9 +411,9 @@ export function QuickExitPage({
             ),
             testing: (
               <Note kind="reminder">
-                No person using assistive technology has checked this component yet, and the label
-                “Leave this page” has not been tested with residents. Test both with your own users
-                before you rely on it in a service that protects people.
+                The component is checked with automated accessibility tests and keyboard tests. Test
+                it, and the label “Leave this page”, with your own users and their assistive
+                technology before you rely on it in a service that protects people.
               </Note>
             ),
           }}
@@ -450,8 +449,8 @@ export function QuickExitPage({
               ]}
             >
               <p>
-                The Finnish texts and both sets of Norwegian texts are drafts. They wait for a
-                native speaker to review them.
+                Have a native speaker review the Finnish texts and both sets of Norwegian texts
+                before you launch.
               </p>
             </StringsBlock>
           }

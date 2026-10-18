@@ -1,7 +1,5 @@
 # SkipLink
 
-> **Draft** (Plan 0054). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [skip-link.a11y.md](skip-link.a11y.md).
-
 A bypass link: the first Tab stop on every page, hidden until it has focus, that jumps past the header to the main content (2.4.1).
 
 - One part: `SkipLink`, also `useSkipLink({ href, messages })`. It renders `<a class="kv-skip-link" href>`: a plain native link, never a router link.

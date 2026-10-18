@@ -82,20 +82,21 @@ None. Nothing is live. Entering the group, a screen reader reads the legend, "gr
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                 |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                       |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | checkbox-group.stories.tsx, every story, 4 themes                                                                                     |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `checkbox-group.test.tsx` (axe and role, name and state): `the group is named by its legend and described by its help text and error` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test in `checkbox-group.test.tsx`                                                                                |
+| Focus order and management                                                 | pass        | n/a         | pass    | `checkbox-group.test.tsx`: `Space toggles the focused checkbox and reports the next value`                                            |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                      |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                       |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                       |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                       |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                       |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                       |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                       |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                       |
 
 Questions for the manual testing with assistive technology: is the group's help text and error read when the user enters the group in each screen reader (TalkBack is known to be inconsistent)? Without `aria-invalid` on the boxes, do users still understand which group is wrong?
 

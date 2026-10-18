@@ -1,7 +1,5 @@
 # CheckboxGroup
 
-> **Alpha candidate.** The accessibility reviewer and assistive-technology tests are still pending. The accessibility contract is [checkbox-group.a11y.md](checkbox-group.a11y.md).
-
 **KvirnUI holds no form state; bring your own form logic.** CheckboxGroup renders the values you give it and reports each change up through `onValueChange`. It never stores the selection, and it doesn't validate.
 
 A CheckboxGroup is one question with several answers that can all be true: "How do you want to be contacted?" with email, text message and letter. It groups [Checkbox](../checkbox/checkbox.md)es under a legend, with an optional description, help text and error. For a single yes-or-no answer, use a lone [Checkbox](../checkbox/checkbox.md) in a [Field](../field/field.md). For exactly one answer out of several, use a [RadioGroup](../radio-group/radio-group.md). For a choice from a long list, use a [Listbox](../listbox/listbox.md).

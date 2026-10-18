@@ -28,6 +28,7 @@
 
   For a gate failure, continue the same agent with SendMessage (its context is intact) and paste only the failing test names and error lines. Respawn only when its context is stale.
 
+- **One run at a time.** Briefs tell agents to prefix every check, test, sweep and build with `flock -w 1800 /tmp/kvirn-gate.lock <command>`; the main thread does the same, and starts no gate while an agent might be running one. Editing in parallel is fine, running is not (AGENTS.md rule 12).
 - Gates run on the main thread, once, after every subagent reports done, scoped to the changed files and in order: `vp check <files>` → `vp test run <files>` → `vp run i18n:check` → `vp run theme:check`. A failure goes back to the engineer; re-run only that gate. Use `test-runner` when the output would be long or needs triage.
 - Plan mode for Explore and Plan. Save plans to `docs/design/plans/` (under 250 lines), not only in the session.
 - No Claude hook enforces scope or git rules, so rules 11 and 12 are on you. Format what you edit with `vp fmt <files>`. The `commit-msg` hook and CI reject commits that aren't Conventional Commits. Agents never create branches or worktrees.

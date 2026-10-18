@@ -149,7 +149,6 @@ export function MenuPage({
     <ComponentPage
       title="Menu"
       lead="Someone using only a keyboard opens it, moves with the arrow keys and lands back on the button."
-      status="alpha-candidate"
       pattern="APG Menu Button"
       whenToUse={
         <ul>

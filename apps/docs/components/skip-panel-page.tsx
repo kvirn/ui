@@ -155,7 +155,6 @@ export function SkipPanelPage({
     <ComponentPage
       title="SkipPanel"
       lead="The whole panel is one Tab stop: Tab lands on the first link and the next Tab leaves. The Up and Down arrow keys move between the items. A shortcut can be run from the list or by pressing its keys anywhere on the page, so nobody has to use the keys."
-      status="in-progress"
       whenToUse={
         <ul>
           <li>
@@ -390,8 +389,8 @@ export function SkipPanelPage({
                 ]}
               >
                 <p>
-                  The key names come from the <code>keys</code> messages. The Finnish and the two
-                  Norwegian names are drafts that a native speaker still has to review.
+                  The key names come from the <code>keys</code> messages. Have a native speaker
+                  review the Finnish and the two Norwegian names before you launch.
                 </p>
               </StringsBlock>
             </>

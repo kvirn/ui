@@ -84,7 +84,7 @@ Approximated by `@kvirn-ui/testing`'s `readAloud` (English); not NVDA or JAWS ou
 - Target size: not applicable. An icon-only button's target is the Button's: the default theme makes an icon-only button square and larger than the 24 by 24 pixel minimum (2.5.8 Target Size (Minimum), AA).
 - Forced colours: icons draw in the text colour (`currentColor`), which follows the system colour. The default theme turns an explicit `fill`, `stroke` or `color` on `.kv-icon` (set by your own CSS) into `currentColor` in forced-colours mode, so a hard-coded colour can't vanish. Colours on child shapes are kept, so forced-colours contrast for a multi-colour, meaningful SVG is the consumer's job. Icon has no `fill` or `stroke` option: a one-off SVG sets `fill="currentColor"` on its own shapes, or it draws black in forced colours.
 - Reduced motion: icons do not move. The one exception is the `spinner` icon with the consumer-added class `kv-animate-spinner`: it crawls only under `prefers-reduced-motion: no-preference`, and the app owns the 2.2.2 Pause, Stop, Hide control (the stop CSS is on the Theming page, "Moving indicators and WCAG 2.2.2").
-- Text resize and reflow: icon sizes are in rem (`width` and `height`, plus a `kv-icon--size-<px>` class), so they scale with browser zoom and the user's root font size, not with the surrounding text. 1.4.4 Resize Text (AA) holds because text resizes and icons aren't text. The largest icon is 6rem, so no horizontal scrolling is expected at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA). An automated test checks that the default size, 20, is 1.25rem.
+- Text resize and reflow: icon sizes are in rem (`width` and `height`, plus a `kv-icon--size-<px>` class), so they scale with browser zoom and the user's root font size, not with the surrounding text. 1.4.4 Resize Text (AA) holds because text resizes and icons aren't text. The largest icon is 6rem, so no horizontal scrolling is expected at 320 CSS px, reviewed in the stories, not automated (1.4.10 Reflow, AA). An automated test checks that the default size, 20, is 1.25rem.
 
 ## WCAG SCs covered
 
@@ -97,20 +97,21 @@ Approximated by `@kvirn-ui/testing`'s `readAloud` (English); not NVDA or JAWS ou
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                        |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------ |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                              |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | icon.stories.tsx, every story, 4 themes                                                                      |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | icon.test.tsx › an unregistered name with an icon renders the icon without a warning; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | icon.test.tsx › keyboard › Tab never stops on an icon                                                        |
+| Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                                                  |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                             |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                              |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                              |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                              |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                              |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                              |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                              |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                              |
 
 ## Known issues
 

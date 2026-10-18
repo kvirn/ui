@@ -29,6 +29,7 @@ import type {
 } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import {
+  useCallback,
   useContext,
   useEffect,
   useId,
@@ -487,19 +488,22 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
   ])
 
   // The old cell unmounts when the month changes, so focus that was in the grid follows the day.
-  const moveTabStop = (date: IsoDate) => {
-    const hadFocus =
-      cellElements.current.get(store.getState().focusedDate) === document.activeElement
-    store.actions.focusDate(date)
-    shouldFocusCell.current = hadFocus
-  }
+  const moveTabStop = useCallback(
+    (date: IsoDate) => {
+      const hadFocus =
+        cellElements.current.get(store.getState().focusedDate) === document.activeElement
+      store.actions.focusDate(date)
+      shouldFocusCell.current = hadFocus
+    },
+    [store],
+  )
 
   // A controlled value that changes while mounted moves the Tab stop and the month to it.
   useEffect(() => {
     if (value !== undefined && isValidIsoDate(value) && value !== store.getState().focusedDate) {
       moveTabStop(value)
     }
-  }, [store, value])
+  }, [store, value, moveTabStop])
 
   const rangeValueStart = rangeValue?.start
   const rangeValueEnd = rangeValue?.end
@@ -520,7 +524,7 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
     if (isValidIsoDate(target) && target !== store.getState().focusedDate) {
       moveTabStop(target)
     }
-  }, [store, selects, rangeValueStart, rangeValueEnd])
+  }, [store, selects, rangeValueStart, rangeValueEnd, moveTabStop])
 
   const formatters = useMemo(() => createCalendarFormatters(locale), [locale])
 

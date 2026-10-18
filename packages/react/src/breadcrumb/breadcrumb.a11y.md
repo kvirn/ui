@@ -69,7 +69,7 @@ The landmark name is the only string: `breadcrumb.label` (en `You are here`; sv 
 - Target size: at least 24 by 24 pixels (2.5.8 Target Size (Minimum), AA).
 - Separators: the first item's separator is hidden (it is rendered in every item). A separator is never the only cue between levels, because the items are separate list items (1.4.1 Use of Color, A).
 - Reflow: the trail wraps at 320 pixels wide (1.4.10 Reflow, AA), proved in the stories.
-- Forced colours and reduced motion: not yet checked by an automated test.
+- Forced colours and reduced motion: not checked by an automated test.
 
 A custom theme must keep these.
 
@@ -79,21 +79,22 @@ A custom theme must keep these.
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                  |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                        |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | breadcrumb.stories.tsx, every story, 4 themes                                                                          |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `breadcrumb.test.tsx` (axe and role, name and state): `is a navigation landmark named by the message breadcrumb.label` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 4 rows, each names a test in `breadcrumb.test.tsx`                                                                     |
+| Focus order and management                                                 | pass        | n/a         | pass    | `breadcrumb.test.tsx` asserts focus                                                                                    |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI          |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                        |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                        |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                        |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                        |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                        |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                        |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                        |
 
 ## Message keys
 
-`breadcrumb.label` (all five locales; fi, nb and nn are drafts for native review).
+`breadcrumb.label` (all five locales; have a native speaker review fi, nb and nn before launch).

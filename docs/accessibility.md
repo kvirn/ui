@@ -22,31 +22,58 @@
 
 ## Assistive technology matrix
 
-A component is `alpha` when quality gates 1 to 6 pass, and `beta` when it is alpha and every **Core** row below has passed. **Release** rows are tested before 1.0, and before every minor release after it, for all changed components. Results go in `<name>.a11y.md`, dated and with versions, and are published on the docs site.
+The matrix has three tiers. **Automated** rows are proved by re-runnable tests (anyone can run them with `vp test run`) and need no person. All of it runs in CI, the Display modes sweeps in one serial step. **Core** rows must pass before `beta`. **Release** rows are tested before 1.0, and before every minor release after it, for all changed components. Results go in `<name>.a11y.md`, dated and with versions, and are published on the docs site.
 
-| AT                                     | Browser         | OS              | Tier    |
-| -------------------------------------- | --------------- | --------------- | ------- |
-| Windows Contrast Themes                | Edge            | Windows         | Core    |
-| Keyboard only, 400% zoom, 320px reflow | all             | all             | Core    |
-| VoiceOver                              | Safari          | macOS           | Core    |
-| VoiceOver                              | Safari          | iOS             | Core    |
-| TalkBack                               | Chrome          | Android         | Core    |
-| NVDA                                   | Chrome          | Windows         | Core    |
-| NVDA                                   | Firefox         | Windows         | Core    |
-| Narrator                               | Edge            | Windows         | Core    |
-| JAWS                                   | Chrome          | Windows         | Release |
-| Dragon / Voice Control                 | Chrome / Safari | Windows / macOS | Release |
+`alpha` and `beta` are the internal roadmap ladder only (`docs/roadmap.md`). On the docs site the same facts show as the derived status below: `alpha` is roughly `Automated`, and `beta` is `AT-verified`.
+
+**Automated (re-runnable tests)** (maintainer, 2026-10-18):
+
+| Row                                                                        | Proved by                                                            |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | the Storybook projects                                               |
+| Markup and ARIA (roles, names, ids, states)                                | the component test's role and state tests, and axe's structure rules |
+| Keyboard contract rows (Vitest browser)                                    | the named keyboard tests in `<name>.test.tsx`                        |
+| Focus order and management                                                 | the component test and the `Keyboard` story                          |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | the four sweep projects, for the components in the sweep list        |
+
+| AT        | Browser | OS      | Tier    |
+| --------- | ------- | ------- | ------- |
+| NVDA      | Chrome  | Windows | Core    |
+| VoiceOver | Safari  | iOS     | Core    |
+| JAWS      | Chrome  | Windows | Release |
+| TalkBack  | Chrome  | Android | Release |
+| VoiceOver | Safari  | macOS   | Release |
+
+The rows are the screen readers most widely used in public surveys such as the WebAIM screen reader survey, so a component is tested by a person on a few combinations instead of ten (maintainer, 2026-10-18). NVDA is Core because it is free, so anyone can repeat the test. Windows Contrast Themes, keyboard only with 400% zoom and 320px reflow, NVDA + Firefox, Narrator and Dragon / Voice Control are no longer rows. The trade-off: forced colours and Contrast Themes emulation, 320px reflow and text spacing are meant to be covered by the Display modes row: an emulated, opt-in sweep that today runs only on Button and SkipPanel and is not in CI. For every other component they are untested until the sweep is extended. Keyboard operation is covered by the keyboard contract rows (Vitest). No person tests the real Windows Contrast Themes or zoom setting. Voice control and the other screen reader and browser pairs are not tested by a person.
+
+**Static components.** A component that renders only native static elements, with no role override, state, live region, focus or key handling, gets `n/a` on every human row (Core and Release), each with a Notes reason naming that fact. The `accessibility-reviewer` must agree. Its Automated rows (axe, markup test) stay (maintainer, 2026-10-18). Native semantics the consumer picks (the landmark element, the heading level) map through the browser, and no person verifies them for these components. A tier whose rows are all `n/a` shows `n/a`, never a verified word.
 
 ### When a row passes
 
-A row passes only when **both** checks pass (maintainer, 2026-10-13). AI and LLM validation counts, as long as it can be proved and re-run.
+A **Core** or **Release** row passes only when **both** checks pass (maintainer, 2026-10-13). An **Automated** row needs only the agent check: its Human check is `n/a` (maintainer, 2026-10-18). AI and LLM validation counts, as long as it can be proved and re-run.
 
-| Check       | Who                                          | Counts when                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| ----------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Agent check | `accessibility-reviewer`, in a fresh context | Every behaviour the row covers is proved by a test in the repo that runs in CI, named in the record: keyboard rows in `<name>.test.tsx`, forced colours, reduced motion, reflow and text spacing by the opt-in sweep projects (`testing` skill; Button only so far), and screen reader rows by `readAloud` / `readAnnouncements` against the contract's Read aloud table. The reviewer returns APPROVE on that evidence. An agent's reading with no test behind it doesn't count |
-| Human check | A person, on the real AT, browser and OS     | Done by hand on the real combination, recorded with the date, the tester and the AT, browser and OS versions. Agents never write or claim a human check                                                                                                                                                                                                                                                                                                                          |
+| Check       | Who                                          | Counts when                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ----------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Agent check | `accessibility-reviewer`, in a fresh context | Every behaviour the row covers is proved by a test in the repo that anyone can re-run, named in the record: keyboard rows in `<name>.test.tsx`, forced colours, reduced motion, reflow and text spacing by the four sweep projects (`testing` skill; the components in the sweep list), and screen reader rows by `readAloud` / `readAnnouncements` against the contract's Read aloud table. The reviewer returns APPROVE on that evidence. An agent's reading with no test behind it doesn't count |
+| Human check | A person, on the real AT, browser and OS     | Done by hand on the real combination, recorded with the date, the tester and the AT, browser and OS versions. Agents never write or claim a human check                                                                                                                                                                                                                                                                                                                                             |
 
-A row with only the agent check is `agent-verified`, not passed: the virtual screen reader and browser emulation approximate the real AT, they don't replace it.
+A Core or Release row with only the agent check is `agent-verified`, not passed: the virtual screen reader and browser emulation approximate the real AT, they don't replace it.
+
+### Cell vocabulary and `n/a`
+
+A cell is `pending`, `pass`, `agent-verified` (agent check only, Core and Release rows) or `n/a`. `n/a` means the row cannot apply, for example a native `<hr>` has nothing to operate. It needs a non-empty Notes reason and the `accessibility-reviewer` must agree with it. It counts as done, and is shown as `n/a`, never as `pass` (maintainer, 2026-10-18). A row with a missing or unproven reason is `pending`.
+
+### Derived status
+
+No page or contract states a status by hand: it is computed from the table (maintainer, 2026-10-18). Per tier, done is the rows whose Result is `pass` or `n/a`. The page shows the counts (`Automated 5 of 5, Core 0 of 2, Release 0 of 3`; `Core n/a` or `Release n/a` when every row of that tier is `n/a`) and the highest word that holds. `AT-verified` and `Release-tested` also need at least one row of the tier with Human check `pass`, because a person must have tested it; a tier of only `n/a` rows never earns a word (lead decision, 2026-10-18; the maintainer may overrule):
+
+| Word             | When                                                                                                    |
+| ---------------- | ------------------------------------------------------------------------------------------------------- |
+| (none)           | The Automated tier is not all done: counts only                                                         |
+| `Automated`      | Every Automated row is done                                                                             |
+| `Agent-verified` | Automated done and every Core row has its Agent check done, and Core is not all `n/a`                   |
+| `AT-verified`    | Automated done, every Core row has its Result done, and at least one Core row has Human check `pass`    |
+| `Release-tested` | AT-verified, every Release row has its Result done, and at least one Release row has Human check `pass` |
 
 ### Screen reader approximation
 

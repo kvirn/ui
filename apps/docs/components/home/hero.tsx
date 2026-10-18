@@ -23,7 +23,6 @@ export function Hero() {
         </Link>
         <Link href="#who">{text.who}</Link>
       </div>
-      <p className="home-honest">{text.honest}</p>
     </Band>
   )
 }

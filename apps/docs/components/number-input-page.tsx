@@ -54,7 +54,6 @@ export function NumberInputPage({
     <ComponentPage
       title="NumberInput"
       lead="It accepts digits and the decimal mark of the page’s language, leaves out other characters and says so, and never changes the number with the arrow keys."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

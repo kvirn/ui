@@ -10,7 +10,6 @@ import type {
   FileUploadPreviewProps,
   FileUploadRejectionsProps,
   FileUploadRootProps,
-  FileUploadSizeProps,
   FileUploadStatusProps,
   FileUploadSummaryProps,
   FileUploadTriggerProps,
@@ -235,7 +234,7 @@ export const fileUploadPreviewRows = propRows<Pick<FileUploadPreviewProps, 'chil
 })
 
 export const fileUploadFileDetailRows = propRows<
-  Pick<FileUploadNameProps & FileUploadTypeProps & FileUploadSizeProps, 'children'>
+  Pick<FileUploadNameProps & FileUploadTypeProps, 'children'>
 >({
   children: childrenRow('the file’s name, type or size'),
 })

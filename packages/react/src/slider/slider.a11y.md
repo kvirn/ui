@@ -76,7 +76,7 @@ None from the component. On focus a screen reader reads the label, "slider", `ar
 - Focus indicator: a ring around the input box with at least 3:1 contrast against the colours next to it (2.4.7 Focus Visible, AA; 2.4.13 Focus Appearance, AAA).
 - Target size: the box is tall enough to press, and the thumb is at least 24px (2.5.8 Target Size (Minimum), AA). On a coarse pointer, such as a finger, the thumb's hit area is larger.
 - Colour: the thumb and the track edge each have at least 3:1 contrast against their background (1.4.11 Non-text Contrast, AA). An invalid slider has a heavier error-coloured edge plus the message. A disabled slider has a dashed edge and a muted thumb.
-- Forced colours (the system's own colour scheme): the track uses the system field colour with a button-border edge, the thumb uses the system highlight colour, a disabled slider is grey, and an invalid one has a heavier edge in the system text colour. This is reviewed in a story, not yet in an automated display-mode check.
+- Forced colours (the system's own colour scheme): the track uses the system field colour with a button-border edge, the thumb uses the system highlight colour, a disabled slider is grey, and an invalid one has a heavier edge in the system text colour. This is reviewed in a story, not in an automated display-mode check.
 - Reduced motion: the track's border colour changes gradually only when the person has not asked for reduced motion. The thumb never animates.
 - Right-to-left (RTL) pages: the browser reverses the range, and nothing in the theme depends on direction.
 
@@ -94,26 +94,27 @@ None from the component. On focus a screen reader reads the label, "slider", `ar
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                               |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                     |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | slider.stories.tsx, every story, 4 themes                                                           |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | slider.test.tsx › valueText sets aria-valuetext, and it follows each change; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 10 rows, each names a test (slider.test.tsx › Tab moves to the slider, one stop)                    |
+| Focus order and management                                                 | pass        | n/a         | pass    | slider.test.tsx asserts focus (toHaveFocus); first rule: Tab moves to the slider, one stop          |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                    |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                     |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                     |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                     |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                     |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                     |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                     |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                     |
 
 Research questions for the assistive technology (AT) run: is `aria-valuetext` spoken on every step on VoiceOver iOS (swipe up and down) and TalkBack? Does Safari reverse the range in RTL? Can a resident on iOS Safari move the thumb without a drag, and is the NumberInput beside it enough?
 
 ## Known issues
 
-- **The thumb and track are not tested automatically.** They are parts the browser draws itself, styled separately for each browser engine. They are reviewed by eye and in the Windows Contrast Themes row of the manual matrix.
+- **The thumb and track are not tested automatically.** They are parts the browser draws itself, styled separately for each browser engine. They are reviewed by eye; check them in Windows Contrast Themes yourself.
 - **A value between steps.** The browser snaps the thumb to the nearest step; beside a NumberInput, the NumberInput keeps the typed number.
 - **`form.reset()` and `aria-valuetext`.** For an uncontrolled slider the text follows the native value after each change and after a form reset (read back in the next task, since the reset runs after its event).
 - **A controlled `value` off the step or outside the range.** The browser snaps the thumb and `aria-valuenow`, but `aria-valuetext` is built from the `value` you passed, so the two can disagree. Pass a value on a step and inside `min` and `max`.

@@ -91,23 +91,24 @@ Headless: CodeBlock ships no CSS. With `@kvirn-ui/theme/theme.css`:
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                  |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                        |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | code-block.stories.tsx, every story, 4 themes                                                                          |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `code-block.test.tsx` (axe and role, name and state): `Root is a div, Label a p and Code a pre, with the part classes` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 3 rows, each names a test in `code-block.test.tsx`                                                                     |
+| Focus order and management                                                 | pass        | n/a         | pass    | `code-block.test.tsx`: `Enter on Copy writes the code and keeps focus`                                                 |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                       |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                        |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                        |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                        |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                        |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                        |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                        |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                        |
 
 ## Known issues
 
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. WebKit is not covered by the automated tests, so check Safari with your own users and assistive technology.
 - **No syntax highlighting** (it would be a dependency, and colour must not carry meaning).
 - **The group gets its name after scripts run.** The Label names the group once the page's scripts run, not in the HTML the server sends. Before that the block is a plain `div`, with the label text just before the code in reading order. This is not an accessibility failure. It matters to your accessibility statement only if your site promises to work without JavaScript.

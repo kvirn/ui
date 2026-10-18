@@ -73,20 +73,15 @@ None.
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                       | Agent check | Human check | Result  | Notes |
+| --------------------------------------- | ----------- | ----------- | ------- | ----- |
+| **Core (required for beta)**            |             |             |         |       |
+| NVDA + Chrome + Windows                 | pending     | pending     | pending |       |
+| VoiceOver + Safari + iOS                | pending     | pending     | pending |       |
+| **Release (before 1.0 and each minor)** |             |             |         |       |
+| JAWS + Chrome + Windows                 | pending     | pending     | pending |       |
+| TalkBack + Chrome + Android             | pending     | pending     | pending |       |
+| VoiceOver + Safari + macOS              | pending     | pending     | pending |       |
 
 ## Known issues
 

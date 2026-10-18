@@ -1,8 +1,6 @@
 # Badge
 
-> **Draft** (Plan 0059). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [badge.a11y.md](badge.a11y.md).
-
-A short status or category in words: `Granted`, `Pre-alpha`, `News`. It renders a `<span>`.
+A short status or category in words: `Granted`, `Draft`, `News`. It renders a `<span>`.
 
 - One part: `Badge`, also `useBadge()`. It renders `<span class="kv-badge">`, and no role, ARIA, text or strings.
 - `variant`: `neutral` (default), `primary`, `info`, `success`, `warning` or `danger`. The class is `kv-badge--<variant>`. Always say the status in words: the colour is only a second cue.

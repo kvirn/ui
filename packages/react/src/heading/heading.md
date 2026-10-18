@@ -1,7 +1,5 @@
 # Heading
 
-> **Draft** (Plan 0023). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [heading.a11y.md](heading.a11y.md).
-
 A heading with its element as a required `as` prop, and its look as an optional one. `<Heading as="h2">` renders an `<h2>`, and `<Heading as="h3" size="heading-2">` an `<h3>` that looks like heading-2.
 
 - One part: `Heading`, also `useHeading({ level, size })`. It renders `<h1>` to `<h6>` with the classes `kv-heading` and `kv-heading--<size>`, and no role, ARIA, text or strings.

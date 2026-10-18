@@ -19,10 +19,10 @@ Address is the native `<address>` element with a class, so the theme can undo th
 
 This component has no focusable parts and handles no keys.
 
-| Key       | Context | Action                                                   | Test                                   |
-| --------- | ------- | -------------------------------------------------------- | -------------------------------------- |
-| Tab       | Address | Not a Tab stop: no `tabindex`, no handlers               | `address.test.tsx › is not a Tab stop` |
-| Shift+Tab | Address | Not a Tab stop. Links inside it follow the Link contract | `address.test.tsx › is not a Tab stop` |
+| Key       | Context | Action                                                              | Test                                   |
+| --------- | ------- | ------------------------------------------------------------------- | -------------------------------------- |
+| Tab       | Address | Not a Tab stop: no `tabindex`, no handlers                          | `address.test.tsx › is not a Tab stop` |
+| Shift+Tab | Address | Not a Tab stop. Links inside are the consumer’s own Link components | `address.test.tsx › is not a Tab stop` |
 
 ## Focus management
 
@@ -56,20 +56,21 @@ Headless: Address ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-address` s
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                                                                  |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                                                        |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | address.stories.tsx, every story, 4 themes                                                                                                                                             |
+| Markup and ARIA (roles, names, ids, states)                                | pending     | n/a         | pending | `address.test.tsx` has no axe check                                                                                                                                                    |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 2 rows, each names a test in `address.test.tsx`                                                                                                                                        |
+| Focus order and management                                                 | n/a         | n/a         | n/a     | Address itself is never focusable and never moves focus; links inside are the consumer’s own Link components, each under its own contract                                              |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                                                                          |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                                                        |
+| NVDA + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<address>` with its own semantics; no role, state, focus or key handling; links inside are the consumer's own Link components, each under its own contract; nothing to operate |
+| VoiceOver + Safari + iOS                                                   | n/a         | n/a         | n/a     | native `<address>` with its own semantics; no role, state, focus or key handling; links inside are the consumer's own Link components, each under its own contract; nothing to operate |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                                                        |
+| JAWS + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<address>` with its own semantics; no role, state, focus or key handling; links inside are the consumer's own Link components, each under its own contract; nothing to operate |
+| TalkBack + Chrome + Android                                                | n/a         | n/a         | n/a     | native `<address>` with its own semantics; no role, state, focus or key handling; links inside are the consumer's own Link components, each under its own contract; nothing to operate |
+| VoiceOver + Safari + macOS                                                 | n/a         | n/a         | n/a     | native `<address>` with its own semantics; no role, state, focus or key handling; links inside are the consumer's own Link components, each under its own contract; nothing to operate |
 
 ## Known issues
 

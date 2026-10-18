@@ -103,7 +103,6 @@ export function AccordionPage({
     <ComponentPage
       title="Accordion"
       lead="Readers open them one by one, and every item opens on its own."
-      status="alpha-candidate"
       pattern="APG Accordion"
       whenToUse={
         <ul>

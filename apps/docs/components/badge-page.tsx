@@ -45,7 +45,6 @@ export function BadgePage({
     <ComponentPage
       title="Badge"
       lead="It is plain text in the flow of the page: it can’t be pressed and it announces nothing."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

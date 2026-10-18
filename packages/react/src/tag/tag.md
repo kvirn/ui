@@ -1,7 +1,5 @@
 # Tag and TagGroup
 
-> **Draft** (Plan 0075). This page moves to the docs site once `apps/docs` has a page for it. The accessibility contract is [tag.a11y.md](tag.a11y.md). The design is `docs/design/tag-and-filters.md`.
-
 A short fact in words, such as an applied filter: `Year: 2025`. It is either static text or one removable button, the whole chip.
 
 - `Tag.Root` is an `<li>`. Put a `Tag.Label` (static text) or a `Tag.Remove` (the button) in it.

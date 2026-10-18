@@ -44,7 +44,6 @@ export function DividerPage({
     <ComponentPage
       title="Divider"
       lead="A line between two blocks. It adds no text or behaviour, and the default theme sets its margin and colour from CSS variables."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

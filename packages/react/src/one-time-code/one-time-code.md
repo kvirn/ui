@@ -1,7 +1,5 @@
 # OneTimeCode
 
-> **Draft** (Plan 0014, Phase 3; the pattern is Plan 0019). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [one-time-code.a11y.md](one-time-code.a11y.md), the design spec is [docs/design/one-time-code.md](../../../../docs/design/one-time-code.md), and the decisions are in the forms skill (OneTimeCode).
-
 **KvirnUI holds no form state; bring your own form logic.** OneTimeCode renders what it's given. It keeps no value of its own and doesn't check the code: the value lives in your form state, or in the native input.
 
 A OneTimeCode shows a code sent by text message or email, or made by an authenticator app, as **a row of boxes, one per character**, shaped by a `pattern` such as `999999`, `****-****` or `AA-9999`. Underneath it is **one native `<input>`**. Typing, paste, SMS autofill, password managers, dictation, undo and the screen reader all work on that one field. The boxes only draw its value, its caret and its selection.

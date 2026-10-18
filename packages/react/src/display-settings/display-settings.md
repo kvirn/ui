@@ -1,7 +1,5 @@
 # DisplaySettings
 
-> **Draft** (Plan 0099). The accessibility contract is [display-settings.a11y.md](display-settings.a11y.md).
-
 Colour scheme, contrast and motion in one place, on `useTheme()`. One content, three layouts, and the choices on their own so you can put them anywhere.
 
 - `DisplaySettings.Inline`: a Disclosure. The panel opens in flow and pushes the content below it down.

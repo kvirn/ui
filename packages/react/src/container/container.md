@@ -1,7 +1,5 @@
 # Container
 
-> **Alpha candidate.** The accessibility reviewer and assistive-technology tests are still pending. The accessibility contract is [container.a11y.md](container.a11y.md).
-
 A block that centres and limits the width of the page's content. One `<div class="kv-container">`.
 
 - `size`: `'page'` (default, centred, at most `80rem`, inline padding of 16px, 24px from `40rem` and 40px from `64rem`), `'reading'` (`45rem`, for prose) or `'form'` (`40rem`). The two measures are start-aligned and add no padding.

@@ -132,7 +132,6 @@ export function DefinitionListPage({
     <ComponentPage
       title="DefinitionList"
       lead="Every link says what it changes, because its name is built from the row’s label."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

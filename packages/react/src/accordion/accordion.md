@@ -1,7 +1,5 @@
 # Accordion
 
-> **Draft** (Plan 0058). This page moves to the docs site once `apps/docs` has a page for it. The accessibility contract is [accordion.a11y.md](accordion.a11y.md).
-
 An Accordion is a list of questions or sections, each a heading with a button that reveals one panel (APG Accordion). It is a list of [Disclosures](../disclosure/disclosure.md) with headings: use it for a FAQ. Items are independent, so more than one can be open.
 
 - Five parts: `Accordion.Root` (`<div>`), `Accordion.Item` (`<div>`, owns one disclosure's state), `Accordion.Heading` (`<h1>` to `<h6>` by the required `level`), `Accordion.Trigger` (`<button>`) and `Accordion.Panel` (`<div>`, `hidden` while closed). Each is also exported on its own (`AccordionRoot`, …), and the hook is `useAccordion`, used with one `useDisclosure()` per item.

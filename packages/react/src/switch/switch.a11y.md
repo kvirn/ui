@@ -88,25 +88,26 @@ None from the component. On focus a screen reader reads the label, "switch" and 
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                             |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                   |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | switch.stories.tsx, every story, 4 themes                                                                         |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | switch.test.tsx › renders a native <input type="checkbox" role="switch">, outside a Field; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 6 rows, each names a test (switch.test.tsx › Tab moves to each switch, one stop each)                             |
+| Focus order and management                                                 | pass        | n/a         | pass    | switch.test.tsx asserts focus (toHaveFocus); first rule: Tab moves to each switch, one stop each                  |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                  |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                   |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                   |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                   |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                   |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                   |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                   |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                   |
 
 Research questions for the AT run: is `role="switch"` on a native checkbox announced as "switch" or "checkbox" in each screen reader, and is the on or off state spoken? Can a resident tell the state without colour in a contrast theme?
 
 ## Known issues
 
-- **The thumb and tick are not tested automatically.** They are drawn with CSS on the input itself. Nothing automated shows that Firefox and WebKit draw them, or that on and off differ visibly. They are reviewed by eye and checked in the manual AT matrix (the Windows Contrast Themes row). A hidden indicator element is the fallback.
+- **The thumb and tick are not tested automatically.** They are drawn with CSS on the input itself. Nothing automated shows that Firefox and WebKit draw them, or that on and off differ visibly. They are reviewed by eye; check them in Windows Contrast Themes yourself. A hidden indicator element is the fallback.
 - **`data-state` after `form.reset()`.** For an uncontrolled switch it's updated on change events, not on a form reset. The theme styles `:checked`, so the look is right; read the native state, not the attribute.
-- **Some screen readers announce `role="switch"` as a checkbox or a toggle button.** The state is still spoken. Manual AT is `pending`.
+- **Some screen readers announce `role="switch"` as a checkbox or a toggle button.** The state is still spoken. Check it with the screen readers your users have.

@@ -1,7 +1,5 @@
 # Progress
 
-> **Draft** (Plan 0074). This page moves to the docs site. The accessibility contract is [progress.a11y.md](progress.a11y.md) and the design spec is [docs/design/status-patterns.md](../../../../docs/design/status-patterns.md).
-
 Progress says that something is working, and how far along when you know. It is text first. An unknown wait can add `Progress.Indicator`, a decorative spinner; a native `<progress>` is drawn only when you pass a `value`, and then there is no spinner: one indicator per wait. Both loop for as long as the wait lasts, and `prefers-reduced-motion: reduce` shows a still rest shape instead. The library has no stop control: to meet WCAG 2.2.2 (Pause, Stop, Hide) the app offers its own, see [Moving indicators and WCAG 2.2.2](/foundation/theming#moving-indicators). The text and the slow sentence at 10 s carry the wait.
 
 - It renders **at once** and announces once. `delayMilliseconds` holds it back for a wait that is often quick.

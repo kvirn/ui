@@ -118,7 +118,6 @@ export function CalendarPage({
     <ComponentPage
       title="Calendar"
       lead="Someone using only a keyboard reaches the whole month with one Tab stop and the date keys. Every day has a full name that a screen reader (software that reads the screen aloud) speaks. It sits beside a typed field and never replaces it."
-      status="alpha-candidate"
       pattern="APG Date Picker Dialog (the calendar grid)"
       whenToUse={
         <ul>

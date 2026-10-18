@@ -1,6 +1,6 @@
 # Accessibility contract: Tooltip (Root, Trigger, Popup, Name, Shortcut)
 
-- **APG pattern:** [Tooltip](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/) (still marked work in progress by APG, and AT support for `role="tooltip"` varies, so the trigger is complete without it), and WCAG 1.4.13 Content on Hover or Focus (AA).
+- **APG pattern:** [Tooltip](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/) (APG marks it as a work in progress, and AT support for `role="tooltip"` varies, so the trigger is complete without it), and WCAG 1.4.13 Content on Hover or Focus (AA).
 - **Deviations:** none from the APG keyboard practice. Two decisions: the part of the tooltip that repeats the trigger's name is `aria-hidden` and only the shortcut is the description (so a screen reader hears the name once and learns the shortcut), and `popover="manual"` rather than `popover="hint"`, so a tooltip never light-dismisses an open Popover.
 - **Native elements used:** `<div popover="manual" role="tooltip">` (Popup), `<span>` (Name, Shortcut). The Trigger is the consumer's own control: a `<button>` by default, or any focusable control through `as` (`Toolbar.Toggle`, `Button`, `Toolbar.Item`). Nothing for Root: it renders no element.
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
@@ -99,7 +99,7 @@ Tooltip has no strings of its own and announces nothing: the description is read
 - Colour: the text has at least 4.5:1 contrast against the tooltip's background in every theme (1.4.3 Contrast (Minimum), AA), checked by the theme's contrast check. The tooltip's edge is a decorative hairline: 1.4.11 Non-text Contrast (AA) doesn't apply to the box, and its content is text.
 - forced-colors behaviour: the system's background and text colours, a thin edge in the text colour, and no shadow. The keys keep their edge.
 - reduced-motion behaviour: a short fade in, only when the user has not asked for reduced motion. No movement, no scale. Closing is instant in every setting.
-- Reflow, text spacing: the tooltip is at most 20rem wide and never wider than the viewport minus 8px each side, so long text wraps and the tooltip grows in height, not width, and has no fixed height (1.4.10 Reflow, AA; 1.4.12 Text Spacing, AA: reviewed in the stories, not yet automated). The text is never clipped. In a viewport too short for a long tooltip (320 by 256) it may overlap its trigger (2.4.11): the overlap is transient, and the tooltip is dismissable with Escape and hoverable (1.4.13), so nothing is lost. This trade-off was decided on 2026-10-04 and approved by the maintainer on 2026-10-14. At 400% zoom it may cover content near the trigger: that is why it is hoverable and dismissable.
+- Reflow, text spacing: the tooltip is at most 20rem wide and never wider than the viewport minus 8px each side, so long text wraps and the tooltip grows in height, not width, and has no fixed height (1.4.10 Reflow, AA; 1.4.12 Text Spacing, AA: reviewed in the stories, not automated). The text is never clipped. In a viewport too short for a long tooltip (320 by 256) it may overlap its trigger (2.4.11): the overlap is transient, and the tooltip is dismissable with Escape and hoverable (1.4.13), so nothing is lost. This trade-off was decided on 2026-10-04 and approved by the maintainer on 2026-10-14. At 400% zoom it may cover content near the trigger: that is why it is hoverable and dismissable.
 - RTL: placement and padding use logical properties and the tooltip is centred, so nothing flips.
 
 ## WCAG SCs covered
@@ -114,20 +114,21 @@ Tooltip has no strings of its own and announces nothing: the description is read
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                                               |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                                     |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | tooltip.stories.tsx, every story, 4 themes                                                                                                                          |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | tooltip.test.tsx › closed: the popup is in the DOM, hidden, a role="tooltip" in the top layer, and the trigger is described by its shortcut; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 14 rows, each names a test (tooltip.test.tsx › Tab focuses the trigger and its tooltip opens at once)                                                               |
+| Focus order and management                                                 | pass        | n/a         | pass    | tooltip.test.tsx asserts focus (toHaveFocus); first rule: Tab focuses the trigger and its tooltip opens at once                                                     |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                                                    |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                                     |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                                     |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                                                     |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                                     |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                                     |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                                     |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                                     |
 
 Also pending, by hand: whether NVDA, JAWS and VoiceOver read an icon-only button's name once and its shortcut once (the trigger has `aria-keyshortcuts` and the description), whether a screen reader reads the hidden-from-AT name again in browse mode while the tooltip is open, and whether a magnifier user at 400% can reach the tooltip by moving the pointer onto it.
 

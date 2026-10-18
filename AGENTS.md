@@ -67,9 +67,9 @@ Nothing is done until all of these pass. The orchestrator runs them, once, at th
 3. `vp run i18n:check` and `vp run theme:check`.
 4. The component has a hook, a compound component, stories (every state, RTL, forced-colors, and a `Keyboard` story if it has a focusable part) and a `<name>.a11y.md` that matches the tests. Its Docs page shows the contract's Keyboard section.
 5. `accessibility-reviewer` returns APPROVE.
-6. Every Core row of the AT matrix (`docs/accessibility.md`) passes before `beta`: an agent check proved by tests that re-run, **and** a human check on the real AT. **Agents never write or claim a human check.**
+6. Every Automated row of the AT matrix (`docs/accessibility.md`) is `pass` or `n/a` with a reason the reviewer agrees with (agent check only), and every Core row passes before `beta`: an agent check proved by tests that re-run, **and** a human check on the real AT. **Agents never write or claim a human check.**
 
-Forced colours, reduced motion and 320px reflow are not gated per change. Four opt-in projects sweep the Button stories (`vp test run --project storybook-forced-colors | -reduced-motion | -reflow | -text-spacing`); they are not in `vp run test` or CI, and other components are not swept (`testing` skill).
+Forced colours, reduced motion and 320px reflow are not gated per change. Four projects sweep the stories of the components in `sweepComponents` in `vite.config.ts` (`vp test run --project storybook-forced-colors | -reduced-motion | -reflow | -text-spacing`). CI runs them in one serial step after `vp run test`; they are not part of `vp run test`, and components outside the list are not swept (`testing` skill).
 
 ## Hard rules
 
@@ -84,7 +84,7 @@ Forced colours, reduced motion and 320px reflow are not gated per change. Four o
 9. **Public API changes** need a docs update. Changesets are off until alpha.
 10. **Stay in scope.** No drive-by refactors. If the plan is wrong, update the plan first.
 11. **The tree has one owner.** One worktree and branch per feature, created by the maintainer (`git worktree add ../kvirn-<feature> -b <feature>`). Agents never create branches or worktrees, and never `git stash`, `checkout --`, `reset` or `clean` over changes they didn't make.
-12. **Checks are scoped.** Subagents run only `vp check <files>` and `vp test run <file>` on their own files, one command at a time. Path-less runs, sweeps, builds, `vp check --fix` and a path-less `vp fmt` are the orchestrator's, once, after every subagent has reported done. No hook enforces this.
+12. **Checks are scoped.** Subagents run only `vp check <files>` and `vp test run <file>` on their own files, one command at a time. Path-less runs, sweeps, builds, `vp check --fix` and a path-less `vp fmt` are the orchestrator's, once, after every subagent has reported done. No hook enforces this. **Never run two checks, tests, sweeps or builds at once**, in any agent or on the main thread: parallel runs flake. Every such command (`vp check`, `vp test`, `vp run`, `vp pack`, `next build`, `pnpm exec`) goes through `flock -w 1800 /tmp/kvirn-gate.lock <command>`, which waits its turn and never skips. Editing in parallel is fine; running is not.
 13. **Test behaviour, accessibility and requirements, never CSS.** Every test proves a contract row, a WCAG success criterion or a plan requirement, once, in the cheapest layer. No computed styles, layout or `theme.css` text. A visual WCAG criterion asserts its threshold, not the theme's value (`testing` skill).
 14. **Variation is a class; language is the provider's.** A component takes no presentation prop except `variant`, `size` and `orientation`, and each only picks a `kv-<part>--<option>` class (the default adds none). Gap, spacing, marker, layout, columns, width and colour are classes the consumer adds, never props, never inline `style`. `data-*` is state, never a choice. No component, hook or `core` helper that renders takes `lang` or `dir`: they come from `KvirnProvider`. `itemToLang`-style marking of content in another language (WCAG 3.1.2) is the one exception.
 

@@ -1,7 +1,7 @@
 # Accessibility contract: Menu (Root, Trigger, Popup, Item, CheckboxItem, RadioGroup, RadioItem, Separator, Group, GroupLabel)
 
 - **APG pattern:** [Menu Button](https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/) (the [Actions Menu Button](https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/examples/menu-button-actions/) example) and the menu roles of [Menubar](https://www.w3.org/WAI/ARIA/apg/patterns/menubar/) (`menuitemcheckbox`, `menuitemradio`, groups, separators).
-- **Deviations:** none from the APG keyboard practice. Decisions that are defaults until the maintainer confirms them: no submenus and no `menubar` in v1, so ArrowLeft and ArrowRight are not handled; a disabled item stays focusable with `aria-disabled` (the APG's own rule for composites); items are `<button>`s; pointer movement over an item focuses it (one highlight).
+- **Deviations:** none from the APG keyboard practice. Defaults to know: no submenus and no `menubar`, so ArrowLeft and ArrowRight are not handled; a disabled item stays focusable with `aria-disabled` (the APG's own rule for composites); items are `<button>`s; pointer movement over an item focuses it (one highlight).
 - **Native elements used:** `<button>` (Trigger and every item), `<div popover="auto" role="menu">` (Popup), `<div role="group">` (Group, RadioGroup), `<div role="separator">`. Nothing for Root: it renders no element.
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `menu.test.tsx` next to this file, `../popup/use-popup.test.tsx` and `../popup/use-dismissable-layer.test.tsx`, and `typeahead/*.test.ts` in `@kvirn-ui/core`. `menu.stories.tsx` in `apps/storybook/src/components/menu/`.
@@ -100,7 +100,7 @@ Menu has no strings of its own and announces nothing: `aria-expanded` tells a sc
 - Colour: highlighted, disabled and checked items keep at least 4.5:1 contrast for text (1.4.3 Contrast (Minimum) (AA)) and the popup's edge at least 3:1 (1.4.11 Non-text Contrast (AA)).
 - forced-colors behaviour: the popup keeps a visible edge in the system's text colour, the highlighted item uses the system's highlight colours, and checked state is drawn from borders.
 - reduced-motion behaviour: no positional animation, ever.
-- Reflow: at 320px the popup is never wider than the screen minus its padding, and scrolls inside when it is too tall. No horizontal scrolling at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA).
+- Reflow: at 320px the popup is never wider than the screen minus its padding, and scrolls inside when it is too tall. No horizontal scrolling at 320 CSS px, reviewed in the stories, not automated (1.4.10 Reflow, AA).
 - RTL: `bottom-start` lines the popup's right edge with the trigger's. ArrowUp and ArrowDown never flip.
 
 ## WCAG SCs covered
@@ -116,20 +116,21 @@ Menu has no strings of its own and announces nothing: `aria-expanded` tells a sc
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                               |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                     |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | menu.stories.tsx, every story, 4 themes                                                                                             |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | menu.test.tsx › a disabled item has aria-disabled and data-disabled, and is still a button that takes focus; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 16 rows, each names a test (menu.test.tsx › Tab focuses the trigger, and is one stop)                                               |
+| Focus order and management                                                 | pass        | n/a         | pass    | menu.test.tsx asserts focus (toHaveFocus); first rule: Tab focuses the trigger, and is one stop                                     |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                    |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                     |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                     |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                     |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                     |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                     |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                     |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                     |
 
 Also pending, by hand: Tab out of the menu on Safari and Firefox (the focus start point after the popup closes), and how screen readers read disabled items.
 
@@ -142,4 +143,4 @@ Also pending, by hand: Tab out of the menu on Safari and Firefox (the focus star
 - **Disabled items stay reachable,** so a screen reader user hears "dimmed". That is deliberate (discoverability), and a reason to explain why an action is unavailable: explain it in visible text on the page, and point the item's `aria-describedby` at it, so a screen reader reads "Share, dimmed, <reason>" (`menu.test.tsx › a disabled item points at the reason on the page with aria-describedby`).
 - **Hover moves focus** (one highlight, as native menus do). A magnifier user may find the focus moving under the pointer surprising.
 - **No submenus** in this version, and no context menu or menubar.
-- **Tab is never intercepted.** The browser moves focus from the item and the menu closes on that focus move (deferred one task, reason `tab`), with no focus return. Chromium does as documented; Safari and Firefox are `pending`.
+- **Tab is never intercepted.** The browser moves focus from the item and the menu closes on that focus move (deferred one task, reason `tab`), with no focus return. Chromium does as documented; check Safari and Firefox yourself.

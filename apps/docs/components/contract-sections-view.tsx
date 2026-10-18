@@ -44,6 +44,10 @@ function announcementsOf(contract: Contract, extraRows: readonly ContractAnnounc
     : contract.announcements
 }
 
+/** The accessibility sections shown under the Accessibility `h2`: the test record is its own `h2`. */
+const accessibilityOf = (contract: Contract) =>
+  contract.accessibility.filter((section) => section.id !== 'testing')
+
 /** The sections that have content, in page order, for the page's contents list. */
 export function contractSectionList(
   contract: Contract,
@@ -56,26 +60,19 @@ export function contractSectionList(
           block.type === 'heading' ? [{ id: `keyboard-${block.id}`, label: block.text }] : [],
         )
       : []
-  const knownIssuesHeadings = contract.knownIssues.flatMap((block) =>
-    block.type === 'heading' ? [{ id: `known-issues-${block.id}`, label: block.text }] : [],
-  )
   return [
-    ...(contract.accessibility.length === 0
+    ...(accessibilityOf(contract).length === 0
       ? []
       : [
           {
             id: 'accessibility',
             label: text.sections.accessibility,
-            children: contract.accessibility.map((section) => ({
-              id: section.id,
-              label: section.title,
-            })),
+            children: contract.accessibility
+              .filter((section) => section.id !== 'testing')
+              .map((section) => ({ id: section.id, label: section.title })),
           },
         ]),
     { id: 'keyboard', label: text.sections.keyboard, children: keyboardHeadings },
-    ...(contract.knownIssues.length === 0
-      ? []
-      : [{ id: 'known-issues', label: text.sections.knownIssues, children: knownIssuesHeadings }]),
     ...(announcements.kind === 'none' && contract.readAloud.length === 0
       ? []
       : [
@@ -303,6 +300,59 @@ function assertNotesHaveSections(contract: Contract, notes: ContractNotes) {
   }
 }
 
+/** The known-issues h3 headings of a contract, for the page's contents list. */
+export const knownIssuesHeadings = (contract: Contract): PageSection[] =>
+  contract.knownIssues.flatMap((block) =>
+    block.type === 'heading' ? [{ id: `known-issues-${block.id}`, label: block.text }] : [],
+  )
+
+/** Known issues: the `h2` right above Testing, after the API. */
+export function ContractKnownIssues({
+  contract,
+  notes = {},
+}: {
+  contract: Contract
+  notes?: ContractNotes
+}) {
+  if (contract.knownIssues.length === 0) return null
+  return (
+    <section aria-labelledby="known-issues">
+      <AnchoredHeading as="h2" id="known-issues">
+        {text.sections.knownIssues}
+      </AnchoredHeading>
+      <Blocks
+        blocks={contract.knownIssues}
+        labelledBy="known-issues"
+        headingTag="h3"
+        idPrefix="known-issues"
+      />
+      {notes['known-issues']}
+    </section>
+  )
+}
+
+/** The AT test record: the last `h2` of a component page, after the API. */
+export function ContractTesting({
+  contract,
+  notes = {},
+}: {
+  contract: Contract
+  notes?: ContractNotes
+}) {
+  const section = contract.accessibility.find((entry) => entry.id === 'testing')
+  if (section === undefined) return null
+  return (
+    <section aria-labelledby="testing">
+      <AnchoredHeading as="h2" id="testing">
+        {text.sections.testing}
+      </AnchoredHeading>
+      <p>{text.accessibility.testingIntro}</p>
+      <Blocks blocks={section.body} labelledBy="testing" headingTag="h3" idPrefix="testing" />
+      {notes.testing}
+    </section>
+  )
+}
+
 export function ContractSectionsView({
   contract,
   extraAnnouncementRows,
@@ -320,7 +370,8 @@ export function ContractSectionsView({
   /** The page has a Strings section, so the table links to it. */
   linkToStrings?: boolean
 }) {
-  const { keyboard, accessibility, knownIssues } = contract
+  const { keyboard } = contract
+  const accessibility = accessibilityOf(contract)
   assertNotesHaveSections(contract, notes)
   const announcements = announcementsOf(contract, extraAnnouncementRows)
   const facts =
@@ -347,7 +398,6 @@ export function ContractSectionsView({
                 <AnchoredHeading as="h3" id={section.id}>
                   {section.title}
                 </AnchoredHeading>
-                {section.id === 'testing' ? <p>{text.accessibility.testingIntro}</p> : null}
                 <Blocks
                   blocks={section.body}
                   labelledBy={section.id}
@@ -402,20 +452,6 @@ export function ContractSectionsView({
           {notes['keyboard']}
         </>
       </section>
-      {knownIssues.length === 0 ? null : (
-        <section aria-labelledby="known-issues">
-          <AnchoredHeading as="h2" id="known-issues">
-            {text.sections.knownIssues}
-          </AnchoredHeading>
-          <Blocks
-            blocks={knownIssues}
-            labelledBy="known-issues"
-            headingTag="h3"
-            idPrefix="known-issues"
-          />
-          {notes['known-issues']}
-        </section>
-      )}
       {announcements.kind === 'none' && contract.readAloud.length === 0 ? null : (
         <section aria-labelledby="announcements">
           <AnchoredHeading as="h2" id="announcements">

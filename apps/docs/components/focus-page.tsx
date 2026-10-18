@@ -53,7 +53,6 @@ export function FocusPage({
     <ComponentPage
       title="Focus"
       lead="Neither adds a role or ARIA: you choose the element and give it a name."
-      status="alpha-candidate"
       pattern="APG Dialog (Modal), focus rules only"
       whenToUse={
         <ul>

@@ -41,7 +41,6 @@ export function AddressPage({
     <ComponentPage
       title="Address"
       lead="It adds no text, role or behaviour, and the default theme undoes the browser’s italic."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

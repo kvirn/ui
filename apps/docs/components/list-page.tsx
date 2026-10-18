@@ -55,7 +55,6 @@ export function ListPage({
     <ComponentPage
       title="List"
       lead="A class sets the marker and the space between items, and the list has the list role unless you set another role."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

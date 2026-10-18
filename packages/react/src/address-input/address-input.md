@@ -1,7 +1,5 @@
 # AddressInput
 
-> **Draft** (design spec [docs/design/phone-and-address-inputs.md](../../../../docs/design/phone-and-address-inputs.md) §6.2). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [address-input.a11y.md](address-input.a11y.md).
-
 **KvirnUI holds no form state; bring your own form logic.** AddressInput renders what it's given. It keeps no value, looks nothing up and validates nothing.
 
 An AddressInput asks for a postal address in separate boxes: street, line 2, postal code and city, in the Nordic order. Use it for an address the user types or autofill fills in one action. For showing an address the service already knows, use [Address](../address/address.md) (the static `<address>`) in a summary with a change link. For a foreign address of unknown format, use a `Textarea`.

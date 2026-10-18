@@ -86,7 +86,6 @@ export function OneTimeCodePage({
     <ComponentPage
       title="OneTimeCode"
       lead="It is one native text box drawn as boxes, so paste, undo and the screen reader work as in any text box. The box carries the attribute browsers use to offer a code from a text message."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

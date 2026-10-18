@@ -1,7 +1,5 @@
 # Mask
 
-> **Draft** (Plans 0014, 0039 and 0040). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [text-input.a11y.md](../text-input/text-input.a11y.md), because a mask is a prop of [TextInput](../text-input/text-input.md), and the decisions are in the forms skill (masks).
-
 **KvirnUI holds no form state; bring your own form logic.** A mask shapes what the user types into a text box: it drops characters that can't be valid, puts separators in as the user types past them, and limits the length. It reports what it did, and never blocks, clamps or corrects a value. Whether a number exists is your form's job (see Checks).
 
 Use a mask for a **code**: a personal identity number, a postcode, an organisation number, an IBAN, a reference number, a date in one field, a one-time code. For a quantity or an amount, use [NumberInput](../number-input/number-input.md), which builds the number mask in. For a date of birth, use [DateInput](../date-input/date-input.md).

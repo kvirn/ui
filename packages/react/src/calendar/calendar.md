@@ -1,7 +1,5 @@
 # Calendar
 
-> **Draft** (Plans 0082, 0087). This page moves to the docs site. The accessibility contract is [calendar.a11y.md](calendar.a11y.md) and the design spec is [docs/design/date-picker-and-calendar.md](../../../../docs/design/date-picker-and-calendar.md).
-
 A month as a grid of days, for choosing one date near today: a booking, a start date, "last Thursday". It is a companion to typed entry, never a replacement: a [DateInput](../date-input/date-input.md) beside it is always the way that works for every user. For a date of birth or any date far from today, use only the DateInput. When many days are unavailable, prefer radio buttons.
 
 - The grid is one Tab stop, on the focused day, and the arrow, Home, End and Page keys move through the days, across months. Enter, Space or a click chooses a day.

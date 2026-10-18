@@ -54,12 +54,12 @@ Fieldset handles no keys and moves no focus. A group's keys come from its contro
 
 ## Announcements
 
-| Event                  | Message key (i18n)  | Politeness                                                                                                                                                                            |
-| ---------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| An error appears       | none                | None: errors are not live regions                                                                                                                                                     |
-| Focus enters the group | none                | Screen readers announce the legend and "group"; the description and error follow through `aria-describedby`, which is not yet checked on real assistive technology (see Known issues) |
-| The error text is read | `field.errorPrefix` | Part of the message: "Error: Choose how long you need the permit", 3.3.1 Error Identification (A)                                                                                     |
-| The legend is read     | `field.optional`    | Part of the name when the marker shows: "How should we contact you? (optional)", 3.3.2 Labels or Instructions (A)                                                                     |
+| Event                  | Message key (i18n)  | Politeness                                                                                                                                                                |
+| ---------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| An error appears       | none                | None: errors are not live regions                                                                                                                                         |
+| Focus enters the group | none                | Screen readers announce the legend and "group"; the description and error follow through `aria-describedby`, which depends on the assistive technology (see Known issues) |
+| The error text is read | `field.errorPrefix` | Part of the message: "Error: Choose how long you need the permit", 3.3.1 Error Identification (A)                                                                         |
+| The legend is read     | `field.optional`    | Part of the name when the marker shows: "How should we contact you? (optional)", 3.3.2 Labels or Instructions (A)                                                         |
 
 Message keys are the Field's (`field.optional`, `field.errorPrefix`), resolved the same way: the part's children, then `<Fieldset.Root messages>` or `useFieldset({ messages })`, then the provider, then `en`.
 
@@ -91,24 +91,25 @@ Message keys are the Field's (`field.optional`, `field.errorPrefix`), resolved t
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                              |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                    |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | fieldset.stories.tsx, every story, 4 themes                                                                                                        |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `fieldset.test.tsx` (axe and role, name and state): `the legend is the group’s name, and the description is its description, in en`                |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 2 rows, each names a test in `fieldset.test.tsx`                                                                                                   |
+| Focus order and management                                                 | pass        | n/a         | pass    | `fieldset.test.tsx`: `keyboard › Tab moves through the controls in DOM order and never stops on the group, its legend, its help text or its error` |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                                   |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                    |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                    |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                                    |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                    |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                    |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                    |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                    |
 
 Research question for the manual run with assistive technology: is the group's description and error announced on entering the group in each screen reader?
 
 ## Known issues
 
-- **`aria-describedby` on a `<fieldset>` may not be announced consistently.** GOV.UK reports that NVDA, JAWS and VoiceOver announce it when the user enters the group and that TalkBack does not do so consistently. That is a report from others, not a result here: the manual AT run checks all four.
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **`aria-describedby` on a `<fieldset>` may not be announced consistently.** GOV.UK reports that NVDA, JAWS and VoiceOver announce it when the user enters the group and that TalkBack does not do so consistently. That is a report from others, not a result here: test all four with your users.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. WebKit is not covered by the automated tests, so check Safari with your own users and assistive technology.

@@ -115,7 +115,6 @@ export function CheckboxGroupPage({
     <ComponentPage
       title="CheckboxGroup"
       lead="It names the group with a legend. It keeps no state of its own: the checked values are yours."
-      status="alpha-candidate"
       pattern="APG Checkbox (in a labelled group)"
       whenToUse={
         <ul>

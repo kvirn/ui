@@ -103,7 +103,8 @@ function Subscribe({
               className="kv-stack"
               onSubmit={(event) => {
                 event.preventDefault()
-                const value = String(new FormData(event.currentTarget).get('email') ?? '')
+                const email = new FormData(event.currentTarget).get('email')
+                const value = typeof email === 'string' ? email : ''
                 setSubmitCount((count) => count + 1)
                 setState(emailPattern.test(value.trim()) ? 'sent' : 'invalid')
               }}

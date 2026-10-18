@@ -346,7 +346,6 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
     <ComponentPage
       title="Map"
       lead="You choose where the map pictures come from. Nothing is requested from anyone until a map with a provider is on the page."
-      status="in-progress"
       packageName="@kvirn-ui/map"
       pattern="None: there is no APG pattern for a map. The markers use the Toolbar’s arrow keys."
       whenToUse={
@@ -371,9 +370,9 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
               with a provider is on the page.
             </li>
             <li>
-              There is no address search yet. A visitor finds a place by the markers, the list and
-              the layers. Address search is planned, over a geocoding service (it turns a typed
-              address into a position) that you would choose.
+              The map has no address search of its own. A visitor finds a place by the markers, the
+              list and the layers. To add address search, use a geocoding service (it turns a typed
+              address into a position) that you choose.
             </li>
             <li>
               It is its own package, <code>@kvirn-ui/map</code>. Its styles are an opt-in import,{' '}
@@ -579,8 +578,9 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
             ),
             testing: (
               <Note kind="tip">
-                No row has passed yet. Test with the assistive technology your residents use before
-                you rely on the map, and keep the list.
+                The map is checked with automated accessibility tests and keyboard tests. Test with
+                the assistive technology your residents use before you rely on the map, and keep the
+                list.
               </Note>
             ),
             'known-issues': (
@@ -732,8 +732,8 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
                 ]}
               >
                 <p>
-                  The map’s texts exist in all five languages. A native speaker has not reviewed the
-                  Swedish, Finnish and Norwegian ones yet (see Known issues). Your map’s{' '}
+                  The map’s texts exist in all five languages. Have a native speaker review the
+                  Swedish, Finnish and Norwegian ones before you launch. Your map’s{' '}
                   <code>label</code>, your layer names and your place data are yours, so write them
                   in the page’s language.
                 </p>

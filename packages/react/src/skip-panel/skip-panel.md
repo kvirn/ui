@@ -1,7 +1,5 @@
 # SkipPanel
 
-> **Draft** (Plan 0132). The accessibility contract is [skip-panel.a11y.md](skip-panel.a11y.md). Visual details: `docs/design/skip-panel.md`.
-
 A skip panel: on the first Tab, a card lists where to skip to and which keyboard shortcuts the site offers. Each shortcut runs from the card or by its chord. For a skip link that stays in the page flow, use [SkipLink](../skip-link/skip-link.md).
 
 - Parts: `Root`, `Group`, `Label`, `List`, `Item`, `Link`, `Shortcut`, `HelpLink`, `Hint`. Hooks: `useSkipPanel(options)` for the Root, and `useSkipPanelGroup`, `useSkipPanelLink`, `useSkipPanelShortcut`, `useSkipPanelHelpLink`, `useSkipPanelHint` for the parts that need more than a class.

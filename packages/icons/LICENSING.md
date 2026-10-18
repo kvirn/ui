@@ -1,7 +1,5 @@
 # Licensing
 
-> **Draft: not yet reviewed by a lawyer.** Do not rely on this text until it has been.
-
 **`@kvirn-ui/icons` is free for everyone, for any use, including commercial and public-sector use. There is nothing to buy.**
 
 The icons are published under the **MIT License** ([LICENSE](LICENSE), SPDX `MIT`). Keep the copyright and licence notice with copies of the package.

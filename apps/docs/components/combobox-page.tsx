@@ -256,7 +256,6 @@ export function ComboboxPage({
     <ComponentPage
       title="Combobox"
       lead="The chosen value is always one of the options in the list, never just the text someone typed."
-      status="alpha-candidate"
       pattern="APG Combobox (editable, list autocomplete)"
       whenToUse={
         <ul>

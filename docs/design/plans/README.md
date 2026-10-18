@@ -10,22 +10,26 @@ Plans describe **how** we will build something. Decisions live in the skills and
 
 ## Index
 
-| #                                           | Title                                                            | Status        |
-| ------------------------------------------- | ---------------------------------------------------------------- | ------------- |
-| [0088](0088-read-aloud.md)                  | ReadAloud (text to speech player and selection reader)           | In progress   |
-| [0118](0118-docs-back-to-top.md)            | Back to top on the docs site                                     | Done          |
-| [0122](0122-quick-exit.md)                  | QuickExit (leave a sensitive page in one action)                 | In progress   |
-| [0123](0123-english-only-prose.md)          | English-only prose, examples and fixtures                        | Done          |
-| [0124](0124-icon-library.md)                | Icon library (`@kvirn-ui/icons`, 257 outline icons)              | Done (agents) |
-| [0125](0125-heading-scale.md)               | Wider heading scale (h1–h6)                                      | Done          |
-| [0126](0126-spinner-icon.md)                | The spinner is an icon (`<Icon name="spinner">`)                 | Done (agents) |
-| [0127](0127-icon-variant-and-stroke.md)     | Icon variant, stroke classes, spinner in Icons/Library           | Done (agents) |
-| [0128](0128-icons-replace-built-ins.md)     | Default icons come from `@kvirn-ui/icons`, no built-ins in react | Draft         |
-| [0129](0129-map-richtext-library-icons.md)  | Map and rich-text on library icons; `@kvirn-ui/icons` public     | In progress   |
-| [0130](0130-icon-name-registry-only.md)     | No default icons; `name` resolves only the app's registry        | Done (agents) |
-| [0131](0131-letterform-text-style-icons.md) | Bold, italic, underline, strike icons as B/I/U/S letterforms     | Done (agents) |
-| [0132](0132-skip-panel.md)                  | SkipPanel (floating skip panel with keyboard shortcuts)          | Done (agents) |
-| [0135](0135-skip-panel-docs-site.md)        | SkipPanel on the docs site, HelpLink, `mod`, shortcuts setting   | In progress   |
-| [0133](0133-heading-levels.md)              | Heading icons H1–H6; levels 2–6 in the text type picker          | Done (agents) |
-| [0136](0136-divider.md)                     | Divider (`<hr>` with CSS-variable margin, width, colour)         | In progress   |
-| [0137](0137-easy-read-icon.md)              | `easy-read` icon (reopens the 0124 cut)                          | Done (agents) |
+| #                                                        | Title                                                             | Status        |
+| -------------------------------------------------------- | ----------------------------------------------------------------- | ------------- |
+| [0088](0088-read-aloud.md)                               | ReadAloud (text to speech player and selection reader)            | In progress   |
+| [0118](0118-docs-back-to-top.md)                         | Back to top on the docs site                                      | Done          |
+| [0122](0122-quick-exit.md)                               | QuickExit (leave a sensitive page in one action)                  | In progress   |
+| [0123](0123-english-only-prose.md)                       | English-only prose, examples and fixtures                         | Done          |
+| [0124](0124-icon-library.md)                             | Icon library (`@kvirn-ui/icons`, 257 outline icons)               | Done (agents) |
+| [0125](0125-heading-scale.md)                            | Wider heading scale (h1–h6)                                       | Done          |
+| [0126](0126-spinner-icon.md)                             | The spinner is an icon (`<Icon name="spinner">`)                  | Done (agents) |
+| [0127](0127-icon-variant-and-stroke.md)                  | Icon variant, stroke classes, spinner in Icons/Library            | Done (agents) |
+| [0128](0128-icons-replace-built-ins.md)                  | Default icons come from `@kvirn-ui/icons`, no built-ins in react  | Draft         |
+| [0129](0129-map-richtext-library-icons.md)               | Map and rich-text on library icons; `@kvirn-ui/icons` public      | In progress   |
+| [0130](0130-icon-name-registry-only.md)                  | No default icons; `name` resolves only the app's registry         | Done (agents) |
+| [0131](0131-letterform-text-style-icons.md)              | Bold, italic, underline, strike icons as B/I/U/S letterforms      | Done (agents) |
+| [0132](0132-skip-panel.md)                               | SkipPanel (floating skip panel with keyboard shortcuts)           | Done (agents) |
+| [0135](0135-skip-panel-docs-site.md)                     | SkipPanel on the docs site, HelpLink, `mod`, shortcuts setting    | In progress   |
+| [0133](0133-heading-levels.md)                           | Heading icons H1–H6; levels 2–6 in the text type picker           | Done (agents) |
+| [0136](0136-divider.md)                                  | Divider (`<hr>` with CSS-variable margin, width, colour)          | In progress   |
+| [0137](0137-easy-read-icon.md)                           | `easy-read` icon (reopens the 0124 cut)                           | Done (agents) |
+| [0138](0138-no-status-in-public-docs.md)                 | No current-status text in public docs                             | Done (agents) |
+| [0139](0139-matrix-automated-tier-and-derived-status.md) | Automated matrix tier, `n/a` rows, status derived from the matrix | Approved      |
+| [0140](0140-smaller-at-matrix.md)                        | A smaller AT matrix: most common screen readers only              | Approved      |
+| [0141](0141-sweeps-in-ci-and-testing-upkeep.md)          | Display-mode sweeps in CI; Testing upkeep in the docs workflow    | Approved      |

@@ -103,7 +103,6 @@ export function NavigationPage({
     <ComponentPage
       title="Navigation"
       lead="Every link is a plain Tab stop, in the order you write them, so a keyboard user has no new keys to learn."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

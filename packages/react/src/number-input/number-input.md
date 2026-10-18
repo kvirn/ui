@@ -1,7 +1,5 @@
 # NumberInput
 
-> **Draft** (Plan 0033). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [number-input.a11y.md](number-input.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md), and the decisions are in the forms skill.
-
 A quantity or an amount in a form: how many children live with you, the monthly rent, the distance to school in kilometres. A native text box that takes digits and the decimal mark of the page's language, and leaves everything else out. **For a code with leading zeros (a postcode, a case number, a personal identity number) use a [TextInput](../text-input/text-input.md) with a mask**, because a number drops the leading zeros: see its masked examples. For a date, use [DateInput](../date-input/date-input.md).
 
 - Renders a native `<input type="text">` with the number mask by default (`mask={false}` turns it off, another `mask` replaces it), the keypad that fits (`inputmode`), `spellcheck="false"` and the classes `kv-input kv-input--numeric`. Your `className` joins them.

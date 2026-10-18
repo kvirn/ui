@@ -81,36 +81,37 @@ Headless: Card ships no CSS. With `@kvirn-ui/theme/theme.css`:
 - Contrast: the default theme checks that text, links, muted text and button edges meet their minimum contrast on the card's surface and on the surfaces a card sits on (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA). The card's own edge is decorative and low in contrast on purpose: the heading and the spacing group the content, not the edge.
 - Forced colours: the card keeps a visible border in the system's text colour, so its boundary and dividers stay.
 - Reduced motion: nothing moves. There is no hover effect, transition or pointer style.
-- Reflow and text spacing: no fixed sizes, no clipping, long words break, and the card can shrink in a grid. The stories show it at narrow widths and with a Finnish text, by eye. An automated check for 320px and text spacing is planned and does not run yet (1.4.10 Reflow, 1.4.12 Text Spacing). Media directly in a part or the Root never get wider than it.
+- Reflow and text spacing: no fixed sizes, no clipping, long words break, and the card can shrink in a grid. The stories show it at narrow widths and with a Finnish text, by eye. No automated check covers 320px and text spacing (1.4.10 Reflow, 1.4.12 Text Spacing). Media directly in a part or the Root never get wider than it.
 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships (A): the card has no role of its own, so your element and children decide the meaning. Header and Footer are never landmarks.
 - 1.3.2 Meaningful Sequence (A) and 2.4.3 Focus Order (A): the order in the page is the reading order and the focus order. The Tab rows prove the card is skipped.
 - 1.4.3 Contrast (Minimum) (AA) and 1.4.11 Non-text Contrast (AA): the default theme's colour pairs on every card surface are checked automatically.
-- 1.4.10 Reflow (AA) and 1.4.12 Text Spacing (AA): the card doesn't crop or fix its size. This is reviewed in the stories, not yet by an automated check.
+- 1.4.10 Reflow (AA) and 1.4.12 Text Spacing (AA): the card doesn't crop or fix its size. This is reviewed in the stories, not by an automated check.
 - 2.4.11 Focus Not Obscured (Minimum) (AA): the card doesn't clip a child's focus ring (reviewed in the stories). 2.4.13 Focus Appearance (AAA) is not counted toward AA.
 - 4.1.2 Name, Role, Value (A): the card has no role or name of its own to get wrong.
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | card.stories.tsx, every story, 4 themes                                                                       |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `card.test.tsx` (axe and role, name and state): `adds no role, ARIA or tabindex`                              |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 3 rows, each names a test in `card.test.tsx`                                                                  |
+| Focus order and management                                                 | pass        | n/a         | pass    | `card.test.tsx`: `the card is skipped by Tab: focus goes through its children in DOM order`                   |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
 ## Known issues
 
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
-- **A list of cards can lose its list role in Safari.** Safari with VoiceOver drops the list role when `list-style: none` removes the markers, which the default theme does. Write `role="list"` on a hand-written `<ul>`, or use Stack or Grid as the list: they add it themselves. If your linter calls `role="list"` redundant, relax that rule for `ul` only. This is not yet checked with the real VoiceOver in Safari.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. WebKit is not covered by the automated tests, so check Safari with your own users and assistive technology.
+- **A list of cards can lose its list role in Safari.** Safari with VoiceOver drops the list role when `list-style: none` removes the markers, which the default theme does. Write `role="list"` on a hand-written `<ul>`, or use Stack or Grid as the list: they add it themselves. If your linter calls `role="list"` redundant, relax that rule for `ul` only. Check it with VoiceOver in Safari.
 - **Prose and nested cards.** Prose turned on inside a card (`kv-prose`) stops at a nested card, for two levels of nesting. The default theme doesn't support deeper nesting.

@@ -111,7 +111,7 @@ Headless: TableOfContents ships no CSS. With the default theme it uses the same 
 - 1.3.1 Info and Relationships (A): a `<nav>` landmark, native lists and nesting (`table-of-contents.test.tsx › nests the lists from the levels, so the depth is announced`, `› a skipped level nests one step`).
 - 1.4.1 Use of Color (A): the current heading has an underline and weight, and the trail has weight (default theme).
 - 1.4.3 Contrast (Minimum) (AA), 1.4.11 Non-text Contrast (AA): the colours are measured by the theme's automated contrast check.
-- 1.4.10 Reflow (AA): long Finnish text at 320px in a story, with words allowed to break. 1.4.12 Text Spacing (AA): no fixed heights; there is no automated check yet.
+- 1.4.10 Reflow (AA): long Finnish text at 320px in a story, with words allowed to break. 1.4.12 Text Spacing (AA): no fixed heights; no automated check covers it.
 - 2.1.1 Keyboard (A), 2.4.3 Focus Order (A): native links in DOM order (the Keyboard rows above).
 - 2.4.1 Bypass Blocks (A): a named landmark of links to the sections (WCAG technique G64, providing a table of contents), with a dev warning for a link that has no target (`table-of-contents.test.tsx › a missing heading warns once, naming the id, and its link stays`).
 - 2.4.4 Link Purpose (In Context) (A), 2.4.6 Headings and Labels (AA): the link text is the heading's text, and the landmark has a name (`table-of-contents.test.tsx › renders a navigation landmark named by aria-labelledby, with no aria-label`).
@@ -123,24 +123,25 @@ Headless: TableOfContents ships no CSS. With the default theme it uses the same 
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                              |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                    |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | table-of-contents.stories.tsx, every story, 4 themes                                                                               |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | table-of-contents.test.tsx › renders a navigation landmark named by aria-labelledby, with no aria-label; expectNoA11yViolations    |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 4 rows, each names a test (table-of-contents.test.tsx › Tab moves through the links in DOM order, nested ones included)            |
+| Focus order and management                                                 | pass        | n/a         | pass    | table-of-contents.test.tsx asserts focus (toHaveFocus); first rule: Tab moves through the links in DOM order, nested ones included |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                   |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                    |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                    |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                    |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                    |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                    |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                    |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                    |
 
 ## Known issues
 
-- **Focus after a followed link is the browser's.** A heading isn't focusable, so after someone follows a link, focus falls back to the page (`document.activeElement` is `body`) and the browser moves the place Tab continues from to the heading. It is not yet checked that NVDA, JAWS and VoiceOver put the reading position at the heading, and that the next Tab continues after it, in each browser. This is part of the manual testing, which is pending. It is not a conformance failure: following a link moves the place Tab continues from. Workaround: if your own check shows that the reading position doesn't move, give the target headings `tabindex="-1"` (never `0`). The browser then focuses the heading and the theme's focus ring shows on it. Don't set `outline: none` on them.
-- **List semantics in Safari.** The default theme draws no list marker, and Safari (VoiceOver) drops the list semantics of such a list, so the lists carry `role="list"`. It is not yet checked that VoiceOver with Safari says "list, 3 items" and announces the nested level. This is part of the manual testing, which is pending. The workaround is already in place: `role="list"` on every list. If you draw your own markup with the hook, keep `role="list"` on the lists.
-- **People who use a keyboard may mistake the highlighted link for where their keyboard is.** The link to the section you're reading is underlined, and the underline moves as you scroll, so it can look like the focus ring. A usability test is pending. If it confirms this, the highlight becomes a quiet background fill.
-- **`IntersectionObserver` does not report the last pixels of a scroll,** so passive `scroll` and `resize` listeners also wake the same measuring. The behaviour in WebKit and mobile Safari is not automated and is `pending`.
+- **Focus after a followed link is the browser's.** A heading isn't focusable, so after someone follows a link, focus falls back to the page (`document.activeElement` is `body`) and the browser moves the place Tab continues from to the heading. Check with NVDA, JAWS and VoiceOver in your target browsers that the reading position lands on the heading and the next Tab continues after it. Following a link moves the place Tab continues from, so this is not a failure. Workaround: if your own check shows that the reading position doesn't move, give the target headings `tabindex="-1"` (never `0`). The browser then focuses the heading and the theme's focus ring shows on it. Don't set `outline: none` on them.
+- **List semantics in Safari.** The default theme draws no list marker, and Safari (VoiceOver) drops the list semantics of such a list, so the lists carry `role="list"`. Check that VoiceOver with Safari says "list, 3 items" and announces the nested level. The workaround is already in place: `role="list"` on every list. If you draw your own markup with the hook, keep `role="list"` on the lists.
+- **People who use a keyboard may mistake the highlighted link for where their keyboard is.** The link to the section you're reading is underlined, and the underline moves as you scroll, so it can look like the focus ring. Test it with your users; a quiet background fill is the alternative.
+- **`IntersectionObserver` does not report the last pixels of a scroll,** so passive `scroll` and `resize` listeners also wake the same measuring. The behaviour in WebKit and mobile Safari is not covered by an automated test.

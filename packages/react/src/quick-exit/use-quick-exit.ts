@@ -36,6 +36,11 @@ export function resolveQuickExitHref(
 /** Internal. How many hooks have the shortcut on: two would both announce the Shift count. */
 let mountedCount = 0
 
+const hidePage = (document: Document) => {
+  document.documentElement.style.setProperty('display', 'none', 'important')
+  document.title = ''
+}
+
 const hasModifier = (event: KeyboardEvent) => event.altKey || event.ctrlKey || event.metaKey
 
 export interface UseQuickExitOptions {
@@ -153,8 +158,7 @@ export function useQuickExit({
     }
     // Same tick, before the navigation: a slow destination never shows the page. `!important`
     // because the author's own `display` on `<body>` would win over `hidden`.
-    env.document.documentElement.style.setProperty('display', 'none', 'important')
-    env.document.title = ''
+    hidePage(env.document)
     setState('leaving')
     if (current.navigate === undefined) {
       env.window.location.replace(destination)

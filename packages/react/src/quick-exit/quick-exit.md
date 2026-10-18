@@ -1,7 +1,5 @@
 # QuickExit
 
-> **Draft** (Plan 0122). The accessibility contract is [quick-exit.a11y.md](quick-exit.a11y.md).
-
 A link that takes a person off a sensitive page at once, to a neutral site you choose. It is one `<div>` (`Root`) with one `<a href>` (`Link`).
 
 - Activating the link, or pressing Shift three times (each pressed alone and within five seconds of the last; `windowMs` changes it), hides the page, empties the title and replaces the page with `href`, so Back doesn't return to it.
@@ -43,7 +41,7 @@ Test it with the network throttled: the tab must go blank at once and the destin
 - Ctrl/Cmd, Shift and middle click are handled: they leave in the same tab. "Open in new tab" from the context menu can't be prevented, so it opens the destination in a new tab and leaves this page open.
 - Unsaved form data on the page is lost on exit.
 - A router push (a custom `navigate`) keeps the history entry, so Back returns to the page.
-- NVDA uses Shift to pause speech, so the shortcut can fire by accident. `shortcut={false}` opts out. In NVDA and JAWS browse mode, backwards quick navigation (Shift+H, Shift+K, Shift+1 to 6) may reach the page as a lone Shift and count: three backwards heading jumps could leave the page. Not yet checked on the real AT.
+- NVDA uses Shift to pause speech, so the shortcut can fire by accident. `shortcut={false}` opts out. In NVDA and JAWS browse mode, backwards quick navigation (Shift+H, Shift+K, Shift+1 to 6) may reach the page as a lone Shift and count: three backwards heading jumps could leave the page. Check it on your own assistive technology.
 
 ## Hook
 

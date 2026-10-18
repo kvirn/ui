@@ -46,7 +46,6 @@ export function ContainerPage({
     <ComponentPage
       title="Container"
       lead="It is a plain layout box. It adds nothing for assistive technology such as screen readers, so the element you choose keeps its own meaning."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

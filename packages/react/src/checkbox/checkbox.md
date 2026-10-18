@@ -1,7 +1,5 @@
 # Checkbox
 
-> **Draft** (Plan 0013). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [checkbox.a11y.md](checkbox.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md), and the decisions are in the forms skill.
-
 **KvirnUI holds no form state; bring your own form logic.** Checkbox is a native `<input type="checkbox">`. It shows the `checked` you give it and reports changes through `onCheckedChange`. It never copies the state into state of its own, and it doesn't validate.
 
 A Checkbox is one yes-or-no answer: a declaration, a consent, or a "select all" in a staff table. For several answers to one question, use a [CheckboxGroup](../checkbox-group/checkbox-group.md). For exactly one answer out of several, use a [RadioGroup](../radio-group/radio-group.md). For a choice from a long list, use a [Listbox](../listbox/listbox.md).

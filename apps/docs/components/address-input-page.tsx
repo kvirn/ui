@@ -101,7 +101,6 @@ export function AddressInputPage({
     <ComponentPage
       title="AddressInput"
       lead="The postal code takes its shape from the country. AddressInput looks nothing up and never moves focus when a box is full."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

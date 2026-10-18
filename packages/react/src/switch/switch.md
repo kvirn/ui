@@ -1,7 +1,5 @@
 # Switch
 
-> **Draft** (Plan 0069). This page moves to the docs site. The accessibility contract is [switch.a11y.md](switch.a11y.md) and the design spec is [docs/design/switch.md](../../../../docs/design/switch.md).
-
 **KvirnUI holds no form state; bring your own form logic.** Switch is a native `<input type="checkbox" role="switch">`. It shows the `checked` you give it and reports changes through `onCheckedChange`. It never copies the state into state of its own, and it doesn't validate.
 
 A Switch is a setting that takes effect at once, with no Save button ("Get messages by text message").

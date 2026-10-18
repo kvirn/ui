@@ -1,7 +1,5 @@
 # Site search
 
-> **Draft** (Plan 0095). A pattern in the private `@kvirn-ui/patterns`. The accessibility contract is [site-search.a11y.md](site-search.a11y.md).
-
 The site's search: a `<search>` landmark around a GET form, with a `Field`, a `TextInput` and a `Button` joined into one strip by an attached `ButtonGroup`. Put it in the Site header's `Masthead`, or on the results page.
 
 - One part: `SiteSearch`. `action` (required) is the search page, `label` (required) the field's name, and the children the button's word. `name` (default `q`) and `defaultValue` reach the field.

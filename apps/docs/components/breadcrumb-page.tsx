@@ -99,7 +99,6 @@ export function BreadcrumbPage({
     <ComponentPage
       title="Breadcrumb"
       lead="Each level above you is a link. The page you are on is plain text, so someone using the keyboard doesn’t stop on it."
-      status="alpha-candidate"
       pattern="APG Breadcrumb"
       whenToUse={
         <ul>
@@ -215,8 +214,8 @@ export function BreadcrumbPage({
             code={sources['other-language']}
             note={
               <Note kind="tip">
-                The name exists in all five languages. The Finnish version and both Norwegian
-                versions are drafts: ask a native speaker to check them before you publish.
+                The name exists in all five languages. Have a native speaker check the text in each
+                language you ship before you publish.
               </Note>
             }
           >

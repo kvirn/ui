@@ -1,7 +1,5 @@
 # Icon
 
-> **Draft** (Plan 0009). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [icon.a11y.md](icon.a11y.md), and the design spec is [docs/design/icon.md](../../../../docs/design/icon.md).
-
 One component for every icon: icons from the icon library, your own SVGs, and icons from libraries such as Lucide, Heroicons and Phosphor. There are three routes, and you can mix them:
 
 - **`icon`** for one icon from a library: `<Icon icon={Search} />`. No setup. It also takes an icon from `@kvirn-ui/icons` directly: `<Icon icon={add} />` with `import { add } from '@kvirn-ui/icons'`.

@@ -81,7 +81,6 @@ export function LinkPage({
     <ComponentPage
       title="Link"
       lead="It is a native link, so it behaves the way people expect. Add the new-tab notice and the link says when it opens a new tab, also to a screen reader (software that reads the screen aloud)."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>Use a link to go somewhere: another page, a place on this page or a file.</li>

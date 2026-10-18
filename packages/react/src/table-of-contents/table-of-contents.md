@@ -1,7 +1,5 @@
 # TableOfContents
 
-> **Draft** (Plan 0049). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [table-of-contents.a11y.md](table-of-contents.a11y.md), and the design spec is [docs/design/table-of-contents.md](../../../../docs/design/table-of-contents.md).
-
 The headings of a long page as a named `<nav>` of plain `#id` links, with the heading the reader is in marked as the current location. Use it on a long guide, manual or article with three or more sections, where a reader wants to jump to a section and see where they are. For a site's menu or a section's sub-pages, use [Navigation](../navigation/navigation.md). For a single link, use [Link](../link/link.md).
 
 - Four parts: `TableOfContents.Root` (`<nav>`), `TableOfContents.List` (`<ul>`), `TableOfContents.Item` (`<li>`) and `TableOfContents.Link` (`<a>`), also exported as `TableOfContentsRoot`, `TableOfContentsList`, `TableOfContentsItem` and `TableOfContentsLink`. Give the Root the page's headings as `items`, in document order, and it draws the whole nested list. A function child draws your own.

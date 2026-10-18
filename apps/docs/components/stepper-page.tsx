@@ -48,7 +48,6 @@ export function StepperPage({
     <ComponentPage
       title="Stepper"
       lead="It is orientation, not navigation: it has no links and is not a Tab stop."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

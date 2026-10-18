@@ -92,7 +92,6 @@ export function CardPage({
     <ComponentPage
       title="Card"
       lead="It groups what belongs together on a raised surface and adds no role, text or behaviour of its own."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

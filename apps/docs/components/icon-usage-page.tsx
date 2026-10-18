@@ -116,13 +116,13 @@ import { SvgIcon } from '@kvirn-ui/icons/react'
         },
         {
           id: 'not-done',
-          label: 'What is not done yet',
+          label: 'Limits',
           content: (
             <p>
-              The {iconCount} icons are drawn and checked by tests and agents. Recognition tests, a
-              native-speaker review of the labels (Swedish, Finnish, Norwegian Bokmål, Norwegian
-              Nynorsk and English), checks with real assistive technology and a sensitivity review
-              have not been done yet.
+              The {iconCount} icons are checked by automated tests. Before you launch, test that
+              your users recognise the icons you use, have a native speaker review the labels you
+              give them in each language you ship, and try them with your users’ assistive
+              technology.
             </p>
           ),
         },

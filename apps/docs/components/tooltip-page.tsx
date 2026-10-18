@@ -98,7 +98,6 @@ export function TooltipPage({
     <ComponentPage
       title="Tooltip"
       lead="It never takes focus and holds no controls."
-      status="alpha-candidate"
       pattern="APG Tooltip"
       whenToUse={
         <ul>

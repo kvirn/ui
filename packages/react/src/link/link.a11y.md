@@ -85,7 +85,7 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 - Target size: inline links in a sentence are exempt from 2.5.8 Target Size (Minimum) (AA). The default theme sets a minimum size for standalone links, and the service link and a Navigation item are as tall as the theme's control height (taller in the comfortable density, shorter in the compact one). Tests: `link.stories.tsx › Service` (play) asserts the 24px threshold, and `navigation.stories.tsx › CompactDensity` for a navigation item.
 - forced-colors behaviour: a native `<a href>`, so the system's link colour applies. The service link keeps a thin edge in that colour, and its icon block is not filled: it has a divider in that colour, so the boundary survives (1.4.11 Non-text Contrast (AA)). A link with `current` is bolder in the default theme, so it is never shown by colour alone (1.4.1 Use of Color (A)). How the current page looks in a list of links, in forced colours too, is described in Navigation's contract (a fill and a bolder weight, and a straight bar in forced colours). A link in running text has 3:1 contrast against the body text (checked by the theme's contrast check) and is underlined on hover; the contrast themes, forced colours and a link in grey or red text (a caption, `small`, help text, an error message) keep the underline at rest (1.4.1, `link.stories.tsx › In running text`).
 - reduced-motion behaviour: no motion.
-- Reflow: No horizontal scrolling at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA).
+- Reflow: No horizontal scrolling at 320 CSS px, reviewed in the stories, not automated (1.4.10 Reflow, AA).
 
 ## WCAG SCs covered
 
@@ -98,26 +98,27 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 - 1.4.1 Use of Color (A): the current page is shown by weight as well as colour, and a link in running text keeps its underline (Visual / modes above).
 - 1.4.11 Non-text Contrast (AA): the service link's boundary survives in forced colours (Visual / modes above).
 - 2.5.3 Label in Name (A): `Link.Icon` is hidden from assistive technology, so the name is the visible text.
-- 2.5.8 Target Size (Minimum) (AA): the service link is asserted at 24 × 24 CSS px (`link.stories.tsx › Service`). Other standalone links are not yet tested.
+- 2.5.8 Target Size (Minimum) (AA): the service link is asserted at 24 × 24 CSS px (`link.stories.tsx › Service`). Other standalone links are not tested.
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | link.stories.tsx, every story, 4 themes                                                       |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | link.test.tsx › current="page" sets aria-current and data-current; expectNoA11yViolations     |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 6 rows, each names a test (link.test.tsx › keyboard › Tab moves focus to the link)            |
+| Focus order and management                                                 | pass        | n/a         | pass    | link.test.tsx asserts focus (toHaveFocus); first rule: keyboard › Tab moves focus to the link |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                              |
+| **Core (required for beta)**                                               |             |             |         |                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                               |
 
 ## Known issues
 
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **Keyboard tests run in Chromium only.** The keyboard rows run in Vitest browser mode on Chromium, not in WebKit. Test in Safari with your own assistive technology.
 - **A `target="_blank"` link with no notice is not flagged.** Neither a type error nor a dev warning catches it (a maintainer decision of 2026-10-05), so review it by hand.

@@ -1,7 +1,5 @@
 # Stack
 
-> **Draft** (Plan 0056). The accessibility contract is [stack.a11y.md](stack.a11y.md).
-
 The vertical rhythm between blocks outside prose: its children one below the other with a `space` step between them. One `<div class="kv-stack">`. Prose has its own margins; use Stack for bands, form parts and lists.
 
 - Gap is a class you add: `kv-stack--gap-2`, `-4` or `-8`. The default is the `space-6` step and adds none.

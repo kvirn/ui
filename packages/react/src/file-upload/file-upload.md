@@ -1,7 +1,5 @@
 # FileUpload
 
-> **Draft** (Plan 0021). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [file-upload.a11y.md](file-upload.a11y.md), the design spec is [docs/design/file-upload.md](../../../../docs/design/file-upload.md), and the decisions are in the forms skill (FileUpload).
-
 **KvirnUI sends nothing anywhere.** FileUpload checks the files it is given, shows them, and calls _your_ `upload` function. It makes no network calls, sets no cookies and reads no file content except to show an image preview on the device.
 
 A FileUpload attaches files to a form. **One native button opens the system file dialog**: that is the way in for the keyboard, voice, switch and touch. A drop zone around it is an extra for devices that drag. Behind the button is a hidden native `<input type="file">`.

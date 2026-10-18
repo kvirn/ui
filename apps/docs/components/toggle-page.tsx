@@ -49,7 +49,6 @@ export function TogglePage({
     <ComponentPage
       title="Toggle"
       lead="Use it for a choice with a direct, visible effect, such as showing only unread messages."
-      status="alpha-candidate"
       pattern="APG Button (toggle button)"
       whenToUse={
         <ul>

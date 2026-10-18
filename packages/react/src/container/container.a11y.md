@@ -68,30 +68,31 @@ Headless: Container ships no CSS. With `@kvirn-ui/theme/theme.css` (DESIGN.md, L
 - Focus indicator, target size, contrast: not applicable. Container has no colour, no edge and no control of its own.
 - forced-colors behaviour: not applicable, nothing is drawn.
 - reduced-motion behaviour: no motion.
-- Reflow and text spacing: the container sets a maximum width, never a fixed one, so it is never wider than the screen and nothing scrolls sideways at 320px or at 400% zoom (1.4.10 Reflow (AA)). It has no fixed height (1.4.12 Text Spacing (AA)). A 320px story with a long Finnish word checks that nothing scrolls sideways; a sweep of all components is planned.
+- Reflow and text spacing: the container sets a maximum width, never a fixed one, so it is never wider than the screen and nothing scrolls sideways at 320px or at 400% zoom (1.4.10 Reflow (AA)). It has no fixed height (1.4.12 Text Spacing (AA)). A 320px story with a long Finnish word checks that nothing scrolls sideways.
 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): no role of its own, so the element you choose decides (`container.test.tsx › rendering › adds no role, ARIA, tabindex, inert or data attribute`).
 - 1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A): DOM order equals reading and focus order (the keyboard rows).
-- 1.4.10 Reflow (AA): a maximum width, never a fixed one (the 320px story checks that nothing scrolls sideways). 1.4.12 Text Spacing (AA): no fixed heights, by reading; no automated check yet.
+- 1.4.10 Reflow (AA): a maximum width, never a fixed one (the 320px story checks that nothing scrolls sideways). 1.4.12 Text Spacing (AA): no fixed heights, by reading; no automated check.
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                                                                                           |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                                                                                 |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | container.stories.tsx, every story, 4 themes                                                                                                                                                                    |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `container.test.tsx` (axe and role, name and state): `adds no role, ARIA, tabindex, inert or data attribute`                                                                                                    |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 2 rows, each names a test in `container.test.tsx`                                                                                                                                                               |
+| Focus order and management                                                 | pass        | n/a         | pass    | `container.test.tsx` asserts focus                                                                                                                                                                              |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                                                                                                |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                                                                                 |
+| NVDA + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<div>`, or the `main`, `section` or `article` the consumer picks, with its own semantics; landmark semantics are the element's own native mapping; Container adds none; no state, focus or key handling |
+| VoiceOver + Safari + iOS                                                   | n/a         | n/a         | n/a     | native `<div>`, or the `main`, `section` or `article` the consumer picks, with its own semantics; landmark semantics are the element's own native mapping; Container adds none; no state, focus or key handling |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                                                                                 |
+| JAWS + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<div>`, or the `main`, `section` or `article` the consumer picks, with its own semantics; landmark semantics are the element's own native mapping; Container adds none; no state, focus or key handling |
+| TalkBack + Chrome + Android                                                | n/a         | n/a         | n/a     | native `<div>`, or the `main`, `section` or `article` the consumer picks, with its own semantics; landmark semantics are the element's own native mapping; Container adds none; no state, focus or key handling |
+| VoiceOver + Safari + macOS                                                 | n/a         | n/a         | n/a     | native `<div>`, or the `main`, `section` or `article` the consumer picks, with its own semantics; landmark semantics are the element's own native mapping; Container adds none; no state, focus or key handling |
 
 ## Known issues
 

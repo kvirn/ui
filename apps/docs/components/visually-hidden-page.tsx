@@ -55,7 +55,6 @@ export function VisuallyHiddenPage({
     <ComponentPage
       title="VisuallyHidden"
       lead="It stays in the page, so a screen reader (software that reads the screen aloud) reads it in the flow of the sentence."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

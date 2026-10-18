@@ -81,7 +81,7 @@ The visible state (hidden before Tab, shown while focused, hidden after, not cov
 | ----- | ------------------ | ---------- |
 | none  | none               | –          |
 
-The focus moves announce. Strings: `skipPanel.*` and `keys.*`. The Finnish, Norwegian Bokmål and Nynorsk key-cap names are drafts. <!-- kv-lang-ok: the language names -->
+The focus moves announce. Strings: `skipPanel.*` and `keys.*`. Have a native speaker review the Finnish, Norwegian Bokmål and Nynorsk key-cap names before you launch. <!-- kv-lang-ok: the language names -->
 
 ### Read aloud
 
@@ -121,26 +121,27 @@ Headless: no CSS. The theme clips the card (cuts it to an empty box, so it stays
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                               |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                     |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | skip-panel.stories.tsx, every story, 4 themes                                                                                       |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | skip-panel.test.tsx › a consumer’s own aria-describedby on the first Link is merged with the arrow sentence; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 35 rows, each names a test (skip-panel.test.tsx › SkipPanel keyboard › Tab on page load focuses the first Link)                     |
+| Focus order and management                                                 | pass        | n/a         | pass    | skip-panel.test.tsx asserts focus (toHaveFocus); first rule: SkipPanel keyboard › Tab on page load focuses the first Link           |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                       |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                     |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                     |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                     |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                     |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                     |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                     |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                     |
 
 ## Known issues
 
 - Touch screen-reader users (VoiceOver on iOS, TalkBack) also hear the arrow sentence, which does not apply to them. The maintainer accepted this.
-- In browse mode a screen reader reads every item with its own arrow keys, which matches the arrow hint. Whether it also announces the description on the first Link is not known. Manual check `pending`.
+- In browse mode a screen reader reads every item with its own arrow keys, which matches the arrow hint. Whether it also announces the description on the first Link is not known; test it with your own screen reader.
 - Before the page hydrates, the server HTML has no roving tabindex, so every item is a Tab stop until the script runs.
-- Whether Alt+Shift+letter reaches the page under NVDA and JAWS (browse and focus mode), Firefox, and Windows with two input layouts is not known. Manual check `pending`.
-- How screen readers read the group names and the nested Kbd is not known. Manual check `pending`.
+- Whether Alt+Shift+letter reaches the page under NVDA and JAWS (browse and focus mode), Firefox, and Windows with two input layouts is not known; test it with your users' setups.
+- How screen readers read the group names and the nested Kbd is not known; test it with your own screen reader.
 - Screen-reader users who read from the top of the page hear the whole panel before the content, because the card is cut to nothing visually but still in the page (C7). They can jump to the main landmark or the h1.

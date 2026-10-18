@@ -144,7 +144,6 @@ export function PaginationPage({
     <ComponentPage
       title="Pagination"
       lead="Every page is a link to its own address, so Back, sharing and opening in a new tab work. The current page has a filled shape and heavier text as well as its colour."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

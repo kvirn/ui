@@ -1,7 +1,5 @@
 # Menu
 
-> **Draft** (Plan 0070). This page moves to the docs site with the component page. The accessibility contract is [menu.a11y.md](menu.a11y.md).
-
 A Menu is a short list of **actions** that a button opens: print, share, delete. It is not navigation. Links to pages are a `Navigation` or a `Disclosure`, never `role="menu"`: a screen reader then switches to a mode that does not read links as links, and a development warning fires for a `Menu.Item` rendered as a link. A single action is a button, not a menu with one item.
 
 The browser puts the menu in the **top layer**, so no ancestor's `overflow` clips it and you never fight `z-index`. KvirnUI places it next to the button, flips it when there is no room and lets it scroll inside when it is too tall. Focus moves onto the items as the user arrows through them, Enter or Space runs one, and focus returns to the button.

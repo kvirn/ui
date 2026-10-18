@@ -1,7 +1,5 @@
 # Kbd
 
-> **Draft** (Plan 0024). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [kbd.a11y.md](kbd.a11y.md).
-
 A key in running text: `You can move between the fields with` <kbd>Tab</kbd>. It renders the native `<kbd>`.
 
 - One part: `Kbd`, also `useKbd()`. It renders `<kbd class="kv-kbd">`, and no role, ARIA, text or strings.

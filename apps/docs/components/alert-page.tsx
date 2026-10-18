@@ -126,8 +126,7 @@ export function AlertPage({
   return (
     <ComponentPage
       title="Alert"
-      lead="It shows its status with an icon, a word and a colour. A screen reader (software that reads the screen aloud) says it only when you ask for that. The close button was added later than the rest of Alert."
-      status="alpha"
+      lead="It shows its status with an icon, a word and a colour. A screen reader (software that reads the screen aloud) says it only when you ask for that."
       whenToUse={
         <ul>
           <li>
@@ -263,9 +262,9 @@ export function AlertPage({
               ),
               'known-issues': (
                 <Note kind="tip">
-                  Nobody has yet tested with real screen readers whether the announcement is heard
-                  in time. If you use <code>announce</code>, listen to it with the screen readers
-                  your users have.
+                  How soon a screen reader speaks an announcement depends on the screen reader and
+                  the browser. If you use <code>announce</code>, listen to it with the screen
+                  readers your users have.
                 </Note>
               ),
             }}

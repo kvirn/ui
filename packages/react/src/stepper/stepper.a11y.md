@@ -61,7 +61,7 @@ No live region: the new page is content reached by navigation and carried by foc
 | ---------------------------------- | ------------------------------------------------------------------------------------------------ | ---------------------- | ------------------------------------------------------------------------------------- |
 | A question page read top to bottom | `heading, Which vehicle is the permit for?, level 1` → `paragraph` → `Step 2 of 5: Your vehicle` | none                   | `stepper.test.tsx › is the reading stop right after the heading`                      |
 | Without a name, or a blank name    | `paragraph` → `Step 2 of 5`, no colon                                                            | none                   | `stepper.test.tsx › reads without a name and with a blank name as the position alone` |
-| Label or legend as the heading     | the Stepper after the `h1` or the legend, before the control: not read in that state             | none                   | none yet (the placement is checked by the dev warnings only)                          |
+| Label or legend as the heading     | the Stepper after the `h1` or the legend, before the control: not read in that state             | none                   | none (the placement is checked by the dev warnings only)                              |
 
 The phrases are the virtual screen reader's approximation, not NVDA or JAWS wording.
 
@@ -76,31 +76,32 @@ The phrases are the virtual screen reader's approximation, not NVDA or JAWS word
 
 ## Visual / modes
 
-Headless: Stepper ships no CSS. With the default theme the Stepper is body text in the normal text colour. It has no margin (the page layout sets the spacing), it wraps and hyphenates long words, and it looks the same in every density. It adds no new colour pair: the text colour on the page backgrounds is already measured (1.4.3 Contrast (Minimum), AA). Sizes follow the browser's text size (1.4.4 Resize Text, AA), and the text reflows at 320px (1.4.10 Reflow, AA). Text spacing (1.4.12 Text Spacing, AA) is not yet checked by a story. Forced colours: it uses the system text colour, and nothing is carried by colour (1.4.1 Use of Color, A). Target size, focus indicator and motion do not apply, because Stepper is not a control.
+Headless: Stepper ships no CSS. With the default theme the Stepper is body text in the normal text colour. It has no margin (the page layout sets the spacing), it wraps and hyphenates long words, and it looks the same in every density. It adds no new colour pair: the text colour on the page backgrounds is already measured (1.4.3 Contrast (Minimum), AA). Sizes follow the browser's text size (1.4.4 Resize Text, AA), and the text reflows at 320px (1.4.10 Reflow, AA). Text spacing (1.4.12 Text Spacing, AA) is not checked by a story. Forced colours: it uses the system text colour, and nothing is carried by colour (1.4.1 Use of Color, A). Target size, focus indicator and motion do not apply, because Stepper is not a control.
 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships (A), 1.3.2 Meaningful Sequence (A): a paragraph that follows the heading, outside any name (`stepper.test.tsx › is the reading stop right after the heading`, and the `dev warnings` tests for a Stepper inside a heading, label or legend).
 - 1.4.1 Use of Color (A): the words say it (story `Default`, axe in every theme).
-- 1.4.3 Contrast (Minimum) (AA), 1.4.4 Resize Text (AA), 1.4.10 Reflow (AA): text on measured pairs, in rem, wrapping. 1.4.12 Text Spacing (AA): `pending`, because there is no text-spacing story or automated check yet.
+- 1.4.3 Contrast (Minimum) (AA), 1.4.4 Resize Text (AA), 1.4.10 Reflow (AA): text on measured pairs, in rem, wrapping. 1.4.12 Text Spacing (AA): no text-spacing story or automated check covers it.
 - 4.1.3 Status Messages (AA): not a status message.
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                              |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                    |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | stepper.stories.tsx, every story, 4 themes                                                                                                         |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | stepper.test.tsx › renders one p with the position and a class, no role or ARIA, and passes attributes and the ref through; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | stepper.test.tsx › keyboard › Tab passes over it                                                                                                   |
+| Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                                                                                        |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                                   |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                    |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                    |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                                    |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                    |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                    |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                    |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                    |
 
 ## Known issues
 

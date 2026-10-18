@@ -68,8 +68,8 @@ Pagination announces nothing itself. A page change is announced by the page's ow
 - Focus indicator: a link shows the focus ring (`:focus-visible`), through `Link`.
 - Target size: 44 pixels high by default, 24 by 24 pixels at minimum (2.5.8 Target Size (Minimum), AA).
 - Current page: a shape and `aria-current`, never colour alone (1.4.1 Use of Color, A).
-- Reflow: the links wrap, and below 40rem only Previous, the current page, the status and Next show (1.4.10 Reflow, AA). The narrow layout is a manual check, `pending`.
-- Forced colours and reduced motion: not yet checked by an automated test.
+- Reflow: the links wrap, and below 40rem only Previous, the current page, the status and Next show (1.4.10 Reflow, AA). No automated check covers the narrow layout; check it at 320px yourself.
+- Forced colours and reduced motion: not covered by an automated test.
 
 A custom theme must keep these.
 
@@ -79,21 +79,22 @@ A custom theme must keep these.
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                                              |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                                    |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | pagination.stories.tsx, every story, 4 themes                                                                                                                      |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | pagination.test.tsx › is a navigation landmark named by the message pagination.label; expectNoA11yViolations                                                       |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test (pagination.test.tsx › Pagination keyboard › Tab moves through every link in order, and the ellipsis and status are no stops)            |
+| Focus order and management                                                 | pass        | n/a         | pass    | pagination.test.tsx asserts focus (toHaveFocus); first rule: Pagination keyboard › Tab moves through every link in order, and the ellipsis and status are no stops |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                                                   |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                                    |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                                    |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                                                    |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                                    |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                                    |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                                    |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                                    |
 
 ## Message keys
 
-`pagination.label`, `pagination.previous`, `pagination.next`, `pagination.status`, `pagination.page` (all five locales; fi, nb and nn are drafts for native review).
+`pagination.label`, `pagination.previous`, `pagination.next`, `pagination.status`, `pagination.page` (all five locales; have a native speaker review fi, nb and nn before you launch).

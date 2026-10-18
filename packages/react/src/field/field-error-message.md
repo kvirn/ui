@@ -1,7 +1,5 @@
 # Field.ErrorMessage
 
-> **Draft** (Plan 0017). The accessibility contract is [field.a11y.md](field.a11y.md), shared with Field. The Field it sits in is described in [field.md](field.md).
-
 The error under a control: what is wrong and how to fix it, in text. It renders only while its [Field](field.md) or [Fieldset](../fieldset/fieldset.md) is `invalid`, so a stale error is never referenced. KvirnUI validates nothing: you set `invalid` and write the message. A group has its own: `Fieldset.ErrorMessage`, `RadioGroup.ErrorMessage` and `CheckboxGroup.ErrorMessage`.
 
 - It starts with an error icon and the `field.errorPrefix` text ("Error:" in English). The theme hides the prefix visually, so screen-reader users hear "Error: Enter your name" and the error never relies on colour (1.4.1).

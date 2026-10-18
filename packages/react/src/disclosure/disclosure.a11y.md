@@ -68,7 +68,7 @@ Disclosure has no strings of its own and announces nothing: the change of `aria-
 - **Name the trigger with visible text that says what the panel holds** ("Opening hours"), the same open and closed (4.1.2 Name, Role, Value; 2.5.3 Label in Name). Never "Show more" for one state and "Show less" for the other: `aria-expanded` carries the state.
 - **Render the Panel right after the Trigger,** in the same parent, so the Tab order matches the visual order (2.4.3 Focus Order).
 - **Keep what the page needs to work out of a closed panel,** and do not hide an error message or the only way to complete a task in one (3.3.1 Error Identification).
-- **A panel shown from a breakpoint, expanded without JavaScript, is not a Disclosure feature.** The trigger's `aria-expanded="false"` would lie while the panel is visible. A navigation menu that is always shown on a wide screen and a button on a narrow one is not built yet: no menu component does it (the Navigation component covers nested lists and a horizontal bar). Use your own CSS: show the panel with an author rule on `.kv-disclosure-panel[hidden]` (`display: block`, and `content-visibility: visible` for `until-found`) and hide the trigger from that width with `display: none`, which also removes it from the accessibility tree. Nothing in the library supports or tests it.
+- **A panel shown from a breakpoint, expanded without JavaScript, is not a Disclosure feature.** The trigger's `aria-expanded="false"` would lie while the panel is visible. A navigation menu that is always shown on a wide screen and a button on a narrow one is not provided: no menu component does it (the Navigation component covers nested lists and a horizontal bar). Use your own CSS: show the panel with an author rule on `.kv-disclosure-panel[hidden]` (`display: block`, and `content-visibility: visible` for `until-found`) and hide the trigger from that width with `display: none`, which also removes it from the accessibility tree. Nothing in the library supports or tests it.
 - **Server rendering:** a closed panel is `hidden` in the markup, and without JavaScript the trigger does nothing. Content that must be readable without JavaScript is not in a Disclosure, or is `defaultOpen`.
 - Everything the Button page asks of you applies to the trigger too.
 
@@ -94,20 +94,21 @@ Disclosure has no strings of its own and announces nothing: the change of `aria-
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                       |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                             |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | disclosure.stories.tsx, every story, 4 themes                                                                               |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `disclosure.test.tsx` (axe and role, name and state): `an open disclosure: expanded, visible, data-open, no axe violations` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 6 rows, each names a test in `disclosure.test.tsx`                                                                          |
+| Focus order and management                                                 | pass        | n/a         | pass    | `disclosure.test.tsx`: `Tab focuses the trigger, and is one stop`                                                           |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                            |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                             |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                             |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                             |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                             |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                             |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                             |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                             |
 
 Also pending, by hand: whether `hidden="until-found"` content is found and revealed by find-in-page in Chrome, Edge and (when supported) Safari and Firefox, and what screen readers announce when it opens.
 

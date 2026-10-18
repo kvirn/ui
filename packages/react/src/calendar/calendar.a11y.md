@@ -138,7 +138,7 @@ The month is not a live heading: that would speak on every key that crosses a mo
 | Next month pressed             | `polite: november 2026` (November 2026)                                                                                                         | polite                 | `calendar.test.tsx › Next month announces the new month, politely`                                                   |
 | A day chosen                   | `polite: fredag 16 oktober 2026 vald` (Friday 16 October 2026 selected)                                                                         | polite                 | `calendar.test.tsx › choosing a day announces it, politely`                                                          |
 
-The phrases are Swedish because the tests run in the `sv` locale; the English meaning follows in brackets. Each row has a named test using `readAloud` or `readAnnouncements` (`@kvirn-ui/testing/read-aloud`). The phrases are the virtual screen reader's approximation, not NVDA or JAWS wording: it says `disabled` where real readers say "dimmed" or "unavailable", and it does not prove modality or focus containment. A real screen reader may say today twice ("idag", Swedish for today, in the name and "current date" from `aria-current`); the manual AT run checks whether that is noise.
+The phrases are Swedish because the tests run in the `sv` locale; the English meaning follows in brackets. Each row has a named test using `readAloud` or `readAnnouncements` (`@kvirn-ui/testing/read-aloud`). The phrases are the virtual screen reader's approximation, not NVDA or JAWS wording: it says `disabled` where real readers say "dimmed" or "unavailable", and it does not prove modality or focus containment. A real screen reader may say today twice ("idag", Swedish for today, in the name and "current date" from `aria-current`); test with your own users whether that is noise.
 
 ## Consumer responsibilities
 
@@ -162,7 +162,7 @@ The phrases are Swedish because the tests run in the `sv` locale; the English me
 - 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): the grid, headers and gridcells, names and states.
 - 1.4.1 Use of Color (A), 1.4.11 Non-text Contrast (AA): the cues for selected, today and unavailable.
 - 1.4.10 Reflow (AA): a story at 320 pixels wide checks that nothing scrolls sideways, with and without week numbers, and in range mode.
-- 1.4.12 Text Spacing (AA): no automated check yet.
+- 1.4.12 Text Spacing (AA): no automated check.
 - 1.4.13 Content on Hover or Focus (AA): the name of a month or year button also shows as a tooltip, which follows the Tooltip's rules (dismissable, hoverable, persistent).
 - 2.1.1 Keyboard (A), 2.1.4 Character Key Shortcuts (A, there are none), 2.4.3 Focus Order (A), 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA).
 - 2.5.3 Label in Name (A), 2.5.8 Target Size (Minimum) (AA).
@@ -172,20 +172,21 @@ The phrases are Swedish because the tests run in the `sv` locale; the English me
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                      |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | calendar.stories.tsx, every story, 4 themes                                                                          |
+| Markup and ARIA (roles, names, ids, states)                                | pending     | n/a         | pending | `calendar.test.tsx` has no axe check                                                                                 |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 37 rows, each names a test in `calendar.test.tsx`                                                                    |
+| Focus order and management                                                 | pass        | n/a         | pass    | `calendar.test.tsx`: `keyboard › Tab moves from before the calendar through the month buttons to the grid, one stop` |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                     |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                      |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                      |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                      |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                      |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                      |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                      |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                      |
 
 Range mode: **AT run pending** for `aria-selected` on every day in the range with `aria-multiselectable`: do screen readers say "selected" on each day, and is it noise? Days outside the range carry no `aria-selected="false"` (the tested choice, and it keeps the markup small); the AT run decides whether a reader needs it.
 

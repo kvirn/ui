@@ -51,7 +51,6 @@ export function ButtonGroupPage({
     <ComponentPage
       title="ButtonGroup"
       lead="Give it a name and a screen reader (software that reads the screen aloud) can tell people which buttons belong together."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

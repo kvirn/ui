@@ -94,7 +94,6 @@ export function TableOfContentsPage({
     <ComponentPage
       title="TableOfContents"
       lead="The mark follows the reader’s scrolling. Nothing moves focus and nothing is announced when it changes."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

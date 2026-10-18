@@ -110,8 +110,24 @@ const sweepExcludeAllBut = (components: string[]) =>
 
 type ContextOptions = NonNullable<PlaywrightProviderOptions['contextOptions']>
 
+// The components the display-mode sweeps cover: those whose stories pass all four.
+const sweepComponents = [
+  'button',
+  'skip-panel',
+  'accordion',
+  'address-input',
+  'address',
+  'alert-dialog',
+  'alert',
+  'announcer',
+  'badge',
+  'breadcrumb',
+  'button-group',
+  'card',
+]
+
 const sweepExclude = [
-  ...sweepExcludeAllBut(['button', 'skip-panel']),
+  ...sweepExcludeAllBut(sweepComponents),
   '**/patterns/**',
   '**/foundation/**',
   '**/content-types/**',
@@ -179,10 +195,21 @@ export default defineConfig({
       ],
       'vitest/no-focused-tests': 'error',
       'vitest/no-disabled-tests': 'error',
+      // Our tests assert through helpers (`expectNoA11yViolations`, `expectedExit`): they count.
+      'vitest/expect-expect': [
+        'warn',
+        { assertFunctionNames: ['expect', 'expect.element', 'expect*'] },
+      ],
       'typescript/no-explicit-any': 'error',
       'typescript/ban-ts-comment': ['error', { 'ts-expect-error': true, 'ts-ignore': true }],
     },
     overrides: [
+      {
+        // These stories import a component's source with Vite's `?raw`, which has a default export the
+        // import plugin cannot see.
+        files: ['apps/storybook/src/content-types/**'],
+        rules: { 'import/default': 'off' },
+      },
       {
         files: ['packages/core/**'],
         rules: {
@@ -288,8 +315,8 @@ export default defineConfig({
       storybookProject('storybook-dark', 'dark', 'standard'),
       storybookProject('storybook-light-contrast', 'light', 'more'),
       storybookProject('storybook-dark-contrast', 'dark', 'more'),
-      // The display-mode sweep, Button and SkipPanel for now. Not in `vp run test` or CI: run one
-      // with `vp test run --project storybook-<mode>`. The preview's afterEach reads
+      // The display-mode sweep, on the components in `sweepComponents`. CI runs the four projects in one
+      // serial step after `vp run test`; run one with `vp test run --project storybook-<mode>`. The preview's afterEach reads
       // VITE_STORYBOOK_SWEEP and asserts the outcome after each story's play function.
       ...displayModeSweeps.map(({ name, contextOptions }) =>
         storybookProject(`storybook-${name}`, 'light', 'standard', {

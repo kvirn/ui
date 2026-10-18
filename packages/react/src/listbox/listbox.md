@@ -1,7 +1,5 @@
 # Listbox
 
-> **Draft** (Plan 0022). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [listbox.a11y.md](listbox.a11y.md), and the decisions are in the overlays-and-lists skill.
-
 Choosing one option from a list, or several. It has two renderings of one API:
 
 - **The popup** (`Listbox.Root`, `Listbox.Trigger`, `Listbox.Popup` and the parts inside it): a stylable popup in the browser's top layer, the APG select-only combobox. It holds groups and rich options, and it is the only rendering for `multiple`.

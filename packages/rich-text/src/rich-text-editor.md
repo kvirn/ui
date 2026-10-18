@@ -1,7 +1,5 @@
 # RichTextEditor
 
-> **Draft** (Plan 0036). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [rich-text-editor.a11y.md](rich-text-editor.a11y.md), and the design spec is [docs/design/rich-text-editor.md](../../../docs/design/rich-text-editor.md).
-
 A formatted-text field for text that will be published or sent: a news item, a case description in a staff tool, an association's event text. It is the control of a [Field](../../react/src/field/field.md), so it is labelled, described and validated like any control, and it posts its value with the form. It is built on [Tiptap](https://tiptap.dev) (ProseMirror), so a team that needs more adds or removes features with the ordinary Tiptap API, without forking our parts. For a plain answer in a resident's own words, use a [Textarea](../../react/src/textarea/textarea.md): residents rarely need formatting, and an editor is heavier to use with a keyboard and a screen reader. To show saved text, render it as [Prose](../../react/src/prose/prose.md).
 
 - **Parts:** `RichTextEditor.Root` (the box, and the Tiptap editor), `Toolbar` (the formatting bar, attached to the box), and `Content` (the editable text). The toolbar holds `DefaultControls`, the opt-in one-row `CompactControls`, or your own `Group`s of `CommandButton` and `CommandToggle`.
@@ -83,7 +81,7 @@ A new `richText` namespace in all five locales. The toolbar's names, the block n
 
 ## Notes
 
-- **Screen reader support for a `contenteditable` varies** across NVDA, JAWS and VoiceOver. The manual AT matrix is `pending`, and nothing here is claimed until it is run.
+- **Screen reader support for a `contenteditable` varies** across NVDA, JAWS and VoiceOver. Test it with your own users and assistive technology.
 - **Development warnings** (once, in English): a text with no accessible name (no `Field.Label`, `aria-label` or `aria-labelledby`), a `characterCount` with no `maxLength`, icon-only controls with `tooltips={false}`, a configured heading level the picker has no name for, and no provider for the announcements.
 - **Save drafts.** A long text is the worst thing to lose to a session timeout: in a staff tool, save drafts and warn before a session ends (WCAG 2.2.1).
 - **Inside a Dialog,** the first Escape in the text is not passed on, so a Dialog doesn't close and lose the text. A second Escape reaches the Dialog.

@@ -117,7 +117,6 @@ export function ProsePage({
     <ComponentPage
       title="Prose"
       lead="It adds no role, so what assistive technology finds is the headings, lists and links you write."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
@@ -203,7 +202,7 @@ export function ProsePage({
           <UseCase
             id="steps"
             title="A process in order"
-            why="Write the steps as a native ol with the kv-steps class. Every step has a heading and text, or none has a heading. Start each heading with a verb. The list keeps its native numbers and list role, which a test checks in Chromium. The same in Safari with VoiceOver is not proven yet."
+            why="Write the steps as a native ol with the kv-steps class. Every step has a heading and text, or none has a heading. Start each heading with a verb. The list keeps its native numbers and list role, which a test checks in Chromium. Check the same in Safari with VoiceOver."
             code={sources['steps']}
             note={
               <Note kind="tip">

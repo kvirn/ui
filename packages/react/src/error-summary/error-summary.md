@@ -1,7 +1,5 @@
 # ErrorSummary
 
-> **Draft.** This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [error-summary.a11y.md](error-summary.a11y.md).
-
 The problems of a failed submit, at the top of the form, each a link to its field. Focus moves to the summary once, so the screen reader reads it and a keyboard user starts at the list. It is an [Alert.Danger](../alert/alert.md): the colour, icon and status word agree with every other danger message.
 
 - Five parts: `ErrorSummary.Root`, `.Title` (an `h2`, or `as="h3"` to `"h6"`), `.List` (`<ul>`, or `as="ol"`), `.Item` (`<li>`) and `.Link` (`<a href="#controlId">`). Also exported as `ErrorSummaryRoot`, `ErrorSummaryTitle`, `ErrorSummaryList`, `ErrorSummaryItem` and `ErrorSummaryLink`.

@@ -116,20 +116,21 @@ Only changes made while the box has focus are announced: a text set from code (a
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                   |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                         |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | textarea.stories.tsx, every story, 4 themes                                                             |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | textarea.test.tsx › the Field’s label is the name, and its id links them; expectNoA11yViolations        |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 8 rows, each names a test (textarea.test.tsx › Tab moves in and out and never inserts a tab)            |
+| Focus order and management                                                 | pass        | n/a         | pass    | textarea.test.tsx asserts focus (toHaveFocus); first rule: Tab moves in and out and never inserts a tab |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                        |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                         |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                         |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                         |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                         |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                         |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                         |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                         |
 
 Research questions for the AT run: is the count read once with the value when the box gets focus, and not read again by the polite announcement at the same moment? Is a pause of 500 ms right, or does it interrupt a slow typist? Is "too many characters" understood as a warning without a visual cue? Does Dragon dictate a long text without the count lagging?
 
@@ -138,5 +139,5 @@ Research questions for the AT run: is the count read once with the value when th
 - **The direction is the page's.** The Textarea has no `dir` prop and never sets `dir="auto"` (maintainer, 2026-10-05). It inherits the direction like every input: set it with the provider (`dir`, or an RTL `locale`) and put `useLocale().localeProps` where the language is set. A resident who writes Arabic in a left-to-right page gets left-aligned text; that is a page-language question, not a per-box one.
 - **Auto-grow needs `field-sizing: content` and typed `attr()`.** Elsewhere `rows` sets the height and the text scrolls inside, with a native scrollbar and a resize handle. There is no JavaScript auto-grow, by decision.
 - **An uncontrolled box with `characterCount` doesn't see a value set from code.** It counts typing, follows a native form reset, and reads the element's value on mount and on `pageshow` (the browser restores a form without an input event). A value you write to the element later is not seen: pass `value`.
-- **Manual AT is `pending`.** The debounce (500 ms) and the 80% threshold need NVDA, VoiceOver, TalkBack and Dragon.
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **Test the count with assistive technology.** The debounce (500 ms) and the 80% threshold are worth testing with NVDA, VoiceOver, TalkBack and Dragon.
+- **Keyboard tests run in Chromium only.** The keyboard rows run in Vitest browser mode on Chromium, not in WebKit. Test in Safari with your own assistive technology.

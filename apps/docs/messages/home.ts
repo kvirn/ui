@@ -11,8 +11,6 @@ export const homeMessages = {
       "Somewhere tonight, someone is applying for a school place, a permit, a pension. Tired, in a hurry, in their second language. With a reading difficulty, colours they can't tell apart, reading glasses left in the other room, a screen reader, or one free hand. KvirnUI is the part of your service that makes sure they all get through.",
     start: 'Start building',
     who: "Who it's for",
-    honest:
-      'Pre-alpha. The API will change. Testing with assistive technology is pending, and we say so everywhere.',
   },
   moments: [
     {
@@ -69,13 +67,11 @@ export const homeMessages = {
     titleSecond: 'nobody chooses.',
     big: "You can't take your pension application to a competitor. So it has to work for everyone who turns up, on whatever they turn up with, on the day it matters to them.",
     ours: 'Most libraries make that your problem. We made it ours. The invisible parts, the keyboard, the focus, the words a screen reader needs, the plain structure a tired mind needs, the contrast, the target sizes, the five languages, are built in, written down and tested, so your team can spend its time on the service itself.',
-    honest:
-      "We are small, and early. The API will change. We haven't yet put the components in front of people who use assistive technology every day, and until we have, every page here says so. That honesty is the product too.",
     links: { evidence: 'How we prove it', start: 'How to get started', contact: 'Talk to us' },
   },
   evidence: {
     heading: "We don't ask you to believe it. We show you.",
-    body: 'Every component has a written contract: every role, every key, every announcement. Every key is pressed by a test in a real browser. Every story is checked in four themes. And where nobody has tested with real assistive technology yet, it says pending, in the open, until someone has.',
+    body: 'Every component has a written contract: every role, every key, every announcement. Every key is pressed by a test in a real browser. Every story is checked in four themes. These tests do not replace testing with real assistive technology, so test with your own users before you launch.',
     countsLabel: 'KvirnUI in numbers',
     counts: {
       components: 'components',
@@ -89,7 +85,6 @@ export const homeMessages = {
     links: {
       components: 'Every component and its keyboard contract',
       contract: "Read Button's contract",
-      pending: 'What is still pending',
     },
   },
   start: {
@@ -120,7 +115,7 @@ export const homeMessages = {
     email: 'magnus@vike.se',
     decide: {
       heading: 'You decide what your organisation builds with',
-      body: "Tell us about the service and the deadline. We'll tell you plainly what KvirnUI does today, what is still pending, and what a licence covers. No mailing list: one message, answered by the person who builds it.",
+      body: "Tell us about the service and the deadline. We'll tell you plainly what KvirnUI does, what you need to test yourself, and what a licence covers. No mailing list: one message, answered by the person who builds it.",
       link: 'Email about a licence or a pilot',
       subject: 'KvirnUI for our organisation',
     },

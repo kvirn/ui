@@ -95,7 +95,7 @@ Resolution, first match wins: the part's own children (an empty or whitespace-on
 - Target size: the label is the click target for choice controls, taller than the 24 by 24 CSS pixel minimum in both densities, and sits above a text control (2.5.8 Target Size (Minimum) (AA)).
 - Colour: the label, description, help text and optional marker use the normal text colour, and a help text keeps it when the field is invalid, disabled or read-only (the error carries the state). The error text has at least 4.5:1 contrast on every background (7:1 in the high-contrast themes), checked by the theme's contrast check. The error has an icon, and a text prefix for screen readers, and the invalid control has a thicker edge, so colour is never the only cue (1.4.1 Use of Color (A)). The invalid edge has at least 3:1 contrast against the page and card backgrounds (1.4.11 Non-text Contrast (AA)).
 - forced-colors behaviour: the error text uses the system's text colour, the icon follows it, and the invalid control keeps its thicker border.
-- reduced-motion behaviour: no layout animation when an error appears. Not yet checked by an automated sweep.
+- reduced-motion behaviour: no layout animation when an error appears. Not checked by an automated sweep.
 - 1.4.12 Text Spacing (AA): no fixed heights. A help text's size and line height are in `rem`, so it grows with the browser's text size (1.4.4 Resize Text (AA)).
 - Help text size: a help text is a step smaller than a description in both densities. The size belongs to the part, not to where it sits.
 - RTL: logical properties only. The icon doesn't mirror.
@@ -119,20 +119,21 @@ Resolution, first match wins: the part's own children (an empty or whitespace-on
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                      |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | field.stories.tsx, every story, 4 themes                                                                                             |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `field.test.tsx` (axe and role, name and state): `valid without a description: no aria-describedby, and no error message in the DOM` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 4 rows, each names a test in `field.test.tsx`                                                                                        |
+| Focus order and management                                                 | pass        | n/a         | pass    | `field.test.tsx`: `keyboard › Tab goes to the control and never stops on the label, the help text or the error`                      |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                     |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                      |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                      |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                      |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                      |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                      |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                      |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                      |
 
 Research questions for the AT run: is the error prefix heard once and in the right language? Is the optional marker heard in the name? Is the description heard before the error, and is that the best order (Designsystemet, the Norwegian government design system, puts the error first)? With a description, a help text and the error, are all three read, in this order? Is a pattern such as "YYYYMMDD-NNNN" (the Swedish personal identity number format: year, month, day, four digits) understandable when spoken? Is an option's help text read for each radio, and a fieldset's help text read on entering the group? On iOS Safari and Android Chrome with the on-screen keyboard open, do users see the error under the field they were sent to?
 
@@ -140,4 +141,4 @@ Research questions for the AT run: is the error prefix heard once and in the rig
 
 - **The description is associated after mount.** Server-rendered markup lists a Prose or a HelpText in `aria-describedby` only after hydration. `useField` with `hasDescription` or `descriptions` doesn't have this gap.
 - **Error under the control on phones.** The on-screen keyboard can cover the message under a focused field. The mitigation is in the docs (focus on submit, `scroll-padding`), not in the components, and the AT and usability run checks it. The error is linked from the first render whenever the field is invalid, in server-rendered markup too, and when an app moves focus to the field in an effect after submit. Tests: `field.test.tsx › focus on submit`.
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. WebKit is not covered by the automated tests, so check Safari with your own users and assistive technology.

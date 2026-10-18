@@ -47,7 +47,6 @@ export function SkipLinkPage({
     <ComponentPage
       title="SkipLink"
       lead="A link at the top of the page that takes people using a keyboard straight to the main content. The default theme keeps it out of sight until it has focus, so the page looks the same to people who use a mouse."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

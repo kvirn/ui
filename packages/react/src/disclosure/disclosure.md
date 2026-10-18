@@ -1,7 +1,5 @@
 # Disclosure
 
-> **Draft.** This page moves to the docs site once `apps/docs` has a page for it. The accessibility contract is [disclosure.a11y.md](disclosure.a11y.md).
-
 A Disclosure is a button that shows and hides a panel of content (APG Disclosure): opening hours, a "read more", a help text. It holds the open state and wires the button and the panel together. It never moves focus.
 
 - Three parts: `Disclosure.Root` (no element, it owns the open state), `Disclosure.Trigger` (`<button>` with `aria-expanded` and `aria-controls`, and a chevron at the inline end) and `Disclosure.Panel` (`<div>`, `hidden` while closed). Each is also exported on its own (`DisclosureRoot`, `DisclosureTrigger`, `DisclosurePanel`), and the hook is `useDisclosure`.
@@ -60,4 +58,4 @@ It returns `triggerProps`, `panelProps`, `isOpen`, `isDisabled`, `isFocusVisible
 
 ## A panel shown from a breakpoint
 
-Not supported. A navigation that is always shown on a wide screen and a button on a narrow one would leave `aria-expanded="false"` on a visible panel. Use `NavigationMenu` (planned), or your own CSS that shows the panel and hides the trigger from that width: see the contract's Consumer responsibilities.
+Not supported. A navigation that is always shown on a wide screen and a button on a narrow one would leave `aria-expanded="false"` on a visible panel. Use your own CSS that shows the panel and hides the trigger from that width: see the contract's Consumer responsibilities.

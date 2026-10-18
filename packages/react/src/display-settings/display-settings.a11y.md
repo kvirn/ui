@@ -70,20 +70,21 @@ None. Choosing an option changes the page's appearance, which the user sees; it 
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                        |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                              |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | display-settings.stories.tsx, every story, 4 themes                                                                          |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `display-settings.test.tsx` (axe and role, name and state): `the button is named by the message and controls a closed panel` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 7 rows, each names a test in `display-settings.test.tsx`                                                                     |
+| Focus order and management                                                 | pass        | n/a         | pass    | `display-settings.test.tsx`: `Enter opens the panel and Enter again closes it, and focus stays on the button`                |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                             |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                              |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                              |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                              |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                              |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                              |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                              |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                              |
 
 ## Known issues
 

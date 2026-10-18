@@ -1,7 +1,5 @@
 # Pagination
 
-> **Draft** (Plan 0062). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [pagination.a11y.md](pagination.a11y.md).
-
 Links to the pages of a long list: Previous, page numbers with gaps, Next. Each page is a URL, so Back, bookmarks and "open in new tab" work. It is links and never buttons.
 
 ## API

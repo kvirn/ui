@@ -71,7 +71,6 @@ export function GridPage({
     <ComponentPage
       title="Grid"
       lead="You choose the columns with classes, so you need no CSS of your own. Grid adds no meaning of its own: what a screen reader reads and what the keyboard visits follows the order you write."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

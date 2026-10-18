@@ -51,7 +51,6 @@ export function TextInputPage({
     <ComponentPage
       title="TextInput"
       lead="Inside a Field, its label, help text and error are read with the box. It can shape what is typed with a mask, and it holds no form state."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

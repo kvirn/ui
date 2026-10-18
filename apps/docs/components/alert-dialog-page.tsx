@@ -126,7 +126,6 @@ export function AlertDialogPage({
     <ComponentPage
       title="AlertDialog"
       lead="It is read out together with its description, and a press outside never closes it. Focus starts on the action you choose."
-      status="alpha-candidate"
       pattern="APG Alert Dialog"
       whenToUse={
         <ul>

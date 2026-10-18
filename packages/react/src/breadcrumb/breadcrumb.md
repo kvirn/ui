@@ -1,7 +1,5 @@
 # Breadcrumb
 
-> **Draft** (Plan 0062). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [breadcrumb.a11y.md](breadcrumb.a11y.md).
-
 A trail from the home page down to the page you are on: where you are, and the way up (2.4.8). Use it on every page below the start page, before `<main>`.
 
 ## API

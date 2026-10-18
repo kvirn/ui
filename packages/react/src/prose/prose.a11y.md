@@ -36,7 +36,7 @@ A `Prose` inside a `Field.Root` or a `Fieldset.Root` registers itself with the n
 Two theme classes for CMS content. Neither is a component, adds a role, or needs a string. Neither is a focusable part, so the Keyboard section below is unchanged.
 
 - `kv-inset`: any block, usually `<div>`; no role, no ARIA, not a live region. Not `aside` (a landmark), not `role="note"`, not `role="status"`: it is static article content, never announced (4.1.3 does not apply). Test: `prose.test.tsx › kv-inset adds no role, no live region and no tab stop, and its text stays in the reading order`.
-- `kv-steps`: native `<ol>`. Keeps the `list` role with n `listitem`s (Chromium); the WebKit list role and the marker being read are not proven by a test: AT verification `pending`. The number is the native `::marker`, never `list-style: none`, so WebKit keeps the list too. No `aria-current`, no `tabindex`. Test: `prose.test.tsx › ol.kv-steps keeps the list role with one listitem per step, and no ARIA of its own`.
+- `kv-steps`: native `<ol>`. Keeps the `list` role with n `listitem`s (Chromium); the WebKit list role and the marker being read are not proven by a test: test it with your own assistive technology. The number is the native `::marker`, never `list-style: none`, so WebKit keeps the list too. No `aria-current`, no `tabindex`. Test: `prose.test.tsx › ol.kv-steps keeps the list role with one listitem per step, and no ARIA of its own`.
 - `figure`: native `figure`, named by `figcaption`. No class: prose already styles it. Test: `prose.test.tsx › an article with an inset, steps and a figure with alt text has no axe violations`.
 
 Consumer responsibilities for these (nothing enforces them):
@@ -45,7 +45,7 @@ Consumer responsibilities for these (nothing enforces them):
 - **Inset, Alert or blockquote.** Content that is part of the article and must not be missed (a condition, an exception, a tip) is `kv-inset`. A legal or money consequence, or a deadline you lose rights by missing ("Apply by 30 April, or the application will not be processed"), is a static `Alert.Warning`. The state of something (saved, failed) is an Alert, announced only when it appears after an action. A quotation is a `blockquote`.
 - **Steps or Stepper.** `kv-steps` is content: all the steps of a process, about 3 to 8, each a heading plus text (every step has a heading or none; headings start with a verb and do not repeat the number). The Stepper is a caption above a form question with the user's current step. They share no markup, class or string. Do not use `kv-steps` as a progress indicator. A short list of one-line instructions stays a plain prose `ol`.
 - **Alt text** (1.1.1 Non-text Content (A), 1.4.5 Images of Text (AA)). Informative photo: what it shows that matters here, about 150 characters at most; credit and source in the `figcaption`. Map, chart or plan: a short `alt` (what and where), and the facts in the body text or a table right after it, never only in `title`. Image of text: avoid, else all the text in `alt` and in HTML. Decorative: `alt=""`, no `figure`, no caption. Linked image: the link's destination. `alt` and `figcaption` are both read, so they never repeat each other. Text in another language gets `lang` (3.1.2 Language of Parts (AA)).
-- **Video and audio: guidance only, no component.** Native `<video controls preload="metadata" playsinline>`, self-hosted, with a `<track kind="captions" srclang default>` per language and a `poster` (1.2.2 Captions (Prerecorded) (A)). Never `autoplay` (1.4.2 Audio Control (A), 2.2.2 Pause, Stop, Hide (A)). No YouTube, Vimeo or other iframe (no third-party network calls). Information that is only visual is spoken in the narration, or an audio-described version or a transcript with the descriptions sits next to the video (1.2.3 Audio Description or Media Alternative (Prerecorded) (A), 1.2.5 Audio Description (Prerecorded) (AA)). `<audio controls>` gets a transcript (1.2.1 Audio-only and Video-only (Prerecorded) (A)). Keyboard support of native media controls differs per browser: AT verification `pending`.
+- **Video and audio: guidance only, no component.** Native `<video controls preload="metadata" playsinline>`, self-hosted, with a `<track kind="captions" srclang default>` per language and a `poster` (1.2.2 Captions (Prerecorded) (A)). Never `autoplay` (1.4.2 Audio Control (A), 2.2.2 Pause, Stop, Hide (A)). No YouTube, Vimeo or other iframe (no third-party network calls). Information that is only visual is spoken in the narration, or an audio-described version or a transcript with the descriptions sits next to the video (1.2.3 Audio Description or Media Alternative (Prerecorded) (A), 1.2.5 Audio Description (Prerecorded) (AA)). `<audio controls>` gets a transcript (1.2.1 Audio-only and Video-only (Prerecorded) (A)). Keyboard support of native media controls differs per browser: test the controls with your own assistive technology.
 - **Not styled.** Native `details` and `summary` are not styled in prose. Closed `details` content does not print: do not put the only copy of a fact there.
 
 ## Allowed elements
@@ -94,7 +94,7 @@ Headless: Prose ships no CSS. With the default theme the `kv-prose` rules apply:
 - **Line length and type.** A 70-character line length, and the body and heading type styles. `h1` to `h6` each have their own style, and `h4` to `h6` stay at 16px in every prose size.
 - **Links.** A link has an underline on hover and a focus ring.
 - **Contrast.** Text, links and code on the page and section backgrounds are checked automatically (1.4.3 Contrast (Minimum) (AA), 1.4.11 Non-text Contrast (AA)).
-- **Reflow.** Nothing has a fixed size, so text reflows (reviewed in the stories, not yet automated (1.4.10 Reflow, AA)).
+- **Reflow.** Nothing has a fixed size, so text reflows (reviewed in the stories, not automated (1.4.10 Reflow, AA)).
 - **Text spacing.** Reviewed by hand in a Storybook story (1.4.12 Text Spacing (AA)).
 - **Reduced motion.** Prose animates only a link's colour, and only when motion is allowed.
 
@@ -117,20 +117,21 @@ With the theme, `kv-prose--small` (14px), the default (16px), `kv-prose--large` 
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                   |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                         |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | prose.stories.tsx, every story, 4 themes                                                                                |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | prose.test.tsx › renders one element with the kv-prose class, no role or ARIA, and its children; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | n/a         | n/a         | n/a     | no focusable or operable part; prose renders no tabindex                                                                |
+| Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                                                             |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                        |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                         |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                         |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                         |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                         |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                         |
 
 ## Known issues
 

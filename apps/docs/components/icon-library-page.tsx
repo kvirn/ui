@@ -54,9 +54,7 @@ export function IconLibraryPage({
               {text.howToUse}
             </Link>
           </p>
-          <p>
-            {text.notDone} <Link href="/foundation/icons#not-done">{text.notDoneLink}</Link>
-          </p>
+          <p>{text.testWithUsers}</p>
         </>
       }
     >

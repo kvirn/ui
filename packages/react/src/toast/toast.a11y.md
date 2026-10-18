@@ -1,7 +1,7 @@
 # Accessibility contract: Toast (`useToast`, and the region `KvirnProvider` renders)
 
 - **APG pattern:** none for a toast. The announcement is APG's [Alert pattern](https://www.w3.org/WAI/ARIA/apg/patterns/alert/) in the Announcer's polite region, which already exists; the region of toasts is never a live region. The items are the [Alert](../alert/alert.a11y.md)'s parts.
-- **Deviations:** none from APG. Two defaults still wait for the maintainer's decision: toasts are **persistent by default** (`autoDismiss: false`), and a toast is only info or success, never a warning or an error.
+- **Deviations:** none from APG. Two defaults to know: toasts are **persistent by default** (`autoDismiss: false`), and a toast is only info or success, never a warning or an error.
 - **Native elements used:** `<section>` (the region, a `popover="manual"` in the top layer), `<ul role="list">` and `<li>`, the Alert's `<div>` root, `<p>` (the Title), `<span>` (the status word), `<button type="button">` (the action and Close).
 - **Status:** alpha candidate. Reviewer findings fixed 2026-10-06, accessibility-reviewer re-review pending. Manual AT is `pending`.
 - **Tests:** `toast.test.tsx` next to this file, `@kvirn-ui/core` `toast-queue.test.ts` (the timing rules). `toast.stories.tsx` in `apps/storybook/src/components/toast/`. Design spec: `docs/design/toast.md`.
@@ -105,7 +105,7 @@ Headless: no CSS. With the default theme (`@kvirn-ui/theme/theme.css`):
 - forced-colors behaviour: the Alert's. It uses the system's background and text colours with an edge on all four sides, and the status is carried by the icon's shape and the status word.
 - reduced-motion behaviour: a fade in only when the user has not asked for reduced motion; removal is instant. The timer ring steps in quarters instead of moving.
 - Timer ring (decorative): drawn in the toast's accent colour on a light tint, with contrast checked by the theme's contrast check (1.4.11). It uses the system's button text colour in forced colours. It is a clock, so it is not mirrored in right-to-left languages.
-- Reflow: full width below 40rem, no fixed sizes, and a capped region that scrolls. No horizontal scrolling at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA), with Finnish text. Text spacing grows the height, reviewed in the stories, not yet automated (1.4.12 Text Spacing, AA).
+- Reflow: full width below 40rem, no fixed sizes, and a capped region that scrolls. No horizontal scrolling at 320 CSS px, reviewed in the stories, not automated (1.4.10 Reflow, AA), with Finnish text. Text spacing grows the height, reviewed in the stories, not automated (1.4.12 Text Spacing, AA).
 - RTL: placement follows the reading direction: the inline end is the left. Hidden in print.
 - Without the theme: the region is a `popover` in the top layer with the browser's default popover box; the toasts are plain Alerts. Usable, unstyled.
 
@@ -113,7 +113,7 @@ Headless: no CSS. With the default theme (`@kvirn-ui/theme/theme.css`):
 
 - 1.3.1 Info and Relationships (A), 1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A): a named region, an ordered list, DOM order = visual order = Tab order.
 - 1.4.1 Use of Color (A), 1.4.3 Contrast (Minimum) (AA), 1.4.10 Reflow (AA; asserted by `toast.stories.tsx › Reflow320` and `TenToastsReflow`), 1.4.11 Non-text Contrast (AA): the Alert's icon shape and word, the theme's contrast check, one column below 40rem, a capped region.
-- 1.4.12 Text Spacing (AA): the toast grows in height with the text. Reviewed in the stories, not yet automated.
+- 1.4.12 Text Spacing (AA): the toast grows in height with the text. Reviewed in the stories, not automated.
 - 2.1.1 Keyboard (A): Close, the action and Escape; no trap (2.1.2 No Keyboard Trap, A).
 - 2.2.1 Timing Adjustable (A), 2.2.2 Pause, Stop, Hide (A): persistent by default; timers only by an app switch the user can turn off, paused by hover, focus, hidden tab and blurred window, a visible timer ring, Close and Escape always. There is no minimum time: a trade-off the maintainer approved against 2.2.1.
 - 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA): block-end edge, a limit, room kept at the end of the page, block-start placement when the focus is under it.
@@ -125,27 +125,28 @@ Headless: no CSS. With the default theme (`@kvirn-ui/theme/theme.css`):
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                                          |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                                |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | toast.stories.tsx, every story, 4 themes                                                                                                                       |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | toast.test.tsx › a toast is a named region holding a list item, with no role or live region of its own; expectNoA11yViolations                                 |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 7 rows, each names a test (toast.test.tsx › keyboard › Tab from the page enters the first toast at its action, then its Close, then the next toast)            |
+| Focus order and management                                                 | pass        | n/a         | pass    | toast.test.tsx asserts focus (toHaveFocus); first rule: keyboard › Tab from the page enters the first toast at its action, then its Close, then the next toast |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                                               |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                                |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                                |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                                                |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                                |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                                |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                                |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                                |
 
 ## Known issues
 
 - **A timed toast can vanish under a screen reader in browse mode,** which triggers neither hover nor focus. With no minimum floor a short `autoDismiss` makes this worse. The default is persistent for this reason, and the docs tell the app to tie `autoDismiss` to a user setting and keep the value long enough to read (2.2.1 Timing Adjustable, A; a trade-off the maintainer approved). Not yet confirmed with a real screen reader.
-- **4.1.3 Status Messages (AA) and the region having no live role.** The message reaches assistive technology through the Announcer's `status` region, not through the visible box (as for `Alert`). Not yet confirmed with a real screen reader: that the joined message is heard in time after the action that caused it.
+- **4.1.3 Status Messages (AA) and the region having no live role.** The message reaches assistive technology through the Announcer's `status` region, not through the visible box (as for `Alert`). Check with your own screen reader that the joined message is heard in time after the action that caused it.
 - **Joined messages.** The provider joins the toasts of one commit into one message, because the Announcer replaces a second one inside 100 ms. Two `show` calls in separate commits within 100 ms: the second replaces the first one if it was not spoken yet.
 - **The Announcer replaces a message of the same politeness spoken within 100 ms,** whoever sent it: a CopyButton's "Copied" and a toast shown in the same moment replace each other. The provider already joins the toasts of one commit; a toast and another component's `announce` in separate commits within 100 ms are the app's to avoid.
 - **A handover while a modal is open** shows the new host's region in the top layer above the modal (rare: it needs the first provider to unmount while a dialog is open).
 - **Server rendering:** the region is not rendered on the server, and a toast shown before mount is dropped (with a warning).
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium; the manual AT matrix is `pending`.
+- **Keyboard tests run in Chromium only.** The keyboard rows run in Vitest browser mode on Chromium, not in WebKit. Test in Safari with your own assistive technology.

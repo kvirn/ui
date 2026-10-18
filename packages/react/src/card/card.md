@@ -1,7 +1,5 @@
 # Card
 
-> **Draft** (Plan 0007). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [card.a11y.md](card.a11y.md), and the design spec is [docs/design/card.md](../../../../docs/design/card.md).
-
 A plain container for one thing on the page: an image, a heading, some text and a couple of actions, for a service, a news item or a case. Card is elevation level 2, and it is always `surface-raised`. A region of the page, such as a sidebar, is a [Section](../section/section.md).
 
 - Four parts, each one `<div>`: `Card.Root`, `Card.Header`, `Card.Body` and `Card.Footer` (also exported as `CardRoot`, `CardHeader`, `CardBody` and `CardFooter`). Header and Footer are never `<header>` or `<footer>`, which would become page landmarks.

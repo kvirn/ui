@@ -1,7 +1,5 @@
 # Button
 
-> **Draft** (Plan 0003). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [button.a11y.md](button.a11y.md).
-
 A native `<button>` for actions. For navigation, use [Link](../link/link.md).
 
 - `type="button"` by default, so a Button never submits a form by accident. Use `type="submit"` for the button that does. `type="reset"` puts the form's fields back to their starting values.

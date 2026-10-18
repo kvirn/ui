@@ -1,5 +1,5 @@
 import { ApplicationLogo } from '@kvirn-ui/patterns'
-import { Badge, Heading, Link, Section } from '@kvirn-ui/react'
+import { Heading, Link, Section } from '@kvirn-ui/react'
 import { messages } from '../messages/en.ts'
 import { sectionCurrent, siteTools } from './site-sections.ts'
 import type { SiteSection } from './site-sections.ts'
@@ -26,7 +26,6 @@ export function SiteFooter({
               <ApplicationLogo.Root href="/">
                 <ApplicationLogo.Name>{text.header.home}</ApplicationLogo.Name>
               </ApplicationLogo.Root>
-              <Badge>{text.header.status}</Badge>
             </div>
             <p>{text.footer.licence}</p>
             <p>
@@ -56,11 +55,6 @@ export function SiteFooter({
               {text.footer.projectHeading}
             </Heading>
             <ul role="list">
-              <li>
-                <Link href="/docs#status">
-                  {text.footer.status({ status: text.header.status })}
-                </Link>
-              </li>
               {siteTools.map((tool) => (
                 <li key={tool.id}>
                   <SiteToolLink tool={tool} pathname={pathname} />

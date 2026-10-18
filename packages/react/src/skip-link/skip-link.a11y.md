@@ -67,7 +67,7 @@ Headless: no CSS. With the default theme the link is hidden visually, but not re
 - a focus ring with at least 3:1 contrast (2.4.7 Focus Visible, AA);
 - space around it and a target of at least 24 by 24 CSS pixels (2.5.8 Target Size (Minimum), AA).
 
-It reflows with the page (reviewed in the stories, not yet automated (1.4.10 Reflow, AA)). In forced colours (a Windows contrast mode) it uses the system's link and background colours and a highlight-coloured ring, with no reliance on a background fill. If you restyle it, keep the contrast, the underline, the ring and the target size.
+It reflows with the page (reviewed in the stories, not automated (1.4.10 Reflow, AA)). In forced colours (a Windows contrast mode) it uses the system's link and background colours and a highlight-coloured ring, with no reliance on a background fill. If you restyle it, keep the contrast, the underline, the ring and the target size.
 
 ## WCAG SCs covered
 
@@ -81,22 +81,23 @@ It reflows with the page (reviewed in the stories, not yet automated (1.4.10 Ref
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                               |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                     |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | skip-link.stories.tsx, every story, 4 themes                                                                        |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | skip-link.test.tsx › the name is the default label, rendered as text with no ARIA added; expectNoA11yViolations     |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test (skip-link.test.tsx › SkipLink keyboard › the first Tab stop is the skip link)            |
+| Focus order and management                                                 | pass        | n/a         | pass    | skip-link.test.tsx asserts focus (toHaveFocus); first rule: SkipLink keyboard › the first Tab stop is the skip link |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                    |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                     |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                     |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                     |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                     |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                     |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                     |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                     |
 
 ## Known issues
 
-- The Finnish, Norwegian Bokmål and Norwegian Nynorsk texts are drafts. A native speaker still has to review them. <!-- kv-lang-ok: the language name Bokmål -->
-- Safari (WebKit): it isn't yet known whether the focus ring shows on the target after someone presses Enter on the link. This is not automated, and the manual check is `pending`. In Safari, Tab only reaches links when "Press Tab to highlight each item" is on (or with Option+Tab), so test with that setting on. Don't hide the ring on `[tabindex="-1"]`.
+- Have a native speaker review the Finnish, Norwegian Bokmål and Norwegian Nynorsk texts before you launch. <!-- kv-lang-ok: the language name Bokmål -->
+- Safari (WebKit): whether the focus ring shows on the target after someone presses Enter on the link is not covered by an automated test, so check it in your own service. In Safari, Tab only reaches links when "Press Tab to highlight each item" is on (or with Option+Tab), so test with that setting on. Don't hide the ring on `[tabindex="-1"]`.

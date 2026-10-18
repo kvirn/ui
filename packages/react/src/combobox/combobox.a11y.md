@@ -120,7 +120,7 @@ An option holds any markup. `Combobox.OptionIcon`, `OptionText`, `OptionDescript
 - **The list is the scroll element,** with one sizer element inside it (`kv-listbox-virtual-sizer`) and absolutely positioned options. The geometry is inline and nothing else: the library ships no CSS. The list carries `data-virtualized`, and must be a scroll container with a height limit (the default theme makes it one).
 - **Flat lists only.** With `groups`, `virtualize` is ignored and a development warning is logged. The list renders in full.
 - **Off by default, and the docs say why.** Options that aren't rendered can't be found with find in page, aren't printed, and are out of reach of a screen reader's browse mode.
-- **Screen-reader support varies.** `aria-setsize`, `aria-posinset` and `aria-activedescendant` into a virtualized list are read differently by NVDA, JAWS, VoiceOver and TalkBack. The manual AT run covers it before `beta` and is `pending`.
+- **Screen-reader support varies.** `aria-setsize`, `aria-posinset` and `aria-activedescendant` into a virtualized list are read differently by NVDA, JAWS, VoiceOver and TalkBack. Test it with the screen readers your users have.
 
 ## Announcements
 
@@ -150,7 +150,7 @@ They go through the shared Announcer, about 500 ms after the last change (`annou
 - Focus indicator: on keyboard focus, a ring at least 2px thick, set off from the element, with at least 3:1 contrast against the adjacent colours, around the input (or around the Control, which draws the edge) (2.4.7 Focus Visible, level AA; 2.4.13 Focus Appearance, level AAA). The input has `data-focused` while it has focus, and `data-focus-visible` (also set on the Control) for any focus, unless a pointer moved it there. Browsers also match `:focus-visible` on a click in a text input, so the ring follows `data-focus-visible`, or `:focus-visible` alone before the script runs. A click shows focus as a 2px edge in the focus colour, with no ring, so it changes width as well as colour. The text doesn't move. Focused and invalid keeps the thick error edge, and the ring shows on any focus, a click included (form-fields.md §6.8a). The active option is shown by a bar at its start and a tinted fill, never by colour alone; the chosen option by a tick (1.4.1, 2.4.7). The popup's look is the Listbox's.
 - Target size: the input, each option, Toggle, Clear and each chip are at least 24 × 24 CSS px, even where the drawn mark is smaller, and taller in the default theme (2.5.8). Each chip is one button.
 - Colour: the same look as the TextInput. An edge you can see, a thicker edge when invalid and a dashed edge when disabled, so state is not shown by colour alone. The chosen values are chips with an edge, so they are not told apart from the page by colour alone.
-- forced-colors behaviour (Windows contrast themes): the system's colours. Edges use the button-text colour. An invalid field has a thicker edge, and a disabled one a dashed edge in the disabled-text colour. Focus in the input turns the edge to the highlight colour, and keyboard focus draws a highlight ring. On a standalone input, the system paints an outline on a click, so a click shows a ring there too. Inside a Control the input has no outline of its own, so a click shows only the thin highlight edge (a known gap, not yet fixed). The active option uses the highlight colours, and the cross and chevron take the text colour.
+- forced-colors behaviour (Windows contrast themes): the system's colours. Edges use the button-text colour. An invalid field has a thicker edge, and a disabled one a dashed edge in the disabled-text colour. Focus in the input turns the edge to the highlight colour, and keyboard focus draws a highlight ring. On a standalone input, the system paints an outline on a click, so a click shows a ring there too. Inside a Control the input has no outline of its own, so a click shows only the thin highlight edge (a known limit). The active option uses the highlight colours, and the cross and chevron take the text colour.
 - reduced-motion behaviour: nothing moves. The popup does not animate its position or opacity, and the edge and fill change with a transition only when motion is allowed.
 - Reflow: the input is as wide as its column and no wider, the popup is at least as wide as it and never wider than the viewport, the chips wrap, and long option text wraps.
 - RTL: the text, the chips and the chevron follow the reading direction, and the tick is at the inline end.
@@ -168,29 +168,30 @@ They go through the shared Announcer, about 500 ms after the last change (`annou
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                   |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                         |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | combobox.stories.tsx, every story, 4 themes                                                                             |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `combobox.test.tsx` (axe and role, name and state): `the Field’s label names the input, and the help text describes it` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 37 rows, each names a test in `combobox.test.tsx`                                                                       |
+| Focus order and management                                                 | pass        | n/a         | pass    | `combobox.test.tsx`: `typing opens the popup with the matching options, and focus stays on the input`                   |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                        |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                         |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                         |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                         |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                         |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                         |
 
 Research questions for the AT run: is the result count read once, after typing stops, and not over the screen reader's own reading of the typed letter? Does the screen reader read the active option from `aria-activedescendant` on each arrow press, in NVDA, JAWS, VoiceOver (macOS and iOS) and TalkBack? Is the chosen text read after Enter? Is the value list's name and count useful, or noise, before the input? Does a Voice Control user say "show options" or "remove Stockholm" and reach the Toggle and the remove buttons?
 
 ## Known issues
 
-- **`aria-activedescendant` on VoiceOver and TalkBack** has known gaps. A Combobox stays custom on touch devices (there is no native rendering), so the manual AT run must cover iOS and Android before `beta`.
+- **`aria-activedescendant` on VoiceOver and TalkBack** has known gaps. A Combobox stays custom on touch devices (there is no native rendering), so test on iOS and Android with your users.
 - **Toggle and Clear are not tab stops.** That is allowed because their actions have keys (ArrowDown, Alt+ArrowDown, select and delete), and it keeps the Tab sequence short.
 - **Virtualization is opt-in and has limits.** Without `virtualize`, every matching option renders while the popup is open, so a list of many thousands is slow: use `virtualize` for those. With it, options that aren't rendered can't be found with find in page or printed, groups are not virtualized, and `aria-activedescendant` into a virtualized list is unverified on VoiceOver and TalkBack (see Virtualization).
 - **The popup has no tab stop.** It scrolls natively, and keyboard users scroll it by moving the active option, which is scrolled into view.
 - **A Combobox inside a form with an Enter shortcut.** Enter with an active option chooses it and never submits the form, as the pattern says. With no active option it submits (the browser's own). The text is not sent, only the hidden inputs are.
 - **Text that has no match is not an error by itself.** The Combobox reports `null` and leaves the message to the consumer, because the right words depend on the form.
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`. `popover="manual"`, the outside press and Escape must be checked on Safari 17.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. WebKit is not covered by the automated tests. Check `popover="manual"`, the outside press and Escape on Safari 17 yourself.

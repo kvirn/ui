@@ -47,7 +47,6 @@ export function HeadingPage({
     <ComponentPage
       title="Heading"
       lead="The level gives the page its outline and the size only changes how it looks, so you never pick a level because of how big it should be."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

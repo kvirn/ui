@@ -47,7 +47,6 @@ export function TopBarPage({
   return (
     <ComponentPage
       title="TopBar"
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

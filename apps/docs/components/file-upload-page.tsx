@@ -261,7 +261,6 @@ export function FileUploadPage({
     <ComponentPage
       title="FileUpload"
       lead="One native button opens the system file dialog, a drop zone is an extra for devices that drag, and every file is checked against your limits before it enters the list."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

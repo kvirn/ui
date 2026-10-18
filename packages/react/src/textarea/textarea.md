@@ -1,7 +1,5 @@
 # Textarea
 
-> **Draft** (Plan 0034). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [textarea.a11y.md](textarea.a11y.md), the design spec is [docs/design/rich-text-editor.md](../../../../docs/design/rich-text-editor.md) (Textarea and Character count), and the decisions are in the forms skill.
-
 **KvirnUI holds no form state; bring your own form logic.** Textarea is the multi-line text box of a [Field](../field/field.md): a native `<textarea>` for a longer answer, such as "Describe your situation", a message to a caseworker or a reason for an appeal. It renders the `value` you give it, reports changes up through `onValueChange`, never copies the value into state of its own, and doesn't validate. Use it with TanStack Form, React Hook Form, your own `useState`, or a plain `<form>`.
 
 For a short answer on one line, use [TextInput](../text-input/text-input.md). For text with headings, lists and links, use the rich text editor (`@kvirn-ui/rich-text`). Don't use a Textarea to collect a code, a number or a date: those are a TextInput with a mask, a [NumberInput](../number-input/number-input.md) and a [DateInput](../date-input/date-input.md).

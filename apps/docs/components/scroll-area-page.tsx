@@ -52,7 +52,6 @@ export function ScrollAreaPage({
     <ComponentPage
       title="ScrollArea"
       lead="While it scrolls, a keyboard user can Tab to it and scroll it."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

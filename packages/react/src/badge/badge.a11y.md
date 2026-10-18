@@ -69,20 +69,21 @@ Headless: Badge ships no CSS. With the theme stylesheet (`@kvirn-ui/theme`), a b
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result | Notes                                                                                                                                          |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |        |                                                                                                                                                |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass   | badge.stories.tsx, every story, 4 themes                                                                                                       |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass   | `badge.test.tsx` (axe and role, name and state): `renders a span, no role or ARIA, and passes attributes and the ref through`                  |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass   | 1 rows, each names a test in `badge.test.tsx`                                                                                                  |
+| Focus order and management                                                 | n/a         | n/a         | n/a    | a badge is not a control: nothing in it is focusable                                                                                           |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass   | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                                  |
+| **Core (required for beta)**                                               |             |             |        |                                                                                                                                                |
+| NVDA + Chrome + Windows                                                    | n/a         | n/a         | n/a    | native `<span>`, `<strong>` or `<em>` with no role, read as text in the page; no live region, state, focus or key handling; nothing to operate |
+| VoiceOver + Safari + iOS                                                   | n/a         | n/a         | n/a    | native `<span>`, `<strong>` or `<em>` with no role, read as text in the page; no live region, state, focus or key handling; nothing to operate |
+| **Release (before 1.0 and each minor)**                                    |             |             |        |                                                                                                                                                |
+| JAWS + Chrome + Windows                                                    | n/a         | n/a         | n/a    | native `<span>`, `<strong>` or `<em>` with no role, read as text in the page; no live region, state, focus or key handling; nothing to operate |
+| TalkBack + Chrome + Android                                                | n/a         | n/a         | n/a    | native `<span>`, `<strong>` or `<em>` with no role, read as text in the page; no live region, state, focus or key handling; nothing to operate |
+| VoiceOver + Safari + macOS                                                 | n/a         | n/a         | n/a    | native `<span>`, `<strong>` or `<em>` with no role, read as text in the page; no live region, state, focus or key handling; nothing to operate |
 
 ## Known issues
 

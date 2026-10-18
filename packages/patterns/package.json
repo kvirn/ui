@@ -2,7 +2,7 @@
   "name": "@kvirn-ui/patterns",
   "version": "0.0.0",
   "private": true,
-  "description": "Site patterns, content types and fixtures built on KvirnUI. Private until reviewed.",
+  "description": "Site patterns, content types and fixtures built on KvirnUI.",
   "homepage": "https://ui.kvirn.com",
   "license": "BUSL-1.1",
   "author": "KvirnUI <magnus@vike.se> (https://ui.kvirn.com)",

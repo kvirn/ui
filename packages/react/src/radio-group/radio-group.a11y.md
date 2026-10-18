@@ -122,20 +122,21 @@ Also proved: the Reveal's Fields keep their optional marker and required state (
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                      |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                            |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | radio-group.stories.tsx, every story, 4 themes                                                                             |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | radio-group.test.tsx › a Radio is a native <input type="radio"> with its class, no ARIA role; expectNoA11yViolations       |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 13 rows, each names a test (radio-group.test.tsx › Tab enters the group at the first radio when none is checked)           |
+| Focus order and management                                                 | pass        | n/a         | pass    | radio-group.test.tsx asserts focus (toHaveFocus); first rule: Tab enters the group at the first radio when none is checked |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                           |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                            |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                            |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                            |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                            |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                            |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                            |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                            |
 
 Research questions for the AT run: without `aria-invalid` on radios, is the group's error read on entering the group? Is a required group's missing optional text enough, or do users need "required" announced? Are the arrow keys right in right-to-left in NVDA, JAWS and VoiceOver (the browser mirrors them)?
 

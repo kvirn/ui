@@ -57,7 +57,7 @@ The summary is not a widget. Focus is moved to it by script, once per submit; th
 
 ## Announcements
 
-None through a live region. The focus move makes the screen reader read the group's name (the Title, with the status word), once. Whether it also reads the content (the list of links) is not assured: screen readers usually read only the name of a focused `role="group"`. That is `pending` the manual AT run. Setting `announce` on the Alert as well would read it twice and is never done.
+None through a live region. The focus move makes the screen reader read the group's name (the Title, with the status word), once. Whether it also reads the content (the list of links) is not assured: screen readers usually read only the name of a focused `role="group"`. Test it with your own screen reader users. Setting `announce` on the Alert as well would read it twice and is never done.
 
 | Event                 | Message key (i18n)                                      | Politeness |
 | --------------------- | ------------------------------------------------------- | ---------- |
@@ -93,20 +93,21 @@ None through a live region. The focus move makes the screen reader read the grou
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                           |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                 |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | error-summary.stories.tsx, every story, 4 themes                                                                                |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `error-summary.test.tsx` (axe and role, name and state): `it is an Alert.Danger group named by its title, with a list of links` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 4 rows, each names a test in `error-summary.test.tsx`                                                                           |
+| Focus order and management                                                 | pass        | n/a         | pass    | `error-summary.test.tsx`: `focus › moves focus to the summary on mount`                                                         |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                 |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                 |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                 |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                 |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                 |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                 |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                 |
 
 ## Known issues
 

@@ -2,7 +2,7 @@
 
 The optional default theme for KvirnUI: one hand-written, readable CSS file, `theme.css`. The headless packages ship no CSS. This file styles them through the classes they render and their state attributes.
 
-> **Pre-alpha.** The look is accepted, and the package is pre-alpha: expect changes before 1.0. It is designed and tested to meet WCAG 2.2 AA, but check your own service.
+It is designed and tested to meet WCAG 2.2 AA, but check your own service.
 
 ## Three ways to use it
 

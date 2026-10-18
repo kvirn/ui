@@ -213,11 +213,6 @@ body {
   }
 }
 
-.docs-status {
-  max-inline-size: 70ch;
-  margin-block: var(--kv-space-4) 0;
-}
-
 /* Code blocks and the example's code bar (docs/design/docs-code.md §6). */
 .docs-code {
   margin-block: var(--kv-space-4);

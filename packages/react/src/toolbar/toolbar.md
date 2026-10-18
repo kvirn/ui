@@ -1,7 +1,5 @@
 # Toolbar
 
-> **Draft** (Plan 0035). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [toolbar.a11y.md](toolbar.a11y.md), the design spec is [docs/design/rich-text-editor.md](../../../../docs/design/rich-text-editor.md) (§6.5 and §7.3), and the decisions are in Plan 0035.
-
 A row of related controls that a keyboard user passes with **one Tab**, and moves through with the arrow keys: the formatting bar of an editor, the actions above a table. **Use it for three or more controls** (APG). For a few buttons that belong together, use a [ButtonGroup](../button-group/button-group.md): every button is its own Tab stop there. For navigation, use a `nav` with [Link](../link/link.md)s.
 
 - Renders `<div role="toolbar">` with the class `kv-toolbar`. **Name it** with `aria-label` or `aria-labelledby`: a development warning fires without one. Set `aria-controls` to the element it acts on, when there is one.

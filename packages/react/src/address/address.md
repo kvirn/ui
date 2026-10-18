@@ -1,7 +1,5 @@
 # Address
 
-> **Draft** (Plan 0095). This page moves to the docs site once `apps/docs` lists it. The accessibility contract is [address.a11y.md](address.a11y.md).
-
 Contact details for the nearest article or for the page: a postal address, a visiting address, a phone number, an email address. It renders the native `<address>`.
 
 - One part: `Address`. It renders `<address class="kv-address">`, and no role, ARIA, text or strings.

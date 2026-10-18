@@ -93,7 +93,6 @@ export function TabsPage({
     <ComponentPage
       title="Tabs"
       lead="A keyboard user reaches the tab list with one Tab press, moves between the tabs with the arrow keys and reaches the open panel with the next Tab."
-      status="alpha-candidate"
       pattern="APG Tabs"
       whenToUse={
         <ul>

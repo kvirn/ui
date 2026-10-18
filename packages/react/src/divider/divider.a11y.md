@@ -56,20 +56,21 @@ Headless: Divider ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-divider` d
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                  |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                        |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | divider.stories.tsx, every story, 4 themes                                                                                             |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `divider.test.tsx` (axe and role, name and state): `renders an hr element`                                                             |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 2 rows, each names a test in `divider.test.tsx`                                                                                        |
+| Focus order and management                                                 | n/a         | n/a         | n/a     | an hr is not focusable                                                                                                                 |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                       |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                        |
+| NVDA + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate |
+| VoiceOver + Safari + iOS                                                   | n/a         | n/a         | n/a     | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                        |
+| JAWS + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate |
+| TalkBack + Chrome + Android                                                | n/a         | n/a         | n/a     | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate |
+| VoiceOver + Safari + macOS                                                 | n/a         | n/a         | n/a     | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate |
 
 ## Known issues
 

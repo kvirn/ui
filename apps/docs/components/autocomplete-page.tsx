@@ -221,7 +221,6 @@ export function AutocompletePage({
     <ComponentPage
       title="Autocomplete"
       lead="The value is the text itself, so the user can write something that is not in the list."
-      status="alpha-candidate"
       pattern="APG Combobox (editable, list autocomplete)"
       whenToUse={
         <ul>

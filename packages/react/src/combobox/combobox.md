@@ -1,7 +1,5 @@
 # Combobox
 
-> **Alpha candidate.** The accessibility reviewer and assistive-technology tests are still pending. The accessibility contract is [combobox.a11y.md](combobox.a11y.md).
-
 Choosing one option from a long list, or several, by typing to filter it. The user types a few letters, the list shrinks to what contains them, and they choose with the arrow keys and Enter, or with a press. The value is one of the options, never the text.
 
 Use a Combobox when the list is too long to scan, about 15 options or more: a municipality, a country, an occupation code, a school. For a short list use a Listbox (or a RadioGroup, which shows every choice at once). When the answer is free text and the list only suggests, use an Autocomplete.

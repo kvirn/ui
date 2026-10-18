@@ -101,7 +101,6 @@ export function DatePickerPage({
     <ComponentPage
       title="DatePicker"
       lead="Choosing a day fills the field and returns focus to the button. Typing always works: the picker is the slower path, not a replacement."
-      status="alpha-candidate"
       pattern="APG Date Picker Dialog"
       whenToUse={
         <ul>

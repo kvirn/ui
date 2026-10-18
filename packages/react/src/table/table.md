@@ -1,7 +1,5 @@
 # Table
 
-> **Draft** (Plan 0026). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [table.a11y.md](table.a11y.md), the design spec is [docs/design/table.md](../../../../docs/design/table.md), and the decisions are in the overlays-and-lists skill.
-
 A Table shows data in rows and columns: cases, payments, decisions, statistics. It renders a **native `<table>`**, so a screen reader can read it by row and column and say which header a cell belongs to. KvirnUI adds what is easy to get wrong: a name, the sort state and its announcement, a different name for every row checkbox, and an honest size for a table too big to render.
 
 - Parts: `Table.Root`, `.ScrollRegion`, `.Caption`, `.Head`, `.Body`, `.Foot`, `.Row`, `.ColumnHeader`, `.RowHeader`, `.Cell`, `.SortButton`, `.SelectCheckbox`, `.SelectAllCheckbox`, `.ExpandButton`, `.DetailRow` and `.Empty`. Each is also exported on its own (`TableRoot`, …), and the hook is `useTable`.
@@ -166,7 +164,7 @@ Add `columnFilteringFeature` with `filteredRowModel: createFilteredRowModel()`, 
 - **A filter change is announced** after 500 ms without another one, with the number of rows left: "3 rows." A filter that leaves nothing shows `Table.Empty`. Replace its text with something useful.
 - **Search box.** Add `columnFilteringFeature` (a requirement of the global filter), `globalFilteringFeature` and `filteredRowModel: createFilteredRowModel()`. Put a labelled `TextInput type="search"` in a `<search>` landmark and call `table.setGlobalFilter(value)` from `onValueChange`. A page that also has a site search should name this one (for example `aria-labelledby` on the field's label). The row count is announced as for any filter, and `Table.Empty` says what to do when nothing matches. See the Search story: `SearchCases`.
 - **Choosing columns.** Add `columnVisibilityFeature`. Render a `Fieldset.Root group` with a `Fieldset.Legend` ("Show columns") and one `Checkbox` with a `Field.Label` for each `table.getAllLeafColumns()` column that `getCanHide()`, with `checked={column.getIsVisible()}` and `onCheckedChange={(checked) => column.toggleVisibility(checked)}`. Give the identifier column `enableHiding: false`, so the rows keep a row header. Draw `row.getVisibleCells()` in the body. Nothing is announced: the change is the user's own. See the Column visibility story: `ColumnVisibilityCases`.
-- **Pagination is the recommended answer to a large table.** Each page is its own small table. Say where the user is, in the caption or in a status near the controls ("Rows 21–40 of 312"), and keep the page controls after the table so they come in the Tab order where people look for them. A Pagination component is planned for M3.
+- **Pagination is the recommended answer to a large table.** Each page is its own small table. Say where the user is, in the caption or in a status near the controls ("Rows 21–40 of 312"), and keep the page controls after the table so they come in the Tab order where people look for them. Use [Pagination](../pagination/pagination.md) for the page controls.
 
 ## Large data
 

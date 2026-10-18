@@ -1,6 +1,6 @@
 # Accessibility contract: Navigation
 
-- **APG pattern:** none needed for a list of links. A labelled `<nav>` landmark around a list of links is plain HTML, and it is not the [Disclosure Navigation](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/) pattern: nothing here opens or closes, and no NavigationMenu component is planned. Never `role="menu"`.
+- **APG pattern:** none needed for a list of links. A labelled `<nav>` landmark around a list of links is plain HTML, and it is not the [Disclosure Navigation](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/) pattern: nothing here opens or closes. Never `role="menu"`.
 - **Deviations:** none
 - **Native elements used:** `<nav>` (the `navigation` landmark), `<ul>` and `<li>`. The links are [Link](../link/link.a11y.md): native `<a href>`.
 - **Status:** alpha candidate. Gates green 2026-10-06, accessibility-reviewer pending, and it reads the whole contract. Manual AT is `pending`.
@@ -73,7 +73,7 @@ None. The name is the consumer's `label` or `aria-labelledby`, in the consumer's
 - **Name every navigation, and give each a different name** (2.4.1 Bypass Blocks, A; 2.4.6 Headings and Labels, AA): "Main menu", "In this section". Prefer `aria-labelledby` pointing at a visible heading where there is one. Don't put "navigation" or "menu" in the label when the landmark role already says it, unless the name would be empty without it.
 - **Render the same items in the same order and the same place on every page.** Navigation never reorders items, so keep the list the same from page to page.
 - **Mark exactly one current link per navigation** (4.1.2 Name, Role, Value, A). `current="page"` goes on the link to the page. When the page isn't in the navigation (a case page, a menu that stops above it, a header bar of sections), `current` with no value goes on the deepest item shown, which gives `aria-current="true"` (the GOV.UK Design System calls it the active item). Never on an ancestor of a listed page, and never on a link inside a `hidden` group: when the page is inside a collapsed group, the deepest item shown takes it. Navigation doesn't detect the page from the router, and a development warning fires when two links have it.
-- **Collapse a group with `hidden`, never by unmounting it.** Its links stay in the DOM but leave the Tab sequence and the accessibility tree. The toggle that opens it is yours (a `Button` with `aria-expanded` and `aria-controls`): Navigation has no toggle and does not manage a disclosure, and no NavigationMenu component is planned.
+- **Collapse a group with `hidden`, never by unmounting it.** Its links stay in the DOM but leave the Tab sequence and the accessibility tree. The toggle that opens it is yours (a `Button` with `aria-expanded` and `aria-controls`): Navigation has no toggle and does not manage a disclosure.
 - **A horizontal bar is one level.** A nested list stays a column under its item. Give a section's sub-links a second `Navigation` with its own name. Navigation has no flyouts and no collapsing of its own.
 - **Link text** says where the link goes, in context (2.4.4 Link Purpose (In Context), A). No "click here".
 - **Two levels at most on resident pages.** A staff or CMS sidebar may go deeper, with the trail showing the way (a story shows four levels). A menu that opens and closes is not a longer list: build the toggle yourself, as above.
@@ -95,7 +95,7 @@ Headless: Navigation ships no CSS. With `@kvirn-ui/theme/theme.css`:
 - RTL: logical properties only. The nested indent and the forced-colours bar sit at the inline start (the right), and a horizontal bar starts at the right.
 - Horizontal (`kv-navigation--horizontal`): the top level is a row that wraps with gaps between items. Each item is as wide as its label, up to the row, so a longer label wraps inside its item. One level: a nested list stays an indented column under its item.
 - Collapsed groups: a `hidden` group is `display: none`, so it stays collapsed without `reset.css`.
-- Reflow and text spacing: a vertical list by default and a row that wraps in a bar, with `overflow-wrap: anywhere`. No horizontal scrolling at 320 CSS pixels wide with the Finnish fixtures, vertical and horizontal (stories with long Finnish text, vertical and horizontal; the dedicated sweep is not built yet).
+- Reflow and text spacing: a vertical list by default and a row that wraps in a bar, with `overflow-wrap: anywhere`. No horizontal scrolling at 320 CSS pixels wide with the Finnish fixtures, vertical and horizontal (stories with long Finnish text, vertical and horizontal; there is no dedicated sweep).
 
 ## WCAG SCs covered
 
@@ -112,27 +112,28 @@ Headless: Navigation ships no CSS. With `@kvirn-ui/theme/theme.css`:
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                       |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                             |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | navigation.stories.tsx, every story, 4 themes                                                                               |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | navigation.test.tsx › renders a named navigation landmark with a list of list items; expectNoA11yViolations                 |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 6 rows, each names a test (navigation.test.tsx › Tab moves through the links in DOM order, nested ones included)            |
+| Focus order and management                                                 | pass        | n/a         | pass    | navigation.test.tsx asserts focus (toHaveFocus); first rule: Tab moves through the links in DOM order, nested ones included |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                            |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                             |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                             |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                             |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                             |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                             |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                             |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                             |
 
 ## Known issues
 
-- **List semantics in Safari.** The default theme draws no list marker, and Safari (VoiceOver) drops the list semantics of such a list, so the lists carry `role="list"`. Check "list, 4 items" and the nested level in VoiceOver + Safari in the manual AT run.
-- **The trail is visual only.** The ancestors of the current page are drawn as a quiet bold trail, but never marked with `aria-current` and not announced. A screen reader user gets the hierarchy from the list nesting, and a Breadcrumb is the announced path. How well the nesting reads is part of the manual AT run, which is `pending`.
-- **A solid fill can be read as keyboard focus.** A Listbox's active option and a pressed Toggle are solid in the primary colour too. The ring sits 2 pixels outside the fill. The usability test is `pending`, and the fallback is the quiet fill with a connector line, which is its own plan.
+- **List semantics in Safari.** The default theme draws no list marker, and Safari (VoiceOver) drops the list semantics of such a list, so the lists carry `role="list"`. Check that VoiceOver in Safari says "list, 4 items" and announces the nested level.
+- **The trail is visual only.** The ancestors of the current page are drawn as a quiet bold trail, but never marked with `aria-current` and not announced. A screen reader user gets the hierarchy from the list nesting, and a Breadcrumb is the announced path. Check how well the nesting reads with your own screen reader.
+- **A solid fill can be read as keyboard focus.** A Listbox's active option and a pressed Toggle are solid in the primary colour too. The ring sits 2 pixels outside the fill. Test it with your users; the fallback is the quiet fill with a connector line.
 - **Two solid fills at once.** A header bar whose section carries `current` (`aria-current="true"`) next to a list whose page carries `"page"` draws two solid items. Whether `"true"` should draw the trail look is an open design question, and the approved rule stands as written. A bar has no second row for the trail branch either: give the section's sub-links a second `Navigation`.
 - **The trail's speed on very large trees** is not measured. The theme finds the trail with a CSS selector that looks at the children of each item, and a very large CMS tree could make it slow.
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **Keyboard tests run in Chromium only.** The keyboard rows run in Vitest browser mode on Chromium, not in WebKit. Test in Safari with your own assistive technology.
 - **The group's name is set after hydration.** `Navigation.Label` registers in a layout effect, so the nested list gets `aria-labelledby` on the client and not in the server HTML. Without JavaScript the list has no name, though the label text still comes before it in reading order.

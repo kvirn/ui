@@ -1,7 +1,5 @@
 # Prose
 
-> **Draft** (Plan 0023). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [prose.a11y.md](prose.a11y.md).
-
 Text set for reading: the `kv-prose` class as a component. It renders a `<div>`.
 
 - One part: `Prose` (also exported as `ProseRoot`; `Prose.Root` still works but is deprecated), one `<div class="kv-prose">`.

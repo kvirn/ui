@@ -48,7 +48,6 @@ export function SliderPage({
     <ComponentPage
       title="Slider"
       lead="It is the browser’s own range control, so the arrow keys, Home, End, Page Up, Page Down, dragging and sending a form work without extra code."
-      status="alpha-candidate"
       pattern="APG Slider (single thumb)"
       whenToUse={
         <ul>

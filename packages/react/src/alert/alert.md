@@ -1,7 +1,5 @@
 # Alert
 
-> **Draft** (Plan 0020). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [alert.a11y.md](alert.a11y.md), the design spec is [docs/design/alert.md](../../../../docs/design/alert.md), and the decisions are in the api-conventions skill.
-
 > **Not assertive.** Despite the name, an Alert is not `role="alert"` and does not interrupt anyone. That role is only the Announcer's assertive region. See `announce` below.
 
 A status message in the content: something people need to know now, or the result of what they just did. Use `Alert.Info`, `Alert.Success`, `Alert.Warning` or `Alert.Danger`: each shows its status with an icon, a word and a colour, never with colour alone. It doesn't announce itself unless you ask, and it never takes focus on its own.

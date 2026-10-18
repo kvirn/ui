@@ -49,7 +49,6 @@ export function SectionPage({
     <ComponentPage
       title="Section"
       lead="It gives the region its own surface and padding, and it can become a named landmark when you choose the element."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
@@ -151,7 +150,7 @@ export function SectionPage({
               <Note kind="reminder">
                 Put <code>role=&quot;list&quot;</code> on the <code>&lt;ul&gt;</code>. Safari can
                 stop announcing a list when its markers are hidden (1.3.1 Info and Relationships,
-                A). We have not checked this with VoiceOver yet.
+                A). Check it with VoiceOver in Safari.
               </Note>
             }
           >

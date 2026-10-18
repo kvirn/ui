@@ -54,7 +54,6 @@ export function CopyButtonPage({
     <ComponentPage
       title="CopyButton"
       lead="Its name never changes to “Copied”. The result shows as words next to the button, and a screen reader (software that reads the screen aloud) announces it. If the browser refuses, the text is selected so people can copy it by hand."
-      status="alpha-candidate"
       pattern="APG Button"
       whenToUse={
         <ul>

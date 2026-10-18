@@ -55,14 +55,14 @@ None. The role and name are the announcement.
 
 ### Read aloud
 
-| State or action                     | Expected phrase(s) as read aloud | Live region politeness | Test     |
-| ----------------------------------- | -------------------------------- | ---------------------- | -------- |
-| The content fits                    | the content only, no region      | none                   | none yet |
-| The content overflows               | `region, <name>`                 | none                   | none yet |
-| `region="always"`, the content fits | `region, <name>`                 | none                   | none yet |
-| Tab onto the overflowing area       | `<name>, region`                 | none                   | none yet |
+| State or action                     | Expected phrase(s) as read aloud | Live region politeness | Test |
+| ----------------------------------- | -------------------------------- | ---------------------- | ---- |
+| The content fits                    | the content only, no region      | none                   | none |
+| The content overflows               | `region, <name>`                 | none                   | none |
+| `region="always"`, the content fits | `region, <name>`                 | none                   | none |
+| Tab onto the overflowing area       | `<name>, region`                 | none                   | none |
 
-These rows are read from the DOM (role, name, state) and are not tested with `readAloud` until the `@kvirn-ui/testing/read-aloud` helper ships. The role, name and Tab stop are asserted in `scroll-area.test.tsx`. The manual AT matrix stays `pending`.
+These rows are read from the DOM (role, name, state) and are not tested with `readAloud`. The role, name and Tab stop are asserted in `scroll-area.test.tsx`.
 
 ## Consumer responsibilities
 
@@ -95,20 +95,21 @@ These rows are read from the DOM (role, name, state) and are not tested with `re
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                               |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                     |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | scroll-area.stories.tsx, every story, 4 themes                                                                                      |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | scroll-area.test.tsx › content that fits is a plain div: no role, no name, no tabindex, no data-overflowing; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 8 rows, each names a test (scroll-area.test.tsx › Tab focuses the area when it overflows)                                           |
+| Focus order and management                                                 | pass        | n/a         | pass    | scroll-area.test.tsx asserts focus (toHaveFocus); first rule: Tab focuses the area when it overflows                                |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                    |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                     |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                     |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                     |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                     |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                     |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                     |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                     |
 
 What the manual run must check: the region is announced with its name only while it scrolls, and a keyboard user can scroll it.
 

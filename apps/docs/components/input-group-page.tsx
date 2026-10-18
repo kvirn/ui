@@ -75,7 +75,6 @@ export function InputGroupPage({
     <ComponentPage
       title="InputGroup"
       lead="It draws the edge and the focus ring once, and the label still carries all the meaning."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

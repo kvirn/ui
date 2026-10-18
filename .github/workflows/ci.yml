@@ -45,11 +45,13 @@ jobs:
           cache: true
       - run: vp install
       - run: pnpm exec playwright install --with-deps chromium
+      # The type check resolves workspace packages through their built output, so build first.
+      - run: vp run build
       # Formatting is advisory: lint and types block, format drift only warns.
       - run: vp check --no-fmt
       - run: vp fmt --check
         continue-on-error: true
       - run: vp run test
+      - run: vp test run --project storybook-forced-colors && vp test run --project storybook-reduced-motion && vp test run --project storybook-reflow && vp test run --project storybook-text-spacing
       - run: vp run i18n:check
       - run: vp run theme:check
-      - run: vp run build

@@ -1,7 +1,5 @@
 # Field
 
-> **Draft.** This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [field.a11y.md](field.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md), and the decisions are in the forms skill.
-
 **KvirnUI holds no form state; bring your own form logic.** Field renders what it's given and wires it together. It doesn't validate, and it doesn't keep a value, a touched flag or an error. You set `invalid`, `required` and `disabled` from your form library (TanStack Form, React Hook Form) or from your own code, and you write the error message.
 
 A Field joins one control to its label, an optional description (a `Prose`), an optional help text (a `HelpText`) and an error message, so the accessible name, the description and the invalid state are right without you wiring ids.

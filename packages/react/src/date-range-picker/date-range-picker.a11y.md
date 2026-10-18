@@ -123,28 +123,29 @@ The phrases are the virtual screen reader's approximation, not NVDA or JAWS word
 - 2.5.3 Label in Name (A): the trigger is named by its visible text (`there is one trigger after both fields: a button named by its visible text…`).
 - 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA): the trigger and Close are Buttons with the Button's ring, the grids' ring is the Calendar's, and nothing inside is sticky. Reviewed in the stories.
 - 1.4.3 Contrast (Minimum) (AA), 1.4.11 Non-text Contrast (AA): the dialog and the grids use the Dialog's and the Calendar's colours, measured by the theme check and axe in the stories (`has no axe violations closed, and open at the start step`).
-- 1.4.10 Reflow (AA), 1.4.12 Text Spacing (AA), 2.5.8 Target Size (Minimum) (AA): not yet checked by an automated sweep; the sheet and the day cells are reviewed in the stories.
+- 1.4.10 Reflow (AA), 1.4.12 Text Spacing (AA), 2.5.8 Target Size (Minimum) (AA): not checked by an automated sweep; the sheet and the day cells are reviewed in the stories.
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                                                                                |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                                                                      |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | date-range-picker.stories.tsx, every story, 4 themes                                                                                                                                                 |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `date-range-picker.test.tsx` (axe and role, name and state): `there is one trigger after both fields: a button named by its visible text, with a hidden icon, aria-haspopup and aria-expanded false` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 23 rows, each names a test in `date-range-picker.test.tsx`                                                                                                                                           |
+| Focus order and management                                                 | pass        | n/a         | pass    | `date-range-picker.test.tsx`: `Enter on the trigger opens the dialog with focus on today when both fields are empty`                                                                                 |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                                                                                     |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                                                                      |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                                                                      |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                                                                                      |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                                                                      |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                                                                      |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                                                                      |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                                                                      |
 
 ## Known issues
 
 - Screen reader users: whether a screen reader says the finished range after focus lands on the trigger, or drops it, is unproven until the manual assistive technology tests run.
-- Screen reader users: `aria-selected` on every day between the ends may be noisy. This is also `pending` the manual assistive technology tests.
+- Screen reader users: `aria-selected` on every day between the ends may be noisy. Test it with your own screen reader users.
 - Children you pass to `DateRangePicker.Popup` stay mounted while the dialog is closed (the default Calendar does not).
-- Screen reader users: when both fields already hold a finished range, the dialog opens with an empty step line, and the grid's `aria-describedby` points at an empty description. The picker silences the completion message by blanking `rangeSelected`, which also blanks the finished-range line. Follow-up: a Calendar option to silence only the completion announcement.
+- Screen reader users: when both fields already hold a finished range, the dialog opens with an empty step line, and the grid's `aria-describedby` points at an empty description. The picker silences the completion message by blanking `rangeSelected`, which also blanks the finished-range line.

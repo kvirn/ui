@@ -1,7 +1,5 @@
 # Route focus
 
-> **Draft** (Plan 0055). The accessibility contract is [route-focus.a11y.md](route-focus.a11y.md).
-
 After a client-side navigation a keyboard or screen reader user lands on the new page's title, not on a stale focus position (WCAG 2.4.3, 4.1.3). `useRouteFocus` is a hook only: call it once in the layout, give it the router's location as `key`, and it focuses the page's `h1`.
 
 - It does nothing on the first load, on a hash-only change, when the user is typing in a field, when no target exists (a development warning says so), and on Back or Forward while `history.scrollRestoration` is `'auto'` (focus stays put, but `announce` still speaks).

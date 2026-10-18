@@ -1,7 +1,5 @@
 # CodeBlock
 
-> **Draft** (Plan 0060). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [code-block.a11y.md](code-block.a11y.md).
-
 A code sample with a label and a [CopyButton](../copy-button/copy-button.md). No syntax highlighting.
 
 - Parts: `CodeBlock.Root` (`<div>`, a `group` named by the Label while one is mounted), `CodeBlock.Label` (`<p>`), `CodeBlock.Code` (`<pre>`) and `CodeBlock.Copy` (a CopyButton). Also `CodeBlockRoot`, `CodeBlockLabel`, `CodeBlockCode` and `CodeBlockCopy`, and `useCodeBlock()`.

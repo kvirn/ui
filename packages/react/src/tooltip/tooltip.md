@@ -1,7 +1,5 @@
 # Tooltip
 
-> **Draft** (Plan 0037). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [tooltip.a11y.md](tooltip.a11y.md), and the design spec is [docs/design/tooltip.md](../../../../docs/design/tooltip.md).
-
 A short label for a control, shown when the pointer rests on it or it has keyboard focus: the name of an icon-only button, and its shortcut ("Bold Ctrl+B"). **A tooltip never holds anything a user needs.** The control has a name of its own, and the tooltip only shows it or adds a shortcut. For content a user can act on, such as a link or a short form, use a [Popover](../popover/popover.md). For help a user must read, use visible text, a [Field](../field/field.md) hint or a Details disclosure.
 
 - **Parts:** `Tooltip.Root` (no element, it owns the state), `Tooltip.Trigger` (the control: a `<button>`, or your own through `as`), `Tooltip.Popup` (`<div popover="manual" role="tooltip">`), `Tooltip.Name` and `Tooltip.Shortcut` (`<span>`). Render the popup **right after the trigger**.

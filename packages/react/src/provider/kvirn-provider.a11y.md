@@ -83,12 +83,12 @@ The provider has no strings of its own. It resolves every component's keys. Each
 - Target size: fixture radios are 24 × 24 CSS px, in labels at least 28px tall (2.5.8).
 - forced-colors behaviour: the provider keeps writing the resolved attributes. `@kvirn-ui/theme` must let the OS palette win and never override `forced-colors: active`.
 - reduced-motion behaviour: no motion. A theme change is instant, and `data-kv-motion="reduce"` stops theme transitions and animations like `prefers-reduced-motion` (AAA 2.3.3, not counted toward AA).
-- Reflow: No horizontal scrolling at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA), for the Swedish, theme-switcher, nested-locale and RTL stories.
+- Reflow: No horizontal scrolling at 320 CSS px, reviewed in the stories, not automated (1.4.10 Reflow, AA), for the Swedish, theme-switcher, nested-locale and RTL stories.
 
 ## WCAG SCs covered
 
 - 1.4.3 Contrast (Minimum), AAA 1.4.6 Contrast (Enhanced), not counted toward AA, 1.4.11 Non-text Contrast: OS preferences are honoured by default, and high contrast is user-selectable. Contrast values themselves are `@kvirn-ui/theme`'s (`theme:check`).
-- 1.4.10 Reflow: reviewed in the stories, not yet automated.
+- 1.4.10 Reflow: reviewed in the stories, not automated.
 - 3.1.1 Language of Page: consumer responsibility (`<html lang dir>`, with `getLocaleProps`), documented in the usage doc's setup.
 - 3.1.2 Language of Parts: `localeProps`, and the dev warning for a nested language change without a catalog (`kvirn-provider.test.tsx › nesting`, `a nested provider inherits unset props and changes only its section`).
 - 3.2.2 On Input: selecting a theme changes presentation only. No context change, no focus move.
@@ -97,22 +97,23 @@ The provider has no strings of its own. It resolves every component's keys. Each
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                    |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                          |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | kvirn-provider.stories.tsx, every story, 4 themes                                                                                        |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | kvirn-provider.test.tsx › uses en, ltr, UTC and the en messages; expectNoA11yViolations                                                  |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test in `use-theme.test.tsx` (use-theme.test.tsx › Tab moves focus to the checked radio of the colour-scheme group) |
+| Focus order and management                                                 | pass        | n/a         | pass    | use-theme.test.tsx › arrow keys change the radio group; focus stays and nothing is announced                                             |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                         |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                          |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                          |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                          |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                          |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                          |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                          |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                          |
 
 ## Known issues
 
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
-- **`TODO(legal-verify)`:** storing an explicitly chosen theme preference in `localStorage` is assumed to fall under the ePrivacy Art. 5(3) "strictly necessary" exemption. Not yet verified.
+- **Keyboard tests run in Chromium only.** The keyboard rows run in Vitest browser mode on Chromium, not in WebKit. Test in Safari with your own assistive technology.
+- **Storing the theme preference.** The library assumes that storing an explicitly chosen theme preference in `localStorage` falls under the ePrivacy Art. 5(3) "strictly necessary" exemption. Confirm that with your own legal advice.

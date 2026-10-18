@@ -32,7 +32,6 @@ export function AnnouncerPage({
     <ComponentPage
       title="Announcer"
       lead="A live region is a part of the page that a screen reader (software that reads the screen aloud) speaks when its text changes. You send a message with a hook, and the outermost KvirnProvider renders the regions."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

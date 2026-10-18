@@ -23,12 +23,19 @@ function Countdown({
   const text = referenceEserviceMessages[locale].timeout
   const { announce } = useAnnouncer()
   const [minutesLeft, setMinutesLeft] = useState(minutesBeforeEnd)
+  const [wasOpen, setWasOpen] = useState(open)
+
+  if (open !== wasOpen) {
+    setWasOpen(open)
+    if (open) {
+      setMinutesLeft(minutesBeforeEnd)
+    }
+  }
 
   useEffect(() => {
     if (!open) {
       return
     }
-    setMinutesLeft(minutesBeforeEnd)
     let left = minutesBeforeEnd
     const timer = setInterval(() => {
       left -= 1

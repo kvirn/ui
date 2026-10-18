@@ -241,9 +241,7 @@ const device = (
 
 const report = (
   <>
-    <p>
-      {text.report.body} <Link href="/docs#status">{text.report.statusLink}</Link>.
-    </p>
+    <p>{text.report.body}</p>
     <p>
       <Link href={githubIssues}>{text.report.action}</Link>. {text.report.privacy}
     </p>

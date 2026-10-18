@@ -82,7 +82,6 @@ export function CodeBlockPage({
     <ComponentPage
       title="CodeBlock"
       lead="In the default theme the code wraps, so there is nothing to scroll sideways. Nothing is highlighted, so no colour carries meaning."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

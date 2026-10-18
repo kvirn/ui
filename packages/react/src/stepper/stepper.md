@@ -1,7 +1,5 @@
 # Stepper
 
-> **Draft** (Plan 0083). This page moves to the docs site. The accessibility contract is [stepper.a11y.md](stepper.a11y.md) and the design spec is [docs/design/stepper.md](../../../../docs/design/stepper.md).
-
 Stepper says where the user is in a multi-page form, in one line of text: "Step 2 of 5: Your vehicle". It is a **position, not navigation**: no list, no links, no live region, not a Tab stop.
 
 Put it directly after the page heading, as its own element. Never inside the `h1`, a `label` or a `legend`: its text would join that name (a development warning says so). The Stepper adds no focus move and no announcement: the new page is carried by focus (`useRouteFocus` moves it to the heading), and the Stepper is the next thing a screen reader reads.

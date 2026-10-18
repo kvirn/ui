@@ -70,7 +70,7 @@ Toggle has no strings of its own and announces nothing: the screen reader reads 
 - Pressed (default theme): a solid fill in the primary colour with a light icon or label, flat in a toolbar. The fill reaches 3:1 against its surroundings and the icon 4.5:1 or 3:1 on the fill (1.4.1 Use of Color, A; 1.4.11 Non-text Contrast, AA). The theme's contrast check measures the pairs.
 - forced-colors behaviour: pressed uses the system's highlight colours for its fill, text and edge, so it differs from an unpressed button without colour alone (`toggle.stories.tsx › ForcedColors`).
 - reduced-motion behaviour: the fill changes instantly.
-- Reflow: a long label wraps inside the button. No horizontal scrolling at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA).
+- Reflow: a long label wraps inside the button. No horizontal scrolling at 320 CSS px, reviewed in the stories, not automated (1.4.10 Reflow, AA).
 
 ## WCAG SCs covered
 
@@ -84,22 +84,23 @@ Toggle has no strings of its own and announces nothing: the screen reader reads 
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                      |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | toggle.stories.tsx, every story, 4 themes                                                                            |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | toggle.test.tsx › is a native button with aria-pressed, off by default, and the part classes; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test (toggle.test.tsx › Tab moves to the toggle and Shift+Tab moves off it)                     |
+| Focus order and management                                                 | pass        | n/a         | pass    | toggle.test.tsx asserts focus (toHaveFocus); first rule: Tab moves to the toggle and Shift+Tab moves off it          |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                     |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                      |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                      |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                      |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                      |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                      |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                      |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                      |
 
 ## Known issues
 
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **Keyboard tests run in Chromium only.** The keyboard rows run in Vitest browser mode on Chromium, not in WebKit. Test in Safari with your own assistive technology.
 - The pressed look in the contrast themes is the same as a primary button at rest (they have no depth there). The context and `aria-pressed` tell them apart.

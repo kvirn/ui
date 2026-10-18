@@ -75,7 +75,7 @@ Headless: CopyButton ships no CSS. With `@kvirn-ui/theme/theme.css` it is a Butt
 - Focus indicator, target size, contrast, forced colours: the Button's.
 - reduced-motion behaviour: no motion.
 - Forced colours: the result words and icon use the system's text colour. RTL: the status sits at the inline end, and the icons don't mirror.
-- Reflow: No horizontal scrolling at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA). The failure text wraps below the button.
+- Reflow: No horizontal scrolling at 320 CSS px, reviewed in the stories, with no automated check (1.4.10 Reflow, AA). The failure text wraps below the button.
 
 ## WCAG SCs covered
 
@@ -88,24 +88,25 @@ Headless: CopyButton ships no CSS. With `@kvirn-ui/theme/theme.css` it is a Butt
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                   |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                         |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | copy-button.stories.tsx, every story, 4 themes                                                                          |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `copy-button.test.tsx` (axe and role, name and state): `useCopyButton gives the label and a status for your own button` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 7 rows, each names a test in `copy-button.test.tsx`                                                                     |
+| Focus order and management                                                 | pass        | n/a         | pass    | `copy-button.test.tsx`: `Enter on a refused copy selects the text and keeps focus on the button`                        |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                        |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                         |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                         |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                         |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                         |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                         |
 
 ## Known issues
 
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. WebKit is not covered by the automated tests, so check Safari with your own users and assistive technology.
 - **The status is not a live region on purpose:** the Announcer already speaks it, and a second region would say it twice. Browse mode reads the same words.
 - **Selection is not read in browse mode** by every screen reader: the failure message tells the user to copy the text themselves.
-- **fi, nb and nn strings** are drafts or placeholders for native review.
+- **fi, nb and nn strings:** have a native speaker review them before launch.

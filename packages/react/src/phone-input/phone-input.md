@@ -1,7 +1,5 @@
 # PhoneInput
 
-> **Draft.** The accessibility contract is [phone-input.a11y.md](phone-input.a11y.md), and the design spec is [docs/design/phone-and-address-inputs.md](../../../../docs/design/phone-and-address-inputs.md).
-
 A phone number in a form. A native `<input type="tel">` with the attributes a phone number needs, set once: the phone keypad, no spell-check, left to right, `autocomplete="tel"`, 20 characters wide. **It never formats**: the number is kept as the user typed, pasted or autofilled it (`070-174 06 05`, `+46 (0)70 174 06 05`), on input and on blur. Normalise it to E.164 on the server.
 
 - Renders a native `<input type="tel">`, classes `kv-input kv-input--numeric kv-phone-input`. Your `className` joins them.

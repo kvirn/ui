@@ -1,7 +1,5 @@
 # Grid
 
-> **Draft** (Plan 0108). The accessibility contract is [grid.a11y.md](grid.a11y.md).
-
 Explicit, consistent column tracks with the range of Tailwind's grid utilities: columns, spans, start and end lines, rows, gaps, flow and alignment, each responsive. Two parts: `Grid.Root` and `Grid.Item` (also exported as `GridRoot` and `GridItem`). Grid replaces Columns.
 
 - Everything is a class you add, never a prop. Root: `kv-grid--cols-1` … `-12`, `kv-grid--fit-sm|md|lg`, `kv-grid--rows-n`, `kv-grid--gap-n`, `flow-*`, `justify-*`, `items-*`, `content-*`, `place-*`. Item: `kv-grid-item--span-n`, `start-n`, `end-n`, `row-span-n`, `row-start-n`, `self-*`. The full tables are in the [theme](../../../theme/grid.css) and on the Docs page.

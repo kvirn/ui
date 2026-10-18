@@ -1,7 +1,5 @@
 # Autocomplete
 
-> **Draft** (Plan 0022). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [autocomplete.a11y.md](autocomplete.a11y.md), and the decisions are in the overlays-and-lists skill.
-
 A text field that suggests. The user types, a list of suggestions appears, and they can pick one, which fills the field, or keep what they typed. The value is the text, which may match nothing: suggestions help, they never block other text.
 
 Use an Autocomplete for a question whose answer is free text: a street, a search, a place name. When the answer must be one of the options (a municipality, a country, an occupation code), use a Combobox, where the value is the chosen option and text that matches nothing is reported as no value.

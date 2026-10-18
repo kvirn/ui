@@ -62,7 +62,6 @@ export function ToastPage({
     <ComponentPage
       title="Toast"
       lead="It doesn’t move focus, a screen reader announces it, and it stays until the user closes it unless your app turns timers on."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

@@ -101,23 +101,24 @@ Escape and the typed characters are not handled. A key an item handled already (
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                                 |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                       |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | toolbar.stories.tsx, every story, 4 themes                                                                                                            |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | toolbar.test.tsx › is a div with role="toolbar", its name and the part class, and no aria-orientation when horizontal; expectNoA11yViolations         |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 13 rows, each names a test (toolbar.test.tsx › roving tabindex › Tab enters at the control that last had focus, from before and from after)           |
+| Focus order and management                                                 | pass        | n/a         | pass    | toolbar.test.tsx asserts focus (toHaveFocus); first rule: roving tabindex › Tab enters at the control that last had focus, from before and from after |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                                      |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                       |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                       |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                                       |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                       |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                       |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                       |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                       |
 
 ## Known issues
 
 - **Before hydration every item is a Tab stop.** Items register after the first render, so until then every item has `tabindex="0"` and a server-rendered toolbar works as a row of ordinary buttons (no arrow keys yet). After registration one item keeps `0` and the others get `-1`. Test: `toolbar.test.tsx › before the items register, every item is an ordinary Tab stop`.
 - **Items are registered, not queried.** An element that is a control but not an item (a plain `<Button>` placed in the toolbar) is a Tab stop of its own and is skipped by the arrows. Test: `toolbar.test.tsx › a plain control in the toolbar is its own Tab stop and the arrows skip it`.
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **Keyboard tests run in Chromium only.** The keyboard rows run in Vitest browser mode on Chromium, not in WebKit. Test in Safari with your own assistive technology.

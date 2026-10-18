@@ -1,6 +1,6 @@
 // kv-lang-ok-file: the grid names, weekday headers and announcements are asserted in the sv locale (Intl dates and the sv catalog)
 import { sv } from '@kvirn-ui/i18n/sv'
-import { act, useState } from 'react'
+import { act, useEffect, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, onTestFinished, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -659,15 +659,17 @@ describe('language, messages and settings', () => {
   })
 
   test('a new range that moves the focused day to another month keeps focus in the grid', async () => {
-    let narrow: () => void = () => {}
+    const control = { narrow: () => {} }
     function Range() {
       const [minimum, setMinimum] = useState('2026-09-01')
-      narrow = () => setMinimum('2026-11-20')
+      useEffect(() => {
+        control.narrow = () => setMinimum('2026-11-20')
+      })
       return <Example minimum={minimum} />
     }
     await render(<Range />)
     today().element().focus()
-    await act(async () => narrow())
+    await act(async () => control.narrow())
     await expect.element(day('fredag 20 november 2026')).toHaveFocus()
   })
 

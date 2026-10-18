@@ -85,26 +85,27 @@ Rules for callers (4.1.3 Status Messages, AA):
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                      |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | announcer.stories.tsx, every story, 4 themes                                                                                         |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `announcer.test.tsx` (axe and role, name and state): `a polite and an assertive region exist, empty, as soon as the provider mounts` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 3 rows, each names a test in `announcer.test.tsx`                                                                                    |
+| Focus order and management                                                 | pass        | n/a         | pass    | `announcer.test.tsx`: `the regions are not focusable`                                                                                |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | n/a         | n/a         | n/a     | nothing is visible: the regions are clipped one-pixel boxes                                                                          |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                      |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                      |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                      |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                      |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                      |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                      |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                      |
 
 What to check by ear: a polite message is read after the current speech, an assertive one interrupts it, the same message twice is read twice, a throttled message is read once, and nothing is read twice in any screen reader and browser pair (the `role` plus `aria-live` pairing is the usual cause).
 
 ## Known issues
 
-- **Language of a message.** The regions inherit the page's `lang`. A message from a nested `KvirnProvider` with another locale is read with the page's voice. Fix later with a per-message `lang`.
-- **Latest wins.** Two messages for the same politeness inside 100 ms: the second replaces the first. There is no queue yet.
-- **Without a provider nothing is announced.** Components that announce (a masked TextInput, for example) do nothing for screen reader users when no provider is mounted. Follow-up.
+- **Language of a message.** The regions inherit the page's `lang`. A message from a nested `KvirnProvider` with another locale is read with the page's voice.
+- **Latest wins.** Two messages for the same politeness inside 100 ms: the second replaces the first. There is no queue.
+- **Without a provider nothing is announced.** Components that announce (a masked TextInput, for example) do nothing for screen reader users when no provider is mounted.
 - **Nested providers with their own `env`** (an iframe) share the outermost provider's regions, which live in the outer document.

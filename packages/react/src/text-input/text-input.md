@@ -1,7 +1,5 @@
 # TextInput
 
-> **Draft** (Plan 0013). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [text-input.a11y.md](text-input.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md), and the decisions are in the forms skill.
-
 **KvirnUI holds no form state; bring your own form logic.** TextInput is the text box of a [Field](../field/field.md): a native `<input>` for words and codes, such as a name, an email address, a phone number, a case number, a postcode or a personal identity number. It renders the `value` you give it, reports changes up through `onValueChange`, never copies the value into state of its own, and doesn't validate. Use it with TanStack Form, React Hook Form, your own `useState`, or a plain `<form>`.
 
 For a quantity or an amount, use [NumberInput](../number-input/number-input.md). For a date, use [DateInput](../date-input/date-input.md). A code with leading zeros stays a TextInput with a mask, because a number would drop the zeros (see Codes and numbers below).

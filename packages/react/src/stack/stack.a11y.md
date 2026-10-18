@@ -75,24 +75,25 @@ Headless: Stack ships no CSS. With the default theme (`@kvirn-ui/theme/theme.css
 
 - 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): a div has no role, and a `ul` or `ol` has `role="list"` (`stack.test.tsx › rendering › adds role="list" to a ul and an ol, and no role to a div`).
 - 1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A): DOM order equals reading and focus order (the keyboard rows).
-- 1.4.10 Reflow (AA): no fixed sizes (the 320 CSS px story checks that nothing scrolls sideways). 1.4.12 Text Spacing (AA): no fixed heights, by reading; no automated check yet.
+- 1.4.10 Reflow (AA): no fixed sizes (the 320 CSS px story checks that nothing scrolls sideways). 1.4.12 Text Spacing (AA): no fixed heights, by reading; no automated check covers it.
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                             |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                   |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | stack.stories.tsx, every story, 4 themes                                                          |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | stack.test.tsx › adds role="list" to a ul and an ol, and no role to a div; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | stack.test.tsx › keyboard › is not a Tab stop and keeps the children in DOM order                 |
+| Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                                       |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                  |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                   |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                   |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                   |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                   |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                   |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                   |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                   |
 
 ## Known issues
 

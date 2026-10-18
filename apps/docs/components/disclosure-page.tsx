@@ -71,7 +71,6 @@ export function DisclosurePage({
     <ComponentPage
       title="Disclosure"
       lead="Whether it is open shows as a chevron and as a state a screen reader (software that reads the screen aloud) reports, never as colour alone."
-      status="alpha-candidate"
       pattern="APG Disclosure"
       whenToUse={
         <ul>
@@ -94,7 +93,7 @@ export function DisclosurePage({
           <li>
             Not for a menu that is always shown on a wide screen and a button on a narrow one: a
             Disclosure can’t show its panel while it says it is closed, and the library has no
-            component for that yet. For a floating panel over the page, use a{' '}
+            component for that. For a floating panel over the page, use a{' '}
             <Link href="/components/popover">Popover</Link>.
           </li>
         </ul>

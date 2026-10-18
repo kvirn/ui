@@ -122,7 +122,7 @@ Headless: Alert ships no CSS. With the theme stylesheet (`@kvirn-ui/theme`):
 - Contrast: the close button's cross is drawn in the text colour and its focus ring in the focus-ring colour, on the four lightly tinted status backgrounds. Text, links, muted text, the focus ring, button edges and the status's own bar and icon (3:1) are held to their minimums on those four backgrounds by the theme's contrast check (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA). The lowest pairs are 3.13:1 and 3.32:1 in dark mode on the tinted primary background; a rebrand of the primary colours can break them first.
 - forced-colors behaviour: the alert uses the system's background, text and link colours, and all four edges are drawn in the system's text colour with the thick bar kept. The close button's icon uses the system's button-text colour and its ring the system's highlight colour. All four statuses then share one colour, so the status is carried by the icon's shape (square, circle, triangle, octagon), the status word in the accessibility tree and the title's words.
 - reduced-motion behaviour: no motion at all. It appears and disappears instantly.
-- Reflow and text spacing: no fixed sizes, nothing scrolls or is cut off, and long words hyphenate and then break; the icon stays on the title's first line. No horizontal scrolling at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA), with a long Finnish text (the `LongFinnishText` story). Text spacing grows the height and clips nothing, reviewed in the stories, not yet automated (1.4.12 Text Spacing, AA).
+- Reflow and text spacing: no fixed sizes, nothing scrolls or is cut off, and long words hyphenate and then break; the icon stays on the title's first line. No horizontal scrolling at 320 CSS px, reviewed in the stories, with no automated check (1.4.10 Reflow, AA), with a long Finnish text (the `LongFinnishText` story). Text spacing grows the height and clips nothing, reviewed in the stories, with no automated check (1.4.12 Text Spacing, AA).
 - RTL: logical properties only. The bar and icon sit on the inline start, and the close button on the inline end. Status icons never mirror, and neither does the cross.
 - Print: the thick bar (a border) and the icon print, so the status stays visible on paper. The close button is hidden in print.
 - Without the theme stylesheet: no colour, no bar, no hidden word. The icon and "Warning: …" show as plain text, which is a correct unstyled alert.
@@ -146,23 +146,24 @@ Headless: Alert ships no CSS. With the theme stylesheet (`@kvirn-ui/theme`):
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | alert.stories.tsx, every story, 4 themes                                                                      |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `alert.test.tsx` (axe and role, name and state): `the heading name starts with the status word`               |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 10 rows, each names a test in `alert.test.tsx`                                                                |
+| Focus order and management                                                 | pass        | n/a         | pass    | `alert.test.tsx`: `Enter on the close button dismisses the alert and moves focus to the heading`              |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
 ## Known issues
 
-- **4.1.3 Status Messages (AA) and the box having no role.** The criterion asks that a status message be programmatically determinable through role or properties. Here the message reaches assistive technology through the Announcer's `status` or `alert` region with the same text, and the visible box has no role. The name Alert is the component: `role="alert"` stays an implementation detail of the Announcer's assertive region, never of the box. We believe this meets the intent. The manual AT matrix must confirm it, in particular whether a polite announcement after Send is heard in time and not lost to the screen reader's own feedback on the button.
-- **Hidden status word.** The word is visually hidden, like the error message's "Error:". The planned usability test checks that people with colour-vision deficiency and in Contrast Themes tell the statuses apart by icon shape. Result: pending.
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **4.1.3 Status Messages (AA) and the box having no role.** The criterion asks that a status message be programmatically determinable through role or properties. Here the message reaches assistive technology through the Announcer's `status` or `alert` region with the same text, and the visible box has no role. The name Alert is the component: `role="alert"` stays an implementation detail of the Announcer's assertive region, never of the box. We believe this meets the intent. Test with your own users whether a polite announcement after Send is heard in time and not lost to the screen reader's own feedback on the button.
+- **Hidden status word.** The word is visually hidden, like the error message's "Error:". Test with your own users, including people with colour-vision deficiency and in Contrast Themes, that the statuses can be told apart by icon shape.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. WebKit is not covered by the automated tests, so check Safari with your own users and assistive technology.

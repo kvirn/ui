@@ -109,7 +109,6 @@ export function FieldPage({
     <ComponentPage
       title="Field"
       lead="It holds no form state and never validates: you decide when a field is invalid."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

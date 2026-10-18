@@ -96,7 +96,7 @@ Opening is announced by the focus move: the screen reader reads the role and the
 - Colour: the dialog's text keeps at least 4.5:1 contrast on its surface (1.4.3 Contrast (Minimum) (AA)). The edge is decorative, not a control boundary, so 1.4.11 Non-text Contrast (AA) asks nothing of it. The backdrop only dims.
 - forced-colors behaviour: the dialog keeps a visible edge on all sides, in the system's text colour. Open state is never shown by colour alone.
 - reduced-motion behaviour: opening fades in only without `prefers-reduced-motion: reduce`. Closing is always instant, so focus returns at once.
-- Reflow: on narrow screens the dialog is a sheet at the bottom, as wide as the screen, with no fixed width or height, and scrolls inside when it is too tall. No horizontal scrolling at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA).
+- Reflow: on narrow screens the dialog is a sheet at the bottom, as wide as the screen, with no fixed width or height, and scrolls inside when it is too tall. No horizontal scrolling at 320 CSS px, reviewed in the stories, with no automated check (1.4.10 Reflow, AA).
 - RTL: logical properties only. Close sits at the inline end and the actions start at the inline start.
 
 ## WCAG SCs covered
@@ -113,27 +113,28 @@ Opening is announced by the focus move: the screen reader reads the role and the
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | dialog.stories.tsx, every story, 4 themes                                                                                                     |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `dialog.test.tsx` (axe and role, name and state): `an open dialog is modal, has role dialog, aria-modal and data-open, and no axe violations` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 13 rows, each names a test in `dialog.test.tsx`                                                                                               |
+| Focus order and management                                                 | pass        | n/a         | pass    | `dialog.test.tsx`: `the title is an h2 that takes focus programmatically but is never a Tab stop`                                             |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                              |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                               |
 
 Also pending, by hand: whether the dialog's own live region is announced when a message arrives in the first moments after opening (it exists only while open), whether the focus move reads the name and description on every screen reader, and a second Escape without a user gesture on Safari 17 and Chromium (the `close` handler and the re-show cover it).
 
 ## Known issues
 
 - **Tab leaves to browser UI** before it wraps (approved deviation). A user who expects the APG cycle needs one more Tab.
-- **The own live region exists only while open,** so a message in the first moments may be missed. The manual AT matrix tests it.
-- **No Safari 17 or iOS run yet.** `showModal()` focus differs between engines, so an effect sets focus explicitly. The Chromium baseline is green.
+- **The own live region exists only while open,** so a message in the first moments may be missed. Test it with your own screen reader users.
+- **Tested in Chromium only.** `showModal()` focus differs between engines, so an effect sets focus explicitly. Check Safari 17 and iOS with your own users.
 - **A closed dialog's content is in the DOM** (hidden and inert, with its ids from the first render, which must be unique on the page). A dialog that unmounts while open does not return focus: the trigger usually goes with it.
 - **`aria-labelledby` and `aria-describedby` appear after the first client render** because the parts register in effects. On the server, the markup has neither.

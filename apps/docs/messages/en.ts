@@ -17,8 +17,6 @@ export const messages = {
     },
     getStartedPage: {
       lead: 'Accessible React components for public services in the Nordics and the EU. You write the markup and styles. KvirnUI gives you the behaviour, keyboard support and screen reader support, designed and tested to meet WCAG 2.2 AA.',
-      status:
-        'This is a pre-alpha version. The API will change. Don’t use KvirnUI in a live service yet.',
       whatYouGet: {
         label: 'What you get',
         body: 'Behaviour, keyboard support and screen reader support in five languages. You keep the markup and the styles.',
@@ -265,10 +263,8 @@ export const messages = {
     },
     header: {
       home: 'KvirnUI',
-      status: 'Pre-alpha',
       navLabel: 'Site',
       toolsLabel: 'Tools',
-      latest: ({ status }: { status: string }) => `Latest: ${status}`,
       tools: { github: 'GitHub' },
       accessibilitySettings: 'Accessibility settings',
       searchLabel: 'Search the documentation',
@@ -464,8 +460,7 @@ export const messages = {
       },
       report: {
         heading: 'Report a problem',
-        body: 'KvirnUI is designed and tested to meet WCAG 2.2 AA. Testing by people with assistive technology is still pending, so you may find problems.',
-        statusLink: 'See the project status',
+        body: 'KvirnUI is designed and tested to meet WCAG 2.2 AA. Test it with your own users and assistive technology, and tell us if you find a problem.',
         action: 'Report a problem on GitHub',
         privacy: 'GitHub issues are public, so don’t include personal information.',
         emailBefore: 'No GitHub account, or want to write privately? Email',
@@ -521,27 +516,6 @@ export const messages = {
     display: {
       storageNote:
         "We save your choice in this browser only. We don't use cookies or send it anywhere.",
-    },
-    status: {
-      label: 'Status',
-      planned: 'Planned',
-      inPlanning: 'In planning',
-      inProgress: 'In progress',
-      alphaCandidate: 'Alpha candidate',
-      alpha: 'Alpha',
-      beta: 'Beta',
-      stable: 'Stable',
-      plannedText: 'Not built yet.',
-      inPlanningText:
-        "Being planned, or paused. Its API and behaviour can still change, and it is not ready for review. Don't use it in a live service.",
-      inProgressText:
-        "Being built. Its API and behaviour can still change, and it is not ready for review. Don't use it in a live service.",
-      alphaCandidateText:
-        "Built, and the automated tests pass. The independent accessibility review and manual testing with assistive technology are still pending. Don't use it in a live service yet.",
-      alphaText:
-        "Automated tests and an independent accessibility review pass. Manual testing with assistive technology is pending. Don't use it in a live service yet.",
-      betaText: 'Tested with the core set of assistive technologies. The API can still change.',
-      stableText: 'The API is stable and follows semantic versioning.',
     },
     template: {
       example: 'Example',
@@ -608,6 +582,7 @@ export const messages = {
         keyboard: 'Keyboard',
         knownIssues: 'Known issues',
         announcements: 'Announcements',
+        testing: 'Testing',
       },
       accessibility: {
         whatItDoes: 'What it does for you',
@@ -659,13 +634,12 @@ export const messages = {
       licence:
         'KvirnUI is free for personal use. Any other production use needs a commercial licence.',
       claim:
-        'KvirnUI is designed to meet WCAG 2.2 AA, and tested automatically and by keyboard. Testing with assistive technology is pending.',
+        'KvirnUI is designed to meet WCAG 2.2 AA, and tested automatically and by keyboard. Test it with your own users and assistive technology before you launch.',
       claimLink: 'What this means',
       noTracking:
         'This site uses no cookies or analytics. A message sent from the contact form goes through an email service.',
       sectionsHeading: 'Sections',
       projectHeading: 'Project',
-      status: ({ status }: { status: string }) => `Status: ${status}`,
       privacy: 'Privacy',
       contact: 'Contact',
     },
@@ -768,14 +742,21 @@ export const messages = {
     facts: {
       package: 'Package',
       pattern: 'Pattern',
+      testing: 'Testing',
+      tiers: { automated: 'Automated', core: 'Core', release: 'Release' },
+      tierNotApplicable: ({ tier }: { tier: string }) => `${tier} n/a`,
+      tierProgress: ({ tier, done, total }: { tier: string; done: number; total: number }) =>
+        `${tier} ${done} of ${total}`,
+      testingSummary: ({ word, counts }: { word: string | undefined; counts: string }) =>
+        word === undefined ? counts : `${word}. ${counts}`,
     },
     icons: {
       seeAll: ({ count }: { count: number }) => `See all ${count} icons`,
       allLead: ({ count }: { count: number }) =>
         `Search ${count} icons by name or by what they mean, and copy the import line.`,
       howToUse: 'How to use icons',
-      notDone: 'The icons are not fully reviewed yet.',
-      notDoneLink: 'What is not done yet',
+      testWithUsers:
+        'Test the icons with your own users, and give every icon that carries meaning a text label.',
       searchRegion: 'Icons',
       searchLabel: 'Search the icons',
       searchHelp: 'Search by name, other names or meaning, such as “bus”, “payment” or “warning”.',

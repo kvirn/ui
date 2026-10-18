@@ -104,7 +104,6 @@ export function DateRangePickerPage({
     <ComponentPage
       title="DateRangePicker"
       lead="Typing always works: the picker is an extra way to fill in the dates, not a replacement."
-      status="alpha-candidate"
       pattern="APG Date Picker Dialog"
       whenToUse={
         <ul>

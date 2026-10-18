@@ -16,14 +16,14 @@
 
 ## 3. Decisions
 
-| #   | Decision | Reason |
-| --- | -------- | ------ |
-| a   | Icon variants: `primary`, `secondary`, `accent`, `muted`, `info`, `success`, `warning`, `danger`; default `undefined` adds no class and stays `currentColor` | Role names (DESIGN.md Colors) plus the four statuses Alert uses. `muted` because `text-muted` is a text token, not a role. No `surface`/`neutral`: an icon in `surface` on `surface` is 1:1, and neutral text is the inherited default |
-| b   | `kv-spinner--<variant>`, same eight values; the ring reads `var(--kv-spinner-variant-color, var(--kv-spinner-color))` | Context rules keep setting `--kv-spinner-color` untouched; a variant is only present when the consumer adds it, then it wins with no specificity fight. Forced colours ignore it (§5) |
-| c   | `kv-icon--stroke-1`, `kv-icon--stroke-2`, and `kv-icon--stroke-1-5`; `kv-spinner--stroke-1`, `kv-spinner--stroke-2` | 1.5 is the drawing's attribute and needs no class. `-1-5` exists for icons only, to bring a registered set drawn at another width (Lucide's 2) to the library's 1.5. It is not a cascade reset: unlayered consumer CSS beats `@layer kv` anyway. The spinner has nothing to normalise |
-| d   | `variant` is a prop on `useIcon` and `Icon` (`IconVariant` type, exported), not a provider default; stroke is classes only | Typed values, one documented choice, same shape as `size`. A provider-wide colour would tint every icon. The CSS spinner is a class-only part, so its variant is a class |
-| e   | `Icons/Loading spinner` becomes the story `LoadingSpinner` in `Icons/Library`; `color` becomes `variant`, plus a `stroke` control | One place for the library; the story-only wrapper colour taught the wrong API (§6) |
-| f   | Variants decorate; words carry meaning | 1.4.1, 1.4.11 and the 20px rule (§5) |
+| #   | Decision                                                                                                                                                     | Reason                                                                                                                                                                                                                                                                                |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| a   | Icon variants: `primary`, `secondary`, `accent`, `muted`, `info`, `success`, `warning`, `danger`; default `undefined` adds no class and stays `currentColor` | Role names (DESIGN.md Colors) plus the four statuses Alert uses. `muted` because `text-muted` is a text token, not a role. No `surface`/`neutral`: an icon in `surface` on `surface` is 1:1, and neutral text is the inherited default                                                |
+| b   | `kv-spinner--<variant>`, same eight values; the ring reads `var(--kv-spinner-variant-color, var(--kv-spinner-color))`                                        | Context rules keep setting `--kv-spinner-color` untouched; a variant is only present when the consumer adds it, then it wins with no specificity fight. Forced colours ignore it (§5)                                                                                                 |
+| c   | `kv-icon--stroke-1`, `kv-icon--stroke-2`, and `kv-icon--stroke-1-5`; `kv-spinner--stroke-1`, `kv-spinner--stroke-2`                                          | 1.5 is the drawing's attribute and needs no class. `-1-5` exists for icons only, to bring a registered set drawn at another width (Lucide's 2) to the library's 1.5. It is not a cascade reset: unlayered consumer CSS beats `@layer kv` anyway. The spinner has nothing to normalise |
+| d   | `variant` is a prop on `useIcon` and `Icon` (`IconVariant` type, exported), not a provider default; stroke is classes only                                   | Typed values, one documented choice, same shape as `size`. A provider-wide colour would tint every icon. The CSS spinner is a class-only part, so its variant is a class                                                                                                              |
+| e   | `Icons/Loading spinner` becomes the story `LoadingSpinner` in `Icons/Library`; `color` becomes `variant`, plus a `stroke` control                            | One place for the library; the story-only wrapper colour taught the wrong API (§6)                                                                                                                                                                                                    |
+| f   | Variants decorate; words carry meaning                                                                                                                       | 1.4.1, 1.4.11 and the 20px rule (§5)                                                                                                                                                                                                                                                  |
 
 ## 4. Content
 
@@ -33,14 +33,14 @@ No new strings or i18n keys. The unknown-variant dev warning is developer text, 
 
 **Icon variant classes** (theme section 10, after the size classes and before its forced-colours block):
 
-| Class               | `color:`                    | Floor measured today (`contrast-requirements.ts`)                             |
-| ------------------- | --------------------------- | ----------------------------------------------------------------------------- |
-| `kv-icon--primary`  | `var(--kv-color-primary)`   | 3:1 non-text on canvas, surface, surface-raised, primary-subtle, status bgs   |
-| `kv-icon--secondary`| `var(--kv-color-secondary)` | 3:1 non-text on the same four and the status bgs                              |
-| `kv-icon--accent`   | `var(--kv-color-accent)`    | 3:1 non-text on canvas, surface, surface-raised, primary-subtle               |
-| `kv-icon--muted`    | `var(--kv-color-text-muted)`| text floor (4.5:1, 7:1 contrast themes) on the three surfaces and every alert bg |
-| `kv-icon--info`     | `var(--kv-color-primary)`   | as primary. Its own class so a future `info` token remaps it alone (the info alert's accent is `primary` today) |
-| `kv-icon--success`, `--warning`, `--danger` | `var(--kv-color-<status>)` | text floor on the three surfaces, `primary-subtle` and their own `-subtle` |
+| Class                                       | `color:`                     | Floor measured today (`contrast-requirements.ts`)                                                               |
+| ------------------------------------------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `kv-icon--primary`                          | `var(--kv-color-primary)`    | 3:1 non-text on canvas, surface, surface-raised, primary-subtle, status bgs                                     |
+| `kv-icon--secondary`                        | `var(--kv-color-secondary)`  | 3:1 non-text on the same four and the status bgs                                                                |
+| `kv-icon--accent`                           | `var(--kv-color-accent)`     | 3:1 non-text on canvas, surface, surface-raised, primary-subtle                                                 |
+| `kv-icon--muted`                            | `var(--kv-color-text-muted)` | text floor (4.5:1, 7:1 contrast themes) on the three surfaces and every alert bg                                |
+| `kv-icon--info`                             | `var(--kv-color-primary)`    | as primary. Its own class so a future `info` token remaps it alone (the info alert's accent is `primary` today) |
+| `kv-icon--success`, `--warning`, `--danger` | `var(--kv-color-<status>)`   | text floor on the three surfaces, `primary-subtle` and their own `-subtle`                                      |
 
 - The class sets `color` only; the drawing's `stroke="currentColor"` follows. Never `stroke` or `fill`, so a two-tone registered logo keeps its child colours.
 - **Pairs:** every variant/background pair on `surface` (and canvas, surface-raised) is already required in all four themes, so **no pair is missing**. The engineer adds one named group, `iconVariantPairs`: the eight variant tokens × `plainBackgrounds` at 3:1, so the variants stay required if a token's other reason is removed (accent stops ending the gradient). Duplicates of existing pairs must not double-report.
@@ -52,12 +52,12 @@ No new strings or i18n keys. The unknown-variant dev warning is developer text, 
 
 **Stroke.** The library's `<svg>` root carries `stroke-width="1.5"` and no child sets its own (checked: none of the 257 svgs, nor the built-ins). A CSS `stroke-width` on the root beats the presentation attribute and the children inherit it.
 
-| Class                                   | Icon (root `<svg>`) | CSS spinner                       |
-| --------------------------------------- | ------------------- | --------------------------------- |
-| (none)                                  | attribute 1.5       | `--kv-spinner-stroke-units: 1.5`  |
-| `kv-icon--stroke-1` / `kv-spinner--stroke-1` | `stroke-width: 1` | `--kv-spinner-stroke-units: 1` |
-| `kv-icon--stroke-1-5`                   | `stroke-width: 1.5` | –                                 |
-| `kv-icon--stroke-2` / `kv-spinner--stroke-2` | `stroke-width: 2` | `--kv-spinner-stroke-units: 2` |
+| Class                                        | Icon (root `<svg>`) | CSS spinner                      |
+| -------------------------------------------- | ------------------- | -------------------------------- |
+| (none)                                       | attribute 1.5       | `--kv-spinner-stroke-units: 1.5` |
+| `kv-icon--stroke-1` / `kv-spinner--stroke-1` | `stroke-width: 1`   | `--kv-spinner-stroke-units: 1`   |
+| `kv-icon--stroke-1-5`                        | `stroke-width: 1.5` | –                                |
+| `kv-icon--stroke-2` / `kv-spinner--stroke-2` | `stroke-width: 2`   | `--kv-spinner-stroke-units: 2`   |
 
 - CSS spinner: `--kv-spinner-stroke: max(1px, var(--kv-spinner-size) * var(--kv-spinner-stroke-units, 1.5) / 24)`, the icon's grid scaled by the ring size. `--kv-spinner-stroke` stays a length a consumer can still set. `kv-spinner--lg` drops its `--kv-indicator-width` override and follows the formula.
 - **What the default does:** 1.25em ring, 16px text: 2px → 1.25px (−37%), the same as the icon spinner at `'20'` (loading-indicators.md §6.4). `--sm` (16px): 2px → 1px. `--lg` (48px): 4px → 3px. Button, Progress, toast and Map status get lighter. Decorative and beside words (L5), so 1.4.11 does not apply; the noticing question stays pending. `stroke-2` gives 1.67px at 20px; today's exact 2px is `--kv-spinner-stroke: 2px`.
@@ -69,11 +69,11 @@ No new strings or i18n keys. The unknown-variant dev warning is developer text, 
 
 ## 6. Storybook (`Icons/Library`)
 
-| Story                            | Change                                                                                                             |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| meta                             | args `variant: 'none'`, `stroke: '1.5'`; argTypes `variant` select (none + the eight), `stroke` select `1`, `1.5`, `2` → `kv-icon--stroke-1`, no class, `kv-icon--stroke-2`. `color`, `colorOptions` and the wrapper `<span style>` go: `variant` is passed to `Icon` |
-| `Default`, `AllIcons`, the 17 category stories, `Rtl` | Read `variant` and `stroke`; no other change                                                         |
-| `Variants` (new)                 | `info`, `success`, `warning`, `danger` icons at `'24'`, each with its name as visible text beside it; plus default and the other four. Stroke 1, 1.5, 2 rows |
+| Story                                                      | Change                                                                                                                                                                                                                                                                                                                      |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| meta                                                       | args `variant: 'none'`, `stroke: '1.5'`; argTypes `variant` select (none + the eight), `stroke` select `1`, `1.5`, `2` → `kv-icon--stroke-1`, no class, `kv-icon--stroke-2`. `color`, `colorOptions` and the wrapper `<span style>` go: `variant` is passed to `Icon`                                                       |
+| `Default`, `AllIcons`, the 17 category stories, `Rtl`      | Read `variant` and `stroke`; no other change                                                                                                                                                                                                                                                                                |
+| `Variants` (new)                                           | `info`, `success`, `warning`, `danger` icons at `'24'`, each with its name as visible text beside it; plus default and the other four. Stroke 1, 1.5, 2 rows                                                                                                                                                                |
 | `LoadingSpinner` (new, from `loading-spinner.stories.tsx`) | The animated spinner at 16, 20, 24, 48; the still arc (no `kv-animate-spinner`); in context with words ("Loading…" from the existing fixture) in a Button and a Progress line; one `dir="rtl"` row (no mirror). Controls `size`, `variant`, `stroke` drive the first. Keeps the decorative and no-`progressbar` play checks |
 
 - `loading-spinner.stories.tsx` is deleted; its ID becomes `icons-library--loading-spinner`. Update links in loading-indicators.md, Plan 0126 and the docs site.

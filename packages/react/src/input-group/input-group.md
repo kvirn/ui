@@ -1,7 +1,5 @@
 # InputGroup
 
-> **Draft** (Plan 0013, Phase 1b). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [input-group.a11y.md](input-group.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md) §6.13, and the decisions are in the forms skill.
-
 **KvirnUI holds no form state; bring your own form logic.** InputGroup renders what it's given. It keeps no value and doesn't validate: the value lives in your form state, or in the native input.
 
 An InputGroup puts a unit, a symbol, a decorative icon or a Button **inside the input's box**: "kr" after a rent, "%" after a percentage, a search icon before a query, a "Clear" Button after it.

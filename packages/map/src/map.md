@@ -1,6 +1,6 @@
 # Map
 
-> **Draft** (Plan 0117). English only for now. The accessibility contract is [map.a11y.md](map.a11y.md), and the design is in `docs/design/map.md`.
+> Map messages ship in Swedish, Finnish, Norwegian (both written standards) and English. The accessibility contract is [map.a11y.md](map.a11y.md), and the design is in `docs/design/map.md`.
 
 A Map shows where places are: a camera over a base map with a marker for each place, and the same places as a list. It draws with an engine you choose (a provider) and ships no tiles, no engine CSS and no URL.
 

@@ -39,7 +39,6 @@ export function KbdPage({ contract, sources }: { contract: Contract; sources: Kb
     <ComponentPage
       title="Kbd"
       lead="It is the native kbd element with a class, so a screen reader reads it as part of the sentence."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

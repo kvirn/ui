@@ -175,7 +175,6 @@ export function RadioGroupPage({
     <ComponentPage
       title="RadioGroup"
       lead="It names the group with a legend, and the browser’s own radio keys do the rest."
-      status="alpha-candidate"
       pattern="APG Radio Group"
       whenToUse={
         <ul>

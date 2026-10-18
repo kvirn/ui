@@ -84,9 +84,9 @@ Button has no strings of its own. Its name is its content, which the consumer pr
 - Target size: headless. The default theme makes buttons at least 24 × 24 CSS px (2.5.8), in both densities. Test: `button.stories.tsx › Default`, `› Compact density`.
 - forced-colors behaviour: a native `<button>`, so the system's `ButtonText` / `ButtonFace` apply. The disabled state isn't conveyed only by colour in the default theme: it has a dashed edge (1.4.1, `button.stories.tsx › States`).
 - Compact (`kv-button--compact`): 32px tall from 64rem, 44px below it, so it meets 2.5.8 only, like `kv-compact`. Test: `button.stories.tsx › Size` (axe, target size, same height as a compact input).
-- Link look (`kv-button--link`): at least 24px tall at every width (2.5.8), the normal focus ring (2.4.7), underlined on hover only. Disabled is `text-muted` with a dashed underline as the non-colour cue (1.4.1); on a filled top bar it is the bar's on-colour with the dashed underline. Forced colours (`ButtonText`) is checked by reading, not proved by an automated test yet (a sweep is planned). Test: `button.stories.tsx › LinkLook` (axe, target size).
+- Link look (`kv-button--link`): at least 24px tall at every width (2.5.8), the normal focus ring (2.4.7), underlined on hover only. Disabled is `text-muted` with a dashed underline as the non-colour cue (1.4.1); on a filled top bar it is the bar's on-colour with the dashed underline. Forced colours (`ButtonText`) is checked by reading, with no automated test. Test: `button.stories.tsx › LinkLook` (axe, target size).
 - reduced-motion behaviour: the button itself has no motion. The spinner of a busy button rests under reduced motion.
-- Reflow: No horizontal scrolling at 320 CSS px, reviewed in the stories, not yet automated (1.4.10 Reflow, AA).
+- Reflow: No horizontal scrolling at 320 CSS px, reviewed in the stories, with no automated check (1.4.10 Reflow, AA).
 
 ## WCAG SCs covered
 
@@ -99,21 +99,22 @@ Button has no strings of its own. Its name is its content, which the consumer pr
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                 |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                       |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | button.stories.tsx, every story, 4 themes                                                                             |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `button.test.tsx` (axe and role, name and state): `uses aria-disabled instead of disabled and stays in the Tab order` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 18 rows, each names a test in `button.test.tsx`                                                                       |
+| Focus order and management                                                 | pass        | n/a         | pass    | `button.test.tsx`: `Enter and Space activate the button and keep focus on it`                                         |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI         |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                       |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                       |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                       |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                       |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                       |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                       |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                       |
 
 ## Known issues
 
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`. Safari doesn't focus buttons on click, which doesn't affect this contract.
+- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. WebKit is not covered by the automated tests, so check Safari with your own users and assistive technology. Safari doesn't focus buttons on click, which doesn't affect this contract.

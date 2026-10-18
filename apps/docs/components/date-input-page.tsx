@@ -91,7 +91,6 @@ export function DateInputPage({
     <ComponentPage
       title="DateInput"
       lead="Each box has its own visible label, and a date of birth can be filled in by the browser. It never reads or checks the date: that is your form’s job."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

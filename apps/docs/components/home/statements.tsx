@@ -37,7 +37,6 @@ export function Why() {
         <p className="home-big">{why.big}</p>
         <div className="home-prose">
           <p>{why.ours}</p>
-          <p className="home-honesty">{why.honest}</p>
           <div className="home-actions">
             <Link href="#evidence">{why.links.evidence}</Link>
             <Link href="#start">{why.links.start}</Link>

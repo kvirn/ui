@@ -69,7 +69,6 @@ export function IconPage({
     <ComponentPage
       title="Icon"
       lead="It is hidden from screen readers unless you give it a name. It is drawn in the colour of the text around it, and its size follows the reader’s browser text-size setting."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

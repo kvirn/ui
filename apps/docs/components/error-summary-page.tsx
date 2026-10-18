@@ -111,7 +111,6 @@ export function ErrorSummaryPage({
     <ComponentPage
       title="ErrorSummary"
       lead="It takes focus once, so a screen reader can say its title and a keyboard user starts at the list."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>
@@ -247,8 +246,8 @@ export function ErrorSummaryPage({
                 The summary has no live region (a part of the page that a screen reader reads aloud
                 when it changes) on purpose: the focus move is the announcement, and adding{' '}
                 <code>role=&quot;alert&quot;</code> would read it twice. A screen reader usually
-                says only the name of a focused group, so whether it also reads the list is not yet
-                checked with a real screen reader.
+                says only the name of a focused group, so listen to it with the screen readers your
+                users have to confirm it also reads the list.
               </Note>
             ),
             focus: (

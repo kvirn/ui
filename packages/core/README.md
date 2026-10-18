@@ -12,8 +12,6 @@ These are safe to use and follow semver:
 - `createAnnouncer`: the live-region announcer, for code that isn't a React component.
 - The types that the React package re-exports or that its public props use (`MaskResult`, `FileUploadContext`, `FileUploadFailure`, `FileUploadRejection` and similar).
 
-## Not a stable API
+## Internal exports
 
-Everything else serves `@kvirn-ui/react` and can change in any release, without a major version. That includes `createMask` (write a mask as a plain definition and pass it to `Input`, which resolves it), `createComponentStore`, the theme store helpers (`createThemeStore`, `resolveTheme`, `resolveThemeOptions`, `findInvalidThemeOptions`, `isSameThemeConfiguration`), `resolveMessageNamespace`, `getLanguage`, `matchesText`, `startsWithText` and the `default*` constants.
-
-Marking them `@internal` in the types is a separate breaking change.
+Everything else serves `@kvirn-ui/react` and is not part of the public API and can change in any release, without a major version. That includes `createMask` (write a mask as a plain definition and pass it to `Input`, which resolves it), `createComponentStore`, the theme store helpers (`createThemeStore`, `resolveTheme`, `resolveThemeOptions`, `findInvalidThemeOptions`, `isSameThemeConfiguration`), `resolveMessageNamespace`, `getLanguage`, `matchesText`, `startsWithText` and the `default*` constants.

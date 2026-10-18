@@ -96,7 +96,6 @@ export function ProgressPage({
     <ComponentPage
       title="Progress"
       lead="It is shown and announced once as soon as the wait starts; set a delay for waits that are usually quick, so they never flash."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

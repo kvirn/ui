@@ -102,20 +102,21 @@ NumberInput renders the `kv-input` part of TextInput with `kv-input--numeric`, s
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                               |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                     |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | number-input.stories.tsx, every story, 4 themes                                                                                     |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | number-input.test.tsx › the label names it, the help text and the error describe it, and the state is on it; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 10 rows, each names a test (number-input.test.tsx › Tab and Shift+Tab move focus to and from the input, in DOM order)               |
+| Focus order and management                                                 | pass        | n/a         | pass    | number-input.test.tsx asserts focus (toHaveFocus); first rule: Tab and Shift+Tab move focus to and from the input, in DOM order     |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                    |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                     |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                     |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                     |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                     |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                     |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                     |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                     |
 
 Research questions for the assistive technology (AT) run: is a left-out character's message read once, after the echo, and not repeated while a key is held? Is a text box that takes digits understood as a number field by each screen reader, without the spinbutton role? Does `inputmode="numeric"` or `"decimal"` bring up the right keyboard with VoiceOver and TalkBack, and does `text` (negatives allowed) still make a minus sign reachable? Does Dragon dictate "one thousand two hundred and fifty" into the field without corruption?
 
@@ -125,6 +126,6 @@ Research questions for the assistive technology (AT) run: is a left-out characte
 - **No provider, no announcement.** `KvirnProvider` is required for announcements.
 - **Undo.** When the mask rewrites the value (writes a group separator, leaves out a character), undo can't go back past that step. Accepted, as for TextInput masks.
 - **`min` and `max` are not announced.** They are reported to your code only. Say the range in the help text.
-- **WebKit is not automated.** The keyboard rows are tested automatically in Chromium only, not in WebKit (Safari's engine), and the manual assistive technology (AT) matrix is `pending`.
+- **Keyboard tests run in Chromium only.** The keyboard rows are tested automatically in Chromium, not in WebKit (Safari's engine). Test in Safari with your own assistive technology.
 - **Right-to-left pages: a negative number.** Number masks don't set `dir="ltr"`, so in a right-to-left page the minus sign of a negative number may show on the right of the digits. Use `dir="ltr"` on the NumberInput if your page needs it. To be checked with real readers.
 - **A typed space is announced as not allowed when `grouping` is on.** The mask writes the group separator itself, so a space the user types is left out and announced (by design; whether it is noise is a question for the AT run).

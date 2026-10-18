@@ -1,7 +1,5 @@
 # Link
 
-> **Draft** (Plan 0003). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [link.a11y.md](link.a11y.md).
-
 A native `<a href>` for navigation, rendered by your router's link component when you register one. For actions, use [Button](../button/button.md).
 
 - `current` sets `aria-current`, for example `current="page"` in navigation. The other values are `step` (a step in a process), `location`, `date` and `time`; `true` gives `aria-current="true"`, and `false` or no value gives none. Link doesn't detect the current page itself.

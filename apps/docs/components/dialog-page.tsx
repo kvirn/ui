@@ -137,7 +137,6 @@ export function DialogPage({
     <ComponentPage
       title="Dialog"
       lead="The page behind it is out of reach until it closes, and focus goes back to where it was."
-      status="alpha-candidate"
       pattern="APG Dialog (Modal)"
       whenToUse={
         <ul>

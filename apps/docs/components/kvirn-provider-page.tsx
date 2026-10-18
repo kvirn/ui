@@ -588,8 +588,7 @@ export function KvirnProviderPage() {
               </ul>
               <p>
                 Check with your data protection officer that a stored preference is strictly
-                necessary for your service, and describe it in your privacy notice. The ePrivacy
-                question is still open in KvirnUI (<code>TODO(legal-verify)</code>).
+                necessary for your service, and describe it in your privacy notice.
               </p>
               <Sub {...themeScript} />
               <p>

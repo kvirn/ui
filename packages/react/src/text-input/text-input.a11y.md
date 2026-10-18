@@ -147,20 +147,21 @@ A masked TextInput announces a rejection through the shared Announcer (4.1.3 Sta
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                   |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                         |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | text-input.stories.tsx, every story, 4 themes                                                                           |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | text-input.test.tsx › the Field’s label is the name, its id links them, and the type stays text; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 19 rows, each names a test (text-input.test.tsx › Tab moves through the inputs in DOM order)                            |
+| Focus order and management                                                 | pass        | n/a         | pass    | text-input.test.tsx asserts focus (toHaveFocus); first rule: Tab moves through the inputs in DOM order                  |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                        |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                         |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                         |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                         |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                         |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                         |
 
 Research questions for the AT run: is a refused character's message read once, after the echo, and not repeated while a key is held? Does the caret stay where the user expects after the mask inserts a literal, with each screen reader? Does Dragon dictate into a masked field without corruption?
 
@@ -169,9 +170,9 @@ Also: does `inputMode="numeric"` bring up the right keyboard with VoiceOver and 
 ## Known issues
 
 - **Multi-line text is `Textarea`.** TextInput is a single line (see the Textarea page).
-- **No prefix or suffix (`kr`, `€`), no show-password button.** Not available yet. Put the unit in the label or help text.
-- **Masks: manual AT is `pending`.** The throttle (three seconds), the clear-then-set message and the caret behaviour need NVDA, VoiceOver, TalkBack and Dragon. Real IMEs, dead keys and dictation are tested by hand; the component test dispatches composition events.
+- **No prefix or suffix (`kr`, `€`), no show-password button.** Not available. Put the unit in the label or help text.
+- **Masks: test with assistive technology.** The throttle (three seconds), the clear-then-set message and the caret behaviour are worth testing with NVDA, VoiceOver, TalkBack and Dragon. Real IMEs, dead keys and dictation are tested by hand; the component test dispatches composition events.
 - **Masks: undo.** When the mask rewrites the value (inserts a literal, removes a refused character), undo can't go back past that step: writing the value clears the browser's history before it. Accepted.
 - **Masks: no provider, no announcement.** `KvirnProvider` is required for announcements.
 - **Masks: `type="email"`** has no caret control, so only `masks.email()` is supported on it.
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **Keyboard tests run in Chromium only.** The keyboard rows run in Vitest browser mode on Chromium, not in WebKit. Test in Safari with your own assistive technology.

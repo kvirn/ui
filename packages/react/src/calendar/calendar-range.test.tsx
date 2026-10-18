@@ -1,6 +1,6 @@
 // kv-lang-ok-file: the day names, range hints and announcements are asserted in the sv locale (Intl dates and the sv catalog)
 import { sv } from '@kvirn-ui/i18n/sv'
-import { act, useState } from 'react'
+import { act, useEffect, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -390,7 +390,7 @@ describe('keyboard', () => {
   })
 
   test('Enter on an impossible end with selects="end" does nothing and focus stays', async () => {
-    const onValueChange = vi.fn()
+    const onValueChange = vi.fn<(range: DateRange) => void>()
     await render(
       <Example
         selects="end"
@@ -406,7 +406,7 @@ describe('keyboard', () => {
   })
 
   test('Enter on an unavailable day does nothing and focus stays', async () => {
-    const onValueChange = vi.fn()
+    const onValueChange = vi.fn<(range: DateRange) => void>()
     await render(
       <Example isDateUnavailable={(date) => date === '2026-10-16'} onValueChange={onValueChange} />,
     )
@@ -436,7 +436,7 @@ describe('keyboard', () => {
   })
 
   test('a key with Control, Alt or Meta is left native in range mode', async () => {
-    const onValueChange = vi.fn()
+    const onValueChange = vi.fn<(range: DateRange) => void>()
     await render(<Example onValueChange={onValueChange} />)
     starts('onsdag 14 oktober 2026').element().focus()
     await userEvent.keyboard('{Control>}{Enter}{/Control}')
@@ -461,15 +461,17 @@ describe('focus when the view changes', () => {
   })
 
   test('a controlled value that moves the Tab stop keeps focus that was in the grid', async () => {
-    let change: () => void = () => {}
+    const control = { change: () => {} }
     function Outside() {
       const [value, setValue] = useState<DateRange>({ start: '2026-10-16', end: '' })
-      change = () => setValue({ start: '2026-12-03', end: '' })
+      useEffect(() => {
+        control.change = () => setValue({ start: '2026-12-03', end: '' })
+      })
       return <Example value={value} />
     }
     await render(<Outside />)
     starts('fredag 16 oktober 2026').element().focus()
-    await act(async () => change())
+    await act(async () => control.change())
     await expect.element(starts('torsdag 3 december 2026')).toHaveFocus()
   })
 })

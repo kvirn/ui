@@ -133,11 +133,11 @@ Names, not announcements, in `table`: `selectRow` ("Select"), `selectRowNumber` 
 | 1.4.1  | Use of Color (A)                  | Sort state, selection and expansion are in attributes, text and shape, never colour alone                            |
 | 1.4.10 | Reflow (AA)                       | A data table is exempt, and it scrolls inside a focusable region, named while it scrolls                             |
 | 1.4.11 | Non-text Contrast (AA)            | The default theme's focus ring and control borders, checkbox included, are held to 3:1 by the theme's contrast check |
-| 1.4.12 | Text Spacing (AA)                 | Cells have no fixed height, so spacing doesn't clip text (no automated test checks it yet)                           |
+| 1.4.12 | Text Spacing (AA)                 | Cells have no fixed height, so spacing doesn't clip text (no automated test checks it)                               |
 | 2.1.1  | Keyboard (A)                      | Every control is a native button or checkbox. The scroll region is focusable while it scrolls                        |
 | 2.4.3  | Focus Order (A)                   | Tab follows the reading order. A focused row stays rendered                                                          |
 | 2.4.7  | Focus Visible (AA)                | Every control and the scroll region show focus                                                                       |
-| 2.4.11 | Focus Not Obscured (Minimum) (AA) | The scroll padding is the sticky header's height (no automated test measures it yet)                                 |
+| 2.4.11 | Focus Not Obscured (Minimum) (AA) | The scroll padding is the sticky header's height (no automated test measures it)                                     |
 | 2.5.3  | Label in Name (A)                 | Visible text names its button: the header text, and the visible text of an expand button                             |
 | 2.5.8  | Target Size (Minimum) (AA)        | Checkboxes are 24 by 24 CSS pixels, sort and expand buttons larger                                                   |
 | 3.2.2  | On Input (A)                      | Sorting, selecting or expanding never changes context: focus stays on the control and nothing navigates or opens     |
@@ -146,26 +146,27 @@ Names, not announcements, in `table`: `selectRow` ("Select"), `selectRowNumber` 
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                             |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                   |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | table.stories.tsx, every story, 4 themes                                                                          |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | table.test.tsx › a native table named by its caption, with column headers and row headers; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 14 rows, each names a test (table.test.tsx › Tab focuses the scroll region when the table overflows)              |
+| Focus order and management                                                 | pass        | n/a         | pass    | table.test.tsx asserts focus (toHaveFocus); first rule: Tab focuses the scroll region when the table overflows    |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                  |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                   |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                   |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                   |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                   |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                   |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                   |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                   |
 
 What the manual run must check: table navigation, the header announced with each cell, `aria-sort` and the sort announcement, the checkbox names, the select-all count, `aria-rowcount` and `aria-rowindex` in a virtualized table, and whether a self-referencing `aria-labelledby` (a checkbox named by its own `aria-label` and the row header) is read the same in every combination.
 
 ## Known issues
 
-- Screen readers may differ in how they report `aria-rowcount` and `aria-rowindex`. This has not been checked with real screen readers yet (manual AT is pending).
+- Screen readers may differ in how they report `aria-rowcount` and `aria-rowindex`. Test it with the screen readers your users have.
 - A virtualized table can't be searched with find-in-page, isn't printed in full, and Tab can't reach a control in a row that isn't rendered. Pagination or a filter is the recommended default.
 - Shift+click range selection and multi-sort are not offered: each needs a key the pattern doesn't document.
-- The select-all checkbox always means every row of the table. A "this page only" variant is not offered yet.
+- The select-all checkbox always means every row of the table. A "this page only" variant is not offered.

@@ -1,69 +1,29 @@
-import {
-  Badge,
-  DefinitionListDescription,
-  DefinitionListRow,
-  DefinitionListTerm,
-} from '@kvirn-ui/react'
-import type { BadgeVariant } from '@kvirn-ui/react'
+import { DefinitionListDescription, DefinitionListRow, DefinitionListTerm } from '@kvirn-ui/react'
 import { Children, Fragment, isValidElement } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
 import { hasContent, PageContents, SectionHeading } from './page-contents.tsx'
 import type { PageSection } from './page-contents.tsx'
 import { DocsPage } from './docs-page.tsx'
+import {
+  ContractKnownIssues,
+  ContractTesting,
+  knownIssuesHeadings,
+} from './contract-sections-view.tsx'
+import type { ContractNotes } from './contract-sections-view.tsx'
 import { componentPages } from './site-sections.ts'
 import { UseCase } from './use-case.tsx'
+import type { Contract, TestTier } from '../lib/contract-parser.ts'
 
-const text = messages.docs.status
 const template = messages.docs.template
+const contractText = messages.docs.contract
 const factText = messages.docs.facts
-
-/** The roadmap's words (docs/roadmap.md): `alpha` means the gates and the independent review passed. */
-export type ComponentStatus =
-  | 'planned'
-  | 'in-planning'
-  | 'in-progress'
-  | 'alpha-candidate'
-  | 'alpha'
-  | 'beta'
-  | 'stable'
-
-const statusLabels: Record<ComponentStatus, string> = {
-  planned: text.planned,
-  'in-planning': text.inPlanning,
-  'in-progress': text.inProgress,
-  'alpha-candidate': text.alphaCandidate,
-  alpha: text.alpha,
-  beta: text.beta,
-  stable: text.stable,
-}
-
-const statusTexts: Record<ComponentStatus, string> = {
-  planned: text.plannedText,
-  'in-planning': text.inPlanningText,
-  'in-progress': text.inProgressText,
-  'alpha-candidate': text.alphaCandidateText,
-  alpha: text.alphaText,
-  beta: text.betaText,
-  stable: text.stableText,
-}
-
-const statusVariants: Record<ComponentStatus, BadgeVariant> = {
-  planned: 'neutral',
-  'in-planning': 'warning',
-  'in-progress': 'info',
-  'alpha-candidate': 'warning',
-  alpha: 'primary',
-  beta: 'primary',
-  stable: 'success',
-}
 
 export interface ComponentPageProps {
   /** The `h1`: the component's name. */
   title: string
   /** The rest of the lead: its first sentence is the page's `summary` in `site-sections.ts`. */
   lead?: string
-  status: ComponentStatus
   /** The package to install and import from. Default: `@kvirn-ui/react`. */
   packageName?: string
   /** The `Pattern` fact, such as "APG Tabs". The row is left out when a page gives none. */
@@ -143,7 +103,84 @@ function pageParts({
       ? [{ sections: contractSections, node: <Fragment key="contract">{contract}</Fragment> }]
       : []),
     ...own('api', template.api, api),
+    ...knownIssuesPart(contract),
+    ...testingPart(contract),
   ]
+}
+
+/** The page passes its `Contract` (and notes) to the sections view in `contract`: Known issues and Testing are read from there. */
+function knownIssuesPart(node: ReactNode): PagePart[] {
+  for (const child of Children.toArray(node)) {
+    if (isValidElement<{ contract?: Contract; notes?: ContractNotes }>(child)) {
+      const { contract, notes } = child.props
+      if (contract !== undefined && contract.knownIssues.length > 0) {
+        return [
+          {
+            sections: [
+              {
+                id: 'known-issues',
+                label: contractText.sections.knownIssues,
+                children: knownIssuesHeadings(contract),
+              },
+            ],
+            node: (
+              <ContractKnownIssues key="known-issues" contract={contract} notes={notes ?? {}} />
+            ),
+          },
+        ]
+      }
+    }
+  }
+  return []
+}
+
+function testingPart(node: ReactNode): PagePart[] {
+  for (const child of Children.toArray(node)) {
+    if (isValidElement<{ contract?: Contract; notes?: ContractNotes }>(child)) {
+      const { contract, notes } = child.props
+      if (contract?.accessibility.some((section) => section.id === 'testing')) {
+        return [
+          {
+            sections: [{ id: 'testing', label: contractText.sections.testing }],
+            node: <ContractTesting key="testing" contract={contract} notes={notes ?? {}} />,
+          },
+        ]
+      }
+    }
+  }
+  return []
+}
+
+/** The page passes its `Contract` to the sections view in `contract`: the status is read from there. */
+function statusOf(node: ReactNode): Contract['status'] | undefined {
+  for (const child of Children.toArray(node)) {
+    if (isValidElement<{ contract?: Partial<Contract> }>(child)) {
+      const status = child.props.contract?.status
+      if (status !== undefined) {
+        return status
+      }
+    }
+  }
+  return undefined
+}
+
+const tierOrder: readonly TestTier[] = ['automated', 'core', 'release']
+
+function testingSummary(status: Contract['status']) {
+  const counts = tierOrder
+    .filter(
+      (tier) =>
+        tier !== 'automated' || (status.counts.automated.total > 0 && status.word !== 'Automated'),
+    )
+    .map((tier) => {
+      const { done, total, notApplicable } = status.counts[tier]
+      const label = factText.tiers[tier]
+      return notApplicable
+        ? factText.tierNotApplicable({ tier: label })
+        : factText.tierProgress({ tier: label, done, total })
+    })
+    .join(', ')
+  return factText.testingSummary({ word: status.word, counts })
 }
 
 function leadText(title: string, lead: string | undefined) {
@@ -161,29 +198,28 @@ function Fact({ term, children }: { term: string; children: ReactNode }) {
 }
 
 /**
- * The component page template: the intro band with name, lead, status and facts, the contents,
- * then the fixed order of sections. A section with no content is not rendered. The status is a
- * word in a Badge, never colour alone, and the sentence under the facts says what it means.
+ * The component page template: the intro band with name, lead and facts, the contents, then the
+ * fixed order of sections. A section with no content is not rendered.
  */
 export function ComponentPage(props: ComponentPageProps) {
   const parts = pageParts(props)
-  const { status, packageName = '@kvirn-ui/react', pattern } = props
+  const { packageName = '@kvirn-ui/react', pattern } = props
+  const status = statusOf(props.contract)
   return (
     <DocsPage
       title={props.title}
       lead={leadText(props.title, props.lead)}
       facts={
         <>
-          <Fact term={text.label}>
-            <Badge variant={statusVariants[status]}>{statusLabels[status]}</Badge>
-          </Fact>
           <Fact term={factText.package}>
             <code>{packageName}</code>
           </Fact>
           {pattern === undefined ? null : <Fact term={factText.pattern}>{pattern}</Fact>}
+          {status === undefined ? null : (
+            <Fact term={factText.testing}>{testingSummary(status)}</Fact>
+          )}
         </>
       }
-      afterFacts={status === 'stable' ? null : <p className="docs-status">{statusTexts[status]}</p>}
       contents={<PageContents sections={parts.flatMap((part) => [...part.sections])} />}
     >
       {parts.map((part) => part.node)}

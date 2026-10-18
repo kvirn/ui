@@ -1,7 +1,5 @@
 # ButtonGroup
 
-> **Draft** (Plan 0035). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [button-group.a11y.md](button-group.a11y.md), and the design spec is [docs/design/rich-text-editor.md](../../../../docs/design/rich-text-editor.md) (§6.5.2).
-
 A row of related [Button](../button/button.md)s: the footer of a [Card](../card/card.md), the actions of a form, or a group in a [Toolbar](../toolbar/toolbar.md). **For a row that should be one Tab stop with the arrow keys, use a Toolbar.** Here every button is its own Tab stop, in DOM order.
 
 - Renders one `<div class="kv-button-group">`, flat: there is no `.Root`. Your `className` joins the class. In a Toolbar it is `Toolbar.Group`, the same component under the toolbar's name.

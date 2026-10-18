@@ -56,7 +56,6 @@ export function SwitchPage({
     <ComponentPage
       title="Switch"
       lead="It is built on the browser’s own checkbox, so the Space key, a click on the label and form submission work as people expect. It holds no state of its own."
-      status="alpha-candidate"
       pattern="APG Switch"
       whenToUse={
         <ul>

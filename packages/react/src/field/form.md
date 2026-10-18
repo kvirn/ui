@@ -1,7 +1,5 @@
 # Form
 
-> **Draft** (Plan 0017). The accessibility contracts are the ones of the parts: [field.a11y.md](field.a11y.md), [fieldset.a11y.md](../fieldset/fieldset.a11y.md) and each control's own. The decisions are in the forms skill.
-
 **KvirnUI holds no form state; bring your own form logic.** A form is a native `<form>` made of questions, and each question is a [Field](field.md) (one control) or a [Fieldset](../fieldset/fieldset.md) (several controls, or several questions). Nothing validates for you: your form library or your own code sets `invalid`, `required` and `disabled`, and writes the error messages.
 
 This page is the overview. It shows one short form with every control, "Apply for a resident parking permit", and says which component answers which question. A real resident service asks one thing per page.

@@ -239,7 +239,6 @@ export function TablePage({
     <ComponentPage
       title="Table"
       lead="A screen reader (software that reads the screen aloud) reads each cell together with its row and column headers. A table can also sort, select and expand rows and show long lists, and it stays a real table."
-      status="alpha-candidate"
       pattern="APG Table"
       whenToUse={
         <ul>

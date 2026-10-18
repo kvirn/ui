@@ -114,11 +114,6 @@
   line-height: var(--kv-font-lead-line-height);
 }
 
-.home-honest {
-  margin: 0;
-  font-size: var(--kv-font-body-small-size);
-}
-
 /* Moments: a photograph and a person, side by side from 64rem, alternating sides. */
 .home-moment-grid {
   display: grid;
@@ -247,11 +242,6 @@
   margin: 0 0 var(--kv-space-5);
   max-inline-size: 52ch;
   font-size: var(--kv-font-body-large-size);
-}
-
-.home-honesty {
-  padding-inline-start: var(--kv-space-4);
-  border-inline-start: 3px solid var(--kv-color-primary);
 }
 
 /* The turn from feeling to proof: text and canvas swap places. */

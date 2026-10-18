@@ -1,7 +1,5 @@
 # Popover
 
-> **Draft** (Plan 0022, Phase 2). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [popover.a11y.md](popover.a11y.md), and the decisions are in the overlays-and-lists skill.
-
 A Popover is a small floating panel that a button opens: a hint, a short form, a few controls. The browser puts it in the **top layer**, so no ancestor's `overflow` clips it and you never fight `z-index`. KvirnUI places it next to the button, flips it when there is no room, keeps it inside the viewport and lets it scroll inside when it is too tall.
 
 - Four parts: `Popover.Root` (no element, it owns the open state), `Popover.Trigger` (`<button>`), `Popover.Popup` (`<div popover="auto" role="dialog">`) and `Popover.Close` (`<button>`). Each is also exported on its own (`PopoverRoot`, `PopoverTrigger`, `PopoverPopup`, `PopoverClose`), and the hook is `usePopover`.

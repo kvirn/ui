@@ -1,7 +1,5 @@
 # Focus management
 
-> **Draft** (Plan 0085). The accessibility contract is [focus.a11y.md](focus.a11y.md).
-
 `useFocus` and `FocusScope` move, hold and return focus for your own drawer, wizard step or layout, so what you build behaves like Dialog, Menu and the docs site. Every example below is a live story.
 
 ```tsx

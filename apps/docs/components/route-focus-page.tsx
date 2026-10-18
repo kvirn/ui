@@ -55,7 +55,6 @@ export function RouteFocusPage({
     <ComponentPage
       title="Route focus"
       lead="It renders nothing. It does nothing on the first load, when only the hash changes, or while someone is typing in a field."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

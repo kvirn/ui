@@ -91,13 +91,13 @@ Opening is announced by the focus move: role "alertdialog", the name, and the de
 - Colour: the dialog's text has at least 4.5:1 contrast on its surface (1.4.3 Contrast (Minimum), AA). A destructive confirm is a danger button with the words carrying the risk, never colour alone (1.4.1 Use of Color, A).
 - forced-colors behaviour (Windows contrast themes): the dialog keeps a visible edge in the system text colour on all sides, so the open state is never shown by colour alone. Test: `alert-dialog.stories.tsx › ForcedColors`.
 - reduced-motion behaviour: opening fades in only when the user allows motion. Closing is always instant, so focus returns at once.
-- Reflow: no fixed width or height. At 320 CSS px and 400% zoom it needs no horizontal scrolling, and it scrolls inside when it is too tall (1.4.10 Reflow, AA). This is reviewed in the stories, not yet automated.
+- Reflow: no fixed width or height. At 320 CSS px and 400% zoom it needs no horizontal scrolling, and it scrolls inside when it is too tall (1.4.10 Reflow, AA). This is reviewed in the stories and has no automated check.
 - RTL: logical properties only. The actions start at the inline start. Test: `alert-dialog.stories.tsx › Rtl`.
 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships (A) and 4.1.2 Name, Role, Value (A): the role `alertdialog`, the name from the Title and the description (`alert-dialog.test.tsx › an open alert dialog is modal, has role alertdialog, a name, a description and no axe violations`).
-- 1.4.10 Reflow (AA): the sheet and the scroll inside it. Not yet automated.
+- 1.4.10 Reflow (AA): the sheet and the scroll inside it. No automated check.
 - 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A) and 2.4.3 Focus Order (A): native keys and Escape, Tab can always leave to the browser, and focus goes in on open and back on close (`alert-dialog.test.tsx › Escape reports escape, closes the alert dialog and returns focus to the trigger`).
 - 2.2.1 Timing Adjustable (A): for a timeout warning. This is the consumer's block, see Consumer responsibilities.
 - 2.4.7 Focus Visible (AA) and 2.4.11 Focus Not Obscured (Minimum) (AA): the buttons' focus ring, and nothing is pinned, so nothing covers the focused control.
@@ -107,20 +107,21 @@ Opening is announced by the focus move: role "alertdialog", the name, and the de
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                                      |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                            |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | alert-dialog.stories.tsx, every story, 4 themes                                                                                                            |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `alert-dialog.test.tsx` (axe and role, name and state): `an open alert dialog is modal, has role alertdialog, a name, a description and no axe violations` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 11 rows, each names a test in `alert-dialog.test.tsx`                                                                                                      |
+| Focus order and management                                                 | pass        | n/a         | pass    | `alert-dialog.test.tsx`: `Tab focuses the trigger, and is one stop`                                                                                        |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                                              |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                            |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                            |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                                            |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                            |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                            |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                            |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                            |
 
 Also pending, by hand: whether `aria-haspopup="dialog"` on an alert dialog's trigger is the best token, and whether the description is read out with the name on every screen reader.
 

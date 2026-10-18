@@ -93,7 +93,6 @@ export function PhoneInputPage({
     <ComponentPage
       title="PhoneInput"
       lead="It keeps the number exactly as the person wrote or pasted it. It never formats the number, and by default it never refuses what is typed."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

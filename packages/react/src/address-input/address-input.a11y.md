@@ -63,7 +63,7 @@ AddressInput has no keys of its own. Nothing is announced for accepted input, au
 
 ### Read aloud
 
-Not asserted yet: the fieldset and Field phrases are proved by `fieldset.a11y.md` and `field.a11y.md`. Draft, `pending` AT: "Your address, group" · "Street address, edit text, required" · "Address line 2 (optional), edit text, For example c/o and a name" · "Postal code, edit text, required, For example 123 45".
+Not asserted by a test: the fieldset and Field phrases are proved by `fieldset.a11y.md` and `field.a11y.md`. Expected phrases, not verified with a screen reader: "Your address, group" · "Street address, edit text, required" · "Address line 2 (optional), edit text, For example c/o and a name" · "Postal code, edit text, required, For example 123 45".
 
 ## Consumer responsibilities
 
@@ -95,20 +95,21 @@ Not asserted yet: the fieldset and Field phrases are proved by `fieldset.a11y.md
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                           |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                 |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | address-input.stories.tsx, every story, 4 themes                                                                |
+| Markup and ARIA (roles, names, ids, states)                                | pending     | n/a         | pending | `address-input.test.tsx` has no axe check                                                                       |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 6 rows, each names a test in `address-input.test.tsx`                                                           |
+| Focus order and management                                                 | pass        | n/a         | pass    | `address-input.test.tsx`: `a full postal code never moves focus, and changing country never rewrites the value` |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI   |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                 |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                 |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                 |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                 |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                 |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                 |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                 |
 
 ## Known issues
 

@@ -1,7 +1,5 @@
 # DefinitionList
 
-> **Draft.** This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [definition-list.a11y.md](definition-list.a11y.md).
-
 Rows of a term, a description and an optional action, as one native description list: the answers on a check-your-answers page, a contact card, a case card, an event. It is read-only. A description the user can edit is a Field, and the row's action is a link to where it is changed.
 
 - Six parts: `DefinitionList.Root` (`<dl>`), `.Row` (`<div>`), `.Term` (`<dt>`), `.Description` (`<dd>`), `.Actions` (`<dd>`) and `.Change` (`<a>`). Also exported as `DefinitionListRoot`, `DefinitionListRow`, `DefinitionListTerm`, `DefinitionListDescription`, `DefinitionListActions` and `DefinitionListChange`.

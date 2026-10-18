@@ -219,7 +219,6 @@ export function ListboxPage({
     <ComponentPage
       title="Listbox"
       lead="On a phone it can be the browser’s own select. With a keyboard or a screen reader, focus stays on one control while you move through the options."
-      status="alpha-candidate"
       pattern="APG Combobox (select-only)"
       whenToUse={
         <ul>
@@ -365,7 +364,7 @@ export function ListboxPage({
                 language unless the text says otherwise (3.1.2 Language of Parts), so give{' '}
                 <code>itemToLang</code> the code of each item. It sets <code>lang</code> on each
                 native option, each popup option and the chosen text in the trigger. Combobox and
-                Autocomplete don’t support it yet: their value is an input, which has one{' '}
+                Autocomplete don’t support it: their value is an input, which has one{' '}
                 <code>lang</code> for the whole text.
               </>
             }

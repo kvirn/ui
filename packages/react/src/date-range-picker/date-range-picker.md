@@ -1,7 +1,5 @@
 # DateRangePicker
 
-> **Draft.** This page moves to the docs site. The accessibility contract is [date-range-picker.a11y.md](date-range-picker.a11y.md) and the design spec is [docs/design/date-range.md](../../../../docs/design/date-range.md).
-
 One "Choose dates" button after a **From** and a **To** date. It opens a modal dialog holding a range [Calendar](../calendar/calendar.md): two months side by side from 64rem, one below. A stay, a leave or a closure can be picked in two presses instead of typed. **Typing always works**: DateRangePicker is an add-on to two typed fields, never the only way to give a range.
 
 ## When not to use

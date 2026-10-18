@@ -102,9 +102,8 @@ export function LocalesPage({
             <>
               <p>
                 English is built in and is the fallback. Import the catalog you need from its own
-                path, and only the catalogs you import are bundled. Some Swedish, Finnish and
-                Norwegian texts are drafts that a native speaker has not reviewed yet. A component
-                page lists this under Known issues when it applies to that component.
+                path, and only the catalogs you import are bundled. Have a native speaker review the
+                Swedish, Finnish and Norwegian texts you use before you launch.
               </p>
               <TableScrollRegion aria-labelledby="languages">
                 <TableRoot className="kv-table--card kv-table--striped" aria-labelledby="languages">

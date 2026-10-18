@@ -1,7 +1,5 @@
 # AlertDialog
 
-> **Draft** (Plan 0067). The accessibility contract is [alert-dialog.a11y.md](alert-dialog.a11y.md). It shares its hook and behaviour with [Dialog](../dialog/dialog.md).
-
 An AlertDialog is a Dialog for a message that needs an answer: a confirm-before-delete, a session timeout warning. It has `role="alertdialog"`, it is read out together with its description, it starts on the safe or primary action, and **a press outside never dismisses it**.
 
 - Eight parts: `AlertDialog.Root`, `.Trigger`, `.Popup`, `.Title`, `.Description`, `.Body`, `.Actions` and `.Close`, each also exported on its own (`AlertDialogRoot`, …). The hook is `useAlertDialog`. `AlertDialog.Close` is a plain `<button type="button">` that closes with `'close-press'`: its children are its name, there is no icon and no default text, and you style it (Button classes) or use your own buttons.

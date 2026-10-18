@@ -1,7 +1,5 @@
 # Dialog
 
-> **Draft.** This page moves to the docs site with the other components. The accessibility contract is [dialog.a11y.md](dialog.a11y.md), and the look is in `docs/design/dialog.md`.
-
 A Dialog is a window on top of the page that asks for the user's attention: a form, a short read, a decision. It is a native `<dialog>` shown with `showModal()`, so it is in the **top layer** (no portal, no `z-index`) and the page behind it is **inert** for the keyboard, the pointer and screen readers. Focus moves in when it opens and returns when it closes.
 
 - Eight parts: `Dialog.Root` (no element, it owns the open state), `Dialog.Trigger` (`<button>`, optional), `Dialog.Popup` (`<dialog>`), `Dialog.Title` (`<h2>`), `Dialog.Description` (`<p>`), `Dialog.Body` and `Dialog.Actions` (`<div>`) and `Dialog.Close` (`<button>`). Each is also exported on its own (`DialogRoot`, `DialogPopup`, …), and the hook is `useDialog`.

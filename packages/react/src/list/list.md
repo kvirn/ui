@@ -1,7 +1,5 @@
 # List
 
-> **Draft** (Plan 0095). The accessibility contract is [list.a11y.md](list.a11y.md).
-
 The one native list: link lists, related links, footer link groups and any other short list. `List.Root` renders `<ul class="kv-list">`, or `<ol>` with `as="ol"`, and `List.Item` renders `<li>`. There is no `List.Link`, no text and no strings.
 
 - Marker and gap are classes you add: `kv-list--bullet` or `kv-list--decimal`, and `kv-list--gap-2`, `-6` or `-8`. The default has no marker and the `space-4` step.

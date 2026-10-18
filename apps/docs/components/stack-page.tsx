@@ -44,7 +44,6 @@ export function StackPage({
     <ComponentPage
       title="Stack"
       lead="It adds no behaviour and no new meaning: the element you choose decides what a screen reader says."
-      status="alpha-candidate"
       whenToUse={
         <ul>
           <li>

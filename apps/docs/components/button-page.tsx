@@ -51,7 +51,6 @@ export function ButtonPage({
     <ComponentPage
       title="Button"
       lead="It never sends a form by accident. A disabled button can stay reachable with the keyboard, so people can still find it and read why."
-      status="alpha-candidate"
       pattern="APG Button"
       whenToUse={
         <ul>

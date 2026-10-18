@@ -94,7 +94,6 @@ export function PopoverPage({
     <ComponentPage
       title="Popover"
       lead="It sits next to the button, stays inside the screen, and closes with Escape or a press outside."
-      status="alpha-candidate"
       pattern="None exactly: APG Disclosure for the button, Dialog (Modal) roles for the popup, used non-modal"
       whenToUse={
         <ul>

@@ -104,7 +104,7 @@ An option holds any markup. `Autocomplete.OptionIcon`, `OptionText`, `OptionDesc
 - **Navigate the data, not the DOM.** The arrows and Page Up and Page Down move through the whole list of suggestions (2.1.1 Keyboard (A); `autocomplete-virtual.test.tsx › virtualized: PageDown and PageUp move ten suggestions that may not be rendered`). Home and End still move the caret.
 - **Expose the full size.** Every rendered suggestion has `aria-setsize` and `aria-posinset`, and the size follows each keystroke (1.3.1 Info and Relationships (A); `autocomplete-virtual.test.tsx › typing opens a list of 10 000 suggestions that mounts only a window`, `autocomplete-virtual.test.tsx › virtualized: typing narrows the suggestions, and the size of the set follows`).
 - **Flat lists only, off by default, inline geometry only.** As in the Combobox: `groups` render in full with a development warning, unrendered suggestions can't be found with find in page or printed, and the list is the scroll element with a sizer inside it.
-- **Screen-reader support varies.** The manual testing with assistive technology covers it before `beta` and is `pending`.
+- **Screen-reader support varies.** Test it with the screen readers your users have.
 
 ## Announcements
 
@@ -143,26 +143,27 @@ As the Combobox's, including the focus indicator. On keyboard focus, and on any 
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                       |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                             |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | autocomplete.stories.tsx, every story, 4 themes                                                                             |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `autocomplete.test.tsx` (axe and role, name and state): `the Field’s label names the input, and the help text describes it` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 33 rows, each names a test in `autocomplete.test.tsx`                                                                       |
+| Focus order and management                                                 | pass        | n/a         | pass    | `autocomplete.test.tsx`: `typing opens the popup with the matching suggestions, and focus stays on the input`               |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                            |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                             |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                             |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                             |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                             |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                             |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                             |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                             |
 
 Questions for the manual testing with assistive technology: is the suggestion count read once, after typing stops, and not over the typed letters? Is a picked suggestion read as the input's new value? Does a screen reader user understand that other text is allowed, or should the help text say so? Does `aria-activedescendant` read each suggestion on VoiceOver (macOS and iOS) and TalkBack?
 
 ## Known issues
 
-- **`aria-activedescendant` on VoiceOver and TalkBack** has known gaps. Someone using VoiceOver (Apple's screen reader) or TalkBack (Android's) may not hear the highlighted suggestion read. There is no native rendering, so the manual testing must cover iOS and Android before `beta`.
+- **`aria-activedescendant` on VoiceOver and TalkBack** has known gaps. Someone using VoiceOver (Apple's screen reader) or TalkBack (Android's) may not hear the highlighted suggestion read. There is no native rendering, so test on iOS and Android with your users.
 - **Filtering after a pick.** After a suggestion is picked the list stays filtered by it until the text changes, so ArrowDown then shows the suggestions that contain that text. Empty the text to see them all.
 - **Virtualization is opt-in and has limits.** Suggestions that are not drawn can't be found with find in page or printed. See Virtualization above.
-- **WebKit is not automated.** The keyboard tests run in Chromium only. Safari's engine (WebKit) is not tested automatically, and the manual testing with assistive technology is `pending`. `popover="manual"`, the outside press and Escape must be checked on Safari 17.
+- **WebKit is not automated.** The keyboard tests run in Chromium only. Safari's engine (WebKit) is not tested automatically. Check `popover="manual"`, the outside press and Escape on Safari 17 yourself.

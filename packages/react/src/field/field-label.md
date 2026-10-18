@@ -1,7 +1,5 @@
 # Field.Label
 
-> **Draft** (Plan 0017). The accessibility contract is [field.a11y.md](field.a11y.md), shared with Field. The Field it sits in is described in [field.md](field.md).
-
 The visible label of one control: a native `<label for>` that names the control, and the click target that focuses it. Use it first inside a [Field](field.md). A group of controls takes a `Legend` instead ([Fieldset](../fieldset/fieldset.md), [RadioGroup](../radio-group/radio-group.md), [CheckboxGroup](../checkbox-group/checkbox-group.md)). A placeholder is never a label.
 
 - The Field links the label to the control, so you write no `for` and no `id`.

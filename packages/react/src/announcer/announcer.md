@@ -1,7 +1,5 @@
 # Announcer
 
-> **Draft** (Plan 0014). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [announcer.a11y.md](announcer.a11y.md).
-
 The shared way to tell a screen reader that something changed, without moving focus (WCAG 4.1.3 Status Messages): a count of results, a saved form, a rejected character, a finished upload.
 
 - `useAnnouncer()` returns `{ announce }`. Call `announce(message, options)` from an event handler or an effect.

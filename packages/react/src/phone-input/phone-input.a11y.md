@@ -89,25 +89,26 @@ PhoneInput looks like a TextInput, 20 characters wide and never wider than its c
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                   |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                         |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | phone-input.stories.tsx, every story, 4 themes                                                          |
+| Markup and ARIA (roles, names, ids, states)                                | pending     | n/a         | pending | the test has no axe check                                                                               |
+| Keyboard contract rows (Vitest browser)                                    | pending     | n/a         | pending | rows are tested on TextInput without a mask, not on PhoneInput                                          |
+| Focus order and management                                                 | pass        | n/a         | pass    | phone-input.test.tsx asserts focus (toHaveFocus); first rule: Tab moves through the inputs in DOM order |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                        |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                         |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                         |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                         |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                         |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                         |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                         |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                         |
 
 ## Known issues
 
 - **No mask by default.** The `telephone` mask refuses Unicode digits (Eastern Arabic, full-width) and a dot, so a correctly typed number could be refused. Until the core mask maps them, `mask="telephone"` is the consumer's explicit choice.
 - **Extensions.** With `mask="telephone"`, letters ("ankn. 123") are left out. Without a mask they are kept.
-- **The select is optional.** Without a `PhoneInput.Country` one box takes `+358 …`. Whether autofill fills the select from `tel-country-code` depends on the browser, since an option's text is the country name and its code, such as `Sweden (+46)`: pending the AT run.
+- **The select is optional.** Without a `PhoneInput.Country` one box takes `+358 …`. Whether autofill fills the select from `tel-country-code` depends on the browser, since an option's text is the country name and its code, such as `Sweden (+46)`. Test it in the browsers your users have.
 - **`tel-national` is set after mount.** The Number learns of the Country part in an effect, so server-rendered markup has `tel` until hydration.
-- **WebKit is not automated.** The manual AT matrix is `pending`.
+- **Keyboard tests run in Chromium only.** Test in Safari with your own assistive technology.

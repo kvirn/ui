@@ -1,7 +1,5 @@
 # Tabs
 
-> **Draft** (Plan 0048). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [tabs.a11y.md](tabs.a11y.md), the design spec is [docs/design/tabs.md](../../../../docs/design/tabs.md), and the decisions are in Plan 0048.
-
 Tabs show one panel of content at a time, with a list of tabs to switch between them. Use them for parallel views of one thing on one page: the details, the documents and the history of a case. For links to other pages, use [Navigation](../navigation/navigation.md) with `kv-navigation--horizontal`: a tab never navigates and never changes the URL. For content that everyone should read in one go, use headings and sections instead.
 
 - Renders a `<div class="kv-tabs">` with a `<div role="tablist">`, a `<button role="tab">` for each tab and a `<div role="tabpanel">` for each panel. **Name the list** with `aria-label` or `aria-labelledby` when a page has more than one.

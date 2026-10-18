@@ -47,7 +47,6 @@ export function CheckboxPage({
     <ComponentPage
       title="Checkbox"
       lead="It is a native checkbox, so the browser handles the Space key, clicking the label and sending the form. It keeps no form state of its own."
-      status="alpha-candidate"
       pattern="APG Checkbox (two-state and mixed)"
       whenToUse={
         <ul>

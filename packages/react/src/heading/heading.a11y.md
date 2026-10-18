@@ -59,20 +59,21 @@ Right to left and forced colours: a heading sets no directional or background st
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                  |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                        |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | heading.stories.tsx, every story, 4 themes                                                                                             |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `heading.test.tsx` (axe and role, name and state): `adds only its classes, no role or ARIA, and passes attributes and the ref through` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 1 rows, each names a test in `heading.test.tsx`                                                                                        |
+| Focus order and management                                                 | n/a         | n/a         | n/a     | a heading is not focusable by itself                                                                                                   |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                       |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                        |
+| NVDA + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<h1>` to `<h6>` with its own heading role; only classes added, no state, focus or key handling; nothing to operate             |
+| VoiceOver + Safari + iOS                                                   | n/a         | n/a         | n/a     | native `<h1>` to `<h6>` with its own heading role; only classes added, no state, focus or key handling; nothing to operate             |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                        |
+| JAWS + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<h1>` to `<h6>` with its own heading role; only classes added, no state, focus or key handling; nothing to operate             |
+| TalkBack + Chrome + Android                                                | n/a         | n/a         | n/a     | native `<h1>` to `<h6>` with its own heading role; only classes added, no state, focus or key handling; nothing to operate             |
+| VoiceOver + Safari + macOS                                                 | n/a         | n/a         | n/a     | native `<h1>` to `<h6>` with its own heading role; only classes added, no state, focus or key handling; nothing to operate             |
 
 ## Known issues
 

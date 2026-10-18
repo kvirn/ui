@@ -94,20 +94,21 @@ None. Nothing is live. The Input's name, description and state are read on focus
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                            |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                  |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | input-group.stories.tsx, every story, 4 themes                                                                                   |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | input-group.test.tsx › the Addon is aria-hidden and out of the accessibility tree; expectNoA11yViolations                        |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test (input-group.test.tsx › Tab goes to the input, then to the Button, and Shift+Tab goes back)            |
+| Focus order and management                                                 | pass        | n/a         | pass    | input-group.test.tsx asserts focus (toHaveFocus); first rule: Tab goes to the input, then to the Button, and Shift+Tab goes back |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                 |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                  |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                  |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                  |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                  |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                  |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                  |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                  |
 
 Research questions for the AT run: do screen-reader users know the unit from the label alone, with the Addon hidden? Is a screen reader's "click" or touch exploration on the Addon harmless? Do users type the unit ("kr", "%") anyway? Does a Voice Control user reach the clear Button by its visible name?
 
@@ -115,4 +116,4 @@ Research questions for the AT run: do screen-reader users know the unit from the
 
 - **Autofill covers only the Input.** The browser's autofill fill doesn't paint behind an Addon. Known browser behaviour, accepted.
 - **A Button's transparent edges show in forced colours,** so it looks like a bordered button attached to the inside of the box. Accepted: it's the shape Contrast Themes users expect of a button.
-- **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. A WebKit run is not automated, and the manual AT matrix is `pending`.
+- **Keyboard tests run in Chromium only.** The keyboard rows run in Vitest browser mode on Chromium, not in WebKit. Test in Safari with your own assistive technology.

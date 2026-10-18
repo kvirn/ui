@@ -82,22 +82,23 @@ The focused `h1` is read by the screen reader. `announce` is off by default, so 
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
-| **Component-specific**                   |             |             |         |       |
-| Next.js announcer doubled or not         | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | route-focus.stories.tsx, every story, 4 themes (apps/storybook/src/components/focus/)                                         |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | use-route-focus.test.tsx › first load does not move focus or touch the title; expectNoA11yViolations                          |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 3 rows, each names a test (use-route-focus.test.tsx › keyboard › Tab after a navigation continues after the title)            |
+| Focus order and management                                                 | pass        | n/a         | pass    | use-route-focus.test.tsx asserts focus (toHaveFocus); first rule: keyboard › Tab after a navigation continues after the title |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | n/a         | n/a         | n/a     | draws nothing itself; the focus ring on the focused h1 is the theme's general focus rule                                      |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                               |
+| **Component-specific**                                                     |             |             |         |                                                                                                                               |
+| Next.js announcer doubled or not                                           | pending     | pending     | pending |                                                                                                                               |
 
 ## Known issues
 

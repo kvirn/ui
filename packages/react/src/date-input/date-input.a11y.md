@@ -1,6 +1,6 @@
 # Accessibility contract: DateInput (DateInput.Root, DateInput.Day, DateInput.Month, DateInput.Year)
 
-- **APG pattern:** none. There is no APG pattern for a date field made of text boxes. A date is a group of three labelled text inputs inside a `<fieldset>` with a `<legend>`, which is the pattern the GOV.UK Design System and other public-sector design systems use. Each box is a native input with its own label, so the browser can autofill it and dictation and screen readers can address it; how each assistive technology does so is in the AT test record, `pending`. The one-field alternative, a `TextInput` with `masks.date()`, is preferred for most dates; the boxes stay supported.
+- **APG pattern:** none. There is no APG pattern for a date field made of text boxes. A date is a group of three labelled text inputs inside a `<fieldset>` with a `<legend>`, which is the pattern the GOV.UK Design System and other public-sector design systems use. Each box is a native input with its own label, so the browser can autofill it and dictation and screen readers can address it; how each assistive technology does so is recorded in the AT test record as it is tested. The one-field alternative, a `TextInput` with `masks.date()`, is preferred for most dates; the boxes stay supported.
 - **Deviations:** none from APG. One deviation from the keyboard practice, approved by the maintainer (2026-10-04): **focus moves to the next box when the user's typing fills a box** (auto-advance), on by default, `autoAdvance={false}` turns it off. The practice says typing never moves focus (3.2.2 On Input (A)), so six guards and a visible hint make it predictable, and DateInput is the only exception (OneTimeCode, TextInput and every other control keep "typing never moves focus"). Decisions: three native text inputs, never `type="date"`; the order follows the region through `Intl` and a month-first result becomes day first; three Tab stops, no arrow-key stepping; the consumer writes the date example; `Fieldset.Root`'s `invalid` does not cascade, each box has its own `invalid`.
 - **Native elements used:** `<fieldset>` and `<legend>` (the consumer's `Fieldset.Root` and `Fieldset.Legend`), `<div>` (`DateInput.Root`, and one per box), `<label for>` (the box label), `<input type="text">` with `inputmode="numeric"` (the boxes).
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`, including how screen readers announce the focus move.
@@ -75,7 +75,7 @@ All native, with one addition: DateInput handles no keys and never calls `preven
 
 ## Announcements
 
-None. Nothing is live. In English, on entering the first box a screen reader reads the legend, "group", the group's description (the auto-advance hint "Focus moves to the next box when a box is full.", the consumer's example and, when invalid, "Error: …"); then the box's label, "edit text" and its state. Moving to the next box, by Tab or by the auto-advance, reads its label only: the focus move is announced as a new field. Whether that is clear enough while typing fast is an AT-matrix question (`pending`).
+None. Nothing is live. In English, on entering the first box a screen reader reads the legend, "group", the group's description (the auto-advance hint "Focus moves to the next box when a box is full.", the consumer's example and, when invalid, "Error: …"); then the box's label, "edit text" and its state. Moving to the next box, by Tab or by the auto-advance, reads its label only: the focus move is announced as a new field. Whether that is clear enough while typing fast depends on the screen reader: test it with your users.
 
 ## Consumer responsibilities
 
@@ -95,7 +95,7 @@ None. Nothing is live. In English, on entering the first box a screen reader rea
 - Focus indicator: the TextInput's own, a ring at least 2 pixels thick with at least 3:1 contrast against its surroundings (2.4.13 Focus Appearance, AAA), on the focused box.
 - Target size: each box is as high as a TextInput and wide enough for its digits, above the 24 by 24 pixel minimum of 2.5.8 Target Size (Minimum) (AA), also in the compact density. The year box is wider than day and month.
 - Colour: an invalid box takes the TextInput's invalid state, a thicker edge in the error colour with no shift of the text, plus the group's message (never colour alone, 1.4.1 Use of Color (A)). A disabled box has a dashed edge; a read-only box has a solid edge.
-- Forced colours (a user's high-contrast mode): the TextInput's system colours; every box keeps a visible edge and the message stays visible. That an invalid box's edge is thicker than a valid one's is reviewed by eye and in the Windows Contrast Themes row of the assistive technology record, not asserted by a test.
+- Forced colours (a user's high-contrast mode): the TextInput's system colours; every box keeps a visible edge and the message stays visible. That an invalid box's edge is thicker than a valid one's is reviewed by eye and in Windows Contrast Themes, not asserted by a test.
 - Reduced motion: no motion of its own.
 - Right to left: the boxes flow right to left in the order of the page, and digits stay left to right.
 
@@ -114,20 +114,21 @@ None. Nothing is live. In English, on entering the first box a screen reader rea
 
 ## AT test record
 
-| AT + browser + OS                        | Agent check | Human check | Result  | Notes |
-| ---------------------------------------- | ----------- | ----------- | ------- | ----- |
-| **Core (required for beta)**             |             |             |         |       |
-| Windows Contrast Themes + Edge           | pending     | pending     | pending |       |
-| Keyboard only / 400% zoom / 320px reflow | pending     | pending     | pending |       |
-| VoiceOver + Safari + macOS               | pending     | pending     | pending |       |
-| VoiceOver + Safari + iOS                 | pending     | pending     | pending |       |
-| TalkBack + Chrome + Android              | pending     | pending     | pending |       |
-| NVDA + Chrome + Windows                  | pending     | pending     | pending |       |
-| NVDA + Firefox + Windows                 | pending     | pending     | pending |       |
-| Narrator + Edge + Windows                | pending     | pending     | pending |       |
-| **Release (before 1.0 and each minor)**  |             |             |         |       |
-| JAWS + Chrome + Windows                  | pending     | pending     | pending |       |
-| Dragon / Voice Control                   | pending     | pending     | pending |       |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                    |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                          |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | date-input.stories.tsx, every story, 4 themes                                                                                            |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `date-input.test.tsx` (axe and role, name and state): `the group is named by its legend and each box by its label`                       |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 11 rows, each names a test in `date-input.test.tsx`                                                                                      |
+| Focus order and management                                                 | pass        | n/a         | pass    | `date-input.test.tsx`: `typing the last digit of a box moves focus to the next box: year, month, day for sv-SE, and never from the last` |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                         |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                          |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                          |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                          |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                          |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                          |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                          |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                          |
 
 Research questions for the AT run: do NVDA, JAWS, VoiceOver and TalkBack users who type fast notice the auto-advance (the label is read on arrival), and do they hear the hint on entering the group? Does dictating digits ("one nine nine zero") behave? Do NVDA, JAWS and VoiceOver announce the group name and its hint on the first box? Is the group's error read on entering the group when only one box is marked invalid, or does the box need its own link to the error? Do Swedish residents (year first) and Finland-Swedish residents (day first) both complete the date without errors in their own order?
 

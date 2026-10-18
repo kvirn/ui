@@ -1,7 +1,5 @@
 # Fieldset
 
-> **Draft** (Plan 0013). This page moves to the docs site once `apps/docs` has a content system. The accessibility contract is [fieldset.a11y.md](fieldset.a11y.md), the design spec is [docs/design/form-fields.md](../../../../docs/design/form-fields.md), and the decisions are in the forms skill.
-
 **KvirnUI holds no form state; bring your own form logic.** Fieldset renders what it's given. `invalid`, `required` and `disabled` come from your form library or your own code, and you write the error message.
 
 A native `<fieldset>` with a `<legend>`: it groups related questions (an address) or the controls of one question (the options of a radio group, the three boxes of a date), under one accessible name. Its description, help text and error describe the group.
