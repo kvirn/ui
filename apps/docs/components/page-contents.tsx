@@ -8,8 +8,8 @@ import { DocsPage } from './docs-page.tsx'
 
 const text = messages.docs.contents
 
-/** One more `h2` means a second page: 8 entries still fit one 320 x 640 screen (docs-component-page.md §5). */
-export const maxContentsEntries = 8
+/** One more `h2` means a second page: 9 entries still fit one 320 x 640 screen (docs-component-page.md §5). */
+export const maxContentsEntries = 9
 
 export interface PageSection {
   id: string

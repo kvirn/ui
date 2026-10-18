@@ -130,7 +130,7 @@ Shown only when a row's politeness is `polite` or `assertive` (an Announcer mess
 - **Every page with an h2 has it**, in the same place: after the lead (and the status on a component page), before the first h2; a third column from 80rem. The 404 page has no h2s, so it has none: `TableOfContents.Root` renders nothing for empty `items`, and `PageContents` must not render its title alone either.
 - **Always h2s only**, from the same `sections` list that gives the headings their ids, so the list and the headings can't drift.
 - **Home:** What you get · Components · Start here (gains Installation) · What "designed and tested to meet WCAG 2.2 AA" means. **Foundation topic pages** (Theming, Colour, Typography): their own h2s, no fixed set. **KvirnProvider** and other Foundation pages with a contract use the component template. **Reference pages** (for example all message keys): one h2 per group.
-- **Page length, one rule: at most 8 entries in "On this page".** A ninth h2 means a second page (8 × 44px + title still fits one 320 × 640 screen). Use cases are capped at 8 for the same reason.
+- **Page length, one rule: at most 9 entries in "On this page".** A tenth h2 means a second page (9 × 44px + title still fits one 320 × 640 screen). A full component page has 9 once Testing is its own h2. Use cases stay capped at 8.
 
 ## 6. Data contract (no new dependency)
 
