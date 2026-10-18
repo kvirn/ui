@@ -2995,6 +2995,16 @@
       "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.rss"
+    },
+    {
+      "name": "settings-6",
+      "category": "interface",
+      "aliases": ["cog-6", "gear-6"],
+      "tags": ["settings", "preferences", "options", "configure", "gear", "cog"],
+      "meaning": "Settings, a variant of `settings`: a gear with six teeth around a hub (the same meaning, a lighter gear for consumers who prefer it).",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
     }
   ]
 }

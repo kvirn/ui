@@ -1,6 +1,6 @@
 # Icon catalogue
 
-Every icon of `@kvirn-ui/icons`: **289 icons in 18 categories, all drawn, none planned**. Priority (1 to 3) ordered the drawing until an icon was drawn, and is removed from a drawn icon, so the Priority column is `–` throughout.
+Every icon of `@kvirn-ui/icons`: **290 icons in 18 categories, all drawn, none planned**. Priority (1 to 3) ordered the drawing until an icon was drawn, and is removed from a drawn icon, so the Priority column is `–` throughout.
 
 ## How the catalogue is used
 
@@ -17,7 +17,7 @@ Every icon of `@kvirn-ui/icons`: **289 icons in 18 categories, all drawn, none p
 | 1   | Direction and movement         | `direction`            | 14      | 0       | 14      |
 | 2   | Actions                        | `actions`              | 21      | 0       | 21      |
 | 3   | Status and feedback            | `status`               | 10      | 0       | 10      |
-| 4   | Interface controls             | `interface`            | 25      | 0       | 25      |
+| 4   | Interface controls             | `interface`            | 26      | 0       | 26      |
 | 5   | Text editing                   | `text-editing`         | 27      | 0       | 27      |
 | 6   | Tables and data                | `tables-data`          | 11      | 0       | 11      |
 | 7   | Documents and files            | `documents`            | 17      | 0       | 17      |
@@ -32,7 +32,7 @@ Every icon of `@kvirn-ui/icons`: **289 icons in 18 categories, all drawn, none p
 | 16  | Leisure, culture and community | `leisure-culture`      | 10      | 0       | 10      |
 | 17  | Language and access            | `access-language`      | 14      | 0       | 14      |
 | 18  | Social media                   | `social`               | 8       | 0       | 8       |
-|     | **All**                        |                        | **289** | **0**   | **289** |
+|     | **All**                        |                        | **290** | **0**   | **290** |
 
 ## Direction and movement
 
@@ -120,6 +120,7 @@ Menus, settings, views, visibility and media controls in an interface.
 | `pause`           | –                                             | drawn  | –        | no  | none                     | Pause playback: two upright bars.                                                                                      |
 | `play`            | `resume`                                      | drawn  | –        | no  | none                     | Start or resume playback: a triangle pointing right, which follows the media, not the script.                          |
 | `settings`        | `cog`, `gear`                                 | drawn  | –        | no  | none                     | Settings: a gear with eight teeth around a hub.                                                                        |
+| `settings-6`      | `cog-6`, `gear-6`                             | drawn  | –        | no  | none                     | Settings, a lighter variant: a gear with six teeth around a hub.                                                       |
 | `skip-next`       | `next-track`, `media-next`                    | drawn  | –        | no  | none                     | Skip to the next item in media: a play triangle against a bar.                                                         |
 | `skip-previous`   | `previous-track`, `media-previous`            | drawn  | –        | no  | none                     | Back to the previous item in media: a play triangle against a bar, the mirror of skip-next.                            |
 | `sort`            | –                                             | drawn  | –        | no  | none                     | Sortable, not sorted yet: an up arrow and a down arrow side by side.                                                   |

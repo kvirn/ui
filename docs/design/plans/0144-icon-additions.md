@@ -66,6 +66,8 @@ New category for C, D and E (not `rss`): `social` ("Social media", marks of netw
 - [ ] Final gates once: `vp check` → `vp run test` → `vp run i18n:check` → `vp run theme:check`; fix tests that hard-code the count
 - [ ] accessibility-reviewer on the diff
 
+- Decision: `settings-6` (a six-tooth `settings`, category `interface`, no label, no RTL mirror) added by the maintainer 2026-10-19; count 290. The evenly spaced gear (side teeth at slope 3:5) is a proposed grid exception, maintainer to confirm.
+
 ## Risks
 
 - Brand marks at 24px one-stroke can lose their identity (Instagram, TikTok, Bluesky); the iconographer may report PARTIAL with the reason rather than force a bad mark.

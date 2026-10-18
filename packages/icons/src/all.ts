@@ -222,6 +222,7 @@ import { search } from './icons/search.ts'
 import { send } from './icons/send.ts'
 import { serviceDesk } from './icons/service-desk.ts'
 import { settings } from './icons/settings.ts'
+import { settings6 } from './icons/settings-6.ts'
 import { share } from './icons/share.ts'
 import { shield } from './icons/shield.ts'
 import { sickLeave } from './icons/sick-leave.ts'
@@ -514,6 +515,7 @@ export const allIcons = {
   send: send,
   'service-desk': serviceDesk,
   settings: settings,
+  'settings-6': settings6,
   share: share,
   shield: shield,
   'sick-leave': sickLeave,
@@ -806,6 +808,7 @@ export const iconNames = [
   'send',
   'service-desk',
   'settings',
+  'settings-6',
   'share',
   'shield',
   'sick-leave',
