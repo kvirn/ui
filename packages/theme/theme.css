@@ -77,6 +77,7 @@
  *  8a. Heading       kv-heading: the type role of a heading, apart from its level
  *  8b. Kbd           kv-kbd: a key in running text
  *  8l. Address       kv-address: contact details of the page or an article, upright
+ *  8n. Divider       kv-divider: a hairline between two blocks, set with CSS variables
  *  8m. List          kv-list: the one native list, with no marker, bullets or numbers
  *  8c. Tooltip       kv-tooltip: a name and a shortcut for a control, level 3
  *  8d. Visually hidden and skip link  kv-visually-hidden, kv-skip-link: hidden until focused
@@ -3586,6 +3587,22 @@
     font-style: normal;
     font-size: var(--kv-font-body-size);
     line-height: var(--kv-font-body-line-height);
+  }
+
+  /* 8n. Divider -------------------------------------------------------------------------------
+   * <Divider> renders <hr class="kv-divider">. The line is a border, never a background, so forced
+   * colours keep it. Set --kv-divider-margin-block, --kv-divider-margin-inline, --kv-divider-width,
+   * --kv-divider-style and --kv-divider-color on the element or any ancestor; each falls back to a
+   * token. Zero specificity, so your own CSS wins. */
+  :where(.kv-divider) {
+    border: 0;
+    border-block-start: var(--kv-divider-width, var(--kv-border-width))
+      var(--kv-divider-style, solid) var(--kv-divider-color, var(--kv-color-border-subtle));
+    margin-block: var(--kv-divider-margin-block, var(--kv-space-4));
+    margin-inline: var(--kv-divider-margin-inline, 0);
+    block-size: 0;
+    overflow: visible;
+    color: inherit;
   }
 
   /* 8m. List ----------------------------------------------------------------------------------

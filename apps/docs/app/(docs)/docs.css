@@ -658,6 +658,8 @@ body {
   border: var(--kv-border-width) solid transparent;
   border-radius: var(--kv-radius-lg);
   background-color: var(--kv-color-surface);
+  /* The grid gap already spaces the line. */
+  --kv-divider-margin-block: 0;
 }
 
 .docs-icon-controls :is(.kv-field, .kv-fieldset) {
@@ -703,8 +705,7 @@ body {
 }
 
 .docs-icon-customize {
-  padding-block-start: var(--kv-space-3);
-  border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
+  padding-block-start: 0;
 }
 
 .docs-icon-customize > summary {

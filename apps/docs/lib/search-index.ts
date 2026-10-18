@@ -24,6 +24,7 @@ import * as dateRangePicker from '../content/date-range-picker.api.ts'
 import * as definitionList from '../content/definition-list.api.ts'
 import * as dialog from '../content/dialog.api.ts'
 import * as disclosure from '../content/disclosure.api.ts'
+import * as divider from '../content/divider.api.ts'
 import * as errorSummary from '../content/error-summary.api.ts'
 import * as field from '../content/field.api.ts'
 import * as fieldset from '../content/fieldset.api.ts'
@@ -100,6 +101,7 @@ const apiModules: Readonly<Record<string, object>> = {
   'definition-list': definitionList,
   dialog,
   disclosure,
+  divider,
   'error-summary': errorSummary,
   field,
   fieldset,

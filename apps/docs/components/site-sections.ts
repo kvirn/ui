@@ -145,6 +145,11 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'A button that shows and hides one panel of content, such as the opening hours or a longer explanation.',
       ),
       component(
+        'Divider',
+        'divider',
+        'A line between two blocks, with its margin, width and colour set from CSS variables.',
+      ),
+      component(
         'Heading',
         'heading',
         'A heading with its element as a required prop and its look as an optional one.',

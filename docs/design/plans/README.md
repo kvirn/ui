@@ -27,3 +27,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0132](0132-skip-panel.md)                  | SkipPanel (floating skip panel with keyboard shortcuts)          | Done (agents) |
 | [0135](0135-skip-panel-docs-site.md)        | SkipPanel on the docs site, HelpLink, `mod`, shortcuts setting   | In progress   |
 | [0133](0133-heading-levels.md)              | Heading icons H1–H6; levels 2–6 in the text type picker          | Done (agents) |
+| [0136](0136-divider.md)                     | Divider (`<hr>` with CSS-variable margin, width, colour)         | In progress   |

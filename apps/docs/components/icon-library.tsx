@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   CopyButton,
+  Divider,
   Field,
   Fieldset,
   Icon,
@@ -397,6 +398,7 @@ export function IconLibrary({
               <Button type="submit">{text.submit}</Button>
             </div>
           </div>
+          <Divider />
           <details className="docs-icon-customize">
             <summary className="kv-disclosure-trigger">
               <span>{text.customize}</span>{' '}
