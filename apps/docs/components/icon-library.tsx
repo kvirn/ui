@@ -97,6 +97,9 @@ const matches = (icon: IconLibraryEntry, words: readonly string[]) => {
 
 const subscribeNothing = () => () => {}
 
+// The theme's own motion rules keep these still under reduced motion.
+const animatedIcons = new Set(['spinner'])
+
 type CopyStatus = 'idle' | 'copied' | 'failed'
 
 function IconTile({
@@ -113,6 +116,12 @@ function IconTile({
   const label = icon.hasLabel
     ? iconMessages[iconCamelName(icon.name) as keyof typeof iconMessages]
     : undefined
+  const previewClassName = [
+    settings.stroke === '' ? '' : `kv-icon--stroke-${settings.stroke}`,
+    animatedIcons.has(icon.name) ? 'kv-animate-spinner' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
   const lineRef = useRef<HTMLElement>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const [status, setStatus] = useState<CopyStatus>('idle')
@@ -134,7 +143,7 @@ function IconTile({
           icon={allIcons[icon.name as keyof typeof allIcons]}
           size={settings.size as IconSize}
           {...(settings.variant === '' ? {} : { variant: settings.variant as IconVariant })}
-          {...(settings.stroke === '' ? {} : { className: `kv-icon--stroke-${settings.stroke}` })}
+          {...(previewClassName === '' ? {} : { className: previewClassName })}
         />
         {isHydrated ? (
           <div className="docs-icon-tools">

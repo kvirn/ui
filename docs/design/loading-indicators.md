@@ -87,7 +87,7 @@ Never: an indicator alone, two moving indicators for one wait, a skeleton over t
 
 - Root as every icon: `viewBox="0 0 24 24"`, `fill="none"`, `stroke="currentColor"`, `stroke-width="1.5"`, round caps and joins. The `strokeWidth` prop reaches it.
 - One path, the circle keyline (centre 12,12, r 9), from 12 o'clock, clockwise, open: `M12 3a9 9 0 1 1 0 18a9 9 0 1 1 0-18`.
-- On that path only: `pathLength="100"` and `stroke-dasharray="75 25"`: the **rest shape**, a ¾ arc from 12 to 9 o'clock, the same as `in-progress`. Clear gap 12.6 units, so it never reads as the full circle of `success`. Without `theme.css`, under `reduce` and after an app's stop, this shows.
+- On that path only: `pathLength="100"` and `stroke-dasharray="75 25"`: the **rest shape**, a ¾ arc from 12 to 9 o'clock, a still arc like the removed `in-progress`, now an alias of `spinner`. Clear gap 12.6 units, so it never reads as the full circle of `success`. Without `theme.css`, under `reduce` and after an app's stop, this shows.
 - These two attributes are the stated exception to "shapes set none of these" (icon.md §6.1); no prop overrides them.
 
 **Motion**: opt-in. The consumer adds `kv-animate-spinner` to the Icon (L7); without it the icon is still. Endless, only under `prefers-reduced-motion: no-preference`. The selectors target the library drawing (`pathLength`), so a replacement icon registered as `spinner` gets no dash unless it keeps them. Units are percent of a turn via `pathLength`:

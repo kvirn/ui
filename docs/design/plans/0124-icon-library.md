@@ -26,7 +26,7 @@ A public-sector icon library of 150+ outline icons that look drawn by one hand: 
 
 Taken during implementation (lead, 2026-10-16):
 
-- Start with a construction grid (`packages/icons/grid/`) and the 25 built-ins redrawn as the pilot; showcase in Storybook only, no docs-site page yet. The package is `private` until reviewed.
+- Start with a construction grid (`packages/icons/grid/`) and the 25 built-ins redrawn as the pilot; showcase in Storybook only, no docs-site page yet. The package is public (maintainer, 2026-10-18); human review checks stay pending.
 - Generated modules are committed (Storybook and the workspace alias read `src`); a package test fails if they drift from `svg/`.
 - Colour in the stories is a story-only control on a wrapper, as the Icon `Colors` story does. Icon takes no colour or variant prop (AGENTS.md rule 14, `use-icon.ts` omits colour); a colour class would be a new theme/API decision for the maintainer.
 - Engineer decisions: `delete` is reserved, so its module exports `deleteIcon` (registry key stays `'delete'`); a hand-written `src/create-icon.ts` wraps shapes like `createBuiltInIcon`; the generator's root `<svg>` check is strict (viewBox, fill, stroke, stroke-width, linecap, linejoin exact; only `xmlns` extra); `all.ts` also exports `LibraryIconName`; stories reuse `kv-story-icon-gallery` and `kv-story-icon-cell` from `preview.css`; devDependencies `react`, `@types/react`, `vite-plus` are existing catalog entries, no new dependency. `packages/icons` added to the node test project glob (`vite.config.ts:262`).

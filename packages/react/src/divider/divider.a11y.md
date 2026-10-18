@@ -39,6 +39,13 @@ This component has no focusable parts and handles no keys.
 
 Divider renders no text, so it has no message keys.
 
+### Read aloud
+
+| State or action                                | Expected phrase(s) as read aloud                                                      | Live region politeness | Test                                                                               |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------- |
+| `<Divider />` between two paragraphs           | `Above`, `separator, …` (the virtual reader adds orientation and value text), `Below` | none                   | `divider.test.tsx › a default divider reads as a separator between the paragraphs` |
+| `<Divider role="presentation" />` between them | `Above`, `Below` (no `separator` between the paragraphs)                              | none                   | `divider.test.tsx › a presentation divider reads nothing between the paragraphs`   |
+
 ## Consumer responsibilities
 
 - **Pick the role on purpose.** Keep the default `separator` when the blocks on each side are different topics. Pass `role="presentation"` when the line is only decoration, so screen readers skip it (1.3.1 Info and Relationships, A).
@@ -51,26 +58,26 @@ Divider ships no CSS of its own. With the default theme it is a thin, faint line
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships (A): a break between topics is the native `<hr>` (`divider.test.tsx › renders an hr element`); a decorative one can be `role="presentation"` (`divider.test.tsx › passes role="presentation" through`).
+- 1.3.1 Info and Relationships (A): a break between topics is the native `<hr>` and reads as a separator (`divider.test.tsx › a default divider reads as a separator between the paragraphs`); a decorative one can be `role="presentation"` and reads nothing (`divider.test.tsx › a presentation divider reads nothing between the paragraphs`).
 - 1.4.11 Non-text Contrast (AA): the default line is decoration between blocks, and the content can be understood without it. If you make the line carry meaning, keep your own colour visible.
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                  |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                        |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | divider.stories.tsx, every story, 4 themes                                                                                             |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `divider.test.tsx`: `renders an hr element`, `has no axe violations as a separator and as presentation`                                |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 2 rows, each names a test in `divider.test.tsx`                                                                                        |
-| Focus order and management                                                 | n/a         | n/a         | n/a     | an hr is not focusable                                                                                                                 |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: Divider is not in the sweep list, so no sweep project runs its stories                                                      |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                                        |
-| NVDA + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate |
-| VoiceOver + Safari + iOS                                                   | n/a         | n/a         | n/a     | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                        |
-| JAWS + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate |
-| TalkBack + Chrome + Android                                                | n/a         | n/a         | n/a     | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate |
-| VoiceOver + Safari + macOS                                                 | n/a         | n/a         | n/a     | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate |
+| AT + browser + OS                                                          | Agent check | Human check | Result | Notes                                                                                                                                                                                                          |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |        |                                                                                                                                                                                                                |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass   | divider.stories.tsx, every story, 4 themes                                                                                                                                                                     |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass   | `divider.test.tsx`: `a default divider reads as a separator between the paragraphs`, `a presentation divider reads nothing between the paragraphs`, `has no axe violations as a separator and as presentation` |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass   | 2 rows, each names a test in `divider.test.tsx`                                                                                                                                                                |
+| Focus order and management                                                 | n/a         | n/a         | n/a    | an hr is not focusable                                                                                                                                                                                         |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass   | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                                                                                                  |
+| **Core (required for beta)**                                               |             |             |        |                                                                                                                                                                                                                |
+| NVDA + Chrome + Windows                                                    | n/a         | pass        | pass   | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate; tested by hand by the maintainer, 2026-10-18, versions not recorded    |
+| VoiceOver + Safari + iOS                                                   | n/a         | pass        | pass   | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate; tested by hand by the maintainer, 2026-10-18, versions not recorded    |
+| **Release (before 1.0 and each minor)**                                    |             |             |        |                                                                                                                                                                                                                |
+| JAWS + Chrome + Windows                                                    | n/a         | n/a         | n/a    | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate                                                                         |
+| TalkBack + Chrome + Android                                                | n/a         | n/a         | n/a    | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate                                                                         |
+| VoiceOver + Safari + macOS                                                 | n/a         | n/a         | n/a    | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate                                                                         |
 
 ## Known issues
 

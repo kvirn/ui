@@ -35,7 +35,7 @@ The first task of the library plan turns this into the named inventory in `docs/
 | ------------------------ | ----- | ---------------------------------------------------------------------------------------------------------- |
 | Direction and movement   | 14    | chevrons, arrows, expand/collapse, first/last, refresh, undo/redo, external                                |
 | Actions                  | 18    | add, remove, close, check, edit, delete, copy, paste, save, share, print, download, upload, search, filter |
-| Status and feedback      | 10    | info, success, warning, error, help, pending, in-progress, blocked, new, attention                         |
+| Status and feedback      | 10    | info, success, warning, error, help, pending, spinner, blocked, new, attention                             |
 | Interface controls       | 14    | menu, more, settings, sort, view-list/grid, eye/eye-off, lock/unlock, zoom in/out, fullscreen, drag        |
 | Documents and files      | 14    | document, form, folder, attachment, image, table, certificate, archive, signature, receipt, stamp          |
 | Communication            | 10    | message, mail, phone, chat, notification (bell/off), megaphone, contact, feedback                          |

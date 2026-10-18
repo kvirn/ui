@@ -107,11 +107,11 @@ None added. `icon-labels.test.ts` keeps catalog and locales in step.
 - D17 (engineer I): the Icon story controls drive `icon` via `libraryIconChoices`; the `name` + `defineIcons` demos keep registering Lucide/Heroicons/Phosphor (a `{component, mirrorInRtl}` entry needs a component); `UnknownName` stays.
 - Follow-up T14 (found by engineer I): `packages/map/src/map-controls.tsx:23` types `icon: IconName | IconComponent`, so library `IconData` isn't accepted by map controls. Widen to `IconRegistryEntry` (public API change, maintainer call).
 - D18 (review 2026-10-17, lead): `accessibility-reviewer` returned CHANGES (one rule-13 duplicate test, now merged into "an icon renders a component or data"; non-blocking: Show code for IconData args, Icon control key, unaliased `document` imports: fixed). `icon-page.tsx:145,163` claim map and rich-text icons come from the library: true only with the uncommitted Plan 0129 work (`packages/map/src/map-icons.ts`); commit them together. `icon-library-page.tsx:31-36` "What is not done yet" is honest, kept.
-- Open for the maintainer: `SvgIcon` `size` writes width/height (rule 14: no theme in this package); `@kvirn-ui/icons` is `private`; CLAUDE.md:15 and `.claude/agents/iconographer.md` mention the deleted `built-in-icons.tsx`.
+- Open for the maintainer: `SvgIcon` `size` writes width/height (rule 14: no theme in this package); CLAUDE.md:15 and `.claude/agents/iconographer.md` mention the deleted `built-in-icons.tsx`.
 
 ## Risks & open questions
 
-- **`@kvirn-ui/icons` is `private: true`** (`package.json:4`) and "private until reviewed". A published `@kvirn-ui/react` can't depend on it: icons must be published first or alongside. Maintainer's call, before any publish.
+- **`@kvirn-ui/icons` is public** (no `private` in `package.json`; maintainer, 2026-10-18), so a published `@kvirn-ui/react` can depend on it. Human review checks stay pending.
 - Every react consumer now bundles the 25 defaults (as before) plus the registry data; the other 232 stay out only if tree-shaking holds, hence T6.
 - Plan 0126/0127 and a dirty tree touch icon files: before T1/T2, confirm with `git status` that nothing under `packages/react/src/icon` or `packages/icons` is uncommitted by others, and re-read 0126 D1.
 - Public API change (`IconRegistryEntry` widens, icon modules become data): docs update in T4/T5.

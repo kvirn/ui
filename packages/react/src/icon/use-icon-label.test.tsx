@@ -69,7 +69,7 @@ describe('useIconLabel', () => {
 
   test('only names with a label key compile', () => {
     expectTypeOf<'city-hall'>().toExtend<IconLabelName>()
-    expectTypeOf<'in-progress'>().toExtend<IconLabelName>()
+    expectTypeOf<'spinner'>().toExtend<IconLabelName>()
     expectTypeOf<'arrow-back'>().not.toExtend<IconLabelName>()
   })
 })

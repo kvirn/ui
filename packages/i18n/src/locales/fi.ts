@@ -520,7 +520,6 @@ export const fi = {
     blocked: 'Estetty',
     error: 'Virhe',
     help: 'Ohje',
-    inProgress: 'Käsittelyssä',
     info: 'Tietoa',
     new: 'Uusi',
     pending: 'Odottaa',

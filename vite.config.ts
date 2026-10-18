@@ -124,6 +124,7 @@ const sweepComponents = [
   'breadcrumb',
   'button-group',
   'card',
+  'divider',
 ]
 
 const sweepExclude = [

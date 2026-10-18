@@ -778,7 +778,6 @@ export interface KvirnMessages {
     blocked: TextMessage
     error: TextMessage
     help: TextMessage
-    inProgress: TextMessage
     info: TextMessage
     new: TextMessage
     /** Waiting, not started yet (an hourglass). */

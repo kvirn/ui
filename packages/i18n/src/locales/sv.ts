@@ -513,7 +513,6 @@ export const sv = {
     blocked: 'Blockerad',
     error: 'Fel',
     help: 'Hjälp',
-    inProgress: 'Pågår',
     info: 'Information',
     new: 'Nytt',
     pending: 'Väntar',

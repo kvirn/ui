@@ -1,5 +1,5 @@
 import { MainMenu } from '@kvirn-ui/patterns'
-import { Navigation } from '@kvirn-ui/react'
+import { Divider, Navigation } from '@kvirn-ui/react'
 import { messages } from '../messages/en.ts'
 import { OwnPackageMark, OwnPackageNote } from './own-package-badge.tsx'
 import { pageCurrent, sectionCurrent } from './site-sections.ts'
@@ -103,7 +103,7 @@ export function SiteMenu({
                   .map((child) => (
                     <SectionGroup key={child.id} section={child} pathname={pathname} />
                   ))}
-                <OwnPackageNote inList pages={section.groups.flatMap((group) => group.pages)} />
+                  <OwnPackageNote inList pages={section.groups.flatMap((group) => group.pages)} />
               </MainMenu.TopicPanel>
             </MainMenu.Topic>
           ),

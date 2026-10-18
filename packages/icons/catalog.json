@@ -408,19 +408,9 @@
       "label": "icons.help"
     },
     {
-      "name": "in-progress",
-      "category": "status",
-      "aliases": ["ongoing", "processing"],
-      "tags": ["in progress", "ongoing", "processing", "being handled", "started", "under review"],
-      "meaning": "Being handled now: an open three-quarter arc with no arrowhead, glyph only with no container, always with words.",
-      "status": "drawn",
-      "mirrorInRtl": false,
-      "label": "icons.inProgress"
-    },
-    {
       "name": "spinner",
       "category": "status",
-      "aliases": ["loading", "busy"],
+      "aliases": ["loading", "busy", "in-progress", "processing", "ongoing"],
       "tags": ["loading", "busy", "waiting", "spinner", "in progress", "working"],
       "meaning": "A three-quarter arc that crawls when the class kv-animate-spinner is added; glyph only, always with words.",
       "status": "drawn",
@@ -1928,7 +1918,7 @@
       "category": "access-language",
       "aliases": ["easy-to-read"],
       "tags": ["easy to read", "accessible text"],
-      "meaning": "This page has an easy-to-read version: a page with two short start-aligned text lines and a picture peak at its foot; not a national easy-to-read mark, and a consumer who needs the official mark supplies it.",
+      "meaning": "Easy-to-read version: a page with two short start-aligned text lines and a picture peak at its foot; not a national mark.",
       "status": "drawn",
       "mirrorInRtl": true,
       "label": "icons.easyRead"
@@ -1938,7 +1928,7 @@
       "category": "access-language",
       "aliases": [],
       "tags": ["easy to read", "thumbs up", "accessible text"],
-      "meaning": "This page has an easy-to-read version, the alternative to `easy-read` (a site picks one of the two): a raised thumb in front of a page whose left edge shows. Not a national easy-to-read mark (no face, no open book), and a consumer who needs the official mark supplies it. Show it with the visible term beside it.",
+      "meaning": "Easy-to-read version: a raised thumb in front of the open edge of a page; not a national mark.",
       "status": "drawn",
       "mirrorInRtl": false,
       "label": "icons.easyReadThumbsUp"

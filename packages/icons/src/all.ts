@@ -125,7 +125,6 @@ import { idCard } from './icons/id-card.ts'
 import { image } from './icons/image.ts'
 import { imageAdd } from './icons/image-add.ts'
 import { imageRemove } from './icons/image-remove.ts'
-import { inProgress } from './icons/in-progress.ts'
 import { indent } from './icons/indent.ts'
 import { info } from './icons/info.ts'
 import { interpreter } from './icons/interpreter.ts'
@@ -393,7 +392,6 @@ export const allIcons = {
   image: image,
   'image-add': imageAdd,
   'image-remove': imageRemove,
-  'in-progress': inProgress,
   indent: indent,
   info: info,
   interpreter: interpreter,
@@ -661,7 +659,6 @@ export const iconNames = [
   'image',
   'image-add',
   'image-remove',
-  'in-progress',
   'indent',
   'info',
   'interpreter',

@@ -514,7 +514,6 @@ export const nn = {
     blocked: 'Blokkert',
     error: 'Feil',
     help: 'Hjelp',
-    inProgress: 'Under handsaming',
     info: 'Informasjon',
     new: 'Nytt',
     pending: 'Ventar',

@@ -1,4 +1,5 @@
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { readAloud } from '@kvirn-ui/testing/read-aloud'
 import { createRef } from 'react'
 import { describe, expect, test } from 'vite-plus/test'
 import { page } from 'vite-plus/test/browser'
@@ -8,19 +9,9 @@ import { Divider } from './divider.tsx'
 // Contract: divider.a11y.md.
 
 describe('Divider', () => {
-  test('renders an hr element', async () => {
-    await render(<Divider data-testid="divider" />)
-    expect(page.getByTestId('divider').element().tagName).toBe('HR')
-  })
-
   test('keeps the kv-divider class next to a className prop', async () => {
     await render(<Divider className="other" data-testid="divider" />)
     expect(page.getByTestId('divider').element().className).toBe('other kv-divider')
-  })
-
-  test('passes role="presentation" through', async () => {
-    await render(<Divider role="presentation" data-testid="divider" />)
-    expect(page.getByTestId('divider').element().getAttribute('role')).toBe('presentation')
   })
 
   test('forwards the ref to the hr', async () => {
@@ -46,5 +37,35 @@ describe('Divider', () => {
     )
     await expect.element(page.getByText('Between')).toBeVisible()
     await expectNoA11yViolations(container)
+  })
+
+  describe('read aloud', () => {
+    test('a default divider reads as a separator between the paragraphs', async () => {
+      const { container } = await render(
+        <div>
+          <p>Above</p>
+          <Divider />
+          <p>Below</p>
+        </div>,
+      )
+      const phrases = await readAloud(container)
+      const above = phrases.findIndex((phrase) => phrase.includes('Above'))
+      const below = phrases.findIndex((phrase) => phrase.includes('Below'))
+      expect(phrases.slice(above + 1, below).some((phrase) => phrase.startsWith('separator'))).toBe(
+        true,
+      )
+    })
+
+    test('a presentation divider reads nothing between the paragraphs', async () => {
+      const { container } = await render(
+        <div>
+          <p>Above</p>
+          <Divider role="presentation" />
+          <p>Below</p>
+        </div>,
+      )
+      const phrases = await readAloud(container)
+      expect(phrases.some((phrase) => phrase.startsWith('separator'))).toBe(false)
+    })
   })
 })

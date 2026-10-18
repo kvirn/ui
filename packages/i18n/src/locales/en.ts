@@ -504,7 +504,6 @@ export const en = {
     blocked: 'Blocked',
     error: 'Error',
     help: 'Help',
-    inProgress: 'In progress',
     info: 'Information',
     new: 'New',
     pending: 'Waiting',

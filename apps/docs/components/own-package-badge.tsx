@@ -1,4 +1,4 @@
-import { Badge, Link, VisuallyHidden } from '@kvirn-ui/react'
+import { Badge, Divider, Link, VisuallyHidden } from '@kvirn-ui/react'
 import { messages } from '../messages/en.ts'
 
 const text = messages.docs.nav
@@ -36,6 +36,7 @@ export function OwnPackageNote({
   const Tag = inList ? 'li' : 'p'
   return (
     <Tag className="docs-own-package-note">
+      <Divider role='presentation' />
       * {text.ownPackage}. {text.ownPackageNote}{' '}
       <Link href="/docs#packages">
         {text.ownPackageReadMore} <VisuallyHidden>{text.ownPackageReadMoreHidden}</VisuallyHidden>
