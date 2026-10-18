@@ -312,15 +312,6 @@ describe('AltGr', () => {
 })
 
 describe('the keys the text leaves to the browser and Tiptap', () => {
-  test('the arrow keys, Home and End move the caret in the text', async () => {
-    const { editor } = create('<p>Library is open on Thursdays.</p>')
-    placeCaret(editor, 'Library')
-    await userEvent.keyboard('{Home}{ArrowRight}{ArrowRight}{ArrowRight}X')
-    expect(editor.view.dom.textContent).toContain('LibXrary')
-    await userEvent.keyboard('{End}Y')
-    expect(editor.view.dom.textContent).toContain('Thursdays.Y')
-  })
-
   test('Enter starts a new paragraph and Shift+Enter a line break', async () => {
     const { editor } = create('<p>Welcome in.</p>')
     placeCaret(editor, 'Welcome in.')

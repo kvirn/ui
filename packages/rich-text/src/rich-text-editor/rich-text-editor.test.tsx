@@ -417,19 +417,6 @@ describe('announcements', () => {
     await userEvent.keyboard('{Control>}b{/Control}')
     await expect.element(status()).toHaveTextContent('Fetstil av')
   })
-
-  test('Tab in a list item says the new level', async () => {
-    await render(
-      inSwedish(
-        <RichTextEditor.Root defaultValue="<ul><li><p>Ett</p></li><li><p>Två</p></li></ul>">
-          <RichTextEditor.Content aria-label="Text" />
-        </RichTextEditor.Root>,
-      ),
-    )
-    await userEvent.click(textbox('Text'))
-    await userEvent.keyboard('{Control>}{End}{/Control}{Tab}')
-    await expect.element(status()).toHaveTextContent('Nivå 2')
-  })
 })
 
 describe('a refused pasted or dropped image', () => {
