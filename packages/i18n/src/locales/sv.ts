@@ -596,6 +596,8 @@ export const sv = {
     shield: 'Säkerhet',
     accessibility: 'Tillgänglighet',
     captions: 'Textning',
+    easyRead: 'Lättläst',
+    easyReadThumbsUp: 'Lättläst',
     keyboard: 'Tangentbord',
     language: 'Språk',
     delegation: 'Ombud',

@@ -603,6 +603,8 @@ export const fi = {
     shield: 'Turvallisuus',
     accessibility: 'Saavutettavuus',
     captions: 'Tekstitys',
+    easyRead: 'Selkokieli',
+    easyReadThumbsUp: 'Selkokieli',
     keyboard: 'Näppäimistö',
     language: 'Kieli',
     delegation: 'Valtuutus',

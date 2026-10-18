@@ -597,6 +597,8 @@ export const nn = {
     shield: 'Tryggleik',
     accessibility: 'Tilgjenge',
     captions: 'Teksting',
+    easyRead: 'Lettlesen',
+    easyReadThumbsUp: 'Lettlesen',
     keyboard: 'Tastatur',
     language: 'Språk',
     delegation: 'Fullmakt',

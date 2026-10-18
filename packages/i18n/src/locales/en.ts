@@ -587,6 +587,8 @@ export const en = {
     shield: 'Security',
     accessibility: 'Accessibility',
     captions: 'Captions',
+    easyRead: 'Easy to read',
+    easyReadThumbsUp: 'Easy to read',
     keyboard: 'Keyboard',
     language: 'Language',
     delegation: 'Acting on behalf',

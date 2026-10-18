@@ -868,6 +868,8 @@ export interface KvirnMessages {
     shield: TextMessage
     accessibility: TextMessage
     captions: TextMessage
+    easyRead: TextMessage
+    easyReadThumbsUp: TextMessage
     keyboard: TextMessage
     language: TextMessage
     /** Acting on someone's behalf. */

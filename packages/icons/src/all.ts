@@ -77,6 +77,8 @@ import { documentCheck } from './icons/document-check.ts'
 import { documentRemove } from './icons/document-remove.ts'
 import { download } from './icons/download.ts'
 import { dragHandle } from './icons/drag-handle.ts'
+import { easyRead } from './icons/easy-read.ts'
+import { easyReadThumbsUp } from './icons/easy-read-thumbs-up.ts'
 import { edit } from './icons/edit.ts'
 import { education } from './icons/education.ts'
 import { emergency } from './icons/emergency.ts'
@@ -343,6 +345,8 @@ export const allIcons = {
   'document-remove': documentRemove,
   download: download,
   'drag-handle': dragHandle,
+  'easy-read': easyRead,
+  'easy-read-thumbs-up': easyReadThumbsUp,
   edit: edit,
   education: education,
   emergency: emergency,
@@ -609,6 +613,8 @@ export const iconNames = [
   'document-remove',
   'download',
   'drag-handle',
+  'easy-read',
+  'easy-read-thumbs-up',
   'edit',
   'education',
   'emergency',

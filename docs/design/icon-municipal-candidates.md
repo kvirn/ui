@@ -287,7 +287,7 @@ Round-1 rows that exist or overlap: `town-hall` = **`city-hall`**, `court` = **`
 
 ## Lessons for our style
 
-1. Letters hide inside conventions (P, T, €, "!"): `hearing-loop`, `parking-disc`, `easy-read` need an object metaphor or ship as words.
+1. Letters hide inside conventions (P, T, €, "!"): `hearing-loop`, `parking-disc` need an object metaphor or ship as words. `easy-read` was reopened by the maintainer on 2026-10-18 and drawn without letters (Plan 0137).
 2. Drop national, religious and legal-tradition markers: flags, crosses on graves, mayor's chain, gavel, temple columns, the Dutch red pencil.
 3. Meaning in the sources sits in colour and fill, and the scenes are made for 36–80px. Ours must read at 16/20/24px in one stroke.
 4. ARASAAC's "house outline plus one inner object" (book = library, bed = care home) is reusable: `town-hall`, `school`, `library`, `care-home`, `preschool`.
@@ -296,7 +296,7 @@ Round-1 rows that exist or overlap: `town-hall` = **`city-hall`**, `court` = **`
 ## Open for the maintainer
 
 - A `building` container in the parts kit (gabled house outline plus one inner glyph)? A kit change that touches the whole set.
-- Drop `hearing-loop`, `easy-read` and `parking-disc` to words only, given the no-letters rule?
+- Drop `hearing-loop` and `parking-disc` to words only, given the no-letters rule? (`easy-read`: decided, drawn, Plan 0137.)
 - Country variants: this research finds **one universal icon per concept** in nearly every case, with the label per country. A variant is only plausible for the `V` rows, and none of them is clearly worth a second drawing yet.
 - ISO 7001 shapes (`sign-language`, `hearing-loop`, `step-free-access`): may they be redrawn in a library? `TODO(legal-verify)`, and compare against ISO 7001:2023, which was not read.
 - Recognition testing with residents is pending for every row, as for the 84 drawn.

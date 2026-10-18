@@ -1924,6 +1924,26 @@
       "label": null
     },
     {
+      "name": "easy-read",
+      "category": "access-language",
+      "aliases": ["easy-to-read"],
+      "tags": ["easy to read", "accessible text"],
+      "meaning": "This page has an easy-to-read version: a page with two short start-aligned text lines and a picture peak at its foot; not a national easy-to-read mark, and a consumer who needs the official mark supplies it. Show it with the visible term beside it: at 16px the thumb reads and the page does not.",
+      "status": "drawn",
+      "mirrorInRtl": true,
+      "label": "icons.easyRead"
+    },
+    {
+      "name": "easy-read-thumbs-up",
+      "category": "access-language",
+      "aliases": [],
+      "tags": ["easy to read", "thumbs up", "accessible text"],
+      "meaning": "This page has an easy-to-read version, the alternative to `easy-read` (a site picks one of the two): a raised thumb in front of a page whose left edge shows. Not a national easy-to-read mark (no face, no open book), and a consumer who needs the official mark supplies it. A hand gesture, an exception to the metaphor rule, chosen by the maintainer 2026-10-18.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.easyReadThumbsUp"
+    },
+    {
       "name": "keyboard",
       "category": "access-language",
       "aliases": ["keyboard-shortcuts"],

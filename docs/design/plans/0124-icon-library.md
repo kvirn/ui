@@ -1,6 +1,6 @@
 # Plan 0124: Icon library (`@kvirn-ui/icons`, 150+ outline icons)
 
-- **Status:** Done for agents (257 icons drawn, reviewed twice, all fixes in; open for people: recognition tests, native-speaker labels, AT, the sensitivity review, the `icons:check` gate, the forced-colours stories, the built-ins sync)
+- **Status:** Done for agents (265 icons drawn, reviewed twice, all fixes in; open for people: recognition tests, native-speaker labels, AT, the sensitivity review, the `icons:check` gate, the forced-colours stories, the built-ins sync)
 - **Owner:** lead · `iconographer` draws, `component-engineer` builds the package
 - **Created:** 2026-10-16 · **Target:** alpha
 - **Related:** `docs/design/icon.md` (the 25 built-ins, grid, keylines), Plan 0009, `.claude/skills/iconography/`
@@ -51,6 +51,8 @@ Taken during implementation (lead, 2026-10-16):
 - Lead, catalogue (`packages/icons/catalog.json` is the source for the docs Icons page, `docs/design/icon-catalog.md` the readable view; 183 icons: 84 drawn, 99 planned in 16 categories): maintainer decided 2026-10-16 that pending, in-progress, blocked, new, attention and help are glyph-only with no container (the four status shapes stay the only containers); `contrast` is a circle with a hatched half, outline only; dark-mode (half-moon disc), help (lifebuoy), sign-language (only if it meets the detail budget and the no-gestures rule at 20px, else cut) and text-size (stepped bars) stay planned and join the recognition test; `navigation` is an alias of `menu` only; `marker` stays the map's own and out of the catalogue. Still to do: an engineer test that keeps the catalogue and `svg/` in sync, then the docs Icons page (menu entry, search, category filter).
 - Lead, 2026-10-16 (follow-up list, 23 icons: ambulance police firetruck tram subway government wheelchair gender-male gender-female gender-non-binary gender-fluid tag hashtag direct-message pin-remove cash wallet theatre translate sign-language view-columns skip-next skip-previous): 22 drawn, `sign-language` cut a second time. Aliases added: user, users, commenting, security, save, update, grid, list, time, date, loading, spinner. Brand logos, like, heart and star stay out. Outcomes of the municipal list are in `icon-wanted.md`; the catalogue is `catalog.json` (242 drawn, 17 categories).
 - `"."` exports named icons (tree-shakeable); `"./all"` exports `allIcons` and `iconNames` for registries and galleries.
+
+- Maintainer, 2026-10-18: **`easy-read` is reopened** (vital on municipal sites); drawn without letters, one drawing, the label per locale. [Plan 0137](0137-easy-read-icon.md).
 
 Pending (maintainer): add `vp run icons:check` (drawing-rule checker, §Tasks 3) as a gate and to CI. A new gate is the maintainer's call.
 

@@ -131,7 +131,6 @@ The catalogue has no sports, culture or leisure icon, while every municipal site
 
 - `tax`: `tax`: document or `invoice`.
 - `passport`: `passport`: use `id-card`.
-- `easy-read`: `easy-read`: national marks; the consumer supplies it.
 - `hearing-loop`: `hearing-loop`: carries a "T".
 - `audio-description`: `audio-description`: carries "AD".
 - `shelter`: `shelter`: the civil-defence sign is national.
