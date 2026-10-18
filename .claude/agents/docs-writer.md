@@ -25,7 +25,7 @@ Follow the `docs-pages` skill and its template (`references/component-page-templ
 1. **Read** `apps/docs/components/<name>-page.tsx`, `apps/docs/examples/<name>/`, `apps/docs/content/<name>.api.ts`, the contract `packages/*/src/<name>/<name>.a11y.md`, the component source and `<name>.test.tsx`. Find paths with Glob; read sections, not whole files, when a file is long.
 2. **Analyse** against WCAG 2.2 AA (all 55 A and AA criteria), EU regulation and good accessible UX, as the skill's "Analysis" section says. The gap table drives the rest.
 3. **Verify every claim** on the page and in the contract's rendered sections, with the skill's table. Use the local references first; fetch W3C, EUR-Lex or ETSI pages only for what they don't settle, and cite the URL.
-4. **Fix the page:** template order, missing or empty sections, use cases (real tasks, accessible, documented props only, fixture text in `texts.ts`), API rows against the code, the notes the gaps call for, then the plain-language pass.
+4. **Fix the page:** template order, missing or empty sections, use cases (real tasks, accessible, documented props only, fixture text in `texts.ts`, and each `propsUsed` entry grepped against the example source: the prop is written on the named part, else removed or corrected), API rows against the code, the notes the gaps call for, then the plain-language pass.
 5. **Ask** `accessibility-reviewer` or `ux-designer` through your report's `ASK` block when a judgement isn't yours to make from the sources. You can't start agents yourself. The orchestrator relays the answer and you continue.
 6. **Run** `vp check <your files>`, one command, on the files you changed. Nothing else (rule 12).
 
@@ -50,6 +50,7 @@ Claims: <n> checked · <n> OK · <n> fixed · <n> wrong · <n> removed as unveri
 Gaps: | Requirement | Component does | Adopter must | Page says it | Action |   ← only rows with a gap
 Notes: <added / changed, one line each, with the evidence>
 Examples: <kept / added / removed, one line each>
+propsUsed: <n> entries checked against the example source · <n> fixed (list each: page, use case, part, prop, what was wrong)
 Plain language: <sections reworded, terms newly explained, and any sentence you left technical on purpose, with why>
 For component-engineer: <wrong claims in the contract or code, with the evidence>
 ASK: <expert> — <question> — <what you checked> — <what's blocked>   ← or "none"

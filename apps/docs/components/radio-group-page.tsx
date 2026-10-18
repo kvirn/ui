@@ -269,10 +269,7 @@ export function RadioGroupPage({
             title="One option isn’t available"
             why="A single disabled radio is skipped by Tab and by the arrow keys. Say why in its help text, because a disabled control can’t explain itself. To disable every option, set disabled on the group."
             code={sources['disabled-option']}
-            propsUsed={[
-              { part: 'RadioGroup.Radio', prop: 'disabled' },
-              { part: 'RadioGroup.Root', prop: 'disabled' },
-            ]}
+            propsUsed={[{ part: 'RadioGroup.Radio', prop: 'disabled' }]}
           >
             <DisabledOptionRadioGroup />
           </UseCase>

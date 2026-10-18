@@ -153,7 +153,6 @@ export function InputGroupPage({
             title="Disabled, with the reason"
             why="A disabled Field disables the input and draws the box dashed, and a click no longer focuses it. Say why in a help text under the box. Avoid a disabled box in a resident’s form where you can."
             code={sources['disabled-with-reason']}
-            propsUsed={[{ part: 'InputGroup.Root', prop: 'disabled' }]}
           >
             <DisabledWithReason />
           </UseCase>

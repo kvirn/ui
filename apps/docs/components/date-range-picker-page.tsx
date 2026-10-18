@@ -181,7 +181,6 @@ export function DateRangePickerPage({
             propsUsed={[
               { part: 'DateRangePicker.Root', prop: 'isDateUnavailable' },
               { part: 'DateRangePicker.Root', prop: 'getDateDescription' },
-              { part: 'DateRangePicker.Root', prop: 'allowUnavailableInRange' },
             ]}
           >
             <BookedDays />

@@ -517,10 +517,6 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
               </>
             }
             code={sources['map-types']}
-            propsUsed={[
-              { part: 'Map.BaseMapSwitch', prop: 'children' },
-              { part: 'Map.BaseMapSwitch', prop: 'icon' },
-            ]}
             note={
               <Note kind="reminder">
                 Give each map type a clear label and its own attribution. The label names the choice

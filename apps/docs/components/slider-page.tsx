@@ -146,10 +146,7 @@ export function SliderPage({
             title="A distance that is off for now"
             why="When another choice makes the slider meaningless, disable it and say why in the help text. A disabled Field disables the slider too, and Tab skips it."
             code={sources['not-available']}
-            propsUsed={[
-              { part: 'Slider', prop: 'disabled' },
-              { part: 'Slider', prop: 'defaultValue' },
-            ]}
+            propsUsed={[{ part: 'Slider', prop: 'defaultValue' }]}
           >
             <NotAvailable />
           </UseCase>

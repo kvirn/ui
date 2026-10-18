@@ -145,7 +145,6 @@ export function SwitchPage({
             title="A setting that isn’t available"
             why="Disable the switch and say why in its help text, with what the user can do about it. Never put the reason in a tooltip. A disabled switch is skipped by Tab, so the help text is the only place the reason is."
             code={sources['disabled-with-reason']}
-            propsUsed={[{ part: 'Switch', prop: 'disabled' }]}
           >
             <DisabledWithReason />
           </UseCase>

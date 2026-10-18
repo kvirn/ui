@@ -370,10 +370,6 @@ export function RichTextEditorPage({
               </>
             }
             code={sources['compact-toolbar']}
-            propsUsed={[
-              { part: 'RichTextEditor.CompactControls', prop: 'include' },
-              { part: 'RichTextEditor.CompactControls', prop: 'exclude' },
-            ]}
             note={
               <Note kind="tip">
                 Every control is still there, in “More”, in the same order as the full toolbar. The

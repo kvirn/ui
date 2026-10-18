@@ -1,4 +1,5 @@
 import { LinkRoot } from '@kvirn-ui/react'
+import { apiHookPart } from './api-ids.ts'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
@@ -125,7 +126,13 @@ export function TopBarPage({
             title="Your own element"
             why="When the bar must be another element than a div, call useTopBar and spread topBarProps on it. You get only the class: no role, ARIA or tabindex. Join a class of your own with mergeProps."
             code={sources['own-element']}
-            propsUsed={[{ part: 'TopBar', prop: 'variant' }]}
+            propsUsed={[
+              {
+                part: apiHookPart('useTopBar', 'options'),
+                label: 'useTopBar (options)',
+                prop: 'variant',
+              },
+            ]}
           >
             <OwnElement />
           </UseCase>
