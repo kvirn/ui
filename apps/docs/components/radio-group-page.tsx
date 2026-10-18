@@ -1,4 +1,4 @@
-import { Heading, Link } from '@kvirn-ui/react'
+import { Link } from '@kvirn-ui/react'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { CodeBlock } from './code-block.tsx'
@@ -299,48 +299,18 @@ export function RadioGroupPage({
             ]}
             note={
               <>
-                <Heading as="h4" id="other-option-read-aloud">
-                  What a screen reader says
-                </Heading>
                 <p>
-                  A screen reader is software that reads the screen aloud. This is the order a
-                  person meets this example in, as the library’s own test reads it. It is an
-                  approximation: real screen readers word it differently, and testing with real
-                  assistive technology is still needed.
+                  When “Other” is checked, the text field appears right after it. A screen reader
+                  says <q>An input field has appeared below.</q> once, politely, and reads the radio
+                  with <q>1 control</q>. That sentence is the default text of{' '}
+                  <code>radioGroup.revealShown</code> (see <Link href="#api-strings">Strings</Link>
+                  ). Everything else it says is under{' '}
+                  <Link href="#announcements-read-aloud">What a screen reader reads</Link>.
                 </p>
-                <ol>
-                  <li>
-                    Entering the group: <q>group, How did you hear about the service? (optional)</q>
-                    . The “(optional)” is there because the group is not <code>required</code>. Then
-                    each radio, for example{' '}
-                    <q>
-                      radio, A letter from the municipality, not checked, position 1, set size 3
-                    </q>
-                    . “Other” adds <q>1 control</q>, the field it opens:{' '}
-                    <q>radio, Other, not checked, 1 control, position 3, set size 3</q>. The hidden
-                    field is not read.
-                  </li>
-                  <li>
-                    Checking “Other”:{' '}
-                    <q>radio, Other, checked, 1 control, position 3, set size 3</q>. Then, politely
-                    and once, <q>An input field has appeared below.</q> This is the default text of{' '}
-                    <code>radioGroup.revealShown</code> (see{' '}
-                    <Link href="#api-strings">Strings</Link>).
-                  </li>
-                  <li>
-                    Pressing Tab: <q>textbox, Please specify (optional)</q>. The field is not
-                    required, so its label has the marker.
-                  </li>
-                  <li>
-                    Checking another option, or resetting the form: nothing is announced, and the
-                    field is no longer read.
-                  </li>
-                </ol>
                 <Note kind="reminder">
-                  While “Other” is not chosen the field is hidden: screen readers don’t read it and
-                  Tab skips it. A plain form still sends what was typed as <code>source-other</code>
-                  , so ignore it on the server. Give the field a label of its own, and make it
-                  required only while “Other” is chosen.
+                  A plain form still sends what was typed as <code>source-other</code>, so ignore it
+                  on the server. Give the field a label of its own, and make it required only while
+                  “Other” is chosen.
                 </Note>
               </>
             }
