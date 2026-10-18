@@ -61,7 +61,7 @@ export const CustomVariables: Story = {
           '--kv-divider-margin-block': 'var(--kv-space-8)',
           '--kv-divider-width': '4px',
           '--kv-divider-style': 'dashed',
-          '--kv-divider-color': 'var(--kv-color-border)',
+          '--kv-divider-color': 'var(--kv-color-border-control)',
         } as CSSProperties
       }
     >

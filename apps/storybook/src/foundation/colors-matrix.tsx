@@ -167,7 +167,7 @@ function Summary({
           <p>Failing pairs in use:</p>
           <ul>
             {failing.map(({ foreground, background, ratio, minimum }) => (
-              <li key={`${foreground} ${background}`}>
+              <li key={`${foreground} ${background} ${minimum}`}>
                 <TokenCode name={foreground} /> on <TokenCode name={background} />:{' '}
                 {ratioText(ratio)}, needs {minimumText(minimum)}
               </li>
@@ -239,7 +239,7 @@ function PairsInUse({
           const foregroundColor = snapshot.colors[foreground]
           const backgroundColor = snapshot.colors[background]
           return (
-            <tr key={`${foreground} ${background}`}>
+            <tr key={`${foreground} ${background} ${minimum}`}>
               <th scope="row">
                 {foregroundColor === undefined ? null : <Swatch color={foregroundColor} />}
                 <TokenCode name={foreground} />

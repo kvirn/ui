@@ -22,6 +22,7 @@ import {
 } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 import { expect, userEvent } from 'storybook/test'
 import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
 import { ExampleProvider, filterText } from '../search-and-forms/search-support.tsx'
@@ -84,7 +85,7 @@ function matching(area: AreaKey, languageKeys: readonly string[], hourKeys: read
   )
 }
 
-function UnitFinder({
+function UnitFinderContent({
   initialArea = 'all',
   initialLanguages = [],
   initialHours = [],
@@ -219,7 +220,7 @@ function UnitFinder({
   )
 
   return (
-    <ExampleProvider>
+    <>
       <Container size="reading">
         <Stack className="kv-stack--gap-6">
           {collapsible ? (
@@ -307,6 +308,15 @@ function UnitFinder({
           ) : null}
         </Stack>
       </Container>
+    </>
+  )
+}
+
+// The hooks in the content need the provider above them, so it can't be rendered by the same component.
+function UnitFinder(props: Parameters<typeof UnitFinderContent>[0]): ReactNode {
+  return (
+    <ExampleProvider>
+      <UnitFinderContent {...props} />
     </ExampleProvider>
   )
 }

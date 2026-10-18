@@ -29,7 +29,7 @@ const meta = {
       control: 'select',
       options: [undefined, 'SE', 'FI', 'NO', 'DE'],
       description:
-        'The address’s country (ISO alpha-2). `SE`, `FI` and `NO` give the postal code its mask, a numeric keypad and a 6, 6 or 4 character box; any other country has no mask, upper-case letters and a 10 character box. Default: the provider’s `country`, then the locale’s. Changing it never rewrites a typed value.',
+        'The address’s country (ISO alpha-2). `SE`, `FI` and `NO` give the postal code its mask, a numeric keypad and a 6, 6 or 4 character box; any other country has no mask, a box that takes what is typed (phone keyboards are asked for capital letters) and a 10 character box. Default: the provider’s `country`, then the locale’s. Changing it never rewrites a typed value.',
     },
     autoComplete: {
       control: 'select',
@@ -183,7 +183,7 @@ export const Norway: Story = {
 }
 
 /**
- * An address abroad, `country="DE"`: no mask, letters allowed and upper case, ten characters wide,
+ * An address abroad, `country="DE"`: no mask: the box takes what is typed, asks phone keyboards for capital letters and is ten characters wide,
  * so a foreign code is never refused. For a format you don’t know, use a `Textarea` instead.
  */
 export const AddressAbroad: Story = {
@@ -399,6 +399,7 @@ export const TwoAddresses: Story = {
           <Field.Root required>
             <Field.Label>Postal code</Field.Label>
             <AddressInput.PostalCode name="applicantPostalCode" />
+            <Field.HelpText>For example 123 45</Field.HelpText>
           </Field.Root>
           <Field.Root required>
             <Field.Label>Town or city</Field.Label>
@@ -416,6 +417,7 @@ export const TwoAddresses: Story = {
           <Field.Root required>
             <Field.Label>Postal code</Field.Label>
             <AddressInput.PostalCode name="guardianPostalCode" />
+            <Field.HelpText>For example 123 45</Field.HelpText>
           </Field.Root>
           <Field.Root required>
             <Field.Label>Town or city</Field.Label>
