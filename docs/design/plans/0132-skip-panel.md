@@ -179,7 +179,8 @@ A native speaker's review of the key-cap names is pending (not an agent claim).
 
 ## Risks & open questions
 
-- Docs page: `.docs-skip-panel-example` (`contain: layout`) keeps the card's z-index inside the example. Check by hand that a sticky site header never covers the focused row (2.4.11, docs only). Opt-in sweeps (text-spacing 1.4.12, forced-colors) cover Button only; extending `sweepExclude` to SkipPanel is a follow-up.
+- Docs page: `.docs-skip-panel-example` (`contain: layout`) keeps the card's z-index inside the example. Check by hand that a sticky site header never covers the focused row (2.4.11, docs only).
+- Opt-in sweeps now cover the SkipPanel stories (maintainer-approved gate change, 2026-10-18): `sweepExclude` keeps Button and SkipPanel, boxes of at most 1×1px (the C7 hidden-until-focus clip) are exempt in the overflow and text-spacing assertions, and a story that pins a wide viewport says why with `parameters.reflowOptOut` (`Narrow` doesn't, and passes at 320px). Forced colours, reduced motion, reflow and text spacing pass on Button and SkipPanel (35 tests each). Human checks stay pending.
 - Whether Alt+Shift+letter reaches the page under NVDA and JAWS (browse and focus mode), Firefox, and Windows with two input layouts. Manual AT matrix: `pending`.
 - How screen readers read the group names and the nested Kbd. Manual AT matrix: `pending`.
 - Browse mode reads the whole panel at the top of every page (C7). Documented as a known issue.

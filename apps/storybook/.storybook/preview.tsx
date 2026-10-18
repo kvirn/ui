@@ -189,14 +189,15 @@ const preview: Preview = {
   beforeEach: ({ parameters }) => (drivesThemeStore(parameters) ? undefined : resetStoryTheme),
   // The display-mode sweep (`vite.config.ts`): each story is also checked in the mode
   // its Vitest project emulates.
-  afterEach: async ({ canvasElement }) => {
+  afterEach: async ({ canvasElement, parameters }) => {
     const sweep = import.meta.env.VITE_STORYBOOK_SWEEP
     if (sweep === 'forced-colors') {
       await expectVisibleInForcedColors(canvasElement)
     } else if (sweep === 'reduced-motion') {
       await expectNoMotionInReducedMotion()
     } else if (sweep === 'reflow') {
-      await expectReflowViewport()
+      // A story that pins a wide viewport on purpose says why; the sweep then skips only the 320 precondition.
+      if (typeof parameters['reflowOptOut'] !== 'string') await expectReflowViewport()
       await expectNoHorizontalOverflow(canvasElement)
     } else if (sweep === 'text-spacing') {
       await expectNoClippedTextWithSpacing(canvasElement)

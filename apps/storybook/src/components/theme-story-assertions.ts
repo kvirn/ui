@@ -30,10 +30,21 @@ export async function expectTopBarTargetSizes(root: Element) {
   }
 }
 
-/** Nothing inside the element is wider than it (1.4.10). */
+// Hidden until focus by clipping to a 1 CSS px box (technique C7, a skip link): the content is
+// not on screen, so a sweep does not read it as clipped or overflowing. Nothing larger is exempt.
+const isClippedAway = (element: Element, root: Element) => {
+  for (let node: Element | null = element; node && node !== root; node = node.parentElement) {
+    const { width, height } = node.getBoundingClientRect()
+    if (width <= 1 && height <= 1) return true
+  }
+  return false
+}
+
+/** Nothing inside the element is wider than it (1.4.10). A box clipped to 1 CSS px is skipped. */
 export async function expectNoHorizontalOverflow(element: HTMLElement) {
   await expect(element.scrollWidth).toBeLessThanOrEqual(element.clientWidth)
   for (const child of element.querySelectorAll<HTMLElement>('*')) {
+    if (isClippedAway(child, element)) continue
     await expect(child.getBoundingClientRect().right).toBeLessThanOrEqual(
       element.getBoundingClientRect().right + 0.5,
     )
@@ -124,7 +135,7 @@ const textSpacingCss = `
 
 /**
  * Text spacing (1.4.12): with the spacing applied, no element that clips its content (overflow
- * hidden or clip, or a fixed height) has more content than box.
+ * hidden or clip, or a fixed height) has more content than box. A box clipped to 1 CSS px is skipped.
  */
 export async function expectNoClippedTextWithSpacing(root: Element) {
   const style = document.createElement('style')
@@ -132,7 +143,7 @@ export async function expectNoClippedTextWithSpacing(root: Element) {
   document.head.append(style)
   try {
     for (const element of root.querySelectorAll<HTMLElement>('*')) {
-      if (!element.textContent?.trim()) continue
+      if (!element.textContent?.trim() || isClippedAway(element, root)) continue
       const { overflowX, overflowY } = getComputedStyle(element)
       const clipsX = overflowX === 'hidden' || overflowX === 'clip'
       const clipsY = overflowY === 'hidden' || overflowY === 'clip'

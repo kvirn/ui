@@ -36,6 +36,9 @@ const meta = {
   globals: { ...wideGlobals, locale: 'en' },
   parameters: {
     viewport: { options: chromeViewports },
+    // The floating card is fixed only from 40rem x 36rem, so these stories pin a wide viewport;
+    // Narrow turns this off and is the one the reflow sweep reads at 320.
+    reflowOptOut: 'pinned to a wide viewport; Narrow proves 320 px',
     a11yContract: contract,
     docs: { description: { component: usageGuide(guide) } },
   },
@@ -278,7 +281,10 @@ export const Keyboard: Story = {
 /** At 320px the panel sits at the top of the page, full width, with each key combination under its label. */
 export const Narrow: Story = {
   globals: narrowGlobals,
-  parameters: showSource('skip-panel/skip-panel.fixture.tsx', 'SkipPanelNarrow'),
+  parameters: {
+    ...showSource('skip-panel/skip-panel.fixture.tsx', 'SkipPanelNarrow'),
+    reflowOptOut: false,
+  },
   render: () => <SkipPanelNarrow />,
   play: playUnlessDocs(async ({ canvas, canvasElement }) => {
     const panel = panelOf(canvasElement)

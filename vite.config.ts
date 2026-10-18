@@ -103,15 +103,15 @@ const noRedundantRoles: ['error', { ul: string[] }] = ['error', { ul: ['list'] }
 const maxWorkers = Number(process.env['VITEST_MAX_WORKERS'] ?? 2)
 
 // Vitest's exclude globs have no negation, so the other component directories are listed.
-const sweepExcludeAllBut = (component: string) =>
+const sweepExcludeAllBut = (components: string[]) =>
   readdirSync('apps/storybook/src/components', { withFileTypes: true })
-    .filter((entry) => entry.isDirectory() && entry.name !== component)
+    .filter((entry) => entry.isDirectory() && !components.includes(entry.name))
     .map((entry) => `**/components/${entry.name}/**`)
 
 type ContextOptions = NonNullable<PlaywrightProviderOptions['contextOptions']>
 
 const sweepExclude = [
-  ...sweepExcludeAllBut('button'),
+  ...sweepExcludeAllBut(['button', 'skip-panel']),
   '**/patterns/**',
   '**/foundation/**',
   '**/content-types/**',
@@ -288,7 +288,7 @@ export default defineConfig({
       storybookProject('storybook-dark', 'dark', 'standard'),
       storybookProject('storybook-light-contrast', 'light', 'more'),
       storybookProject('storybook-dark-contrast', 'dark', 'more'),
-      // The display-mode sweep, Button only for now. Not in `vp run test` or CI: run one
+      // The display-mode sweep, Button and SkipPanel for now. Not in `vp run test` or CI: run one
       // with `vp test run --project storybook-<mode>`. The preview's afterEach reads
       // VITE_STORYBOOK_SWEEP and asserts the outcome after each story's play function.
       ...displayModeSweeps.map(({ name, contextOptions }) =>
