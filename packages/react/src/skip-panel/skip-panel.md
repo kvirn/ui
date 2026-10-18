@@ -1,6 +1,6 @@
 # SkipPanel
 
-A skip panel: on the first Tab, a card lists where to skip to and which keyboard shortcuts the site offers. Each shortcut runs from the card or by its chord. For a skip link that stays in the page flow, use [SkipLink](../skip-link/skip-link.md).
+A skip panel: on the first Tab, a list of links shows where to skip to and which keyboard shortcuts the site offers. Each shortcut runs from its row or by its chord. For a skip link that stays in the page flow, use [SkipLink](../skip-link/skip-link.md).
 
 - Parts: `Root`, `Group`, `Label`, `List`, `Item`, `Link`, `Shortcut`, `HelpLink`, `Hint`. Hooks: `useSkipPanel(options)` for the Root, and `useSkipPanelGroup`, `useSkipPanelLink`, `useSkipPanelShortcut`, `useSkipPanelHelpLink`, `useSkipPanelHint` for the parts that need more than a class.
 - Options on Root: `reopenShortcut` (a chord that opens the list again, no default), `shortcutsEnabled` (default `true`; `false` adds no listener and drops the key caps and `aria-keyshortcuts`).

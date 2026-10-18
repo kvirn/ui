@@ -43,15 +43,15 @@ One look, a floating card, with no `variant`: an in-flow skip is the plain `Skip
 
 Unhappy paths:
 
-| Case                                                     | Behaviour                                                                                                                  |
-| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Target id missing or hidden                              | Dev warning, as SkipLink (`skip-link-target-missing:<id>`); point at an always-rendered wrapper                            |
-| Chord pressed in a text field, select or contenteditable | Ignored; the character is typed                                                                                            |
-| Chord taken first by AT, browser or OS                   | The row still works: every chord has its visible row                                                                       |
-| Before hydration or no JS                                | Links work, the panel shows on focus (CSS only). Chords, the reopen chord and Escape do nothing                            |
-| `shortcutsEnabled={false}`                               | Chords unbound, key caps and the Hint not rendered, `aria-keyshortcuts` and descriptions removed. Rows stay Tab stops (Q2) |
-| Escape after reopen, previous element gone               | Focus goes to the first link's target (main content), never `body`                                                         |
-| Touch only; dismissed                                    | Never seen by touch. Hidden when focus leaves, or by Escape after a reopen; nothing stored across pages                    |
+| Case                                                     | Behaviour                                                                                                                                        |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Target id missing or hidden                              | Dev warning, as SkipLink (`skip-link-target-missing:<id>`); point at an always-rendered wrapper                                                  |
+| Chord pressed in a text field, select or contenteditable | Ignored; the character is typed                                                                                                                  |
+| Chord taken first by AT, browser or OS                   | The row still works: every chord has its visible row                                                                                             |
+| Before hydration or no JS                                | Links work, the panel shows on focus (CSS only). Chords, the reopen chord and Escape do nothing                                                  |
+| `shortcutsEnabled={false}`                               | Chords unbound, key caps and the Hint not rendered, `aria-keyshortcuts` and descriptions removed. Rows stay in the list, still one Tab stop (Q2) |
+| Escape after reopen, previous element gone               | Focus goes to the first link's target (main content), never `body`                                                                               |
+| Touch only; dismissed                                    | Never seen by touch. Hidden when focus leaves, or by Escape after a reopen; nothing stored across pages                                          |
 
 ## 4. Content
 

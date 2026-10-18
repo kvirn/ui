@@ -16,7 +16,7 @@ export const addressInputRootRows = propRows<
     type: 'string',
     default: '–',
     description:
-      'The address’s country as an ISO 3166-1 alpha-2 code, such as SE. It picks the postal code’s mask, width and keypad: SE, FI and NO have a mask, any other country takes letters and digits. Without it: the provider’s country, then the country the page’s language implies (Swedish SE, Finnish FI, Norwegian NO). English implies none. It is the address’s country, not the page’s, and changing it never rewrites what was typed.',
+      'The address’s country as an ISO 3166-1 alpha-2 code, such as SE. It picks the postal code’s mask, width and keypad: SE, FI and NO have a mask, and any other country has none. Without it: the provider’s country, then the country the page’s language implies (Swedish SE, Finnish FI, Norwegian NO). English implies none. It is the address’s country, not the page’s, and changing it never rewrites what was typed.',
   },
   autoComplete: {
     type: 'string',
@@ -167,7 +167,7 @@ export const addressInputPostalCodeAttributes: readonly AttributeRow[] = [
     name: 'inputmode, autocapitalize',
     values: '"numeric" with a mask; "text" and "characters" without',
     meaning:
-      'The digit keypad for a masked code, and upper case letters for a country with no mask.',
+      'The digit keypad for a masked code. For a country with no mask, a keyboard that starts in capital letters. The text is kept as typed.',
   },
   {
     name: 'dir',

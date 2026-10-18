@@ -147,7 +147,7 @@ const componentGroupList: readonly SummarisedGroup[] = [
       component(
         'Divider',
         'divider',
-        'A line between two blocks, with its margin, width and colour set from CSS variables.',
+        'A line that marks where one topic ends and the next begins.',
       ),
       component(
         'Heading',
@@ -267,7 +267,7 @@ const componentGroupList: readonly SummarisedGroup[] = [
       component(
         'AddressInput',
         'address-input',
-        'A postal address in separate boxes (street, line 2, postal code and city), each with its autofill purpose set.',
+        'A postal address in separate boxes (street, line 2, postal code and city). A browser can fill them all in at once.',
       ),
       component('Autocomplete', 'autocomplete', 'A text field that suggests as the user types.'),
       component(

@@ -19,6 +19,9 @@ export function DefaultSkipPanel() {
             <SkipPanel.Item>
               <SkipPanel.Link href="#skip-panel-navigation">{texts.navigationLabel}</SkipPanel.Link>
             </SkipPanel.Item>
+            <SkipPanel.Item>
+              <SkipPanel.HelpLink href="#skip-panel-keyboard-help" />
+            </SkipPanel.Item>
           </SkipPanel.List>
         </SkipPanel.Group>
         <SkipPanel.Hint />
@@ -29,6 +32,9 @@ export function DefaultSkipPanel() {
       </div>
       <div id="skip-panel-main">
         <p>{texts.main}</p>
+      </div>
+      <div id="skip-panel-keyboard-help">
+        <p>{texts.keyboardHelp}</p>
       </div>
     </div>
   )

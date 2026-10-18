@@ -37,9 +37,10 @@ const boxRenders = (what: ReactNode) => (
   <>
     {what} An <code>&lt;input type=&quot;text&quot;&gt;</code> (a TextInput) with the role{' '}
     <code>textbox</code>. Put it in its own <code>Field</code> with a visible{' '}
-    <code>Field.Label</code>: the label, help text and error are wired to it. It takes every
-    attribute of an <code>&lt;input&gt;</code> except <code>type</code> and <code>mask</code>, and
-    passes <code>ref</code> to it.
+    <code>Field.Label</code>: the label, help text and error are wired to it. It takes the props of
+    a <Link href="/components/text-input">TextInput</Link> and passes <code>ref</code> to it. You
+    cannot set <code>type</code>. The street, line 2 and city boxes also take no <code>mask</code>,{' '}
+    <code>announceRejections</code> or <code>messages</code>.
   </>
 )
 
@@ -75,7 +76,7 @@ const parts: ApiPart[] = [
   {
     name: 'AddressInput.PostalCode',
     renders: boxRenders(
-      'The postal code. It follows the Root’s country: SE, FI and NO get a mask, a number keypad and a box as wide as the code. Any other country takes letters and digits, in upper case, in a box ten characters wide. Also exported as AddressInputPostalCode.',
+      'The postal code. It follows the Root’s country: SE, FI and NO get a mask, a number keypad and a box as wide as the code. Any other country gets no mask: the box takes what is typed, asks phone keyboards for capital letters and is ten characters wide. Also exported as AddressInputPostalCode.',
     ),
     props: addressInputPostalCodeRows,
     attributes: addressInputPostalCodeAttributes,
@@ -100,12 +101,13 @@ export function AddressInputPage({
   return (
     <ComponentPage
       title="AddressInput"
-      lead="The postal code takes its shape from the country. AddressInput looks nothing up and never moves focus when a box is full."
+      lead="The postal code takes its shape from the country, such as Sweden or Norway. AddressInput looks nothing up and never moves focus by itself when a box is full."
       whenToUse={
         <ul>
           <li>
             Use it to ask for a postal address in separate boxes: street, line 2, postal code and
-            city, in the Nordic order. Each box has the autofill purpose browsers know.
+            city, in the Nordic order. Each box says what it is for, so a browser can fill in the
+            whole address in one step (autofill).
           </li>
           <li>
             Put the boxes in a plain <Link href="/components/fieldset">Fieldset</Link> with a legend
@@ -140,12 +142,19 @@ export function AddressInputPage({
           <UseCase
             id="errors-per-box"
             title="Fix the boxes that are wrong"
-            why="Each box has its own error. The error summary has one link per wrong box, and each goes to its box."
+            why={
+              <>
+                Each box has its own error text. The{' '}
+                <Link href="/components/error-summary">error summary</Link> at the top has one link
+                per wrong box, and each link moves focus to its box.
+              </>
+            }
             code={sources['errors-per-box']}
             note={
               <Note kind="reminder">
                 Say what is wrong and how to fix it, with the format: “Enter a postal code with 5
-                digits, like 123 45” (3.3.1 Error Identification, 3.3.3 Error Suggestion).
+                digits, like 123 45” (3.3.1 Error Identification, Level A; 3.3.3 Error Suggestion,
+                Level AA).
               </Note>
             }
           >
@@ -183,7 +192,7 @@ export function AddressInputPage({
             note={
               <Note kind="reminder">
                 Don’t make people enter again what they gave earlier in the same process (3.3.7
-                Redundant Entry).
+                Redundant Entry, Level A).
               </Note>
             }
           >
@@ -201,7 +210,14 @@ export function AddressInputPage({
               <Note kind="reminder">
                 Give the Fieldset a legend and every box a visible label. Without the legend,
                 “Postal code” and “City” have no shared question (1.3.1 Info and Relationships,
-                3.3.2 Labels or Instructions).
+                3.3.2 Labels or Instructions, both Level A).
+              </Note>
+            ),
+            focus: (
+              <Note kind="reminder">
+                If your site has a sticky header, add <code>scroll-padding</code> so a focused box
+                and the error under it are not hidden behind the header (2.4.11 Focus Not Obscured
+                (Minimum), Level AA).
               </Note>
             ),
             'known-issues': (

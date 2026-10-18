@@ -13,6 +13,7 @@ export default function Page() {
       sources={{
         default: readExampleSource('divider/default.tsx'),
         'decorative-line': readExampleSource('divider/decorative-line.tsx'),
+        'stronger-line': readExampleSource('divider/stronger-line.tsx'),
       }}
     />
   )

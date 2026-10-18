@@ -6,13 +6,13 @@
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `divider.test.tsx` next to this file. `divider.stories.tsx` in `apps/storybook/src/components/divider/`.
 
-Divider is the native `<hr>` element with a class, so the theme can draw and space it. It adds no ARIA, text or behaviour. `<hr>` has the implicit `separator` role: a thematic break that some screen readers announce.
+Divider is the native `<hr>` element with a class, so the theme can draw and space it. It adds no ARIA attributes, no text and no behaviour. An `<hr>` has the built-in role `separator` (a break between two topics), and some screen readers announce it.
 
 ## Roles, states, properties
 
 | Part    | Element / role                | ARIA                           | Notes                                                                                  |
 | ------- | ----------------------------- | ------------------------------ | -------------------------------------------------------------------------------------- |
-| Divider | `<hr>` → implicit `separator` | none                           | `class="kv-divider"`. Attributes and the ref reach the element unchanged               |
+| Divider | `<hr>` → built-in `separator` | none                           | `class="kv-divider"`. Attributes and the ref reach the element unchanged               |
 | Divider | `<hr role="presentation">`    | passed through by the consumer | A purely visual line: not announced. The consumer chooses; the component never adds it |
 | Divider | never                         | no `tabindex`, name            | It needs no accessible name and is not interactive                                     |
 
@@ -41,18 +41,18 @@ Divider renders no text, so it has no message keys.
 
 ## Consumer responsibilities
 
-- **Pick the role on purpose.** Keep the default `separator` when the blocks on each side are different topics. Pass `role="presentation"` when the line is only decoration (1.3.1).
-- **Don't carry meaning in the line alone.** What the line separates must also be clear from headings or text (1.4.1, 1.3.1).
-- **Keep your own colour visible.** If you change `--kv-divider-color`, keep it visible against the background when the line matters to understanding (1.4.11).
+- **Pick the role on purpose.** Keep the default `separator` when the blocks on each side are different topics. Pass `role="presentation"` when the line is only decoration, so screen readers skip it (1.3.1 Info and Relationships, A).
+- **Don't carry meaning in the line alone.** What the line separates must also be clear from headings or text (1.3.1 Info and Relationships, A; 1.4.1 Use of Color, A).
+- **Keep your own colour visible.** If you change `--kv-divider-color`, keep the line clearly visible against the background when it matters to understanding (1.4.11 Non-text Contrast, AA).
 
 ## Visual / modes
 
-Headless: Divider ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-divider` draws a hairline in the subtle border colour with a block margin; margin, width, style and colour are CSS variables. The line is a border, not a background, so it stays visible in forced colours. Sizes are in tokens (rem). Target size and focus indicator: not applicable. Motion: none.
+Divider ships no CSS of its own. With the default theme it is a thin, faint line with space above and below. The space, width, style and colour are CSS variables you can change. The line is a border, not a background, so it stays visible in forced colours mode (the user's own system colours). Target size and focus indicator do not apply, because the line cannot be focused. There is no motion.
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships: a thematic break is the native `<hr>` (`divider.test.tsx › renders an hr element`); a decorative one can be `role="presentation"` (`divider.test.tsx › passes role="presentation" through`).
-- 1.4.11 Non-text Contrast: the line is decoration between blocks, not required to understand the content.
+- 1.3.1 Info and Relationships (A): a break between topics is the native `<hr>` (`divider.test.tsx › renders an hr element`); a decorative one can be `role="presentation"` (`divider.test.tsx › passes role="presentation" through`).
+- 1.4.11 Non-text Contrast (AA): the default line is decoration between blocks, and the content can be understood without it. If you make the line carry meaning, keep your own colour visible.
 
 ## AT test record
 
@@ -60,10 +60,10 @@ Headless: Divider ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-divider` d
 | -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                        |
 | axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | divider.stories.tsx, every story, 4 themes                                                                                             |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `divider.test.tsx` (axe and role, name and state): `renders an hr element`                                                             |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `divider.test.tsx`: `renders an hr element`, `has no axe violations as a separator and as presentation`                                |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 2 rows, each names a test in `divider.test.tsx`                                                                                        |
 | Focus order and management                                                 | n/a         | n/a         | n/a     | an hr is not focusable                                                                                                                 |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                                                                       |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: Divider is not in the sweep list, so no sweep project runs its stories                                                      |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                                                        |
 | NVDA + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate |
 | VoiceOver + Safari + iOS                                                   | n/a         | n/a         | n/a     | native `<hr>` with its own separator role (or `role="presentation"` set by the consumer), no state or key handling; nothing to operate |

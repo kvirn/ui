@@ -17,6 +17,9 @@ export function Reopen() {
             <SkipPanel.Item>
               <SkipPanel.Link href="#skip-panel-reopen-main" />
             </SkipPanel.Item>
+            <SkipPanel.Item>
+              <SkipPanel.HelpLink href="#skip-panel-reopen-keyboard-help" />
+            </SkipPanel.Item>
           </SkipPanel.List>
         </SkipPanel.Group>
         <SkipPanel.Hint />
@@ -30,6 +33,9 @@ export function Reopen() {
             </li>
           ))}
         </ul>
+      </div>
+      <div id="skip-panel-reopen-keyboard-help">
+        <p>{texts.keyboardHelp}</p>
       </div>
     </div>
   )

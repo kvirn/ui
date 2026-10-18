@@ -133,12 +133,13 @@ const parts: ApiPart[] = [
     name: 'SkipPanel.Hint',
     renders: (
       <>
-        <code>&lt;p&gt;</code> that always renders the arrow sentence, “Use the up and down arrow
-        keys to move between items.” The first link is described by it, so a screen reader reads it
-        when focus arrives. With a <code>reopenShortcut</code> and shortcuts on, it adds a second
-        sentence, such as “Press Alt+Shift+K to open this list again.” Always put one inside the
-        Root: without it a development warning says the first link has no description. It takes
-        every attribute of a <code>&lt;p&gt;</code>.
+        <code>&lt;p&gt;</code> with short instructions for the list. It always renders the arrow
+        sentence, “Use the up and down arrow keys to move between items.” The first link is
+        described by it, so a screen reader reads it when focus arrives. With a{' '}
+        <code>reopenShortcut</code> and shortcuts on, it adds a second sentence, such as “Press
+        Alt+Shift+K to open this list again.” Always put one inside the Root: without it a
+        development warning says the first link has no description. It takes every attribute of a{' '}
+        <code>&lt;p&gt;</code>.
       </>
     ),
   },
@@ -154,7 +155,7 @@ export function SkipPanelPage({
   return (
     <ComponentPage
       title="SkipPanel"
-      lead="The whole panel is one Tab stop: Tab lands on the first link and the next Tab leaves. The Up and Down arrow keys move between the items. A shortcut can be run from the list or by pressing its keys anywhere on the page, so nobody has to use the keys."
+      lead="The whole panel is one Tab stop (a place where the Tab key stops). The first Tab lands on the first link and the next Tab leaves the panel. The Up and Down arrow keys move between the items. Every shortcut is also a row in the list, so nobody has to use the keys."
       whenToUse={
         <ul>
           <li>
@@ -172,10 +173,8 @@ export function SkipPanelPage({
             <Link href="/components/quick-exit">QuickExit</Link>, that comes first.
           </li>
           <li>
-            It is one Tab stop (a place where the Tab key stops), however many items it has. Tab
-            focuses “Main content”, the Up and Down arrow keys move to the other items, and the next
-            Tab leaves. So a person who wants the header presses Tab once. Without this, they would
-            tab through every shortcut on every page.
+            It stays one Tab stop however many items it has. Someone who wants the header presses
+            Tab once, instead of tabbing through every shortcut on every page.
           </li>
           <li>
             Keep it short: at most three skip links, five shortcuts and six items in all. A long
@@ -210,13 +209,12 @@ export function SkipPanelPage({
               <>
                 Residents of a municipality often search the site or check their cases. A second
                 group lists these two as rows. “Search” is a button that moves focus to the search
-                field. “My cases” is a link: here it points to the same page, and on your site it is
-                the address of the cases page or your router’s link component. Press the keys
-                anywhere on the page, except in a text field, and the row does the same as when you
-                press it. A help link goes last. It leads to the page where a visitor can read about
-                the shortcuts and turn them off. Here it points to a place on the same page. On your
-                site it points to that page, such as <code>/accessibility-settings#shortcuts</code>.
-                Its text comes from the library, and you can replace it.
+                field. “My cases” is a link. A shortcut is a chord (keys pressed together). Press
+                the chord anywhere on the page, except in a text field, and the row does what it
+                does when you press it. The help link goes last. In this example the links point to
+                places on the same page. On your site, “My cases” points to the cases page, and the
+                help link points to the page where visitors read about the shortcuts and turn them
+                off, such as <code>/accessibility-settings#shortcuts</code>.
               </>
             }
             code={sources['shortcuts']}
@@ -230,10 +228,11 @@ export function SkipPanelPage({
               <Note kind="reminder">
                 Make every chord Alt (Option on a Mac) plus Shift plus a letter, or use{' '}
                 <code>mod</code> with a letter. A bare letter would fire while someone types or uses
-                speech input. It would also fall under 2.1.4 Character Key Shortcuts (Level A),
-                which asks for a way to turn it off, change it or limit it to when its control has
-                focus. In development, a warning flags a bare letter, Ctrl with Alt, and{' '}
-                <code>mod</code> together with <code>ctrl</code> or <code>meta</code>.
+                speech input (software that turns speech into text). It would also fall under 2.1.4
+                Character Key Shortcuts (Level A), which asks for a way to turn it off, change it or
+                limit it to when its control has focus. In development, a warning flags a bare
+                letter, Ctrl with Alt, and <code>mod</code> together with <code>ctrl</code> or{' '}
+                <code>meta</code>.
               </Note>
             }
           >
@@ -246,8 +245,8 @@ export function SkipPanelPage({
               <>
                 A caseworker has tabbed down a list of cases and wants the list of shortcuts again.
                 Give the Root a <code>reopenShortcut</code>. The chord opens the list and focuses
-                its first link. Escape closes it and puts focus back on the case they were on. A
-                Hint inside the list tells people which keys to press.
+                its first link. Escape closes it and puts focus back on the case they were on. The
+                Hint (a line of instructions in the list) tells people which keys to press.
               </>
             }
             code={sources['reopen']}
@@ -255,8 +254,8 @@ export function SkipPanelPage({
             note={
               <Note kind="tip">
                 A chord does nothing while focus is in a text field, a text area or a select, so it
-                never stops someone from typing. The example uses buttons for that reason. See the
-                Keyboard section.
+                never stops someone from typing. The example has buttons and no text field, so the
+                chord works wherever you tab. See the Keyboard section.
               </Note>
             }
           >
@@ -267,16 +266,19 @@ export function SkipPanelPage({
             title="Let people turn the shortcuts off"
             why={
               <>
-                A shortcut can clash with the keys of a screen reader, the browser or the system.
-                Connect <code>shortcutsEnabled</code> to a setting. When it is off, no chord works,
-                the key names disappear and the second group’s label changes from “Keyboard
-                shortcuts” to “Quick links”. The rows stay in the list. A <code>HelpLink</code>{' '}
-                stays too, so a visitor who turned the shortcuts off can find the page that turns
-                them on again.
+                A shortcut can clash with the keys of a screen reader (software that reads the
+                screen aloud), the browser or the system. Connect <code>shortcutsEnabled</code> to a
+                setting. When it is off, no chord works, the key names disappear and the second
+                group’s label changes from “Keyboard shortcuts” to “Quick links”. The rows stay in
+                the list. The <code>HelpLink</code> stays too, so a visitor who turned the shortcuts
+                off can find the page that turns them on again.
               </>
             }
             code={sources['turn-off']}
-            propsUsed={[{ part: 'SkipPanel.Root', prop: 'shortcutsEnabled' }]}
+            propsUsed={[
+              { part: 'SkipPanel.Root', prop: 'shortcutsEnabled' },
+              { part: 'SkipPanel.HelpLink', prop: 'href' },
+            ]}
             note={
               <Note kind="reminder">
                 Offer a setting that turns the shortcuts off, and keep it where people can find it:
@@ -299,10 +301,8 @@ export function SkipPanelPage({
               <Note kind="reminder">
                 Give every skip link a target with the id it points to. If the id is missing, the
                 link goes nowhere and people using a keyboard must still tab through the whole
-                header (2.4.1 Bypass Blocks, Level A). Always put a Hint inside the Root: it tells
-                people about the arrow keys, and a development warning flags a missing one. Add a{' '}
-                <code>HelpLink</code> to a page where visitors can turn the shortcuts off, because
-                chords can clash with a screen reader (2.1.4 Character Key Shortcuts).
+                header (2.4.1 Bypass Blocks, Level A). Put a Hint inside the Root, and add a{' '}
+                <code>HelpLink</code> to the page where visitors can turn the shortcuts off.
               </Note>
             ),
             keyboard: (

@@ -11,11 +11,13 @@ export function TurnOff() {
       <p>
         <small>{texts.hintTurnOff}</small>
       </p>
-      <Field.Root>
-        <Switch name="shortcuts" checked={shortcutsOn} onCheckedChange={setShortcutsOn} />
-        <Field.Label marker="none">{texts.useShortcuts}</Field.Label>
-        <Field.HelpText>{texts.switchHelp}</Field.HelpText>
-      </Field.Root>
+      <div id="skip-panel-turn-off-settings">
+        <Field.Root>
+          <Switch name="shortcuts" checked={shortcutsOn} onCheckedChange={setShortcutsOn} />
+          <Field.Label marker="none">{texts.useShortcuts}</Field.Label>
+          <Field.HelpText>{texts.switchHelp}</Field.HelpText>
+        </Field.Root>
+      </div>
       <SkipPanel.Root shortcutsEnabled={shortcutsOn}>
         <SkipPanel.Group>
           <SkipPanel.Label />
@@ -36,6 +38,9 @@ export function TurnOff() {
               >
                 {texts.bookLabel}
               </SkipPanel.Shortcut>
+            </SkipPanel.Item>
+            <SkipPanel.Item>
+              <SkipPanel.HelpLink href="#skip-panel-turn-off-settings" />
             </SkipPanel.Item>
           </SkipPanel.List>
         </SkipPanel.Group>
