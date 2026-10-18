@@ -624,14 +624,14 @@ body {
   background-repeat: no-repeat;
 }
 
-/* Components/Form: questions in one column, 32px apart (docs/design/form-fields.md §5, open
-   question 10: the theme ships no form layout class yet). Also on a <form>. */
+/* Components/Form: questions in one column (docs/design/form-fields.md §5, open question 10: the
+   theme ships no form layout class yet). Also on a <form>. No gap: a field and a group of choices
+   carry their own block margin (--kv-field-block-margins), so a gap here would add to it. */
 .kv-story-form {
   display: grid;
   /* A single column that can shrink: an auto track's minimum is the longest word, so a long
      Finnish compound would widen the page (1.4.10). */
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--kv-space-8);
   max-inline-size: 40rem;
 }
 

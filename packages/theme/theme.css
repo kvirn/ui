@@ -6499,9 +6499,21 @@
     overflow-wrap: break-word;
   }
 
+  /* A group of choices (RadioGroup.Root, CheckboxGroup.Root) is one question, like a field: the
+   * same block margin between questions (--kv-field-block-margins), and none when it is the only
+   * element in its parent. After .kv-fieldset, which resets the margin at the same specificity. */
+  .kv-radio-group,
+  .kv-checkbox-group {
+    &:where(:not(:only-child)) {
+      margin-block: var(--kv-field-block-margins);
+    }
+  }
+
   /* A fieldset and a date input space their own fields (the gap, and the 24px below), so a field
-   * inside one has no block margin of its own: the options of a group are one gap apart. */
+   * or a group inside one has no block margin of its own: the options of a group are one gap
+   * apart. */
   .kv-fieldset > .kv-field,
+  .kv-fieldset > :is(.kv-radio-group, .kv-checkbox-group),
   .kv-date-input > .kv-field {
     margin-block: 0;
   }
