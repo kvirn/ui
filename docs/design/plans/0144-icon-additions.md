@@ -67,6 +67,7 @@ New category for C, D and E (not `rss`): `social` ("Social media", marks of netw
 - [ ] accessibility-reviewer on the diff
 
 - Decision: `settings-6` (a six-tooth `settings`, category `interface`, no label, no RTL mirror) added by the maintainer 2026-10-19; count 290. The evenly spaced gear (side teeth at slope 3:5) is a proposed grid exception, maintainer to confirm.
+- Decision: `database-add` and `database-remove` (badged counterparts of `database`, category `tables-data`, no label, no RTL mirror) added by the maintainer 2026-10-19; count 292. The band stub (the middle band keeps only its start-side 5.25 units) is a proposed part, maintainer to confirm.
 
 ## Risks
 

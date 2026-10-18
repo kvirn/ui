@@ -3005,6 +3005,26 @@
       "status": "drawn",
       "mirrorInRtl": false,
       "label": null
+    },
+    {
+      "name": "database-add",
+      "category": "tables-data",
+      "aliases": ["add-database", "dataset-add"],
+      "tags": ["database add", "add data", "new dataset", "add records"],
+      "meaning": "Add a database or dataset: the database cylinder with the badge plus.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "database-remove",
+      "category": "tables-data",
+      "aliases": ["remove-database", "database-delete"],
+      "tags": ["database remove", "remove data", "delete dataset", "remove records"],
+      "meaning": "Remove a database or dataset: the database cylinder with the badge minus.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
     }
   ]
 }

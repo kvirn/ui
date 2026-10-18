@@ -1,6 +1,6 @@
 # Icon catalogue
 
-Every icon of `@kvirn-ui/icons`: **290 icons in 18 categories, all drawn, none planned**. Priority (1 to 3) ordered the drawing until an icon was drawn, and is removed from a drawn icon, so the Priority column is `–` throughout.
+Every icon of `@kvirn-ui/icons`: **292 icons in 18 categories, all drawn, none planned**. Priority (1 to 3) ordered the drawing until an icon was drawn, and is removed from a drawn icon, so the Priority column is `–` throughout.
 
 ## How the catalogue is used
 
@@ -19,7 +19,7 @@ Every icon of `@kvirn-ui/icons`: **290 icons in 18 categories, all drawn, none p
 | 3   | Status and feedback            | `status`               | 10      | 0       | 10      |
 | 4   | Interface controls             | `interface`            | 26      | 0       | 26      |
 | 5   | Text editing                   | `text-editing`         | 27      | 0       | 27      |
-| 6   | Tables and data                | `tables-data`          | 11      | 0       | 11      |
+| 6   | Tables and data                | `tables-data`          | 13      | 0       | 13      |
 | 7   | Documents and files            | `documents`            | 17      | 0       | 17      |
 | 8   | Communication                  | `communication`        | 20      | 0       | 20      |
 | 9   | People and identity            | `people`               | 20      | 0       | 20      |
@@ -32,7 +32,7 @@ Every icon of `@kvirn-ui/icons`: **290 icons in 18 categories, all drawn, none p
 | 16  | Leisure, culture and community | `leisure-culture`      | 10      | 0       | 10      |
 | 17  | Language and access            | `access-language`      | 14      | 0       | 14      |
 | 18  | Social media                   | `social`               | 8       | 0       | 8       |
-|     | **All**                        |                        | **290** | **0**   | **290** |
+|     | **All**                        |                        | **292** | **0**   | **292** |
 
 ## Direction and movement
 
@@ -171,19 +171,21 @@ Formatting, lists, alignment, links and code in the rich text editor.
 
 Tables, the table tools of the editor, and charts of figures.
 
-| Name                  | Aliases                   | Status | Priority | RTL | Label                         | Meaning                                                                                     |
-| --------------------- | ------------------------- | ------ | -------- | --- | ----------------------------- | ------------------------------------------------------------------------------------------- |
-| `chart-bar`           | `bar-chart`, `statistics` | drawn  | –        | no  | `icons.chartBar`: Bar chart   | Comparing amounts: three bars of different heights sharing a baseline, not in rising order. |
-| `chart-line`          | `line-chart`              | drawn  | –        | no  | `icons.chartLine`: Line chart | A change over time: a line with two bends above a baseline.                                 |
-| `chart-pie`           | `pie-chart`               | drawn  | –        | no  | `icons.chartPie`: Pie chart   | Parts of a whole: a circle with one slice pulled out.                                       |
-| `database`            | `open-data`, `dataset`    | drawn  | –        | no  | `icons.database`: Database    | A store of data: a cylinder in two sections.                                                |
-| `table`               | –                         | drawn  | –        | no  | `icons.table`: Table          | A table: a landscape frame with a header rule, a row rule and a column.                     |
-| `table-column-add`    | `column-add`              | drawn  | –        | no  | none                          | Add a column: the frame with column rules and a small plus.                                 |
-| `table-column-remove` | `column-remove`           | drawn  | –        | no  | none                          | Delete a column: the frame with column rules and a small minus.                             |
-| `table-merge`         | `merge-cells`             | drawn  | –        | no  | none                          | Merge cells: two arrows from the frame sides meeting where the column breaks.               |
-| `table-row-add`       | `row-add`                 | drawn  | –        | no  | none                          | Add a row: the frame with row rules and a small plus.                                       |
-| `table-row-remove`    | `row-remove`              | drawn  | –        | no  | none                          | Delete a row: the frame with row rules and a small minus.                                   |
-| `table-split`         | `split-cell`              | drawn  | –        | no  | none                          | Split a cell: two arrows from a whole column out to the frame sides.                        |
+| Name                  | Aliases                              | Status | Priority | RTL | Label                         | Meaning                                                                                     |
+| --------------------- | ------------------------------------ | ------ | -------- | --- | ----------------------------- | ------------------------------------------------------------------------------------------- |
+| `chart-bar`           | `bar-chart`, `statistics`            | drawn  | –        | no  | `icons.chartBar`: Bar chart   | Comparing amounts: three bars of different heights sharing a baseline, not in rising order. |
+| `chart-line`          | `line-chart`                         | drawn  | –        | no  | `icons.chartLine`: Line chart | A change over time: a line with two bends above a baseline.                                 |
+| `chart-pie`           | `pie-chart`                          | drawn  | –        | no  | `icons.chartPie`: Pie chart   | Parts of a whole: a circle with one slice pulled out.                                       |
+| `database`            | `open-data`, `dataset`               | drawn  | –        | no  | `icons.database`: Database    | A store of data: a cylinder in two sections.                                                |
+| `database-add`        | `add-database`, `dataset-add`        | drawn  | –        | no  | none                          | Add a database or dataset: the database cylinder with the badge plus.                       |
+| `database-remove`     | `remove-database`, `database-delete` | drawn  | –        | no  | none                          | Remove a database or dataset: the database cylinder with the badge minus.                   |
+| `table`               | –                                    | drawn  | –        | no  | `icons.table`: Table          | A table: a landscape frame with a header rule, a row rule and a column.                     |
+| `table-column-add`    | `column-add`                         | drawn  | –        | no  | none                          | Add a column: the frame with column rules and a small plus.                                 |
+| `table-column-remove` | `column-remove`                      | drawn  | –        | no  | none                          | Delete a column: the frame with column rules and a small minus.                             |
+| `table-merge`         | `merge-cells`                        | drawn  | –        | no  | none                          | Merge cells: two arrows from the frame sides meeting where the column breaks.               |
+| `table-row-add`       | `row-add`                            | drawn  | –        | no  | none                          | Add a row: the frame with row rules and a small plus.                                       |
+| `table-row-remove`    | `row-remove`                         | drawn  | –        | no  | none                          | Delete a row: the frame with row rules and a small minus.                                   |
+| `table-split`         | `split-cell`                         | drawn  | –        | no  | none                          | Split a cell: two arrows from a whole column out to the frame sides.                        |
 
 ## Documents and files
 

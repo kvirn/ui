@@ -70,6 +70,8 @@ import { credentialsWallet } from './icons/credentials-wallet.ts'
 import { cut } from './icons/cut.ts'
 import { darkMode } from './icons/dark-mode.ts'
 import { database } from './icons/database.ts'
+import { databaseAdd } from './icons/database-add.ts'
+import { databaseRemove } from './icons/database-remove.ts'
 import { delegation } from './icons/delegation.ts'
 import { deleteIcon } from './icons/delete.ts'
 import { detour } from './icons/detour.ts'
@@ -363,6 +365,8 @@ export const allIcons = {
   cut: cut,
   'dark-mode': darkMode,
   database: database,
+  'database-add': databaseAdd,
+  'database-remove': databaseRemove,
   delegation: delegation,
   delete: deleteIcon,
   detour: detour,
@@ -656,6 +660,8 @@ export const iconNames = [
   'cut',
   'dark-mode',
   'database',
+  'database-add',
+  'database-remove',
   'delegation',
   'delete',
   'detour',
