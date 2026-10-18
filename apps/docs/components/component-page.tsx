@@ -1,4 +1,10 @@
-import { DefinitionListDescription, DefinitionListRow, DefinitionListTerm } from '@kvirn-ui/react'
+import {
+  Badge,
+  DefinitionListDescription,
+  DefinitionListRow,
+  DefinitionListTerm,
+  VisuallyHidden,
+} from '@kvirn-ui/react'
 import { Children, Fragment, isValidElement } from 'react'
 import type { ReactNode } from 'react'
 import { messages } from '../messages/en.ts'
@@ -180,7 +186,28 @@ function testingSummary(status: Contract['status']) {
         : factText.tierProgress({ tier: label, done, total })
     })
     .join(', ')
-  return factText.testingSummary({ word: status.word, counts })
+  return counts
+}
+
+function StatusBadge({ word }: { word: Contract['status']['word'] }) {
+  const { text, variant } = statusBadgeOf(word)
+  return <Badge variant={variant}>{text}</Badge>
+}
+
+function statusBadgeOf(word: Contract['status']['word']) {
+  const text = factText.statusBadge
+  switch (word) {
+    case undefined:
+      return { text: text.none, variant: 'danger' } as const
+    case 'Automated':
+      return { text: text.automated, variant: 'warning' } as const
+    case 'Agent-verified':
+      return { text: text.agentVerified, variant: 'warning' } as const
+    case 'AT-verified':
+      return { text: text.atVerified, variant: 'success' } as const
+    case 'Release-tested':
+      return { text: text.releaseTested, variant: 'success' } as const
+  }
 }
 
 function leadText(title: string, lead: string | undefined) {
@@ -216,7 +243,10 @@ export function ComponentPage(props: ComponentPageProps) {
           </Fact>
           {pattern === undefined ? null : <Fact term={factText.pattern}>{pattern}</Fact>}
           {status === undefined ? null : (
-            <Fact term={factText.testing}>{testingSummary(status)}</Fact>
+            <Fact term={factText.testing}>
+              <StatusBadge word={status.word} />
+              <VisuallyHidden>{factText.statusSeparator}</VisuallyHidden> {testingSummary(status)}
+            </Fact>
           )}
         </>
       }

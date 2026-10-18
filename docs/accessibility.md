@@ -75,6 +75,8 @@ No page or contract states a status by hand: it is computed from the table (main
 | `AT-verified`    | Automated done, every Core row has its Result done, and at least one Core row has Human check `pass`    |
 | `Release-tested` | AT-verified, every Release row has its Result done, and at least one Release row has Human check `pass` |
 
+The docs page shows the status as a Badge, always with the word in it so colour never carries the meaning alone: red "Not yet verified" for no word, yellow for `Automated` and `Agent-verified`, green for `AT-verified` and `Release-tested`.
+
 ### Screen reader approximation
 
 `readAloud` and `readAnnouncements` (`@kvirn-ui/testing/read-aloud`, optional peer `@guidepup/virtual-screen-reader`) walk a rendered subtree with a virtual screen reader (`@guidepup/virtual-screen-reader`) and return the phrases it speaks, such as "button, Menu, not expanded" or "polite: Saved". Component tests and the `accessibility-reviewer` use them to check names, states, reading order and live-region text against the contract's Read aloud table.

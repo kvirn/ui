@@ -1,6 +1,6 @@
 # Roadmap & components
 
-Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core AT set passed, see `docs/accessibility.md`) → `stable` (API frozen). Update the status here when it changes. This ladder is internal; the docs site shows the status derived from the AT test record: `alpha` ≈ `Automated`, `beta` ≈ `AT-verified`.
+Component status moves `planned` → `alpha` (gates 1–6 pass) → `beta` (core AT set passed, see `docs/accessibility.md`) → `stable` (API frozen). Update the status here when it changes. This ladder is internal; the docs site shows the status derived from the AT test record: `alpha` ≈ `Automated`, `beta` ≈ `AT-verified`. The word shows as a coloured badge on each component page: red none, yellow `Automated` and `Agent-verified`, green `AT-verified` and `Release-tested` (Plan 0143, browser look pending).
 
 ## Milestones
 

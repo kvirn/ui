@@ -747,8 +747,14 @@ export const messages = {
       tierNotApplicable: ({ tier }: { tier: string }) => `${tier} n/a`,
       tierProgress: ({ tier, done, total }: { tier: string; done: number; total: number }) =>
         `${tier} ${done} of ${total}`,
-      testingSummary: ({ word, counts }: { word: string | undefined; counts: string }) =>
-        word === undefined ? counts : `${word}. ${counts}`,
+      statusSeparator: '. ',
+      statusBadge: {
+        none: 'Not yet verified',
+        automated: 'Automated',
+        agentVerified: 'Agent-verified',
+        atVerified: 'AT-verified',
+        releaseTested: 'Release-tested',
+      },
     },
     icons: {
       seeAll: ({ count }: { count: number }) => `See all ${count} icons`,
