@@ -102,7 +102,7 @@ Both go through the shared Announcer. `announce={false}` opts out (when focus al
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | progress.test.tsx › shows the label as plain text with no role; expectNoA11yViolations |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | progress.test.tsx › keyboard › Tab passes over it: it has no focusable part            |
 | Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                            |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel                                       |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                        |
 | **Core (required for beta)**                                               |             |             |         |                                                                                        |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                        |
 | VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                        |

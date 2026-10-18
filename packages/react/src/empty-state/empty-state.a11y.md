@@ -48,7 +48,7 @@ Nothing in it is a Tab stop, so there are no key rows.
 | Markup and ARIA (roles, names, ids, states)                                | pending     | n/a         | pending | no test file of its own: markup is the consumer's |
 | Keyboard contract rows (Vitest browser)                                    | n/a         | n/a         | n/a     | static text: no focusable or operable part        |
 | Focus order and management                                                 | n/a         | n/a         | n/a     | static text: nothing in it is focusable           |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not swept: the sweeps cover Button and SkipPanel  |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                   |
 | **Core (required for beta)**                                               |             |             |         |                                                   |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                   |
 | VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                   |
