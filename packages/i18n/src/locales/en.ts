@@ -520,6 +520,7 @@ export const en = {
     table: 'Table',
     archive: 'Archive',
     attachment: 'Attachment',
+    rss: 'Feed',
     certificate: 'Certificate',
     document: 'Document',
     documentCheck: 'Approved document',

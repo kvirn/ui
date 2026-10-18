@@ -84,6 +84,11 @@
       "id": "access-language",
       "title": "Language and access",
       "description": "Language, accessibility, display settings, reading aloud and captions."
+    },
+    {
+      "id": "social",
+      "title": "Social media",
+      "description": "Marks of social networks, always shown with the network's name, never as the only link text."
     }
   ],
   "icons": [
@@ -120,7 +125,7 @@
     {
       "name": "chevron-down",
       "category": "direction",
-      "aliases": ["expand"],
+      "aliases": [],
       "tags": ["open", "expand", "show more", "dropdown", "chevron"],
       "meaning": "Open or show what is below: a chevron pointing down.",
       "status": "drawn",
@@ -140,7 +145,7 @@
     {
       "name": "chevron-up",
       "category": "direction",
-      "aliases": ["collapse"],
+      "aliases": [],
       "tags": ["close", "collapse", "show less", "chevron"],
       "meaning": "Close or show what is above: a chevron pointing up.",
       "status": "drawn",
@@ -210,9 +215,9 @@
     {
       "name": "add",
       "category": "actions",
-      "aliases": ["plus", "zoom-in"],
+      "aliases": ["plus"],
       "tags": ["add", "plus", "new", "create", "add another"],
-      "meaning": "Add, add another or zoom in: a plus.",
+      "meaning": "Add or add another: a plus.",
       "status": "drawn",
       "mirrorInRtl": false,
       "label": null
@@ -230,7 +235,7 @@
     {
       "name": "close",
       "category": "actions",
-      "aliases": ["x", "cross", "dismiss"],
+      "aliases": ["cross", "dismiss"],
       "tags": ["close", "dismiss", "cancel", "clear", "exit"],
       "meaning": "Close, dismiss or clear: two crossed diagonal strokes.",
       "status": "drawn",
@@ -270,7 +275,7 @@
     {
       "name": "download",
       "category": "actions",
-      "aliases": ["save", "export"],
+      "aliases": ["export"],
       "tags": ["download", "get file", "save to device", "save file"],
       "meaning": "Save a file to the device: an arrow going down into an open tray.",
       "status": "drawn",
@@ -320,9 +325,9 @@
     {
       "name": "remove",
       "category": "actions",
-      "aliases": ["minus", "decrease", "zoom-out"],
+      "aliases": ["minus", "decrease"],
       "tags": ["remove", "minus", "decrease", "less", "subtract"],
-      "meaning": "Remove one, decrease or zoom out: a minus.",
+      "meaning": "Remove one or decrease: a minus.",
       "status": "drawn",
       "mirrorInRtl": false,
       "label": null
@@ -2732,6 +2737,264 @@
       "status": "drawn",
       "mirrorInRtl": false,
       "label": null
+    },
+    {
+      "name": "zoom-in",
+      "category": "interface",
+      "aliases": ["magnify", "enlarge"],
+      "tags": ["zoom in", "magnify", "enlarge", "bigger", "closer", "map", "image", "document"],
+      "meaning": "Zoom in, show closer: a magnifying glass with a plus inside.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "zoom-out",
+      "category": "interface",
+      "aliases": ["reduce", "shrink"],
+      "tags": ["zoom out", "reduce", "smaller", "further", "map", "image", "document"],
+      "meaning": "Zoom out, show more of the whole: a magnifying glass with a minus inside.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "expand",
+      "category": "direction",
+      "aliases": ["open-section"],
+      "tags": ["expand", "open", "show more", "accordion", "disclosure", "section"],
+      "meaning": "Open one section: a chevron pointing down inside a square, the single-item counterpart of expand-all.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "collapse",
+      "category": "direction",
+      "aliases": ["close-section"],
+      "tags": ["collapse", "close", "show less", "accordion", "disclosure", "section"],
+      "meaning": "Close one section: a chevron pointing up inside a square, the single-item counterpart of collapse-all.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "pin-off",
+      "category": "maps-places",
+      "aliases": ["place-off"],
+      "tags": ["pin off", "place off", "location hidden", "unpin", "map"],
+      "meaning": "A place or point is hidden or unpinned: the pin with the kit slash, its outline broken around the slash and its hole dropped.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "sort-ascending",
+      "category": "interface",
+      "aliases": ["sort-up", "sorted-ascending"],
+      "tags": ["sort ascending", "ascending", "a to z", "smallest first", "column", "order"],
+      "meaning": "Sorted ascending, smallest first: the sort family's up arrow beside three bars that grow from top to bottom.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "sort-descending",
+      "category": "interface",
+      "aliases": ["sort-down", "sorted-descending"],
+      "tags": ["sort descending", "descending", "z to a", "largest first", "column", "order"],
+      "meaning": "Sorted descending, largest first: the sort family's down arrow beside three bars that shrink from top to bottom.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "filter-off",
+      "category": "interface",
+      "aliases": ["clear-filters", "filter-clear", "funnel-off"],
+      "tags": ["filter off", "clear filters", "remove filters", "reset filters", "funnel"],
+      "meaning": "Clear the filters, or no filter applied: the funnel shifted 2 up, opened on its inline-end side, with the badge cross.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "attachment-add",
+      "category": "documents",
+      "aliases": ["attach-file", "add-attachment"],
+      "tags": ["attachment add", "attach", "add attachment", "attach file", "paperclip"],
+      "meaning": "Add an attachment: the paper clip with the badge plus.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "hang-up",
+      "category": "communication",
+      "aliases": ["call-end", "end-call"],
+      "tags": ["hang up", "end call", "call end", "leave call", "phone"],
+      "meaning": "End a call: the telephone handset laid down, ear and mouth pieces turned down.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "chat-off",
+      "category": "communication",
+      "aliases": ["comment-off", "chat-unavailable"],
+      "tags": ["chat off", "chat unavailable", "comments off", "no chat", "mute"],
+      "meaning": "Chat is off or unavailable: the speech bubble with the kit slash.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "save",
+      "category": "actions",
+      "aliases": ["store", "keep"],
+      "tags": ["save", "save changes", "save draft", "store", "keep"],
+      "meaning": "Save your work or a draft: a diskette with a shutter and a label.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "heart",
+      "category": "actions",
+      "aliases": ["favourite"],
+      "tags": ["heart", "favourite", "favorite", "save as favourite", "love"],
+      "meaning": "Mark something as a favourite: an outline heart, two round lobes and a point.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "star",
+      "category": "actions",
+      "aliases": [],
+      "tags": ["star", "rating", "rate", "highlight", "featured"],
+      "meaning": "A rating or a highlighted item: an outline five-pointed star.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "bookmark",
+      "category": "actions",
+      "aliases": ["save-for-later"],
+      "tags": ["bookmark", "save for later", "read later", "saved"],
+      "meaning": "Keep a page or item to come back to later: a bookmark ribbon with a notched end.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "like",
+      "category": "actions",
+      "aliases": ["thumbs-up"],
+      "tags": ["like", "thumbs up", "approve", "helpful", "agree"],
+      "meaning": "Like or find helpful: a raised thumb with a cuff, no page behind it. A hand gesture, rude in some cultures; always with words.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "x",
+      "category": "social",
+      "aliases": ["twitter"],
+      "tags": ["x", "twitter", "social media", "social network", "follow us"],
+      "meaning": "The mark of the X social network (formerly Twitter): a simplified letter X drawn as a hollow slanted band crossed by a thin stroke that passes behind it, in one stroke. A trademark of its owner; always shown with the network's name, never as the only link text. Not a close or remove icon: that is `close`.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "facebook",
+      "category": "social",
+      "aliases": [],
+      "tags": ["facebook", "meta", "social media", "social network", "follow us"],
+      "meaning": "The mark of the Facebook social network: a simplified lower-case f inside a circle, its stem running down into the circle's bottom edge, in one stroke. A trademark of its owner; always shown with the network's name, never as the only link text.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "instagram",
+      "category": "social",
+      "aliases": [],
+      "tags": ["instagram", "photos", "social media", "social network", "follow us"],
+      "meaning": "The mark of the Instagram photo network: a simplified camera outline, a rounded square with a ring in the centre and a dot at the upper end corner, in one stroke. A trademark of its owner; always shown with the network's name, never as the only link text.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "linkedin",
+      "category": "social",
+      "aliases": [],
+      "tags": [
+        "linkedin",
+        "jobs",
+        "career",
+        "professional network",
+        "social media",
+        "social network",
+        "follow us"
+      ],
+      "meaning": "The mark of the LinkedIn professional network: a simplified lower-case \"in\" inside a rounded square, in one stroke. A trademark of its owner; always shown with the network's name, never as the only link text.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "youtube",
+      "category": "social",
+      "aliases": [],
+      "tags": ["youtube", "video", "channel", "social media", "social network", "follow us"],
+      "meaning": "The mark of the YouTube video network: a simplified wide rounded frame with a play triangle inside, in one stroke. A trademark of its owner; always shown with the network's name, never as the only link text.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "tiktok",
+      "category": "social",
+      "aliases": [],
+      "tags": ["tiktok", "short video", "social media", "social network", "follow us"],
+      "meaning": "The mark of the TikTok video network: a simplified outline of a thick musical note with a hollow head and a hooked flag. A trademark of its owner; always shown with the network's name, never as the only link text.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "mastodon",
+      "category": "social",
+      "aliases": ["fediverse"],
+      "tags": ["mastodon", "fediverse", "social media", "social network", "follow us"],
+      "meaning": "The mark of the Mastodon social network: a simplified speech bubble with a lower lip on the left and the network's m inside. A trademark of its owner; always shown with the network's name, never as the only link text.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "bluesky",
+      "category": "social",
+      "aliases": ["bsky"],
+      "tags": ["bluesky", "bsky", "social media", "social network", "follow us"],
+      "meaning": "The mark of the Bluesky social network: a simplified butterfly outline in one stroke. A trademark of its owner; always shown with the network's name, never as the only link text.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "rss",
+      "category": "communication",
+      "aliases": ["feed"],
+      "tags": ["rss", "feed", "news feed", "atom", "subscribe", "updates"],
+      "meaning": "A web feed (RSS or Atom) to subscribe to: a dot with two quarter arcs spreading from it.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": "icons.rss"
     }
   ]
 }

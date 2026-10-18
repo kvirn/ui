@@ -529,6 +529,7 @@ export const sv = {
     table: 'Tabell',
     archive: 'Arkiv',
     attachment: 'Bilaga',
+    rss: 'Flöde',
     certificate: 'Intyg',
     document: 'Dokument',
     documentCheck: 'Godkänt dokument',

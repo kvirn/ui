@@ -530,6 +530,7 @@ export const nn = {
     table: 'Tabell',
     archive: 'Arkiv',
     attachment: 'Vedlegg',
+    rss: 'Nyheitsstraum',
     certificate: 'Attest',
     document: 'Dokument',
     documentCheck: 'Godkjent dokument',

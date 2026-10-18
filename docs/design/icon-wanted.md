@@ -261,9 +261,9 @@ A second list for the sets a municipality site meets in emergency, transit, iden
 
 `police` and `theatre` were cut or words-only in the first check; they are drawn now on the maintainer's approval of this list. `tram` was an alias of `train` and now has its own drawing. `wallet` is a drawn icon and no longer an alias of `payment`; `credentials-wallet` stays separate.
 
-Aliases added to existing icons: `user` and `users` (of `person` and `people`), `commenting` (`chat`), `security` (`shield`), `save` (`download`), `update` (`refresh`), `grid` (`view-grid`), `list` (`bullet-list`), `time` (`clock`), `date` (`calendar`) and `loading` and `spinner` (`in-progress`).
+Aliases added to existing icons: `user` and `users` (of `person` and `people`), `commenting` (`chat`), `security` (`shield`), `update` (`refresh`), `grid` (`view-grid`), `list` (`bullet-list`), `time` (`clock`), `date` (`calendar`) and `loading` and `spinner` (`in-progress`).
 
-Still out: brand logos, and like, heart and star icons.
+Still out: nothing from this list. Brand logos, heart, star and like were reversed by the maintainer on 2026-10-18 and are drawn in Plan 0144: simplified original social marks in category `social` (20px and up, always with the network's name), `heart`, `star` and `like` (a thumb with a cuff). Trademarks stay with their owners (`packages/icons/LICENSING.md`).
 
 ## Open for the maintainer (status after drawing)
 

@@ -16,7 +16,7 @@ Where facts live: the grid, keylines, gaps, markup rules (first written for the 
 2. **Parts before geometry.** Build from the parts kit (container, arm, head, dot, tray, badge cut). A new shape is a proposal to the kit, not a one-off. Two icons that share an idea (every arrow, every document, every person) share the same part, drawn at the same coordinates.
 3. **Equal weight, not equal size.** A circle, a square and a triangle of the same measured size look unequal. Draw to the keylines (circle largest, triangle widest) and prove it by measurement (ink density, below), not by eye.
 4. **Detail is a budget.** At most 4 strokes of content inside a container, and no feature smaller than the gap rule. A detail that fills in at 16px is deleted, not thinned. Fewer parts reads faster.
-5. **Meaning without colour or text.** An icon works in greyscale and in forced colours, holds a single concept, carries no letters or numerals (language-bound, 1.4.5 images of text; the exceptions are the B/I/U/S letterforms of `bold`, `italic`, `underline` and `strike` (Plan 0131) and the H + numeral of `heading-1`…`heading-6` (Plan 0133), conventions users know from every editor, maintainer 2026-10-17), and is never the only carrier of information (1.4.1, 1.1.1).
+5. **Meaning without colour or text.** An icon works in greyscale and in forced colours, holds a single concept, carries no letters or numerals (language-bound, 1.4.5 images of text; the exceptions are the B/I/U/S letterforms of `bold`, `italic`, `underline` and `strike` (Plan 0131) and the H + numeral of `heading-1`…`heading-6` (Plan 0133), conventions users know from every editor, maintainer 2026-10-17; and the **brand glyph** exception below), no gesture beyond the two recorded exceptions (`easy-read-thumbs-up` and `like`, category `actions`, Plan 0144; both in the sensitivity review in `icon-library.md` §8, always with words), and is never the only carrier of information (1.4.1, 1.1.1).
 
 ## Process (every icon, every time)
 
@@ -45,7 +45,7 @@ Draw in families of 8–12 (all arrows, all documents, all people), because cons
 ## Don't
 
 - Don't add a keyline, grid size, stroke width or corner radius: those are `docs/design/icon.md` decisions and the maintainer's.
-- Don't draw brand marks, logos, flags or emblems. A municipal emblem is an asset the consumer supplies.
+- Don't draw brand marks, logos, flags or emblems, except the **brand glyph** exception: category `social` only (maintainer 2026-10-18, Plan 0144), where a simplified original mark may hold a letterform (`f`, `in`, `m`, `X`), with radius 2, no colour, used at 20px and up beside the network's name and never as the only link text. A municipal emblem is still an asset the consumer supplies.
 - Don't use a filled shape, a gradient, a second colour or a shadow.
 - Don't trace or paste from another set, and don't ship a path string equal to one in Heroicons or Lucide: grep before handing off.
 - Don't draw a variant at a size (a "16px version"). If 16px fails, redraw the one drawing.

@@ -55,6 +55,7 @@ export function IconLibraryPage({
             </Link>
           </p>
           <p>{text.testWithUsers}</p>
+          <p>{text.socialNote}</p>
         </>
       }
     >

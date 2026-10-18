@@ -16,14 +16,17 @@ import { arrowSouth } from './icons/arrow-south.ts'
 import { arrowWest } from './icons/arrow-west.ts'
 import { association } from './icons/association.ts'
 import { attachment } from './icons/attachment.ts'
+import { attachmentAdd } from './icons/attachment-add.ts'
 import { attachmentRemove } from './icons/attachment-remove.ts'
 import { attention } from './icons/attention.ts'
 import { benefit } from './icons/benefit.ts'
 import { bike } from './icons/bike.ts'
 import { blocked } from './icons/blocked.ts'
+import { bluesky } from './icons/bluesky.ts'
 import { bold } from './icons/bold.ts'
 import { book } from './icons/book.ts'
 import { bookFacility } from './icons/book-facility.ts'
+import { bookmark } from './icons/bookmark.ts'
 import { building } from './icons/building.ts'
 import { bulkyWaste } from './icons/bulky-waste.ts'
 import { bulletList } from './icons/bullet-list.ts'
@@ -45,6 +48,7 @@ import { chartBar } from './icons/chart-bar.ts'
 import { chartLine } from './icons/chart-line.ts'
 import { chartPie } from './icons/chart-pie.ts'
 import { chat } from './icons/chat.ts'
+import { chatOff } from './icons/chat-off.ts'
 import { check } from './icons/check.ts'
 import { checklist } from './icons/checklist.ts'
 import { chevronBack } from './icons/chevron-back.ts'
@@ -57,6 +61,7 @@ import { clock } from './icons/clock.ts'
 import { close } from './icons/close.ts'
 import { code } from './icons/code.ts'
 import { codeBlock } from './icons/code-block.ts'
+import { collapse } from './icons/collapse.ts'
 import { collapseAll } from './icons/collapse-all.ts'
 import { contrast } from './icons/contrast.ts'
 import { copy } from './icons/copy.ts'
@@ -85,13 +90,16 @@ import { emergency } from './icons/emergency.ts'
 import { energy } from './icons/energy.ts'
 import { error } from './icons/error.ts'
 import { exam } from './icons/exam.ts'
+import { expand } from './icons/expand.ts'
 import { expandAll } from './icons/expand-all.ts'
 import { external } from './icons/external.ts'
 import { eye } from './icons/eye.ts'
 import { eyeOff } from './icons/eye-off.ts'
+import { facebook } from './icons/facebook.ts'
 import { family } from './icons/family.ts'
 import { ferry } from './icons/ferry.ts'
 import { filter } from './icons/filter.ts'
+import { filterOff } from './icons/filter-off.ts'
 import { fire } from './icons/fire.ts'
 import { firetruck } from './icons/firetruck.ts'
 import { first } from './icons/first.ts'
@@ -107,6 +115,7 @@ import { genderFluid } from './icons/gender-fluid.ts'
 import { genderMale } from './icons/gender-male.ts'
 import { genderNonBinary } from './icons/gender-non-binary.ts'
 import { government } from './icons/government.ts'
+import { hangUp } from './icons/hang-up.ts'
 import { harbour } from './icons/harbour.ts'
 import { hashtag } from './icons/hashtag.ts'
 import { heading1 } from './icons/heading-1.ts'
@@ -117,6 +126,7 @@ import { heading5 } from './icons/heading-5.ts'
 import { heading6 } from './icons/heading-6.ts'
 import { health } from './icons/health.ts'
 import { healthRecord } from './icons/health-record.ts'
+import { heart } from './icons/heart.ts'
 import { help } from './icons/help.ts'
 import { highlight } from './icons/highlight.ts'
 import { history } from './icons/history.ts'
@@ -127,6 +137,7 @@ import { imageAdd } from './icons/image-add.ts'
 import { imageRemove } from './icons/image-remove.ts'
 import { indent } from './icons/indent.ts'
 import { info } from './icons/info.ts'
+import { instagram } from './icons/instagram.ts'
 import { interpreter } from './icons/interpreter.ts'
 import { invoice } from './icons/invoice.ts'
 import { italic } from './icons/italic.ts'
@@ -139,8 +150,10 @@ import { last } from './icons/last.ts'
 import { law } from './icons/law.ts'
 import { layers } from './icons/layers.ts'
 import { lightMode } from './icons/light-mode.ts'
+import { like } from './icons/like.ts'
 import { link } from './icons/link.ts'
 import { linkOff } from './icons/link-off.ts'
+import { linkedin } from './icons/linkedin.ts'
 import { liveDepartures } from './icons/live-departures.ts'
 import { locate } from './icons/locate.ts'
 import { locateOff } from './icons/locate-off.ts'
@@ -152,6 +165,7 @@ import { mailOff } from './icons/mail-off.ts'
 import { mailRemove } from './icons/mail-remove.ts'
 import { map } from './icons/map.ts'
 import { marriage } from './icons/marriage.ts'
+import { mastodon } from './icons/mastodon.ts'
 import { meal } from './icons/meal.ts'
 import { medication } from './icons/medication.ts'
 import { menu } from './icons/menu.ts'
@@ -180,6 +194,7 @@ import { personRemove } from './icons/person-remove.ts'
 import { phone } from './icons/phone.ts'
 import { pin } from './icons/pin.ts'
 import { pinAdd } from './icons/pin-add.ts'
+import { pinOff } from './icons/pin-off.ts'
 import { pinRemove } from './icons/pin-remove.ts'
 import { play } from './icons/play.ts'
 import { playground } from './icons/playground.ts'
@@ -200,6 +215,8 @@ import { repair } from './icons/repair.ts'
 import { repeat } from './icons/repeat.ts'
 import { research } from './icons/research.ts'
 import { roadworks } from './icons/roadworks.ts'
+import { rss } from './icons/rss.ts'
+import { save } from './icons/save.ts'
 import { school } from './icons/school.ts'
 import { search } from './icons/search.ts'
 import { send } from './icons/send.ts'
@@ -215,9 +232,12 @@ import { skipNext } from './icons/skip-next.ts'
 import { skipPrevious } from './icons/skip-previous.ts'
 import { snow } from './icons/snow.ts'
 import { sort } from './icons/sort.ts'
+import { sortAscending } from './icons/sort-ascending.ts'
+import { sortDescending } from './icons/sort-descending.ts'
 import { spinner } from './icons/spinner.ts'
 import { sportsHall } from './icons/sports-hall.ts'
 import { sportsPitch } from './icons/sports-pitch.ts'
+import { star } from './icons/star.ts'
 import { stop } from './icons/stop.ts'
 import { streetLight } from './icons/street-light.ts'
 import { strike } from './icons/strike.ts'
@@ -237,6 +257,7 @@ import { textColor } from './icons/text-color.ts'
 import { textSize } from './icons/text-size.ts'
 import { theatre } from './icons/theatre.ts'
 import { ticket } from './icons/ticket.ts'
+import { tiktok } from './icons/tiktok.ts'
 import { timer } from './icons/timer.ts'
 import { timetable } from './icons/timetable.ts'
 import { trail } from './icons/trail.ts'
@@ -262,6 +283,10 @@ import { warning } from './icons/warning.ts'
 import { waste } from './icons/waste.ts'
 import { water } from './icons/water.ts'
 import { wheelchair } from './icons/wheelchair.ts'
+import { x } from './icons/x.ts'
+import { youtube } from './icons/youtube.ts'
+import { zoomIn } from './icons/zoom-in.ts'
+import { zoomOut } from './icons/zoom-out.ts'
 import { zoomToFit } from './icons/zoom-to-fit.ts'
 
 /** Every icon in the library, keyed by its kebab-case name. Pass it to `KvirnProvider icons`. */
@@ -283,14 +308,17 @@ export const allIcons = {
   'arrow-west': arrowWest,
   association: association,
   attachment: attachment,
+  'attachment-add': attachmentAdd,
   'attachment-remove': attachmentRemove,
   attention: attention,
   benefit: benefit,
   bike: bike,
   blocked: blocked,
+  bluesky: bluesky,
   bold: bold,
   book: book,
   'book-facility': bookFacility,
+  bookmark: bookmark,
   building: building,
   'bulky-waste': bulkyWaste,
   'bullet-list': bulletList,
@@ -312,6 +340,7 @@ export const allIcons = {
   'chart-line': chartLine,
   'chart-pie': chartPie,
   chat: chat,
+  'chat-off': chatOff,
   check: check,
   checklist: checklist,
   'chevron-back': chevronBack,
@@ -324,6 +353,7 @@ export const allIcons = {
   close: close,
   code: code,
   'code-block': codeBlock,
+  collapse: collapse,
   'collapse-all': collapseAll,
   contrast: contrast,
   copy: copy,
@@ -352,13 +382,16 @@ export const allIcons = {
   energy: energy,
   error: error,
   exam: exam,
+  expand: expand,
   'expand-all': expandAll,
   external: external,
   eye: eye,
   'eye-off': eyeOff,
+  facebook: facebook,
   family: family,
   ferry: ferry,
   filter: filter,
+  'filter-off': filterOff,
   fire: fire,
   firetruck: firetruck,
   first: first,
@@ -374,6 +407,7 @@ export const allIcons = {
   'gender-male': genderMale,
   'gender-non-binary': genderNonBinary,
   government: government,
+  'hang-up': hangUp,
   harbour: harbour,
   hashtag: hashtag,
   'heading-1': heading1,
@@ -384,6 +418,7 @@ export const allIcons = {
   'heading-6': heading6,
   health: health,
   'health-record': healthRecord,
+  heart: heart,
   help: help,
   highlight: highlight,
   history: history,
@@ -394,6 +429,7 @@ export const allIcons = {
   'image-remove': imageRemove,
   indent: indent,
   info: info,
+  instagram: instagram,
   interpreter: interpreter,
   invoice: invoice,
   italic: italic,
@@ -406,8 +442,10 @@ export const allIcons = {
   law: law,
   layers: layers,
   'light-mode': lightMode,
+  like: like,
   link: link,
   'link-off': linkOff,
+  linkedin: linkedin,
   'live-departures': liveDepartures,
   locate: locate,
   'locate-off': locateOff,
@@ -419,6 +457,7 @@ export const allIcons = {
   'mail-remove': mailRemove,
   map: map,
   marriage: marriage,
+  mastodon: mastodon,
   meal: meal,
   medication: medication,
   menu: menu,
@@ -447,6 +486,7 @@ export const allIcons = {
   phone: phone,
   pin: pin,
   'pin-add': pinAdd,
+  'pin-off': pinOff,
   'pin-remove': pinRemove,
   play: play,
   playground: playground,
@@ -467,6 +507,8 @@ export const allIcons = {
   repeat: repeat,
   research: research,
   roadworks: roadworks,
+  rss: rss,
+  save: save,
   school: school,
   search: search,
   send: send,
@@ -482,9 +524,12 @@ export const allIcons = {
   'skip-previous': skipPrevious,
   snow: snow,
   sort: sort,
+  'sort-ascending': sortAscending,
+  'sort-descending': sortDescending,
   spinner: spinner,
   'sports-hall': sportsHall,
   'sports-pitch': sportsPitch,
+  star: star,
   stop: stop,
   'street-light': streetLight,
   strike: strike,
@@ -504,6 +549,7 @@ export const allIcons = {
   'text-size': textSize,
   theatre: theatre,
   ticket: ticket,
+  tiktok: tiktok,
   timer: timer,
   timetable: timetable,
   trail: trail,
@@ -529,6 +575,10 @@ export const allIcons = {
   waste: waste,
   water: water,
   wheelchair: wheelchair,
+  x: x,
+  youtube: youtube,
+  'zoom-in': zoomIn,
+  'zoom-out': zoomOut,
   'zoom-to-fit': zoomToFit,
 } as const
 
@@ -550,14 +600,17 @@ export const iconNames = [
   'arrow-west',
   'association',
   'attachment',
+  'attachment-add',
   'attachment-remove',
   'attention',
   'benefit',
   'bike',
   'blocked',
+  'bluesky',
   'bold',
   'book',
   'book-facility',
+  'bookmark',
   'building',
   'bulky-waste',
   'bullet-list',
@@ -579,6 +632,7 @@ export const iconNames = [
   'chart-line',
   'chart-pie',
   'chat',
+  'chat-off',
   'check',
   'checklist',
   'chevron-back',
@@ -591,6 +645,7 @@ export const iconNames = [
   'close',
   'code',
   'code-block',
+  'collapse',
   'collapse-all',
   'contrast',
   'copy',
@@ -619,13 +674,16 @@ export const iconNames = [
   'energy',
   'error',
   'exam',
+  'expand',
   'expand-all',
   'external',
   'eye',
   'eye-off',
+  'facebook',
   'family',
   'ferry',
   'filter',
+  'filter-off',
   'fire',
   'firetruck',
   'first',
@@ -641,6 +699,7 @@ export const iconNames = [
   'gender-male',
   'gender-non-binary',
   'government',
+  'hang-up',
   'harbour',
   'hashtag',
   'heading-1',
@@ -651,6 +710,7 @@ export const iconNames = [
   'heading-6',
   'health',
   'health-record',
+  'heart',
   'help',
   'highlight',
   'history',
@@ -661,6 +721,7 @@ export const iconNames = [
   'image-remove',
   'indent',
   'info',
+  'instagram',
   'interpreter',
   'invoice',
   'italic',
@@ -673,8 +734,10 @@ export const iconNames = [
   'law',
   'layers',
   'light-mode',
+  'like',
   'link',
   'link-off',
+  'linkedin',
   'live-departures',
   'locate',
   'locate-off',
@@ -686,6 +749,7 @@ export const iconNames = [
   'mail-remove',
   'map',
   'marriage',
+  'mastodon',
   'meal',
   'medication',
   'menu',
@@ -714,6 +778,7 @@ export const iconNames = [
   'phone',
   'pin',
   'pin-add',
+  'pin-off',
   'pin-remove',
   'play',
   'playground',
@@ -734,6 +799,8 @@ export const iconNames = [
   'repeat',
   'research',
   'roadworks',
+  'rss',
+  'save',
   'school',
   'search',
   'send',
@@ -749,9 +816,12 @@ export const iconNames = [
   'skip-previous',
   'snow',
   'sort',
+  'sort-ascending',
+  'sort-descending',
   'spinner',
   'sports-hall',
   'sports-pitch',
+  'star',
   'stop',
   'street-light',
   'strike',
@@ -771,6 +841,7 @@ export const iconNames = [
   'text-size',
   'theatre',
   'ticket',
+  'tiktok',
   'timer',
   'timetable',
   'trail',
@@ -796,6 +867,10 @@ export const iconNames = [
   'waste',
   'water',
   'wheelchair',
+  'x',
+  'youtube',
+  'zoom-in',
+  'zoom-out',
   'zoom-to-fit',
 ] as const
 

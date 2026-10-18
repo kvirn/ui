@@ -536,6 +536,7 @@ export const fi = {
     table: 'Taulukko',
     archive: 'Arkisto',
     attachment: 'Liite',
+    rss: 'Syöte',
     certificate: 'Todistus',
     document: 'Asiakirja',
     documentCheck: 'Hyväksytty asiakirja',

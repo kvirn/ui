@@ -764,6 +764,8 @@ export const messages = {
       howToUse: 'How to use icons',
       testWithUsers:
         'Test the icons with your own users, and give every icon that carries meaning a text label.',
+      socialNote:
+        'The social media marks are simplified drawings of trademarks that belong to their owners. Use them at 20px and up, beside the network’s name, and follow each owner’s brand guidelines.',
       searchRegion: 'Icons',
       searchLabel: 'Search the icons',
       searchHelp: 'Search by name, other names or meaning, such as “bus”, “payment” or “warning”.',

@@ -35,3 +35,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0141](0141-sweeps-in-ci-and-testing-upkeep.md)          | Display-mode sweeps in CI; Testing upkeep in the docs workflow    | Approved      |
 | [0142](0142-stable-local-ci.md)                          | Stable local CI: one entry point, container, isolated caches      | Done (agents) |
 | [0143](0143-status-badge.md)                             | A coloured testing status badge on component pages                | In progress   |
+| [0144](0144-icon-additions.md)                           | Icon additions: reversed cuts, counterparts, social marks         | In progress   |

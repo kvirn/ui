@@ -796,6 +796,7 @@ export interface KvirnMessages {
     table: TextMessage
     archive: TextMessage
     attachment: TextMessage
+    rss: TextMessage
     certificate: TextMessage
     document: TextMessage
     documentCheck: TextMessage

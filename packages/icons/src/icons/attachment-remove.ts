@@ -4,7 +4,7 @@ import type { IconData } from '../icon-data.ts'
 export const attachmentRemove: IconData = {
   shapes: [
     ['path', { d: 'M9 8v10.5a2.25 2.25 0 0 0 2.25 2.25' }],
-    ['path', { d: 'M13.5 13v-5.25a4.5 4.5 0 0 0-9 0v9.75' }],
+    ['path', { d: 'M13.5 10.5v-2.75a4.5 4.5 0 0 0-9 0v9.75' }],
     ['path', { d: 'M12.5 16.5h8' }],
   ],
 }
