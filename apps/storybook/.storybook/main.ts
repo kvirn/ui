@@ -20,7 +20,20 @@ const config: StorybookConfig = {
   ],
   core: { disableTelemetry: true, disableWhatsNewNotifications: true },
   // Packages export their built `dist`; the stories run on the source.
-  viteFinal: (config) => mergeConfig(config, { resolve: { alias: workspaceSourceAlias() } }),
+  viteFinal: (config) =>
+    mergeConfig(config, {
+      resolve: { alias: workspaceSourceAlias() },
+      build: {
+        rolldownOptions: {
+          // The source keeps its "use client" for Next.js consumers; a Storybook bundle has no server.
+          onwarn: (warning: { code?: string }, defaultHandler: (warning: object) => void) => {
+            if (warning.code !== 'MODULE_LEVEL_DIRECTIVE') {
+              defaultHandler(warning)
+            }
+          },
+        },
+      },
+    }),
 }
 
 export default config
