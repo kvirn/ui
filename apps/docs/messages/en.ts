@@ -353,7 +353,12 @@ export const messages = {
         shortcuts: {
           heading: 'Keyboard shortcuts',
           intro:
-            'Press Tab once when a page opens to see the skip list. It has links that jump to the main content and the site navigation, and a Search shortcut. Press Ctrl and K (Command and K on a Mac) to go to the search box, and Alt, Shift and K (Option, Shift and K on a Mac) to open the list again.',
+            'The skip list has links that jump to the main content and the site navigation, and a Search shortcut.',
+          openBefore: 'To show the skip list fast, from anywhere on the page, press',
+          openAfter:
+            '(the second one on a Mac). It does not work while you type in a field. You can also press Tab once when a page opens.',
+          searchBefore: 'To go to the search box, press',
+          searchAfter: '(the second one on a Mac).',
           why: 'Other software, such as a screen reader or voice control, may use the same keys. If they clash, turn the shortcuts off here. The skip list and its links keep working, and the choice stays on this device.',
           switchLabel: 'Keyboard shortcuts on this site',
         },
@@ -801,11 +806,10 @@ export const messages = {
       noMatchHelp: 'Check the spelling, or try a word for what the icon is for.',
       allCategoriesLink: 'Search all categories',
       request: 'Missing an icon? Tell us which one you need.',
-      importLabel: 'Import:',
-      copy: 'Copy',
-      copyHidden: ({ importName }: { importName: string }) => ` import ${importName}`,
+      copy: 'Copy import',
+      copyHidden: ({ importName }: { importName: string }) => ` ${importName}`,
       aliases: ({ list }: { list: string }) => `Also called: ${list}`,
-      flips: 'Flips in right-to-left text.',
+      flips: 'Flips in right-to-left text',
       label: ({ label }: { label: string }) => `Translated label: “${label}”`,
     },
     search: {

@@ -99,6 +99,24 @@ const display = (
 const keyboard = (
   <>
     <p>{text.keyboard.intro}</p>
+    <ShortcutsSettingCard
+      open={
+        <Keys
+          alternatives={[
+            ['alt', 'shift', 'K'],
+            ['option', 'shift', 'K'],
+          ]}
+        />
+      }
+      search={
+        <Keys
+          alternatives={[
+            ['ctrl', 'K'],
+            ['command', 'K'],
+          ]}
+        />
+      }
+    />
     <TableScrollRegion aria-labelledby="keyboard-table-caption">
       <TableRoot className="kv-table--card kv-table--striped">
         <TableCaption id="keyboard-table-caption">{text.keyboard.tableLabel}</TableCaption>
@@ -120,7 +138,6 @@ const keyboard = (
         </TableBody>
       </TableRoot>
     </TableScrollRegion>
-    <ShortcutsSettingCard />
     <p>{text.keyboard.noShortcuts}</p>
     <p>
       {text.keyboard.componentsBefore}{' '}
