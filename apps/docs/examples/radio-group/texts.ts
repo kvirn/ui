@@ -22,6 +22,12 @@ export const useRadioGroupTexts = defineExampleTexts({
     sourceColleague: 'A colleague',
     sourceOther: 'Other',
     sourceSpecify: 'Please specify',
-    revealShown: 'A box for your own words has opened below.',
+    heardFromSpecify: 'Please say where you heard about the service',
+    revealHeardFrom: 'A box for where you heard about the service has opened below.',
+    replyLegend: 'How should we reply to you?',
+    replyEmail: 'By email',
+    replyLetter: 'By letter',
+    replyBySpecify: 'Please say how we should reply',
+    revealReplyBy: 'A box for how we should reply has opened below.',
   },
 })

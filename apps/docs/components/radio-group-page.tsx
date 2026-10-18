@@ -319,8 +319,18 @@ export function RadioGroupPage({
           </UseCase>
           <UseCase
             id="announcement-wording"
-            title="Use your own words for the announcement"
-            why="When someone checks “Other”, a screen reader says that a field has appeared. In English the default text is “An input field has appeared below.”, and it follows the language of the page. Change it when your service says it differently: once for the whole site in the provider, or for one question on its Reveal."
+            title="Tell several “Other” questions apart by their announcement"
+            why={
+              <>
+                When someone checks “Other”, a screen reader says that a field has appeared, right
+                after it reads the radio. In English the default text is “An input field has
+                appeared below.”, and it follows the language of the page. That is enough for one
+                group. When a page has several, give each Reveal its own text that names its field,
+                as below, so the person hears which one opened. Every group announces, also when you
+                check them one after the other. See{' '}
+                <Link href="#announcements-read-aloud">What a screen reader reads</Link>.
+              </>
+            }
             code={sources['announcement-wording']}
             propsUsed={[
               { part: 'RadioGroup.Reveal', prop: 'value' },
@@ -329,11 +339,10 @@ export function RadioGroupPage({
             ]}
             note={
               <Note kind="recipe" more={<CodeBlock language="tsx" code={providerWording} />}>
-                To change it for the whole site, pass the text to the provider, as below. Write it
-                in the language of the page: for another language, start from that language’s
-                catalog instead of <code>en</code>. An empty text is ignored, so the default is
-                used. <Link href="/foundation/locales#per-provider">Locales</Link> explains the
-                rest.
+                To use one text for the whole site, pass it to the provider, as below. Write it in
+                the language of the page: for another language, start from that language’s catalog
+                instead of <code>en</code>. An empty text is ignored, so the default is used.{' '}
+                <Link href="/foundation/locales#per-provider">Locales</Link> explains the rest.
               </Note>
             }
           >
