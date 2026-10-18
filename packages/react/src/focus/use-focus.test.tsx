@@ -43,7 +43,7 @@ function Drawer({ children, ...options }: DrawerProps) {
           <div style={{ display: 'grid', gap: 24, justifyItems: 'start' }}>
             <button type="button">First</button>
             <button type="button" id="second">
-              Mellan
+              Middle
             </button>
             <button type="button" onClick={() => setOpen(false)}>
               Sista
@@ -84,7 +84,7 @@ describe('use-focus.test.tsx › keyboard', () => {
     await render(<Drawer contain="loop" onEscape={() => {}} />)
     await openDrawer()
     await userEvent.tab()
-    await expect.element(byName('Mellan')).toHaveFocus()
+    await expect.element(byName('Middle')).toHaveFocus()
   })
 
   test('the loop reads the stops at key time, so a stop added later is the last', async () => {
@@ -306,9 +306,9 @@ describe('use-focus.test.tsx › focus management', () => {
   test('focus moving to another element in the scope, or a re-render, never moves focus again (3.2.1)', async () => {
     const view = await render(<Drawer initialFocus="first" />)
     await openDrawer()
-    byName('Mellan').element().focus()
+    byName('Middle').element().focus()
     await view.rerender(<Drawer initialFocus="first" restore />)
-    await expect.element(byName('Mellan')).toHaveFocus()
+    await expect.element(byName('Middle')).toHaveFocus()
   })
 
   test('initialFocus container focuses the scope without leaving a Tab stop', async () => {
@@ -330,7 +330,7 @@ describe('use-focus.test.tsx › focus management', () => {
   test('initialFocus as a selector focuses that element', async () => {
     await render(<Drawer initialFocus="#second" />)
     await openDrawer()
-    await expect.element(byName('Mellan')).toHaveFocus()
+    await expect.element(byName('Middle')).toHaveFocus()
   })
 
   test('initialFocus as a selector falls through to the first stop when it matches nothing', async () => {

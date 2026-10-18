@@ -1,5 +1,7 @@
 # Plan 0133: Heading icons H1–H6 and levels 2–6 in the text type picker
 
+<!-- kv-lang-ok-file: the tables quote the Swedish catalog values -->
+
 - **Status:** Done (agents)
 - **Owner:** lead / iconographer / component-engineer
 - **Created:** 2026-10-17 · **Target:** alpha

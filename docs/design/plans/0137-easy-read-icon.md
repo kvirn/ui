@@ -1,5 +1,7 @@
 # Plan 0137: `easy-read` icon
 
+<!-- kv-lang-ok-file: the plan quotes the Nordic labels of the icon -->
+
 - **Status:** Done for agents (recognition tests, sensitivity review, AT and native review of `nn` pending)
 - **Owner:** lead → iconographer, component-engineer
 - **Created:** 2026-10-18 · **Target:** alpha

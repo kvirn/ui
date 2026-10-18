@@ -73,9 +73,10 @@ const englishToo = new Set<string>([
   'information',
   'menu',
   // English words and CSS or code values that the icon labels spell the same in a Nordic language
-  // ("auto" is a CSS value, "post" and "brand" and "handling" and "journal" are plain English).
+  // ("auto" is a CSS value, "post" and "brand" and "byte" and "handling" and "journal" are plain English).
   'auto',
   'brand',
+  'byte',
   'handling',
   'journal',
   'post',
