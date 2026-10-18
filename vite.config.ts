@@ -125,6 +125,11 @@ const sweepComponents = [
   'button-group',
   'card',
   'divider',
+  'checkbox',
+  'checkbox-group',
+  'code-block',
+  'container',
+  'copy-button',
 ]
 
 const sweepExclude = [

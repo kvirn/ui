@@ -134,6 +134,7 @@ export function SiteShell({
       </SkipPanel.Root>
       <SiteHeader.Root variant="primary">
         <TopBar>
+          <p>{text.header.status}</p>
           <div className="docs-top-end">
             <Navigation.Root label={text.header.toolsLabel} className="kv-navigation--horizontal">
               <Navigation.List>

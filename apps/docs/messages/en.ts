@@ -263,6 +263,7 @@ export const messages = {
     },
     header: {
       home: 'KvirnUI',
+      status: 'Alpha version out now. The API may still change.',
       navLabel: 'Site',
       toolsLabel: 'Tools',
       tools: { github: 'GitHub' },
