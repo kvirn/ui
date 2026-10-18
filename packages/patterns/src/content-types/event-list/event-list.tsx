@@ -139,10 +139,10 @@ export function EventListPage({ state = 'upcoming' }: EventListPageProps) {
                   >
                     <CheckboxGroup.Legend>Category</CheckboxGroup.Legend>
                     {categories.map((value) => (
-                      <Field.Root key={value}>
+                      <CheckboxGroup.Option key={value}>
                         <Checkbox value={value} />
                         <Field.Label>{kvirnbyEventCategoryLabels[value]}</Field.Label>
-                      </Field.Root>
+                      </CheckboxGroup.Option>
                     ))}
                   </CheckboxGroup.Root>
                   <DateRangePicker.Root

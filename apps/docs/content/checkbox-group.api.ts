@@ -1,4 +1,5 @@
 import type {
+  CheckboxGroupOptionProps,
   CheckboxGroupRootProps,
   FieldsetLegendProps,
   UseCheckboxGroupOptions,
@@ -6,6 +7,37 @@ import type {
 } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
+
+export type CheckboxGroupOptionDocumentedProps = Pick<
+  Extract<CheckboxGroupOptionProps, { as?: unknown }>,
+  'disabled' | 'controlId' | 'as'
+>
+
+export const checkboxGroupOptionRows = propRows<CheckboxGroupOptionDocumentedProps>({
+  disabled: {
+    type: 'boolean',
+    default: 'false',
+    description:
+      'Disables this option’s control. Its label and help text get data-disabled. To disable every option, set disabled on the group.',
+  },
+  controlId: {
+    type: 'string',
+    default: 'generated',
+    description:
+      'The control’s id. Set it to link to the option from an error summary; the label, help text and control stay wired to it.',
+  },
+  as: {
+    type: '"div" | "li"',
+    default: '"div"',
+    description:
+      'The element to render. Use li when the options are a list, and then put the options in a <ul role="list"> inside the group, after the legend, so a screen reader announces the list.',
+  },
+})
+
+export const checkboxGroupOptionAttributes: readonly AttributeRow[] = [
+  { name: 'kv-option', values: 'always', meaning: 'The part class. The default theme styles it.' },
+  { name: 'data-disabled', values: 'present or absent', meaning: 'The option is disabled.' },
+]
 
 export type CheckboxGroupRootDocumentedProps = Pick<
   CheckboxGroupRootProps,

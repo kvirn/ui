@@ -95,14 +95,14 @@ export const LegendAsHeading: Story = {
         How long should the permit last?
       </RadioGroup.Legend>
       <Stepper {...args} />
-      <Field.Root>
+      <RadioGroup.Option>
         <RadioGroup.Radio value="1" />
         <Field.Label>One month</Field.Label>
-      </Field.Root>
-      <Field.Root>
+      </RadioGroup.Option>
+      <RadioGroup.Option>
         <RadioGroup.Radio value="12" />
         <Field.Label>One year</Field.Label>
-      </Field.Root>
+      </RadioGroup.Option>
     </RadioGroup.Root>
   ),
   globals: { locale: 'en' },

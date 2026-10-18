@@ -9,6 +9,8 @@ import { StringsBlock } from './strings-block.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   radioAttributes,
+  radioGroupOptionAttributes,
+  radioGroupOptionRows,
   radioGroupErrorMessageAttributes,
   radioGroupHelpTextAttributes,
   radioGroupLegendAttributes,
@@ -27,6 +29,7 @@ import { DefaultRadioGroup } from '../examples/radio-group/default.tsx'
 import { DisabledOptionRadioGroup } from '../examples/radio-group/disabled-option.tsx'
 import { ErrorOnSubmitRadioGroup } from '../examples/radio-group/error-on-submit.tsx'
 import { OptionHelpTextRadioGroup } from '../examples/radio-group/option-help-text.tsx'
+import { OtherOptionRadioGroup } from '../examples/radio-group/other-option.tsx'
 import { PlainFormRadioGroup } from '../examples/radio-group/plain-form.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
@@ -36,7 +39,8 @@ export type RadioGroupExampleSources = Record<
   | 'plain-form'
   | 'option-help-text'
   | 'error-on-submit'
-  | 'disabled-option',
+  | 'disabled-option'
+  | 'other-option',
   string
 >
 
@@ -48,12 +52,24 @@ const parts: ApiPart[] = [
         <code>&lt;fieldset&gt;</code>, which a screen reader announces as a group. It is a{' '}
         <code>Fieldset.Root</code> with <code>group</code> set, takes every attribute of a{' '}
         <code>&lt;fieldset&gt;</code> and passes <code>ref</code> to it. Its options are{' '}
-        <code>RadioGroup.Radio</code> and Field parts. The default theme is described on{' '}
-        <Link href="/foundation/theming">Theming</Link>.
+        <code>RadioGroup.Option</code> parts, each with a <code>RadioGroup.Radio</code> and its
+        label. The default theme is described on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: radioGroupRootRows,
     attributes: radioGroupRootAttributes,
+  },
+  {
+    name: 'RadioGroup.Option',
+    renders: (
+      <>
+        <code>&lt;div&gt;</code> (or <code>&lt;li&gt;</code>) around one answer: its radio, its{' '}
+        <code>Field.Label</code> and its <code>Field.HelpText</code>. It has no “(optional)” marker
+        and no error message of its own: those belong to the question.
+      </>
+    ),
+    props: radioGroupOptionRows,
+    attributes: radioGroupOptionAttributes,
   },
   {
     name: 'RadioGroup.Radio',
@@ -61,7 +77,7 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;input type=&quot;radio&quot;&gt;</code> with the role <code>radio</code>. It takes
         every attribute of an <code>&lt;input&gt;</code> and passes <code>ref</code> to it. Put it
-        directly in a <code>Field.Root</code>, before the label. It never has{' '}
+        directly in a <code>RadioGroup.Option</code>, before the label. It never has{' '}
         <code>aria-invalid</code> or <code>aria-required</code>: ARIA doesn’t support them on a
         radio.
       </>
@@ -74,7 +90,7 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;div&gt;</code> that holds what belongs to one radio, such as an “Other, please
-        specify” field. Put it right after that radio’s <code>Field.Root</code>. It is{' '}
+        specify” field. Put it right after that radio’s <code>RadioGroup.Option</code>. It is{' '}
         <code>hidden</code> until the radio is checked, is never unmounted, and never moves focus.
         The radio gets <code>aria-controls</code>, and the appearance is announced politely. The
         typed text is still submitted by a plain form: ignore or clear it on the server.
@@ -109,7 +125,7 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;p&gt;</code>: a short instruction under the options. It is listed in the group’s{' '}
         <code>aria-describedby</code>. A help text for one option is a <code>Field.HelpText</code>{' '}
-        in that option’s Field.
+        in that option’s <code>RadioGroup.Option</code>.
       </>
     ),
     attributes: radioGroupHelpTextAttributes,
@@ -208,9 +224,9 @@ export function RadioGroupPage({
             title="Explain one option"
             why={
               <>
-                A short text about one option goes in that option’s Field as a{' '}
-                <code>Field.HelpText</code>, directly under its label, and is read with that radio.
-                Text about the whole group goes in <code>RadioGroup.HelpText</code> under the
+                A short text about one option goes in that option’s <code>RadioGroup.Option</code>{' '}
+                as a <code>Field.HelpText</code>, directly under its label, and is read with that
+                radio. Text about the whole group goes in <code>RadioGroup.HelpText</code> under the
                 options. A description to read before answering goes in{' '}
                 <code>RadioGroup.Prose</code> above them.
               </>
@@ -260,6 +276,26 @@ export function RadioGroupPage({
           >
             <DisabledOptionRadioGroup />
           </UseCase>
+          <UseCase
+            id="other-option"
+            title="Let people answer “Other” in their own words"
+            why="A free-text answer belongs to the option it qualifies, and it is only asked when it is needed. The text field appears when “Other” is chosen, so people who pick another option don’t see it."
+            code={sources['other-option']}
+            propsUsed={[
+              { part: 'RadioGroup.Reveal', prop: 'value' },
+              { part: 'RadioGroup.Radio', prop: 'value' },
+            ]}
+            note={
+              <Note kind="reminder">
+                While “Other” is not chosen the field is hidden: screen readers don’t read it and
+                Tab skips it. A plain form still sends what was typed as <code>source-other</code>,
+                so ignore it on the server. Give the field a label of its own, and make it required
+                only while “Other” is chosen.
+              </Note>
+            }
+          >
+            <OtherOptionRadioGroup />
+          </UseCase>
         </>
       }
       contract={
@@ -294,7 +330,7 @@ export function RadioGroupPage({
               intro: (
                 <>
                   A hook that gives your own <code>&lt;input type=&quot;radio&quot;&gt;</code> the
-                  same attributes, wired to the nearest Field and RadioGroup. It returns{' '}
+                  same attributes, wired to the nearest Option and RadioGroup. It returns{' '}
                   <code>inputProps</code> to spread on the input, and <code>isChecked</code> (known
                   from props only), <code>isInvalid</code> and <code>isDisabled</code>. It has no
                   focus state: style focus with <code>:focus-visible</code>.

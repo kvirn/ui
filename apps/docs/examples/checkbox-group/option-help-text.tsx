@@ -7,19 +7,19 @@ export function OptionHelpTextCheckboxGroup() {
   return (
     <CheckboxGroup.Root name="contact" defaultValue={['email']}>
       <CheckboxGroup.Legend>{texts.legend}</CheckboxGroup.Legend>
-      <Field.Root>
+      <CheckboxGroup.Option>
         <Checkbox value="email" />
         <Field.Label>{texts.email}</Field.Label>
         <Field.HelpText>{texts.emailHelp}</Field.HelpText>
-      </Field.Root>
-      <Field.Root>
+      </CheckboxGroup.Option>
+      <CheckboxGroup.Option>
         <Checkbox value="text" />
         <Field.Label>{texts.text}</Field.Label>
-      </Field.Root>
-      <Field.Root>
+      </CheckboxGroup.Option>
+      <CheckboxGroup.Option>
         <Checkbox value="letter" />
         <Field.Label>{texts.letter}</Field.Label>
-      </Field.Root>
+      </CheckboxGroup.Option>
       <CheckboxGroup.HelpText>{texts.groupHelp}</CheckboxGroup.HelpText>
     </CheckboxGroup.Root>
   )

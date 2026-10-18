@@ -7,19 +7,19 @@ export function OptionHelpTextRadioGroup() {
   return (
     <RadioGroup.Root name="duration">
       <RadioGroup.Legend>{texts.legend}</RadioGroup.Legend>
-      <Field.Root>
+      <RadioGroup.Option>
         <RadioGroup.Radio value="1" />
         <Field.Label>{texts.oneMonth}</Field.Label>
-      </Field.Root>
-      <Field.Root>
+      </RadioGroup.Option>
+      <RadioGroup.Option>
         <RadioGroup.Radio value="6" />
         <Field.Label>{texts.sixMonths}</Field.Label>
         <Field.HelpText>{texts.sixMonthsHelp}</Field.HelpText>
-      </Field.Root>
-      <Field.Root>
+      </RadioGroup.Option>
+      <RadioGroup.Option>
         <RadioGroup.Radio value="12" />
         <Field.Label>{texts.twelveMonths}</Field.Label>
-      </Field.Root>
+      </RadioGroup.Option>
       <RadioGroup.HelpText>{texts.groupHelp}</RadioGroup.HelpText>
     </RadioGroup.Root>
   )

@@ -723,7 +723,7 @@
     gap: var(--kv-space-2);
   }
 
-  .kv-map-base-maps-options > .kv-field {
+  .kv-map-base-maps-options > :is(.kv-field, .kv-option) {
     position: relative;
     display: block;
     margin: 0;
@@ -743,7 +743,7 @@
     content: none;
   }
 
-  .kv-map-base-maps-options .kv-field > .kv-field-label {
+  .kv-map-base-maps-options :is(.kv-field, .kv-option) > .kv-field-label {
     position: relative;
     box-sizing: border-box;
     display: flex;
@@ -783,16 +783,18 @@
     aspect-ratio: 4 / 3;
   }
 
-  .kv-map-base-maps-options .kv-field:hover .kv-map-base-map-preview {
+  .kv-map-base-maps-options :is(.kv-field, .kv-option):hover .kv-map-base-map-preview {
     border-color: var(--kv-color-border-control);
   }
 
-  .kv-map-base-maps-options .kv-field:has(> .kv-radio:checked) .kv-map-base-map-preview {
+  .kv-map-base-maps-options
+    :is(.kv-field, .kv-option):has(> .kv-radio:checked)
+    .kv-map-base-map-preview {
     box-shadow: 0 0 0 2px var(--kv-color-primary);
   }
 
-  .kv-map-base-maps-options .kv-field > .kv-field-label::before,
-  .kv-map-base-maps-options .kv-field > .kv-field-label::after {
+  .kv-map-base-maps-options :is(.kv-field, .kv-option) > .kv-field-label::before,
+  .kv-map-base-maps-options :is(.kv-field, .kv-option) > .kv-field-label::after {
     content: none;
     position: absolute;
     inset-block-start: var(--kv-space-1);
@@ -801,19 +803,23 @@
     block-size: 1.25rem;
   }
 
-  .kv-map-base-maps-options .kv-field:has(> .kv-radio:checked) > .kv-field-label::before {
+  .kv-map-base-maps-options
+    :is(.kv-field, .kv-option):has(> .kv-radio:checked)
+    > .kv-field-label::before {
     content: '';
     border-radius: var(--kv-radius-full);
     background-color: var(--kv-color-primary);
   }
 
-  .kv-map-base-maps-options .kv-field:has(> .kv-radio:checked) > .kv-field-label::after {
+  .kv-map-base-maps-options
+    :is(.kv-field, .kv-option):has(> .kv-radio:checked)
+    > .kv-field-label::after {
     content: '';
     background-color: var(--kv-color-on-primary);
     clip-path: polygon(26% 52%, 37% 41%, 45% 49%, 66% 28%, 77% 39%, 45% 71%);
   }
 
-  .kv-map-base-maps-options .kv-field:has(> .kv-radio:focus-visible) {
+  .kv-map-base-maps-options :is(.kv-field, .kv-option):has(> .kv-radio:focus-visible) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: 2px;
   }
@@ -1351,22 +1357,28 @@
       background: Canvas;
     }
 
-    .kv-map-base-maps-options .kv-field:has(> .kv-radio:checked) .kv-map-base-map-preview {
+    .kv-map-base-maps-options
+      :is(.kv-field, .kv-option):has(> .kv-radio:checked)
+      .kv-map-base-map-preview {
       box-shadow: none;
       outline: 2px solid Highlight;
     }
 
-    .kv-map-base-maps-options .kv-field:has(> .kv-radio:checked) > .kv-field-label::before {
+    .kv-map-base-maps-options
+      :is(.kv-field, .kv-option):has(> .kv-radio:checked)
+      > .kv-field-label::before {
       forced-color-adjust: none;
       background-color: Highlight;
     }
 
-    .kv-map-base-maps-options .kv-field:has(> .kv-radio:checked) > .kv-field-label::after {
+    .kv-map-base-maps-options
+      :is(.kv-field, .kv-option):has(> .kv-radio:checked)
+      > .kv-field-label::after {
       forced-color-adjust: none;
       background-color: HighlightText;
     }
 
-    .kv-map-base-maps-options .kv-field:has(> .kv-radio:focus-visible),
+    .kv-map-base-maps-options :is(.kv-field, .kv-option):has(> .kv-radio:focus-visible),
     .kv-map-base-maps-trigger:focus-visible,
     .kv-map-list-trigger:focus-visible::after,
     .kv-map-cluster-place-trigger:focus-visible::after {

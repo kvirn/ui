@@ -17,18 +17,18 @@ export function OptionsPage() {
           <h4>{texts.owner.question}</h4>
         </RadioGroup.Legend>
         <Stepper current={2} total={5} name={texts.sectionName} />
-        <Field.Root>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="me" />
           <Field.Label>{texts.owner.me}</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </RadioGroup.Option>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="company" />
           <Field.Label>{texts.owner.company}</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </RadioGroup.Option>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="family" />
           <Field.Label>{texts.owner.family}</Field.Label>
-        </Field.Root>
+        </RadioGroup.Option>
       </RadioGroup.Root>
       <Button type="submit" className="kv-button--primary">
         {texts.continue}

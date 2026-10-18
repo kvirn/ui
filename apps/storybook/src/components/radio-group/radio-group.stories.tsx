@@ -89,18 +89,18 @@ const meta = {
           <RadioGroup.Prose>
             <p>{text.durationHint}</p>
           </RadioGroup.Prose>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="1" />
             <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="6" />
             <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>{text.duration12}</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
         </RadioGroup.Root>
       </>
@@ -164,18 +164,18 @@ export const Keyboard: Story = {
             <RadioGroup.Prose>
               <p>{text.durationHint}</p>
             </RadioGroup.Prose>
-            <Field.Root>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="1" />
               <Field.Label>{text.duration1}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </RadioGroup.Option>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="6" />
               <Field.Label>{text.duration6}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </RadioGroup.Option>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="12" />
               <Field.Label>{text.duration12}</Field.Label>
-            </Field.Root>
+            </RadioGroup.Option>
             <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
           </RadioGroup.Root>
           <div className="kv-button-group">
@@ -202,18 +202,18 @@ export const Selected: Story = {
             <RadioGroup.Prose>
               <p>{text.durationHint}</p>
             </RadioGroup.Prose>
-            <Field.Root>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="1" />
               <Field.Label>{text.duration1}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </RadioGroup.Option>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="6" />
               <Field.Label>{text.duration6}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </RadioGroup.Option>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="12" />
               <Field.Label>{text.duration12}</Field.Label>
-            </Field.Root>
+            </RadioGroup.Option>
             <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
           </RadioGroup.Root>
           <div className="kv-button-group">
@@ -243,19 +243,19 @@ export const WithOptionHelpTexts: Story = {
           <RadioGroup.Prose>
             <p>{text.durationHint}</p>
           </RadioGroup.Prose>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="1" />
             <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="6" />
             <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>{text.duration12}</Field.Label>
             <Field.HelpText>{text.duration12Hint}</Field.HelpText>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
         </RadioGroup.Root>
       </>
@@ -311,18 +311,18 @@ export const DisabledOption: Story = {
           <RadioGroup.Prose>
             <p>{text.durationHint}</p>
           </RadioGroup.Prose>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="1" />
             <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="6" disabled />
             <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>{text.duration12}</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
         </RadioGroup.Root>
       </>
@@ -358,18 +358,18 @@ export const AsPageHeading: Story = {
           <RadioGroup.Prose>
             <p>{text.durationHint}</p>
           </RadioGroup.Prose>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="1" />
             <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="6" />
             <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>{text.duration12}</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
         </RadioGroup.Root>
       </>
@@ -394,18 +394,18 @@ export const InCard: Story = {
             <RadioGroup.Prose>
               <p>{text.durationHint}</p>
             </RadioGroup.Prose>
-            <Field.Root>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="1" />
               <Field.Label>{text.duration1}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </RadioGroup.Option>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="6" />
               <Field.Label>{text.duration6}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </RadioGroup.Option>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="12" />
               <Field.Label>{text.duration12}</Field.Label>
-            </Field.Root>
+            </RadioGroup.Option>
             <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
           </RadioGroup.Root>
         </Card.Root>
@@ -430,18 +430,18 @@ export const Compact: Story = {
             <RadioGroup.Prose>
               <p>{text.durationHint}</p>
             </RadioGroup.Prose>
-            <Field.Root>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="1" />
               <Field.Label>{text.duration1}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </RadioGroup.Option>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="6" />
               <Field.Label>{text.duration6}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </RadioGroup.Option>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="12" />
               <Field.Label>{text.duration12}</Field.Label>
-            </Field.Root>
+            </RadioGroup.Option>
             <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
           </RadioGroup.Root>
         </div>
@@ -473,19 +473,19 @@ export const LongFinnish: Story = {
           <RadioGroup.Prose>
             <p>{text.durationHint}</p>
           </RadioGroup.Prose>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="1" />
             <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="6" />
             <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>{text.duration12}</Field.Label>
             <Field.HelpText>{text.duration12Hint}</Field.HelpText>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
         </RadioGroup.Root>
       </>
@@ -613,19 +613,19 @@ const renderGroupStates: NonNullable<Story['render']> = (_args, { globals, id })
           <RadioGroup.Prose>
             <p>{text.durationHint}</p>
           </RadioGroup.Prose>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="1" />
             <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="6" />
             <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>{text.duration12}</Field.Label>
             <Field.HelpText>{text.duration12Hint}</Field.HelpText>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
         </RadioGroup.Root>
         <RadioGroup.Root name={`invalid-${id}`} invalid>
@@ -633,18 +633,18 @@ const renderGroupStates: NonNullable<Story['render']> = (_args, { globals, id })
           <RadioGroup.Prose>
             <p>{text.durationHint}</p>
           </RadioGroup.Prose>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="1" />
             <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="6" />
             <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>{text.duration12}</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
         </RadioGroup.Root>
         <RadioGroup.Root name={`disabled-${id}`} disabled defaultValue="12">
@@ -652,30 +652,30 @@ const renderGroupStates: NonNullable<Story['render']> = (_args, { globals, id })
           <RadioGroup.Prose>
             <p>{text.durationHint}</p>
           </RadioGroup.Prose>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="1" />
             <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="6" />
             <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>{text.duration12}</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.ErrorMessage>{text.durationError}</RadioGroup.ErrorMessage>
         </RadioGroup.Root>
         <RadioGroup.Root name={`other-${id}`} defaultValue="other">
           <RadioGroup.Legend>{text.sourceLegend}</RadioGroup.Legend>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="friend" />
             <Field.Label>{text.sourceFriend}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="other" />
             <Field.Label>{text.sourceOther}</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.Reveal value="other">
             <Field.Root>
               <Field.Label>{text.sourceSpecify}</Field.Label>

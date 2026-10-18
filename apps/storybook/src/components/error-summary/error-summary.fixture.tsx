@@ -90,14 +90,14 @@ export function ParkingForm({
         </Field.Root>
         <RadioGroup.Root invalid={showErrors} required>
           <RadioGroup.Legend>How long do you need the permit?</RadioGroup.Legend>
-          <Field.Root controlId={firstOptionId}>
+          <RadioGroup.Option controlId={firstOptionId}>
             <RadioGroup.Radio value="1" />
             <Field.Label>1 month</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>12 months</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.ErrorMessage>
             Choose how long the permit should be valid
           </RadioGroup.ErrorMessage>

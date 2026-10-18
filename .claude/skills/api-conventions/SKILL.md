@@ -53,16 +53,16 @@ Exception: `Grid.Root` renders two elements, an internal `<div class="kv-grid-co
 
 **Alias sets:**
 
-| Namespace       | Parts                                                          |
-| --------------- | -------------------------------------------------------------- |
-| `Field`         | `Root`, `Label`, `Prose`, `HelpText`, `ErrorMessage`           |
-| `Fieldset`      | `Root`, `Legend`, `Prose`, `HelpText`, `ErrorMessage`          |
-| `CheckboxGroup` | `Root`, `Legend`, `Prose`, `HelpText`, `ErrorMessage`          |
-| `RadioGroup`    | `Root`, `Radio`, `Legend`, `Prose`, `HelpText`, `ErrorMessage` |
-| `InputGroup`    | `Root`, `Addon`, `Input`                                       |
-| `DateInput`     | `Root`, `Day`, `Month`, `Year`                                 |
-| `Link`          | `Root`, `NewTabNotice`, `Icon`                                 |
-| `Toolbar`       | `Root`, `Button`, `Toggle`, `Item`, `Group`                    |
+| Namespace       | Parts                                                                    |
+| --------------- | ------------------------------------------------------------------------ |
+| `Field`         | `Root`, `Label`, `Prose`, `HelpText`, `ErrorMessage`                     |
+| `Fieldset`      | `Root`, `Legend`, `Prose`, `HelpText`, `ErrorMessage`                    |
+| `CheckboxGroup` | `Root`, `Option`, `Legend`, `Prose`, `HelpText`, `ErrorMessage`          |
+| `RadioGroup`    | `Root`, `Option`, `Radio`, `Legend`, `Prose`, `HelpText`, `ErrorMessage` |
+| `InputGroup`    | `Root`, `Addon`, `Input`                                                 |
+| `DateInput`     | `Root`, `Day`, `Month`, `Year`                                           |
+| `Link`          | `Root`, `NewTabNotice`, `Icon`                                           |
+| `Toolbar`       | `Root`, `Button`, `Toggle`, `Item`, `Group`                              |
 
 `Toolbar` is a namespace object (it has no callable root). Its `Button` and `Toggle` are Button and Toggle wrapped to join the toolbar, `Item` makes any focusable control one through `as`, and `Group` is a thin typed wrapper over `ButtonGroup` (Plan 0035). `Toggle` and `ButtonGroup` are single elements, so they are flat.
 

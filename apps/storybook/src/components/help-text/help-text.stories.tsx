@@ -216,19 +216,19 @@ export const OptionHelpTexts: Story = {
           <RadioGroup.Prose>
             <p>{text.durationHint}</p>
           </RadioGroup.Prose>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="1" />
             <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="6" />
             <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>{text.duration12}</Field.Label>
             <Field.HelpText>{text.duration12Hint}</Field.HelpText>
-          </Field.Root>
+          </RadioGroup.Option>
         </RadioGroup.Root>
       </>
     )
@@ -406,19 +406,19 @@ const renderHelpTextStates =
             <RadioGroup.Prose>
               <p>{choices.durationHint}</p>
             </RadioGroup.Prose>
-            <Field.Root>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="1" />
               <Field.Label>{choices.duration1}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </RadioGroup.Option>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="6" />
               <Field.Label>{choices.duration6}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </RadioGroup.Option>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="12" />
               <Field.Label>{choices.duration12}</Field.Label>
               <Field.HelpText>{choices.duration12Hint}</Field.HelpText>
-            </Field.Root>
+            </RadioGroup.Option>
           </RadioGroup.Root>
         </div>
       </>

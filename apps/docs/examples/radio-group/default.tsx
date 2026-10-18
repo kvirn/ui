@@ -10,18 +10,18 @@ export function DefaultRadioGroup() {
       <RadioGroup.Prose>
         <p>{texts.hint}</p>
       </RadioGroup.Prose>
-      <Field.Root>
+      <RadioGroup.Option>
         <RadioGroup.Radio value="1" />
         <Field.Label>{texts.oneMonth}</Field.Label>
-      </Field.Root>
-      <Field.Root>
+      </RadioGroup.Option>
+      <RadioGroup.Option>
         <RadioGroup.Radio value="6" />
         <Field.Label>{texts.sixMonths}</Field.Label>
-      </Field.Root>
-      <Field.Root>
+      </RadioGroup.Option>
+      <RadioGroup.Option>
         <RadioGroup.Radio value="12" />
         <Field.Label>{texts.twelveMonths}</Field.Label>
-      </Field.Root>
+      </RadioGroup.Option>
     </RadioGroup.Root>
   )
 }

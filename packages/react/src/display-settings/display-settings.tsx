@@ -62,10 +62,10 @@ function DisplaySettingsGroups({
           <RadioGroup.Legend marker="none">{group.legend}</RadioGroup.Legend>
           <div className={short === true ? 'kv-display-settings-segments' : undefined}>
             {group.options.map((option) => (
-              <Field.Root key={option.value}>
+              <RadioGroup.Option key={option.value}>
                 <RadioGroup.Radio value={option.value} />
                 <Field.Label>{option.label}</Field.Label>
-              </Field.Root>
+              </RadioGroup.Option>
             ))}
           </div>
         </RadioGroup.Root>

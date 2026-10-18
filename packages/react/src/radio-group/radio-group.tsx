@@ -5,6 +5,8 @@ import type { KvirnMessages } from '@kvirn-ui/i18n'
 import { useAnnouncer } from '../announcer/use-announcer.ts'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldGroupContext, FieldTextHostContext } from '../field/field-context.ts'
+import { FieldOption } from '../field/field-option.tsx'
+import type { FieldOptionProps } from '../field/field-option.tsx'
 import type { FieldErrorMessageProps, FieldHelpTextProps } from '../field/field.tsx'
 import {
   FieldsetErrorMessage,
@@ -52,10 +54,10 @@ export interface RadioGroupRootProps extends Omit<FieldsetRootProps, 'group'> {
  * @example
  * <RadioGroup.Root name="language" value={language} onValueChange={setLanguage} required>
  *   <RadioGroup.Legend>Which language do you want to use?</RadioGroup.Legend>
- *   <Field.Root>
+ *   <RadioGroup.Option>
  *     <RadioGroup.Radio value="sv" />
  *     <Field.Label>Svenska</Field.Label>
- *   </Field.Root>
+ *   </RadioGroup.Option>
  * </RadioGroup.Root>
  */
 export function RadioGroupRoot({
@@ -109,6 +111,18 @@ export function RadioGroupRadio(props: RadioProps): ReactElement {
 }
 RadioGroupRadio.displayName = 'RadioGroup.Radio'
 
+export type RadioGroupOptionProps = FieldOptionProps
+
+/**
+ * One answer of the group: wires its `Field.Label` and `Field.HelpText` to the radio inside it,
+ * like a `Field.Root` but with no error message and no optional marker (the group's question is
+ * the Fieldset's). `disabled` disables this option's radio.
+ */
+export function RadioGroupOption(props: RadioGroupOptionProps): ReactElement {
+  return <FieldOption {...props} />
+}
+RadioGroupOption.displayName = 'RadioGroup.Option'
+
 const revealTags = ['div', 'section'] as const
 
 export type RadioGroupRevealProps = AsTag<
@@ -124,7 +138,7 @@ export type RadioGroupRevealProps = AsTag<
 
 /**
  * The content that belongs to one radio, such as an "Other, please specify" field: it follows
- * that radio's `Field.Root` in the DOM, is `hidden` until the radio is checked and is never
+ * that radio's `RadioGroup.Option` in the DOM, is `hidden` until the radio is checked and is never
  * unmounted, so what the user typed survives switching options (and is still submitted by a
  * plain form: ignore or clear it on the server). Focus stays on the radio. The radio gets
  * `aria-controls`, and a field appearing is announced politely (contract: radio-group.a11y.md).
@@ -233,6 +247,7 @@ RadioGroupErrorMessage.displayName = 'RadioGroup.ErrorMessage'
 /** A group of radios under a legend, with a description, a help text and an error. */
 export const RadioGroup = {
   Root: RadioGroupRoot,
+  Option: RadioGroupOption,
   Radio: RadioGroupRadio,
   Reveal: RadioGroupReveal,
   Legend: RadioGroupLegend,

@@ -12,6 +12,8 @@ import {
   checkboxGroupHelpTextAttributes,
   checkboxGroupLegendAttributes,
   checkboxGroupLegendRows,
+  checkboxGroupOptionAttributes,
+  checkboxGroupOptionRows,
   checkboxGroupProseAttributes,
   checkboxGroupRootAttributes,
   checkboxGroupRootRows,
@@ -38,12 +40,25 @@ const parts: ApiPart[] = [
         <code>&lt;fieldset&gt;</code>, which a screen reader announces as a group. It is a{' '}
         <code>Fieldset.Root</code> with <code>group</code> set, takes every attribute of a{' '}
         <code>&lt;fieldset&gt;</code> and passes <code>ref</code> to it. Its options are{' '}
-        <Link href="/components/checkbox">Checkbox</Link> and Field parts, not parts of the group.
-        The default theme is described on <Link href="/foundation/theming">Theming</Link>.
+        <code>CheckboxGroup.Option</code> parts, each with a{' '}
+        <Link href="/components/checkbox">Checkbox</Link> and its label. The default theme is
+        described on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: checkboxGroupRootRows,
     attributes: checkboxGroupRootAttributes,
+  },
+  {
+    name: 'CheckboxGroup.Option',
+    renders: (
+      <>
+        <code>&lt;div&gt;</code> (or <code>&lt;li&gt;</code>) around one answer: its checkbox, its{' '}
+        <code>Field.Label</code> and its <code>Field.HelpText</code>. It has no “(optional)” marker
+        and no error message of its own: those belong to the question.
+      </>
+    ),
+    props: checkboxGroupOptionRows,
+    attributes: checkboxGroupOptionAttributes,
   },
   {
     name: 'CheckboxGroup.Legend',
@@ -71,7 +86,7 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;p&gt;</code>: a short instruction under the options. It is listed in the group’s{' '}
         <code>aria-describedby</code>. A help text for one option is a <code>Field.HelpText</code>{' '}
-        in that option’s Field.
+        in that option’s <code>CheckboxGroup.Option</code>.
       </>
     ),
     attributes: checkboxGroupHelpTextAttributes,
@@ -198,11 +213,11 @@ export function CheckboxGroupPage({
             title="Explain one option"
             why={
               <>
-                A short text about one option goes in that option’s Field as a{' '}
-                <code>Field.HelpText</code>, directly under its label, and is read with that
-                checkbox. Text about the whole group goes in <code>CheckboxGroup.HelpText</code>{' '}
-                under the options. A description to read before answering goes in{' '}
-                <code>CheckboxGroup.Prose</code> above them.
+                A short text about one option goes in that option’s{' '}
+                <code>CheckboxGroup.Option</code> as a <code>Field.HelpText</code>, directly under
+                its label, and is read with that checkbox. Text about the whole group goes in{' '}
+                <code>CheckboxGroup.HelpText</code> under the options. A description to read before
+                answering goes in <code>CheckboxGroup.Prose</code> above them.
               </>
             }
             code={sources['option-help-text']}

@@ -7,15 +7,15 @@ export function DisabledOptionRadioGroup() {
   return (
     <RadioGroup.Root name="duration" defaultValue="12">
       <RadioGroup.Legend>{texts.legend}</RadioGroup.Legend>
-      <Field.Root>
+      <RadioGroup.Option>
         <RadioGroup.Radio value="12" />
         <Field.Label>{texts.twelveMonths}</Field.Label>
-      </Field.Root>
-      <Field.Root>
+      </RadioGroup.Option>
+      <RadioGroup.Option>
         <RadioGroup.Radio value="24" disabled />
         <Field.Label>{texts.unavailable}</Field.Label>
         <Field.HelpText>{texts.unavailableHelp}</Field.HelpText>
-      </Field.Root>
+      </RadioGroup.Option>
     </RadioGroup.Root>
   )
 }

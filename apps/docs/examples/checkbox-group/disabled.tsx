@@ -7,14 +7,14 @@ export function DisabledCheckboxGroup() {
   return (
     <CheckboxGroup.Root name="contact" defaultValue={['letter']} disabled>
       <CheckboxGroup.Legend>{texts.disabledLegend}</CheckboxGroup.Legend>
-      <Field.Root>
+      <CheckboxGroup.Option>
         <Checkbox value="text" />
         <Field.Label>{texts.text}</Field.Label>
-      </Field.Root>
-      <Field.Root>
+      </CheckboxGroup.Option>
+      <CheckboxGroup.Option>
         <Checkbox value="letter" />
         <Field.Label>{texts.letter}</Field.Label>
-      </Field.Root>
+      </CheckboxGroup.Option>
       <CheckboxGroup.HelpText>{texts.disabledHelp}</CheckboxGroup.HelpText>
     </CheckboxGroup.Root>
   )

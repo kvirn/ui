@@ -1,5 +1,6 @@
 import type {
   FieldsetLegendProps,
+  RadioGroupOptionProps,
   RadioGroupRevealProps,
   RadioGroupRootProps,
   RadioProps,
@@ -103,6 +104,37 @@ export const radioGroupRootAttributes: readonly AttributeRow[] = [
     meaning:
       'Set for you: every description and help text in DOM order, then the error. Your own ids come after.',
   },
+]
+
+export type RadioGroupOptionDocumentedProps = Pick<
+  Extract<RadioGroupOptionProps, { as?: unknown }>,
+  'disabled' | 'controlId' | 'as'
+>
+
+export const radioGroupOptionRows = propRows<RadioGroupOptionDocumentedProps>({
+  disabled: {
+    type: 'boolean',
+    default: 'false',
+    description:
+      'Disables this option’s control. Its label and help text get data-disabled. To disable every option, set disabled on the group.',
+  },
+  controlId: {
+    type: 'string',
+    default: 'generated',
+    description:
+      'The control’s id. Set it to link to the option from an error summary; the label, help text and control stay wired to it.',
+  },
+  as: {
+    type: '"div" | "li"',
+    default: '"div"',
+    description:
+      'The element to render. Use li when the options are a list, and then put the options in a <ul role="list"> inside the group, after the legend, so a screen reader announces the list.',
+  },
+})
+
+export const radioGroupOptionAttributes: readonly AttributeRow[] = [
+  { name: 'kv-option', values: 'always', meaning: 'The part class. The default theme styles it.' },
+  { name: 'data-disabled', values: 'present or absent', meaning: 'The option is disabled.' },
 ]
 
 export type RadioDocumentedProps = Pick<

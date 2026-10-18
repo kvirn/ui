@@ -11,18 +11,18 @@ export function ControlledCheckboxGroup() {
     <div>
       <CheckboxGroup.Root name="contact" value={contact} onValueChange={setContact}>
         <CheckboxGroup.Legend>{texts.legend}</CheckboxGroup.Legend>
-        <Field.Root>
+        <CheckboxGroup.Option>
           <Checkbox value="email" />
           <Field.Label>{texts.email}</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </CheckboxGroup.Option>
+        <CheckboxGroup.Option>
           <Checkbox value="text" />
           <Field.Label>{texts.text}</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </CheckboxGroup.Option>
+        <CheckboxGroup.Option>
           <Checkbox value="letter" />
           <Field.Label>{texts.letter}</Field.Label>
-        </Field.Root>
+        </CheckboxGroup.Option>
       </CheckboxGroup.Root>
       <p>
         {texts.youChose}: {contact.length === 0 ? texts.nothing : contact.join(', ')}

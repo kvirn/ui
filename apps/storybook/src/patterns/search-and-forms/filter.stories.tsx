@@ -164,10 +164,10 @@ function FilterRecipe({
         >
           <CheckboxGroup.Legend>Type of page</CheckboxGroup.Legend>
           {kinds.map((value) => (
-            <Field.Root key={value}>
+            <CheckboxGroup.Option key={value}>
               <Checkbox value={value} />
               <Field.Label>{kindLabels[value]}</Field.Label>
-            </Field.Root>
+            </CheckboxGroup.Option>
           ))}
         </CheckboxGroup.Root>
         <Field.Root>

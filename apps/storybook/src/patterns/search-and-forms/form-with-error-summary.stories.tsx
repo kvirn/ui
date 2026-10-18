@@ -203,14 +203,14 @@ function EnquiryForm({
             onValueChange={setReply}
           >
             <RadioGroup.Legend>How should we reply?</RadioGroup.Legend>
-            <Field.Root controlId={firstReplyId}>
+            <RadioGroup.Option controlId={firstReplyId}>
               <RadioGroup.Radio value="email" />
               <Field.Label>By email</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </RadioGroup.Option>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="letter" />
               <Field.Label>By letter</Field.Label>
-            </Field.Root>
+            </RadioGroup.Option>
             <RadioGroup.ErrorMessage>{errors.reply}</RadioGroup.ErrorMessage>
           </RadioGroup.Root>
           <Field.Root controlId={messageId} invalid={errors.message !== undefined} required>

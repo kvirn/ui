@@ -17,6 +17,7 @@ export default function Page() {
         'option-help-text': readExampleSource('radio-group/option-help-text.tsx'),
         'error-on-submit': readExampleSource('radio-group/error-on-submit.tsx'),
         'disabled-option': readExampleSource('radio-group/disabled-option.tsx'),
+        'other-option': readExampleSource('radio-group/other-option.tsx'),
       }}
     />
   )

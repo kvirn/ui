@@ -106,13 +106,13 @@ export function QuestionPage({ locale, step }: { locale: ReferenceLocale; step: 
                   </RadioGroup.Legend>
                   {stepper}
                   {text.who.options.map((option, optionIndex) => (
-                    <Field.Root
+                    <RadioGroup.Option
                       key={option.value}
                       {...(optionIndex === 0 ? { controlId: firstOptionId } : {})}
                     >
                       <RadioGroup.Radio value={option.value} />
                       <Field.Label>{option.label}</Field.Label>
-                    </Field.Root>
+                    </RadioGroup.Option>
                   ))}
                   <RadioGroup.ErrorMessage>{error}</RadioGroup.ErrorMessage>
                 </RadioGroup.Root>

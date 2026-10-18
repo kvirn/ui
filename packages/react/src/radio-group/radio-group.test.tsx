@@ -69,13 +69,13 @@ function Duration({ disabledOption, optionHelpText = false, ...rootProps }: Dura
       <Fieldset.Legend>How long do you need the permit?</Fieldset.Legend>
       <RadioGroup.Prose>Choose one option.</RadioGroup.Prose>
       {options.map(([value, label]) => (
-        <Field.Root key={value}>
+        <RadioGroup.Option key={value}>
           <RadioGroup.Radio value={value} disabled={value === disabledOption} />
           <Field.Label>{label}</Field.Label>
           {optionHelpText && value === '12' ? (
             <Field.HelpText>Lowest price per month.</Field.HelpText>
           ) : null}
-        </Field.Root>
+        </RadioGroup.Option>
       ))}
       <Fieldset.ErrorMessage>Choose how long you need the permit</Fieldset.ErrorMessage>
     </RadioGroup.Root>
@@ -104,10 +104,10 @@ describe('rendering', () => {
     const ref = createRef<HTMLInputElement>()
     await render(
       <RadioGroup.Root aria-label="Language" name="language">
-        <Field.Root>
+        <RadioGroup.Option>
           <RadioGroup.Radio ref={ref} value="sv" className="own" data-own="" />
           <Field.Label>Swedish</Field.Label>
-        </Field.Root>
+        </RadioGroup.Option>
       </RadioGroup.Root>,
     )
     const radio = page.getByRole('radio', { name: 'Swedish' })
@@ -148,7 +148,7 @@ describe('rendering', () => {
       .toHaveAccessibleDescription('Lowest price per month.')
   })
 
-  test('an option help text is a Field.HelpText in that option’s Field, outside its label, and has no axe violations', async () => {
+  test('an option help text is a Field.HelpText in that RadioGroup.Option, outside its label, and has no axe violations', async () => {
     const { container } = await render(english(<Duration optionHelpText />))
     const helpText = page.getByText('Lowest price per month.').element()
     expect(helpText.id).not.toBe('')
@@ -165,25 +165,119 @@ describe('rendering', () => {
   })
 })
 
+describe('option', () => {
+  test('RadioGroup.Option controlId is the radio’s id, so an error summary link can target it', async () => {
+    await render(
+      english(
+        <RadioGroup.Root name="period">
+          <RadioGroup.Legend>Period</RadioGroup.Legend>
+          <RadioGroup.Option controlId="first-period">
+            <RadioGroup.Radio value="1" />
+            <Field.Label>One month</Field.Label>
+          </RadioGroup.Option>
+        </RadioGroup.Root>,
+      ),
+    )
+    await expect
+      .element(page.getByRole('radio', { name: 'One month', exact: true }))
+      .toHaveAttribute('id', 'first-period')
+  })
+
+  test('disabled on a RadioGroup.Option disables only its radio', async () => {
+    await render(
+      english(
+        <RadioGroup.Root name="period">
+          <RadioGroup.Legend>Period</RadioGroup.Legend>
+          <RadioGroup.Option disabled>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>One month</Field.Label>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
+            <RadioGroup.Radio value="6" />
+            <Field.Label>Six months</Field.Label>
+          </RadioGroup.Option>
+        </RadioGroup.Root>,
+      ),
+    )
+    await expect.element(page.getByRole('radio', { name: 'One month' })).toBeDisabled()
+    await expect.element(page.getByRole('radio', { name: 'Six months' })).toBeEnabled()
+  })
+
+  test('a RadioGroup.Option has the kv-option class and no kv-field class', async () => {
+    const { container } = await render(english(<Duration />))
+    expect(container.querySelectorAll('.kv-option')).toHaveLength(3)
+    expect(container.querySelectorAll('.kv-field')).toHaveLength(0)
+  })
+
+  test('a Field.ErrorMessage in a RadioGroup.Option renders nothing', async () => {
+    const { container } = await render(
+      english(
+        <RadioGroup.Root name="period" invalid>
+          <RadioGroup.Legend>Period</RadioGroup.Legend>
+          <RadioGroup.Option>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>One month</Field.Label>
+            <Field.ErrorMessage>Not here</Field.ErrorMessage>
+          </RadioGroup.Option>
+        </RadioGroup.Root>,
+      ),
+    )
+    expect(container.querySelector('.kv-option .kv-field-error-message')).toBeNull()
+  })
+
+  test('as="li" renders the RadioGroup.Option as a list item', async () => {
+    const { container } = await render(
+      english(
+        <RadioGroup.Root name="period">
+          <RadioGroup.Legend>Period</RadioGroup.Legend>
+          <ul role="list">
+            <RadioGroup.Option as="li">
+              <RadioGroup.Radio value="1" />
+              <Field.Label>One month</Field.Label>
+            </RadioGroup.Option>
+          </ul>
+        </RadioGroup.Root>,
+      ),
+    )
+    expect(container.querySelector('li.kv-option')).not.toBeNull()
+  })
+
+  test('a Field.Root around a group radio still names it', async () => {
+    const { container } = await render(
+      english(
+        <RadioGroup.Root name="period">
+          <RadioGroup.Legend>Period</RadioGroup.Legend>
+          <Field.Root>
+            <RadioGroup.Radio value="1" />
+            <Field.Label>One month</Field.Label>
+          </Field.Root>
+        </RadioGroup.Root>,
+      ),
+    )
+    await expect.element(page.getByRole('radio', { name: 'One month', exact: true })).toBeVisible()
+    expect(container.querySelectorAll('.kv-field')).toHaveLength(1)
+  })
+})
+
 describe('name', () => {
   test('every radio gets the group’s name, generated when missing', async () => {
     await render(
       <>
         <RadioGroup.Root aria-label="One" name="eget">
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="a" />
             <Field.Label>A</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
         </RadioGroup.Root>
         <RadioGroup.Root aria-label="Two">
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="b" />
             <Field.Label>B</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="c" />
             <Field.Label>C</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
         </RadioGroup.Root>
       </>,
     )
@@ -274,10 +368,10 @@ describe('value', () => {
   test('a Radio in a group without a value warns once', async () => {
     await render(
       <RadioGroup.Root aria-label="Language">
-        <Field.Root>
+        <RadioGroup.Option>
           <RadioGroup.Radio />
           <Field.Label>A</Field.Label>
-        </Field.Root>
+        </RadioGroup.Option>
       </RadioGroup.Root>,
     )
     expect(consoleWarn.mock.calls.some(([message]) => String(message).includes('value'))).toBe(true)
@@ -292,20 +386,20 @@ describe('value', () => {
           value="a"
           onValueChange={vi.fn<(value: string, details: RadioGroupChangeDetails) => void>()}
         >
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="a" />
             <Field.Label>A</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="b" />
             <Field.Label>B</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
         </RadioGroup.Root>
         <RadioGroup.Root aria-label="Two" name="two" defaultValue="c">
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="c" />
             <Field.Label>C</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
         </RadioGroup.Root>
       </>,
     )
@@ -410,6 +504,7 @@ describe('useRadioGroup and useRadio', () => {
 
 describe('the group’s own part names', () => {
   test('each part has its own display name, and the flat Radio is the same input', async () => {
+    expect(RadioGroup.Option.displayName).toBe('RadioGroup.Option')
     expect(RadioGroup.Radio.displayName).toBe('RadioGroup.Radio')
     expect(RadioGroup.Legend.displayName).toBe('RadioGroup.Legend')
     expect(RadioGroup.Prose.displayName).toBe('RadioGroup.Prose')
@@ -422,10 +517,10 @@ describe('the group’s own part names', () => {
           <p>Choose one.</p>
         </RadioGroup.Prose>
         <RadioGroup.ErrorMessage>Choose a language</RadioGroup.ErrorMessage>
-        <Field.Root>
+        <RadioGroup.Option>
           <Radio value="sv" />
           <Field.Label>Swedish</Field.Label>
-        </Field.Root>
+        </RadioGroup.Option>
       </RadioGroup.Root>,
     )
     const group = page.getByRole('group', { name: 'Language (optional)' })
@@ -442,10 +537,10 @@ describe('the group’s own part names', () => {
         <RadioGroup.Prose>
           <p>Choose one.</p>
         </RadioGroup.Prose>
-        <Field.Root>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="sv" />
           <Field.Label>Swedish</Field.Label>
-        </Field.Root>
+        </RadioGroup.Option>
         <RadioGroup.HelpText data-testid="helpText">You can change this later.</RadioGroup.HelpText>
         <RadioGroup.ErrorMessage>Choose a language</RadioGroup.ErrorMessage>
       </RadioGroup.Root>,
@@ -646,14 +741,14 @@ describe('reveal', () => {
     return (
       <RadioGroup.Root name="source" {...props}>
         <Fieldset.Legend>How did you hear about us?</Fieldset.Legend>
-        <Field.Root>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="friend" />
           <Field.Label>Through a friend</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </RadioGroup.Option>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="other" />
           <Field.Label>Other</Field.Label>
-        </Field.Root>
+        </RadioGroup.Option>
         <RadioGroup.Reveal value="other">
           <Field.Root>
             <Field.Label>Describe</Field.Label>
@@ -687,10 +782,24 @@ describe('reveal', () => {
     await expect.element(radio('Other')).toHaveFocus()
   })
 
-  test('the reveal follows its radio’s field in DOM order', async () => {
+  test('Tab from the checked radio skips the hidden reveal field and leaves the group', async () => {
+    await render(
+      english(
+        <>
+          <OtherQuestion defaultValue="friend" />
+          <button type="button">Submit</button>
+        </>,
+      ),
+    )
+    radio('Through a friend').element().focus()
+    await userEvent.tab()
+    await expect.element(page.getByRole('button', { name: 'Submit' })).toHaveFocus()
+  })
+
+  test('the reveal follows its radio’s option in DOM order', async () => {
     await render(english(<OtherQuestion />))
-    const radioField = radio('Other').element().closest('.kv-field')
-    expect(radioField?.nextElementSibling).toBe(reveal())
+    const radioOption = radio('Other').element().closest('.kv-option')
+    expect(radioOption?.nextElementSibling).toBe(reveal())
   })
 
   test('the radio points at the reveal with aria-controls, the others do not', async () => {
@@ -802,10 +911,10 @@ describe('reveal', () => {
     await render(
       english(
         <RadioGroup.Root name="source" defaultValue="other">
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="other" />
             <Field.Label>Other</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.Reveal value="other">
             <Field.Root required>
               <Field.Label>Describe</Field.Label>
@@ -823,10 +932,10 @@ describe('reveal', () => {
       english(
         <RadioGroup.Root name="source" defaultValue="other">
           <RadioGroup.Legend>How?</RadioGroup.Legend>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="other" />
             <Field.Label>Other</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.Reveal value="other">
             <Field.Root>
               <Field.Label>Describe</Field.Label>
@@ -914,10 +1023,10 @@ describe('reveal', () => {
     await render(
       english(
         <RadioGroup.Root name="source">
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="other" />
             <Field.Label>Other</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.Reveal value="other" messages={{ revealShown: 'Write more below' }}>
             <p>More</p>
           </RadioGroup.Reveal>

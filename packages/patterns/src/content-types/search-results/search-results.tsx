@@ -165,10 +165,10 @@ export function SearchResults({ state = 'results' }: SearchResultsProps) {
                 >
                   <CheckboxGroup.Legend>Type of page</CheckboxGroup.Legend>
                   {kinds.map((value) => (
-                    <Field.Root key={value}>
+                    <CheckboxGroup.Option key={value}>
                       <Checkbox value={value} />
                       <Field.Label>{kindLabels[value]}</Field.Label>
-                    </Field.Root>
+                    </CheckboxGroup.Option>
                   ))}
                 </CheckboxGroup.Root>
                 <CheckboxGroup.Root
@@ -181,10 +181,10 @@ export function SearchResults({ state = 'results' }: SearchResultsProps) {
                 >
                   <CheckboxGroup.Legend>Year</CheckboxGroup.Legend>
                   {years.map((value) => (
-                    <Field.Root key={value}>
+                    <CheckboxGroup.Option key={value}>
                       <Checkbox value={value} />
                       <Field.Label>{value}</Field.Label>
-                    </Field.Root>
+                    </CheckboxGroup.Option>
                   ))}
                 </CheckboxGroup.Root>
                 <Field.Root>

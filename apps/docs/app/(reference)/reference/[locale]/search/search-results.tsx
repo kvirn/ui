@@ -160,10 +160,10 @@ export function ReferenceSearchResults({ locale }: { locale: ReferenceLocale }) 
                   >
                     <CheckboxGroup.Legend>{text.typeLegend}</CheckboxGroup.Legend>
                     {kinds.map((value) => (
-                      <Field.Root key={value}>
+                      <CheckboxGroup.Option key={value}>
                         <Checkbox value={value} />
                         <Field.Label>{kindLabel(value)}</Field.Label>
-                      </Field.Root>
+                      </CheckboxGroup.Option>
                     ))}
                   </CheckboxGroup.Root>
                   <Field.Root>

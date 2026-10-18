@@ -79,18 +79,18 @@ const meta = {
           <CheckboxGroup.Prose>
             <p>{text.contactHint}</p>
           </CheckboxGroup.Prose>
-          <Field.Root>
+          <CheckboxGroup.Option>
             <Checkbox value="email" />
             <Field.Label>{text.contactEmail}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="text" />
             <Field.Label>{text.contactText}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="letter" />
             <Field.Label>{text.contactLetter}</Field.Label>
-          </Field.Root>
+          </CheckboxGroup.Option>
           <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
         </CheckboxGroup.Root>
       </>
@@ -150,18 +150,18 @@ export const Keyboard: Story = {
             <CheckboxGroup.Prose>
               <p>{text.contactHint}</p>
             </CheckboxGroup.Prose>
-            <Field.Root>
+            <CheckboxGroup.Option>
               <Checkbox value="email" />
               <Field.Label>{text.contactEmail}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </CheckboxGroup.Option>
+            <CheckboxGroup.Option>
               <Checkbox value="text" />
               <Field.Label>{text.contactText}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </CheckboxGroup.Option>
+            <CheckboxGroup.Option>
               <Checkbox value="letter" />
               <Field.Label>{text.contactLetter}</Field.Label>
-            </Field.Root>
+            </CheckboxGroup.Option>
             <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
           </CheckboxGroup.Root>
           <div className="kv-button-group">
@@ -197,20 +197,20 @@ export const WithOptionHelpTexts: Story = {
           <CheckboxGroup.Prose>
             <p>{text.contactHint}</p>
           </CheckboxGroup.Prose>
-          <Field.Root>
+          <CheckboxGroup.Option>
             <Checkbox value="email" />
             <Field.Label>{text.contactEmail}</Field.Label>
             <Field.HelpText>{text.contactEmailHint}</Field.HelpText>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="text" />
             <Field.Label>{text.contactText}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="letter" />
             <Field.Label>{text.contactLetter}</Field.Label>
             <Field.HelpText>{text.contactLetterHint}</Field.HelpText>
-          </Field.Root>
+          </CheckboxGroup.Option>
           <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
         </CheckboxGroup.Root>
       </>
@@ -277,18 +277,18 @@ export const InCard: Story = {
             <CheckboxGroup.Prose>
               <p>{text.contactHint}</p>
             </CheckboxGroup.Prose>
-            <Field.Root>
+            <CheckboxGroup.Option>
               <Checkbox value="email" />
               <Field.Label>{text.contactEmail}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </CheckboxGroup.Option>
+            <CheckboxGroup.Option>
               <Checkbox value="text" />
               <Field.Label>{text.contactText}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </CheckboxGroup.Option>
+            <CheckboxGroup.Option>
               <Checkbox value="letter" />
               <Field.Label>{text.contactLetter}</Field.Label>
-            </Field.Root>
+            </CheckboxGroup.Option>
             <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
           </CheckboxGroup.Root>
         </Card.Root>
@@ -313,18 +313,18 @@ export const Compact: Story = {
             <CheckboxGroup.Prose>
               <p>{text.contactHint}</p>
             </CheckboxGroup.Prose>
-            <Field.Root>
+            <CheckboxGroup.Option>
               <Checkbox value="email" />
               <Field.Label>{text.contactEmail}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </CheckboxGroup.Option>
+            <CheckboxGroup.Option>
               <Checkbox value="text" />
               <Field.Label>{text.contactText}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </CheckboxGroup.Option>
+            <CheckboxGroup.Option>
               <Checkbox value="letter" />
               <Field.Label>{text.contactLetter}</Field.Label>
-            </Field.Root>
+            </CheckboxGroup.Option>
             <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
           </CheckboxGroup.Root>
         </div>
@@ -356,20 +356,20 @@ export const LongFinnish: Story = {
           <CheckboxGroup.Prose>
             <p>{text.contactHint}</p>
           </CheckboxGroup.Prose>
-          <Field.Root>
+          <CheckboxGroup.Option>
             <Checkbox value="email" />
             <Field.Label>{text.contactEmail}</Field.Label>
             <Field.HelpText>{text.contactEmailHint}</Field.HelpText>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="text" />
             <Field.Label>{text.contactText}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="letter" />
             <Field.Label>{text.contactLetter}</Field.Label>
             <Field.HelpText>{text.contactLetterHint}</Field.HelpText>
-          </Field.Root>
+          </CheckboxGroup.Option>
           <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
         </CheckboxGroup.Root>
       </>
@@ -424,36 +424,36 @@ const renderGroupStates: NonNullable<Story['render']> = (_args, { globals }) => 
           <CheckboxGroup.Prose>
             <p>{text.contactHint}</p>
           </CheckboxGroup.Prose>
-          <Field.Root>
+          <CheckboxGroup.Option>
             <Checkbox value="email" />
             <Field.Label>{text.contactEmail}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="text" />
             <Field.Label>{text.contactText}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="letter" />
             <Field.Label>{text.contactLetter}</Field.Label>
-          </Field.Root>
+          </CheckboxGroup.Option>
         </CheckboxGroup.Root>
         <CheckboxGroup.Root name="invalid" invalid defaultValue={['text']}>
           <CheckboxGroup.Legend>{text.contactLegend}</CheckboxGroup.Legend>
           <CheckboxGroup.Prose>
             <p>{text.contactHint}</p>
           </CheckboxGroup.Prose>
-          <Field.Root>
+          <CheckboxGroup.Option>
             <Checkbox value="email" />
             <Field.Label>{text.contactEmail}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="text" />
             <Field.Label>{text.contactText}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="letter" />
             <Field.Label>{text.contactLetter}</Field.Label>
-          </Field.Root>
+          </CheckboxGroup.Option>
           <CheckboxGroup.ErrorMessage>{text.contactError}</CheckboxGroup.ErrorMessage>
         </CheckboxGroup.Root>
         <CheckboxGroup.Root name="disabled" disabled defaultValue={['email']}>
@@ -461,18 +461,18 @@ const renderGroupStates: NonNullable<Story['render']> = (_args, { globals }) => 
           <CheckboxGroup.Prose>
             <p>{text.contactHint}</p>
           </CheckboxGroup.Prose>
-          <Field.Root>
+          <CheckboxGroup.Option>
             <Checkbox value="email" />
             <Field.Label>{text.contactEmail}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="text" />
             <Field.Label>{text.contactText}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="letter" />
             <Field.Label>{text.contactLetter}</Field.Label>
-          </Field.Root>
+          </CheckboxGroup.Option>
         </CheckboxGroup.Root>
       </div>
     </>

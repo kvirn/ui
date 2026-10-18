@@ -780,11 +780,13 @@ export {
   CheckboxGroupErrorMessage,
   CheckboxGroupHelpText,
   CheckboxGroupLegend,
+  CheckboxGroupOption,
   CheckboxGroupProse,
   CheckboxGroupRoot,
 } from './checkbox-group/checkbox-group.tsx'
 export type {
   CheckboxGroupChangeDetails,
+  CheckboxGroupOptionProps,
   CheckboxGroupRootProps,
 } from './checkbox-group/checkbox-group.tsx'
 export { useCheckboxGroup } from './checkbox-group/use-checkbox-group.ts'
@@ -815,6 +817,7 @@ export {
   RadioGroupErrorMessage,
   RadioGroupHelpText,
   RadioGroupLegend,
+  RadioGroupOption,
   RadioGroupProse,
   RadioGroupRadio,
   RadioGroupReveal,
@@ -822,6 +825,7 @@ export {
 } from './radio-group/radio-group.tsx'
 export type {
   RadioGroupChangeDetails,
+  RadioGroupOptionProps,
   RadioGroupRevealProps,
   RadioGroupRootProps,
 } from './radio-group/radio-group.tsx'

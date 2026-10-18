@@ -17,5 +17,10 @@ export const useRadioGroupTexts = defineExampleTexts({
     send: 'Send',
     sent: 'Sent',
     errorMissing: 'Choose how long you need the permit.',
+    sourceLegend: 'How did you hear about the service?',
+    sourceLetter: 'A letter from the municipality',
+    sourceColleague: 'A colleague',
+    sourceOther: 'Other',
+    sourceSpecify: 'Please specify',
   },
 })

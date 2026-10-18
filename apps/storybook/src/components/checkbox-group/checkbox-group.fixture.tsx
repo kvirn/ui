@@ -24,18 +24,18 @@ export function ControlledContactGroup({ locale }: { locale: FormLocale }) {
           <CheckboxGroup.Prose>
             <p>{text.contactHint}</p>
           </CheckboxGroup.Prose>
-          <Field.Root>
+          <CheckboxGroup.Option>
             <Checkbox value="email" />
             <Field.Label>{text.contactEmail}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="text" />
             <Field.Label>{text.contactText}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="letter" />
             <Field.Label>{text.contactLetter}</Field.Label>
-          </Field.Root>
+          </CheckboxGroup.Option>
         </CheckboxGroup.Root>
         <p className="kv-story-form-output" data-testid="mirror">
           {text.youChose}: {value.join(', ')}
@@ -68,18 +68,18 @@ export function ContactForm({ locale }: { locale: FormLocale }) {
           <CheckboxGroup.Prose>
             <p>{text.contactHint}</p>
           </CheckboxGroup.Prose>
-          <Field.Root>
+          <CheckboxGroup.Option>
             <Checkbox value="email" />
             <Field.Label>{text.contactEmail}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="text" />
             <Field.Label>{text.contactText}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="letter" />
             <Field.Label>{text.contactLetter}</Field.Label>
-          </Field.Root>
+          </CheckboxGroup.Option>
         </CheckboxGroup.Root>
         <div className="kv-button-group">
           <Button type="submit" className="kv-button--primary">

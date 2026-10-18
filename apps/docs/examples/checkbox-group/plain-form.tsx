@@ -15,18 +15,18 @@ export function PlainFormCheckboxGroup() {
     >
       <CheckboxGroup.Root name="contact" defaultValue={['text']}>
         <CheckboxGroup.Legend>{texts.legend}</CheckboxGroup.Legend>
-        <Field.Root>
+        <CheckboxGroup.Option>
           <Checkbox value="email" />
           <Field.Label>{texts.email}</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </CheckboxGroup.Option>
+        <CheckboxGroup.Option>
           <Checkbox value="text" />
           <Field.Label>{texts.text}</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </CheckboxGroup.Option>
+        <CheckboxGroup.Option>
           <Checkbox value="letter" />
           <Field.Label>{texts.letter}</Field.Label>
-        </Field.Root>
+        </CheckboxGroup.Option>
       </CheckboxGroup.Root>
       <Button type="submit" className="kv-button--primary">
         {texts.send}

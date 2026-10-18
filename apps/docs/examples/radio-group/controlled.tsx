@@ -11,18 +11,18 @@ export function ControlledRadioGroup() {
     <div>
       <RadioGroup.Root name="duration" value={duration} onValueChange={setDuration}>
         <RadioGroup.Legend>{texts.legend}</RadioGroup.Legend>
-        <Field.Root>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="1" />
           <Field.Label>{texts.oneMonth}</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </RadioGroup.Option>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="6" />
           <Field.Label>{texts.sixMonths}</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </RadioGroup.Option>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="12" />
           <Field.Label>{texts.twelveMonths}</Field.Label>
-        </Field.Root>
+        </RadioGroup.Option>
       </RadioGroup.Root>
       <p>
         {texts.youChose}: {duration ?? texts.nothing}

@@ -2,6 +2,8 @@
 import { useMemo } from 'react'
 import type { ReactElement } from 'react'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { FieldOption } from '../field/field-option.tsx'
+import type { FieldOptionProps } from '../field/field-option.tsx'
 import type { FieldErrorMessageProps, FieldHelpTextProps } from '../field/field.tsx'
 import {
   FieldsetErrorMessage,
@@ -46,11 +48,11 @@ export interface CheckboxGroupRootProps extends Omit<FieldsetRootProps, 'group'>
  *   <CheckboxGroup.Prose>
  *     <p>Select all that apply. We only contact you about the decision.</p>
  *   </CheckboxGroup.Prose>
- *   <Field.Root>
+ *   <CheckboxGroup.Option>
  *     <Checkbox value="email" />
  *     <Field.Label>Email</Field.Label>
  *     <Field.HelpText>The decision comes within a week.</Field.HelpText>
- *   </Field.Root>
+ *   </CheckboxGroup.Option>
  *   <CheckboxGroup.HelpText>You can change your mind later under My pages.</CheckboxGroup.HelpText>
  * </CheckboxGroup.Root>
  */
@@ -87,6 +89,18 @@ export function CheckboxGroupRoot({
 }
 CheckboxGroupRoot.displayName = 'CheckboxGroup.Root'
 
+export type CheckboxGroupOptionProps = FieldOptionProps
+
+/**
+ * One answer of the group: wires its `Field.Label` and `Field.HelpText` to the checkbox inside
+ * it, like a `Field.Root` but with no error message and no optional marker (the group's question
+ * is the Fieldset's). `disabled` disables this option's checkbox.
+ */
+export function CheckboxGroupOption(props: CheckboxGroupOptionProps): ReactElement {
+  return <FieldOption {...props} />
+}
+CheckboxGroupOption.displayName = 'CheckboxGroup.Option'
+
 /** The group's question and its accessible name: the `Fieldset.Legend` under the group's name. */
 export function CheckboxGroupLegend(props: FieldsetLegendProps): ReactElement {
   return <FieldsetLegend {...props} />
@@ -114,6 +128,7 @@ CheckboxGroupErrorMessage.displayName = 'CheckboxGroup.ErrorMessage'
 /** A group of checkboxes under a legend, with a description, a help text and an error. */
 export const CheckboxGroup = {
   Root: CheckboxGroupRoot,
+  Option: CheckboxGroupOption,
   Legend: CheckboxGroupLegend,
   Prose: CheckboxGroupProse,
   HelpText: CheckboxGroupHelpText,

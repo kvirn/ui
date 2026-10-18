@@ -6573,6 +6573,7 @@
    * instruction. Its paragraphs, lists and links are prose; this only fixes the box and the
    * type, and gives it no margin of its own (the gap is the field's). */
   .kv-field > .kv-prose,
+  .kv-option > .kv-prose,
   .kv-fieldset > .kv-prose {
     max-inline-size: var(--kv-prose-measure);
     margin: 0;
@@ -7435,7 +7436,8 @@
    * (appearance: none), so the browser's keys, focus and form behaviour stay. <Listbox.Root> with
    * native="always" (or on touch devices) renders a <select class="kv-listbox-native">. Design spec: docs/design/form-fields.md §6.5 and §6.8.
    *
-   * A control that is a direct child of kv-field makes the field a choice row: the box or the
+   * A control that is a direct child of kv-field, or of kv-option (an option of a RadioGroup or a
+   * CheckboxGroup), makes it a choice row: the box or the
    * circle at the start, 24px, centred on the label's first line, and the label across the
    * whole row, padded past the box, so the box, the space around it and the text are one
    * target of at least 44px (32px compact). An option's help text (a Field.HelpText in the option's field)
@@ -7446,6 +7448,9 @@
    *     <Checkbox name="declaration" />
    *     <Field.Label>I confirm that the details are correct</Field.Label>
    *   </Field.Root>
+   *
+   * Options sit one gap apart because the group's fieldset is a flex column with that gap; an
+   * option has no block margin of its own.
    *
    * The marks are the input's own ::before, drawn with clip-path on a background-color: no
    * images or shadows, which forced colours drop. A tick appears when a box is checked, a dash
@@ -7463,7 +7468,7 @@
     --kv-choice-size: 1.5rem;
   }
 
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) {
+  :is(.kv-field, .kv-option):has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) {
     display: grid;
     grid-template-columns: var(--kv-choice-column-size, var(--kv-choice-size)) minmax(0, 1fr);
     column-gap: var(--kv-space-3);
@@ -7473,7 +7478,7 @@
 
   /* The label spans the row; the control sits on top of its padding. At least the control's
    * minimum height, whatever the line height, and wraps beside the box. */
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) > .kv-field-label {
+  :is(.kv-field, .kv-option):has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) > .kv-field-label {
     grid-row: 1;
     grid-column: 1 / -1;
     justify-self: start;
@@ -7485,8 +7490,8 @@
     cursor: pointer;
   }
 
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) > .kv-prose,
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) > .kv-field-help-text {
+  :is(.kv-field, .kv-option):has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) > .kv-prose,
+  :is(.kv-field, .kv-option):has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) > .kv-field-help-text {
     grid-column: 2;
   }
 
@@ -7494,13 +7499,14 @@
    * control's minimum height, so the row gap would put the help text as far from its own label as
    * from the next option's. The negative margin cancels the gap for the help text that follows the
    * label. A description (a Prose) keeps the gap. */
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch))
+  :is(.kv-field, .kv-option):has(> :is(.kv-checkbox, .kv-radio, .kv-switch))
     > .kv-field-label
     + .kv-field-help-text {
     margin-block-start: calc(-1 * var(--kv-field-gap));
   }
 
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch)) > .kv-field-error-message {
+  :is(.kv-field, .kv-option):has(> :is(.kv-checkbox, .kv-radio, .kv-switch))
+    > .kv-field-error-message {
     grid-column: 1 / -1;
   }
 
@@ -7512,7 +7518,9 @@
   }
 
   /* A disabled choice: its label is muted like a disabled button's. */
-  .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch):is(:disabled, [data-disabled]))
+  :is(.kv-field, .kv-option):has(
+      > :is(.kv-checkbox, .kv-radio, .kv-switch):is(:disabled, [data-disabled])
+    )
     > .kv-field-label {
     color: var(--kv-color-text-muted);
     cursor: not-allowed;
@@ -7601,7 +7609,7 @@
       [aria-invalid='true']
     ):hover,
   .kv-radio:not(:checked, :disabled, [data-disabled], [data-invalid], [aria-invalid='true']):hover,
-  .kv-field:has(> .kv-field-label:hover)
+  :is(.kv-field, .kv-option):has(> .kv-field-label:hover)
     > .kv-checkbox:not(
       :checked,
       :indeterminate,
@@ -7610,7 +7618,7 @@
       [data-invalid],
       [aria-invalid='true']
     ),
-  .kv-field:has(> .kv-field-label:hover)
+  :is(.kv-field, .kv-option):has(> .kv-field-label:hover)
     > .kv-radio:not(:checked, :disabled, [data-disabled], [data-invalid], [aria-invalid='true']) {
     --kv-choice-edge: var(--kv-color-text);
   }
@@ -7623,7 +7631,7 @@
   }
 
   .kv-checkbox:is(:checked, :indeterminate):not(:disabled, [data-disabled]):hover,
-  .kv-field:has(> .kv-field-label:hover)
+  :is(.kv-field, .kv-option):has(> .kv-field-label:hover)
     > .kv-checkbox:is(:checked, :indeterminate):not(:disabled, [data-disabled]) {
     --kv-choice-fill: var(--kv-color-primary-hover);
   }
@@ -7635,7 +7643,8 @@
   }
 
   .kv-radio:checked:not(:disabled, [data-disabled]):hover,
-  .kv-field:has(> .kv-field-label:hover) > .kv-radio:checked:not(:disabled, [data-disabled]) {
+  :is(.kv-field, .kv-option):has(> .kv-field-label:hover)
+    > .kv-radio:checked:not(:disabled, [data-disabled]) {
     --kv-choice-mark: var(--kv-color-primary-hover);
   }
 
@@ -8038,7 +8047,7 @@
         [data-invalid],
         [aria-invalid='true']
       ):hover,
-    .kv-field:has(> .kv-field-label:hover)
+    :is(.kv-field, .kv-option):has(> .kv-field-label:hover)
       > .kv-checkbox:not(
         :checked,
         :indeterminate,
@@ -8047,7 +8056,7 @@
         [data-invalid],
         [aria-invalid='true']
       ),
-    .kv-field:has(> .kv-field-label:hover)
+    :is(.kv-field, .kv-option):has(> .kv-field-label:hover)
       > .kv-radio:not(:checked, :disabled, [data-disabled], [data-invalid], [aria-invalid='true']) {
       --kv-choice-edge: ButtonBorder;
     }
@@ -8058,7 +8067,7 @@
     }
 
     .kv-checkbox:is(:checked, :indeterminate):not(:disabled, [data-disabled]):hover,
-    .kv-field:has(> .kv-field-label:hover)
+    :is(.kv-field, .kv-option):has(> .kv-field-label:hover)
       > .kv-checkbox:is(:checked, :indeterminate):not(:disabled, [data-disabled]) {
       --kv-choice-fill: Highlight;
     }
@@ -8069,7 +8078,8 @@
     }
 
     .kv-radio:checked:not(:disabled, [data-disabled]):hover,
-    .kv-field:has(> .kv-field-label:hover) > .kv-radio:checked:not(:disabled, [data-disabled]) {
+    :is(.kv-field, .kv-option):has(> .kv-field-label:hover)
+      > .kv-radio:checked:not(:disabled, [data-disabled]) {
       --kv-choice-mark: Highlight;
     }
 
@@ -8174,7 +8184,9 @@
       --kv-choice-mark: GrayText;
     }
 
-    .kv-field:has(> :is(.kv-checkbox, .kv-radio, .kv-switch):is(:disabled, [data-disabled]))
+    :is(.kv-field, .kv-option):has(
+        > :is(.kv-checkbox, .kv-radio, .kv-switch):is(:disabled, [data-disabled])
+      )
       > .kv-field-label {
       color: GrayText;
     }
@@ -12310,14 +12322,14 @@
     border-radius: var(--kv-radius-md);
   }
 
-  .kv-display-settings-segments > .kv-field {
+  .kv-display-settings-segments > :is(.kv-field, .kv-option) {
     position: relative;
     flex: 1 1 auto;
     min-inline-size: 0;
     gap: 0;
   }
 
-  .kv-display-settings-segments > .kv-field + .kv-field {
+  .kv-display-settings-segments > :is(.kv-field, .kv-option) + :is(.kv-field, .kv-option) {
     border-inline-start: var(--kv-border-width) solid var(--kv-color-border-control);
   }
 
@@ -12334,13 +12346,13 @@
     cursor: pointer;
   }
 
-  .kv-display-settings-groups--segments .kv-display-settings-segments > .kv-field {
+  .kv-display-settings-groups--segments .kv-display-settings-segments > :is(.kv-field, .kv-option) {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .kv-display-settings-groups--segments
     .kv-display-settings-segments
-    > .kv-field
+    > :is(.kv-field, .kv-option)
     > .kv-field-label {
     display: flex;
     grid-row: 1;
@@ -12358,24 +12370,24 @@
     text-align: center;
   }
 
-  .kv-display-settings-segments > .kv-field:has(.kv-radio:not(:checked):hover) {
+  .kv-display-settings-segments > :is(.kv-field, .kv-option):has(.kv-radio:not(:checked):hover) {
     background-color: var(--kv-color-primary-subtle);
   }
 
-  .kv-display-settings-segments > .kv-field:has(.kv-radio:checked) {
+  .kv-display-settings-segments > :is(.kv-field, .kv-option):has(.kv-radio:checked) {
     background-color: var(--kv-color-primary);
     color: var(--kv-color-on-primary);
     font-weight: 600;
   }
 
   .kv-display-settings-segments
-    > .kv-field:has(.kv-radio:is(:focus-visible, [data-focus-visible])) {
+    > :is(.kv-field, .kv-option):has(.kv-radio:is(:focus-visible, [data-focus-visible])) {
     outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
     outline-offset: calc(-2 * var(--kv-focus-ring-width));
   }
 
   .kv-display-settings-segments
-    > .kv-field:has(.kv-radio:checked:is(:focus-visible, [data-focus-visible])) {
+    > :is(.kv-field, .kv-option):has(.kv-radio:checked:is(:focus-visible, [data-focus-visible])) {
     outline-color: var(--kv-color-on-primary);
   }
 
@@ -12384,17 +12396,17 @@
       border-color: ButtonText;
     }
 
-    .kv-display-settings-segments > .kv-field + .kv-field {
+    .kv-display-settings-segments > :is(.kv-field, .kv-option) + :is(.kv-field, .kv-option) {
       border-color: ButtonText;
     }
 
-    .kv-display-settings-segments > .kv-field:has(.kv-radio:checked) {
+    .kv-display-settings-segments > :is(.kv-field, .kv-option):has(.kv-radio:checked) {
       background-color: Highlight;
       color: HighlightText;
     }
 
     .kv-display-settings-segments
-      > .kv-field:has(.kv-radio:is(:focus-visible, [data-focus-visible])) {
+      > :is(.kv-field, .kv-option):has(.kv-radio:is(:focus-visible, [data-focus-visible])) {
       outline-color: CanvasText;
     }
   }

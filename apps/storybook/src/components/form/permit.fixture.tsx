@@ -163,19 +163,19 @@ export function PermitForm({ locale, errors = false, showSubmits = false }: Perm
           <RadioGroup.Prose>
             <p>{choice.durationHint}</p>
           </RadioGroup.Prose>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="1" />
             <Field.Label>{choice.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="6" />
             <Field.Label>{choice.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>{choice.duration12}</Field.Label>
             <Field.HelpText>{choice.duration12Hint}</Field.HelpText>
-          </Field.Root>
+          </RadioGroup.Option>
           <RadioGroup.ErrorMessage>{choice.durationError}</RadioGroup.ErrorMessage>
         </RadioGroup.Root>
 
@@ -184,18 +184,18 @@ export function PermitForm({ locale, errors = false, showSubmits = false }: Perm
           <CheckboxGroup.Prose>
             <p>{choice.contactHint}</p>
           </CheckboxGroup.Prose>
-          <Field.Root>
+          <CheckboxGroup.Option>
             <Checkbox value="email" />
             <Field.Label>{choice.contactEmail}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="text" />
             <Field.Label>{choice.contactText}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="letter" />
             <Field.Label>{choice.contactLetter}</Field.Label>
-          </Field.Root>
+          </CheckboxGroup.Option>
         </CheckboxGroup.Root>
 
         <Field.Root required invalid={errors}>

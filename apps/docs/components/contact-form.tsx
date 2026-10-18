@@ -126,10 +126,13 @@ export function ContactForm({ action }: ContactFormProps) {
         >
           <RadioGroup.Legend>{text.reasonLegend}</RadioGroup.Legend>
           {reasons.map((reason, index) => (
-            <Field.Root key={reason} {...(index === 0 ? { controlId: 'contact-reason' } : {})}>
+            <RadioGroup.Option
+              key={reason}
+              {...(index === 0 ? { controlId: 'contact-reason' } : {})}
+            >
               <RadioGroup.Radio value={reason} />
               <Field.Label>{homeMessages.contact[reason].heading}</Field.Label>
-            </Field.Root>
+            </RadioGroup.Option>
           ))}
           <RadioGroup.ErrorMessage>{state.errors.reason}</RadioGroup.ErrorMessage>
         </RadioGroup.Root>

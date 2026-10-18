@@ -39,18 +39,18 @@ export function ErrorOnSubmitCheckboxGroup() {
         <CheckboxGroup.Prose>
           <p>{texts.requiredHint}</p>
         </CheckboxGroup.Prose>
-        <Field.Root>
+        <CheckboxGroup.Option>
           <Checkbox value="email" />
           <Field.Label>{texts.email}</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </CheckboxGroup.Option>
+        <CheckboxGroup.Option>
           <Checkbox value="text" />
           <Field.Label>{texts.text}</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </CheckboxGroup.Option>
+        <CheckboxGroup.Option>
           <Checkbox value="letter" />
           <Field.Label>{texts.letter}</Field.Label>
-        </Field.Root>
+        </CheckboxGroup.Option>
         <CheckboxGroup.ErrorMessage>{texts.errorMissing}</CheckboxGroup.ErrorMessage>
       </CheckboxGroup.Root>
       <Button type="submit" className="kv-button--primary">

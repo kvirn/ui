@@ -189,10 +189,10 @@ function UnitFinder({
         >
           <CheckboxGroup.Legend>Language</CheckboxGroup.Legend>
           {languages.map((value) => (
-            <Field.Root key={value}>
+            <CheckboxGroup.Option key={value}>
               <Checkbox value={value} />
               <Field.Label>{kvirnbyUnitLanguages[value]}</Field.Label>
-            </Field.Root>
+            </CheckboxGroup.Option>
           ))}
         </CheckboxGroup.Root>
         <CheckboxGroup.Root
@@ -205,10 +205,10 @@ function UnitFinder({
         >
           <CheckboxGroup.Legend>Opening hours</CheckboxGroup.Legend>
           {hours.map((value) => (
-            <Field.Root key={value}>
+            <CheckboxGroup.Option key={value}>
               <Checkbox value={value} />
               <Field.Label>{hoursLabels[value]}</Field.Label>
-            </Field.Root>
+            </CheckboxGroup.Option>
           ))}
         </CheckboxGroup.Root>
         <div>

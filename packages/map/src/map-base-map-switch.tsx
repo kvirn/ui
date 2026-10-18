@@ -77,13 +77,13 @@ export function MapBaseMapSwitch({
               <RadioGroup.Legend marker="none">{map.messages.baseMapLabel}</RadioGroup.Legend>
               <div className="kv-map-base-maps-options">
                 {map.baseMaps.map((baseMap) => (
-                  <Field.Root key={baseMap.id}>
+                  <RadioGroup.Option key={baseMap.id}>
                     <RadioGroup.Radio value={baseMap.id} />
                     <Field.Label>
                       <BaseMapPreview baseMap={baseMap} icon={icon} />
                       {baseMap.label}
                     </Field.Label>
-                  </Field.Root>
+                  </RadioGroup.Option>
                 ))}
               </div>
             </RadioGroup.Root>

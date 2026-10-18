@@ -7,22 +7,23 @@
 A CheckboxGroup is one question with several answers that can all be true: "How do you want to be contacted?" with email, text message and letter. It groups [Checkbox](../checkbox/checkbox.md)es under a legend, with an optional description, help text and error. For a single yes-or-no answer, use a lone [Checkbox](../checkbox/checkbox.md) in a [Field](../field/field.md). For exactly one answer out of several, use a [RadioGroup](../radio-group/radio-group.md). For a choice from a long list, use a [Listbox](../listbox/listbox.md).
 
 - `CheckboxGroup.Root` renders the native `<fieldset>` and acts as a [Fieldset](../fieldset/fieldset.md) with `group` set. The `CheckboxGroup.Legend` is its accessible name. Entering the group, a screen reader reads the legend, "group", the description and help text, and the error when it is invalid.
-- Each option is a `Checkbox` with a `value`, directly in its own `Field.Root` before the `Field.Label`. The group gives it its `name` and its checked state, and reports the next values. A Field inside a group has no "(optional)" marker: the marker belongs to the question, so the legend ends with "(optional)" in English when the group isn't `required`.
+- Each option is a `Checkbox` with a `value`, directly in its own `CheckboxGroup.Option` before the `Field.Label`. The group gives it its `name` and its checked state, and reports the next values. An Option has no "(optional)" marker and no error message of its own: the marker belongs to the question, so the legend ends with "(optional)" in English when the group isn't `required`.
 - **Controlled:** pass `value` (an array of the checked values) and `onValueChange(values, { reason: 'input', event })`. **Uncontrolled:** pass `defaultValue` and `name`, and the browser keeps the state; a form submit sends every checked box under the group's `name` (`FormData.getAll`).
 - Each checkbox is its own Tab stop. The group is not a composite widget, and the arrow keys do nothing.
 - Headless: no CSS. It renders `kv-checkbox-group` next to `kv-fieldset`, and your `className` joins them. With `@kvirn-ui/theme/theme.css` imported it is styled.
 
 ## API
 
-Five parts. Each is also exported on its own (`CheckboxGroupRoot`, `CheckboxGroupLegend`, `CheckboxGroupProse`, `CheckboxGroupHelpText`, `CheckboxGroupErrorMessage`), which is the form to import in a React Server Component, because a server component can't dot into a client module. The options are [Checkbox](../checkbox/checkbox.md) and [Field](../field/field.md) parts, not parts of the group.
+Six parts. Each is also exported on its own (`CheckboxGroupRoot`, `CheckboxGroupOption`, `CheckboxGroupLegend`, `CheckboxGroupProse`, `CheckboxGroupHelpText`, `CheckboxGroupErrorMessage`), which is the form to import in a React Server Component, because a server component can't dot into a client module. The checkboxes are [Checkbox](../checkbox/checkbox.md), not parts of the group; `Field.Label` and `Field.HelpText` work inside an Option.
 
-| Part                         | Renders                      | What it is                                                                                                                           |
-| ---------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `CheckboxGroup.Root`         | `<fieldset>`                 | The group. Takes the props below and every fieldset prop.                                                                            |
-| `CheckboxGroup.Legend`       | `<legend>`                   | The question and the group's name. Put it first. `marker` is `'optional'` (the default in a group that isn't `required`) or `'none'` |
-| `CheckboxGroup.Prose`        | a [Prose](../prose/prose.md) | The description: what the user must read before answering, above the options, in 16px                                                |
-| `CheckboxGroup.HelpText`     | `<p>`                        | A short instruction that helps while answering, under the options, in 14px                                                           |
-| `CheckboxGroup.ErrorMessage` | `<p>`                        | The error. It renders only when the group is `invalid`, and behaves like [Field's](../field/field.md). One per group                 |
+| Part                         | Renders                      | What it is                                                                                                                                                                                           |
+| ---------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CheckboxGroup.Root`         | `<fieldset>`                 | The group. Takes the props below and every fieldset prop.                                                                                                                                            |
+| `CheckboxGroup.Legend`       | `<legend>`                   | The question and the group's name. Put it first. `marker` is `'optional'` (the default in a group that isn't `required`) or `'none'`                                                                 |
+| `CheckboxGroup.Option`       | `<div>`                      | One answer: wires its `Field.Label` and `Field.HelpText` to the checkbox. `disabled`, `controlId` (the checkbox's id, for an error summary link), `as` (`div` or `li`). No optional marker, no error |
+| `CheckboxGroup.Prose`        | a [Prose](../prose/prose.md) | The description: what the user must read before answering, above the options, in 16px                                                                                                                |
+| `CheckboxGroup.HelpText`     | `<p>`                        | A short instruction that helps while answering, under the options, in 14px                                                                                                                           |
+| `CheckboxGroup.ErrorMessage` | `<p>`                        | The error. It renders only when the group is `invalid`, and behaves like [Field's](../field/field.md). One per group                                                                                 |
 
 These are the [Fieldset's](../fieldset/fieldset.md) parts under the group's name.
 
@@ -65,15 +66,15 @@ import { Checkbox, CheckboxGroup, Field } from '@kvirn-ui/react'
   <CheckboxGroup.Prose>
     <p>Select all that apply. We only contact you about the decision.</p>
   </CheckboxGroup.Prose>
-  <Field.Root>
+  <CheckboxGroup.Option>
     <Checkbox value="email" />
     <Field.Label>Email</Field.Label>
     <Field.HelpText>The decision comes within a week.</Field.HelpText>
-  </Field.Root>
-  <Field.Root>
+  </CheckboxGroup.Option>
+  <CheckboxGroup.Option>
     <Checkbox value="sms" />
     <Field.Label>Sms</Field.Label>
-  </Field.Root>
+  </CheckboxGroup.Option>
   <CheckboxGroup.HelpText>You can change your mind later under My pages.</CheckboxGroup.HelpText>
   <CheckboxGroup.ErrorMessage>{errors.contact}</CheckboxGroup.ErrorMessage>
 </CheckboxGroup.Root>
@@ -85,7 +86,7 @@ Your part:
 
 - **Put the `CheckboxGroup.Legend` first.** It asks the question. Make it a sentence a person can answer.
 - **Give every Checkbox a `value`.** The group can't tell the options apart without it.
-- **A description and a help text are text.** The accessible description is the text content, so a heading, list or link inside it loses its structure for a screen-reader user. Keep a help text to one or two short sentences with no links. A help text for a single option is a `Field.HelpText` in that option's Field.
+- **A description and a help text are text.** The accessible description is the text content, so a heading, list or link inside it loses its structure for a screen-reader user. Keep a help text to one or two short sentences with no links. A help text for a single option is a `Field.HelpText` in that `CheckboxGroup.Option`.
 - **Set `invalid` and render a `CheckboxGroup.ErrorMessage` together,** with text that says what's wrong and how to fix it. `invalid` marks the group and its options for the theme (a 2px edge) but never turns on the options' own `invalid`. On submit, move focus to the first checkbox of the group, since the group never moves focus.
 - **Don't nest groups,** and don't use a group for a single option. A lone declaration is a [Checkbox](../checkbox/checkbox.md) in a Field.
 - **A required group isn't announced as required.** `aria-required` isn't supported on `group`, so `required` only removes the optional marker ("(optional)" in English) from the legend and sets `data-required`. Say what is required in the legend or the description. The assistive-technology test run decides whether a fallback is needed.

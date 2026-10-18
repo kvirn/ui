@@ -53,14 +53,14 @@ export function MixedControls() {
         <Stack className="kv-stack--gap-8">
           <RadioGroup.Root name="vehicle" required invalid={errors.vehicle}>
             <RadioGroup.Legend>{texts.vehicleLegend}</RadioGroup.Legend>
-            <Field.Root controlId={firstVehicleId}>
+            <RadioGroup.Option controlId={firstVehicleId}>
               <RadioGroup.Radio value="car" />
               <Field.Label>{texts.car}</Field.Label>
-            </Field.Root>
-            <Field.Root>
+            </RadioGroup.Option>
+            <RadioGroup.Option>
               <RadioGroup.Radio value="motorcycle" />
               <Field.Label>{texts.motorcycle}</Field.Label>
-            </Field.Root>
+            </RadioGroup.Option>
             <RadioGroup.ErrorMessage>{texts.vehicleError}</RadioGroup.ErrorMessage>
           </RadioGroup.Root>
           <Field.Root controlId={confirmId} required invalid={errors.confirm}>

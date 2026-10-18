@@ -27,18 +27,18 @@ export function ControlledDurationGroup({ locale }: { locale: FormLocale }) {
           <RadioGroup.Prose>
             <p>{text.durationHint}</p>
           </RadioGroup.Prose>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="1" />
             <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="6" />
             <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>{text.duration12}</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
         </RadioGroup.Root>
         <p className="kv-story-form-output" data-testid="mirror">
           {text.youChose}: {value}
@@ -73,18 +73,18 @@ export function DurationForm({ locale }: { locale: FormLocale }) {
           <RadioGroup.Prose>
             <p>{text.durationHint}</p>
           </RadioGroup.Prose>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="1" />
             <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="6" />
             <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>{text.duration12}</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
         </RadioGroup.Root>
         <div className="kv-button-group">
           <Button type="submit" className="kv-button--primary">
@@ -121,18 +121,18 @@ export function ControlledEmptyDurationGroup({ locale }: { locale: FormLocale })
           <RadioGroup.Prose>
             <p>{text.durationHint}</p>
           </RadioGroup.Prose>
-          <Field.Root>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="1" />
             <Field.Label>{text.duration1}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="6" />
             <Field.Label>{text.duration6}</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </RadioGroup.Option>
+          <RadioGroup.Option>
             <RadioGroup.Radio value="12" />
             <Field.Label>{text.duration12}</Field.Label>
-          </Field.Root>
+          </RadioGroup.Option>
         </RadioGroup.Root>
         <p className="kv-story-form-output" data-testid="mirror">
           {text.youChose}: {value ?? '–'}
@@ -207,18 +207,18 @@ export function OtherOptionGroup({ locale }: { locale: FormLocale }) {
     <div className="kv-story-form">
       <RadioGroup.Root name={name}>
         <RadioGroup.Legend>{text.sourceLegend}</RadioGroup.Legend>
-        <Field.Root>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="friend" />
           <Field.Label>{text.sourceFriend}</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </RadioGroup.Option>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="web" />
           <Field.Label>{text.sourceWeb}</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </RadioGroup.Option>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="other" />
           <Field.Label>{text.sourceOther}</Field.Label>
-        </Field.Root>
+        </RadioGroup.Option>
         <RadioGroup.Reveal value="other">
           <Field.Root>
             <Field.Label>{text.sourceSpecify}</Field.Label>
@@ -239,14 +239,14 @@ export function ControlledOtherOptionGroup({ locale }: { locale: FormLocale }) {
     <div className="kv-story-form">
       <RadioGroup.Root name={name} value={value} onValueChange={setValue}>
         <RadioGroup.Legend>{text.sourceLegend}</RadioGroup.Legend>
-        <Field.Root>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="friend" />
           <Field.Label>{text.sourceFriend}</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </RadioGroup.Option>
+        <RadioGroup.Option>
           <RadioGroup.Radio value="other" />
           <Field.Label>{text.sourceOther}</Field.Label>
-        </Field.Root>
+        </RadioGroup.Option>
         <RadioGroup.Reveal value="other">
           <Field.Root>
             <Field.Label>{text.sourceSpecify}</Field.Label>

@@ -318,10 +318,10 @@ export function FilterAList({ locale }: { locale: FormLocale }) {
           >
             <CheckboxGroup.Legend>{text.categoryLegend}</CheckboxGroup.Legend>
             {(['kids', 'culture', 'sport'] as const).map((value) => (
-              <Field.Root key={value}>
+              <CheckboxGroup.Option key={value}>
                 <Checkbox value={value} />
                 <Field.Label>{text.categories[value]}</Field.Label>
-              </Field.Root>
+              </CheckboxGroup.Option>
             ))}
           </CheckboxGroup.Root>
           <CheckboxGroup.Root
@@ -334,10 +334,10 @@ export function FilterAList({ locale }: { locale: FormLocale }) {
           >
             <CheckboxGroup.Legend>{text.yearLegend}</CheckboxGroup.Legend>
             {(['2025', '2024'] as const).map((value) => (
-              <Field.Root key={value}>
+              <CheckboxGroup.Option key={value}>
                 <Checkbox value={value} />
                 <Field.Label>{value}</Field.Label>
-              </Field.Root>
+              </CheckboxGroup.Option>
             ))}
           </CheckboxGroup.Root>
         </form>

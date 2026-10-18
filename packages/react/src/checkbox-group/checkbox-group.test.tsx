@@ -63,13 +63,13 @@ function Contact({ withDescription = true, optionHelpText = false, ...rootProps 
       <Fieldset.Legend>How should we contact you?</Fieldset.Legend>
       {withDescription ? <CheckboxGroup.Prose>Select all that apply.</CheckboxGroup.Prose> : null}
       {options.map(([value, label]) => (
-        <Field.Root key={value}>
+        <CheckboxGroup.Option key={value}>
           <Checkbox value={value} />
           <Field.Label>{label}</Field.Label>
           {optionHelpText && value === 'letter' ? (
             <Field.HelpText>Takes a few extra days.</Field.HelpText>
           ) : null}
-        </Field.Root>
+        </CheckboxGroup.Option>
       ))}
       <Fieldset.ErrorMessage>Choose how we should contact you</Fieldset.ErrorMessage>
     </CheckboxGroup.Root>
@@ -114,10 +114,10 @@ describe('rendering', () => {
           <Contact />
           <CheckboxGroup.Root required>
             <Fieldset.Legend>Required question</Fieldset.Legend>
-            <Field.Root>
+            <CheckboxGroup.Option>
               <Checkbox value="a" />
               <Field.Label>Option A</Field.Label>
-            </Field.Root>
+            </CheckboxGroup.Option>
           </CheckboxGroup.Root>
         </>,
       ),
@@ -141,7 +141,7 @@ describe('rendering', () => {
       .not.toHaveAttribute('aria-describedby')
   })
 
-  test('an option help text is a Field.HelpText in that option’s Field, outside its label, and has no axe violations', async () => {
+  test('an option help text is a Field.HelpText in that CheckboxGroup.Option, outside its label, and has no axe violations', async () => {
     const { container } = await render(english(<Contact optionHelpText />))
     const helpText = page.getByText('Takes a few extra days.').element()
     expect(helpText.id).not.toBe('')
@@ -156,16 +156,17 @@ describe('rendering', () => {
   })
 
   test('CheckboxGroup.HelpText is the group’s help text: after the description, before the error', async () => {
+    expect(CheckboxGroup.Option.displayName).toBe('CheckboxGroup.Option')
     expect(CheckboxGroup.HelpText.displayName).toBe('CheckboxGroup.HelpText')
     await render(
       english(
         <CheckboxGroup.Root invalid>
           <CheckboxGroup.Legend>How should we contact you?</CheckboxGroup.Legend>
           <CheckboxGroup.Prose>Select all that apply.</CheckboxGroup.Prose>
-          <Field.Root>
+          <CheckboxGroup.Option>
             <Checkbox value="email" />
             <Field.Label>Email</Field.Label>
-          </Field.Root>
+          </CheckboxGroup.Option>
           <CheckboxGroup.HelpText data-testid="helpText">
             You can change this later.
           </CheckboxGroup.HelpText>
@@ -225,14 +226,14 @@ describe('value', () => {
   test('every checkbox gets the group’s name, and a name on a Checkbox wins', async () => {
     await render(
       <CheckboxGroup.Root name="contact" aria-label="Contact">
-        <Field.Root>
+        <CheckboxGroup.Option>
           <Checkbox value="a" />
           <Field.Label>A</Field.Label>
-        </Field.Root>
-        <Field.Root>
+        </CheckboxGroup.Option>
+        <CheckboxGroup.Option>
           <Checkbox value="b" name="eget" />
           <Field.Label>B</Field.Label>
-        </Field.Root>
+        </CheckboxGroup.Option>
       </CheckboxGroup.Root>,
     )
     await expect
@@ -284,18 +285,18 @@ describe('value', () => {
           }}
         >
           <Fieldset.Legend>How should we contact you?</Fieldset.Legend>
-          <Field.Root>
+          <CheckboxGroup.Option>
             <Checkbox
               value="all"
               indeterminate={value.length > 0 && !value.includes('all')}
               onCheckedChange={() => calls.push('onCheckedChange')}
             />
             <Field.Label>All ways</Field.Label>
-          </Field.Root>
-          <Field.Root>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
             <Checkbox value="email" />
             <Field.Label>Email</Field.Label>
-          </Field.Root>
+          </CheckboxGroup.Option>
         </CheckboxGroup.Root>
       )
     }
@@ -314,14 +315,58 @@ describe('value', () => {
   test('a Checkbox in a group without a value warns once', async () => {
     await render(
       <CheckboxGroup.Root aria-label="Contact" name="contact">
-        <Field.Root>
+        <CheckboxGroup.Option>
           <Checkbox />
           <Field.Label>A</Field.Label>
-        </Field.Root>
+        </CheckboxGroup.Option>
       </CheckboxGroup.Root>,
     )
     expect(consoleWarn).toHaveBeenCalledTimes(1)
     expect(consoleWarn.mock.calls[0]?.[0]).toContain('value')
+  })
+})
+
+describe('option', () => {
+  test('disabled on a CheckboxGroup.Option disables only its checkbox', async () => {
+    await render(
+      english(
+        <CheckboxGroup.Root>
+          <CheckboxGroup.Legend>Contact</CheckboxGroup.Legend>
+          <CheckboxGroup.Option disabled>
+            <Checkbox value="email" />
+            <Field.Label>Email</Field.Label>
+          </CheckboxGroup.Option>
+          <CheckboxGroup.Option>
+            <Checkbox value="letter" />
+            <Field.Label>Letter</Field.Label>
+          </CheckboxGroup.Option>
+        </CheckboxGroup.Root>,
+      ),
+    )
+    await expect.element(page.getByRole('checkbox', { name: 'Email' })).toBeDisabled()
+    await expect.element(page.getByRole('checkbox', { name: 'Letter' })).toBeEnabled()
+  })
+
+  test('a CheckboxGroup.Option has the kv-option class and no kv-field class', async () => {
+    const { container } = await render(english(<Contact />))
+    expect(container.querySelectorAll('.kv-option')).toHaveLength(options.length)
+    expect(container.querySelectorAll('.kv-field')).toHaveLength(0)
+  })
+
+  test('a Field.Root around a group checkbox still names it', async () => {
+    const { container } = await render(
+      english(
+        <CheckboxGroup.Root>
+          <CheckboxGroup.Legend>Contact</CheckboxGroup.Legend>
+          <Field.Root>
+            <Checkbox value="email" />
+            <Field.Label>Email</Field.Label>
+          </Field.Root>
+        </CheckboxGroup.Root>,
+      ),
+    )
+    await expect.element(page.getByRole('checkbox', { name: 'Email', exact: true })).toBeVisible()
+    expect(container.querySelectorAll('.kv-field')).toHaveLength(1)
   })
 })
 
@@ -335,9 +380,9 @@ describe('state', () => {
     }
   })
 
-  test('invalid does not cascade to the Fields', async () => {
+  test('invalid does not cascade to the options', async () => {
     const { container } = await render(english(<Contact invalid />))
-    expect(container.querySelectorAll('.kv-field[data-invalid]')).toHaveLength(0)
+    expect(container.querySelectorAll('.kv-option[data-invalid]')).toHaveLength(0)
   })
 
   test('disabled disables every checkbox natively', async () => {
