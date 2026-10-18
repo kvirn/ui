@@ -26,12 +26,15 @@ import {
   useRadioRows,
 } from '../content/radio-group.api.ts'
 import { AnnouncementWordingRadioGroup } from '../examples/radio-group/announcement-wording.tsx'
+import { CompactRadioGroup } from '../examples/radio-group/compact.tsx'
 import { ControlledRadioGroup } from '../examples/radio-group/controlled.tsx'
 import { DefaultRadioGroup } from '../examples/radio-group/default.tsx'
 import { DisabledOptionRadioGroup } from '../examples/radio-group/disabled-option.tsx'
 import { ErrorOnSubmitRadioGroup } from '../examples/radio-group/error-on-submit.tsx'
+import { InvalidRadioGroup } from '../examples/radio-group/invalid.tsx'
 import { OptionHelpTextRadioGroup } from '../examples/radio-group/option-help-text.tsx'
 import { OtherOptionRadioGroup } from '../examples/radio-group/other-option.tsx'
+import { PageHeadingRadioGroup } from '../examples/radio-group/page-heading.tsx'
 import { PlainFormRadioGroup } from '../examples/radio-group/plain-form.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
@@ -53,7 +56,10 @@ export type RadioGroupExampleSources = Record<
   | 'error-on-submit'
   | 'disabled-option'
   | 'other-option'
-  | 'announcement-wording',
+  | 'announcement-wording'
+  | 'invalid'
+  | 'compact'
+  | 'page-heading',
   string
 >
 
@@ -251,6 +257,32 @@ export function RadioGroupPage({
             <OptionHelpTextRadioGroup />
           </UseCase>
           <UseCase
+            id="page-heading"
+            title="One question on a page"
+            why={
+              <>
+                When a page asks one question, the legend can be the page’s heading. Put the heading
+                inside the legend and add the class <code>kv-fieldset-legend--heading</code>, which
+                gives it the size of a page heading. Use <code>h1</code> if it is the page’s main
+                heading. This example is inside a page that already has one, so it uses{' '}
+                <code>h2</code>. When the person presses Continue with nothing chosen, show an
+                error, as in{' '}
+                <Link href="#error-on-submit">Say what is wrong when nothing is chosen</Link>.
+              </>
+            }
+            code={sources['page-heading']}
+            propsUsed={[{ part: 'RadioGroup.Root', prop: 'required' }]}
+            note={
+              <Note kind="tip">
+                Set <code>required</code> on the group, as here. Without it the legend adds
+                “(optional)” after your heading, so a question the person must answer looks optional
+                (3.3.2 Labels or Instructions).
+              </Note>
+            }
+          >
+            <PageHeadingRadioGroup />
+          </UseCase>
+          <UseCase
             id="error-on-submit"
             title="Say what is wrong when nothing is chosen"
             why={
@@ -278,6 +310,38 @@ export function RadioGroupPage({
             }
           >
             <ErrorOnSubmitRadioGroup />
+          </UseCase>
+          <UseCase
+            id="invalid"
+            title="Say why an answer was not accepted"
+            why={
+              <>
+                Sometimes a person answers, but you can’t accept the answer, and you only find out
+                after they send the form. Here the chosen way to get a decision is not set up. After
+                the check, set <code>invalid</code> on the group and render a{' '}
+                <code>RadioGroup.ErrorMessage</code> that names the reason and says what to do next.
+                Also show an <Link href="/components/error-summary">Error summary</Link> whose link
+                goes to the group’s first option: give that option a <code>controlId</code> and use
+                the same id in the link. As above, the error is read with the group’s description,
+                because a radio can’t be marked invalid. If you know before the person chooses,
+                disable the option and say why, as in{' '}
+                <Link href="#disabled-option">One option isn’t available</Link>.
+              </>
+            }
+            code={sources['invalid']}
+            propsUsed={[
+              { part: 'RadioGroup.Root', prop: 'invalid' },
+              { part: 'RadioGroup.Root', prop: 'value' },
+              { part: 'RadioGroup.Option', prop: 'controlId' },
+            ]}
+            note={
+              <Note kind="reminder">
+                Use the same words in the summary and under the group. Name the reason and say what
+                to do next (3.3.1 Error Identification, 3.3.3 Error Suggestion).
+              </Note>
+            }
+          >
+            <InvalidRadioGroup />
           </UseCase>
           <UseCase
             id="disabled-option"
@@ -347,6 +411,31 @@ export function RadioGroupPage({
             }
           >
             <AnnouncementWordingRadioGroup />
+          </UseCase>
+          <UseCase
+            id="compact"
+            title="A denser group for staff screens"
+            why={
+              <>
+                A caseworker who records many decisions a day can fit more on the screen. Put the
+                class <code>kv-compact</code> on the form, on any container around the group, or on{' '}
+                <code>&lt;html&gt;</code> for a whole staff tool. It is a class, not a prop. From a
+                window 64rem wide (1024 pixels at the browser’s default text size), option rows are
+                32px high instead of 44px, the legend and option labels are 14px instead of 16px,
+                options are 4px apart instead of 8px, and questions are 16px apart instead of 24px.
+                In a narrower window nothing changes, because touch is likely there. The circle
+                stays at least 24 by 24 pixels, and the description and error text stay 16px.
+              </>
+            }
+            code={sources['compact']}
+            note={
+              <Note kind="tip">
+                Compact rows meet 2.5.8 Target Size (Minimum) (AA), but not the 44px of 2.5.5 Target
+                Size (Enhanced) (AAA). Keep services for residents at the default size.
+              </Note>
+            }
+          >
+            <CompactRadioGroup />
           </UseCase>
         </>
       }

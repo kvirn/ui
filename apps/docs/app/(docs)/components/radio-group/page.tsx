@@ -19,6 +19,9 @@ export default function Page() {
         'disabled-option': readExampleSource('radio-group/disabled-option.tsx'),
         'other-option': readExampleSource('radio-group/other-option.tsx'),
         'announcement-wording': readExampleSource('radio-group/announcement-wording.tsx'),
+        invalid: readExampleSource('radio-group/invalid.tsx'),
+        compact: readExampleSource('radio-group/compact.tsx'),
+        'page-heading': readExampleSource('radio-group/page-heading.tsx'),
       }}
     />
   )
