@@ -2322,6 +2322,13 @@
     padding-block: var(--kv-space-2) var(--kv-space-6);
   }
 
+  /* A closed panel that find-in-page can open keeps its box (content-visibility, not display),
+   * so its padding would still add a gap under the row. */
+  .kv-disclosure-panel[hidden='until-found'],
+  .kv-accordion-panel[hidden='until-found'] {
+    padding-block: 0;
+  }
+
   @media (forced-colors: active) {
     .kv-accordion,
     .kv-accordion-item {
