@@ -4,6 +4,8 @@
     "*.ts",
     "packages/*/src",
     "packages/*/scripts",
+    "tooling/ci",
+    "tooling/gate-guard",
     "tooling/commit-message",
     "tooling/english-only",
     "tooling/keyboard-docs",

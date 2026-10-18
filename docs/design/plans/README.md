@@ -33,3 +33,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0139](0139-matrix-automated-tier-and-derived-status.md) | Automated matrix tier, `n/a` rows, status derived from the matrix | Approved      |
 | [0140](0140-smaller-at-matrix.md)                        | A smaller AT matrix: most common screen readers only              | Approved      |
 | [0141](0141-sweeps-in-ci-and-testing-upkeep.md)          | Display-mode sweeps in CI; Testing upkeep in the docs workflow    | Approved      |
+| [0142](0142-stable-local-ci.md)                          | Stable local CI: one entry point, container, isolated caches      | Done (agents) |

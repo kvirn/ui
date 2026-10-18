@@ -31,6 +31,6 @@
 - **One run at a time.** Briefs tell agents to prefix every check, test, sweep and build with `flock -w 1800 /tmp/kvirn-gate.lock <command>`; the main thread does the same, and starts no gate while an agent might be running one. Editing in parallel is fine, running is not (AGENTS.md rule 12).
 - Gates run on the main thread, once, after every subagent reports done, scoped to the changed files and in order: `vp check <files>` → `vp test run <files>` → `vp run i18n:check` → `vp run theme:check`. A failure goes back to the engineer; re-run only that gate. Use `test-runner` when the output would be long or needs triage.
 - Plan mode for Explore and Plan. Save plans to `docs/design/plans/` (under 250 lines), not only in the session.
-- No Claude hook enforces scope or git rules, so rules 11 and 12 are on you. Format what you edit with `vp fmt <files>`. The `commit-msg` hook and CI reject commits that aren't Conventional Commits. Agents never create branches or worktrees.
+- The `gate-guard` hook enforces the lock, no loops around a gate and no repeat on an unchanged tree (rule 12); scope and git rules (11) are still on you. Format what you edit with `vp fmt <files>`. The `commit-msg` hook and CI reject commits that aren't Conventional Commits. Agents never create branches or worktrees.
 - This session is the orchestrator: read ranges, not whole files; keep conclusions, not file dumps; don't re-read what scout or an agent already reported.
 - When compacting, keep the plan path, the modified files, failing gate output and open decisions.

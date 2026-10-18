@@ -61,6 +61,10 @@ Vitest projects in the root `vite.config.ts`:
 
 The whole tree runs through `vp run test`, which runs the four Storybook projects one at a time. Each `storybookTest()` project starts its own Vite server, and two or more in one Vitest process make random story files fail with `Failed to fetch dynamically imported module` (a single project is stable). Scoped runs of a stories file name one project: `vp test run --project storybook <file>`.
 
+## Running CI locally
+
+`pnpm run ci:docker` (`tooling/ci`) runs the `gates` job: build, check, fmt, the node and browser tests, `i18n:check` and `theme:check` in a container with a fixed CPU and memory budget (defaults `KVIRN_CI_CPUS=4`, `KVIRN_CI_MEMORY=10g`), then the Storybook projects and the display-mode sweeps on the host under the gate lock, because Chromium dropped its connection in one Storybook file per container run (memory, CPU, cache, shared memory and limits were ruled out; plan 0142). `--step <name>` runs one step. A whole-tree run is heavy: CI is the normal place for it, and a local one is a deliberate choice. The `tooling/gate-guard` hook (`.claude/settings.json`) stops an agent from running a gate without the lock, in a loop, or again on an unchanged tree.
+
 ## CI
 
 `.github/workflows/ci.yml` pins Actions to commit SHAs, uses read-only `contents` permission and installs Chromium only (add browsers to the `playwright install` line to widen it). It runs:
