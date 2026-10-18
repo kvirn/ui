@@ -42,6 +42,9 @@ The word is always shown as text in the badge, and the counts stay beside it, so
 - [x] `docs/accessibility.md` §Derived status: one sentence that the page shows the status as a coloured badge, with the mapping
 - [ ] `vp check` and `theme:check` green; looking at a page in light, dark, contrast themes, forced colours and 320px is pending (a person)
 - [x] `accessibility-reviewer` (APPROVE after the hidden separator fix) on the diff
+- [x] Parser: `fail` is an allowed cell value and never done (`doneResult`/`doneAgent` unchanged)
+- [x] AT test record only: Result `pass` renders a `success` Badge, `fail` a `danger` Badge, word kept
+- [x] `docs/accessibility.md` §Cell vocabulary: one sentence on `fail` and the Result badges
 
 ## Decisions
 
@@ -51,6 +54,7 @@ The word is always shown as text in the badge, and the counts stay beside it, so
 - No `ux-designer` spec: the change maps existing variants onto an existing fact and adds no layout.
 
 - The status and counts need a text boundary for screen readers, not only the pill: a hidden ". " separator from the docs messages (reviewer finding, fixed).
+- The Result badges are an opt-in `resultBadges` prop of `Blocks`, set only by `ContractTesting`, matching the column named `Result`; other tables are untouched.
 
 ## Risks & open questions
 

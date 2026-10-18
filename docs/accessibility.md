@@ -61,7 +61,7 @@ A Core or Release row with only the agent check is `agent-verified`, not passed:
 
 ### Cell vocabulary and `n/a`
 
-A cell is `pending`, `pass`, `agent-verified` (agent check only, Core and Release rows) or `n/a`. `n/a` means the row cannot apply, for example a native `<hr>` has nothing to operate. It needs a non-empty Notes reason and the `accessibility-reviewer` must agree with it. It counts as done, and is shown as `n/a`, never as `pass` (maintainer, 2026-10-18). A row with a missing or unproven reason is `pending`.
+A cell is `pending`, `pass`, `agent-verified` (agent check only, Core and Release rows) or `n/a`. `n/a` means the row cannot apply, for example a native `<hr>` has nothing to operate. It needs a non-empty Notes reason and the `accessibility-reviewer` must agree with it. It counts as done, and is shown as `n/a`, never as `pass` (maintainer, 2026-10-18). A row with a missing or unproven reason is `pending`. A cell may also be `fail`: it never counts as done, so the tier stays incomplete and the status word does not rise, and the docs page shows Result `pass` as a green badge and `fail` as a red one, with the word kept in the badge.
 
 ### Derived status
 

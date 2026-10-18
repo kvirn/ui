@@ -75,7 +75,7 @@ export interface Contract {
 
 export type TestTier = 'automated' | 'core' | 'release'
 
-export type TestCell = 'pending' | 'pass' | 'agent-verified' | 'n/a'
+export type TestCell = 'pending' | 'pass' | 'agent-verified' | 'n/a' | 'fail'
 
 /** A row of the AT test record under a tier row, with the cells normalised. */
 export interface TestRecordRow {
@@ -466,7 +466,7 @@ function knownIssuesIn(blocks: ContractBlock[]): ContractBlock[] {
   return isNone ? [] : blocks
 }
 
-const testCells: readonly string[] = ['pending', 'pass', 'agent-verified', 'n/a']
+const testCells: readonly string[] = ['pending', 'pass', 'agent-verified', 'n/a', 'fail']
 
 const tierPrefixes = [
   ['automated', '**Automated'],
@@ -539,7 +539,9 @@ function parseTestRecord(blocks: ContractBlock[], file: string): TestRecord {
         )
       }
     }
-    if (cells.includes('n/a') && notes.trim() === '') {
+    // An Automated row's Human check is n/a by rule, so it needs no reason of its own.
+    const needsReason = current === 'automated' ? [cells[0], cells[2]] : cells
+    if (needsReason.includes('n/a') && notes.trim() === '') {
       throw new ContractError(
         file,
         `AT test record row "${label}" is n/a and needs a reason in Notes`,

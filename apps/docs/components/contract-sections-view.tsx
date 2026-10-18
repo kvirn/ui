@@ -1,4 +1,5 @@
 import {
+  Badge,
   DefinitionListDescription,
   DefinitionListRoot,
   DefinitionListRow,
@@ -198,11 +199,14 @@ function Blocks({
   labelledBy,
   headingTag,
   idPrefix,
+  resultBadges = false,
 }: {
   blocks: readonly ContractBlock[]
   labelledBy: string
   headingTag: HeadingTag
   idPrefix: string
+  /** The AT test record: Result `pass` and `fail` get a badge, with the word kept in it. */
+  resultBadges?: boolean
 }) {
   return blocks.map((block, index) => {
     switch (block.type) {
@@ -222,17 +226,30 @@ function Blocks({
             ))}
           </ul>
         )
-      case 'table':
+      case 'table': {
+        const resultColumn = resultBadges
+          ? block.columns.findIndex((column) => column.trim().toLowerCase() === 'result')
+          : -1
         return (
           <DataTable
             key={index}
             labelledBy={labelledBy}
             columns={block.columns.map((column) => column.replace(/\s*\(`[^`]*`\)/, ''))}
             rows={block.rows.map((row) =>
-              row.map((cell, cellIndex) => <Inline key={cellIndex} source={cell} />),
+              row.map((cell, cellIndex) => {
+                const word = cell.replaceAll('`', '').trim().toLowerCase()
+                return cellIndex === resultColumn && (word === 'pass' || word === 'fail') ? (
+                  <Badge key={cellIndex} variant={word === 'pass' ? 'success' : 'danger'}>
+                    {word}
+                  </Badge>
+                ) : (
+                  <Inline key={cellIndex} source={cell} />
+                )
+              }),
             )}
           />
         )
+      }
       case 'heading':
         return (
           <AnchoredHeading key={index} as={headingTag} id={`${idPrefix}-${block.id}`}>
@@ -347,7 +364,13 @@ export function ContractTesting({
         {text.sections.testing}
       </AnchoredHeading>
       <p>{text.accessibility.testingIntro}</p>
-      <Blocks blocks={section.body} labelledBy="testing" headingTag="h3" idPrefix="testing" />
+      <Blocks
+        blocks={section.body}
+        labelledBy="testing"
+        headingTag="h3"
+        idPrefix="testing"
+        resultBadges
+      />
       {notes.testing}
     </section>
   )
