@@ -628,6 +628,35 @@ describe('timers', () => {
     expect(toastElements()).toHaveLength(1)
   })
 
+  test('a busy toast stays with a numeric autoDismiss until the result replaces it, and the result times out', async () => {
+    useFakeClock()
+    await render(
+      <Page
+        toast={{ autoDismiss: 10_000 }}
+        actions={{
+          Show: (toast) => {
+            toast.show({ id: 'job', title: 'Sending the form', busy: true })
+          },
+          Finish: (toast) => {
+            toast.show({ id: 'job', title: 'The form was sent' })
+          },
+        }}
+      />,
+    )
+    await press('Show')
+    await vi.advanceTimersByTimeAsync(600_000)
+    expect(toastElements()).toHaveLength(1)
+
+    await press('Finish')
+    await vi.advanceTimersByTimeAsync(9999)
+    expect(toastElements()).toHaveLength(1)
+    await vi.advanceTimersByTimeAsync(1)
+
+    await vi.waitFor(() => {
+      expect(regionElement()).toBeNull()
+    })
+  })
+
   test('the timer pauses while the pointer is over the region, and resumes with at least five seconds', async () => {
     useFakeClock()
     await render(<Page toast={{ autoDismiss: 10_000 }} actions={{ Show: showTimed }} />)
