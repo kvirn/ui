@@ -142,7 +142,7 @@ export function SwitchPage({
           <UseCase
             id="disabled-with-reason"
             title="A setting that isn’t available"
-            why="Disable the switch and say why in its help text, with what the user can do about it. Never put the reason in a tooltip. A disabled switch is skipped by Tab, so write the reason as visible text, as here."
+            why="Disable the switch and say why in its help text, with what the person can do about it. Never put the reason in a tooltip. Tab skips a disabled switch, but a screen reader reading the page still reaches it, says it is unavailable and reads the help text next to it. So the reason must be visible text, as here. If people need to find the setting before they can fix the reason, show the reason and a way to fix it (a link to add a mobile number) instead of a disabled switch."
             code={sources['disabled-with-reason']}
           >
             <DisabledWithReason />

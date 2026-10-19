@@ -48,6 +48,7 @@ Native like a text input, with two differences: Enter is a line break, and Arrow
 | Shift+Tab              | Into the group from after: the checked radio, or the last if none is checked |
 | ArrowDown / ArrowRight | Next radio, checks it, wraps. Native. Test the direction in RTL              |
 | ArrowUp / ArrowLeft    | Previous radio, checks it, wraps. Native. Test the direction in RTL          |
+| (disabled radio)       | Skipped by Tab and the arrows. Native `disabled`; the reason is help text    |
 | Space                  | Checks the focused radio if it isn't checked                                 |
 
 One Tab stop for the group. Focus strategy: native.

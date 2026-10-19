@@ -25,7 +25,7 @@ Rules, tested in `checkbox.test.tsx`:
 - **No form state.** `defaultChecked` and `name` work in a plain form (`FormData` has the value); `checked` and `onCheckedChange` give a controlled checkbox. The checkbox never copies `checked` into state (`checkbox.test.tsx › works in a plain form: the browser keeps the state and FormData has it`, `checkbox.test.tsx › a controlled checkbox shows the checked it is given`).
 - **`aria-invalid` on a standalone Checkbox** when its Field is `invalid`. A Checkbox in a group gets only `data-invalid` from the group (`checkbox-group.a11y.md`).
 - **The error of a standalone checkbox** (a declaration) is the Field.ErrorMessage, under the row, in `aria-describedby` after the option's help text.
-- **Disabled.** A Field's `disabled` or the prop gives native `disabled` and `data-disabled`. The label of a disabled choice is muted by the theme, never hidden.
+- **Disabled.** A Field's `disabled` or the prop gives native `disabled` and `data-disabled`. The label of a disabled choice is muted by the theme, never hidden. Put the reason for a disabled checkbox in visible help text, never in a tooltip. The help text stays in its `aria-describedby`. Tab skips a disabled checkbox (a standalone control), and Checkbox has no focusable disabled state.
 - **Dev warnings (once):** a Checkbox in a Field with no Field.Label (no accessible name, 1.3.1/4.1.2); an `id` inside a Field (ignored: set `controlId` on the Field); a Checkbox with no accessible name at all.
 
 ## Keyboard

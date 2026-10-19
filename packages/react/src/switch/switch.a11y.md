@@ -63,7 +63,7 @@ None from the component. On focus a screen reader reads the label, "switch" and 
 - Put the Switch directly in `Field.Root`, before a `<Field.Label marker="none">`.
 - The label names the setting, a noun phrase that reads correctly with "on" or "off" after it ("Reminders by text message"). Never "On" or "Off" in it, and never a label that changes with the state.
 - A switch takes effect at once: say so ("Changes are saved straight away"), keep it enabled and focused while saving, put it back and show an error if the save fails, and never navigate or move focus on change (3.2.2 On Input, A).
-- A not-available switch is `disabled`, with the reason in the help text, never in a tooltip.
+- A not-available switch is `disabled`, with the reason in visible help text, never in a tooltip. The help text stays in its `aria-describedby`. Tab skips a disabled switch (a standalone control), and Switch has no focusable disabled state.
 - Use a Checkbox for an answer sent with a form, a declaration or a consent, and a Toggle for a button with a direct visible effect on the page.
 
 ## Visual / modes

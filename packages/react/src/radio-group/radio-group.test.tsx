@@ -445,6 +445,13 @@ describe('state', () => {
     await expect.element(page.getByRole('radio', { name: '1 month' })).not.toBeDisabled()
   })
 
+  test('a disabled radio keeps its help text in its description', async () => {
+    await render(english(<Duration disabledOption="12" optionHelpText />))
+    const radio = page.getByRole('radio', { name: '12 months' })
+    await expect.element(radio).toBeDisabled()
+    await expect.element(radio).toHaveAccessibleDescription('Lowest price per month.')
+  })
+
   test('disabled disables every radio natively', async () => {
     await render(english(<Duration disabled />))
     expect((page.getByRole('group').element() as HTMLFieldSetElement).disabled).toBe(true)

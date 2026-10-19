@@ -226,7 +226,7 @@ export function CheckboxGroupPage({
           <UseCase
             id="disabled"
             title="A group that can’t be changed now"
-            why="Disabling the group disables every checkbox natively, so Tab skips them. Say why in a help text, because a disabled control can’t explain itself."
+            why="Disabling the group disables every checkbox natively, so Tab skips them. A screen reader reading the page still reaches them, says they are unavailable and reads the help text next to them. So say why in visible help text, with what the person can do."
             code={sources['disabled']}
             propsUsed={[{ part: 'CheckboxGroup.Root', prop: 'disabled' }]}
           >

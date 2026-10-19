@@ -149,6 +149,21 @@ describe('in a Field', () => {
     await expect.element(second).toHaveAttribute('data-disabled', '')
   })
 
+  test('a disabled switch keeps its help text in its description', async () => {
+    await render(
+      <Field.Root>
+        <Switch disabled />
+        <Field.Label marker="none">Text message</Field.Label>
+        <Field.HelpText>Add a mobile number to turn this on.</Field.HelpText>
+      </Field.Root>,
+    )
+    const disabled = page.getByRole('switch', { name: 'Text message' })
+    await expect.element(disabled).toBeDisabled()
+    await expect
+      .element(disabled)
+      .toHaveAccessibleDescription('Add a mobile number to turn this on.')
+  })
+
   test('keeps your own aria-describedby ids, after the Field’s', async () => {
     await render(
       <>
