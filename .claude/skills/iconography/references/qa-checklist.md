@@ -46,7 +46,7 @@ At minimum the list in `docs/design/icon.md` §6.1, plus each new pair your icon
 - Reaches 3:1 against its background at the smallest size shipped (measure with the theme's pair; ask the orchestrator for `theme:check`).
 - Survives forced colours: single colour, `currentColor` only.
 - RTL decision recorded with the reason.
-- No text, no flag, no brand, no gesture, no gendered or ability-coded figure. Exceptions: category `social` (the brand glyph rule in `SKILL.md`) and the gesture `like` (category `actions`, Plan 0144) beside `easy-read-thumbs-up`; both stay in the sensitivity review (`icon-library.md` §8) and are always used with words.
+- No text, no flag, no brand, no gesture, no gendered or ability-coded figure. Exceptions: categories `social` and `service-marks` (the brand glyph rule in `SKILL.md`) and the gesture `like` (category `actions`, Plan 0144) beside `easy-read-thumbs-up`; both stay in the sensitivity review (`icon-library.md` §8) and are always used with words.
 - Originality: no path string equals a Heroicons or Lucide path (grep). Single straight segments and dots (`M4 12h16`, `M8 15h.01`) are exempt: on our grid they have one spelling. Every path with two or more segments or a curve must be unique.
 
 ## Sign-off row (in the inventory)

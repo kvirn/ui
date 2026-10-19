@@ -45,7 +45,7 @@ Draw in families of 8–12 (all arrows, all documents, all people), because cons
 ## Don't
 
 - Don't add a keyline, grid size, stroke width or corner radius: those are `docs/design/icon.md` decisions and the maintainer's.
-- Don't draw brand marks, logos, flags or emblems, except the **brand glyph** exception: category `social` only (maintainer 2026-10-18, Plan 0144), where a simplified original mark may hold a letterform (`f`, `in`, `m`, `X`), with radius 2, no colour, used at 20px and up beside the network's name and never as the only link text. A municipal emblem is still an asset the consumer supplies.
+- Don't draw brand marks, logos, flags or emblems, except the **brand glyph** exception: categories `social` and `service-marks` only (maintainer 2026-10-18 and 2026-10-19, Plan 0144), where a simplified original mark may hold a letterform (`f`, `in`, `m`, `X`, `B`, `V`, `K`), with radius 2, no colour, used at 20px and up beside the network's or service's name and never as the only link text. A municipal emblem is still an asset the consumer supplies.
 - Don't use a filled shape, a gradient, a second colour or a shadow.
 - Don't trace or paste from another set, and don't ship a path string equal to one in Heroicons or Lucide: grep before handing off.
 - Don't draw a variant at a size (a "16px version"). If 16px fails, redraw the one drawing.

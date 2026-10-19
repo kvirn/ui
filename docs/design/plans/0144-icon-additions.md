@@ -27,6 +27,8 @@ Fill the gaps in the icon set: the missing counterparts of existing icons, the i
 - Review fixes (accessibility-reviewer): `save`, `hang-up`, `like`, `star`, `heart`, `bookmark` have `label: null` and no `icons.*` key (actions carry no label, icon-library.md decision 6; a label is a noun phrase, icon.md §7); only `rss` keeps `icons.rss` (nb "Nyhetsstrøm", nn "Nyheitsstraum"). `unpin` dropped from `pin-off`; `add`/`remove` meanings lose "zoom".
 - `attachment-remove` redrawn: the inline-end run now stops at y 10.5 (was 13), so it shares the host of `attachment-add` and the two swap in place. `like` is recorded as a second gesture exception beside `easy-read-thumbs-up` in `SKILL.md` rule 5 and `qa-checklist.md`.
 
+- 2026-10-19, maintainer asked for `bankid`, `digital-signage`, `visa`, `mastercard`, `payment-card`, `klarna`, `2fa`. `payment-card` is not drawn: `payment` is already a bank card (aliases `card`, `bank-card`), so `payment-card` becomes an alias of it (a second near-identical card would confuse). `2fa` → `two-factor` (aliases `2fa`, `mfa`, `two-step`). Marks of services (`bankid`, `visa`, `mastercard`, `klarna`) go in a new category `service-marks` and follow the social-mark rules (simplified originals, radius 2, 20px and up, beside the name, never the only text, brand-glyph letterform exception extended to this category). BankID, Visa, Mastercard and Klarna publish strict brand guidelines: these simplified marks are for lists and "we accept" rows, never in place of the official button or logo where the owner requires it (state this in LICENSING.md).
+
 ## Open for the maintainer (none blocks; each stands as drawn unless reversed)
 
 - Larger lens kit part for `zoom-in`/`zoom-out` (ring r 7.5, handle (15.75,15.75)→(20.5,20.5)).
@@ -68,6 +70,10 @@ New category for C, D and E (not `rss`): `social` ("Social media", marks of netw
 
 - Decision: `settings-6` (a six-tooth `settings`, category `interface`, no label, no RTL mirror) added by the maintainer 2026-10-19; count 290. The evenly spaced gear (side teeth at slope 3:5) is a proposed grid exception, maintainer to confirm.
 - Decision: `database-add` and `database-remove` (badged counterparts of `database`, category `tables-data`, no label, no RTL mirror) added by the maintainer 2026-10-19; count 292. The band stub (the middle band keeps only its start-side 5.25 units) is a proposed part, maintainer to confirm.
+- Decision: the key badge (a small key, ring r 2.83, in the badge position; `two-factor`) is a proposed part, proposed, maintainer to confirm.
+- Decision: the shortened landscape screen on a pole (`digital-signage`) is a proposed part, proposed, maintainer to confirm.
+- Decision: the Visa V arms at slope 2:1 (`visa`) is a proposed part, proposed, maintainer to confirm.
+- Decision: `mastercard` is unboxed, because a plate would break the 2-unit gap; `visa` and `klarna` reuse the plate of `payment`; `bankid` is separated from `bold` only by the plate. Count 298 in 19 categories; the 2026-10-19 category `service-marks` and its LICENSING.md section are documented; `payment-card` is an alias of `payment`.
 
 ## Risks
 

@@ -89,6 +89,11 @@
       "id": "social",
       "title": "Social media",
       "description": "Marks of social networks, always shown with the network's name, never as the only link text."
+    },
+    {
+      "id": "service-marks",
+      "title": "Service marks",
+      "description": "Marks of payment and e-identification services, always shown with the service's name, never the only text."
     }
   ],
   "icons": [
@@ -1575,7 +1580,7 @@
     {
       "name": "payment",
       "category": "money",
-      "aliases": ["pay", "bank-card", "card"],
+      "aliases": ["pay", "bank-card", "card", "payment-card"],
       "tags": ["payment", "pay", "card", "bank card", "checkout", "wallet"],
       "meaning": "Pay: a bank card with a stripe.",
       "status": "drawn",
@@ -3022,6 +3027,112 @@
       "aliases": ["remove-database", "database-delete"],
       "tags": ["database remove", "remove data", "delete dataset", "remove records"],
       "meaning": "Remove a database or dataset: the database cylinder with the badge minus.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "bankid",
+      "category": "service-marks",
+      "aliases": [],
+      "tags": [
+        "bankid",
+        "e-identification",
+        "electronic id",
+        "sign in with bankid",
+        "identify yourself",
+        "service mark"
+      ],
+      "meaning": "The mark of the BankID e-identification service (Sweden, Norway): a simplified upright capital \"B\" inside a rounded square, in one stroke. A trademark of its owner and not the official logo; always shown with the service's name, never as the only text, and never in place of the official button or logo where the owner requires it.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "two-factor",
+      "category": "people",
+      "aliases": ["2fa", "mfa", "two-step", "two-factor-authentication"],
+      "tags": [
+        "two-factor",
+        "two-step verification",
+        "multi-factor",
+        "sign-in code",
+        "second factor",
+        "secure sign in"
+      ],
+      "meaning": "Two-step sign-in: a phone (something you have) with a small key (something you know) at its lower inline-end corner.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "visa",
+      "category": "service-marks",
+      "aliases": ["visa-card", "visa-logo"],
+      "tags": [
+        "visa",
+        "card payment",
+        "credit card",
+        "debit card",
+        "we accept",
+        "payment method",
+        "checkout"
+      ],
+      "meaning": "The mark of the Visa card network: a simplified V with a short lead-in stroke on a card plate, in one stroke. A trademark of its owner and not the official logo; always shown with the service's name, never as the only text, and never in place of the official logo where the owner requires it.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "mastercard",
+      "category": "service-marks",
+      "aliases": ["mastercard-logo", "master-card"],
+      "tags": [
+        "mastercard",
+        "card payment",
+        "credit card",
+        "debit card",
+        "we accept",
+        "payment method",
+        "checkout"
+      ],
+      "meaning": "The mark of the Mastercard card network: two overlapping circles side by side, in one stroke. A trademark of its owner and not the official logo; always shown with the service's name, never as the only text, and never in place of the official logo where the owner requires it.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "klarna",
+      "category": "service-marks",
+      "aliases": ["klarna-logo"],
+      "tags": [
+        "klarna",
+        "pay later",
+        "invoice payment",
+        "instalments",
+        "we accept",
+        "payment method",
+        "checkout"
+      ],
+      "meaning": "The mark of the Klarna payment service: a simplified K with a curved upper arm and a full stop on a card plate, in one stroke. A trademark of its owner and not the official logo; always shown with the service's name, never as the only text, and never in place of the official logo where the owner requires it.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "digital-signage",
+      "category": "communication",
+      "aliases": ["information-screen", "display-board", "kiosk-display", "info-screen"],
+      "tags": [
+        "digital signage",
+        "information screen",
+        "display",
+        "public screen",
+        "notice screen",
+        "kiosk",
+        "lobby screen"
+      ],
+      "meaning": "A public information screen in a hall, at a stop or in a library: a landscape screen with two text lines on a pole with a foot.",
       "status": "drawn",
       "mirrorInRtl": false,
       "label": null

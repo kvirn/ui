@@ -195,11 +195,11 @@ Per breakpoint: icons don't change size with the viewport, only with the root fo
   - more than one colour.
 - **Dots** (in "i" and "!", and the calendar dots) are a 0.01-unit round-capped segment, for example `M12 7.75h.01`. They're as wide as the stroke and scale with `strokeWidth`. Draw them as strokes, not filled circles: a filled shape ignores `fill="none"`, and they need to change with the stroke.
 
-**Brand glyph (category `social`, maintainer 2026-10-18, Plan 0144; open to reversal)**
+**Brand glyph (categories `social` and `service-marks`, maintainer 2026-10-18 and 2026-10-19, Plan 0144; open to reversal)**
 
-- The social network marks (`x`, `facebook`, `instagram`, `linkedin`, `youtube`, `tiktok`, `mastodon`, `bluesky`) are the one exception to "no letters, numerals, brands or emblems". Letterforms (`f`, `in`, `m`, `X`) are allowed inside them, as strokes on the same grid.
+- The social network marks (`x`, `facebook`, `instagram`, `linkedin`, `youtube`, `tiktok`, `mastodon`, `bluesky`) and the service marks (`bankid`, `visa`, `mastercard`, `klarna`) are the one exception to "no letters, numerals, brands or emblems". Letterforms (`f`, `in`, `m`, `X`, `B`, `V`, `K`) are allowed inside them, as strokes on the same grid.
 - Each mark is a **simplified original**, never traced from or equal to a vector file of the owner, with no colour, in the house stroke and radius 2 (not the brand's larger radius). The trademark belongs to its owner (`packages/icons/LICENSING.md`).
-- Use them at **20px and up, beside the network's name**, never as the only link text (2.4.4, 1.1.1). At 16px `bluesky` reads as a cat's head and the `instagram` dot is faint.
+- Use them at **20px and up, beside the network's or service's name**, never as the only link text (2.4.4, 1.1.1). At 16px `bluesky` reads as a cat's head and the `instagram` dot is faint.
 - A mark is an object or a letterform and never mirrors in RTL. A mark is never an alias of another icon (`x` is not `close`).
 - The kit additions the group uses ("Larger lens", "Star points", "X band, 3:4") are proposed, for the maintainer to confirm (`icon-library.md` §2).
 

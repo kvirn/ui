@@ -19,6 +19,7 @@ import { attachment } from './icons/attachment.ts'
 import { attachmentAdd } from './icons/attachment-add.ts'
 import { attachmentRemove } from './icons/attachment-remove.ts'
 import { attention } from './icons/attention.ts'
+import { bankid } from './icons/bankid.ts'
 import { benefit } from './icons/benefit.ts'
 import { bike } from './icons/bike.ts'
 import { blocked } from './icons/blocked.ts'
@@ -75,6 +76,7 @@ import { databaseRemove } from './icons/database-remove.ts'
 import { delegation } from './icons/delegation.ts'
 import { deleteIcon } from './icons/delete.ts'
 import { detour } from './icons/detour.ts'
+import { digitalSignage } from './icons/digital-signage.ts'
 import { directMessage } from './icons/direct-message.ts'
 import { directions } from './icons/directions.ts'
 import { distance } from './icons/distance.ts'
@@ -147,6 +149,7 @@ import { job } from './icons/job.ts'
 import { justify } from './icons/justify.ts'
 import { key } from './icons/key.ts'
 import { keyboard } from './icons/keyboard.ts'
+import { klarna } from './icons/klarna.ts'
 import { language } from './icons/language.ts'
 import { last } from './icons/last.ts'
 import { law } from './icons/law.ts'
@@ -167,6 +170,7 @@ import { mailOff } from './icons/mail-off.ts'
 import { mailRemove } from './icons/mail-remove.ts'
 import { map } from './icons/map.ts'
 import { marriage } from './icons/marriage.ts'
+import { mastercard } from './icons/mastercard.ts'
 import { mastodon } from './icons/mastodon.ts'
 import { meal } from './icons/meal.ts'
 import { medication } from './icons/medication.ts'
@@ -269,6 +273,7 @@ import { tram } from './icons/tram.ts'
 import { transitStop } from './icons/transit-stop.ts'
 import { translate } from './icons/translate.ts'
 import { tree } from './icons/tree.ts'
+import { twoFactor } from './icons/two-factor.ts'
 import { underline } from './icons/underline.ts'
 import { undo } from './icons/undo.ts'
 import { university } from './icons/university.ts'
@@ -280,6 +285,7 @@ import { videoCall } from './icons/video-call.ts'
 import { videoCallOff } from './icons/video-call-off.ts'
 import { viewColumns } from './icons/view-columns.ts'
 import { viewGrid } from './icons/view-grid.ts'
+import { visa } from './icons/visa.ts'
 import { walk } from './icons/walk.ts'
 import { wallet } from './icons/wallet.ts'
 import { warning } from './icons/warning.ts'
@@ -314,6 +320,7 @@ export const allIcons = {
   'attachment-add': attachmentAdd,
   'attachment-remove': attachmentRemove,
   attention: attention,
+  bankid: bankid,
   benefit: benefit,
   bike: bike,
   blocked: blocked,
@@ -370,6 +377,7 @@ export const allIcons = {
   delegation: delegation,
   delete: deleteIcon,
   detour: detour,
+  'digital-signage': digitalSignage,
   'direct-message': directMessage,
   directions: directions,
   distance: distance,
@@ -442,6 +450,7 @@ export const allIcons = {
   justify: justify,
   key: key,
   keyboard: keyboard,
+  klarna: klarna,
   language: language,
   last: last,
   law: law,
@@ -462,6 +471,7 @@ export const allIcons = {
   'mail-remove': mailRemove,
   map: map,
   marriage: marriage,
+  mastercard: mastercard,
   mastodon: mastodon,
   meal: meal,
   medication: medication,
@@ -564,6 +574,7 @@ export const allIcons = {
   'transit-stop': transitStop,
   translate: translate,
   tree: tree,
+  'two-factor': twoFactor,
   underline: underline,
   undo: undo,
   university: university,
@@ -575,6 +586,7 @@ export const allIcons = {
   'video-call-off': videoCallOff,
   'view-columns': viewColumns,
   'view-grid': viewGrid,
+  visa: visa,
   walk: walk,
   wallet: wallet,
   warning: warning,
@@ -609,6 +621,7 @@ export const iconNames = [
   'attachment-add',
   'attachment-remove',
   'attention',
+  'bankid',
   'benefit',
   'bike',
   'blocked',
@@ -665,6 +678,7 @@ export const iconNames = [
   'delegation',
   'delete',
   'detour',
+  'digital-signage',
   'direct-message',
   'directions',
   'distance',
@@ -737,6 +751,7 @@ export const iconNames = [
   'justify',
   'key',
   'keyboard',
+  'klarna',
   'language',
   'last',
   'law',
@@ -757,6 +772,7 @@ export const iconNames = [
   'mail-remove',
   'map',
   'marriage',
+  'mastercard',
   'mastodon',
   'meal',
   'medication',
@@ -859,6 +875,7 @@ export const iconNames = [
   'transit-stop',
   'translate',
   'tree',
+  'two-factor',
   'underline',
   'undo',
   'university',
@@ -870,6 +887,7 @@ export const iconNames = [
   'video-call-off',
   'view-columns',
   'view-grid',
+  'visa',
   'walk',
   'wallet',
   'warning',

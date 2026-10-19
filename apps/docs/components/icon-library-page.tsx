@@ -56,6 +56,7 @@ export function IconLibraryPage({
           </p>
           <p>{text.testWithUsers}</p>
           <p>{text.socialNote}</p>
+          <p>{text.serviceMarksNote}</p>
         </>
       }
     >

@@ -93,6 +93,7 @@ const categoriesWithStory = [
   'leisure-culture',
   'access-language',
   'social',
+  'service-marks',
 ]
 
 const meta = {
@@ -135,7 +136,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The drawn icon set of @kvirn-ui/icons, registered with `KvirnProvider icons={allIcons}`. Apps that name only the icons they use import them one by one from the package root instead. The 292 icons are drawn and checked by tests and agents. Recognition tests, a native-speaker review of the labels (sv, fi, nb, nn, en), checks with real assistive technology and a sensitivity review are not done yet. Copy a name from the galleries into `<Icon name="…" />`.',
+          'The drawn icon set of @kvirn-ui/icons, registered with `KvirnProvider icons={allIcons}`. Apps that name only the icons they use import them one by one from the package root instead. The 298 icons are drawn and checked by tests and agents. Recognition tests, a native-speaker review of the labels (sv, fi, nb, nn, en), checks with real assistive technology and a sensitivity review are not done yet. Copy a name from the galleries into `<Icon name="…" />`.',
       },
     },
   },
@@ -271,6 +272,9 @@ function categoryStory(categoryId: string): Story {
         {group.id === 'social' ? (
           <p>Use these marks at 20px and up, beside the network's name.</p>
         ) : null}
+        {group.id === 'service-marks' ? (
+          <p>Use these marks at 20px and up, beside the service's name.</p>
+        ) : null}
         <ul role="list" className="kv-story-icon-gallery">
           {group.icons.map((icon) => (
             <li key={icon.name} className="kv-story-icon-cell">
@@ -317,6 +321,7 @@ export const SafetyLawAndCivicLife: Story = categoryStory('safety-civic')
 export const LeisureCultureAndCommunity: Story = categoryStory('leisure-culture')
 export const LanguageAndAccess: Story = categoryStory('access-language')
 export const SocialMedia: Story = categoryStory('social')
+export const ServiceMarks: Story = categoryStory('service-marks')
 
 /** Right to left: the icons that point along the reading direction flip, the rest keep their drawing. */
 export const Rtl: Story = {
