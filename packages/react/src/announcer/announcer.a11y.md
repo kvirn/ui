@@ -76,12 +76,12 @@ Rules for callers (4.1.3 Status Messages, AA):
 
 ## WCAG SCs covered
 
-- 4.1.3 Status Messages (AA): a polite and an assertive live region that exist before their text (`announcer.test.tsx › a polite message is added to the polite region after it was already in the page`, `› an assertive message goes to the alert region`).
+- 4.1.3 Status Messages (AA): a polite and an assertive live region that exist before their text: tests check that a polite message is added to a region that was already in the page and that an assertive message goes to the alert region.
 - 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): `status` and `alert` are the roles for these messages. The regions are never `aria-hidden`.
-- 3.2.1 On Focus (A): the regions can't take focus (`announcer.test.tsx › the regions are not focusable`).
-- 2.1.1 Keyboard (A), 2.4.3 Focus Order (A): the regions add no stop to the Tab order (`announcer.test.tsx › the regions are not focusable`).
-- 3.1.2 Language of Parts (AA): text is passed through unchanged, in the provider's language (`announcer.test.tsx › text is passed through unchanged, in the provider language (sv and fi)`). A message in another language than the page's is not marked up, which is a known issue.
-- Axe: no violations with both regions empty and with both holding a message (`announcer.test.tsx › axe`).
+- 3.2.1 On Focus (A): the regions can't take focus (a test checks that the regions are not focusable).
+- 2.1.1 Keyboard (A), 2.4.3 Focus Order (A): the regions add no stop to the Tab order (a test checks that the regions are not focusable).
+- 3.1.2 Language of Parts (AA): text is passed through unchanged, in the provider's language (a test checks that text is passed through unchanged in Swedish and Finnish). A message in another language than the page's is not marked up, which is a known issue.
+- Axe finds no violations with both regions empty and with both holding a message.
 
 ## AT test record
 
@@ -91,7 +91,7 @@ Rules for callers (4.1.3 Status Messages, AA):
 | axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | announcer.stories.tsx, every story, 4 themes                                                                                         |
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `announcer.test.tsx` (axe and role, name and state): `a polite and an assertive region exist, empty, as soon as the provider mounts` |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 3 rows, each names a test in `announcer.test.tsx`                                                                                    |
-| Focus order and management                                                 | pass        | n/a         | pass    | `announcer.test.tsx`: `the regions are not focusable`                                                                                |
+| Focus order and management                                                 | pass        | n/a         | pass    | `announcer.test.tsx`: `the regions are not focusable`; `announcing never moves focus`                                                |
 | Display modes (forced colours, 320px reflow, text spacing, reduced motion) | n/a         | n/a         | n/a     | nothing is visible: the regions are clipped one-pixel boxes                                                                          |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                                                      |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                      |
@@ -101,7 +101,13 @@ Rules for callers (4.1.3 Status Messages, AA):
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                      |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                      |
 
-What to check by ear: a polite message is read after the current speech, an assertive one interrupts it, the same message twice is read twice, a throttled message is read once, and nothing is read twice in any screen reader and browser pair (the `role` plus `aria-live` pairing is the usual cause).
+### What to check
+
+- A polite message sent while the screen reader is speaking is read after the current speech.
+- An assertive message interrupts the speech.
+- The same message sent twice with a pause between is read twice.
+- A keyed message sent repeatedly is read once in the window.
+- Nothing is read twice, in each screen reader and browser pair.
 
 ## Known issues
 

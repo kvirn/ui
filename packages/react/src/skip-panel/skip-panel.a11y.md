@@ -1,7 +1,7 @@
 # Accessibility contract: SkipPanel
 
 - **APG pattern:** none. WCAG technique G1 (a link at the top to skip to the main content) with C7 (hide it until it has focus), as SkipLink.
-- **Deviations:** the whole panel is one Tab stop, with arrow keys between its items (a "roving tabindex", the same idea as the APG toolbar), so a keyboard user passes it with one Tab. This differs from the APG keyboard practice, and the project's maintainer approved it on 2026-10-18. The panel has no dialog, menu or landmark role, no headings and no live region.
+- **Deviations:** the whole panel is one Tab stop, with arrow keys between its items (a "roving tabindex", the same idea as the APG toolbar), so a keyboard user passes it with one Tab. This differs from the APG keyboard practice and is an approved deviation. The panel has no dialog, menu or landmark role, no headings and no live region.
 - **Native elements used:** `<div>`, `<ul>`, `<li>`, `<a href="#id">`, `<a href>` (HelpLink), `<button>`, `<kbd>` (through Kbd), `<p>`.
 - **Status:** in progress. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `skip-panel.test.tsx` next to this file; `shortcut.test.ts` in `packages/core/src/shortcut/`. Stories in `apps/storybook/src/components/skip-panel/`, where `theme.css` is loaded and the visible state is proved.
@@ -10,16 +10,16 @@ SkipPanel is a list of links and buttons that is one Tab stop, with arrow keys b
 
 ## Roles, states, properties
 
-| Part        | Element / role                          | ARIA                                 | Notes                                                                                                                                                                                                                                     |
-| ----------- | --------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Root        | `<div class="kv-skip-panel">`           | none                                 | `data-collapsed` after Escape on the floating list, `data-reopened` while opened by the reopen shortcut.                                                                                                                                  |
-| Group       | `<div role="group">`                    | `aria-labelledby` → Label            | Named by visible text, not a heading                                                                                                                                                                                                      |
-| Label       | `<span>`                                | none                                 | `skipPanel.skipToLabel`, `skipPanel.shortcutsLabel`, or `skipPanel.actionsLabel` when shortcuts are off                                                                                                                                   |
-| List / Item | `<ul role="list">` / `<li>`             | none                                 | `role="list"` because list-style none drops the role in WebKit                                                                                                                                                                            |
-| Link        | `<a href>`                              | `aria-describedby` on the first Link | The first Link is described by the Hint's arrow sentence. Focuses its target, as SkipLink. Text `skipPanel.mainContent` or children                                                                                                       |
-| Shortcut    | `<button type="button">` or `as` a link | `aria-keyshortcuts="Alt+Shift+S"`    | A `mod` chord is `Meta+K` on Apple platforms and `Control+K` elsewhere. Name is its text then the key caps ("Search Alt+Shift+S"), no `aria-label` (2.5.3). Key caps and `aria-keyshortcuts` are removed when `shortcutsEnabled` is false |
-| HelpLink    | `<a href>`                              | none                                 | The last item. A plain link in the roving set: follows its `href` natively, no focus-target logic. Text `skipPanel.helpLink` or children. Rendered while `shortcutsEnabled` is false                                                      |
-| Hint        | `<p>` holding a `<span id>`             | none                                 | The arrow sentence in a `<span id>`, which the first Link's `aria-describedby` points at; then the reopen sentence only with a `reopenShortcut` and shortcuts enabled                                                                     |
+| Part        | Element / role                          | ARIA                                 | Notes                                                                                                                                                                                                                                                      |
+| ----------- | --------------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Root        | `<div class="kv-skip-panel">`           | none                                 | `data-collapsed` after Escape on the floating list, `data-reopened` while opened by the reopen shortcut.                                                                                                                                                   |
+| Group       | `<div role="group">`                    | `aria-labelledby` → Label            | Named by visible text, not a heading                                                                                                                                                                                                                       |
+| Label       | `<span>`                                | none                                 | `skipPanel.skipToLabel`, `skipPanel.shortcutsLabel`, or `skipPanel.actionsLabel` when shortcuts are off                                                                                                                                                    |
+| List / Item | `<ul role="list">` / `<li>`             | none                                 | `role="list"` because list-style none drops the role in WebKit                                                                                                                                                                                             |
+| Link        | `<a href>`                              | `aria-describedby` on the first Link | The first Link is described by the Hint's arrow sentence. Focuses its target, as SkipLink. Text `skipPanel.mainContent` or children                                                                                                                        |
+| Shortcut    | `<button type="button">` or `as` a link | `aria-keyshortcuts="Alt+Shift+S"`    | A `mod` chord is `Meta+K` on Apple platforms and `Control+K` elsewhere. Name is its text then the key caps ("Search Alt+Shift+S"), no `aria-label` (2.5.3 Label in Name, A). Key caps and `aria-keyshortcuts` are removed when `shortcutsEnabled` is false |
+| HelpLink    | `<a href>`                              | none                                 | The last item. A plain link in the roving set: follows its `href` natively, no focus-target logic. Text `skipPanel.helpLink` or children. Rendered while `shortcutsEnabled` is false                                                                       |
+| Hint        | `<p>` holding a `<span id>`             | none                                 | The arrow sentence in a `<span id>`, which the first Link's `aria-describedby` points at; then the reopen sentence only with a `reopenShortcut` and shortcuts enabled                                                                                      |
 
 ## Keyboard
 
@@ -66,13 +66,13 @@ SkipPanel is a list of links and buttons that is one Tab stop, with arrow keys b
 | any chord                        | a modal dialog is open and the list is not in it | Not handled                                                                                                                                                                                        | `skip-panel.test.tsx › SkipPanel chords › no chord is handled while a modal dialog that does not hold the card is open`               |
 | any chord                        | Apple platform, AltGraph reported with Option    | Handled (Apple keyboards have no AltGr)                                                                                                                                                            | `skip-panel.test.tsx › SkipPanel chords › on Apple platforms AltGraph reported with Option does not reject the chord`                 |
 
-The visible state (hidden before Tab, shown while focused, hidden after, not covering the next focused element) is proved in the stories with the theme loaded.
+The visible state (hidden before Tab, shown while focused, hidden after, not covering the next focused element) is proved by stories with the default theme loaded.
 
 ## Focus management
 
 - Initial focus: not moved.
-- The reopen shortcut remembers the focused element outside Root (never `body`) and focuses the first Link. Escape puts focus back on it, or on the first Link's target if it is gone or was `body`. The remembered element is forgotten when focus leaves the list (`SkipPanel keyboard › the element to return to is forgotten when focus leaves the card`, `… › Escape after the reopen shortcut from nothing focused goes to the first Link’s target, never body`).
-- Pressing a row with the mouse keeps focus in the list. Safari and Firefox on macOS don't focus a button when the mouse goes down, so without this the list would hide before the click lands (`SkipPanel keyboard › pressing a row with the mouse keeps focus in the card`).
+- The reopen shortcut remembers the focused element outside Root (never `body`) and focuses the first Link. Escape puts focus back on it, or on the first Link's target if it is gone or was `body`. The remembered element is forgotten when focus leaves the list.
+- Pressing a row with the mouse keeps focus in the list. Safari and Firefox on macOS don't focus a button when the mouse goes down, so without this the list would hide before the click lands.
 - Trap: no. Hidden by clipping (the list is cut to nothing but stays on the page, WCAG technique C7), never `display: none`.
 
 ## Announcements
@@ -81,11 +81,11 @@ The visible state (hidden before Tab, shown while focused, hidden after, not cov
 | ----- | ------------------ | ---------- |
 | none  | none               | –          |
 
-Moving focus is what gets announced: the panel has no live region of its own. Strings: `skipPanel.*` and `keys.*`. Have a native speaker review the Finnish, Norwegian Bokmål and Nynorsk key-cap names before you launch. <!-- kv-lang-ok: the language names -->
+Moving focus is what gets announced: the panel has no live region of its own. Its strings are in the message catalog. If you override the strings, have a native speaker check them.
 
 ### Read aloud
 
-These phrases come from a test tool that approximates a screen reader (`readAloud` and `readAnnouncements` in `@kvirn-ui/testing`), using the English (`en`) texts. They are not what NVDA or JAWS say. Checks with real screen readers are recorded in the AT test record. When focus moves (the reopen chord, Escape after reopen, the arrow keys), the element that receives focus is read, with no live region.
+These phrases come from a test tool that approximates a screen reader, using the English (`en`) texts. They are not what NVDA or JAWS say. Checks with real screen readers are recorded in the AT test record. When focus moves (the reopen chord, Escape after reopen, the arrow keys), the element that receives focus is read, with no live region.
 
 | State or action               | Expected phrase(s) as read aloud                                                                                  | Live region politeness | Test                                                                                                                                                                                                  |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -106,7 +106,7 @@ These phrases come from a test tool that approximates a screen reader (`readAlou
 - **Keep it short.** The panel is one Tab stop, but a long list is slow to arrow through: at most 6 items in total, with at most 3 Links and at most 5 Shortcuts (the default theme is sized for this). For one link, use SkipLink.
 - **Add a `SkipPanel.HelpLink`** last, pointing at the page where a visitor reads the shortcuts and turns them off, for example `<SkipPanel.HelpLink href="/accessibility-settings#shortcuts" />`: it tells people who don't know the arrow keys where the rest is, and stays visible while `shortcutsEnabled` is false so shortcuts can be turned back on. Use `as` for a router link.
 - **Put `<SkipPanel.Hint />` inside Root.** The first Link is described by it; without it a development warning says so.
-- **Above a sticky header:** the floating list has `z-index: 1000` (its stacking order). Override the `kv-skip-panel` z-index if your header sits higher.
+- **Above a sticky header:** the floating list sits above most page content. Raise its stacking order (the `kv-skip-panel` z-index) if your header is higher.
 - **Pick chords with Alt or Option plus Shift and a letter,** or `mod` (Command on Apple, Ctrl elsewhere) with a letter, such as `{ key: 'k', mod: true }`. Never use `mod` together with `ctrl` or `meta` (a development warning). Check that Ctrl+K or Command+K doesn't clash with the browser or the screen reader. Never use a bare letter (2.1.4 Character Key Shortcuts, A), Ctrl+Alt (it is AltGr) or `/` (there is no such key on Nordic layouts). Windows' layout switch (Alt+Shift) can intercept some chords, and Firefox on Windows uses Alt+Shift+letter for HTML access keys.
 - **Offer the off switch:** wire `shortcutsEnabled` to a setting. 2.1.4 Character Key Shortcuts (A) covers only shortcuts made of printable characters, so Alt and Ctrl chords are outside it, but a bare letter is in scope. The switch is still offered because chords clash with the browser, the screen reader and the layout.
 - **Mark a custom label in another language** with its language (3.1.2 Language of Parts, AA).
@@ -114,11 +114,27 @@ These phrases come from a test tool that approximates a screen reader (`readAlou
 
 ## Visual / modes
 
-Headless: the package ships no CSS. With the default theme the list is cut down to an empty box until focus is inside it, so keyboard and screen reader users can still reach it. When focus arrives, it shows as a panel that floats over the page, with no fade or other motion. It hides again as soon as focus leaves, so it never covers the next element that gets focus (2.4.11 Focus Not Obscured (Minimum), AA). On screens at least 40rem wide and 36rem high it is fixed at the top of the window. On smaller screens, and at 400% zoom, it sits at the top of the page and scrolls with it, so it needs no scrollbar of its own (1.4.10 Reflow, AA). Each row is as tall as other controls (2.5.8 Target Size (Minimum), AA). In forced colours mode (the user's own system colours) it uses the system's text, background and link colours, and the highlight colour for the focus ring.
+Headless: the package ships no CSS. With the default theme the list is cut down to an empty box until focus is inside it, so keyboard and screen reader users can still reach it. When focus arrives, it shows as a panel that floats over the page, with no fade or other motion. It hides again as soon as focus leaves, so it never covers the next element that gets focus (2.4.11 Focus Not Obscured (Minimum), AA). On wide, tall screens it is fixed at the top of the window. On smaller screens, and at 400% zoom, it sits at the top of the page and scrolls with it, so it needs no scrollbar of its own (1.4.10 Reflow, AA). Each row is as tall as other controls (2.5.8 Target Size (Minimum), AA). In forced colours mode (the user's own system colours) it uses the system's text, background and link colours, and the highlight colour for the focus ring.
 
 ## WCAG SCs covered
 
-1.3.1 Info and Relationships (A), 1.4.10 Reflow (AA), 1.4.13 Content on Hover or Focus (AA), 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A), 2.1.4 Character Key Shortcuts (A), 2.4.1 Bypass Blocks (A), 2.4.3 Focus Order (A), 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA), 2.5.3 Label in Name (A), 2.5.8 Target Size (Minimum) (AA), 3.2.1 On Focus (A), 3.2.3 Consistent Navigation (AA), 4.1.2 Name, Role, Value (A). The behaviour ones are proved by the tests above and the axe tests; the visual ones by the stories.
+- 1.3.1 Info and Relationships (A): the group is named by visible text, and the lists are lists with items.
+- 1.4.10 Reflow (AA): the list sits in the page on small screens and at 400% zoom, and the reflow sweep checks every story for sideways scrolling at 320 CSS pixels.
+- 1.4.13 Content on Hover or Focus (AA): the panel shows on focus and hides when focus leaves.
+- 2.1.1 Keyboard (A): every item is reachable and operable by keyboard.
+- 2.1.2 No Keyboard Trap (A): Tab always leaves the panel.
+- 2.1.4 Character Key Shortcuts (A): shortcuts are chords with Alt or Ctrl and can be switched off.
+- 2.4.1 Bypass Blocks (A): the links jump to the main content.
+- 2.4.3 Focus Order (A): the panel is first, and the target keeps the order.
+- 2.4.7 Focus Visible (AA): the focused item shows a focus ring.
+- 2.4.11 Focus Not Obscured (Minimum) (AA): the panel hides as soon as focus leaves it.
+- 2.5.3 Label in Name (A): a shortcut's name is its text followed by its key caps.
+- 2.5.8 Target Size (Minimum) (AA): each row is as tall as other controls.
+- 3.2.1 On Focus (A): focus alone changes nothing.
+- 3.2.3 Consistent Navigation (AA): your duty; keep the panel the same on every page.
+- 4.1.2 Name, Role, Value (A): links and buttons are named by their text.
+
+The behaviour ones are proved by tests and axe; the visual ones by stories and the sweeps.
 
 ## AT test record
 
@@ -149,9 +165,10 @@ Headless: the package ships no CSS. With the default theme the list is cut down 
 
 ## Known issues
 
-- People who use a screen reader with a touch screen (VoiceOver on iOS, TalkBack) also hear the arrow-key sentence, which does not apply to them. The maintainer accepted this.
-- In browse mode (the screen reader's reading mode) a screen reader reads every item with its own arrow keys, which matches the arrow hint. Whether it also announces the description on the first Link is not known; test it with your own screen reader.
+- People who use a screen reader with a touch screen (VoiceOver on iOS, TalkBack) also hear the arrow-key sentence, which does not apply to them. The sentence is short; if it bothers your users, leave out `SkipPanel.Hint`, but then the first Link has no description and a warning appears in development.
+- In browse mode (the screen reader's reading mode) a screen reader reads every item with its own arrow keys, which matches the arrow hint. It may not announce the description on the first Link; test with your users' screen readers.
+- In Safari, Tab reaches links only when "Press Tab to highlight each item" is on (or with Option+Tab). Test with that setting on.
 - Until the page's script has loaded, the page has no roving tabindex (the single Tab stop), so every item is a Tab stop.
-- Whether Alt+Shift+letter reaches the page under NVDA and JAWS (browse and focus mode), Firefox, and Windows with two input layouts is not known; test it with your users' setups.
-- How screen readers read the group names and the nested Kbd is not known; test it with your own screen reader.
+- Whether Alt+Shift+letter reaches the page under NVDA and JAWS (browse and focus mode), Firefox, and Windows with two input layouts may not work; test with your users' setups.
+- Screen readers may read the group names and the nested Kbd differently; test with your users' screen readers.
 - Screen-reader users who read from the top of the page hear the whole panel before the content, because the list is cut to nothing visually but still in the page (C7). They can jump to the main landmark or the h1.

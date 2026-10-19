@@ -9,7 +9,7 @@ export const stackRows = propRows<StackDocumentedProps>({
     type: 'string',
     default: '–',
     description:
-      'Your own classes. They join the part’s class and never replace it, so the theme keeps styling the layout. Add a gap class: kv-stack--gap-2, kv-stack--gap-4 or kv-stack--gap-8. With none, the gap sits between -4 and -8.',
+      'Your own classes. They join the part’s class and never replace it, so the theme keeps styling the layout. Add a gap class: kv-stack--gap-2, kv-stack--gap-4 or kv-stack--gap-8. With none, the gap is 1.5rem in the default theme, between -4 and -8.',
   },
   as: {
     type: "'div' | 'ul' | 'ol' | 'li' | 'section' | 'form'",
@@ -39,17 +39,17 @@ export const stackAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-stack--gap-2',
     values: 'you add it',
-    meaning: 'The smallest space step between children.',
+    meaning: 'The smallest space step between children: 0.5rem in the default theme.',
   },
   {
     name: 'kv-stack--gap-4',
     values: 'you add it',
-    meaning: 'A small space step between children.',
+    meaning: 'A small space step between children: 1rem in the default theme.',
   },
   {
     name: 'kv-stack--gap-8',
     values: 'you add it',
-    meaning: 'A large space step between children.',
+    meaning: 'A large space step between children: 2rem in the default theme.',
   },
 ]
 

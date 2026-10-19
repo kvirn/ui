@@ -10,12 +10,12 @@ Stack is its children one below the other with an even space between them. It ad
 
 ## Roles, states, properties
 
-| Part  | Element / role      | ARIA                                                                        | Notes                                                                                                                                                                                       |
-| ----- | ------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Stack | `<div>` → `generic` | `role="list"` on `ul`/`ol` only                                             | The consumer adds a gap class (`kv-stack--gap-2`, `-4` or `-8`) for another gap; the default adds none. `as="ul"` or `"ol"` with `<li>` children is a list                                  |
-| Stack | `as`                | the chosen element's own                                                    | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once in development and renders the default element. `className` joins, `style` and refs pass |
-| Stack | attributes          | passed through                                                              | `aria-*`, `id` and every other attribute reach the element unchanged                                                                                                                        |
-| Stack | never adds          | no `tabindex`, `inert` or `aria-hidden`; no role except `list` on `ul`/`ol` | No handler, no heading, no live region, no text                                                                                                                                             |
+| Part  | Element / role      | ARIA                                                                        | Notes                                                                                                                                                      |
+| ----- | ------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stack | `<div>` → `generic` | `role="list"` on `ul`/`ol` only                                             | The consumer adds a gap class (`kv-stack--gap-2`, `-4` or `-8`) for another gap; the default adds none. `as="ul"` or `"ol"` with `<li>` children is a list |
+| Stack | `as`                | the chosen element's own                                                    | One element, chosen with a string. A value outside the list is a type error. `className` joins, other attributes and refs pass through                     |
+| Stack | attributes          | passed through                                                              | `aria-*`, `id` and every other attribute reach the element unchanged                                                                                       |
+| Stack | never adds          | no `tabindex`, `inert` or `aria-hidden`; no role except `list` on `ul`/`ol` | No handler, no heading, no live region, no text                                                                                                            |
 
 `useStack()` gives the same frozen props object (only `className`) for your own element.
 
@@ -69,13 +69,13 @@ Headless: Stack ships no CSS. With the default theme (`@kvirn-ui/theme/theme.css
 - Focus indicator, target size, contrast: not applicable. Stack has no colour, no edge and no control of its own.
 - forced-colors behaviour: not applicable, nothing is drawn.
 - reduced-motion behaviour: no motion.
-- Reflow and text spacing: a flex column with a gap: children keep their natural width and wrap their own text (1.4.10 Reflow, AA). No fixed heights (1.4.12 Text Spacing, AA). A story with a long Finnish word in a 320 CSS px column checks that nothing scrolls sideways.
+- Reflow and text spacing: a flex column with a gap: children keep their natural width and wrap their own text (1.4.10 Reflow, AA). No fixed heights (1.4.12 Text Spacing, AA). The reflow sweep checks every story at 320 CSS pixels for sideways scrolling, and the text-spacing sweep checks that no box clips text.
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): a div has no role, and a `ul` or `ol` has `role="list"` (`stack.test.tsx › rendering › adds role="list" to a ul and an ol, and no role to a div`).
+- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): a div has no role, and a `ul` or `ol` has `role="list"`.
 - 1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A): DOM order equals reading and focus order (the keyboard rows).
-- 1.4.10 Reflow (AA): no fixed sizes (the 320 CSS px story checks that nothing scrolls sideways). 1.4.12 Text Spacing (AA): no fixed heights, and the `storybook-text-spacing` sweep applies the 1.4.12 spacing to every story and fails on a box that clips more content than it holds.
+- 1.4.10 Reflow (AA): no fixed sizes (the reflow sweep checks that nothing scrolls sideways at 320 CSS pixels). 1.4.12 Text Spacing (AA): no fixed heights, and the text-spacing sweep applies the wider spacing to every story and fails on a box that clips text.
 
 ## AT test record
 
@@ -85,7 +85,7 @@ Headless: Stack ships no CSS. With the default theme (`@kvirn-ui/theme/theme.css
 | axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | stack.stories.tsx, every story, 4 themes                                                                      |
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | stack.test.tsx › adds role="list" to a ul and an ol, and no role to a div; expectNoA11yViolations             |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | stack.test.tsx › keyboard › is not a Tab stop and keeps the children in DOM order                             |
-| Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                                                   |
+| Focus order and management                                                 | pass        | n/a         | pass    | `stack.test.tsx` asserts focus                                                                                |
 | Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                               |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
@@ -94,6 +94,13 @@ Headless: Stack ships no CSS. With the default theme (`@kvirn-ui/theme/theme.css
 | JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
+
+### What to check
+
+- Move through a page in reading order with NVDA or VoiceOver: the order matches what you see, at wide and narrow widths.
+- As a `ul` with `li` Items, it is read as "list, N items".
+- A named `nav` or `aside` Item is found in the landmarks list by its name.
+- At 400% zoom nothing needs sideways scrolling.
 
 ## Known issues
 

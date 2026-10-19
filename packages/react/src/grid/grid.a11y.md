@@ -10,13 +10,13 @@ Grid lays children out on explicit column tracks chosen with classes (`kv-grid--
 
 ## Roles, states, properties
 
-| Part           | Element / role                               | ARIA                                            | Notes                                                                                                                                                       |
-| -------------- | -------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Grid.Root      | internal `<div class="kv-grid-container">`   | none                                            | The query container around the grid element. No role, no ARIA, no attribute beyond its class. This is the one approved exception to "one part, one element" |
-| Grid.Root      | `<div>` → `generic`, or `<ul>`/`<ol>` → list | `role="list"` on `ul`/`ol` only                 | `class="kv-grid"`. Every prop, the ref and `className` go here. `as="ul"` with `<li>` Items is a list, and its count is announced                           |
-| Grid.Item      | `<div>` → `generic`                          | none. The consumer adds it with the element     | `class="kv-grid-item"`. Optional: any direct child is a cell. Outside a Root it warns once in development                                                   |
-| Grid.Root/Item | `as`                                         | the chosen element's own                        | A value outside the list is a type error and, in JavaScript, warns once in development and renders the default element. `className` joins, refs pass        |
-| both           | never                                        | no `tabindex`, `inert`, `aria-hidden`, `data-*` | No handler, no heading, no live region, no text                                                                                                             |
+| Part           | Element / role                               | ARIA                                            | Notes                                                                                                                                                                       |
+| -------------- | -------------------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Grid.Root      | internal `<div class="kv-grid-container">`   | none                                            | The query container around the grid element. No role, no ARIA, no attribute beyond its class. Grid renders a wrapper and the grid element, so a container query can size it |
+| Grid.Root      | `<div>` → `generic`, or `<ul>`/`<ol>` → list | `role="list"` on `ul`/`ol` only                 | `class="kv-grid"`. Every prop, the ref and `className` go here. `as="ul"` with `<li>` Items is a list, and its count is announced                                           |
+| Grid.Item      | `<div>` → `generic`                          | none. The consumer adds it with the element     | `class="kv-grid-item"`. Optional: any direct child is a cell. Outside a Root it warns once in development                                                                   |
+| Grid.Root/Item | `as`                                         | the chosen element's own                        | A value outside the list is a type error. `className` joins, refs pass                                                                                                      |
+| both           | never                                        | no `tabindex`, `inert`, `aria-hidden`, `data-*` | No handler, no heading, no live region, no text                                                                                                                             |
 
 `useGrid()` gives the same frozen props objects (only `className`): `containerProps`, `rootProps` and `itemProps`.
 
@@ -69,25 +69,25 @@ Grid renders no text, so it has no message keys.
 ## Consumer responsibilities
 
 - **A list of links or cards is a list.** `as="ul"` or `"ol"` with `<li>` children (`Grid.Item as="li"`), so the count is announced (1.3.1 Info and Relationships (A)). Grid sets `role="list"` itself; don't write it.
-- **No reordering.** There is no `order-*` and no dense packing (1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A)). `start-*`, `end-*` and `row-start-*` place an item on a line: placing a later item before an earlier one makes the visual order differ from the DOM, reading and focus order. Keep line placement in DOM order. (A maintainer-approved accessibility trade-off.)
+- **No reordering.** There is no `order-*` and no dense packing (1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A)). `start-*`, `end-*` and `row-start-*` place an item on a line: placing a later item before an earlier one makes the visual order differ from the DOM, reading and focus order. Keep line placement in DOM order. (An accessibility trade-off.)
 - **Start at one track.** A bare `cols-n` (n > 1), `flow-col` without `rows-n`, or `auto-cols-min|max` keeps its tracks at 320px, so the cells squeeze and content overflows or overlaps (1.4.10 Reflow (AA)). Start with `kv-grid--cols-1` or `kv-grid--fit-*` and add columns with a breakpoint form (`kv-grid--md-cols-n`). `fit-*` uses `min(…, 100%)` and never overflows.
 - **Name the landmarks.** A `nav`, `aside` or `section` Item needs `aria-label` or `aria-labelledby`, in the page's language. A page has one `main`: Grid never renders one by default.
 - **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2 Language of Parts (AA)).
 
 ## Visual / modes
 
-Headless: Grid ships no CSS. With `@kvirn-ui/theme/theme.css` (DESIGN.md, Layout):
+Headless: Grid ships no CSS. With `@kvirn-ui/theme/theme.css`:
 
 - Focus indicator, target size, contrast: not applicable. Grid has no colour, no edge and no control of its own.
 - forced-colors behaviour: not applicable, nothing is drawn.
 - reduced-motion behaviour: no motion.
-- Reflow (1.4.10 Reflow (AA)): a 320px story checks that nothing scrolls sideways. Text spacing (1.4.12 Text Spacing (AA)): Grid sets no fixed height, `overflow` or clip, and the `storybook-text-spacing` sweep applies the 1.4.12 spacing to every story and fails on a box that clips more content than it holds.
+- Reflow (1.4.10 Reflow (AA)): the reflow sweep checks every story at 320 CSS pixels for sideways scrolling. Text spacing (1.4.12 Text Spacing (AA)): Grid sets no fixed height, `overflow` or clip, and the text-spacing sweep applies the wider spacing to every story and fails on a box that clips text.
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): a div has no role, and a `ul` or `ol` has `role="list"` (`grid.test.tsx › as › adds role="list" to a ul and an ol Root, and no role to a div`).
+- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): a div has no role, and a `ul` or `ol` has `role="list"`.
 - 1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A): DOM order equals reading and focus order (the keyboard rows).
-- 1.4.10 Reflow (AA): a 320px story checks that nothing scrolls sideways. 1.4.12 Text Spacing (AA): no fixed height, overflow or clip, and the `storybook-text-spacing` sweep fails on a box that clips more content than it holds.
+- 1.4.10 Reflow (AA): the reflow sweep checks that nothing scrolls sideways at 320 CSS pixels. 1.4.12 Text Spacing (AA): no fixed height, overflow or clip, and the text-spacing sweep fails on a box that clips text.
 
 ## AT test record
 
@@ -106,6 +106,13 @@ Headless: Grid ships no CSS. With `@kvirn-ui/theme/theme.css` (DESIGN.md, Layout
 | JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                 |
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                 |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                 |
+
+### What to check
+
+- Move through a page in reading order with NVDA or VoiceOver: the order matches what you see, at wide and narrow widths.
+- As a `ul` with `li` Items, it is read as "list, N items".
+- A named `nav` or `aside` Item is found in the landmarks list by its name.
+- At 400% zoom nothing needs sideways scrolling.
 
 ## Known issues
 

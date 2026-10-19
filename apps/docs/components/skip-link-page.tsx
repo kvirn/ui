@@ -46,18 +46,22 @@ export function SkipLinkPage({
   return (
     <ComponentPage
       title="SkipLink"
-      lead="A link at the top of the page that takes people using a keyboard straight to the main content. The default theme keeps it out of sight until it has focus, so the page looks the same to people who use a mouse."
+      lead="Activating it moves focus to the main content, so people using a keyboard don’t have to tab through the header on every page. The default theme keeps it out of sight until it has focus, so the page looks the same to people who use a mouse."
       whenToUse={
         <ul>
           <li>
             Use one on every page that has a header or a menu before the main content. People who
             use a keyboard can then jump past it, instead of pressing Tab through it on every page.
           </li>
-          <li>Put it first in the page, before the header and any other link.</li>
           <li>
-            Give the main content an id, such as <code>main</code>, and set the link’s{' '}
-            <code>href</code> to <code>#main</code>. A <code>#</code> address points to an element
-            on the same page.
+            Put it first in the page, before the header and any other link. Keep it in the page
+            flow: don’t put it in a fixed bar that covers other content (2.4.11 Focus Not Obscured
+            (Minimum), AA).
+          </li>
+          <li>
+            Give the main content an id, such as <code>&lt;main id=&quot;main&quot;&gt;</code>, and
+            set the link’s <code>href</code> to <code>#main</code>. A <code>#</code> address points
+            to an element on the same page.
           </li>
           <li>
             Not for a link to another page: use a <Link href="/components/link">Link</Link>. Not for
@@ -95,8 +99,8 @@ export function SkipLinkPage({
           </UseCase>
           <UseCase
             id="two-links"
-            title="A way past the header and a way to the search"
-            why="Some pages have two things people look for first. Give each its own link, one after the other at the top: the main content first, then the search. Each has a target with its own id."
+            title="Skip to the main content or to the search"
+            why="Some pages have two things people look for first. Give each its own link, one after the other at the top: the main content first, then the search. Each link points to a target with its own id."
             code={sources['two-links']}
             propsUsed={[
               { part: 'SkipLink', prop: 'href' },
@@ -147,11 +151,22 @@ export function SkipLinkPage({
                 label: 'useSkipLink (options)',
                 prop: 'href',
               },
+              {
+                part: apiHookPart('useSkipLink', 'result'),
+                label: 'useSkipLink (result)',
+                prop: 'skipLinkProps',
+              },
+              {
+                part: apiHookPart('useSkipLink', 'result'),
+                label: 'useSkipLink (result)',
+                prop: 'label',
+              },
             ]}
             note={
               <Note kind="tip">
-                The link does not cancel the browser’s own jump to the target, so the jump also
-                works without JavaScript.
+                Put the whole of <code>skipLinkProps</code> on a native <code>&lt;a&gt;</code>. It
+                carries the class, the address and the click handler that moves focus to the target
+                (2.4.1 Bypass Blocks, A).
               </Note>
             }
           >

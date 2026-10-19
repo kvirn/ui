@@ -27,8 +27,8 @@ export type GridExampleSources = Record<
 
 const partRenders = (
   <>
-    <code>&lt;div&gt;</code> with no role. It takes every attribute of a <code>&lt;div&gt;</code>{' '}
-    and passes <code>ref</code> to it.
+    It takes every attribute of a <code>&lt;div&gt;</code> and passes <code>ref</code> to it. It has
+    no state, so no <code>data-*</code>.
   </>
 )
 
@@ -37,11 +37,13 @@ const parts: ApiPart[] = [
     name: 'Grid.Root',
     renders: (
       <>
-        {partRenders} Root renders an internal <code>&lt;div&gt;</code> around the grid element, so
-        the breakpoints answer to the grid’s own width. Every prop and the ref go to the grid
-        element. Put it in a block-level parent: in a shrink-to-fit parent (inline-flex, float) it
-        collapses. Also exported as <code>GridRoot</code>. The default theme is described on{' '}
-        <Link href="/foundation/theming">Theming</Link>.
+        <code>&lt;div class=&quot;kv-grid&quot;&gt;</code>, inside an internal{' '}
+        <code>&lt;div class=&quot;kv-grid-container&quot;&gt;</code>, so the breakpoints answer to
+        the grid’s own width. {partRenders} Every prop and the ref go to the grid element, not to
+        the wrapper. It has no role, except <code>role=&quot;list&quot;</code> on a <code>ul</code>{' '}
+        or <code>ol</code>. Put it in a block-level parent: in a shrink-to-fit parent (inline-flex,
+        float) it collapses. Also exported as <code>GridRoot</code>. The default theme is described
+        on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: gridRootRows,
@@ -51,8 +53,9 @@ const parts: ApiPart[] = [
     name: 'Grid.Item',
     renders: (
       <>
-        {partRenders} Optional: any direct child of Root is a cell. Also exported as{' '}
-        <code>GridItem</code>. An Item outside a Root warns in development.
+        <code>&lt;div class=&quot;kv-grid-item&quot;&gt;</code> with no role. {partRenders}{' '}
+        Optional: any direct child of Root is a cell. Also exported as <code>GridItem</code>. An
+        Item outside a Root warns in development.
       </>
     ),
     props: gridItemRows,
@@ -70,7 +73,7 @@ export function GridPage({
   return (
     <ComponentPage
       title="Grid"
-      lead="You choose the columns with classes, so you need no CSS of your own. Grid adds no meaning of its own: what a screen reader reads and what the keyboard visits follows the order you write."
+      lead="You choose the columns with the theme’s classes, so you write no CSS of your own. Grid adds no meaning of its own: what a screen reader reads and what the keyboard visits follows the order you write."
       whenToUse={
         <ul>
           <li>
@@ -151,8 +154,8 @@ export function GridPage({
             propsUsed={[{ part: 'Grid.Item', prop: 'as' }]}
             note={
               <Note kind="tip">
-                The cells follow the DOM order, and the grid mirrors in right-to-left languages: the
-                first cell is at the right.
+                The cells follow the DOM order. In a right-to-left language the grid mirrors, so the
+                first cell sits at the right and the side column moves to the left.
               </Note>
             }
           >
@@ -184,8 +187,8 @@ export function GridPage({
           notes={{
             'what-you-need-to-do': (
               <Note kind="reminder">
-                Start with one column: <code>kv-grid--cols-1</code> or a <code>fit</code> class.
-                Then add columns with a breakpoint, such as <code>kv-grid--lg-cols-3</code>. A bare{' '}
+                A grid has one column until you add more. Add columns from a breakpoint, such as{' '}
+                <code>kv-grid--lg-cols-3</code>, or use a <code>fit</code> class. A bare{' '}
                 <code>kv-grid--cols-3</code> keeps three columns on a 320px screen, and content
                 overflows (1.4.10 Reflow).
               </Note>

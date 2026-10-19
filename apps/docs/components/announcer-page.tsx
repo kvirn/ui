@@ -31,7 +31,7 @@ export function AnnouncerPage({
   return (
     <ComponentPage
       title="Announcer"
-      lead="A live region is a part of the page that a screen reader (software that reads the screen aloud) speaks when its text changes. You send a message with a hook, and the outermost KvirnProvider renders the regions."
+      lead="A live region is a part of the page that a screen reader (software that reads the screen aloud) speaks when its text changes. You send a message with a hook, and the outermost KvirnProvider holds the live regions."
       whenToUse={
         <ul>
           <li>
@@ -39,9 +39,9 @@ export function AnnouncerPage({
             a count, a result, a rejected character, a finished upload.
           </li>
           <li>
-            Don’t announce what focus already reads, such as a focused control’s own label or state,
-            and don’t add your own <code>role=&quot;status&quot;</code> or <code>aria-live</code>{' '}
-            for the same message: it would be read twice.
+            Don’t announce what focus already reads, such as a focused control’s own label or state.
+            Don’t add your own <code>role=&quot;status&quot;</code> or <code>aria-live</code> for
+            the same message either: it would be read twice.
           </li>
           <li>
             Keep a message short, with the number or the name in it: “3 services found”, not “The
@@ -54,8 +54,8 @@ export function AnnouncerPage({
             Announcer for you.
           </li>
           <li>
-            There is no component to render and no text of its own: you pass a message already
-            translated.
+            There is no part to render. You call a hook and pass a message that is already
+            translated, because the Announcer has no text of its own.
           </li>
         </ul>
       }
@@ -83,7 +83,7 @@ export function AnnouncerPage({
           <UseCase
             id="assertive"
             title="Something to act on now"
-            why="Assertive interrupts the screen reader, so keep it for what the user must act on right now, such as a session that has ended. Use it rarely."
+            why="Assertive interrupts the screen reader, so keep it for what the user must act on right now, such as a session that has ended. Use it rarely. An announcement after a session has expired is not enough: warn before it expires and let people extend it (2.2.1 Timing Adjustable, A), for example with an AlertDialog."
             code={sources['assertive']}
             propsUsed={[
               { part: apiHookPart('announce', 'options'), label: 'announce', prop: 'politeness' },
@@ -111,7 +111,7 @@ export function AnnouncerPage({
           <UseCase
             id="inside-dialog"
             title="A message from inside a dialog"
-            why="A modal dialog makes the rest of the page silent, including the page’s live regions. A Dialog has its own live regions while it is open, so a message sent from a component inside it is still spoken. Nothing else changes: you call announce as usual."
+            why="A modal dialog makes the rest of the page silent, including the page’s live regions. A Dialog or an AlertDialog has its own live regions while it is open, so a message sent from a component inside it is still spoken. You call announce as usual."
             code={sources['inside-dialog']}
             note={
               <Note kind="reminder">
@@ -155,9 +155,10 @@ export function AnnouncerPage({
           notes={{
             'what-you-need-to-do': (
               <Note kind="reminder">
-                Set the page language to the provider’s language. The live regions have no language
-                of their own, so a screen reader speaks every message in the page’s language (3.1.1
-                Language of Page).
+                Mount KvirnProvider once, at the top of your app and outside any form. Without it,{' '}
+                <code>announce</code> does nothing and screen reader users hear nothing (4.1.3
+                Status Messages, AA). Set the page language to the provider’s language too: the live
+                regions have no language of their own (3.1.1 Language of Page, A).
               </Note>
             ),
             'known-issues': (

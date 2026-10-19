@@ -5,7 +5,7 @@ import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 const classNameDescription =
   'Your own classes. They join the part’s class and never replace it, so the theme keeps styling the layout.'
 
-export const gridRootRows = propRows<Pick<GridRootProps, 'className' | 'as'>>({
+export const gridRootRows = propRows<Pick<GridRootProps, 'className' | 'as' | 'ref'>>({
   className: {
     type: 'string',
     default: '–',
@@ -17,9 +17,14 @@ export const gridRootRows = propRows<Pick<GridRootProps, 'className' | 'as'>>({
     description:
       'Changes the element: ul or ol with li children for a list whose count is announced. A list gets role="list", because Safari drops the list role when the bullets are removed. In JavaScript, an element outside the list is replaced by a div and warns once in development.',
   },
+  ref: {
+    type: 'Ref<HTMLElement>',
+    default: '–',
+    description: 'Reaches the grid element, not the wrapper around it.',
+  },
 })
 
-export const gridItemRows = propRows<Pick<GridItemProps, 'className' | 'as'>>({
+export const gridItemRows = propRows<Pick<GridItemProps, 'className' | 'as' | 'ref'>>({
   className: {
     type: 'string',
     default: '–',
@@ -30,6 +35,11 @@ export const gridItemRows = propRows<Pick<GridItemProps, 'className' | 'as'>>({
     default: "'div'",
     description:
       'Changes the element: li inside a ul or ol Root, article, section, nav or aside with a name, or main (one per page, never the default). Grid adds no role of its own: the element’s meaning applies.',
+  },
+  ref: {
+    type: 'Ref<HTMLElement>',
+    default: '–',
+    description: 'Reaches the element, whichever it is.',
   },
 })
 
@@ -58,6 +68,23 @@ export const gridRootAttributes: readonly AttributeRow[] = [
       'The space between cells. n is 0 to 6, 8, 10, 12 or 16. The default gap is 1.5rem; gap-0 removes it.',
   },
   {
+    name: 'kv-grid--gap-x-n | kv-grid--gap-y-n',
+    values: 'you add it',
+    meaning: 'The space between columns only, or between rows only.',
+  },
+  {
+    name: 'kv-grid--rows-n | flow-row | flow-col | auto-rows-… | auto-cols-…',
+    values: 'you add it',
+    meaning:
+      'Explicit rows (1 to 12), the direction new cells fill in, and the size of rows or columns the grid adds itself. They change how cells are placed, not the order of the DOM.',
+  },
+  {
+    name: 'kv-grid--items-… | justify-items-… | place-items-… | content-… | justify-…',
+    values: 'you add it',
+    meaning:
+      'Where cells sit inside their area (start, center, end, stretch), and where the whole set of tracks sits inside the grid.',
+  },
+  {
     name: 'kv-grid--sm-… | --md-… | --lg-… | --xl-… | --2xl-…',
     values: 'you add it',
     meaning:
@@ -78,6 +105,17 @@ export const gridItemAttributes: readonly AttributeRow[] = [
       'The columns and rows a cell covers, or the line it starts or ends at. Keep line placement in DOM order: reading and focus order follow the DOM.',
   },
   {
+    name: 'kv-grid-item--self-… | justify-self-… | place-self-…',
+    values: 'you add it',
+    meaning: 'Where one cell sits inside its own area, in place of what the Root chose.',
+  },
+  {
+    name: 'kv-grid-item--subgrid | rows-subgrid',
+    values: 'you add it',
+    meaning:
+      'The cell becomes a grid that shares the columns (or rows) of its parent, so its own cells line up with the cells around it.',
+  },
+  {
     name: 'kv-grid-item--lg-span-8',
     values: 'you add it',
     meaning: 'Any of the above from a breakpoint of the grid’s own width, as for the Root.',
@@ -87,7 +125,7 @@ export const gridItemAttributes: readonly AttributeRow[] = [
 export const useGridHook: ApiHook = {
   name: 'useGrid',
   intro:
-    'Gives the classes for your own elements. It takes no options, and the classes add no role, ARIA or tabindex.',
+    'Gives the classes for your own elements. It takes no options, and the classes add no role, ARIA or tabindex. On your own ul or ol, add role="list" yourself, which Grid.Root does for you.',
   result: propRows<UseGridResult>({
     containerProps: {
       type: 'GridPartProps',

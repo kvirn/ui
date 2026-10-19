@@ -109,6 +109,17 @@ describe('SkipLink keyboard', () => {
     expect(document.activeElement).toBe(link)
     expect(page.getByRole('main').element().hasAttribute('tabindex')).toBe(false)
   })
+
+  test("a click on the link does not cancel the browser's own jump to the target", async () => {
+    await render(<Page />)
+    const link = page.getByRole('link', { name: 'Skip to main content' }).element()
+    const click = vi.fn<(event: Event) => boolean>((event) => event.defaultPrevented)
+    document.addEventListener('click', click)
+    await userEvent.click(link)
+    document.removeEventListener('click', click)
+    expect(click).toHaveReturnedWith(false)
+    expect(document.activeElement).toBe(page.getByRole('main').element())
+  })
 })
 
 describe('SkipLink target', () => {

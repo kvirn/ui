@@ -52,7 +52,8 @@ export function StackPage({
           </li>
           <li>
             Pick the space with a gap class, <code>kv-stack--gap-2</code>, <code>-4</code> or{' '}
-            <code>-8</code>: a smaller step inside a group, a larger one between sections.
+            <code>-8</code>: a smaller step inside a group, a larger one between sections. With no
+            class you get a step between <code>-4</code> and <code>-8</code>.
           </li>
           <li>
             Use <code>as</code> to make it the element the content needs, such as a <code>ul</code>{' '}

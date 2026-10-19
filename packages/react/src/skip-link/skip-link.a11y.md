@@ -33,13 +33,13 @@ Native tab order. No key is intercepted.
 | Enter     | on the skip link   | Focuses the target (`tabindex="-1"` added if it was not focusable); the next Tab continues in it | `skip-link.test.tsx › SkipLink keyboard › Enter moves focus to the target and the next Tab continues after it` |
 | Space     | on the skip link   | Not handled (a link; the page scrolls natively)                                                  | `skip-link.test.tsx › SkipLink keyboard › Space is not handled`                                                |
 
-The visible state is proved in a story test that loads the default theme: hidden before Tab, shown in the page flow while focused, hidden after Tab.
+A story with the default theme loaded proves the visible state: hidden before Tab, shown in the page flow while focused, hidden after Tab.
 
 ## Focus management
 
 - Initial focus: not moved. The link is a Tab stop and nothing else.
-- On activation: focus moves to the target element. The click handler does not call `preventDefault`, so the browser still makes its own jump to the target. The code shows this; no test checks it.
-- A target made focusable has `tabindex="-1"` until it loses focus (`SkipLink target › a target without tabindex gets tabindex -1 until it loses focus, then it is removed`). A target already focusable is left alone (`a target that is already focusable is left alone`, `a target with its own tabindex -1 keeps it after blur`).
+- On activation: focus moves to the target element. The click handler does not call `preventDefault`, so the browser still makes its own jump to the target. A test shows the browser's own jump is not cancelled.
+- A target made focusable has `tabindex="-1"` until it loses focus. A target already focusable is left alone, and so is one with its own `tabindex="-1"`.
 - Trap: no. Restore to: not applicable.
 
 ## Announcements
@@ -53,7 +53,7 @@ Moving focus to the target reads its name or content. The only string is the lin
 ## Consumer responsibilities
 
 - **Put it first in the body,** before the header and any other link, and give the main content the id (`<main id="main">`).
-- **A missing target warns** in development: `skip-link-target-missing:<id>`.
+- **A missing target warns** in development: the warning names the missing id.
 - **Language.** A custom label is your own text. When it is in another language than the page, mark it: put it in a nested `KvirnProvider` and spread `useLocale().localeProps` on your own element (3.1.2 Language of Parts, AA).
 - **Do not hide the target's focus ring.** The default theme draws the focus ring on the target, only when focus came from the keyboard (`:focus-visible`): don't set `outline: none` on `[tabindex="-1"]`.
 - **Do not put it in a sticky layer that covers other content** (2.4.11 Focus Not Obscured (Minimum), AA): it stays in the flow.
@@ -67,37 +67,45 @@ Headless: no CSS. With the default theme the link is hidden visually, but not re
 - a focus ring with at least 3:1 contrast (2.4.7 Focus Visible, AA);
 - space around it and a target of at least 24 by 24 CSS pixels (2.5.8 Target Size (Minimum), AA).
 
-It reflows with the page (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow. In forced colours (a Windows contrast mode) it uses the system's link and background colours and a highlight-coloured ring, with no reliance on a background fill. If you restyle it, keep the contrast, the underline, the ring and the target size.
+It reflows with the page (1.4.10 Reflow, AA): the reflow sweep checks every story at 320 CSS pixels for horizontal overflow. In forced colours (a Windows contrast mode) it uses the system's link and background colours and a highlight-coloured ring, with no reliance on a background fill. If you restyle it, keep the contrast, the underline, the ring and the target size.
 
 ## WCAG SCs covered
 
-- 2.4.1 Bypass Blocks (A): the link jumps to the main content (`SkipLink keyboard › Enter moves focus to the target and the next Tab continues after it`).
+- 2.4.1 Bypass Blocks (A): the link jumps to the main content.
 - 2.4.3 Focus Order (A): first stop; the next Tab continues in the target.
-- 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA): visible and in the page flow while focused (the story test with the theme loaded).
+- 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA): visible and in the page flow while focused (a story with the default theme loaded).
 - 1.4.1 Use of Color (A): the link is underlined, so colour is not the only cue (a theme property, not a test).
 - 3.1.2 Language of Parts (AA): a custom label in another language is marked by the consumer (see Consumer responsibilities).
 - 2.5.8 Target Size (Minimum) (AA), 1.4.10 Reflow (AA), 1.4.3 Contrast (Minimum) (AA) and 1.4.11 Non-text Contrast (AA): the default theme; the contrast is measured by an automated check.
-- 4.1.2 Name, Role, Value (A): `link` named by its text (`SkipLink name and attributes › the name is the default label, rendered as text with no ARIA added`, and the axe tests).
+- 4.1.2 Name, Role, Value (A): `link` named by its text, and axe finds no violation.
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                               |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                     |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | skip-link.stories.tsx, every story, 4 themes                                                                        |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | skip-link.test.tsx › the name is the default label, rendered as text with no ARIA added; expectNoA11yViolations     |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test (skip-link.test.tsx › SkipLink keyboard › the first Tab stop is the skip link)            |
-| Focus order and management                                                 | pass        | n/a         | pass    | skip-link.test.tsx asserts focus (toHaveFocus); first rule: SkipLink keyboard › the first Tab stop is the skip link |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI       |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                     |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                     |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                     |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                     |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                     |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                     |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                     |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                          |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | skip-link.stories.tsx, every story, 4 themes                                                                                   |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | skip-link.test.tsx › the name is the default label, rendered as text with no ARIA added; expectNoA11yViolations                |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test (skip-link.test.tsx › SkipLink keyboard › the first Tab stop is the skip link)                       |
+| Focus order and management                                                 | pass        | n/a         | pass    | skip-link.test.tsx asserts focus (document.activeElement); first rule: SkipLink keyboard › the first Tab stop is the skip link |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                  |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                |
+
+### What to check
+
+- Tab once on a fresh page: the link appears and its name is read.
+- Press Enter: focus lands in the main content, and the next Tab continues after the link, not in the header.
+- Tab without Enter: the link hides.
+- At 400% zoom the focused link is visible and uncovered.
+- In Safari, turn on "Press Tab to highlight each item" first, then repeat the first two steps.
 
 ## Known issues
 
-- Have a native speaker review the Finnish, Norwegian Bokmål and Norwegian Nynorsk texts before you launch. <!-- kv-lang-ok: the language name Bokmål -->
+- If you override the label, have a native speaker check it.
 - Safari (WebKit): whether the focus ring shows on the target after someone presses Enter on the link is not covered by an automated test, so check it in your own service. In Safari, Tab only reaches links when "Press Tab to highlight each item" is on (or with Option+Tab), so test with that setting on. Don't hide the ring on `[tabindex="-1"]`.

@@ -166,7 +166,8 @@ export function SkipPanelPage({
           <li>
             Add shortcut rows only for real actions, such as “Search” or “My cases”. Every shortcut
             also shows in the list as a button or link, so people who can’t use the keys lose
-            nothing.
+            nothing. Keep the same links and shortcuts on every page (3.2.3 Consistent Navigation,
+            AA).
           </li>
           <li>
             Put it first in the page, before the header and any other link. If the page also has a{' '}
@@ -209,12 +210,12 @@ export function SkipPanelPage({
               <>
                 Residents of a municipality often search the site or check their cases. A second
                 group lists these two as rows. “Search” is a button that moves focus to the search
-                field. “My cases” is a link. A shortcut is a chord (keys pressed together). Press
-                the chord anywhere on the page, except in a text field, and the row does what it
-                does when you press it. The help link goes last. In this example the links point to
-                places on the same page. On your site, “My cases” points to the cases page, and the
-                help link points to the page where visitors read about the shortcuts and turn them
-                off, such as <code>/accessibility-settings#shortcuts</code>.
+                field. “My cases” is a link. Each row has a chord: keys pressed together, such as
+                Alt+Shift+S. Press the chord anywhere on the page, except in a text field, and the
+                row runs as if you had pressed it. The help link goes last. In this example the
+                links point to places on the same page. On your site, “My cases” points to the cases
+                page. The help link points to the page where visitors read about the shortcuts and
+                turn them off, such as <code>/accessibility-settings#shortcuts</code>.
               </>
             }
             code={sources['shortcuts']}
@@ -226,13 +227,13 @@ export function SkipPanelPage({
             ]}
             note={
               <Note kind="reminder">
-                Make every chord Alt (Option on a Mac) plus Shift plus a letter, or use{' '}
-                <code>mod</code> with a letter. A bare letter would fire while someone types or uses
-                speech input (software that turns speech into text). It would also fall under 2.1.4
-                Character Key Shortcuts (Level A), which asks for a way to turn it off, change it or
-                limit it to when its control has focus. In development, a warning flags a bare
-                letter, Ctrl with Alt, and <code>mod</code> together with <code>ctrl</code> or{' '}
-                <code>meta</code>.
+                Make every chord Alt (Option on a Mac) plus Shift plus a letter. Or use{' '}
+                <code>mod</code> with a letter: it means Ctrl on Windows and Command on a Mac. A
+                bare letter would fire while someone types or uses speech input (software that turns
+                speech into text). It would also fall under 2.1.4 Character Key Shortcuts (Level A),
+                which asks for a way to turn it off, change it or limit it to when its control has
+                focus. In development, a warning flags a bare letter, Ctrl with Alt, and{' '}
+                <code>mod</code> together with <code>ctrl</code> or <code>meta</code>.
               </Note>
             }
           >
@@ -303,6 +304,14 @@ export function SkipPanelPage({
                 link goes nowhere and people using a keyboard must still tab through the whole
                 header (2.4.1 Bypass Blocks, Level A). Put a Hint inside the Root, and add a{' '}
                 <code>HelpLink</code> to the page where visitors can turn the shortcuts off.
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                The floating list sits above the page by its stacking order (<code>z-index</code>).
+                If a fixed header on your site sits above it, set a higher <code>z-index</code> on
+                the <code>kv-skip-panel</code> class in your CSS. Otherwise the header can hide the
+                item that has focus (2.4.11 Focus Not Obscured (Minimum), AA).
               </Note>
             ),
             keyboard: (
