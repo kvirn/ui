@@ -1,6 +1,6 @@
 # Heading scale: a wider h1–h6 span and prose heading rhythm
 
-Status: Approved (option A with a 14px floor for h6, maintainer, 2026-10-16). Plan: [0125](plans/0125-heading-scale.md). No code changed by this spec.
+Status: Approved (option A with a 14px floor for h6, maintainer, 2026-10-16). Plan: Plan 0125. No code changed by this spec.
 
 ## Brief
 

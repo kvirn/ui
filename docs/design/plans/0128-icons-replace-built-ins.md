@@ -1,10 +1,10 @@
 # Plan 0128: Default icons come from `@kvirn-ui/icons`
 
 - **Status:** In progress (review: CHANGES, fixes running) (direction chosen by the maintainer 2026-10-17; package split below awaits a nod)
-- **Superseded in part** by [0130](0130-icon-name-registry-only.md) (2026-10-17): no default icons (replaces D1's "defaults come from the icons package" and D5), and examples use `<Icon name>` (replaces D15).
+- **Superseded in part** by Plan 0130 (deleted; `git log -- docs/design/plans/0130-*.md`) (2026-10-17): no default icons (replaces D1's "defaults come from the icons package" and D5), and examples use `<Icon name>` (replaces D15).
 - **Owner:** lead
 - **Created:** 2026-10-17 · **Target:** alpha
-- **Related:** [0124 icon library](0124-icon-library.md) (supersedes its "25 built-ins stay in react" decision), [0126](0126-spinner-icon.md), [0127](0127-icon-variant-and-stroke.md), `docs/design/icon-library.md`, skill `api-conventions` (Registries)
+- **Related:** Plan 0124, icon library (deleted; `git log -- docs/design/plans/0124-*.md`) (supersedes its "25 built-ins stay in react" decision), Plan 0126 (deleted; `git log -- docs/design/plans/0126-*.md`), Plan 0127 (deleted; `git log -- docs/design/plans/0127-*.md`), `docs/design/icon-library.md`, skill `api-conventions` (Registries)
 
 ## Goal
 

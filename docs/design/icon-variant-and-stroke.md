@@ -1,7 +1,7 @@
 # Design spec: Icon and spinner variant (colour) and stroke width
 
 - **Status:** Draft · **Designer:** ux-designer agent · **Date:** 2026-10-17
-- **Plan:** to be written (amends [icon.md](icon.md) §6.2–6.6, [loading-indicators.md](loading-indicators.md) L6 and §6.4, [Plan 0126](plans/0126-spinner-icon.md))
+- **Plan:** to be written (amends [icon.md](icon.md) §6.2–6.6, [loading-indicators.md](loading-indicators.md) L6 and §6.4, Plan 0126)
 - **Type:** component default styling (theme classes, one `variant` prop). No new colour token.
 
 ## 1. Brief

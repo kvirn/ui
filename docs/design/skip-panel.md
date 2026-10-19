@@ -2,7 +2,7 @@
 
 - **Status:** Approved (maintainer decisions 2026-10-17; 2026-10-18: renamed SkipPanel, no inline variant)
 - **Designer:** ux-designer agent · **Date:** 2026-10-18
-- **Plan:** `docs/design/plans/0132-skip-panel.md`
+- **Plan:** Plan 0132
 - **Type:** component default styling and behaviour (extends `SkipLink`, `packages/react/src/skip-link/`)
 
 ## 1. Brief

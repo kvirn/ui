@@ -3,7 +3,7 @@
 - **Status:** Done for agents (open: licence wording, visual check of the pin, human review checks)
 - **Owner:** lead
 - **Created:** 2026-10-17 · **Target:** alpha
-- **Related:** [0128](0128-icons-replace-built-ins.md), [0124](0124-icon-library.md), `docs/design/map.md`, `docs/design/rich-text-editor.md`
+- **Related:** [0128](0128-icons-replace-built-ins.md), Plan 0124 (deleted; `git log -- docs/design/plans/0124-*.md`), `docs/design/map.md`, `docs/design/rich-text-editor.md`
 
 ## Goal
 
@@ -55,7 +55,7 @@ Unchanged: same roles, names, keyboard and RTL behaviour. The visible change is 
 
 - A public icons package ships `icons.<key>` labels that no native speaker has reviewed: marked pending, decorative by default.
 - `packages/map` is still `private`; rich-text is public and now depends on icons.
-- Dirty tree: `docs/roadmap.md`, `plans/README.md`, `plans/0124` hold maintainer edits; no `vp fmt` on them.
+- Dirty tree: `docs/roadmap.md`, `plans/README.md`, Plan 0124 hold maintainer edits; no `vp fmt` on them.
 
 ## Done when
 

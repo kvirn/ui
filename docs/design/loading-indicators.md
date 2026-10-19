@@ -1,7 +1,7 @@
 # Design spec: Loading indicators (spinner icon, animated gradient bar)
 
 - **Status:** In review (maintainer decisions of 2026-10-06 applied; amended 2026-10-17 by Plan 0126: a still library icon `spinner`, crawled by the consumer class `kv-animate-spinner`) · **Designer:** ux-designer agent · **Date:** 2026-10-06, amended 2026-10-17
-- **Plans:** [0080](plans/README.md) (in git history) and [0126](plans/0126-spinner-icon.md). Amends [status-patterns.md](status-patterns.md) D2 ("no spinner and no indeterminate bar"), which the maintainer rejected.
+- **Plans:** [0080](plans/README.md) (in git history) and Plan 0126. Amends [status-patterns.md](status-patterns.md) D2 ("no spinner and no indeterminate bar"), which the maintainer rejected.
 - **Prototype:** removed in the prototype cleanup (git history). It showed the 0080 CSS ring; the icon spinner (§6.2) is reviewed from the `Icons/Library` → `LoadingSpinner` story (`icons-library--loading-spinner`).
 - **Type:** component default styling + one library icon + approved tokens. No new token, no new Icon prop.
 - **Maintainer decisions:**
