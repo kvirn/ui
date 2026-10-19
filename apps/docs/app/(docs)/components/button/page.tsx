@@ -13,6 +13,7 @@ export default function Page() {
       sources={{
         default: readExampleSource('button/default.tsx'),
         variants: readExampleSource('button/variants.tsx'),
+        'focus-states': readExampleSource('button/focus-states.tsx'),
         'disabled-with-reason': readExampleSource('button/disabled-with-reason.tsx'),
         'submit-form': readExampleSource('button/submit-form.tsx'),
         saving: readExampleSource('button/saving.tsx'),

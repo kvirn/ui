@@ -10,6 +10,7 @@ import { UseCase } from './use-case.tsx'
 import { buttonAttributes, buttonRows, useButtonHook } from '../content/button.api.ts'
 import { DefaultButton } from '../examples/button/default.tsx'
 import { DisabledWithReason } from '../examples/button/disabled-with-reason.tsx'
+import { FocusStates } from '../examples/button/focus-states.tsx'
 import { IconOnly } from '../examples/button/icon-only.tsx'
 import { Saving } from '../examples/button/saving.tsx'
 import { SubmitForm } from '../examples/button/submit-form.tsx'
@@ -21,7 +22,13 @@ import type { Contract } from '../lib/contract-parser.ts'
 // file does the `node:fs` reads and this composition renders in a browser test.
 
 export type ButtonExampleSources = Record<
-  'default' | 'variants' | 'disabled-with-reason' | 'submit-form' | 'saving' | 'icon-only',
+  | 'default'
+  | 'variants'
+  | 'focus-states'
+  | 'disabled-with-reason'
+  | 'submit-form'
+  | 'saving'
+  | 'icon-only',
   string
 >
 
@@ -79,6 +86,33 @@ export function ButtonPage({
             code={sources['variants']}
           >
             <Variants />
+          </UseCase>
+          <UseCase
+            id="focus-states"
+            title="Seeing which button has the keyboard"
+            why={
+              <>
+                Someone using only a keyboard needs to see which button is ready to press. In the
+                default theme, a button with keyboard focus shows a ring around it, at least 2px
+                wide and with 3:1 contrast against its background (2.4.7 Focus Visible). Every kind
+                of button gets the same ring, and a disabled button that can still be focused keeps
+                it. A natively disabled button is skipped by Tab, so it never gets one.
+              </>
+            }
+            code={sources['focus-states']}
+            propsUsed={[
+              { part: 'Button', prop: 'disabled' },
+              { part: 'Button', prop: 'focusableWhenDisabled' },
+            ]}
+            note={
+              <Note kind="reminder">
+                The ring is forced here with <code>data-focus-visible</code>, which the Button sets
+                by itself after a Tab. Press Tab on a real button to see the same ring. A mouse
+                click does not show it. If you restyle buttons, keep a visible ring (2.4.7).
+              </Note>
+            }
+          >
+            <FocusStates />
           </UseCase>
           <UseCase
             id="disabled-with-reason"
