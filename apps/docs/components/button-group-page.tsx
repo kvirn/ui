@@ -50,7 +50,7 @@ export function ButtonGroupPage({
   return (
     <ComponentPage
       title="ButtonGroup"
-      lead="Give it a name and a screen reader (software that reads the screen aloud) can tell people which buttons belong together."
+      lead="A row of related buttons. When you give the row a name, a screen reader (software that reads the screen aloud) tells people which buttons belong together."
       whenToUse={
         <ul>
           <li>
@@ -58,8 +58,8 @@ export function ButtonGroupPage({
             footer of a card.
           </li>
           <li>
-            Put the main button first and keep one main button on the screen. People using a
-            keyboard then reach the main next step first.
+            Keep one main button on the screen, for the main next step. The group doesn’t style or
+            order buttons by importance: you do.
           </li>
           <li>
             Name the group when the buttons need a context their own labels don’t give. In a{' '}
@@ -151,7 +151,8 @@ export function ButtonGroupPage({
                 With three or more actions, a <Link href="/components/toolbar">Toolbar</Link> is one
                 Tab stop and the arrow keys move between the buttons, across groups. Name each group
                 so a screen reader says which one focus has entered. Use <code>Toolbar.Button</code>{' '}
-                for the buttons.
+                for the buttons. <code>Toolbar.Group</code> is the same group, always joined into
+                one strip.
               </>
             }
             code={sources['in-a-toolbar']}

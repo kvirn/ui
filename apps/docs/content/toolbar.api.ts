@@ -44,7 +44,7 @@ export const toolbarRootRows = propRows<ToolbarRootDocumentedProps>({
     type: "'div' | 'section'",
     default: "'div'",
     description:
-      'Changes the element: a section with aria-labelledby is a named region. It still gets the role, the class and the keys.',
+      'Changes the element. A section still gets role="toolbar" (so it is a toolbar and not a region), the class and the keys.',
   },
 })
 

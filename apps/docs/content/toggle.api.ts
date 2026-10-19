@@ -59,7 +59,8 @@ export const toggleAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-toggle',
     values: 'always',
-    meaning: 'The pressed look: a solid primary fill with a light label or icon.',
+    meaning:
+      'The toggle part class. The default theme fills a pressed toggle with the primary colour and a light label or icon.',
   },
   {
     name: 'kv-button--icon-only',
@@ -117,7 +118,7 @@ export const useToggleHook: ApiHook = {
       type: 'MouseEventHandler<HTMLButtonElement>',
       default: '–',
       description:
-        'Called on every activation, and never while disabled. Pass it here, not on top.',
+        'Called on every activation, and never while disabled. Pass it here, not on your own <button>, so a disabled toggle blocks it.',
     },
   }),
   result: propRows<UseToggleResult>({

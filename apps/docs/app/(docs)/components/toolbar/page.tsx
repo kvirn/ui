@@ -13,6 +13,7 @@ export default function Page() {
       sources={{
         default: readExampleSource('toolbar/default.tsx'),
         toggles: readExampleSource('toolbar/toggles.tsx'),
+        'icon-only': readExampleSource('toolbar/icon-only.tsx'),
         unavailable: readExampleSource('toolbar/unavailable.tsx'),
         'other-controls': readExampleSource('toolbar/other-controls.tsx'),
         vertical: readExampleSource('toolbar/vertical.tsx'),

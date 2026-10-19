@@ -6,7 +6,7 @@
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `toggle.test.tsx` next to this file. `toggle.stories.tsx` in `apps/storybook/src/components/toggle/`.
 
-A Toggle is a Button that is on or off. Use it for a choice with a direct, visible effect on the page: bold text, "show only unread". It is not for an answer in a form (use a Checkbox or a radio group) or a setting that is saved (use a [Switch](../switch/switch.a11y.md)). It builds on [Button](../button/button.a11y.md): everything Button's contract says about `disabled`, `focusableWhenDisabled` and the missing-name warning holds here.
+A Toggle is a Button that is on or off. Use it for a choice with a direct, visible effect on the page: bold text, "show only unread". It is not for an answer in a form (use a Checkbox or a radio group) or a setting that is saved (use a Switch). It builds on Button: everything Button's contract says about `disabled`, `focusableWhenDisabled` and the missing-name warning holds here.
 
 ## Roles, states, properties
 
@@ -17,7 +17,7 @@ A Toggle is a Button that is on or off. Use it for a choice with a direct, visib
 |        | disabled                            | native `disabled`                               | Not focusable, not activatable. `aria-pressed` and `data-disabled` stay, so a disabled pressed toggle still says it is on                                                          |
 |        | disabled and focusable              | `aria-disabled="true"`, no `disabled` attribute | Stays in the Tab order. Click, Enter and Space change nothing and call neither `onPressedChange` nor `onClick`. `focusableWhenDisabled` is Button's                                |
 |        | keyboard focus                      | none                                            | `data-focus-visible` while the toggle matches `:focus-visible`                                                                                                                     |
-|        | no accessible name                  | –                                               | A dev warning when the only content is hidden from assistive technology, such as a decorative `Icon` (4.1.2). Test: `toggle.test.tsx › accessible name`                            |
+|        | no accessible name                  | –                                               | A dev warning when the only content is hidden from assistive technology, such as a decorative `Icon` (4.1.2).                                                                      |
 
 `useToggle` gives the same `toggleProps` for your own `<button>`. It is `useButton` plus the pressed state, so a disabled toggle blocks activation there too.
 
@@ -28,7 +28,7 @@ A Toggle is a Button that is on or off. Use it for a choice with a direct, visib
 - **Arrows wrap:** n/a
 - **Shortcuts:** none
 
-A native `<button>`: one Tab stop, in DOM order, with no `tabindex`. Enter and Space are native, and both switch it. In a [Toolbar](../toolbar/toolbar.a11y.md) it is one of the toolbar's items instead: the toolbar's contract owns the keys then.
+A native `<button>`: one Tab stop, in DOM order, with no `tabindex`. Enter and Space are native, and both switch it. In a Toolbar it is one of the toolbar's items instead: the toolbar's contract owns the keys then.
 
 | Key           | Context                        | Action                                                                                     | Test                                                                                                                           |
 | ------------- | ------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
@@ -58,7 +58,7 @@ Toggle has no strings of its own and announces nothing: the screen reader reads 
 ## Consumer responsibilities
 
 - Give the toggle a visible text label, or an `aria-label` from your own translations for an icon-only toggle (4.1.2 Name, Role, Value, A; 2.5.3 Label in Name, A). **The name must not change with the state:** "Show map" stays "Show map" and never becomes "Hide map" when it is on (APG).
-- Use a Toggle for a choice with a direct, visible effect. A setting that turns something on or off for good is a [Switch](../switch/switch.a11y.md) (saved at once) or a Checkbox, and an answer in a form is a Checkbox or a radio group.
+- Use a Toggle for a choice with a direct, visible effect. A setting that turns something on or off for good is a Switch (saved at once) or a Checkbox, and an answer in a form is a Checkbox or a radio group.
 - With `pressed`, update it in `onPressedChange`, or the toggle never changes.
 - A toggle that changes a list or a result (a filter) needs a status message with the result count, such as "12 results", announced through `useAnnouncer` (4.1.3 Status Messages, AA). The press alone tells a screen reader user only that the button is pressed.
 - Style `[data-pressed]` and `[aria-pressed='true']`. The pressed state must never be shown by colour alone (1.4.1 Use of Color, A): the default theme fills the button and changes the icon or label colour.
@@ -68,9 +68,9 @@ Toggle has no strings of its own and announces nothing: the screen reader reads 
 - Focus indicator: as Button. The default theme draws a focus ring that is at least 2px at 3:1 (2.4.7 Focus Visible, AA; 2.4.13 Focus Appearance, AAA).
 - Target size: as Button, at least 24 × 24 CSS px in the default theme (2.5.8 Target Size (Minimum), AA).
 - Pressed (default theme): a solid fill in the primary colour with a light icon or label, flat in a toolbar. The fill reaches 3:1 against its surroundings and the icon 4.5:1 or 3:1 on the fill (1.4.1 Use of Color, A; 1.4.11 Non-text Contrast, AA). The theme's contrast check measures the pairs.
-- forced-colors behaviour: pressed uses the system's highlight colours for its fill, text and edge, so it differs from an unpressed button without colour alone (`toggle.stories.tsx › ForcedColors`).
+- forced-colors behaviour: pressed uses the system's highlight colours for its fill, text and edge, so it differs from an unpressed button without colour alone (the forced-colours sweep also checks that every toggle keeps a visible boundary and shows a focus indicator when it has focus).
 - reduced-motion behaviour: the fill changes instantly.
-- Reflow: a long label wraps inside the button. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
+- Reflow: a long label wraps inside the button. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the reflow sweep runs every story at 320 CSS px and fails on horizontal overflow.
 
 ## WCAG SCs covered
 
@@ -100,7 +100,18 @@ Toggle has no strings of its own and announces nothing: the screen reader reads 
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                      |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                      |
 
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab to the toggle: its name, "toggle button" and the pressed state are read.
+- Press Enter, then Space: the state change is read, the name stays the same, and focus stays.
+- An icon-only toggle reads its label, not just "button".
+- A disabled toggle with a reason (`focusableWhenDisabled`): Tab finds it, it is read as unavailable, the reason is read, and pressing changes nothing.
+- A toggle that filters a list: switch it and check that the new result count is read.
+- In forced colours or a high-contrast theme, pressed and not pressed differ without relying on colour.
+
 ## Known issues
 
 - **Keyboard tests run in Chromium only.** The keyboard rows run in Vitest browser mode on Chromium, not in WebKit. Test in Safari with your own assistive technology.
-- The pressed look in the contrast themes is the same as a primary button at rest (they have no depth there). The context and `aria-pressed` tell them apart.
+- The pressed look in the high-contrast themes is the same as a primary button at rest (they have no depth there). The context and `aria-pressed` tell them apart.

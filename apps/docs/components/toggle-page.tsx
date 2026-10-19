@@ -48,7 +48,7 @@ export function TogglePage({
   return (
     <ComponentPage
       title="Toggle"
-      lead="Use it for a choice with a direct, visible effect, such as showing only unread messages."
+      lead="A button that is either on or off, and a screen reader (software that reads the screen aloud) says which. Use it for a choice with a direct, visible effect, such as showing only unread messages."
       pattern="APG Button (toggle button)"
       whenToUse={
         <ul>
@@ -98,8 +98,9 @@ export function TogglePage({
             note={
               <Note kind="reminder">
                 When a toggle changes a list, show how many results are left in a status message
-                (4.1.3 Status Messages). The count in this example is an <code>output</code> element
-                that is on the page from the start, so a screen reader announces the change.
+                (4.1.3 Status Messages). This example uses an <code>output</code> element, which is
+                a status message and is on the page from the start. You can also use{' '}
+                <code>useAnnouncer</code>.
               </Note>
             }
           >
@@ -110,13 +111,16 @@ export function TogglePage({
             title="A toggle with only an icon"
             why={
               <>
-                Use it where there is room for an icon and not a word, such as showing a password.
-                The name comes from an <code>aria-label</code> you take from your own translations,
-                and it stays the same when the toggle switches.
+                Use it where there is room for an icon but not for a word, such as a button that
+                shows a password. The name comes from an <code>aria-label</code> that you take from
+                your own translations. It stays the same when the toggle switches.
               </>
             }
             code={sources['icon-only']}
-            propsUsed={[{ part: 'Toggle', prop: 'pressed' }]}
+            propsUsed={[
+              { part: 'Toggle', prop: 'pressed' },
+              { part: 'Toggle', prop: 'onPressedChange' },
+            ]}
             note={
               <Note kind="reminder">
                 Don’t change the label when the state changes: a screen reader reports the state
@@ -132,11 +136,11 @@ export function TogglePage({
             title="Disabled with a reason"
             why={
               <>
-                You can’t avoid disabling the toggle, for example when there is nothing to filter.
-                Keep it in the Tab order and link the reason to it with{' '}
-                <code>aria-describedby</code>, so people using a keyboard or a screen reader
-                (software that reads the screen aloud) find it and learn why. It still says whether
-                it is on.
+                Try not to disable a toggle. With <code>disabled</code> alone it leaves the Tab
+                order. When the reason matters, for example when there is nothing to filter, add{' '}
+                <code>focusableWhenDisabled</code> and link the reason to the toggle with{' '}
+                <code>aria-describedby</code>. People using a keyboard or a screen reader can then
+                find the toggle and learn why it is off limits. It still says whether it is on.
               </>
             }
             code={sources['disabled-with-reason']}

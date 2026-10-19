@@ -19,6 +19,7 @@ import {
   useToolbarHook,
 } from '../content/toolbar.api.ts'
 import { DefaultToolbar } from '../examples/toolbar/default.tsx'
+import { IconOnly } from '../examples/toolbar/icon-only.tsx'
 import { NoLoop } from '../examples/toolbar/no-loop.tsx'
 import { OtherControls } from '../examples/toolbar/other-controls.tsx'
 import { Toggles } from '../examples/toolbar/toggles.tsx'
@@ -27,7 +28,7 @@ import { Vertical } from '../examples/toolbar/vertical.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type ToolbarExampleSources = Record<
-  'default' | 'toggles' | 'unavailable' | 'other-controls' | 'vertical' | 'no-loop',
+  'default' | 'toggles' | 'icon-only' | 'unavailable' | 'other-controls' | 'vertical' | 'no-loop',
   string
 >
 
@@ -108,7 +109,7 @@ export function ToolbarPage({
   return (
     <ComponentPage
       title="Toolbar"
-      lead="A control that isn’t available now stays in the arrow-key order, and a screen reader says it is unavailable."
+      lead="A row of related controls that is one Tab stop. The arrow keys move between the controls, and a control that isn’t available stays reachable and is read as unavailable."
       pattern="APG Toolbar"
       whenToUse={
         <ul>
@@ -143,9 +144,10 @@ export function ToolbarPage({
             title="Toggles that change a text’s style"
             why={
               <>
-                A style such as bold is on or off. Use a <code>Toolbar.Toggle</code>: a screen
-                reader says which are on (<code>aria-pressed</code>) and the name never changes.
-                Point the toolbar at the element it changes with <code>aria-controls</code>.
+                A caseworker writes a message to a resident. A style such as bold is on or off, so
+                use a <code>Toolbar.Toggle</code>: a screen reader says which styles are on (
+                <code>aria-pressed</code>) and the name never changes. Point the toolbar at the
+                element it changes with <code>aria-controls</code>.
               </>
             }
             code={sources['toggles']}
@@ -155,6 +157,26 @@ export function ToolbarPage({
             ]}
           >
             <Toggles />
+          </UseCase>
+          <UseCase
+            id="icon-only"
+            title="A toolbar with only icons"
+            why={
+              <>
+                A message editor has little room, so each control shows an icon. Give every icon
+                button a name with <code>aria-label</code> from your own translations. Without one a
+                screen reader says only “button”. Name each group too.
+              </>
+            }
+            code={sources['icon-only']}
+            note={
+              <Note kind="tip">
+                Not everyone knows what an icon means. Where your readers might not, also show a
+                tooltip with the same name.
+              </Note>
+            }
+          >
+            <IconOnly />
           </UseCase>
           <UseCase
             id="unavailable-command"
@@ -232,6 +254,12 @@ export function ToolbarPage({
         <ContractSectionsView
           contract={contract}
           notes={{
+            'known-issues': (
+              <Note kind="tip">
+                If an issue here affects your service, list it in your accessibility statement with
+                its workaround.
+              </Note>
+            ),
             'what-you-need-to-do': (
               <Note kind="reminder">
                 Name the toolbar and every group, and name every control that has only an icon.

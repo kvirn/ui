@@ -10,7 +10,7 @@ export const buttonGroupRows = propRows<ButtonGroupDocumentedProps>({
     type: 'string',
     default: '–',
     description:
-      'Your own classes. They join the part’s class and never replace it. Add kv-button-group--attached to join the buttons into one strip, like a segmented control.',
+      'Your own classes. They join the part’s class and never replace it. Add kv-button-group--attached to join the buttons into one strip. It changes the look only: it does not choose a button.',
   },
 })
 
@@ -18,7 +18,8 @@ export const buttonGroupAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-button-group',
     values: 'always',
-    meaning: 'The part class. The default theme lays the buttons in a row, stacked below 40rem.',
+    meaning:
+      'The part class. The default theme lays the buttons in a row. Outside a toolbar, a group that is not joined stacks its buttons below 40rem.',
   },
   {
     name: 'kv-button-group--attached',
