@@ -59,7 +59,7 @@ Headless: List ships no CSS. With `@kvirn-ui/theme/theme.css`, `kv-list` stacks 
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships, 4.1.2 Name, Role, Value: a list is a list with a count, with or without markers (`list.test.tsx › always has role="list", and a consumer role wins`).
+- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): a list is a list with a count, with or without markers.
 - 1.4.4 Resize Text: sizes are in rem.
 
 ## AT test record

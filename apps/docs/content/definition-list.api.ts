@@ -66,7 +66,8 @@ export const termAttributes: readonly AttributeRow[] = [
   {
     name: 'id',
     values: 'generated, inside a Row',
-    meaning: 'The Row gives the Term an id, which names the Change link.',
+    meaning:
+      'The Row gives the Term an id, which names the Change link. An id you set yourself is kept and still names the link.',
   },
 ]
 
@@ -85,6 +86,11 @@ export const changeAttributes: readonly AttributeRow[] = [
     meaning: 'The Link class, so the link looks like every other link.',
   },
   { name: 'kv-definition-list-change', values: 'always', meaning: 'The part class.' },
+  {
+    name: 'id',
+    values: 'generated, inside a Row',
+    meaning: 'The link’s own id. Its name starts with its own text, then the Term’s.',
+  },
   {
     name: 'aria-labelledby',
     values: 'the link’s id, then the Term’s id',

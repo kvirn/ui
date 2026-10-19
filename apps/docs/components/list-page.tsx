@@ -22,8 +22,8 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;ul&gt;</code>, or <code>&lt;ol&gt;</code> with <code>as=&quot;ol&quot;</code>,
         with the role <code>list</code>. It takes every attribute of a <code>&lt;ul&gt;</code> and
-        passes <code>ref</code> to it. It has no state, no hook and no strings, and it renders on
-        the server too. Also exported as <code>ListRoot</code>. The default theme is described on{' '}
+        passes <code>ref</code> to it. It has no state, no hook and no strings. Also exported as{' '}
+        <code>ListRoot</code>. The default theme is described on{' '}
         <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
@@ -54,7 +54,7 @@ export function ListPage({
   return (
     <ComponentPage
       title="List"
-      lead="A class sets the marker and the space between items, and the list has the list role unless you set another role."
+      lead="You choose bullets, numbers and spacing with a class. The list always has the list role, because a screen reader (software that reads the screen aloud) in Safari with VoiceOver can drop it from a list with no marker."
       whenToUse={
         <ul>
           <li>
@@ -88,7 +88,7 @@ export function ListPage({
           <UseCase
             id="related-links"
             title="Related services at the end of a page"
-            why="Links to other services. Put them in a named nav, so people who jump between landmarks can find them."
+            why="Links to other services at the end of a page. Put them in a named nav, so screen reader users who jump between the page’s navigation areas can find them."
             code={sources['related-links']}
             note={
               <Note kind="reminder">
@@ -103,7 +103,7 @@ export function ListPage({
           <UseCase
             id="steps"
             title="How to apply for a parking permit"
-            why="Steps in a fixed order: an ordered list says so in the markup, and the decimal class shows the numbers."
+            why="Steps in a fixed order. An ordered list tells a screen reader that the order matters, and the decimal class shows the numbers."
             code={sources['steps']}
             propsUsed={[{ part: 'List.Root', prop: 'as' }]}
           >
@@ -126,9 +126,8 @@ export function ListPage({
             'what-you-need-to-do': (
               <Note kind="reminder">
                 Use the decimal class with <code>as=&quot;ol&quot;</code>, not with a plain list. On
-                a plain list the numbers you see say nothing about order to a screen reader
-                (software that reads the screen aloud), so that information would be lost (1.3.1
-                Info and Relationships).
+                a plain list the numbers you see say nothing about order to a screen reader, so that
+                information would be lost (1.3.1 Info and Relationships).
               </Note>
             ),
           }}

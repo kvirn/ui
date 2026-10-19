@@ -10,14 +10,14 @@ Rows of a term, a description and optional actions: the answers on a check-your-
 
 ## Roles, states, properties
 
-| Part        | Element / role        | ARIA                                               | Notes                                                                                                                                                                                                                                                                                                                                                            |
-| ----------- | --------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Root        | `<dl>` (no role)      | none                                               | `<div>` rows are allowed inside a `<dl>`, and keep each term with its descriptions                                                                                                                                                                                                                                                                               |
-| Row         | `<div>`, generic      | none                                               | One term and one or more descriptions. Gives its Term an id for the Change link, or follows the Term's own `id`                                                                                                                                                                                                                                                  |
-| Term        | `<dt>` → `term`       | none                                               | The label. A consumer `id` is kept and registered with the Row, so the Change link's `aria-labelledby` follows it (`Change link › a Term with its own id keeps it and still names the Change link`). If no element has that id the Change link warns once in development (`Change link › a Change link whose Term is not in the row warns once in development`). |
-| Description | `<dd>` → `definition` | none                                               | The answer. Wraps, never truncates                                                                                                                                                                                                                                                                                                                               |
-| Actions     | `<dd>` → `definition` | none                                               | Holds links. A second definition of the same term                                                                                                                                                                                                                                                                                                                |
-| Change      | `<a>` → `link`        | `aria-labelledby` = its own id, then the Term's id | Visible text is `definitionList.change` ("Change"). The accessible name is "Change" plus the term, so the link's purpose is clear when links are listed on their own (2.4.4 Link Purpose (In Context), A) and the name contains the visible text (2.5.3 Label in Name, A)                                                                                        |
+| Part        | Element / role        | ARIA                                               | Notes                                                                                                                                                                                                                                                                     |
+| ----------- | --------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Root        | `<dl>` (no role)      | none                                               | `<div>` rows are allowed inside a `<dl>`, and keep each term with its descriptions                                                                                                                                                                                        |
+| Row         | `<div>`, generic      | none                                               | One term and one or more descriptions. Gives its Term an id for the Change link, or follows the Term's own `id`                                                                                                                                                           |
+| Term        | `<dt>` → `term`       | none                                               | The label. A consumer `id` is kept and registered with the Row, so the Change link's `aria-labelledby` follows it. If no element has that id the Change link warns once in development.                                                                                   |
+| Description | `<dd>` → `definition` | none                                               | The answer. Wraps, never truncates                                                                                                                                                                                                                                        |
+| Actions     | `<dd>` → `definition` | none                                               | Holds links. A second definition of the same term                                                                                                                                                                                                                         |
+| Change      | `<a>` → `link`        | `aria-labelledby` = its own id, then the Term's id | Visible text is `definitionList.change` ("Change"). The accessible name is "Change" plus the term, so the link's purpose is clear when links are listed on their own (2.4.4 Link Purpose (In Context), A) and the name contains the visible text (2.5.3 Label in Name, A) |
 
 ## Allowed elements
 
@@ -47,7 +47,7 @@ The list is not a widget. Its only focusable parts are the Change links (and any
 
 - Initial focus: none. Nothing moves focus.
 - Trap: no. Restore to: not applicable.
-- Never obscured by: nothing is sticky. The link's ring is the theme's.
+- Never obscured by: nothing is sticky. The link shows a focus ring (2.4.7 Focus Visible, AA).
 
 ## Announcements
 
@@ -67,17 +67,17 @@ None. It is static content.
 - Target size: the Change link is at least 24 CSS pixels high (2.5.8 Target Size (Minimum), AA).
 - forced-colors behaviour: the row dividers use the system's text colour, and links keep the system's link colour.
 - reduced-motion behaviour: nothing animates.
-- Reflow: on screens narrower than 40rem the rows stack (term, description, actions), and a story checks that nothing scrolls sideways in a narrow column (1.4.10 Reflow, AA).
+- Reflow: on a narrow screen the rows stack (term, description, actions), and the reflow sweep checks that nothing scrolls sideways at 320 CSS pixels (1.4.10 Reflow, AA).
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships (A): native `dl`, `dt`, `dd` (`definition list › the list is a description list: a term per row and its descriptions`).
-- 2.4.4 Link Purpose (In Context) (A), 2.5.3 Label in Name (A): `Change link › the name is "Change" plus the term and starts with the visible text`.
-- 2.4.7 Focus Visible (AA): the link ring, from the theme. No named test checks the ring itself.
-- 2.5.8 Target Size (Minimum) (AA): the Change link is at least 24 CSS pixels high, from the theme. No named test checks it.
-- 3.3.7 Redundant Entry (A): your duty (Consumer responsibilities): the Change link returns to the page after saving. Not tested here.
-- 1.4.10 Reflow (AA): the stacked layout, asserted by `definition-list.stories.tsx › Reflow320` (`expectNoHorizontalOverflow` at 320px).
-- Axe: no violations (`accessibility › no axe violations`).
+- 1.3.1 Info and Relationships (A): native `dl`, `dt`, `dd`.
+- 2.4.4 Link Purpose (In Context) (A), 2.5.3 Label in Name (A): the name is "Change" plus the term and starts with the visible text.
+- 2.4.7 Focus Visible (AA): the link shows a focus ring. The ring itself is checked by eye.
+- 2.5.8 Target Size (Minimum) (AA): the Change link is at least 24 CSS pixels high, from the theme. This is checked by eye.
+- 3.3.7 Redundant Entry (A): your duty (Consumer responsibilities): the Change link returns to the page after saving. This is not checked automatically.
+- 1.4.10 Reflow (AA): the stacked layout. The reflow sweep checks that nothing scrolls sideways at 320 CSS pixels.
+- Axe finds no violations in any story.
 
 ## AT test record
 
@@ -97,6 +97,14 @@ None. It is static content.
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                            |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                            |
 
+### What to check
+
+- Tab through the page: focus stops on each Change link in row order, and on nothing else in the list.
+- Each Change link reads "Change" plus its row's label ("Change Name"), never just "Change", also in the links list.
+- With the screen reader's list and term commands, each term is read with its answer(s). In a row with two answers, both are read after the term.
+- Press Enter on a Change link: it goes to the step where the answer is changed.
+- At 400% zoom or 320px, the rows stack, term first, and nothing is cut off.
+
 ## Known issues
 
-- A consumer `Term` id is registered with the Row in a layout effect, so server-rendered HTML has the Change link's `aria-labelledby` pointing at the generated id, which is absent. The link is named just "Change" until hydration (`definition-list.test.tsx › a Term with its own id is not yet followed by the Change link in server HTML`). The API is unchanged.
+- In server-rendered HTML the link is named just “Change” until the page script has loaded, when the Term has an `id` you set yourself. Use the generated id, or accept the short name.

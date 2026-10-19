@@ -6,8 +6,7 @@ export const listRootRows = propRows<Pick<ListRootProps, 'as' | 'ref'>>({
   as: {
     type: "'ul' | 'ol'",
     default: "'ul'",
-    description:
-      'Changes the element: ol when the order matters. Another tag warns once in development and renders a ul.',
+    description: 'Changes the element: use ol when the order matters. Only ul and ol are allowed.',
   },
   ref: {
     type: 'Ref<HTMLElement>',
@@ -46,6 +45,6 @@ export const listRootAttributes: readonly AttributeRow[] = [
     name: 'kv-list--gap-2, kv-list--gap-6, kv-list--gap-8',
     values: 'class you add',
     meaning:
-      'Another space between the items, as a step of the theme’s spacing scale. The default step is 4.',
+      'Another space between the items. gap-2 is tighter than the default, gap-6 and gap-8 are wider.',
   },
 ]

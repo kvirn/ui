@@ -163,7 +163,7 @@ export function DefinitionListPage({
           <UseCase
             id="check-your-answers"
             title="Check your answers before sending"
-            why="The last step of a form shows every answer with a link back to the step where it is changed. Each link reads, for example, “Change Name”, so a screen reader user who lists the links knows what each one does."
+            why="The last step of a form shows every answer with a link back to the step where it is changed. Each link reads, for example, “Change Name”, so a screen reader user (who hears the page read aloud) can list the links and still know what each one does."
             code={sources['check-your-answers']}
             note={
               <Note kind="reminder">
@@ -192,13 +192,13 @@ export function DefinitionListPage({
           <UseCase
             id="missing-answer"
             title="An answer that is missing"
-            why="Say that nothing is given, and let the link say what to do. The word on the link comes from the messages, so “Add” still ends up as “Add Phone number”."
+            why="Say that nothing is given, and let the link say what to do. You change the word on the link with the messages prop, and the link’s name is still “Add Phone number”."
             code={sources['missing-answer']}
             propsUsed={[{ part: 'DefinitionList.Change', prop: 'messages' }]}
             note={
               <Note kind="tip">
-                An empty description is read as a term with nothing after it. Write “Not provided”
-                so everyone knows the answer is missing and not lost.
+                Write “Not provided” in the Description, so everyone knows the answer is missing and
+                not lost. An empty Description leaves the reader with a label and no value.
               </Note>
             }
           >
@@ -215,7 +215,7 @@ export function DefinitionListPage({
           <UseCase
             id="own-markup"
             title="With your own elements"
-            why="When the markup is yours, spread the props of the hook on a native description list. Give the Term an id and pass it to getChangeProps, and the link gets its name."
+            why="When the markup is yours, take the class names and the link’s props from the hook and put them on a native description list. Give the Term an id and pass it to getChangeProps, and the link gets its name."
             code={sources['own-markup']}
             propsUsed={[
               {
@@ -236,9 +236,9 @@ export function DefinitionListPage({
           notes={{
             'what-you-need-to-do': (
               <Note kind="reminder">
-                Send people back to the page they came from after they change an answer, with what
-                they entered still there. 3.3.7 Redundant Entry asks you not to make people enter it
-                again.
+                After someone changes an answer, send them back to the summary with every other
+                answer still filled in. 3.3.7 Redundant Entry (A) asks you not to make people enter
+                the same information again.
               </Note>
             ),
             'known-issues': (
