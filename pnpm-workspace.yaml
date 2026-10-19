@@ -6,9 +6,9 @@ catalogMode: strict
 
 catalog:
   # Toolchain. Vite+ is pinned exactly and bundles Vitest, Oxlint, Oxfmt and tsdown.
-  vite-plus: 1.0.0
-  vite: npm:@voidzero-dev/vite-plus-core@1.0.0
-  '@vitest/browser-playwright': 5.0.1
+  vite-plus: 1.3.0
+  vite: npm:@voidzero-dev/vite-plus-core@1.3.0
+  '@vitest/browser-playwright': 5.0.5
   typescript: ^7.0.2
   '@types/node': ^24.19.2
   # The sanctioned runtime dependencies of core, pinned exactly
@@ -26,6 +26,7 @@ catalog:
   # Approximate screen-reader transcript for tests (plan 0077 Part B): a pinned dev dependency, and an optional peer (~) of @kvirn-ui/testing/read-aloud.
   '@guidepup/virtual-screen-reader': 0.33.0
   # The Vitest browser provider's peer. Vitest runs the browser tests; there is no e2e runner.
+  # Held at 1.63.0: 1.64.1 (Chromium 156) closes the browser connection partway through a Storybook run (2026-10-19).
   playwright: 1.63.0
   # Tiptap, the rich text editor's engine: peers of @kvirn-ui/rich-text, devDependencies here.
   # One version for every package, pinned exactly, so ProseMirror is never duplicated.
@@ -44,11 +45,11 @@ catalog:
   '@heroicons/react': 2.2.0
   '@phosphor-icons/react': 2.1.10
   # Workbench, docs, release
-  storybook: 10.6.1
-  '@storybook/react-vite': 10.6.1
-  '@storybook/addon-a11y': 10.6.1
-  '@storybook/addon-docs': 10.6.1
-  '@storybook/addon-vitest': 10.6.1
+  storybook: 10.6.2
+  '@storybook/react-vite': 10.6.2
+  '@storybook/addon-a11y': 10.6.2
+  '@storybook/addon-docs': 10.6.2
+  '@storybook/addon-vitest': 10.6.2
   # Tables in MDX pages: a Storybook build dependency only
   remark-gfm: 4.0.1
   next: 16.3.8
