@@ -100,7 +100,7 @@ Menu has no strings of its own and announces nothing: `aria-expanded` tells a sc
 - Colour: highlighted, disabled and checked items keep at least 4.5:1 contrast for text (1.4.3 Contrast (Minimum) (AA)) and the popup's edge at least 3:1 (1.4.11 Non-text Contrast (AA)).
 - forced-colors behaviour: the popup keeps a visible edge in the system's text colour, the highlighted item uses the system's highlight colours, and checked state is drawn from borders.
 - reduced-motion behaviour: no positional animation, ever.
-- Reflow: at 320px the popup is never wider than the screen minus its padding, and scrolls inside when it is too tall. No horizontal scrolling at 320 CSS px, reviewed in the stories, not automated (1.4.10 Reflow, AA).
+- Reflow: at 320px the popup is never wider than the screen minus its padding, and scrolls inside when it is too tall. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
 - RTL: `bottom-start` lines the popup's right edge with the trigger's. ArrowUp and ArrowDown never flip.
 
 ## WCAG SCs covered
@@ -123,7 +123,7 @@ Menu has no strings of its own and announces nothing: `aria-expanded` tells a sc
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | menu.test.tsx › a disabled item has aria-disabled and data-disabled, and is still a button that takes focus; expectNoA11yViolations |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 16 rows, each names a test (menu.test.tsx › Tab focuses the trigger, and is one stop)                                               |
 | Focus order and management                                                 | pass        | n/a         | pass    | menu.test.tsx asserts focus (toHaveFocus); first rule: Tab focuses the trigger, and is one stop                                     |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                                                                     |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                       |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                                                     |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                     |
 | VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                     |

@@ -91,13 +91,13 @@ Opening is announced by the focus move: role "alertdialog", the name, and the de
 - Colour: the dialog's text has at least 4.5:1 contrast on its surface (1.4.3 Contrast (Minimum), AA). A destructive confirm is a danger button with the words carrying the risk, never colour alone (1.4.1 Use of Color, A).
 - forced-colors behaviour (Windows contrast themes): the dialog keeps a visible edge in the system text colour on all sides, so the open state is never shown by colour alone. Test: `alert-dialog.stories.tsx › ForcedColors`.
 - reduced-motion behaviour: opening fades in only when the user allows motion. Closing is always instant, so focus returns at once.
-- Reflow: no fixed width or height. At 320 CSS px and 400% zoom it needs no horizontal scrolling, and it scrolls inside when it is too tall (1.4.10 Reflow, AA). This is reviewed in the stories and has no automated check.
+- Reflow: no fixed width or height. At 320 CSS px and 400% zoom it needs no horizontal scrolling, and it scrolls inside when it is too tall (1.4.10 Reflow, AA). At 320 CSS px the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow; 400% zoom is reviewed in the stories.
 - RTL: logical properties only. The actions start at the inline start. Test: `alert-dialog.stories.tsx › Rtl`.
 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships (A) and 4.1.2 Name, Role, Value (A): the role `alertdialog`, the name from the Title and the description (`alert-dialog.test.tsx › an open alert dialog is modal, has role alertdialog, a name, a description and no axe violations`).
-- 1.4.10 Reflow (AA): the sheet and the scroll inside it. No automated check.
+- 1.4.10 Reflow (AA): the sheet and the scroll inside it (the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow).
 - 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A) and 2.4.3 Focus Order (A): native keys and Escape, Tab can always leave to the browser, and focus goes in on open and back on close (`alert-dialog.test.tsx › Escape reports escape, closes the alert dialog and returns focus to the trigger`).
 - 2.2.1 Timing Adjustable (A): for a timeout warning. This is the consumer's block, see Consumer responsibilities.
 - 2.4.7 Focus Visible (AA) and 2.4.11 Focus Not Obscured (Minimum) (AA): the buttons' focus ring, and nothing is pinned, so nothing covers the focused control.

@@ -93,7 +93,7 @@ Popover has no strings of its own and announces nothing: `aria-expanded` changes
 - Colour: the popup's edge keeps at least 3:1 contrast against the page (1.4.11 Non-text Contrast, AA) and its text at least 4.5:1 on its surface (1.4.3 Contrast (Minimum), AA). The default theme draws the popup on the raised surface in the body text colour, the same pair as a menu; if you restyle it you meet both pairs.
 - forced-colors behaviour (a mode where the system chooses the colours): the default theme gives the popup a `CanvasText` border and no shadow; if you restyle it, keep a visible edge in the system's text colour. The open state is shown by `aria-expanded`, never by colour alone (1.4.1 Use of Color, A).
 - reduced-motion behaviour: the hook animates nothing. If you fade the popup, fade opacity only and switch it off under `prefers-reduced-motion`.
-- Reflow: at 320px the popup is never wider than the viewport minus the padding, scrolls inside when it is too tall, and the page has no horizontal scroll. No horizontal scrolling at 320 CSS px, reviewed in the stories, not automated (1.4.10 Reflow, AA).
+- Reflow: at 320px the popup is never wider than the viewport minus the padding, scrolls inside when it is too tall, and the page has no horizontal scroll. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
 - RTL (right-to-left text): `start` and `end` placements follow the anchor's direction: `bottom-start` lines the popup's right edge with the trigger's in right-to-left text.
 
 ## WCAG SCs covered
@@ -109,21 +109,21 @@ Popover has no strings of its own and announces nothing: `aria-expanded` changes
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                              |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                    |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | popover.stories.tsx, every story, 4 themes                                                         |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | popover.test.tsx › an open popover: expanded, shown, data-open, no axe violations                  |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 13 rows, each names a test (popover.test.tsx › Tab focuses the trigger, and is one stop)           |
-| Focus order and management                                                 | pass        | n/a         | pass    | popover.test.tsx asserts focus (toHaveFocus); first rule: Tab focuses the trigger, and is one stop |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                                    |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                    |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                    |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                    |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                    |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                    |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                    |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                    |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | popover.stories.tsx, every story, 4 themes                                                                    |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | popover.test.tsx › an open popover: expanded, shown, data-open, no axe violations                             |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 13 rows, each names a test (popover.test.tsx › Tab focuses the trigger, and is one stop)                      |
+| Focus order and management                                                 | pass        | n/a         | pass    | popover.test.tsx asserts focus (toHaveFocus); first rule: Tab focuses the trigger, and is one stop            |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
 Also pending, by hand: whether screen readers announce the popup's name when focus first enters it with Tab, and whether `popover="auto"` light dismiss and our own Escape and outside-press handling agree on Safari 17 and iOS.
 

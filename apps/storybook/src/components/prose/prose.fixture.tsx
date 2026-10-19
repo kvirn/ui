@@ -1,4 +1,4 @@
-import { Button, Link, Navigation, Prose } from '@kvirn-ui/react'
+import { Button, Link, Navigation, Prose, ScrollArea } from '@kvirn-ui/react'
 import { useId } from 'react'
 import type { CSSProperties } from 'react'
 import { articleFor, updatedDate } from '../../foundation/foundations.fixture.tsx'
@@ -138,8 +138,8 @@ export function GuidanceArticle({
         <pre>
           <code>{smsCode}</code>
         </pre>
-        <section
-          className="kv-scroll-region"
+        <ScrollArea
+          region="always"
           aria-labelledby={`${ids}-times`}
           tabIndex={scrollRegionTabIndex}
         >
@@ -164,7 +164,7 @@ export function GuidanceArticle({
               ))}
             </tbody>
           </table>
-        </section>
+        </ScrollArea>
 
         <figure>
           <blockquote>

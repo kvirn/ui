@@ -521,6 +521,7 @@ body {
 
 .kv-story-icon-row {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--kv-space-2);
 }

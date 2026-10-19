@@ -75,7 +75,7 @@ Headless: CopyButton ships no CSS. With `@kvirn-ui/theme/theme.css` it is a Butt
 - Focus indicator, target size, contrast, forced colours: the Button's.
 - reduced-motion behaviour: no motion.
 - Forced colours: the result words and icon use the system's text colour. RTL: the status sits at the inline end, and the icons don't mirror.
-- Reflow: No horizontal scrolling at 320 CSS px, reviewed in the stories, with no automated check (1.4.10 Reflow, AA). The failure text wraps below the button.
+- Reflow: No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow. The failure text wraps below the button.
 
 ## WCAG SCs covered
 

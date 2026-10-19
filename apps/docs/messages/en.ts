@@ -592,7 +592,7 @@ export const messages = {
         visual: 'Visual and modes',
         testing: 'Testing',
         testingIntro:
-          'The automated tests prove the keyboard behaviour, the names and states, and that axe finds no violations in every story and theme. A row passes only when an automated agent check and a person on the real assistive technology have both checked it. "agent-verified" means automated tests in the repository (with a virtual screen reader for the screen reader rows), not the real assistive technology.',
+          'The automated tests prove the keyboard behaviour, the names and states, that axe finds no violations in every story and theme, and, for the components they cover, that the stories hold up in forced colours, reduced motion, text spacing and a 320 pixel width. An Automated row passes on these tests alone. A Core or Release row passes only when an automated agent check and a person on the real assistive technology have both checked it. "agent-verified" means automated tests in the repository (with a virtual screen reader for the screen reader rows), not the real assistive technology.',
         wcag: 'WCAG success criteria',
         announcesNothing: 'It announces nothing.',
       },

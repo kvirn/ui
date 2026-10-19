@@ -341,7 +341,7 @@ export const Keyboard: Story = {
 
 /** 320px: the three groups wrap into one column. */
 export const Narrow: Story = {
-  globals: { viewport: { value: 'reflow', isRotated: false } },
+  globals: { viewport: { value: 'reflow320', isRotated: false } },
   render: () => <DisplaySettings.Inline defaultOpen />,
 }
 

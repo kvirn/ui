@@ -92,7 +92,10 @@ export const Default: Story = {
 export const Primary: Story = {
   argTypes: { variant: { control: false } },
   globals: { ...wideGlobals },
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    reflowOptOut: 'pinned to the 80rem bar; Narrow proves 320 px',
+  },
   render: () => (
     <TopBar variant="primary">
       <p>
@@ -121,7 +124,10 @@ export const Primary: Story = {
 export const Secondary: Story = {
   argTypes: { variant: { control: false } },
   globals: { ...wideGlobals },
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    reflowOptOut: 'pinned to the 80rem bar; Narrow proves 320 px',
+  },
   render: () => (
     <TopBar variant="secondary">
       <p>
@@ -150,7 +156,10 @@ export const Secondary: Story = {
 export const Accent: Story = {
   argTypes: { variant: { control: false } },
   globals: { ...wideGlobals },
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    reflowOptOut: 'pinned to the 80rem bar; Narrow proves 320 px',
+  },
   render: () => (
     <TopBar variant="accent">
       <p>
@@ -254,7 +263,10 @@ export const OnPrimaryBand: Story = {
 export const DisplaySettingsLinkLook: Story = {
   argTypes: { variant: { control: false } },
   globals: { ...wideGlobals },
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    reflowOptOut: 'pinned to the 80rem bar; Narrow proves 320 px',
+  },
   render: () => (
     <TopBar variant="primary">
       <p>

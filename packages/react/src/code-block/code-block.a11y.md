@@ -78,7 +78,7 @@ Headless: CodeBlock ships no CSS. With `@kvirn-ui/theme/theme.css`:
 - Forced colours: the code keeps a visible edge in the system's text colour. The status words and icon use the system's text colour too.
 - Reduced motion: nothing moves.
 - Layout: a wrapping row. The Label and the Code take a full row each. Copy and its status share the last row, and the failure text wraps below Copy on a narrow screen. The icons don't flip in right-to-left languages.
-- Reflow and text spacing: the code wraps and never scrolls, so there is no sideways scrolling at 320 CSS pixels and nothing is clipped at 400% zoom or with wider text spacing (1.4.10 Reflow, 1.4.12 Text Spacing). This is reviewed in the stories, not by an automated check.
+- Reflow and text spacing: the code wraps and never scrolls, so there is no sideways scrolling at 320 CSS pixels and nothing is clipped at 400% zoom or with wider text spacing (1.4.10 Reflow, 1.4.12 Text Spacing). The `storybook-reflow` and `storybook-text-spacing` sweeps check it: every story at 320 CSS px fails on horizontal overflow, and with the 1.4.12 spacing applied a box that clips more content than it holds fails. Zoom to 400% is reviewed in the stories.
 
 ## WCAG SCs covered
 

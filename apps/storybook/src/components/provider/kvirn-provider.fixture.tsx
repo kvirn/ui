@@ -7,6 +7,7 @@ import {
   CharacterCount,
   KvirnProvider,
   KvirnThemeScript,
+  ScrollArea,
   useTheme,
 } from '@kvirn-ui/react'
 import type { StoredThemePreference, ThemeStorageAdapter } from '@kvirn-ui/react'
@@ -124,10 +125,12 @@ export function ServerHead() {
   const openingTag = markup.slice(0, markup.indexOf('>') + 1)
   const defaultsLine = markup.split('\n').find((line) => line.includes('var defaults')) ?? ''
   return (
-    <pre>
-      {openingTag}
-      {'\n'}
-      {defaultsLine.trim()}
-    </pre>
+    <ScrollArea aria-label="Theme script markup">
+      <pre>
+        {openingTag}
+        {'\n'}
+        {defaultsLine.trim()}
+      </pre>
+    </ScrollArea>
   )
 }

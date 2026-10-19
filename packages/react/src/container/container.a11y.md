@@ -74,7 +74,7 @@ Headless: Container ships no CSS. With `@kvirn-ui/theme/theme.css` (DESIGN.md, L
 
 - 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): no role of its own, so the element you choose decides (`container.test.tsx › rendering › adds no role, ARIA, tabindex, inert or data attribute`).
 - 1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A): DOM order equals reading and focus order (the keyboard rows).
-- 1.4.10 Reflow (AA): a maximum width, never a fixed one (the 320px story checks that nothing scrolls sideways). 1.4.12 Text Spacing (AA): no fixed heights, by reading; no automated check.
+- 1.4.10 Reflow (AA): a maximum width, never a fixed one (the 320px story checks that nothing scrolls sideways). 1.4.12 Text Spacing (AA): no fixed heights, and the `storybook-text-spacing` sweep applies the 1.4.12 spacing to every story and fails on a box that clips more content than it holds.
 
 ## AT test record
 

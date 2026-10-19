@@ -40,11 +40,39 @@ const isClippedAway = (element: Element, root: Element) => {
   return false
 }
 
-/** Nothing inside the element is wider than it (1.4.10). A box clipped to 1 CSS px is skipped. */
+// A labelled, focusable region that scrolls sideways itself (a ScrollArea, a wide Table): 1.4.10
+// exempts content that needs two-dimensional layout, so its contents may be wider than the page.
+// The region itself must still fit, and a keyboard user can scroll it.
+const isScrollRegion = (node: Element) => {
+  if (node.getAttribute('role') !== 'region' || node.getAttribute('tabindex') !== '0') return false
+  if (!node.getAttribute('aria-label')?.trim() && !node.getAttribute('aria-labelledby')?.trim()) {
+    return false
+  }
+  const { overflowX } = getComputedStyle(node)
+  return overflowX === 'auto' || overflowX === 'scroll'
+}
+
+// Top-layer and fixed content escapes the region's scroll box, so it is never exempt.
+const escapesScrollBox = (element: Element) =>
+  element.matches(':popover-open, :modal') || getComputedStyle(element).position === 'fixed'
+
+const isInScrollRegion = (element: Element, root: Element) => {
+  if (escapesScrollBox(element)) return false
+  for (let node = element.parentElement; node && node !== root; node = node.parentElement) {
+    if (escapesScrollBox(node)) return false
+    if (isScrollRegion(node)) return true
+  }
+  return false
+}
+
+/**
+ * Nothing inside the element is wider than it (1.4.10). A box clipped to 1 CSS px is skipped, and
+ * so are the contents of a focusable scroll region (the region itself is checked).
+ */
 export async function expectNoHorizontalOverflow(element: HTMLElement) {
   await expect(element.scrollWidth).toBeLessThanOrEqual(element.clientWidth)
   for (const child of element.querySelectorAll<HTMLElement>('*')) {
-    if (isClippedAway(child, element)) continue
+    if (isClippedAway(child, element) || isInScrollRegion(child, element)) continue
     await expect(child.getBoundingClientRect().right).toBeLessThanOrEqual(
       element.getBoundingClientRect().right + 0.5,
     )
@@ -95,9 +123,36 @@ export async function expectVisibleInForcedColors(root: Element) {
     await expect(hasBoundary || style.color !== backgroundBehind(element)).toBe(true)
   }
   const focused = document.activeElement
-  if (focused && root.contains(focused) && focused.matches(':focus-visible')) {
-    await expect(isDrawn(getComputedStyle(focused), 'outline')).toBe(true)
+  if (
+    focused instanceof HTMLElement &&
+    root.contains(focused) &&
+    focused.matches(':focus-visible')
+  ) {
+    await expect(await hasFocusRing(focused, root)).toBe(true)
   }
+}
+
+// A ring from `[data-focus-visible]` is React state: it changes a render after the focus event.
+const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve))
+
+// The focused part draws the ring, or (an input in a group or control) its nearest wrapper with an
+// outline does, and only while focus is inside it: a permanent outline is not a focus ring.
+const hasFocusRing = async (focused: HTMLElement, root: Element) => {
+  if (isDrawn(getComputedStyle(focused), 'outline')) return true
+  let wrapper: Element | null = null
+  for (let node = focused.parentElement; node && root.contains(node); node = node.parentElement) {
+    if (isDrawn(getComputedStyle(node), 'outline')) {
+      wrapper = node
+      break
+    }
+  }
+  if (!wrapper) return false
+  focused.blur()
+  await nextFrame()
+  const permanent = isDrawn(getComputedStyle(wrapper), 'outline')
+  focused.focus({ focusVisible: true })
+  await nextFrame()
+  return !permanent
 }
 
 /** The Playwright context option took effect: the page really asks for reduced motion. */

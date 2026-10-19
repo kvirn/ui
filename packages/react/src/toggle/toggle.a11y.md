@@ -70,7 +70,7 @@ Toggle has no strings of its own and announces nothing: the screen reader reads 
 - Pressed (default theme): a solid fill in the primary colour with a light icon or label, flat in a toolbar. The fill reaches 3:1 against its surroundings and the icon 4.5:1 or 3:1 on the fill (1.4.1 Use of Color, A; 1.4.11 Non-text Contrast, AA). The theme's contrast check measures the pairs.
 - forced-colors behaviour: pressed uses the system's highlight colours for its fill, text and edge, so it differs from an unpressed button without colour alone (`toggle.stories.tsx › ForcedColors`).
 - reduced-motion behaviour: the fill changes instantly.
-- Reflow: a long label wraps inside the button. No horizontal scrolling at 320 CSS px, reviewed in the stories, not automated (1.4.10 Reflow, AA).
+- Reflow: a long label wraps inside the button. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
 
 ## WCAG SCs covered
 
@@ -91,7 +91,7 @@ Toggle has no strings of its own and announces nothing: the screen reader reads 
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | toggle.test.tsx › is a native button with aria-pressed, off by default, and the part classes; expectNoA11yViolations |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test (toggle.test.tsx › Tab moves to the toggle and Shift+Tab moves off it)                     |
 | Focus order and management                                                 | pass        | n/a         | pass    | toggle.test.tsx asserts focus (toHaveFocus); first rule: Tab moves to the toggle and Shift+Tab moves off it          |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                                                      |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI        |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                                      |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                      |
 | VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                      |

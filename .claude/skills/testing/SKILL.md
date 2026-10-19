@@ -29,13 +29,13 @@ We test **behaviour, accessibility and requirements**. We never test CSS. Before
 
 **The one exception: a WCAG criterion that can only be measured visually.** Assert the criterion's threshold on the outcome, never the theme's value, and put the SC number in the test name:
 
-| SC                      | Assert                                                                                                  | Never assert                     |
-| ----------------------- | ------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| 2.5.8 Target size       | the target is at least 24×24 CSS px                                                                     | its padding or height            |
-| 2.4.7 Focus visible     | a focused part shows an indicator (outline is not none)                                                 | outline width, offset or colour  |
-| 1.4.10 Reflow           | no horizontal scroll at 320px (`storybook-reflow`)                                                      | grid or flex rules               |
-| 1.4.12 Text spacing     | with the SC's spacing applied, no text is clipped (`storybook-text-spacing`)                            | line height or `overflow` values |
-| 1.4.11 / forced colours | a drawn boundary, or text distinct from its background, and a focus outline (`storybook-forced-colors`) | border width or system colours   |
+| SC                      | Assert                                                                                                                                                                                                                                        | Never assert                     |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| 2.5.8 Target size       | the target is at least 24×24 CSS px                                                                                                                                                                                                           | its padding or height            |
+| 2.4.7 Focus visible     | a focused part shows an indicator (outline is not none)                                                                                                                                                                                       | outline width, offset or colour  |
+| 1.4.10 Reflow           | no horizontal scroll at 320px (`storybook-reflow`); a focusable `role="region"` that scrolls sideways may hold wider content (2D layout, e.g. a Table), the region itself must fit (maintainer 2026-10-19)                                    | grid or flex rules               |
+| 1.4.12 Text spacing     | with the SC's spacing applied, no text is clipped (`storybook-text-spacing`)                                                                                                                                                                  | line height or `overflow` values |
+| 1.4.11 / forced colours | a drawn boundary, or text distinct from its background, and a focus outline on the focused part or, for an input in a group, on its nearest outlined wrapper only while focus is inside it (`storybook-forced-colors`; maintainer 2026-10-19) | border width or system colours   |
 
 The look is reviewed by eye in Storybook, never by test. When a test you meet breaks these rules, delete it in the change that touches it, and say so in the summary.
 

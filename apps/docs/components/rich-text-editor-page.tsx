@@ -349,9 +349,9 @@ export function RichTextEditorPage({
             ]}
             note={
               <Note kind="tip">
-                Touch screens have no tooltips, so show the names. A full toolbar that wraps is
-                about 200 pixels tall at a width of 320 pixels, and a short one leaves more room for
-                the text. For one row on a phone, see the compact toolbar below.
+                Touch screens have no tooltips, so show the names. A full toolbar wraps onto several
+                rows at a width of 320 pixels, and a short one leaves more room for the text. For
+                one row on a phone, see the compact toolbar below.
               </Note>
             }
           >

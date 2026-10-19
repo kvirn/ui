@@ -63,6 +63,7 @@ const secondTopic = { name: 'Care and support', hidden: true } as const
 
 /** The main menu at the desktop width: topics are buttons in the nav row, every panel closed. */
 export const Default: Story = {
+  parameters: { reflowOptOut: 'asserts the 80rem layout; NarrowMenu proves 320 px' },
   globals: { ...wideGlobals },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
@@ -120,6 +121,8 @@ export const Default: Story = {
 
 /** An open panel from 64rem: a band under the header with the overview link first, then the children. */
 export const OpenWide: Story = {
+  globals: { ...wideGlobals },
+  parameters: { reflowOptOut: 'asserts the 80rem layout; NarrowMenu proves 320 px' },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -238,6 +241,7 @@ export const NarrowMenu: Story = {
  * panel is shown, the page's link has `aria-current="page"`. A link in a closed panel never does.
  */
 export const CurrentPage: Story = {
+  parameters: { reflowOptOut: 'asserts the 80rem layout; NarrowMenu proves 320 px' },
   globals: { ...wideGlobals },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
@@ -294,6 +298,8 @@ export const CurrentPage: Story = {
 
 /** Try the keys listed in the Keyboard section above. */
 export const Keyboard: Story = {
+  globals: { ...wideGlobals },
+  parameters: { reflowOptOut: 'asserts the 80rem layout; NarrowMenu proves 320 px' },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
       <PageFrame.Root>
@@ -356,6 +362,7 @@ export const Keyboard: Story = {
 
 /** Right to left: the row starts at the right, and the chevrons stay vertical. */
 export const RTL: Story = {
+  parameters: { reflowOptOut: 'asserts the 80rem layout; NarrowMenu proves 320 px' },
   globals: { dir: 'rtl', locale: 'en', ...wideGlobals },
   render: () => (
     <KvirnProvider locale="en" messages={en}>
@@ -410,6 +417,7 @@ export const RTL: Story = {
 
 /** Forced colours: the open panel keeps a `CanvasText` border where the shadow drops. */
 export const ForcedColors: Story = {
+  parameters: { reflowOptOut: 'asserts the 80rem layout; NarrowMenu proves 320 px' },
   globals: { forcedColors: 'active', ...wideGlobals },
   render: () => (
     <KvirnProvider locale="en" messages={en}>

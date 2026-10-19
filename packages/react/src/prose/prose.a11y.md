@@ -94,7 +94,7 @@ Headless: Prose ships no CSS. With the default theme the `kv-prose` rules apply:
 - **Line length and type.** A 70-character line length, and the body and heading type styles. `h1` to `h6` each have their own style, and `h4` to `h6` stay at 16px in every prose size.
 - **Links.** A link has an underline on hover and a focus ring.
 - **Contrast.** Text, links and code on the page and section backgrounds are checked automatically (1.4.3 Contrast (Minimum) (AA), 1.4.11 Non-text Contrast (AA)).
-- **Reflow.** Nothing has a fixed size, so text reflows (reviewed in the stories, not automated (1.4.10 Reflow, AA)).
+- **Reflow.** Nothing has a fixed size, so text reflows (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
 - **Text spacing.** Reviewed by hand in a Storybook story (1.4.12 Text Spacing (AA)).
 - **Reduced motion.** Prose animates only a link's colour, and only when motion is allowed.
 
@@ -124,7 +124,7 @@ With the theme, `kv-prose--small` (14px), the default (16px), `kv-prose--large` 
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | prose.test.tsx › renders one element with the kv-prose class, no role or ARIA, and its children; expectNoA11yViolations |
 | Keyboard contract rows (Vitest browser)                                    | n/a         | n/a         | n/a     | no focusable or operable part; prose renders no tabindex                                                                |
 | Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                                                             |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                                                         |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI           |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                                         |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
 | VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                         |

@@ -110,7 +110,7 @@ The phrases are the virtual screen reader's approximation, not NVDA or JAWS word
 - 4.1.3 Status Messages (AA): `{date} selected` after the dialog has closed.
 - 3.1.2 Language of Parts (AA): the Calendar's `lang` when the browser has no data for the locale.
 - 1.4.10 Reflow (AA): stories at 320 pixels wide check that the dialog and its grid do not scroll sideways, with and without week numbers.
-- 1.4.12 Text Spacing (AA), 2.5.8 Target Size (Minimum) (AA): no automated check.
+- 1.4.12 Text Spacing (AA): the `storybook-text-spacing` sweep applies the 1.4.12 spacing to every story and fails on a box that clips more content than it holds. 2.5.8 Target Size (Minimum) (AA): no automated check.
 
 ## AT test record
 
@@ -121,7 +121,7 @@ The phrases are the virtual screen reader's approximation, not NVDA or JAWS word
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `date-picker.test.tsx` (axe and role, name and state): `the trigger is a button named by its visible text, with a hidden icon, aria-haspopup and aria-expanded false` |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 13 rows, each names a test in `date-picker.test.tsx`                                                                                                                  |
 | Focus order and management                                                 | pass        | n/a         | pass    | `date-picker.test.tsx`: `Enter on the trigger opens the dialog with focus on today when the field is empty`                                                           |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                                                                                                       |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                                                         |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                                                                                       |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                                       |
 | VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                                                       |

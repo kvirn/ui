@@ -6,6 +6,7 @@ import { expect, fn, userEvent, waitFor } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { dateTextsFor } from '../date-input/date-input.fixture.tsx'
 import { localeOf } from '../form/form.fixture.tsx'
+import { chromeViewports, wideGlobals } from '../../patterns/patterns-story-support.tsx'
 import { expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
 import {
   LocalePickers,
@@ -101,7 +102,13 @@ const openPicker = (canvas: {
 
 /** The main example: one `masks.date()` field with "Choose date" beside it. One Tab stop, paste works, and the chosen day is written in the field's own format. */
 export const MaskedTextInput: Story = {
-  parameters: source('MaskedDatePicker'),
+  globals: { ...wideGlobals },
+  parameters: {
+    ...source('MaskedDatePicker'),
+    viewport: { options: chromeViewports },
+    reflowOptOut:
+      'asserts the trigger beside the field; the row wraps at 320 px, swept at 320 px by Open and Swedish',
+  },
   render: (args, { globals }) => (
     <MaskedDatePicker {...args} locale={localeOf(globals)} initial="20/10/2026" />
   ),

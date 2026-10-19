@@ -4,7 +4,7 @@
 - **Deviations:** none. Pages are URLs, so each is a link and none is a button: Back, sharing and opening in a new tab work.
 - **Native elements used:** `<nav>` (the `navigation` landmark), `<ul>` and `<li>`. The links are [Link](../link/link.a11y.md): native `<a href>`, rendered by the registered router link.
 - **Status:** alpha candidate. Gates green, accessibility-reviewer APPROVE after fixes (2026-10-06). Manual AT is `pending`.
-- **Tests:** `pagination.test.tsx` next to this file. `pagination.stories.tsx` in `apps/storybook/src/components/pagination/`, where `theme.css` is loaded and the targets and the current page's shape are proved. The narrow layout (below 40rem) is a manual check, `pending`, until the opt-in `storybook-reflow` sweep is widened to its stories: a 320px column in a wide preview can't trigger the media query. Design brief: `docs/design/municipality-reference-site.md` (B17) and `DESIGN.md`, Breadcrumb and pagination.
+- **Tests:** `pagination.test.tsx` next to this file. `pagination.stories.tsx` in `apps/storybook/src/components/pagination/`, where `theme.css` is loaded and the targets and the current page's shape are proved. The narrow layout (below 40rem) is the `Reflow320` story, which the `storybook-reflow` sweep runs at 320 CSS px. Design brief: `docs/design/municipality-reference-site.md` (B17) and `DESIGN.md`, Breadcrumb and pagination.
 
 Pagination lets a resident move through a long list. It adds no `tabindex`, no key handling and no live announcement: the links are the focusable parts and own the keys. Which numbers and gaps to show is the consumer's.
 
@@ -68,7 +68,7 @@ Pagination announces nothing itself. A page change is announced by the page's ow
 - Focus indicator: a link shows the focus ring (`:focus-visible`), through `Link`.
 - Target size: 44 pixels high by default, 24 by 24 pixels at minimum (2.5.8 Target Size (Minimum), AA).
 - Current page: a shape and `aria-current`, never colour alone (1.4.1 Use of Color, A).
-- Reflow: the links wrap, and below 40rem only Previous, the current page, the status and Next show (1.4.10 Reflow, AA). No automated check covers the narrow layout; check it at 320px yourself.
+- Reflow: the links wrap, and below 40rem only Previous, the current page, the status and Next show (1.4.10 Reflow, AA). The narrow layout is the `Reflow320` story (the `storybook-reflow` sweep runs every story but `Keyboard` at 320 CSS px (`Keyboard` is pinned to 80rem; `Reflow320` covers the narrow layout) and fails on horizontal overflow).
 - Forced colours and reduced motion: not covered by an automated test.
 
 A custom theme must keep these.
@@ -86,7 +86,7 @@ A custom theme must keep these.
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | pagination.test.tsx › is a navigation landmark named by the message pagination.label; expectNoA11yViolations                                                       |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test (pagination.test.tsx › Pagination keyboard › Tab moves through every link in order, and the ellipsis and status are no stops)            |
 | Focus order and management                                                 | pass        | n/a         | pass    | pagination.test.tsx asserts focus (toHaveFocus); first rule: Pagination keyboard › Tab moves through every link in order, and the ellipsis and status are no stops |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                                                                                                    |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                                                      |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                                                                                    |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                                    |
 | VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                                                    |

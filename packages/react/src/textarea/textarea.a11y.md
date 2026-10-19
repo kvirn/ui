@@ -116,21 +116,21 @@ Only changes made while the box has focus are announced: a text set from code (a
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                   |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                         |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | textarea.stories.tsx, every story, 4 themes                                                             |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | textarea.test.tsx › the Field’s label is the name, and its id links them; expectNoA11yViolations        |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 8 rows, each names a test (textarea.test.tsx › Tab moves in and out and never inserts a tab)            |
-| Focus order and management                                                 | pass        | n/a         | pass    | textarea.test.tsx asserts focus (toHaveFocus); first rule: Tab moves in and out and never inserts a tab |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                                         |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                         |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                         |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                         |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                         |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                         |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                         |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                         |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | textarea.stories.tsx, every story, 4 themes                                                                   |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | textarea.test.tsx › the Field’s label is the name, and its id links them; expectNoA11yViolations              |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 8 rows, each names a test (textarea.test.tsx › Tab moves in and out and never inserts a tab)                  |
+| Focus order and management                                                 | pass        | n/a         | pass    | textarea.test.tsx asserts focus (toHaveFocus); first rule: Tab moves in and out and never inserts a tab       |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
 Research questions for the AT run: is the count read once with the value when the box gets focus, and not read again by the polite announcement at the same moment? Is a pause of 500 ms right, or does it interrupt a slow typist? Is "too many characters" understood as a warning without a visual cue? Does Dragon dictate a long text without the count lagging?
 

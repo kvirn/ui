@@ -205,8 +205,15 @@ function themeCombination(
     play: async ({ canvas, canvasElement, userEvent }) => {
       await userEvent.click(canvas.getByRole('radio', { name: colorScheme }))
       await userEvent.click(canvas.getByRole('radio', { name: contrast }))
+      // The display-mode sweeps run with forced colours or reduced motion on, and the summary follows them.
+      const media = (query: string) => window.matchMedia(query).matches
+      const motion = media('(prefers-reduced-motion: reduce)') ? 'Mindre rörelse' : 'Full rörelse'
       await expect(
-        canvas.getByText(`Används nu: ${colorScheme}, ${contrast}, Full rörelse`),
+        canvas.getByText(
+          media('(forced-colors: active)')
+            ? 'Systemets tvingade färger används och går före ditt val.'
+            : `Används nu: ${colorScheme}, ${contrast}, ${motion}`,
+        ),
       ).toBeVisible()
       const root = canvasElement.ownerDocument.documentElement
       await expect(root).toHaveAttribute(

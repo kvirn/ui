@@ -1,5 +1,5 @@
 // kv-lang-ok-file: per-locale story texts: the toolbar locale selects the sv, fi, nb, nn or en table
-import { Button, Field } from '@kvirn-ui/react'
+import { Button, Field, ScrollArea } from '@kvirn-ui/react'
 import { defaultExtensions, RichTextEditor } from '@kvirn-ui/rich-text'
 import { Mark } from '@tiptap/core'
 import type { JSONContent } from '@tiptap/core'
@@ -335,9 +335,11 @@ export function ControlledJsonEditor({ locale }: { locale: FormLocale }) {
             <RichTextEditor.Content />
           </RichTextEditor.Root>
         </Field.Root>
-        <pre className="kv-story-form-output" data-testid="json">
-          {JSON.stringify(value)}
-        </pre>
+        <ScrollArea aria-label="JSON value">
+          <pre className="kv-story-form-output" data-testid="json">
+            {JSON.stringify(value)}
+          </pre>
+        </ScrollArea>
       </div>
     </>
   )

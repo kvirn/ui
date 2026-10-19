@@ -95,21 +95,21 @@ Both go through the shared Announcer. `announce={false}` opts out (when focus al
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                  |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | -------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                        |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | progress.stories.tsx, every story, 4 themes                                            |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | progress.test.tsx › shows the label as plain text with no role; expectNoA11yViolations |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | progress.test.tsx › keyboard › Tab passes over it: it has no focusable part            |
-| Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                            |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                        |
-| **Core (required for beta)**                                               |             |             |         |                                                                                        |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                        |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                        |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                        |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                        |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                        |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                        |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | progress.stories.tsx, every story, 4 themes                                                                   |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | progress.test.tsx › shows the label as plain text with no role; expectNoA11yViolations                        |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | progress.test.tsx › keyboard › Tab passes over it: it has no focusable part                                   |
+| Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                                                   |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
 Questions for the screen reader tests: is the label announced once, at once, with no repeat? Does a screen reader read both the bar's name and `aria-valuetext` redundantly ("Exporting cases, progress bar, Exporting cases, 45%")? Does a busy button read as unavailable and keep its place?
 

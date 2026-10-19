@@ -6,6 +6,7 @@ import type { ReactNode } from 'react'
 import { expect, userEvent } from 'storybook/test'
 import { usageGuide } from '../../docs-source.ts'
 import { expectMinimumTargetSize, expectNoHorizontalOverflow } from '../theme-story-assertions.ts'
+import { chromeViewports, wideGlobals } from '../../patterns/patterns-story-support.tsx'
 import { withLocale } from './pagination.fixture.tsx'
 
 // Components/Pagination: the headless Pagination, styled by @kvirn-ui/theme/theme.css (brief B17
@@ -144,6 +145,11 @@ export const LastPage: Story = {
 
 /** Try the keys: Tab goes through every link, the current page included, and skips the gap. Enter follows a link. */
 export const Keyboard: Story = {
+  globals: { ...wideGlobals },
+  parameters: {
+    viewport: { options: chromeViewports },
+    reflowOptOut: 'the page numbers are shown from 40rem; Reflow320 proves 320 px',
+  },
   args: {
     children: (
       <Pagination.List>

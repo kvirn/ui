@@ -67,7 +67,7 @@ Headless: no CSS. With the default theme the link is hidden visually, but not re
 - a focus ring with at least 3:1 contrast (2.4.7 Focus Visible, AA);
 - space around it and a target of at least 24 by 24 CSS pixels (2.5.8 Target Size (Minimum), AA).
 
-It reflows with the page (reviewed in the stories, not automated (1.4.10 Reflow, AA)). In forced colours (a Windows contrast mode) it uses the system's link and background colours and a highlight-coloured ring, with no reliance on a background fill. If you restyle it, keep the contrast, the underline, the ring and the target size.
+It reflows with the page (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow. In forced colours (a Windows contrast mode) it uses the system's link and background colours and a highlight-coloured ring, with no reliance on a background fill. If you restyle it, keep the contrast, the underline, the ring and the target size.
 
 ## WCAG SCs covered
 
@@ -88,7 +88,7 @@ It reflows with the page (reviewed in the stories, not automated (1.4.10 Reflow,
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | skip-link.test.tsx › the name is the default label, rendered as text with no ARIA added; expectNoA11yViolations     |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test (skip-link.test.tsx › SkipLink keyboard › the first Tab stop is the skip link)            |
 | Focus order and management                                                 | pass        | n/a         | pass    | skip-link.test.tsx asserts focus (toHaveFocus); first rule: SkipLink keyboard › the first Tab stop is the skip link |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                                                     |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI       |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                                     |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                     |
 | VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                     |

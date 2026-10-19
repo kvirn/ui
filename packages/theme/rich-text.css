@@ -130,6 +130,13 @@
     background-color: var(--kv-color-surface);
   }
 
+  /* The table group has words on its buttons, so at 320px it wraps onto a second row instead of
+   * squeezing each word out of its button (1.4.10). Icon-only groups stay one strip. */
+  .kv-toolbar--attached
+    .kv-button-group.kv-button-group--attached:has(> .kv-button:not(.kv-button--icon-only)) {
+    flex-wrap: wrap;
+  }
+
   /* Flat buttons, like an input group's: no depth, no fill, an edge that is there and transparent,
    * so a button never changes size. A pressed toggle is section 6a's solid tile. */
   .kv-toolbar--attached .kv-button:not([aria-pressed='true'], [data-pressed]) {

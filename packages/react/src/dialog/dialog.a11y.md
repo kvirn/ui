@@ -96,7 +96,7 @@ Opening is announced by the focus move: the screen reader reads the role and the
 - Colour: the dialog's text keeps at least 4.5:1 contrast on its surface (1.4.3 Contrast (Minimum) (AA)). The edge is decorative, not a control boundary, so 1.4.11 Non-text Contrast (AA) asks nothing of it. The backdrop only dims.
 - forced-colors behaviour: the dialog keeps a visible edge on all sides, in the system's text colour. Open state is never shown by colour alone.
 - reduced-motion behaviour: opening fades in only without `prefers-reduced-motion: reduce`. Closing is always instant, so focus returns at once.
-- Reflow: on narrow screens the dialog is a sheet at the bottom, as wide as the screen, with no fixed width or height, and scrolls inside when it is too tall. No horizontal scrolling at 320 CSS px, reviewed in the stories, with no automated check (1.4.10 Reflow, AA).
+- Reflow: on narrow screens the dialog is a sheet at the bottom, as wide as the screen, with no fixed width or height, and scrolls inside when it is too tall. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
 - RTL: logical properties only. Close sits at the inline end and the actions start at the inline start.
 
 ## WCAG SCs covered
@@ -120,7 +120,7 @@ Opening is announced by the focus move: the screen reader reads the role and the
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `dialog.test.tsx` (axe and role, name and state): `an open dialog is modal, has role dialog, aria-modal and data-open, and no axe violations` |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 13 rows, each names a test in `dialog.test.tsx`                                                                                               |
 | Focus order and management                                                 | pass        | n/a         | pass    | `dialog.test.tsx`: `the title is an h2 that takes focus programmatically but is never a Tab stop`                                             |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                                                                               |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                                 |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                                                               |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                               |
 | VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                                               |

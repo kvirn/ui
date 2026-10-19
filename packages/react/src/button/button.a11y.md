@@ -86,7 +86,7 @@ Button has no strings of its own. Its name is its content, which the consumer pr
 - Compact (`kv-button--compact`): 32px tall from 64rem, 44px below it, so it meets 2.5.8 only, like `kv-compact`. Test: `button.stories.tsx › Size` (axe, target size, same height as a compact input).
 - Link look (`kv-button--link`): at least 24px tall at every width (2.5.8), the normal focus ring (2.4.7), underlined on hover only. Disabled is `text-muted` with a dashed underline as the non-colour cue (1.4.1); on a filled top bar it is the bar's on-colour with the dashed underline. Forced colours (`ButtonText`) is checked by reading, with no automated test. Test: `button.stories.tsx › LinkLook` (axe, target size).
 - reduced-motion behaviour: the button itself has no motion. The spinner of a busy button rests under reduced motion.
-- Reflow: No horizontal scrolling at 320 CSS px, reviewed in the stories, with no automated check (1.4.10 Reflow, AA).
+- Reflow: No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
 
 ## WCAG SCs covered
 

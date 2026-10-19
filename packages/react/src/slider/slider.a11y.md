@@ -94,21 +94,21 @@ None from the component. On focus a screen reader reads the label, "slider", `ar
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                               |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                     |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | slider.stories.tsx, every story, 4 themes                                                           |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | slider.test.tsx › valueText sets aria-valuetext, and it follows each change; expectNoA11yViolations |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 10 rows, each names a test (slider.test.tsx › Tab moves to the slider, one stop)                    |
-| Focus order and management                                                 | pass        | n/a         | pass    | slider.test.tsx asserts focus (toHaveFocus); first rule: Tab moves to the slider, one stop          |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                                     |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                     |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                     |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                     |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                     |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                     |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                     |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                     |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | slider.stories.tsx, every story, 4 themes                                                                     |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | slider.test.tsx › valueText sets aria-valuetext, and it follows each change; expectNoA11yViolations           |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 10 rows, each names a test (slider.test.tsx › Tab moves to the slider, one stop)                              |
+| Focus order and management                                                 | pass        | n/a         | pass    | slider.test.tsx asserts focus (toHaveFocus); first rule: Tab moves to the slider, one stop                    |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
 Research questions for the assistive technology (AT) run: is `aria-valuetext` spoken on every step on VoiceOver iOS (swipe up and down) and TalkBack? Does Safari reverse the range in RTL? Can a resident on iOS Safari move the thumb without a drag, and is the NumberInput beside it enough?
 

@@ -85,7 +85,7 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 - Target size: inline links in a sentence are exempt from 2.5.8 Target Size (Minimum) (AA). The default theme sets a minimum size for standalone links, and the service link and a Navigation item are as tall as the theme's control height (taller in the comfortable density, shorter in the compact one). Tests: `link.stories.tsx › Service` (play) asserts the 24px threshold, and `navigation.stories.tsx › CompactDensity` for a navigation item.
 - forced-colors behaviour: a native `<a href>`, so the system's link colour applies. The service link keeps a thin edge in that colour, and its icon block is not filled: it has a divider in that colour, so the boundary survives (1.4.11 Non-text Contrast (AA)). A link with `current` is bolder in the default theme, so it is never shown by colour alone (1.4.1 Use of Color (A)). How the current page looks in a list of links, in forced colours too, is described in Navigation's contract (a fill and a bolder weight, and a straight bar in forced colours). A link in running text has 3:1 contrast against the body text (checked by the theme's contrast check) and is underlined on hover; the contrast themes, forced colours and a link in grey or red text (a caption, `small`, help text, an error message) keep the underline at rest (1.4.1, `link.stories.tsx › In running text`).
 - reduced-motion behaviour: no motion.
-- Reflow: No horizontal scrolling at 320 CSS px, reviewed in the stories, not automated (1.4.10 Reflow, AA).
+- Reflow: No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
 
 ## WCAG SCs covered
 
@@ -102,21 +102,21 @@ Resolution, first match wins: `Link.NewTabNotice` children, then `<Link.Root mes
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                         |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                               |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | link.stories.tsx, every story, 4 themes                                                       |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | link.test.tsx › current="page" sets aria-current and data-current; expectNoA11yViolations     |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 6 rows, each names a test (link.test.tsx › keyboard › Tab moves focus to the link)            |
-| Focus order and management                                                 | pass        | n/a         | pass    | link.test.tsx asserts focus (toHaveFocus); first rule: keyboard › Tab moves focus to the link |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                               |
-| **Core (required for beta)**                                               |             |             |         |                                                                                               |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                               |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                               |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                               |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                               |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                               |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                               |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                         |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                               |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | link.stories.tsx, every story, 4 themes                                                                       |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | link.test.tsx › current="page" sets aria-current and data-current; expectNoA11yViolations                     |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 6 rows, each names a test (link.test.tsx › keyboard › Tab moves focus to the link)                            |
+| Focus order and management                                                 | pass        | n/a         | pass    | link.test.tsx asserts focus (toHaveFocus); first rule: keyboard › Tab moves focus to the link                 |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                               |
+| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                               |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                               |
+| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
+| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
+| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
 ## Known issues
 

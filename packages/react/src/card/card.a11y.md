@@ -81,14 +81,14 @@ Headless: Card ships no CSS. With `@kvirn-ui/theme/theme.css`:
 - Contrast: the default theme checks that text, links, muted text and button edges meet their minimum contrast on the card's surface and on the surfaces a card sits on (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA). The card's own edge is decorative and low in contrast on purpose: the heading and the spacing group the content, not the edge.
 - Forced colours: the card keeps a visible border in the system's text colour, so its boundary and dividers stay.
 - Reduced motion: nothing moves. There is no hover effect, transition or pointer style.
-- Reflow and text spacing: no fixed sizes, no clipping, long words break, and the card can shrink in a grid. The stories show it at narrow widths and with a Finnish text, by eye. No automated check covers 320px and text spacing (1.4.10 Reflow, 1.4.12 Text Spacing). Media directly in a part or the Root never get wider than it.
+- Reflow and text spacing: no fixed sizes, no clipping, long words break, and the card can shrink in a grid. The stories show it at narrow widths and with a Finnish text; the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow, and the `storybook-text-spacing` sweep applies the 1.4.12 spacing to every story and fails on a box that clips more content than it holds (1.4.10 Reflow, 1.4.12 Text Spacing). Media directly in a part or the Root never get wider than it.
 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships (A): the card has no role of its own, so your element and children decide the meaning. Header and Footer are never landmarks.
 - 1.3.2 Meaningful Sequence (A) and 2.4.3 Focus Order (A): the order in the page is the reading order and the focus order. The Tab rows prove the card is skipped.
 - 1.4.3 Contrast (Minimum) (AA) and 1.4.11 Non-text Contrast (AA): the default theme's colour pairs on every card surface are checked automatically.
-- 1.4.10 Reflow (AA) and 1.4.12 Text Spacing (AA): the card doesn't crop or fix its size. This is reviewed in the stories, not by an automated check.
+- 1.4.10 Reflow (AA) and 1.4.12 Text Spacing (AA): the card doesn't crop or fix its size. The reflow and text-spacing sweeps check it: the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow; the `storybook-text-spacing` sweep applies the 1.4.12 spacing to every story and fails on a box that clips more content than it holds.
 - 2.4.11 Focus Not Obscured (Minimum) (AA): the card doesn't clip a child's focus ring (reviewed in the stories). 2.4.13 Focus Appearance (AAA) is not counted toward AA.
 - 4.1.2 Name, Role, Value (A): the card has no role or name of its own to get wrong.
 

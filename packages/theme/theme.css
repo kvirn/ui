@@ -3110,7 +3110,9 @@
         border-block-start: var(--kv-border-width) solid var(--kv-prose-color-hr);
       }
 
-      /* Reference numbers have no break points, so inline code may break anywhere. */
+      /* Reference numbers have no break points, so inline code may break anywhere. The padding and
+       * border are not cloned onto each line: a cloned end edge hangs past the line's end and
+       * overflows a 320px column (1.4.10). */
       &:where(code):not(:where(pre *)) {
         padding-inline: var(--kv-space-1);
         border: var(--kv-border-width) solid var(--kv-color-border-subtle);
@@ -3120,8 +3122,6 @@
         font-family: var(--kv-font-family-mono);
         font-size: var(--kv-prose-code-size);
         overflow-wrap: anywhere;
-        -webkit-box-decoration-break: clone;
-        box-decoration-break: clone;
       }
 
       /* Code in a heading, a link, a quote or a table head follows the part. */

@@ -74,21 +74,21 @@ Headless: Kbd ships no CSS. With the default theme, `kv-kbd` (and a bare `kbd` i
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                            |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                  |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | kbd.stories.tsx, every story, 4 themes                                                                           |
-| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | kbd.test.tsx › renders a kbd, no role or ARIA, and passes attributes and the ref through; expectNoA11yViolations |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | kbd.test.tsx › is not a Tab stop                                                                                 |
-| Focus order and management                                                 | n/a         | n/a         | n/a     | nothing focusable: the component never takes or moves focus                                                      |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                                                                                  |
-| **Core (required for beta)**                                               |             |             |         |                                                                                                                  |
-| NVDA + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<kbd>` with no role, read as text in the sentence; no state, focus or key handling; nothing to operate   |
-| VoiceOver + Safari + iOS                                                   | n/a         | n/a         | n/a     | native `<kbd>` with no role, read as text in the sentence; no state, focus or key handling; nothing to operate   |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                  |
-| JAWS + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native `<kbd>` with no role, read as text in the sentence; no state, focus or key handling; nothing to operate   |
-| TalkBack + Chrome + Android                                                | n/a         | n/a         | n/a     | native `<kbd>` with no role, read as text in the sentence; no state, focus or key handling; nothing to operate   |
-| VoiceOver + Safari + macOS                                                 | n/a         | n/a         | n/a     | native `<kbd>` with no role, read as text in the sentence; no state, focus or key handling; nothing to operate   |
+| AT + browser + OS                                                          | Agent check | Human check | Result | Notes                                                                                                            |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------ | ---------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |        |                                                                                                                  |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass   | kbd.stories.tsx, every story, 4 themes                                                                           |
+| Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass   | kbd.test.tsx › renders a kbd, no role or ARIA, and passes attributes and the ref through; expectNoA11yViolations |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass   | kbd.test.tsx › is not a Tab stop                                                                                 |
+| Focus order and management                                                 | n/a         | n/a         | n/a    | nothing focusable: the component never takes or moves focus                                                      |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass   | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI    |
+| **Core (required for beta)**                                               |             |             |        |                                                                                                                  |
+| NVDA + Chrome + Windows                                                    | n/a         | n/a         | n/a    | native `<kbd>` with no role, read as text in the sentence; no state, focus or key handling; nothing to operate   |
+| VoiceOver + Safari + iOS                                                   | n/a         | n/a         | n/a    | native `<kbd>` with no role, read as text in the sentence; no state, focus or key handling; nothing to operate   |
+| **Release (before 1.0 and each minor)**                                    |             |             |        |                                                                                                                  |
+| JAWS + Chrome + Windows                                                    | n/a         | n/a         | n/a    | native `<kbd>` with no role, read as text in the sentence; no state, focus or key handling; nothing to operate   |
+| TalkBack + Chrome + Android                                                | n/a         | n/a         | n/a    | native `<kbd>` with no role, read as text in the sentence; no state, focus or key handling; nothing to operate   |
+| VoiceOver + Safari + macOS                                                 | n/a         | n/a         | n/a    | native `<kbd>` with no role, read as text in the sentence; no state, focus or key handling; nothing to operate   |
 
 ## Known issues
 
