@@ -28,8 +28,8 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;p&gt;</code> with no role of its own, or a <code>&lt;div&gt;</code> with{' '}
         <code>as</code>. The text is the message, so it takes no children. It takes every attribute
-        of a <code>&lt;p&gt;</code> and passes <code>ref</code> to it. The default theme is
-        described on <Link href="/foundation/theming">Theming</Link>.
+        of the element it renders and passes <code>ref</code> to it. The default theme is described
+        on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: stepperRows,
@@ -47,7 +47,7 @@ export function StepperPage({
   return (
     <ComponentPage
       title="Stepper"
-      lead="It is orientation, not navigation: it has no links and is not a Tab stop."
+      lead="Tells someone which step of a form with several pages they are on, in plain text such as “Step 2 of 5: Your vehicle”. It is orientation, not navigation: it has no links and is not a Tab stop."
       whenToUse={
         <ul>
           <li>
@@ -77,7 +77,7 @@ export function StepperPage({
           <UseCase
             id="question-page"
             title="A page with a question in an application"
-            why="A step is a section, and a section can take more than one page. This is the second page of “Your vehicle”, so it still says step 2 of 5. The name is optional: without one the text is “Step 2 of 5”."
+            why="A step is a section, and a section can take more than one page. This page asks for the registration number and is one page of “Your vehicle”, so it says step 2 of 5. The name is optional: without one the text is “Step 2 of 5”."
             code={sources['question-page']}
             propsUsed={[
               { part: 'Stepper', prop: 'current' },
@@ -106,10 +106,11 @@ export function StepperPage({
               { part: 'Stepper', prop: 'name' },
             ]}
             note={
-              <Note kind="tip">
-                Moving focus to the heading is the flow’s work, here with{' '}
+              <Note kind="reminder">
+                Moving focus to the new page’s heading is the flow’s work, here with{' '}
                 <Link href="/components/route-focus">useRouteFocus</Link>. The Stepper is not a Tab
                 stop and says nothing by itself when the step changes (2.4.3 Focus Order, level A).
+                Put it in the same place on every step (3.2.3 Consistent Navigation, level AA).
               </Note>
             }
           >
@@ -131,13 +132,28 @@ export function StepperPage({
           <UseCase
             id="own-markup"
             title="With your own element"
-            why="When the markup is yours, spread the props from the hook on your own element and use the text from the hook. You can use the same text in the page title."
+            why="When the markup is yours, spread the props from the hook on your own element, and render the text from the hook right after the page heading. You can use the same text in the page title."
             code={sources['own-markup']}
             propsUsed={[
+              {
+                part: apiHookPart('useStepper', 'options'),
+                label: 'useStepper (options)',
+                prop: 'current',
+              },
+              {
+                part: apiHookPart('useStepper', 'options'),
+                label: 'useStepper (options)',
+                prop: 'total',
+              },
               {
                 part: apiHookPart('useStepper', 'result'),
                 label: 'useStepper (result)',
                 prop: 'rootProps',
+              },
+              {
+                part: apiHookPart('useStepper', 'result'),
+                label: 'useStepper (result)',
+                prop: 'text',
               },
             ]}
           >

@@ -1,7 +1,7 @@
 # Accessibility contract: Slider
 
 - **APG pattern:** [Slider](https://www.w3.org/WAI/ARIA/apg/patterns/slider/), single thumb. The native form: `<input type="range">`, whose implicit role is `slider` and whose `aria-valuemin`, `aria-valuemax` and `aria-valuenow` are native.
-- **Deviations:** none from APG. Decisions: no `role="slider"` div (native semantics first); no visible value part (a NumberInput beside it is the visible, exact value); no track fill; no `required`.
+- **Deviations:** none from APG.
 - **Native elements used:** `<input type="range">`, named by a `<label for>` (Field.Label) or by `aria-labelledby`.
 - **Status:** alpha candidate. Native range, gates green, accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `slider.test.tsx` next to this file. `slider.stories.tsx` in `apps/storybook/src/components/slider/`.
@@ -24,7 +24,7 @@ Rules, each with an automated test:
 - **A Slider beside a NumberInput.** An explicit `aria-labelledby` opts the Slider out of the Field: it gets no `id`, no `aria-describedby`, no `aria-invalid` and no `data-invalid` from it. The NumberInput owns the Field's id, the label's `for` and the error. The Field's label and help text take no `id`, so wrap their text in a `<span id>` and point `aria-labelledby` and `aria-describedby` at it. Pass `aria-describedby` yourself for the help text. A disabled Field still disables the Slider.
 - **Controlled and uncontrolled.** `value` is a `number`; `onValueChange` gets `Number(event.currentTarget.value)`. A form submit sends `name=value` as a string; `form.reset()` restores `defaultValue`.
 - **Disabled.** A Field's `disabled` or the prop gives native `disabled` and `data-disabled`.
-- **Dev warnings (once):** a Slider in a Field with no Field.Label; a Slider outside a Field with no accessible name (`aria-label` or `aria-labelledby` count); an `id` inside a Field; `min >= max` (`slider-min-max`); a `value` or `defaultValue` outside the range (`slider-value-out-of-range`).
+- **Dev warnings (once):** a Slider in a Field with no Field.Label; a Slider outside a Field with no accessible name (`aria-label` or `aria-labelledby` count); an `id` inside a Field; a `min` that is not below `max`; a `value` or `defaultValue` outside the range.
 
 ## Keyboard
 
@@ -44,8 +44,8 @@ Each slider is one Tab stop. Nothing is intercepted: every key keeps its native 
 | ArrowLeft / ArrowDown  | on the slider      | Decreases by `step`                                        | `slider.test.tsx › ArrowLeft and ArrowDown decrease by one step`      |
 | Home                   | on the slider      | Sets `min`                                                 | `slider.test.tsx › Home sets the minimum`                             |
 | End                    | on the slider      | Sets `max`                                                 | `slider.test.tsx › End sets the maximum`                              |
-| PageUp                 | on the slider      | Increases by a larger step (native, 10% of the range)      | `slider.test.tsx › PageUp and PageDown move by a larger step`         |
-| PageDown               | on the slider      | Decreases by a larger step (native)                        | `slider.test.tsx › PageUp and PageDown move by a larger step`         |
+| PageUp                 | on the slider      | Increases by a larger step (a step the browser sets)       | `slider.test.tsx › PageUp and PageDown move by a larger step`         |
+| PageDown               | on the slider      | Decreases by a larger step (a step the browser sets)       | `slider.test.tsx › PageUp and PageDown move by a larger step`         |
 | ArrowLeft / ArrowRight | right-to-left page | The browser reverses them: Left increases, Right decreases | `slider.test.tsx › in a right-to-left page the arrows are reversed`   |
 
 Arrows stop at `min` and `max`. The value is announced natively; there is no live region.
@@ -76,7 +76,7 @@ None from the component. On focus a screen reader reads the label, "slider", `ar
 - Focus indicator: a ring around the input box with at least 3:1 contrast against the colours next to it (2.4.7 Focus Visible, AA; 2.4.13 Focus Appearance, AAA).
 - Target size: the box is tall enough to press, and the thumb is at least 24px (2.5.8 Target Size (Minimum), AA). On a coarse pointer, such as a finger, the thumb's hit area is larger.
 - Colour: the thumb and the track edge each have at least 3:1 contrast against their background (1.4.11 Non-text Contrast, AA). An invalid slider has a heavier error-coloured edge plus the message. A disabled slider has a dashed edge and a muted thumb.
-- Forced colours (the system's own colour scheme): the track uses the system field colour with a button-border edge, the thumb uses the system highlight colour, a disabled slider is grey, and an invalid one has a heavier edge in the system text colour. This is reviewed in a story, not in an automated display-mode check.
+- Forced colours (the system's own colour scheme): the track uses the system field colour with a button-border edge, the thumb uses the system highlight colour, a disabled slider is grey, and an invalid one has a heavier edge in the system text colour. The forced-colours sweep runs every story and checks the boundaries and the focus ring; the thumb and track colours themselves are checked by eye.
 - Reduced motion: the track's border colour changes gradually only when the person has not asked for reduced motion. The thumb never animates.
 - Right-to-left (RTL) pages: the browser reverses the range, and nothing in the theme depends on direction.
 
@@ -110,11 +110,18 @@ None from the component. On focus a screen reader reads the label, "slider", `ar
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
-Research questions for the assistive technology (AT) run: is `aria-valuetext` spoken on every step on VoiceOver iOS (swipe up and down) and TalkBack? Does Safari reverse the range in RTL? Can a resident on iOS Safari move the thumb without a drag, and is the NumberInput beside it enough?
+### What to check
+
+- Tab to the slider: you hear the label, "slider", the value with its unit and the help text.
+- Press Right or Up, then Left or Down: the value moves one step each time and the new value is spoken with its unit.
+- Press Home and End: the value jumps to the ends. Press Page Up and Page Down: it jumps by a larger step.
+- With a NumberInput beside it, type a number: the slider moves. Click the label: the number box is focused.
+- Disable the Field: Tab skips the slider and the help text says why.
+- On a phone with a screen reader, change the value without dragging: the value text is spoken, and the NumberInput works.
 
 ## Known issues
 
-- **The thumb and track are not tested automatically.** They are parts the browser draws itself, styled separately for each browser engine. They are reviewed by eye; check them in Windows Contrast Themes yourself.
+- **The thumb and track colours are checked by eye.** They are parts the browser draws itself, styled separately for each browser engine, so the automated forced-colours check covers the boundaries and the focus ring but not these. Check them in Windows Contrast Themes yourself.
 - **A value between steps.** The browser snaps the thumb to the nearest step; beside a NumberInput, the NumberInput keeps the typed number.
-- **`form.reset()` and `aria-valuetext`.** For an uncontrolled slider the text follows the native value after each change and after a form reset (read back in the next task, since the reset runs after its event).
+- **`form.reset()` and `aria-valuetext`.** For an uncontrolled slider the text follows the native value after each change and after a form reset.
 - **A controlled `value` off the step or outside the range.** The browser snaps the thumb and `aria-valuenow`, but `aria-valuetext` is built from the `value` you passed, so the two can disagree. Pass a value on a step and inside `min` and `max`.

@@ -70,6 +70,12 @@ export const sliderAttributes: readonly AttributeRow[] = [
     meaning: 'From valueText, or the number in the provider’s locale.',
   },
   {
+    name: 'aria-describedby',
+    values: 'ids',
+    meaning:
+      'From the Field: the help text, then the error, then your own ids. With aria-labelledby the Field adds none, and only your own ids are used.',
+  },
+  {
     name: 'data-invalid',
     values: 'present or absent',
     meaning: 'The Field is invalid.',

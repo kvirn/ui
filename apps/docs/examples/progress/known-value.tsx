@@ -20,7 +20,7 @@ export function KnownValue() {
     <div>
       <Button onClick={() => setValue(0)}>{texts.export}</Button>
       {value === undefined || isDone ? null : (
-        <Progress.Root label={texts.exporting} value={value} delayMilliseconds={0}>
+        <Progress.Root label={texts.exporting} value={value}>
           <Progress.Label />
           <Progress.Bar />
         </Progress.Root>

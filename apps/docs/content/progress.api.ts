@@ -29,8 +29,9 @@ const optionRows = {
   },
   delayMilliseconds: {
     type: 'number',
-    default: '1000',
-    description: 'How long a wait stays invisible, so a quick one never flashes.',
+    default: '0',
+    description:
+      'How long a wait stays hidden before it is shown. 0 shows it at once. Set a delay for a wait that is often quick, so it never flashes. A wait that ends inside the delay is never shown or announced.',
   },
   slowAfterMilliseconds: {
     type: 'number | false',
@@ -199,7 +200,8 @@ export const useProgressHook: ApiHook = {
     rootProps: {
       type: 'ProgressRootPartProps',
       default: '–',
-      description: 'Spread on the Root’s element: the class and data-state.',
+      description:
+        'Spread on the Root’s element: the class, data-state and, with a value, data-determinate.',
     },
     labelProps: {
       type: 'ProgressLabelPartProps',

@@ -1,7 +1,7 @@
 # Accessibility contract: Progress
 
 - **APG pattern:** none. A progress bar is not a widget and has no keys. The native form, `<progress>` (implicit `progressbar` role), is used only when the value is known.
-- **Deviations:** none. The text carries the wait, and a decorative spinner (`Progress.Indicator`) may sit beside it. A known value uses the native `<progress>` and no spinner. The wait is announced once when shown and once when slow, never per percent or per tick.
+- **Deviations:** none.
 - **Native elements used:** `<div>`, `<p>` and `<span>` for the text, `<progress>` for a known value.
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `progress.test.tsx` next to this file, and `packages/core/src/progress/progress-timer.test.ts` for the timing. `progress.stories.tsx` in `apps/storybook/src/components/progress/`.
@@ -59,11 +59,11 @@ Progress has no focusable part and intercepts no key. It is never a Tab stop.
 
 | Event                                             | Message key (i18n)                 | Politeness | Test                                                                        |
 | ------------------------------------------------- | ---------------------------------- | ---------- | --------------------------------------------------------------------------- |
-| Shown after the delay (unless `announce={false}`) | the `label`, or `progress.loading` | polite     | `announcements › announces the label once, politely, after the delay`       |
+| Shown after the delay (unless `announce={false}`) | the `label`, or `progress.loading` | polite     | `announcements › announces the label once, politely, when it is shown`      |
 | Becomes slow (10 s)                               | `progress.slow`                    | polite     | `slow › adds the slow sentence after ten seconds and announces it once`     |
 | Value changes, re-render, unmount                 | nothing                            | –          | `announcements › says nothing more when it re-renders or its value changes` |
 
-Both go through the shared Announcer. `announce={false}` opts out (when focus already reads the state, or another part announces it, as a Table with `isLoading`). A Progress inside a Dialog uses the Dialog's own Announcer. Without a `KvirnProvider` nothing is announced and a development warning says why.
+Both go through the shared Announcer. `announce={false}` opts out (when focus already reads the state, or another part announces it, as a Table with `isLoading`). By design, a Progress inside a Dialog uses the Dialog's own Announcer. Without a `KvirnProvider` nothing is announced and a development warning says why.
 
 ## Consumer responsibilities
 
@@ -74,7 +74,7 @@ Both go through the shared Announcer. `announce={false}` opts out (when focus al
 - Offer Cancel as a separate button, never inside Progress.
 - Wrap the app in `KvirnProvider`: the wait is announced through it. Without one nothing is announced and a development warning says why. Pass `announce={false}` only when focus already reads the state or another part announces it (a Table with `isLoading`).
 - Never put a Progress inside an Alert's tinted background, or on a page-wide overlay that hides the user's answers.
-- **2.2.2 Pause, Stop, Hide (A).** The indicators (spinner, bar sheen, busy Button, job Toast, FileUpload track, Table busy sweep) move for as long as the wait lasts, which can be more than 5 s. The theme honours `prefers-reduced-motion: reduce` and shows a still shape, but that setting alone is not a control on the page. An indicator that can keep moving for more than 5 seconds alongside other content needs a visible control on the page that stops or hides it. An indicator that is the only content during a wait where nothing else can be done is exempt. The library ships no such control, so the app offers its own and applies the CSS that stops the indicators. [Moving indicators and WCAG 2.2.2](/foundation/theming#moving-indicators). The text, the percent and the 10 s slow sentence carry the wait.
+- **2.2.2 Pause, Stop, Hide (A).** The indicators (spinner, bar sheen, busy Button, job Toast, FileUpload track, Table busy sweep) move for as long as the wait lasts, which can be more than 5 s. The theme honours `prefers-reduced-motion: reduce` and shows a still shape, but that setting alone is not a control on the page. An indicator that can keep moving for more than 5 seconds alongside other content needs a visible control on the page that stops or hides it. An indicator that is the only content during a wait where nothing else can be done is exempt. The library ships no such control, so the app offers its own and applies the CSS that stops the indicators. The Theming page of the Foundation section explains moving indicators and WCAG 2.2.2. The text, the percent and the 10 s slow sentence carry the wait.
 
 ## Visual / modes
 
@@ -111,7 +111,9 @@ Both go through the shared Announcer. `announce={false}` opts out (when focus al
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
 
-Questions for the screen reader tests: is the label announced once, at once, with no repeat? Does a screen reader read both the bar's name and `aria-valuetext` redundantly ("Exporting cases, progress bar, Exporting cases, 45%")? Does a busy button read as unavailable and keep its place?
+### What to check
+
+- Start a send: the label is spoken once and politely, focus stays on the busy button, and nothing is spoken when the percent changes.
 
 ## Known issues
 

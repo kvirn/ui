@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useProgressTexts } from './texts.ts'
 
 function Waiting({ label, value }: { label: string; value: number }) {
-  const progress = useProgress({ label, value, delayMilliseconds: 0 })
+  const progress = useProgress({ label, value })
   const format = useFormat()
   if (!progress.isShown || progress.barProps === undefined) {
     return null

@@ -95,7 +95,7 @@ export function ProgressPage({
   return (
     <ComponentPage
       title="Progress"
-      lead="It is shown and announced once as soon as the wait starts; set a delay for waits that are usually quick, so they never flash."
+      lead="Shows that something the user started is still working, and how far along it is when you know. A screen reader announces it once, and a sentence is added when the wait is slow."
       whenToUse={
         <ul>
           <li>
@@ -109,6 +109,10 @@ export function ProgressPage({
           <li>
             Give it a <code>value</code> only when you know how far along it is. An unknown wait has
             the label alone, with a spinner if you like.
+          </li>
+          <li>
+            It shows at once. For a wait that is often quick, set <code>delayMilliseconds</code>, so
+            a short wait never flashes on the screen.
           </li>
           <li>
             Not for a message about something that happened: that is an{' '}
@@ -131,9 +135,11 @@ export function ProgressPage({
             why={
               <>
                 The pattern for a long action. The Button is <code>busy</code>, so a second press is
-                blocked and focus stays on it, and the Progress sits right after it, without a
-                spinner of its own because the button has one. On failure the Progress goes, an{' '}
-                <Link href="/components/alert">Alert</Link> takes its place and busy turns off.
+                blocked and focus stays on it. The Progress sits right after it and has no spinner
+                of its own, because the busy button already has one. On failure the Progress goes,
+                an <Link href="/components/alert">Alert</Link> takes its place and busy turns off.
+                The screen reader says the label once, politely (see{' '}
+                <Link href="#announcements">Announcements</Link>).
               </>
             }
             code={sources['busy-button']}
@@ -150,19 +156,26 @@ export function ProgressPage({
           <UseCase
             id="known-value"
             title="A wait with a known value"
-            why="When you know how far along it is, pass a value. A built-in HTML progress bar renders, named by the label, and the percent is shown as text after it. The library never announces the percent, so a screen reader is not interrupted at every step. When the wait ends the Progress disappears without a word, so show the result, here an Alert."
+            why="When you know how far along it is, pass a value. The browser’s own progress bar appears, named by the label, and the percent is shown as text after it. The library never announces the percent, so a screen reader is not interrupted at every step. When the wait ends the Progress disappears without a word, so show the result, here an Alert."
             code={sources['known-value']}
             propsUsed={[
+              { part: 'Progress.Root', prop: 'label' },
               { part: 'Progress.Root', prop: 'value' },
-              { part: 'Progress.Root', prop: 'delayMilliseconds' },
             ]}
+            note={
+              <Note kind="reminder">
+                Give the Root a label that says what is happening. Without one the text is only
+                “Loading.” (4.1.2 Name, Role, Value). If you also pass text to the Label, use the
+                same words: the bar’s value text is built from the Root’s label.
+              </Note>
+            }
           >
             <KnownValue />
           </UseCase>
           <UseCase
             id="slow-wait"
             title="A wait that takes longer than expected"
-            why="After ten seconds by default, a sentence is added saying that it is taking longer and to keep the page open, and it is announced once. Set another limit, or false to never add it."
+            why="After ten seconds by default, a sentence is added saying that the wait is taking longer and to keep the page open, and it is announced once. Here the limit is four seconds, and a wait shorter than half a second is never shown. Set another limit, or false to never add the sentence."
             code={sources['slow-wait']}
             propsUsed={[
               { part: 'Progress.Root', prop: 'slowAfterMilliseconds' },
@@ -179,11 +192,16 @@ export function ProgressPage({
                 When the markup is yours, spread the props of the hook on your elements and render
                 nothing while <code>isShown</code> is false. Put <code>labelId</code> on the label
                 text and spread <code>barProps</code> on a <code>&lt;progress&gt;</code>, so the
-                label names the bar.
+                label names the bar. The hook still announces the wait for you.
               </>
             }
             code={sources['own-markup']}
             propsUsed={[
+              {
+                part: apiHookPart('useProgress', 'options'),
+                label: 'useProgress (options)',
+                prop: 'value',
+              },
               {
                 part: apiHookPart('useProgress', 'result'),
                 label: 'useProgress (result)',
@@ -212,10 +230,10 @@ export function ProgressPage({
           notes={{
             'what-you-need-to-do': (
               <Note kind="reminder">
-                An indicator that can keep moving for more than 5 seconds alongside other content
-                needs a visible control on the page that stops or hides it (2.2.2 Pause, Stop,
-                Hide). An indicator that is the only content during a wait where nothing else can be
-                done is exempt. The reduced motion setting alone is not that control. See{' '}
+                An indicator that keeps moving for more than 5 seconds next to other content needs a
+                visible control on the page that stops or hides it (2.2.2 Pause, Stop, Hide, level
+                A). The reduced motion setting alone is not that control, and an indicator that is
+                the only content during a wait where nothing else can be done needs none. Read{' '}
                 <Link href="/foundation/theming#moving-indicators">
                   Moving indicators and WCAG 2.2.2
                 </Link>

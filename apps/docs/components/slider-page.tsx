@@ -25,11 +25,12 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;input type=&quot;range&quot;&gt;</code>. It takes every attribute of an{' '}
-        <code>&lt;input&gt;</code> except <code>type</code>, <code>role</code> and{' '}
-        <code>required</code>, and passes <code>ref</code> to it. Put it in a{' '}
-        <code>Field.Root</code>, after the <code>Field.Label</code>. The label, help text and error
-        are the Field’s parts, and the slider has no strings of its own. The default theme is
-        described on <Link href="/foundation/theming">Theming</Link>.
+        <code>&lt;input&gt;</code> except <code>type</code>, <code>role</code>,{' '}
+        <code>required</code> and <code>readOnly</code> (a range always has a value), and passes{' '}
+        <code>ref</code> to it. Put it in a <code>Field.Root</code>, after the{' '}
+        <code>Field.Label</code>. The label, help text and error are the Field’s parts, and the
+        slider has no strings of its own. The default theme is described on{' '}
+        <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: sliderRows,
@@ -47,7 +48,7 @@ export function SliderPage({
   return (
     <ComponentPage
       title="Slider"
-      lead="It is the browser’s own range control, so the arrow keys, Home, End, Page Up, Page Down, dragging and sending a form work without extra code."
+      lead="Lets someone choose an approximate number by dragging a handle or with the keyboard. It is the browser’s own range control, so the arrow keys, Home, End, Page Up, Page Down, dragging and sending a form work without extra code."
       pattern="APG Slider (single thumb)"
       whenToUse={
         <ul>
@@ -56,9 +57,9 @@ export function SliderPage({
             seeing the position helps: a search distance, a volume.
           </li>
           <li>
-            Name the quantity and its unit in the label, state the ends of the range in the help
-            text, and give <code>valueText</code> the unit so a screen reader (software that reads
-            the screen aloud) says “15 km”, not “15”.
+            Put it in a <Link href="/components/field">Field</Link>, after the label, with the ends
+            of the range in the help text. Give <code>valueText</code> the unit, so a screen reader
+            (software that reads the screen aloud) says “15 km”, not “15”.
           </li>
           <li>
             Not for an exact value, such as an amount or an age: use a{' '}
@@ -105,11 +106,11 @@ export function SliderPage({
             ]}
             note={
               <Note kind="recipe">
-                Let the NumberInput own the Field, so a click on the label and the error land on it.
-                Name and describe the slider with <code>aria-labelledby</code> and{' '}
-                <code>aria-describedby</code>, pointing at a <code>span</code> with an id inside the
-                label and the help text. Give only the NumberInput a <code>name</code>, so the form
-                sends the value once.
+                Let the NumberInput own the Field. A click on the label then moves focus to the
+                number box, and the error belongs to it. Name and describe the slider with{' '}
+                <code>aria-labelledby</code> and <code>aria-describedby</code>, pointing at a{' '}
+                <code>span</code> with an id inside the label and the help text. Give only the
+                NumberInput a <code>name</code>, so the form sends the value once.
               </Note>
             }
           >
@@ -121,7 +122,9 @@ export function SliderPage({
             why={
               <>
                 A list that changes while the thumb moves is a status message. The slider announces
-                only its own value, so say the new count yourself, once, after the person stops.
+                only its own value, so say the new count yourself, once, after the person stops. The
+                example does this half a second after the last change, politely: the screen reader
+                finishes what it is saying first.
               </>
             }
             code={sources['live-results']}
@@ -143,7 +146,14 @@ export function SliderPage({
           <UseCase
             id="not-available"
             title="A distance that is off for now"
-            why="When another choice makes the slider meaningless, disable it and say why in the help text. A disabled Field disables the slider too, and Tab skips it."
+            why={
+              <>
+                When another choice makes the slider meaningless, disable it and say why in the help
+                text. Here <code>disabled</code> is set on the{' '}
+                <Link href="/components/field">Field</Link>, which disables the slider too, and Tab
+                skips it.
+              </>
+            }
             code={sources['not-available']}
             propsUsed={[{ part: 'Slider', prop: 'defaultValue' }]}
           >
@@ -158,15 +168,15 @@ export function SliderPage({
             'what-you-need-to-do': (
               <Note kind="reminder">
                 Name the quantity and its unit in the label, and give <code>valueText</code> the
-                unit. Without them a screen reader says only a bare number, and the user can’t tell
-                what it measures (4.1.2 Name, Role, Value).
+                unit. Without a name a screen reader user hears only “slider” and can’t tell what it
+                is for (4.1.2 Name, Role, Value). Without the unit they hear a bare number.
               </Note>
             ),
             'visual-and-modes': (
               <Note kind="reminder">
                 If you restyle the slider, keep the thumb and the track edge at least 3:1 against
-                their background, and keep the thumb and its hit area large enough to press (1.4.11
-                Non-text Contrast, 2.5.8 Target Size (Minimum)).
+                their background (1.4.11 Non-text Contrast). Keep the thumb at least 24 pixels
+                across (2.5.8 Target Size (Minimum)).
               </Note>
             ),
             'known-issues': (
