@@ -127,7 +127,7 @@ export function TableOfContentsPage({
           <UseCase
             id="two-levels"
             title="Sections and the parts under them"
-            why="A long page has h2 sections with h3 parts. Give each entry its heading level, and a deeper level nests under the entry above it. It is a native nested list, so a screen reader says how deep it is. Two levels are enough for most pages. Only the order of the levels matters, not their numbers."
+            why="A long guide, such as how to apply for a building permit, has sections (h2) with parts (h3) under them. Give each entry the level of its heading. A deeper level nests under the entry above it. The list is a native nested list, so a screen reader says how deep you are. Two levels are enough for most pages. Only the order of the levels matters, not their numbers."
             code={sources['two-levels']}
             propsUsed={[{ part: 'TableOfContents.Root', prop: 'items' }]}
             note={
@@ -143,8 +143,8 @@ export function TableOfContentsPage({
           </UseCase>
           <UseCase
             id="own-markup"
-            title="Drawing the list your own way"
-            why="Pass a function as the child to get the nested entries and the current id, and draw the list yourself with the parts. Use it to show only the top level in a narrow column, or to add something next to the links."
+            title="A short list in a narrow column"
+            why="A policy page may have room for only the top level in a side column. Pass a function as the child to get the nested entries and the current id, and draw the list yourself with the parts. You can also add something next to the links, such as a count."
             code={sources['own-markup']}
             propsUsed={[
               { part: 'TableOfContents.Root', prop: 'children' },
@@ -216,6 +216,13 @@ export function TableOfContentsPage({
         <ContractSectionsView
           contract={contract}
           notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Don’t put a <code>&lt;base href&gt;</code> on the page. It turns the{' '}
+                <code>#id</code> links into links that leave the page, and people can no longer jump
+                to a section (2.4.1 Bypass Blocks, level A).
+              </Note>
+            ),
             focus: (
               <Note kind="reminder" more={<CodeBlock code={stickyHeaderCode} />}>
                 With a sticky header, give its height to <code>offset</code> and to{' '}

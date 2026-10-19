@@ -122,9 +122,11 @@ const parts: ApiPart[] = [
       <>
         A <code>toolbar</code> (the <Link href="/components/toolbar">Toolbar</Link>) attached to the
         top of the box, with one Tab stop and the arrow keys between its controls. With the default
-        controls it wraps group by group on a narrow screen, and with <code>CompactControls</code>{' '}
-        it stays one row. It is not rendered while the editor is read-only. It also takes the props
-        of <code>Toolbar.Root</code>. Also exported as <code>RichTextEditorToolbar</code>.
+        controls it wraps group by group on a narrow screen. A group of word buttons also wraps
+        inside itself, and a group of icon-only buttons stays in one strip. With{' '}
+        <code>CompactControls</code> it stays one row. It is not rendered while the editor is
+        read-only. It also takes the props of <code>Toolbar.Root</code>. Also exported as{' '}
+        <code>RichTextEditorToolbar</code>.
       </>
     ),
     props: toolbarRows,
@@ -148,9 +150,9 @@ const parts: ApiPart[] = [
         The same controls on one row, for a phone. Bold, Italic, Bulleted list and Numbered list
         stay on the bar, followed by a <code>&quot;More&quot;</code> menu button that holds every
         other control once, in the default order: Underline, Strikethrough and Code as checkboxes,
-        the text types as options, Link and Image opening their forms under the button. The split is
-        fixed, so the arrow keys reach the same controls at every width. With one control left over
-        it stays on the bar, and with none there is no menu.
+        the text types as a choice of one, Link and Image opening their forms under the button. The
+        split is fixed, so the arrow keys reach the same controls at every width. With one control
+        left over it stays on the bar, and with none there is no menu.
       </>
     ),
     props: defaultControlsRows,
@@ -362,10 +364,10 @@ export function RichTextEditorPage({
             title="One row of controls on a phone"
             why={
               <>
-                A resident writes a short description on a phone, with the keyboard open. The full
-                toolbar wraps to several rows and leaves little room for the text.{' '}
-                <code>CompactControls</code> keeps Bold, Italic and the lists on one row, and puts
-                the rest behind a visible “More”.
+                A volunteer at an association writes the event text on a phone, with the on-screen
+                keyboard open. The full toolbar wraps to several rows and leaves little room for the
+                text. <code>CompactControls</code> keeps Bold, Italic and the lists on one row, and
+                puts the rest behind a visible “More”.
               </>
             }
             code={sources['compact-toolbar']}
@@ -462,16 +464,17 @@ export function RichTextEditorPage({
             ),
             testing: (
               <Note kind="tip">
-                A row passes only with both an agent check and a human check. Screen reader support
-                for an editable text varies, so test with the assistive technology your staff use
-                before you roll the editor out.
+                A Core or Release row passes only with an agent check and a human check on the real
+                assistive technology. Screen reader support for an editable text varies, so test
+                with the assistive technology your staff use before you roll the editor out.
               </Note>
             ),
             keyboard: (
               <Note kind="tip">
-                You don’t need to teach a way out of the editor. Tab and Shift+Tab leave it after
-                nesting or moving between table cells where they can, and Alt+F10 goes from the text
-                to the toolbar (2.1.2 No Keyboard Trap).
+                You don’t need to teach a way out of the editor. In a list or a table, Tab nests an
+                item or moves to the next cell, only where that is possible. Everywhere else it
+                leaves the editor, so pressing it again always gets out (2.1.2 No Keyboard Trap,
+                level A).
               </Note>
             ),
             'known-issues': (

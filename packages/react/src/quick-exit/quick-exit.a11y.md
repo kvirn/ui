@@ -80,7 +80,7 @@ Approximated by `@kvirn-ui/testing`'s `readAloud`, with the English (`en`) texts
 
 ## Visual / modes
 
-- A hint you override with a longer sentence (more than 3 lines below 40rem, or 2 lines at 40rem and wider) makes the row taller than the scroll padding the theme sets for the sticky row, so a focused element can end up under it (2.4.11).
+- A hint you override with a longer sentence (more than 3 lines on a narrow screen, or 2 lines on a wide one) makes the row taller than the scroll padding the theme sets for the sticky row, so a focused element can end up under it (2.4.11).
 
 Headless: no CSS. With `@kvirn-ui/theme/theme.css` the row is `kv-quick-exit` and the link `kv-quick-exit-link`.
 
@@ -132,4 +132,4 @@ Headless: no CSS. With `@kvirn-ui/theme/theme.css` the row is `kv-quick-exit` an
 - **Keyboard tests run in Chromium only.** The keyboard rows run in Vitest browser mode on Chromium, not in WebKit. Test in Safari with your own assistive technology.
 - **NVDA pauses speech with Shift,** so the shortcut can fire by accident. `shortcut={false}` opts out.
 - **Browse-mode quick navigation:** in NVDA and JAWS, backwards quick navigation (Shift+H, Shift+K, Shift+1 to 6) may reach the page as a lone Shift and count, so three backwards heading jumps could leave the page. Check it with NVDA and JAWS in your service.
-- **fi, nb and nn strings:** have a native speaker review them before you launch.
+- **Your own strings:** if you override the strings, have a native speaker check them.

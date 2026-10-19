@@ -18,7 +18,7 @@ const offsetRow = {
   type: 'number',
   default: '0',
   description:
-    'The top of the area a heading is read in, in px from the top of the viewport. The current heading is the last one in the top fifth of the space below it. With a sticky header, use its height here and as scroll-padding-top on html.',
+    'The top of the area a heading is read in, in px from the top of the viewport. The current heading is the last one that has reached the top fifth of the space below this line, or else the first one on screen. With a sticky header, use its height here and as scroll-padding-top on html.',
 } as const
 
 const messagesRow = {

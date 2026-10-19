@@ -32,6 +32,7 @@ The Display modes row of a component turns `pass` only after all four sweeps pas
 - 2026-10-19: stories that pin the wide (1280px) viewport or assert the wide layout use the existing `reflowOptOut`; each component keeps a narrow story in the sweep: top-bar (Narrow), primary navigation (Narrow Menu; Open Wide and Keyboard now also `wideGlobals`), pagination Keyboard (Reflow320 swept), date-picker Masked Text Input (the masked row is swept at 320px by Open and Swedish). display-settings Narrow used an undefined viewport key; now `reflow320`.
 - 2026-10-19: real reflow fixes, layout only: the story icon row wraps (`preview.css`); an attached rich-text toolbar group of word buttons wraps (`rich-text.css`; icon-only groups stay one strip); wide `<pre>` demos in the Provider and rich-text fixtures sit in a labelled ScrollArea; the Prose table region is a `ScrollArea region="always"`.
 - 2026-10-19 (maintainer): Prose inline code drops `box-decoration-break: clone` (it hung 2px past a 320px column under 1.4.12 spacing); a wrapped code reference loses its closed edge at the break. `docs/design/foundations-and-prose.md` updated.
+- 2026-10-20: the KvirnProvider page shows "no keys": the provider has none of its own, and the five Keyboard rows in its contract are the keys of a theme switcher built on `useTheme`. tooling/keyboard-docs needs the no-keys sentence first, and the docs parser then hides the rows; accepted rather than adding a story or changing the parser.
 - 2026-10-19: the Provider theme stories asserted the "in use" summary without forced colours and with full motion; they now read the media queries (`kvirn-provider.stories.tsx`, `themeCombination`).
 
 ## Tasks
@@ -51,7 +52,7 @@ The Display modes row of a component turns `pass` only after all four sweeps pas
 - ReadAloud's `engine` option and `ReadAloudEngine` type: the docs no longer call them "unstable"; whether they are stable public API is a maintainer decision (Plan 0088).
 - DisplaySettings has no component page either: its panel is used on the docs site's `/accessibility-settings` page only.
 - Tag (with TagGroup) has a contract, component and stories but no docs-site page (no page, route, examples, `site-sections.ts` entry). Writing one is a separate task.
-- `render/as-prop.ts` has no test: the `as` fallback to the default tag and its `as-not-allowed` dev warning are unproved for List and the other `as` parts; the docs pages no longer claim it.
+- Done 2026-10-20: `render/as-prop.test.tsx` proves a disallowed `as` renders the default element and warns once (commit 8036dc47). Badge, Stack, Grid and the List page dropped the claim before the test existed; it may come back there.
 - The docs example `examples/toolbar/vertical.tsx` lays its column out with an inline `style`, because the theme has no `kv-toolbar--vertical` class (AGENTS rule 14). A theme class needs a design decision.
 - `docs-pages` skill: "Real examples" says use cases have no upper limit, the template checklist says 2–8; DateInput and RadioGroup have 10. Maintainer to choose (recommended: no upper limit).
 - The Prose fixture's table region (`prose.fixture.tsx`) is a Tab stop even when it fits (`tabIndex` override; the `Article` story asserts it). The ScrollArea rule is a Tab stop only while it overflows. Not a regression; a separate change to the story and fixture.

@@ -1,52 +1,50 @@
 # Accessibility contract: KvirnProvider
 
-- **APG pattern:** none. The provider renders no visible element and has no interaction of its own. The outermost one renders two visually hidden, empty live regions (`announcer.a11y.md`). The theme switcher used in its stories is consumer markup made of native radio groups ([APG Radio Group](https://www.w3.org/WAI/ARIA/apg/patterns/radio/), native `<input type="radio">`).
+- **APG pattern:** none. The provider renders no visible element and has no interaction of its own. The outermost one renders two visually hidden, empty live regions (see the Announcer page). A theme switcher built on `useTheme` is consumer markup made of native radio groups ([APG Radio Group](https://www.w3.org/WAI/ARIA/apg/patterns/radio/), native `<input type="radio">`).
 - **Deviations:** none
-- **Native elements used:** none rendered by the provider. The story fixture uses `<fieldset>`, `<legend>`, `<label>` and `<input type="radio">`. `KvirnThemeScript` renders one `<script>`.
-- **Status:** alpha. Gates 1–6 pass (accessibility-reviewer APPROVE, 2026-09-30). Manual AT is `pending`.
+- **Native elements used:** none rendered by the provider. A theme switcher built on `useTheme` uses `<fieldset>`, `<legend>`, `<label>` and `<input type="radio">`. `KvirnThemeScript` renders one `<script>`.
+- **Status:** alpha. Manual AT is `pending`.
 - **Tests:** `kvirn-provider.test.tsx` and `use-theme.test.tsx` next to this file. `kvirn-provider.stories.tsx` in `apps/storybook/src/components/provider/`.
 
 The provider's contract is about what it guarantees for other components:
 
-- `lang` and `dir` are available as `useLocale().localeProps` wherever the locale changes (3.1.2). The provider renders no element that can carry `lang`, so the consumer spreads `localeProps` on the element that starts a section in another language, and sets `<html lang dir>` for the page language itself (3.1.1).
-- Every visible and announced component string comes from `messages`, resolved as instance `messages`, then the nearest provider and its ancestors, then built-in `en` (hard rule 4). An empty or whitespace-only override falls through to the next level, so an accessible name is never empty (4.1.2).
-- The attributes are resolved from `prefers-color-scheme` and `prefers-contrast` until the user chooses (without JavaScript the page is the light, standard theme), and the theme never overrides `forced-colors` (1.4.3, 1.4.11; AAA 1.4.6 is not counted toward AA).
+- `lang` and `dir` are available as `useLocale().localeProps` wherever the locale changes (3.1.2 Language of Parts, AA). The provider renders no element that can carry `lang`, so the consumer spreads `localeProps` on the element that starts a section in another language, and sets `<html lang dir>` for the page language itself (3.1.1 Language of Page, A).
+- Every visible and announced component string comes from `messages`, resolved as instance `messages`, then the nearest provider and its ancestors, then built-in `en`. An empty or whitespace-only override falls through to the next level, so an accessible name is never empty (4.1.2 Name, Role, Value, A).
+- The attributes are resolved from `prefers-color-scheme` and `prefers-contrast` until the user chooses (without JavaScript the page is the light, standard theme), and the theme never overrides `forced-colors` (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA). 1.4.6 Contrast (Enhanced), AAA, is not counted toward AA.
 - A theme change moves no focus and announces nothing. The switcher's own control state is the feedback.
 
 ## Roles, states, properties
 
-| Part                            | Element / role                                                  | ARIA                                                 | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| ------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| KvirnProvider                   | none (context only)                                             | none                                                 | Writes `data-kv-color-scheme`, `data-kv-contrast` and `data-kv-motion` (resolved values) on `<html>`. Not exposed to AT                                                                                                                                                                                                                                                                                                               |
-| `localeProps`                   | consumer's element                                              | `lang`, `dir` attributes                             | `lang` is the BCP 47 locale. `dir` comes from the locale, or the `dir` prop                                                                                                                                                                                                                                                                                                                                                           |
-| KvirnThemeScript                | `<script nonce>`                                                | none                                                 | Blocking, before first paint. Not exposed to AT                                                                                                                                                                                                                                                                                                                                                                                       |
-| Theme switcher (fixture)        | `<fieldset>` → `group`, `<legend>` → name                       | none added                                           | One group per axis: colour scheme, contrast                                                                                                                                                                                                                                                                                                                                                                                           |
-| Theme switcher option (fixture) | `<input type="radio">` in a `<label>`                           | native `checked`                                     | Name from the wrapping `<label>`. 24 × 24 CSS px (2.5.8)                                                                                                                                                                                                                                                                                                                                                                              |
-| Toast region (`toast`)          | `<section class="kv-toast-region" popover="manual">` → `region` | `aria-label` from `toast.regionLabel`, `lang`, `dir` | Rendered by the host provider (the first that mounted; the next takes over if it unmounts) after its children, only while a toast exists, in the top layer. Never a live region. Contract: `toast.a11y.md`. The whole page shares one list and one region: only the host's `toast`, locale and messages are used, and a later or nested provider's `toast` is ignored with a dev warning (`toast-multiple-providers`, `nested-toast`) |
-| Resolved theme text (fixture)   | `<p>`                                                           | none. Deliberately **not** a live region             | Shows the resolved values. Not `<output>` or `role=status`, so a change is not announced                                                                                                                                                                                                                                                                                                                                              |
+| Part                   | Element / role                                                  | ARIA                                                 | Notes                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ---------------------- | --------------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| KvirnProvider          | none (context only)                                             | none                                                 | Writes `data-kv-color-scheme`, `data-kv-contrast` and `data-kv-motion` (resolved values) on `<html>`. Not exposed to AT                                                                                                                                                                                                                                                                               |
+| `localeProps`          | consumer's element                                              | `lang`, `dir` attributes                             | `lang` is the BCP 47 locale. `dir` comes from the locale, or the `dir` prop                                                                                                                                                                                                                                                                                                                           |
+| KvirnThemeScript       | `<script nonce>`                                                | none                                                 | Blocking, before first paint. Not exposed to AT                                                                                                                                                                                                                                                                                                                                                       |
+| Theme switcher         | `<fieldset>` → `group`, `<legend>` → name                       | none added                                           | One group per axis: colour scheme, contrast                                                                                                                                                                                                                                                                                                                                                           |
+| Theme switcher option  | `<input type="radio">` in a `<label>`                           | native `checked`                                     | Name from the wrapping `<label>`. 24 × 24 CSS px (2.5.8 Target Size (Minimum), AA)                                                                                                                                                                                                                                                                                                                    |
+| Toast region (`toast`) | `<section class="kv-toast-region" popover="manual">` → `region` | `aria-label` from `toast.regionLabel`, `lang`, `dir` | Rendered by the host provider (the first that mounted; the next takes over if it unmounts) after its children, only while a toast exists, in the top layer. Never a live region. Described on the Toast page. The whole page shares one list and one region: only the host's `toast`, locale and messages are used, and a later or nested provider's `toast` is ignored with a warning in development |
+| Resolved theme text    | `<p>`                                                           | none. Deliberately **not** a live region             | Shows the resolved values. Not `<output>` or `role=status`, so a change is not announced                                                                                                                                                                                                                                                                                                              |
 
 ## Keyboard
 
 This component has no focusable parts and handles no keys.
 
-The provider renders no focusable element and adds no key handling. The rows below prove it leaves native radio-group behaviour intact in the `ThemeSwitcher` fixture, which is the consumer's markup on `useTheme()`. Enter and Space (a native radio is checked with Space) and Escape, Home and End are the browser's own and are not handled or asserted here.
+The rows below are the keys of a theme switcher built on `useTheme`, as in the stories. They prove the provider leaves native radio-group behaviour intact. Enter and Space (a native radio is checked with Space) and Escape, Home and End are the browser's own and are not handled or asserted here.
 
-| Key                    | Context                    | Action                                                                                          | Test                                                                                       |
-| ---------------------- | -------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Tab                    | Theme-switcher fixture     | Focus moves to the checked radio of the colour-scheme group                                     | `use-theme.test.tsx › Tab moves focus to the checked radio of the colour-scheme group`     |
-| Tab / Shift+Tab        | Theme-switcher radio group | Moves to the next / previous group. One Tab stop per group                                      | `use-theme.test.tsx › Tab moves to the next group: one Tab stop per radio group`           |
-| ArrowUp / ArrowLeft    | Theme-switcher radio group | Checks and focuses the previous option (native; RTL handling is the browser's, not tested here) | `use-theme.test.tsx › ArrowUp / ArrowLeft select the previous option and keep focus on it` |
-| ArrowDown / ArrowRight | Theme-switcher radio group | Checks and focuses the next option, wrapping from last to first                                 | `use-theme.test.tsx › ArrowDown / ArrowRight select the next option and wrap around`       |
-| Arrow keys             | Contrast group             | Changes contrast only; the colour-scheme group is untouched                                     | `use-theme.test.tsx › Arrow keys change the contrast group independently`                  |
-
-Also covered in Vitest browser mode: `use-theme.test.tsx › arrow keys change the radio group; focus stays and nothing is announced`.
+| Key                    | Context                    | Action                                                                                   | Test                                                                                       |
+| ---------------------- | -------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Tab                    | Theme switcher             | Focus moves to the checked radio of the colour-scheme group                              | `use-theme.test.tsx › Tab moves focus to the checked radio of the colour-scheme group`     |
+| Tab / Shift+Tab        | Theme-switcher radio group | Moves to the next / previous group. One Tab stop per group                               | `use-theme.test.tsx › Tab moves to the next group: one Tab stop per radio group`           |
+| ArrowUp / ArrowLeft    | Theme-switcher radio group | Checks and focuses the previous option (native; the browser handles right-to-left order) | `use-theme.test.tsx › ArrowUp / ArrowLeft select the previous option and keep focus on it` |
+| ArrowDown / ArrowRight | Theme-switcher radio group | Checks and focuses the next option, wrapping from last to first                          | `use-theme.test.tsx › ArrowDown / ArrowRight select the next option and wrap around`       |
+| Arrow keys             | Contrast group             | Changes contrast only; the colour-scheme group is untouched                              | `use-theme.test.tsx › Arrow keys change the contrast group independently`                  |
 
 ## Focus management
 
 - Initial focus: not moved. The provider never touches focus.
 - Trap: no.
 - Restore to: not applicable.
-- A theme change keeps focus on the radio that caused it (`use-theme.test.tsx › arrow keys change the radio group; focus stays and nothing is announced`).
+- A theme change keeps focus on the radio that caused it.
 - Never obscured by: the provider renders nothing visible and nothing focusable.
 
 ## Announcements
@@ -56,11 +54,11 @@ Also covered in Vitest browser mode: `use-theme.test.tsx › arrow keys change t
 | Theme change              | none               | None, by design. The checked radio is the feedback. The provider's live regions stay empty |
 | Locale or messages change | none               | None. Components re-render with the new strings                                            |
 
-The outermost provider hosts the shared Announcer's live regions (`announcer.a11y.md`). They are empty unless a component or the app calls `useAnnouncer().announce`.
+The outermost provider hosts the shared Announcer's live regions (see the Announcer page). They are empty unless a component or the app calls `useAnnouncer().announce`.
 
 ### Message keys
 
-The provider has no strings of its own. It resolves every component's keys. Each component's contract lists its own keys. The provider's tests resolve this one against the real catalog types:
+The provider has no strings of its own. It resolves every component's keys. Each component's contract lists its own keys.:
 
 | Key                 | Used by (owner) | en                     |
 | ------------------- | --------------- | ---------------------- |
@@ -68,32 +66,32 @@ The provider has no strings of its own. It resolves every component's keys. Each
 
 ## Consumer responsibilities
 
-- Set `<html lang dir>` to the root provider's locale and direction (3.1.1), with `getLocaleProps(locale)` from `@kvirn-ui/react/server`. The provider can't: it renders no element of its own to carry them, and a server layout can't spread `localeProps` on `<html>`.
-- Spread `useLocale().localeProps` on the element that starts a section in another language, so `lang` matches the strings (3.1.2). Nested providers inherit everything they don't set.
+- Set `<html lang dir>` to the root provider's locale and direction (3.1.1 Language of Page, A), with `getLocaleProps(locale)` from `@kvirn-ui/react/server`. The provider can't: it renders no element of its own to carry them, and a server layout can't spread `localeProps` on `<html>`.
+- Spread `useLocale().localeProps` on the element that starts a section in another language, so `lang` matches the strings (3.1.2 Language of Parts, AA). Nested providers inherit everything they don't set.
 - Pass a catalog (`messages={sv}`) for a non-English locale. Otherwise English strings render under a non-English `lang`, with a dev warning per key.
 - A nested provider that changes the language must pass that language's catalog too (`<KvirnProvider locale="fi-FI" messages={fi}>`). Otherwise its strings stay in the parent's language while `lang` says otherwise. A dev warning names both locales.
-- When overriding a message that forms an accessible name, keep it consistent with the visible label (2.5.3 Label in Name).
+- When overriding a message that forms an accessible name, keep it consistent with the visible label (2.5.3 Label in Name, A).
 - Build the theme switcher from native controls with visible labels (for example radio groups in a `<fieldset>` with a `<legend>`), and don't make the resolved-theme text a live region.
-- Render `KvirnThemeScript` with the response's CSP `nonce` in the server-rendered `<head>`, and put `suppressHydrationWarning` on `<html>`. Pass it the provider's `theme` object, from the server entry (`@kvirn-ui/react/server`) in a Server Component. It runs before first paint, and until it does the theme's own `prefers-*` rules answer for a visitor's OS setting (1.4.3, 1.4.11; AAA 2.3.3 is not counted toward AA).
+- Render `KvirnThemeScript` with the response's CSP `nonce` in the server-rendered `<head>`, and put `suppressHydrationWarning` on `<html>`. Pass it the provider's `theme` object, from the server entry (`@kvirn-ui/react/server`) in a Server Component. It runs before first paint, and until it does the theme's own `prefers-*` rules answer for a visitor's OS setting (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA).
 - Set `timeZone` explicitly, the same on the server and in the browser. Without one, instants are shown in UTC and the first one formatted warns in development.
 
 ## Visual / modes
 
-- Focus indicator: the provider renders nothing visible. The fixture relies on the browser's native radio focus ring. The default theme restyles rings in `@kvirn-ui/theme`.
-- Target size: fixture radios are 24 × 24 CSS px, in labels at least 28px tall (2.5.8).
+- Focus indicator: the provider renders nothing visible. A theme switcher relies on the browser's native radio focus ring. The default theme restyles rings in `@kvirn-ui/theme`.
+- Target size: the switcher's radios are 24 × 24 CSS px, in labels at least 28px tall (2.5.8 Target Size (Minimum), AA).
 - forced-colors behaviour: the provider keeps writing the resolved attributes. `@kvirn-ui/theme` must let the OS palette win and never override `forced-colors: active`.
-- reduced-motion behaviour: no motion. A theme change is instant, and `data-kv-motion="reduce"` stops theme transitions and animations like `prefers-reduced-motion` (AAA 2.3.3, not counted toward AA).
-- Reflow: No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow, including the Swedish, theme-switcher, nested-locale and RTL stories.
+- reduced-motion behaviour: no motion. A theme change is instant, and `data-kv-motion="reduce"` stops theme transitions and animations like `prefers-reduced-motion` (2.3.3 Animation from Interactions, AAA, is not counted toward AA).
+- Reflow: No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the reflow sweep checks every story at 320 CSS pixels for horizontal overflow, including those with Swedish text, a theme switcher, a nested locale and right-to-left.
 
 ## WCAG SCs covered
 
-- 1.4.3 Contrast (Minimum), AAA 1.4.6 Contrast (Enhanced), not counted toward AA, 1.4.11 Non-text Contrast: OS preferences are honoured by default, and high contrast is user-selectable. Contrast values themselves are `@kvirn-ui/theme`'s (`theme:check`).
-- 1.4.10 Reflow: the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
-- 3.1.1 Language of Page: consumer responsibility (`<html lang dir>`, with `getLocaleProps`), documented in the usage doc's setup.
-- 3.1.2 Language of Parts: `localeProps`, and the dev warning for a nested language change without a catalog (`kvirn-provider.test.tsx › nesting`, `a nested provider inherits unset props and changes only its section`).
-- 3.2.2 On Input: selecting a theme changes presentation only. No context change, no focus move.
-- 4.1.2 Name, Role, Value: empty overrides fall through, so names are never empty (`kvirn-provider.test.tsx › an empty override falls through to the next level and warns once`).
-- 4.1.3 Status Messages: not applicable. A theme change is deliberately not announced.
+- 1.4.3 Contrast (Minimum) (AA) and 1.4.11 Non-text Contrast (AA): OS preferences are honoured by default, and high contrast is user-selectable. The contrast values themselves are `@kvirn-ui/theme`'s, checked automatically in every theme. 1.4.6 Contrast (Enhanced), AAA, is not counted toward AA.
+- 1.4.10 Reflow (AA): the reflow sweep checks every story at 320 CSS pixels for horizontal overflow.
+- 3.1.1 Language of Page (A): your duty (`<html lang dir>`, with `getLocaleProps`); see Set-up on this page.
+- 3.1.2 Language of Parts (AA): `localeProps`, and a warning in development for a nested language change without a catalog.
+- 3.2.2 On Input (A): selecting a theme changes presentation only. No context change, no focus move.
+- 4.1.2 Name, Role, Value (A): empty overrides fall through, so names are never empty.
+- 4.1.3 Status Messages (AA): not applicable. A theme change is deliberately not announced.
 
 ## AT test record
 
@@ -112,6 +110,14 @@ The provider has no strings of its own. It resolves every component's keys. Each
 | JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                          |
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                          |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                          |
+
+### What to check
+
+- Set the operating system to dark, then to high contrast, and reload: the page follows without a choice.
+- In a theme switcher, Tab to the colour-scheme group and use the arrow keys: the checked option is read, focus stays, and nothing else is announced.
+- With Windows contrast themes on, the page uses the system colours and the switcher says so.
+- A part in another language (a nested provider with `localeProps`) is read in that language's voice.
+- A theme chosen in one tab is followed by a second tab.
 
 ## Known issues
 
