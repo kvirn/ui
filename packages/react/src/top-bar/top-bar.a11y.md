@@ -8,11 +8,11 @@
 
 ## Roles, states, properties
 
-| Part               | Element / role   | ARIA / state | Notes                                                                                                                                                                                               |
-| ------------------ | ---------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TopBar`           | `<div>`, no role | none         | No landmark of its own: a `Navigation` inside is the landmark, named by its `label`. Test: `top-bar.test.tsx › the root is a plain div with no role, and the Navigation inside it is the landmark`. |
-| `TopBar` `variant` | class only       | none         | `primary`, `secondary` or `accent` adds `kv-top-bar--<variant>`; none adds no class. Tests: `top-bar.test.tsx › variant %s renders the class "%s"`, `› useTopBar`.                                  |
-| children           | yours            | yours        | Laid out at the start and the end in DOM order, so reading and focus order are the visual order (1.3.2, 2.4.3).                                                                                     |
+| Part               | Element / role   | ARIA / state | Notes                                                                                                                                                 |
+| ------------------ | ---------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TopBar`           | `<div>`, no role | none         | No landmark of its own: a `Navigation` inside is the landmark, named by its `label`.                                                                  |
+| `TopBar` `variant` | class only       | none         | `primary`, `secondary` or `accent` adds `kv-top-bar--<variant>`; none adds no class.                                                                  |
+| children           | yours            | yours        | Laid out at the start and the end in DOM order, so reading and focus order are the visual order (1.3.2 Meaningful Sequence, A; 2.4.3 Focus Order, A). |
 
 The navigation's own rows (`aria-current` on one link) are the Navigation's. `useTopBar({ variant })` gives the same frozen `topBarProps` (only `className`) for your own element.
 
@@ -49,7 +49,7 @@ The bar handles no key itself: arrows, Home and End do nothing (`top-bar.test.ts
 - Initial focus: not moved.
 - Trap: no.
 - Restore to: not needed.
-- Never obscured by: nothing: it is not sticky.
+- Never obscured by: nothing, as the bar is not sticky.
 
 ## Announcements
 
@@ -59,22 +59,34 @@ None.
 
 - Text first, the navigation last, each a child of the bar.
 - Name the navigation with its `label`, and mark the current link.
-- A link in the text says where it goes.
+- A link in the text says where it goes (2.4.4 Link Purpose (In Context), A).
+- If you make the bar sticky, check that the focused control is not hidden behind it (2.4.11 Focus Not Obscured (Minimum), AA).
 - Write a sentence in a `<p>`, never a bare `<div>`: a link directly in a div of the bar is a bar item and loses its resting underline.
 
 ## Visual / modes
 
-- No fill by default: the page's colours. `primary`, `secondary` and `accent` fill the bar with `primary`, `secondary` or `accent`, and its text, text links (a link in a sentence stays underlined at rest), focus ring and current navigation bar are `on-primary`, `on-secondary` or `on-accent` (`focus-ring` is about 1:1 on a fill). Measured by `theme:check` at 4.5:1, 7:1 in the contrast themes. On the primary Site header it is the darker `primary-hover` band, its text links are `on-primary` (a link in a sentence stays underlined at rest), its ring is `on-primary`, and the current navigation item has the `on-primary` bar.
-- A bar without a fill marks its current tool with weight 600, a straight `primary` bar at the item's block end (flush on the band's edge from 64rem) and the `text` colour, never the Navigation's solid fill; in forced colours the item is `LinkText` and the theme's own bar marks it.
-- No type rules of its own: the text takes its size from what it sits on; bar items (a link that is a direct child of the bar or of a side, a Navigation item, a `kv-button--link` button) are at least 24px tall at every width (2.5.8), in the bar's on-colour, underlined on hover only, with no hover background. A link in a sentence is not a bar item: it keeps its underline at rest (1.4.1). A popup opened from the bar keeps its own tokens.
-- 320px: the two sides wrap onto their own rows, nothing is hidden (1.4.10).
-- forced-colors behaviour: links are `LinkText`. A variant's fill drops to `Canvas` with a 1px `CanvasText` edge, the ring is `Highlight` and the theme's `LinkText` bar marks the current item; so does the primary Site header's band.
+- No fill by default: the page's colours. `primary`, `secondary` and `accent` fill the bar, and its text, text links (a link in a sentence stays underlined at rest), focus ring and current navigation bar take the colour made for that fill. Text meets 4.5:1 on every fill, and 7:1 in the contrast themes, checked automatically in every theme. The focus ring has about the same colour as the fill itself, so it uses the on-fill colour instead. The primary site header is a darker band with the same on-fill colours.
+- A bar without a fill marks its current tool with bolder text and a straight bar at the item's block end, never the Navigation's solid fill. In forced colours the item takes the system link colour and the theme's own bar marks it.
+- No type rules of its own: the text takes its size from what it sits on. Bar items (a link that is a direct child of the bar or of a side, a Navigation item, a link-look button) are at least 24 by 24 CSS px at every width (2.5.8 Target Size (Minimum), AA), in the bar's on-colour, underlined on hover only, with no hover background. A link in a sentence is not a bar item: it keeps its underline at rest (1.4.1 Use of Color, A). A popup opened from the bar keeps its own look.
+- 320px: the two sides wrap onto their own rows, nothing is hidden (1.4.10 Reflow, AA). The text-spacing sweep applies the 1.4.12 spacing and fails on a box that clips its content.
+- forced-colors behaviour: links take the system link colour. A variant's fill drops to the system background with a thin edge in the system text colour, the focus ring takes the highlight colour, and the theme's link-colour bar marks the current item; so does the primary site header's band.
 - reduced-motion behaviour: nothing animates.
 - RTL: logical properties; the text is at the right and the navigation at the left.
 
 ## WCAG SCs covered
 
-1.3.1, 1.3.2, 1.4.1, 1.4.3, 1.4.10, 1.4.11, 2.4.3, 2.4.7, 4.1.2.
+- 1.3.1 Info and Relationships (A)
+- 1.3.2 Meaningful Sequence (A)
+- 1.4.1 Use of Color (A)
+- 1.4.3 Contrast (Minimum) (AA)
+- 1.4.10 Reflow (AA)
+- 1.4.11 Non-text Contrast (AA)
+- 1.4.12 Text Spacing (AA)
+- 2.4.3 Focus Order (A)
+- 2.4.4 Link Purpose (In Context) (A)
+- 2.4.7 Focus Visible (AA)
+- 2.5.8 Target Size (Minimum) (AA)
+- 4.1.2 Name, Role, Value (A)
 
 ## AT test record
 
@@ -83,7 +95,7 @@ None.
 | **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                               |
 | axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | top-bar.stories.tsx, every story, 4 themes                                                                                    |
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | top-bar.test.tsx › the root is a plain div with no role, and the Navigation inside it is the landmark; expectNoA11yViolations |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 6 rows, each names a test (top-bar.test.tsx › Tab moves through the bar items in DOM order)                                   |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test (top-bar.test.tsx › Tab moves through the bar items in DOM order)                                   |
 | Focus order and management                                                 | pass        | n/a         | pass    | top-bar.test.tsx asserts focus (toHaveFocus); first rule: Tab moves through the bar items in DOM order                        |
 | Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                 |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                                               |
@@ -93,6 +105,17 @@ None.
 | JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                               |
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                               |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                               |
+
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab goes through the bar in the order it is read: text links first, the tools last.
+- The landmarks list does not show the bar. It shows its navigation, with its own name.
+- The current tool is announced as current.
+- A link-look button is announced as a button, and Enter and Space both press it.
+- At 320px the two sides wrap, nothing is hidden, and there is no sideways scroll.
+- On a filled bar in a high-contrast theme or forced colours, the text and the focus ring stay easy to see.
 
 ## Known issues
 

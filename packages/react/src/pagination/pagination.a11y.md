@@ -51,7 +51,7 @@ Native tab order. No key is intercepted, and the arrow keys do nothing.
 | ----- | ------------------ | ---------- |
 | none  | none               | –          |
 
-Pagination announces nothing itself. A page change is announced by the page's own heading and route announcement. Strings: `pagination.label`, `previous`, `next`, `status` (`{page}`, `{total}`) and `page` (`{page}`). Page numbers go through the locale's number format.
+Pagination announces nothing itself. A page change is the app's job: move focus to the new list or announce the change (see Focus management). Strings: `pagination.label`, `previous`, `next`, `status` (`{page}`, `{total}`) and `page` (`{page}`). Page numbers go through the locale's number format.
 
 ## Consumer responsibilities
 
@@ -68,14 +68,14 @@ Pagination announces nothing itself. A page change is announced by the page's ow
 - Focus indicator: a link shows the focus ring (`:focus-visible`), through `Link`.
 - Target size: 44 pixels high by default, 24 by 24 pixels at minimum (2.5.8 Target Size (Minimum), AA).
 - Current page: a shape and `aria-current`, never colour alone (1.4.1 Use of Color, A).
-- Reflow: the links wrap, and below 40rem only Previous, the current page, the status and Next show (1.4.10 Reflow, AA). The narrow layout is the `Reflow320` story (the `storybook-reflow` sweep runs every story but `Keyboard` at 320 CSS px (`Keyboard` is pinned to 80rem; `Reflow320` covers the narrow layout) and fails on horizontal overflow).
-- Forced colours and reduced motion: not covered by an automated test.
+- Reflow: the links wrap, and below 40rem only Previous, the current page, the status and Next show (1.4.10 Reflow, AA). The reflow sweep runs the narrow layout at 320 CSS px and fails on horizontal overflow.
+- Forced colours and reduced motion: the links follow the system colours, the current page keeps its filled shape, and nothing animates. The forced-colours and reduced-motion sweeps check it.
 
 A custom theme must keep these.
 
 ## WCAG SCs covered
 
-1.3.1 Info and Relationships (A): a landmark and a list. 1.4.1 Use of Color (A): the current page is a filled shape and a weight, not colour. 1.4.10 Reflow (AA): the links wrap, and below 40rem only Previous, the current page, the status and Next show. 2.4.3 Focus Order (A). 2.4.4 Link Purpose (In Context) (A): `Page 2`. 2.5.3 Label in Name (A): the visible number is in the name. 2.5.8 Target Size (Minimum) (AA). 3.1.2 Language of Parts (AA): a custom label in another language is marked by the consumer. 4.1.2 Name, Role, Value (A). 2.4.8 Location (AAA, beyond the AA bar): the current page and the total show where you are. Designed and tested to meet WCAG 2.2 AA.
+1.3.1 Info and Relationships (A): a landmark and a list. 1.4.1 Use of Color (A): the current page is a filled shape and a weight, not colour. 1.4.10 Reflow (AA): the links wrap, and below 40rem only Previous, the current page, the status and Next show. 2.4.3 Focus Order (A). 3.2.3 Consistent Navigation (AA): the consumer rule to put it in the same place on every page. 2.4.4 Link Purpose (In Context) (A): `Page 2`. 2.5.3 Label in Name (A): the visible number is in the name. 2.5.8 Target Size (Minimum) (AA). 3.1.2 Language of Parts (AA): a custom label in another language is marked by the consumer. 4.1.2 Name, Role, Value (A). 2.4.8 Location (AAA, beyond the AA bar): the current page and the total show where you are. Designed and tested to meet WCAG 2.2 AA.
 
 ## AT test record
 
@@ -94,6 +94,17 @@ A custom theme must keep these.
 | JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                                    |
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                                    |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                                    |
+
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab reaches Previous, each page number and Next once. The gap and the status text are not stops.
+- The current page is announced as current, and its name still has the number.
+- Press Enter on a page link: the list and the address change, and Back returns. Note where focus lands and whether you hear the change.
+- The landmarks list shows Pagination with its own name, and two on a page differ.
+- At 320px only Previous, the current page, "Page N of M" and Next show, with no sideways scroll.
+- In forced colours the current page still stands out.
 
 ## Message keys
 

@@ -56,6 +56,18 @@ export const navigationLabelRows = propRows<Pick<NavigationLabelProps, 'as'>>({
 export const navigationListAttributes: readonly AttributeRow[] = [
   { name: 'kv-navigation-list', values: 'always', meaning: 'The part class.' },
   {
+    name: 'role',
+    values: '"list"',
+    meaning:
+      'Always set. Safari with VoiceOver drops the list role from a list without markers, so it is written out.',
+  },
+  {
+    name: 'aria-labelledby',
+    values: 'the id of a Navigation.Label, or yours',
+    meaning:
+      'Set from the Navigation.Label in the same item, unless you pass aria-label or aria-labelledby yourself.',
+  },
+  {
     name: 'hidden',
     values: 'present or absent',
     meaning:

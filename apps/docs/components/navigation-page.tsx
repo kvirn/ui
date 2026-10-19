@@ -82,9 +82,8 @@ const parts: ApiPart[] = [
         <code>&lt;span&gt;</code> with plain text, in the <code>Navigation.Item</code> next to the
         nested <code>Navigation.List</code> it names. It is not a heading and not a link: it has no
         role, is never a Tab stop and is not in the list of headings. Without a nested list in the
-        same item it names nothing, and a development warning says so (
-        <code>navigation-label-without-list</code>; outside any item,{' '}
-        <code>navigation-label-outside-item</code>).
+        same item it names nothing, and a development warning says so. A label outside any item gets
+        a warning too.
       </>
     ),
     props: navigationLabelRows,
@@ -109,35 +108,49 @@ export function NavigationPage({
             Use it for the links that move people between the pages of a service or a site: a main
             menu, a section menu, or a menu beside a long guide.
           </li>
-          <li>Give every navigation a name, and a different name when a page has more than one.</li>
           <li>
-            Keep it in the same place and the same order on every page (3.2.3 Consistent Navigation,
-            AA).
+            Give every navigation a name, and a different name when a page has more than one. A
+            screen reader lists the page’s landmarks (labelled regions such as a navigation), and
+            the name is how people tell two navigations apart.
           </li>
-          <li>Keep to two levels on pages for residents. A staff or CMS sidebar can go deeper.</li>
+          <li>
+            Keep it in the same place and the same order on every page, so people find it where they
+            expect it (3.2.3 Consistent Navigation, AA).
+          </li>
+          <li>
+            Keep to two levels on pages for residents. A sidebar for staff, or one from a content
+            management system, can go deeper.
+          </li>
           <li>
             Not for switching content on the same page: use{' '}
             <LinkRoot href="/components/tabs">Tabs</LinkRoot>. Not for the headings of one long
             page: use <LinkRoot href="/components/table-of-contents">TableOfContents</LinkRoot>.
           </li>
           <li>
-            Not for a menu with flyouts or one that opens and closes by itself. Navigation has none
-            and there is no NavigationMenu component. You can open and close a group yourself, as in
-            “A group that opens and closes” below.
+            Not for a menu with flyouts, or one that opens its own lists: see the{' '}
+            <LinkRoot href="/patterns/main-menu">Main menu</LinkRoot> pattern. Navigation has no
+            flyouts and no toggle of its own. You can open and close a group yourself, as in “A
+            group that opens and closes” below.
           </li>
         </ul>
       }
       example={
-        <ExampleFrame headingId="example" code={sources['default']}>
-          <DefaultNavigation />
-        </ExampleFrame>
+        <>
+          <ExampleFrame headingId="example" code={sources['default']}>
+            <DefaultNavigation />
+          </ExampleFrame>
+          <Note kind="reminder">
+            Write link text that says where the link goes, such as “Apply for a parking permit”,
+            never “click here” (2.4.4 Link Purpose (In Context), A).
+          </Note>
+        </>
       }
       useCases={
         <>
           <UseCase
             id="two-levels"
             title="A section with a second level"
-            why="A section has pages under it. Put a second Navigation.List inside the item they belong to. The lists nest as ordinary HTML lists, so a screen reader can tell people which level they are on. Mark only the page you are on, never its parent."
+            why="A section has pages under it. Put a second Navigation.List inside the item they belong to. The lists nest as ordinary HTML lists, so a screen reader tells people which level they are on. Mark only the page you are on as current, never its parent."
             code={sources['two-levels']}
             note={
               <Note kind="tip">
@@ -151,7 +164,7 @@ export function NavigationPage({
           <UseCase
             id="horizontal"
             title="A row of sections at the top"
-            why="Add the class kv-navigation--horizontal to the root to lay the top level out as a row that wraps. It changes the look only. The roles, the names and the keys are the same as in a column, and the links stay in reading order."
+            why="Add the class kv-navigation--horizontal to the root to lay the top level out as a row that wraps. It changes the look only. The roles, the names and the keys are the same as in a column, and the links stay in reading order. A row has one level: a nested list stays a column under its item."
             code={sources['horizontal']}
           >
             <HorizontalNavigation />
@@ -159,12 +172,13 @@ export function NavigationPage({
           <UseCase
             id="page-not-listed"
             title="When the page isn’t in the navigation"
-            why="Some pages are not in the menu, such as one application. Put current on the deepest item the menu does show. It sets aria-current to true, so the menu still has exactly one current link."
+            why="Some pages are not in the menu, such as one application. Put current, with no value, on the deepest item the menu does show. It sets aria-current to true, so the menu still has exactly one current link."
             code={sources['page-not-listed']}
             note={
               <Note kind="reminder">
-                Mark exactly one link per navigation, and never an ancestor of a listed page. A
-                development warning fires when two links are marked.
+                Mark exactly one link per navigation, and never an ancestor of a listed page. Two
+                current links confuse a screen reader user, and a development warning fires (4.1.2
+                Name, Role, Value, A).
               </Note>
             }
           >
@@ -173,7 +187,7 @@ export function NavigationPage({
           <UseCase
             id="collapsible-group"
             title="A group that opens and closes"
-            why="Navigation has no toggle of its own. Render the group with hidden and open it from a Button with aria-expanded and aria-controls. The links of a hidden group leave the Tab order, so keyboard users skip them until the group is open."
+            why="Navigation has no toggle of its own. Render the group with hidden and open it from a Button with aria-expanded and aria-controls. The links of a hidden group leave the Tab order, so keyboard users skip them until the group is open. Never put current on a link inside a hidden group."
             code={sources['collapsible-group']}
             note={
               <Note kind="recipe" more={<CodeBlock code={collapsibleCode} />}>
@@ -186,7 +200,7 @@ export function NavigationPage({
           <UseCase
             id="group-labels"
             title="Links grouped under labels"
-            why="A staff sidebar groups its links under names such as Permits and Services. Put a Navigation.Label in each item, next to its nested list. The list takes the label as its name, so people using a screen reader hear which group they are in. The label is plain text, not a heading and not a link. The name is added when the page loads in the browser, so it is not in the server-rendered HTML."
+            why="A staff sidebar groups its links under names such as Permits and Services. Put a Navigation.Label in each item, next to its nested list. The list takes the label as its name, so people using a screen reader hear which group they are in. The label is plain text, not a heading and not a link. The browser adds the name after the page loads, so it is not in the HTML the server sends."
             code={sources['group-labels']}
           >
             <GroupLabels />
@@ -203,6 +217,13 @@ export function NavigationPage({
                 picks a landmark by its name. Where a visible heading exists, point{' '}
                 <code>aria-labelledby</code> at it. A development warning fires if a name is missing
                 or used twice (2.4.1 Bypass Blocks, A; 2.4.6 Headings and Labels, AA).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                Check each item against your own site. What applies belongs in your accessibility
+                statement, with the workaround. The Web Accessibility Directive requires public
+                bodies to publish one.
               </Note>
             ),
           }}

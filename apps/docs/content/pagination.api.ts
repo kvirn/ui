@@ -42,6 +42,12 @@ export const paginationRootAttributes: readonly AttributeRow[] = [
 
 export const paginationListAttributes: readonly AttributeRow[] = [
   { name: 'kv-pagination-list', values: 'always', meaning: 'The part class.' },
+  {
+    name: 'role',
+    values: '"list"',
+    meaning:
+      'Always set. Safari with VoiceOver drops the list role from a list without markers, so it is written out.',
+  },
 ]
 
 export const paginationItemAttributes: readonly AttributeRow[] = [

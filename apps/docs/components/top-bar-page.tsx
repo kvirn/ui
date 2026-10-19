@@ -81,9 +81,8 @@ export function TopBarPage({
             why={
               <>
                 Some tools act on the page and don’t go to another one: print, say. Put a Button in
-                the bar and give it the class <code>kv-button--link</code>. It looks like the links
-                beside it and is read as a button. Tab reaches it after the navigation, in the order
-                you wrote.
+                the bar and give it the class <code>kv-button--link</code>. It looks like a link and
+                a screen reader reads it as a button. Tab reaches it in the order you wrote.
               </>
             }
             code={sources['button-tool']}
@@ -99,7 +98,7 @@ export function TopBarPage({
           <UseCase
             id="phone-link"
             title="Opening hours and a phone number"
-            why="A bar doesn’t need a navigation. For a single link, such as the phone number of the contact centre, write the link directly in the bar after the text. The theme treats a link that stands on its own as a bar item: at least 24px tall, and underlined only when you point at it."
+            why="A bar doesn’t need a navigation. For a single link, such as the phone number of the contact centre, write the link directly in the bar after the text. The theme treats a link that stands on its own as a bar item: at least 24 pixels tall (2.5.8 Target Size (Minimum), AA), and underlined only when you point at it."
             code={sources['phone-link']}
           >
             <PhoneLink />
@@ -107,14 +106,14 @@ export function TopBarPage({
           <UseCase
             id="filled"
             title="A bar with a fill"
-            why="Set variant to primary, secondary or accent to fill the bar across the full width. Its text, links, focus ring and the current tool take the fill’s on-colour. The theme’s contrast check covers each fill: 4.5:1 for text, and 7:1 in the contrast themes. A link in a sentence stays underlined."
+            why="Set variant to primary, secondary or accent to fill the bar across the full width. Its text, links, focus ring and the current tool take the fill’s on-colour, the colour made to be read on that fill. The theme’s contrast check covers each fill: 4.5:1 for text, and 7:1 in the two high-contrast themes. A link in a sentence stays underlined."
             code={sources['filled']}
             propsUsed={[{ part: 'TopBar', prop: 'variant' }]}
             note={
               <Note kind="reminder">
                 Write a sentence in a <code>&lt;p&gt;</code>, never a bare <code>&lt;div&gt;</code>:
                 a link directly in a div of the bar counts as a bar item and loses its underline at
-                rest.
+                rest, so it is no longer clear that it is a link (1.4.1 Use of Color, A).
               </Note>
             }
           >
@@ -123,7 +122,7 @@ export function TopBarPage({
           <UseCase
             id="own-element"
             title="Your own element"
-            why="When the bar must be another element than a div, call useTopBar and spread topBarProps on it. You get only the class: no role, ARIA or tabindex. Join a class of your own with mergeProps."
+            why="When you render the bar element yourself, for example inside a component of your own, call useTopBar and spread topBarProps on it. You get only the class: no role, ARIA or tabindex. To add a class of your own, join it with mergeProps."
             code={sources['own-element']}
             propsUsed={[
               {
@@ -137,7 +136,20 @@ export function TopBarPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Name the navigation inside the bar, and give it a different name from the main menu.
+                A screen reader user picks a landmark by its name. A development warning fires if a
+                name is missing or used twice (2.4.6 Headings and Labels, AA).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

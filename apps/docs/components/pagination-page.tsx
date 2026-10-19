@@ -78,7 +78,8 @@ const parts: ApiPart[] = [
         <code>&lt;a href&gt;</code> for one page: a thin wrapper over{' '}
         <LinkRoot href="/components/link">Link.Root</LinkRoot>, so it is rendered by the router link
         you register on the provider. It takes the other props and <code>ref</code> of{' '}
-        <code>Link.Root</code>, except <code>current</code>, which is a boolean here.
+        <code>Link.Root</code>, except <code>current</code>, which is a boolean here. Pass{' '}
+        <code>as=&quot;a&quot;</code> to skip the router link.
       </>
     ),
     props: paginationLinkRows,
@@ -160,9 +161,10 @@ export function PaginationPage({
             and Next on the last, never disable them.
           </li>
           <li>
-            On a screen narrower than 40rem the theme shows only Previous, the current page, the
-            status and Next. Always render <code>Pagination.Status</code> too, so people on a phone
-            see how many pages there are. From 40rem the total is the last page link, so keep it.
+            On a screen narrower than 40rem (640 pixels at the default text size) the theme shows
+            only Previous, the current page, the status and Next. Always render{' '}
+            <code>Pagination.Status</code> too, so people on a phone see how many pages there are.
+            From 40rem the total is the last page link, so keep it.
           </li>
           <li>
             Not for steps in a form or a flow. Not for the sections of a site: use{' '}
@@ -301,7 +303,16 @@ export function PaginationPage({
               <Note kind="reminder">
                 Always render <code>Pagination.Status</code>. Below 40rem the page numbers are
                 hidden, so without it a phone shows no total. A development warning says so when it
-                is missing.
+                is missing (1.3.1 Info and Relationships, A).
+              </Note>
+            ),
+            focus: (
+              <Note kind="reminder">
+                When a page link shows new results without reloading the page, focus stays on the
+                link you pressed and a screen reader says nothing. Move focus to the new content
+                yourself, for example with{' '}
+                <LinkRoot href="/components/route-focus">Route focus</LinkRoot> (2.4.3 Focus Order,
+                A).
               </Note>
             ),
           }}

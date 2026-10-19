@@ -15,7 +15,8 @@ export const topBarAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-top-bar',
     values: 'always',
-    meaning: 'The part class. The default theme lays out the two sides and wraps them at 320px.',
+    meaning:
+      'The part class. The default theme lays out the two sides and wraps them onto their own rows when there is no room, as at 320 pixels wide.',
   },
   {
     name: 'kv-top-bar--primary',
