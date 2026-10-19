@@ -1,7 +1,7 @@
 # Accessibility contract: OneTimeCode (Root, Input, Slot)
 
-- **APG pattern:** none. A one-time code is one native text input. The name, description and state come from HTML and the Field (see the Field and TextInput contracts), and the masked typing rules from the mask engine. Prior art: GOV.UK "Confirm a phone number" (one input for the code) and `input-otp` (one input with drawn slots).
-- **Deviations:** none from APG. Decisions: one native input with boxes that only draw it (the slots), `data-caret`, `data-selected` and `data-ready`, no auto-advance, no auto-submit, a `pattern` in place of a length with drawn separators, and the mask.
+- **APG pattern:** none. A one-time code is one native text input. The name, description and state come from HTML and the Field (see the Field and TextInput contracts), and the masked typing rules from the mask engine.
+- **Deviations:** none from APG. It is one native input, with boxes that only draw it. There is no auto-advance and no auto-submit.
 - **Native elements used:** `<input type="text">` (Input), `<div>` (Root, no role), `<span aria-hidden="true">` (Slot, and the separator).
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `one-time-code.test.tsx` next to this file. `one-time-code.stories.tsx` in `apps/storybook/src/components/one-time-code/`.
@@ -74,7 +74,7 @@ Every key is the native text field's, and the component prevents none of them: n
 
 - Initial focus: not moved. The component never focuses anything, including when the code is complete or when a wrong-code error shows (the page focuses the error summary or the field, as for any field).
 - Trap: no.
-- Restore to: not applicable. The input is always rendered, and never disabled while a code is checked: a disabled input loses focus, which lands on `body`. Use `readOnly` and say "Checking the code" through the Announcer (see Consumer responsibilities).
+- Restore to: not applicable. The input is always rendered, and never disabled while a code is checked: a disabled input loses focus, which lands on `body`. Use `readOnly` and say "Checking the code" through the Announcer (see What you need to do).
 - Never obscured by: the focus ring is the input's own ring, drawn outside the whole row, and nothing in the row has overflow, so it is not clipped (2.4.11 Focus Not Obscured (Minimum), AA; 2.4.13 Focus Appearance, AAA). Consumers with a sticky header set `scroll-padding`.
 
 ## Announcements
@@ -105,9 +105,9 @@ Both are the mask's, throttled to one message per field every three seconds, and
 - Focus indicator: on keyboard focus, the input's own ring around the whole row, with at least 3:1 contrast against the background (2.4.7 Focus Visible, AA; 2.4.13 Focus Appearance, AAA). It is set by `data-focus-visible`, or by `:focus-visible` before the script runs. A click shows no ring (an invalid field shows the ring on any focus, and keeps its error-coloured edge): the active box's edge shows the focus, and the plain field's edge turns heavier in the focus colour. The box where the next character goes also has a heavy focus-coloured edge and a static caret, and selected boxes a tinted fill with the same edge, never colour alone.
 - Target size: the input covers the whole row, so it clears 2.5.8 Target Size (Minimum, AA) in both densities, and in the default comfortable density it also clears 2.5.5 Target Size (Enhanced, AAA).
 - Colour: the box edges have at least 3:1 contrast against the background (1.4.11 Non-text Contrast, AA). An invalid field has a heavier error-coloured edge on every box, never colour alone: the message under the row carries it. A disabled field has a dashed edge, and its characters are muted. Complete has no look of its own: a tick or green edge would read as "verified". The theme's contrast check covers every colour pair.
-- Forced colours (the system's own colour scheme): the theme shows the plain input as a normal text field in the system's colours, with a heavier edge in the system text colour when invalid and a dashed grey edge when disabled. The focus edge and the keyboard ring use the system highlight colour, and a click's transparent outline is painted by the system. The slots are hidden. This is reviewed in a story, not yet in an automated display-mode check.
+- Forced colours (the system's own colour scheme): the theme shows the plain input as a normal text field in the system's colours, with a heavier edge in the system text colour when invalid and a dashed grey edge when disabled. The focus edge and the keyboard ring use the system highlight colour, and a click's transparent outline is painted by the system. The slots are hidden. The forced-colours sweep checks that the input keeps a visible boundary and shows a focus indicator when it has focus.
 - Reduced motion: the boxes' edge and fill change gradually only when the person has not asked for reduced motion. The caret never blinks, in any setting (2.2.2 Pause, Stop, Hide, A).
-- Reflow (1.4.10 Reflow, AA): the boxes shrink, then the plain field shows instead of wrapping, so there is no horizontal scrolling at 320px width, in a card, at 200% text or at 400% zoom. Switching is CSS only: the same input keeps its value, caret and focus. At 320 CSS px the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow; 200% text and 400% zoom are reviewed in the stories.
+- Reflow (1.4.10 Reflow, AA): the boxes shrink, then the plain field shows instead of wrapping, so there is no horizontal scrolling at 320px width, in a card, at 200% text or at 400% zoom. Switching is CSS only: the same input keeps its value, caret and focus. The reflow sweep runs every story at 320 CSS px and fails on horizontal overflow, and the text-spacing sweep fails on a box that clips its text. 200% text and 400% zoom are checked by eye.
 - Text spacing (1.4.12 Text Spacing, AA): the boxes don't depend on the input's text metrics, have no fixed height and are centred with flex, so characters are not clipped.
 - Before the script runs (`data-ready` not set) the plain input shows, so what is typed or autofilled meanwhile is visible as the browser draws it, with no mask and no `maxlength`. When the script starts, that value goes through the mask once (separators and characters that don't fit are dropped, and it is written back only if it changed), so the boxes draw exactly what the field holds and the form never submits characters the boxes hide. A controlled `value` is the consumer's and is drawn as it is. A form reset does the same for the default value.
 - Right-to-left (RTL) pages: the code is an identifier, so the input has `dir="ltr"` and the row of boxes reads left to right, at the start (the right) of the column. ArrowRight still moves to the next character.
@@ -146,7 +146,16 @@ Both are the mask's, throttled to one message per field every three seconds, and
 | **Component-specific**                                                                 |             |             |         |                                                                                                                                                  |
 | Caret position after activation (centre press by Dragon, Voice Control, VoiceOver iOS) | pending     | pending     | pending | A press at a box's centre puts the caret before that character, or at the end of the code on an empty box                                        |
 
-Also pending, by hand: SMS autofill on iOS Safari and Android Chrome, the browsers' own password managers, 1Password and Bitwarden (does an icon cover the last box?), iOS selection handles at the invisible text, and a screen magnifier following the caret. Research questions: how do screen-reader users check the code they entered? Do they press Tab between digits? Can magnifier users say which box is next, at a glance?
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab to the field: the label and the description (length, groups) are read. The field is one text box.
+- Type the code: your own typing is heard, and nothing extra when it is complete.
+- A letter in a digits code: a polite "Only digits can be entered here" is said, and nothing is inserted.
+- Paste "123 456" and "Your code is 123456": both leave `123456`.
+- On a phone, a code from a text message is offered by the keyboard or browser and fills the field.
+- After a wrong code, focus stays and the error is read once.
 
 ## Known issues
 

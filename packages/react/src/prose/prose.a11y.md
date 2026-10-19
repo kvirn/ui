@@ -91,19 +91,19 @@ Prose renders no text, so it has no message keys.
 
 Headless: Prose ships no CSS. With the default theme the `kv-prose` rules apply:
 
-- **Line length and type.** A 70-character line length, and the body and heading type styles. `h1` to `h6` each have their own style, and `h4` to `h6` stay at 16px in every prose size.
+- **Line length and type.** A 70-character line length, and the body and heading type styles. `h1` to `h6` each have their own style, in falling order from `h4` to `h6`, and `h4` to `h6` do not change with the prose size.
 - **Links.** A link has an underline on hover and a focus ring.
 - **Contrast.** Text, links and code on the page and section backgrounds are checked automatically (1.4.3 Contrast (Minimum) (AA), 1.4.11 Non-text Contrast (AA)).
-- **Reflow.** Nothing has a fixed size, so text reflows (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
-- **Text spacing.** Reviewed by hand in a Storybook story (1.4.12 Text Spacing (AA)).
+- **Reflow.** Nothing has a fixed size, so text reflows (1.4.10 Reflow, AA): the reflow sweep runs every story at 320 CSS px and fails on horizontal overflow.
+- **Text spacing.** The text-spacing sweep applies the 1.4.12 spacing to every story and fails on a box that clips its content (1.4.12 Text Spacing (AA)).
 - **Reduced motion.** Prose animates only a link's colour, and only when motion is allowed.
 
 ## Sizes, width and colour roles
 
-With the theme, `kv-prose--small` (14px), the default (16px), `kv-prose--large` (18px), `kv-prose--xl` (20px) and `kv-prose--2xl` (24px) are token swaps, and `kv-prose--xl` and `--2xl` step down to the large size below 40rem. `kv-prose--full` removes the 70ch measure. The text stays in rem and the line height has no fixed height, so it resizes to 200% (1.4.4 Resize Text (AA)) and the text-spacing overrides fit (1.4.12 Text Spacing (AA)). The `--kv-prose-color-*` roles recolour one part and default to the theme's tokens, so each theme, the high-contrast themes and forced colours still apply.
+With the theme, `kv-prose--small`, the default, `kv-prose--large`, `kv-prose--xl` and `kv-prose--2xl` are token swaps that grow in that order, and `kv-prose--xl` and `--2xl` step down to the large size below 40rem. `kv-prose--full` removes the 70ch measure. The text stays in rem and the line height has no fixed height, so it resizes to 200% (1.4.4 Resize Text (AA)) and the text-spacing overrides fit (1.4.12 Text Spacing (AA)). The `--kv-prose-color-*` roles recolour one part and default to the theme's tokens, so each theme, the high-contrast themes and forced colours still apply.
 
-- **`kv-prose--small` is for notes and metadata only.** The design system keeps essential content at 16px or more, so a resident's instructions are never `--small`. Nothing enforces this: it is a consumer responsibility.
-- **Headings keep their roles in every size.** `h1` to `h6` keep their own heading styles whatever the prose size. `h4` to `h6` are 16px (never below, because essential content is never smaller) and are told apart by weight and tracking, so in `--large`, `--xl` and `--2xl` they are smaller than the body text. Stop at `h3` in resident-facing text. Nothing enforces this: it is a consumer responsibility.
+- **`kv-prose--small` is for notes and metadata only.** The design system keeps essential content at the default body size or larger, so a resident's instructions are never `--small`. Nothing enforces this: it is a consumer responsibility.
+- **Headings keep their roles in every size.** `h1` to `h6` keep their own heading styles whatever the prose size. `h4` to `h6` never go below the default body size (essential content is never smaller) and are told apart by size, weight and letter spacing, h4 largest and h6 smallest, so in `--large`, `--xl` and `--2xl` they are smaller than the body text. Stop at `h3` in resident-facing text. Nothing enforces this: it is a consumer responsibility.
 - **A colour you set is yours to check.** The automatic contrast check measures the default colours, not an override: text and links 4.5:1, a quote bar or rule 3:1 against the surface it sits on, in every theme you ship (1.4.3 Contrast (Minimum), 1.4.11 Non-text Contrast).
 - **Not carried from the typography plugin:** generated backticks and quote marks (generated content is read inconsistently), italics on a quote, and a scrolling `pre` (a scroller a keyboard user can't reach).
 
@@ -111,9 +111,9 @@ With the theme, `kv-prose--small` (14px), the default (16px), `kv-prose--large` 
 
 - 1.3.1 Info and Relationships (A): Prose has no role of its own, so the content you write decides the semantics (`prose.test.tsx`). In a Field or Fieldset the description is part of the accessible description of the control or group (`prose.test.tsx`, axe in both). `kv-steps` is a native list.
 - 3.3.2 Labels or Instructions (A): a description in a Field is linked to its control.
-- 1.4.3 Contrast (Minimum) (AA), 1.4.10 Reflow (AA) and 1.4.12 Text Spacing (AA): the `kv-prose` theme rules, as checked in the Storybook stories. The sizes and the width option are checked in the `Sizes` and `Full width and colour roles` stories, and the default colours by the automatic contrast check.
+- 1.4.3 Contrast (Minimum) (AA), 1.4.10 Reflow (AA) and 1.4.12 Text Spacing (AA): the `kv-prose` theme rules, as checked by the display-mode sweeps and by stories for the sizes and the width option. The default colours are checked by the automatic contrast check.
 - 1.4.4 Resize Text (AA): the sizes are in rem.
-- 1.1.1 Non-text Content (A), 1.2.1, 1.2.2 and 1.2.3 (A), 1.2.5 (AA), 1.4.1 Use of Color (A) and 1.4.5 Images of Text (AA): the figure, video and audio guidance and the inset's leading word. These are consumer responsibilities (see What you need to do).
+- 1.1.1 Non-text Content (A), 1.2.1 Audio-only and Video-only (Prerecorded) (A), 1.2.2 Captions (Prerecorded) (A), 1.2.3 Audio Description or Media Alternative (Prerecorded) (A), 1.2.5 Audio Description (Prerecorded) (AA), 1.4.1 Use of Color (A) and 1.4.5 Images of Text (AA): the figure, video and audio guidance and the inset's leading word. These are consumer responsibilities (see What you need to do).
 
 ## AT test record
 
@@ -132,6 +132,14 @@ With the theme, `kv-prose--small` (14px), the default (16px), `kv-prose--large` 
 | JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                         |
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                         |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                         |
+
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- A description in a Field is read with the control, before the error.
+- A numbered list of steps says "list, n items".
+- A picture is read as its alt text, then its caption, with no repeat.
 
 ## Known issues
 

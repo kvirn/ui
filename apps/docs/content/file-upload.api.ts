@@ -272,6 +272,11 @@ export const fileUploadItemButtonAttributes: readonly AttributeRow[] = [
     values: 'text',
     meaning: 'Set for you: the visible text, then the file name (“Remove report.pdf”).',
   },
+  {
+    name: 'aria-describedby',
+    values: 'ids',
+    meaning: 'Set for you: the item’s Status, and its ItemError while the item has failed.',
+  },
 ]
 
 export const useFileUploadHook: ApiHook = {

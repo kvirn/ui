@@ -36,14 +36,19 @@ const partRenders = (element: string) => (
   </>
 )
 
+const rootRenders = (
+  <>
+    <code>&lt;div&gt;</code> with no role, or the element <code>as</code> picks. It takes every
+    attribute of that element and passes <code>ref</code> to it. Also exported as{' '}
+    <code>CardRoot</code>. The default theme is described on{' '}
+    <Link href="/foundation/theming">Theming</Link>.
+  </>
+)
+
 const parts: ApiPart[] = [
   {
     name: 'Card.Root',
-    renders: (
-      <>
-        {partRenders('div')} Also exported as <code>CardRoot</code>.
-      </>
-    ),
+    renders: rootRenders,
     props: cardRootRows,
     attributes: cardRootAttributes,
   },
@@ -91,7 +96,7 @@ export function CardPage({
   return (
     <ComponentPage
       title="Card"
-      lead="It groups what belongs together on a raised surface and adds no role, text or behaviour of its own."
+      lead="It groups what belongs together on a raised surface. It adds no role (the name a screen reader gives an element), no text and no behaviour of its own."
       whenToUse={
         <ul>
           <li>
@@ -198,7 +203,17 @@ export function CardPage({
           <ApiBlock
             importLine="import { Card, useCard } from '@kvirn-ui/react'"
             parts={parts}
-            hook={{ name: 'useCard', intro: 'Takes no options.', result: useCardResult }}
+            hook={{
+              name: 'useCard',
+              intro: (
+                <>
+                  Takes no options. Use it for your own elements, such as a{' '}
+                  <code>&lt;section&gt;</code> with <code>aria-labelledby</code>. You pick the
+                  element and the heading level.
+                </>
+              ),
+              result: useCardResult,
+            }}
           />
           <CodeBlock
             code={`const card = useCard()\n<section {...card.rootProps} aria-labelledby={headingId}>\n  <div {...card.bodyProps}>…</div>\n</section>`}

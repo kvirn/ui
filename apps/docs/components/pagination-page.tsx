@@ -193,7 +193,7 @@ export function PaginationPage({
           <UseCase
             id="news-list"
             title="A news list with ten pages"
-            why="With many pages, show the first and the last page and the pages around the current one. Put a Pagination.Ellipsis in each gap. The ellipsis is plain text in its own item, so it is not a link and not a Tab stop. The filled current page shows where you are, and on a narrow screen the status does too."
+            why="With many pages, show the first and the last page and the pages around the current one. Put a Pagination.Ellipsis in each gap. A gap is its own item with the text …, so a screen reader counts it in the list and reads it as punctuation, or pauses. The page numbers around it show which pages are left out. Don’t hide it: an empty item is read as “blank”. To have it spoken as words, give Ellipsis your own text in a VisuallyHidden next to an aria-hidden …. It is not a link and not a Tab stop. The filled current page shows where you are, and on a narrow screen the status does too."
             code={sources['news-list']}
             propsUsed={[
               { part: 'Pagination.Link', prop: 'page' },

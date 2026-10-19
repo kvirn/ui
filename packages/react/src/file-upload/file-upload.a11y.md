@@ -1,7 +1,7 @@
 # Accessibility contract: FileUpload (Root, Trigger, Input, DropZone, DropHint, Limits, Rejections, Summary, List, Item, Preview, Name, Type, Size, Status, ItemError, Progress, Actions, CancelButton, RetryButton, RemoveButton)
 
 - **APG pattern:** none. There is no APG pattern for a file upload. The way in is a native `<button>` that opens the system file dialog, backed by a hidden native `<input type="file">`. A drop zone is an enhancement for devices that drag, never the only way in (2.1.1 Keyboard, level A; 2.5.7 Dragging Movements, level AA). Prior art: GOV.UK file upload and multiple file upload.
-- **Deviations:** none from APG. Decisions: one native button and a hidden input, rejected files kept out of the list, announcements batched into one sentence, focus on the item after a removal, and a scoped exception (the component checks the files it is given).
+- **Deviations:** none from APG. Rejected files are kept out of the list, and announcements are batched into one sentence.
 - **Native elements used:** `<button>` (Trigger, Cancel, Retry, Remove), `<input type="file">` (Input), `<progress>` (Progress), `<ul>` and `<li>` (List, Item, and the lines of Rejections), `<div>` (Root, DropZone, Actions), `<p>` (DropHint, Summary, Status, ItemError).
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `file-upload.test.tsx` and `file-upload-announcements.test.ts` next to this file. `file-upload.stories.tsx` in `apps/storybook/src/components/file-upload/`.
@@ -33,13 +33,13 @@ A FileUpload lets someone attach files to a form. One button opens the system di
 Rules, tested in `file-upload.test.tsx`:
 
 - **One control.** The Trigger is the only control that adds files and the only Tab stop for it. The native input is out of the accessibility tree and out of the Tab order, so browse mode and voice control see one control, and an error-summary link to the Field's id lands on a visible button (2.4.7 Focus Visible, level AA).
-- **The Trigger's name** points at a `<span id="…-text">` that holds its visible text, then at the Field label (never at the button itself, which a native `<label for>` would outrank). With the hook, wrap your text in `<span id={triggerTextId}>`. Your own element must keep that span, or the name is only the label. The name starts with its visible text, then the Field label ("Choose files Attachments (optional)"), so a voice user can say "click Choose files" (2.5.3 Label in Name, level A) and two uploads on a page tell apart. A click on the label opens the dialog too, and does nothing at the limit (`the Field label (D9)`).
+- **The Trigger's name** points at a `<span id="…-text">` that holds its visible text, then at the Field label (never at the button itself, which a native `<label for>` would outrank). With the hook, wrap your text in `<span id={triggerTextId}>`. Your own element must keep that span, or the name is only the label. The name starts with its visible text, then the Field label ("Choose files Attachments (optional)"), so a voice user can say "click Choose files" (2.5.3 Label in Name, level A) and two uploads on a page tell apart. A click on the label opens the dialog too, and does nothing at the limit.
 - **No `aria-required` on the Trigger,** and no `required` on the input. A button doesn't allow `aria-required`. A required Field shows through the missing "(optional)" marker, and the consumer's error says "required".
 - **Every limit is checked here,** because a drop and "All files" skip the browser's checks: type (by MIME type and extension), largest and smallest size, how many files, empty, duplicate (same name, size and last modified), folder, and the consumer's `validate`. A refused file **never enters the list**, never counts toward `maxFiles`, and never uploads. The Field is not marked invalid by it.
 - **Adding appends,** except with `multiple` off, where a new file replaces the old. A refused new file leaves the old one in place. With an `upload` function the input is reset after each add, so the same file can be chosen again. Without one, the input holds the list (through `DataTransfer`), so a plain form posts it.
 - **Statuses** are exposed as `data-status` and in text. A failure shows neutral words and never the raw error of the network. Only an error object that opts in (`retryable`, `message`) supplies text of its own.
-- **Dragging is an extra** (2.5.7 Dragging Movements, level AA). A file over the zone sets `data-dragging` and the hint says what dropping does; leaving the zone (not moving onto a child of it) clears it. A disabled zone shows no dragging state, answers `dropEffect` `none` and adds nothing. Tested in `dragging`.
-- **Previews** are decorative. The object URL made for one is revoked when its item goes away (`previews`).
+- **Dragging is an extra** (2.5.7 Dragging Movements, level AA). A file over the zone sets `data-dragging` and the hint says what dropping does; leaving the zone (not moving onto a child of it) clears it. A disabled zone shows no dragging state, answers `dropEffect` `none` and adds nothing.
+- **Previews** are decorative. The object URL made for one is revoked when its item goes away.
 - **Retry reuses the stored `File`,** so nobody has to find it in a phone's picker again.
 - **The limits are said before anyone chooses** (3.3.2 Labels or Instructions, level A): `FileUpload.Limits`, or a `Field.HelpText` in the Field (any description of the Field counts, so a `Field.Prose` does too). A development warning fires if `accept`, `maxFiles` or `maxFileSize` is set and neither exists.
 - **Every part merges the consumer's class, handlers and refs** with its own and carries its part class. Tested once, in `the public API › every part merges class, handlers and refs, and carries its part class`.
@@ -74,7 +74,7 @@ Rules, tested in `file-upload.test.tsx`:
 - **Whenever a focused button goes away,** focus never falls to `body`, and never lands on another button: a held or repeated Enter would delete a file the user didn't choose.
   - **Cancel** (when the upload finishes) and **Retry** (when it restarts) go away while their item stays: focus moves to that same item's `<li tabindex="-1">`.
   - **Remove** takes the item with it: focus moves to the next item's `<li>`, else the previous item's, else the Trigger.
-  - Only a button that was **removed from the page** is replaced. A user who clicks away from a button that is still there keeps their place, however soon a progress tick renders (3.2.1 On Focus, level A). Tested in `focus after a removal`.
+  - Only a button that was **removed from the page** is replaced. A user who clicks away from a button that is still there keeps their place, however soon a progress tick renders (3.2.1 On Focus, level A).
 - Items are not Tab stops. A script focuses them only to keep focus in place.
 - A rejected file moves no focus. Its line is in the Trigger's description.
 - The drop moves no focus.
@@ -96,7 +96,7 @@ Everything goes through the shared Announcer, politely. One sentence per batch, 
 
 Results are reported from the store, so auto upload, Retry and `uploadAll()` go the same way, and a result for a file that was removed, retried or cancelled is dropped. After a drop it announces the full text.
 
-- Tested in `announcements in en (4.1.3)` and `announcements in sv (4.1.3)`, one test per row above (the full list: `the list filling up is announced with what to do next`), with fake timers reading the polite region.
+- Each row above has a test that reads the polite region, in English and Swedish.
 - No Announcer `key` is used: its throttle drops messages instead of delaying them.
 
 ## Consumer responsibilities
@@ -108,7 +108,7 @@ Results are reported from the store, so auto upload, Retry and `uploadAll()` go 
 - **Translate your own text** (the label and the description) and put them in a nested `KvirnProvider` with `useLocale().localeProps` on your own element where a locale isn't translated (3.1.2 Language of Parts, level AA).
 - **Provide the Announcer** (`KvirnProvider`). Without one, nothing is announced and a warning says so.
 - **Don't make people choose a file twice (3.3.7 Redundant Entry, level A).** A browser can't put a file back in a file input after a reload. Either upload on add (`upload`), keep the files on the server and show them again after a failed submit with a way to remove them, or check every field on the client (or submit with `fetch`) so a validation error never reloads the page.
-- **2.2.2 Pause, Stop, Hide (level A).** The indicators (spinner, bar sheen, busy Button, job Toast, FileUpload track, Table busy sweep) move for as long as the wait lasts, which can be more than 5 s. `prefers-reduced-motion: reduce` is honoured and shows a still rest shape, but to meet WCAG 2.2.2 the app must also offer its own visible control that stops moving content (the library ships none) and applies the stop CSS. [Moving indicators and WCAG 2.2.2](/foundation/theming#moving-indicators). The status text and the percent carry the wait.
+- **2.2.2 Pause, Stop, Hide (level A).** The indicators (spinner, bar sheen, busy Button, job Toast, FileUpload track, Table busy sweep) move for as long as the wait lasts, which can be more than 5 s. `prefers-reduced-motion: reduce` is honoured and shows a still rest shape, but to meet WCAG 2.2.2 the app must also offer its own visible control that stops moving content (the library ships none) and applies the stop CSS. See "Moving indicators and WCAG 2.2.2" on the Theming page. The status text and the percent carry the wait.
 
 ## Visual / modes
 
@@ -117,6 +117,8 @@ Results are reported from the store, so auto upload, Retry and `uploadAll()` go 
 - Targets are at least 24 by 24 CSS pixels, and larger on devices with a coarse pointer such as a touch screen (2.5.8 Target Size (Minimum), level AA). Long names wrap anywhere, so a 120-character name doesn't scroll sideways at 320 CSS pixels (1.4.10 Reflow, level AA). RTL mirrors through logical properties.
 - Reduced motion removes every transition. The indeterminate track shows its still rest shape (2.2.2 Pause, Stop, Hide, level A).
 - On devices without a precise pointer there is no zone and no hint: only the button.
+- Focus indicator: the button and each item's Remove and Cancel buttons show the focus ring on keyboard focus (2.4.7 Focus Visible, AA), and nothing clips it. The page's sticky header is the consumer's to account for (2.4.11 Focus Not Obscured (Minimum), AA).
+- Text spacing (1.4.12 Text Spacing, AA): the text-spacing sweep applies the spacing to every story and fails on a box that clips its content. The reflow sweep runs every story at 320 CSS px and fails on horizontal overflow.
 
 ## WCAG SCs covered
 
@@ -160,11 +162,20 @@ Results are reported from the store, so auto upload, Retry and `uploadAll()` go 
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                |
 
-`pending`. To run before `beta`: NVDA, JAWS, VoiceOver (macOS and iOS), TalkBack and Dragon add several files, hear a refused file, follow an upload, cancel, retry and remove. Include how VoiceOver on macOS reads a polite message that arrives with a focus change, and what focusing an `<li>` reads on iOS and TalkBack.
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab to the button: its name (its text, then the label) and the limits are read.
+- Enter opens the file dialog. Choose an allowed file, one that is too big and one of the wrong type.
+- "Added" is read for the good one, a count for the refused ones, and the refusals can be read under the button.
+- A file's Remove button has the file name. After Enter, focus moves to the next file, else the previous, else the button.
+- A slow upload: the finish is heard, with no progress read-out. Cancel one: Retry and Remove appear and focus is on the item.
+- With the list full, the button says why it does nothing and is still reachable.
 
 ## Known issues
 
 - HEIC photos (a photo format iPhones can use): whether Safari converts to JPEG for `accept=".jpg"` in every path needs a check on your own device.
 - Client-side limits can be bypassed. The server must check again.
 - Under React's `<Activity mode="hidden">` the effect cleanup resets the list and aborts running uploads. Keep a FileUpload mounted while a form is hidden.
-- The Trigger's name is read from the text span and the Field label. The name is asserted in `file-upload.test.tsx › wiring: the Trigger is the one control › a native button named by its own text then the Field label, with the Field control id`. Firefox and WebKit are not run automatically.
+- The Trigger's name is read from the text span and the Field label. A test asserts the name. Firefox and WebKit are not run automatically.

@@ -156,7 +156,8 @@ export const oneTimeCodeInputAttributes: readonly AttributeRow[] = [
   {
     name: 'data-invalid, data-required, data-disabled',
     values: 'present or absent',
-    meaning: 'From the Field, with aria-invalid, aria-required and native disabled.',
+    meaning:
+      'From the Field, with aria-invalid, aria-required and native disabled. data-disabled also follows the disabled prop.',
   },
 ]
 

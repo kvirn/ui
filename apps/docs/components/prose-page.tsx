@@ -116,7 +116,7 @@ export function ProsePage({
   return (
     <ComponentPage
       title="Prose"
-      lead="It adds no role, so what assistive technology finds is the headings, lists and links you write."
+      lead="It adds no role, so what assistive technology (software such as a screen reader) finds is the headings, lists and links you write."
       whenToUse={
         <ul>
           <li>
@@ -157,8 +157,15 @@ export function ProsePage({
           <UseCase
             id="larger-text"
             title="Larger text for long reading"
-            why="For guidance that residents read in full, add the large size. The text stays in rem, so it still resizes with the browser."
+            why={
+              <>
+                For guidance that residents read in full, add the <code>kv-prose--large</code>{' '}
+                class. The size is set in rem, a unit that follows the browser’s text-size setting,
+                so the text still resizes.
+              </>
+            }
             code={sources['large']}
+            propsUsed={[{ part: 'Prose', prop: 'className' }]}
           >
             <LargeProse />
           </UseCase>
@@ -169,8 +176,9 @@ export function ProsePage({
             code={sources['field-description']}
             note={
               <Note kind="reminder">
-                A description is read as plain text, so a heading, list or link in it loses its
-                structure. Keep it to a few short paragraphs, as in{' '}
+                A screen reader reads a description as plain text, so a heading, list or link in it
+                loses its structure, and the link can’t be followed. Keep it to a few short
+                paragraphs, so the instructions reach everyone (3.3.2 Labels or Instructions). See{' '}
                 <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
@@ -202,7 +210,15 @@ export function ProsePage({
           <UseCase
             id="steps"
             title="A process in order"
-            why="Write the steps as a native ol with the kv-steps class. Every step has a heading and text, or none has a heading. Start each heading with a verb. The list keeps its native numbers and list role, which a test checks in Chromium. Check the same in Safari with VoiceOver."
+            why={
+              <>
+                Write the steps as an ordinary numbered list (<code>ol</code>) with the{' '}
+                <code>kv-steps</code> class. Every step has a heading and text, or none has a
+                heading. Start each heading with a verb. The list keeps its numbers and its list
+                role. An automated test checks this in Chromium, so check the same in Safari with
+                VoiceOver.
+              </>
+            }
             code={sources['steps']}
             note={
               <Note kind="tip">
@@ -220,9 +236,10 @@ export function ProsePage({
             code={sources['images-and-media']}
             note={
               <Note kind="reminder">
-                Captions, never an embed: put every fact a picture carries in the text next to it
-                (1.1.1 Non-text Content). If you use video, host it yourself with captions, and
-                don’t embed one from a third party.
+                Put every fact a picture carries in the text next to it (1.1.1 Non-text Content).
+                For video, host the file yourself and add captions (1.2.2 Captions (Prerecorded)).
+                Don’t embed a video from another site: it makes your visitors’ browsers contact that
+                site.
               </Note>
             }
           >

@@ -97,7 +97,7 @@ export function InputGroupPage({
           </li>
           <li>
             Not for a long unit or a sentence: use the label or a help text. Not for a button that
-            sits beside the box: put it next to the Field instead.
+            sits outside the box: that is a separate Button next to the Field.
           </li>
         </ul>
       }
@@ -134,7 +134,7 @@ export function InputGroupPage({
           <UseCase
             id="error"
             title="An error on the box"
-            why="Put the group in a Field with invalid and write the message in the Field. The Field marks the input with aria-invalid and the box takes the invalid edge from it, so the box and the input agree. The focus ring shows on any focus in an invalid box, and the invalid edge stays."
+            why="Put the group in a Field with invalid and write the message in the Field. The Field marks the input with aria-invalid and tells the box too, so both agree. The box draws a thicker edge, and the message under it says what is wrong and how to fix it, so colour is not the only signal."
             code={sources['invalid']}
             note={
               <Note kind="reminder">

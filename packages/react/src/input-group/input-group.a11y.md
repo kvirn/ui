@@ -18,7 +18,7 @@ An InputGroup puts a unit ("kr", "%", "km"), a decorative icon or a Button insid
 | a Button (optional) | `<button>` (see Button), directly in the Root | its own name and Tab stop                                                                                                | Never inside an Addon. A text Button's name is its visible text ("Clear"). An icon-only Button has an `aria-label` from your translations ("Clear the search")                                                                                                        |
 | `useInputGroup`     | the same attributes, for your own elements    | `rootProps`, `addonProps`                                                                                                | Options: `invalid`, `disabled`. Also returns `isInvalid`, `isDisabled`, `isFocusVisible`. Spread `rootProps` on the box and `addonProps` on each Addon                                                                                                                |
 
-Rules, tested in `input-group.test.tsx`:
+Rules:
 
 - **Addons are `aria-hidden="true"`** and are never in the Input's accessible name or description. A unit shown in the box is also said by the label or a help text, a `Field.Prose` in the Field (if the Addon were linked to the Input, users would hear a unit the label already says, twice).
 - **Clicking an Addon, or the Root's padding, focuses the Input** (`mousedown` on the box, outside any control inside it). The whole box is one target, and the keyboard reaches the Input directly, so no key is needed for it. Disabled groups don't move focus.
@@ -46,13 +46,13 @@ Escape, arrow keys and Home / End keep the native text-field behaviour in the in
 
 ## Pointer
 
-A click is not a key, so it isn't in the Keyboard table. Clicking an Addon, or the box's padding, focuses the Input (the Addon isn't a control), and the keyboard reaches the Input directly with Tab. A disabled box ignores the click. Tested in `input-group.test.tsx › clicking an Addon focuses the Input`.
+A click is not a key, so it isn't in the Keyboard table. Clicking an Addon, or the box's padding, focuses the Input (the Addon isn't a control), and the keyboard reaches the Input directly with Tab. A disabled box ignores the click.
 
 ## Focus management
 
 - Initial focus: not moved.
 - Trap: no.
-- Restore to: not applicable. A clear Button that disappears when the box is empty is the consumer's: on activation, empty the value and move focus to the Input, so focus never lands on `body` (`input-group.stories.tsx › SearchWithClear`).
+- Restore to: not applicable. A clear Button that disappears when the box is empty is the consumer's: on activation, empty the value and move focus to the Input, so focus never lands on `body`.
 - Never obscured by: the focus ring is drawn around the whole box, outside it, and the Root has no overflow, so nothing clips it (2.4.11 Focus Not Obscured, level AA; 2.4.13 Focus Appearance, level AAA). On a Button the ring is on the Button only. If your page has a sticky header, set `scroll-padding` so the header doesn't cover the focused box.
 
 ## Announcements
@@ -72,12 +72,12 @@ None. Nothing is live. The Input's name, description and state are read on focus
 
 ## Visual / modes
 
-- Focus indicator: a ring around the whole box when the Input has keyboard focus (`data-focus-visible` on the Root, or the browser's `:focus-visible` before the script runs), and around the Button only when the Button has it. The ring is at least 2px thick with at least 3:1 contrast against its background (2.4.7 Focus Visible, level AA). How an invalid box looks on a click is a theme look, reviewed in the stories; no test covers it, and the contract makes no claim beyond the ring on keyboard focus. The Input inside has no ring of its own.
+- Focus indicator: a ring around the whole box when the Input has keyboard focus (`data-focus-visible` on the Root, or the browser's `:focus-visible` before the script runs), and around the Button only when the Button has it. The ring is at least 2px thick with at least 3:1 contrast against its background (2.4.7 Focus Visible, level AA). How an invalid box looks on a click is a theme look: it is checked by eye, and this contract claims only the ring on keyboard focus. The Input inside has no ring of its own.
 - Target size: the default theme makes the box and a Button in it larger than the 24 by 24 CSS pixel minimum, in both densities (2.5.8 Target Size (Minimum), level AA). The whole box is the click target for the Input. An Addon makes the box larger, never smaller. If you restyle, keep the minimum.
 - Colour: the edge has at least 3:1 contrast against its background (1.4.11 Non-text Contrast, level AA). An invalid box has a thicker edge in the danger colour, and colour is never the only signal: the message under the group and the thicker edge carry it. A disabled box has a dashed edge. Addon text and icon use the normal text colour (a muted one when disabled), and the Button's divider uses the edge colour. Every pair is already in the theme's contrast check.
 - forced-colors behaviour: the edge uses the system's button-border colour. An invalid box has a thicker edge in the system's text colour, and a disabled box has a dashed edge in the system's greyed-out colour. Focus uses the system's highlight colour, and on any focus in the Input the edge takes it too. Addon text uses the system's field text colour, and the Button's label and divider use the system's button text colour.
 - reduced-motion behaviour: the Root's border and fill and the Button's fill change with a transition only when the user hasn't asked for reduced motion. The focus ring appears instantly.
-- Reflow: the Root never grows wider than its column. The Input shrinks, Addons and the Button don't. At 320px with a Finnish label there's no horizontal scrolling (checked in the `LongFinnishLabel` story). The text Button is one short word, or icon-only where the label is long.
+- Reflow: the Root never grows wider than its column. The Input shrinks, Addons and the Button don't. At 320px with a Finnish label there's no horizontal scrolling: the reflow sweep runs every story at 320 CSS px and fails on horizontal overflow. The text Button is one short word, or icon-only where the label is long.
 - 1.4.12 Text Spacing (AA): no fixed heights, and the Addon is centred, so it isn't clipped.
 - RTL: logical properties only. A start Addon is on the right, the divider and the Button's rounded corners swap, and icons in Addons don't mirror.
 
@@ -87,7 +87,7 @@ None. Nothing is live. The Input's name, description and state are read on focus
 - 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): the Input is named by its label, with no extra role or name from the wrapper.
 - 1.4.1 Use of Color (A), 1.4.11 Non-text Contrast (AA): the edge, the invalid width and the dashed disabled edge, never colour alone.
 - 2.1.1 Keyboard (A), 2.4.3 Focus Order (A): Tab goes Input, then Button. Nothing is focusable in an Addon.
-- 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (AA): a ring that is never clipped. 2.4.13 Focus Appearance is AAA and not counted toward the AA bar: the ring is also at least 2px thick.
+- 2.4.7 Focus Visible (AA): the ring shows on keyboard focus and is never clipped by the box. 2.4.13 Focus Appearance is AAA and not counted toward the AA bar: the ring is also at least 2px thick.
 - 2.5.3 Label in Name (A): a text Button's name is its visible text.
 - 2.5.8 Target Size (Minimum) (AA): the box and the Button are larger than 24 by 24 CSS pixels in the default theme.
 - 3.3.2 Labels or Instructions (A): the label carries the unit.
@@ -110,7 +110,16 @@ None. Nothing is live. The Input's name, description and state are read on focus
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                  |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                  |
 
-Research questions for the AT run: do screen-reader users know the unit from the label alone, with the Addon hidden? Is a screen reader's "click" or touch exploration on the Addon harmless? Do users type the unit ("kr", "%") anyway? Does a Voice Control user reach the clear Button by its visible name?
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab to the input: the label (with the unit) and the field type are read. The unit addon is not read separately.
+- Tab again reaches Clear. Its name is read, and Enter empties the box.
+- After clearing, focus is back in the input and the empty field is read.
+- Invalid: the error is read with the input, and the thicker edge shows.
+- Click the unit: the input takes focus and nothing else is read.
+- With voice control, saying Clear's visible name activates it.
 
 ## Known issues
 

@@ -47,9 +47,9 @@ Heading renders no text, so it has no message keys.
 
 ## Visual / modes
 
-Heading ships no CSS of its own. With the default theme, `kv-heading` sets the heading colour and font family (the theme's contrast check covers it, 1.4.3 Contrast (Minimum), AA), and the size class sets the type role (`display`, `heading-1` to `heading-6`), in running text and outside it. From 40rem up the sizes are `display` 3rem, `heading-1` 2.25rem, `heading-2` 1.875rem, `heading-3` 1.5rem, `heading-4` 1.25rem, `heading-5` 1rem and `heading-6` 0.875rem. Below 40rem `display`, `heading-1`, `heading-2` and `heading-3` step down; levels 4 to 6 don't. They are told apart by size first, then weight and letter spacing. `heading-6` at 14px is below body size, a maintainer-approved trade-off: WCAG sets no minimum font size. Sizes are in rem, so they follow the browser's text size (1.4.4 Resize Text, AA). Margins come from `kv-prose` or the consumer. Target size, focus indicator and motion: not applicable.
+Heading ships no CSS of its own. With the default theme, `kv-heading` sets the heading colour and font family (the theme's contrast check covers it, 1.4.3 Contrast (Minimum), AA), and the size class sets the type role (`display`, `heading-1` to `heading-6`), in running text and outside it. The sizes fall in order from `display` to `heading-6`. Below 40rem `display`, `heading-1`, `heading-2` and `heading-3` step down; levels 4 to 6 don't. They are told apart by size first, then weight and letter spacing. `heading-6` is smaller than the body text, which WCAG allows: it sets no minimum font size. Sizes are in rem, so they follow the browser's text size (1.4.4 Resize Text, AA). Margins come from `kv-prose` or the consumer. Target size, focus indicator and motion: not applicable.
 
-Right to left and forced colours: a heading sets no directional or background styles, so it starts at the start of the line and keeps the system's text colour (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA). The Storybook stories "Right to left" and "Forced colors" check this.
+Right to left and forced colours: a heading sets no directional or background styles, so it starts at the start of the line and keeps the system's text colour (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA). Stories in right-to-left text and in forced colours check this.
 
 ## WCAG SCs covered
 
@@ -64,7 +64,7 @@ Right to left and forced colours: a heading sets no directional or background st
 | **Automated (re-runnable tests)**                                          |             |             |        |                                                                                                                                        |
 | axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass   | heading.stories.tsx, every story, 4 themes                                                                                             |
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass   | `heading.test.tsx` (axe and role, name and state): `adds only its classes, no role or ARIA, and passes attributes and the ref through` |
-| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass   | 1 rows, each names a test in `heading.test.tsx`                                                                                        |
+| Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass   | 1 row, each names a test in `heading.test.tsx`                                                                                         |
 | Focus order and management                                                 | n/a         | n/a         | n/a    | a heading is not focusable by itself                                                                                                   |
 | Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass   | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                          |
 | **Core (required for beta)**                                               |             |             |        |                                                                                                                                        |
@@ -74,6 +74,12 @@ Right to left and forced colours: a heading sets no directional or background st
 | JAWS + Chrome + Windows                                                    | n/a         | n/a         | n/a    | native `<h1>` to `<h6>` with its own heading role; only classes added, no state, focus or key handling; nothing to operate             |
 | TalkBack + Chrome + Android                                                | n/a         | n/a         | n/a    | native `<h1>` to `<h6>` with its own heading role; only classes added, no state, focus or key handling; nothing to operate             |
 | VoiceOver + Safari + macOS                                                 | n/a         | n/a         | n/a    | native `<h1>` to `<h6>` with its own heading role; only classes added, no state, focus or key handling; nothing to operate             |
+
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- The headings list shows the levels in order, and each name is clear.
 
 ## Known issues
 

@@ -51,7 +51,7 @@ export const useProseTexts = defineExampleTexts<ProseTexts>({
     },
     inset: {
       lead: 'Important:',
-      text: 'Apply by 30 April. We can’t process applications that arrive later.',
+      text: 'Each car needs its own permit. Apply once for every registration number.',
     },
     steps: {
       heading: 'How it works',

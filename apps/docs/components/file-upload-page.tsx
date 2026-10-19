@@ -71,8 +71,9 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;button type=&quot;button&quot;&gt;</code>: the one control that adds files. It
-        opens the system dialog, carries the Field’s control id, and its name is its text and then
-        the Field label. It never has <code>aria-required</code>.
+        opens the system dialog, shows an upload icon before its text, carries the Field’s control
+        id, and its name is its text and then the Field label. It never has{' '}
+        <code>aria-required</code>.
       </>
     ),
     props: fileUploadTriggerRows,
@@ -303,8 +304,8 @@ export function FileUploadPage({
             title="Send the files with a plain form"
             why={
               <>
-                Without <code>upload</code>, files stay pending and the component keeps the native
-                input’s files equal to the list, dropped files included. Give the input a{' '}
+                Without <code>upload</code>, the files wait in the list and the component keeps the
+                hidden file input equal to the list, dropped files included. Give the input a{' '}
                 <code>name</code>, and a normal form submit sends them.
               </>
             }
@@ -314,13 +315,21 @@ export function FileUploadPage({
               { part: 'FileUpload.Root', prop: 'accept' },
               { part: 'FileUpload.Root', prop: 'maxFiles' },
             ]}
+            note={
+              <Note kind="reminder">
+                A browser can’t put a file back in a file input after the page reloads. If your form
+                reloads when a field has an error, people must choose the files again (3.3.7
+                Redundant Entry). Check every field in the browser first, or send the form without a
+                reload.
+              </Note>
+            }
           >
             <SendWithForm />
           </UseCase>
           <UseCase
             id="upload-yourself"
             title="Upload to your own server"
-            why="KvirnUI sends nothing: you write upload. Report progress as a fraction from 0 to 1 and honour the signal, and the item shows a progress bar, a Cancel button while it uploads, and Retry or Remove afterwards."
+            why="KvirnUI sends nothing: you write upload. Report progress as a fraction from 0 to 1, and stop when the signal says so (it fires when the upload is cancelled or removed). The item then shows a progress bar, a Cancel button while it uploads, and Retry or Remove afterwards."
             code={sources['upload-yourself']}
             propsUsed={[
               { part: 'FileUpload.Root', prop: 'upload' },
@@ -330,7 +339,7 @@ export function FileUploadPage({
               <Note kind="tip">
                 What <code>upload</code> resolves with is stored on the item as <code>result</code>,
                 so you can read server ids in <code>onFilesChange</code>. Progress is never
-                announced, only starts, finishes and failures.
+                announced. Finished and failed uploads are announced together after a short pause.
               </Note>
             }
           >
@@ -365,7 +374,8 @@ export function FileUploadPage({
             note={
               <Note kind="reminder">
                 A client check is not security. Check the type, size and content again on your
-                server, as in <Link href="#what-you-need-to-do">What you need to do</Link>.
+                server, and strip the location data that photos can carry. See{' '}
+                <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
           >
@@ -422,10 +432,19 @@ export function FileUploadPage({
                 Messages).
               </Note>
             ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                The upload track keeps moving for as long as an upload lasts. When that can be
+                longer than 5 seconds beside other content, offer a visible control that stops it
+                (2.2.2 Pause, Stop, Hide). See{' '}
+                <Link href="/foundation/theming#moving-indicators">Moving indicators</Link>.
+              </Note>
+            ),
             'known-issues': (
               <Note kind="tip">
                 Add the items that apply to your service to your accessibility statement, with the
-                workaround. Photos from iPhones are the open one: test them with your own limits.
+                workaround. Test photos from iPhones against your own limits: HEIC, the photo format
+                iPhones can use, is the known issue.
               </Note>
             ),
           }}

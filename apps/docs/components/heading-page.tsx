@@ -103,9 +103,10 @@ export function HeadingPage({
             title="A heading that names a region"
             why={
               <>
-                Give the heading an <code>id</code> and point to it with{' '}
-                <code>aria-labelledby</code> on the region. The region’s name is then the heading’s
-                text, so the two never differ.
+                A region is a part of the page with its own name, such as a{' '}
+                <Link href="/components/section">Section</Link> used as a landmark. Give the heading
+                an <code>id</code> and point to it with <code>aria-labelledby</code> on the region.
+                The region’s name is then the heading’s text, so the two never differ.
               </>
             }
             code={sources['names-region']}
@@ -116,7 +117,14 @@ export function HeadingPage({
           <UseCase
             id="in-running-text"
             title="Headings in running text"
-            why="Inside a block of running text (Prose) the headings get their margins from the Prose. In the default theme the levels h4 to h6 differ by size first, then by weight and letter spacing, and they do not get smaller on a small screen."
+            why={
+              <>
+                Inside a block of running text (a <Link href="/components/prose">Prose</Link>) the
+                headings get their margins from the Prose. In the default theme the levels{' '}
+                <code>h4</code> to <code>h6</code> differ by size first, then by weight and letter
+                spacing, and they do not get smaller on a small screen.
+              </>
+            }
             code={sources['in-prose']}
             propsUsed={[{ part: 'Heading', prop: 'as' }]}
           >

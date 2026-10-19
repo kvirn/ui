@@ -48,7 +48,7 @@ export function SectionPage({
   return (
     <ComponentPage
       title="Section"
-      lead="It gives the region its own surface and padding, and it can become a named landmark when you choose the element."
+      lead="It gives a region its own surface and padding. With the right element and a name, it can also be a landmark: a part of the page that screen readers list."
       whenToUse={
         <ul>
           <li>
@@ -57,8 +57,8 @@ export function SectionPage({
           </li>
           <li>
             Put a heading at the top, at the level the page’s outline needs. Make the section a
-            landmark (a part of the page that screen readers list, so users can jump to it) only for
-            a region a user would want to jump to.
+            landmark only for a region a user would want to jump to, because people who use a screen
+            reader (software that reads the screen aloud) can jump from landmark to landmark.
           </li>
           <li>
             Keep the DOM order the same as the reading order: a sidebar that sits beside the main
@@ -127,8 +127,8 @@ export function SectionPage({
             propsUsed={[{ part: 'Section', prop: 'className' }]}
             note={
               <Note kind="tip">
-                A section inside a section is only for switching between the surface and canvas
-                looks.
+                A card on a section is fine. A section inside a section is only for switching
+                between the surface and canvas looks. Don’t put a section inside a card.
               </Note>
             }
           >

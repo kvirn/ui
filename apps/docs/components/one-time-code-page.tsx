@@ -85,7 +85,7 @@ export function OneTimeCodePage({
   return (
     <ComponentPage
       title="OneTimeCode"
-      lead="It is one native text box drawn as boxes, so paste, undo and the screen reader work as in any text box. The box carries the attribute browsers use to offer a code from a text message."
+      lead="It is one ordinary text box drawn as separate boxes, so paste, undo and the screen reader work as in any text box. The box carries the attribute a browser looks for when it offers a code from a text message. Whether the browser offers it depends on the browser and the device."
       whenToUse={
         <ul>
           <li>
@@ -295,8 +295,9 @@ export function OneTimeCodePage({
               ]}
             >
               <p>
-                OneTimeCode has no strings of its own. It announces the mask’s, and{' '}
-                <code>messages</code> replaces them for one code.
+                OneTimeCode has no strings of its own. It announces the strings of the mask (the
+                part that decides which characters fit), and <code>messages</code> replaces them for
+                one code.
               </p>
             </StringsBlock>
           }

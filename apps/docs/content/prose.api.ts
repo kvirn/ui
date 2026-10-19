@@ -2,9 +2,15 @@ import type { ProseRootProps, UseProseResult } from '@kvirn-ui/react'
 import { propRows } from '../components/api-block.tsx'
 import type { AttributeRow } from '../components/api-block.tsx'
 
-export type ProseDocumentedProps = Pick<ProseRootProps, 'as' | 'ref'>
+export type ProseDocumentedProps = Pick<ProseRootProps, 'as' | 'className' | 'ref'>
 
 export const proseRows = propRows<ProseDocumentedProps>({
+  className: {
+    type: 'string',
+    default: '–',
+    description:
+      'Your own classes. They join kv-prose and never replace it, so the theme keeps styling the text. Add a size class here, such as kv-prose--large.',
+  },
   as: {
     type: "'div' | 'article' | 'section'",
     default: "'div'",

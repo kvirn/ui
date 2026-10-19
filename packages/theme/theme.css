@@ -4863,7 +4863,7 @@
    *   kv-card-footer--padding-*                  one part: overrides the Root's padding
    *   kv-card--dividers                          Root: a border-subtle line between parts
    *
-   *   <Card.Root render={<li />}>
+   *   <Card.Root as="li">
    *     <Card.Header className="kv-card-header--padding-none"><img src="…" alt="" /></Card.Header>
    *     <Card.Body className="kv-prose"><h3>…</h3><p>…</p></Card.Body>
    *     <Card.Footer className="kv-button-group"><Button>…</Button></Card.Footer>
@@ -5093,7 +5093,7 @@
    *   kv-section--surface, kv-section--canvas        the background. Default surface
    *   kv-section--padding-none, -sm, -md, -lg      the padding. Default md
    *
-   *   <Section render={<aside aria-labelledby="contact" />} className="kv-prose">
+   *   <Section as="aside" aria-labelledby="contact" className="kv-prose">
    *     <h2 id="contact">Contact us</h2><p>…</p>
    *   </Section>
    *

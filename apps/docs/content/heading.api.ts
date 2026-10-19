@@ -34,6 +34,8 @@ export const headingAttributes: readonly AttributeRow[] = [
 
 export const useHeadingHook: ApiHook = {
   name: 'useHeading',
+  intro:
+    'Use it when the element is your own, such as a heading drawn by your own component. Pass the level you give the element, and spread rootProps on it.',
   options: propRows<UseHeadingOptions>({
     level: {
       type: '1 | 2 | 3 | 4 | 5 | 6',
