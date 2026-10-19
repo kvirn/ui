@@ -50,7 +50,7 @@ export function TextInputPage({
   return (
     <ComponentPage
       title="TextInput"
-      lead="Inside a Field, its label, help text and error are read with the box. It can shape what is typed with a mask, and it holds no form state."
+      lead="Inside a Field, its label, help text and error are read with the box. It can shape what is typed with a mask. It keeps no form state of its own: your code or your form library holds the value."
       whenToUse={
         <ul>
           <li>
@@ -91,16 +91,21 @@ export function TextInputPage({
               <>
                 The <code>type</code> gives phones the right keyboard for an email address or a
                 phone number. Add <code>autoComplete</code> wherever the question asks for the
-                user’s own data, so the browser can fill it in.
+                user’s own data, so the browser can fill it in. <code>type=&quot;number&quot;</code>{' '}
+                and <code>type=&quot;date&quot;</code> are not accepted. A number box drops leading
+                zeros and changes on scroll, so use{' '}
+                <Link href="/components/number-input">NumberInput</Link>. For a date, use{' '}
+                <Link href="/components/date-input">DateInput</Link>.
               </>
             }
             code={sources['input-types']}
             propsUsed={[{ part: 'TextInput', prop: 'type' }]}
             note={
-              <Note kind="tip">
-                <code>type=&quot;number&quot;</code> and <code>type=&quot;date&quot;</code> are not
-                accepted, and a development warning says so. A number drops leading zeros and
-                changes on scroll: use NumberInput.
+              <Note kind="reminder">
+                Set <code>autoComplete</code> on every box that asks for the user’s own data, such
+                as <code>name</code>, <code>email</code>, <code>tel</code> or{' '}
+                <code>postal-code</code> (1.3.5 Identify Input Purpose). Never block paste or
+                autofill (3.3.8 Accessible Authentication (Minimum)).
               </Note>
             }
           >
@@ -139,10 +144,11 @@ export function TextInputPage({
             why={
               <>
                 Without <code>value</code> the native input keeps the text, and sending the form
-                sends it by <code>name</code>. Start it with <code>defaultValue</code> and read it
-                from <code>FormData</code>. KvirnUI checks nothing: after sending, say what is
-                missing in a <code>Field.ErrorMessage</code> and move focus to the first box with an
-                error. For a longer form, add an{' '}
+                sends it by <code>name</code>. Start it with <code>defaultValue</code>, for example
+                with something the user already told you, so they don’t type it twice (3.3.7
+                Redundant Entry). Read the values from <code>FormData</code>. KvirnUI checks
+                nothing: after sending, say what is missing in a <code>Field.ErrorMessage</code> and
+                move focus to the first box with an error. For a longer form, add an{' '}
                 <Link href="/components/error-summary">ErrorSummary</Link>.
               </>
             }
@@ -160,7 +166,7 @@ export function TextInputPage({
           <UseCase
             id="masked-code"
             title="A code with a fixed shape"
-            why="A mask shapes what is typed and puts the space in. A character it can’t take is left out and announced politely. The country comes from the language unless you pass it. The mask never says a value is wrong: you check it after the form is sent."
+            why="A mask shapes what is typed and puts the space in. A character it can’t take is left out and announced politely. The country comes from the language set on KvirnProvider unless you pass it. The mask never says a value is wrong: you check it after the form is sent."
             code={sources['masked-code']}
             propsUsed={[
               { part: 'TextInput', prop: 'mask' },
@@ -205,6 +211,21 @@ export function TextInputPage({
           messageNamespace="mask"
           linkToStrings
           notes={{
+            focus: (
+              <Note kind="reminder">
+                If your page has a header that stays at the top while scrolling, add{' '}
+                <code>scroll-padding</code> so it never covers the focused box (2.4.11 Focus Not
+                Obscured (Minimum)).
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                If you restyle the box, keep its edge at 3:1 contrast against the surface (1.4.11
+                Non-text Contrast), keep a visible focus ring (2.4.7 Focus Visible), keep it at
+                least 24 CSS pixels tall (2.5.8 Target Size (Minimum)), and show an invalid box by
+                more than colour (1.4.1 Use of Color).
+              </Note>
+            ),
             'what-you-need-to-do': (
               <Note kind="reminder">
                 Give every box a visible label in a Field. A placeholder is not a label: it

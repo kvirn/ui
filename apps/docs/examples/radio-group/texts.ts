@@ -13,7 +13,7 @@ export const useRadioGroupTexts = defineExampleTexts({
     unavailableHelp: 'Not available for this kind of permit.',
     groupHelp: 'You can apply for an extension later.',
     youChose: 'You chose',
-    nothing: 'nothing yet',
+    nothing: 'nothing',
     send: 'Send',
     sent: 'Sent',
     errorMissing: 'Choose how long you need the permit.',
@@ -42,7 +42,7 @@ export const useRadioGroupTexts = defineExampleTexts({
     decisionMailbox: 'In your digital mailbox',
     decisionMissing: 'Choose how you want to get your decision.',
     decisionNoMailbox:
-      'Your digital mailbox is not active yet. Activate it, or choose another way to get your decision.',
+      'Your digital mailbox is not active. Activate it, or choose another way to get your decision.',
     caseLegend: 'What is your decision on this application?',
     caseProse: 'You must choose one before you save the decision.',
     caseApprove: 'Approve',

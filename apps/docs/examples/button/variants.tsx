@@ -1,17 +1,17 @@
 'use client'
 import { Button, ButtonGroup } from '@kvirn-ui/react'
-import { useExampleTexts } from '../../components/example-texts.tsx'
+import { useButtonTexts } from './texts.ts'
 
 export function Variants() {
-  const { texts } = useExampleTexts()
+  const { texts } = useButtonTexts()
   return (
     <>
       <ButtonGroup>
-        <Button className="kv-button--primary">{texts.button.sendApplication}</Button>
-        <Button>{texts.button.saveDraft}</Button>
-        <Button className="kv-button--danger">{texts.button.deleteDraft}</Button>
+        <Button className="kv-button--primary">{texts.sendApplication}</Button>
+        <Button>{texts.saveDraft}</Button>
+        <Button className="kv-button--danger">{texts.deleteDraft}</Button>
       </ButtonGroup>
-      <p>{texts.button.dangerNote}</p>
+      <p>{texts.dangerNote}</p>
     </>
   )
 }

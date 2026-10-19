@@ -88,7 +88,7 @@ None. Nothing is live. Entering the group, a screen reader reads the legend, "gr
 | axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | checkbox-group.stories.tsx, every story, 4 themes                                                                                     |
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `checkbox-group.test.tsx` (axe and role, name and state): `the group is named by its legend and described by its help text and error` |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 5 rows, each names a test in `checkbox-group.test.tsx`                                                                                |
-| Focus order and management                                                 | pass        | n/a         | pass    | `checkbox-group.test.tsx`: `Space toggles the focused checkbox and reports the next value`                                            |
+| Focus order and management                                                 | pass        | n/a         | pass    | `checkbox-group.test.tsx`: `Tab moves through every checkbox in DOM order`                                                            |
 | Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                         |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                                                       |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                       |
@@ -98,7 +98,14 @@ None. Nothing is live. Entering the group, a screen reader reads the legend, "gr
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                       |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                       |
 
-Questions for the manual testing with assistive technology: is the group's help text and error read when the user enters the group in each screen reader (TalkBack is known to be inconsistent)? Without `aria-invalid` on the boxes, do users still understand which group is wrong?
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab into the group: the legend and "group" are read, then the help text and the error.
+- Each box is one Tab stop, in reading order. The arrow keys move nothing.
+- Space changes only the focused box.
+- On an invalid group the error is read when focus enters.
 
 ## Known issues
 

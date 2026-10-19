@@ -67,8 +67,9 @@ const parts: ApiPart[] = [
     name: 'Menu.Popup',
     renders: (
       <>
-        <code>&lt;div popover=&quot;auto&quot;&gt;</code> with the role <code>menu</code>. Its items
-        render only while it is open. Render it right after the trigger.
+        <code>&lt;div popover=&quot;auto&quot;&gt;</code> with the role <code>menu</code>. The popup
+        and its items stay in the page while it is closed, and the browser hides them. Render it
+        right after the trigger.
       </>
     ),
     props: menuPopupRows,
@@ -121,7 +122,11 @@ const parts: ApiPart[] = [
   },
   {
     name: 'Menu.Group',
-    renders: <>{elementNote('div')} Name it with a GroupLabel.</>,
+    renders: (
+      <>
+        {elementNote('div')} It has the role <code>group</code>. Name it with a GroupLabel.
+      </>
+    ),
     props: menuGroupRows,
     attributes: menuGroupAttributes,
   },
@@ -133,7 +138,11 @@ const parts: ApiPart[] = [
   },
   {
     name: 'Menu.Separator',
-    renders: <>{elementNote('div')} A divider between items.</>,
+    renders: (
+      <>
+        {elementNote('div')} It has the role <code>separator</code>: a divider between items.
+      </>
+    ),
     attributes: menuSeparatorAttributes,
   },
 ]
@@ -219,7 +228,7 @@ export function MenuPage({
           <UseCase
             id="checkbox-and-radio"
             title="Options that stay on or off"
-            why="A checkbox item toggles a setting, and radio items choose one value from a few. Both keep the menu open here, so the user can change more than one."
+            why="A checkbox item turns a setting on or off, and radio items choose one value from a few. Here the checkbox item keeps the menu open, so the user can change more than one setting. A radio item closes the menu, which is the default. Name the radio group, here with aria-label. Without a name, a screen reader reads the choices without saying what they choose between (1.3.1 Info and Relationships)."
             code={sources['checkbox-and-radio']}
             propsUsed={[
               { part: 'Menu.CheckboxItem', prop: 'checked' },
@@ -238,7 +247,7 @@ export function MenuPage({
           <UseCase
             id="know-why-it-closed"
             title="Know why it closed"
-            why="Keep the open state yourself when the page needs to react to it. onOpenChange says why it changed. With open set, closing is a request: you decide whether to close."
+            why="Keep the open state yourself when the page needs to react to the menu opening or closing. onOpenChange says why it changed: a press, a key, Escape and so on. This example shows the last reason. With open set, closing is a request: you decide whether to close."
             code={sources['controlled']}
             propsUsed={[
               { part: 'Menu.Root', prop: 'open' },
@@ -247,8 +256,8 @@ export function MenuPage({
             note={
               <Note kind="tip">
                 Put a confirmation in an element that is always on the page, such as an{' '}
-                <code>&lt;output&gt;</code>, never inside the menu: the menu is gone when the action
-                has run.
+                <code>&lt;output&gt;</code>, never inside the menu: the menu is closed when the
+                action has run.
               </Note>
             }
           >

@@ -108,12 +108,12 @@ const parts: ApiPart[] = [
     name: 'RadioGroup.Reveal',
     renders: (
       <>
-        <code>&lt;div&gt;</code> that holds what belongs to one radio, such as an “Other, please
-        specify” field. Put it right after that radio’s <code>RadioGroup.Option</code>. It is{' '}
-        <code>hidden</code> until the radio is checked, is never unmounted, and never moves focus.
-        The radio gets <code>aria-controls</code>. When someone checks the radio, a screen reader
-        says “An input field has appeared below.” politely (see{' '}
-        <Link href="#api-strings">Strings</Link> to change the text). The typed text is still
+        <code>&lt;div&gt;</code> (or <code>&lt;section&gt;</code>) that holds what belongs to one
+        radio, such as an “Other, please specify” field. Put it right after that radio’s{' '}
+        <code>RadioGroup.Option</code>. It is <code>hidden</code> until the radio is checked, is
+        never unmounted, and never moves focus. The radio gets <code>aria-controls</code>. When
+        someone checks the radio, a screen reader says “An input field has appeared below.” politely
+        (see <Link href="#api-strings">Strings</Link> to change the text). The typed text is still
         submitted by a plain form: ignore or clear it on the server.
       </>
     ),
@@ -211,7 +211,7 @@ export function RadioGroupPage({
           <UseCase
             id="controlled"
             title="Keep the choice in your form state"
-            why="Your form library or reducer owns the value. Give the group the chosen value and store the one it reports. The group never stores it. Pass null, not undefined, to say the group is controlled and nothing is chosen yet."
+            why="Your form library or reducer owns the value. Give the group the chosen value and store the one it reports. The group never stores it. Pass null, not undefined, to say the group is controlled and nothing is chosen."
             code={sources['controlled']}
             propsUsed={[
               { part: 'RadioGroup.Root', prop: 'value' },
@@ -303,7 +303,7 @@ export function RadioGroupPage({
             note={
               <Note kind="reminder">
                 The group never moves focus. After a failed submit, move it to the first radio or to
-                an <Link href="/components/error-summary">Error summary</Link>, as in{' '}
+                an <Link href="/components/error-summary">ErrorSummary</Link>, as in{' '}
                 <Link href="#what-you-need-to-do">What you need to do</Link>.
               </Note>
             }
@@ -319,7 +319,7 @@ export function RadioGroupPage({
                 after they send the form. Here the chosen way to get a decision is not set up. After
                 the check, set <code>invalid</code> on the group and render a{' '}
                 <code>RadioGroup.ErrorMessage</code> that names the reason and says what to do next.
-                Also show an <Link href="/components/error-summary">Error summary</Link> whose link
+                Also show an <Link href="/components/error-summary">ErrorSummary</Link> whose link
                 goes to the group’s first option: give that option a <code>controlId</code> and use
                 the same id in the link. As above, the error is read with the group’s description,
                 because a radio can’t be marked invalid. If you know before the person chooses,

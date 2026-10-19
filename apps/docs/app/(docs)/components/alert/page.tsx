@@ -16,6 +16,7 @@ export default function Page() {
         'with-actions': readExampleSource('alert/with-actions.tsx'),
         announced: readExampleSource('alert/announced.tsx'),
         dismissible: readExampleSource('alert/dismissible.tsx'),
+        'site-wide': readExampleSource('alert/site-wide.tsx'),
       }}
     />
   )

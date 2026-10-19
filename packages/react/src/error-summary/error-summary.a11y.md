@@ -6,7 +6,7 @@
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `error-summary.test.tsx` next to this file. `error-summary.stories.tsx` in `apps/storybook/src/components/error-summary/`.
 
-An [Alert.Danger](../alert/alert.a11y.md) at the top of a form, shown after a failed submit, that lists every problem as a link to its field. Focus moves to it once, so the screen reader reads it and a keyboard user starts at the list.
+An Alert.Danger (see the Alert page) at the top of a form, shown after a failed submit, that lists every problem as a link to its field. Focus moves to it once, so the screen reader reads it and a keyboard user starts at the list.
 
 ## Roles, states, properties
 
@@ -82,9 +82,9 @@ None through a live region. The focus move makes the screen reader read the grou
 ## WCAG SCs covered
 
 - 3.3.1 Error Identification (A), 3.3.3 Error Suggestion (AA): each problem is named in text, linked to its field (`links › each link goes to its control id and reads the field error text`).
-- 2.4.3 Focus Order (A): focus moves to the summary on a failed submit and then to the field (`focus › moves focus to the summary on mount`, `› again when focusKey changes`, `› a link moves focus to the field`).
+- 2.4.3 Focus Order (A): focus moves to the summary on a failed submit and then to the field (`focus › moves focus to the summary on mount`, `focus › moves focus again when focusKey changes, even from a link inside it`, `› a link moves focus to the field`).
 - 4.1.3 Status Messages (AA): the summary takes focus, so it needs no live region (`announcements › nothing is said in the Announcer`).
-- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): native list and links, a named group. 2.4.2 Page Titled (A): the prefix on the page title (`document title › prefixes`).
+- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): native list and links, a named group. 2.4.2 Page Titled (A): the prefix on the page title (`document title › prefixes the page title while shown and restores it on unmount`).
 - 2.4.7 Focus Visible (AA): the summary and the links show a focus ring (Visual / modes; reviewed in the stories, no named test).
 - 1.4.1 Use of Color (A): the links are underlined and the Alert's danger word and icon say danger, so colour is not the only cue (theme properties, no named test).
 - 1.4.3 Contrast (Minimum) (AA): the Alert's colour pairs, measured by the theme check and axe (`accessibility › no axe violations with the summary focused`).
@@ -109,6 +109,17 @@ None through a live region. The focus move makes the screen reader read the grou
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                 |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                 |
 
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Submit an empty form: focus moves to the summary and "Error: There is a problem" is read.
+- Tab: the first error link is read.
+- Press Enter on a link: focus moves to the field, and its label, "invalid" and the error are read.
+- Submit again: focus returns to the summary.
+- Shift+Tab on the first link goes to the stop before the summary.
+- With `prefixDocumentTitle`, the tab title starts with "Error:" while the summary shows.
+
 ## Known issues
 
-- none
+- **A screen reader may read only the group's title when it takes focus.** The first Tab reads the first error.

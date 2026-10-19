@@ -42,8 +42,8 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;div&gt;</code> with no role. It takes every attribute of a{' '}
-        <code>&lt;div&gt;</code> and passes <code>ref</code> to it. It makes the ids and tells its
-        label, description, help text, error and control about each other. The default theme is
+        <code>&lt;div&gt;</code> and passes <code>ref</code> to it. It creates the ids and links its
+        label, description, help text, error and control to each other. The default theme is
         described on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
@@ -78,9 +78,10 @@ const parts: ApiPart[] = [
     name: 'Field.HelpText',
     renders: (
       <>
-        <code>&lt;p&gt;</code>, the help text. It registers like a description and is listed in DOM
-        order, then the error. Outside a Field or Fieldset it renders a plain paragraph with no id
-        and warns in development.
+        <code>&lt;p&gt;</code>, the help text. It takes every attribute of a <code>&lt;p&gt;</code>{' '}
+        except <code>id</code>. It registers like a description and is listed in DOM order, then the
+        error. Outside a Field or Fieldset it renders a plain paragraph with no id and warns in
+        development.
       </>
     ),
     attributes: fieldHelpTextAttributes,
@@ -89,9 +90,11 @@ const parts: ApiPart[] = [
     name: 'Field.ErrorMessage',
     renders: (
       <>
-        <code>&lt;p&gt;</code>, rendered only while the field is invalid. It starts with a
-        decorative error icon and the <code>field.errorPrefix</code> text, which the default theme
-        hides from sight but not from screen readers. It is not a live region.
+        <code>&lt;p&gt;</code>, rendered only while the field is invalid. It takes every attribute
+        of a <code>&lt;p&gt;</code> except <code>id</code>. It starts with a decorative error icon
+        and the <code>field.errorPrefix</code> text, which the default theme hides from sight but
+        not from screen readers. It is not a live region (a part of the page that a screen reader
+        reads aloud when it changes).
       </>
     ),
     attributes: fieldErrorMessageAttributes,
@@ -139,9 +142,17 @@ export function FieldPage({
         </ul>
       }
       example={
-        <ExampleFrame headingId="example" code={sources['default']}>
-          <DefaultField />
-        </ExampleFrame>
+        <>
+          <ExampleFrame headingId="example" code={sources['default']}>
+            <DefaultField />
+          </ExampleFrame>
+          <Note kind="reminder">
+            Tell the browser what each field asks for with <code>autoComplete</code>, as the example
+            does for the name. The browser can then fill in the person’s own details, which helps
+            people who find typing hard (1.3.5 Identify Input Purpose). Never block pasting into a
+            field (3.3.8 Accessible Authentication).
+          </Note>
+        </>
       }
       useCases={
         <>
@@ -199,7 +210,7 @@ export function FieldPage({
           <UseCase
             id="disabled-with-reason"
             title="A field that can’t be changed"
-            why="Disabling a field disables its control natively and marks every part. A disabled control can’t take focus, so avoid it in a resident form. Where you can’t, say why in the help text. A read-only control stays reachable with the keyboard if people only need to read the value."
+            why="A disabled field turns off its control and marks every part as disabled. A disabled control can’t take keyboard focus, so avoid it in a form for residents. Where you can’t, say why in the help text. A read-only control stays reachable with the keyboard, so use that when people only need to read the value."
             code={sources['disabled']}
             propsUsed={[{ part: 'Field.Root', prop: 'disabled' }]}
           >

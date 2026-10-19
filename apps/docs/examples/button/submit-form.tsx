@@ -1,10 +1,10 @@
 'use client'
 import { Button } from '@kvirn-ui/react'
 import { useId } from 'react'
-import { useExampleTexts } from '../../components/example-texts.tsx'
+import { useButtonTexts } from './texts.ts'
 
 export function SubmitForm() {
-  const { texts } = useExampleTexts()
+  const { texts } = useButtonTexts()
   const nameId = useId()
   return (
     <form
@@ -14,11 +14,11 @@ export function SubmitForm() {
       }}
     >
       <p>
-        <label htmlFor={nameId}>{texts.button.applicantName}</label>{' '}
+        <label htmlFor={nameId}>{texts.applicantName}</label>{' '}
         <input id={nameId} name="name" autoComplete="name" />
       </p>
       <Button type="submit" className="kv-button--primary">
-        {texts.button.sendApplication}
+        {texts.sendApplication}
       </Button>
     </form>
   )

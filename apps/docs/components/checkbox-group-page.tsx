@@ -247,8 +247,8 @@ export function CheckboxGroupPage({
             ),
             'known-issues': (
               <Note kind="reminder">
-                Until a required group can be announced as required, write it in the legend or in
-                the text above the options (3.3.2 Labels or Instructions).
+                A required group is not announced as required. Write that an answer is needed in the
+                legend or in the text above the options (3.3.2 Labels or Instructions).
               </Note>
             ),
           }}

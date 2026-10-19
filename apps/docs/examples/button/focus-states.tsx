@@ -1,6 +1,5 @@
 'use client'
 import { Button, Fieldset, Grid, Icon, Stack } from '@kvirn-ui/react'
-import { useExampleTexts } from '../../components/example-texts.tsx'
 import { useButtonTexts } from './texts.ts'
 
 const kinds = [
@@ -12,47 +11,46 @@ const kinds = [
 // `data-focus-visible` is what the Button sets itself after a Tab. Passing it here shows the ring
 // without moving focus. On your own page, press Tab to see the same ring on a real button.
 export function FocusStates() {
-  const { texts } = useExampleTexts()
-  const { texts: buttonTexts } = useButtonTexts()
+  const { texts } = useButtonTexts()
   return (
     <Stack className="kv-stack--gap-4">
       {kinds.map(({ kind, className }) => (
         <Fieldset.Root key={kind}>
-          <Fieldset.Legend>{buttonTexts.kinds[kind]}</Fieldset.Legend>
+          <Fieldset.Legend>{texts.kinds[kind]}</Fieldset.Legend>
           <Grid.Root className="kv-grid--fit-sm kv-grid--gap-4">
             <div>
-              <p>{buttonTexts.states.rest}</p>
-              <Button className={className}>{texts.button.sendApplication}</Button>
+              <p>{texts.states.rest}</p>
+              <Button className={className}>{texts.sendApplication}</Button>
             </div>
             <div>
-              <p>{buttonTexts.states.keyboardFocus}</p>
+              <p>{texts.states.keyboardFocus}</p>
               <Button className={className} data-focus-visible="">
-                {texts.button.sendApplication}
+                {texts.sendApplication}
               </Button>
             </div>
             <div>
-              <p>{buttonTexts.states.disabledFocusable}</p>
+              <p>{texts.states.disabledFocusable}</p>
               <Button className={className} disabled focusableWhenDisabled data-focus-visible="">
-                {texts.button.sendApplication}
+                {texts.sendApplication}
               </Button>
             </div>
           </Grid.Root>
         </Fieldset.Root>
       ))}
       <Fieldset.Root>
-        <Fieldset.Legend>{buttonTexts.kinds.iconOnly}</Fieldset.Legend>
+        <Fieldset.Legend>{texts.kinds.iconOnly}</Fieldset.Legend>
         <Grid.Root className="kv-grid--fit-sm kv-grid--gap-4">
           <div>
-            <p>{buttonTexts.states.rest}</p>
-            <Button className="kv-button--icon-only" aria-label={texts.button.closeLabel}>
+            <p>{texts.states.rest}</p>
+            <Button className="kv-button--icon-only" aria-label={texts.closeLabel}>
               <Icon name="close" />
             </Button>
           </div>
           <div>
-            <p>{buttonTexts.states.keyboardFocus}</p>
+            <p>{texts.states.keyboardFocus}</p>
             <Button
               className="kv-button--icon-only"
-              aria-label={texts.button.closeLabel}
+              aria-label={texts.closeLabel}
               data-focus-visible=""
             >
               <Icon name="close" />

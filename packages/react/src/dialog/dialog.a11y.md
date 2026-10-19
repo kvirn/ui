@@ -1,7 +1,7 @@
 # Accessibility contract: Dialog (Root, Trigger, Popup, Title, Description, Body, Actions, Close)
 
 - **APG pattern:** [Dialog (Modal)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/). The popup is a native `<dialog>` opened with `showModal()`: the browser puts it in the top layer and makes the page behind it `inert`.
-- **Deviations:** **Tab does not cycle inside the dialog.** A native modal `<dialog>` lets Tab leave to the browser's own UI (the address bar) before it wraps, where the APG cycles inside. Approved by the maintainer on 2026-10-06. 2.1.2 No Keyboard Trap (A) holds: focus is never trapped, and the page behind is inert. Everything else follows the APG.
+- **Deviations:** **Tab does not cycle inside the dialog.** A native modal `<dialog>` lets Tab leave to the browser's own UI (the address bar) before it wraps, where the APG cycles inside. Approved by the maintainer. 2.1.2 No Keyboard Trap (A) holds: focus is never trapped, and the page behind is inert. Everything else follows the APG.
 - **Native elements used:** `<dialog>` (Popup), `<button>` (Trigger, Close), `<h2>` (Title), `<p>` (Description), `<div>` (Body, Actions). Nothing for Root: it renders no element.
 - **Status:** alpha candidate. Accessibility-reviewer APPROVE. Manual AT is `pending`.
 - **Tests:** `dialog.test.tsx` next to this file, `../popup/use-dismissable-layer.test.tsx` (the `backdrop` option) and `@kvirn-ui/core` `scroll-lock.test.ts`. `dialog.stories.tsx` in `apps/storybook/src/components/dialog/`.
@@ -82,7 +82,7 @@ Opening is announced by the focus move: the screen reader reads the role and the
 - **Name the dialog:** a `Dialog.Title` (the question the buttons answer, or a verb phrase for a task: never "Are you sure?"), or `aria-label`. A development warning fires without one (4.1.2).
 - **Say what each button does** with verb and object ("Save the number"), never "OK" or "Yes". One primary action, first in the DOM.
 - **Give a Trigger, or `finalFocusRef`.** A dialog opened by a timer, with focus on `body`, has nowhere to return to.
-- **Keeps what was typed.** The content stays mounted while the dialog is closed, so reopening it to finish the same task shows what was entered, with nothing typed twice (supports 3.3.7 Redundant Entry (A)). To start fresh, render `Dialog.Root` conditionally. A backdrop press does nothing by default, so no one loses input by accident. Tested in `dialog.test.tsx › what was typed is still there when the dialog is closed with Escape and opened again`.
+- **Keeps what was typed.** The content stays mounted while the dialog is closed, so reopening it to finish the same task shows what was entered, with nothing typed twice (supports 3.3.7 Redundant Entry (A)). To start fresh, render `Dialog.Root` conditionally. A backdrop press does nothing by default, so no one loses input by accident.
 - **Opening on page load is for system messages only** (a session timeout). Use a page for a multi-step form or long reading.
 - **Scroll lock needs CSS.** `@kvirn-ui/theme` styles `html[data-kv-scroll-locked]`. A headless user adds `overflow: hidden` for it.
 - **Render the Dialog outside a page `<form>`.** The content stays mounted while closed, so a Popup inside a form keeps its fields in that form: a `required` or invalid field in the closed dialog silently blocks the page form's submit (3.3.1). Render the Dialog outside the form, or render its own `<form>` conditionally.
@@ -96,7 +96,8 @@ Opening is announced by the focus move: the screen reader reads the role and the
 - Colour: the dialog's text keeps at least 4.5:1 contrast on its surface (1.4.3 Contrast (Minimum) (AA)). The edge is decorative, not a control boundary, so 1.4.11 Non-text Contrast (AA) asks nothing of it. The backdrop only dims.
 - forced-colors behaviour: the dialog keeps a visible edge on all sides, in the system's text colour. Open state is never shown by colour alone.
 - reduced-motion behaviour: opening fades in only without `prefers-reduced-motion: reduce`. Closing is always instant, so focus returns at once.
-- Reflow: on narrow screens the dialog is a sheet at the bottom, as wide as the screen, with no fixed width or height, and scrolls inside when it is too tall. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
+- Reflow: on narrow screens the dialog is a sheet at the bottom, as wide as the screen, with no fixed width or height, and scrolls inside when it is too tall. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the reflow sweep runs every story at 320 CSS px and fails on horizontal overflow.
+- Text spacing (1.4.12 Text Spacing, AA): the text-spacing sweep applies the spacing to every story and fails on a box that clips its content.
 - RTL: logical properties only. Close sits at the inline end and the actions start at the inline start.
 
 ## WCAG SCs covered
@@ -105,6 +106,7 @@ Opening is announced by the focus move: the screen reader reads the role and the
 - 1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A): Close after the Title, the actions in DOM order, focus in on open and back on close.
 - 1.4.3 Contrast (Minimum) (AA): the dialog's text on its surface.
 - 1.4.10 Reflow (AA), 1.4.4 Resize Text (AA): the sheet and the inside scroll.
+- 1.4.12 Text Spacing (AA): the text-spacing sweep applies the spacing to every story and fails on a box that clips its content.
 - 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A), 2.1.4 Character Key Shortcuts (A): native button keys and Escape. No shortcuts. Tab leaves to browser UI.
 - 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA): nothing pinned.
 - 2.5.8 Target Size (Minimum) (AA): the buttons are never smaller than 24 by 24 CSS pixels.
@@ -130,6 +132,16 @@ Opening is announced by the focus move: the screen reader reads the role and the
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                               |
 
 Also pending, by hand: whether the dialog's own live region is announced when a message arrives in the first moments after opening (it exists only while open), whether the focus move reads the name and description on every screen reader, and a second Escape without a user gesture on Safari 17 and Chromium (the `close` handler and the re-show cover it).
+
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Open with Enter, then with Space: focus lands on the first control that is not Close.
+- Tab never reaches the page behind the dialog.
+- Escape closes the dialog and focus returns to the trigger.
+- Type some text, press Escape and open the dialog again: the text is still there.
+- With `dismissOnOutsidePress` off, a tap on the backdrop does nothing.
 
 ## Known issues
 

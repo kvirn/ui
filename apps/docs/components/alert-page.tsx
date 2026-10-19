@@ -25,12 +25,13 @@ import {
 import { Announced } from '../examples/alert/announced.tsx'
 import { DefaultAlert } from '../examples/alert/default.tsx'
 import { Dismissible } from '../examples/alert/dismissible.tsx'
+import { SiteWide } from '../examples/alert/site-wide.tsx'
 import { Statuses } from '../examples/alert/statuses.tsx'
 import { WithActions } from '../examples/alert/with-actions.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type AlertExampleSources = Record<
-  'default' | 'statuses' | 'with-actions' | 'announced' | 'dismissible',
+  'default' | 'statuses' | 'with-actions' | 'announced' | 'dismissible' | 'site-wide',
   string
 >
 
@@ -105,10 +106,9 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;button type=&quot;button&quot;&gt;</code> with the role <code>button</code>, named
-        by <code>alert.close</code>. Optional, and last in the root. It was added after the first
-        version of Alert. It owns no open or closed state: you remove the alert yourself. It takes
-        every attribute of a <code>&lt;button&gt;</code> except <code>type</code> and{' '}
-        <code>aria-disabled</code>.
+        by <code>alert.close</code>. Optional, and last in the root. It owns no open or closed
+        state: you remove the alert yourself. It takes every attribute of a{' '}
+        <code>&lt;button&gt;</code> except <code>type</code> and <code>aria-disabled</code>.
       </>
     ),
     props: closeRows,
@@ -206,7 +206,8 @@ export function AlertPage({
                 An alert that is there when the page loads is read in its place on the page. One
                 that appears after the user pressed a button is silent unless you ask. Set{' '}
                 <code>announce=&quot;polite&quot;</code> so a screen reader reads the text aloud.
-                Focus stays on the button.
+                Focus stays on the button. What is read, and how to change it, is under{' '}
+                <Link href="#announcements">Announcements</Link>.
               </>
             }
             code={sources['announced']}
@@ -245,6 +246,29 @@ export function AlertPage({
             }
           >
             <Dismissible />
+          </UseCase>
+          <UseCase
+            id="site-wide"
+            title="A message for the whole site"
+            why={
+              <>
+                Some messages are about every page, such as a planned outage. Render the alert as a{' '}
+                <code>section</code> and name it with the Title’s <code>id</code>. Screen reader
+                users can then find it in their list of page regions (landmarks). Do this for one
+                site-wide alert only, never for a message about one part of a page.
+              </>
+            }
+            code={sources['site-wide']}
+            propsUsed={[{ part: readyMadeRootName, label: 'Alert.Warning', prop: 'as' }]}
+            note={
+              <Note kind="tip">
+                The region’s name is the Title, so write a Title that makes sense on its own. Keep
+                an outage message on the page for as long as it is true. Never remove it on a timer
+                (2.2.1 Timing Adjustable, level A).
+              </Note>
+            }
+          >
+            <SiteWide />
           </UseCase>
         </>
       }

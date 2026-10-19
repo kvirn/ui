@@ -6,6 +6,7 @@ export interface AlertTexts {
   failed: { title: string; body: string; retry: string; contact: string }
   saved: { title: string; save: string }
   dismissible: { heading: string; title: string; body: string; showAgain: string }
+  siteWide: { title: string; body: string }
 }
 
 export const useAlertTexts = defineExampleTexts<AlertTexts>({
@@ -33,6 +34,10 @@ export const useAlertTexts = defineExampleTexts<AlertTexts>({
       title: 'The service is slower than usual today',
       body: 'Searching can take up to a minute. Your answers are still saved.',
       showAgain: 'Show the message again',
+    },
+    siteWide: {
+      title: 'The booking service is closed for maintenance on Saturday 14 November',
+      body: 'You can book again from 14:00. For urgent cases, call the service line.',
     },
   },
 })

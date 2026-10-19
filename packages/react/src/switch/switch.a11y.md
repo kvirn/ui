@@ -104,7 +104,16 @@ None from the component. On focus a screen reader reads the label, "switch" and 
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                   |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                   |
 
-Research questions for the AT run: is `role="switch"` on a native checkbox announced as "switch" or "checkbox" in each screen reader, and is the on or off state spoken? Can a resident tell the state without colour in a contrast theme?
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab to the switch: the label, "switch", on or off and the help text are read.
+- Press Space: the new state is read.
+- Enter in a form does not toggle the switch.
+- Click the label: the switch toggles and takes focus.
+- A failed save shows and announces the error.
+- In a high-contrast theme the focus ring and the on and off looks differ.
 
 ## Known issues
 

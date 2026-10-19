@@ -40,11 +40,12 @@ The Display modes row of a component turns `pass` only after all four sweeps pas
 - [x] Run the four sweeps (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), triage failures per directory: all four green on one worker; the load flake (§Open) hit one file per run, each passed alone
 - [x] Fix failing stories (or list the component under Open): none left out
 - [x] Set the Display modes row to `pass` in each swept component's `*.a11y.md` (52 files)
-- [ ] `docs-writer`: docs-site component pages match the derived status and the contract
+- [ ] `docs-writer`: docs-site component pages match the code and the contract, in waves of three (maintainer, 2026-10-20); contract findings go to `component-engineer` in batches. Done: Button, Link, TextInput, Checkbox, CheckboxGroup, RadioGroup, Switch, Alert, Dialog, AlertDialog, Tabs (pages and contracts), Menu, Popover, Tooltip (pages)
 - [ ] `docs/roadmap.md` and `docs/accessibility.md` note updated; `vp run test` green
 
 ## Open
 
 - A random 1–5 story files per run fail to load ("Failed to fetch dynamically imported module", no server error, no file change during the run), a different set each run, sweep or not, before and after the toolchain update. Pre-existing; until it's fixed a sweep can't prove a directory in one run.
 - `vp check` (or something in the same step) writes `.d.ts` files next to the sources in `packages/{core,i18n,icons,react}/src` (gitignored). Stale ones broke `vp pack` for core on 2026-10-19 (`MISSING_EXPORT GeocoderIntent`); 725 were deleted, and they came back at 22:23.
+- Contract Keyboard tables cite exact test titles (tooling/keyboard-docs requires it), so the `(5.1)`, `(5.2)`, `(5.6)` and `%s` noise in TextInput's mask rows renders on the docs page until the tests in `use-mask.test.tsx` and `number-input.test.tsx` are renamed.
 - The Prose fixture's table region (`prose.fixture.tsx`) is a Tab stop even when it fits (`tabIndex` override; the `Article` story asserts it). The ScrollArea rule is a Tab stop only while it overflows. Not a regression; a separate change to the story and fixture.

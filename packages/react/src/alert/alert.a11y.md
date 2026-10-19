@@ -70,7 +70,7 @@ Escape, arrow keys and Home / End are not handled. Children handle their own key
 - Trap: no.
 - Focus target: the consumer may make a root a focus target with `tabIndex={-1}` (an arrival message, the later error summary block). It then shows the focus ring on `:focus-visible`, Tab from it goes to the first link or button inside, and it never gets `tabIndex={0}`. Moving focus to an alert and setting `announce` on it would read it twice: use one of them.
 - Inserting an alert never moves focus away from the control the user pressed (3.2.2 On Input, A). Removing one that holds focus is the consumer's bug: move focus first (see Restore to).
-- Restore to: not applicable. **After dismissing, the consumer moves focus (2.4.3 Focus Order, A).** The close button is removed with the alert, and a removed element that had focus sends focus to the page. In the same `onClick`, move focus to a sensible place first: the heading of the part of the page the alert belonged to (`tabIndex={-1}`), the control that caused the alert, or a control that brings the message back. Never leave it on a removed element. Alert cannot do this for you, because it doesn't know what the page is. Tests: `alert.test.tsx › keyboard › Enter on the close button dismisses the alert and moves focus to the heading`.
+- Restore to: not applicable. **After dismissing, the consumer moves focus (2.4.3 Focus Order, A).** The close button is removed with the alert, and a removed element that had focus sends focus to the page. In the same `onClick`, move focus to a sensible place first: the heading of the part of the page the alert belonged to (`tabIndex={-1}`), the control that caused the alert, or a control that brings the message back. Never leave it on a removed element. Alert cannot do this for you, because it doesn't know what the page is.
 - Never obscured by: the default theme never clips an alert, so a link's or button's focus ring inside is never clipped (2.4.11 Focus Not Obscured, AA; 2.4.13 Focus Appearance, AAA). With a sticky header, the page sets `scroll-padding` so a focused alert isn't hidden.
 
 ## Announcements
@@ -119,10 +119,10 @@ Headless: Alert ships no CSS. With the theme stylesheet (`@kvirn-ui/theme`):
 
 - Focus indicator: the root has none of its own unless the consumer made it focusable (`tabIndex={-1}`): a focus ring with a gap, outside the box. The close button has the same ring on keyboard focus. Children keep their own rings, never clipped.
 - Target size: the close button is at least 24 by 24 CSS px (2.5.8 Target Size (Minimum), AA); the default theme makes it larger, and smaller than that only in its compact density. It is centred on the title's first line and reaches into the alert's padding, so the title keeps its height. Buttons and links in Actions keep their own sizes.
-- Contrast: the close button's cross is drawn in the text colour and its focus ring in the focus-ring colour, on the four lightly tinted status backgrounds. Text, links, muted text, the focus ring, button edges and the status's own bar and icon (3:1) are held to their minimums on those four backgrounds by the theme's contrast check (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA). The lowest pairs are 3.13:1 and 3.32:1 in dark mode on the tinted primary background; a rebrand of the primary colours can break them first.
+- Contrast: the close button's cross is drawn in the text colour and its focus ring in the focus-ring colour, on the four lightly tinted status backgrounds. Text, links, muted text, the focus ring, button edges and the status's own bar and icon (3:1) are held to their minimums on those four backgrounds by the theme's contrast check, run on every theme (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA). The lowest pairs are 3.13:1 and 3.32:1 in dark mode on the tinted primary background; a rebrand of the primary colours can break them first.
 - forced-colors behaviour: the alert uses the system's background, text and link colours, and all four edges are drawn in the system's text colour with the thick bar kept. The close button's icon uses the system's button-text colour and its ring the system's highlight colour. All four statuses then share one colour, so the status is carried by the icon's shape (square, circle, triangle, octagon), the status word in the accessibility tree and the title's words.
 - reduced-motion behaviour: no motion at all. It appears and disappears instantly.
-- Reflow and text spacing: no fixed sizes, nothing scrolls or is cut off, and long words hyphenate and then break; the icon stays on the title's first line. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow, with a long Finnish text (the `LongFinnishText` story). Text spacing grows the height and clips nothing (1.4.12 Text Spacing, AA): the `storybook-text-spacing` sweep applies the 1.4.12 spacing to every story and fails on a box that clips more content than it holds.
+- Reflow and text spacing: no fixed sizes, nothing scrolls or is cut off, and long words hyphenate and then break; the icon stays on the title's first line. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the reflow sweep runs every story at 320 CSS px and fails on horizontal overflow, and one story uses a long Finnish text. Text spacing grows the height and clips nothing (1.4.12 Text Spacing, AA): the text-spacing sweep applies the 1.4.12 spacing to every story and fails on a box that clips more content than it holds.
 - RTL: logical properties only. The bar and icon sit on the inline start, and the close button on the inline end. Status icons never mirror, and neither does the cross.
 - Print: the thick bar (a border) and the icon print, so the status stays visible on paper. The close button is hidden in print.
 - Without the theme stylesheet: no colour, no bar, no hidden word. The icon and "Warning: …" show as plain text, which is a correct unstyled alert.
@@ -161,6 +161,16 @@ Headless: Alert ships no CSS. With the theme stylesheet (`@kvirn-ui/theme`):
 | JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                               |
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                               |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                               |
+
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab past an alert with a link: the alert is skipped and the link is reached.
+- Tab to Close, press Enter, then Space on another alert: the alert goes and focus lands on the heading.
+- A button that adds an alert with `announce`: the text is read once, and focus stays on the button.
+- The status word starts the heading when you read it.
+- In forced colours the four statuses differ by icon shape.
 
 ## Known issues
 

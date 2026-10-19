@@ -85,7 +85,8 @@ const parts: ApiPart[] = [
     name: 'Dialog.Description',
     renders: (
       <>
-        <code>&lt;p&gt;</code> with a short explanation, read out after the title.
+        <code>&lt;p&gt;</code> with a short explanation. It describes the dialog to a screen reader
+        (software that reads the screen aloud).
       </>
     ),
     props: dialogDescriptionRows,
@@ -172,7 +173,7 @@ export function DialogPage({
           <UseCase
             id="form-in-a-dialog"
             title="A form in a dialog"
-            why="Changing one value does not need a page of its own. The title says the task, the description says what happens next, and each button says what it does. Closing with Escape or Close keeps what was typed, and a press on the backdrop does nothing by default."
+            why="Changing one value does not need a page of its own. The title says the task, the description says what happens next, and each button says what it does. Closing with Escape or Close keeps what was typed. A press on the backdrop (the dimmed area behind the dialog) does nothing by default, so a stray tap loses nothing."
             code={sources['with-a-form']}
             propsUsed={[
               { part: 'Dialog.Root', prop: 'open' },
@@ -191,7 +192,13 @@ export function DialogPage({
           <UseCase
             id="one-dialog-many-rows"
             title="One dialog for every row of a list"
-            why="A list of cases or applications can share one dialog. Open it from your own state, set what it shows, and leave out the Trigger. When it closes, focus goes back to the button that opened it."
+            why={
+              <>
+                A list of cases or applications can share one dialog. Open it from your own state
+                with <code>open</code>, set what it shows, and leave out the Trigger. When it
+                closes, focus goes back to the button that opened it.
+              </>
+            }
             code={sources['many-rows']}
             propsUsed={[
               { part: 'Dialog.Root', prop: 'open' },
@@ -210,7 +217,14 @@ export function DialogPage({
           <UseCase
             id="close-a-case-from-a-list"
             title="Close a case and keep your place in the list"
-            why="Closing a case removes its row, and the button that opened the dialog goes with it. After the case is closed, pass finalFocusRef with the list’s heading and focus lands there. If the dialog is dismissed instead, leave it out and focus returns to the button. The heading also shows how many cases are left."
+            why={
+              <>
+                Closing a case removes its row, and the button that opened the dialog goes with it.
+                After the case is closed, pass <code>finalFocusRef</code> with the list’s heading,
+                and focus lands there. If the dialog is dismissed instead, leave it out and focus
+                returns to the button. The heading also shows how many cases are left.
+              </>
+            }
             code={sources['close-from-list']}
             propsUsed={[
               { part: 'Dialog.Root', prop: 'finalFocusRef' },
@@ -230,7 +244,13 @@ export function DialogPage({
           <UseCase
             id="know-why-it-closed"
             title="Know why it closed"
-            why="Keep the open state yourself when the page needs to react to it. onOpenChange says why the dialog changed. While open is set, a close is only a request: you decide whether to close it."
+            why={
+              <>
+                Keep the open state yourself when the page needs to react to it.{' '}
+                <code>onOpenChange</code> says why the dialog changed. While <code>open</code> is
+                set, a close is only a request: you decide whether to close it.
+              </>
+            }
             code={sources['controlled']}
             propsUsed={[
               { part: 'Dialog.Root', prop: 'open' },
@@ -242,7 +262,14 @@ export function DialogPage({
           <UseCase
             id="long-notice-with-a-choice"
             title="A long notice with a choice at the end"
-            why="By default focus starts on the first control that is not Close. In a notice with text to read, that is a choice below the text. Pass the Title with initialFocusRef, and the dialog starts at its beginning, so the arrow keys scroll the text."
+            why={
+              <>
+                By default focus starts on the first control that is not Close. In a notice with
+                text to read, that is a choice below the text. Pass the Title to{' '}
+                <code>initialFocusRef</code>, and the dialog starts at its beginning, so the arrow
+                keys scroll the text.
+              </>
+            }
             code={sources['initial-focus']}
             propsUsed={[{ part: 'Dialog.Root', prop: 'initialFocusRef' }]}
           >
@@ -259,6 +286,14 @@ export function DialogPage({
                 Give the dialog a title. Without a name a screen reader says only “dialog”, and the
                 person can’t tell what it is for (4.1.2 Name, Role, Value). Say what each button
                 does, with a verb and an object, never “OK” or “Yes”.
+              </Note>
+            ),
+            focus: (
+              <Note kind="tip">
+                A dialog adds no announcement of its own. Opening it moves focus in, and a screen
+                reader then reads the dialog’s role, its name (the Title) and its description. Write
+                a Title and a Description that make sense when read alone, and listen to them with
+                your own screen reader users.
               </Note>
             ),
             'visual-and-modes': (

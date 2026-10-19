@@ -89,7 +89,8 @@ export function LinkPage({
             here”.
           </li>
           <li>
-            Use <code>kv-link--service</code> for the link that starts an e-service.
+            Use <code>kv-link--service</code> for the link that starts an e-service (an online
+            public service).
           </li>
           <li>
             Not for an action that changes something, such as sending or saving: use a{' '}
@@ -111,9 +112,10 @@ export function LinkPage({
             why={
               <>
                 Opening a new tab takes people somewhere they may not expect, so say so in the
-                link’s name. Put <code>Link.NewTabNotice</code> inside the link: it adds that text,
-                translated to the page’s language. Link also adds <code>noopener noreferrer</code>{' '}
-                to <code>rel</code> for you.
+                link’s name. Put <code>Link.NewTabNotice</code> inside the link: it adds that text
+                in the language set on <code>KvirnProvider</code>. Link also adds{' '}
+                <code>noopener noreferrer</code> to <code>rel</code> for you, so the new page can’t
+                reach back to yours.
               </>
             }
             code={sources['new-tab']}
@@ -133,13 +135,14 @@ export function LinkPage({
           <UseCase
             id="current-page"
             title="The current page in a list of links"
-            why="Mark the link to the page the user is on, so a screen reader says “current page” and the default theme shows it by weight as well as colour. Link doesn’t read the router: you decide which link is current."
+            why="Mark the link to the page the user is on, so a screen reader can tell them where they are and the default theme shows it by weight as well as colour. Link doesn’t read your router: you decide which link is current."
             code={sources['current-page']}
             propsUsed={[{ part: 'Link.Root', prop: 'current' }]}
             note={
               <Note kind="tip">
-                With a router, compare the link’s address with the router’s own current address, and
-                pass <code>current=&quot;page&quot;</code> or <code>false</code>.
+                With a router (the part of your app that changes pages), compare the link’s address
+                with the router’s own current address, and pass{' '}
+                <code>current=&quot;page&quot;</code> or <code>false</code>.
               </Note>
             }
           >
@@ -210,6 +213,13 @@ export function LinkPage({
         <ContractSectionsView
           contract={contract}
           notes={{
+            'visual-and-modes': (
+              <Note kind="reminder">
+                If you restyle links, keep a link in running text clear by more than colour (1.4.1
+                Use of Color), keep a visible focus ring (2.4.7 Focus Visible), and keep a link that
+                stands alone at least 24 × 24 CSS pixels (2.5.8 Target Size (Minimum)).
+              </Note>
+            ),
             'what-you-need-to-do': (
               <Note kind="reminder">
                 A link that says only “click here” or “read more” fails 2.4.4 Link Purpose (In

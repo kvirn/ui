@@ -81,7 +81,7 @@ export function CheckboxPage({
           <UseCase
             id="declaration"
             title="A declaration that must be confirmed"
-            why="A declaration or a consent is one box the user has to tick before sending. Mark the Field as required, so the label has no “(optional)” and a screen reader (software that reads the screen aloud) says the box is required. Check the answer when the user sends the form, set invalid and say what to do."
+            why="A declaration or a consent is one box the user has to tick before sending. Mark the Field as required, so the label has no “(optional)” and a screen reader (software that reads the screen aloud) says the box is required. Check the answer when the user sends the form. Then set invalid and say what to do."
             code={sources['declaration']}
             propsUsed={[
               { part: 'Checkbox', prop: 'checked' },
@@ -129,8 +129,8 @@ export function CheckboxPage({
             code={sources['help-text']}
             note={
               <Note kind="tip">
-                A help text is plain text: no link, list or heading, because a screen reader reads
-                it as one flat string and a link in it can’t be followed from the box.
+                A help text is plain text: no link, list or heading. A screen reader reads it as one
+                flat string, so a link or list in it would lose its meaning.
               </Note>
             }
           >
@@ -139,13 +139,20 @@ export function CheckboxPage({
           <UseCase
             id="select-all"
             title="Select all, with a mixed state"
-            why="A “select all” box is mixed while only some rows are chosen. You pass indeterminate from your data and clear it once the user has chosen: the browser doesn’t."
+            why="A “select all” box shows a mixed state while only some rows are chosen: not all, and not none. You set indeterminate from your data. The browser does not clear it when the user clicks, so your data must."
             code={sources['select-all']}
             propsUsed={[
               { part: 'Checkbox', prop: 'checked' },
               { part: 'Checkbox', prop: 'indeterminate' },
               { part: 'Checkbox', prop: 'onCheckedChange' },
             ]}
+            note={
+              <Note kind="reminder">
+                Give every row’s box its own visible label that tells the rows apart, such as the
+                case number. Boxes that all read “Select” can’t be told apart (2.4.6 Headings and
+                Labels; 4.1.2 Name, Role, Value).
+              </Note>
+            }
           >
             <SelectAll />
           </UseCase>

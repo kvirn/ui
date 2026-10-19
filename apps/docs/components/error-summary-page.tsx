@@ -39,8 +39,8 @@ const parts: ApiPart[] = [
     renders: (
       <>
         An <Link href="/components/alert">Alert.Danger</Link>: a <code>&lt;div&gt;</code> with the
-        role <code>group</code>, named by the Title, and <code>tabindex=&quot;-1&quot;</code>, so it
-        takes focus from script and is not a Tab stop. It has no live region. It takes every
+        role <code>group</code>, named by the Title, and <code>tabindex=&quot;-1&quot;</code>, so
+        code can move focus to it and it is not a Tab stop. It has no live region. It takes every
         attribute of a <code>&lt;div&gt;</code> and passes <code>ref</code> to it. Also exported as{' '}
         <code>ErrorSummaryRoot</code>. The default theme is described on{' '}
         <Link href="/foundation/theming">Theming</Link>.
@@ -89,10 +89,10 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;a href=&quot;#controlId&quot;&gt;</code> with the role <code>link</code>. Its text
         is the field’s own error text. A click or Enter focuses the control and scrolls its label
-        into view. With a modifier key, when no element has the id, or when the control can’t take
-        focus, the browser handles it. It takes every attribute of an <code>&lt;a&gt;</code> except{' '}
-        <code>href</code>, and passes <code>ref</code> to it. Also exported as{' '}
-        <code>ErrorSummaryLink</code>.
+        (or, for a group, its legend) into view. With a modifier key, when no element has the id, or
+        when the control can’t take focus, the browser handles it. It takes every attribute of an{' '}
+        <code>&lt;a&gt;</code> except <code>href</code>, and passes <code>ref</code> to it. Also
+        exported as <code>ErrorSummaryLink</code>.
       </>
     ),
     props: linkRows,
@@ -110,7 +110,7 @@ export function ErrorSummaryPage({
   return (
     <ComponentPage
       title="ErrorSummary"
-      lead="It takes focus once, so a screen reader can say its title and a keyboard user starts at the list."
+      lead="It takes focus when it appears and after each failed submit, so a screen reader can say its title and a keyboard user starts at the list."
       whenToUse={
         <ul>
           <li>
@@ -156,10 +156,11 @@ export function ErrorSummaryPage({
             ]}
             note={
               <Note kind="reminder">
-                Don’t forget the field error ids: set <code>controlId</code> on every{' '}
+                Set <code>controlId</code> on every{' '}
                 <Link href="/components/field#api-field-root-controlid">Field.Root</Link> a link
-                points at, and keep the <code>Field.ErrorMessage</code> under the control. A link to
-                an id that isn’t on the page goes nowhere, and a development warning says so.
+                points at, and keep the <code>Field.ErrorMessage</code> under the control (3.3.1
+                Error Identification). A link to an id that isn’t on the page goes nowhere, and a
+                development warning says so.
               </Note>
             }
           >
@@ -171,9 +172,9 @@ export function ErrorSummaryPage({
             why={
               <>
                 When the question is the group, such as first and last name, the error belongs to
-                the <Link href="/components/fieldset">Fieldset</Link>. Link to the first field of
-                the group: the link focuses it and scrolls its label into view. A group of radio
-                buttons links to its first option in the same way.
+                the <Link href="/components/fieldset">Fieldset</Link>. Link to the first box that is
+                wrong: the link focuses it and scrolls its label into view. A group of radio buttons
+                links to its first option in the same way.
               </>
             }
             code={sources['group-error']}
@@ -188,8 +189,8 @@ export function ErrorSummaryPage({
               <>
                 Most forms mix text fields with options and a confirmation. A group of radio buttons
                 links to its first option, and a checkbox to the box itself. Set{' '}
-                <code>controlId</code> on the first option’s Field.Root and on the checkbox’s, and
-                link to those ids.
+                <code>controlId</code> on the first <code>RadioGroup.Option</code> and on the
+                checkbox’s <code>Field.Root</code>, and link to those ids.
               </>
             }
             code={sources['mixed-controls']}
@@ -244,10 +245,10 @@ export function ErrorSummaryPage({
             'what-it-does-for-you': (
               <Note kind="tip">
                 The summary has no live region (a part of the page that a screen reader reads aloud
-                when it changes) on purpose: the focus move is the announcement, and adding{' '}
-                <code>role=&quot;alert&quot;</code> would read it twice. A screen reader usually
-                says only the name of a focused group, so listen to it with the screen readers your
-                users have to confirm it also reads the list.
+                when it changes) on purpose: the focus move is the announcement, and a live region
+                on top of it would read it twice. A screen reader usually says only the name of a
+                focused group, so listen with the screen readers your users have to confirm what
+                they hear.
               </Note>
             ),
             focus: (

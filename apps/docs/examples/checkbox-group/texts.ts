@@ -10,7 +10,7 @@ export const useCheckboxGroupTexts = defineExampleTexts({
     emailHelp: 'The decision arrives within a week.',
     groupHelp: 'You can change this later under My pages.',
     youChose: 'You chose',
-    nothing: 'nothing yet',
+    nothing: 'nothing',
     send: 'Send',
     sent: 'Sent',
     requiredHint: 'Required. Choose at least one.',

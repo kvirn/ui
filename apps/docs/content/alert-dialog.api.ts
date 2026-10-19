@@ -8,12 +8,16 @@ import { propRows } from '../components/api-block.tsx'
 import type { ApiHook, AttributeRow } from '../components/api-block.tsx'
 import {
   dialogActionsAttributes,
+  dialogActionsRows,
   dialogBodyAttributes,
+  dialogBodyRows,
   dialogDescriptionAttributes,
+  dialogDescriptionRows,
   dialogHookResultRows,
   dialogCloseAsRow,
   dialogSharedOptionRows,
   dialogTitleAttributes,
+  dialogTitleRows,
 } from './dialog.api.ts'
 
 const alertDialogOptionRows = {
@@ -44,6 +48,12 @@ export const alertDialogRootRows = propRows<AlertDialogRootProps>({
 export const alertDialogCloseRows = propRows<Pick<AlertDialogCloseProps, 'as'>>({
   as: dialogCloseAsRow,
 })
+
+// The text parts take the same tags as the Dialog's: the same rows.
+export const alertDialogTitleRows = dialogTitleRows
+export const alertDialogDescriptionRows = dialogDescriptionRows
+export const alertDialogBodyRows = dialogBodyRows
+export const alertDialogActionsRows = dialogActionsRows
 
 export const alertDialogTriggerAttributes: readonly AttributeRow[] = [
   {

@@ -48,7 +48,8 @@ const parts: ApiPart[] = [
     name: 'Fieldset.Legend',
     renders: (
       <>
-        <code>&lt;legend&gt;</code>, the group’s name. Put it first in the fieldset.
+        <code>&lt;legend&gt;</code>, the group’s name. It takes every attribute of a{' '}
+        <code>&lt;legend&gt;</code> and passes <code>ref</code> to it. Put it first in the fieldset.
       </>
     ),
     props: fieldsetLegendRows,
@@ -114,8 +115,8 @@ export function FieldsetPage({
               reader (software that reads the screen aloud) uses it as the name of the group.
             </li>
             <li>
-              Don’t wrap every Field in a Fieldset: a fieldset announces itself, and nested ones get
-              noisy.
+              Don’t wrap every Field in a Fieldset. A screen reader announces a fieldset when focus
+              enters it, so nested ones get noisy.
             </li>
             <li>
               Not for one control: use a <Link href="/components/field">Field</Link>, whose label
@@ -126,9 +127,10 @@ export function FieldsetPage({
             </li>
           </ul>
           <Note kind="tip">
-            To show an answer that can’t be changed, show it as text (such as “Applicant: Anna
-            Andersson. The applicant can’t be changed after the application is sent.”), not as a
-            disabled group.
+            To show an answer that can’t be changed, show it as text, such as “Applicant: Anna
+            Andersson”, not as a disabled group. A disabled control gets no keyboard focus, so
+            people using a keyboard or a screen reader can’t reach it to read it (see the Keyboard
+            table).
           </Note>
         </>
       }
@@ -151,7 +153,15 @@ export function FieldsetPage({
           <UseCase
             id="group-error"
             title="Describe the group and report its error"
-            why="The description is read before answering, so it goes above the controls. The help text goes under them, and the error last. All three belong to the group: a screen reader usually reads them when focus enters the group. After a failed send, move focus to the first control that is wrong."
+            why={
+              <>
+                The description is read before answering, so it goes above the controls. The help
+                text goes under them, and the error last. All three belong to the group and are
+                linked to it, so a screen reader can read them when focus enters the group. Support
+                differs between screen readers (see <Link href="#known-issues">Known issues</Link>).
+                After a failed send, move focus to the first control that is wrong.
+              </>
+            }
             code={sources['error-on-submit']}
             propsUsed={[
               { part: 'Fieldset.Root', prop: 'invalid' },

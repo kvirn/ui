@@ -17,7 +17,7 @@ A Button performs an action. Navigation is a Link. `Button` defaults to `type="b
 |        | disabled and focusable | `aria-disabled="true"`, no `disabled` attribute | Stays in the Tab order. Click, Enter, Space and implicit form submission are blocked: the `onClick` is not called, and the default (form submission) is prevented. `data-disabled`. `aria-disabled` can't be passed directly: it's set only through `disabled` with `focusableWhenDisabled`, or through `busy`                                                                                                                                                                                                                                                                                                                           |
 |        | busy                   | `aria-disabled="true"`, no `disabled` attribute | The action is running (`busy`). Stays in the Tab order and keeps focus when `busy` turns on (2.4.3). Click, Enter, Space and implicit submission are blocked like a focusable disabled button. `data-busy`, no `data-disabled`. The name never changes (2.5.3). No `aria-busy`. `disabled` wins when both are set. While busy a decorative `<span class="kv-spinner" aria-hidden="true">` is the first child (it shows at once, and it loops while busy, resting under reduced motion: see the 2.2.2 point under What you need to do). The Button announces nothing: pair it with a `Progress` beside it, without a `Progress.Indicator` |
 |        | keyboard focus         | none                                            | `data-focus-visible` while the button matches `:focus-visible`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-|        | no accessible name     | –                                               | A dev warning when the button has no `aria-label`, `aria-labelledby`, `title` or `<label>`, and no content outside `aria-hidden`: an icon-only button with only a decorative `Icon` (4.1.2). Test: `button.test.tsx › icon-only button name`                                                                                                                                                                                                                                                                                                                                                                                             |
+|        | no accessible name     | –                                               | A dev warning when the button has no `aria-label`, `aria-labelledby`, `title` or `<label>`, and no content outside `aria-hidden`: an icon-only button with only a decorative `Icon` (4.1.2)                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 
 `useButton` gives the same `buttonProps` for your own `<button>`. Pass your click handler as `useButton({ onClick })`, so it is blocked while disabled.
 
@@ -80,13 +80,13 @@ Button has no strings of its own. Its name is its content, which the consumer pr
 
 ## Visual / modes
 
-- Focus indicator: headless. The browser's native ring by default. The default theme restyles it to at least 2px at 3:1 (2.4.7 Focus Visible, level AA; 2.4.13 Focus Appearance, level AAA). Test: `button.stories.tsx › Focus visible`, and `theme:check` for the ring's contrast.
-- Target size: headless. The default theme makes buttons at least 24 × 24 CSS px (2.5.8), in both densities. Test: `button.stories.tsx › Default`, `› Compact density`.
-- forced-colors behaviour: a native `<button>`, so the system's `ButtonText` / `ButtonFace` apply. The disabled state isn't conveyed only by colour in the default theme: it has a dashed edge (1.4.1, `button.stories.tsx › States`).
-- Compact (`kv-button--compact`): 32px tall from 64rem, 44px below it, so it meets 2.5.8 only, like `kv-compact`. Test: `button.stories.tsx › Size` (axe, target size, same height as a compact input).
-- Link look (`kv-button--link`): at least 24px tall at every width (2.5.8), the normal focus ring (2.4.7), underlined on hover only. Disabled is `text-muted` with a dashed underline as the non-colour cue (1.4.1); on a filled top bar it is the bar's on-colour with the dashed underline. Forced colours (`ButtonText`) is checked by reading, with no automated test. Test: `button.stories.tsx › LinkLook` (axe, target size).
-- reduced-motion behaviour: the button itself has no motion. The spinner of a busy button rests under reduced motion.
-- Reflow: No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
+- Focus indicator: headless. The browser's native ring by default. The default theme restyles it to at least 2px at 3:1 (2.4.7 Focus Visible, level AA; 2.4.13 Focus Appearance, level AAA). The ring's contrast against its surroundings is checked in every theme.
+- Target size: headless. The default theme makes buttons at least 24 × 24 CSS px (2.5.8), in both densities, and a story asserts that threshold.
+- forced-colors behaviour: a native `<button>`, so the system's `ButtonText` / `ButtonFace` apply. The disabled state isn't conveyed only by colour in the default theme: it has a dashed edge (1.4.1). The forced-colours sweep checks that every button keeps a visible edge and shows a focus indicator when it has focus (1.4.11).
+- Compact (`kv-button--compact`): at least 24 × 24 CSS px at every width, so it meets 2.5.8 only (not the 44px of the AAA target size). It is shorter on wide screens (from 64rem) and taller on narrow ones, where a touch is likelier. A story asserts the 24px threshold.
+- Link look (`kv-button--link`): at least 24px tall at every width (2.5.8), the normal focus ring (2.4.7), underlined on hover only. Disabled is `text-muted` with a dashed underline as the non-colour cue (1.4.1); on a filled top bar it is the bar's on-colour with the dashed underline. In forced colours it takes the system link colour, and the forced-colours sweep checks its edge and focus indicator like any other button. A story asserts the 24px threshold.
+- reduced-motion behaviour: the button itself has no motion. The spinner of a busy button rests under reduced motion, and the reduced-motion sweep checks that no animation keeps looping (2.3.3).
+- Reflow and text spacing: the reflow sweep runs every story at 320 CSS px and fails on horizontal overflow (1.4.10 Reflow, AA). The text-spacing sweep applies the 1.4.12 spacing and fails when a box clips its text.
 
 ## WCAG SCs covered
 
@@ -114,6 +114,16 @@ Button has no strings of its own. Its name is its content, which the consumer pr
 | JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                       |
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                       |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                       |
+
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab to the button: the focus ring shows, and the name and "button" are read.
+- Press Enter, then Space. Each runs the action once, and focus stays on the button.
+- A focusable disabled button is reached and read as unavailable. Enter and Space do nothing.
+- A busy button keeps focus and its name. Presses do nothing.
+- An icon-only button reads its `aria-label`.
 
 ## Known issues
 

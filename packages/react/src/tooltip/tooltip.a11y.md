@@ -99,7 +99,7 @@ Tooltip has no strings of its own and announces nothing: the description is read
 - Colour: the text has at least 4.5:1 contrast against the tooltip's background in every theme (1.4.3 Contrast (Minimum), AA), checked by the theme's contrast check. The tooltip's edge is a decorative hairline: 1.4.11 Non-text Contrast (AA) doesn't apply to the box, and its content is text.
 - forced-colors behaviour: the system's background and text colours, a thin edge in the text colour, and no shadow. The keys keep their edge.
 - reduced-motion behaviour: a short fade in, only when the user has not asked for reduced motion. No movement, no scale. Closing is instant in every setting.
-- Reflow, text spacing: the tooltip is at most 20rem wide and never wider than the viewport minus 8px each side, so long text wraps and the tooltip grows in height, not width, and has no fixed height (1.4.10 Reflow, AA; 1.4.12 Text Spacing, AA: the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow; the `storybook-text-spacing` sweep applies the 1.4.12 spacing to every story and fails on a box that clips more content than it holds). The text is never clipped. In a viewport too short for a long tooltip (320 by 256) it may overlap its trigger (2.4.11): the overlap is transient, and the tooltip is dismissable with Escape and hoverable (1.4.13), so nothing is lost. This trade-off was decided on 2026-10-04 and approved by the maintainer on 2026-10-14. At 400% zoom it may cover content near the trigger: that is why it is hoverable and dismissable.
+- Reflow, text spacing: the tooltip is at most 20rem wide and never wider than the viewport minus 8px each side, so long text wraps and the tooltip grows in height, not width, and has no fixed height (1.4.10 Reflow, AA; 1.4.12 Text Spacing, AA: the reflow sweep runs every story at 320 CSS px and fails on horizontal overflow; the text-spacing sweep applies the 1.4.12 spacing to every story and fails on a box that clips more content than it holds). The text is never clipped. In a viewport too short for a long tooltip (320 by 256) it may overlap its trigger (2.4.11): the overlap is transient, and the tooltip is dismissable with Escape and hoverable (1.4.13), so nothing is lost. At 400% zoom it may cover content near the trigger: that is why it is hoverable and dismissable.
 - RTL: placement and padding use logical properties and the tooltip is centred, so nothing flips.
 
 ## WCAG SCs covered
@@ -107,7 +107,7 @@ Tooltip has no strings of its own and announces nothing: the description is read
 - 1.4.13 Content on Hover or Focus (AA): dismissable (Escape), hoverable (the grace period and the pointer on the tooltip), persistent (no timeout, until hover or focus ends).
 - 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): `role="tooltip"`, `aria-describedby`, and the trigger's own name.
 - 2.5.3 Label in Name (A): the tooltip starts with the trigger's name.
-- 1.4.3 Contrast (Minimum) (AA), 1.4.11 Non-text Contrast (AA), 1.4.1 Use of Color (A): the text, and no meaning in colour.
+- 1.4.3 Contrast (Minimum) (AA), 1.4.1 Use of Color (A): the text, and no meaning in colour. The box's edge is a decorative hairline, so 1.4.11 Non-text Contrast (AA) asks nothing of it.
 - 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A), 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA): keyboard focus opens it, Escape hides it, and it covers its trigger only in a viewport too short for a long tooltip, where Escape hides it.
 - 1.4.4 Resize Text (AA), 1.4.10 Reflow (AA), 1.4.12 Text Spacing (AA): limited to the viewport, wraps, no fixed height.
 - 3.2.1 On Focus (A): opening a tooltip is not a change of context, and focus never moves.
@@ -132,9 +132,20 @@ Tooltip has no strings of its own and announces nothing: the description is read
 
 Also pending, by hand: whether NVDA, JAWS and VoiceOver read an icon-only button's name once and its shortcut once (the trigger has `aria-keyshortcuts` and the description), whether a screen reader reads the hidden-from-AT name again in browse mode while the tooltip is open, and whether a magnifier user at 400% can reach the tooltip by moving the pointer onto it.
 
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab to an icon-only button: the tooltip shows at once, and the name is read once.
+- With a shortcut: the name is read once, then the shortcut once after it.
+- Escape hides the tooltip, focus stays, and the page behind does not react.
+- Hover for half a second shows the tooltip, and moving onto it keeps it.
+- At 400% zoom the tooltip can be dismissed and never hides the button for good.
+- On touch, a tap shows no tooltip, and the button's name is enough.
+
 ## Known issues
 
-- **In a viewport too short for a long tooltip, the tooltip may cover its trigger.** Approved by the maintainer 2026-10-14. It affects magnifier users at high zoom on a short viewport. A maximum width with wrapping keeps the tooltip narrow, so it grows in height instead and covers less. It is transient: Escape dismisses it and it is hoverable (1.4.13), so nothing is lost.
+- **In a viewport too short for a long tooltip, the tooltip may cover its trigger.** It affects magnifier users at high zoom on a short viewport. A maximum width with wrapping keeps the tooltip narrow, so it grows in height instead and covers less. It is transient: Escape dismisses it and it is hoverable (1.4.13), so nothing is lost.
 - **Escape with a focused open Listbox or Combobox closes the listbox first.** Those components handle Escape in their own key handler and call `preventDefault()`, before the tooltip's document listener, which then ignores the key. One Escape closes the listbox and the tooltip stays; the next Escape hides it. The tested case is a Popover underneath. A Dialog is not covered by a test.
 - **A pointer on another trigger closes this trigger's keyboard-focused tooltip, and it comes back when that tooltip closes while focus is still here.** One tooltip of a group is open at a time. When the other tooltip closes (the pointer leaves it), the focused trigger's tooltip opens again (reason `focus`), so a keyboard user's tooltip is never lost to a stray pointer. It also comes back when Escape hides the other tooltip, so with the pointer on another trigger it takes two Escapes to hide both.
 - **A tooltip never takes an outside press.** Its layer passes presses through, so a press elsewhere while a keyboard-focused tooltip is open reaches the Popover underneath in the same press. Escape is exact: one key closes the tooltip and the next closes the Popover.

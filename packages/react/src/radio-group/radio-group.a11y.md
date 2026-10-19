@@ -67,16 +67,16 @@ Arrow keys check the radio they move to, so the page must not do anything harmfu
 - Initial focus: not moved.
 - Trap: no.
 - Restore to: not applicable.
-- On error: the group never moves focus. An Error summary moves focus to itself; without one, the consumer moves focus to the checked radio, or the first one, of the invalid group.
+- On error: the group never moves focus. An ErrorSummary moves focus to itself; without one, the consumer moves focus to the checked radio, or the first one, of the invalid group.
 - Never obscured by: nothing around the circles clips the focus ring (2.4.11 Focus Not Obscured (Minimum), AA).
 
 ## Announcements
 
-One, only with a `RadioGroup.Reveal`: every time the user checks a radio and its field appears, the polite live region says "An input field has appeared below." once (`radioGroup.revealShown`, overridable per provider and per instance). It has no throttle key, so a second group, or returning to the radio within three seconds, is announced too. Nothing is said on first render with a checked radio, when `value` changes from outside, or when the field is hidden (`radio-group.test.tsx › it is announced politely, exactly once, when the user checks the radio`, `radio-group.test.tsx › it is not announced on mount with a checked radio`, `radio-group.test.tsx › it is not announced when a controlled value is set from outside`, `radio-group.test.tsx › it is not announced when the reveal is hidden`, `radio-group.test.tsx › the message can be overridden per instance`). Otherwise nothing is live. On entering the group a screen reader reads the legend, "group", the help text and, when invalid, "Fel: …" (Error: …); then the radio's label, "radio button", "1 of 3" (from the native grouping) and its state.
+One, only with a `RadioGroup.Reveal`: every time the user checks a radio and its field appears, the polite live region says "An input field has appeared below." once (`radioGroup.revealShown`, overridable per provider and per instance). It has no throttle key, so a second group, or returning to the radio within three seconds, is announced too. Nothing is said on first render with a checked radio, when `value` changes from outside, or when the field is hidden (`radio-group.test.tsx › it is announced politely, exactly once, when the user checks the radio`, `radio-group.test.tsx › it is not announced on mount with a checked radio`, `radio-group.test.tsx › it is not announced when a controlled value is set from outside`, `radio-group.test.tsx › it is not announced when the reveal is hidden`, `radio-group.test.tsx › the message can be overridden per instance`). Otherwise nothing is live. On entering the group a screen reader reads the legend, "group", the help text and, when invalid, "Error: …"; then the radio's label, "radio button", "1 of 3" (from the native grouping) and its state.
 
 ### Read aloud
 
-Approximated by `@kvirn-ui/testing`'s `readAloud` (English catalog); not NVDA or JAWS output. AT `pending`.
+Approximated by `@kvirn-ui/testing`'s `readAloud` (English catalog); not NVDA or JAWS output.
 
 | State or action                  | Expected phrase(s) as read aloud                                                                      | Live region politeness | Test                                                                                                                                                                                                                                                                                                        |
 | -------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -95,7 +95,7 @@ Also proved: the Reveal's Fields keep their optional marker and required state (
 - Offer an answer for everyone. If "none" or "I don't know" is valid, it's an option; the group has no deselect.
 - Preselecting an option is a decision with consequences (residents rarely change a default): do it only when one answer is overwhelmingly common and harmless.
 - Pass `value` and `onValueChange` from your form state, or `defaultValue` and `name` for a plain `<form>`.
-- Set `invalid` and render a `RadioGroup.ErrorMessage`. On submit, move focus to the checked radio or the first one of an invalid group (or to the Error summary).
+- Set `invalid` and render a `RadioGroup.ErrorMessage`. On submit, move focus to the checked radio or the first one of an invalid group (or to the ErrorSummary).
 - With a `RadioGroup.Reveal`, put it right after its radio's `RadioGroup.Option`, give its field a label of its own, and make the field required only while its radio is chosen. A hidden field is still submitted: ignore or clear it when another option is chosen.
 - Don't use a radio group for a long list: from about 7 options, a Listbox is shorter to scan.
 - Say once, before the first question, that every question must be answered unless it says it is optional (in `en`: "Every question must be answered unless it says (optional)"), per 3.3.2 Labels or Instructions (A).
@@ -138,11 +138,18 @@ Also proved: the Reveal's Fields keep their optional marker and required state (
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                            |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                            |
 
-Research questions for the AT run: without `aria-invalid` on radios, is the group's error read on entering the group? Is a required group's missing optional text enough, or do users need "required" announced? Are the arrow keys right in right-to-left in NVDA, JAWS and VoiceOver (the browser mirrors them)?
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab into the group: the legend and "group" are read.
+- One Tab lands on the checked radio, or on the first if none is checked.
+- The arrow keys move focus and check the radio, and wrap. A disabled option is skipped. In a right-to-left page the arrows are mirrored.
+- Checking "Other" reads "An input field has appeared below." once, and Tab reaches the field.
 
 ## Known issues
 
 - **A required group isn't announced as required.** `aria-required` isn't supported on `group` or `radio`, and KvirnUI prefers `aria-required` over native `required`. The group's legend loses its optional text and gets `data-required`. If the AT run shows a gap: `role="radiogroup"` on the fieldset (allowed on `<fieldset>`, and it supports `aria-required` and `aria-invalid`), or native `required` on the radios.
-- **A radio has no focus state of its own.** `useRadio` returns no `isFocusVisible` and `RadioGroup.Radio` sets no `data-focus-visible`: a re-render while a radio has focus makes React write its `name` again, and Chromium then stops treating the group as one Tab stop. The theme styles focus with the native `:focus-visible`.
+- **A radio has no focus state of its own.** `useRadio` returns no `isFocusVisible` and `RadioGroup.Radio` sets no `data-focus-visible`: a radio's focus state would make the browser stop treating the group as one Tab stop. The theme styles focus with the native `:focus-visible`.
 - **`aria-describedby` on a `<fieldset>` isn't announced consistently by TalkBack.** See the Fieldset page.
 - **Shift+Tab into an unchecked group.** Browsers differ on which radio gets focus: Chrome and Firefox focus the last, Safari the first. The keyboard tests run on Chromium; the optional engines run in CI.

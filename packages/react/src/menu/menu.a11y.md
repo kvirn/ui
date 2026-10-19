@@ -33,7 +33,7 @@ Each rule below has a test:
 - **Dismissal.** Escape closes the innermost layer only. A press outside closes it (the trigger is not outside: its press toggles). Focus moving to an element outside the menu another way (a screen reader command, a script) closes it too (`focus-out`). The platform hiding the popup (another auto popover opening) closes it in the state too (`light-dismiss`).
 - **Composition.** Inside a vertical `Toolbar`, ArrowDown on the trigger opens the menu and the toolbar does not also move focus. Under `Tooltip.Trigger`, the tooltip closes while the menu is open. Inside a `Dialog`, the menu stacks above it and Escape closes the menu only. The popup leaves the toolbar's context.
 - **Server rendering.** The server writes the trigger and the closed popup with its items (`popover`, `role="menu"`, `data-placement`), and no inline position.
-- **`as`.** `Menu.Trigger` takes a component (`as={Button}`, or `Toolbar.Item as={Menu.Trigger}` the other way round) that must render a button and spread its props on a DOM node; its props are plain props, merged with the part's (handlers chain, `className` joins, refs merge). A trigger that is not a `<button>` warns in development. **Allowed elements:** Popup, Group and RadioGroup `div` (default) or `section`; GroupLabel `div` (default), `span` or `p`; another tag warns once in development and falls back. The items (`Item`, `CheckboxItem`, `RadioItem`) and `Separator` have no `as`: an action is a `<button>` with a menu role,, and a link in a menu would be announced as a menu item.
+- **`as`.** `Menu.Trigger` takes a component (`as={Button}`, or `Toolbar.Item as={Menu.Trigger}` the other way round) that must render a button and spread its props on a DOM node; its props are plain props, merged with the part's (handlers chain, `className` joins, refs merge). A trigger that is not a `<button>` warns in development. **Allowed elements:** Popup, Group and RadioGroup `div` (default) or `section`; GroupLabel `div` (default), `span` or `p`; another tag warns once in development and falls back. The items (`Item`, `CheckboxItem`, `RadioItem`) and `Separator` have no `as`: an action is a `<button>` with a menu role, and a link in a menu would be announced as a menu item.
 - **Dev warnings:** a part outside a Root; a Trigger that is not a `<button>`; a `RadioGroup` or `Group` with no name.
 
 ## Keyboard
@@ -100,7 +100,7 @@ Menu has no strings of its own and announces nothing: `aria-expanded` tells a sc
 - Colour: highlighted, disabled and checked items keep at least 4.5:1 contrast for text (1.4.3 Contrast (Minimum) (AA)) and the popup's edge at least 3:1 (1.4.11 Non-text Contrast (AA)).
 - forced-colors behaviour: the popup keeps a visible edge in the system's text colour, the highlighted item uses the system's highlight colours, and checked state is drawn from borders.
 - reduced-motion behaviour: no positional animation, ever.
-- Reflow: at 320px the popup is never wider than the screen minus its padding, and scrolls inside when it is too tall. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
+- Reflow: at 320px the popup is never wider than the screen minus its padding, and scrolls inside when it is too tall. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the reflow sweep runs every story at 320 CSS px and fails on horizontal overflow.
 - RTL: `bottom-start` lines the popup's right edge with the trigger's. ArrowUp and ArrowDown never flip.
 
 ## WCAG SCs covered
@@ -133,6 +133,17 @@ Menu has no strings of its own and announces nothing: `aria-expanded` tells a sc
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                     |
 
 Also pending, by hand: Tab out of the menu on Safari and Firefox (the focus start point after the popup closes), and how screen readers read disabled items.
+
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab to the button, then press Enter or ArrowDown: the first item has focus, and its name and role are read.
+- ArrowDown past the last item wraps to the first. Typing a first letter jumps to a matching item.
+- A disabled item is read as unavailable, with its linked reason.
+- Choose a checkbox or radio item: note what is read, and check that the page shows the new setting.
+- Escape closes the menu and focus returns to the button.
+- Tab while the menu is open closes it and moves to the next control.
 
 ## Known issues
 

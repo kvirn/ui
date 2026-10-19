@@ -188,7 +188,7 @@ export const radioAttributes: readonly AttributeRow[] = [
 
 export type RadioGroupRevealDocumentedProps = Pick<
   Extract<RadioGroupRevealProps, { as?: unknown }>,
-  'value' | 'messages'
+  'value' | 'messages' | 'as'
 >
 
 export const radioGroupRevealRows = propRows<RadioGroupRevealDocumentedProps>({
@@ -202,6 +202,11 @@ export const radioGroupRevealRows = propRows<RadioGroupRevealDocumentedProps>({
     description:
       'Overrides the announcement ("an input field has appeared below") for this instance.',
   },
+  as: {
+    type: '"div" | "section"',
+    default: '"div"',
+    description: 'The element to render.',
+  },
 })
 
 export const radioGroupRevealAttributes: readonly AttributeRow[] = [
@@ -213,10 +218,10 @@ export const radioGroupRevealAttributes: readonly AttributeRow[] = [
   {
     name: 'id',
     values: 'always',
-    meaning: 'Stable, and the radio’s `aria-controls` points at it.',
+    meaning: 'Stable, and the radio’s aria-controls points at it.',
   },
   { name: 'hidden', values: 'present or absent', meaning: 'Present until its radio is checked.' },
-  { name: 'data-state', values: '`open` or `closed`', meaning: 'Whether its radio is checked.' },
+  { name: 'data-state', values: '"open" or "closed"', meaning: 'Whether its radio is checked.' },
 ]
 
 export type RadioGroupLegendDocumentedProps = Pick<FieldsetLegendProps, 'marker'>

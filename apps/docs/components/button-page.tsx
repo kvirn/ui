@@ -66,7 +66,10 @@ export function ButtonPage({
             Write the label as a verb that says what will happen: “Send application”, not “OK”.
           </li>
           <li>Use one primary button per page, for the main next step.</li>
-          <li>Deleting and other actions that can’t be undone need a confirmation step.</li>
+          <li>
+            Before an action that can’t be undone, such as deleting, ask the user to confirm, for
+            example in an <Link href="/components/alert-dialog">AlertDialog</Link>.
+          </li>
           <li>
             Not for going to another page: use a <Link href="/components/link">Link</Link>.
           </li>
@@ -178,6 +181,14 @@ export function ButtonPage({
               { part: 'Button', prop: 'busy' },
               { part: 'Button', prop: 'onClick' },
             ]}
+            note={
+              <Note kind="reminder">
+                The spinner keeps moving for as long as the wait lasts. When a wait can run longer
+                than 5 seconds beside other content, offer a visible control that stops it (2.2.2
+                Pause, Stop, Hide). See{' '}
+                <Link href="/foundation/theming#moving-indicators">Moving indicators</Link>.
+              </Note>
+            }
           >
             <Saving />
           </UseCase>
@@ -193,15 +204,18 @@ export function ButtonPage({
             code={sources['icon-only']}
             note={
               <Note
-                kind="recipe"
+                kind="reminder"
                 more={
                   <CodeBlock
-                    code={`<Button aria-label={messages.close}><Icon name="close" /></Button>`}
+                    code={`<Button className="kv-button--icon-only" aria-label={messages.close}>
+  <Icon name="close" />
+</Button>`}
                   />
                 }
               >
-                Keep the icon decorative and put the name on the Button. A development warning says
-                so if an icon-only button has no name.
+                Without a name, a screen reader says only “button” (4.1.2 Name, Role, Value). Keep
+                the icon decorative and put the name on the Button. While you build, a warning in
+                the browser console tells you when an icon-only button has no name.
               </Note>
             }
           >
@@ -209,7 +223,19 @@ export function ButtonPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'visual-and-modes': (
+              <Note kind="reminder">
+                If you restyle buttons, keep every button at least 24 × 24 CSS pixels (2.5.8 Target
+                Size (Minimum)), so people with a tremor or large fingers can hit it.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

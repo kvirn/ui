@@ -8,13 +8,17 @@ import { Note } from './note.tsx'
 import { UseCase } from './use-case.tsx'
 import {
   alertDialogActionsAttributes,
+  alertDialogActionsRows,
   alertDialogBodyAttributes,
+  alertDialogBodyRows,
   alertDialogCloseAttributes,
   alertDialogCloseRows,
   alertDialogDescriptionAttributes,
+  alertDialogDescriptionRows,
   alertDialogPopupAttributes,
   alertDialogRootRows,
   alertDialogTitleAttributes,
+  alertDialogTitleRows,
   alertDialogTriggerAttributes,
   useAlertDialogHook,
 } from '../content/alert-dialog.api.ts'
@@ -70,15 +74,18 @@ const parts: ApiPart[] = [
         <code>&lt;h2&gt;</code> that names the alert dialog: the question the buttons answer.
       </>
     ),
+    props: alertDialogTitleRows,
     attributes: alertDialogTitleAttributes,
   },
   {
     name: 'AlertDialog.Description',
     renders: (
       <>
-        <code>&lt;p&gt;</code> with the consequence. Always give one: it is read out with the title.
+        <code>&lt;p&gt;</code> with the consequence. Always give one: a screen reader (software that
+        reads the screen aloud) reads it out with the title.
       </>
     ),
+    props: alertDialogDescriptionRows,
     attributes: alertDialogDescriptionAttributes,
   },
   {
@@ -88,6 +95,7 @@ const parts: ApiPart[] = [
         <code>&lt;div&gt;</code> for content between the description and the actions.
       </>
     ),
+    props: alertDialogBodyRows,
     attributes: alertDialogBodyAttributes,
   },
   {
@@ -97,6 +105,7 @@ const parts: ApiPart[] = [
         <code>&lt;div&gt;</code> for your buttons, the primary one first.
       </>
     ),
+    props: alertDialogActionsRows,
     attributes: alertDialogActionsAttributes,
   },
   {
@@ -135,7 +144,7 @@ export function AlertDialogPage({
           </li>
           <li>
             Use it in a page or a form for residents and in staff tools alike. Opening it on page
-            load is for system messages only, such as the timeout warning.
+            load is for system messages only, such as the session timeout warning.
           </li>
           <li>
             Not for a form or a read the user may dismiss: that is a{' '}
@@ -146,10 +155,6 @@ export function AlertDialogPage({
             <Link href="/components/alert">Alert</Link>.
           </li>
           <li>Not for a multi-step form or long reading: use a page.</li>
-          <li>
-            Write the title as the question the buttons answer, and the buttons as a verb and an
-            object, as <Link href="#what-you-need-to-do">What you need to do</Link> says.
-          </li>
         </ul>
       }
       example={
@@ -188,7 +193,14 @@ export function AlertDialogPage({
           <UseCase
             id="delete-several"
             title="Delete the cases chosen in a list"
-            why="A case worker chooses several cases and deletes them. Put what will be deleted in the Body, so the answer is made with the facts in view, and say how many in the title and on the button. Render the safe action with your own Button component."
+            why={
+              <>
+                A case worker chooses several cases and deletes them. Put what will be deleted in
+                the Body, so the answer is made with the facts in view, and say how many in the
+                title and on the button. Render the safe action with your own Button component:{' '}
+                <code>as={'{Button}'}</code> on <code>AlertDialog.Close</code>.
+              </>
+            }
             code={sources['delete-cases']}
             propsUsed={[
               { part: 'AlertDialog.Root', prop: 'initialFocusRef' },
@@ -226,7 +238,15 @@ export function AlertDialogPage({
           <UseCase
             id="action-fails"
             title="Delete a booking when the delete fails"
-            why="A confirm button can fail. Keep the alert dialog open, so nothing is lost, and show the error inside it with an Alert. The page’s live regions are inert while the dialog is open, so the dialog hosts its own. An Alert with announce is read out through it."
+            why={
+              <>
+                A confirm button can fail. Keep the alert dialog open, so nothing is lost, and show
+                the error inside it with an <Link href="/components/alert">Alert</Link>. The page
+                behind a modal dialog is inert, so the page’s live regions (the areas a screen
+                reader watches for new text) are silent while it is open. The dialog hosts its own,
+                and an Alert with <code>announce</code> is read out through it.
+              </>
+            }
             code={sources['failed-delete']}
             propsUsed={[
               { part: 'AlertDialog.Root', prop: 'open' },

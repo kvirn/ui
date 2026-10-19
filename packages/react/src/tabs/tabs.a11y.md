@@ -1,12 +1,12 @@
 # Accessibility contract: Tabs
 
 - **APG pattern:** [Tabs](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/), with the keyboard practice for a composite widget (one Tab stop, a roving `tabindex`).
-- **Deviations:** two, both approved by the maintainer and recorded in the project's keyboard and APG notes. (1) **A panel has `tabindex="0"` by default.** APG sets it only when the panel has no focusable content, and a headless panel cannot know its first content without scanning the DOM. One redundant Tab stop is the lesser evil: no default would strand keyboard users on a panel of scrolling text (2.1.1). A panel that starts with a focusable element passes `tabIndex={-1}`. (2) **A disabled tab stays focusable** (`aria-disabled="true"`, as the project's keyboard rules say for items of a composite widget), and automatic activation never selects it, so focus and selection can differ. APG is silent on both.
+- **Deviations:** two, both approved by the maintainer. (1) **A panel has `tabindex="0"` by default.** APG sets it only when the panel has no focusable content, and a headless panel cannot know its first content without scanning the DOM. One redundant Tab stop is the lesser evil: no default would strand keyboard users on a panel of scrolling text (2.1.1). A panel that starts with a focusable element passes `tabIndex={-1}`. (2) **A disabled tab stays focusable** (`aria-disabled="true"`, as the project's keyboard rules say for items of a composite widget), and automatic activation never selects it, so focus and selection can differ. APG is silent on both.
 - **Native elements used:** `<button type="button">` for a tab, `<div>` for the root, the list and a panel. The roles are explicit: `tablist`, `tab` and `tabpanel`.
-- **Status:** alpha candidate. Accessibility-reviewer APPROVE (2026-10-06). Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer APPROVE. Manual AT is `pending`.
 - **Tests:** `tabs.test.tsx` and `tabs-ids.test.ts` next to this file. `tabs.stories.tsx` in `apps/storybook/src/components/tabs/`.
 
-Tabs show one panel of content at a time, with a list of tabs to switch between them: a keyboard user passes the tab list with one Tab press, moves between the tabs with the arrow keys and reaches the selected panel with the next Tab, and a screen reader user hears "tab, 2 of 3, selected". Tabs change content on the same page. For links to other pages, use [Navigation](../navigation/navigation.a11y.md) (`kv-navigation--horizontal`): a tab never navigates.
+Tabs show one panel of content at a time, with a list of tabs to switch between them: a keyboard user passes the tab list with one Tab press, moves between the tabs with the arrow keys and reaches the selected panel with the next Tab, and a screen reader user usually hears "tab, 2 of 3, selected". Tabs change content on the same page. For links to other pages, use [Navigation](../navigation/navigation.a11y.md) (`kv-navigation--horizontal`): a tab never navigates.
 
 ## Roles, states, properties
 
@@ -78,17 +78,17 @@ Escape and the typed characters are not handled, and there is no typeahead (APG 
 ## Visual / modes
 
 - Focus indicator: a tab and a panel each show the same focus ring as a link: at least 2px thick, set off from the element (2.4.7 Focus Visible, level AA; 2.4.13 Focus Appearance, level AAA).
-- Target size: a tab is at least 24 × 24 CSS px, and taller in the default theme (2.5.8). Test: `tabs.stories.tsx › Default` and `CompactDensity`.
-- State without colour: the selected tab is bold and has a straight bar at its edge, not colour alone (1.4.1, 1.4.11). A disabled tab is dimmed text and `aria-disabled`. Test: `tabs.stories.tsx › DisabledTab`.
-- forced-colors behaviour (Windows contrast themes): the bar, the line under the list and the text use the system's colours, a disabled tab uses the system's disabled-text colour, and the focus ring uses its highlight colour. Test: `tabs.stories.tsx › ForcedColors`.
-- reduced-motion behaviour: nothing animates.
-- Reflow: the list wraps, row by row, and never scrolls sideways. A long label wraps inside its tab. A vertical set stacks below 40rem (1.4.10). Test: `tabs.stories.tsx › LongFinnishText`.
+- Target size: a tab is at least 24 × 24 CSS px, and taller in the default theme (2.5.8). A story asserts that threshold, also in the compact density.
+- State without colour: the selected tab is bold and has a straight bar at its edge, not colour alone (1.4.1, 1.4.11). A disabled tab is dimmed text and `aria-disabled`.
+- forced-colors behaviour (Windows contrast themes): the bar, the line under the list and the text use the system's colours, a disabled tab uses the system's disabled-text colour, and the focus ring uses its highlight colour. The forced-colours sweep checks that every tab keeps a visible boundary and shows a focus indicator when it has focus (1.4.11).
+- reduced-motion behaviour: nothing animates, and the reduced-motion sweep checks that no animation keeps looping (2.3.3).
+- Reflow: the list wraps, row by row, and never scrolls sideways. A long label wraps inside its tab. A vertical set stacks below 40rem (1.4.10). The reflow sweep runs every story at 320 CSS px and fails on horizontal overflow, and one story uses a long Finnish text. The text-spacing sweep applies the 1.4.12 spacing and fails on a box that clips its content.
 - Right to left: logical properties only, and the arrows flip (above). The bar of a vertical tab is at the inline end.
 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships (A): `tablist`, `tab` and `tabpanel`, a tab and its panel tied by `aria-controls` and `aria-labelledby`.
-- 1.4.1 Use of Color (A), 1.4.11 Non-text Contrast (AA): the selected tab is a bar and a weight, and the default theme's bar and focus ring are held to a 3:1 contrast by `theme:check`.
+- 1.4.1 Use of Color (A), 1.4.11 Non-text Contrast (AA): the selected tab is a bar and a weight, and the default theme's bar and focus ring are held to a 3:1 contrast in every theme.
 - 1.4.10 Reflow (AA): the list wraps and never scrolls sideways.
 - 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A): every tab and panel is reachable, and Tab always leaves.
 - 2.4.3 Focus Order (A), 2.4.7 Focus Visible (AA): one Tab stop, DOM order, the panel next.
@@ -112,6 +112,16 @@ Escape and the typed characters are not handled, and there is no typeahead (APG 
 | JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                    |
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                    |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                    |
+
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab into the list: focus lands on the selected tab.
+- Right and Left move between the tabs, wrap, and change the panel.
+- Tab from a tab goes to the panel.
+- With `activationMode="manual"` the arrows move focus and Enter selects.
+- A disabled tab is reached and read as unavailable.
 
 ## Known issues
 

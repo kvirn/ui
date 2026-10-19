@@ -93,7 +93,7 @@ Popover has no strings of its own and announces nothing: `aria-expanded` changes
 - Colour: the popup's edge keeps at least 3:1 contrast against the page (1.4.11 Non-text Contrast, AA) and its text at least 4.5:1 on its surface (1.4.3 Contrast (Minimum), AA). The default theme draws the popup on the raised surface in the body text colour, the same pair as a menu; if you restyle it you meet both pairs.
 - forced-colors behaviour (a mode where the system chooses the colours): the default theme gives the popup a `CanvasText` border and no shadow; if you restyle it, keep a visible edge in the system's text colour. The open state is shown by `aria-expanded`, never by colour alone (1.4.1 Use of Color, A).
 - reduced-motion behaviour: the hook animates nothing. If you fade the popup, fade opacity only and switch it off under `prefers-reduced-motion`.
-- Reflow: at 320px the popup is never wider than the viewport minus the padding, scrolls inside when it is too tall, and the page has no horizontal scroll. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow.
+- Reflow: at 320px the popup is never wider than the viewport minus the padding, scrolls inside when it is too tall, and the page has no horizontal scroll. No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the reflow sweep runs every story at 320 CSS px and fails on horizontal overflow.
 - RTL (right-to-left text): `start` and `end` placements follow the anchor's direction: `bottom-start` lines the popup's right edge with the trigger's in right-to-left text.
 
 ## WCAG SCs covered
@@ -127,9 +127,20 @@ Popover has no strings of its own and announces nothing: `aria-expanded` changes
 
 Also pending, by hand: whether screen readers announce the popup's name when focus first enters it with Tab, and whether `popover="auto"` light dismiss and our own Escape and outside-press handling agree on Safari 17 and iOS.
 
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Press Enter on the button: "expanded" is read, and focus stays on the button.
+- Tab goes into the popup, and its name is read.
+- Tab past the last control leaves the popup, which stays open.
+- Escape inside the popup closes it and focus returns to the button.
+- Close closes the popup and focus returns to the button.
+- Click elsewhere: the popup closes and focus does not land in an odd place.
+
 ## Known issues
 
 - **Opening does not move focus,** so a screen reader user hears only "expanded" on the trigger and has to move on with Tab (or a virtual cursor key) to reach the popup. This is the disclosure pattern and is deliberate. A Dialog is the pattern for content that must take focus.
 - **A closed popup's content is in the DOM,** hidden by the browser. A popup with a heavy subtree, or with ids that must be unique, is the consumer's to render conditionally.
 - **Safari 17 and iOS are not covered by the automated tests.** `popover` light dismiss and the toggle event differ a little between browsers. Check them in Safari yourself.
-- **The popup's default look is new.** The theme draws `kv-popover-popup` like a menu popup (level 3, `xl` radius, `--kv-space-4` padding, 24rem at most) and fades it in on open; `kv-popover-trigger` and `kv-popover-close` take the Button look you give them. Its design review is still open.
+- **The default popup is a raised surface with an edge, rounded corners and padding.** If you restyle it, keep the edge and the surface (Visual / modes).

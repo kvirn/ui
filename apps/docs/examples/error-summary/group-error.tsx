@@ -5,22 +5,25 @@ import { useErrorSummaryTexts } from './texts.ts'
 
 export function GroupError() {
   const { texts } = useErrorSummaryTexts()
-  const firstNameId = `${useId()}-first-name`
+  const idPrefix = useId()
+  const firstNameId = `${idPrefix}-first-name`
+  const lastNameId = `${idPrefix}-last-name`
   const [submitCount, setSubmitCount] = useState(0)
-  const [isIncomplete, setIsIncomplete] = useState(false)
+  // The id of the first box left empty: the summary links to it.
+  const [firstEmptyId, setFirstEmptyId] = useState<string | undefined>(undefined)
 
   return (
     <Stack className="kv-stack--gap-8">
-      {isIncomplete ? (
+      {firstEmptyId === undefined ? null : (
         <ErrorSummary.Root focusKey={submitCount}>
           <ErrorSummary.Title />
           <ErrorSummary.List>
             <ErrorSummary.Item>
-              <ErrorSummary.Link controlId={firstNameId}>{texts.nameError}</ErrorSummary.Link>
+              <ErrorSummary.Link controlId={firstEmptyId}>{texts.nameError}</ErrorSummary.Link>
             </ErrorSummary.Item>
           </ErrorSummary.List>
         </ErrorSummary.Root>
-      ) : null}
+      )}
       <Stack
         className="kv-stack--gap-8"
         as="form"
@@ -28,17 +31,23 @@ export function GroupError() {
         onSubmit={(event) => {
           event.preventDefault()
           const data = new FormData(event.currentTarget)
-          setIsIncomplete(data.get('firstName') === '' || data.get('lastName') === '')
+          setFirstEmptyId(
+            data.get('firstName') === ''
+              ? firstNameId
+              : data.get('lastName') === ''
+                ? lastNameId
+                : undefined,
+          )
           setSubmitCount((count) => count + 1)
         }}
       >
-        <Fieldset.Root group required invalid={isIncomplete}>
+        <Fieldset.Root group required invalid={firstEmptyId !== undefined}>
           <Fieldset.Legend>{texts.nameQuestion}</Fieldset.Legend>
           <Field.Root controlId={firstNameId} required>
             <Field.Label>{texts.firstName}</Field.Label>
             <TextInput name="firstName" autoComplete="given-name" />
           </Field.Root>
-          <Field.Root required>
+          <Field.Root controlId={lastNameId} required>
             <Field.Label>{texts.lastName}</Field.Label>
             <TextInput name="lastName" autoComplete="family-name" />
           </Field.Root>

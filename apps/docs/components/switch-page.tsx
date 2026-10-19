@@ -132,8 +132,8 @@ export function SwitchPage({
             code={sources['help-text']}
             note={
               <Note kind="tip">
-                A help text is plain text: no link, list or heading, because a screen reader reads
-                it as one flat string.
+                A help text is plain text: no link, list or heading. A screen reader reads it as one
+                flat string, so a link or list in it would lose its meaning.
               </Note>
             }
           >
@@ -142,7 +142,7 @@ export function SwitchPage({
           <UseCase
             id="disabled-with-reason"
             title="A setting that isn’t available"
-            why="Disable the switch and say why in its help text, with what the user can do about it. Never put the reason in a tooltip. A disabled switch is skipped by Tab, so the help text is the only place the reason is."
+            why="Disable the switch and say why in its help text, with what the user can do about it. Never put the reason in a tooltip. A disabled switch is skipped by Tab, so write the reason as visible text, as here."
             code={sources['disabled-with-reason']}
           >
             <DisabledWithReason />

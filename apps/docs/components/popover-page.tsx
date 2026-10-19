@@ -37,12 +37,7 @@ export type PopoverExampleSources = Record<
 const parts: ApiPart[] = [
   {
     name: 'Popover.Root',
-    renders: (
-      <>
-        no element. It owns the open state and passes it to the parts inside it. The default theme
-        is described on <Link href="/foundation/theming">Theming</Link>.
-      </>
-    ),
+    renders: <>no element. It owns the open state and passes it to the parts inside it.</>,
     props: popoverRootRows,
   },
   {
@@ -140,9 +135,9 @@ export function PopoverPage({
             ]}
             note={
               <Note kind="reminder">
-                Focus goes back to the button by itself when the popup closes with Escape, Close, a
-                press outside or a light dismiss. When your own code closes it, as after Save, move
-                focus there yourself (2.4.3 Focus Order). See{' '}
+                Focus goes back to the button by itself when a person closes the popup with Escape,
+                Close, a press outside or a light dismiss, and focus was in the popup. When your own
+                code closes it, as after Save, move focus there yourself (2.4.3 Focus Order). See{' '}
                 <Link href="#focus">Focus management</Link>.
               </Note>
             }
@@ -171,7 +166,7 @@ export function PopoverPage({
           <UseCase
             id="application-rows"
             title="A details button on every row"
-            why="Each row gets its own Popover. The browser allows one open popover at a time, so opening another closes the first. Give every button a name that says which row it is for, starting with the visible word, and name each popup by its own heading."
+            why="Each row gets its own Popover. In the browser, opening one popover closes any other that is open. Give every button a name that says which row it is for, starting with the visible word, and name each popup by its own heading."
             code={sources['application-rows']}
             note={
               <Note kind="reminder">
@@ -188,9 +183,10 @@ export function PopoverPage({
             title="Know why it closed"
             why={
               <>
-                Keep the open state yourself when the page needs to react, for example to save a
-                draft. <code>onOpenChange</code> says why it changed. With <code>open</code> set,
-                closing is a request: you decide whether to close.
+                Keep the open state yourself when the page needs to react to the popover opening or
+                closing. <code>onOpenChange</code> says why it changed. This example shows whether
+                the popover is open and the last reason. With <code>open</code> set, closing is a
+                request: you decide whether to close.
               </>
             }
             code={sources['controlled']}

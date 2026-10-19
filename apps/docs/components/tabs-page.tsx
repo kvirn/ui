@@ -162,13 +162,13 @@ export function TabsPage({
           </UseCase>
           <UseCase
             id="disabled-tab"
-            title="A tab that isn’t available yet"
+            title="A tab that can’t be used right now"
             why={
               <>
-                A tab can’t be used until something has happened. People can still reach it with the
-                arrow keys, and a screen reader (software that reads the screen aloud) says it is
-                unavailable, so they can find it. Link the reason to it with{' '}
-                <code>aria-describedby</code>.
+                Sometimes a tab can’t be used until something has happened, such as a decision on a
+                case. People can still reach it with the arrow keys, and a screen reader (software
+                that reads the screen aloud) says it is unavailable, so they can find it. Link the
+                reason to it with <code>aria-describedby</code>.
               </>
             }
             code={sources['disabled-tab']}
@@ -211,10 +211,11 @@ export function TabsPage({
             title="A panel that starts with a link or a field"
             why={
               <>
-                A panel is a Tab stop (<code>tabindex</code> 0), so keyboard users can reach one
-                that holds only text and scroll it. When its first content is a link or a field,
-                pass <code>tabIndex</code> -1 so Tab goes straight to it and the panel isn’t an
-                extra stop.
+                A panel is a Tab stop (a place where the Tab key stops, set with{' '}
+                <code>tabindex=&quot;0&quot;</code>), so keyboard users can reach a panel that holds
+                only text and scroll it. When its first content is a link or a field, pass{' '}
+                <code>tabIndex={'{-1}'}</code> so Tab goes straight to that link or field and the
+                panel isn’t an extra stop.
               </>
             }
             code={sources['focusable-panel']}
@@ -224,7 +225,26 @@ export function TabsPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Name the tab list with <code>aria-label</code> or <code>aria-labelledby</code> when
+                a page has more than one set of tabs, so a screen reader user can tell them apart
+                (4.1.2 Name, Role, Value, level A). Every example on this page does it.
+              </Note>
+            ),
+            focus: (
+              <Note kind="tip">
+                Choosing a tab never moves focus. It stays on the tab, and the next Tab press goes
+                to the panel. A keyboard user moves from the tabs to the panel with one Tab press.
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

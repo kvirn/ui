@@ -50,7 +50,7 @@ export const readyMadeRootRows = propRows<
     type: "Partial<KvirnMessages['alert']>",
     default: '–',
     description:
-      'Per-instance override of this root’s status word, such as { dangerPrefix: "Viktigt:" }, and of the close button’s name.',
+      'Per-instance override of this root’s status word, such as { dangerPrefix: "Important:" }, and of the close button’s name.',
   },
   icon: {
     type: 'ReactNode',

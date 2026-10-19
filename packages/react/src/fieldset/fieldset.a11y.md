@@ -1,7 +1,7 @@
 # Accessibility contract: Fieldset (Fieldset.Root, Fieldset.Legend, Fieldset.ErrorMessage, Fieldset.Prose as the description and Fieldset.HelpText as the help text)
 
 - **APG pattern:** none. A fieldset is native HTML: `<fieldset>` with a `<legend>` is the group's name, and the browser maps it to the `group` role.
-- **Deviations:** none from APG. Decisions: the parts, the wiring, nesting, the legend marker, the default order, and several descriptions and help texts. A Prose in a Fieldset is the group's description (there is no Fieldset.Description), and the group's help text is `Fieldset.HelpText`.
+- **Deviations:** none from APG. A Prose in a Fieldset is the group's description (there is no Fieldset.Description), and the group's help text is `Fieldset.HelpText`.
 - **Native elements used:** `<fieldset>` (Fieldset.Root), `<legend>` (Fieldset.Legend), `<p>` (Fieldset.ErrorMessage, which behaves like Field.ErrorMessage), a `<div class="kv-prose">` for the description (Fieldset.Prose), a `<p class="kv-field-help-text">` for the help text (Fieldset.HelpText), and a `<span>` for the optional marker.
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `fieldset.test.tsx` next to this file. `fieldset.stories.tsx` in `apps/storybook/src/components/fieldset/`.
@@ -22,13 +22,13 @@ A Fieldset groups related questions or the options of one question. Its legend i
 Rules, tested in `fieldset.test.tsx`:
 
 - The legend is the first child of the fieldset in the DOM (the browser needs this for the name).
-- A Fieldset's `invalid` marks its own parts only. It doesn't pass down to the Fields inside, so a group error doesn't mark every control (`fieldset.test.tsx › invalid does not cascade: the Fields inside stay valid`).
-- A Field inside a `group` fieldset defaults to `marker="none"`: an option or a date box is never "(optional)". The group's legend carries the marker instead, when the group isn't `required` (`fieldset.test.tsx › marker defaults in a group`).
+- A Fieldset's `invalid` marks its own parts only. It doesn't pass down to the Fields inside, so a group error doesn't mark every control.
+- A Field inside a `group` fieldset defaults to `marker="none"`: an option or a date box is never "(optional)". The group's legend carries the marker instead, when the group isn't `required`.
 - A plain Fieldset only groups questions (for example an address), so its legend has no marker, and its Fields mark themselves.
 - Nested fieldsets: the nearest Fieldset's text parts win, and a plain Fieldset inside a group fieldset stops the group defaults.
-- A Prose, a HelpText and the Fieldset.ErrorMessage attach to the nearest Field or Fieldset, as in `field.a11y.md`: a Prose or a HelpText in a Field in the Fieldset describes that Field's control, not the group (`fieldset.test.tsx › Fieldset.HelpText (Plan 0029) › a Field’s own help text inside the group describes its input, not the group`, `prose.test.tsx › a Prose in a Field inside a Fieldset describes the Field’s control, not the group`).
-- A `Fieldset.Prose` in a Fieldset is the group's description (`prose.test.tsx › a Prose in a Fieldset describes the group`). It is the Prose's **text content**: a heading, list or link inside it is read as plain text, so keep a description short. A Prose that isn't a description goes outside the Fieldset. A help text is plain text only.
-- Several descriptions and help texts are listed in DOM order, then the error, each with its own id. With the default order that is the description, the help text, then the error (`fieldset.test.tsx › Fieldset.HelpText (Plan 0029) › aria-describedby lists the description, the help text, then the error`). A second Fieldset.ErrorMessage gives a dev warning (`fieldset.test.tsx › several descriptions`). `useFieldset({ descriptions })` and `getDescriptionProps(name)` give the same markup on the server.
+- A Prose, a HelpText and the Fieldset.ErrorMessage attach to the nearest Field or Fieldset, as in `field.a11y.md`: a Prose or a HelpText in a Field in the Fieldset describes that Field's control, not the group.
+- A `Fieldset.Prose` in a Fieldset is the group's description. It is the Prose's **text content**: a heading, list or link inside it is read as plain text, so keep a description short. A Prose that isn't a description goes outside the Fieldset. A help text is plain text only.
+- Several descriptions and help texts are listed in DOM order, then the error, each with its own id. With the default order that is the description, the help text, then the error. A second Fieldset.ErrorMessage gives a dev warning. `useFieldset({ descriptions })` and `getDescriptionProps(name)` give the same markup on the server.
 
 ## Keyboard
 
@@ -107,7 +107,15 @@ Message keys are the Field's (`field.optional`, `field.errorPrefix`), resolved t
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                    |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                    |
 
-Research question for the manual run with assistive technology: is the group's description and error announced on entering the group in each screen reader?
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab in from outside: the legend and "group" are read, then the description or the error (support differs).
+- A group that is not required reads "(optional)" at the end of its legend.
+- There is no Tab stop on the legend, description, help text or error.
+- Submit with a box empty: after focus lands on the first wrong box, the group's error can be heard.
+- A disabled fieldset: Tab skips every control.
 
 ## Known issues
 

@@ -1,12 +1,10 @@
 'use client'
 import { Button, ButtonGroup, Progress } from '@kvirn-ui/react'
 import { useEffect, useState } from 'react'
-import { useExampleTexts } from '../../components/example-texts.tsx'
 import { useButtonTexts } from './texts.ts'
 
 export function Saving() {
-  const { texts } = useExampleTexts()
-  const { texts: buttonTexts } = useButtonTexts()
+  const { texts } = useButtonTexts()
   const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
@@ -20,10 +18,10 @@ export function Saving() {
   return (
     <ButtonGroup>
       <Button busy={isSaving} onClick={() => setIsSaving(true)}>
-        {texts.button.saveDraft}
+        {texts.saveDraft}
       </Button>
       {isSaving ? (
-        <Progress.Root label={buttonTexts.saving}>
+        <Progress.Root label={texts.saving}>
           <Progress.Label />
         </Progress.Root>
       ) : null}

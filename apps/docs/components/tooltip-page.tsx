@@ -35,7 +35,6 @@ const parts: ApiPart[] = [
     renders: (
       <>
         no element. It owns the open state and the timing, and passes them to the parts inside it.
-        The default theme is described on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: tooltipRootRows,
@@ -68,7 +67,9 @@ const parts: ApiPart[] = [
     renders: (
       <>
         <code>&lt;span&gt;</code>. It takes every attribute of a <code>&lt;span&gt;</code> and
-        passes <code>ref</code> to it.
+        passes <code>ref</code> to it. It repeats the trigger’s name for sighted users and is hidden
+        from screen readers, which read the trigger’s own name. A popup that holds only a Name adds
+        nothing for a screen reader.
       </>
     ),
     props: tooltipNameRows,
@@ -97,7 +98,7 @@ export function TooltipPage({
   return (
     <ComponentPage
       title="Tooltip"
-      lead="It never takes focus and holds no controls."
+      lead="It shows the name or shortcut of a control when the pointer rests on it or the control has keyboard focus. It never takes focus and holds no controls."
       pattern="APG Tooltip"
       whenToUse={
         <ul>

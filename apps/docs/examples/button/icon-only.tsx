@@ -1,11 +1,11 @@
 'use client'
 import { Button, Icon } from '@kvirn-ui/react'
-import { useExampleTexts } from '../../components/example-texts.tsx'
+import { useButtonTexts } from './texts.ts'
 
 export function IconOnly() {
-  const { texts } = useExampleTexts()
+  const { texts } = useButtonTexts()
   return (
-    <Button className="kv-button--icon-only" aria-label={texts.button.closeLabel}>
+    <Button className="kv-button--icon-only" aria-label={texts.closeLabel}>
       <Icon name="close" />
     </Button>
   )

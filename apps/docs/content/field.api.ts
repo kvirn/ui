@@ -77,7 +77,11 @@ export const fieldProseAttributes: readonly AttributeRow[] = [
 ]
 
 export const fieldHelpTextAttributes: readonly AttributeRow[] = [
-  { name: 'kv-field-help-text', values: 'always', meaning: 'The part class: 14px in the theme.' },
+  {
+    name: 'kv-field-help-text',
+    values: 'always',
+    meaning: 'The part class. The default theme sets it a step smaller than the description.',
+  },
   { name: 'data-invalid', values: 'present or absent', meaning: 'The field is invalid.' },
   { name: 'data-disabled', values: 'present or absent', meaning: 'The field is disabled.' },
 ]
@@ -123,7 +127,7 @@ export const useFieldHook: ApiHook = {
       type: 'readonly string[]',
       default: '–',
       description:
-        'The names of the descriptions you render with getDescriptionProps(name), in render order. aria-describedby lists them in this order, then the error.',
+        'The names of the descriptions you render with getDescriptionProps(name), in render order. aria-describedby lists them in this order, then the error. If you also set hasDescription, that description comes first.',
     },
     hasErrorMessage: {
       type: 'boolean',

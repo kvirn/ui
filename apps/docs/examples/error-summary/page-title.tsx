@@ -34,7 +34,7 @@ export function PageTitle() {
           </ErrorSummary.List>
         </ErrorSummary.Root>
       ) : null}
-      <Field.Root controlId={emailId} invalid={isShown}>
+      <Field.Root controlId={emailId} required invalid={isShown}>
         <Field.Label>{texts.email}</Field.Label>
         <TextInput type="email" autoComplete="email" />
         <Field.ErrorMessage>{texts.emailError}</Field.ErrorMessage>

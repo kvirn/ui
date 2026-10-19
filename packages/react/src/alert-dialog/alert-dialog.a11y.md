@@ -1,7 +1,7 @@
 # Accessibility contract: AlertDialog (Root, Trigger, Popup, Title, Description, Body, Actions, Close)
 
 - **APG pattern:** [Alert Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/), a [Dialog (Modal)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) for a message that needs an answer. It shares its hook, focus rules and layer behaviour with Dialog: see the [Dialog](/components/dialog) page for everything not listed here.
-- **Deviations:** **Tab does not cycle inside the dialog**, as in Dialog: a native modal `<dialog>` lets Tab leave to browser UI before it wraps. Approved by the maintainer on 2026-10-06.
+- **Deviations:** **Tab does not cycle inside the dialog**, as in Dialog: a native modal `<dialog>` lets Tab leave to browser UI before it wraps. Approved by the maintainer.
 - **Native elements used:** `<dialog role="alertdialog">` (Popup), `<button>` (Trigger), `<h2>` (Title), `<p>` (Description), `<div>` (Body, Actions). Nothing for Root.
 - **Status:** alpha candidate. Accessibility-reviewer APPROVE. Manual AT is `pending`.
 - **Tests:** `alert-dialog.test.tsx` next to this file, and `../dialog/dialog.test.tsx` for the shared behaviour. `alert-dialog.stories.tsx` in `apps/storybook/src/components/alert-dialog/`.
@@ -89,15 +89,17 @@ Opening is announced by the focus move: role "alertdialog", the name, and the de
 - Focus indicator: the trigger and the actions are Buttons, so they have the Button's focus ring (2.4.7 Focus Visible, AA). The Title shows the same ring after a keyboard open.
 - Target size: the buttons are at least 24 × 24 CSS px, and taller in the default theme (2.5.8 Target Size (Minimum), AA).
 - Colour: the dialog's text has at least 4.5:1 contrast on its surface (1.4.3 Contrast (Minimum), AA). A destructive confirm is a danger button with the words carrying the risk, never colour alone (1.4.1 Use of Color, A).
-- forced-colors behaviour (Windows contrast themes): the dialog keeps a visible edge in the system text colour on all sides, so the open state is never shown by colour alone. Test: `alert-dialog.stories.tsx › ForcedColors`.
+- forced-colors behaviour (Windows contrast themes): the dialog keeps a visible edge in the system text colour on all sides, so the open state is never shown by colour alone. The forced-colours sweep checks that every part keeps a visible boundary and shows a focus indicator when it has focus (1.4.11).
 - reduced-motion behaviour: opening fades in only when the user allows motion. Closing is always instant, so focus returns at once.
-- Reflow: no fixed width or height. At 320 CSS px and 400% zoom it needs no horizontal scrolling, and it scrolls inside when it is too tall (1.4.10 Reflow, AA). At 320 CSS px the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow; 400% zoom is reviewed in the stories.
-- RTL: logical properties only. The actions start at the inline start. Test: `alert-dialog.stories.tsx › Rtl`.
+- Reflow: no fixed width or height. At 320 CSS px and 400% zoom it needs no horizontal scrolling, and it scrolls inside when it is too tall (1.4.10 Reflow, AA). The reflow sweep runs every story at 320 CSS px and fails on horizontal overflow; 400% zoom is reviewed in the stories.
+- Text spacing (1.4.12 Text Spacing, AA): the text-spacing sweep applies the spacing to every story and fails on a box that clips its content.
+- RTL: logical properties only. The actions start at the inline start.
 
 ## WCAG SCs covered
 
 - 1.3.1 Info and Relationships (A) and 4.1.2 Name, Role, Value (A): the role `alertdialog`, the name from the Title and the description (`alert-dialog.test.tsx › an open alert dialog is modal, has role alertdialog, a name, a description and no axe violations`).
-- 1.4.10 Reflow (AA): the sheet and the scroll inside it (the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow).
+- 1.4.10 Reflow (AA): the sheet and the scroll inside it (the reflow sweep runs every story at 320 CSS px and fails on horizontal overflow).
+- 1.4.12 Text Spacing (AA): the text-spacing sweep applies the spacing to every story and fails on a box that clips its content.
 - 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A) and 2.4.3 Focus Order (A): native keys and Escape, Tab can always leave to the browser, and focus goes in on open and back on close (`alert-dialog.test.tsx › Escape reports escape, closes the alert dialog and returns focus to the trigger`).
 - 2.2.1 Timing Adjustable (A): for a timeout warning. This is the consumer's block, see Consumer responsibilities.
 - 2.4.7 Focus Visible (AA) and 2.4.11 Focus Not Obscured (Minimum) (AA): the buttons' focus ring, and nothing is pinned, so nothing covers the focused control.
@@ -113,7 +115,7 @@ Opening is announced by the focus move: role "alertdialog", the name, and the de
 | axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | alert-dialog.stories.tsx, every story, 4 themes                                                                                                            |
 | Markup and ARIA (roles, names, ids, states)                                | pass        | n/a         | pass    | `alert-dialog.test.tsx` (axe and role, name and state): `an open alert dialog is modal, has role alertdialog, a name, a description and no axe violations` |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 11 rows, each names a test in `alert-dialog.test.tsx`                                                                                                      |
-| Focus order and management                                                 | pass        | n/a         | pass    | `alert-dialog.test.tsx`: `Tab focuses the trigger, and is one stop`                                                                                        |
+| Focus order and management                                                 | pass        | n/a         | pass    | `alert-dialog.test.tsx`: `initial focus is initialFocusRef, the safe action, not the first control`                                                        |
 | Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pass        | n/a         | pass    | the four sweep projects (`storybook-forced-colors`, `-reduced-motion`, `-reflow`, `-text-spacing`), run in CI                                              |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                                                                            |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                                            |
@@ -124,6 +126,15 @@ Opening is announced by the focus move: role "alertdialog", the name, and the de
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                            |
 
 Also pending, by hand: whether `aria-haspopup="dialog"` on an alert dialog's trigger is the best token, and whether the description is read out with the name on every screen reader.
+
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Open the alert dialog: focus is on the safe action, and the title and the description are read.
+- Escape closes it with the safe outcome.
+- A tap on the backdrop does nothing.
+- Over a Dialog, Escape closes only the alert dialog.
 
 ## Known issues
 

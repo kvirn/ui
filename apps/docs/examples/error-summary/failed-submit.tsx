@@ -43,12 +43,12 @@ export function FailedSubmit() {
           setIsSent(!next.email && !next.phone)
         }}
       >
-        <Field.Root controlId={emailId} invalid={errors.email}>
+        <Field.Root controlId={emailId} required invalid={errors.email}>
           <Field.Label>{texts.email}</Field.Label>
           <TextInput name="email" type="email" autoComplete="email" />
           <Field.ErrorMessage>{texts.emailError}</Field.ErrorMessage>
         </Field.Root>
-        <Field.Root controlId={phoneId} invalid={errors.phone}>
+        <Field.Root controlId={phoneId} required invalid={errors.phone}>
           <Field.Label>{texts.phone}</Field.Label>
           <TextInput name="phone" type="tel" autoComplete="tel" />
           <Field.ErrorMessage>{texts.phoneError}</Field.ErrorMessage>

@@ -146,7 +146,7 @@ export const useFieldsetHook: ApiHook = {
       type: 'readonly string[]',
       default: '–',
       description:
-        'The names of the descriptions you render with getDescriptionProps(name), in render order. aria-describedby lists them in this order, then the error.',
+        'The names of the descriptions you render with getDescriptionProps(name), in render order. aria-describedby lists them in this order, then the error. If you also set hasDescription, that description comes first.',
     },
     hasErrorMessage: {
       type: 'boolean',

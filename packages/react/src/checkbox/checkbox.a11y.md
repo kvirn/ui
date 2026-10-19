@@ -26,7 +26,7 @@ Rules, tested in `checkbox.test.tsx`:
 - **`aria-invalid` on a standalone Checkbox** when its Field is `invalid`. A Checkbox in a group gets only `data-invalid` from the group (`checkbox-group.a11y.md`).
 - **The error of a standalone checkbox** (a declaration) is the Field.ErrorMessage, under the row, in `aria-describedby` after the option's help text.
 - **Disabled.** A Field's `disabled` or the prop gives native `disabled` and `data-disabled`. The label of a disabled choice is muted by the theme, never hidden.
-- **Dev warnings (once):** a Checkbox in a Field with no Field.Label (no accessible name, 1.3.1/4.1.2); an `id` inside a Field (ignored: set `controlId` on the Field).
+- **Dev warnings (once):** a Checkbox in a Field with no Field.Label (no accessible name, 1.3.1/4.1.2); an `id` inside a Field (ignored: set `controlId` on the Field); a Checkbox with no accessible name at all.
 
 ## Keyboard
 
@@ -67,12 +67,12 @@ None. Nothing is live. On focus a screen reader reads the label, "checkbox", the
 - Own `indeterminate`: set it from your data (some, not all, children are checked) and pass `false` once the user has chosen. Don't use it for a checkbox that was never answered.
 - Validate and set `invalid` yourself; render a Field.ErrorMessage that says what to do ("Confirm that the information is correct").
 - On a failed send, move focus to the ErrorSummary or to the first invalid field. The Checkbox's error is not live and is read only when the box gets focus (3.3.1 Error Identification (A), 4.1.3 Status Messages (AA)).
-- Don't use a checkbox where a [Switch](/components/switch) or a button is meant (a setting that is saved at once is a Switch), and don't use one for "yes or no" questions that need both answers: use a [RadioGroup](/components/radio-group).
+- Don't use a checkbox where a Switch or a button is meant (a setting that is saved at once is a Switch), and don't use one for "yes or no" questions that need both answers: use a RadioGroup.
 
 ## Visual / modes
 
 - Focus indicator: on keyboard focus, a ring at least 2px thick, set off from the box, with at least 3:1 contrast against the adjacent colours, drawn around the box (2.4.7 Focus Visible (AA); 2.4.13 Focus Appearance (AAA)).
-- Target size: the box is 24 × 24 CSS px, the minimum of 2.5.8 Target Size (Minimum) (AA). The whole row is the target: the label spans the row and is 44px high in the default theme (32px in the compact density).
+- Target size: the box is 24 × 24 CSS px, the minimum of 2.5.8 Target Size (Minimum) (AA). The whole row is the target: the label spans the row and is at least 24px high in every density (2.5.8).
 - Colour: the box's edge has at least 3:1 contrast against its background (1.4.11 Non-text Contrast (AA)). Checked and indeterminate boxes are filled, with a drawn tick or dash in a contrasting colour. Unchecked and checked differ in shape (a mark appears), not only in colour (1.4.1 Use of Color (A)). An invalid box has a thicker edge plus the error message, never colour alone. A disabled box has a dashed edge, and its label is muted, never hidden.
 - forced-colors behaviour (Windows contrast themes): the tick and dash are drawn as shapes and take the system's colours. Checked and indeterminate boxes use the highlight colour for fill and edge, with a highlight-text mark. An invalid box has a thick edge in the text colour. A disabled box has a dashed edge in the disabled-text colour.
 - reduced-motion behaviour: the edge and fill change with a transition only when motion is allowed. The mark appears instantly.
@@ -82,7 +82,7 @@ None. Nothing is live. On focus a screen reader reads the label, "checkbox", the
 
 - 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): native checkbox, label `for`, mixed state from the DOM property.
 - 1.4.1 Use of Color (A), 1.4.11 Non-text Contrast (AA): the mark's shape, the edge and the invalid width.
-- 1.4.3 Contrast (Minimum) (AA): the label, help and error text use the theme's text colours, whose pairs `theme:check` measures.
+- 1.4.3 Contrast (Minimum) (AA): the label, help and error text use the theme's text colours, whose contrast pairs are measured in every theme.
 - 2.1.1 Keyboard (A), 2.4.3 Focus Order (A): native Tab and Space.
 - 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA), 2.4.13 Focus Appearance (AAA, not counted toward the AA bar).
 - 2.5.3 Label in Name (A), 2.5.8 Target Size (Minimum) (AA): the visible label is the name; the box is 24 × 24 CSS px and the whole row is the target.
@@ -106,10 +106,20 @@ None. Nothing is live. On focus a screen reader reads the label, "checkbox", the
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                    |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                    |
 
-Questions for the manual testing with assistive technology: is "mixed" announced on an indeterminate checkbox in each screen reader? Is the standalone checkbox's error read after the help text on focus? Does a Voice Control user check the box by saying its visible label?
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab to the box: the label, "checkbox", the state and the help text are read.
+- Press Space: the state changes and is read.
+- Enter in a form does not toggle the box.
+- Click the label: the box toggles and takes focus.
+- A "select all" box with some rows chosen reads "mixed".
+- Send a declaration unchecked: focus moves to the box and the error is read.
+- With voice control, say the visible label to check the box.
 
 ## Known issues
 
-- **`indeterminate` can't be server-rendered.** The DOM property is set in a layout effect, so the first paint of server markup is unchecked, and a mixed box looks unchecked until the script runs. The component test covers the client (the DOM property and `data-state`). No automated test checks the drawn mark: it is reviewed by eye, so check it in Windows Contrast Themes yourself.
+- **`indeterminate` can't be server-rendered.** The DOM property is set in a layout effect, so the first paint of server markup is unchecked, and a mixed box looks unchecked until the script runs. The component test covers the client (the DOM property and `data-state`).
 - **`data-state` after `form.reset()`.** For an uncontrolled checkbox it's updated on change events, not on a form reset. The theme styles `:checked` and `:indeterminate`, so the look is right; read the native state, not the attribute, in your own code.
-- **The check and dash marks are not tested automatically.** They are drawn with `::before` and `clip-path` on the input. The browser tests that checked the marks were removed, so nothing automated shows that Firefox and WebKit (Safari's engine, not run locally) draw them, or that checked and indeterminate differ visibly from unchecked. The marks are reviewed by eye, so check them in Windows Contrast Themes yourself. A hidden indicator element is the fallback if a browser doesn't draw them.
+- **The check and dash marks are not tested automatically.** They are drawn with `::before` and `clip-path` on the input. No automated test shows that Firefox and WebKit (Safari's engine, not run locally) draw them, or that checked and indeterminate differ visibly from unchecked. The marks are reviewed by eye, so check them in Windows Contrast Themes yourself. A hidden indicator element is the fallback if a browser doesn't draw them.
