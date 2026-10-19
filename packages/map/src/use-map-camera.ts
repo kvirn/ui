@@ -71,6 +71,9 @@ export function useMapCamera({
   const [isKeyboardHintDismissed, setKeyboardHintDismissed] = useState(false)
   const initialViewRef = useRef(initialView)
   const announceOnSettle = useRef(false)
+  // A request to announce can come with no view change (the same address shown twice): the token reruns the settle effect.
+  const [announceRequest, setAnnounceRequest] = useState(0)
+  const settlePrefix = useRef<string | undefined>(undefined)
 
   useEffect(() => {
     if (engineContainer === null) {
@@ -131,15 +134,16 @@ export function useMapCamera({
     }
     const timer = window.setTimeout(() => {
       announceOnSettle.current = false
-      say(
+      const count =
         placesInViewCount === visibleCount
           ? messages.placesAll({ count: visibleCount })
-          : messages.placesInView({ count: placesInViewCount }),
-        `${baseId}-view`,
-      )
+          : messages.placesInView({ count: placesInViewCount })
+      const prefix = settlePrefix.current
+      settlePrefix.current = undefined
+      say(prefix === undefined ? count : `${prefix} ${count}`, `${baseId}-view`)
     }, SETTLE_MILLISECONDS)
     return () => window.clearTimeout(timer)
-  }, [view, bounds, placesInViewCount, visibleCount, messages, say, baseId])
+  }, [view, bounds, placesInViewCount, visibleCount, messages, say, baseId, announceRequest])
 
   useEffect(() => {
     if (status === 'failed') {
@@ -226,8 +230,10 @@ export function useMapCamera({
       setKeyboardHintDismissed(true)
       setGestureHint(null)
     },
-    announceNextSettle: () => {
+    announceNextSettle: (prefix?: string) => {
       announceOnSettle.current = true
+      settlePrefix.current = prefix
+      setAnnounceRequest((request) => request + 1)
     },
   }
 }

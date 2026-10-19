@@ -507,6 +507,30 @@ export const sv = {
     layersLegend: 'Visa på kartan',
     layerCountValue: ({ count }, format) => format.number(count),
     layersHiddenValue: ({ count }, format) => `${format.number(count)} dolda`,
+    addressShown: 'Kartan visar adressen.',
+  },
+  addressSearch: {
+    label: 'Hitta en adress',
+    helpSuggest: ({ min }, format) =>
+      `Skriv minst ${format.number(min)} tecken av en gata, ett postnummer eller en ort. Välj sedan en adress i listan.`,
+    helpRequest: 'Skriv en gata och ett nummer, ett postnummer eller en ort. Tryck sedan på Sök.',
+    submit: 'Sök',
+    privacy: ({ service }) => `Det du skriver skickas till ${service} för att hitta adressen.`,
+    privacyUnnamed: 'Det du skriver skickas till en adresstjänst för att hitta adressen.',
+    tooShort: ({ min }, format) => `Skriv minst ${format.number(min)} tecken för att söka.`,
+    searching: 'Söker efter adresser',
+    resultCount: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 adress hittades',
+        other: `${format.number(count)} adresser hittades`,
+      }),
+    noResults: ({ query }) =>
+      `Ingen adress hittades för ”${query}”. Kontrollera stavningen eller lägg till orten.`,
+    error: 'Adresssökningen fungerar inte just nu. Försök igen om en stund.',
+    offline: 'Du är offline. Anslut till internet och sök igen.',
+    picked: ({ label }) => `Vald: ${label}.`,
+    pickedFilled: ({ label }) =>
+      `Vald: ${label}. Adressen är ifylld nedan. Kontrollera den innan du fortsätter.`,
   },
   icons: {
     attention: 'Kräver din åtgärd',

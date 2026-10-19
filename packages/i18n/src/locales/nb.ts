@@ -508,6 +508,30 @@ export const nb = {
     layersLegend: 'Vis på kartet',
     layerCountValue: ({ count }, format) => format.number(count),
     layersHiddenValue: ({ count }, format) => `${format.number(count)} skjult`,
+    addressShown: 'Kartet viser adressen.',
+  },
+  addressSearch: {
+    label: 'Finn en adresse',
+    helpSuggest: ({ min }, format) =>
+      `Skriv minst ${format.number(min)} tegn av en gate, et postnummer eller et sted. Velg deretter en adresse fra listen.`,
+    helpRequest: 'Skriv en gate og et nummer, et postnummer eller et sted. Trykk deretter på Søk.',
+    submit: 'Søk',
+    privacy: ({ service }) => `Det du skriver, sendes til ${service} for å finne adressen.`,
+    privacyUnnamed: 'Det du skriver, sendes til en adressetjeneste for å finne adressen.',
+    tooShort: ({ min }, format) => `Skriv minst ${format.number(min)} tegn for å søke.`,
+    searching: 'Søker etter adresser',
+    resultCount: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 adresse funnet',
+        other: `${format.number(count)} adresser funnet`,
+      }),
+    noResults: ({ query }) =>
+      `Fant ingen adresse for «${query}». Sjekk stavemåten, eller legg til stedet.`,
+    error: 'Adressesøket fungerer ikke akkurat nå. Prøv igjen om litt.',
+    offline: 'Du er frakoblet. Koble til internett og søk på nytt.',
+    picked: ({ label }) => `Valgt: ${label}.`,
+    pickedFilled: ({ label }) =>
+      `Valgt: ${label}. Adressen er fylt ut nedenfor. Sjekk den før du fortsetter.`,
   },
   icons: {
     attention: 'Krever handling fra deg',

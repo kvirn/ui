@@ -480,8 +480,12 @@ export type { MapPlaceSource } from './map/place-source.ts'
 export { createMapStore, selectPlacesInView, selectVisiblePlaces } from './map/map-store.ts'
 export type { CreateMapStoreOptions, MapActions, MapState, MapStore } from './map/map-store.ts'
 export type {
+  AddressDetails,
   AddressResult,
+  AddressSuggestion,
+  GeocoderIntent,
   GeocoderProvider,
+  GeocoderSearchOptions,
   LngLat,
   MapBaseMap,
   MapBounds,

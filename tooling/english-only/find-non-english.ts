@@ -54,6 +54,7 @@ const englishToo = new Set<string>([
   'felt',
   'format',
   'gang',
+  'gate',
   'held',
   'just',
   'kart',
@@ -65,6 +66,7 @@ const englishToo = new Set<string>([
   'side',
   'sorter',
   'under',
+  'visa',
   // A first name in fixtures ("Anna Svensson"), not a Swedish word.
   'anna',
   // English or shared with English in the technical vocabulary.

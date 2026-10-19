@@ -508,6 +508,31 @@ export const nn = {
     layersLegend: 'Vis på kartet',
     layerCountValue: ({ count }, format) => format.number(count),
     layersHiddenValue: ({ count }, format) => `${format.number(count)} skjult`,
+    addressShown: 'Kartet viser adressa.',
+  },
+  addressSearch: {
+    label: 'Finn ei adresse',
+    helpSuggest: ({ min }, format) =>
+      `Skriv minst ${format.number(min)} teikn av ein gate, eit postnummer eller ein stad. Vel deretter ei adresse frå lista.`,
+    helpRequest:
+      'Skriv ein gate og eit nummer, eit postnummer eller ein stad. Trykk deretter på Søk.',
+    submit: 'Søk',
+    privacy: ({ service }) => `Det du skriv, blir sendt til ${service} for å finne adressa.`,
+    privacyUnnamed: 'Det du skriv, blir sendt til ei adresseteneste for å finne adressa.',
+    tooShort: ({ min }, format) => `Skriv minst ${format.number(min)} teikn for å søkje.`,
+    searching: 'Søkjer etter adresser',
+    resultCount: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 adresse funnen',
+        other: `${format.number(count)} adresser funne`,
+      }),
+    noResults: ({ query }) =>
+      `Fann inga adresse for «${query}». Sjekk stavemåten, eller legg til staden.`,
+    error: 'Adressesøket fungerer ikkje akkurat no. Prøv igjen om litt.',
+    offline: 'Du er fråkopla. Kopl til internett og søk på nytt.',
+    picked: ({ label }) => `Vald: ${label}.`,
+    pickedFilled: ({ label }) =>
+      `Vald: ${label}. Adressa er fylt ut nedanfor. Sjekk ho før du held fram.`,
   },
   icons: {
     attention: 'Krev handling frå deg',

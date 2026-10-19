@@ -177,8 +177,15 @@ export interface UseMapResult<Data = unknown> {
   openCluster: (clusterId: string | null, openerId?: string) => void
   /** Hides or shows a layer. Closes the popup of a place or cluster on it and announces the new count. */
   setLayerHidden: (layerId: string, hidden: boolean) => void
-  /** Centres the map on a place or an address without moving focus (WCAG 3.2.2). */
+  /**
+   * Centres the map on a place or an address without moving focus (WCAG 3.2.2). An address also
+   * draws the result pin and announces `map.addressShown` once the view settles.
+   */
   show: (target: MapPlace<Data> | AddressResult) => void
+  /** The address that `show` drew a pin for, until `clearResult`. */
+  searchResult: AddressResult | null
+  /** Removes the result pin. It announces nothing. */
+  clearResult: () => void
   setHighlightedPlaceId: (placeId: string | null) => void
   setActiveMarkerId: (placeId: string | null) => void
   dismissKeyboardHint: () => void
@@ -186,8 +193,8 @@ export interface UseMapResult<Data = unknown> {
   registerOverlay: (element: HTMLElement) => () => void
   /** For a focused marker: after the frame, pans the map just enough to clear it of the overlays. Keyboard focus only. */
   keepClear: (element: HTMLElement) => void
-  /** For the viewport: the next settled view is announced, as the user pressed a key or button. */
-  announceNextSettle: () => void
+  /** For the viewport: the next settled view is announced, as the user pressed a key or button. `prefix` is said before the count. */
+  announceNextSettle: (prefix?: string) => void
 }
 
 export function useMap<Data = unknown>({
@@ -215,6 +222,7 @@ export function useMap<Data = unknown>({
   const [highlightedPlaceId, setHighlightedPlaceId] = useState<string | null>(null)
   const [activeMarkerId, setActiveMarkerId] = useState<string | null>(null)
   const [popupSlot, setPopupSlot] = useState<HTMLElement | null>(null)
+  const [searchResult, setSearchResult] = useState<AddressResult | null>(null)
 
   const ids = useMemo(
     () => ({
@@ -390,8 +398,13 @@ export function useMap<Data = unknown>({
       }
       if ('name' in target) {
         store.actions.selectPlace(target.id)
+      } else {
+        setSearchResult(target)
+        camera.announceNextSettle(messages.addressShown)
       }
     },
+    searchResult,
+    clearResult: () => setSearchResult(null),
     setHighlightedPlaceId,
     setActiveMarkerId,
   }

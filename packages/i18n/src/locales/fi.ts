@@ -514,6 +514,31 @@ export const fi = {
     layersLegend: 'Näytä kartalla',
     layerCountValue: ({ count }, format) => format.number(count),
     layersHiddenValue: ({ count }, format) => `${format.number(count)} piilotettu`,
+    addressShown: 'Kartta näyttää osoitteen.',
+  },
+  addressSearch: {
+    label: 'Hae osoite',
+    helpSuggest: ({ min }, format) =>
+      `Kirjoita vähintään ${format.number(min)} merkkiä kadusta, postinumerosta tai paikkakunnasta. Valitse sitten osoite luettelosta.`,
+    helpRequest: 'Kirjoita katu ja numero, postinumero tai paikkakunta. Paina sitten Hae.',
+    submit: 'Hae',
+    privacy: ({ service }) =>
+      `Kirjoittamasi teksti lähetetään palveluun ${service} osoitteen hakemiseksi.`,
+    privacyUnnamed: 'Kirjoittamasi teksti lähetetään osoitepalveluun osoitteen hakemiseksi.',
+    tooShort: ({ min }, format) => `Kirjoita vähintään ${format.number(min)} merkkiä hakeaksesi.`,
+    searching: 'Haetaan osoitteita',
+    resultCount: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 osoite löytyi',
+        other: `${format.number(count)} osoitetta löytyi`,
+      }),
+    noResults: ({ query }) =>
+      `Osoitetta ”${query}” ei löytynyt. Tarkista kirjoitusasu tai lisää paikkakunta.`,
+    error: 'Osoitehaku ei toimi juuri nyt. Yritä hetken kuluttua uudelleen.',
+    offline: 'Olet offline-tilassa. Yhdistä internetiin ja hae uudelleen.',
+    picked: ({ label }) => `Valittu: ${label}.`,
+    pickedFilled: ({ label }) =>
+      `Valittu: ${label}. Osoite on täytetty alle. Tarkista se ennen kuin jatkat.`,
   },
   icons: {
     attention: 'Vaatii toimenpiteitäsi',

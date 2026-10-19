@@ -25,10 +25,16 @@ export default defineConfig({
   pack: [
     {
       ...packPreset,
-      entry: ['src/index.ts', 'src/maplibre.ts'],
+      entry: [
+        'src/index.ts',
+        'src/maplibre.ts',
+        'src/leaflet.ts',
+        'src/google.ts',
+        'src/nominatim.ts',
+      ],
       // The engine is a peer: the adopter owns the one copy and chooses whether to load it at all.
       deps: {
-        neverBundle: ['react', 'react-dom', 'maplibre-gl', /^@kvirn-ui\//],
+        neverBundle: ['react', 'react-dom', 'maplibre-gl', 'leaflet', /^@kvirn-ui\//],
       },
       banner,
       inputOptions: {

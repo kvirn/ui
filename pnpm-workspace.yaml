@@ -39,6 +39,8 @@ catalog:
   '@tiptap/extensions': 3.31.4
   # Map engine: an optional peer of @kvirn-ui/map's /maplibre entry, a devDependency here. Pinned exactly.
   maplibre-gl: 6.14.0
+  # Map engine: an optional peer of @kvirn-ui/map's /leaflet entry (BSD-2-Clause, no install scripts), a devDependency here. Pinned exactly.
+  leaflet: 1.9.4
   # Icon libraries: devDependencies only, for Icon's compatibility tests and stories.
   # Pinned exactly, so a release that changes how a library builds its <svg> is a reviewed bump.
   lucide-react: 1.52.0

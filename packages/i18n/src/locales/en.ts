@@ -498,6 +498,30 @@ export const en = {
     layersLegend: 'Show on the map',
     layerCountValue: ({ count }, format) => format.number(count),
     layersHiddenValue: ({ count }, format) => `${format.number(count)} hidden`,
+    addressShown: 'The map shows the address.',
+  },
+  addressSearch: {
+    label: 'Find an address',
+    helpSuggest: ({ min }, format) =>
+      `Type at least ${format.number(min)} characters of a street, postal code or place. Then choose an address from the list.`,
+    helpRequest: 'Type a street and number, a postal code or a place. Then press Search.',
+    submit: 'Search',
+    privacy: ({ service }) => `What you type is sent to ${service} to find the address.`,
+    privacyUnnamed: 'What you type is sent to an address service to find the address.',
+    tooShort: ({ min }, format) => `Type at least ${format.number(min)} characters to search.`,
+    searching: 'Searching for addresses',
+    resultCount: ({ count }, format) =>
+      format.plural(count, {
+        one: '1 address found',
+        other: `${format.number(count)} addresses found`,
+      }),
+    noResults: ({ query }) =>
+      `No address found for “${query}”. Check the spelling, or add the town.`,
+    error: 'The address search isn’t working right now. Try again in a moment.',
+    offline: 'You’re offline. Connect to the internet, then search again.',
+    picked: ({ label }) => `Chosen: ${label}.`,
+    pickedFilled: ({ label }) =>
+      `Chosen: ${label}. The address is filled in below. Check it before you continue.`,
   },
   icons: {
     attention: 'Needs your action',

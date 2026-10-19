@@ -70,15 +70,49 @@ export type MapMarkerItem<Data = unknown> =
   | { type: 'place'; place: MapPlace<Data> }
   | { type: 'cluster'; cluster: MapCluster<Data> }
 
+/** The parts of a postal address, for filling in a form from a pick (WCAG 3.3.7). */
+export interface AddressDetails {
+  line1: string
+  postalCode: string
+  city: string
+  /** ISO 3166-1 alpha-2, upper case: `SE`. */
+  country: string
+}
+
 export interface AddressResult {
   id: string
   label: string
   position: LngLat
   bounds?: MapBounds
+  address?: AddressDetails
+}
+
+/** What a geocoder lists. A service that answers with text only leaves out `position`, and `resolve` adds it on a pick. */
+export type AddressSuggestion = Omit<AddressResult, 'position'> & { position?: LngLat }
+
+/** `'suggest'`: a request per pause in typing. `'submit'`: the visitor pressed Enter or Search. */
+export type GeocoderIntent = 'suggest' | 'submit'
+
+export interface GeocoderSearchOptions {
+  signal?: AbortSignal
+  /** The provider's BCP 47 locale. */
+  locale?: string
+  intent?: GeocoderIntent
 }
 
 export interface GeocoderProvider {
-  search: (query: string, options: { signal?: AbortSignal }) => Promise<AddressResult[]>
+  /** Who receives the typed text. Named in the privacy notice. */
+  name?: string
+  /** The credit text that the service's terms ask for. Shown beside the privacy notice. */
+  attribution?: string
+  /** `true` only if the service's terms allow a request per pause in typing. Otherwise AddressSearch searches on request. */
+  suggest?: boolean
+  search: (query: string, options: GeocoderSearchOptions) => Promise<AddressSuggestion[]>
+  /** Adds the position to a suggestion that has none. Called once, on a pick. */
+  resolve?: (
+    result: AddressSuggestion,
+    options: { signal?: AbortSignal; locale?: string },
+  ) => Promise<AddressResult>
 }
 
 export interface MapMountOptions {

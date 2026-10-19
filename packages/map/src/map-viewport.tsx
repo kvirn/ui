@@ -2,6 +2,7 @@ import type { ComponentPropsWithRef, KeyboardEvent, ReactElement } from 'react'
 import { joinClassNames } from './class-names.ts'
 import { hasModifier } from './has-modifier.ts'
 import { useMapContext } from './map-context.ts'
+import { MapSearchResult } from './map-search-result.tsx'
 import type { MapPanDirection } from './use-map.ts'
 
 const panKeys: Record<string, MapPanDirection> = {
@@ -96,6 +97,7 @@ export function MapViewport({
           <p>{messages.tilesFailedBody}</p>
         </div>
       ) : null}
+      <MapSearchResult />
       {children}
     </div>
   )

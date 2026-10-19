@@ -96,11 +96,14 @@ Phase 0 is the gate: nothing past it starts before the approvals below.
 - [x] P2 `useMap` and the Map parts, i18n (5 locales), `map.css`, `map.test.tsx` (35 keyboard rows named), stories, `map.a11y.md`, docs page
 - [x] P3 Layers, clustering (plans 0118, 0119); GeoJSON as an optional source still open
 - [x] P5 MapLibre adapter (`/maplibre`, `/worker`)
-- [ ] P4a `ux-designer`: `docs/design/address-search.md` (states, content, announcements, standalone vs in a form, AddressInput hand-off)
-- [ ] P4b `component-engineer`: `useAddressSearch` + `AddressSearch` on Autocomplete, `nominatim` sub-entry, `addressSearch.*` in 5 locales, tests for every contract row, stories, `address-search.a11y.md`; after P4a
-- [ ] P5b `component-engineer`: Leaflet adapter (`/leaflet`, optional peer `leaflet`, catalog pin) then Google adapter (`/google`, SDK loaded by the consumer's call), against the provider contract; mocked at the engine boundary
+- [x] P4a `ux-designer`: `docs/design/address-search.md` (states, content, announcements, standalone vs in a form, AddressInput hand-off)
+- [ ] P4b `component-engineer`: built and gated 2026-10-19 (30 tests, 14 stories `Map/AddressSearch`, 5 locales, `nominatim`, `announceResults` on the combobox hook); first review CHANGES REQUIRED, fixes in progress: keyboard-skill entry for the Enter deviation, Read aloud table and tests, Space test on Search, Google SDK links under `aria-hidden`, a `Disabled` story, contract wording, status while resolving, `show()` on the same address, `map.md`. Then re-review on the delta
+- [x] P4c `ux-designer` (research): which geocoders to support beyond `nominatim` (Google Places, Photon, Pelias/Geoapify, Mapbox, Nordic national services), their terms, and the open-adapter recipe so any provider plugs into `GeocoderProvider`; output `docs/design/geocoder-providers.md`; adapters follow as P4d
+- [x] P5b `component-engineer`: Leaflet adapter (`/leaflet`, optional peer `leaflet`, catalog pin) then Google adapter (`/google`, SDK loaded by the consumer's call), against the provider contract; mocked at the engine boundary
+- [ ] P4d `/google-places` geocoder entry (needs `resolve`, built in P4b); the docs recommend neither Google nor Nominatim for resident forms until the legal read of their terms (geocoder-providers.md O7). `/photon`, `/pelias`, `/kartverket` stay docs recipes unless the maintainer asks
+- [ ] P5c Add `map` to `sweepComponents` in `vite.config.ts` and run the four sweeps (maintainer's gate list; reviewer recommends it)
 - [ ] P6 Docs page and map.md updates for AddressSearch and the adapters; roadmap line
-- [ ] P7 Gates, then `accessibility-reviewer`
+- [ ] P7 Gates, then `accessibility-reviewer` APPROVE. Manual AT questions for the matrix: "Chosen: …" heard twice, the pick and "The map shows the address" announcements cutting each other off, `aria-selected="false"` read on each option
 
 ## Decisions
 
@@ -142,6 +145,22 @@ Taken during the Docs page slice (English only, no tests):
 - **`rasterStyle({ tiles, attribution })`** builds a MapLibre raster style from the consumer's URL templates; no tile URL is in `packages/`. The `OpenStreetMap` story passes OSM's URL and is tagged `!test` (Storybook's own tag, honoured by addon-vitest), so no test run calls a third party. The repo's testing skill does not yet name this tag: add it there.
 - **Base maps (spec §9 answered yes):** `MapBaseMap { id, label, attribution? }` in core; `MapProvider.baseMaps/defaultBaseMap` is read by `useMap` before mount, `MapHandle.setBaseMap(id)` swaps tiles (`map.setStyle`) and keeps camera and markers. `maplibre({ baseMaps, defaultBaseMap })` next to the single `style` option (no switcher). `Map.BaseMapSwitch` is a `RadioGroup` (a fieldset with legend `map.baseMapLabel`) beside the viewport, renders nothing under 2 base maps; `Map.Attribution` takes a node or `(baseMap) => node`, default the active `attribution`. Announces `map.baseMapChanged` on a switch only. No tile URL in `packages/`; the `BaseMaps` story (`!test`) holds OSM, Esri and OpenTopoMap URLs and the consumer owns the terms. No theme.css change (radio group styles suffice). No tests yet; English only.
 - **BaseMapSwitch is templatable, the list is optional (maintainer, 2026-10-14):** `Map.BaseMapSwitch` takes a render function `({ baseMaps, baseMap, setBaseMap }) => ReactNode` that replaces the radios inside `div.kv-map-base-maps`; the consumer names the control; still nothing with fewer than two base maps. `useMapState()` is the public context reader (returns `UseMapResult`, throws outside `Map.Root`). `Map.Skip` renders only with details open, a mounted `Map.List` (registered in a root context) or an `href`; the focus-return fallback is opener, then list heading, then the viewport (it gets an `id`). Show or hide is whether you render the part: no `show*` props (rule 14), the story has controls only. The doc says the omitted list is the consumer's a11y duty.
+
+### P5b decisions (Leaflet and Google adapters)
+
+- Leaflet 1.9.4 pinned in the catalog (BSD-2-Clause, no install scripts: only a `prepare` for its own repo; the lockfile grew by 11 lines). No `@types/leaflet`: `leaflet-module.d.ts` declares the part used. Tests run the real engine in Chromium with an inline-image tile URL, so no mock and no network.
+- The shared camera counts zoom from a 512px world, so both adapters add 1 to the engine's 256px zoom.
+- Leaflet's own drag, wheel and double click are off. The adapter pans on a mouse drag, zooms on Ctrl/Cmd+wheel, and reports `gesture` for the bare wheel and one-finger touch; the container is `touch-action: pan-x pan-y` so one finger scrolls the page. Zoom and fade animation are off (reduced motion needs no extra check).
+- Google: `mount` is sync, the SDK async, so the handle holds the camera until the SDK arrives and then applies it. A failed load is an `error` event. `gestureHandling: 'cooperative'` as briefed: Google exposes no "prevented gesture" event, so `gesture` comes from the container's own wheel and touch events and Google's English-or-locale overlay shows too (cannot be hidden). `project` and `unproject` are Web Mercator maths (no OverlayView). Attribution stays Google's (ToS), documented in `map.md`.
+- `loader` returns `google.maps.importLibrary('maps')`; `apiKey` is the convenience path and names `https://maps.googleapis.com/maps/api/js`, the one URL Google requires.
+
+AddressSearch (spec [address-search.md](../address-search.md), maintainer 2026-10-19):
+
+- **Approved, keyboard deviation (D1):** Enter with nothing highlighted searches and never submits the form; `keyboard` skill updated in the same change.
+- **Approved, API (D2–D4):** search on request (Enter or a Search button) by default, as-you-type only when the geocoder declares `suggest: true` (`nominatim` is false, per its usage policy). `GeocoderProvider` gains `name?`, `attribution?`, `suggest?`; `search` gains a `locale` option; `AddressResult` gains `address?` (`line1`, `postalCode`, `city`, `country`). `Map.show(result)` draws a non-interactive result pin and announces `map.addressShown`; new `clearResult()`.
+- **Taken as recommended (D5–D8):** keep the "Chosen: {label}" announcement; Root renders a `div` (docs example wraps `<search>`); a form using only the lookup still imports `@kvirn-ui/map`; status text lives in the popup so Escape hides it.
+- **Implementation (P4b):** the combobox hook gets `announceResults` (default `true`); AddressSearch sets it `false`, because empty `messages` fell through to the Autocomplete's own "No results" and "N results", which doubled ours (test in `combobox.test.tsx`). The Search button exists only on request, so the as-you-type intent test checks `submit` for Enter and that no button renders. The test recorder starts from the live region's current text, so a new recorder does not count an old message. Stories (`address-search.stories.tsx`) use the offline MapLibre provider from `map.fixture.tsx` (no tiles, no network) for WithMap, so the pin is visible. Each state is its own story, since one popup is open at a time.
+- **Google adapter (maintainer):** keep `gestureHandling: 'cooperative'`; Google's own hint shows beside ours, documented in `map.md`.
 
 ## Risks & open questions
 

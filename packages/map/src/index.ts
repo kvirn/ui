@@ -55,6 +55,41 @@ export type {
   MapSkipProps,
   MapViewportProps,
 } from './map.tsx'
+export {
+  AddressSearch,
+  AddressSearchClear,
+  AddressSearchControl,
+  AddressSearchHelpText,
+  AddressSearchInput,
+  AddressSearchLabel,
+  AddressSearchList,
+  AddressSearchNotice,
+  AddressSearchOption,
+  AddressSearchPopup,
+  AddressSearchRoot,
+  AddressSearchStatus,
+  AddressSearchSubmit,
+} from './address-search.tsx'
+export type {
+  AddressSearchClearProps,
+  AddressSearchControlProps,
+  AddressSearchHelpTextProps,
+  AddressSearchInputProps,
+  AddressSearchListProps,
+  AddressSearchNoticeProps,
+  AddressSearchOptionProps,
+  AddressSearchPopupProps,
+  AddressSearchProps,
+  AddressSearchRootProps,
+  AddressSearchStatusProps,
+  AddressSearchSubmitProps,
+} from './address-search.tsx'
+export { useAddressSearch } from './use-address-search.ts'
+export type {
+  AddressSearchState,
+  UseAddressSearchOptions,
+  UseAddressSearchResult,
+} from './use-address-search.ts'
 export { mapIcons } from './map-icons.ts'
 export { useMap } from './use-map.ts'
 export type {
@@ -69,8 +104,12 @@ export type {
 export { createMemoryProvider } from './memory-provider.ts'
 export type { MemoryProvider } from './memory-provider.ts'
 export type {
+  AddressDetails,
   AddressResult,
+  AddressSuggestion,
+  GeocoderIntent,
   GeocoderProvider,
+  GeocoderSearchOptions,
   LngLat,
   MapBaseMap,
   MapBounds,

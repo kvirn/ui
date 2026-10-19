@@ -770,6 +770,39 @@ export interface KvirnMessages {
     layerCountValue: MessageFunction<{ count: number }>
     /** Beside the layers title while the card is collapsed and layers are hidden: `3 hidden`. */
     layersHiddenValue: MessageFunction<{ count: number }>
+    /** Announced when a search result is shown on the map. The places in view follow it: `The map shows the address. 3 places in the map view.` */
+    addressShown: TextMessage
+  }
+  /**
+   * AddressSearch (map package). The text is the visitor's address query or the geocoder's own
+   * label. `{service}` is the geocoder's `name`, the consumer's.
+   */
+  addressSearch: {
+    /** The visible label. A form says `Find your address` through `label`. */
+    label: TextMessage
+    /** Help text in as-you-type mode. `min` is the shortest text that is searched. */
+    helpSuggest: MessageFunction<{ min: number }>
+    /** Help text in on-request mode. */
+    helpRequest: TextMessage
+    /** The text of the Search button. */
+    submit: TextMessage
+    /** Says where the typed text goes. `service` is the geocoder's `name`. */
+    privacy: MessageFunction<{ service: string }>
+    /** The same when the geocoder has no name. */
+    privacyUnnamed: TextMessage
+    /** On request only: Enter or Search with fewer characters than `min`. */
+    tooShort: MessageFunction<{ min: number }>
+    searching: TextMessage
+    /** Announced after an answer: `1 address found`, `6 addresses found`. */
+    resultCount: MessageFunction<{ count: number }>
+    /** `query` is the text that was searched. Not an error. */
+    noResults: MessageFunction<{ query: string }>
+    error: TextMessage
+    offline: TextMessage
+    /** Announced at once after a pick. `label` is the geocoder's label. */
+    picked: MessageFunction<{ label: string }>
+    /** The same when a form is filled in from the pick. A form passes it as `messages.picked`. */
+    pickedFilled: MessageFunction<{ label: string }>
   }
   /** The accessible name of an icon that stands alone, by catalogue `label` (`icons.<key>`). Icons beside visible text have none (Plan 0124). */
   icons: {

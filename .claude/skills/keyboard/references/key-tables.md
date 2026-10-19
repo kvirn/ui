@@ -99,6 +99,8 @@ Listbox: one Tab stop. Multi-select adds Space to toggle and Shift+Arrow to exte
 | Alt+ArrowDown       | Opens without moving the active option                                  |
 | Alt+ArrowUp         | Accepts and closes                                                      |
 
+**AddressSearch (approved deviation, 2026-10-19, Plan 0117 D1):** Enter with no suggestion active and no IME composition searches now and never submits a form (`preventDefault`); with a suggestion active it picks. The form's own submit button sends it.
+
 ## Actions and links
 
 | Component  | Key              | Action                                                                                                                                                                                                                                                                               |
