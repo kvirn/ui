@@ -1,11 +1,9 @@
 'use client'
-import { DateInput, Field, Fieldset, TextInput, masks, useLocale } from '@kvirn-ui/react'
+import { DateInput, Field, Fieldset, TextInput, masks } from '@kvirn-ui/react'
 import { useDateInputTexts } from './texts.ts'
 
 export function ReadOnlyDate() {
   const { texts } = useDateInputTexts()
-  const { locale } = useLocale()
-  const example = masks.date().withLocale(locale).format('2026-10-27')
   return (
     <>
       <Fieldset.Root group required>
@@ -27,9 +25,7 @@ export function ReadOnlyDate() {
           defaultValue="2026-10-27"
           className="kv-input--width-10"
         />
-        <Field.HelpText>
-          {texts.oneFieldHint(example)}. {texts.readOnlyReason}
-        </Field.HelpText>
+        <Field.HelpText>{texts.readOnlyReason}</Field.HelpText>
       </Field.Root>
     </>
   )

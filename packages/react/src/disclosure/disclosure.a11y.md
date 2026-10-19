@@ -68,7 +68,7 @@ Disclosure has no strings of its own and announces nothing: the change of `aria-
 - **Name the trigger with visible text that says what the panel holds** ("Opening hours"), the same open and closed (4.1.2 Name, Role, Value; 2.5.3 Label in Name). Never "Show more" for one state and "Show less" for the other: `aria-expanded` carries the state.
 - **Render the Panel right after the Trigger,** in the same parent, so the Tab order matches the visual order (2.4.3 Focus Order).
 - **Keep what the page needs to work out of a closed panel,** and do not hide an error message or the only way to complete a task in one (3.3.1 Error Identification).
-- **A panel shown from a breakpoint, expanded without JavaScript, is not a Disclosure feature.** The trigger's `aria-expanded="false"` would lie while the panel is visible. A navigation menu that is always shown on a wide screen and a button on a narrow one is not provided: no menu component does it (the Navigation component covers nested lists and a horizontal bar). Use your own CSS: show the panel with an author rule on `.kv-disclosure-panel[hidden]` (`display: block`, and `content-visibility: visible` for `until-found`) and hide the trigger from that width with `display: none`, which also removes it from the accessibility tree. Nothing in the library supports or tests it.
+- **A panel shown from a breakpoint, expanded without JavaScript, is not a Disclosure feature.** The trigger's `aria-expanded="false"` would lie while the panel is visible. A navigation menu that is always shown on a wide screen and a button on a narrow one is not provided: no menu component does it (the Navigation component covers nested lists and a horizontal bar). Use your own CSS: (1) from that width, show the panel with a rule on `.kv-disclosure-panel[hidden]` that sets `display: block`, and `content-visibility: visible` when you use `until-found`. (2) From the same width, hide the trigger with `display: none`, which also removes it from the accessibility tree. The library does not support or test this.
 - **Server rendering:** a closed panel is `hidden` in the markup, and without JavaScript the trigger does nothing. Content that must be readable without JavaScript is not in a Disclosure, or is `defaultOpen`.
 - Everything the Button page asks of you applies to the trigger too.
 
@@ -110,7 +110,16 @@ Disclosure has no strings of its own and announces nothing: the change of `aria-
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                             |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                             |
 
-Also pending, by hand: whether `hidden="until-found"` content is found and revealed by find-in-page in Chrome, Edge and (when supported) Safari and Firefox, and what screen readers announce when it opens.
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab to the button: its name and "collapsed" are read.
+- Press Enter, then Space: "expanded" is read, and focus stays on the button.
+- Open, Tab goes into the panel's first control. Closed, Tab skips the panel.
+- The name is the same open and closed.
+- With `hiddenUntilFound`, find-in-page on a word in the closed panel opens it.
+- At 320px the text wraps and the chevron stays visible.
 
 ## Known issues
 

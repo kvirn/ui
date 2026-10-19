@@ -156,7 +156,8 @@ export function NumberInputPage({
                 A unit such as “kr” can sit inside the box, in an{' '}
                 <Link href="/components/input-group">InputGroup</Link> addon. Screen readers
                 (software that reads the screen aloud) skip the addon, so the label still says the
-                unit: “Monthly rent in kronor”.
+                unit: “Monthly rent in kronor”. <code>grouping</code> writes the digits in threes,
+                so a long amount is easier to read.
               </>
             }
             code={sources['unit-in-box']}
@@ -189,6 +190,13 @@ export function NumberInputPage({
           messageNamespace="mask"
           linkToStrings
           notes={{
+            focus: (
+              <Note kind="reminder">
+                If your page has a header that stays at the top while scrolling, add{' '}
+                <code>scroll-padding</code> so it never covers the focused box (2.4.11 Focus Not
+                Obscured (Minimum)).
+              </Note>
+            ),
             'what-you-need-to-do': (
               <Note kind="reminder">
                 Give every NumberInput a visible label in a <code>Field</code>. Without a name a

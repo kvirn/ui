@@ -128,7 +128,7 @@ export const accordionTriggerAttributes: readonly AttributeRow[] = [
     name: 'kv-accordion-trigger',
     values: 'always',
     meaning:
-      'The part class, next to kv-disclosure-trigger and kv-disclosure-icon (the chevron). Your own class is added after them.',
+      'The part class, next to kv-disclosure-trigger. Your own class joins them. The chevron inside keeps kv-disclosure-icon.',
   },
   {
     name: 'aria-expanded',
@@ -142,13 +142,23 @@ export const accordionTriggerAttributes: readonly AttributeRow[] = [
   },
   { name: 'data-open', values: 'present or absent', meaning: 'The item is open.' },
   { name: 'data-disabled', values: 'present or absent', meaning: 'The item is disabled.' },
+  {
+    name: 'data-focus-visible',
+    values: 'present or absent',
+    meaning: 'The trigger has keyboard focus (:focus-visible).',
+  },
+  {
+    name: 'aria-disabled',
+    values: '"true" or absent',
+    meaning: 'Set when the item has disabled and focusableWhenDisabled both on.',
+  },
 ]
 
 export const accordionPanelAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-accordion-panel',
     values: 'always',
-    meaning: 'The part class, next to kv-disclosure-panel. Your own class is added after them.',
+    meaning: 'The part class, next to kv-disclosure-panel. Your own class joins them.',
   },
   {
     name: 'hidden',

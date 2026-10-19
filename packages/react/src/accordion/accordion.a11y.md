@@ -6,7 +6,7 @@
 - **Status:** alpha candidate. Accessibility-reviewer APPROVE (2026-10-06). Manual AT is `pending`.
 - **Tests:** `accordion.test.tsx` next to this file. `accordion.stories.tsx` in `apps/storybook/src/components/accordion/`.
 
-An Accordion is a list of questions or sections, each a heading with a button, that a reader opens one by one. Items are independent: opening one never closes another. A "show all" button is not part of this version.
+An Accordion is a list of questions or sections, each a heading with a button, that a reader opens one by one. Items are independent: opening one never closes another. It has no "show all" button.
 
 ## Roles, states, properties
 
@@ -105,7 +105,7 @@ Accordion has no strings of its own. A screen reader reports the change of `aria
 - 2.4.7 Focus Visible (AA) and 2.4.11 Focus Not Obscured (Minimum) (AA): the focus ring shows and isn't clipped by the component.
 - 2.5.8 Target Size (Minimum) (AA): the whole row is the target.
 - 2.5.3 Label in Name (A): the button's name is its visible text, the same open and closed (`accordion.test.tsx › a trigger keeps its name open and closed`). Choosing words that match is yours.
-- 1.4.3 Contrast (Minimum) (AA) and 1.4.11 Non-text Contrast (AA): the text and the chevron use the page's text colour, and the theme adds no new colour pair. The text colours are measured by `theme:check`.
+- 1.4.3 Contrast (Minimum) (AA) and 1.4.11 Non-text Contrast (AA): the text and the chevron use the page's text colour, and the theme adds no new colour pair. The text colours are checked automatically in every theme.
 - 3.2.1 On Focus (A) and 3.2.2 On Input (A): focusing or pressing a button opens its panel and changes nothing else.
 
 ## AT test record
@@ -126,8 +126,19 @@ Accordion has no strings of its own. A screen reader reports the change of `aria
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                 |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                 |
 
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Each question is one Tab stop and appears in the headings list.
+- Press Enter on a question: "expanded" is read, and focus stays on it.
+- Opening a second question keeps the first open.
+- Tab from an open question goes into its answer, then to the next question.
+- The arrow keys, Home and End only scroll the page.
+- With `region`, an open answer appears in the landmarks list, named by its question.
+
 ## Known issues
 
-- **No arrow-key navigation between headers.** APG lists it as optional. Every button is a Tab stop, so a long FAQ costs a keyboard user more Tab presses. This may change after testing with assistive technology.
-- **No "show all" button and no "only one open" mode** in this version.
+- **No arrow-key navigation between headers.** APG lists it as optional. Every button is a Tab stop, so a long FAQ costs a keyboard user more Tab presses.
+- **No "show all" button and no "only one open" mode.**
 - **Find-in-page support differs between browsers.** With `hiddenUntilFound`, Chromium browsers reveal a closed answer that matches. A browser without support treats the answer as hidden, so find-in-page misses it and nothing else breaks.

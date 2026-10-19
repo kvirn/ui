@@ -1,12 +1,12 @@
 # Accessibility contract: NumberInput
 
-- **APG pattern:** none needed. NumberInput is a native text `<input>`, a `textbox`. It is deliberately **not** the APG spin button: there is no stepping with the arrow keys and no spinner buttons. The name, description and state come from HTML and `aria-describedby`, as for [TextInput](../text-input/text-input.a11y.md).
+- **APG pattern:** none needed. NumberInput is a native text `<input>`, a `textbox`. It is deliberately **not** the APG spin button: there is no stepping with the arrow keys and no spinner buttons. The name, description and state come from HTML and `aria-describedby`, as for TextInput.
 - **Deviations:** none from APG, because no APG pattern is used. `type="number"` is not used by design: it changes its value on the mouse wheel and on ArrowUp and ArrowDown, drops leading zeros, rounds silently, shows spinners that are hard to hit, and reads the decimal mark by the browser's language and not the page's (the reasons GOV.UK gives).
 - **Native elements used:** `<input type="text">` with `inputmode` and `spellcheck="false"`. By default it also runs a number mask (a rule for which characters the box accepts and how the number is written: `masks.number()`); `mask={false}` runs none and a custom `mask` replaces it. A mask adds no element and no role.
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `number-input.test.tsx` next to this file, and `../mask/use-mask.test.tsx` for the mask machinery. `number-input.stories.tsx` in `apps/storybook/src/components/number-input/`.
 
-NumberInput is a quantity or an amount in a Field: a TextInput with a number mask built in, in the provider's language. It is a native input, so the browser supplies the role (`textbox`), the keyboard, selection, paste, autofill and undo. NumberInput adds the Field's wiring, the number mask and the part classes. The mask is optional: `mask={false}` makes it a plain numeric text box (same role, keys and Field wiring, nothing left out), and another `mask` replaces the number mask. For a code with leading zeros (a postcode, a case number) use a [TextInput](../text-input/text-input.a11y.md) with a mask: a number would drop the zeros.
+NumberInput is a quantity or an amount in a Field: a TextInput with a number mask built in, in the provider's language. It is a native input, so the browser supplies the role (`textbox`), the keyboard, selection, paste, autofill and undo. NumberInput adds the Field's wiring, the number mask and the part classes. The mask is optional: `mask={false}` makes it a plain numeric text box (same role, keys and Field wiring, nothing left out), and another `mask` replaces the number mask. For a code with leading zeros (a postcode, a case number) use a TextInput with a mask: a number would drop the zeros.
 
 ## Roles, states, properties
 
@@ -42,7 +42,7 @@ All native: NumberInput handles no keys itself and never calls `preventDefault` 
 | Escape                              | NumberInput               | Does nothing: the value and the focus stay                                                                                                                                                                                                                                   | `number-input.test.tsx › Escape does nothing: the value and the focus stay`                                                                                                                                                                                                                                                |
 | –                                   | its Field.Label           | A click on the label focuses the input (native `<label for>`)                                                                                                                                                                                                                | `number-input.test.tsx › clicking the label focuses the input`                                                                                                                                                                                                                                                             |
 
-Copy, cut and undo (Control/Command+C, X and Z) are native too, and a dead key or IME composition is left alone until it ends (the mask's rows are in the [TextInput contract](../text-input/text-input.a11y.md#masked-input)). NumberInput adds no shortcuts.
+Copy, cut and undo (Control/Command+C, X and Z) are native too, and a dead key or IME composition is left alone until it ends (the mask's rows are in the TextInput contract). NumberInput adds no shortcuts.
 
 ## Focus management
 
@@ -63,7 +63,7 @@ Copy, cut and undo (Control/Command+C, X and Z) are native too, and a dead key o
 
 Focus entering the input announces nothing live: the name, role, "required", "invalid" and the description (help text, then error) are read by the screen reader. NumberInput adds no strings of its own: the number mask uses two of the mask's messages (`characterNotAllowed` and `maximumDecimals`: the number engine never rejects a character for length, so `maximumLength` is for pattern and RegExp masks only), a custom `mask` uses the mask's three (`characterNotAllowed`, `maximumLength` and `maximumDecimals`), in all five locales, and `mask={false}` uses none, and they can be overridden per provider and per instance (`messages`). `announceRejections={false}` turns the announcements off, for example when you show your own message. **The KvirnProvider is required for announcements.** Without one the mask still works, nothing is announced, and one development warning says so.
 
-Dev warnings (English, for the developer, never announced): a NumberInput with no accessible name (`number-input-without-name`, `number-input-in-field-without-label`), an `id` inside a Field (`number-input-id-in-field`), `decimals` above 0 in a Field with no help text (`number-input-decimals-without-help-text`, 3.3.2), and a custom `mask` in a Field with no help text (`number-input-mask-without-description`, 3.3.2: a mask shapes the input but doesn't explain the format). A whole number with the default mask needs no format help text, and `mask={false}` applies no format, so neither warns. A `mask` that is not a mask name warns once (`mask-unknown-name:<name>`) and runs no mask, and a country mask by name with no resolvable country warns (`mask-country-unresolved:<name>:<locale>`): both come from the mask hook (see the [TextInput contract](../text-input/text-input.a11y.md)).
+Dev warnings (English, for the developer, never announced): a NumberInput with no accessible name, an `id` inside a Field, `decimals` above 0 in a Field with no help text (3.3.2), and a custom `mask` in a Field with no help text (3.3.2: a mask shapes the input but doesn't explain the format). A whole number with the default mask needs no format help text, and `mask={false}` applies no format, so neither warns. A `mask` that is not a mask name warns once and runs no mask, and a country mask by name with no resolvable country warns: both come from the mask hook (see the TextInput contract).
 
 ## Consumer responsibilities
 
@@ -84,7 +84,7 @@ NumberInput renders the `kv-input` part of TextInput with `kv-input--numeric`, s
 - Target size: at least 24px high (2.5.8 Target Size (Minimum), AA).
 - Forced colours (the system's own colour scheme): the input keeps a real border, and invalid is not shown by colour alone.
 - Reduced motion: colours change gradually only when the person has not asked for reduced motion.
-- Right-to-left (RTL) pages: the layout uses logical properties only. The arrow keys are the browser's own (`number-input.test.tsx › ArrowLeft and ArrowRight move the caret in a right-to-left page and are not intercepted`). A negative number's minus sign: see Known issues.
+- Right-to-left (RTL) pages: the layout uses logical properties only. The arrow keys are the browser's own. A negative number's minus sign: see Known issues.
 
 ## WCAG SCs covered
 
@@ -120,6 +120,18 @@ NumberInput renders the `kv-input` part of TextInput with `kv-input--numeric`, s
 
 Research questions for the assistive technology (AT) run: is a left-out character's message read once, after the echo, and not repeated while a key is held? Is a text box that takes digits understood as a number field by each screen reader, without the spinbutton role? Does `inputmode="numeric"` or `"decimal"` bring up the right keyboard with VoiceOver and TalkBack, and does `text` (negatives allowed) still make a minus sign reachable? Does Dragon dictate "one thousand two hundred and fifty" into the field without corruption?
 
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- Tab in: the label and the help text are read.
+- Typing digits says nothing.
+- A letter leaves the text unchanged and "Only digits can be entered here." is said once, politely.
+- With decimals, a second decimal mark or a digit past the decimals says "No more decimals can be entered here."
+- ArrowUp and ArrowDown move the caret. The number does not change, and no spin button is announced.
+- Paste "1 250,50": it shows the way the page writes a number.
+- On a phone the numeric keypad shows. With negatives allowed the text keypad shows, and a minus sign can be reached.
+
 ## Known issues
 
 - **Negative numbers use the text keypad.** iOS's numeric and decimal keypads have no minus sign, so `allowNegative` asks for `inputmode="text"`. The mask still leaves out letters.
@@ -127,5 +139,5 @@ Research questions for the assistive technology (AT) run: is a left-out characte
 - **Undo.** When the mask rewrites the value (writes a group separator, leaves out a character), undo can't go back past that step. Accepted, as for TextInput masks.
 - **`min` and `max` are not announced.** They are reported to your code only. Say the range in the help text.
 - **Keyboard tests run in Chromium only.** The keyboard rows are tested automatically in Chromium, not in WebKit (Safari's engine). Test in Safari with your own assistive technology.
-- **Right-to-left pages: a negative number.** Number masks don't set `dir="ltr"`, so in a right-to-left page the minus sign of a negative number may show on the right of the digits. Use `dir="ltr"` on the NumberInput if your page needs it. To be checked with real readers.
+- **Right-to-left pages: a negative number.** Number masks don't set `dir="ltr"`, so in a right-to-left page the minus sign of a negative number may show on the right of the digits. Use `dir="ltr"` on the NumberInput if your page needs it.
 - **A typed space is announced as not allowed when `grouping` is on.** The mask writes the group separator itself, so a space the user types is left out and announced (by design; whether it is noise is a question for the AT run).

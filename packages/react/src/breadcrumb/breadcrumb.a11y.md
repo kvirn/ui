@@ -2,8 +2,8 @@
 
 - **APG pattern:** [Breadcrumb](https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/): a `<nav>` named by a label around an ordered list of links.
 - **Deviations:** none. The current page is the last item as text (`<span aria-current="page">`), not a link to the page you are on. The APG makes `aria-current` optional when the current item is not a link; here it is set, so the current item is still exposed, and a link to the same page offers nothing to follow. The current page is simply not a Tab stop.
-- **Native elements used:** `<nav>` (the `navigation` landmark), `<ol>` and `<li>`. The links are [Link](../link/link.a11y.md): native `<a href>`, rendered by the registered router link.
-- **Status:** alpha candidate. Gates green, accessibility-reviewer APPROVE after fixes (2026-10-06); the review of `variant` and `separator` is pending. Manual AT is `pending`.
+- **Native elements used:** `<nav>` (the `navigation` landmark), `<ol>` and `<li>`. The links are Links: native `<a href>`, rendered by the registered router link.
+- **Status:** alpha candidate. Gates green, accessibility-reviewer APPROVE after fixes. Manual AT is `pending`.
 - **Tests:** `breadcrumb.test.tsx` next to this file. `breadcrumb.stories.tsx` in `apps/storybook/src/components/breadcrumb/`, where `theme.css` is loaded and the wrapping, separators and targets are proved. Design brief: `docs/design/municipality-reference-site.md` (B4) and `DESIGN.md`, Breadcrumb and pagination.
 
 A breadcrumb tells a resident where they are and gives a way up. It adds no `tabindex`, no key handling, no state and no announcement: the links are the focusable parts and own the keys.
@@ -53,7 +53,7 @@ The landmark name is the only string: `breadcrumb.label` (en `You are here`; sv 
 
 ## Consumer responsibilities
 
-- **List every level from the home page to the current page's parent,** each a link, then the current page as `Breadcrumb.Current`. It never collapses into "…": a hidden level is a hidden way out (2.4.8 Location, AAA, beyond the AA bar). The default theme wraps it.
+- **List every level from the home page to the current page's parent,** each a link, then the current page as `Breadcrumb.Current`. It never collapses into "…": a hidden level is a hidden way out (2.4.8 Location, AAA, beyond the AA bar). It wraps onto more lines instead.
 - **Do not link the current page,** and mark no other item `aria-current`.
 - **Link text is the page's title:** "Start", not "Home link" or "Click here" (2.4.4 Link Purpose (In Context), A).
 - **Put it in the same place on every page that has one.** The trail is repeated on many pages, and people look for it in the same spot.
@@ -68,14 +68,25 @@ The landmark name is the only string: `breadcrumb.label` (en `You are here`; sv 
 - Focus indicator: a link shows the focus ring (`:focus-visible`), through `Link`.
 - Target size: at least 24 by 24 pixels (2.5.8 Target Size (Minimum), AA).
 - Separators: the first item's separator is hidden (it is rendered in every item). A separator is never the only cue between levels, because the items are separate list items (1.4.1 Use of Color, A).
-- Reflow: the trail wraps at 320 pixels wide (1.4.10 Reflow, AA), proved in the stories.
-- Forced colours and reduced motion: not checked by an automated test.
+- Reflow: the trail wraps at 320 pixels wide (1.4.10 Reflow, AA): the reflow sweep runs every story at 320 CSS px and fails on horizontal overflow.
+- Forced colours and reduced motion: the trail follows the system colours and nothing animates. The forced-colours and reduced-motion sweeps check it.
 
 A custom theme must keep these.
 
 ## WCAG SCs covered
 
-1.1.1 Non-text Content (A): the separator is decoration, never read. 1.3.1 Info and Relationships (A): a landmark, an ordered list, the current page. 1.4.1 Use of Color (A): the current page is text in a heavier weight plus `aria-current`, not colour. 1.4.10 Reflow (AA): wraps at 320 pixels wide. 1.4.11 Non-text Contrast (AA): a custom separator is decoration, so it has no contrast need. 2.4.4 Link Purpose (In Context) (A): the link text is the page's title. 2.5.8 Target Size (Minimum) (AA). 3.1.2 Language of Parts (AA): a custom `label` in another language is marked by the consumer. 4.1.2 Name, Role, Value (A). 2.4.8 Location (AAA, beyond the AA bar): the trail shows where the page sits. Designed and tested to meet WCAG 2.2 AA.
+- 1.1.1 Non-text Content (A): the separator is decoration, never read.
+- 1.3.1 Info and Relationships (A): a landmark, an ordered list, the current page.
+- 1.4.1 Use of Color (A): the current page is shown by text weight that differs from the links plus `aria-current`, not by colour.
+- 1.4.10 Reflow (AA): wraps at 320 pixels wide.
+- 1.4.11 Non-text Contrast (AA): a custom separator is decoration, so it has no contrast need.
+- 2.4.4 Link Purpose (In Context) (A): the link text is the page's title.
+- 2.5.8 Target Size (Minimum) (AA).
+- 3.1.2 Language of Parts (AA): a custom `label` in another language is marked by the consumer.
+- 4.1.2 Name, Role, Value (A).
+- 2.4.8 Location (AAA, beyond the AA bar): the trail shows where the page sits.
+
+Designed and tested to meet WCAG 2.2 AA.
 
 ## AT test record
 
@@ -95,6 +106,17 @@ A custom theme must keep these.
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                        |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                        |
 
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- The landmarks list shows "You are here" (or your label) once.
+- Tab along the trail: each level is a link, in order. The current page is not a stop.
+- Reading the trail says "list" with the item count, and the current page as current.
+- Enter on a level goes there, and focus is not lost.
+- The separators are not read.
+- At 320px and in right-to-left text the trail wraps and the separators face the right way.
+
 ## Message keys
 
-`breadcrumb.label` (all five locales; have a native speaker review fi, nb and nn before launch).
+`breadcrumb.label` (all five locales). If you override it, have a native speaker check your wording.

@@ -35,9 +35,10 @@ const parts: ApiPart[] = [
     name: 'Accordion.Root',
     renders: (
       <>
-        <code>&lt;div&gt;</code> with no role. It takes every attribute of a{' '}
-        <code>&lt;div&gt;</code> and passes <code>ref</code> to it. The default theme is described
-        on <Link href="/foundation/theming">Theming</Link>.
+        <code>&lt;div&gt;</code> with no role, or a <code>&lt;ul&gt;</code> or{' '}
+        <code>&lt;ol&gt;</code> with <code>as</code>. It takes every attribute of that element and
+        passes <code>ref</code> to it. The default theme is described on{' '}
+        <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: accordionRootRows,
@@ -47,9 +48,9 @@ const parts: ApiPart[] = [
     name: 'Accordion.Item',
     renders: (
       <>
-        <code>&lt;div&gt;</code> with no role. It owns its own open state, so opening one item never
-        closes another. It takes every attribute of a <code>&lt;div&gt;</code> and passes{' '}
-        <code>ref</code> to it.
+        <code>&lt;div&gt;</code> with no role, or an <code>&lt;li&gt;</code> with <code>as</code>.
+        It owns its own open state, so opening one item never closes another. It takes every
+        attribute of that element and passes <code>ref</code> to it.
       </>
     ),
     props: accordionItemRows,
@@ -102,7 +103,7 @@ export function AccordionPage({
   return (
     <ComponentPage
       title="Accordion"
-      lead="Readers open them one by one, and every item opens on its own."
+      lead="Readers open the items one by one. Each item opens and closes on its own."
       pattern="APG Accordion"
       whenToUse={
         <ul>
@@ -125,8 +126,8 @@ export function AccordionPage({
             use <Link href="/components/navigation">Navigation</Link>.
           </li>
           <li>
-            This version has no “only one open” mode and no “show all” button, and the arrow keys
-            don’t move between the questions.
+            It has no “only one open” mode and no “show all” button. The arrow keys don’t move
+            between the questions: each button is a Tab stop.
           </li>
         </ul>
       }
@@ -189,7 +190,7 @@ export function AccordionPage({
           </UseCase>
           <UseCase
             id="as-a-list"
-            title="As a list of items"
+            title="A list that says how many questions there are"
             why={
               <>
                 If you want a screen reader to say how many questions there are, make the root a

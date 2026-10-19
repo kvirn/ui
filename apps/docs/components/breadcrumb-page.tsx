@@ -71,7 +71,7 @@ const parts: ApiPart[] = [
         <code>&lt;a href&gt;</code>: a thin wrapper over{' '}
         <LinkRoot href="/components/link">Link.Root</LinkRoot>, so it is rendered by the router link
         you register on the provider. It takes the same props and <code>ref</code> as{' '}
-        <code>Link.Root</code>.
+        <code>Link.Root</code>, so <code>as=&quot;a&quot;</code> skips the router link.
       </>
     ),
     attributes: breadcrumbLinkAttributes,
@@ -249,8 +249,9 @@ export function BreadcrumbPage({
             ]}
             note={
               <Note kind="reminder">
-                Give each link the class <code>kv-breadcrumb-link</code>: the hook doesn’t. It keeps
-                the link at least 24px tall (2.5.8 Target Size (Minimum), AA).
+                Give each link the class <code>kv-breadcrumb-link</code>: the hook doesn’t. The
+                default theme uses it to keep the link tall enough to press (2.5.8 Target Size
+                (Minimum), AA).
               </Note>
             }
           >
@@ -258,7 +259,20 @@ export function BreadcrumbPage({
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} linkToStrings />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          linkToStrings
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                A breadcrumb helps people move up, but it is not a way to find pages. Your site also
+                needs search or a site map (2.4.5 Multiple Ways, AA).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

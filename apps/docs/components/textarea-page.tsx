@@ -104,18 +104,25 @@ export function TextareaPage({
           <UseCase
             id="character-limit"
             title="A limit the user can see"
-            why="Your form accepts at most 200 characters. The count says so before the user gets there, says how many are left while they type, and says how many are over if they go past it."
+            why={
+              <>
+                Your form accepts at most 200 characters. The count says so before the user starts,
+                says how many are left while they type, and says how many are over if they go past
+                it. With <code>characterCount</code> the limit is not written as the native{' '}
+                <code>maxlength</code>, so a pasted text is kept whole. Over the limit is a warning,
+                never an error: your form decides on submit. A screen reader says the count politely
+                when typing pauses (see <Link href="#announcements">Announcements</Link>).
+              </>
+            }
             code={sources['character-limit']}
             propsUsed={[
               { part: 'Textarea', prop: 'characterCount' },
               { part: 'Textarea', prop: 'maxLength' },
             ]}
             note={
-              <Note kind="tip">
-                With <code>characterCount</code> the limit is not written as the native{' '}
-                <code>maxlength</code>, so a pasted text is kept whole and the count says how many
-                characters are over. Over the limit is a warning, never an error: your form decides
-                on submit.
+              <Note kind="reminder">
+                Wrap your app in <code>KvirnProvider</code>. Without it the count still shows, but
+                nothing is said aloud while the user types (4.1.3 Status Messages).
               </Note>
             }
           >
@@ -188,6 +195,20 @@ export function TextareaPage({
           contract={contract}
           linkToStrings
           notes={{
+            focus: (
+              <Note kind="reminder">
+                If your page has a header that stays at the top while scrolling, add{' '}
+                <code>scroll-padding</code> so it never covers the focused box (2.4.11 Focus Not
+                Obscured (Minimum)).
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                If you restyle the box, keep its edge at 3:1 contrast against the surface (1.4.11
+                Non-text Contrast) and a visible focus ring (2.4.7 Focus Visible). Show a text over
+                the limit by more than colour, as the weight and icon do here (1.4.1 Use of Color).
+              </Note>
+            ),
             'what-you-need-to-do': (
               <Note kind="reminder">
                 Give every box a visible label in a Field. A placeholder is not a label: it
@@ -237,7 +258,7 @@ export function TextareaPage({
                 },
                 {
                   key: 'remaining',
-                  meaning: 'The count as the limit nears: how many characters are left.',
+                  meaning: 'The count while the user types: how many characters are left.',
                   values: { count: 120 },
                 },
                 {

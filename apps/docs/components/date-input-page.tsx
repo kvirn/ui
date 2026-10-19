@@ -90,13 +90,14 @@ export function DateInputPage({
   return (
     <ComponentPage
       title="DateInput"
-      lead="Each box has its own visible label, and a date of birth can be filled in by the browser. It never reads or checks the date: that is your form’s job."
+      lead="Each box has its own visible label, and the browser can fill in a date of birth. It does not check whether the date is real: that is your form’s job."
       whenToUse={
         <ul>
           <li>
             Use it for a date the user knows by heart, such as a date of birth. Put it in a{' '}
-            <code>Fieldset</code> whose legend asks the question. Each part then gets its own
-            autofill token (1.3.5 Identify Input Purpose).
+            <code>Fieldset</code> whose legend asks the question. For a date of birth, set{' '}
+            <code>autoComplete=&quot;bday&quot;</code>: each box then gets its own autofill token
+            (1.3.5 Identify Input Purpose).
           </li>
           <li>
             Use it in forms for residents and for staff, wherever the date is typed rather than
@@ -170,9 +171,10 @@ export function DateInputPage({
             why={
               <>
                 Pass <code>value</code> and <code>onValueChange</code> from your form logic. The
-                Root reports the whole date as the boxes show it: three strings, never padded or
-                parsed. Checking it is your job. Write the strings as <code>YYYY-MM-DD</code>, with
-                two digits for day and month, and pass that to <code>checks.date</code>.
+                Root reports the whole date as the boxes show it: three strings, exactly as typed.
+                It adds no zeros and does not turn them into a date. Checking it is your job. Write
+                the strings as <code>YYYY-MM-DD</code>, with two digits for day and month, and pass
+                that to <code>checks.date</code>.
               </>
             }
             code={sources['controlled']}
@@ -224,12 +226,12 @@ export function DateInputPage({
             why={
               <>
                 For a date near today, put <code>DatePicker.Trigger</code> last in the row of boxes.
-                Typing still works. The picker holds no date: give it the date as <code>value</code>{' '}
-                and write the chosen day back, with <code>dateInputValueToIsoDate</code> and{' '}
-                <code>isoDateToDateInputValue</code> for the boxes. The second field is the
-                alternative described under “When to use it”: one <code>TextInput</code> with{' '}
-                <code>masks.date()</code>, bridged with <code>maskedDateToIsoDate</code> and{' '}
-                <code>isoDateToMaskedDate</code>.
+                Typing still works. The picker holds no date of its own: give it your date as{' '}
+                <code>value</code>, and write the day the user picks back to your state.{' '}
+                <code>dateInputValueToIsoDate</code> and <code>isoDateToDateInputValue</code>{' '}
+                convert between the boxes and the picker. The second field is the one-box
+                alternative from “When to use it”: <code>maskedDateToIsoDate</code> and{' '}
+                <code>isoDateToMaskedDate</code> convert for it.
               </>
             }
             code={sources['with-picker']}
@@ -312,8 +314,23 @@ export function DateInputPage({
             'what-you-need-to-do': (
               <Note kind="reminder">
                 Ask the question in the legend and write an example under the boxes, in the order
-                the boxes are in. Without them the three boxes have no shared name and the format is
-                unclear (1.3.1 Info and Relationships, 3.3.2 Labels or Instructions).
+                the boxes are in. Without a legend the three boxes have no shared question (1.3.1
+                Info and Relationships). Without an example the format is unclear (3.3.2 Labels or
+                Instructions).
+              </Note>
+            ),
+            focus: (
+              <Note kind="reminder">
+                DateInput never moves focus after an error, so you do. After a failed submit, move
+                focus to the first wrong box, or to the first box when the whole date is wrong. That
+                takes the user to the problem.
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                If you restyle the boxes, keep a visible focus ring (2.4.7 Focus Visible), keep each
+                box at least 24 CSS pixels high (2.5.8 Target Size (Minimum)), and show a wrong box
+                by more than colour (1.4.1 Use of Color).
               </Note>
             ),
             'known-issues': (

@@ -41,8 +41,10 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;button type=&quot;button&quot;&gt;</code> with <code>aria-expanded</code> and{' '}
         <code>aria-controls</code>, and a chevron after its content. It takes every attribute of a{' '}
-        <code>&lt;button&gt;</code> except <code>id</code>, <code>type</code>, the two ARIA
-        attributes and the disabled ones, and passes <code>ref</code> to it.
+        <code>&lt;button&gt;</code> except <code>id</code>, <code>type</code>,{' '}
+        <code>aria-expanded</code>, <code>aria-controls</code>, <code>aria-disabled</code> and{' '}
+        <code>disabled</code>, and passes <code>ref</code> to it. Set <code>disabled</code> on{' '}
+        <code>Disclosure.Root</code>.
       </>
     ),
     attributes: disclosureTriggerAttributes,
@@ -70,7 +72,7 @@ export function DisclosurePage({
   return (
     <ComponentPage
       title="Disclosure"
-      lead="Whether it is open shows as a chevron and as a state a screen reader (software that reads the screen aloud) reports, never as colour alone."
+      lead="A chevron and a state that a screen reader (software that reads the screen aloud) reports both show whether it is open, so colour is never the only cue."
       pattern="APG Disclosure"
       whenToUse={
         <ul>
@@ -91,8 +93,8 @@ export function DisclosurePage({
             button.
           </li>
           <li>
-            Not for a menu that is always shown on a wide screen and a button on a narrow one: a
-            Disclosure can’t show its panel while it says it is closed, and the library has no
+            Not for a menu that shows in full on a wide screen and sits behind a button on a narrow
+            one. The button would say “closed” while the menu is on screen, and the library has no
             component for that. For a floating panel over the page, use a{' '}
             <Link href="/components/popover">Popover</Link>.
           </li>
