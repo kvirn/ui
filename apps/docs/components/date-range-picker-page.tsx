@@ -33,12 +33,13 @@ const parts: ApiPart[] = [
     name: 'DateRangePicker.Root',
     renders: (
       <>
-        No element. It owns the open state, the draft range and the limits, and gives the Dialog its
-        context. Inside it, put the group Fieldset with the From and To fields and one{' '}
-        <code>DateRangePicker.Trigger</code> after both, then <code>DateRangePicker.Popup</code>.
-        Each end can be a masked <code>TextInput</code> or a{' '}
-        <Link href="/components/date-input">DateInput</Link>. The default theme is described on{' '}
-        <Link href="/foundation/theming">Theming</Link>.
+        No element. It owns the open state, the draft range (the days pressed so far) and the
+        limits, and gives the Dialog its context. Inside it, put the group Fieldset with the From
+        and To fields and one <code>DateRangePicker.Trigger</code> after both, then{' '}
+        <code>DateRangePicker.Popup</code>. Put the fields and the trigger in a <code>div</code>{' '}
+        with the class <code>kv-date-range-row</code>: it wraps on a narrow screen. Each end can be
+        a masked <code>TextInput</code> or a <Link href="/components/date-input">DateInput</Link>.
+        The default theme is described on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: dateRangePickerRootRows,
@@ -85,8 +86,8 @@ const parts: ApiPart[] = [
       <>
         A <Link href="/components/calendar">Calendar.Root</Link> in range mode with the picker’s
         draft and limits set, and the month buttons, both headings, the range hint and both grids
-        inside it (the second month shows from 64rem). It takes the attributes of a{' '}
-        <code>&lt;div&gt;</code>, not the Calendar’s options: those come from the picker. Give it
+        inside it (the second month shows on screens 64rem wide or more). It takes the attributes of
+        a <code>&lt;div&gt;</code>, not the Calendar’s options: those come from the picker. Give it
         children to compose your own.
       </>
     ),
@@ -103,7 +104,7 @@ export function DateRangePickerPage({
   return (
     <ComponentPage
       title="DateRangePicker"
-      lead="Typing always works: the picker is an extra way to fill in the dates, not a replacement."
+      lead="Choosing the start and the end fills in both fields. Typing always works: the picker is an extra way to give the dates, not a replacement."
       pattern="APG Date Picker Dialog"
       whenToUse={
         <ul>
@@ -142,11 +143,11 @@ export function DateRangePickerPage({
             title="A stay with a longest length"
             why={
               <>
-                Set <code>maximumDays</code> and say the limit in your own unit in the group’s help
-                text. Days count both ends, so a booking of 14 nights is 15 days. The dialog writes
-                the limit in days as well. Someone can still type a reversed or too long range, so
-                the example checks it when the form is sent and puts the error on the To field. (It
-                fixes <code>today</code>, so the dates are the same on any day.)
+                Set <code>maximumDays</code> and write the limit in your own unit in the group’s
+                help text. Days count both ends, so a booking of 14 nights is 15 days. The dialog
+                writes the limit in days. Someone can still type a reversed or too long range. The
+                example checks it when the form is sent and puts the error on the To field. It fixes{' '}
+                <code>today</code>, so the dates are the same on any day.
               </>
             }
             code={sources['nights-limit']}
@@ -170,10 +171,10 @@ export function DateRangePickerPage({
             title="Days that are taken"
             why={
               <>
-                A day that can’t be chosen stays reachable with the keyboard, shows as unavailable
-                (struck through in the default theme) and has the reason in its name. By default a
-                range cannot pass over it; set <code>allowUnavailableInRange</code> when it can,
-                such as a leave across a holiday.
+                A day that can’t be chosen stays reachable with the keyboard and shows as
+                unavailable (struck through in the default theme). The reason is part of its name,
+                so a screen reader reads it. By default a range cannot pass over such a day. Set{' '}
+                <code>allowUnavailableInRange</code> when it can, such as a leave across a holiday.
               </>
             }
             code={sources['booked-days']}
@@ -249,6 +250,18 @@ export function DateRangePickerPage({
           contract={contract}
           linkToStrings
           notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Write the limits in the group’s help text too. The dialog shows them only once it is
+                open (3.3.2 Labels or Instructions).
+              </Note>
+            ),
+            'known-issues': (
+              <Note kind="tip">
+                If an issue here affects your service, list it in your accessibility statement with
+                its workaround.
+              </Note>
+            ),
             focus: (
               <Note kind="tip">
                 Without a <code>timeZone</code> on <code>KvirnProvider</code>, the first paint uses

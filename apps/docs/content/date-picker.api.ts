@@ -29,7 +29,7 @@ const pickerOptionRows = propRows<UseDatePickerOptions>({
     type: '(open: boolean, details: DatePickerChangeDetails) => void',
     default: '–',
     description:
-      'Called when the dialog opens or closes. details.reason is the Dialog’s reason, or "select" when a day was chosen.',
+      'Called when the dialog opens or closes. details.reason is "trigger-press", "close-press", "escape" or "native-close" (the Dialog’s reasons), or "select" when a day was chosen.',
   },
   minimum: {
     type: 'IsoDate',
@@ -95,6 +95,7 @@ export const datePickerTriggerAttributes: readonly AttributeRow[] = [
     values: '"true" or "false"',
     meaning: 'Whether the dialog is open.',
   },
+  { name: 'data-open', values: 'present or absent', meaning: 'The dialog is open.' },
 ]
 
 export const datePickerPopupAttributes: readonly AttributeRow[] = [
@@ -103,6 +104,13 @@ export const datePickerPopupAttributes: readonly AttributeRow[] = [
     values: 'always',
     meaning: 'The part classes. The default theme styles them.',
   },
+  { name: 'aria-modal', values: '"true" while open', meaning: 'The page behind is inert.' },
+  {
+    name: 'aria-labelledby',
+    values: 'the Title’s id',
+    meaning: 'Names the dialog. Give it a title.',
+  },
+  { name: 'data-open', values: 'present or absent', meaning: 'The dialog is open.' },
 ]
 
 export const datePickerTitleRows = propRows<Pick<DatePickerTitleProps, 'as'>>({

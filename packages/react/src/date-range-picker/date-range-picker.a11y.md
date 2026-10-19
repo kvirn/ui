@@ -1,30 +1,30 @@
 # Accessibility contract: DateRangePicker
 
-- **APG pattern:** [Date Picker Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/) (a modal dialog around a grid), after two typed fields. APG has no range pattern: a range is two ordinary selections. The grid is [the Calendar contract](../calendar/calendar.a11y.md) (range mode); the dialog is [the Dialog contract](../dialog/dialog.a11y.md); the single-date sibling is [the DatePicker contract](../date-picker/date-picker.a11y.md).
-- **Deviations:** none new, and no key is added. From the APG example: no OK and Cancel buttons (the second press closes; Close and Escape cancel); the month is announced by Announcer on a button press; Tab leaves the modal to the browser's own UI before wrapping (the Dialog's approved deviation). The maintainer approved these decisions on 2026-10-06.
-- **Native elements used:** `<button type="button">` (trigger and Close), a native `<dialog>` shown with `showModal()`, `<h2>` (title), and the Calendar's `<table role="grid">` (two of them from 64rem).
+- **APG pattern:** [Date Picker Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/) (a modal dialog around a grid), after two typed fields. APG has no range pattern: a range is two ordinary selections. The grid is described on the Calendar page (range mode), the dialog on the Dialog page, and the single-date sibling on the DatePicker page.
+- **Deviations:** none new, and no key is added. From the APG example: no OK and Cancel buttons (the second press closes; Close and Escape cancel); the month is announced by Announcer on a button press; Tab leaves the modal to the browser's own UI before wrapping (a deviation from the APG Dialog pattern, approved).
+- **Native elements used:** `<button type="button">` (trigger and Close), a native `<dialog>` shown with `showModal()`, `<h2>` (title), and the Calendar's `<table role="grid">` (two of them on a wide screen).
 - **Status:** alpha candidate. Reviewer findings fixed, accessibility-reviewer re-review pending. Manual AT is `pending`.
 - **Tests:** `date-range-picker.test.tsx` next to this file. `date-range-picker.stories.tsx` in `apps/storybook/src/components/date-range-picker/`.
 
-DateRangePicker is an **add-on to two typed fields** (a From and a To, each one `masks.date()` TextInput, or each a DateInput): typing always works, and the dialog is the slower path for keyboard and screen reader users. It is a separate component from DatePicker because the Dialog wiring, the draft, the open step, focus return and the post-close announcement are accessibility-critical and identical for everyone. It is controlled only (v1): the fields' range goes in as `value` (`{ start, end }`, ISO strings, `''` for an empty end) and the chosen range comes out once, through `onValueChange`, for the consumer to write into both fields. The one masked field per end is the default composition; the three-box DateInput per end is supported with every feature. There is no `defaultOpen`: a picker never starts open.
+DateRangePicker is an **add-on to two typed fields** (a From and a To, each one `masks.date()` TextInput, or each a DateInput): typing always works, and the dialog is the slower path for keyboard and screen reader users. It is controlled only: it keeps no range of its own. The fields' range goes in as `value` (`{ start, end }`, each as year-month-day such as 2026-10-15, or `''` for an empty end) and the chosen range comes out once, through `onValueChange`, for the consumer to write into both fields. The one masked field per end is the default composition; the three-box DateInput per end is supported with every feature. There is no `defaultOpen`: a picker never starts open.
 
 ## Roles, states, properties
 
-| Part     | Element / role                              | ARIA                                                                                                                          | Notes                                                                                                                                                                 |
-| -------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Root     | none (renders no element)                   | none                                                                                                                          | Owns the open state, the draft range and the Dialog's context                                                                                                         |
-| Trigger  | `<button type="button">` → button           | name = its visible text `dateRangePicker.trigger`; `aria-haspopup="dialog"`; `aria-expanded` `true`/`false`                   | One, after both fields. The calendar icon is decorative (`aria-hidden`). Classes `kv-button kv-date-range-picker-trigger`; `data-open` while open                     |
-| Popup    | native `<dialog>` → dialog                  | `aria-modal="true"` while open; `aria-labelledby` → Title                                                                     | Class `kv-dialog kv-date-range-picker-popup`. Top layer; the page behind is inert                                                                                     |
-| Title    | `<h2>` (`tabindex="-1"`)                    | none                                                                                                                          | `dateRangePicker.title`, replaceable with the question. Names the dialog                                                                                              |
-| Close    | `<button>` icon button                      | name = `dialog.close`                                                                                                         | The Dialog's own Close                                                                                                                                                |
-| Calendar | `div.kv-calendar` with the Calendar's parts | as in [the Calendar contract](../calendar/calendar.a11y.md), range mode: `aria-multiselectable`, `aria-selected` on the range | Mounted only while the dialog is open. `visibleMonths` 2 (two grids from 64rem, one below). The step line (`rangeChooseStart`, `rangeChooseEnd`) is in the range hint |
+| Part     | Element / role                              | ARIA                                                                                                        | Notes                                                                                                                                                         |
+| -------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Root     | none (renders no element)                   | none                                                                                                        | Owns the open state, the draft range and the Dialog's context                                                                                                 |
+| Trigger  | `<button type="button">` → button           | name = its visible text `dateRangePicker.trigger`; `aria-haspopup="dialog"`; `aria-expanded` `true`/`false` | One, after both fields. The calendar icon is decorative (`aria-hidden`). Classes `kv-button kv-date-range-picker-trigger`; `data-open` while open             |
+| Popup    | native `<dialog>` → dialog                  | `aria-modal="true"` while open; `aria-labelledby` → Title                                                   | Class `kv-dialog kv-date-range-picker-popup`. Top layer; the page behind is inert                                                                             |
+| Title    | `<h2>` (`tabindex="-1"`)                    | none                                                                                                        | `dateRangePicker.title`, replaceable with the question. Names the dialog                                                                                      |
+| Close    | `<button>` icon button                      | name = `dialog.close`                                                                                       | The Dialog's own Close                                                                                                                                        |
+| Calendar | `div.kv-calendar` with the Calendar's parts | as on the Calendar page, range mode: `aria-multiselectable`, `aria-selected` on the range                   | Mounted only while the dialog is open. Two grids on a wide screen, one on a narrow one. The step line (choose the start, choose the end) is in the range hint |
 
-Rules, tested in `date-range-picker.test.tsx`:
+Rules the automated tests check:
 
 - **Opens on** the typed start, else the typed end, else today, kept inside `minimum`–`maximum`. The step follows: a start only gives the end step; an end only gives the start step; both give a finished range (a press starts a new one); an end before the start shows as the start alone and is never rewritten. A partial or impossible text counts as no date and gives no error from the picker: the form validates.
 - **Press 1** sets the draft start (fields unchanged, dialog open, "Start date … Choose the end date." announced in the dialog). **Press 2** on a possible end closes at once, calls `onValueChange` **once** with the finished range, and the consumer writes both fields. A day that can't be the end (before the start, too short, too long, past an unavailable day) becomes the new start and says so (restart, not swap). An unavailable day does nothing.
 - **Escape and Close** drop the draft: both fields stay as they were, `onValueChange` is not called, and the next opening starts from the typed range.
-- **Dev warnings (once):** `date-range-picker-invalid-value` (an end that is not `YYYY-MM-DD`); `date-range-picker-<part>-outside-root`.
+- **Dev warnings (once):** an end that is not in the form year-month-day; a part used outside a DateRangePicker.Root.
 
 ## Keyboard
 
@@ -33,14 +33,14 @@ Rules, tested in `date-range-picker.test.tsx`:
 - **Arrows wrap:** no (they cross months and the two grids, as in Calendar)
 - **Shortcuts:** none
 
-The grids' own keys (arrows, Home, End, Page keys, month buttons, the two-month crossings and the press outcomes) are in the Calendar contract and are proved in `calendar-range.test.tsx`; only what the dialog adds is listed here. A key with Control, Alt or Meta is never taken.
+The grids' own keys (arrows, Home, End, Page keys, month buttons, the two-month crossings and the press outcomes) are on the Calendar page and are proved by the Calendar's tests; only what the dialog adds is listed here. A key with Control, Alt or Meta is never taken.
 
 | Key                          | Context                           | Action                                                                                                           | Test                                                                                                                                                                  |
 | ---------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Tab                          | From field                        | Moves to the To field                                                                                            | `date-range-picker.test.tsx › keyboard › Tab moves from the From field to the To field and on to the trigger`                                                         |
 | Tab                          | To field                          | Moves to the one trigger, after both fields                                                                      | `date-range-picker.test.tsx › keyboard › Tab moves from the From field to the To field and on to the trigger`                                                         |
 | Shift+Tab                    | trigger                           | Moves back to the To field, then the From field                                                                  | `date-range-picker.test.tsx › keyboard › Shift+Tab moves from the trigger back to the To field and the From field`                                                    |
-| Tab / Shift+Tab              | open dialog                       | Close, the month buttons, then both grids as one stop; Shift+Tab goes back; the browser's UI sits between rounds | `date-range-picker.test.tsx › keyboard › Shift+Tab from the day goes through the month buttons to Close, and Tab goes back`                                           |
+| Tab / Shift+Tab              | open dialog                       | Close, the month buttons, then both grids as one stop; Shift+Tab goes back; Tab leaves the dialog to the browser's own controls, such as the address bar, before it goes round again | `date-range-picker.test.tsx › keyboard › Shift+Tab from the day goes through the month buttons to Close, and Tab goes back`                                           |
 | Enter                        | trigger                           | Opens the dialog; focus on the start, else the end, else today (both fields empty)                               | `date-range-picker.test.tsx › keyboard › Enter on the trigger opens the dialog with focus on today when both fields are empty`                                        |
 | Space                        | trigger                           | Opens the dialog, as Enter                                                                                       | `date-range-picker.test.tsx › keyboard › Space on the trigger opens the dialog`                                                                                       |
 | Enter                        | trigger, a typed range            | Opens on the typed start, the typed range selected                                                               | `date-range-picker.test.tsx › keyboard › the dialog opens on the typed start, with the whole typed range selected`                                                    |
@@ -61,7 +61,7 @@ The grids' own keys (arrows, Home, End, Page keys, month buttons, the two-month 
 | Escape                       | reopened                          | Opens on the typed range again, not on the dropped start                                                         | `date-range-picker.test.tsx › keyboard › the dialog reopens on the typed range, not on the half-chosen one dropped by Escape`                                         |
 | Enter / Space                | Close                             | Closes; the draft is dropped; focus to the trigger                                                               | `date-range-picker.test.tsx › keyboard › the Close button discards the half-chosen range and returns focus to the trigger`                                            |
 
-A click on a day presses it the same way (`a click on the start and on the end chooses the range the same way`). With the trigger gone, focus goes to the first box of the group around it (`with the trigger gone, focus goes to the end's first box, the nearest group around the trigger, never to body`).
+A click on a day presses it the same way. With the trigger gone, focus goes to the first box of the group around it.
 
 ## Focus management
 
@@ -81,7 +81,7 @@ A click on a day presses it the same way (`a click on the start and on the end c
 | A month button is pressed | `calendar.visibleMonths`  | polite, in the dialog's own Announcer                                               |
 | Opening, closing, Escape  | none                      | the focus moves announce them                                                       |
 
-An inert page drops an announcement, so the completion waits for the dialog to close. The Calendar's own completion announcement and its finished-range step line are switched off inside the picker (`calendarProps.messages.rangeSelected` returns `''`), so it is not said twice; the length comes from `calendar.rangeLength` with the days counted inclusively. Without a provider nothing is announced and the hook warns, as for Calendar.
+An inert page drops an announcement, so the completion waits for the dialog to close. The Calendar's own completion announcement is switched off inside the picker, so it is not said twice, while the finished range stays as the grid's description; the length comes from `calendar.rangeLength` with the days counted inclusively. Without a provider nothing is announced and the hook warns, as for Calendar.
 
 ### Read aloud
 
@@ -101,29 +101,31 @@ The phrases are the virtual screen reader's approximation, not NVDA or JAWS word
 - **Bridge both ends.** `value={{ start: maskedDateToIsoDate(from, locale), end: maskedDateToIsoDate(to, locale) }}` (or `dateInputValueToIsoDate` per DateInput) in, and `onValueChange={(range) => …}` out, one `isoDateToMaskedDate` or `isoDateToDateInputValue` per end. Validate the order and the span yourself (the picker never produces a reversed or over-long range, but a typed one can be).
 - **Say the limits.** Pass `minimum`, `maximum`, `minimumDays` and `maximumDays` and put them in the help text too (3.3.2 Labels or Instructions (A)); a booking says nights (14 nights is `maximumDays={15}`).
 - **Name the task.** Replace the title with the question ("Choose the dates of your stay").
-- **Put the one trigger after both fields.** The Popup can sit in a page `<form>`: none of its buttons submits it (`date-range-picker.test.tsx › a DateRangePicker inside a form submits nothing when its buttons are pressed`).
+- **Put the one trigger after both fields.** The Popup can sit in a page `<form>`: none of its buttons submits it.
 - **Not for** a range far from today (type it), nor when many days are unavailable (use radio buttons).
 - Everything in the Calendar and Dialog contracts applies.
 
 ## Visual / modes
 
 - Focus indicator: the trigger and Close are Buttons and have the Button's focus ring; the grids' is in the Calendar contract.
-- Target size: the trigger is a Button, and the day cells are larger than the 24 by 24 CSS pixel minimum of 2.5.8 Target Size (Minimum) (AA), also below 40rem.
-- Layout: the fields and the trigger sit in `kv-date-range-row`, which wraps: side by side from 40rem, stacked below, the trigger last (at 320px or 200% text it wraps below the To field). The popup is as wide as its calendar (`fit-content`) from 40rem: two months from 64rem, one below it; a sheet below 40rem.
-- forced-colors behaviour: in forced colours (the user's own system colours) it behaves as the Dialog and the Calendar do, and the trigger is a Button.
-- reduced-motion behaviour: the picker adds no motion of its own; the Dialog's opening motion is the only motion.
+- Target size: the trigger is a Button, and the day cells are larger than the 24 by 24 CSS pixel minimum of 2.5.8 Target Size (Minimum) (AA), also on a narrow screen.
+- Layout: the fields and the trigger sit in `kv-date-range-row`, which wraps: side by side on a wide screen, stacked on a narrow one, the trigger last (at 320px or 200% text it wraps below the To field). On a wide screen the popup is as wide as its calendar, with two months; on a narrow screen it shows one month, and below that it is a sheet.
+- Forced colours: in forced colours (the user's own system colours) it behaves as the Dialog and the Calendar do, and the trigger is a Button.
+- Reduced motion: the picker adds no motion of its own; the Dialog's opening motion is the only motion.
 
 ## WCAG SCs covered
 
 - 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A), 2.4.3 Focus Order (A): every row above; focus lands on the day and returns to the trigger.
-- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): roles, names and states of the trigger, dialog and grids (`roles, names and states`, axe).
+- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): roles, names and states of the trigger, dialog and grids (checked by tests and axe).
 - 3.3.2 Labels or Instructions (A): the range hint and the fields' help text. 3.3.7 Redundant Entry (A): the typed range is the starting point. 2.5.7 Dragging Movements (AA): no dragging is needed.
 - 4.1.3 Status Messages (AA): the step and the finished range, the latter after the dialog has closed.
 - 3.1.2 Language of Parts (AA): the Calendar's `lang` when the browser has no data for the locale.
-- 2.5.3 Label in Name (A): the trigger is named by its visible text (`there is one trigger after both fields: a button named by its visible text…`).
-- 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA): the trigger and Close are Buttons with the Button's ring, the grids' ring is the Calendar's, and nothing inside is sticky. Reviewed in the stories.
-- 1.4.3 Contrast (Minimum) (AA), 1.4.11 Non-text Contrast (AA): the dialog and the grids use the Dialog's and the Calendar's colours, measured by the theme check and axe in the stories (`has no axe violations closed, and open at the start step`).
-- 1.4.10 Reflow (AA), 1.4.12 Text Spacing (AA), 2.5.8 Target Size (Minimum) (AA): Reflow and text spacing: the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow; the `storybook-text-spacing` sweep applies the 1.4.12 spacing to every story and fails on a box that clips more content than it holds. Target size of the sheet and the day cells is reviewed in the stories.
+- 2.5.3 Label in Name (A): the trigger is named by its visible text.
+- 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA): the trigger and Close are Buttons with the Button's ring, the grids' ring is the Calendar's, and nothing inside is sticky. The ring is checked by eye.
+- 1.4.3 Contrast (Minimum) (AA), 1.4.11 Non-text Contrast (AA): the dialog and the grids use the Dialog's and the Calendar's colours, measured by the theme's contrast check, and axe finds no violation in any story, closed or open.
+- 1.4.10 Reflow (AA): the reflow sweep checks every story at 320 CSS pixels for horizontal overflow.
+- 1.4.12 Text Spacing (AA): the text-spacing sweep applies the wider spacing to every story and fails on a box that clips text.
+- 2.5.8 Target Size (Minimum) (AA): the size of the sheet and the day cells is checked by eye.
 
 ## AT test record
 
@@ -143,9 +145,17 @@ The phrases are the virtual screen reader's approximation, not NVDA or JAWS word
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                                                                      |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                                                                      |
 
+### What to check
+
+- Tab through From, To and "Choose dates". Press Enter: the dialog is read by its title, and focus is on the typed start (or today).
+- Press Enter on a day: the dialog stays open and "Start date …. Choose the end date." is read.
+- Press Enter on a later day: the dialog closes, both fields fill, focus is on the button, and the range and its length are read.
+- Press Enter on a day before the start: it becomes the new start and this is announced.
+- Start a range, then press Escape: both fields are unchanged and focus is on the button.
+- With a longest stay set, a day too far away says so in its name.
+
 ## Known issues
 
-- Screen reader users: whether a screen reader says the finished range after focus lands on the trigger, or drops it, is unproven until the manual assistive technology tests run.
+- Screen reader users: a screen reader may not say the finished range when focus lands on the trigger. Check with your users.
 - Screen reader users: `aria-selected` on every day between the ends may be noisy. Test it with your own screen reader users.
 - Children you pass to `DateRangePicker.Popup` stay mounted while the dialog is closed (the default Calendar does not).
-- Screen reader users: when both fields already hold a finished range, the dialog opens with an empty step line, and the grid's `aria-describedby` points at an empty description. The picker silences the completion message by blanking `rangeSelected`, which also blanks the finished-range line.

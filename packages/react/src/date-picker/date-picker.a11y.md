@@ -1,12 +1,12 @@
 # Accessibility contract: DatePicker
 
 - **APG pattern:** [Date Picker Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/) (a modal dialog around a grid), after a typed field. The grid is described on the Calendar page; the dialog on the Dialog page.
-- **Deviations:** none new. From the APG example: no OK and Cancel buttons (Enter selects, Close and Escape cancel); the month is announced by Announcer on a button press, not by a live heading (as in Calendar); Tab leaves the modal to the browser's own UI before wrapping (the Dialog's approved deviation). Decisions approved by the maintainer on 2026-10-06.
+- **Deviations:** none new. From the APG example: no OK and Cancel buttons (Enter selects, Close and Escape cancel); the month is announced by Announcer on a button press, not by a live heading (as in Calendar); Tab leaves the modal to the browser's own UI before wrapping (a deviation from the APG Dialog pattern, approved).
 - **Native elements used:** `<button type="button">` (trigger and Close), a native `<dialog>` shown with `showModal()`, `<h2>` (title), and the Calendar's `<table role="grid">`.
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `date-picker.test.tsx` next to this file. `date-picker.stories.tsx` in `apps/storybook/src/components/date-picker/`.
 
-DatePicker is an **add-on to a typed field** (a DateInput, or one `masks.date()` TextInput): typing always works, and the dialog is the slower path for keyboard and screen reader users. It is controlled only: the field's date goes in as `value` (ISO), and the chosen day comes out through `onValueChange` for the consumer to write into the field. It chooses one date. For a start and an end, use DateRangePicker.
+DatePicker is an **add-on to a typed field** (a DateInput, or one `masks.date()` TextInput): typing always works, and the dialog is the slower path for keyboard and screen reader users. It is controlled only: it keeps no date of its own. The field's date goes in as `value` (as year-month-day, such as 2026-10-15), and the chosen day comes out through `onValueChange` for the consumer to write into the field. It chooses one date. For a start and an end, use DateRangePicker.
 
 ## Roles, states, properties
 
@@ -19,11 +19,11 @@ DatePicker is an **add-on to a typed field** (a DateInput, or one `masks.date()`
 | Close    | `<button>` icon button                      | name = `dialog.close`                                                                                  | The Dialog's own Close                                                                                                                              |
 | Calendar | `div.kv-calendar` with the Calendar's parts | as on the Calendar page                                                                                | Mounted only while the dialog is open, so it reads the typed date and today afresh each time. `aria-selected` on the typed date                     |
 
-Rules, tested in `date-picker.test.tsx`:
+Rules the automated tests check:
 
 - **Opens on** the selected (typed) date when the field holds a real date, else on today; a date outside `minimum`–`maximum` opens on the nearest day inside it. A partial or impossible date gives no error from the picker: the form validates with `checks.date`.
 - **Choosing an available day** closes the dialog at once, calls `onValueChange` with the ISO date, and the consumer writes it into the boxes without leading zeros (`isoDateToDateInputValue`) or into the masked field (`isoDateToMaskedDate`). An unavailable day does nothing and the dialog stays open.
-- **Dev warnings (once):** `date-picker-invalid-value` (a `value` that is not `YYYY-MM-DD`); `date-picker-<part>-outside-root`.
+- **Dev warnings (once):** a `value` that is not in the form year-month-day; a part used outside a DatePicker.Root.
 
 ## Keyboard
 
@@ -32,32 +32,33 @@ Rules, tested in `date-picker.test.tsx`:
 - **Arrows wrap:** no (they cross months, as in Calendar)
 - **Shortcuts:** none
 
-The grid's own keys (arrows, Home, End, Page keys, month buttons) are in the Calendar contract and are proved in `calendar.test.tsx`; only what the dialog adds is listed here. A key with Control, Alt or Meta is never taken.
+The grid's own keys (arrows, Home, End, Page keys, month buttons) are in the Calendar contract and are proved by the Calendar's tests; only what the dialog adds is listed here. A key with Control, Alt or Meta is never taken.
 
-| Key             | Context                                 | Action                                                                                                         | Test                                                                                                                                                    |
-| --------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Tab             | last box                                | Moves to the trigger, the last item in the row                                                                 | `date-picker.test.tsx › keyboard › Tab moves from the last box to the trigger`                                                                          |
-| Shift+Tab       | trigger                                 | Moves back to the last box                                                                                     | `date-picker.test.tsx › keyboard › Shift+Tab moves from the trigger back to the last box`                                                               |
-| Tab / Shift+Tab | open dialog                             | Close, the month buttons, then the grid as one stop; Shift+Tab goes back; the browser's UI sits between rounds | `date-picker.test.tsx › keyboard › Shift+Tab from the day goes through the month buttons to Close, and Tab goes back`                                   |
-| Enter           | trigger                                 | Opens the dialog; focus on the selected date, else today                                                       | `date-picker.test.tsx › keyboard › Enter on the trigger opens the dialog with focus on today when the field is empty`                                   |
-| Space           | trigger                                 | Opens the dialog, as Enter                                                                                     | `date-picker.test.tsx › keyboard › Space on the trigger opens the dialog`                                                                               |
-| Enter           | trigger, typed date                     | Opens on the typed date, which has `aria-selected`                                                             | `date-picker.test.tsx › keyboard › the dialog opens on the typed date when the field holds a real date`                                                 |
-| Enter           | trigger, a typed date outside the range | Opens on the nearest day inside the range                                                                      | `date-picker.test.tsx › keyboard › a typed date outside the range opens inside it`                                                                      |
-| ArrowRight      | day                                     | Moves to the next day inside the dialog (the rest as Calendar)                                                 | `date-picker.test.tsx › keyboard › an arrow key moves between days inside the dialog`                                                                   |
-| Enter           | available day                           | Chooses it, closes, fills the field, focus to the trigger                                                      | `date-picker.test.tsx › keyboard › Enter on an available day closes the dialog, fills the boxes without leading zeros and returns focus to the trigger` |
-| Space           | available day                           | The same as Enter                                                                                              | `date-picker.test.tsx › keyboard › Space on an available day chooses it and closes the dialog`                                                          |
-| Enter / Space   | unavailable day                         | Nothing; the dialog stays open                                                                                 | `date-picker.test.tsx › keyboard › Enter on an unavailable day does nothing and the dialog stays open`                                                  |
-| Escape          | open dialog                             | Closes without choosing; the field is unchanged; focus to the trigger                                          | `date-picker.test.tsx › keyboard › Escape closes without choosing and returns focus to the trigger`                                                     |
-| Enter / Space   | Close                                   | Closes without choosing; focus to the trigger                                                                  | `date-picker.test.tsx › keyboard › the Close button closes without choosing and returns focus to the trigger`                                           |
+| Key             | Context                                 | Action                                                                                                                                                                             | Test                                                                                                                                                    |
+| --------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tab             | last box                                | Moves to the trigger, the last item in the row                                                                                                                                     | `date-picker.test.tsx › keyboard › Tab moves from the last box to the trigger`                                                                          |
+| Shift+Tab       | trigger                                 | Moves back to the last box                                                                                                                                                         | `date-picker.test.tsx › keyboard › Shift+Tab moves from the trigger back to the last box`                                                               |
+| Tab / Shift+Tab | open dialog                             | Close, the month buttons, then the grid as one stop; Shift+Tab goes back; Tab leaves the dialog to the browser's own controls, such as the address bar, before it goes round again | `date-picker.test.tsx › keyboard › Shift+Tab from the day goes through the month buttons to Close, and Tab goes back`                                   |
+| Enter           | trigger                                 | Opens the dialog; focus on the selected date, else today                                                                                                                           | `date-picker.test.tsx › keyboard › Enter on the trigger opens the dialog with focus on today when the field is empty`                                   |
+| Space           | trigger                                 | Opens the dialog, as Enter                                                                                                                                                         | `date-picker.test.tsx › keyboard › Space on the trigger opens the dialog`                                                                               |
+| Enter           | trigger, typed date                     | Opens on the typed date, which has `aria-selected`                                                                                                                                 | `date-picker.test.tsx › keyboard › the dialog opens on the typed date when the field holds a real date`                                                 |
+| Enter           | trigger, a typed date outside the range | Opens on the nearest day inside the range                                                                                                                                          | `date-picker.test.tsx › keyboard › a typed date outside the range opens inside it`                                                                      |
+| ArrowRight      | day                                     | Moves to the next day inside the dialog (the rest as Calendar)                                                                                                                     | `date-picker.test.tsx › keyboard › an arrow key moves between days inside the dialog`                                                                   |
+| Enter           | available day                           | Chooses it, closes, fills the field, focus to the trigger                                                                                                                          | `date-picker.test.tsx › keyboard › Enter on an available day closes the dialog, fills the boxes without leading zeros and returns focus to the trigger` |
+| Space           | available day                           | The same as Enter                                                                                                                                                                  | `date-picker.test.tsx › keyboard › Space on an available day chooses it and closes the dialog`                                                          |
+| Enter           | unavailable day                         | Nothing; the dialog stays open                                                                                                                                                     | `date-picker.test.tsx › keyboard › Enter on an unavailable day does nothing and the dialog stays open`                                                  |
+| Space           | unavailable day                         | Nothing; the dialog stays open                                                                                                                                                     | `calendar.test.tsx › keyboard › Enter and Space on an unavailable day select nothing`                                                                   |
+| Escape          | open dialog                             | Closes without choosing; the field is unchanged; focus to the trigger                                                                                                              | `date-picker.test.tsx › keyboard › Escape closes without choosing and returns focus to the trigger`                                                     |
+| Enter / Space   | Close                                   | Closes without choosing; focus to the trigger                                                                                                                                      | `date-picker.test.tsx › keyboard › the Close button closes without choosing and returns focus to the trigger`                                           |
 
-A click on a day chooses it the same way (`a click on a day chooses it and writes a day and month without leading zeros`). The dialog reopens on a date typed since it closed (`the dialog reopens on a date typed since it closed`).
+A click on a day chooses it the same way. The dialog reopens on a date typed since it closed.
 
 ## Focus management
 
 - Without a provider `timeZone`, "today" is the UTC date on first paint only. The Calendar mounts in the popup on every open, so a popup that opens after mount starts on the browser's date (no switch) and initial focus lands on the cell marked `aria-current="date"`.
 - Initial focus: the day with the Tab stop (the typed date, else today, kept inside the range), through the Dialog's `initialFocusRef`. Not the first month button.
-- Trap: yes, native modal (the page behind is `inert`). Tab leaves to the browser's UI before wrapping (the Dialog's approved deviation), so there is no keyboard trap (2.1.2).
-- Restore to: the trigger, for a choice, Escape and Close alike. If the trigger is gone, the first box of the field (the first input in the trigger's nearest `fieldset`, group or field). Never `body` (`with the trigger gone, focus goes to the first box of the field, never to body`).
+- Trap: yes, native modal (the page behind is `inert`). Tab leaves to the browser's UI before wrapping (a deviation from the APG Dialog pattern, approved), so there is no keyboard trap (2.1.2 No Keyboard Trap, A).
+- Restore to: the trigger, for a choice, Escape and Close alike. If the trigger is gone, the first box of the field (the first input in the trigger's nearest `fieldset`, group or field). Never `body`.
 - Never obscured by: nothing inside is sticky; the sheet scrolls (2.4.11 Focus Not Obscured (Minimum) (AA)).
 
 ## Announcements
@@ -85,32 +86,34 @@ The phrases are the virtual screen reader's approximation, not NVDA or JAWS word
 
 ## Consumer responsibilities
 
-- **Keep the typed field.** DatePicker never replaces it: typing always works, and it keeps `autocomplete` (1.3.5 Identify Input Purpose (AA)) and avoids dragging (2.5.7 Dragging Movements (AA)). A DateInput stays in a `Fieldset` with a legend, help text with an example, and an error.
+- **Keep the typed field.** DatePicker never replaces it: typing always works, and it avoids dragging (2.5.7 Dragging Movements (AA)). Where the typed field collects information about the user, such as a date of birth, give it the matching `autocomplete` value yourself (1.3.5 Identify Input Purpose (AA)). A DateInput stays in a `Fieldset` with a legend, help text with an example, and an error.
 - **Bridge the value.** `value={dateInputValueToIsoDate(boxes)}` (or `maskedDateToIsoDate(text, locale)`) in, and `onValueChange={(date) => setBoxes(isoDateToDateInputValue(date))}` out. Validate the field yourself (`checks.date`, with its `range`).
 - **Say the range.** Pass `minimum` and `maximum` and put them in the field's help text too (3.3.2 Labels or Instructions (A)): the dialog's range hint is only visible once it is open.
 - **Name the task.** Replace the title with the question ("Choose the day of your visit").
-- **Put the trigger inside the date's row.** The Popup can sit in a page `<form>`: none of its buttons submits it (`date-picker.test.tsx › a DatePicker inside a form submits nothing when its buttons are pressed`).
+- **Put the trigger inside the date's row.** The Popup can sit in a page `<form>`: none of its buttons submits it.
 - **Not for** a date of birth or any date far from today: type it. **Not when many days are unavailable:** use radio buttons.
 - Everything on the Calendar page and the Dialog page applies too.
 
 ## Visual / modes
 
 - Focus indicator: the trigger and Close are Buttons, with a ring at least 2 pixels thick and at least 3:1 contrast against its surroundings (2.4.13 Focus Appearance, AAA); the grid's is described on the Calendar page.
-- Target size: the trigger is a Button, and the day cells are the Calendar's, which are smaller below 40rem wide so that seven columns fit a 320 pixel screen. All are above the 24 by 24 pixel minimum of 2.5.8 Target Size (Minimum) (AA).
-- Layout: the trigger is last in the row of boxes and wraps below them on a 320 pixel screen or at 200% text. From 40rem wide the popup is as wide as its calendar, and below that it is a sheet at the bottom of the screen.
+- Target size: the trigger is a Button, and the day cells are the Calendar's, which are smaller on a narrow screen so that seven columns fit a 320 pixel screen. All are above the 24 by 24 pixel minimum of 2.5.8 Target Size (Minimum) (AA).
+- Layout: the trigger is last in the row of boxes and wraps below them on a 320 pixel screen or at 200% text. On a wide screen the popup is as wide as its calendar, and on a narrow one it is a sheet at the bottom of the screen.
 - Forced colours (a user's high-contrast mode): as the Dialog and the Calendar; the trigger is a Button.
 - Reduced motion: the Dialog's own open motion only.
 
 ## WCAG SCs covered
 
 - 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A), 2.4.3 Focus Order (A): every row above; focus lands on the day and returns to the trigger.
-- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): roles, names and states of the trigger, dialog and grid (the roles test and axe).
+- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): roles, names and states of the trigger, dialog and grid (checked by tests and axe).
 - 3.3.2 Labels or Instructions (A): the range hint and the field's help text. 3.3.7 Redundant Entry (A): the typed date is the starting point. 2.5.7 Dragging Movements (AA): nothing needs dragging.
+- 2.4.7 Focus Visible (AA): the trigger, Close and the focused day show a focus ring.
+- 1.4.3 Contrast (Minimum) (AA) and 1.4.11 Non-text Contrast (AA): the text, the focus ring and the borders are measured in the default theme.
 - 2.4.11 Focus Not Obscured (Minimum) (AA): nothing inside the dialog is sticky.
 - 4.1.3 Status Messages (AA): `{date} selected` after the dialog has closed.
 - 3.1.2 Language of Parts (AA): the Calendar's `lang` when the browser has no data for the locale.
-- 1.4.10 Reflow (AA): stories at 320 pixels wide check that the dialog and its grid do not scroll sideways, with and without week numbers.
-- 1.4.12 Text Spacing (AA): the `storybook-text-spacing` sweep applies the 1.4.12 spacing to every story and fails on a box that clips more content than it holds. 2.5.8 Target Size (Minimum) (AA): no automated check.
+- 1.4.10 Reflow (AA): the reflow sweep checks every story at 320 CSS pixels for sideways scrolling, so the dialog and its grid do not scroll sideways.
+- 1.4.12 Text Spacing (AA): the text-spacing sweep applies the wider spacing to every story and fails on a box that clips text. 2.5.8 Target Size (Minimum) (AA): the sizes are checked by eye.
 
 ## AT test record
 
@@ -130,7 +133,16 @@ The phrases are the virtual screen reader's approximation, not NVDA or JAWS word
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                                                       |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                                                       |
 
+### What to check
+
+- Tab to the field, then to "Choose date". Press Enter: focus is on the typed date (or today), and the dialog is announced with its title.
+- Arrow to another day and press Enter: the dialog closes, the field fills, focus is back on the button, and "{date} selected" is announced.
+- Reopen and press Escape: the field is unchanged and focus is on the button.
+- With a minimum and maximum: the range sentence is read with the grid. A closed day reads its reason, and Enter does nothing.
+- Tab and Shift+Tab inside reach Close and the month buttons, and you can always leave.
+- At 400% zoom or 320px, the button wraps below the field and nothing is cut off.
+
 ## Known issues
 
-- Whether a screen reader says "{date} selected" after focus lands on the trigger, or drops it, is unproven until the manual matrix runs.
+- A screen reader may not say "{date} selected" when focus lands on the trigger. Check with your users.
 - Children you pass to `DatePicker.Popup` stay mounted while the dialog is closed (the default Calendar does not).

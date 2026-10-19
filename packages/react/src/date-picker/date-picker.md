@@ -81,7 +81,7 @@ import {
 
 A DatePicker is mounted closed and never starts open: there is no `defaultOpen`. To show a Calendar without a dialog, render a [Calendar](../calendar/calendar.md) inline in the page.
 
-Put the trigger last in the DateInput row (it wraps below the boxes on a narrow screen). Put the `DatePicker.Popup` outside any page `<form>`: a dialog keeps its content mounted while it is closed. For a masked field put the input and the trigger in `<div className="kv-date-picker-row">` inside the `Field.Root`, between the label and the help text, so the trigger lines up with the input and not with the help text.
+Put the trigger last in the DateInput row (it wraps below the boxes on a narrow screen). The `DatePicker.Popup` can sit inside a page `<form>`: none of its buttons submits the form. For a masked field put the input and the trigger in `<div className="kv-date-picker-row">` inside the `Field.Root`, between the label and the help text, so the trigger lines up with the input and not with the help text.
 
 ## API
 

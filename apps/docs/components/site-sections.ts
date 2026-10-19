@@ -185,7 +185,7 @@ const componentGroupList: readonly SummarisedGroup[] = [
       component(
         'Container',
         'container',
-        'A block that centres the page’s content and limits how wide it gets.',
+        'A block that limits how wide the page’s content gets, centred for the page and start-aligned for reading and forms.',
       ),
       component(
         'Grid',
@@ -293,12 +293,12 @@ const componentGroupList: readonly SummarisedGroup[] = [
       component(
         'DatePicker',
         'date-picker',
-        'A button after a typed date that opens a modal dialog with a Calendar.',
+        'A button next to a date field that opens a calendar in a dialog, so a day can be picked instead of typed.',
       ),
       component(
         'DateRangePicker',
         'date-range-picker',
-        'One button after a From and a To date that opens a modal dialog with a range Calendar.',
+        'A button after a From and a To date field that opens a calendar in a dialog, so a start and an end can be picked.',
       ),
       component(
         'ErrorSummary',

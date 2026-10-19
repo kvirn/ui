@@ -32,10 +32,9 @@ const parts: ApiPart[] = [
     name: 'DatePicker.Root',
     renders: (
       <>
-        No element. It owns the open state and the picker’s limits, and gives the Dialog its
-        context. Put the typed field, <code>DatePicker.Trigger</code> and{' '}
-        <code>DatePicker.Popup</code> inside it, and the field’s Fieldset inside it too, so the
-        trigger sits in the row of boxes. The default theme is described on{' '}
+        No element. It owns the open state and the limits, and gives the Dialog its context. Put the
+        field, <code>DatePicker.Trigger</code> and <code>DatePicker.Popup</code> inside it. Keep the
+        trigger in the same row as the field. The default theme is described on{' '}
         <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
@@ -100,7 +99,7 @@ export function DatePickerPage({
   return (
     <ComponentPage
       title="DatePicker"
-      lead="Choosing a day fills the field and returns focus to the button. Typing always works: the picker is the slower path, not a replacement."
+      lead="Choosing a day fills in the field. Typing always works: the picker is an extra way to give the date, not a replacement."
       pattern="APG Date Picker Dialog"
       whenToUse={
         <ul>
@@ -141,9 +140,11 @@ export function DatePickerPage({
             why={
               <>
                 A single <code>TextInput</code> with <code>masks.date()</code> is the shortest
-                field, and the trigger sits beside it in a row that wraps. Turn the text into an ISO
-                date for the picker with <code>maskedDateToIsoDate</code>, and the chosen day back
-                into the text with <code>isoDateToMaskedDate</code>.
+                field. Put it and the trigger in a <code>div</code> with the class{' '}
+                <code>kv-date-picker-row</code>, so the trigger sits beside it and wraps below it on
+                a narrow screen. Turn the text into an ISO date for the picker with{' '}
+                <code>maskedDateToIsoDate</code>, and the chosen day back into the text with{' '}
+                <code>isoDateToMaskedDate</code>.
               </>
             }
             code={sources['masked-field']}
@@ -160,9 +161,9 @@ export function DatePickerPage({
             why={
               <>
                 Set <code>minimum</code> and <code>maximum</code>. The dialog writes them in words
-                above the grid; say them in the field’s help text too, because the user sees that
-                text first. <code>today</code> is fixed in this example so the dates are the same on
-                any day.
+                above the grid. Say them in the field’s help text too, because people read that text
+                first. The example checks a typed date against the same limits and shows an error.
+                It fixes <code>today</code>, so the dates are the same on any day.
               </>
             }
             code={sources['limits']}
@@ -174,8 +175,8 @@ export function DatePickerPage({
             note={
               <Note kind="reminder">
                 The picker never checks what is typed. Check the typed date against the same limits
-                in your form, for example with <code>checks.date</code> and its range, and say what
-                is wrong.
+                in your form, for example with <code>checks.date</code> and its <code>min</code> and{' '}
+                <code>max</code>, and say how to fix it (3.3.1 Error Identification).
               </Note>
             }
           >
@@ -184,7 +185,7 @@ export function DatePickerPage({
           <UseCase
             id="closed-days"
             title="Days that are closed, with the reason"
-            why="A day that can’t be chosen stays focusable, struck through, with the reason in its name, so a keyboard or screen reader user can find it and read why. The typed field is where most people look first, so state the closed days in words in its help text, and show an error when a closed date is typed."
+            why="A day that can’t be chosen stays reachable with the keyboard and is struck through. The reason is part of its name, so a screen reader reads it. Most people look at the typed field first, so write the closed days in its help text, and show an error when someone types a closed date."
             code={sources['closed-days']}
             propsUsed={[
               { part: 'DatePicker.Root', prop: 'isDateUnavailable' },
@@ -215,6 +216,13 @@ export function DatePickerPage({
           contract={contract}
           linkToStrings
           notes={{
+            focus: (
+              <Note kind="tip">
+                Without a <code>timeZone</code> on <code>KvirnProvider</code>, the first paint uses
+                today’s date in UTC, and a dialog that opens later starts on the browser’s date.
+                Pass <code>timeZone</code> so the server and the browser agree on the day.
+              </Note>
+            ),
             'what-you-need-to-do': (
               <Note kind="reminder">
                 Say the dates that can be chosen in the field’s help text too. The dialog’s own line

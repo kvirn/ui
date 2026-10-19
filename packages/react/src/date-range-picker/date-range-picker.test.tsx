@@ -192,6 +192,18 @@ describe('roles, names and states', () => {
     expect(document.querySelector('[role="grid"]')).toBeNull()
   })
 
+  test('a finished range is read as the description of each grid, never an empty one', async () => {
+    await render(<Example initial={{ start: '2026-10-16', end: '2026-10-23' }} />)
+    await open()
+    for (const grid of page.getByRole('grid').elements()) {
+      const describedBy = grid.getAttribute('aria-describedby')
+      expect(describedBy).not.toBeNull()
+      expect(document.getElementById(describedBy as string)?.textContent).toContain(
+        'valda, 8 dagar',
+      )
+    }
+  })
+
   test('the title can be replaced with the question', async () => {
     await render(
       <KvirnProvider locale="sv" messages={sv}>

@@ -29,7 +29,7 @@ export const dateRangePickerRootRows = propRows<UseDateRangePickerOptions>({
     type: '(open: boolean, details: DateRangePickerChangeDetails) => void',
     default: '–',
     description:
-      'Called when the dialog opens or closes. details.reason is the Dialog’s reason, or "select" when the end was chosen.',
+      'Called when the dialog opens or closes. details.reason is "trigger-press", "close-press", "escape" or "native-close" (the Dialog’s reasons), or "select" when the end was chosen.',
   },
   minimum: {
     type: 'IsoDate',
