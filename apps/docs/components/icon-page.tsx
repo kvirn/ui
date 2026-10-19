@@ -11,11 +11,10 @@ import { iconAttributes, iconRows, useIconHook } from '../content/icon.api.ts'
 import { ByImport } from '../examples/icon/by-import.tsx'
 import { ByName } from '../examples/icon/by-name.tsx'
 import { DefaultIcon } from '../examples/icon/default.tsx'
-import { MapSet } from '../examples/icon/map-set.tsx'
 import { MirrorInRtl } from '../examples/icon/mirror-in-rtl.tsx'
 import { OneOffDrawing } from '../examples/icon/one-off-drawing.tsx'
 import { OwnComponent } from '../examples/icon/own-component.tsx'
-import { RichTextSet } from '../examples/icon/rich-text-set.tsx'
+import { PackageSets } from '../examples/icon/package-sets.tsx'
 import { Sizes } from '../examples/icon/sizes.tsx'
 import { WithLabel } from '../examples/icon/with-label.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
@@ -24,8 +23,7 @@ export type IconExampleSources = Record<
   | 'default'
   | 'by-name'
   | 'by-import'
-  | 'map-set'
-  | 'rich-text-set'
+  | 'package-sets'
   | 'with-label'
   | 'sizes'
   | 'own-component'
@@ -121,7 +119,7 @@ declare module '@kvirn-ui/react' {
             Export names are in camelCase (words joined, each new word starting with a capital
             letter) and have no “Icon” suffix, such as <code>chevronDown</code>. Two end in “Icon”,{' '}
             <code>deleteIcon</code> and <code>newIcon</code>, because the plain words are reserved
-            in JavaScript. A registered name is the kebab-case word, such as{' '}
+            in JavaScript. By convention, a registered name is the kebab-case word, such as{' '}
             <code>chevron-down</code>. To pick an icon, look through all of them on the{' '}
             <Link href="/icons">Icons page</Link>.
           </p>
@@ -159,7 +157,7 @@ declare module '@kvirn-ui/react' {
             KvirnUI’s own components pass both: <code>name=&quot;close&quot;</code> and the{' '}
             <code>close</code> drawing as <code>icon</code>. A name you register wins over the
             drawing, so registering <code>close</code> changes it in every KvirnUI component at
-            once, such as a Toast, a Dialog or a Tag:
+            once, such as a Toast, a Dialog or an Alert:
           </p>
           <CodeBlock
             code={`import { defineIcons } from '@kvirn-ui/react'
@@ -168,39 +166,35 @@ import { Cross } from 'your-icon-library'
 export const icons = defineIcons({ close: Cross })`}
           />
           <UseCase
-            id="map-set"
-            title="The Map’s icons"
+            id="package-sets"
+            title="Use the icons of the Map and the rich text editor"
             why={
               <>
-                The map package draws the default marker pin and the control arrows with icons from{' '}
-                <code>@kvirn-ui/icons</code>. Pass one with <code>icon</code>, or register them with{' '}
-                <code>defineIcons</code>. <code>mapIcons</code> in <code>@kvirn-ui/map</code> lists
-                them by name.
+                Both packages draw icons from <code>@kvirn-ui/icons</code>. The Map has the marker
+                pin and the control arrows. <code>mapIcons</code> in <code>@kvirn-ui/map</code>{' '}
+                lists them by name. Pass one with <code>icon</code>, or register them with{' '}
+                <code>defineIcons</code>. The editor draws its toolbar icons with{' '}
+                <code>RichTextEditor.Icon</code> (exported as <code>ToolbarIcon</code>), from the
+                names in <code>richTextIconNames</code> in <code>@kvirn-ui/rich-text</code>.
               </>
             }
-            code={sources['map-set']}
+            code={sources['package-sets']}
             propsUsed={[{ part: 'Icon', prop: 'icon' }]}
           >
-            <MapSet />
-          </UseCase>
-          <UseCase
-            id="rich-text-set"
-            title="The rich text editor’s icons"
-            why={
-              <>
-                The editor draws its toolbar icons with <code>RichTextEditor.Icon</code>, from the
-                names in <code>richTextIconNames</code> in <code>@kvirn-ui/rich-text</code>. They
-                are icons from <code>@kvirn-ui/icons</code>.
-              </>
-            }
-            code={sources['rich-text-set']}
-          >
-            <RichTextSet />
+            <PackageSets />
           </UseCase>
           <UseCase
             id="meaningful-icon"
             title="An icon that adds meaning"
-            why="Here the icon says what the word beside it is: the language. A label turns it into an image with that name, so a screen reader says “Language” before the word."
+            why={
+              // kv-lang-ok: "Svenska" is the point of the case (a language's own name), glossed in English
+              <>
+                Here the icon says what the word beside it is: the language (“Svenska” is Swedish,
+                and the example marks it with <code>lang=&quot;sv&quot;</code>). A label turns the
+                icon into an image with that name, so a screen reader says “Language” before the
+                word. See <Link href="#announcements-read-aloud">What a screen reader reads</Link>.
+              </>
+            }
             code={sources['with-label']}
             propsUsed={[{ part: 'Icon', prop: 'label' }]}
             note={
@@ -254,10 +248,10 @@ export const icons = defineIcons({ close: Cross })`}
             title="An arrow in right-to-left text"
             why={
               <>
-                In right-to-left text the default theme flips the library’s arrows, chevrons and the
-                external-link icon, so “next” still points forward. The library marks them, so you
-                set nothing on them. Set <code>mirrorInRtl</code> yourself on a directional icon of
-                your own.
+                In right-to-left text the default theme flips the library’s directional icons, such
+                as the forward and back arrows, the chevrons and <code>external</code>, so “next”
+                still points forward. The library marks them, so you set nothing on them. Set{' '}
+                <code>mirrorInRtl</code> yourself on a directional icon of your own.
               </>
             }
             code={sources['mirror-in-rtl']}
@@ -272,7 +266,20 @@ export const icons = defineIcons({ close: Cross })`}
           </UseCase>
         </>
       }
-      contract={<ContractSectionsView contract={contract} />}
+      contract={
+        <ContractSectionsView
+          contract={contract}
+          notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Name an icon-only Button yourself, with an <code>aria-label</code> from your
+                translations, and keep the icon inside it hidden. Without a name, a screen reader
+                says only “button” (4.1.2 Name, Role, Value).
+              </Note>
+            ),
+          }}
+        />
+      }
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock

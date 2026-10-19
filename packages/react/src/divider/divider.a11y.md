@@ -58,7 +58,7 @@ Divider ships no CSS of its own. With the default theme it is a thin, faint line
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships (A): a break between topics is the native `<hr>` and reads as a separator (`divider.test.tsx › a default divider reads as a separator between the paragraphs`); a decorative one can be `role="presentation"` and reads nothing (`divider.test.tsx › a presentation divider reads nothing between the paragraphs`).
+- 1.3.1 Info and Relationships (A): a break between topics is the native `<hr>` and reads as a separator; a decorative one can be `role="presentation"` and reads nothing.
 - 1.4.11 Non-text Contrast (AA): the default line is decoration between blocks, and the content can be understood without it. If you make the line carry meaning, keep your own colour visible.
 
 ## AT test record

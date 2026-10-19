@@ -6,7 +6,7 @@
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `container.test.tsx` next to this file. `container.stories.tsx` in `apps/storybook/src/components/container/`.
 
-Container is a centred block that limits the width of the page's content. It adds no role, no ARIA, no text, no `tabindex` and no behaviour, and it has no `data-*` state. Everything a user perceives comes from the consumer's children, which keep their own semantics and focus order.
+Container limits the width of the page's content. The `page` size is centred; `reading` and `form` start at the start edge. It adds no role, no ARIA, no text, no `tabindex` and no behaviour, and it has no `data-*` state. Everything a user perceives comes from the consumer's children, which keep their own semantics and focus order.
 
 ## Roles, states, properties
 
@@ -56,25 +56,25 @@ Container renders no text, so it has no message keys.
 
 ## Consumer responsibilities
 
-- **Size.** `'page'` (default, `80rem`, padded) is the page; `'reading'` (`45rem`) is prose; `'form'` (`40rem`) is a form. They are start-aligned and add no padding: nest a `page` container outside if the page needs the gutter.
+- **Size.** `'page'` (default, a page width, padded) is the page; `'reading'` (a comfortable line length) is prose; `'form'` (a form width) is a form. `reading` and `form` are start-aligned and add no padding: nest a `page` container outside if the page needs the gutter.
 - **Landmarks.** `as="main"` or `as="section"` with `aria-labelledby` only for a region a user would want to jump to, always named. A page has one `main`.
 - **DOM order is the visual order.** Write children in the order they are read and focused (1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A)). There is no way to reorder them visually.
 - **Language.** Text in another language goes in a nested `KvirnProvider`, with `useLocale().localeProps` on your own element (3.1.2 Language of Parts (AA)).
 
 ## Visual / modes
 
-Headless: Container ships no CSS. With `@kvirn-ui/theme/theme.css` (DESIGN.md, Layout):
+Headless: Container ships no CSS. With `@kvirn-ui/theme/theme.css`:
 
 - Focus indicator, target size, contrast: not applicable. Container has no colour, no edge and no control of its own.
 - forced-colors behaviour: not applicable, nothing is drawn.
 - reduced-motion behaviour: no motion.
-- Reflow and text spacing: the container sets a maximum width, never a fixed one, so it is never wider than the screen and nothing scrolls sideways at 320px or at 400% zoom (1.4.10 Reflow (AA)). It has no fixed height (1.4.12 Text Spacing (AA)). A 320px story with a long Finnish word checks that nothing scrolls sideways.
+- Reflow and text spacing: the container sets a maximum width, never a fixed one, so it is never wider than the screen and nothing scrolls sideways at 320px or at 400% zoom (1.4.10 Reflow (AA)). It has no fixed height (1.4.12 Text Spacing (AA)). The reflow sweep checks every story at 320 CSS pixels for sideways scrolling, and the text-spacing sweep checks that no box clips text.
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): no role of its own, so the element you choose decides (`container.test.tsx › rendering › adds no role, ARIA, tabindex, inert or data attribute`).
+- 1.3.1 Info and Relationships (A), 4.1.2 Name, Role, Value (A): no role of its own, so the element you choose decides.
 - 1.3.2 Meaningful Sequence (A), 2.4.3 Focus Order (A): DOM order equals reading and focus order (the keyboard rows).
-- 1.4.10 Reflow (AA): a maximum width, never a fixed one (the 320px story checks that nothing scrolls sideways). 1.4.12 Text Spacing (AA): no fixed heights, and the `storybook-text-spacing` sweep applies the 1.4.12 spacing to every story and fails on a box that clips more content than it holds.
+- 1.4.10 Reflow (AA): a maximum width, never a fixed one (the reflow sweep checks that nothing scrolls sideways at 320 CSS pixels). 1.4.12 Text Spacing (AA): no fixed heights, and the text-spacing sweep applies the wider spacing to every story and fails on a box that clips text.
 
 ## AT test record
 

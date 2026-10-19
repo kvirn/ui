@@ -77,7 +77,14 @@ export function BadgePage({
           <UseCase
             id="status-in-a-list"
             title="A status for each case in a list"
-            why="Each item says its status in words, with a hidden “Status:” before it so a screen reader says what the badge is. The variant adds a colour for those who see it: pick it by the role of the status, not by the colour you like. A table pays off only when each row carries several attributes."
+            why={
+              <>
+                Each item says its status in words, with a hidden “Status:” before it so a screen
+                reader says what the badge is. The variant adds a colour for those who see it: pick
+                it by the role of the status, not by the colour you like. If each case has several
+                details, use a <Link href="/components/table">Table</Link> instead.
+              </>
+            }
             code={sources['status-in-list']}
             propsUsed={[{ part: 'Badge', prop: 'variant' }]}
             note={
@@ -104,6 +111,12 @@ export function BadgePage({
             why="A badge is plain text, so a change in it makes no sound. When the person asks for the status again, change the badge and say the result in words. Announce it, and show the same words on the page."
             code={sources['status-changes']}
             propsUsed={[{ part: 'Badge', prop: 'variant' }]}
+            note={
+              <Note kind="reminder">
+                If people need to hear the change, announce it yourself. A Badge never does (4.1.3
+                Status Messages, Level AA).
+              </Note>
+            }
           >
             <StatusChanges />
           </UseCase>

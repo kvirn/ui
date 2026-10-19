@@ -21,10 +21,9 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;hr&gt;</code>, whose built-in role is <code>separator</code>. It takes every
         attribute of an <code>&lt;hr&gt;</code> and passes <code>ref</code> to it. It has no state,
-        no hook and no <code>as</code>, and it renders on the server too. With the default theme you
-        change the line with the CSS variables below. Set them on the line, on a class or on any
-        element above it. The default theme is described on{' '}
-        <Link href="/foundation/theming">Theming</Link>.
+        no hook and no <code>as</code>. With the default theme you change the line with the CSS
+        variables below. Set them on the line, on a class or on any element above it. The default
+        theme is described on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: dividerRows,

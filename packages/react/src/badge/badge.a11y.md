@@ -10,11 +10,11 @@ Badge is a `<span>` with a class, so the theme can draw a short status or catego
 
 ## Roles, states, properties
 
-| Part  | Element / role     | ARIA                     | Notes                                                                                                                                                                                                          |
-| ----- | ------------------ | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Badge | `<span>` → no role | none                     | `class="kv-badge"`, plus `kv-badge--<variant>` for `primary`, `info`, `success`, `warning` and `danger`. Attributes (`id`, `aria-*`) and the ref reach the element unchanged                                   |
-| Badge | `as`               | the chosen element's own | One element, chosen with a string. A value outside the list is a type error and, in JS, warns once (`as-not-allowed:Badge:<tag>`) and renders the default element. `className` joins, the ref gets the element |
-| Badge | never              | no `role`, `tabindex`    | No `role="status"`, no live region, no click handler, no icon and no generated text: the words are the consumer's children, so nothing is skipped or read twice                                                |
+| Part  | Element / role     | ARIA                     | Notes                                                                                                                                                                        |
+| ----- | ------------------ | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Badge | `<span>` → no role | none                     | `class="kv-badge"`, plus `kv-badge--<variant>` for `primary`, `info`, `success`, `warning` and `danger`. Attributes (`id`, `aria-*`) and the ref reach the element unchanged |
+| Badge | `as`               | the chosen element's own | One element, chosen with a string. A value outside the list is a type error. `className` joins, the ref gets the element                                                     |
+| Badge | never              | no `role`, `tabindex`    | No `role="status"`, no live region, no click handler, no icon and no generated text: the words are the consumer's children, so nothing is skipped or read twice              |
 
 ## Allowed elements
 
@@ -61,11 +61,11 @@ Headless: Badge ships no CSS. With the theme stylesheet (`@kvirn-ui/theme`), a b
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships (A): a status is text in an element, not an image or a background (`badge.test.tsx › renders a span, no role or ARIA, and passes attributes and the ref through`).
-- 1.4.1 Use of Color (A): the consumer's words are the status (story `Variants`, axe in every theme).
+- 1.3.1 Info and Relationships (A): a status is text in an element, not an image or a background.
+- 1.4.1 Use of Color (A): the consumer's words are the status, and axe finds no violation in any theme.
 - 1.4.3 Contrast (Minimum) (AA): the text on its background, measured by the theme's contrast check.
 - 1.4.4 Resize Text (AA): the size is in rem.
-- 1.4.10 Reflow (AA): a row of short badges wraps between badges at 320 CSS pixels (story `Narrow`, which checks that the text is visible, not that nothing overflows). A single badge never wraps, so one whose text is wider than the viewport would scroll sideways: keep the text short. No automated check covers a long badge.
+- 1.4.10 Reflow (AA): a row of short badges wraps between badges at 320 CSS pixels (the reflow sweep runs the badge stories at 320 CSS pixels and checks for sideways scrolling). A single badge never wraps, so one whose text is wider than the viewport would scroll sideways: keep the text short. The sweeps do not use a badge with long text, so check a long badge by eye. The text-spacing sweep checks that no badge clips its text.
 
 ## AT test record
 

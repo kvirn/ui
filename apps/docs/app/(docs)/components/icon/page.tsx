@@ -18,8 +18,7 @@ export default function Page() {
         sizes: readExampleSource('icon/sizes.tsx'),
         'own-component': readExampleSource('icon/own-component.tsx'),
         'one-off-drawing': readExampleSource('icon/one-off-drawing.tsx'),
-        'map-set': readExampleSource('icon/map-set.tsx'),
-        'rich-text-set': readExampleSource('icon/rich-text-set.tsx'),
+        'package-sets': readExampleSource('icon/package-sets.tsx'),
         'mirror-in-rtl': readExampleSource('icon/mirror-in-rtl.tsx'),
       }}
     />

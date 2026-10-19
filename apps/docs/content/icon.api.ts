@@ -12,7 +12,7 @@ export const iconRows = propRows<IconDocumentedProps>({
     type: 'IconName',
     default: '–',
     description:
-      'A name you registered with defineIcons in a KvirnProvider, such as close or search. Give one of name, icon, as or children. Together with icon, a registered name wins over the icon.',
+      'A name you registered with defineIcons in a KvirnProvider, such as close or search. KvirnUI has no built-in icons, so a name you did not register draws an empty icon and warns in development. Give one of name, icon, as or children. Together with icon, a registered name wins over the icon.',
   },
   icon: {
     type: 'IconRegistryEntry',
@@ -47,7 +47,7 @@ export const iconRows = propRows<IconDocumentedProps>({
     type: "'primary' | 'secondary' | 'accent' | 'muted' | 'info' | 'success' | 'warning' | 'danger'",
     default: '–',
     description:
-      'A colour from the theme, set with the class kv-icon--<variant>. Without one the icon keeps the text colour around it. It decorates: words carry the meaning, never the colour alone.',
+      'A colour from the theme, set with the class kv-icon--<variant>. Without one the icon keeps the text colour around it. In forced colours the icon uses the system text colour instead. It decorates: words carry the meaning, never the colour alone.',
   },
   mirrorInRtl: {
     type: 'boolean',
@@ -122,7 +122,7 @@ export const useIconHook: ApiHook = {
       type: 'IconComponent | undefined',
       default: '–',
       description:
-        'The component for name or icon, whether the name is a default or a registered one. Undefined without either, or for an unknown name.',
+        'The component for a registered name, else for icon. Undefined without either, or for an unknown name.',
     },
     isDecorative: {
       type: 'boolean',

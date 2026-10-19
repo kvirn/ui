@@ -1,6 +1,7 @@
 import { TrashIcon } from '@heroicons/react/24/outline'
 import { Trash as PhosphorTrash } from '@phosphor-icons/react'
 import { expectNoA11yViolations } from '@kvirn-ui/testing'
+import { readAloud } from '@kvirn-ui/testing/read-aloud'
 import { ArrowRight, Trash2 } from 'lucide-react'
 import { createRef } from 'react'
 import type { ComponentType, ElementType, ReactElement, ReactNode, SVGProps } from 'react'
@@ -463,6 +464,16 @@ describe('accessibility', () => {
       </Button>,
     )
     await expect.element(page.getByRole('button', { name: 'Radera', exact: true })).toBeVisible()
+  })
+
+  test('a labelled Icon is read as an image with its name, and a decorative one is not read', async () => {
+    const { container } = await render(
+      <>
+        <Icon icon={close} label="Close" />
+        <Icon icon={search} />
+      </>,
+    )
+    expect(await readAloud(container)).toEqual(['image, Close'])
   })
 
   test('no axe violations: decorative, labelled, in a Button, icon-only Button', async () => {

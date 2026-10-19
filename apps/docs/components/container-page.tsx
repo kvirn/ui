@@ -81,6 +81,13 @@ export function ContainerPage({
             why="Long text is hard to read on a wide screen. A reading container keeps lines to a comfortable length, for guidance, news, case pages and lists of search results."
             code={sources['reading']}
             propsUsed={[{ part: 'Container', prop: 'size' }]}
+            note={
+              <Note kind="tip">
+                A reading container has no side margin of its own, so on a phone the text reaches
+                the edge of the screen. Put it inside a page container, as “The page and a column
+                inside it” shows below.
+              </Note>
+            }
           >
             <ReadingColumn />
           </UseCase>
@@ -135,8 +142,7 @@ export function ContainerPage({
             'what-you-need-to-do': (
               <Note kind="tip">
                 A page-width Container with <code>as=&quot;main&quot;</code> gives the page its main
-                landmark. Landmarks let people jump past repeated content (technique ARIA11 for
-                2.4.1 Bypass Blocks).
+                landmark. Landmarks let people jump past repeated content (2.4.1 Bypass Blocks).
               </Note>
             ),
             'visual-and-modes': (
