@@ -98,8 +98,14 @@ export function ToastPage({
         <>
           <UseCase
             id="undo"
-            title="A toast with Undo"
-            why="An action keeps the toast on screen until it is closed, whatever autoDismiss says. The page has the same Undo, so nobody has to find the toast."
+            title="Deleting a draft, with Undo"
+            why={
+              <>
+                An action keeps the toast on screen until it is closed, whatever{' '}
+                <code>autoDismiss</code> says. The page has the same Undo, so nobody has to find the
+                toast.
+              </>
+            }
             code={sources['with-an-undo']}
             propsUsed={[
               { part: apiHookPart('show', 'options'), label: 'show', prop: 'action' },
@@ -117,7 +123,16 @@ export function ToastPage({
           <UseCase
             id="auto-close"
             title="Messages that close by themselves"
-            why="With autoDismiss on, a confirmation fades away by itself and a ring on the toast counts down the time left. The timer pauses while you hover or focus the toast, while the tab is hidden and while a dialog is open. A toast with an Undo or any other action never closes by itself, and neither does one the person must act on. Offer it as a user setting, not a fixed choice. The switch here changes this site’s own KvirnProvider; in your app you set autoDismiss in its toast prop."
+            why={
+              <>
+                With <code>autoDismiss</code> on, a confirmation closes by itself, and a ring on the
+                toast counts down the time left. The timer pauses while you hover over or focus the
+                toast, while the tab is hidden and while a dialog is open. A toast with an action,
+                such as Undo, never closes by itself. Offer the timer as a user setting, not a fixed
+                choice. The switch here changes this site’s own <code>KvirnProvider</code>. In your
+                app you set <code>autoDismiss</code> in its <code>toast</code> prop.
+              </>
+            }
             code={sources['auto-close']}
             propsUsed={[{ part: apiHookPart('show', 'options'), label: 'show', prop: 'action' }]}
             note={
@@ -133,7 +148,15 @@ export function ToastPage({
           <UseCase
             id="job-in-progress"
             title="A job that takes a while"
-            why="Show a toast with busy while a job runs, then show the result with the same id, so one toast updates in place instead of a second one stacking. The spinner is replaced, and the result is announced once. The words carry the wait: the status word and the title say what is happening."
+            why={
+              <>
+                Show a toast with <code>busy</code> while a job runs. Then show the result with the
+                same <code>id</code>, so one toast updates in place and a second one does not stack.
+                The spinner is replaced, and the result is announced once. The words carry the wait:
+                the status word and the title say what is happening. Keep <code>autoDismiss</code>{' '}
+                off in an app that uses busy toasts, so the toast cannot close before the job ends.
+              </>
+            }
             code={sources['job-in-progress']}
             propsUsed={[
               { part: apiHookPart('show', 'options'), label: 'show', prop: 'busy' },
@@ -157,7 +180,14 @@ export function ToastPage({
           <UseCase
             id="remove-attachment"
             title="Removing a file from an application"
-            why="The button the user pressed leaves the page with its row, so focus has nowhere to go. Focus a heading that stays, then show the toast with focus. The user hears the message where focus is, and one Tab reaches Undo. When the toast closes, focus goes back to the heading."
+            why={
+              <>
+                The button the user pressed leaves the page with its row, so focus has nowhere to
+                go. Focus a heading that stays, then show the toast with <code>focus: true</code>.
+                The user hears the message where focus is, and one Tab reaches Undo. When the toast
+                closes, focus goes back to the heading.
+              </>
+            }
             code={sources['remove-attachment']}
             propsUsed={[
               { part: apiHookPart('show', 'options'), label: 'show', prop: 'focus' },
@@ -176,7 +206,13 @@ export function ToastPage({
           <UseCase
             id="clear-before-summary"
             title="Sending a form that has an error"
-            why="A persistent toast from earlier stays on screen. Call dismissAll before the error summary appears, so nothing competes with it. Show the problem in the summary and beside the field, never in a toast."
+            why={
+              <>
+                A persistent toast from earlier stays on screen. Call <code>dismissAll</code> before
+                the error summary appears, so nothing competes with it. Show the problem in the
+                summary and beside the field, never in a toast.
+              </>
+            }
             code={sources['clear-before-summary']}
             propsUsed={[
               { part: apiHookPart('useToast', 'result'), label: 'useToast', prop: 'dismissAll' },

@@ -56,7 +56,7 @@ export const toastShowOptionRows = propRows<ToastShowOptions>({
     type: 'boolean',
     default: 'false',
     description:
-      'A job in progress: a decorative spinner replaces the status icon and the status word stays. Show the result with the same id to replace it. Show it without an auto-dismiss timer.',
+      'A job in progress: a decorative spinner replaces the status icon and the status word stays. Show the result with the same id to replace it. Keep autoDismiss off while you use it, so the toast cannot close before the job ends.',
   },
   body: {
     type: 'ReactNode',

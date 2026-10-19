@@ -1,7 +1,7 @@
 # Accessibility contract: Table (Root, ScrollRegion, Caption, Head, Body, Foot, Row, ColumnHeader, RowHeader, Cell, SortButton, SelectCheckbox, SelectAllCheckbox, ExpandButton, DetailRow, Empty)
 
 - **APG pattern:** [Table](https://www.w3.org/WAI/ARIA/apg/patterns/table/) and the [Sortable Table example](https://www.w3.org/WAI/ARIA/apg/patterns/table/examples/sortable-table/). Not the Grid pattern: a read-only data table keeps the screen reader's table navigation, and the keys are the ones a web page already has.
-- **Deviations:** none from APG. Decisions: a native `<table>`, no `role="grid"`; TanStack Table is bundled in `core`, `useTable` creates the instance, multi-sort is off, `Table.ScrollRegion`, virtualization with spacer rows.
+- **Deviations:** none from APG. It is a native `<table>` with no `role="grid"`.
 - **Native elements used:** `<table>`, `<caption>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<th scope>`, `<td>`, `<button>` (sort and expand), `<input type="checkbox">` (selection), `<div>` that is a `role="region"` while it scrolls, or always with `region="always"` (scroll region).
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is pending.
 - **Tests:** `table.test.tsx` next to this file. `table.stories.tsx` in `apps/storybook/src/components/table/`. The unit tests of the TanStack wrapper (`createTable`, `createLocaleSortFn`, `renderTemplate`) are in `packages/core/src/table/`.
@@ -79,9 +79,9 @@ Rules, each proved by a test in the component's test file:
 - **Trap:** no. Tab always leaves the table.
 - **Restore to:** n/a. Sorting, selecting and expanding keep focus on the button or checkbox that was pressed. Sorting reorders the rows under it, and focus stays on the sort button.
 - **A focused row stays mounted while virtualized.** The body tracks `focusin` and `focusout`, and the row that holds focus is a required index of the virtualizer, so it is rendered wherever the table is scrolled. Focus never falls to `body` because a row was unmounted.
-- **Never obscured by:** the sticky header. `Table.ScrollRegion` measures the header's height, with or without `useTable`, and measures it again when the header wraps. The theme uses it as scroll padding, so Tab and a scroll to a row are meant to leave the focused control clear (2.4.11 Focus Not Obscured (Minimum), AA). No automated test measures this yet.
+- **Never obscured by:** the sticky header. `Table.ScrollRegion` measures the header's height, with or without `useTable`, and measures it again when the header wraps. The theme uses it as scroll padding, so Tab and a scroll to a row are meant to leave the focused control clear (2.4.11 Focus Not Obscured (Minimum), AA).
 - **The scroll region is a Tab stop only while it scrolls,** so a keyboard user can reach and scroll a table that overflows (2.1.1 Keyboard, A), and meets no empty stop when it doesn't. This holds with `region="always"` too: the option adds the role and the name, never a tab stop. If the table stops overflowing while the region itself has focus, it keeps its `tabindex`, and its role, until focus leaves, so focus is never dropped to the page.
-- **The scroll region is a named region only while it scrolls, by default.** A table that fits is a plain `<div>` with no role, no name and no `tabindex`, so a page with several short tables doesn't list an empty landmark for each (1.3.1 Info and Relationships, A). The role is set after the first measurement, so the server render and the first client render are the same markup (the plain `<div>`). `region="always"` (on `Table.ScrollRegion` or `useTable`) makes it a named region from the first render, whether it scrolls or not, for a page that wants a table to be a landmark users can jump to. Maintainer decision, 2026-10-04.
+- **The scroll region is a named region only while it scrolls, by default.** A table that fits is a plain `<div>` with no role, no name and no `tabindex`, so a page with several short tables doesn't list an empty landmark for each (1.3.1 Info and Relationships, A). The role is set after the first measurement, so the server render and the first client render are the same markup (the plain `<div>`). `region="always"` (on `Table.ScrollRegion` or `useTable`) makes it a named region from the first render, whether it scrolls or not, for a page that wants a table to be a landmark users can jump to.
 - **Virtualized tables skip what isn't rendered.** Tab goes through the rendered rows. A row outside the window and its overscan has no controls in the DOM until it is scrolled to.
 
 ## Announcements
@@ -111,7 +111,7 @@ Names, not announcements, in `table`: `selectRow` ("Select"), `selectRowNumber` 
 - **Large data: paginate or filter first, virtualize last.** Unrendered rows can't be found with find-in-page, aren't printed and are out of reach of screen-reader browse mode. If you virtualize, give the scroll region a height, keep rows to one measured size where you can, and provide a way to find a row by search or filter.
 - **Narrow screens.** Put the table in `Table.ScrollRegion`: when the table scrolls, the region is a named, focusable `region`, and when it fits, a plain `<div>`. Add `region="always"` to make it a named region either way. Name it: a `Table.Caption` with `table`, or `aria-labelledby` or `aria-label` on the region when the table has no caption. A data table that needs two dimensions is exempt from reflow (1.4.10 Reflow, AA), but must be reachable and scrollable. Don't turn rows into cards with `display: block`: it drops the table semantics.
 - **Translate your own text:** the caption, the headers and the cells.
-- **A busy sweep needs a stop control (2.2.2 Pause, Stop, Hide, A).** An indicator that can keep moving for more than 5 seconds alongside other content needs a visible control on the page that stops or hides it (2.2.2). An indicator that is the only content during a wait where nothing else can be done is exempt. `prefers-reduced-motion` alone is not that control. [Moving indicators and WCAG 2.2.2](/foundation/theming#moving-indicators).
+- **A moving loading bar needs a stop control (2.2.2 Pause, Stop, Hide, A).** An indicator that can keep moving for more than 5 seconds alongside other content needs a visible control on the page that stops or hides it (2.2.2). An indicator that is the only content during a wait where nothing else can be done is exempt. `prefers-reduced-motion` alone is not that control. [Moving indicators and WCAG 2.2.2](/foundation/theming#moving-indicators).
 - **Provide the Announcer** (`KvirnProvider`). Without one, nothing is announced.
 
 ## Visual / modes
@@ -119,9 +119,9 @@ Names, not announcements, in `table`: `selectRow` ("Select"), `selectRowNumber` 
 - **Focus indicator:** the default theme draws the focus ring of every control in the table, and of the scroll region. It leaves room for the sticky header (see Focus management).
 - **Target size:** sort buttons and expand buttons are larger than 24 by 24 CSS pixels in both densities. Checkboxes are 24 by 24, the Checkbox's own size, and the cell's padding keeps neighbouring targets apart (2.5.8 Target Size (Minimum), AA).
 - **The sort icon is not the state.** `aria-sort`, `data-sort` and the icon's shape carry it, never colour alone (1.4.1 Use of Color, A).
-- **forced-colors:** the header's edge is a border in the system's text colour, never a shadow or a background alone. A selected row loses its fill, and its checked checkbox shows the state. A story shows this. The `storybook-forced-colors` sweep asserts a drawn boundary or distinct text on every focusable part and a focus ring on the focused one. The selected row's lost fill and the header's border colour are checked by eye.
-- **reduced-motion:** sorting and expanding don't animate. While `isLoading`, the busy sweep moves under no preference and rests under `prefers-reduced-motion` (see Consumer responsibilities, 2.2.2).
-- **Reflow and zoom:** the table scrolls inside its named region (the region is named while it scrolls) at a width of 320 CSS pixels and at 400% zoom (1.4.10 Reflow, AA). A story shows it at 320 pixels in Finnish. Cells have no fixed height, so text spacing doesn't clip them (1.4.12 Text Spacing, AA). The `storybook-reflow` sweep proves the scroll region itself fits 320 CSS pixels and that the table scrolls inside it. 400% zoom is checked by eye, and the `storybook-text-spacing` sweep fails on a cell that clips its text.
+- **forced-colors:** the header's edge is a border in the system's text colour, never a shadow or a background alone. A selected row loses its fill, and its checked checkbox shows the state. The forced-colours sweep asserts a drawn boundary or distinct text on every focusable part and a focus ring on the focused one. The selected row's lost fill and the header's border colour are not asserted by it.
+- **reduced-motion:** sorting and expanding don't animate. While `isLoading`, the loading bar moves under no preference and rests under `prefers-reduced-motion` (see Consumer responsibilities, 2.2.2).
+- **Reflow and zoom:** the table scrolls inside its named region (the region is named while it scrolls) at a width of 320 CSS pixels and at 400% zoom (1.4.10 Reflow, AA). Cells have no fixed height, so text spacing doesn't clip them (1.4.12 Text Spacing, AA). The reflow sweep proves the scroll region itself fits 320 CSS pixels, with Finnish text, and that the table scrolls inside it. 400% zoom is not asserted by a test, and the text-spacing sweep fails on a cell that clips its text.
 - **RTL:** logical properties, so the columns and the scroll direction mirror. The sort icon doesn't flip: up and down aren't directions of the reading order.
 
 ## WCAG SCs covered
@@ -133,7 +133,7 @@ Names, not announcements, in `table`: `selectRow` ("Select"), `selectRowNumber` 
 | 1.4.1  | Use of Color (A)                  | Sort state, selection and expansion are in attributes, text and shape, never colour alone                            |
 | 1.4.10 | Reflow (AA)                       | A data table is exempt, and it scrolls inside a focusable region, named while it scrolls                             |
 | 1.4.11 | Non-text Contrast (AA)            | The default theme's focus ring and control borders, checkbox included, are held to 3:1 by the theme's contrast check |
-| 1.4.12 | Text Spacing (AA)                 | Cells have no fixed height, so spacing doesn't clip text (the `storybook-text-spacing` sweep checks it)              |
+| 1.4.12 | Text Spacing (AA)                 | Cells have no fixed height, so spacing doesn't clip text (the text-spacing sweep checks it)                          |
 | 2.1.1  | Keyboard (A)                      | Every control is a native button or checkbox. The scroll region is focusable while it scrolls                        |
 | 2.4.3  | Focus Order (A)                   | Tab follows the reading order. A focused row stays rendered                                                          |
 | 2.4.7  | Focus Visible (AA)                | Every control and the scroll region show focus                                                                       |
@@ -162,7 +162,17 @@ Names, not announcements, in `table`: `selectRow` ("Select"), `selectRowNumber` 
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                   |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                   |
 
-What the manual run must check: table navigation, the header announced with each cell, `aria-sort` and the sort announcement, the checkbox names, the select-all count, `aria-rowcount` and `aria-rowindex` in a virtualized table, and whether a self-referencing `aria-labelledby` (a checkbox named by its own `aria-label` and the row header) is read the same in every combination.
+### What to check
+
+With a screen reader and the keyboard, try:
+
+- With table commands, each cell is read with its column and row header.
+- Press a sort button three times: "Sorted by Name, ascending.", then descending, then "No longer sorted by Name."
+- A row checkbox is named "Select" plus the row name. Select-all reads the count after Space.
+- An expand button reads "Details" plus the row name, with expanded or collapsed, and then the detail row.
+- In a virtualized table the row count and each row's place are read.
+- A checkbox named by its own label and the row header is read the same in every combination.
+- At 320px, Tab reaches the named scroll region and the arrow keys scroll it.
 
 ## Known issues
 

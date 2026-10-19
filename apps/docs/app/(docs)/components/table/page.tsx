@@ -13,6 +13,7 @@ export default function Page() {
       sources={{
         default: readExampleSource('table/default.tsx'),
         sortable: readExampleSource('table/sortable.tsx'),
+        filter: readExampleSource('table/filter.tsx'),
         selectable: readExampleSource('table/selectable.tsx'),
         expandable: readExampleSource('table/expandable.tsx'),
         empty: readExampleSource('table/empty.tsx'),

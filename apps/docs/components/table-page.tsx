@@ -37,13 +37,14 @@ import {
 import { DefaultTable } from '../examples/table/default.tsx'
 import { EmptyCases } from '../examples/table/empty.tsx'
 import { ExpandableCases } from '../examples/table/expandable.tsx'
+import { FilterableCases } from '../examples/table/filter.tsx'
 import { LargeTable } from '../examples/table/large.tsx'
 import { SelectableCases } from '../examples/table/selectable.tsx'
 import { SortableCases } from '../examples/table/sortable.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type TableExampleSources = Record<
-  'default' | 'sortable' | 'selectable' | 'expandable' | 'empty' | 'large',
+  'default' | 'sortable' | 'filter' | 'selectable' | 'expandable' | 'empty' | 'large',
   string
 >
 
@@ -102,9 +103,11 @@ const parts: ApiPart[] = [
     name: 'Table.ScrollRegion',
     renders: (
       <>
-        <code>&lt;div&gt;</code> around the table. It is a named <code>region</code> and a Tab stop
-        only while the table scrolls (or always a region with <code>region=&quot;always&quot;</code>
-        ), and a plain <code>&lt;div&gt;</code> otherwise. It is the virtualizer’s scroll element.
+        <code>&lt;div&gt;</code> around the table. While the table scrolls, it is a named{' '}
+        <code>region</code> and a Tab stop, so a keyboard user can scroll the table. When the table
+        fits, it is a plain <code>&lt;div&gt;</code>. With <code>region=&quot;always&quot;</code> it
+        is a named region even when nothing scrolls, but it is a Tab stop only while the table
+        scrolls. It is also the virtualizer’s scroll element.
       </>
     ),
     props: tableScrollRegionRows,
@@ -276,7 +279,7 @@ export function TablePage({
             id="sortable"
             title="A table the user can sort"
             // kv-lang-ok: the letters å, ä and ö are the point of the Swedish sort order
-            why="Put the sort in the column header, so a user can order cases by name or amount. Sorting one column at a time is announced. The order follows the language you set. This example sorts in Swedish, so å, ä and ö come after z."
+            why="Put the sort in the column header, so a user can order cases by name or amount. Only one column is sorted at a time, and each change is announced. You choose the language of the order. This example sorts in Swedish, so å, ä and ö come after z."
             code={sources['sortable']}
             propsUsed={[
               { ...optionsOf, prop: 'features' },
@@ -296,6 +299,25 @@ export function TablePage({
             }
           >
             <SortableCases />
+          </UseCase>
+          <UseCase
+            id="filter"
+            title="Searching a list of cases"
+            why={
+              <>
+                A case worker looks for one case in a long list. A search box above the table
+                filters the rows as they type, and the table says how many rows match, such as “3
+                rows.”, once they stop typing. See <Link href="#announcements">Announcements</Link>.
+              </>
+            }
+            code={sources['filter']}
+            propsUsed={[
+              { ...optionsOf, prop: 'features' },
+              { ...optionsOf, prop: 'rowHeader' },
+              { part: 'Table.Empty', prop: 'children' },
+            ]}
+          >
+            <FilterableCases />
           </UseCase>
           <UseCase
             id="selectable"
@@ -371,6 +393,13 @@ export function TablePage({
                 Give every table a caption that says what the data is. Without a name, a screen
                 reader user can’t tell the tables on a page apart (1.3.1 Info and Relationships). A
                 development warning says so.
+              </Note>
+            ),
+            focus: (
+              <Note kind="reminder">
+                Put every table that can be wider than the screen in <code>Table.ScrollRegion</code>
+                , and name it. The table then scrolls sideways inside the region at 320 CSS pixels,
+                and a keyboard user can reach and scroll it (1.4.10 Reflow, 2.1.1 Keyboard).
               </Note>
             ),
             'visual-and-modes': (

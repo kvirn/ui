@@ -24,5 +24,8 @@ export const useTableTexts = defineExampleTexts({
     },
     emptyCases: 'You have no open cases. New applications show up here when you send them.',
     allCases: 'All cases',
+    searchCases: 'Search cases',
+    noMatchingCases:
+      'No case matches your search. Check the spelling, or search for a case number.',
   },
 })

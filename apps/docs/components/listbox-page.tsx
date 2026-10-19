@@ -77,10 +77,10 @@ const parts: ApiPart[] = [
     name: 'Listbox.Trigger',
     renders: (
       <>
-        {element('div role="combobox" tabindex="0"')}, as in the APG select-only combobox. Focus
-        stays on it. It is named by the Field’s label followed by the value, and renders a{' '}
-        <code>Listbox.Value</code> when it has no children. It takes every attribute of a{' '}
-        {element('div')} and passes <code>ref</code> to it. Theming is on{' '}
+        {element('div role="combobox" tabindex="0"')}, as in the select-only combobox pattern of the
+        ARIA Authoring Practices Guide (APG). Focus stays on it. It is named by the Field’s label
+        followed by the value, and renders a <code>Listbox.Value</code> when it has no children. It
+        takes every attribute of a {element('div')} and passes <code>ref</code> to it. Theming is on{' '}
         <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
@@ -257,6 +257,26 @@ export function ListboxPage({
       useCases={
         <>
           <UseCase
+            id="plain-form"
+            title="A required choice in a form"
+            why="KvirnUI holds no form state. Give the Root a name and the chosen key goes into the form as a hidden input, so FormData and a plain submit work. With nothing chosen it sends an empty value: check for that yourself, say what to do, and move focus to the field."
+            code={sources['plain-form']}
+            propsUsed={[
+              { part: 'Listbox.Root', prop: 'name' },
+              { part: 'Listbox.Root', prop: 'onValueChange' },
+            ]}
+            note={
+              <Note kind="reminder">
+                Write the error as an instruction, “Choose a municipality”, and set{' '}
+                <code>invalid</code> on the Field so the error is read with the field (3.3.1 Error
+                Identification, 3.3.3 Error Suggestion). Don’t change the page or send the form when
+                the value changes (3.2.2 On Input).
+              </Note>
+            }
+          >
+            <PlainFormListbox />
+          </UseCase>
+          <UseCase
             id="groups"
             title="Options in groups"
             why="Use groups when the options fall into a few named sets that help people find one, such as regions. Each group has a visible label, and the same label names the group for a screen reader."
@@ -268,7 +288,13 @@ export function ListboxPage({
           <UseCase
             id="several"
             title="Choosing several options"
-            why="Use multiple when the user may choose more than one. The popup stays open after a choice, each option toggles, and the value is an array of keys. The trigger shows the chosen texts joined by a comma."
+            why={
+              <>
+                Use <code>multiple</code> when the user may choose more than one. The popup stays
+                open after a choice, each option toggles, and the value is an array of keys. The
+                trigger shows the chosen texts joined by a comma.
+              </>
+            }
             code={sources['several']}
             propsUsed={[
               { part: 'Listbox.Root', prop: 'multiple' },
@@ -293,33 +319,16 @@ export function ListboxPage({
             <DisabledOptionListbox />
           </UseCase>
           <UseCase
-            id="plain-form"
-            title="A required choice in a form"
-            why="KvirnUI holds no form state. Give the Root a name and the chosen key goes into the form as a hidden input, so FormData and a plain submit work. With nothing chosen it sends an empty value: check for that yourself, say what to do, and move focus to the field."
-            code={sources['plain-form']}
-            propsUsed={[
-              { part: 'Listbox.Root', prop: 'name' },
-              { part: 'Listbox.Root', prop: 'onValueChange' },
-            ]}
-            note={
-              <Note kind="reminder">
-                Write the error as an instruction, “Choose a municipality”, and set{' '}
-                <code>invalid</code> on the Field so the error is read with the field (3.3.1 Error
-                Identification, 3.3.3 Error Suggestion). Don’t change the page or send the form when
-                the value changes (3.2.2 On Input).
-              </Note>
-            }
-          >
-            <PlainFormListbox />
-          </UseCase>
-          <UseCase
             id="native-select"
             title="The browser’s own select"
             why={
               <>
                 On a phone the browser’s own select is often better than anything custom.{' '}
                 <code>native=&quot;always&quot;</code> renders one native select from the same
-                items, with the same value, name and Field wiring. It shows plain text only.
+                items, with the same value, name and Field wiring. It shows plain text only. With
+                the default <code>native=&quot;auto&quot;</code>, a touch device first draws the
+                popup trigger and switches right after the page loads, so{' '}
+                <code>native=&quot;always&quot;</code> avoids that one frame.
               </>
             }
             code={sources['native-select']}
@@ -329,10 +338,11 @@ export function ListboxPage({
               { part: 'Listbox.Root', prop: 'autoComplete' },
             ]}
             note={
-              <Note kind="tip">
-                With the default <code>native=&quot;auto&quot;</code> the first render is the popup
-                trigger, and a touch device switches right after mount. Use{' '}
-                <code>native=&quot;always&quot;</code> to avoid that one frame.
+              <Note kind="reminder">
+                Only the native select takes <code>autoComplete</code>. The popup trigger is not a
+                form input, so a field that asks for the person’s own details needs{' '}
+                <code>native=&quot;always&quot;</code> to let the browser fill it in (1.3.5 Identify
+                Input Purpose).
               </Note>
             }
           >
@@ -387,7 +397,14 @@ export function ListboxPage({
           <UseCase
             id="long-list"
             title="A list of thousands"
-            why="Filter or split a long list first. If it stays long, virtualize renders only the options in view plus the active and the chosen one. Each option still tells a screen reader how many options there are and its place in the list. Unrendered options can’t be found with find in page or printed."
+            why={
+              <>
+                Filter or split a long list first. If it stays long, <code>virtualize</code> renders
+                only the options in view, plus the active and the chosen one. Each option still
+                tells a screen reader how many options there are and its place in the list. Options
+                that are not drawn can’t be found with find in page or printed.
+              </>
+            }
             code={sources['long-list']}
             propsUsed={[{ part: 'Listbox.Root', prop: 'virtualize' }]}
           >

@@ -316,6 +316,8 @@ export const tableEmptyAttributes: readonly AttributeRow[] = [
 
 export const useTableHook: ApiHook = {
   name: 'useTable',
+  intro:
+    'Takes TanStack Table’s options and the ones below. The table lists the options that most tables use. Others, such as getRowCanExpand and the on…Change handlers, work as in TanStack Table.',
   options: propRows<
     Pick<
       UseTableOptions<Features, Data>,

@@ -32,7 +32,7 @@ export const rootRows = propRows<Omit<ListboxRootProps<unknown>, 'children'>>({
     type: '(item: TItem) => string | undefined',
     default: '–',
     description:
-      'The language of an item’s text, as a BCP 47 code such as fi, or undefined for the page’s language. Sets lang on each native option, each popup option and each chosen text in the trigger’s value (WCAG 3.1.2). Not on Combobox or Autocomplete yet.',
+      'The language of an item’s text, as a BCP 47 code such as fi, or undefined for the page’s language. Sets lang on each native option, each popup option and each chosen text in the trigger’s value (WCAG 3.1.2). Combobox and Autocomplete do not have it.',
   },
   itemToKey: {
     type: '(item: TItem) => string',
