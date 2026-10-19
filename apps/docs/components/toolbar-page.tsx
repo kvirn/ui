@@ -109,7 +109,7 @@ export function ToolbarPage({
   return (
     <ComponentPage
       title="Toolbar"
-      lead="A row of related controls that is one Tab stop. The arrow keys move between the controls, and a control that isn’t available stays reachable and is read as unavailable."
+      lead="A row of related controls that is one Tab stop. The arrow keys move between the controls, and a control that isn’t available stays reachable, and a screen reader tells the user it can’t be used (each one words it differently)."
       pattern="APG Toolbar"
       whenToUse={
         <ul>

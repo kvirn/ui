@@ -153,8 +153,8 @@ export function ToastPage({
                 Show a toast with <code>busy</code> while a job runs. Then show the result with the
                 same <code>id</code>, so one toast updates in place and a second one does not stack.
                 The spinner is replaced, and the result is announced once. The words carry the wait:
-                the status word and the title say what is happening. Keep <code>autoDismiss</code>{' '}
-                off in an app that uses busy toasts, so the toast cannot close before the job ends.
+                the status word and the title say what is happening. A busy toast stays even with{' '}
+                <code>autoDismiss</code> on, and only the result that replaces it times out.
               </>
             }
             code={sources['job-in-progress']}

@@ -195,7 +195,9 @@ describe('roles, names and states', () => {
   test('a finished range is read as the description of each grid, never an empty one', async () => {
     await render(<Example initial={{ start: '2026-10-16', end: '2026-10-23' }} />)
     await open()
-    for (const grid of page.getByRole('grid').elements()) {
+    const grids = page.getByRole('grid').elements()
+    expect(grids.length).toBeGreaterThan(0)
+    for (const grid of grids) {
       const describedBy = grid.getAttribute('aria-describedby')
       expect(describedBy).not.toBeNull()
       expect(document.getElementById(describedBy as string)?.textContent).toContain(

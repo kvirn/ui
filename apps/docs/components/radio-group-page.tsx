@@ -345,7 +345,7 @@ export function RadioGroupPage({
           <UseCase
             id="disabled-option"
             title="One option isn’t available"
-            why="Tab and the arrow keys skip a disabled radio (the browser does this). A screen reader reading the page still reaches it, says it is unavailable and reads its help text. So say why in visible help text next to it, with what the person can do. To disable every option, set disabled on the group."
+            why="Tab and the arrow keys skip a disabled radio (the browser does this). A screen reader can still reach it when reading the page, and tells the user it can't be used (each screen reader words it differently). So say why in visible help text next to it, with what the person can do. To disable every option, set disabled on the group."
             code={sources['disabled-option']}
             propsUsed={[{ part: 'RadioGroup.Radio', prop: 'disabled' }]}
           >

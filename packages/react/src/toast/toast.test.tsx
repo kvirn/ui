@@ -2016,6 +2016,42 @@ describe('provider and development warnings', () => {
     expect(warnings().match(/never times out/g)).toHaveLength(1)
   })
 
+  test('a busy toast without an action under a numeric autoDismiss logs no dropped-timer warning', async () => {
+    await render(
+      <Page
+        toast={{ autoDismiss: 10_000 }}
+        actions={{
+          Show: (toast) => {
+            toast.show({ title: 'Sending the form', busy: true })
+          },
+        }}
+      />,
+    )
+    await press('Show')
+
+    expect(warnings()).not.toMatch(/never times out/)
+  })
+
+  test('a busy toast with an action under a numeric autoDismiss still warns about the dropped timer', async () => {
+    await render(
+      <Page
+        toast={{ autoDismiss: 10_000 }}
+        actions={{
+          Show: (toast) => {
+            toast.show({
+              title: 'Sending the form',
+              busy: true,
+              action: { label: 'Cancel', onPress: () => {} },
+            })
+          },
+        }}
+      />,
+    )
+    await press('Show')
+
+    expect(warnings().match(/never times out/g)).toHaveLength(1)
+  })
+
   test('a variant that is not info or success warns once and shows an info toast', async () => {
     await render(
       <Page

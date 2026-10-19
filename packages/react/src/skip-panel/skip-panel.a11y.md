@@ -169,6 +169,6 @@ The behaviour ones are proved by tests and axe; the visual ones by stories and t
 - In browse mode (the screen reader's reading mode) a screen reader reads every item with its own arrow keys, which matches the arrow hint. It may not announce the description on the first Link; test with your users' screen readers.
 - In Safari, Tab reaches links only when "Press Tab to highlight each item" is on (or with Option+Tab). Test with that setting on.
 - Until the page's script has loaded, the page has no roving tabindex (the single Tab stop), so every item is a Tab stop.
-- Whether Alt+Shift+letter reaches the page under NVDA and JAWS (browse and focus mode), Firefox, and Windows with two input layouts may not work; test with your users' setups.
+- Alt+Shift+letter may not reach the page under NVDA and JAWS (browse and focus mode), Firefox, and Windows with two input layouts; test with your users' setups.
 - Screen readers may read the group names and the nested Kbd differently; test with your users' screen readers.
 - Screen-reader users who read from the top of the page hear the whole panel before the content, because the list is cut to nothing visually but still in the page (C7). They can jump to the main landmark or the h1.

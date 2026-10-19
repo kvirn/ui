@@ -250,10 +250,10 @@ export function createToastController(
       )
       return false
     }
-    if (result.timerDropped) {
+    if (result.timerDropped && content.action !== undefined) {
       warnOnce(
         'toast-timer-dropped',
-        'autoDismiss asked for a timer, but a toast with an action never times out, and neither does a busy one: the user may still be reaching for the action, and the job is not done. Give the action a persistent alternative on the page, since the toast can be closed.',
+        'autoDismiss asked for a timer, but a toast with an action never times out: the user may still be reaching for the action. Give the action a persistent alternative on the page, since the toast can be closed.',
       )
     }
     if (wantsFocus) {

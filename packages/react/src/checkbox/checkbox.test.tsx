@@ -151,6 +151,21 @@ describe('in a Field', () => {
     await expect.element(second).toHaveAttribute('data-disabled', '')
   })
 
+  test('a disabled checkbox keeps its help text in its description', async () => {
+    await render(
+      <Field.Root>
+        <Checkbox disabled />
+        <Field.Label marker="none">Newsletter</Field.Label>
+        <Field.HelpText>Add an email address to turn this on.</Field.HelpText>
+      </Field.Root>,
+    )
+    const disabled = page.getByRole('checkbox', { name: 'Newsletter' })
+    await expect.element(disabled).toBeDisabled()
+    await expect
+      .element(disabled)
+      .toHaveAccessibleDescription('Add an email address to turn this on.')
+  })
+
   test('keeps your own aria-describedby ids, after the Field’s', async () => {
     await render(
       <>

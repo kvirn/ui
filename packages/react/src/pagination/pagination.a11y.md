@@ -69,7 +69,7 @@ Pagination announces nothing itself. A page change is the app's job: move focus 
 - Target size: 44 pixels high by default, 24 by 24 pixels at minimum (2.5.8 Target Size (Minimum), AA).
 - Current page: a shape and `aria-current`, never colour alone (1.4.1 Use of Color, A).
 - Reflow: the links wrap, and below 40rem only Previous, the current page, the status and Next show (1.4.10 Reflow, AA). The reflow sweep runs the narrow layout at 320 CSS px and fails on horizontal overflow.
-- Forced colours and reduced motion: the links follow the system colours, the current page keeps its filled shape, and nothing animates. The forced-colours and reduced-motion sweeps check it.
+- Forced colours and reduced motion: the links follow the system colours. In forced colours the fill drops and the current page shows a bar in the link colour under its number (checked by eye). The forced-colours sweep checks that each link has a visible boundary or distinct text and that the focus ring is drawn; the reduced-motion sweep checks that nothing animates.
 
 A custom theme must keep these.
 
