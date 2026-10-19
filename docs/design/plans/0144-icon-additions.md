@@ -38,6 +38,13 @@ Fill the gaps in the icon set: the missing counterparts of existing icons, the i
   - F6 furniture (`home-living`): `sofa`, `chair`, `dining-table` (never `table`: that is the data table), `bed`, `wardrobe`, `lamp`, `shelf`, `bathtub`.
   - `visa` (travel visa or residence permit) is open: the maintainer has not answered; the drawn `visa` stays the card mark.
 
+- 2026-10-19, wave 2 (48 planned, 47 drawn: `graduation-cap` became an alias of `university`; batches G1–G5), from the maintainer's screenshot of a Swedish consumer-service category grid (cars, clothes, travel, craftsmen, mobile and subscriptions, groceries, housing, furniture, beauty and health, appliances, leisure, computers/TV/consoles, legal, broadband, energy, insurance, moving and cleaning, animals, education, online games and streaming). Already covered: `car`, `shirt`, `plane`, `suitcase`, `repair`/tools, `mobile`, `cart`, `home`, `lamp`, `law`, `energy`, `education`. `garden` (on `fence`) and `camera` (on `video-call`) were only tags and stay as search tags.
+  - G1 home-living: `fridge`, `washing-machine`, `oven`, `dishwasher`, `vacuum-cleaner`, `broom`, `spray-bottle`, `moving-box`, `hand-truck`, `apartment`, `house-key`, `garden`.
+  - G2 media and connection (`communication`): `gamepad`, `tv`, `dice`, `streaming`, `camera`, `router`, `fiber`, `sim-card`.
+  - G3 care, beauty, pets, school, accessories: `paw`, `dog`, `cat`, `mirror`, `hair-dryer`, `dumbbell`, `graduation-cap`, `chalkboard`, `backpack` (care-education); `glasses`, `bag`, `umbrella` (alias `insurance`) (food-clothing).
+  - G4 law, energy, vehicles, groceries: `gavel` (safety-civic); `solar-panel`, `wind-turbine`, `meter`, `tyre`, `license-plate`, `scooter`, `caravan` (mobility-environment); `apple`, `milk` (food-clothing).
+  - G5 leisure (`leisure-culture`): `guitar`, `palette`, `football`, `binoculars`, `sailboat`, `fishing-rod`.
+
 ## Open for the maintainer (none blocks; each stands as drawn unless reversed)
 
 - Larger lens kit part for `zoom-in`/`zoom-out` (ring r 7.5, handle (15.75,15.75)→(20.5,20.5)).
@@ -71,6 +78,7 @@ New category for C, D and E (not `rss`): `social` ("Social media", marks of netw
 
 - [x] A1 ✓ · A2 ✓ · B1 ✓ (all drawn and merged into catalog.json, 289 icons) · B2 ✓ · C ✓ · D ✓ · E ✓ (batch files `0144-batch-<X>.json`; A/B/C were split into A1/A2/B1/B2/C after the first agents were interrupted)
 - [x] F1 ✓ (14) · F2 ✓ (14) · F3 ✓ (13) · F4 ✓ (14) · F5 ✓ (10) · F6 ✓ (8): all 73 drawn and merged (371 icons, 21 categories), documented in `icon-library.md` ("Plan 0144 batch F additions", "Proposed parts", §8)
+- [x] Wave 2: G1 ✓ (12) · G2 ✓ (8) · G3 ✓ (11) · G4 ✓ (10) · G5 ✓ (6): 47 drawn and merged (418 icons, 21 categories), documented in `icon-library.md` ("Plan 0144 batch G additions", "Proposed parts")
 - [x] Merge batch entries into `catalog.json` (lead); `mirror-in-rtl.json`: none mirror, no change
 - Scratch files `docs/design/plans/0144-batch-{A1,A2,B1,B2,C,D,E}.json`: delete before commit; the notes live in `icon-library.md`.
 - [x] component-engineer: `node scripts/generate.mjs` (via `vp run` if wired), i18n labels in 5 locales where an entry has a `label`, new count (264 → N) in `icons.stories.tsx:137` and in `icon-library.md`/`icon-catalog.md`, `icon-wanted.md` "Still out" and "Cut or merged" lines, `LICENSING.md` brand note, gallery/docs pages, category `social`
@@ -93,6 +101,13 @@ New category for C, D and E (not `rss`): `social` ("Social media", marks of netw
 - Decision (batch F): `parking` is a car under a roof, not a letter P, and may read as a garage: always with words.
 - Decision (batch F): sixteen new kit parts (heat waves, roof band, wing 1:2, tent 2:1, hanger 1:2, lamp shade 2:1, pump post, tool on the anti-diagonal, saw teeth, leaf quarter arcs, arc fan, loop badge, pill capsule, envelope pocket slope, volume-off cross, shelf with 5 strokes) are proposed, maintainer to confirm.
 - Scratch files `0144-batch-F1…F6.json` are deleted; their notes live in `icon-library.md`.
+- Decision (batch G, 2026-10-19): labels stay null for all 47 icons; no `icons.*` keys. Count 371 → 418, no new category.
+- Decision (batch G): `graduation-cap` is not drawn: it and `mortarboard` are aliases of `university` (no second cap; one concept, one icon).
+- Decision (batch G): the alias `moving` of `moving-box` is dropped (too close to `change-of-address`).
+- Decision (batch G): `football` density (+20% against the circle-keyline icons) is accepted; `tyre` at +40% on the object median is accepted as a solid object.
+- Decision (batch G): `solar-panel` has a stand, not a sun (a sun broke the stroke budget and filled in at 16px).
+- Decision (batch G): sixteen kit parts (appliance body, 45° carton, stepped double block, push-broom head, controller outline, streaming arcs, camera hump, fibre cable and rays, paw pads, backpack r 4 top, hair-dryer nozzle, chalkboard easel legs, ellipse tyre, 270° meter dial, gable carton fin, leaf quarter arcs reused) are proposed, maintainer to confirm.
+- Scratch files `0144-batch-G1…G5.json` are deleted; their notes live in `icon-library.md`.
 
 ## Risks
 

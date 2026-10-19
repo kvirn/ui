@@ -1,6 +1,6 @@
 # Plan 0117: Map, layers and AddressSearch
 
-- **Status:** In progress (approved 2026-10-14; English first, no tests yet, see Decisions)
+- **Status:** In progress (approved 2026-10-14; map, layers, clusters, MapLibre done; AddressSearch and Leaflet/Google adapters open)
 - **Owner:** lead / component-engineer
 - **Created:** 2026-10-14 · **Target:** alpha
 - **Related:** [design spec](../map.md) (the contract, visuals and §9 open questions), [combobox spec](../combobox.md), `overlays-and-lists`, `forms`, `regulations` skills
@@ -91,14 +91,15 @@ Focus never lands on `body`. Announcements are polite, settle about 500 ms after
 Phase 0 is the gate: nothing past it starts before the approvals below.
 
 - [x] P0 **APPROVAL:** dependencies, rule 7 wording, D2/D4 key model, D5 icon-only buttons, D6 halo, D7 motion, D8 height token (see Decisions)
-- [ ] P0 Update `AGENTS.md` rules 6–7, `docs/architecture.md`, `regulations` skill and `DESIGN.md` for what is approved
-- [ ] P1 `core/map`: geo maths, view state, selection, layer visibility, in-view filter, grid clustering, provider types; node tests
-- [ ] P1 `packages/map` scaffold (package.json, vite preset, exports, optional peers) and the memory provider (no network, used by tests and stories)
-- [ ] P2 `useMap` + Map.Root/Viewport/Markers/Marker/Controls/Attribution/Skip/List/Details; i18n; `kv-map-*` in `theme.css`; `theme:check`
-- [x] P3 Layers (`Map.Layers`), clustering (plans 0118, 0119); GeoJSON as an optional source still open
-- [ ] P4 `useAddressSearch` + `AddressSearch` on Autocomplete; `GeocoderProvider`; `nominatim` sub-entry; AddressInput hand-off
-- [ ] P5 MapLibre adapter (first real engine). Leaflet and Google adapters follow once P5 proves the interface; split to plan 0118 if P5 grows
-- [ ] P6 Stories (every state, RTL, forced colours, `Keyboard` story, `parameters.a11yContract`), `map.a11y.md`, docs page, roadmap
+- [x] P0 Rules 6–7, `docs/architecture.md`, `regulations` and `DESIGN.md` updated for what is approved
+- [x] P1 `core/map` (geo maths, view state, clustering, kd index, provider types; node tests) and the `packages/map` scaffold with the memory provider
+- [x] P2 `useMap` and the Map parts, i18n (5 locales), `map.css`, `map.test.tsx` (35 keyboard rows named), stories, `map.a11y.md`, docs page
+- [x] P3 Layers, clustering (plans 0118, 0119); GeoJSON as an optional source still open
+- [x] P5 MapLibre adapter (`/maplibre`, `/worker`)
+- [ ] P4a `ux-designer`: `docs/design/address-search.md` (states, content, announcements, standalone vs in a form, AddressInput hand-off)
+- [ ] P4b `component-engineer`: `useAddressSearch` + `AddressSearch` on Autocomplete, `nominatim` sub-entry, `addressSearch.*` in 5 locales, tests for every contract row, stories, `address-search.a11y.md`; after P4a
+- [ ] P5b `component-engineer`: Leaflet adapter (`/leaflet`, optional peer `leaflet`, catalog pin) then Google adapter (`/google`, SDK loaded by the consumer's call), against the provider contract; mocked at the engine boundary
+- [ ] P6 Docs page and map.md updates for AddressSearch and the adapters; roadmap line
 - [ ] P7 Gates, then `accessibility-reviewer`
 
 ## Decisions

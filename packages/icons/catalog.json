@@ -2386,7 +2386,7 @@
     {
       "name": "university",
       "category": "care-education",
-      "aliases": ["college", "higher-education", "graduation"],
+      "aliases": ["college", "higher-education", "graduation", "graduation-cap", "mortarboard"],
       "tags": ["university", "college", "higher education", "graduation", "degree"],
       "meaning": "Higher education: a graduation cap.",
       "status": "drawn",
@@ -3886,6 +3886,528 @@
       "aliases": ["bath"],
       "tags": ["bathtub", "bath", "bathroom", "tub", "wet room", "renovation"],
       "meaning": "A bathtub, or the bathroom: a tub on feet with a tap, seen from the side.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "fridge",
+      "category": "home-living",
+      "aliases": ["refrigerator", "freezer"],
+      "tags": ["fridge", "refrigerator", "freezer", "appliance", "white goods", "kitchen"],
+      "meaning": "A fridge or freezer: a tall cabinet with a freezer door above the fridge door and one handle across the split.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "washing-machine",
+      "category": "home-living",
+      "aliases": ["washer"],
+      "tags": ["washing machine", "washer", "laundry", "appliance", "white goods"],
+      "meaning": "A washing machine: a front-loader with a round porthole door, a knob and a display.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "oven",
+      "category": "home-living",
+      "aliases": ["cooker"],
+      "tags": ["oven", "cooker", "appliance", "white goods", "kitchen"],
+      "meaning": "An oven or cooker: an appliance with three knobs above a door window.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "dishwasher",
+      "category": "home-living",
+      "aliases": [],
+      "tags": ["dishwasher", "dishes", "appliance", "white goods", "kitchen"],
+      "meaning": "A dishwasher: an appliance with a control panel, a door handle and a plate standing in the rack. Use at 20px or larger, with words.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "vacuum-cleaner",
+      "category": "home-living",
+      "aliases": ["vacuum"],
+      "tags": ["vacuum cleaner", "vacuum", "cleaning", "hoovering", "appliance"],
+      "meaning": "A vacuum cleaner: a canister on the floor, a hose and a wand down to the floor nozzle.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "broom",
+      "category": "home-living",
+      "aliases": ["cleaning", "sweep"],
+      "tags": ["broom", "cleaning", "sweep", "house cleaning", "cleaning service"],
+      "meaning": "Cleaning: a floor broom with a long handle and a bristled head.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "spray-bottle",
+      "category": "home-living",
+      "aliases": ["spray", "detergent"],
+      "tags": ["spray bottle", "spray", "detergent", "cleaning products", "cleaning"],
+      "meaning": "Cleaning products: a trigger spray bottle with a mist of drops.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "moving-box",
+      "category": "home-living",
+      "aliases": ["carton", "removals"],
+      "tags": ["moving box", "carton", "moving", "removals", "packing", "box"],
+      "meaning": "Moving and packing: a carton with a tape seam across its top and a hand hole.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "hand-truck",
+      "category": "home-living",
+      "aliases": ["sack-truck", "dolly"],
+      "tags": ["hand truck", "sack truck", "dolly", "moving", "removals", "carry"],
+      "meaning": "Removals and heavy carrying: a sack truck with a wheel, carrying one box. Use at 20px or larger, with words.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "apartment",
+      "category": "home-living",
+      "aliases": ["flat", "block-of-flats"],
+      "tags": ["apartment", "flat", "block of flats", "housing", "tenancy", "multi-storey"],
+      "meaning": "An apartment or block of flats: a tall and a low residential block side by side, with windows.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "house-key",
+      "category": "home-living",
+      "aliases": ["home-key", "key-handover"],
+      "tags": ["house key", "home key", "moving in", "key handover", "tenancy", "property"],
+      "meaning": "Keys to a home: moving in, a key handover, a rental or a purchase. A key whose bow is a small house.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "garden",
+      "category": "home-living",
+      "aliases": ["plant", "gardening"],
+      "tags": ["garden", "plant", "gardening", "potted plant", "garden centre"],
+      "meaning": "Garden and plants: a seedling with two leaves in a pot.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "gamepad",
+      "category": "communication",
+      "aliases": ["game-controller", "gaming", "video-game"],
+      "tags": ["gamepad", "game controller", "video games", "gaming", "online games", "leisure"],
+      "meaning": "Video games, game consoles or online games: a plain game controller with a direction pad and two buttons.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "tv",
+      "category": "communication",
+      "aliases": ["television", "tv-set"],
+      "tags": ["tv", "television", "tv licence", "channels", "broadcast", "screen"],
+      "meaning": "Television, a TV set or TV channels: a landscape screen with an antenna on top and two short feet.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "dice",
+      "category": "communication",
+      "aliases": ["board-game"],
+      "tags": ["dice", "games", "board games", "chance", "play", "leisure"],
+      "meaning": "Games, board games or chance: one die showing five pips.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "streaming",
+      "category": "communication",
+      "aliases": ["stream", "live-stream", "streaming-service"],
+      "tags": [
+        "streaming",
+        "stream",
+        "live stream",
+        "streaming service",
+        "on demand",
+        "watch online",
+        "subscription"
+      ],
+      "meaning": "Streaming video or audio, a live stream or a streaming service: a play triangle between two broadcast arcs.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "camera",
+      "category": "communication",
+      "aliases": ["photo-camera", "photography"],
+      "tags": ["camera", "photo camera", "take a photo", "photography", "picture"],
+      "meaning": "A photo camera, taking a photo or photography: a camera body with a viewfinder hump, a lens ring and a flash dot.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "router",
+      "category": "communication",
+      "aliases": ["modem", "broadband", "wireless-router"],
+      "tags": [
+        "router",
+        "modem",
+        "broadband",
+        "internet connection",
+        "home network",
+        "wifi router"
+      ],
+      "meaning": "A router, modem or broadband connection at home: a low box with two antennas and a row of three status lights.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "fiber",
+      "category": "communication",
+      "aliases": ["fibre", "optical-fibre", "fiber-optic", "fibre-optic"],
+      "tags": [
+        "fibre",
+        "fiber",
+        "optical fibre",
+        "fibre broadband",
+        "fibre connection",
+        "cable",
+        "internet"
+      ],
+      "meaning": "Optical fibre or a fibre broadband connection: a cable bending into a connector, with light leaving its tip. Use at 20px or larger, with words.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "sim-card",
+      "category": "communication",
+      "aliases": ["sim", "esim"],
+      "tags": ["sim card", "sim", "esim", "mobile subscription", "phone plan", "operator"],
+      "meaning": "A SIM card or a mobile subscription: an upright card with one cut corner and a chip.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "paw",
+      "category": "care-education",
+      "aliases": ["pet", "pets", "animals"],
+      "tags": ["paw", "paw print", "pet", "pets", "animals", "pet care", "vet"],
+      "meaning": "Pets and animals: a plain paw print with four toe pads over a heel pad. Pet care, pet insurance and animal services (a dog is `dog`, a cat is `cat`).",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "dog",
+      "category": "care-education",
+      "aliases": ["puppy"],
+      "tags": ["dog", "puppy", "pet", "dog licence", "dog walking", "animals"],
+      "meaning": "A dog: a plain head seen from the front with long hanging ears, two eyes and a nose, no breed.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "cat",
+      "category": "care-education",
+      "aliases": ["kitten"],
+      "tags": ["cat", "kitten", "pet", "animals"],
+      "meaning": "A cat: a plain head seen from the front with two pointed ears, two eyes and a small nose.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "mirror",
+      "category": "care-education",
+      "aliases": ["beauty", "hand-mirror"],
+      "tags": ["mirror", "hand mirror", "beauty", "cosmetics", "personal care", "beauty salon"],
+      "meaning": "Beauty and personal care: a round hand mirror on a handle with a glint on the glass. Use at 20px or larger, with words.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "hair-dryer",
+      "category": "care-education",
+      "aliases": ["hairdresser", "blow-dryer"],
+      "tags": ["hair dryer", "blow dryer", "hairdresser", "hair salon", "beauty"],
+      "meaning": "A hair dryer seen from the side: a round housing, a barrel with a flared nozzle and a grip below. Hairdressers and hair care.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "dumbbell",
+      "category": "care-education",
+      "aliases": ["fitness", "gym", "weights"],
+      "tags": ["dumbbell", "fitness", "gym", "weights", "exercise", "training", "health"],
+      "meaning": "Fitness and exercise: a dumbbell with two plates on each end of the bar (the outdoor training place is `outdoor-gym`, the indoor hall `sports-hall`).",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "chalkboard",
+      "category": "care-education",
+      "aliases": ["blackboard", "teaching", "teacher"],
+      "tags": ["chalkboard", "blackboard", "teaching", "teacher", "lesson", "classroom", "course"],
+      "meaning": "Teaching and lessons: a board on a splayed easel with two lines of writing, a teacher cue without a person (learning in general is `education`, the building `school`).",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "backpack",
+      "category": "care-education",
+      "aliases": ["school-bag", "rucksack"],
+      "tags": ["backpack", "school bag", "rucksack", "pupil", "school start", "hiking"],
+      "meaning": "A school bag or backpack seen from the front: a rounded top, a carry loop, a flap seam and a front pocket.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "glasses",
+      "category": "food-clothing",
+      "aliases": ["eyeglasses", "spectacles", "optician"],
+      "tags": ["glasses", "eyeglasses", "spectacles", "optician", "eyesight", "accessories"],
+      "meaning": "Eyeglasses: two round lenses, a bridge and two temples. Opticians, eyewear and eyesight (seeing in general is `eye`).",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "bag",
+      "category": "food-clothing",
+      "aliases": ["handbag", "tote"],
+      "tags": ["bag", "handbag", "tote", "purse", "accessories", "clothes"],
+      "meaning": "A bag or handbag: a body with sloping shoulders under a round handle, no brand (a shopping bag of food is `groceries`). Use at 20px or larger, with words.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "umbrella",
+      "category": "food-clothing",
+      "aliases": ["insurance", "rain"],
+      "tags": ["umbrella", "insurance", "rain", "weather", "protection", "cover"],
+      "meaning": "An open umbrella with a scalloped edge and a hooked handle. Insurance and cover, or rain and weather.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "gavel",
+      "category": "safety-civic",
+      "aliases": ["judge", "verdict"],
+      "tags": ["gavel", "judge", "court", "verdict", "ruling", "legal", "hearing"],
+      "meaning": "A court ruling or a judge: a gavel, its head at 45° over a sound block.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "solar-panel",
+      "category": "mobility-environment",
+      "aliases": ["solar", "solar-power"],
+      "tags": ["solar panel", "solar power", "solar energy", "renewable", "photovoltaic"],
+      "meaning": "Solar power: a tilted panel with a grid of cells on a post.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "wind-turbine",
+      "category": "mobility-environment",
+      "aliases": ["wind-power"],
+      "tags": ["wind turbine", "wind power", "wind energy", "renewable", "windmill"],
+      "meaning": "Wind power: a three-blade turbine on a tower.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "meter",
+      "category": "mobility-environment",
+      "aliases": ["gauge", "electricity-meter", "water-meter", "meter-reading"],
+      "tags": [
+        "meter",
+        "meter reading",
+        "electricity meter",
+        "water meter",
+        "gauge",
+        "consumption",
+        "usage"
+      ],
+      "meaning": "A utility meter or its reading: a round dial, open at the bottom, with scale ticks and a needle.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "tyre",
+      "category": "mobility-environment",
+      "aliases": ["tire", "tyres", "wheel"],
+      "tags": [
+        "tyre",
+        "tire",
+        "wheel",
+        "tyre change",
+        "winter tyres",
+        "summer tyres",
+        "car service"
+      ],
+      "meaning": "A tyre, seen from a little to the side: the sidewall with its rim and the tread with three grooves.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "license-plate",
+      "category": "mobility-environment",
+      "aliases": ["number-plate", "licence-plate", "registration-plate"],
+      "tags": [
+        "license plate",
+        "number plate",
+        "registration",
+        "registration number",
+        "vehicle register"
+      ],
+      "meaning": "A vehicle's number plate: a wide plate with a plain band at one end and two plain marks, no letters or emblem. Use at 20px or larger, with words.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "scooter",
+      "category": "mobility-environment",
+      "aliases": ["kick-scooter", "e-scooter"],
+      "tags": [
+        "scooter",
+        "kick scooter",
+        "e-scooter",
+        "electric scooter",
+        "micromobility",
+        "rental scooter"
+      ],
+      "meaning": "A kick scooter seen from the side: two small wheels, a low deck and a steering column with a handlebar.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "caravan",
+      "category": "mobility-environment",
+      "aliases": ["trailer", "camper"],
+      "tags": ["caravan", "trailer", "camper", "camping", "holiday", "towing"],
+      "meaning": "A caravan seen from the side: a rounded box with a window, one wheel and a drawbar.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "apple",
+      "category": "food-clothing",
+      "aliases": ["fruit"],
+      "tags": ["apple", "fruit", "produce", "healthy food", "school meals"],
+      "meaning": "An apple, or fruit in general: an apple with a stem and a leaf.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "milk",
+      "category": "food-clothing",
+      "aliases": ["dairy", "milk-carton"],
+      "tags": ["milk", "dairy", "carton", "drink", "groceries"],
+      "meaning": "Milk or dairy: a carton with a gable top and a fin, seen from a corner.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "guitar",
+      "category": "leisure-culture",
+      "aliases": ["acoustic-guitar", "instrument"],
+      "tags": ["guitar", "acoustic guitar", "instrument", "music lessons", "music school"],
+      "meaning": "An acoustic guitar laid on the diagonal: figure-eight body, sound hole, neck and headstock. Playing an instrument, music lessons (one note alone is `music`).",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "palette",
+      "category": "leisure-culture",
+      "aliases": ["art", "artist-palette"],
+      "tags": ["palette", "art", "painting class", "arts and crafts", "creative"],
+      "meaning": "An artist's palette: a bean-shaped board with a thumb hole and three dots of paint. Art, painting and crafts.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "football",
+      "category": "leisure-culture",
+      "aliases": ["soccer", "soccer-ball", "ball"],
+      "tags": ["football", "soccer", "ball", "ball sports", "club"],
+      "meaning": "An association football (soccer ball): a circle with a centre panel and five seams. Ball sports and clubs (the place is `sports-pitch`).",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "binoculars",
+      "category": "leisure-culture",
+      "aliases": ["field-glasses", "birdwatching"],
+      "tags": ["binoculars", "birdwatching", "nature watching", "viewpoint", "outdoors"],
+      "meaning": "Binoculars seen from the front: two barrels on a bridge over two lenses. Birdwatching, nature watching and viewpoints.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "sailboat",
+      "category": "leisure-culture",
+      "aliases": ["sailing", "yacht"],
+      "tags": ["sailboat", "sailing", "boat", "yacht", "leisure boating"],
+      "meaning": "A sailing boat: a hull with a mast, mainsail and jib. Sailing and leisure boating (a passenger boat is `ferry`, a quay with a boat is `harbour`).",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "fishing-rod",
+      "category": "leisure-culture",
+      "aliases": ["fishing", "angling"],
+      "tags": ["fishing", "fishing rod", "angling", "fishing licence", "fishing waters"],
+      "meaning": "A fishing rod with a reel, and a line hanging from the tip to a hook. Fishing, angling and fishing licences.",
       "status": "drawn",
       "mirrorInRtl": false,
       "label": null

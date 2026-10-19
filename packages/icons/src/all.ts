@@ -6,6 +6,8 @@ import { alignCenter } from './icons/align-center.ts'
 import { alignEnd } from './icons/align-end.ts'
 import { alignStart } from './icons/align-start.ts'
 import { ambulance } from './icons/ambulance.ts'
+import { apartment } from './icons/apartment.ts'
+import { apple } from './icons/apple.ts'
 import { archive } from './icons/archive.ts'
 import { area } from './icons/area.ts'
 import { arrowBack } from './icons/arrow-back.ts'
@@ -19,12 +21,15 @@ import { attachment } from './icons/attachment.ts'
 import { attachmentAdd } from './icons/attachment-add.ts'
 import { attachmentRemove } from './icons/attachment-remove.ts'
 import { attention } from './icons/attention.ts'
+import { backpack } from './icons/backpack.ts'
+import { bag } from './icons/bag.ts'
 import { bankid } from './icons/bankid.ts'
 import { bathtub } from './icons/bathtub.ts'
 import { battery } from './icons/battery.ts'
 import { bed } from './icons/bed.ts'
 import { benefit } from './icons/benefit.ts'
 import { bike } from './icons/bike.ts'
+import { binoculars } from './icons/binoculars.ts'
 import { blocked } from './icons/blocked.ts'
 import { bluesky } from './icons/bluesky.ts'
 import { bluetooth } from './icons/bluetooth.ts'
@@ -34,6 +39,7 @@ import { book } from './icons/book.ts'
 import { bookFacility } from './icons/book-facility.ts'
 import { bookmark } from './icons/bookmark.ts'
 import { bread } from './icons/bread.ts'
+import { broom } from './icons/broom.ts'
 import { building } from './icons/building.ts'
 import { bulkyWaste } from './icons/bulky-waste.ts'
 import { bulletList } from './icons/bullet-list.ts'
@@ -44,15 +50,19 @@ import { calendar } from './icons/calendar.ts'
 import { calendarAdd } from './icons/calendar-add.ts'
 import { calendarCheck } from './icons/calendar-check.ts'
 import { calendarRemove } from './icons/calendar-remove.ts'
+import { camera } from './icons/camera.ts'
 import { cancelSubscription } from './icons/cancel-subscription.ts'
 import { captions } from './icons/captions.ts'
 import { car } from './icons/car.ts'
+import { caravan } from './icons/caravan.ts'
 import { care } from './icons/care.ts'
 import { cart } from './icons/cart.ts'
 import { cash } from './icons/cash.ts'
+import { cat } from './icons/cat.ts'
 import { cemetery } from './icons/cemetery.ts'
 import { certificate } from './icons/certificate.ts'
 import { chair } from './icons/chair.ts'
+import { chalkboard } from './icons/chalkboard.ts'
 import { changeOfAddress } from './icons/change-of-address.ts'
 import { chartBar } from './icons/chart-bar.ts'
 import { chartLine } from './icons/chart-line.ts'
@@ -89,20 +99,24 @@ import { delegation } from './icons/delegation.ts'
 import { deleteIcon } from './icons/delete.ts'
 import { desktop } from './icons/desktop.ts'
 import { detour } from './icons/detour.ts'
+import { dice } from './icons/dice.ts'
 import { digitalSignage } from './icons/digital-signage.ts'
 import { diningTable } from './icons/dining-table.ts'
 import { directMessage } from './icons/direct-message.ts'
 import { directions } from './icons/directions.ts'
+import { dishwasher } from './icons/dishwasher.ts'
 import { distance } from './icons/distance.ts'
 import { document } from './icons/document.ts'
 import { documentAdd } from './icons/document-add.ts'
 import { documentCheck } from './icons/document-check.ts'
 import { documentRemove } from './icons/document-remove.ts'
+import { dog } from './icons/dog.ts'
 import { door } from './icons/door.ts'
 import { download } from './icons/download.ts'
 import { dragHandle } from './icons/drag-handle.ts'
 import { drill } from './icons/drill.ts'
 import { drivingLicence } from './icons/driving-licence.ts'
+import { dumbbell } from './icons/dumbbell.ts'
 import { ear } from './icons/ear.ts'
 import { easyRead } from './icons/easy-read.ts'
 import { easyReadThumbsUp } from './icons/easy-read-thumbs-up.ts'
@@ -124,26 +138,37 @@ import { facebook } from './icons/facebook.ts'
 import { family } from './icons/family.ts'
 import { fence } from './icons/fence.ts'
 import { ferry } from './icons/ferry.ts'
+import { fiber } from './icons/fiber.ts'
 import { filter } from './icons/filter.ts'
 import { filterOff } from './icons/filter-off.ts'
 import { fire } from './icons/fire.ts'
 import { firetruck } from './icons/firetruck.ts'
 import { first } from './icons/first.ts'
+import { fishingRod } from './icons/fishing-rod.ts'
 import { folder } from './icons/folder.ts'
 import { folderAdd } from './icons/folder-add.ts'
 import { folderRemove } from './icons/folder-remove.ts'
 import { foodWaste } from './icons/food-waste.ts'
+import { football } from './icons/football.ts'
 import { form } from './icons/form.ts'
+import { fridge } from './icons/fridge.ts'
 import { fuel } from './icons/fuel.ts'
 import { fullscreen } from './icons/fullscreen.ts'
 import { fullscreenExit } from './icons/fullscreen-exit.ts'
+import { gamepad } from './icons/gamepad.ts'
+import { garden } from './icons/garden.ts'
+import { gavel } from './icons/gavel.ts'
 import { genderFemale } from './icons/gender-female.ts'
 import { genderFluid } from './icons/gender-fluid.ts'
 import { genderMale } from './icons/gender-male.ts'
 import { genderNonBinary } from './icons/gender-non-binary.ts'
+import { glasses } from './icons/glasses.ts'
 import { government } from './icons/government.ts'
 import { groceries } from './icons/groceries.ts'
+import { guitar } from './icons/guitar.ts'
+import { hairDryer } from './icons/hair-dryer.ts'
 import { hammer } from './icons/hammer.ts'
+import { handTruck } from './icons/hand-truck.ts'
 import { hangUp } from './icons/hang-up.ts'
 import { harbour } from './icons/harbour.ts'
 import { hashtag } from './icons/hashtag.ts'
@@ -165,6 +190,7 @@ import { highlight } from './icons/highlight.ts'
 import { history } from './icons/history.ts'
 import { home } from './icons/home.ts'
 import { hotel } from './icons/hotel.ts'
+import { houseKey } from './icons/house-key.ts'
 import { idCard } from './icons/id-card.ts'
 import { image } from './icons/image.ts'
 import { imageAdd } from './icons/image-add.ts'
@@ -188,6 +214,7 @@ import { last } from './icons/last.ts'
 import { laundry } from './icons/laundry.ts'
 import { law } from './icons/law.ts'
 import { layers } from './icons/layers.ts'
+import { licensePlate } from './icons/license-plate.ts'
 import { lightMode } from './icons/light-mode.ts'
 import { lightbulb } from './icons/lightbulb.ts'
 import { like } from './icons/like.ts'
@@ -212,13 +239,17 @@ import { meal } from './icons/meal.ts'
 import { medication } from './icons/medication.ts'
 import { membership } from './icons/membership.ts'
 import { menu } from './icons/menu.ts'
+import { meter } from './icons/meter.ts'
 import { microphone } from './icons/microphone.ts'
 import { microphoneOff } from './icons/microphone-off.ts'
+import { milk } from './icons/milk.ts'
+import { mirror } from './icons/mirror.ts'
 import { mobile } from './icons/mobile.ts'
 import { mobileOff } from './icons/mobile-off.ts'
 import { more } from './icons/more.ts'
 import { moreVertical } from './icons/more-vertical.ts'
 import { motorcycle } from './icons/motorcycle.ts'
+import { movingBox } from './icons/moving-box.ts'
 import { multilingual } from './icons/multilingual.ts'
 import { museum } from './icons/museum.ts'
 import { music } from './icons/music.ts'
@@ -231,11 +262,14 @@ import { notificationOff } from './icons/notification-off.ts'
 import { numberedList } from './icons/numbered-list.ts'
 import { outdent } from './icons/outdent.ts'
 import { outdoorGym } from './icons/outdoor-gym.ts'
+import { oven } from './icons/oven.ts'
 import { paintRoller } from './icons/paint-roller.ts'
+import { palette } from './icons/palette.ts'
 import { parking } from './icons/parking.ts'
 import { passport } from './icons/passport.ts'
 import { paste } from './icons/paste.ts'
 import { pause } from './icons/pause.ts'
+import { paw } from './icons/paw.ts'
 import { payment } from './icons/payment.ts'
 import { pending } from './icons/pending.ts'
 import { people } from './icons/people.ts'
@@ -271,10 +305,13 @@ import { research } from './icons/research.ts'
 import { restaurant } from './icons/restaurant.ts'
 import { roadworks } from './icons/roadworks.ts'
 import { roof } from './icons/roof.ts'
+import { router } from './icons/router.ts'
 import { rss } from './icons/rss.ts'
+import { sailboat } from './icons/sailboat.ts'
 import { save } from './icons/save.ts'
 import { saw } from './icons/saw.ts'
 import { school } from './icons/school.ts'
+import { scooter } from './icons/scooter.ts'
 import { screwdriver } from './icons/screwdriver.ts'
 import { search } from './icons/search.ts'
 import { send } from './icons/send.ts'
@@ -291,20 +328,24 @@ import { signIn } from './icons/sign-in.ts'
 import { signLanguage } from './icons/sign-language.ts'
 import { signOut } from './icons/sign-out.ts'
 import { signature } from './icons/signature.ts'
+import { simCard } from './icons/sim-card.ts'
 import { skipNext } from './icons/skip-next.ts'
 import { skipPrevious } from './icons/skip-previous.ts'
 import { smartwatch } from './icons/smartwatch.ts'
 import { snow } from './icons/snow.ts'
 import { sofa } from './icons/sofa.ts'
+import { solarPanel } from './icons/solar-panel.ts'
 import { sort } from './icons/sort.ts'
 import { sortAscending } from './icons/sort-ascending.ts'
 import { sortDescending } from './icons/sort-descending.ts'
 import { spinner } from './icons/spinner.ts'
 import { sportsHall } from './icons/sports-hall.ts'
 import { sportsPitch } from './icons/sports-pitch.ts'
+import { sprayBottle } from './icons/spray-bottle.ts'
 import { stairs } from './icons/stairs.ts'
 import { star } from './icons/star.ts'
 import { stop } from './icons/stop.ts'
+import { streaming } from './icons/streaming.ts'
 import { streetLight } from './icons/street-light.ts'
 import { strike } from './icons/strike.ts'
 import { subscription } from './icons/subscription.ts'
@@ -340,13 +381,17 @@ import { translate } from './icons/translate.ts'
 import { tree } from './icons/tree.ts'
 import { trousers } from './icons/trousers.ts'
 import { truck } from './icons/truck.ts'
+import { tv } from './icons/tv.ts'
 import { twoFactor } from './icons/two-factor.ts'
+import { tyre } from './icons/tyre.ts'
+import { umbrella } from './icons/umbrella.ts'
 import { underline } from './icons/underline.ts'
 import { undo } from './icons/undo.ts'
 import { university } from './icons/university.ts'
 import { unlock } from './icons/unlock.ts'
 import { upload } from './icons/upload.ts'
 import { vaccination } from './icons/vaccination.ts'
+import { vacuumCleaner } from './icons/vacuum-cleaner.ts'
 import { vegetarian } from './icons/vegetarian.ts'
 import { verified } from './icons/verified.ts'
 import { videoCall } from './icons/video-call.ts'
@@ -360,10 +405,12 @@ import { walk } from './icons/walk.ts'
 import { wallet } from './icons/wallet.ts'
 import { wardrobe } from './icons/wardrobe.ts'
 import { warning } from './icons/warning.ts'
+import { washingMachine } from './icons/washing-machine.ts'
 import { waste } from './icons/waste.ts'
 import { water } from './icons/water.ts'
 import { wheelchair } from './icons/wheelchair.ts'
 import { wifi } from './icons/wifi.ts'
+import { windTurbine } from './icons/wind-turbine.ts'
 import { window } from './icons/window.ts'
 import { x } from './icons/x.ts'
 import { youtube } from './icons/youtube.ts'
@@ -380,6 +427,8 @@ export const allIcons = {
   'align-end': alignEnd,
   'align-start': alignStart,
   ambulance: ambulance,
+  apartment: apartment,
+  apple: apple,
   archive: archive,
   area: area,
   'arrow-back': arrowBack,
@@ -393,12 +442,15 @@ export const allIcons = {
   'attachment-add': attachmentAdd,
   'attachment-remove': attachmentRemove,
   attention: attention,
+  backpack: backpack,
+  bag: bag,
   bankid: bankid,
   bathtub: bathtub,
   battery: battery,
   bed: bed,
   benefit: benefit,
   bike: bike,
+  binoculars: binoculars,
   blocked: blocked,
   bluesky: bluesky,
   bluetooth: bluetooth,
@@ -408,6 +460,7 @@ export const allIcons = {
   'book-facility': bookFacility,
   bookmark: bookmark,
   bread: bread,
+  broom: broom,
   building: building,
   'bulky-waste': bulkyWaste,
   'bullet-list': bulletList,
@@ -418,15 +471,19 @@ export const allIcons = {
   'calendar-add': calendarAdd,
   'calendar-check': calendarCheck,
   'calendar-remove': calendarRemove,
+  camera: camera,
   'cancel-subscription': cancelSubscription,
   captions: captions,
   car: car,
+  caravan: caravan,
   care: care,
   cart: cart,
   cash: cash,
+  cat: cat,
   cemetery: cemetery,
   certificate: certificate,
   chair: chair,
+  chalkboard: chalkboard,
   'change-of-address': changeOfAddress,
   'chart-bar': chartBar,
   'chart-line': chartLine,
@@ -463,20 +520,24 @@ export const allIcons = {
   delete: deleteIcon,
   desktop: desktop,
   detour: detour,
+  dice: dice,
   'digital-signage': digitalSignage,
   'dining-table': diningTable,
   'direct-message': directMessage,
   directions: directions,
+  dishwasher: dishwasher,
   distance: distance,
   document: document,
   'document-add': documentAdd,
   'document-check': documentCheck,
   'document-remove': documentRemove,
+  dog: dog,
   door: door,
   download: download,
   'drag-handle': dragHandle,
   drill: drill,
   'driving-licence': drivingLicence,
+  dumbbell: dumbbell,
   ear: ear,
   'easy-read': easyRead,
   'easy-read-thumbs-up': easyReadThumbsUp,
@@ -498,26 +559,37 @@ export const allIcons = {
   family: family,
   fence: fence,
   ferry: ferry,
+  fiber: fiber,
   filter: filter,
   'filter-off': filterOff,
   fire: fire,
   firetruck: firetruck,
   first: first,
+  'fishing-rod': fishingRod,
   folder: folder,
   'folder-add': folderAdd,
   'folder-remove': folderRemove,
   'food-waste': foodWaste,
+  football: football,
   form: form,
+  fridge: fridge,
   fuel: fuel,
   fullscreen: fullscreen,
   'fullscreen-exit': fullscreenExit,
+  gamepad: gamepad,
+  garden: garden,
+  gavel: gavel,
   'gender-female': genderFemale,
   'gender-fluid': genderFluid,
   'gender-male': genderMale,
   'gender-non-binary': genderNonBinary,
+  glasses: glasses,
   government: government,
   groceries: groceries,
+  guitar: guitar,
+  'hair-dryer': hairDryer,
   hammer: hammer,
+  'hand-truck': handTruck,
   'hang-up': hangUp,
   harbour: harbour,
   hashtag: hashtag,
@@ -539,6 +611,7 @@ export const allIcons = {
   history: history,
   home: home,
   hotel: hotel,
+  'house-key': houseKey,
   'id-card': idCard,
   image: image,
   'image-add': imageAdd,
@@ -562,6 +635,7 @@ export const allIcons = {
   laundry: laundry,
   law: law,
   layers: layers,
+  'license-plate': licensePlate,
   'light-mode': lightMode,
   lightbulb: lightbulb,
   like: like,
@@ -586,13 +660,17 @@ export const allIcons = {
   medication: medication,
   membership: membership,
   menu: menu,
+  meter: meter,
   microphone: microphone,
   'microphone-off': microphoneOff,
+  milk: milk,
+  mirror: mirror,
   mobile: mobile,
   'mobile-off': mobileOff,
   more: more,
   'more-vertical': moreVertical,
   motorcycle: motorcycle,
+  'moving-box': movingBox,
   multilingual: multilingual,
   museum: museum,
   music: music,
@@ -605,11 +683,14 @@ export const allIcons = {
   'numbered-list': numberedList,
   outdent: outdent,
   'outdoor-gym': outdoorGym,
+  oven: oven,
   'paint-roller': paintRoller,
+  palette: palette,
   parking: parking,
   passport: passport,
   paste: paste,
   pause: pause,
+  paw: paw,
   payment: payment,
   pending: pending,
   people: people,
@@ -645,10 +726,13 @@ export const allIcons = {
   restaurant: restaurant,
   roadworks: roadworks,
   roof: roof,
+  router: router,
   rss: rss,
+  sailboat: sailboat,
   save: save,
   saw: saw,
   school: school,
+  scooter: scooter,
   screwdriver: screwdriver,
   search: search,
   send: send,
@@ -665,20 +749,24 @@ export const allIcons = {
   'sign-language': signLanguage,
   'sign-out': signOut,
   signature: signature,
+  'sim-card': simCard,
   'skip-next': skipNext,
   'skip-previous': skipPrevious,
   smartwatch: smartwatch,
   snow: snow,
   sofa: sofa,
+  'solar-panel': solarPanel,
   sort: sort,
   'sort-ascending': sortAscending,
   'sort-descending': sortDescending,
   spinner: spinner,
   'sports-hall': sportsHall,
   'sports-pitch': sportsPitch,
+  'spray-bottle': sprayBottle,
   stairs: stairs,
   star: star,
   stop: stop,
+  streaming: streaming,
   'street-light': streetLight,
   strike: strike,
   subscription: subscription,
@@ -714,13 +802,17 @@ export const allIcons = {
   tree: tree,
   trousers: trousers,
   truck: truck,
+  tv: tv,
   'two-factor': twoFactor,
+  tyre: tyre,
+  umbrella: umbrella,
   underline: underline,
   undo: undo,
   university: university,
   unlock: unlock,
   upload: upload,
   vaccination: vaccination,
+  'vacuum-cleaner': vacuumCleaner,
   vegetarian: vegetarian,
   verified: verified,
   'video-call': videoCall,
@@ -734,10 +826,12 @@ export const allIcons = {
   wallet: wallet,
   wardrobe: wardrobe,
   warning: warning,
+  'washing-machine': washingMachine,
   waste: waste,
   water: water,
   wheelchair: wheelchair,
   wifi: wifi,
+  'wind-turbine': windTurbine,
   window: window,
   x: x,
   youtube: youtube,
@@ -754,6 +848,8 @@ export const iconNames = [
   'align-end',
   'align-start',
   'ambulance',
+  'apartment',
+  'apple',
   'archive',
   'area',
   'arrow-back',
@@ -767,12 +863,15 @@ export const iconNames = [
   'attachment-add',
   'attachment-remove',
   'attention',
+  'backpack',
+  'bag',
   'bankid',
   'bathtub',
   'battery',
   'bed',
   'benefit',
   'bike',
+  'binoculars',
   'blocked',
   'bluesky',
   'bluetooth',
@@ -782,6 +881,7 @@ export const iconNames = [
   'book-facility',
   'bookmark',
   'bread',
+  'broom',
   'building',
   'bulky-waste',
   'bullet-list',
@@ -792,15 +892,19 @@ export const iconNames = [
   'calendar-add',
   'calendar-check',
   'calendar-remove',
+  'camera',
   'cancel-subscription',
   'captions',
   'car',
+  'caravan',
   'care',
   'cart',
   'cash',
+  'cat',
   'cemetery',
   'certificate',
   'chair',
+  'chalkboard',
   'change-of-address',
   'chart-bar',
   'chart-line',
@@ -837,20 +941,24 @@ export const iconNames = [
   'delete',
   'desktop',
   'detour',
+  'dice',
   'digital-signage',
   'dining-table',
   'direct-message',
   'directions',
+  'dishwasher',
   'distance',
   'document',
   'document-add',
   'document-check',
   'document-remove',
+  'dog',
   'door',
   'download',
   'drag-handle',
   'drill',
   'driving-licence',
+  'dumbbell',
   'ear',
   'easy-read',
   'easy-read-thumbs-up',
@@ -872,26 +980,37 @@ export const iconNames = [
   'family',
   'fence',
   'ferry',
+  'fiber',
   'filter',
   'filter-off',
   'fire',
   'firetruck',
   'first',
+  'fishing-rod',
   'folder',
   'folder-add',
   'folder-remove',
   'food-waste',
+  'football',
   'form',
+  'fridge',
   'fuel',
   'fullscreen',
   'fullscreen-exit',
+  'gamepad',
+  'garden',
+  'gavel',
   'gender-female',
   'gender-fluid',
   'gender-male',
   'gender-non-binary',
+  'glasses',
   'government',
   'groceries',
+  'guitar',
+  'hair-dryer',
   'hammer',
+  'hand-truck',
   'hang-up',
   'harbour',
   'hashtag',
@@ -913,6 +1032,7 @@ export const iconNames = [
   'history',
   'home',
   'hotel',
+  'house-key',
   'id-card',
   'image',
   'image-add',
@@ -936,6 +1056,7 @@ export const iconNames = [
   'laundry',
   'law',
   'layers',
+  'license-plate',
   'light-mode',
   'lightbulb',
   'like',
@@ -960,13 +1081,17 @@ export const iconNames = [
   'medication',
   'membership',
   'menu',
+  'meter',
   'microphone',
   'microphone-off',
+  'milk',
+  'mirror',
   'mobile',
   'mobile-off',
   'more',
   'more-vertical',
   'motorcycle',
+  'moving-box',
   'multilingual',
   'museum',
   'music',
@@ -979,11 +1104,14 @@ export const iconNames = [
   'numbered-list',
   'outdent',
   'outdoor-gym',
+  'oven',
   'paint-roller',
+  'palette',
   'parking',
   'passport',
   'paste',
   'pause',
+  'paw',
   'payment',
   'pending',
   'people',
@@ -1019,10 +1147,13 @@ export const iconNames = [
   'restaurant',
   'roadworks',
   'roof',
+  'router',
   'rss',
+  'sailboat',
   'save',
   'saw',
   'school',
+  'scooter',
   'screwdriver',
   'search',
   'send',
@@ -1039,20 +1170,24 @@ export const iconNames = [
   'sign-language',
   'sign-out',
   'signature',
+  'sim-card',
   'skip-next',
   'skip-previous',
   'smartwatch',
   'snow',
   'sofa',
+  'solar-panel',
   'sort',
   'sort-ascending',
   'sort-descending',
   'spinner',
   'sports-hall',
   'sports-pitch',
+  'spray-bottle',
   'stairs',
   'star',
   'stop',
+  'streaming',
   'street-light',
   'strike',
   'subscription',
@@ -1088,13 +1223,17 @@ export const iconNames = [
   'tree',
   'trousers',
   'truck',
+  'tv',
   'two-factor',
+  'tyre',
+  'umbrella',
   'underline',
   'undo',
   'university',
   'unlock',
   'upload',
   'vaccination',
+  'vacuum-cleaner',
   'vegetarian',
   'verified',
   'video-call',
@@ -1108,10 +1247,12 @@ export const iconNames = [
   'wallet',
   'wardrobe',
   'warning',
+  'washing-machine',
   'waste',
   'water',
   'wheelchair',
   'wifi',
+  'wind-turbine',
   'window',
   'x',
   'youtube',
