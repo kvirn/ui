@@ -154,7 +154,8 @@ export function ToastPage({
                 same <code>id</code>, so one toast updates in place and a second one does not stack.
                 The spinner is replaced, and the result is announced once. The words carry the wait:
                 the status word and the title say what is happening. A busy toast stays even with{' '}
-                <code>autoDismiss</code> on, and only the result that replaces it times out.
+                <code>autoDismiss</code> on, and only the result that replaces it times out, if it
+                has no action.
               </>
             }
             code={sources['job-in-progress']}
