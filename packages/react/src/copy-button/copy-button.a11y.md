@@ -6,7 +6,7 @@
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `copy-button.test.tsx` next to this file. `copy-button.stories.tsx` in `apps/storybook/src/components/copy-button/`.
 
-A CopyButton is a [Button](../button/button.a11y.md) that writes a text to the clipboard. Its accessible name is its label, "Copy", and it never changes to "Copied": the result is a status message (4.1.3), not a new name. When the browser refuses (no permission, an insecure context, no Clipboard API), the button announces the failure and selects the text where it is shown, so the user can copy it by hand.
+A CopyButton is a Button that writes a text to the clipboard. Its accessible name is its label, "Copy", and it never changes to "Copied": the result is a status message (4.1.3), not a new name. When the browser refuses (no permission, an insecure context, no Clipboard API), the button announces the failure and selects the text where it is shown, so the user can copy it by hand.
 
 ## Roles, states, properties
 
@@ -17,7 +17,7 @@ A CopyButton is a [Button](../button/button.a11y.md) that writes a text to the c
 |            | disabled and focusable | `aria-disabled="true"`                                     | As Button (`focusableWhenDisabled`): stays in the Tab order and copies nothing                                                                                                                                                                                                                                                       |
 |            | result                 | none                                                       | `data-status` is `idle`, `copied` or `failed`. `copied` returns to `idle` after 5 s, or at once when the next press starts. `failed` stays until the next press starts and never times out. It carries no name or description. The user hears the result through the announcement                                                    |
 | status     | `<span>` → `generic`   | none: not a live region, no `role`, not `aria-describedby` | `class="kv-copy-status"`, a sibling after the button, never inside it (it would join the name). Decorative `check` / `warning` Icon (`aria-hidden`) plus the words `copyButton.copied` or `copyButton.failed`, so what is seen is what is heard. Not rendered while `idle` or disabled. `status={false}` renders none. Not focusable |
-| text       | `textRef` element      | none                                                       | On failure its contents are selected (`Selection.selectAllChildren`). The selection is not focus: focus stays on the button                                                                                                                                                                                                          |
+| text       | `textRef` element      | none                                                       | On failure its contents are selected (the browser selects the text). The selection is not focus: focus stays on the button                                                                                                                                                                                                           |
 
 `useCopyButton` gives the same `buttonProps`, a `label` and a `status` for your own `<button>` and your own status text.
 
@@ -73,16 +73,16 @@ The label key is `copyButton.label`. Nothing is announced on render. Pressing th
 Headless: CopyButton ships no CSS. With `@kvirn-ui/theme/theme.css` it is a Button (`kv-button`): see the Button page. The result text (`kv-copy-status`) uses the normal text size and colour with an icon in the same colour, so no colour carries it (1.4.1) and no new colour pair is needed.
 
 - Focus indicator, target size, contrast, forced colours: the Button's.
-- reduced-motion behaviour: no motion.
+- Reduced motion: no motion.
 - Forced colours: the result words and icon use the system's text colour. RTL: the status sits at the inline end, and the icons don't mirror.
-- Reflow: No horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA): the `storybook-reflow` sweep runs every story at 320 CSS px and fails on horizontal overflow. The failure text wraps below the button.
+- Reflow: no horizontal scrolling at 320 CSS px (1.4.10 Reflow, AA). The reflow sweep checks every story at that width for horizontal overflow. The failure text wraps below the button.
 
 ## WCAG SCs covered
 
-- 4.1.3 Status Messages (AA): `copyButton.copied` and `copyButton.failed` through the live region (`copy-button.test.tsx › announcements`).
-- 1.4.1 Use of Color (A), 1.3.1 Info and Relationships (A): the visible status is words plus a decorative icon (`copy-button.test.tsx › visible status`).
-- 3.3.1 Error Identification (A): a failure says what happened and what to do, and the failure text stays until the next press, so a slow reader or a magnifier user still has the instruction (`copy-button.test.tsx › visible status › failed stays past five seconds and is replaced by the next press`).
-- 4.1.2 Name, Role, Value (A): role `button`, a stable name, `disabled` / `aria-disabled` exposed (`copy-button.test.tsx › name`).
+- 4.1.3 Status Messages (AA): `copyButton.copied` and `copyButton.failed` through the live region.
+- 1.4.1 Use of Color (A), 1.3.1 Info and Relationships (A): the visible status is words plus a decorative icon.
+- 3.3.1 Error Identification (A): a failure says what happened and what to do, and the failure text stays until the next press, so a slow reader or a magnifier user still has the instruction.
+- 4.1.2 Name, Role, Value (A): role `button`, a stable name, `disabled` / `aria-disabled` exposed.
 - 2.1.1 Keyboard (A), 2.4.3 Focus Order (A): native button; focus never moves (the Keyboard rows).
 - 2.5.3 Label in Name (A): the visible text is the name, and the status never replaces it.
 
@@ -104,9 +104,18 @@ Headless: CopyButton ships no CSS. With `@kvirn-ui/theme/theme.css` it is a Butt
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                         |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                         |
 
+### What to check
+
+- Tab to the button: you hear its name and "button". The name stays the same after a press.
+- Press Enter, then Space: the result is announced once each time and focus stays on the button.
+- After a copy, paste elsewhere and check the text.
+- Make the copy fail (blocked clipboard or an insecure page): the failure is announced, the text is selected and its instruction stays on screen.
+- With several buttons, each name says what it copies.
+- A focusable disabled button is reached and read as unavailable. Enter and Space copy nothing.
+
 ## Known issues
 
 - **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. WebKit is not covered by the automated tests, so check Safari with your own users and assistive technology.
 - **The status is not a live region on purpose:** the Announcer already speaks it, and a second region would say it twice. Browse mode reads the same words.
 - **Selection is not read in browse mode** by every screen reader: the failure message tells the user to copy the text themselves.
-- **fi, nb and nn strings:** have a native speaker review them before launch.
+- **Your own strings:** if you override the strings, have a native speaker check them.

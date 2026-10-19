@@ -38,7 +38,7 @@ export function KbdPage({ contract, sources }: { contract: Contract; sources: Kb
   return (
     <ComponentPage
       title="Kbd"
-      lead="It is the native kbd element with a class, so a screen reader reads it as part of the sentence."
+      lead="Shows a key the reader presses, such as Tab or Esc, inside a sentence. It is the browser’s own kbd element, so a screen reader (software that reads the screen aloud) reads the key as part of the sentence."
       whenToUse={
         <ul>
           <li>
@@ -66,12 +66,9 @@ export function KbdPage({ contract, sources }: { contract: Contract; sources: Kb
             why="An outer Kbd groups one Kbd per key, with the separator as plain text. The default theme draws the keys and leaves the outer one plain, and the group never breaks across lines."
             code={sources['combination']}
             note={
-              <Note kind="reminder">
+              <Note kind="tip">
                 Don’t translate key names: write them as printed on the keyboard. In Nordic text,
-                Ctrl, Shift, Tab and Esc need nothing more. In text in another script, such as
-                Arabic, wrap the key in your own{' '}
-                <code>&lt;span lang=&quot;en&quot;&gt;&lt;Kbd&gt;Tab&lt;/Kbd&gt;&lt;/span&gt;</code>{' '}
-                (3.1.2 Language of Parts).
+                Ctrl, Shift, Tab and Esc need nothing more.
               </Note>
             }
           >
@@ -80,7 +77,7 @@ export function KbdPage({ contract, sources }: { contract: Contract; sources: Kb
           <UseCase
             id="shortcut-list"
             title="A list of shortcuts"
-            why="Each item names the key or keys, then says what they do in words. Name the keys your users have: Ctrl is Cmd on a Mac."
+            why="Each item names the key or keys, then says what they do in words. Give the list a name, so a screen reader user hears what the list is for."
             code={sources['shortcut-list']}
             note={
               <Note kind="tip">
@@ -95,7 +92,7 @@ export function KbdPage({ contract, sources }: { contract: Contract; sources: Kb
           <UseCase
             id="per-system"
             title="A shortcut that differs on a Mac"
-            why="A key has a different name on another system: Ctrl on Windows is Cmd on a Mac. Name the keys your users have, and say it in words, not only in the key."
+            why="A key can have a different name on another system: Ctrl on Windows is Cmd on a Mac. Write both, and say in words which system each is for."
             code={sources['per-system']}
             note={
               <Note kind="tip">
@@ -109,8 +106,15 @@ export function KbdPage({ contract, sources }: { contract: Contract; sources: Kb
           <UseCase
             id="other-script"
             title="A key in a text in another script"
-            why="Key names stay as printed on the keyboard, in Latin letters. In a text in Arabic, wrap the key in an element that says it is English, so software that reads the screen aloud says it in the right language."
+            why="Key names stay as printed on the keyboard, in Latin letters. In a text in Arabic, wrap the key in an element that says it is English, so a screen reader says it in the right language."
             code={sources['other-script']}
+            note={
+              <Note kind="reminder">
+                Mark the key with <code>lang=&quot;en&quot;</code> on your own element around the
+                Kbd. Without it, a screen reader may say the key in the wrong language (3.1.2
+                Language of Parts).
+              </Note>
+            }
           >
             <OtherScript />
           </UseCase>

@@ -6,7 +6,7 @@
 - **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `code-block.test.tsx` next to this file. `code-block.stories.tsx` in `apps/storybook/src/components/code-block/`.
 
-A CodeBlock shows a code sample or a reference with a copy button. The code wraps, so there is no scroller to reach and no 2D scrolling (1.4.10). There is no syntax highlighting, so no colour carries meaning (1.4.1).
+A CodeBlock shows a code sample or a reference with a copy button. The code wraps, so there is no scroller to reach and no 2D scrolling (1.4.10 Reflow, AA). There is no syntax highlighting, so no colour carries meaning (1.4.1 Use of Color, A).
 
 ## Roles, states, properties
 
@@ -24,9 +24,9 @@ A CodeBlock shows a code sample or a reference with a copy button. The code wrap
 
 No part takes `as`.
 
-| Part       | `as` | Why                                                                                                                                     |
-| ---------- | ---- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| every part | none | Root is a `group` named by the Label (an element would not change that), Label a `<p>` (never a heading), Code a `<pre>` (1.3.1, 4.1.2) |
+| Part       | `as` | Why                                                                                                                                                                                    |
+| ---------- | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| every part | none | Root is a `group` named by the Label (an element would not change that), Label a `<p>` (never a heading), Code a `<pre>` (1.3.1 Info and Relationships, A; 4.1.2 Name, Role, Value, A) |
 
 ## Keyboard
 
@@ -78,16 +78,16 @@ Headless: CodeBlock ships no CSS. With `@kvirn-ui/theme/theme.css`:
 - Forced colours: the code keeps a visible edge in the system's text colour. The status words and icon use the system's text colour too.
 - Reduced motion: nothing moves.
 - Layout: a wrapping row. The Label and the Code take a full row each. Copy and its status share the last row, and the failure text wraps below Copy on a narrow screen. The icons don't flip in right-to-left languages.
-- Reflow and text spacing: the code wraps and never scrolls, so there is no sideways scrolling at 320 CSS pixels and nothing is clipped at 400% zoom or with wider text spacing (1.4.10 Reflow, 1.4.12 Text Spacing). The `storybook-reflow` and `storybook-text-spacing` sweeps check it: every story at 320 CSS px fails on horizontal overflow, and with the 1.4.12 spacing applied a box that clips more content than it holds fails. Zoom to 400% is reviewed in the stories.
+- Reflow and text spacing: the code wraps and never scrolls, so there is no sideways scrolling at 320 CSS pixels and nothing is clipped at 400% zoom or with wider text spacing (1.4.10 Reflow, 1.4.12 Text Spacing). The reflow sweep checks every story at 320 CSS pixels for horizontal overflow, and the text-spacing sweep checks that no box clips text once the wider spacing is applied. Zoom to 400% is checked by eye.
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships (A): the group is named by the Label (`code-block.test.tsx › group`).
+- 1.3.1 Info and Relationships (A): the group is named by the Label.
 - 1.4.10 Reflow (AA) and 1.4.12 Text Spacing (AA): the code wraps and there is no scroll region.
 - 2.1.1 Keyboard (A) and 2.4.3 Focus Order (A): the one Tab stop is Copy, after the Code in the page's order.
 - 1.4.3 Contrast (Minimum) (AA): the code is text on the page surface, a pair the theme's contrast check measures.
-- 2.5.3 Label in Name (A): Copy is a CopyButton, so its name is its visible text and the result never replaces it (`copy-button.test.tsx › the name stays Copy in every state`, `› children replace the label and become the name`). A label of your own should keep its visible words in the name.
-- 1.4.1 Use of Color (A), 3.3.1 Error Identification (A) and 4.1.3 Status Messages (AA): through CopyButton, which writes the result as words after the button (`code-block.test.tsx › copy › Copy shows the visible status after the button, and status={false} removes it`) and announces it.
+- 2.5.3 Label in Name (A): Copy is a CopyButton, so its name is its visible text and the result never replaces it. A label of your own should keep its visible words in the name.
+- 1.4.1 Use of Color (A), 3.3.1 Error Identification (A) and 4.1.3 Status Messages (AA): through CopyButton, which writes the result as words after the button and announces it.
 
 ## AT test record
 
@@ -107,8 +107,16 @@ Headless: CodeBlock ships no CSS. With `@kvirn-ui/theme/theme.css`:
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                        |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                        |
 
+### What to check
+
+- Press Tab: focus goes straight to Copy, skipping the label and the code.
+- Move to the block with a screen reader: it reads a labelled group with its label. Copy reads "Copy, button".
+- Press Enter, then Space on Copy: "Copied" is announced once each time, and focus stays on Copy.
+- Over plain HTTP or with clipboard access blocked, Copy announces the failure and selects the code.
+- At 320 CSS px or 400% zoom, the code wraps and nothing scrolls sideways.
+
 ## Known issues
 
 - **WebKit is not automated.** Keyboard rows run in Vitest browser mode on Chromium. WebKit is not covered by the automated tests, so check Safari with your own users and assistive technology.
 - **No syntax highlighting** (it would be a dependency, and colour must not carry meaning).
-- **The group gets its name after scripts run.** The Label names the group once the page's scripts run, not in the HTML the server sends. Before that the block is a plain `div`, with the label text just before the code in reading order. This is not an accessibility failure. It matters to your accessibility statement only if your site promises to work without JavaScript.
+- **The group gets its name after scripts run.** The Label names the group once the page's scripts run, not in the HTML the server sends. Before that the block is a plain `div`, with the label text just before the code in reading order. It matters to your accessibility statement only if your site promises to work without JavaScript.

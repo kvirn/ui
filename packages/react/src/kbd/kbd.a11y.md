@@ -52,7 +52,7 @@ Kbd renders no text, so it has no message keys.
 
 - **Name the key as printed on the keyboard, and say what it does in words.** `Tab` is the same in every locale, so it is not translated. The sentence around it says what the key is for, and the key is never the only instruction (1.3.3 Sensory Characteristics (A): "press the key in the box" is not enough).
 - **Language.** Key names that are the surrounding language's vernacular (Ctrl, Shift, Tab, Esc in Nordic text) need nothing. A key in another script (Arabic text, say) goes in your own `<span lang="en"><Kbd>Tab</Kbd></span>` (3.1.2 Language of Parts (AA)).
-- **Offer a way to remember a shortcut that doesn't need a keyboard layout.** A key name differs between keyboards: `Ctrl` is `Cmd` on macOS, and `Enter` is `Retur` on a Swedish Mac. Name what your users have.
+- **Name the keys your users have.** A key name differs between keyboards: `Ctrl` is `Cmd` on macOS, and `Enter` is `Retur` on a Swedish Mac. Name what your users have.
 - **A character shortcut needs a way to turn it off or remap it** (2.1.4 Character Key Shortcuts (A)). Kbd only documents a shortcut: it doesn't make one.
 
 ## Visual / modes
@@ -68,7 +68,7 @@ Headless: Kbd ships no CSS. With the default theme, `kv-kbd` (and a bare `kbd` i
 
 ## WCAG SCs covered
 
-- 1.3.1 Info and Relationships (A): keyboard input is marked up as `<kbd>` and not as styled text (`kbd.test.tsx › renders a kbd, no role or ARIA, and passes attributes and the ref through`).
+- 1.3.1 Info and Relationships (A): keyboard input is marked up as `<kbd>` and not as styled text.
 - 1.4.3 Contrast (Minimum) (AA): the key's text is dark enough on its background, checked automatically in the default theme.
 - 1.4.4 Resize Text (AA): the size follows the browser's text size.
 

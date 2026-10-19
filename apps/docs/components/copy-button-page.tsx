@@ -53,7 +53,7 @@ export function CopyButtonPage({
   return (
     <ComponentPage
       title="CopyButton"
-      lead="Its name never changes to “Copied”. The result shows as words next to the button, and a screen reader (software that reads the screen aloud) announces it. If the browser refuses, the text is selected so people can copy it by hand."
+      lead="A button that copies a short text, such as a case number, so people can paste it somewhere else. The result shows as words next to the button, and a screen reader (software that reads the screen aloud) announces it. If the browser refuses, the text is selected so people can copy it by hand."
       pattern="APG Button"
       whenToUse={
         <ul>
@@ -110,7 +110,13 @@ export function CopyButtonPage({
           <UseCase
             id="several-buttons"
             title="A copy button for each case in a list"
-            why="A caseworker or a resident has several cases on one page. A bare “Copy” repeated down the list tells a screen reader user nothing, so each button gets a name that says which number it copies."
+            why={
+              <>
+                A caseworker or a resident has several cases on one page. A bare “Copy” repeated
+                down the list tells a screen reader user nothing. Give each button a name of its own
+                with <code>aria-label</code>, which says which number it copies.
+              </>
+            }
             code={sources['several']}
             propsUsed={[
               { part: 'CopyButton', prop: 'text' },
@@ -118,7 +124,7 @@ export function CopyButtonPage({
             ]}
             note={
               <Note kind="reminder">
-                Keep the visible word “Copy” at the start of the name, so someone using voice
+                Keep the visible word “Copy” in the name, best at the start, so someone using voice
                 control can say what they see (2.5.3 Label in Name).
               </Note>
             }
@@ -128,7 +134,7 @@ export function CopyButtonPage({
           <UseCase
             id="your-own-result"
             title="The result in your own words and place"
-            why="Use the hook when the result must appear somewhere the built-in text doesn’t, or in words of your own. Pass the same words in messages, so what people see is what a screen reader announces."
+            why="Use the hook when you need your own button element, or the result in a place of your choice. Pass the same words in messages, so what people see is what a screen reader announces."
             code={sources['own-cue']}
             propsUsed={[
               {

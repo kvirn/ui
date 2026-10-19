@@ -52,8 +52,9 @@ const parts: ApiPart[] = [
     name: 'CodeBlock.Code',
     renders: (
       <>
-        <code>&lt;pre class=&quot;kv-code-block-code&quot;&gt;</code>. It wraps, never scrolls and
-        is never a Tab stop. Put a <code>&lt;code&gt;</code> inside it if you like.
+        <code>&lt;pre class=&quot;kv-code-block-code&quot;&gt;</code>. It has no{' '}
+        <code>tabindex</code>, so it is never a Tab stop. The default theme wraps its text instead
+        of scrolling. Put a <code>&lt;code&gt;</code> inside it if you like.
       </>
     ),
     attributes: codeBlockCodeAttributes,
@@ -81,7 +82,7 @@ export function CodeBlockPage({
   return (
     <ComponentPage
       title="CodeBlock"
-      lead="In the default theme the code wraps, so there is nothing to scroll sideways. Nothing is highlighted, so no colour carries meaning."
+      lead="A labelled sample of code, such as a command to run, with a button that copies it. The code wraps instead of scrolling sideways, and nothing is coloured to carry meaning."
       whenToUse={
         <ul>
           <li>
@@ -108,7 +109,7 @@ export function CodeBlockPage({
           <UseCase
             id="long-command"
             title="A long command that wraps"
-            why="A request or a path can be longer than the screen. The code wraps at any character instead of scrolling, so it fits at 320 CSS pixels and at 400% zoom. Copy still copies the whole text."
+            why="A request or a path can be longer than the screen. The code wraps at any character instead of scrolling sideways, so it fits a screen 320 CSS pixels wide (the width of a page zoomed to 400%). Copy still copies the whole text."
             code={sources['long-line']}
             note={
               <Note kind="tip">
@@ -122,7 +123,7 @@ export function CodeBlockPage({
           <UseCase
             id="named-copy-button"
             title="A copy button that says what it copies"
-            why="With several blocks on a page, “Copy” alone doesn’t say which one. Give Copy a label of your own as its content. The visible words are then its name, and you take them from your own translations."
+            why="Give Copy visible words of your own, such as “Copy command”, instead of “Copy”. What you write inside Copy is its visible text and also its name, so the two match. These words are not translated for you: take them from your own translations."
             code={sources['named-copy']}
             propsUsed={[{ part: 'CodeBlock.Copy', prop: 'children' }]}
           >
@@ -146,7 +147,7 @@ export function CodeBlockPage({
           <UseCase
             id="several-blocks"
             title="Several blocks, each saying what was copied"
-            why="With more than one block on a page, “Copied” alone doesn’t say which one. Each block gets its own label, and its own words for the button and the result. A screen reader user hears the result as it is announced."
+            why="With more than one block on a page, “Copy” and “Copied” alone don’t say which block they mean. Set the button’s words and both results for each block in messages. The words shown after the button are the same words a screen reader announces."
             code={sources['several-blocks']}
             propsUsed={[{ part: 'CodeBlock.Copy', prop: 'messages' }]}
           >

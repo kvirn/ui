@@ -1,3 +1,4 @@
+// kv-lang-ok-file: Arabic text for the Language of Parts (3.1.2) example
 import { defineExampleTexts } from '../../components/local-example-texts.ts'
 
 export const useKbdTexts = defineExampleTexts({
