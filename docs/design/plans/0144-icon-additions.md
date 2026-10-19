@@ -29,6 +29,15 @@ Fill the gaps in the icon set: the missing counterparts of existing icons, the i
 
 - 2026-10-19, maintainer asked for `bankid`, `digital-signage`, `visa`, `mastercard`, `payment-card`, `klarna`, `2fa`. `payment-card` is not drawn: `payment` is already a bank card (aliases `card`, `bank-card`), so `payment-card` becomes an alias of it (a second near-identical card would confuse). `2fa` → `two-factor` (aliases `2fa`, `mfa`, `two-step`). Marks of services (`bankid`, `visa`, `mastercard`, `klarna`) go in a new category `service-marks` and follow the social-mark rules (simplified originals, radius 2, 20px and up, beside the name, never the only text, brand-glyph letterform exception extended to this category). BankID, Visa, Mastercard and Klarna publish strict brand guidelines: these simplified marks are for lists and "we accept" rows, never in place of the official button or logo where the owner requires it (state this in LICENSING.md).
 
+- 2026-10-19, maintainer asked for icons for everyday topics: listen, easy-read (lättläst), sign language, other languages, car, clothes, travel, tools, mobiles, subscriptions, food, house, furniture "and ...". Dedupe: `listen` is an alias of `read-aloud`, `globe` of `language`, `easy-read` and `car` exist. Inventory (wave 1, 73 icons, batches F1–F6; the list is open-ended, more can follow):
+  - F1 language, hearing, subscriptions (`access-language`, `money`): `ear` (alias `hearing`), `headphones`, `volume`, `volume-off`, `microphone`, `microphone-off`, `hearing-loop`, `sign-language`, `multilingual`; `subscription`, `renew`, `membership`, `newsletter`, `cancel-subscription`.
+  - F2 car, tools (`mobility-environment`; tools → new `home-living`): `electric-car`, `ev-charging`, `parking`, `fuel`, `taxi`, `truck`, `motorcycle`, `driving-licence`; `hammer`, `screwdriver`, `drill`, `saw`, `toolbox`, `paint-roller`.
+  - F3 travel, clothes (`mobility-environment`; clothes → new `food-clothing`): `suitcase`, `plane`, `passport`, `hotel`, `tent`, `boarding-pass`; `shirt`, `trousers`, `jacket`, `shoe`, `hat`, `clothes-hanger`, `laundry`. No gendered garments (no dress).
+  - F4 devices, food (`communication`; food → `food-clothing`): `tablet`, `laptop`, `desktop`, `smartwatch`, `wifi`, `bluetooth`, `battery`; `restaurant`, `cooking`, `groceries`, `cart`, `bread`, `coffee`, `vegetarian`.
+  - F5 house (`home-living`): `door`, `window`, `roof`, `fence`, `mailbox`, `heating`, `plug`, `lightbulb`, `stairs`, `elevator`.
+  - F6 furniture (`home-living`): `sofa`, `chair`, `dining-table` (never `table`: that is the data table), `bed`, `wardrobe`, `lamp`, `shelf`, `bathtub`.
+  - `visa` (travel visa or residence permit) is open: the maintainer has not answered; the drawn `visa` stays the card mark.
+
 ## Open for the maintainer (none blocks; each stands as drawn unless reversed)
 
 - Larger lens kit part for `zoom-in`/`zoom-out` (ring r 7.5, handle (15.75,15.75)→(20.5,20.5)).
@@ -61,6 +70,7 @@ New category for C, D and E (not `rss`): `social` ("Social media", marks of netw
 ## Tasks
 
 - [x] A1 ✓ · A2 ✓ · B1 ✓ (all drawn and merged into catalog.json, 289 icons) · B2 ✓ · C ✓ · D ✓ · E ✓ (batch files `0144-batch-<X>.json`; A/B/C were split into A1/A2/B1/B2/C after the first agents were interrupted)
+- [x] F1 ✓ (14) · F2 ✓ (14) · F3 ✓ (13) · F4 ✓ (14) · F5 ✓ (10) · F6 ✓ (8): all 73 drawn and merged (371 icons, 21 categories), documented in `icon-library.md` ("Plan 0144 batch F additions", "Proposed parts", §8)
 - [x] Merge batch entries into `catalog.json` (lead); `mirror-in-rtl.json`: none mirror, no change
 - Scratch files `docs/design/plans/0144-batch-{A1,A2,B1,B2,C,D,E}.json`: delete before commit; the notes live in `icon-library.md`.
 - [x] component-engineer: `node scripts/generate.mjs` (via `vp run` if wired), i18n labels in 5 locales where an entry has a `label`, new count (264 → N) in `icons.stories.tsx:137` and in `icon-library.md`/`icon-catalog.md`, `icon-wanted.md` "Still out" and "Cut or merged" lines, `LICENSING.md` brand note, gallery/docs pages, category `social`
@@ -74,6 +84,15 @@ New category for C, D and E (not `rss`): `social` ("Social media", marks of netw
 - Decision: the shortened landscape screen on a pole (`digital-signage`) is a proposed part, proposed, maintainer to confirm.
 - Decision: the Visa V arms at slope 2:1 (`visa`) is a proposed part, proposed, maintainer to confirm.
 - Decision: `mastercard` is unboxed, because a plate would break the 2-unit gap; `visa` and `klarna` reuse the plate of `payment`; `bankid` is separated from `bold` only by the plate. Count 298 in 19 categories; the 2026-10-19 category `service-marks` and its LICENSING.md section are documented; `payment-card` is an alias of `payment`.
+
+- Decision (batch F, 2026-10-19): labels stay null for all 73 icons (decision 6: the button or text carries the name); no `icons.*` keys.
+- Decision (batch F): `bluetooth` is in `service-marks`, not `communication`, because it is the Bluetooth SIG's mark (20px and up, beside the word; see `LICENSING.md`). `sign-language` and `bluetooth` join the §8 sensitivity list.
+- Decision (batch F): `cart` is not mirrored (an object; the maintainer may prefer a vehicle that faces the reading direction).
+- Decision (batch F): the aliases `pants` (of `trousers`) and `computer` (of `desktop`) are dropped to keep each name unambiguous.
+- Decision (batch F): `volume-off` uses a cross where the arcs were, like `filter-off`; the kit slash crossed the cone and both arcs and left fragments.
+- Decision (batch F): `parking` is a car under a roof, not a letter P, and may read as a garage: always with words.
+- Decision (batch F): sixteen new kit parts (heat waves, roof band, wing 1:2, tent 2:1, hanger 1:2, lamp shade 2:1, pump post, tool on the anti-diagonal, saw teeth, leaf quarter arcs, arc fan, loop badge, pill capsule, envelope pocket slope, volume-off cross, shelf with 5 strokes) are proposed, maintainer to confirm.
+- Scratch files `0144-batch-F1…F6.json` are deleted; their notes live in `icon-library.md`.
 
 ## Risks
 

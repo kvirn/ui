@@ -1,6 +1,6 @@
 # Icon catalogue
 
-Every icon of `@kvirn-ui/icons`: **298 icons in 19 categories, all drawn, none planned**. Priority (1 to 3) ordered the drawing until an icon was drawn, and is removed from a drawn icon, so the Priority column is `–` throughout.
+Every icon of `@kvirn-ui/icons`: **371 icons in 21 categories, all drawn, none planned**. Priority (1 to 3) ordered the drawing until an icon was drawn, and is removed from a drawn icon, so the Priority column is `–` throughout.
 
 ## How the catalogue is used
 
@@ -21,19 +21,21 @@ Every icon of `@kvirn-ui/icons`: **298 icons in 19 categories, all drawn, none p
 | 5   | Text editing                   | `text-editing`         | 27      | 0       | 27      |
 | 6   | Tables and data                | `tables-data`          | 13      | 0       | 13      |
 | 7   | Documents and files            | `documents`            | 17      | 0       | 17      |
-| 8   | Communication                  | `communication`        | 21      | 0       | 21      |
+| 8   | Communication                  | `communication`        | 27      | 0       | 27      |
 | 9   | People and identity            | `people`               | 21      | 0       | 21      |
 | 10  | Time and date                  | `time`                 | 10      | 0       | 10      |
 | 11  | Maps and places                | `maps-places`          | 23      | 0       | 23      |
-| 12  | Money and payments             | `money`                | 8       | 0       | 8       |
+| 12  | Money and payments             | `money`                | 13      | 0       | 13      |
 | 13  | Care, health and education     | `care-education`       | 16      | 0       | 16      |
-| 14  | Mobility and environment       | `mobility-environment` | 25      | 0       | 25      |
+| 14  | Mobility and environment       | `mobility-environment` | 39      | 0       | 39      |
 | 15  | Safety, law and civic life     | `safety-civic`         | 10      | 0       | 10      |
 | 16  | Leisure, culture and community | `leisure-culture`      | 10      | 0       | 10      |
-| 17  | Language and access            | `access-language`      | 14      | 0       | 14      |
+| 17  | Language and access            | `access-language`      | 23      | 0       | 23      |
 | 18  | Social media                   | `social`               | 8       | 0       | 8       |
-| 19  | Service marks                  | `service-marks`        | 4       | 0       | 4       |
-|     | **All**                        |                        | **298** | **0**   | **298** |
+| 19  | Service marks                  | `service-marks`        | 5       | 0       | 5       |
+| 20  | Home and living                | `home-living`          | 24      | 0       | 24      |
+| 21  | Food and clothing              | `food-clothing`        | 14      | 0       | 14      |
+|     | **All**                        |                        | **371** | **0**   | **371** |
 
 ## Direction and movement
 
@@ -218,12 +220,15 @@ Email, phone, chat, notifications, news and sending a message.
 
 | Name               | Aliases                                                               | Status | Priority | RTL | Label                                      | Meaning                                                                                                                         |
 | ------------------ | --------------------------------------------------------------------- | ------ | -------- | --- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| `battery`          | `charge-level`                                                        | drawn  | –        | no  | none                                       | A battery or its charge level: a horizontal battery with a terminal and two level bars.                                         |
 | `chat`             | `conversation`, `comment`, `feedback`, `commenting`                   | drawn  | –        | no  | `icons.chat`: Conversation                 | A conversation or feedback: a speech bubble.                                                                                    |
 | `chat-off`         | `comment-off`, `chat-unavailable`                                     | drawn  | –        | no  | none                                       | Chat is off or unavailable: the speech bubble with the kit slash.                                                               |
+| `desktop`          | `monitor`, `pc`                                                       | drawn  | –        | no  | none                                       | A desktop computer or monitor: a landscape screen on a short two-legged stand with a foot.                                      |
 | `digital-signage`  | `information-screen`, `display-board`, `kiosk-display`, `info-screen` | drawn  | –        | no  | none                                       | A public information screen in a hall, at a stop or in a library: a landscape screen with two text lines on a pole with a foot. |
 | `direct-message`   | `dm`, `private-message`                                               | drawn  | –        | no  | none                                       | A private message to one person: a speech bubble with a single figure.                                                          |
 | `hang-up`          | `call-end`, `end-call`                                                | drawn  | –        | no  | none                                       | End a call: the telephone handset laid down, ear and mouth pieces turned down.                                                  |
 | `hashtag`          | `topic`, `hash`                                                       | drawn  | –        | no  | none                                       | A hashtag topic: two vertical and two horizontal strokes crossing.                                                              |
+| `laptop`           | `laptop-computer`                                                     | drawn  | –        | no  | none                                       | A laptop computer: an open screen above a flat keyboard base.                                                                   |
 | `mail`             | `email`, `envelope`, `message`, `inbox`, `accept-place`, `offer`      | drawn  | –        | no  | `icons.mail`: Email                        | Email or a message: an envelope.                                                                                                |
 | `mail-add`         | `subscribe`, `email-add`                                              | drawn  | –        | no  | none                                       | Subscribe by email: the envelope with the badge plus.                                                                           |
 | `mail-off`         | `email-off`, `mute-email`                                             | drawn  | –        | no  | none                                       | Email is off or unavailable: the envelope with the kit slash.                                                                   |
@@ -236,9 +241,12 @@ Email, phone, chat, notifications, news and sending a message.
 | `phone`            | `call`, `telephone`                                                   | drawn  | –        | no  | `icons.phone`: Telephone                   | Call by phone: a telephone handset.                                                                                             |
 | `rss`              | `feed`                                                                | drawn  | –        | no  | `icons.rss`: Feed                          | A web feed (RSS or Atom) to subscribe to: a dot with two quarter arcs spreading from it.                                        |
 | `send`             | `paper-plane`, `send-message`                                         | drawn  | –        | yes | none                                       | Send: a paper plane.                                                                                                            |
+| `smartwatch`       | `wearable`                                                            | drawn  | –        | no  | none                                       | A smartwatch or other wearable device: a square watch face with straps and a crown.                                             |
+| `tablet`           | `tablet-computer`                                                     | drawn  | –        | no  | none                                       | A tablet computer: a wide upright screen with a home dot at the foot.                                                           |
 | `tag`              | `tagging`, `label`, `mention`                                         | drawn  | –        | no  | none                                       | A tag or label attached to something: a tag with a hole.                                                                        |
 | `video-call`       | `video-meeting`, `video-visit`                                        | drawn  | –        | no  | `icons.videoCall`: Video call              | A video call or a remote appointment: a video camera.                                                                           |
 | `video-call-off`   | `camera-off`, `video-off`                                             | drawn  | –        | no  | none                                       | Video is off: the video camera with the kit slash.                                                                              |
+| `wifi`             | `wi-fi`, `wlan`, `wireless`                                           | drawn  | –        | no  | none                                       | A wireless network (Wi-Fi): a dot with three arcs spreading upwards from it.                                                    |
 
 ## People and identity
 
@@ -319,16 +327,21 @@ Maps, places, routes, map navigation and public buildings.
 
 Paying, invoices, receipts and benefits paid out.
 
-| Name         | Aliases                                    | Status | Priority | RTL | Label                          | Meaning                                                                                 |
-| ------------ | ------------------------------------------ | ------ | -------- | --- | ------------------------------ | --------------------------------------------------------------------------------------- |
-| `benefit`    | `allowance`, `grant`, `support-payment`    | drawn  | –        | no  | `icons.benefit`: Benefit       | Money paid out to you: an open hand under a coin.                                       |
-| `calculator` | `fee-calculator`                           | drawn  | –        | no  | `icons.calculator`: Calculator | Work out a fee, merit value or repayment: dot grid under a screen bar, no numeral keys. |
-| `cash`       | `money`, `banknote`                        | drawn  | –        | no  | `icons.cash`: Cash             | Cash: a banknote with a ring in the middle; no currency symbol or numeral.              |
-| `invoice`    | `bill`                                     | drawn  | –        | no  | `icons.invoice`: Invoice       | A bill to pay: a page with text lines and a total rule.                                 |
-| `payment`    | `pay`, `bank-card`, `card`, `payment-card` | drawn  | –        | no  | `icons.payment`: Payment       | Pay: a bank card with a stripe.                                                         |
-| `receipt`    | `proof-of-payment`                         | drawn  | –        | no  | `icons.receipt`: Receipt       | Proof of payment: a slip with a zigzag bottom edge.                                     |
-| `refund`     | `repayment`                                | drawn  | –        | no  | `icons.refund`: Refund         | Money paid back, such as a tax refund: a plain coin with a U-turn arrow.                |
-| `wallet`     | –                                          | drawn  | –        | no  | `icons.wallet`: Wallet         | A wallet: a folded billfold with a clasp; not a card.                                   |
+| Name                  | Aliases                                    | Status | Priority | RTL | Label                          | Meaning                                                                                                               |
+| --------------------- | ------------------------------------------ | ------ | -------- | --- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `benefit`             | `allowance`, `grant`, `support-payment`    | drawn  | –        | no  | `icons.benefit`: Benefit       | Money paid out to you: an open hand under a coin.                                                                     |
+| `calculator`          | `fee-calculator`                           | drawn  | –        | no  | `icons.calculator`: Calculator | Work out a fee, merit value or repayment: dot grid under a screen bar, no numeral keys.                               |
+| `cancel-subscription` | `end-subscription`                         | drawn  | –        | no  | none                           | Cancel a subscription or recurring payment: the card of subscription with the badge × in place of the circular arrow. |
+| `cash`                | `money`, `banknote`                        | drawn  | –        | no  | `icons.cash`: Cash             | Cash: a banknote with a ring in the middle; no currency symbol or numeral.                                            |
+| `invoice`             | `bill`                                     | drawn  | –        | no  | `icons.invoice`: Invoice       | A bill to pay: a page with text lines and a total rule.                                                               |
+| `membership`          | `member-card`, `member`                    | drawn  | –        | no  | none                           | Membership: a member card with a round emblem and two lines. id-card has a portrait instead.                          |
+| `newsletter`          | –                                          | drawn  | –        | no  | none                           | Newsletter: a letter with a text line rising out of an open envelope. mail is the closed envelope.                    |
+| `payment`             | `pay`, `bank-card`, `card`, `payment-card` | drawn  | –        | no  | `icons.payment`: Payment       | Pay: a bank card with a stripe.                                                                                       |
+| `receipt`             | `proof-of-payment`                         | drawn  | –        | no  | `icons.receipt`: Receipt       | Proof of payment: a slip with a zigzag bottom edge.                                                                   |
+| `refund`              | `repayment`                                | drawn  | –        | no  | `icons.refund`: Refund         | Money paid back, such as a tax refund: a plain coin with a U-turn arrow.                                              |
+| `renew`               | `renewal`, `extend`                        | drawn  | –        | no  | none                           | Renew a permit, licence, loan or membership: a document with a small circular arrow in the badge place.               |
+| `subscription`        | `recurring-payment`                        | drawn  | –        | no  | none                           | A subscription or recurring payment: a bank card with a small circular arrow in the badge place.                      |
+| `wallet`              | –                                          | drawn  | –        | no  | `icons.wallet`: Wallet         | A wallet: a folded billfold with a clasp; not a card.                                                                 |
 
 ## Care, health and education
 
@@ -360,27 +373,41 @@ Transport, streets, waste, water, energy and nature.
 | Name              | Aliases                                                               | Status | Priority | RTL | Label                                   | Meaning                                                                                                      |
 | ----------------- | --------------------------------------------------------------------- | ------ | -------- | --- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | `bike`            | `bicycle`, `cycling`                                                  | drawn  | –        | no  | `icons.bike`: Bicycle                   | A bicycle seen from the side.                                                                                |
+| `boarding-pass`   | `boarding-card`, `flight-ticket`                                      | drawn  | –        | no  | none                                    | A boarding pass or flight ticket: the notched ticket with a small plane.                                     |
 | `bulky-waste`     | `large-waste`                                                         | drawn  | –        | no  | `icons.bulkyWaste`: Bulky waste         | Large items such as furniture: a sofa.                                                                       |
 | `bus`             | `public-transport`, `coach`                                           | drawn  | –        | no  | `icons.bus`: Bus                        | A bus seen from the front.                                                                                   |
 | `car`             | `vehicle`                                                             | drawn  | –        | no  | `icons.car`: Car                        | A car seen from the front.                                                                                   |
 | `detour`          | `diversion`, `reroute`                                                | drawn  | –        | no  | `icons.detour`: Detour                  | Service or street diverted: a line broken in the middle, an arch over the break and an arrowhead at the end. |
+| `driving-licence` | `driving-license`, `driver-licence`                                   | drawn  | –        | no  | none                                    | A driving licence: a card with a steering wheel; distinct from id-card (portrait and lines).                 |
+| `electric-car`    | `ev`, `electric-vehicle`                                              | drawn  | –        | no  | none                                    | An electric car: the car seen from the front with a lightning bolt across its body.                          |
 | `energy`          | `electricity`, `power`                                                | drawn  | –        | no  | `icons.energy`: Energy                  | Electricity and energy: a lightning bolt.                                                                    |
+| `ev-charging`     | `charging-station`, `charge-point`                                    | drawn  | –        | no  | none                                    | A place to charge an electric car: a charging post with a lightning bolt and a cable hanging from its side.  |
 | `ferry`           | `boat`                                                                | drawn  | –        | no  | `icons.ferry`: Ferry                    | A ferry on the water.                                                                                        |
 | `food-waste`      | `bio-waste`, `organic-waste`                                          | drawn  | –        | no  | `icons.foodWaste`: Food waste           | Kitchen and bio waste: an apple core with a leaf-curled stem.                                                |
+| `fuel`            | `petrol-station`, `gas-station`, `filling-station`                    | drawn  | –        | no  | none                                    | Fuel or a filling station: a pump with a display window and a hose hanging from its side.                    |
+| `hotel`           | `accommodation`, `lodging`                                            | drawn  | –        | no  | none                                    | A place to stay overnight: a bed under a wide roof.                                                          |
 | `live-departures` | `departures`, `timetable-live`                                        | drawn  | –        | no  | `icons.liveDepartures`: Live departures | Next departures in real time: list rows with a signal arc.                                                   |
 | `lost-property`   | `lost-and-found`, `found-items`                                       | drawn  | –        | no  | `icons.lostProperty`: Lost property     | Lost and found: a bag or umbrella with a magnifier; no suitcase.                                             |
+| `motorcycle`      | `motorbike`, `moped`                                                  | drawn  | –        | no  | none                                    | A motorcycle seen from the side: two wheels, a seat and tank line running into the front fork.               |
 | `noise`           | `noise-complaint`                                                     | drawn  | –        | no  | `icons.noise`: Noise                    | Noise, or a noise complaint: five vertical bars of uneven height.                                            |
+| `parking`         | `car-park`, `parking-garage`, `carport`                               | drawn  | –        | no  | none                                    | Parking: the car seen from the front under a wide roof. No letter P.                                         |
+| `passport`        | `travel-document`                                                     | drawn  | –        | no  | none                                    | A passport or travel document: a booklet with a plain globe mark, no national emblem.                        |
+| `plane`           | `flight`, `airplane`, `aeroplane`                                     | drawn  | –        | no  | none                                    | Air travel, a flight or an airport: an airliner seen from above, nose up.                                    |
 | `recycle`         | `recycling`, `sorting`                                                | drawn  | –        | no  | `icons.recycle`: Recycling              | Recycling: three arrows chasing each other around a triangle.                                                |
 | `repair`          | `fault-report`, `maintenance`, `wrench`                               | drawn  | –        | no  | `icons.repair`: Repair                  | Repair, or report a fault: a wrench.                                                                         |
 | `roadworks`       | `traffic-cone`, `construction`                                        | drawn  | –        | no  | `icons.roadworks`: Roadworks            | Roadworks: a traffic cone.                                                                                   |
 | `snow`            | `snow-clearing`, `winter`                                             | drawn  | –        | no  | `icons.snow`: Snow                      | Snow and snow clearing: a six-armed snowflake.                                                               |
 | `street-light`    | `lighting`                                                            | drawn  | –        | no  | `icons.streetLight`: Street lighting    | Street lighting: a lamp post with an arm, a hood and three light rays.                                       |
 | `subway`          | `metro`, `underground`                                                | drawn  | –        | no  | `icons.subway`: Metro                   | An underground railway: a train in a tunnel mouth; no letter signs.                                          |
+| `suitcase`        | `luggage`, `baggage`                                                  | drawn  | –        | no  | none                                    | Travel or luggage: an upright rolling suitcase with a pull handle and wheels.                                |
+| `taxi`            | `cab`                                                                 | drawn  | –        | no  | none                                    | A taxi: the car seen from the front with a sign on its roof; no text on the sign.                            |
+| `tent`            | `camping`, `campsite`                                                 | drawn  | –        | no  | none                                    | Camping or a campsite: a ridge tent with crossed poles and an open door.                                     |
 | `ticket`          | `travel-card`, `season-pass`, `pass`                                  | drawn  | –        | no  | `icons.ticket`: Ticket                  | A ticket or travel pass: a notched ticket, no price glyph.                                                   |
 | `train`           | `rail`                                                                | drawn  | –        | no  | `icons.train`: Train                    | A train seen from the front.                                                                                 |
 | `tram`            | `light-rail`, `streetcar`                                             | drawn  | –        | no  | `icons.tram`: Tram                      | A tram: a tram seen from the front with its overhead wire.                                                   |
 | `transit-stop`    | `bus-stop`, `station`                                                 | drawn  | –        | no  | `icons.transitStop`: Stop               | A stop or station: a sign plate on a pole with a timetable case; no shelter, number or letter.               |
 | `tree`            | `park`, `nature`                                                      | drawn  | –        | no  | `icons.tree`: Parks and nature          | Parks and nature: a tree.                                                                                    |
+| `truck`           | `lorry`, `goods-vehicle`                                              | drawn  | –        | no  | none                                    | A truck: a tall cargo box behind a lower cab, seen from the side.                                            |
 | `walk`            | `walking`, `pedestrian`                                               | drawn  | –        | no  | `icons.walk`: On foot                   | On foot: a walking figure.                                                                                   |
 | `waste`           | `rubbish`, `garbage`, `waste-collection`, `litter`, `overflowing-bin` | drawn  | –        | no  | `icons.waste`: Waste                    | Waste collection: a wheeled bin with a lid.                                                                  |
 | `water`           | `tap`, `water-supply`                                                 | drawn  | –        | no  | `icons.water`: Water                    | Water and the water supply: a tap with a drop.                                                               |
@@ -423,22 +450,31 @@ Clubs, bookings, sports places, trails and culture that a municipality runs or f
 
 Language, accessibility, display settings, reading aloud and captions.
 
-| Name                  | Aliases                              | Status | Priority | RTL | Label                                  | Meaning                                                                                                                                            |
-| --------------------- | ------------------------------------ | ------ | -------- | --- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `accessibility`       | `universal-access`, `a11y`           | drawn  | –        | no  | `icons.accessibility`: Accessibility   | Accessibility: an open-armed figure inside a circle; our own geometry, not the UN logo and never a wheelchair.                                     |
-| `captions`            | `subtitles`                          | drawn  | –        | no  | `icons.captions`: Captions             | Captions: a frame with two short text lines at its foot.                                                                                           |
-| `contrast`            | `high-contrast`                      | drawn  | –        | no  | none                                   | Contrast and display settings: a circle with its right half drawn as diagonal stripes, outline only, no fill.                                      |
-| `dark-mode`           | `moon`, `night-mode`                 | drawn  | –        | no  | none                                   | Dark mode: a half-moon disc, a circle with an inner arc, not a crescent.                                                                           |
-| `easy-read`           | `easy-to-read`                       | drawn  | –        | yes | `icons.easyRead`: Easy to read         | Easy-to-read version: a page with two short start-aligned text lines and a picture peak at its foot; not a national mark.                          |
-| `easy-read-thumbs-up` | –                                    | drawn  | –        | no  | `icons.easyReadThumbsUp`: Easy to read | Easy-to-read version: a raised thumb in front of the open edge of a page; not a national mark.                                                     |
-| `interpreter`         | –                                    | drawn  | –        | no  | `icons.interpreter`: Interpreter       | Book a spoken-language interpreter: two speech bubbles with a two-way arrow, no glyphs.                                                            |
-| `keyboard`            | `keyboard-shortcuts`                 | drawn  | –        | no  | `icons.keyboard`: Keyboard             | A keyboard and its shortcuts: a keyboard seen from above.                                                                                          |
-| `language`            | `globe`, `locale`                    | drawn  | –        | no  | `icons.language`: Language             | Change language: a globe with a meridian and two latitude lines, never a flag.                                                                     |
-| `light-mode`          | `sun`, `day-mode`                    | drawn  | –        | no  | none                                   | Light mode: a sun.                                                                                                                                 |
-| `read-aloud`          | `listen`, `speech`, `text-to-speech` | drawn  | –        | no  | none                                   | Listen to this page: text lines with sound arcs.                                                                                                   |
-| `text-size`           | `font-size`                          | drawn  | –        | no  | none                                   | Change the text size: a small and a large outlined box of the same proportion.                                                                     |
-| `translate`           | `translator`, `translation`          | drawn  | –        | yes | none                                   | Translate text from one language to another: two overlapping panels with a one-way arrow beneath, from the back panel to the front one; no glyphs. |
-| `wheelchair`          | `wheelchair-access`, `mobility-aid`  | drawn  | –        | no  | `icons.wheelchair`: Wheelchair         | A wheelchair as an object, not a person in it: a big wheel, a back with a push handle, a seat, a footrest and a small front wheel.                 |
+| Name                  | Aliases                                | Status | Priority | RTL | Label                                  | Meaning                                                                                                                                                                       |
+| --------------------- | -------------------------------------- | ------ | -------- | --- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `accessibility`       | `universal-access`, `a11y`             | drawn  | –        | no  | `icons.accessibility`: Accessibility   | Accessibility: an open-armed figure inside a circle; our own geometry, not the UN logo and never a wheelchair.                                                                |
+| `captions`            | `subtitles`                            | drawn  | –        | no  | `icons.captions`: Captions             | Captions: a frame with two short text lines at its foot.                                                                                                                      |
+| `contrast`            | `high-contrast`                        | drawn  | –        | no  | none                                   | Contrast and display settings: a circle with its right half drawn as diagonal stripes, outline only, no fill.                                                                 |
+| `dark-mode`           | `moon`, `night-mode`                   | drawn  | –        | no  | none                                   | Dark mode: a half-moon disc, a circle with an inner arc, not a crescent.                                                                                                      |
+| `ear`                 | `hearing`                              | drawn  | –        | no  | none                                   | Hearing: an ear in profile with the inner arc of the helix. No slash, no waves.                                                                                               |
+| `easy-read`           | `easy-to-read`                         | drawn  | –        | yes | `icons.easyRead`: Easy to read         | Easy-to-read version: a page with two short start-aligned text lines and a picture peak at its foot; not a national mark.                                                     |
+| `easy-read-thumbs-up` | –                                      | drawn  | –        | no  | `icons.easyReadThumbsUp`: Easy to read | Easy-to-read version: a raised thumb in front of the open edge of a page; not a national mark.                                                                                |
+| `headphones`          | `headset`                              | drawn  | –        | no  | none                                   | Listen with headphones (an audio guide or audio description): a headband over two ear cups.                                                                                   |
+| `hearing-loop`        | `induction-loop`, `telecoil`, `t-loop` | drawn  | –        | no  | none                                   | A hearing (induction) loop is available: an ear in a rounded square, the public sign without its letter T.                                                                    |
+| `interpreter`         | –                                      | drawn  | –        | no  | `icons.interpreter`: Interpreter       | Book a spoken-language interpreter: two speech bubbles with a two-way arrow, no glyphs.                                                                                       |
+| `keyboard`            | `keyboard-shortcuts`                   | drawn  | –        | no  | `icons.keyboard`: Keyboard             | A keyboard and its shortcuts: a keyboard seen from above.                                                                                                                     |
+| `language`            | `globe`, `locale`                      | drawn  | –        | no  | `icons.language`: Language             | Change language: a globe with a meridian and two latitude lines, never a flag.                                                                                                |
+| `light-mode`          | `sun`, `day-mode`                      | drawn  | –        | no  | none                                   | Light mode: a sun.                                                                                                                                                            |
+| `microphone`          | `mic`                                  | drawn  | –        | no  | none                                   | Speak or record: a microphone in a holder on a stand.                                                                                                                         |
+| `microphone-off`      | `mic-off`                              | drawn  | –        | no  | none                                   | Microphone off: the microphone with the kit slash.                                                                                                                            |
+| `multilingual`        | `languages`, `many-languages`          | drawn  | –        | no  | none                                   | Available in several languages: two overlapping speech bubbles, each with a different mark (a line and a dot) and no letters. For changing language use language (the globe). |
+| `read-aloud`          | `listen`, `speech`, `text-to-speech`   | drawn  | –        | no  | none                                   | Listen to this page: text lines with sound arcs.                                                                                                                              |
+| `sign-language`       | (none)                                 | drawn  | –        | no  | none                                   | Sign language: an open hand, fingers together, thumb out. It isn't a sign from any one sign language.                                                                         |
+| `text-size`           | `font-size`                            | drawn  | –        | no  | none                                   | Change the text size: a small and a large outlined box of the same proportion.                                                                                                |
+| `translate`           | `translator`, `translation`            | drawn  | –        | yes | none                                   | Translate text from one language to another: two overlapping panels with a one-way arrow beneath, from the back panel to the front one; no glyphs.                            |
+| `volume`              | `sound`, `sound-on`                    | drawn  | –        | no  | none                                   | Sound on or volume: a speaker with two sound arcs.                                                                                                                            |
+| `volume-off`          | `mute`, `sound-off`                    | drawn  | –        | no  | none                                   | Sound off (muted): the speaker of volume with a cross where the sound arcs were.                                                                                              |
+| `wheelchair`          | `wheelchair-access`, `mobility-aid`    | drawn  | –        | no  | `icons.wheelchair`: Wheelchair         | A wheelchair as an object, not a person in it: a big wheel, a back with a push handle, a seat, a footrest and a small front wheel.                                            |
 
 ## Social media
 
@@ -457,14 +493,67 @@ Marks of social networks, always shown with the network's name, never as the onl
 
 ## Service marks
 
-Marks of payment and e-identification services, always shown with the service's name, never as the only text. Use them at 20px and up, always beside the service's name. Simplified originals, not the official logos: they never replace an owner's required logo or button.
+Marks of payment, e-identification and device-standard services, always shown with the service's name, never as the only text. Use them at 20px and up, always beside the service's name. Simplified originals, not the official logos: they never replace an owner's required logo or button.
 
 | Name         | Aliases                          | Status | Priority | RTL | Label | Meaning                                                                                                                                                                                                                                                                                                                         |
 | ------------ | -------------------------------- | ------ | -------- | --- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `bankid`     | –                                | drawn  | –        | no  | none  | The mark of the BankID e-identification service (Sweden, Norway): a simplified upright capital B inside a rounded square, in one stroke. A trademark of its owner and not the official logo; always shown with the service's name, never as the only text, and never in place of the official logo where the owner requires it. |
+| `bluetooth`  | –                                | drawn  | –        | no  | none  | Bluetooth, the short-range wireless link between devices: a simplified original outline of the Bluetooth rune, the mark of the Bluetooth SIG.                                                                                                                                                                                   |
 | `klarna`     | `klarna-logo`                    | drawn  | –        | no  | none  | The mark of the Klarna payment service: a simplified K with a curved upper arm and a full stop on a card plate, in one stroke. A trademark of its owner and not the official logo; always shown with the service's name, never as the only text, and never in place of the official logo where the owner requires it.           |
 | `mastercard` | `mastercard-logo`, `master-card` | drawn  | –        | no  | none  | The mark of the Mastercard card network: two overlapping circles side by side, in one stroke. A trademark of its owner and not the official logo; always shown with the service's name, never as the only text, and never in place of the official logo where the owner requires it.                                            |
 | `visa`       | `visa-card`, `visa-logo`         | drawn  | –        | no  | none  | The mark of the Visa card network: a simplified V with a short lead-in stroke on a card plate, in one stroke. A trademark of its owner and not the official logo; always shown with the service's name, never as the only text, and never in place of the official logo where the owner requires it.                            |
+
+## Home and living
+
+The home, its rooms, furniture and tools: what a resident repairs, renovates or applies for.
+
+| Name           | Aliases                    | Status | Priority | RTL | Label | Meaning                                                                                                                                        |
+| -------------- | -------------------------- | ------ | -------- | --- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bathtub`      | `bath`                     | drawn  | –        | no  | none  | A bathtub, or the bathroom: a tub on feet with a tap, seen from the side.                                                                      |
+| `bed`          | `bedroom`                  | drawn  | –        | no  | none  | A bed: a headboard, a mattress with a pillow and a footboard, seen from the side.                                                              |
+| `chair`        | –                          | drawn  | –        | no  | none  | A chair: a single seat with a backrest and four legs, seen from the front.                                                                     |
+| `dining-table` | `kitchen-table`            | drawn  | –        | no  | none  | A dining or kitchen table, the piece of furniture: a tabletop on two legs, seen from the side. Not a data table (that is `table`).             |
+| `door`         | `entrance`                 | drawn  | –        | no  | none  | A door or entrance: a closed door leaf with a handle, standing on the floor line.                                                              |
+| `drill`        | `power-drill`              | drawn  | –        | no  | none  | A power drill seen from the side: body, chuck and a bit pointing right, a grip below.                                                          |
+| `elevator`     | `lift`                     | drawn  | –        | no  | none  | An elevator or lift: a cabin with an up and a down arrow, as on a lift's call panel.                                                           |
+| `fence`        | –                          | drawn  | –        | no  | none  | A fence around a plot or garden: three pointed pickets joined by two rails.                                                                    |
+| `hammer`       | –                          | drawn  | –        | no  | none  | A hammer: a handle at 45° with a head across its end.                                                                                          |
+| `heating`      | `radiator`                 | drawn  | –        | no  | none  | Heating in a home: a radiator with heat rising from it.                                                                                        |
+| `lamp`         | `table-lamp`, `floor-lamp` | drawn  | –        | no  | none  | A table or floor lamp: a lampshade on a stand with a foot. For the light bulb itself use `lightbulb`, for outdoor lighting `street-light`.     |
+| `lightbulb`    | `light-bulb`               | drawn  | –        | no  | none  | A light bulb: lighting in a home or building.                                                                                                  |
+| `mailbox`      | `letterbox`                | drawn  | –        | no  | none  | A mailbox where post is delivered: a box with an arched front and a raised flag on a post.                                                     |
+| `paint-roller` | `painting`, `decorating`   | drawn  | –        | no  | none  | Painting and decorating: a paint roller with its frame and handle.                                                                             |
+| `plug`         | `power-plug`               | drawn  | –        | no  | none  | A mains plug for an electrical appliance: two pins, a rounded body and a cable.                                                                |
+| `roof`         | `roofing`                  | drawn  | –        | no  | none  | The roof of a building: a thick pitched roof over the top of two walls.                                                                        |
+| `saw`          | `hand-saw`                 | drawn  | –        | no  | none  | A hand saw at 45°: a handle and a blade with three large teeth.                                                                                |
+| `screwdriver`  | –                          | drawn  | –        | no  | none  | A screwdriver: a round-ended handle with a long thin shaft at 45°.                                                                             |
+| `shelf`        | `bookcase`, `bookshelf`    | drawn  | –        | no  | none  | A bookcase or shelf: a tall case with one shelf and books standing on both levels. For a single book use `book`, for stored records `archive`. |
+| `sofa`         | `couch`, `settee`          | drawn  | –        | no  | none  | A sofa in the living room: a two-seat couch with a backrest, armrests and short legs, seen from the front.                                     |
+| `stairs`       | `staircase`                | drawn  | –        | no  | none  | Stairs between floors: a flight of three steps seen from the side.                                                                             |
+| `toolbox`      | `tool-kit`, `diy`          | drawn  | –        | no  | none  | Tools, or home repair as a topic: a box with a wide handle and a latch on its lid line; distinct from job (briefcase).                         |
+| `wardrobe`     | `closet`, `cupboard`       | drawn  | –        | no  | none  | A wardrobe or cupboard: a tall cabinet with two doors, two handles and feet.                                                                   |
+| `window`       | –                          | drawn  | –        | no  | none  | A window in a home: a frame with a cross of glazing bars, resting on a sill.                                                                   |
+
+## Food and clothing
+
+What people eat, wear and buy for daily life: meals, groceries and clothes.
+
+| Name             | Aliases                              | Status | Priority | RTL | Label | Meaning                                                                                    |
+| ---------------- | ------------------------------------ | ------ | -------- | --- | ----- | ------------------------------------------------------------------------------------------ |
+| `bread`          | `bakery`, `loaf`                     | drawn  | –        | no  | none  | Bread or a bakery: a domed loaf with two scored cuts.                                      |
+| `cart`           | `shopping-cart`, `basket`, `trolley` | drawn  | –        | no  | none  | A shopping cart, or the basket of an order: a cart with a handle, a basket and two wheels. |
+| `clothes-hanger` | `hanger`, `cloakroom`                | drawn  | –        | no  | none  | A clothes hanger, or a cloakroom: a hanger with a hook.                                    |
+| `coffee`         | `cafe`, `hot-drink`                  | drawn  | –        | no  | none  | Coffee, a hot drink or a cafe: a cup with a handle and two wisps of steam.                 |
+| `cooking`        | `kitchen`, `cook`                    | drawn  | –        | no  | none  | Cooking or a kitchen: a pot with a domed lid and two side handles.                         |
+| `groceries`      | `grocery`, `food-shopping`           | drawn  | –        | no  | none  | Groceries or food shopping: a shopping bag with a handle and a leaf on its face.           |
+| `hat`            | `headwear`                           | drawn  | –        | no  | none  | A hat or headwear: a plain round-crowned hat with a band and a brim.                       |
+| `jacket`         | `coat`, `outerwear`                  | drawn  | –        | no  | none  | A jacket or coat: a long-sleeved jacket with a zip down the front.                         |
+| `laundry`        | `clothesline`, `drying`              | drawn  | –        | no  | none  | Laundry or a laundry room: a T-shirt pegged on a clothesline.                              |
+| `restaurant`     | `dining`, `eat-out`                  | drawn  | –        | no  | none  | A restaurant or a place to eat: a fork, a plate and a knife side by side.                  |
+| `shirt`          | `t-shirt`, `clothes`, `clothing`     | drawn  | –        | no  | none  | Clothes, or a shirt: a plain short-sleeved T-shirt.                                        |
+| `shoe`           | `footwear`                           | drawn  | –        | no  | none  | Shoes or footwear: a low shoe seen from the side.                                          |
+| `trousers`       | –                                    | drawn  | –        | no  | none  | Trousers: a pair of long trousers with a waistband.                                        |
+| `vegetarian`     | `plant-based`                        | drawn  | –        | no  | none  | A vegetarian or plant-based meal or diet: a plain leaf with a stem and a midrib.           |
 
 ## RTL decisions
 
@@ -495,11 +584,11 @@ Check these at 16px, and change the drawing, never the threshold:
 
 **Cut: needs a letter, numeral, flag, brand or emblem.**
 
-`tax`, `passport`, `hearing-loop`, `audio-description`, `shelter`, `toilet`, `entrance`, `parking` and `charging` stay cut (unchanged, below).
+`tax`, `audio-description`, `shelter` and `toilet` stay cut (unchanged, below). `passport`, `hearing-loop`, `parking`, `sign-language`, `entrance` (now an alias of `door`) and `charging` (`ev-charging`) were reversed by the maintainer on 2026-10-19 (Plan 0144): drawn as simplified originals, always with words.
 
 - `tax`: without a currency or per-cent sign it is a document with words. Use `document` or `invoice`.
-- `parking`: the sign is a "P". Use the words, with `car` if an icon is wanted.
-- `hearing-loop`: the standard sign carries a "T".
+- `parking`: reversed 2026-10-19 (Plan 0144): drawn as a car under a roof, with no P. It may read as a garage: always use words.
+- `hearing-loop`: reversed 2026-10-19 (Plan 0144): drawn as an ear in a rounded square, without the letter T of the standard sign: always use words.
 - `audio-description`: the standard mark is the letters "AD".
 - `pdf`, `doc`, file-type icons: letters. `document` with the type in words.
 - `police` as insignia or a badge: national emblems. Reopened on 2026-10-16 and drawn as a patrol car (below).
@@ -534,7 +623,7 @@ Check these at 16px, and change the drawing, never the threshold:
 
 - `zoning-plan`: every candidate read as `map`, `table`, `document` or fullscreen corner marks. Use `map` or `document` plus words.
 - `litter`: eight drafts across four metaphors read as a lamp, trophy, pot or camera. It is an alias of `waste`.
-- `sign-language`: cut twice, after 5 tries and then 13 tries over nine approaches. It reads as a wave, stop, handshake or letter, and two hands don't fit with 2-unit gaps. Use words, or a mark the consumer supplies.
+- `sign-language`: cut twice, then reversed 2026-10-19 (Plan 0144): an open hand with fingers together and a thumb out, not a sign from any one sign language. It can read as "stop": always use words.
 - `vote`: a box and paper read as `lock` or a bag, and a checked ballot as a laptop. Use words, or `form` plus words.
 - `place-offer`: a choice can't be drawn under an envelope. `accept-place` and `offer` are aliases of `mail`.
 

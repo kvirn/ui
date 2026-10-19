@@ -94,6 +94,8 @@ const categoriesWithStory = [
   'access-language',
   'social',
   'service-marks',
+  'home-living',
+  'food-clothing',
 ]
 
 const meta = {
@@ -136,7 +138,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The drawn icon set of @kvirn-ui/icons, registered with `KvirnProvider icons={allIcons}`. Apps that name only the icons they use import them one by one from the package root instead. The 298 icons are drawn and checked by tests and agents. Recognition tests, a native-speaker review of the labels (sv, fi, nb, nn, en), checks with real assistive technology and a sensitivity review are not done yet. Copy a name from the galleries into `<Icon name="…" />`.',
+          'The drawn icon set of @kvirn-ui/icons, registered with `KvirnProvider icons={allIcons}`. Apps that name only the icons they use import them one by one from the package root instead. The 371 icons are drawn and checked by tests and agents. Recognition tests, a native-speaker review of the labels (sv, fi, nb, nn, en), checks with real assistive technology and a sensitivity review are not done yet. Copy a name from the galleries into `<Icon name="…" />`.',
       },
     },
   },
@@ -322,6 +324,8 @@ export const LeisureCultureAndCommunity: Story = categoryStory('leisure-culture'
 export const LanguageAndAccess: Story = categoryStory('access-language')
 export const SocialMedia: Story = categoryStory('social')
 export const ServiceMarks: Story = categoryStory('service-marks')
+export const HomeAndLiving: Story = categoryStory('home-living')
+export const FoodAndClothing: Story = categoryStory('food-clothing')
 
 /** Right to left: the icons that point along the reading direction flip, the rest keep their drawing. */
 export const Rtl: Story = {

@@ -767,7 +767,7 @@ export const messages = {
       socialNote:
         'The social media marks are simplified drawings of trademarks that belong to their owners. Use them at 20px and up, beside the network’s name, and follow each owner’s brand guidelines.',
       serviceMarksNote:
-        'The service marks (BankID, Visa, Mastercard, Klarna) are simplified drawings of trademarks that belong to their owners. They are not the official logos and never replace a required logo or button. Use them at 20px and up, beside the service’s name, and follow each owner’s brand guidelines.',
+        'The service marks (BankID, Visa, Mastercard, Klarna, Bluetooth) are simplified drawings of trademarks that belong to their owners. They are not the official logos and never replace a required logo or button. Use them at 20px and up, beside the service’s name, and follow each owner’s brand guidelines.',
       searchRegion: 'Icons',
       searchLabel: 'Search the icons',
       searchHelp: 'Search by name, other names or meaning, such as “bus”, “payment” or “warning”.',

@@ -130,8 +130,8 @@ The catalogue has no sports, culture or leisure icon, while every municipal site
 ## Cut by the maintainer (needs the maintainer to reopen)
 
 - `tax`: `tax`: document or `invoice`.
-- `passport`: `passport`: use `id-card`.
-- `hearing-loop`: `hearing-loop`: carries a "T".
+- `passport`: `passport`: use `id-card`. Reversed 2026-10-19 (Plan 0144): drawn.
+- `hearing-loop`: `hearing-loop`: carries a "T". Reversed 2026-10-19 (Plan 0144): drawn without the T, always with words.
 - `audio-description`: `audio-description`: carries "AD".
 - `shelter`: `shelter`: the civil-defence sign is national.
 - `shelter-support`: `shelter`.
@@ -139,7 +139,7 @@ The catalogue has no sports, culture or leisure icon, while every municipal site
 - `accessible-toilet`: `toilet`.
 - `step-free-access`: `entrance`: accessible entrance is words with `accessibility`.
 - `lift`: `entrance`.
-- `parking-permit`: `parking`: "P"; words with `car`.
+- `parking-permit`: `parking`: "P"; words with `car`. `parking` itself was drawn 2026-10-19 (Plan 0144) as a car under a roof.
 - `parking-disc`: `parking`.
 - `park-and-ride`: `parking`.
 - `ev-charging`: `charging`: energy and a car are two ideas.

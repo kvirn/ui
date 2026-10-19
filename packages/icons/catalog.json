@@ -93,7 +93,17 @@
     {
       "id": "service-marks",
       "title": "Service marks",
-      "description": "Marks of payment and e-identification services, always shown with the service's name, never the only text."
+      "description": "Marks of payment, e-identification and device-standard services, always shown with the service's name, never the only text."
+    },
+    {
+      "id": "home-living",
+      "title": "Home and living",
+      "description": "The home, its rooms, furniture and tools: what a resident repairs, renovates or applies for."
+    },
+    {
+      "id": "food-clothing",
+      "title": "Food and clothing",
+      "description": "What people eat, wear and buy for daily life: meals, groceries and clothes."
     }
   ],
   "icons": [
@@ -3133,6 +3143,749 @@
         "lobby screen"
       ],
       "meaning": "A public information screen in a hall, at a stop or in a library: a landscape screen with two text lines on a pole with a foot.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "ear",
+      "category": "access-language",
+      "aliases": ["hearing"],
+      "tags": ["ear", "hearing", "hard of hearing", "deaf", "audio"],
+      "meaning": "Hearing: an ear in profile with the inner arc of the helix. No slash, no waves.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "headphones",
+      "category": "access-language",
+      "aliases": ["headset"],
+      "tags": ["headphones", "headset", "audio guide", "audio description", "listen"],
+      "meaning": "Listen with headphones (an audio guide or audio description): a headband over two ear cups.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "volume",
+      "category": "access-language",
+      "aliases": ["sound", "sound-on"],
+      "tags": ["volume", "sound", "speaker", "sound on", "audio"],
+      "meaning": "Sound on or volume: a speaker with two sound arcs.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "volume-off",
+      "category": "access-language",
+      "aliases": ["mute", "sound-off"],
+      "tags": ["volume off", "mute", "muted", "sound off", "silent"],
+      "meaning": "Sound off (muted): the speaker of volume with a cross where the sound arcs were.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "microphone",
+      "category": "access-language",
+      "aliases": ["mic"],
+      "tags": ["microphone", "mic", "speak", "record", "voice input"],
+      "meaning": "Speak or record: a microphone in a holder on a stand.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "microphone-off",
+      "category": "access-language",
+      "aliases": ["mic-off"],
+      "tags": ["microphone off", "mic off", "muted microphone"],
+      "meaning": "Microphone off: the microphone with the kit slash.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "hearing-loop",
+      "category": "access-language",
+      "aliases": ["induction-loop", "telecoil", "t-loop"],
+      "tags": ["hearing loop", "induction loop", "telecoil", "hearing aid", "assistive listening"],
+      "meaning": "A hearing (induction) loop is available: an ear in a rounded square. It is the public sign without its letter T, so always show it with words.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "sign-language",
+      "category": "access-language",
+      "aliases": [],
+      "tags": ["sign language", "signing", "deaf", "sign language interpreter"],
+      "meaning": "Sign language: an open hand, fingers together, thumb out. It isn't a sign from any one sign language.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "multilingual",
+      "category": "access-language",
+      "aliases": ["languages", "many-languages"],
+      "tags": ["multilingual", "several languages", "other languages", "language versions"],
+      "meaning": "Available in several languages: two overlapping speech bubbles, each with a different mark (a line and a dot) and no letters. For changing language use language (the globe).",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "subscription",
+      "category": "money",
+      "aliases": ["recurring-payment"],
+      "tags": ["subscription", "recurring payment", "standing order", "direct debit", "monthly"],
+      "meaning": "A subscription or recurring payment: a bank card with a small circular arrow in the badge place.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "renew",
+      "category": "money",
+      "aliases": ["renewal", "extend"],
+      "tags": ["renew", "renewal", "extend", "renew permit", "renew loan"],
+      "meaning": "Renew a permit, licence, loan or membership: a document with a small circular arrow in the badge place.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "membership",
+      "category": "money",
+      "aliases": ["member-card", "member"],
+      "tags": ["membership", "member card", "club card", "library card", "membership fee"],
+      "meaning": "Membership: a member card with a round emblem and two lines. id-card has a portrait instead.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "newsletter",
+      "category": "money",
+      "aliases": [],
+      "tags": ["newsletter", "mailing list", "subscribe", "bulletin"],
+      "meaning": "Newsletter: a letter with a text line rising out of an open envelope. mail is the closed envelope.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "cancel-subscription",
+      "category": "money",
+      "aliases": ["end-subscription"],
+      "tags": ["cancel subscription", "end subscription", "stop recurring payment"],
+      "meaning": "Cancel a subscription or recurring payment: the card of subscription with the badge × in place of the circular arrow.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "electric-car",
+      "category": "mobility-environment",
+      "aliases": ["ev", "electric-vehicle"],
+      "tags": ["electric car", "electric vehicle", "ev", "charging", "zero emission"],
+      "meaning": "An electric car: the car seen from the front with a lightning bolt across its body.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "ev-charging",
+      "category": "mobility-environment",
+      "aliases": ["charging-station", "charge-point"],
+      "tags": [
+        "ev charging",
+        "charging station",
+        "charge point",
+        "charge an electric car",
+        "electric vehicle"
+      ],
+      "meaning": "A place to charge an electric car: a charging post with a lightning bolt and a cable hanging from its side.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "parking",
+      "category": "mobility-environment",
+      "aliases": ["car-park", "parking-garage", "carport"],
+      "tags": ["parking", "car park", "parking permit", "resident parking", "garage", "carport"],
+      "meaning": "Parking: the car seen from the front under a wide roof. No letter P.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "fuel",
+      "category": "mobility-environment",
+      "aliases": ["petrol-station", "gas-station", "filling-station"],
+      "tags": ["fuel", "petrol", "diesel", "filling station", "gas station"],
+      "meaning": "Fuel or a filling station: a pump with a display window and a hose hanging from its side.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "taxi",
+      "category": "mobility-environment",
+      "aliases": ["cab"],
+      "tags": ["taxi", "cab", "transport service", "ride"],
+      "meaning": "A taxi: the car seen from the front with a sign on its roof; no text on the sign.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "truck",
+      "category": "mobility-environment",
+      "aliases": ["lorry", "goods-vehicle"],
+      "tags": ["truck", "lorry", "goods vehicle", "heavy vehicle", "delivery", "freight"],
+      "meaning": "A truck: a tall cargo box behind a lower cab, seen from the side.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "motorcycle",
+      "category": "mobility-environment",
+      "aliases": ["motorbike", "moped"],
+      "tags": ["motorcycle", "motorbike", "moped", "two-wheeler", "licence class"],
+      "meaning": "A motorcycle seen from the side: two wheels, a seat and tank line running into the front fork.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "driving-licence",
+      "category": "mobility-environment",
+      "aliases": ["driving-license", "driver-licence"],
+      "tags": ["driving licence", "driver licence", "driving test", "licence", "driving"],
+      "meaning": "A driving licence: a card with a steering wheel; distinct from id-card (portrait and lines).",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "hammer",
+      "category": "home-living",
+      "aliases": [],
+      "tags": ["hammer", "repair", "renovate", "build", "diy"],
+      "meaning": "A hammer: a handle at 45° with a head across its end.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "screwdriver",
+      "category": "home-living",
+      "aliases": [],
+      "tags": ["screwdriver", "repair", "assemble", "fix", "diy"],
+      "meaning": "A screwdriver: a round-ended handle with a long thin shaft at 45°.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "drill",
+      "category": "home-living",
+      "aliases": ["power-drill"],
+      "tags": ["drill", "power drill", "renovate", "install", "diy"],
+      "meaning": "A power drill seen from the side: body, chuck and a bit pointing right, a grip below.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "saw",
+      "category": "home-living",
+      "aliases": ["hand-saw"],
+      "tags": ["saw", "hand saw", "carpentry", "renovate", "diy"],
+      "meaning": "A hand saw at 45°: a handle and a blade with three large teeth.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "toolbox",
+      "category": "home-living",
+      "aliases": ["tool-kit", "diy"],
+      "tags": ["toolbox", "tools", "tool kit", "repair", "home repair", "diy"],
+      "meaning": "Tools, or home repair as a topic: a box with a wide handle and a latch on its lid line; distinct from job (briefcase).",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "paint-roller",
+      "category": "home-living",
+      "aliases": ["painting", "decorating"],
+      "tags": ["paint roller", "painting", "decorating", "renovate", "wall paint"],
+      "meaning": "Painting and decorating: a paint roller with its frame and handle.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "suitcase",
+      "category": "mobility-environment",
+      "aliases": ["luggage", "baggage"],
+      "tags": ["suitcase", "luggage", "baggage", "travel", "trip", "packing"],
+      "meaning": "Travel or luggage: an upright rolling suitcase with a pull handle and wheels.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "plane",
+      "category": "mobility-environment",
+      "aliases": ["flight", "airplane", "aeroplane"],
+      "tags": ["plane", "flight", "airplane", "airport", "air travel", "fly"],
+      "meaning": "Air travel, a flight or an airport: an airliner seen from above, nose up.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "passport",
+      "category": "mobility-environment",
+      "aliases": ["travel-document"],
+      "tags": ["passport", "travel document", "identity", "border", "travel"],
+      "meaning": "A passport or travel document: a booklet with a plain globe mark, no national emblem.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "hotel",
+      "category": "mobility-environment",
+      "aliases": ["accommodation", "lodging"],
+      "tags": [
+        "hotel",
+        "accommodation",
+        "lodging",
+        "overnight stay",
+        "hostel",
+        "bed and breakfast"
+      ],
+      "meaning": "A place to stay overnight: a bed under a wide roof.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "tent",
+      "category": "mobility-environment",
+      "aliases": ["camping", "campsite"],
+      "tags": ["tent", "camping", "campsite", "outdoors", "shelter"],
+      "meaning": "Camping or a campsite: a ridge tent with crossed poles and an open door.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "boarding-pass",
+      "category": "mobility-environment",
+      "aliases": ["boarding-card", "flight-ticket"],
+      "tags": ["boarding pass", "boarding card", "flight ticket", "check-in", "airport"],
+      "meaning": "A boarding pass or flight ticket: the notched ticket with a small plane.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "shirt",
+      "category": "food-clothing",
+      "aliases": ["t-shirt", "clothes", "clothing"],
+      "tags": ["shirt", "t-shirt", "top", "clothes", "clothing"],
+      "meaning": "Clothes, or a shirt: a plain short-sleeved T-shirt.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "trousers",
+      "category": "food-clothing",
+      "aliases": [],
+      "tags": ["trousers", "pants", "clothes", "clothing"],
+      "meaning": "Trousers: a pair of long trousers with a waistband.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "jacket",
+      "category": "food-clothing",
+      "aliases": ["coat", "outerwear"],
+      "tags": ["jacket", "coat", "outerwear", "winter clothes", "clothes"],
+      "meaning": "A jacket or coat: a long-sleeved jacket with a zip down the front.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "shoe",
+      "category": "food-clothing",
+      "aliases": ["footwear"],
+      "tags": ["shoe", "shoes", "footwear", "sneaker", "clothes"],
+      "meaning": "Shoes or footwear: a low shoe seen from the side.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "hat",
+      "category": "food-clothing",
+      "aliases": ["headwear"],
+      "tags": ["hat", "headwear", "sun hat", "clothes"],
+      "meaning": "A hat or headwear: a plain round-crowned hat with a band and a brim.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "clothes-hanger",
+      "category": "food-clothing",
+      "aliases": ["hanger", "cloakroom"],
+      "tags": ["clothes hanger", "hanger", "cloakroom", "coat check", "wardrobe"],
+      "meaning": "A clothes hanger, or a cloakroom: a hanger with a hook.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "laundry",
+      "category": "food-clothing",
+      "aliases": ["clothesline", "drying"],
+      "tags": ["laundry", "clothesline", "drying", "laundry room", "washing clothes"],
+      "meaning": "Laundry or a laundry room: a T-shirt pegged on a clothesline.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "tablet",
+      "category": "communication",
+      "aliases": ["tablet-computer"],
+      "tags": ["tablet", "tablet computer", "touch screen", "device"],
+      "meaning": "A tablet computer: a wide upright screen with a home dot at the foot.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "laptop",
+      "category": "communication",
+      "aliases": ["laptop-computer"],
+      "tags": ["laptop", "computer", "portable computer", "device"],
+      "meaning": "A laptop computer: an open screen above a flat keyboard base.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "desktop",
+      "category": "communication",
+      "aliases": ["monitor", "pc"],
+      "tags": ["desktop", "computer", "monitor", "screen", "workstation", "device"],
+      "meaning": "A desktop computer or monitor: a landscape screen on a short two-legged stand with a foot.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "smartwatch",
+      "category": "communication",
+      "aliases": ["wearable"],
+      "tags": ["smartwatch", "watch", "wearable", "fitness tracker", "device"],
+      "meaning": "A smartwatch or other wearable device: a square watch face with straps and a crown.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "wifi",
+      "category": "communication",
+      "aliases": ["wi-fi", "wlan", "wireless"],
+      "tags": ["wifi", "wi-fi", "wireless network", "internet", "wlan", "hotspot"],
+      "meaning": "A wireless network (Wi-Fi): a dot with three arcs spreading upwards from it.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "bluetooth",
+      "category": "service-marks",
+      "aliases": [],
+      "tags": ["bluetooth", "wireless", "pairing", "connect device"],
+      "meaning": "Bluetooth, the short-range wireless link between devices: a simplified original outline of the Bluetooth rune, the mark of the Bluetooth SIG.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "battery",
+      "category": "communication",
+      "aliases": ["charge-level"],
+      "tags": ["battery", "charge", "charging", "power level", "device"],
+      "meaning": "A battery or its charge level: a horizontal battery with a terminal and two level bars.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "restaurant",
+      "category": "food-clothing",
+      "aliases": ["dining", "eat-out"],
+      "tags": ["restaurant", "dining", "eat out", "cafeteria", "food service", "food inspection"],
+      "meaning": "A restaurant or a place to eat: a fork, a plate and a knife side by side.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "cooking",
+      "category": "food-clothing",
+      "aliases": ["kitchen", "cook"],
+      "tags": ["cooking", "kitchen", "cook", "recipe", "pot", "home economics"],
+      "meaning": "Cooking or a kitchen: a pot with a domed lid and two side handles.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "groceries",
+      "category": "food-clothing",
+      "aliases": ["grocery", "food-shopping"],
+      "tags": ["groceries", "grocery store", "food shopping", "supermarket", "produce"],
+      "meaning": "Groceries or food shopping: a shopping bag with a handle and a leaf on its face.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "cart",
+      "category": "food-clothing",
+      "aliases": ["shopping-cart", "basket", "trolley"],
+      "tags": ["cart", "shopping cart", "basket", "trolley", "checkout", "order"],
+      "meaning": "A shopping cart, or the basket of an order: a cart with a handle, a basket and two wheels.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "bread",
+      "category": "food-clothing",
+      "aliases": ["bakery", "loaf"],
+      "tags": ["bread", "loaf", "bakery", "baked goods"],
+      "meaning": "Bread or a bakery: a domed loaf with two scored cuts.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "coffee",
+      "category": "food-clothing",
+      "aliases": ["cafe", "hot-drink"],
+      "tags": ["coffee", "cafe", "hot drink", "tea", "break", "coffee break"],
+      "meaning": "Coffee, a hot drink or a cafe: a cup with a handle and two wisps of steam.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "vegetarian",
+      "category": "food-clothing",
+      "aliases": ["plant-based"],
+      "tags": ["vegetarian", "plant-based", "vegan", "leaf", "meat-free", "diet"],
+      "meaning": "A vegetarian or plant-based meal or diet: a plain leaf with a stem and a midrib. One icon for both diets: the words must say vegetarian or vegan.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "door",
+      "category": "home-living",
+      "aliases": ["entrance"],
+      "tags": ["door", "entrance", "entry", "front door", "doorway", "access"],
+      "meaning": "A door or entrance: a closed door leaf with a handle, standing on the floor line.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "window",
+      "category": "home-living",
+      "aliases": [],
+      "tags": ["window", "glazing", "window pane", "daylight", "ventilation"],
+      "meaning": "A window in a home: a frame with a cross of glazing bars, resting on a sill.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "roof",
+      "category": "home-living",
+      "aliases": ["roofing"],
+      "tags": ["roof", "roofing", "roof repair", "attic", "eaves", "building permit"],
+      "meaning": "The roof of a building: a thick pitched roof over the top of two walls.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "fence",
+      "category": "home-living",
+      "aliases": [],
+      "tags": ["fence", "picket fence", "garden", "plot", "property line", "hedge"],
+      "meaning": "A fence around a plot or garden: three pointed pickets joined by two rails.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "mailbox",
+      "category": "home-living",
+      "aliases": ["letterbox"],
+      "tags": ["mailbox", "letterbox", "post box", "postal address", "post delivery"],
+      "meaning": "A mailbox where post is delivered: a box with an arched front and a raised flag on a post.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "heating",
+      "category": "home-living",
+      "aliases": ["radiator"],
+      "tags": ["heating", "radiator", "heat", "district heating", "warmth", "indoor temperature"],
+      "meaning": "Heating in a home: a radiator with heat rising from it.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "plug",
+      "category": "home-living",
+      "aliases": ["power-plug"],
+      "tags": ["plug", "mains plug", "power", "electrical appliance", "socket", "connect"],
+      "meaning": "A mains plug for an electrical appliance: two pins, a rounded body and a cable.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "lightbulb",
+      "category": "home-living",
+      "aliases": ["light-bulb"],
+      "tags": ["light bulb", "lighting", "lamp", "electricity", "light"],
+      "meaning": "A light bulb: lighting in a home or building.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "stairs",
+      "category": "home-living",
+      "aliases": ["staircase"],
+      "tags": ["stairs", "staircase", "steps", "floor", "level access"],
+      "meaning": "Stairs between floors: a flight of three steps seen from the side.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "elevator",
+      "category": "home-living",
+      "aliases": ["lift"],
+      "tags": ["elevator", "lift", "accessibility", "step-free access", "floors"],
+      "meaning": "An elevator or lift: a cabin with an up and a down arrow, as on a lift's call panel.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "sofa",
+      "category": "home-living",
+      "aliases": ["couch", "settee"],
+      "tags": ["sofa", "couch", "settee", "living room", "furniture", "seating"],
+      "meaning": "A sofa in the living room: a two-seat couch with a backrest, armrests and short legs, seen from the front.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "chair",
+      "category": "home-living",
+      "aliases": [],
+      "tags": ["chair", "seat", "dining chair", "furniture", "seating"],
+      "meaning": "A chair: a single seat with a backrest and four legs, seen from the front.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "dining-table",
+      "category": "home-living",
+      "aliases": ["kitchen-table"],
+      "tags": ["dining table", "kitchen table", "table", "furniture", "dining room", "meal"],
+      "meaning": "A dining or kitchen table, the piece of furniture: a tabletop on two legs, seen from the side. Not a data table (that is `table`).",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "bed",
+      "category": "home-living",
+      "aliases": ["bedroom"],
+      "tags": ["bed", "bedroom", "sleep", "mattress", "furniture", "housing"],
+      "meaning": "A bed: a headboard, a mattress with a pillow and a footboard, seen from the side.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "wardrobe",
+      "category": "home-living",
+      "aliases": ["closet", "cupboard"],
+      "tags": ["wardrobe", "closet", "cupboard", "cabinet", "storage", "furniture"],
+      "meaning": "A wardrobe or cupboard: a tall cabinet with two doors, two handles and feet.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "lamp",
+      "category": "home-living",
+      "aliases": ["table-lamp", "floor-lamp"],
+      "tags": ["lamp", "table lamp", "floor lamp", "lampshade", "lighting", "furniture"],
+      "meaning": "A table or floor lamp: a lampshade on a stand with a foot. For the light bulb itself use `lightbulb`, for outdoor lighting `street-light`.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "shelf",
+      "category": "home-living",
+      "aliases": ["bookcase", "bookshelf"],
+      "tags": ["shelf", "bookcase", "bookshelf", "shelving", "storage", "furniture"],
+      "meaning": "A bookcase or shelf: a tall case with one shelf and books standing on both levels. For a single book use `book`, for stored records `archive`.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "bathtub",
+      "category": "home-living",
+      "aliases": ["bath"],
+      "tags": ["bathtub", "bath", "bathroom", "tub", "wet room", "renovation"],
+      "meaning": "A bathtub, or the bathroom: a tub on feet with a tap, seen from the side.",
       "status": "drawn",
       "mirrorInRtl": false,
       "label": null
