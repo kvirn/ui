@@ -1,7 +1,7 @@
 # Accessibility contract: QuickExit
 
 - **APG pattern:** none. QuickExit is a native link that navigates.
-- **Deviations:** a document-level Shift ×3 shortcut, on by default (maintainer decision). `shortcut={false}` removes it. It also works in text fields: a Shift counts only when pressed alone.
+- **Deviations:** a document-level Shift ×3 shortcut, on by default. `shortcut={false}` removes it. It also works in text fields: a Shift counts only when pressed alone.
 - **Native elements used:** `<div>` (Root), `<a href>` (Link).
 - **Status:** alpha candidate. Accessibility-reviewer APPROVE. Manual AT is `pending`.
 - **Tests:** `quick-exit.test.tsx` next to this file, and `packages/core/src/quick-exit/shift-sequence.test.ts`.
@@ -45,7 +45,7 @@ The link is one Tab stop and no focus is moved: the page is replaced. A Shift co
 - Initial focus: not moved.
 - Trap: no.
 - Restore to: not applicable. The page is replaced.
-- Never obscured by: the theme sticks the row only at viewport height 30rem and up and sets `scroll-padding` for it (2.4.11).
+- Never obscured by: the theme sticks the row only on tall screens and leaves room above the focused field for a short row (2.4.11 Focus Not Obscured (Minimum), AA).
 
 ## Announcements
 
@@ -57,7 +57,7 @@ Nothing is announced on a reset, a timeout or the exit: the page is gone. Withou
 
 ### Read aloud
 
-Approximated by `@kvirn-ui/testing`'s `readAloud`, with the English (`en`) texts; not NVDA or JAWS output. AT `pending`. The hint is also read as its own paragraph after the link phrase.
+Approximated by `@kvirn-ui/testing`'s `readAloud`, with the English (`en`) texts; not NVDA or JAWS output. The hint is also read as its own paragraph after the link phrase.
 
 | State or action          | Expected phrase(s) as read aloud                 | Live region politeness | Test                                                                                     |
 | ------------------------ | ------------------------------------------------ | ---------------------- | ---------------------------------------------------------------------------------------- |
@@ -72,7 +72,7 @@ Approximated by `@kvirn-ui/testing`'s `readAloud`, with the English (`en`) texts
 - Place `QuickExit.Hint` inside Root after the Link while the shortcut is on: without it a development warning says sighted keyboard users are not told about the shortcut.
 - Put Root as a direct child of `<body>`, early in the focus order (after the skip link), and pass a neutral `href`.
 - Wrap the app in `KvirnProvider`: the Shift count is announced through it.
-- NVDA uses Shift to pause speech, so the shortcut can fire by accident. Accepted: it is on by default, `shortcut={false}` opts out.
+- NVDA uses Shift to pause speech, so the shortcut can fire by accident. The shortcut is on by default, so a person who pauses speech with Shift three times leaves the page. Set `shortcut={false}` to opt out.
 - `navigate` must replace the history entry with a full navigation (the default `location.replace` does). A router push keeps the entry and leaves a blank page.
 - While a modal dialog is open the page is inert, so the link cannot be reached: only the shortcut works.
 - A web page cannot clear history, cache or other tabs: say that in your own copy. Earlier history entries remain.
@@ -84,13 +84,19 @@ Approximated by `@kvirn-ui/testing`'s `readAloud`, with the English (`en`) texts
 
 Headless: no CSS. With `@kvirn-ui/theme/theme.css` the row is `kv-quick-exit` and the link `kv-quick-exit-link`.
 
+- Target size: the link is larger than 24 by 24 CSS pixels (2.5.8 Target Size (Minimum), AA).
+- Contrast: the link text and the focus ring meet 4.5:1 and 3:1 against their background (1.4.3 Contrast (Minimum), AA; 1.4.11 Non-text Contrast, AA).
+- Forced colours: the forced-colours sweep checks that the boundary and the focus ring are drawn.
+- Reflow: the row stacks on a narrow screen (1.4.10 Reflow, AA), and the reflow sweep checks every story at 320 CSS pixels for sideways scrolling.
+- Print: the row is hidden when the page is printed.
+
 ## WCAG SCs covered
 
 - 2.1.1 Keyboard (A): the link and the shortcut work from the keyboard.
 - 2.1.4 Character Key Shortcuts (A): not applicable. Shift is a modifier, not a character key; `shortcut={false}` is offered anyway.
-- 2.4.7 Focus Visible (AA)
-- 2.4.11 Focus Not Obscured (Minimum) (AA)
-- 2.5.8 Target Size (Minimum) (AA)
+- 2.4.7 Focus Visible (AA): the link shows a focus ring.
+- 2.4.11 Focus Not Obscured (Minimum) (AA): the theme leaves room for the sticky row.
+- 2.5.8 Target Size (Minimum) (AA): the link is larger than 24 by 24 CSS pixels.
 - 3.2.5 Change on Request (AAA): navigation only on activation. Met, though AAA is not the target.
 - 4.1.3 Status Messages (AA): the Shift count is announced politely.
 
@@ -107,11 +113,19 @@ Headless: no CSS. With `@kvirn-ui/theme/theme.css` the row is `kv-quick-exit` an
 | **Core (required for beta)**                                               |             |             |         |                                                                                                                             |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                             |
 | VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                                             |
-| NVDA / JAWS browse mode, Shift+H ×3                                        | pending     | pending     | pending | Does a backwards quick navigation count as Shift?                                                                           |
+| NVDA / JAWS browse mode, Shift+H ×3                                        | pending     | pending     | pending | see Known issues: browse-mode quick navigation                                                                              |
 | **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                             |
 | JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                             |
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                             |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                             |
+
+### What to check
+
+- Tab to "Leave this page" and press Enter: the page goes blank at once and the destination loads.
+- With the shortcut on, press Shift once, then twice: "Press Shift 2 more times…" and then "Press Shift 1 more time…" are announced. Press Shift a third time: the page is left.
+- A capital letter and Shift+Tab in a form field do not count as presses.
+- In NVDA browse mode, press Shift+H three times to jump back through headings: the page stays open.
+- With a modal dialog open, the Shift shortcut still works while the link can't be reached.
 
 ## Known issues
 

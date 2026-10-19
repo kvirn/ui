@@ -86,9 +86,9 @@ const parts: ApiPart[] = [
       <>
         <code>&lt;a href&gt;</code> with the role <code>link</code>. It takes every attribute of an{' '}
         <code>&lt;a&gt;</code> and passes <code>ref</code> to it. It must be inside{' '}
-        <code>QuickExit.Root</code>: outside it, it throws an error. While a modal dialog is open
-        the page is inert, so the link can’t be reached and only the shortcut works. In a signed-in
-        service, point <code>href</code> at an endpoint that ends the session:{' '}
+        <code>QuickExit.Root</code>. While a modal dialog is open, the rest of the page is inert (it
+        can’t be focused or clicked), so the link can’t be reached and only the shortcut works. In a
+        signed-in service, point <code>href</code> at an endpoint that ends the session:{' '}
         <Link href="#end-the-session">End the session too</Link>.
       </>
     ),
@@ -103,8 +103,7 @@ const parts: ApiPart[] = [
         <code>QuickExit.Root</code> after the link, so sighted keyboard users learn about the
         shortcut and the link is described by it. It renders nothing when the Root has{' '}
         <code>shortcut={'{false}'}</code>. With the shortcut on and no Hint, a warning appears once
-        in development. It must be inside <code>QuickExit.Root</code>: outside it, it throws an
-        error.
+        in development. It must be inside <code>QuickExit.Root</code>.
       </>
     ),
     props: quickExitHintRows,
@@ -242,8 +241,8 @@ export function QuickExitPage({
               </p>
               <CodeBlock code={endSessionCode} language="ts" />
               <p>
-                The link leaves in the same tab: a click, a Ctrl or Cmd click and a middle click all
-                replace this page, and so does Shift three times when the shortcut is on. The
+                The link leaves in the same tab: a click, a click with Ctrl held and a middle click
+                all replace this page, and so does Shift three times when the shortcut is on. The
                 example below has the shortcut off and uses{' '}
                 <Link href={`#${apiRowId('QuickExit.Link', 'href')}`}>
                   <code>href</code>
@@ -337,10 +336,10 @@ export function QuickExitPage({
               <>
                 NVDA, a screen reader for Windows, uses the Shift key to pause speech. Three presses
                 of Shift, each less than five seconds after the last, would then leave the page. In
-                browse mode, the screen reader may also pass on a lone Shift when someone jumps back
-                through headings. How a screen reader treats Shift depends on the screen reader. If
-                many of your readers use a screen reader, turn the shortcut off. The link stays, and
-                keyboard and pointer users still reach it.
+                browse mode (how a screen reader moves through a page), NVDA and JAWS may also pass
+                on a lone Shift when someone jumps back through headings. If many of your readers
+                use a screen reader, turn the shortcut off. The link stays, and keyboard and pointer
+                users still reach it.
               </>
             }
             code={sources['no-shortcut']}
@@ -367,6 +366,11 @@ export function QuickExitPage({
                 label: 'useQuickExit (options)',
                 prop: 'href',
               },
+              {
+                part: apiHookPart('useQuickExit', 'options'),
+                label: 'useQuickExit (options)',
+                prop: 'shortcut',
+              },
             ]}
             note={
               <Note kind="tip">
@@ -388,6 +392,13 @@ export function QuickExitPage({
                 Wrap your app in a <code>KvirnProvider</code>. Without it the count of Shift presses
                 is not announced, so a screen reader user gets no feedback while pressing Shift
                 (4.1.3 Status Messages, level AA). The exit itself still works.
+              </Note>
+            ),
+            'visual-and-modes': (
+              <Note kind="reminder">
+                Keep the hint to one short sentence. A long hint makes the row taller than the space
+                the default theme leaves for it, and a focused element can end up hidden under the
+                row (2.4.11 Focus Not Obscured (Minimum), level AA).
               </Note>
             ),
             keyboard: (

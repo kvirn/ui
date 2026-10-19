@@ -1,7 +1,7 @@
 # Accessibility contract: ReadAloud
 
-- **APG pattern:** none for the group. Buttons follow [Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/), the media-button naming practice for Play and Pause.
-- **Deviations:** none from the APG. Previous, Next and Stop stay focusable and `aria-disabled` while idle (`focusableWhenDisabled`, as CopyButton) so the keyboard path doesn't jump.
+- **APG pattern:** none for the group. Buttons follow [Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/), the naming practice for media buttons such as Play and Pause.
+- **Deviations:** none from the APG. Previous, Next and Stop stay focusable while unavailable (`aria-disabled`) while idle, so their names can be found and the keyboard path doesn't jump.
 - **Native elements used:** `<button type="button">`, `<select>` with a `<label>`, a plain `<span>` for the status.
 - **Status:** in-planning. **Blocked: waiting for an npm package update and a re-test.** Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `read-aloud.test.tsx` next to this file (a fake engine, nothing speaks).
@@ -56,26 +56,26 @@ A tag outside the list changes the page's outline or semantics (1.3.1 Info and R
 
 Native controls in DOM order, no `tabindex`. Disabled controls stay in the Tab order (`aria-disabled`) while idle. With no speech support only the group and the status exist, so nothing is focusable.
 
-| Key               | Context                    | Action                                                      | Test                                                                                                  |
-| ----------------- | -------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Tab               | Player                     | Moves through Play, Previous, Next, Stop, Speed (and Voice) | `read-aloud.test.tsx › keyboard › Tab moves through Play, Previous, Next, Stop and Speed`             |
-| Tab               | Player, two voices         | Reaches the Voice select                                    | `read-aloud.test.tsx › keyboard › Tab also reaches the voice select when there are two voices`        |
-| Shift+Tab         | Player                     | Moves to the previous control                               | `read-aloud.test.tsx › keyboard › Shift+Tab moves focus back to the previous control`                 |
-| Enter             | Play                       | Reads. Focus stays on Play                                  | `read-aloud.test.tsx › keyboard › Enter on Play starts reading and keeps focus`                       |
-| Space             | Play                       | Reads. Focus stays on Play                                  | `read-aloud.test.tsx › keyboard › Space on Play starts reading and keeps focus`                       |
-| Escape            | Inside the player          | Stops reading. Focus stays where it is                      | `read-aloud.test.tsx › keyboard › Escape inside the player stops reading and keeps focus`             |
-| Escape            | Inside the player, idle    | Not handled, not prevented                                  | `read-aloud.test.tsx › keyboard › Escape while idle is not prevented`                                 |
-| Enter             | Previous, Next, Stop, idle | Does nothing                                                | `read-aloud.test.tsx › controls › Previous, Next and Stop are aria-disabled but focusable while idle` |
-| Escape            | Anywhere, trigger shown    | Dismisses the selection trigger                             | `read-aloud.test.tsx › selection trigger › is dismissed by Escape`                                    |
-| Arrows, typeahead | Speed, Voice               | Native `<select>` behaviour                                 | `read-aloud.test.tsx › keyboard › arrow keys on the speed select are not handled or prevented`        |
+| Key               | Context                    | Action                                                      | Test                                                                                                        |
+| ----------------- | -------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Tab               | Player                     | Moves through Play, Previous, Next, Stop, Speed (and Voice) | `read-aloud.test.tsx › keyboard › Tab moves through Play, Previous, Next, Stop and Speed`                   |
+| Tab               | Player, two voices         | Reaches the Voice select                                    | `read-aloud.test.tsx › keyboard › Tab also reaches the voice select when there are two voices`              |
+| Shift+Tab         | Player                     | Moves to the previous control                               | `read-aloud.test.tsx › keyboard › Shift+Tab moves focus back to the previous control`                       |
+| Enter             | Play                       | Reads. Focus stays on Play                                  | `read-aloud.test.tsx › keyboard › Enter on Play starts reading and keeps focus`                             |
+| Space             | Play                       | Reads. Focus stays on Play                                  | `read-aloud.test.tsx › keyboard › Space on Play starts reading and keeps focus`                             |
+| Escape            | Inside the player          | Stops reading. Focus stays where it is                      | `read-aloud.test.tsx › keyboard › Escape inside the player stops reading and keeps focus`                   |
+| Escape            | Inside the player, idle    | Not handled, not prevented                                  | `read-aloud.test.tsx › keyboard › Escape while idle is not prevented`                                       |
+| Enter             | Previous, Next, Stop, idle | Does nothing                                                | `read-aloud.test.tsx › keyboard › Enter on Previous, Next and Stop while idle does nothing and keeps focus` |
+| Escape            | Anywhere, trigger shown    | Dismisses the selection trigger                             | `read-aloud.test.tsx › selection trigger › is dismissed by Escape`                                          |
+| Arrows, typeahead | Speed, Voice               | Native `<select>` behaviour                                 | `read-aloud.test.tsx › keyboard › arrow keys on the speed select are not handled or prevented`              |
 
 ## Focus management
 
 - Initial focus: not moved. Focus never leaves the control that was used, including after stop and at the end of the content.
 - Trap: no. Restore to: not applicable.
 - Never obscured by: the player is in the page flow, never sticky. The selection trigger is placed below the selection, beside it when there is no room, and never over the selected text (2.4.11 Focus Not Obscured (Minimum), level AA).
-- SelectionTrigger: never takes focus. Any key, Tab included, dismisses it before focus moves, so it never covers a focused element (2.4.11 Focus Not Obscured (Minimum) (AA); `selection trigger › is dismissed by Tab, so it never covers the element focus moves to`). It is not in the Tab order, exposed to AT. The identical action, and the whole keyboard path, is Play (`selection trigger › is not in the Tab order and is not hidden from assistive technology`).
-- Selection: a selection made in the content is captured, so Tab to Play doesn't lose it (`selection › the selection survives Tab to Play`). Reading it collapses the selection.
+- SelectionTrigger: never takes focus. Any key, Tab included, dismisses it before focus moves, so it never covers a focused element (2.4.11 Focus Not Obscured (Minimum) (AA)). It is not in the Tab order, and it is not hidden from assistive technology. The identical action, and the whole keyboard path, is Play.
+- Selection: a selection made in the content is captured, so Tab to Play doesn't lose it. Reading it collapses the selection.
 
 ## Announcements
 
@@ -84,7 +84,7 @@ Native controls in DOM order, no `tabindex`. Disabled controls stay in the Tab o
 | No voice for the language | `readAloud.noVoice`     | polite     |
 | The speech engine failed  | `readAloud.speechError` | polite     |
 
-Nothing else is announced: not play, pause, next, stop or the end (`errors and announcements › announces nothing on play, pause, next, stop or the end of the content`). The speech is the feedback, and a live region would talk over it and over a screen reader. An unsupported browser is shown as Status text only, since no control exists to attempt.
+Nothing else is announced: not play, pause, next, stop or the end. The speech is the feedback, and a live region would talk over it and over a screen reader. An unsupported browser is shown as Status text only, since no control exists to attempt.
 
 ## Consumer responsibilities
 
@@ -99,17 +99,17 @@ Headless: no CSS. Classes `kv-read-aloud`, `kv-read-aloud-button`, `kv-read-alou
 
 - Focus indicator: the Button's (`data-focus-visible`); the selects use the browser's focus ring.
 - Target size: buttons and selects are native controls at least 24 × 24 CSS px (2.5.8 Target Size (Minimum), level AA), set by the theme.
-- Forced colours: no `::highlight` style ships, so the sentence highlight is not drawn in any mode and Status is the only position cue. When the style returns, it must use the system's `Highlight` and `HighlightText`.
-- Reduced motion: the sentence scrolls into view only when it is out of view and `prefers-reduced-motion` is not set (`read-aloud.test.tsx › scroll`).
+- Forced colours: no `::highlight` style ships, so the sentence highlight is not drawn in any mode and Status is the only position cue. If you add a highlight style, use the system's `Highlight` and `HighlightText` colours.
+- Reduced motion: the sentence scrolls into view only when it is out of view and `prefers-reduced-motion` is not set.
 
 ## WCAG SCs covered
 
-- 2.2.2 and 1.4.2 do not apply: speech and the highlight start only when the user presses Play. Pause and Stop are offered anyway, and the highlight is cleared on stop and unmount (`controls`, `names and roles`, `highlight`).
-- 2.1.1 Keyboard (A): the Keyboard rows.
-- 2.4.11 Focus Not Obscured (Minimum) (AA): the SelectionTrigger never takes focus and any key dismisses it before focus moves (`selection trigger › is dismissed by Tab, so it never covers the element focus moves to`).
-- 3.1.1 Language of Page (A) and 3.1.2 Language of Parts (AA): each sentence is spoken with a voice for its own `lang`, never another language's. Unmarked text takes the closest `[lang]` above it, then the document's, then the provider's locale; an inner `lang` attribute wins, and a sentence with no voice stops the reading with `noVoice` naming that language (`languages inside the content`, `controls › the content’s lang picks the voice`).
-- 4.1.2 Name, Role, Value (A): `names and roles`, `accessibility` (axe).
-- 4.1.3 Status Messages (AA): errors only (`errors and announcements`).
+- 2.2.2 Pause, Stop, Hide (A) and 1.4.2 Audio Control (A) do not apply: speech and the highlight start only when the user presses Play. Pause and Stop are offered anyway, and the highlight is cleared on stop and unmount.
+- 2.1.1 Keyboard (A): every control works from the keyboard.
+- 2.4.11 Focus Not Obscured (Minimum) (AA): the SelectionTrigger never takes focus and any key dismisses it before focus moves.
+- 3.1.1 Language of Page (A) and 3.1.2 Language of Parts (AA): each sentence is spoken with a voice for its own `lang`, never another language's. Unmarked text takes the closest `[lang]` above it, then the document's, then the provider's locale; an inner `lang` attribute wins, and a sentence with no voice stops the reading with a message naming that language.
+- 4.1.2 Name, Role, Value (A): the controls have names and roles, and axe finds no violation.
+- 4.1.3 Status Messages (AA): errors only are announced.
 - 2.5.8 Target Size (Minimum) (AA), 1.4.11 Non-text Contrast (AA): the default theme's job.
 
 ## AT test record
@@ -129,6 +129,15 @@ Headless: no CSS. Classes `kv-read-aloud`, `kv-read-aloud-button`, `kv-read-alou
 | JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                                                |
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                |
+
+### What to check
+
+- Tab through the player: each control is named. Previous, Next and Stop are read as unavailable while idle.
+- Press Enter or Space on Listen: speech starts and focus stays on the button.
+- Press Escape while it reads: reading stops and focus stays.
+- Select text with Shift and the arrow keys, then Tab to Listen: only the selection is read.
+- With no voice for the page language, Listen announces and shows the "no voice" message.
+- In a browser without speech, only the status text shows.
 
 ## Known issues
 

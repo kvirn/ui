@@ -16,7 +16,8 @@ export const useReadAloudRows = propRows<UseReadAloudOptions>({
   engine: {
     type: 'ReadAloudEngine',
     default: 'speechSynthesis',
-    description: 'Advanced and unstable: your own speech engine, for tests or a self-hosted voice.',
+    description:
+      'Advanced: your own speech engine, for tests or a self-hosted voice. Most players leave it out.',
   },
   allowRemoteVoices: {
     type: 'boolean',

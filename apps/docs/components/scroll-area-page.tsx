@@ -55,16 +55,18 @@ export function ScrollAreaPage({
       whenToUse={
         <ul>
           <li>
-            Use it around content that needs two directions to make sense and can’t wrap: a wide
-            table from your content system, or a long line of code. Everything else must wrap, so
-            the page never scrolls sideways at 320 pixels wide (1.4.10 Reflow).
+            Use it around content that can’t wrap without losing its meaning: a wide table from your
+            content system, or a long line of code. Let everything else wrap, so the page doesn’t
+            scroll sideways at 320 pixels wide (1.4.10 Reflow).
           </li>
           <li>
-            When everything fits it is a plain <code>&lt;div&gt;</code>. Only while it scrolls is it
-            a named region (a part of the page that a screen reader, software that reads the screen
-            aloud, can list so users jump to it) and a Tab stop (a place the Tab key stops at).
+            When everything fits it is a plain <code>&lt;div&gt;</code>. While it scrolls it is a
+            named region (a part of the page that a screen reader, software that reads the screen
+            aloud, can list so users jump to it) and a Tab stop (a place the Tab key stops at). With{' '}
+            <code>region=&quot;always&quot;</code> it is a named region even when it fits, but it is
+            a Tab stop only while it scrolls.
           </li>
-          <li>Name it, and say what is inside.</li>
+          <li>Name it and say what is inside: the name is what a screen reader reads.</li>
           <li>
             Not for a table you build with Table: <Link href="/components/table">Table</Link> has
             its own scroll region. Not for a long page: let the page scroll.
@@ -118,6 +120,11 @@ export function ScrollAreaPage({
             why="When the markup is yours, spread the props of the hook on the element that scrolls. Add the name only while isRegion is true, because a name on a plain div is not allowed."
             code={sources['own-markup']}
             propsUsed={[
+              {
+                part: apiHookPart('useScrollArea', 'result'),
+                label: 'useScrollArea (result)',
+                prop: 'scrollAreaProps',
+              },
               {
                 part: apiHookPart('useScrollArea', 'result'),
                 label: 'useScrollArea (result)',

@@ -143,6 +143,7 @@ export function ReadAloudPage({
   return (
     <ComponentPage
       title="ReadAloud"
+      pattern="APG Button (for the buttons)"
       lead="It never starts by itself, and it is not a substitute for a screen reader (software that reads the whole screen aloud)."
       whenToUse={
         <ul>
@@ -173,16 +174,30 @@ export function ReadAloudPage({
         </ul>
       }
       example={
-        <ExampleFrame headingId="example" code={sources['default']}>
-          <Player />
-        </ExampleFrame>
+        <>
+          <p>
+            Press Listen to hear the text. Select some words with the pointer, and a Listen to
+            selected text button appears below them. With the keyboard, select with Shift and the
+            arrow keys, press Tab to reach Listen and press it. The checkbox is off to start with,
+            so the text stays on your device.
+          </p>
+          <ExampleFrame headingId="example" code={sources['default']}>
+            <Player />
+          </ExampleFrame>
+        </>
       }
       useCases={
         <>
           <UseCase
             id="small-player"
             title="A short notice with a simple player"
-            why="Every part is optional. For a short text, leave out Speed, Voice, Previous and Next. Mark text that must not be read, such as a reference number, with data-kv-read-aloud-skip."
+            why={
+              <>
+                Every part is optional. For a short text, leave out Speed, Voice, Previous and Next.
+                Mark text that must not be read, such as a reference number, with{' '}
+                <code>data-kv-read-aloud-skip</code>.
+              </>
+            }
             code={sources['minimal']}
             propsUsed={[{ part: 'ReadAloud.Root', prop: 'contentRef' }]}
           >
@@ -191,7 +206,16 @@ export function ReadAloudPage({
           <UseCase
             id="language-of-the-text"
             title="Text in another language than the page"
-            why="The article below is in Swedish, and its element is marked as Swedish with the lang attribute. It says the same as the first paragraph of the main example: how to apply for a building permit. The player reads each sentence with a voice for that sentence’s own language, and never with a voice for another language. If the device has no voice for it, reading stops, the Status names the language and a screen reader announces it. The tests use a fake speech engine, so what you hear depends on the voices on your device."
+            why={
+              <>
+                The article below is in Swedish, and its element is marked as Swedish with the{' '}
+                <code>lang</code> attribute. It says the same as the first paragraph of the main
+                example: how to apply for a building permit. The player reads each sentence with a
+                voice for that sentence’s own language, and never with a voice for another language.
+                If the device has no voice for it, reading stops, the Status names the language and
+                a screen reader announces it. What you hear depends on the voices on your device.
+              </>
+            }
             code={sources['swedish-content']}
             propsUsed={[{ part: 'ReadAloud.Root', prop: 'contentRef' }]}
             note={
@@ -234,6 +258,11 @@ export function ReadAloudPage({
               {
                 part: apiHookPart('useReadAloud', 'result'),
                 label: 'useReadAloud (result)',
+                prop: 'playProps',
+              },
+              {
+                part: apiHookPart('useReadAloud', 'result'),
+                label: 'useReadAloud (result)',
                 prop: 'rootProps',
               },
             ]}
@@ -253,6 +282,13 @@ export function ReadAloudPage({
           contract={contract}
           linkToStrings
           notes={{
+            'what-you-need-to-do': (
+              <Note kind="reminder">
+                Wrap your app in a <code>KvirnProvider</code>. The player announces the “no voice”
+                and “speech error” messages through it. Without it, a screen reader user hears
+                nothing when reading fails (4.1.3 Status Messages, level AA).
+              </Note>
+            ),
             'visual-and-modes': (
               <Note kind="tip">
                 The default theme styles the player but not the sentence highlight. The sentence is

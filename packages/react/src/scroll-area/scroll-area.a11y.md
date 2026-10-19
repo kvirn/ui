@@ -1,7 +1,7 @@
 # Accessibility contract: ScrollArea
 
 - **APG pattern:** none. A scrollable region with native scrolling: the [`region` role](https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/region.html) and a Tab stop only while it scrolls, so a keyboard user can scroll it (2.1.1 Keyboard, A).
-- **Deviations:** none. Choices: native scrollbars only, never hidden or thinned; no `orientation` prop, because the native `overflow` already scrolls whichever axis overflows; `Table.ScrollRegion` is the first use and shares this logic.
+- **Deviations:** none. Native scrollbars only, never hidden or thinned; there is no `orientation` prop, because the native `overflow` already scrolls whichever axis overflows.
 - **Native elements used:** `<div>` (or `<section>` with `as`) that is a `role="region"` while it scrolls, or always with `region="always"`.
 - **Status:** alpha candidate. Reviewer findings fixed. Manual AT is `pending`.
 - **Tests:** `scroll-area.test.tsx` next to this file. `scroll-area.stories.tsx` in `apps/storybook/src/components/scroll-area/`. `Table.ScrollRegion` is tested in `table.test.tsx`.
@@ -62,7 +62,7 @@ None. The role and name are the announcement.
 | `region="always"`, the content fits | `region, <name>`                 | none                   | none |
 | Tab onto the overflowing area       | `<name>, region`                 | none                   | none |
 
-These rows are read from the DOM (role, name, state) and are not tested with `readAloud`. The role, name and Tab stop are asserted in `scroll-area.test.tsx`.
+These rows follow from the area's role, name and state. What a screen reader says is not covered by a read-aloud test, so check it with your users' screen readers.
 
 ## Consumer responsibilities
 
@@ -79,19 +79,19 @@ These rows are read from the DOM (role, name, state) and are not tested with `re
 - **Target size:** n/a, native scrollbars.
 - **forced-colors:** the focus ring uses the system's highlight colour. Native scrollbars follow the system colours.
 - **reduced-motion:** no motion.
-- **Reflow and zoom:** the area scrolls its own content, so a wide table doesn't make the page scroll sideways at 320 px (1.4.10 Reflow, AA).
+- **Reflow and zoom:** the area scrolls its own content, so a wide table doesn't make the page scroll sideways at 320 px (1.4.10 Reflow, AA). The default theme keeps the area within the page width. If you restyle it, keep it within 320 CSS pixels.
 - **RTL:** native: the scroll origin and the arrow keys flip.
 
 ## WCAG SCs covered
 
-| SC     | Name                              | How                                                                                                                                                        |
-| ------ | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.3.1  | Info and Relationships (A)        | A named region only while it scrolls                                                                                                                       |
-| 1.4.10 | Reflow (AA)                       | Content that is wider than the viewport scrolls inside the area                                                                                            |
-| 2.1.1  | Keyboard (A)                      | A Tab stop while it scrolls, and the native scroll keys                                                                                                    |
-| 2.4.7  | Focus Visible (AA)                | The area takes focus while it scrolls (`scroll-area.test.tsx › Tab focuses the area when it overflows`). The theme draws the ring; no test checks the ring |
-| 2.4.11 | Focus Not Obscured (Minimum) (AA) | The area adds no overlay, sticky part or custom scrollbar, so nothing of its own covers it. No test checks this                                            |
-| 4.1.2  | Name, Role, Value (A)             | `role="region"` and a name from the consumer, with a development warning when it has none                                                                  |
+| SC     | Name                              | How                                                                                                                                         |
+| ------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.3.1  | Info and Relationships (A)        | A named region only while it scrolls                                                                                                        |
+| 1.4.10 | Reflow (AA)                       | Content that is wider than the viewport scrolls inside the area                                                                             |
+| 2.1.1  | Keyboard (A)                      | A Tab stop while it scrolls, and the native scroll keys                                                                                     |
+| 2.4.7  | Focus Visible (AA)                | The area takes focus while it scrolls The theme draws the ring; the ring is checked by eye, and the forced-colours sweep checks it is drawn |
+| 2.4.11 | Focus Not Obscured (Minimum) (AA) | The area adds no overlay, sticky part or custom scrollbar, so nothing of its own covers it. This is checked by eye                          |
+| 4.1.2  | Name, Role, Value (A)             | `role="region"` and a name from the consumer, with a development warning when it has none                                                   |
 
 ## AT test record
 
@@ -111,7 +111,13 @@ These rows are read from the DOM (role, name, state) and are not tested with `re
 | TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                                                                                                     |
 | VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                                                                                                     |
 
-What the manual run must check: the region is announced with its name only while it scrolls, and a keyboard user can scroll it.
+### What to check
+
+- With content wider than the box, Tab to the area: it is announced as a region with its name.
+- Arrow keys, Home, End and Page Down scroll it.
+- Widen the window until the content fits: the region is gone and Tab skips it.
+- At 400% zoom or 320px, only the area scrolls, not the page.
+- In forced colours the area's focus ring is visible.
 
 ## Known issues
 
