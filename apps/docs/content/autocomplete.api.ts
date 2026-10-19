@@ -54,6 +54,7 @@ export const autocompleteRootRows = propRows<Omit<AutocompleteRootProps<unknown>
   placement: comboboxRootRows.placement,
   offset: comboboxRootRows.offset,
   padding: comboboxRootRows.padding,
+  announceResults: comboboxRootRows.announceResults,
   announcementDebounceMilliseconds: comboboxRootRows.announcementDebounceMilliseconds,
   messages: comboboxRootRows.messages,
   virtualize: comboboxRootRows.virtualize,

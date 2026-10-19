@@ -103,6 +103,12 @@ export const comboboxRootRows = propRows<Omit<ComboboxRootProps<unknown>, 'child
     description: 'The gap between the field and the popup, in pixels.',
   },
   padding: listboxRootRows.padding,
+  announceResults: {
+    type: 'boolean',
+    default: 'true',
+    description:
+      'Whether the result count, "no results" and "loading" are announced. Turn it off only when you announce the list state yourself, or the user hears it twice.',
+  },
   announcementDebounceMilliseconds: {
     type: 'number',
     default: '500',

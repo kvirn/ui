@@ -130,6 +130,11 @@ export interface UseComboboxCommonOptions<TItem> {
    * milliseconds. Default 500. Nothing is announced while the user is typing.
    */
   announcementDebounceMilliseconds?: number | undefined
+  /**
+   * Whether the result count, "no results" and "loading" are announced. Default `true`. Turn it off
+   * only when you announce the list's state yourself, or the user hears it twice.
+   */
+  announceResults?: boolean | undefined
   /** Per-instance message overrides: the result count, "no results", "loading", and the names of the buttons. */
   messages?: Partial<KvirnMessages['combobox']> | undefined
   /**
@@ -601,6 +606,7 @@ export function useComboboxMachine<TItem>(
     messages,
     isLoading = false,
     announcementDebounceMilliseconds: debounceOption,
+    announceResults = true,
     virtualize,
   } = options
   const field = useContext(FieldContext)
@@ -785,7 +791,7 @@ export function useComboboxMachine<TItem>(
   // list with a key or the Toggle doesn't read out a count for a list that didn't change.
   const isCountWanted = useRef(false)
   useEffect(() => {
-    if (announcement === undefined || env === undefined) {
+    if (announcement === undefined || env === undefined || !announceResults) {
       isCountWanted.current = false
       return
     }
@@ -804,7 +810,7 @@ export function useComboboxMachine<TItem>(
       }
     }, debounceOption ?? announcementDebounceMilliseconds)
     return () => env.window.clearTimeout(timer)
-  }, [announcement, state.inputValue, state.filterQuery, env, debounceOption])
+  }, [announcement, state.inputValue, state.filterQuery, env, debounceOption, announceResults])
 
   // After a value is removed, focus goes to the next remove button, else the previous, else the input.
   useLayoutEffect(() => {

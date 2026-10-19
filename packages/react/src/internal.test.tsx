@@ -18,6 +18,7 @@ describe('@kvirn-ui/react/internal', () => {
     expect(internal.warnOnce).toBeTypeOf('function')
     expect(internal.joinIds).toBeTypeOf('function')
     expect(internal.FieldContext).toBeDefined()
+    expect(internal.ComboboxProviders).toBeTypeOf('function')
   })
 
   test('the public entry does not export any of them', () => {

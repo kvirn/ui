@@ -1568,6 +1568,17 @@ describe('announcements', () => {
     await expect.element(status(), { timeout: 3000 }).toHaveTextContent('2 results')
   })
 
+  test('announceResults={false} announces neither the count nor no results', async () => {
+    await render(<Example announceResults={false} announcementDebounceMilliseconds={30} />)
+    await typeText('r')
+    await expect.element(page.getByRole('option').first()).toBeVisible()
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    expect(status().element().textContent).toBe('')
+    await userEvent.keyboard('zzz')
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    expect(status().element().textContent).toBe('')
+  })
+
   test('opening with a key or the Toggle announces no count, and the active option is never announced by us', async () => {
     await render(<Example withButtons announcementDebounceMilliseconds={30} />)
     await typeText('{ArrowDown}')
