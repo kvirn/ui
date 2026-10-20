@@ -7,7 +7,7 @@ Every component page in `apps/docs` follows this order. DOM order is reading ord
 h1   Component title
      Component description          one or two plain sentences: what it is, what it does for the user
      Facts: APG pattern             only when one applies
-     Facts: Status                  derived word and tier counts from the AT test record, never typed
+     Facts: Status                  derived word and tier counts from the AT test record; the word may be replaced by the maintainer's header override, never typed by an agent
 
 === Page content ===
 h2   When to use it                 2–5 bullets: when, where, when not (each "not" links the right component)
@@ -52,7 +52,7 @@ Announcements and API reference come after Keyboard. Known issues and Testing cl
 
 ## Checklist
 
-- [ ] Header has title, description, APG pattern (or none, when no pattern applies); the derived status (word and counts) comes from the table and is never typed; no other status, maturity or "yet" wording anywhere on the page
+- [ ] Header has title, description, APG pattern (or none, when no pattern applies); the derived status (word and counts) comes from the table and is never typed (a contract's `Status` override is the maintainer's: never add or change it); no other status, maturity or "yet" wording anywhere on the page
 - [ ] `pattern` is set whenever the contract names an APG pattern: "APG <Pattern>", plus the variant in brackets when the APG has several ("APG Combobox (editable, list autocomplete)")
 - [ ] Sections in the order above; no empty heading
 - [ ] 2–8 use cases, each with a name, a description and code

@@ -3,7 +3,6 @@
 - **APG pattern:** [Disclosure](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/): a button that shows and hides one panel of content.
 - **Deviations:** none from the APG keyboard practice. Escape is not handled: APG does not require it for a disclosure, and a panel is not a layer. Two decisions: find-in-page is opt-in (`hiddenUntilFound`), and a panel that is shown from a breakpoint without JavaScript is not supported (see Consumer responsibilities).
 - **Native elements used:** `<button type="button">` (Trigger), `<div>` (Panel). Nothing for Root: it renders no element.
-- **Status:** alpha candidate. Accessibility-reviewer APPROVE (2026-10-06). Manual AT is `pending`.
 - **Tests:** `disclosure.test.tsx` next to this file. `disclosure.stories.tsx` in `apps/storybook/src/components/disclosure/`.
 
 A Disclosure is a button that shows and hides a panel of content. It holds the open state, wires the two together, and never moves focus. Accordion is a list of disclosures with headings (`accordion.a11y.md`).

@@ -3,7 +3,6 @@
 - **APG pattern:** none. A code block is static text, so there is no APG pattern. Its one control is a CopyButton (see the CopyButton page).
 - **Deviations:** none
 - **Native elements used:** `<pre>` for the code, `<p>` for the label, `<button>` for Copy.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `code-block.test.tsx` next to this file. `code-block.stories.tsx` in `apps/storybook/src/components/code-block/`.
 
 A CodeBlock shows a code sample or a reference with a copy button. The code wraps, so there is no scroller to reach and no 2D scrolling (1.4.10 Reflow, AA). There is no syntax highlighting, so no colour carries meaning (1.4.1 Use of Color, A).

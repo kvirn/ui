@@ -3,7 +3,6 @@
 - **APG pattern:** none. A section is not a widget, so there is no APG pattern.
 - **Deviations:** none
 - **Native elements used:** `<div>` by default. The consumer picks another with `as` (allowed elements below), and the element's own semantics apply.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `section.test.tsx` next to this file. `section.stories.tsx` in `apps/storybook/src/components/section/`.
 
 Section is a plain container for a region of the page, such as a sidebar or a band of content. It adds no role, no ARIA, no text, no `tabindex` and no behaviour. Everything a user perceives inside a section comes from the consumer's children, which keep their own semantics and focus order. A section is not the `Section` part of Disclosure or Tabs: those are parts of another component.

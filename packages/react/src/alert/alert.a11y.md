@@ -3,7 +3,6 @@
 - **APG pattern:** none for the visible block. APG's [Alert pattern](https://www.w3.org/WAI/ARIA/apg/patterns/alert/) is a live region, which the [Announcer](../announcer/announcer.a11y.md) already provides, so the Alert never renders one.
 - **Deviations:** none. No role on the box, `announce` goes through the Announcer, and there is a plain Root and four ready-made status roots. The optional Close is a native button: dismissing never changes how the alert is announced.
 - **Native elements used:** `<div>` for the roots, Body and Actions; `<h2>` for the Title (`as` changes it to another heading or to `<p>`); `<svg>` for the decorative icon; `<span>` for the status word; `<button type="button">` for the optional Close.
-- **Status:** alpha. Manual AT is `pending`.
 - **Tests:** `alert.test.tsx` next to this file. `alert.stories.tsx` in `apps/storybook/src/components/alert/`. Design spec: `docs/design/alert.md`.
 
 An Alert is a status message in the content: something people need to know now, or the result of what they just did. It shows its status with an icon, a word and a colour, never with colour alone (1.4.1 Use of Color, A). It doesn't announce itself unless the consumer asks (`announce`), and it never takes focus on its own. It can have one optional close button (`Alert.Close`). The alert owns no open or closed state: the consumer removes it in the button's `onClick` and moves focus on.

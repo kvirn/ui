@@ -3,7 +3,6 @@
 - **APG pattern:** none. QuickExit is a native link that navigates.
 - **Deviations:** a document-level Shift ×3 shortcut, on by default. `shortcut={false}` removes it. It also works in text fields: a Shift counts only when pressed alone.
 - **Native elements used:** `<div>` (Root), `<a href>` (Link).
-- **Status:** alpha candidate. Accessibility-reviewer APPROVE. Manual AT is `pending`.
 - **Tests:** `quick-exit.test.tsx` next to this file, and `packages/core/src/quick-exit/shift-sequence.test.ts`.
 
 ## Roles, states, properties

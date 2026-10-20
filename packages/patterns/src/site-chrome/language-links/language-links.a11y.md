@@ -3,7 +3,6 @@
 - **APG pattern:** none: [Navigation](../../../../react/src/navigation/navigation.a11y.md), horizontal.
 - **Deviations:** none
 - **Native elements used:** `<nav>`, `<ul>`, `<li>`, `<a href hreflang lang>`.
-- **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
 - **Tests:** the pattern adds no behaviour: `navigation.test.tsx` and `link.test.tsx` in `packages/react/src` prove the parts, and `language-links.stories.tsx` (axe, every theme) the composition. `language-links.stories.tsx` in `apps/storybook/src/patterns/site-chrome/`.
 
 ## Roles, states, properties

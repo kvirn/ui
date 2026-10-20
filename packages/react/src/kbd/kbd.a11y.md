@@ -3,7 +3,6 @@
 - **APG pattern:** none. Kbd is inline text, not a widget.
 - **Deviations:** none
 - **Native elements used:** `<kbd>`. `as` accepts only `kbd` (allowed elements below).
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `kbd.test.tsx` next to this file. `kbd.stories.tsx` in `apps/storybook/src/components/kbd/`.
 
 Kbd is the native `<kbd>` element with a class, so the theme can draw it as a key. It adds no role, ARIA, text or behaviour, so what a user perceives is the text inside it, in the flow of the sentence.

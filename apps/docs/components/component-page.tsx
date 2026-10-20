@@ -176,7 +176,9 @@ function testingSummary(status: Contract['status']) {
   const counts = tierOrder
     .filter(
       (tier) =>
-        tier !== 'automated' || (status.counts.automated.total > 0 && status.word !== 'Automated'),
+        tier !== 'automated' ||
+        (status.counts.automated.total > 0 &&
+          (status.override !== undefined || status.word !== 'Automated')),
     )
     .map((tier) => {
       const { done, total, notApplicable } = status.counts[tier]
@@ -189,16 +191,24 @@ function testingSummary(status: Contract['status']) {
   return counts
 }
 
-function StatusBadge({ word }: { word: Contract['status']['word'] }) {
-  const { text, variant } = statusBadgeOf(word)
+function StatusBadge({ status }: { status: Contract['status'] }) {
+  const { text, variant } = statusBadgeOf(status.override ?? status.word)
   return <Badge variant={variant}>{text}</Badge>
 }
 
-function statusBadgeOf(word: Contract['status']['word']) {
+function statusBadgeOf(word: Contract['status']['word'] | Contract['status']['override']) {
   const text = factText.statusBadge
   switch (word) {
     case undefined:
       return { text: text.none, variant: 'danger' } as const
+    case 'Planning':
+      return { text: text.planning, variant: 'danger' } as const
+    case 'Alpha':
+      return { text: text.alpha, variant: 'warning' } as const
+    case 'Beta':
+      return { text: text.beta, variant: 'success' } as const
+    case 'Stable':
+      return { text: text.stable, variant: 'success' } as const
     case 'Automated':
       return { text: text.automated, variant: 'warning' } as const
     case 'Agent-verified':
@@ -244,7 +254,7 @@ export function ComponentPage(props: ComponentPageProps) {
           {pattern === undefined ? null : <Fact term={factText.pattern}>{pattern}</Fact>}
           {status === undefined ? null : (
             <Fact term={factText.testing}>
-              <StatusBadge word={status.word} />
+              <StatusBadge status={status} />
               <VisuallyHidden>{factText.statusSeparator}</VisuallyHidden> {testingSummary(status)}
             </Fact>
           )}

@@ -3,7 +3,6 @@
 - **APG pattern:** none. An empty state is static text.
 - **Deviations:** none
 - **Native elements used:** the consumer's own markup: a heading, a `<p>` and a `kv-button-group`. The theme styles `kv-empty-state`, `kv-empty-state-title` and `kv-empty-state-body` (classes only, Plan 0074).
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** none of its own: it has no code and no behaviour to test. `empty-state.stories.tsx` in `apps/storybook/src/components/empty-state/` renders the markup and its axe check runs in every theme.
 
 An empty state is classes on your own markup. It adds no role, ARIA, string, live region or focus. A page that is empty on arrival is read in reading order. A filter that empties a list announces through the component that filtered (Table's row count, a search's result count).

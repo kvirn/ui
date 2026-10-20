@@ -3,7 +3,6 @@
 - **APG pattern:** none: composes AlertDialog ([APG Alert and Message Dialogs](https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/)).
 - **Deviations:** none
 - **Native elements used:** `<dialog>` (`AlertDialog`), `<button>`.
-- **Status:** in progress (plan 0095 T5). A recipe: the story is the code, there is no package code. Reviewer and manual AT are `pending`.
 - **Tests:** a recipe adds no behaviour of its own, so the Keyboard rows name no test of their own: each part's keys are proved by its component's tests. Axe runs on every story in `timeout-warning.stories.tsx` (`apps/storybook/src/patterns/my-pages/`).
 
 ## Roles, states, properties

@@ -3,7 +3,6 @@
 - **APG pattern:** none. A native description list (`<dl>`), the same pattern as GOV.UK's [Summary list](https://design-system.service.gov.uk/components/summary-list/).
 - **Deviations:** none.
 - **Native elements used:** `<dl>`, `<div>` row groups, `<dt>`, `<dd>` and `<a>` (the Change link).
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `definition-list.test.tsx` next to this file. `definition-list.stories.tsx` in `apps/storybook/src/components/definition-list/`.
 
 Rows of a term, a description and optional actions: the answers on a check-your-answers page, a contact card, a case card. It is read-only: a description you can edit is a Field, and the row's action is a link to where it is changed.

@@ -3,7 +3,6 @@
 - **APG pattern:** none. Divider is static content, not a widget.
 - **Deviations:** none
 - **Native elements used:** `<hr>`. No `as`: the element is the semantics.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `divider.test.tsx` next to this file. `divider.stories.tsx` in `apps/storybook/src/components/divider/`.
 
 Divider is the native `<hr>` element with a class, so the theme can draw and space it. It adds no ARIA attributes, no text and no behaviour. An `<hr>` has the built-in role `separator` (a break between two topics), and some screen readers announce it.

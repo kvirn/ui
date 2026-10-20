@@ -3,7 +3,6 @@
 - **APG pattern:** none: native buttons in a named region, in the flow. Not the [Dialog pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/): nothing is modal and nothing is trapped.
 - **Deviations:** none
 - **Native elements used:** `<section>` (region), `<h2>`, `<button type="button">`, `<a href>`, `<p tabindex="-1">` for the result.
-- **Status:** alpha candidate, story only (plan 0095). Manual AT is `pending`. Kvirnby sets no cookies; `TODO(legal-verify)`: the ePrivacy wording of a real site.
 - **Tests:** none of its own: patterns aren't unit tested. WCAG is proved by axe in every story state in every theme (`cookie-consent.stories.tsx`); the keys and parts are proved in the components' tests that the rows below name.
 
 ## Roles, states, properties

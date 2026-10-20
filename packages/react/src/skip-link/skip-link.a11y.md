@@ -3,7 +3,6 @@
 - **APG pattern:** none. WCAG technique G1 (a link at the top to skip to the main content) with C7 (hide it until it has focus).
 - **Deviations:** none. Activating the link moves focus to the target. That is what the link is for.
 - **Native elements used:** `<a href="#id">`, never `Link.Root`: a hash on the same page is not a route.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `skip-link.test.tsx` next to this file. `skip-link.stories.tsx` in `apps/storybook/src/components/skip-link/`, where `theme.css` is loaded and the visible state is proved.
 
 SkipLink is a native link with a class. It is the first Tab stop in the body, hidden until it has focus, and it moves focus to the main content.

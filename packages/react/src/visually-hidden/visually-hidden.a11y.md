@@ -3,7 +3,6 @@
 - **APG pattern:** none. WCAG technique C7 (hide text visually and keep it for assistive technology).
 - **Deviations:** none
 - **Native elements used:** `<span>`. The consumer can pick another with `as` (allowed elements below), and its own semantics apply.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `visually-hidden.test.tsx` next to this file. `visually-hidden.stories.tsx` in `apps/storybook/src/components/visually-hidden/`.
 
 VisuallyHidden is a span with a class, so the theme can clip it. It adds no role, ARIA, text or behaviour: its content stays in the accessibility tree and is read in the flow of the sentence.

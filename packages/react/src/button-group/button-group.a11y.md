@@ -3,7 +3,6 @@
 - **APG pattern:** none of its own. The WAI-ARIA `group` role, for related controls (the [Toolbar](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/) pattern uses it to group controls). Outside a toolbar it is layout, and the buttons keep the Button's pattern.
 - **Deviations:** none
 - **Native elements used:** `<div>`. `role="group"` only when it has a name.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `button-group.test.tsx` next to this file. `button-group.stories.tsx` in `apps/storybook/src/components/button-group/`.
 
 A ButtonGroup is a row of related Buttons: the footer of a Card, the actions of a form, or the groups in a Toolbar (where it is `Toolbar.Group`). It holds no state and handles no keys.

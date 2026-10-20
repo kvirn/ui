@@ -4,7 +4,6 @@
 - **APG pattern:** none: native elements.
 - **Deviations:** none
 - **Native elements used:** `<div class="kv-prose">`, `<h1>`, `<p class="kv-lead">`.
-- **Status:** in progress (plan 0095 T5). Reviewer and manual AT are `pending`.
 - **Tests:** a recipe has no package code and adds no behaviour of its own, so its Keyboard rows name no test. Axe runs on every story in `preamble.stories.tsx` (`apps/storybook/src/patterns/content-and-media/`).
 
 ## Roles, states, properties

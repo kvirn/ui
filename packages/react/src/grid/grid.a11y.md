@@ -3,7 +3,6 @@
 - **APG pattern:** none. Grid is a layout, not a widget, and it is not the ARIA `grid` role.
 - **Deviations:** none
 - **Native elements used:** `<div>` by default. `Grid.Root` takes `ul` or `ol`, and `Grid.Item` takes `li`, `article`, `section`, `nav`, `aside` or `main`, with `as`. The element's own semantics apply.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `grid.test.tsx` next to this file. `grid.stories.tsx` in `apps/storybook/src/components/grid/`.
 
 Grid lays children out on explicit column tracks chosen with classes (`kv-grid--cols-12`, `kv-grid--md-cols-2`, `kv-grid--fit-md`, `kv-grid-item--lg-span-8`). It adds no ARIA, no text, no `tabindex` and no behaviour, and it has no `data-*` state. As a `ul` or `ol` Root it adds `role="list"`, because WebKit and VoiceOver drop the list role under `list-style: none`. Everything a user perceives comes from the consumer's children, which keep their own semantics and focus order.

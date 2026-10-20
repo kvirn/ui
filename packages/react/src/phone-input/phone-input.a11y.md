@@ -3,7 +3,6 @@
 - **APG pattern:** none needed. PhoneInput is a native `<input type="tel">`, a `textbox`. The name, description and state come from HTML and `aria-describedby`, as for [TextInput](../text-input/text-input.a11y.md).
 - **Deviations:** none from APG, because no APG pattern is used.
 - **Native elements used:** `<input type="tel">` (`PhoneInput.Number`) with `inputmode="tel"`, `spellcheck="false"`, `dir="ltr"` and `autocomplete="tel"` (`tel-national` next to a country); optionally a native `<select autocomplete="tel-country-code">` (`PhoneInput.Country`) in a `<div>` (`PhoneInput.Root`). No mask by default; `mask="telephone"` or your own mask adds no element and no role.
-- **Status:** alpha candidate. Accessibility-reviewer pending, manual AT is `pending`.
 - **Tests:** `phone-input.test.tsx` next to this file (only what PhoneInput adds), and `../text-input/text-input.test.tsx`, `../field/field.test.tsx` and `../mask/use-mask.test.tsx` for the rest. `phone-input.stories.tsx` in `apps/storybook/src/components/phone-input/`.
 
 PhoneInput is a phone number in a Field (`field.a11y.md`): a TextInput with the attributes a phone number needs, set once (1.3.5). It never formats and never limits what the user writes: the value is their text. It is a native input, so the browser supplies the role, the keyboard, selection, paste and autofill.

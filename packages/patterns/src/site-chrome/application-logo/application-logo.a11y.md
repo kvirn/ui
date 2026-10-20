@@ -3,7 +3,6 @@
 - **APG pattern:** none: a native link ([Link](../../../../react/src/link/link.a11y.md)) with a decorative image and text.
 - **Deviations:** none
 - **Native elements used:** `<a href>`, `<img alt="">`, `<span>`.
-- **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
 - **Tests:** none of its own: patterns aren't unit tested. WCAG is proved by axe in every story state in every theme (`application-logo.stories.tsx`); the keys and parts are proved in the components' tests that the rows below name.
 
 ## Roles, states, properties

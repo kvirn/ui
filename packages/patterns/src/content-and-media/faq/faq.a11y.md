@@ -4,7 +4,6 @@
 - **APG pattern:** none: [Accordion](../../../../react/src/accordion/accordion.a11y.md) composed under a `Heading`.
 - **Deviations:** none
 - **Native elements used:** `<h2>`, `<h3>`, `<button type="button">`, `<div class="kv-prose">`, `<p>`, `<ul>`, `<li>`, `<a href>`.
-- **Status:** in progress (plan 0095 T5). Reviewer and manual AT are `pending`.
 - **Tests:** a recipe has no package code and adds no behaviour of its own, so its Keyboard rows name no test. Axe runs on every story in `faq.stories.tsx` (`apps/storybook/src/patterns/content-and-media/`).
 
 ## Roles, states, properties

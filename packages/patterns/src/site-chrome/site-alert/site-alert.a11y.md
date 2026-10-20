@@ -3,7 +3,6 @@
 - **APG pattern:** none: an [Alert](../../../../react/src/alert/alert.a11y.md) (content, not a live region) as a named region.
 - **Deviations:** none
 - **Native elements used:** `<section>` (region), `<p>` for the title, `<a href>`, `<button type="button">` for the optional close.
-- **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
 - **Tests:** none of its own: patterns aren't unit tested. WCAG is proved by axe in every story state in every theme (`site-alert.stories.tsx`); the keys and parts are proved in the components' tests that the rows below name.
 
 ## Roles, states, properties

@@ -3,7 +3,6 @@
 - **APG pattern:** none. Stack is not a widget, so there is no APG pattern.
 - **Deviations:** none
 - **Native elements used:** `<div>` by default. The consumer picks another with `as` (allowed elements below), and the element's own semantics apply.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `stack.test.tsx` next to this file. `stack.stories.tsx` in `apps/storybook/src/components/stack/`.
 
 Stack is its children one below the other with an even space between them. It adds no ARIA, no text, no `tabindex` and no behaviour, and it has no `data-*` state. The one exception: when it renders a `ul` or `ol`, it adds `role="list"`, because WebKit (Safari's engine) and VoiceOver drop the list role when the list has no markers (`list-style: none`). A `role` you pass yourself wins. Everything a user perceives comes from the consumer's children, which keep their own semantics and focus order.

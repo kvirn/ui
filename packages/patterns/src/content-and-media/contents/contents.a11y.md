@@ -4,7 +4,6 @@
 - **APG pattern:** none: [TableOfContents](../../../../react/src/table-of-contents/table-of-contents.a11y.md) composed with the page's `h2` headings.
 - **Deviations:** none
 - **Native elements used:** `<nav>`, `<ol>` or `<ul>`, `<li>`, `<a href="#id">`, `<h2 id>`.
-- **Status:** in progress (plan 0095 T5). Reviewer and manual AT are `pending`.
 - **Tests:** a recipe has no package code and adds no behaviour of its own, so its Keyboard rows name no test. Axe runs on every story in `contents.stories.tsx` (`apps/storybook/src/patterns/content-and-media/`).
 
 ## Roles, states, properties

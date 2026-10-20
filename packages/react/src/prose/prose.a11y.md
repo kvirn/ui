@@ -3,7 +3,6 @@
 - **APG pattern:** none. Prose is a styling container, not a widget.
 - **Deviations:** none. A Prose in a Field or Fieldset is its description (see below).
 - **Native elements used:** `<div>` by default. The consumer picks `<article>` or `<section>` with `as` (allowed elements below), and the element's own semantics apply.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `prose.test.tsx` next to this file. `prose.stories.tsx` in `apps/storybook/src/components/prose/`.
 
 Prose is the `kv-prose` class as a component: a container whose headings, paragraphs, lists, links and tables the theme sets for reading. It adds no role, ARIA, text, `tabindex` or behaviour of its own, with one exception: inside a `Field` or `Fieldset` it is the description of the control or the group (below).

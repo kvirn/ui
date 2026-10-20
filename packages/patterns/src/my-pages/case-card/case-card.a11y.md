@@ -3,7 +3,6 @@
 - **APG pattern:** none: native elements, composed from shipped parts.
 - **Deviations:** none
 - **Native elements used:** `<ul>`, `<li>`, `<h3>`, `<a href>`, `<dl>`, `<time datetime>`, `Badge`.
-- **Status:** in progress (plan 0095 T5). A recipe: the story is the code, there is no package code. Reviewer and manual AT are `pending`.
 - **Tests:** a recipe adds no behaviour of its own, so the Keyboard rows name no test of their own: each part's keys are proved by its component's tests. Axe runs on every story in `case-card.stories.tsx` (`apps/storybook/src/patterns/my-pages/`).
 
 ## Roles, states, properties

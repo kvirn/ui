@@ -3,7 +3,6 @@
 - **APG pattern:** none: a composition of native landmarks, [Navigation](../../../../react/src/navigation/navigation.a11y.md) and [Disclosure](../../../../react/src/disclosure/disclosure.a11y.md). The main navigation is the [Main menu](../main-menu/main-menu.a11y.md), a list of links or topics that open lists of links, written as children of `SiteHeader.Menu`.
 - **Deviations:** none
 - **Native elements used:** `<header>` (banner), `<nav>`, `<button type="button">` (the Menu button), `<a href>`, `<input type="search">`, `<button type="submit">`.
-- **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
 - **Tests:** none of its own: patterns aren't unit tested. WCAG is proved by axe in every story state in every theme (`site-header.stories.tsx`); the keys and parts are proved in the components' tests that the rows below name.
 
 ## Roles, states, properties

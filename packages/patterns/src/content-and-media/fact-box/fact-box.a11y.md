@@ -4,7 +4,6 @@
 - **APG pattern:** none: native elements: [List](../../../../react/src/list/list.a11y.md) or [DefinitionList](../../../../react/src/definition-list/definition-list.a11y.md).
 - **Deviations:** none
 - **Native elements used:** `<div class="kv-inset">`, `<h2>`–`<h6>`, `<ul>`, `<li>`, `<dl>`, `<dt>`, `<dd>`, `<a href>`.
-- **Status:** in progress (plan 0095 T5). Reviewer and manual AT are `pending`.
 - **Tests:** a recipe has no package code and adds no behaviour of its own, so its Keyboard rows name no test. Axe runs on every story in `fact-box.stories.tsx` (`apps/storybook/src/patterns/content-and-media/`).
 
 ## Roles, states, properties

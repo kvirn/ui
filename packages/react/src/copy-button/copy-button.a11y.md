@@ -3,7 +3,6 @@
 - **APG pattern:** [Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/)
 - **Deviations:** none
 - **Native elements used:** `<button type="button">`. Activation and the Tab stop are the browser's own. The result is announced through the shared live region of `KvirnProvider` (the Announcer) and drawn in a plain `<span>` after the button.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `copy-button.test.tsx` next to this file. `copy-button.stories.tsx` in `apps/storybook/src/components/copy-button/`.
 
 A CopyButton is a Button that writes a text to the clipboard. Its accessible name is its label, "Copy", and it never changes to "Copied": the result is a status message (4.1.3), not a new name. When the browser refuses (no permission, an insecure context, no Clipboard API), the button announces the failure and selects the text where it is shown, so the user can copy it by hand.

@@ -3,7 +3,6 @@
 - **APG pattern:** none. Container is not a widget, so there is no APG pattern.
 - **Deviations:** none
 - **Native elements used:** `<div>` by default. The consumer picks another with `as` (allowed elements below), and the element's own semantics apply.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `container.test.tsx` next to this file. `container.stories.tsx` in `apps/storybook/src/components/container/`.
 
 Container limits the width of the page's content. The `page` size is centred; `reading` and `form` start at the start edge. It adds no role, no ARIA, no text, no `tabindex` and no behaviour, and it has no `data-*` state. Everything a user perceives comes from the consumer's children, which keep their own semantics and focus order.

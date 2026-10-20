@@ -3,7 +3,6 @@
 - **APG pattern:** none needed. TextInput is a native `<input>` with a text-like `type`. There is no APG pattern for a text field: the name, description and state come from HTML and `aria-describedby`.
 - **Deviations:** none from APG. `type="number"` and `type="date"` are not accepted by design.
 - **Native elements used:** `<input type="text | email | tel | url | password | search">`. A mask adds no element and no role.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `text-input.test.tsx` and `../mask/use-mask.test.tsx`. `text-input.stories.tsx` in `apps/storybook/src/components/text-input/`, and `mask.stories.tsx` in `…/mask/`. NumberInput, a TextInput with a number mask built in, has its own contract and stories: [number-input.a11y.md](../number-input/number-input.a11y.md).
 
 TextInput is the text control of a Field (see the Field page). It is a native input: the browser supplies the role (`textbox`, `searchbox`), the keyboard, selection, paste and autofill. TextInput adds the Field's wiring and the part class.

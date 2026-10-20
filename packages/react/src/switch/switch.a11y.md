@@ -3,7 +3,6 @@
 - **APG pattern:** [Switch](https://www.w3.org/WAI/ARIA/apg/patterns/switch/). The native form: a checkbox with `role="switch"`. The state is the native `checked`; `aria-checked` is never written.
 - **Deviations:** none from APG. Design decisions: Enter does not toggle (APG makes it optional); no `required` (a consent is a Checkbox); no strings of its own.
 - **Native elements used:** `<input type="checkbox" role="switch">`, named by a `<label for>` (Field.Label).
-- **Status:** alpha candidate. Accessibility-reviewer APPROVE. Manual AT is `pending`.
 - **Tests:** `switch.test.tsx` next to this file. `switch.stories.tsx` in `apps/storybook/src/components/switch/`.
 
 A Switch is mainly a setting that takes effect at once, with no Save or Send button ("Get messages by text message"). Submitting it in a plain form also works natively, but in a public-sector e-service form prefer a Checkbox (declaration, consent) or a RadioGroup (yes or no). It is a native input, so the browser supplies the Space key, the label click, form submission, `form.reset()` and `disabled`. Switch adds the `switch` role, the Field's wiring, the part class and `data-state`. It holds no form state: pass `checked` and `onCheckedChange` from your logic, or `defaultChecked` and `name` for a plain form.

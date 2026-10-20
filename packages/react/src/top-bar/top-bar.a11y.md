@@ -3,7 +3,6 @@
 - **APG pattern:** none: a plain `<div>` around your text and a [Navigation](../navigation/navigation.a11y.md).
 - **Deviations:** none
 - **Native elements used:** `<div>`; inside it the elements you write (a `<p>`, a `<nav>`, `<a href>`).
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `top-bar.test.tsx` next to this file (keys, the hook, the roles, axe in each variant). `top-bar.stories.tsx` in `apps/storybook/src/components/top-bar/`: axe in every story state in every theme, and the theme's own checks that need `theme.css`: every bar item at least 24 × 24 px (`expectTopBarTargetSizes`, 2.5.8) and the band at least 48px tall (`expectTopBarBandHeight`), at every width. The 48px band is a maintainer requirement (DESIGN.md, Site chrome patterns, top bar), a plan requirement and not a WCAG success criterion.
 
 ## Roles, states, properties

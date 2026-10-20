@@ -3,7 +3,6 @@
 - **APG pattern:** none. There is no APG pattern for a file upload. The way in is a native `<button>` that opens the system file dialog, backed by a hidden native `<input type="file">`. A drop zone is an enhancement for devices that drag, never the only way in (2.1.1 Keyboard, level A; 2.5.7 Dragging Movements, level AA). Prior art: GOV.UK file upload and multiple file upload.
 - **Deviations:** none from APG. Rejected files are kept out of the list, and announcements are batched into one sentence.
 - **Native elements used:** `<button>` (Trigger, Cancel, Retry, Remove), `<input type="file">` (Input), `<progress>` (Progress), `<ul>` and `<li>` (List, Item, and the lines of Rejections), `<div>` (Root, DropZone, Actions), `<p>` (DropHint, Summary, Status, ItemError).
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `file-upload.test.tsx` and `file-upload-announcements.test.ts` next to this file. `file-upload.stories.tsx` in `apps/storybook/src/components/file-upload/`.
 
 A FileUpload lets someone attach files to a form. One button opens the system dialog. Files can also be dropped on a zone around it. Each file is checked against the limits, and a refused file never enters the list: it is named under the button, with how to fix it. Accepted files show in a list with their name, type, size and status, and can be uploaded through the consumer's own `upload` function, with a native progress bar. The library sends nothing anywhere.

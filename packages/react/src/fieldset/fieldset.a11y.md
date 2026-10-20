@@ -3,7 +3,6 @@
 - **APG pattern:** none. A fieldset is native HTML: `<fieldset>` with a `<legend>` is the group's name, and the browser maps it to the `group` role.
 - **Deviations:** none from APG. A Prose in a Fieldset is the group's description (there is no Fieldset.Description), and the group's help text is `Fieldset.HelpText`.
 - **Native elements used:** `<fieldset>` (Fieldset.Root), `<legend>` (Fieldset.Legend), `<p>` (Fieldset.ErrorMessage, which behaves like Field.ErrorMessage), a `<div class="kv-prose">` for the description (Fieldset.Prose), a `<p class="kv-field-help-text">` for the help text (Fieldset.HelpText), and a `<span>` for the optional marker.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `fieldset.test.tsx` next to this file. `fieldset.stories.tsx` in `apps/storybook/src/components/fieldset/`.
 
 A Fieldset groups related questions or the options of one question. Its legend is the group's name, and its description (`Fieldset.Prose`), help text (`Fieldset.HelpText`) and error are the group's. Checkbox groups, radio groups and the date input are built on it.

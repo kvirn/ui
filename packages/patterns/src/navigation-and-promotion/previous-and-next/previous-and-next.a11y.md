@@ -4,7 +4,6 @@
 - **APG pattern:** none: native elements: [Pagination](../../../../react/src/pagination/pagination.a11y.md).
 - **Deviations:** none
 - **Native elements used:** `<nav>`, `<ul>`, `<li>`, `<a href>`.
-- **Status:** in progress (plan 0095 T5). Reviewer and manual AT are `pending`.
 - **Tests:** a recipe has no package code and adds no behaviour of its own, so its Keyboard rows name no test. Axe runs on every story in `previous-and-next.stories.tsx` (`apps/storybook/src/patterns/navigation-and-promotion/`).
 
 ## Roles, states, properties

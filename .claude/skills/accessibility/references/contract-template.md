@@ -3,7 +3,7 @@
 - **APG pattern:** <link>
 - **Deviations:** none, or the deviation and where it is recorded (`keyboard` key tables for keys, `accessibility/references/apg-patterns.md` for roles and states), approved by the maintainer
 - **Native elements used:** …
-- **Status:** alpha | beta | stable
+- **Status:** <!-- optional maintainer override: Planning | Alpha | Beta | Stable; omit to show the status derived from the AT test record -->
 - **Tests:** `<name>.test.tsx` next to this file. `<name>.stories.tsx` in `apps/storybook/src/components/<name>/`.
 
 ## Roles, states, properties

@@ -3,7 +3,6 @@
 - **APG pattern:** none: native elements, composed from shipped parts.
 - **Deviations:** none
 - **Native elements used:** `<div>` band, `<h1>`, `<p>`, `<a href>`, `<img alt="">`.
-- **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
 - **Tests:** a pattern adds no behaviour of its own, so each Keyboard row names the shipped component's test. Axe runs on every story in `hero.stories.tsx` (`apps/storybook/src/patterns/navigation-and-promotion/`).
 
 ## Roles, states, properties

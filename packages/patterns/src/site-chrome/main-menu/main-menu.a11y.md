@@ -3,7 +3,6 @@
 - **APG pattern:** [Disclosure Navigation Menu](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/): buttons that toggle lists of links. It is never `role="menu"`, `menubar` or `menuitem`, and nothing has `aria-haspopup`: the items are page links.
 - **Deviations:** the APG example's optional arrow keys, Home and End are not adopted (plan 0095, D3 and spec section 5.2): `Disclosure` and `Navigation` handle none, a list of links is learned with Tab, and an arrow on a link scrolls the page for a zoomed keyboard user. Adding them later is additive. Escape and the focus-out close are the composition's own handlers.
 - **Native elements used:** `<nav>`, `<ul>`, `<li>`, `<button type="button">` (Disclosure.Trigger), `<div>` (Disclosure.Panel), `<a href>`.
-- **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
 - **Tests:** none of its own: patterns aren't unit tested. WCAG is proved by axe in every story state in every theme (`primary-navigation.stories.tsx`); the keys and parts are proved in the components' tests that the rows below name.
 
 ## Roles, states, properties

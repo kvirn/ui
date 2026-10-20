@@ -3,7 +3,6 @@
 - **APG pattern:** [Disclosure](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/) (inline) and a non-modal dialog opened by a button (floating); the choices are native radio groups.
 - **Deviations:** none
 - **Native elements used:** `<button>`, `<fieldset>` and `<legend>` through `RadioGroup`, `<input type="radio">`, `<label>`, `<div popover>` (floating).
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `display-settings.test.tsx` next to this file, in Chromium with real key events and axe. Stories: `display-settings.stories.tsx` in `apps/storybook/src/components/display-settings/`.
 
 ## Roles, states, properties

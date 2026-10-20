@@ -3,7 +3,6 @@
 - **APG pattern:** none. There is no APG map pattern. The keys follow the [keyboard interface practice](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/), and the markers follow the [Toolbar](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/) arrow model.
 - **Deviations:** the markers in view are **one Tab stop** and the arrow keys move between them, where a Tab stop per marker is unusable with many places. Arrows on the viewport pan and `+` / `-` zoom, while it has focus. Approved by the maintainer.
 - **Native elements used:** `<div role="region">` (Viewport), `<div role="group">` (Markers, Controls), `<button>` (marker, cluster, controls, list row trigger, place in a cluster, Close), `<a>` (skip link), radio group (BaseMapSwitch), `<fieldset>` and checkboxes (Layers), a heading (`h2` by default, `headingLevel` sets it) and `<ul>` (List), `<dialog open>` (Details and ClusterPopup, non-modal) with an `<img>`, a heading, `<p>` for the body and address, `<p>` (Attribution).
-- **Status:** in progress. Translations await native review. A Test cell marked `pending` has no test yet. Manual AT is `pending`.
 - **Tests:** `map.test.tsx` next to this file. `map.stories.tsx` in `apps/storybook/src/components/map/`.
 
 A Map shows places on a camera over a base map, with the same places as a list. It is one focusable region you can pan and zoom from the keyboard, with a set of markers that is a single Tab stop, buttons for every gesture, and a list that is the screen reader user's equivalent of the map.

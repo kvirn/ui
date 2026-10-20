@@ -3,7 +3,6 @@
 - **APG pattern:** none. A scrollable region with native scrolling: the [`region` role](https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/region.html) and a Tab stop only while it scrolls, so a keyboard user can scroll it (2.1.1 Keyboard, A).
 - **Deviations:** none. Native scrollbars only, never hidden or thinned; there is no `orientation` prop, because the native `overflow` already scrolls whichever axis overflows.
 - **Native elements used:** `<div>` (or `<section>` with `as`) that is a `role="region"` while it scrolls, or always with `region="always"`.
-- **Status:** alpha candidate. Reviewer findings fixed. Manual AT is `pending`.
 - **Tests:** `scroll-area.test.tsx` next to this file. `scroll-area.stories.tsx` in `apps/storybook/src/components/scroll-area/`. `Table.ScrollRegion` is tested in `table.test.tsx`.
 
 A ScrollArea holds content that may be wider or taller than its box, such as a wide table, a long code sample or a pasted block, and scrolls it with the browser's own scrollbars. While the content doesn't fit it is a named region you can Tab to and scroll with the arrow keys. When everything fits it is a plain `<div>`. Safari doesn't make a scrollable `<div>` a Tab stop by itself, which is why the area sets `tabindex="0"` while it scrolls.

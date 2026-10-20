@@ -3,7 +3,6 @@
 - **APG pattern:** none needed. Textarea is a native `<textarea>`. There is no APG pattern for a text field: the name, description and state come from HTML and `aria-describedby`.
 - **Deviations:** none from APG. With `characterCount`, `maxLength` is the count's limit and is **not** written as the native `maxlength`: the browser cuts a pasted text without a word, so someone who pastes a text from a draft loses part of it and is not told. The user sees how many characters are over and shortens the text. It is a documented choice of this library.
 - **Native elements used:** `<textarea>`. `CharacterCount` is a `<p>` (a help text). Neither adds a role.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `textarea.test.tsx`, `../character-count/character-count.test.tsx` and `packages/core/src/character-count/character-count.test.ts` (the maths). `textarea.stories.tsx` in `apps/storybook/src/components/textarea/`.
 
 Textarea is the multi-line text control of a Field (see the Field page). It is a native element: the browser supplies the role (`textbox`, multi-line), the keyboard, selection, spellcheck, paste, undo and autofill. Textarea adds the Field's wiring, the part class, `rows` (5 unless you set it) and, with `characterCount`, a count under the box. The count's part is `CharacterCount`, which the rich text editor also uses.

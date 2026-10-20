@@ -3,7 +3,6 @@
 - **APG pattern:** none. A heading is not a widget.
 - **Deviations:** none
 - **Native elements used:** `<h1>` to `<h6>`.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `heading.test.tsx` next to this file. `heading.stories.tsx` in `apps/storybook/src/components/heading/`.
 
 Heading renders the native heading element named by a required `as`, and an optional `size` sets its look apart from the level. It adds only classes, no role, ARIA, text or behaviour, so what a user perceives is the native heading.

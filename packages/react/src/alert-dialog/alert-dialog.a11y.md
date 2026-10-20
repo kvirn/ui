@@ -3,7 +3,6 @@
 - **APG pattern:** [Alert Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/), a [Dialog (Modal)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) for a message that needs an answer. It shares its hook, focus rules and layer behaviour with Dialog: see the [Dialog](/components/dialog) page for everything not listed here.
 - **Deviations:** **Tab does not cycle inside the dialog**, as in Dialog: a native modal `<dialog>` lets Tab leave to browser UI before it wraps. Approved by the maintainer.
 - **Native elements used:** `<dialog role="alertdialog">` (Popup), `<button>` (Trigger), `<h2>` (Title), `<p>` (Description), `<div>` (Body, Actions). Nothing for Root.
-- **Status:** alpha candidate. Accessibility-reviewer APPROVE. Manual AT is `pending`.
 - **Tests:** `alert-dialog.test.tsx` next to this file, and `../dialog/dialog.test.tsx` for the shared behaviour. `alert-dialog.stories.tsx` in `apps/storybook/src/components/alert-dialog/`.
 
 An AlertDialog interrupts the user with a message that needs an answer: a confirm-before-delete, a session timeout warning. It starts on the safe or the primary action, it is read out together with its message, and **a press outside never dismisses it**. Escape runs the owner's cancel outcome, which must never be destructive. The dialog itself announces nothing: opening is read out because focus moves into it (the role, the name and the description). It hosts its own live regions for status inside it, because the page's are inert while it is open.

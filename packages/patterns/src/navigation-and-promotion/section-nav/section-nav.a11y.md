@@ -3,7 +3,6 @@
 - **APG pattern:** none: [Disclosure](../../../../react/src/disclosure/disclosure.a11y.md) holding a [Navigation](../../../../react/src/navigation/navigation.a11y.md); the 64rem rule follows the docs shell.
 - **Deviations:** none
 - **Native elements used:** `<div>`, `<button type="button">`, `<nav>`, `<ul>`, `<li>`, `<a href>`.
-- **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
 - **Tests:** a pattern adds no behaviour of its own, so each Keyboard row names the shipped component's test. Axe runs on every story in `section-nav.stories.tsx` (`apps/storybook/src/patterns/navigation-and-promotion/`).
 
 ## Roles, states, properties

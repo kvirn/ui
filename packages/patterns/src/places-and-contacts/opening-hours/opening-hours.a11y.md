@@ -3,7 +3,6 @@
 - **APG pattern:** none: native elements, composed from shipped parts.
 - **Deviations:** none
 - **Native elements used:** `<h2>`/`<h3>`, `<dl>`, `<div>` rows, `<dt>`, `<dd>`, a `kv-inset` `<div>`, `Alert.Warning`.
-- **Status:** in progress (plan 0095 T5). A recipe: the story is the code, there is no package code. Reviewer and manual AT are `pending`.
 - **Tests:** a recipe adds no behaviour of its own, so the Keyboard rows name no test of their own: each part's keys are proved by its component's tests. Axe runs on every story in `opening-hours.stories.tsx` (`apps/storybook/src/patterns/places-and-contacts/`).
 
 ## Roles, states, properties

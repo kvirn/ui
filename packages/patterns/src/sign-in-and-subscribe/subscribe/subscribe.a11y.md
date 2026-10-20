@@ -4,7 +4,6 @@
 - **APG pattern:** none: [Field](../../../../react/src/field/field.a11y.md), [ErrorSummary](../../../../react/src/error-summary/error-summary.a11y.md) and [Alert](../../../../react/src/alert/alert.a11y.md) composed.
 - **Deviations:** none
 - **Native elements used:** `<h2>`, `<p>`, `<form novalidate>`, `<label>`, `<input type="email" autocomplete="email">`, `<button type="submit">`, `<a href>`.
-- **Status:** in progress (plan 0095 T5). Reviewer and manual AT are `pending`.
 - **Tests:** a recipe has no package code and adds no behaviour of its own, so its Keyboard rows name no test. Axe runs on every story in `subscribe.stories.tsx` (`apps/storybook/src/patterns/sign-in-and-subscribe/`).
 
 ## Roles, states, properties

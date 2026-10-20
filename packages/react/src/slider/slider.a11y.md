@@ -3,7 +3,6 @@
 - **APG pattern:** [Slider](https://www.w3.org/WAI/ARIA/apg/patterns/slider/), single thumb. The native form: `<input type="range">`, whose implicit role is `slider` and whose `aria-valuemin`, `aria-valuemax` and `aria-valuenow` are native.
 - **Deviations:** none from APG.
 - **Native elements used:** `<input type="range">`, named by a `<label for>` (Field.Label) or by `aria-labelledby`.
-- **Status:** alpha candidate. Native range, gates green, accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `slider.test.tsx` next to this file. `slider.stories.tsx` in `apps/storybook/src/components/slider/`.
 
 A Slider is for an approximate value (a search radius, a volume). It is never the only way to enter a number that matters: an exact value is a NumberInput, and a slider beside one gives a resident both. It is a native input, so the browser supplies every key, the drag, a press on the track, form submission, `form.reset()` and `disabled`. Slider adds the Field's wiring, `aria-valuetext`, the part class and `data-*` state. It holds no form state: pass `value` and `onValueChange`, or `defaultValue` and `name` for a plain form.

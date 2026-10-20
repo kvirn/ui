@@ -3,7 +3,6 @@
 - **APG pattern:** none. A one-time code is one native text input. The name, description and state come from HTML and the Field (see the Field and TextInput contracts), and the masked typing rules from the mask engine.
 - **Deviations:** none from APG. It is one native input, with boxes that only draw it. There is no auto-advance and no auto-submit.
 - **Native elements used:** `<input type="text">` (Input), `<div>` (Root, no role), `<span aria-hidden="true">` (Slot, and the separator).
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `one-time-code.test.tsx` next to this file. `one-time-code.stories.tsx` in `apps/storybook/src/components/one-time-code/`.
 
 A OneTimeCode shows a code sent by text message or email as a row of boxes, one per character, shaped by a `pattern` (`999999`, `****-****`, `AA-9999`) with a dash drawn between the groups. Underneath it is one native input: autofill events, paste, undo and the screen reader work on that one field (tested); real SMS autofill, password managers and dictation are best checked by hand with your own users and assistive technology. The boxes are a drawing of its value, caret and selection, hidden from assistive technology. Nothing moves focus and nothing submits on its own (3.2.2).

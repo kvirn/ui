@@ -4,7 +4,6 @@
 - **APG pattern:** none: native `video` controls, with a [Disclosure](../../../../react/src/disclosure/disclosure.a11y.md) for the transcript.
 - **Deviations:** none
 - **Native elements used:** `<video controls preload="none" poster>`, `<track kind="captions" srclang>`, `<h2>`, `<button type="button">`, `<ul>`, `<li>`, `<a href>`.
-- **Status:** in progress (plan 0095 T5). Reviewer and manual AT are `pending`.
 - **Tests:** a recipe has no package code and adds no behaviour of its own, so its Keyboard rows name no test. Axe runs on every story in `video.stories.tsx` (`apps/storybook/src/patterns/content-and-media/`).
 
 ## Roles, states, properties

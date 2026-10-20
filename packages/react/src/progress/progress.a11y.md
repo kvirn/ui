@@ -3,7 +3,6 @@
 - **APG pattern:** none. A progress bar is not a widget and has no keys. The native form, `<progress>` (implicit `progressbar` role), is used only when the value is known.
 - **Deviations:** none.
 - **Native elements used:** `<div>`, `<p>` and `<span>` for the text, `<progress>` for a known value.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `progress.test.tsx` next to this file, and `packages/core/src/progress/progress-timer.test.ts` for the timing. `progress.stories.tsx` in `apps/storybook/src/components/progress/`.
 
 Progress says that something is working and, when known, how far along. It is for a wait the user started (a send, a filter, a route), placed where the result will appear or beside the busy button. It renders at once; `delayMilliseconds` holds it back for a wait that is often quick. Table, Combobox and FileUpload keep their own loading text.

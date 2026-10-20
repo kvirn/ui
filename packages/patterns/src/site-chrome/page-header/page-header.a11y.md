@@ -3,7 +3,6 @@
 - **APG pattern:** none: native elements, composed from shipped parts ([Heading](../../../../react/src/heading/heading.a11y.md), [DefinitionList](../../../../react/src/definition-list/definition-list.a11y.md) and the [Breadcrumb](../../../../react/src/breadcrumb/breadcrumb.a11y.md) you pass as a child).
 - **Deviations:** none
 - **Native elements used:** `<div>` band, `<h1>`, `<p>`, `<dl>`, `<dt>`, `<dd>`, `<nav>` and `<a href>` (the Breadcrumb).
-- **Status:** alpha candidate (plan 0103). Manual AT is `pending`.
 - **Tests:** a pattern adds no behaviour of its own, so each Keyboard row names the shipped component's test. Axe runs on every story in `page-header.stories.tsx` (`apps/storybook/src/patterns/site-chrome/`).
 
 ## Roles, states, properties

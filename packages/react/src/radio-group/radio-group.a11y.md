@@ -3,7 +3,6 @@
 - **APG pattern:** [Radio Group](https://www.w3.org/WAI/ARIA/apg/patterns/radio/). Native: `<input type="radio">` elements that share a `name` already give the pattern's keys (one Tab stop, arrows move and check, Space checks) and its roles, so no ARIA and no key handler are added. The group is a `<fieldset>` with a `<legend>` instead of `role="radiogroup"`.
 - **Deviations:** none from APG. Design decisions: the group is a Fieldset, option labels carry no optional marker, **no `aria-invalid` on radios**, and the group holds no form state.
 - **Native elements used:** `<fieldset>` and `<legend>` (`RadioGroup.Root` and `RadioGroup.Legend`), `<input type="radio">` (`RadioGroup.Radio`), `<label for>` (`Field.Label`).
-- **Status:** alpha candidate. Accessibility-reviewer APPROVE. Manual AT is `pending`.
 - **Tests:** `radio-group.test.tsx` next to this file. `radio-group.stories.tsx` in `apps/storybook/src/components/radio-group/`. The fieldset parts (`RadioGroup.Legend`, `RadioGroup.ErrorMessage`, `RadioGroup.Prose` as the description and `RadioGroup.HelpText` as the help text): `fieldset.a11y.md`. They are the Fieldset's parts under the group's name.
 
 A RadioGroup is one question with exactly one answer ("How long do you need the permit?": 1, 6 or 12 months). `RadioGroup.Root` renders the `<fieldset>` and acts as a `Fieldset.Root` with `group` set; `RadioGroup.Radio` is a native radio. It holds no form state: the selected value is the `value` prop, and each change is reported up.

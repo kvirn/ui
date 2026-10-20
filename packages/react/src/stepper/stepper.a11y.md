@@ -3,7 +3,6 @@
 - **APG pattern:** none. Stepper is static text: native semantics only.
 - **Deviations:** none.
 - **Native elements used:** `<p>`. The consumer can pick `<div>` with `as` (allowed elements below), and its own semantics apply.
-- **Status:** alpha candidate. Reviewer findings fixed, accessibility-reviewer re-review pending. Manual AT is `pending`.
 - **Tests:** `stepper.test.tsx` next to this file. `stepper.stories.tsx` in `apps/storybook/src/components/stepper/`.
 
 Stepper says where the user is in a multi-page form: "Step 2 of 5: Your vehicle". It is orientation, not navigation. A step is a section that may span pages, so the total does not change when an answer adds a page. If sections can't be counted reliably, leave the Stepper out: never "Step 3 of ?".

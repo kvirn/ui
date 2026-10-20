@@ -3,7 +3,6 @@
 - **APG pattern:** none needed. A link is a native `<a href>` ([APG Link](https://www.w3.org/WAI/ARIA/apg/patterns/link/) only covers non-native links, which Link never renders).
 - **Deviations:** none
 - **Native elements used:** `<a href>`, rendered by the app's registered router link component, or by a native `<a>` when none is registered or `as="a"` is given. `<span>` for the new-tab notice. **Allowed elements:** `Link.Root` takes `as` as a component or a tag that renders an `<a href>` and forwards its ref; `Link.NewTabNotice` `span` (default), `em` or `small`; `Link.Icon` `span` (default) or `i`. Another tag on the last two warns once (`as-not-allowed`) and falls back to `span`.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `link.test.tsx` next to this file. `link.stories.tsx` in `apps/storybook/src/components/link/`.
 
 Link navigates. An action is a Button. Link has no `disabled` prop, by type: a disabled link isn't a thing, so remove the link or render plain text instead.

@@ -4,7 +4,6 @@
 - **APG pattern:** [Combobox: Editable Combobox With List Autocomplete](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-autocomplete-list/), through Autocomplete (`aria-autocomplete="list"`, manual selection).
 - **Deviations:** one, approved by the maintainer (2026-10-19, Plan 0117 D1; `keyboard` skill updated). Enter with no suggestion active, and no IME composition, **searches** and calls `preventDefault`, so it never submits a form: the text is a lookup, not an answer. The form's own submit button sends it. Enter on an active suggestion picks it, as in the APG.
 - **Native elements used:** `<input type="text" role="combobox">`, `<label for>`, `<div popover="manual">`, `<div role="listbox">`, `<div role="option">`, `<button type="button">` (Clear, Search).
-- **Status:** in progress. Translations await native review. Manual AT is `pending`.
 - **Tests:** `address-search.test.tsx` next to this file (a fake geocoder in memory: no test calls the network). `address-search.stories.tsx` in `apps/storybook/src/components/map/`.
 
 Design: `docs/design/address-search.md`. The geocoder is the consumer's: the library names no URL and sends nothing until the visitor types and, on request, presses Search.

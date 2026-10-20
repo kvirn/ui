@@ -31,6 +31,7 @@ The word is always shown as text in the badge, and the counts stay beside it, so
 | `AT-verified`                         | AT-verified      | `success` |
 | `Release-tested`                      | Release-tested   | `success` |
 
+- A maintainer override (`Planning`, `Alpha`, `Beta`, `Stable`) replaces the word: see Plan 0146 for the words and variants.
 - The badge text comes from `apps/docs/messages` (all docs locales that exist), not a literal in the component.
 - The mapping is one small pure function next to `testingSummary`, not in the library.
 - The counts sentence stays as the Fact's text after the badge: `Automated 5 of 5, Core 2 of 2, Release n/a`.

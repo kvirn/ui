@@ -3,7 +3,6 @@
 - **APG pattern:** none. An input group is a visual wrapper around a native text input. The name, description and state come from HTML and the Field (see the Field and TextInput pages). A Button inside it follows the APG Button pattern (see the Button page).
 - **Deviations:** none from APG. Decisions: Addons are visual only and `aria-hidden`, interactive add-ons are real Buttons directly in the Root, start and end follow DOM order.
 - **Native elements used:** `<div>` (Root, no role), `<span>` (Addon, `aria-hidden`), the `<input>` (Input), and an optional `<button>` (Button) placed directly in the Root.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `input-group.test.tsx` next to this file. `input-group.stories.tsx` in `apps/storybook/src/components/input-group/`, and `AmountWithUnit` in `number-input.stories.tsx`.
 
 An InputGroup puts a unit ("kr", "%", "km"), a decorative icon or a Button inside the input's box. The Root draws the box: the edge, the radius, the invalid and disabled state and the focus ring. Addons are visual only. The label always carries the meaning, so a screen-reader user never needs the Addon: "Monthly rent in kronor", never "Monthly rent" plus a "kr" Addon.

@@ -24,7 +24,7 @@
 
 The matrix has three tiers. **Automated** rows are proved by re-runnable tests (anyone can run them with `vp test run`) and need no person. All of it runs in CI, the Display modes sweeps in one serial step. **Core** rows must pass before `beta`. **Release** rows are tested before 1.0, and before every minor release after it, for all changed components. Results go in `<name>.a11y.md`, dated and with versions, and are published on the docs site.
 
-`alpha` and `beta` are the internal roadmap ladder only (`docs/roadmap.md`). On the docs site the same facts show as the derived status below: `alpha` is roughly `Automated`, and `beta` is `AT-verified`.
+`alpha` and `beta` are the roadmap ladder (`docs/roadmap.md`). On the docs site the status is derived from the AT test record below (`alpha` is roughly `Automated`, `beta` is `AT-verified`). The maintainer can override it with an optional `- **Status:**` header line holding exactly `Planning`, `Alpha`, `Beta` or `Stable`; the build warns when the override is above the evidence (Plan 0146).
 
 **Automated (re-runnable tests)** (maintainer, 2026-10-18):
 
@@ -65,7 +65,7 @@ A cell is `pending`, `pass`, `agent-verified` (agent check only, Core and Releas
 
 ### Derived status
 
-No page states a status by hand: it is computed from the table (maintainer, 2026-10-18). A contract's `**Status:**` header bullet is the internal ladder of `docs/roadmap.md` and is never rendered. Per tier, done is the rows whose Result is `pass` or `n/a`. The page shows the counts (`Automated 5 of 5, Core 0 of 2, Release 0 of 3`; `Core n/a` or `Release n/a` when every row of that tier is `n/a`) and the highest word that holds. `AT-verified` and `Release-tested` also need at least one row of the tier with Human check `pass`, because a person must have tested it; a tier of only `n/a` rows never earns a word (lead decision, 2026-10-18; the maintainer may overrule):
+A page's status is computed from the table (maintainer, 2026-10-18). A contract's optional `**Status:**` header line is a maintainer override (`Planning`, `Alpha`, `Beta` or `Stable`, any other value fails the build) that replaces the derived word in the badge; the counts stay. The build warns once per contract when the override ranks above the derived word (`Planning` 0; `Automated` and `Agent-verified` 1; `AT-verified` and `Release-tested` 2; `Alpha` 1; `Beta` and `Stable` 2). Agents never add or change one (Plan 0146). Per tier, done is the rows whose Result is `pass` or `n/a`. The page shows the counts (`Automated 5 of 5, Core 0 of 2, Release 0 of 3`; `Core n/a` or `Release n/a` when every row of that tier is `n/a`) and the highest word that holds. `AT-verified` and `Release-tested` also need at least one row of the tier with Human check `pass`, because a person must have tested it; a tier of only `n/a` rows never earns a word (lead decision, 2026-10-18; the maintainer may overrule):
 
 | Word             | When                                                                                                    |
 | ---------------- | ------------------------------------------------------------------------------------------------------- |

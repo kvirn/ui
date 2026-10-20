@@ -3,7 +3,6 @@
 - **APG pattern:** [Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/), the toggle button (`aria-pressed`)
 - **Deviations:** none
 - **Native elements used:** `<button type="button">`. Activation, the Tab stop and the Enter and Space keys are the browser's own.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `toggle.test.tsx` next to this file. `toggle.stories.tsx` in `apps/storybook/src/components/toggle/`.
 
 A Toggle is a Button that is on or off. Use it for a choice with a direct, visible effect on the page: bold text, "show only unread". It is not for an answer in a form (use a Checkbox or a radio group) or a setting that is saved (use a Switch). It builds on Button: everything Button's contract says about `disabled`, `focusableWhenDisabled` and the missing-name warning holds here.

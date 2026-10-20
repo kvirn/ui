@@ -4,7 +4,6 @@
 - **APG pattern:** none: native elements: [Card](../../../../react/src/card/card.a11y.md) and [Grid](../../../../react/src/grid/grid.a11y.md) as a list.
 - **Deviations:** none
 - **Native elements used:** `<h1>`, `<ul>`, `<li>`, `<a href>`, `<div>` for alerts.
-- **Status:** in progress (plan 0095 T5). Reviewer and manual AT are `pending`.
 - **Tests:** a recipe has no package code and adds no behaviour of its own, so its Keyboard rows name no test. Axe runs on every story in `login-entry.stories.tsx` (`apps/storybook/src/patterns/sign-in-and-subscribe/`).
 
 ## Roles, states, properties

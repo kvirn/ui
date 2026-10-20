@@ -3,7 +3,6 @@
 - **APG pattern:** [Toolbar](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/), with toggle buttons ([Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/), `aria-pressed`)
 - **Deviations:** none. APG makes wrapping, and Home and End, optional: the choices are stated below. A control that owns keys keeps them (a Listbox trigger's Home and End), which APG allows.
 - **Native elements used:** `<div role="toolbar">`, and `<button>` for Toolbar.Button and Toolbar.Toggle. The roving `tabindex` is the toolbar's.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `toolbar.test.tsx` next to this file. `toolbar.stories.tsx` in `apps/storybook/src/components/toolbar/`.
 
 A Toolbar is one Tab stop for a row of related controls, with the arrow keys between them, so a keyboard user passes a long row of formatting buttons with one Tab. Use it for three or more controls (APG). With fewer, separate buttons or a ButtonGroup are easier to find. The same arrow keys, in the same order, whatever the width: a toolbar that doesn't fit wraps, and the arrows follow the DOM across rows.

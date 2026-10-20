@@ -3,7 +3,6 @@
 - **APG pattern:** none. APG has no chip or tag pattern, so no key is invented. A removable tag is a native `<button>`: the [APG Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/) keys apply (Enter, Space) and nothing else.
 - **Deviations:** none. Delete and Backspace are not taken on a remove button: that is not an APG deviation (APG defines nothing for a chip).
 - **Native elements used:** `<ul role="list">` with `<li>` items, `<button type="button">`, `<span>`, `<p>`.
-- **Status:** alpha candidate. Accessibility-reviewer pending, manual AT is `pending`.
 - **Tests:** `tag.test.tsx` next to this file. `tag.stories.tsx` in `apps/storybook/src/components/tag/`. Design: `docs/design/tag-and-filters.md`.
 
 A tag is a short fact in words, such as an applied filter. A static tag is text in a list item. A removable tag is one button: the whole chip, text and cross, so there is no small cross to hit (2.5.8) and no text that does nothing when pressed. TagGroup holds the focus rule for removal and the removal announcement. It holds no tag state: the consumer keeps the tags and removes one in `onRemove`.

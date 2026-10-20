@@ -3,7 +3,6 @@
 - **APG pattern:** none. It is not a widget. It applies the W3C technique of moving focus to the new page title on a single-page navigation (WCAG technique G110 is the redirect-based alternative; [technique ARIA22](https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA22) covers the optional status message).
 - **Deviations:** none.
 - **Native elements used:** the consumer's own `<h1>`, made temporarily focusable with `tabindex="-1"`.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `use-route-focus.test.tsx` next to this file. `route-focus.stories.tsx` in `apps/storybook/src/components/route-focus/`.
 
 A client-side navigation does not reload the page, so focus stays on the clicked link (which may be gone) and a screen reader says nothing (2.4.3 Focus Order, level A; 4.1.3 Status Messages, level AA). `useRouteFocus` moves focus to the new page's title once per navigation. It is a hook only: it renders nothing and returns nothing to spread.

@@ -3,7 +3,6 @@
 - **APG pattern:** none. Address is static content, not a widget.
 - **Deviations:** none
 - **Native elements used:** `<address>`. No `as`: the element is the semantics.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `address.test.tsx` next to this file. `address.stories.tsx` in `apps/storybook/src/components/address/`.
 
 Address is the native `<address>` element with a class, so the theme can undo the browser's italic. It adds no role, ARIA, text or behaviour. `<address>` has the `group` role in some browsers and none in others, and a screen reader reads its text as part of the page.

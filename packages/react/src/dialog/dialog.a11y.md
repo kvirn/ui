@@ -3,7 +3,6 @@
 - **APG pattern:** [Dialog (Modal)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/). The popup is a native `<dialog>` opened with `showModal()`: the browser puts it in the top layer and makes the page behind it `inert`.
 - **Deviations:** **Tab does not cycle inside the dialog.** A native modal `<dialog>` lets Tab leave to the browser's own UI (the address bar) before it wraps, where the APG cycles inside. Approved by the maintainer. 2.1.2 No Keyboard Trap (A) holds: focus is never trapped, and the page behind is inert. Everything else follows the APG.
 - **Native elements used:** `<dialog>` (Popup), `<button>` (Trigger, Close), `<h2>` (Title), `<p>` (Description), `<div>` (Body, Actions). Nothing for Root: it renders no element.
-- **Status:** alpha candidate. Accessibility-reviewer APPROVE. Manual AT is `pending`.
 - **Tests:** `dialog.test.tsx` next to this file, `../popup/use-dismissable-layer.test.tsx` (the `backdrop` option) and `@kvirn-ui/core` `scroll-lock.test.ts`. `dialog.stories.tsx` in `apps/storybook/src/components/dialog/`.
 
 A Dialog is a window on top of the page that asks for the user's attention: a form, a short read, a decision. The page behind it cannot be reached with the keyboard or a screen reader, Escape and a Close button close it, focus moves in when it opens and returns to where it was when it closes, and the page does not scroll behind it. The consumer owns the markup inside. For a message that needs an answer, use an AlertDialog.

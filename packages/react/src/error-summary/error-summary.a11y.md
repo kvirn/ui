@@ -3,7 +3,6 @@
 - **APG pattern:** none. It applies the GOV.UK [Error summary](https://design-system.service.gov.uk/components/error-summary/) pattern and WCAG technique [G139](https://www.w3.org/WAI/WCAG22/Techniques/general/G139) (create a mechanism that allows users to jump to errors), with [ARIA22](https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA22)'s alternative (a focus move) in place of a live region.
 - **Deviations:** none. It is not `role="alert"`: the focus move is the announcement.
 - **Native elements used:** `<ul>`, `<li>`, `<a href="#id">`, `<h2>` (from `Alert.Title`; `as` picks `h3` to `h6`), and `<ol>` with `as` on the List.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `error-summary.test.tsx` next to this file. `error-summary.stories.tsx` in `apps/storybook/src/components/error-summary/`.
 
 An Alert.Danger (see the Alert page) at the top of a form, shown after a failed submit, that lists every problem as a link to its field. Focus moves to it once, so the screen reader reads it and a keyboard user starts at the list.

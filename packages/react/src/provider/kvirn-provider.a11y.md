@@ -3,7 +3,6 @@
 - **APG pattern:** none. The provider renders no visible element and has no interaction of its own. The outermost one renders two visually hidden, empty live regions (see the Announcer page). A theme switcher built on `useTheme` is consumer markup made of native radio groups ([APG Radio Group](https://www.w3.org/WAI/ARIA/apg/patterns/radio/), native `<input type="radio">`).
 - **Deviations:** none
 - **Native elements used:** none rendered by the provider. A theme switcher built on `useTheme` uses `<fieldset>`, `<legend>`, `<label>` and `<input type="radio">`. `KvirnThemeScript` renders one `<script>`.
-- **Status:** alpha. Manual AT is `pending`.
 - **Tests:** `kvirn-provider.test.tsx` and `use-theme.test.tsx` next to this file. `kvirn-provider.stories.tsx` in `apps/storybook/src/components/provider/`.
 
 The provider's contract is about what it guarantees for other components:

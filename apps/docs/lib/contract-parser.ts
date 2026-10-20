@@ -101,7 +101,13 @@ export interface TierCount {
 export interface ContractStatus {
   counts: Record<TestTier, TierCount>
   word: 'Automated' | 'Agent-verified' | 'AT-verified' | 'Release-tested' | undefined
+  /** The maintainer's word from the header's `- **Status:**` line (Plan 0146); it replaces `word` on the page. */
+  override?: StatusOverride
 }
+
+const statusOverrides = ['Planning', 'Alpha', 'Beta', 'Stable'] as const
+
+export type StatusOverride = (typeof statusOverrides)[number]
 
 export class ContractError extends Error {
   constructor(file: string, message: string) {
@@ -508,6 +514,43 @@ export function deriveStatus(tiers: TestRecord): ContractStatus {
   return { counts, word }
 }
 
+const derivedRank = {
+  Automated: 1,
+  'Agent-verified': 1,
+  'AT-verified': 2,
+  'Release-tested': 2,
+} as const
+
+// Stable ranks with Beta: the matrix can't prove an API freeze.
+const overrideRank = { Planning: 0, Alpha: 1, Beta: 2, Stable: 2 } as const
+
+function parseStatusOverride(value: string | undefined, file: string): StatusOverride | undefined {
+  const word = value?.replaceAll(/<!--.*?-->/g, '').trim()
+  if (word === undefined || word === '') {
+    return undefined
+  }
+  const override = statusOverrides.find((candidate) => candidate === word)
+  if (override === undefined) {
+    throw new ContractError(
+      file,
+      `has the Status "${word}". Allowed: ${statusOverrides.join(', ')}, or leave the line out`,
+    )
+  }
+  return override
+}
+
+function warnOverrideAboveEvidence(status: ContractStatus, file: string) {
+  const { override, word } = status
+  if (
+    override !== undefined &&
+    overrideRank[override] > (word === undefined ? 0 : derivedRank[word])
+  ) {
+    console.warn(
+      `${file}: Status override "${override}" is above the AT test record (derived: ${word ?? 'Not yet verified'})`,
+    )
+  }
+}
+
 function parseTestRecord(blocks: ContractBlock[], file: string): TestRecord {
   const tiers: TestRecord = { automated: [], core: [], release: [] }
   const table = blocks.find(
@@ -637,6 +680,13 @@ export function parseContract(markdown: string, file: string): Contract {
   addTitled('wcag-success-criteria', 'wcag', 'WCAG SCs covered')
   addTitled('testing', 'testing', 'AT test record')
 
+  const override = parseStatusOverride(header['Status'], file)
+  const status = {
+    ...deriveStatus(parseTestRecord(blocksOf('AT test record'), file)),
+    ...(override === undefined ? {} : { override }),
+  }
+  warnOverrideAboveEvidence(status, file)
+
   return {
     name,
     accessibility,
@@ -644,7 +694,7 @@ export function parseContract(markdown: string, file: string): Contract {
     knownIssues: knownIssuesIn(blocksOf('Known issues')),
     announcements,
     readAloud: announcementLines === undefined ? [] : parseReadAloud(announcementLines, file),
-    status: deriveStatus(parseTestRecord(blocksOf('AT test record'), file)),
+    status,
   }
 }
 

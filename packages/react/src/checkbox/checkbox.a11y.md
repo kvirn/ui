@@ -3,7 +3,6 @@
 - **APG pattern:** [Checkbox](https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/). Dual-state and tri-state ("mixed") are both covered, with the native element: `<input type="checkbox">` and its `indeterminate` property. No ARIA is added.
 - **Deviations:** none from APG. Choices made: Field wiring, no form state, option labels have no optional marker.
 - **Native elements used:** `<input type="checkbox">`, named by a `<label for>` (Field.Label).
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `checkbox.test.tsx` next to this file. `checkbox.stories.tsx` in `apps/storybook/src/components/checkbox/`. A Checkbox inside a group: `checkbox-group.a11y.md`.
 
 A Checkbox is one yes-or-no answer: a declaration, a consent, a "select all" in a staff table. It is a native input, so the browser supplies the role, the Space key, the label click and form submission. Checkbox adds the Field's wiring, the part class, `indeterminate` and `data-state`. It holds no form state: pass `checked` and `onCheckedChange` from your form logic, or `defaultChecked` and `name` for a plain form.

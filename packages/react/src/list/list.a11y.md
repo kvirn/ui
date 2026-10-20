@@ -3,7 +3,6 @@
 - **APG pattern:** none. List is static content, not a widget.
 - **Deviations:** none
 - **Native elements used:** `<ul>` (default) or `<ol>` with `as="ol"`, and `<li>`. `as` is `'ul' | 'ol'` only.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `list.test.tsx` next to this file. `list.stories.tsx` in `apps/storybook/src/components/list/`.
 
 List is the native list with a class and a few typed choices, so link lists, related links and footer link groups are one component instead of a `<ul role="list">` repeated per pattern. It adds no text, no behaviour and no `tabindex`. A list of links is a list, not a navigation: the consumer wraps it in a named `nav` when it is one.

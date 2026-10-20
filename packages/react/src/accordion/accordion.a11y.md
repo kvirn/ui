@@ -3,7 +3,6 @@
 - **APG pattern:** [Accordion](https://www.w3.org/WAI/ARIA/apg/patterns/accordion/): a stack of headings whose buttons each show and hide one section. Each item is a Disclosure: how its button, its hidden panel and find-in-page work is described on the Disclosure page.
 - **Deviations:** none. APG makes the arrow keys, Home and End between headers optional. This version doesn't use them: every button is a Tab stop, and those keys stay the page's own.
 - **Native elements used:** `<div>` (Root, Item), `<h1>` to `<h6>` (Heading, by `level`), `<button type="button">` (Trigger), `<div>` (Panel).
-- **Status:** alpha candidate. Accessibility-reviewer APPROVE (2026-10-06). Manual AT is `pending`.
 - **Tests:** `accordion.test.tsx` next to this file. `accordion.stories.tsx` in `apps/storybook/src/components/accordion/`.
 
 An Accordion is a list of questions or sections, each a heading with a button, that a reader opens one by one. Items are independent: opening one never closes another. It has no "show all" button.

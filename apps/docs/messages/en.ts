@@ -755,6 +755,10 @@ export const messages = {
         agentVerified: 'Agent-verified',
         atVerified: 'AT-verified',
         releaseTested: 'Release-tested',
+        planning: 'Planning',
+        alpha: 'Alpha',
+        beta: 'Beta',
+        stable: 'Stable',
       },
     },
     icons: {

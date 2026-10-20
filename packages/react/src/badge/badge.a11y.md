@@ -3,7 +3,6 @@
 - **APG pattern:** none. Badge is inline text, not a widget.
 - **Deviations:** none
 - **Native elements used:** `<span>`. The consumer can pick `<strong>` or `<em>` with `as` (allowed elements below), and its own semantics apply.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `badge.test.tsx` next to this file. `badge.stories.tsx` in `apps/storybook/src/components/badge/`.
 
 Badge is a `<span>` with a class, so the theme can draw a short status or category as a pill. It adds no role, ARIA, text or behaviour, so what a user perceives is the text inside it, in the flow of the page. The text is the status: the colour only adds to it.

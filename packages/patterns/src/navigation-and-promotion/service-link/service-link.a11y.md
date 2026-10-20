@@ -3,7 +3,6 @@
 - **APG pattern:** none: a native link in the service look.
 - **Deviations:** none
 - **Native elements used:** `<div>`, `<p>`, `<a href>`, an inset `<div>` with `<p>` for the closed state.
-- **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
 - **Tests:** a pattern adds no behaviour of its own, so each Keyboard row names the shipped component's test. Axe runs on every story in `service-link.stories.tsx` (`apps/storybook/src/patterns/navigation-and-promotion/`).
 
 ## Roles, states, properties

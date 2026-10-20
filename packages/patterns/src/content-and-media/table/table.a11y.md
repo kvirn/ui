@@ -4,7 +4,6 @@
 - **APG pattern:** none: [Table](../../../../react/src/table/table.a11y.md), static.
 - **Deviations:** none
 - **Native elements used:** `<table>`, `<caption>`, `<thead>`, `<tbody>`, `<tr>`, `<th scope>`, `<td>`, a scroll region `<div>`.
-- **Status:** in progress (plan 0095 T5). Reviewer and manual AT are `pending`.
 - **Tests:** a recipe has no package code and adds no behaviour of its own, so its Keyboard rows name no test. Axe runs on every story in `table.stories.tsx` (`apps/storybook/src/patterns/content-and-media/`).
 
 ## Roles, states, properties

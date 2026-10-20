@@ -4,7 +4,6 @@
 - **APG pattern:** none: native elements: [List](../../../../react/src/list/list.a11y.md) and [Link](../../../../react/src/link/link.a11y.md).
 - **Deviations:** none
 - **Native elements used:** `<h2>`, `<h3>`, `<ul>`, `<li>`, `<a href>`, `<time datetime>`.
-- **Status:** in progress (plan 0095 T5). Reviewer and manual AT are `pending`.
 - **Tests:** a recipe has no package code and adds no behaviour of its own, so its Keyboard rows name no test. Axe runs on every story in `document-list.stories.tsx` (`apps/storybook/src/patterns/content-and-media/`).
 
 ## Roles, states, properties

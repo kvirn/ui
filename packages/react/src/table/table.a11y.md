@@ -3,7 +3,6 @@
 - **APG pattern:** [Table](https://www.w3.org/WAI/ARIA/apg/patterns/table/) and the [Sortable Table example](https://www.w3.org/WAI/ARIA/apg/patterns/table/examples/sortable-table/). Not the Grid pattern: a read-only data table keeps the screen reader's table navigation, and the keys are the ones a web page already has.
 - **Deviations:** none from APG. It is a native `<table>` with no `role="grid"`.
 - **Native elements used:** `<table>`, `<caption>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<th scope>`, `<td>`, `<button>` (sort and expand), `<input type="checkbox">` (selection), `<div>` that is a `role="region"` while it scrolls, or always with `region="always"` (scroll region).
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is pending.
 - **Tests:** `table.test.tsx` next to this file. `table.stories.tsx` in `apps/storybook/src/components/table/`. The unit tests of the TanStack wrapper (`createTable`, `createLocaleSortFn`, `renderTemplate`) are in `packages/core/src/table/`.
 
 A Table shows data in rows and columns. It renders a native `<table>`, so a screen reader reads its headers, rows and columns and says where you are. With `useTable` it sorts one column at a time, selects rows, expands a row to show its details, filters and paginates through TanStack Table, and can render only the rows near the scroll position. Without `useTable` every part is the plain native element, so a small static table needs none of it.

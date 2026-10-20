@@ -3,7 +3,6 @@
 - **APG pattern:** none: a native search landmark and form, with [Field](../../../../react/src/field/field.a11y.md), [TextInput](../../../../react/src/text-input/text-input.a11y.md), [ButtonGroup](../../../../react/src/button-group/button-group.a11y.md) and [Button](../../../../react/src/button/button.a11y.md).
 - **Deviations:** none
 - **Native elements used:** `<search>`, `<form method="get">`, `<label>`, `<input type="search">`, `<button type="submit">`.
-- **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
 - **Tests:** none of its own: patterns aren't unit tested. WCAG is proved by axe in every story state in every theme (`site-search.stories.tsx`); the keys and parts are proved in the components' tests that the rows below name.
 
 ## Roles, states, properties

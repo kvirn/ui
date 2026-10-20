@@ -3,7 +3,6 @@
 - **APG pattern:** Dialog (Modal) focus rules: initial focus, Tab loop, return. The WCAG technique for moving focus on a view change (see the Route focus page).
 - **Deviations:** none. Dialog itself keeps the native Tab order (approved by the maintainer) and uses only the shared return code.
 - **Native elements used:** the consumer's own element (`<aside>`, `<div>`, `<section>`). Native `<dialog>.showModal()` and the `inert` attribute are the first choice; this is for what they don't cover.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `use-focus.test.tsx` next to this file.
 
 `useFocus` moves focus into a scope when it becomes active, can hold it there (`contain`), and returns it when the scope ends. It renders nothing and adds no role or ARIA: the consumer picks `role="dialog"`, `aria-modal`, a label.

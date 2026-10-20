@@ -3,7 +3,6 @@
 - **APG pattern:** none for the group. Buttons follow [Button](https://www.w3.org/WAI/ARIA/apg/patterns/button/), the naming practice for media buttons such as Play and Pause.
 - **Deviations:** none from the APG. Previous, Next and Stop stay focusable while unavailable (`aria-disabled`) while idle, so their names can be found and the keyboard path doesn't jump.
 - **Native elements used:** `<button type="button">`, `<select>` with a `<label>`, a plain `<span>` for the status.
-- **Status:** in-planning. **Blocked: waiting for an npm package update and a re-test.** Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `read-aloud.test.tsx` next to this file (a fake engine, nothing speaks).
 
 ReadAloud reads a region of the page aloud for people who benefit from hearing it. It is not a screen reader substitute and never starts by itself.

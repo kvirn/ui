@@ -3,7 +3,6 @@
 - **APG pattern:** none: native landmarks and a skip link ([SkipLink](../../../react/src/skip-link/skip-link.a11y.md)).
 - **Deviations:** none
 - **Native elements used:** `<a href="#main">`, `<header>`, `<main id>`, `<footer>`.
-- **Status:** alpha candidate (plan 0095). Manual AT is `pending`.
 - **Tests:** the pattern adds no behaviour of its own: each Keyboard row names the shipped SkipLink's test. `page-frame.stories.tsx` in `apps/storybook/src/patterns/site-chrome/`.
 
 ## Roles, states, properties

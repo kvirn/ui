@@ -3,7 +3,6 @@
 - **APG pattern:** none. The Announcer is not a widget. It is the pair of live regions that WCAG 4.1.3 Status Messages (AA) needs ([ARIA `status` role](https://www.w3.org/TR/wai-aria-1.2/#status), [`alert` role](https://www.w3.org/TR/wai-aria-1.2/#alert), [technique ARIA22](https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA22) and [ARIA19](https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA19)).
 - **Deviations:** none.
 - **Native elements used:** `<output>` for the polite region (its implicit role is `status`) and a `<div role="alert">` for the assertive one, which has no native element.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `announcer.test.tsx` next to this file, and `announcer.test.ts` in `packages/core/src/announcer/`. `announcer.stories.tsx` in `apps/storybook/src/components/announcer/`. The component has no keys.
 
 The Announcer is how a component tells a screen reader that something changed without moving focus (4.1.3 Status Messages, AA). The outermost `KvirnProvider` renders two live regions once, empty, after its children. Components and apps call `useAnnouncer().announce(message, options)`. The regions are the only part, and `Announcer` is not exported: rendering a second pair would make a screen reader read every message twice.

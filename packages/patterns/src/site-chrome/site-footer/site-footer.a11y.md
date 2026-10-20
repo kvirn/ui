@@ -3,7 +3,6 @@
 - **APG pattern:** none: native landmarks, [DefinitionList](../../../../react/src/definition-list/definition-list.a11y.md), [Address](../../../../react/src/address/address.a11y.md) and the [List](../../../../react/src/list/list.a11y.md).
 - **Deviations:** none
 - **Native elements used:** `<footer>` (contentinfo), `<h2>`, `<dl>`, `<address>`, `<nav aria-labelledby>`, `<ul>`, `<a href>`.
-- **Status:** alpha candidate. Manual AT is `pending`.
 - **Tests:** the pattern adds no behaviour: the shipped parts' tests prove the links and `site-footer.stories.tsx` (axe, every theme) the composition. `site-footer.stories.tsx` in `apps/storybook/src/patterns/site-chrome/`.
 
 ## Roles, states, properties

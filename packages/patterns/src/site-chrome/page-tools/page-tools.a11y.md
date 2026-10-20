@@ -3,7 +3,6 @@
 - **APG pattern:** none: native buttons and a `<time>`. [Read aloud](../../../../react/src/read-aloud/read-aloud.a11y.md) and [CopyButton](../../../../react/src/copy-button/copy-button.a11y.md) have their own contracts.
 - **Deviations:** none
 - **Native elements used:** `<button type="button">`, and ReadAloud's `role="group"`. The last-updated line is your own `<p>` with a `<time datetime>`.
-- **Status:** alpha candidate (plan 0095). Manual AT is `pending`. Read aloud is blocked in its own plan (0088).
 - **Tests:** the pattern adds no behaviour of its own: the copy and its status are proved in `copy-button.test.tsx`, the buttons in `button.test.tsx`. `page-tools.stories.tsx` in `apps/storybook/src/patterns/site-chrome/`.
 
 ## Roles, states, properties

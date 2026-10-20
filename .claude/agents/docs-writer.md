@@ -31,7 +31,7 @@ Follow the `docs-pages` skill and its template (`references/component-page-templ
    - Re-derive each Automated row of the contract's `## AT test record` from evidence, by `docs/accessibility.md`: a story file for axe; a component test with axe and role/state assertions for Markup; named keyboard tests for Keyboard (`tooling/keyboard-docs` lists them); `toHaveFocus` tests for Focus order and management; a sweep that includes the component (the sweep list in `vite.config.ts`) for Display modes. `pass` only when the named test or story exists and you opened it, otherwise `pending`. `n/a` only with a true reason.
    - For each interactive component, keep a `### What to check` list of 3–6 plain checks, drawn from its Keyboard table and Announcements, directly under the table in the `## AT test record` section. It is a script, not a result: no dates, names or outcomes. Update it when the contract changes.
    - Record a Core or Release result only from a result the maintainer gives you (tester, date, versions, outcome). Never write or claim a human check, and never turn `pending` into `pass` for those rows.
-   - The header's "Testing" fact and the Testing and Known issues sections are derived or contract-driven: never hand-edit status text.
+   - The header's "Testing" fact and the Testing and Known issues sections are derived or contract-driven: never hand-edit status text, and never add or change a contract's `Status` override (maintainer only).
 7. **Run** `vp check <your files>`, one command, on the files you changed. Nothing else (rule 12).
 
 ## Rules
@@ -41,7 +41,7 @@ Follow the `docs-pages` skill and its template (`references/component-page-templ
 - **Write only** `apps/docs/components/<name>-page.tsx`, `apps/docs/app/components/<name>/page.tsx`, `apps/docs/examples/<name>/**` `apps/docs/content/<name>.api.ts`, and the `
 - **Contracts:** you may change the wording of a `.a11y.md` section to make it plain, never what it claims, and never the Keyboard table's keys or the Message keys. The one other edit is the Testing upkeep step's, in the `## AT test record` section only. A claim that is wrong in the contract or the code is a finding for component-engineer, not an edit.
 - **Template:** if the page can't follow the template because `ComponentPage` or `contract-sections-view.tsx` renders a different order or header, report it once as a template finding. Don't edit those files, `messages/en.ts` or `site-navigation.tsx`.
-- Never claim legal compliance, an AT row as passed without both its agent and human check recorded, or any status, maturity or "yet" wording (Plan 0138). Show `agent-verified`, `n/a` and `pending` rows as recorded. The header's status word and tier counts are derived from the AT table: never type or edit them.
+- Never claim legal compliance, an AT row as passed without both its agent and human check recorded, or any status, maturity or "yet" wording (Plan 0138). Show `agent-verified`, `n/a` and `pending` rows as recorded. The header's status word and tier counts are derived from the AT table (the word can carry a maintainer override): never type or edit them, and never add or change a contract `Status` line.
 - No new dependency, no tests of any kind in `apps/docs` (no page, shell, example, lib or action tests), no changes outside the components you were given.
 
 ## Report

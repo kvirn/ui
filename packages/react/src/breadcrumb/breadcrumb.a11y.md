@@ -3,7 +3,6 @@
 - **APG pattern:** [Breadcrumb](https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/): a `<nav>` named by a label around an ordered list of links.
 - **Deviations:** none. The current page is the last item as text (`<span aria-current="page">`), not a link to the page you are on. The APG makes `aria-current` optional when the current item is not a link; here it is set, so the current item is still exposed, and a link to the same page offers nothing to follow. The current page is simply not a Tab stop.
 - **Native elements used:** `<nav>` (the `navigation` landmark), `<ol>` and `<li>`. The links are Links: native `<a href>`, rendered by the registered router link.
-- **Status:** alpha candidate. Gates green, accessibility-reviewer APPROVE after fixes. Manual AT is `pending`.
 - **Tests:** `breadcrumb.test.tsx` next to this file. `breadcrumb.stories.tsx` in `apps/storybook/src/components/breadcrumb/`, where `theme.css` is loaded and the wrapping, separators and targets are proved. Design brief: `docs/design/municipality-reference-site.md` (B4) and `DESIGN.md`, Breadcrumb and pagination.
 
 A breadcrumb tells a resident where they are and gives a way up. It adds no `tabindex`, no key handling, no state and no announcement: the links are the focusable parts and own the keys.

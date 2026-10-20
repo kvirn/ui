@@ -3,7 +3,6 @@
 - **APG pattern:** [Date Picker Dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/) (a modal dialog around a grid), after a typed field. The grid is described on the Calendar page; the dialog on the Dialog page.
 - **Deviations:** none new. From the APG example: no OK and Cancel buttons (Enter selects, Close and Escape cancel); the month is announced by Announcer on a button press, not by a live heading (as in Calendar); Tab leaves the modal to the browser's own UI before wrapping (a deviation from the APG Dialog pattern, approved).
 - **Native elements used:** `<button type="button">` (trigger and Close), a native `<dialog>` shown with `showModal()`, `<h2>` (title), and the Calendar's `<table role="grid">`.
-- **Status:** alpha candidate. Accessibility-reviewer pending. Manual AT is `pending`.
 - **Tests:** `date-picker.test.tsx` next to this file. `date-picker.stories.tsx` in `apps/storybook/src/components/date-picker/`.
 
 DatePicker is an **add-on to a typed field** (a DateInput, or one `masks.date()` TextInput): typing always works, and the dialog is the slower path for keyboard and screen reader users. It is controlled only: it keeps no date of its own. The field's date goes in as `value` (as year-month-day, such as 2026-10-15), and the chosen day comes out through `onValueChange` for the consumer to write into the field. It chooses one date. For a start and an end, use DateRangePicker.

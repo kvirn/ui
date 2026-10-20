@@ -3,7 +3,6 @@
 - **APG pattern:** none needed for a list of links. A labelled `<nav>` landmark around a list of links is plain HTML, and it is not the [Disclosure Navigation](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/) pattern: nothing here opens or closes. Never `role="menu"`.
 - **Deviations:** none
 - **Native elements used:** `<nav>` (the `navigation` landmark), `<ul>` and `<li>`. The links are [Link](../link/link.a11y.md): native `<a href>`.
-- **Status:** alpha candidate. Gates green 2026-10-06, accessibility-reviewer pending, and it reads the whole contract. Manual AT is `pending`.
 - **Tests:** `navigation.test.tsx` next to this file. `navigation.stories.tsx` and `navigation.fixture.tsx` in `apps/storybook/src/components/navigation/`. Design specs: `docs/design/navigation.md` (the structure and the service link) and `docs/design/navigation-link-options.md` (the look: the current page, the trail and the horizontal bar).
 
 Navigation is a named landmark around a list of page links, with the current page marked and an optional second level. It adds no `tabindex`, no key handling, no state and no announcement: the links are the focusable parts and own the keys ([link.a11y.md](../link/link.a11y.md)). It is not a composite widget, so every link is a Tab stop and the arrow keys do nothing. It is a vertical list by default and a row that wraps with the class `kv-navigation--horizontal` on the root. Orientation is a look and not behaviour, so it is a class and not a prop, and it changes no role, key or name.
