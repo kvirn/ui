@@ -164,6 +164,7 @@
     block-size: 2.25rem;
     translate: 0 calc(2.25rem * 2.75 / 24);
     fill: currentColor;
+    fill-rule: evenodd;
     stroke: var(--kv-color-canvas);
     stroke-width: 1.5;
     stroke-linejoin: round;
