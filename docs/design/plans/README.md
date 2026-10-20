@@ -10,17 +10,11 @@ Plans describe **how** we will build something. Decisions live in the skills and
 
 ## Index
 
-| #                                                        | Title                                                             | Status      |
-| -------------------------------------------------------- | ----------------------------------------------------------------- | ----------- |
-| [0117](0117-map-and-address-search.md)                   | Map, layers and AddressSearch                                     | In progress |
-| [0088](0088-read-aloud.md)                               | ReadAloud (text to speech player and selection reader)            | In progress |
-| [0122](0122-quick-exit.md)                               | QuickExit (leave a sensitive page in one action)                  | In progress |
-| [0128](0128-icons-replace-built-ins.md)                  | Default icons come from `@kvirn-ui/icons`, no built-ins in react  | Draft       |
-| [0129](0129-map-richtext-library-icons.md)               | Map and rich-text on library icons; `@kvirn-ui/icons` public      | In progress |
-| [0135](0135-skip-panel-docs-site.md)                     | SkipPanel on the docs site, HelpLink, `mod`, shortcuts setting    | In progress |
-| [0136](0136-divider.md)                                  | Divider (`<hr>` with CSS-variable margin, width, colour)          | In progress |
-| [0139](0139-matrix-automated-tier-and-derived-status.md) | Automated matrix tier, `n/a` rows, status derived from the matrix | Approved    |
-| [0140](0140-smaller-at-matrix.md)                        | A smaller AT matrix: most common screen readers only              | Approved    |
-| [0141](0141-sweeps-in-ci-and-testing-upkeep.md)          | Display-mode sweeps in CI; Testing upkeep in the docs workflow    | Approved    |
-| [0143](0143-status-badge.md)                             | A coloured testing status badge on component pages                | In progress |
-| [0144](0144-icon-additions.md)                           | Icon additions: reversed cuts, counterparts, social marks         | In progress |
+| #                                               | Title                                                            | Status      |
+| ----------------------------------------------- | ---------------------------------------------------------------- | ----------- |
+| [0117](0117-map-and-address-search.md)          | Map, layers and AddressSearch                                    | In progress |
+| [0088](0088-read-aloud.md)                      | ReadAloud (text to speech player and selection reader)           | In progress |
+| [0122](0122-quick-exit.md)                      | QuickExit (leave a sensitive page in one action)                 | In progress |
+| [0128](0128-icons-replace-built-ins.md)         | Default icons come from `@kvirn-ui/icons`, no built-ins in react | In progress |
+| [0141](0141-sweeps-in-ci-and-testing-upkeep.md) | Display-mode sweeps in CI; Testing upkeep in the docs workflow   | Approved    |
+| [0143](0143-status-badge.md)                    | A coloured testing status badge on component pages               | In progress |

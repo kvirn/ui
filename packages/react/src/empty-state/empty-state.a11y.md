@@ -41,18 +41,18 @@ Nothing in it is a Tab stop, so there are no key rows.
 
 ## AT test record
 
-| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                             |
-| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | ------------------------------------------------- |
-| **Automated (re-runnable tests)**                                          |             |             |         |                                                   |
-| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | empty-state.stories.tsx, every story, 4 themes    |
-| Markup and ARIA (roles, names, ids, states)                                | pending     | n/a         | pending | no test file of its own: markup is the consumer's |
-| Keyboard contract rows (Vitest browser)                                    | n/a         | n/a         | n/a     | static text: no focusable or operable part        |
-| Focus order and management                                                 | n/a         | n/a         | n/a     | static text: nothing in it is focusable           |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending |                                                   |
-| **Core (required for beta)**                                               |             |             |         |                                                   |
-| NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                   |
-| VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                   |
-| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                   |
-| JAWS + Chrome + Windows                                                    | pending     | pending     | pending |                                                   |
-| TalkBack + Chrome + Android                                                | pending     | pending     | pending |                                                   |
-| VoiceOver + Safari + macOS                                                 | pending     | pending     | pending |                                                   |
+| AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                                                                                     |
+| -------------------------------------------------------------------------- | ----------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Automated (re-runnable tests)**                                          |             |             |         |                                                                                                                                                           |
+| axe, WCAG 2.2 A and AA, every story, 4 themes                              | pass        | n/a         | pass    | empty-state.stories.tsx, every story, 4 themes                                                                                                            |
+| Markup and ARIA (roles, names, ids, states)                                | pending     | n/a         | pending | no test file of its own: markup is the consumer's                                                                                                         |
+| Keyboard contract rows (Vitest browser)                                    | n/a         | n/a         | n/a     | static text: no focusable or operable part                                                                                                                |
+| Focus order and management                                                 | n/a         | n/a         | n/a     | static text: nothing in it is focusable                                                                                                                   |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not in `sweepComponents` (vite.config.ts), so the four sweep projects do not run its stories                                                              |
+| **Core (required for beta)**                                               |             |             |         |                                                                                                                                                           |
+| NVDA + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native elements only, with no role, ARIA, live region, focus or key handling; nothing to operate; an action inside it is a Button, under `button.a11y.md` |
+| VoiceOver + Safari + iOS                                                   | n/a         | n/a         | n/a     | native elements only, with no role, ARIA, live region, focus or key handling; nothing to operate; an action inside it is a Button, under `button.a11y.md` |
+| **Release (before 1.0 and each minor)**                                    |             |             |         |                                                                                                                                                           |
+| JAWS + Chrome + Windows                                                    | n/a         | n/a         | n/a     | native elements only, with no role, ARIA, live region, focus or key handling; nothing to operate; an action inside it is a Button, under `button.a11y.md` |
+| TalkBack + Chrome + Android                                                | n/a         | n/a         | n/a     | native elements only, with no role, ARIA, live region, focus or key handling; nothing to operate; an action inside it is a Button, under `button.a11y.md` |
+| VoiceOver + Safari + macOS                                                 | n/a         | n/a         | n/a     | native elements only, with no role, ARIA, live region, focus or key handling; nothing to operate; an action inside it is a Button, under `button.a11y.md` |
