@@ -21,6 +21,7 @@
       "@kvirn-ui/patterns": ["./packages/patterns/src/index.ts"],
       "@kvirn-ui/patterns/fixtures": ["./packages/patterns/src/fixtures/index.ts"],
       "@kvirn-ui/rich-text": ["./packages/rich-text/src/index.ts"],
+      "@kvirn-ui/read-aloud": ["./packages/read-aloud/src/index.ts"],
       "@kvirn-ui/map": ["./packages/map/src/index.ts"],
       "@kvirn-ui/map/maplibre": ["./packages/map/src/maplibre.ts"],
       "@kvirn-ui/testing": ["./packages/testing/src/index.ts"],

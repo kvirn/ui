@@ -10,6 +10,7 @@
     "grid.css",
     "map.css",
     "patterns.css",
+    "read-aloud.css",
     "reset.css",
     "rich-text.css",
     "theme.css",
@@ -34,6 +35,7 @@
       }
     },
     "./map.css": "./map.css",
+    "./read-aloud.css": "./read-aloud.css",
     "./reset.css": "./reset.css",
     "./rich-text.css": "./rich-text.css",
     "./theme.css": "./theme.css",

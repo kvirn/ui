@@ -31,13 +31,9 @@ import type {
   PointerEvent,
   RefObject,
 } from 'react'
-import { warnOnce } from '../dev/dev-warning.ts'
-import { useAnnouncer } from '../announcer/use-announcer.ts'
-import { useButton } from '../button/use-button.ts'
-import type { ButtonPartProps } from '../button/use-button.ts'
-import { useEnv } from '../provider/use-env.ts'
-import { useLocale } from '../provider/use-locale.ts'
-import { useMessages } from '../provider/use-messages.ts'
+import { useAnnouncer, useButton, useLocale } from '@kvirn-ui/react'
+import type { ButtonPartProps } from '@kvirn-ui/react'
+import { useEnv, useMessages, warnOnce } from '@kvirn-ui/react/internal'
 import { collectRangeText } from './collect-range-text.ts'
 
 const highlightName = 'kv-read-aloud'

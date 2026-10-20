@@ -1,7 +1,6 @@
 'use client'
 
 import { Breadcrumb, Container, Heading, Link, List, Prose, Stack } from '@kvirn-ui/react'
-import { useRef } from 'react'
 import { kvirnbyHills } from '../../fixtures/images.ts'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { PageTools } from '../../site-chrome/page-tools/page-tools.tsx'
@@ -15,12 +14,11 @@ export interface NewsArticleProps {
 }
 
 /**
- * One news item, the slot between header and footer: breadcrumb, `h1`, dates, read aloud, preamble,
+ * One news item, the slot between header and footer: breadcrumb, `h1`, dates, preamble,
  * figure, prose, related news and page tools. Example text is English and fictional (Kvirnby
  * municipality).
  */
 export function NewsArticle({ state = 'published', image = true }: NewsArticleProps) {
-  const contentRef = useRef<HTMLDivElement>(null)
   return (
     <>
       <Container>
@@ -51,8 +49,7 @@ export function NewsArticle({ state = 'published', image = true }: NewsArticlePr
               ) : null}
             </p>
           </Stack>
-          <PageTools.Top contentRef={contentRef} />
-          <div ref={contentRef}>
+          <div>
             <Stack className="kv-stack--gap-8">
               <p className="kv-lead">
                 Storgatan is being rebuilt between the square and School Road. Buses are diverted

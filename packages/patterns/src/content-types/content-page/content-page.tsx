@@ -13,7 +13,6 @@ import {
   DefinitionList,
   TableOfContents,
 } from '@kvirn-ui/react'
-import { useRef } from 'react'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { SectionNav } from '../../navigation-and-promotion/section-nav/section-nav.tsx'
 import { ServiceLink } from '../../navigation-and-promotion/service-link/service-link.tsx'
@@ -32,7 +31,6 @@ export interface ContentPageProps {
  * English and fictional (Kvirnby municipality).
  */
 export function ContentPage({ eService = 'open', length = 'short' }: ContentPageProps) {
-  const contentRef = useRef<HTMLDivElement>(null)
   const long = length === 'long'
   return (
     <>
@@ -75,8 +73,7 @@ export function ContentPage({ eService = 'open', length = 'short' }: ContentPage
         <PageFrame.Main>
           <Stack className="kv-stack--gap-8">
             <Heading as="h1">Preschool</Heading>
-            <PageTools.Top contentRef={contentRef} />
-            <div ref={contentRef}>
+            <div>
               <Stack className="kv-stack--gap-8">
                 <p className="kv-lead">
                   Every child from the age of one has the right to a place in preschool. Here you

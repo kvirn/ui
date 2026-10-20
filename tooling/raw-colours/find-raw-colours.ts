@@ -75,7 +75,7 @@ function listCssFiles(directory: string): string[] {
   })
 }
 
-/** theme.css (outside its palette), patterns.css, map.css, rich-text.css, the docs site CSS and the Storybook CSS. */
+/** theme.css (outside its palette), patterns.css, map.css, read-aloud.css, rich-text.css, the docs site CSS and the Storybook CSS. */
 export function listCheckedCssFiles(repositoryRoot: string): string[] {
   return [
     join(repositoryRoot, 'packages/theme/theme.css'),
@@ -83,6 +83,7 @@ export function listCheckedCssFiles(repositoryRoot: string): string[] {
     join(repositoryRoot, 'packages/theme/patterns.css'),
     // The opt-in map and rich text editor classes.
     join(repositoryRoot, 'packages/theme/map.css'),
+    join(repositoryRoot, 'packages/theme/read-aloud.css'),
     join(repositoryRoot, 'packages/theme/rich-text.css'),
     ...listCssFiles(join(repositoryRoot, 'apps/docs')),
     // The preview's stylesheet is in .storybook, which the walk skips as a dot directory.

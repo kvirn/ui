@@ -1,15 +1,14 @@
 # Accessibility contract: Page tools
 
-- **APG pattern:** none: native buttons and a `<time>`. [Read aloud](../../../../react/src/read-aloud/read-aloud.a11y.md) and [CopyButton](../../../../react/src/copy-button/copy-button.a11y.md) have their own contracts.
+- **APG pattern:** none: native buttons and a `<time>`. [CopyButton](../../../../react/src/copy-button/copy-button.a11y.md) have their own contracts.
 - **Deviations:** none
-- **Native elements used:** `<button type="button">`, and ReadAloud's `role="group"`. The last-updated line is your own `<p>` with a `<time datetime>`.
+- **Native elements used:** `<button type="button">`. The last-updated line is your own `<p>` with a `<time datetime>`.
 - **Tests:** the pattern adds no behaviour of its own: the copy and its status are proved in `copy-button.test.tsx`, the buttons in `button.test.tsx`. `page-tools.stories.tsx` in `apps/storybook/src/patterns/site-chrome/`.
 
 ## Roles, states, properties
 
 | Part                 | Element / role      | ARIA / state                                          | Notes                                                                                       |
 | -------------------- | ------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `PageTools.Top`      | ReadAloud's group   | ReadAloud's group and its name                        | Under the `h1`, reads the content of `contentRef`                                           |
 | `PageTools.Root`     | `<div>`             | none                                                  | The row at the end of `main`                                                                |
 | `PageTools.CopyLink` | `<button>` + status | name from its children or CopyButton's, never changes | The result is `copyButton.copied` or `.failed`, announced by CopyButton                     |
 | `PageTools.Print`    | `<button>`          | none                                                  | Its text is its children. Calls `window.print()`, or `onPrint`. Print styles are a 1.0 item |
@@ -29,7 +28,7 @@
 | Shift+Tab    | in the row | Moves back                    | `button.test.tsx › Shift+Tab moves focus off the button`                     |
 | Enter, Space | a button   | Copies the link, or prints    | `copy-button.test.tsx › Enter copies the text and keeps focus on the button` |
 
-The row's own keys are the browser's. Read aloud's keys are in its contract.
+The row's own keys are the browser's.
 
 ## Focus management
 
@@ -47,7 +46,7 @@ The row's own keys are the browser's. Read aloud's keys are in its contract.
 
 ## Consumer responsibilities
 
-- Put the row at the end of `main`, and `PageTools.Top` under the `h1`. No third-party share links.
+- Put the row at the end of `main`. No third-party share links.
 - `PageTools.CopyLink` copies the page's own address unless you pass `text`.
 - Write the last-updated line as your own `<p className="kv-page-tools-updated">` with a `<time datetime>`: the pattern holds no text.
 

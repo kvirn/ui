@@ -1,8 +1,8 @@
 # Plan 0088: ReadAloud (text to speech player and selection reader)
 
-- **Status:** In progress. Verified against the code 2026-10-13: Blocked (2026-10-09, maintainer) on an npm package update and re-test; open: the highlight, gates, reviewer, D6 and Q1 for the maintainer.
+- **Status:** Draft. Deferred to the 1.2 release (maintainer, 2026-10-20): the React parts live in the private `@kvirn-ui/read-aloud`, with one story and one docs example (Plan 0144). Before that: blocked (2026-10-09) on an npm package update and a re-test; open: the highlight, gates, reviewer, D6 and Q1.
 - **Owner:** lead (orchestrator) → component-engineer, ux-designer, accessibility-reviewer
-- **Created:** 2026-10-07 · **Target:** M3 component set
+- **Created:** 2026-10-07 · **Target:** 1.2
 - **Related:** inspiration [ReadSpeaker webReader](https://www.readspeaker.com/products/webreader/); skills `api-conventions`, `accessibility`, `keyboard`, `testing`, `theme-css`, `overlays-and-lists` (selection popup); `core/announcer`; `@kvirn-ui/testing/read-aloud` is an unrelated test helper (a virtual screen reader), don't confuse the two
 
 ## Goal

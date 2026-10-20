@@ -1,5 +1,6 @@
 'use client'
-import { Checkbox, Field, Heading, ReadAloud } from '@kvirn-ui/react'
+import { Checkbox, Field, Heading } from '@kvirn-ui/react'
+import { ReadAloud } from '@kvirn-ui/read-aloud'
 import { useRef, useState } from 'react'
 import { useReadAloudTexts } from './texts.ts'
 

@@ -10,7 +10,6 @@ import {
 import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
 import { KvirnProvider } from '@kvirn-ui/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useRef } from 'react'
 import { expect, userEvent } from 'storybook/test'
 import contract from '../../../../../packages/patterns/src/site-chrome/page-tools/page-tools.a11y.md?raw'
 import { expectNoHorizontalOverflow } from '../../components/theme-story-assertions.ts'
@@ -22,10 +21,9 @@ import {
 } from '../patterns-story-support.tsx'
 
 // Patterns/Site chrome/Page tools (docs/design/storybook-patterns.md section 5.7). Each story is
-// the code an adopter copies: literal JSX, literal text. The `useRef` is the one thing a page of
-// your own needs besides the parts: `PageTools.Top` reads the element it points at.
+// the code an adopter copies: literal JSX, literal text.
 
-const description = `Two rows around a content page. **Top:** read aloud under the \`h1\`, for the lead and the prose. **End of \`main\`:** the last-updated line you write (a \`<p>\` with a \`<time datetime>\`), a button that copies the page's link with its status beside it, and a Print button.
+const description = `The row at the end of \`main\`: the last-updated line you write (a \`<p>\` with a \`<time datetime>\`), a button that copies the page's link with its status beside it, and a Print button.
 
 There are no third-party share links: nothing leaves the page. Print calls \`window.print()\`; print styles are a 1.0 item, so the printed page is the browser's default for now. Copy link's name never changes; the result is announced by CopyButton. Each tool is on its own line at 320px and one row from 40rem.
 
@@ -33,7 +31,6 @@ There are no third-party share links: nothing leaves the page. Print calls \`win
 
 | Part | Element | Props |
 | ---- | ------- | ----- |
-| \`PageTools.Top\` | ReadAloud's named group | \`contentRef\`: the element whose text is read. Children replace the default controls |
 | \`PageTools.Root\` | \`<div>\` | The \`<div>\` props |
 | \`PageTools.CopyLink\` | \`<button>\` and its status | \`text\`: the address, or a function. Default: the page's own. Its label is its children, and the status words are \`CopyButton\`'s |
 | \`PageTools.Print\` | \`<button>\` | \`onPrint\` replaces \`window.print()\`. Its text is its children |
@@ -42,7 +39,7 @@ The last-updated line is your own \`<p>\` with a \`<time datetime>\`: the patter
 
 ## Parts and gaps
 
-Parts used: \`ReadAloud\`, \`CopyButton\`, \`Button\`. No gap. Read aloud is blocked in its own plan (0088): the row is shown as it will be.
+Parts used: \`CopyButton\`, \`Button\`. No gap.
 `
 
 function stubClipboard(writeText: (text: string) => Promise<void>) {
@@ -67,11 +64,10 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** The main example: read aloud under the `h1`, and the row at the end of `main`. */
+/** The main example: the row at the end of `main`. */
 export const Default: Story = {
   globals: { ...wideGlobals },
   render: function Render() {
-    const contentRef = useRef<HTMLDivElement>(null)
     return (
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
@@ -97,8 +93,7 @@ export const Default: Story = {
           </SiteHeader.Root>
           <PageFrame.Main>
             <h1>Preschool</h1>
-            <PageTools.Top contentRef={contentRef} />
-            <div ref={contentRef}>
+            <div>
               <p>
                 Find information about preschool in Kvirnby municipality and how to apply for a
                 place.
@@ -131,7 +126,6 @@ export const Default: Story = {
 export const CopySuccess: Story = {
   globals: { ...wideGlobals },
   render: function Render() {
-    const contentRef = useRef<HTMLDivElement>(null)
     return (
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
@@ -157,8 +151,7 @@ export const CopySuccess: Story = {
           </SiteHeader.Root>
           <PageFrame.Main>
             <h1>Preschool</h1>
-            <PageTools.Top contentRef={contentRef} />
-            <div ref={contentRef}>
+            <div>
               <p>
                 Find information about preschool in Kvirnby municipality and how to apply for a
                 place.
@@ -193,7 +186,6 @@ export const CopySuccess: Story = {
 export const CopyFailure: Story = {
   globals: { ...wideGlobals },
   render: function Render() {
-    const contentRef = useRef<HTMLDivElement>(null)
     return (
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
@@ -219,8 +211,7 @@ export const CopyFailure: Story = {
           </SiteHeader.Root>
           <PageFrame.Main>
             <h1>Preschool</h1>
-            <PageTools.Top contentRef={contentRef} />
-            <div ref={contentRef}>
+            <div>
               <p>
                 Find information about preschool in Kvirnby municipality and how to apply for a
                 place.
@@ -256,7 +247,6 @@ export const CopyFailure: Story = {
 export const Narrow: Story = {
   globals: { ...narrowGlobals },
   render: function Render() {
-    const contentRef = useRef<HTMLDivElement>(null)
     return (
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
@@ -282,8 +272,7 @@ export const Narrow: Story = {
           </SiteHeader.Root>
           <PageFrame.Main>
             <h1>Preschool</h1>
-            <PageTools.Top contentRef={contentRef} />
-            <div ref={contentRef}>
+            <div>
               <p>
                 Find information about preschool in Kvirnby municipality and how to apply for a
                 place.
@@ -314,7 +303,6 @@ export const Narrow: Story = {
 export const Keyboard: Story = {
   globals: { ...wideGlobals },
   render: function Render() {
-    const contentRef = useRef<HTMLDivElement>(null)
     return (
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
@@ -340,8 +328,7 @@ export const Keyboard: Story = {
           </SiteHeader.Root>
           <PageFrame.Main>
             <h1>Preschool</h1>
-            <PageTools.Top contentRef={contentRef} />
-            <div ref={contentRef}>
+            <div>
               <p>
                 Find information about preschool in Kvirnby municipality and how to apply for a
                 place.
@@ -369,7 +356,6 @@ export const Keyboard: Story = {
 export const RTL: Story = {
   globals: { dir: 'rtl', locale: 'en', ...wideGlobals },
   render: function Render() {
-    const contentRef = useRef<HTMLDivElement>(null)
     return (
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
@@ -395,8 +381,7 @@ export const RTL: Story = {
           </SiteHeader.Root>
           <PageFrame.Main>
             <h1>Preschool</h1>
-            <PageTools.Top contentRef={contentRef} />
-            <div ref={contentRef}>
+            <div>
               <p>
                 Find information about preschool in Kvirnby municipality and how to apply for a
                 place.
@@ -424,7 +409,6 @@ export const RTL: Story = {
 export const ForcedColors: Story = {
   globals: { forcedColors: 'active', ...wideGlobals },
   render: function Render() {
-    const contentRef = useRef<HTMLDivElement>(null)
     return (
       <KvirnProvider locale="en" messages={en}>
         <PageFrame.Root>
@@ -450,8 +434,7 @@ export const ForcedColors: Story = {
           </SiteHeader.Root>
           <PageFrame.Main>
             <h1>Preschool</h1>
-            <PageTools.Top contentRef={contentRef} />
-            <div ref={contentRef}>
+            <div>
               <p>
                 Find information about preschool in Kvirnby municipality and how to apply for a
                 place.

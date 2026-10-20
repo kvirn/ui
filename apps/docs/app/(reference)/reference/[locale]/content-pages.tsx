@@ -14,7 +14,6 @@ import {
   Table,
   TableOfContents,
 } from '@kvirn-ui/react'
-import { useRef } from 'react'
 import {
   easyToReadSwedish,
   referenceContentMessages,
@@ -85,7 +84,6 @@ export function PreschoolPage({ locale }: { locale: ReferenceLocale }) {
   const page = text.preschool
   const office = text.preschoolOffice
   const href = (slug: string) => `/reference/${locale}/${slug}`
-  const contentRef = useRef<HTMLDivElement>(null)
   return (
     <>
       <Container>
@@ -130,8 +128,7 @@ export function PreschoolPage({ locale }: { locale: ReferenceLocale }) {
         <PageFrame.Main>
           <Stack className="kv-stack--gap-8">
             <Heading as="h1">{page.title}</Heading>
-            <PageTools.Top contentRef={contentRef} />
-            <div ref={contentRef}>
+            <div>
               <Stack className="kv-stack--gap-8">
                 <p className="kv-lead">{page.lead}</p>
                 <ContentsList
@@ -237,7 +234,6 @@ export function PreschoolPage({ locale }: { locale: ReferenceLocale }) {
 export function PrivacyPage({ locale }: { locale: ReferenceLocale }) {
   const text = referenceContentMessages[locale]
   const page = text.privacy
-  const contentRef = useRef<HTMLDivElement>(null)
   return (
     <>
       <Container size="reading">
@@ -246,8 +242,7 @@ export function PrivacyPage({ locale }: { locale: ReferenceLocale }) {
       <PageFrame.Main size="reading">
         <Stack className="kv-stack--gap-8">
           <Heading as="h1">{page.title}</Heading>
-          <PageTools.Top contentRef={contentRef} />
-          <div ref={contentRef}>
+          <div>
             <Stack className="kv-stack--gap-8">
               <p className="kv-lead">{page.lead}</p>
               <ContentsList
@@ -334,7 +329,6 @@ export function PrivacyPage({ locale }: { locale: ReferenceLocale }) {
 export function CookiesPage({ locale }: { locale: ReferenceLocale }) {
   const text = referenceContentMessages[locale]
   const page = text.cookies
-  const contentRef = useRef<HTMLDivElement>(null)
   return (
     <>
       <Container size="reading">
@@ -343,8 +337,7 @@ export function CookiesPage({ locale }: { locale: ReferenceLocale }) {
       <PageFrame.Main size="reading">
         <Stack className="kv-stack--gap-8">
           <Heading as="h1">{page.title}</Heading>
-          <PageTools.Top contentRef={contentRef} />
-          <div ref={contentRef}>
+          <div>
             <Prose>
               <p className="kv-lead">{page.lead}</p>
               <h2>{page.storeHeading}</h2>

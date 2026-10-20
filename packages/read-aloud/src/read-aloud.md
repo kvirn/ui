@@ -1,5 +1,7 @@
 # ReadAloud
 
+> **Private, in planning for 1.2.** This is the package `@kvirn-ui/read-aloud`; it is not published yet.
+
 > **In planning. Blocked: waiting for an npm package update and a re-test.** No highlight style is shipped while the component is blocked: the sentence is still registered as `::highlight(kv-read-aloud)`, but nothing paints it until you style it. (Plan 0088.) The accessibility contract is [read-aloud.a11y.md](read-aloud.a11y.md).
 
 A text-to-speech player on the browser's own `speechSynthesis`: no dependency, no server. Play reads the selection the user made in the content, else the whole content, one sentence at a time. It never starts by itself.

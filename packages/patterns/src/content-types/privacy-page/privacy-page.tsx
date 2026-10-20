@@ -13,7 +13,6 @@ import {
   Table,
   TableOfContents,
 } from '@kvirn-ui/react'
-import { useRef } from 'react'
 import { kvirnbyPersonalDataPurposes } from '../../fixtures/prose-pages.ts'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { PageTools } from '../../site-chrome/page-tools/page-tools.tsx'
@@ -25,7 +24,6 @@ import { PageTools } from '../../site-chrome/page-tools/page-tools.tsx'
  * section is a placeholder until a lawyer checks it.
  */
 export function PrivacyPage() {
-  const contentRef = useRef<HTMLDivElement>(null)
   return (
     <>
       <Container size="reading">
@@ -43,8 +41,7 @@ export function PrivacyPage() {
       <PageFrame.Main size="reading">
         <Stack className="kv-stack--gap-8">
           <Heading as="h1">How we handle personal data</Heading>
-          <PageTools.Top contentRef={contentRef} />
-          <div ref={contentRef}>
+          <div>
             <Stack className="kv-stack--gap-8">
               <p className="kv-lead">
                 Here you read which personal data Kvirnby municipality collects, why, who sees it

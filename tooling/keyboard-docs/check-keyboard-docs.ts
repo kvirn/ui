@@ -168,9 +168,12 @@ export function findKeyboardDocsProblems(repositoryRoot: string): string[] {
     if (!usedContracts.has(contractFile)) {
       problems.push(`${at(contractFile)}: no stories file imports it`)
     }
-    const { section, problems: formatProblems } = parseKeyboardSection(
-      readFileSync(contractFile, 'utf8'),
-    )
+    const contractText = readFileSync(contractFile, 'utf8')
+    // A component in planning has one story and no tests until it leaves planning (maintainer, 2026-10-20).
+    if (/^- \*\*Status:\*\* Planning\b/m.test(contractText)) {
+      continue
+    }
+    const { section, problems: formatProblems } = parseKeyboardSection(contractText)
     problems.push(...formatProblems.map((problem) => `${at(contractFile)}: ${problem}`))
     if (section === undefined) {
       continue

@@ -162,7 +162,6 @@ const sweepComponents = [
   'provider',
   'quick-exit',
   'radio-group',
-  'read-aloud',
   'rich-text-editor',
   'scroll-area',
   'section',

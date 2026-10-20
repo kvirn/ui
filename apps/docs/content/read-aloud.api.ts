@@ -4,7 +4,7 @@ import type {
   ReadAloudStatusProps,
   UseReadAloudOptions,
   UseReadAloudResult,
-} from '@kvirn-ui/react'
+} from '@kvirn-ui/read-aloud'
 import { propRows } from '../components/api-block.tsx'
 import type { AttributeRow } from '../components/api-block.tsx'
 

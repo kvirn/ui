@@ -15,6 +15,7 @@
     "@kvirn-ui/map": "workspace:*",
     "@kvirn-ui/patterns": "workspace:*",
     "@kvirn-ui/react": "workspace:*",
+    "@kvirn-ui/read-aloud": "workspace:*",
     "@kvirn-ui/rich-text": "workspace:*",
     "@kvirn-ui/testing": "workspace:*",
     "@kvirn-ui/theme": "workspace:*",

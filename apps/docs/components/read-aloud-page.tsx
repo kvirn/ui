@@ -1,5 +1,4 @@
 import { Link } from '@kvirn-ui/react'
-import { apiHookPart } from './api-ids.ts'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
 import { ComponentPage } from './component-page.tsx'
@@ -7,7 +6,6 @@ import { ContractSectionsView, contractSectionList } from './contract-sections-v
 import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
 import { StringsBlock } from './strings-block.tsx'
-import { UseCase } from './use-case.tsx'
 import {
   readAloudButtonRows,
   readAloudPlayAttributes,
@@ -21,16 +19,9 @@ import {
   useReadAloudRows,
 } from '../content/read-aloud.api.ts'
 import { Player } from '../examples/read-aloud/default.tsx'
-import { PlayerInsideContent } from '../examples/read-aloud/inside-content.tsx'
-import { MinimalPlayer } from '../examples/read-aloud/minimal.tsx'
-import { OwnPlayer } from '../examples/read-aloud/own-markup.tsx'
-import { SwedishContent } from '../examples/read-aloud/swedish-content.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type ReadAloudExampleSources = Record<
-  'default' | 'minimal' | 'swedish-content' | 'inside-content' | 'own-markup',
-  string
->
+export type ReadAloudExampleSources = Record<'default', string>
 
 const buttonRenders = (role: string) => (
   <>
@@ -144,7 +135,7 @@ export function ReadAloudPage({
     <ComponentPage
       title="ReadAloud"
       pattern="APG Button (for the buttons)"
-      lead="It never starts by itself, and it is not a substitute for a screen reader (software that reads the whole screen aloud)."
+      lead="ReadAloud is in planning for the 1.2 release and is private, so it is not installable yet. It never starts by itself, and it is not a substitute for a screen reader (software that reads the whole screen aloud)."
       whenToUse={
         <ul>
           <li>
@@ -186,97 +177,6 @@ export function ReadAloudPage({
           </ExampleFrame>
         </>
       }
-      useCases={
-        <>
-          <UseCase
-            id="small-player"
-            title="A short notice with a simple player"
-            why={
-              <>
-                Every part is optional. For a short text, leave out Speed, Voice, Previous and Next.
-                Mark text that must not be read, such as a reference number, with{' '}
-                <code>data-kv-read-aloud-skip</code>.
-              </>
-            }
-            code={sources['minimal']}
-            propsUsed={[{ part: 'ReadAloud.Root', prop: 'contentRef' }]}
-          >
-            <MinimalPlayer />
-          </UseCase>
-          <UseCase
-            id="language-of-the-text"
-            title="Text in another language than the page"
-            why={
-              <>
-                The article below is in Swedish, and its element is marked as Swedish with the{' '}
-                <code>lang</code> attribute. It says the same as the first paragraph of the main
-                example: how to apply for a building permit. The player reads each sentence with a
-                voice for that sentence’s own language, and never with a voice for another language.
-                If the device has no voice for it, reading stops, the Status names the language and
-                a screen reader announces it. What you hear depends on the voices on your device.
-              </>
-            }
-            code={sources['swedish-content']}
-            propsUsed={[{ part: 'ReadAloud.Root', prop: 'contentRef' }]}
-            note={
-              <Note kind="reminder">
-                Set <code>lang</code> on your own element around the content: it picks the voice.
-                The player takes no <code>lang</code> itself. See{' '}
-                <Link href="#what-you-need-to-do">What you need to do</Link>.
-              </Note>
-            }
-          >
-            <SwedishContent />
-          </UseCase>
-          <UseCase
-            id="player-inside-the-text"
-            title="A player at the top of a notice"
-            why="Put the player inside the element it reads, with the notice. One ref covers the whole notice, and the player never reads its own button names or status text."
-            code={sources['inside-content']}
-            propsUsed={[{ part: 'ReadAloud.Root', prop: 'contentRef' }]}
-          >
-            <PlayerInsideContent />
-          </UseCase>
-          <UseCase
-            id="your-own-markup"
-            title="One Listen button in your own markup"
-            why={
-              <>
-                When a design has room for only one button, call <code>useReadAloud</code> and
-                spread its props on your own elements. This notice gets a Listen button that becomes
-                Pause, and the position as text. In a browser that can’t read text aloud,{' '}
-                <code>isSupported</code> is false and only the status text is shown.
-              </>
-            }
-            code={sources['own-markup']}
-            propsUsed={[
-              {
-                part: apiHookPart('useReadAloud', 'result'),
-                label: 'useReadAloud (result)',
-                prop: 'isSupported',
-              },
-              {
-                part: apiHookPart('useReadAloud', 'result'),
-                label: 'useReadAloud (result)',
-                prop: 'playProps',
-              },
-              {
-                part: apiHookPart('useReadAloud', 'result'),
-                label: 'useReadAloud (result)',
-                prop: 'rootProps',
-              },
-            ]}
-            note={
-              <Note kind="tip">
-                Spread <code>rootProps</code> on the element around the controls. It gives the group
-                its name and makes Escape stop the reading, as in the other examples.
-              </Note>
-            }
-          >
-            <OwnPlayer />
-          </UseCase>
-        </>
-      }
       contract={
         <ContractSectionsView
           contract={contract}
@@ -308,7 +208,7 @@ export function ReadAloudPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { ReadAloud, useReadAloud } from '@kvirn-ui/react'"
+          importLine="import { ReadAloud, useReadAloud } from '@kvirn-ui/read-aloud'"
           parts={parts}
           hook={{
             name: 'useReadAloud',

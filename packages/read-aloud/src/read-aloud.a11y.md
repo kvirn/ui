@@ -4,6 +4,7 @@
 - **Deviations:** none from the APG. Previous, Next and Stop stay focusable while unavailable (`aria-disabled`) while idle, so their names can be found and the keyboard path doesn't jump.
 - **Native elements used:** `<button type="button">`, `<select>` with a `<label>`, a plain `<span>` for the status.
 - **Tests:** `read-aloud.test.tsx` next to this file (a fake engine, nothing speaks).
+- **Status:** Planning
 
 ReadAloud reads a region of the page aloud for people who benefit from hearing it. It is not a screen reader substitute and never starts by itself.
 

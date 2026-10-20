@@ -1,8 +1,8 @@
 'use client'
 
-import { Button, CopyButton, ReadAloud, mergeProps } from '@kvirn-ui/react'
-import type { ButtonProps, CopyButtonProps, ReadAloudRootProps } from '@kvirn-ui/react'
-import type { ComponentPropsWithRef, MouseEvent, ReactElement, RefObject } from 'react'
+import { Button, CopyButton, mergeProps } from '@kvirn-ui/react'
+import type { ButtonProps, CopyButtonProps } from '@kvirn-ui/react'
+import type { ComponentPropsWithRef, MouseEvent, ReactElement } from 'react'
 
 export type PageToolsRootProps = ComponentPropsWithRef<'div'>
 
@@ -14,11 +14,6 @@ export interface PageToolsCopyLinkProps extends Omit<CopyButtonProps, 'text'> {
 export interface PageToolsPrintProps extends Omit<ButtonProps, 'type'> {
   /** Replaces `window.print()`. */
   onPrint?: (() => void) | undefined
-}
-
-export interface PageToolsTopProps extends Omit<ReadAloudRootProps, 'contentRef'> {
-  /** The element whose text is read: `main`, or the lead and the prose of the page. */
-  contentRef: RefObject<HTMLElement | null>
 }
 
 /**
@@ -53,41 +48,8 @@ export function PageToolsPrint({ onPrint, ...otherProps }: PageToolsPrintProps):
 }
 PageToolsPrint.displayName = 'PageTools.Print'
 
-/**
- * Read aloud under the `h1`, for the lead and the prose of the page. Without children it has the
- * full set of controls; write `ReadAloud` parts to choose your own.
- */
-export function PageToolsTop({
-  contentRef,
-  className,
-  children,
-  ...otherProps
-}: PageToolsTopProps): ReactElement {
-  return (
-    <ReadAloud.Root
-      contentRef={contentRef}
-      className={['kv-page-tools-top', className].filter(Boolean).join(' ')}
-      {...otherProps}
-    >
-      {children ?? (
-        <>
-          <ReadAloud.Play />
-          <ReadAloud.Previous />
-          <ReadAloud.Next />
-          <ReadAloud.Stop />
-          <ReadAloud.Rate />
-          <ReadAloud.Voice />
-          <ReadAloud.Status />
-        </>
-      )}
-    </ReadAloud.Root>
-  )
-}
-PageToolsTop.displayName = 'PageTools.Top'
-
 export const PageTools = {
   Root: PageToolsRoot,
   CopyLink: PageToolsCopyLink,
   Print: PageToolsPrint,
-  Top: PageToolsTop,
 } as const

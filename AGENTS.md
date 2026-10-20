@@ -16,6 +16,7 @@ packages/i18n      sv fi nb nn en
 packages/theme     theme.css: --kv-* palette + tokens, default styles (opt-in)
 packages/testing   a11y test helpers (private: maintainers and contributors only, never published)
 packages/icons     the icon library: outline SVGs on one 24 grid, generated to modules, `catalog.json` is the source of truth, public, depends on nothing; human review checks pending
+packages/read-aloud ReadAloud's React parts (its machine is in core). Private, in planning for 1.2, blocks nothing
 packages/patterns  site patterns and content types on react + theme classes, zero CSS, private until reviewed
 tooling/           repo checks (commit messages, keyboard docs, Foundation docs, docs props, raw colours), shared tsconfig and vite presets
 docs/              vision · architecture · accessibility · compliance · engineering · roadmap · plans/ · design/

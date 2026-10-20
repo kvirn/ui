@@ -22,7 +22,7 @@ function findRepositoryRoot(): string {
 }
 
 /** Packages other than `packages/react` whose components have a page: `packages/<name>/src/<component>.a11y.md`. */
-const otherPackages = ['rich-text', 'map'] as const
+const otherPackages = ['rich-text', 'map', 'read-aloud'] as const
 
 /**
  * `packages/react/src/<name>/<name>.a11y.md`, the folder's one contract (`provider/`), or

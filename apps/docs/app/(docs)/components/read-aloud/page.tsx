@@ -1,3 +1,4 @@
+import '@kvirn-ui/theme/read-aloud.css'
 import type { Metadata } from 'next'
 import { ReadAloudPage } from '../../../../components/read-aloud-page.tsx'
 import { readContract } from '../../../../lib/contract.ts'
@@ -12,10 +13,6 @@ export default function Page() {
       contract={readContract('read-aloud')}
       sources={{
         default: readExampleSource('read-aloud/default.tsx'),
-        minimal: readExampleSource('read-aloud/minimal.tsx'),
-        'swedish-content': readExampleSource('read-aloud/swedish-content.tsx'),
-        'inside-content': readExampleSource('read-aloud/inside-content.tsx'),
-        'own-markup': readExampleSource('read-aloud/own-markup.tsx'),
       }}
     />
   )

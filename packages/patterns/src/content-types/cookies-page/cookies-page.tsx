@@ -1,7 +1,6 @@
 'use client'
 
 import { Breadcrumb, Container, Heading, Link, Prose, Stack } from '@kvirn-ui/react'
-import { useRef } from 'react'
 import { PageFrame } from '../../page-frame/page-frame.tsx'
 import { PageTools } from '../../site-chrome/page-tools/page-tools.tsx'
 
@@ -11,7 +10,6 @@ import { PageTools } from '../../site-chrome/page-tools/page-tools.tsx'
  * here needs consent. Example text is English and fictional (Kvirnby municipality).
  */
 export function CookiesPage() {
-  const contentRef = useRef<HTMLDivElement>(null)
   return (
     <>
       <Container size="reading">
@@ -29,8 +27,7 @@ export function CookiesPage() {
       <PageFrame.Main size="reading">
         <Stack className="kv-stack--gap-8">
           <Heading as="h1">Cookies</Heading>
-          <PageTools.Top contentRef={contentRef} />
-          <div ref={contentRef}>
+          <div>
             <Prose>
               <p className="kv-lead">This website sets no cookies.</p>
               <h2>What we store on your device</h2>

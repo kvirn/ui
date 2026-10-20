@@ -140,13 +140,11 @@ export {
   PageToolsCopyLink,
   PageToolsPrint,
   PageToolsRoot,
-  PageToolsTop,
 } from './site-chrome/page-tools/page-tools.tsx'
 export type {
   PageToolsCopyLinkProps,
   PageToolsPrintProps,
   PageToolsRootProps,
-  PageToolsTopProps,
 } from './site-chrome/page-tools/page-tools.tsx'
 export {
   Hero,

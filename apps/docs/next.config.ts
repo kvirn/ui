@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       '../../packages/react/src/**/*.a11y.md',
       '../../packages/rich-text/src/**/*.a11y.md',
       '../../packages/map/src/**/*.a11y.md',
+      '../../packages/read-aloud/src/**/*.a11y.md',
     ],
   },
 }

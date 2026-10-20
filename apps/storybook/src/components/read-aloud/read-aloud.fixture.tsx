@@ -1,10 +1,11 @@
 import type { ReadAloudEngine, ReadAloudVoice } from '@kvirn-ui/core'
-import { KvirnProvider, ReadAloud } from '@kvirn-ui/react'
+import { KvirnProvider } from '@kvirn-ui/react'
+import { ReadAloud } from '@kvirn-ui/read-aloud'
 import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { sv } from '@kvirn-ui/i18n/sv'
 import type { Decorator } from '@storybook/react-vite'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef } from 'react'
 
 // Story fixture for Components/ReadAloud. The stories never speak: a fake engine stands in for
 // `speechSynthesis`, so the sound, the installed voices and the timing are the same in every
@@ -25,7 +26,7 @@ export const englishVoices: ReadAloudVoice[] = [
   { voiceURI: 'fake-en-one', name: 'English One', lang: 'en-GB', localService: true },
   { voiceURI: 'fake-en-two', name: 'English Two', lang: 'en-US', localService: true },
 ]
-export const swedishVoice: ReadAloudVoice = {
+const swedishVoice: ReadAloudVoice = {
   voiceURI: 'fake-sv-one',
   name: 'Svenska',
   lang: 'sv-SE',
@@ -111,35 +112,5 @@ export function ArticleWithPlayer({
       </ReadAloud.Root>
       <Article ref={articleRef} />
     </>
-  )
-}
-
-export function SpeechDiagnostics() {
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([])
-  const isSupported = typeof speechSynthesis !== 'undefined'
-  useEffect(() => {
-    if (!isSupported) {
-      return undefined
-    }
-    const update = () => setVoices(speechSynthesis.getVoices())
-    update()
-    speechSynthesis.addEventListener('voiceschanged', update)
-    return () => speechSynthesis.removeEventListener('voiceschanged', update)
-  }, [isSupported])
-  const localCount = voices.filter((voice) => voice.localService).length
-  return (
-    <div data-testid="diagnostics">
-      <p>
-        speechSynthesis supported: {isSupported ? 'yes' : 'no'}. Voices: {voices.length}, local:{' '}
-        {localCount}.
-      </p>
-      <ul>
-        {voices.map((voice) => (
-          <li key={voice.voiceURI}>
-            {voice.name} ({voice.lang}, {voice.localService ? 'local' : 'remote'})
-          </li>
-        ))}
-      </ul>
-    </div>
   )
 }
