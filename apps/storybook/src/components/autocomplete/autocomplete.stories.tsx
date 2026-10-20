@@ -280,13 +280,13 @@ export const NoSuggestions: Story = {
   play: async ({ canvas, canvasElement, globals }) => {
     const { text } = autocompleteTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.street)
-    await userEvent.type(input, 'Min egen gata')
+    await userEvent.type(input, 'My own street')
     // Plain text beside a hidden listbox, not an option: no screen reader reads it as "option 1 of 1".
     await waitFor(() => expect(canvasElement.querySelector('.kv-listbox-empty')).toBeVisible())
     await expect(canvas.queryAllByRole('option')).toHaveLength(0)
     // No suggestion: the input says collapsed, and the typed text is a fine value.
     await expect(input).toHaveAttribute('aria-expanded', 'false')
-    await expect(input).toHaveValue('Min egen gata')
+    await expect(input).toHaveValue('My own street')
   },
 }
 
@@ -559,10 +559,10 @@ export const PlainForm: Story = {
     const { text, shared } = autocompleteTextsFor(localeOf(globals))
     const input = inputOf(canvas, text.street)
     await userEvent.clear(input)
-    await userEvent.type(input, 'Min egen gata 4')
+    await userEvent.type(input, 'My own street 4')
     await userEvent.keyboard('{Escape}')
     await userEvent.click(canvas.getByRole('button', { name: shared.send }))
-    await expect(canvas.getByTestId('sent')).toHaveTextContent(`${shared.sent}: Min egen gata 4`)
+    await expect(canvas.getByTestId('sent')).toHaveTextContent(`${shared.sent}: My own street 4`)
   },
 }
 

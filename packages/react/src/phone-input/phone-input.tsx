@@ -116,7 +116,7 @@ function hasSelectNameSource(select: HTMLSelectElement): boolean {
  *       <PhoneInput.Country name="phoneCountry" />
  *     </Field.Root>
  *     <Field.Root required>
- *       <Field.Label>Nummer</Field.Label>
+ *       <Field.Label>Number</Field.Label>
  *       <PhoneInput.Number name="phone" />
  *     </Field.Root>
  *   </PhoneInput.Root>

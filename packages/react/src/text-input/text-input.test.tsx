@@ -515,9 +515,9 @@ describe('dev warnings', () => {
         <TextInput aria-label="Search" type="search" />
         <span id="heading">Postal code</span>
         <TextInput aria-labelledby="heading" />
-        <label htmlFor="gata">
-          Gata
-          <TextInput id="gata" />
+        <label htmlFor="street">
+          Street
+          <TextInput id="street" />
         </label>
       </>,
     )

@@ -733,12 +733,12 @@ describe('keyboard', () => {
     await render(
       <form>
         <MaskedInput label="Personnummer" options={{ mask: masks.digits({ length: 2 }) }} />
-        <MaskedInput label="Postnummer" options={{ mask: masks.postalCode({ country: 'SE' }) }} />
+        <MaskedInput label="Postal code" options={{ mask: masks.postalCode({ country: 'SE' }) }} />
         <button type="submit">Submit</button>
       </form>,
     )
     const first = page.getByRole('textbox', { name: 'Personnummer' })
-    const second = page.getByRole('textbox', { name: 'Postnummer' })
+    const second = page.getByRole('textbox', { name: 'Postal code' })
     await userEvent.tab()
     await expect.element(first).toHaveFocus()
     await userEvent.keyboard('12')

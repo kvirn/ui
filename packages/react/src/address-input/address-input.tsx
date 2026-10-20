@@ -66,7 +66,7 @@ const AddressInputContext = createContext<AddressInputContextValue | null>(null)
  *       <AddressInput.Line1 name="line1" />
  *     </Field.Root>
  *     <Field.Root required>
- *       <Field.Label>Postnummer</Field.Label>
+ *       <Field.Label>Postal code</Field.Label>
  *       <AddressInput.PostalCode name="postalCode" />
  *       <Field.HelpText>For example 123 45</Field.HelpText>
  *     </Field.Root>

@@ -160,11 +160,11 @@ describe('PhoneInput.Root and PhoneInput.Country', () => {
       <KvirnProvider locale="sv" country="SE">
         <PhoneInput.Root onCountryChange={onCountryChange}>
           <PhoneInput.Country aria-label="Land" />
-          <PhoneInput.Number aria-label="Nummer" onValueChange={onValueChange} />
+          <PhoneInput.Number aria-label="Number" onValueChange={onValueChange} />
         </PhoneInput.Root>
       </KvirnProvider>,
     )
-    const number = page.getByRole('textbox', { name: 'Nummer' })
+    const number = page.getByRole('textbox', { name: 'Number' })
     await userEvent.type(number, '+358 40 123 4567')
     expect(onValueChange.mock.lastCall?.[0]).toBe('+358 40 123 4567')
     expect(onValueChange.mock.lastCall?.[1]).toMatchObject({ country: 'SE', callingCode: '46' })
@@ -196,25 +196,25 @@ describe('PhoneInput.Root and PhoneInput.Country', () => {
       <>
         <PhoneInput.Root>
           <PhoneInput.Country aria-label="Land" />
-          <PhoneInput.Number aria-label="Nummer med land" />
+          <PhoneInput.Number aria-label="Number with country" />
         </PhoneInput.Root>
         <PhoneInput.Root>
-          <PhoneInput.Number aria-label="Nummer i en Root" />
+          <PhoneInput.Number aria-label="Number in a Root" />
         </PhoneInput.Root>
-        <PhoneInput.Number aria-label="Nummer utan Root" />
+        <PhoneInput.Number aria-label="Number without Root" />
       </>,
     )
     await expect
       .element(page.getByRole('combobox', { name: 'Land' }))
       .toHaveAttribute('autocomplete', 'tel-country-code')
     await expect
-      .element(page.getByRole('textbox', { name: 'Nummer med land' }))
+      .element(page.getByRole('textbox', { name: 'Number with country' }))
       .toHaveAttribute('autocomplete', 'tel-national')
     await expect
-      .element(page.getByRole('textbox', { name: 'Nummer i en Root' }))
+      .element(page.getByRole('textbox', { name: 'Number in a Root' }))
       .toHaveAttribute('autocomplete', 'tel')
     await expect
-      .element(page.getByRole('textbox', { name: 'Nummer utan Root' }))
+      .element(page.getByRole('textbox', { name: 'Number without Root' }))
       .toHaveAttribute('autocomplete', 'tel')
   })
 
@@ -222,11 +222,11 @@ describe('PhoneInput.Root and PhoneInput.Country', () => {
     await render(
       <PhoneInput.Root country="SE">
         <PhoneInput.Country aria-label="Land" />
-        <PhoneInput.Number aria-label="Nummer" />
+        <PhoneInput.Number aria-label="Number" />
       </PhoneInput.Root>,
     )
     const select = page.getByRole('combobox', { name: 'Land' })
-    const number = page.getByRole('textbox', { name: 'Nummer' })
+    const number = page.getByRole('textbox', { name: 'Number' })
     await userEvent.tab()
     await expect.element(select).toHaveFocus()
     await userEvent.tab()

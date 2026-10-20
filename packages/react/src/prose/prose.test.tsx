@@ -181,8 +181,8 @@ describe('Prose as the description of a Field or Fieldset', () => {
         <Fieldset.Legend>Address</Fieldset.Legend>
         <Fieldset.Prose>Om gruppen.</Fieldset.Prose>
         <Field.Root>
-          <Field.Label>Gata</Field.Label>
-          <Field.Prose>Utan nummer.</Field.Prose>
+          <Field.Label>Street</Field.Label>
+          <Field.Prose>Without a number.</Field.Prose>
           <TextInput />
         </Field.Root>
       </Fieldset.Root>,
@@ -190,7 +190,7 @@ describe('Prose as the description of a Field or Fieldset', () => {
     await expect
       .element(page.getByRole('group', { name: 'Address' }))
       .toHaveAccessibleDescription('Om gruppen.')
-    await expect.element(page.getByRole('textbox')).toHaveAccessibleDescription('Utan nummer.')
+    await expect.element(page.getByRole('textbox')).toHaveAccessibleDescription('Without a number.')
   })
 
   test('the description is its text content: a heading, list and link inside lose their structure', async () => {

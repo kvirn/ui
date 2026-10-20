@@ -92,7 +92,7 @@ function isMaskCountry(country: string | undefined): country is MaskCountry {
  *   <Fieldset.Legend>Your address</Fieldset.Legend>
  *   <div {...address.rootProps}>
  *     <Field.Root>
- *       <Field.Label>Postnummer</Field.Label>
+ *       <Field.Label>Postal code</Field.Label>
  *       <TextInput {...address.getInputProps('postalCode')} mask={address.postalCodeMask} />
  *     </Field.Root>
  *   </div>

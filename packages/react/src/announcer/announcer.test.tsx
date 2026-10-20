@@ -201,7 +201,7 @@ describe('announce', () => {
     expect(announce('Digits only', { key: 'phone' })).toBe(false)
     // Once spoken, the key stays throttled. A different key is not affected.
     await expect.element(politeRegion()).toHaveTextContent('Digits only')
-    expect(announce('Digits only', { key: 'postnummer' })).toBe(true)
+    expect(announce('Digits only', { key: 'postal-code' })).toBe(true)
     expect(announce('Digits only', { key: 'phone' })).toBe(false)
   })
 
