@@ -4411,6 +4411,36 @@
       "status": "drawn",
       "mirrorInRtl": false,
       "label": null
+    },
+    {
+      "name": "toilets",
+      "category": "mobility-environment",
+      "aliases": ["toilet", "public-toilet", "restroom"],
+      "tags": ["toilet", "wc", "restroom", "lavatory", "public convenience"],
+      "meaning": "Public toilets: a place to use a toilet, drawn as a toilet in profile with a cistern, a bowl and a pedestal.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "dentist",
+      "category": "care-education",
+      "aliases": ["dental", "tooth"],
+      "tags": ["dentist", "dental", "tooth", "teeth", "oral health"],
+      "meaning": "A dentist: dental care, drawn as a molar.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
+    },
+    {
+      "name": "health-centre",
+      "category": "care-education",
+      "aliases": ["health-center", "clinic", "primary-care"],
+      "tags": ["health centre", "clinic", "doctor", "surgery", "legekontor"],
+      "meaning": "Primary health care: a health centre or doctor's surgery, drawn as a public building with a pulse line across the wall.",
+      "status": "drawn",
+      "mirrorInRtl": false,
+      "label": null
     }
   ]
 }

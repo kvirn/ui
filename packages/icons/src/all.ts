@@ -97,6 +97,7 @@ import { databaseAdd } from './icons/database-add.ts'
 import { databaseRemove } from './icons/database-remove.ts'
 import { delegation } from './icons/delegation.ts'
 import { deleteIcon } from './icons/delete.ts'
+import { dentist } from './icons/dentist.ts'
 import { desktop } from './icons/desktop.ts'
 import { detour } from './icons/detour.ts'
 import { dice } from './icons/dice.ts'
@@ -181,6 +182,7 @@ import { heading5 } from './icons/heading-5.ts'
 import { heading6 } from './icons/heading-6.ts'
 import { headphones } from './icons/headphones.ts'
 import { health } from './icons/health.ts'
+import { healthCentre } from './icons/health-centre.ts'
 import { healthRecord } from './icons/health-record.ts'
 import { hearingLoop } from './icons/hearing-loop.ts'
 import { heart } from './icons/heart.ts'
@@ -372,6 +374,7 @@ import { ticket } from './icons/ticket.ts'
 import { tiktok } from './icons/tiktok.ts'
 import { timer } from './icons/timer.ts'
 import { timetable } from './icons/timetable.ts'
+import { toilets } from './icons/toilets.ts'
 import { toolbox } from './icons/toolbox.ts'
 import { trail } from './icons/trail.ts'
 import { train } from './icons/train.ts'
@@ -518,6 +521,7 @@ export const allIcons = {
   'database-remove': databaseRemove,
   delegation: delegation,
   delete: deleteIcon,
+  dentist: dentist,
   desktop: desktop,
   detour: detour,
   dice: dice,
@@ -602,6 +606,7 @@ export const allIcons = {
   'heading-6': heading6,
   headphones: headphones,
   health: health,
+  'health-centre': healthCentre,
   'health-record': healthRecord,
   'hearing-loop': hearingLoop,
   heart: heart,
@@ -793,6 +798,7 @@ export const allIcons = {
   tiktok: tiktok,
   timer: timer,
   timetable: timetable,
+  toilets: toilets,
   toolbox: toolbox,
   trail: trail,
   train: train,
@@ -939,6 +945,7 @@ export const iconNames = [
   'database-remove',
   'delegation',
   'delete',
+  'dentist',
   'desktop',
   'detour',
   'dice',
@@ -1023,6 +1030,7 @@ export const iconNames = [
   'heading-6',
   'headphones',
   'health',
+  'health-centre',
   'health-record',
   'hearing-loop',
   'heart',
@@ -1214,6 +1222,7 @@ export const iconNames = [
   'tiktok',
   'timer',
   'timetable',
+  'toilets',
   'toolbox',
   'trail',
   'train',
