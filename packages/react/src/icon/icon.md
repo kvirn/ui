@@ -30,7 +30,7 @@ import { search } from '@kvirn-ui/icons'
 <Button><Icon name="add" />Add</Button>
 ```
 
-The Map (`mapIcons` in `@kvirn-ui/map`, with the default marker pin) and the rich text editor (`richTextIconNames` in `@kvirn-ui/rich-text`) have their own icons.
+The Map (`mapIcons` in `@kvirn-ui/map`, with the default marker pin) and the rich text editor (`richTextIconNames` in `@kvirn-ui/rich-text`) register their own icon sets, drawn from `@kvirn-ui/icons`.
 
 ## An icon: `icon`
 

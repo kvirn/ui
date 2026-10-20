@@ -65,7 +65,7 @@ A cell is `pending`, `pass`, `agent-verified` (agent check only, Core and Releas
 
 ### Derived status
 
-No page or contract states a status by hand: it is computed from the table (maintainer, 2026-10-18). Per tier, done is the rows whose Result is `pass` or `n/a`. The page shows the counts (`Automated 5 of 5, Core 0 of 2, Release 0 of 3`; `Core n/a` or `Release n/a` when every row of that tier is `n/a`) and the highest word that holds. `AT-verified` and `Release-tested` also need at least one row of the tier with Human check `pass`, because a person must have tested it; a tier of only `n/a` rows never earns a word (lead decision, 2026-10-18; the maintainer may overrule):
+No page states a status by hand: it is computed from the table (maintainer, 2026-10-18). A contract's `**Status:**` header bullet is the internal ladder of `docs/roadmap.md` and is never rendered. Per tier, done is the rows whose Result is `pass` or `n/a`. The page shows the counts (`Automated 5 of 5, Core 0 of 2, Release 0 of 3`; `Core n/a` or `Release n/a` when every row of that tier is `n/a`) and the highest word that holds. `AT-verified` and `Release-tested` also need at least one row of the tier with Human check `pass`, because a person must have tested it; a tier of only `n/a` rows never earns a word (lead decision, 2026-10-18; the maintainer may overrule):
 
 | Word             | When                                                                                                    |
 | ---------------- | ------------------------------------------------------------------------------------------------------- |

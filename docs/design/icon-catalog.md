@@ -693,7 +693,7 @@ Check these at 16px, and change the drawing, never the threshold:
 - `rights`, `court` → `law`; `alarm` → `emergency`; `metro` → `subway` (`tram` is its own drawing); `park` → `tree`; `public-transport` → `bus`; `fault-report` → `repair`.
 - `navigation`: an alias of `menu`; `directions` has it as a tag. `translate` is its own drawing, not an alias of `interpreter`.
 
-**Not in the catalogue.** `marker` is the Map's own solid marker, registered in `mapIcons` by `@kvirn-ui/map`. It stays out of this catalogue so it never collides with the library's outline `pin`.
+**Not in the catalogue.** `marker` is the Map's registry name for the library's `pin` (`mapIcons` in `@kvirn-ui/map`, `packages/map/src/map-icons.ts`), filled by `map.css`. It is not a second catalogue entry.
 
 ## Decisions (maintainer, 2026-10-16)
 

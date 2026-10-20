@@ -3,7 +3,7 @@
 - **APG pattern:** none. WCAG technique G1 (a link at the top to skip to the main content) with C7 (hide it until it has focus), as SkipLink.
 - **Deviations:** the whole panel is one Tab stop, with arrow keys between its items (a "roving tabindex", the same idea as the APG toolbar), so a keyboard user passes it with one Tab. This differs from the APG keyboard practice and is an approved deviation. The panel has no dialog, menu or landmark role, no headings and no live region.
 - **Native elements used:** `<div>`, `<ul>`, `<li>`, `<a href="#id">`, `<a href>` (HelpLink), `<button>`, `<kbd>` (through Kbd), `<p>`.
-- **Status:** in progress. Accessibility-reviewer pending. Manual AT is `pending`.
+- **Status:** alpha candidate. Accessibility-reviewer APPROVE (Plans 0132 and 0135). Manual AT is `pending`.
 - **Tests:** `skip-panel.test.tsx` next to this file; `shortcut.test.ts` in `packages/core/src/shortcut/`. Stories in `apps/storybook/src/components/skip-panel/`, where `theme.css` is loaded and the visible state is proved.
 
 SkipPanel is a list of links and buttons that is one Tab stop, with arrow keys between its items, first in the body. Shortcuts are page-wide chords (keys pressed together) that the consumer supplies; there are no defaults.
