@@ -1,6 +1,6 @@
 # Plan 0128: Default icons come from `@kvirn-ui/icons`
 
-- **Status:** In progress (review: CHANGES, fixes running) (direction chosen by the maintainer 2026-10-17; package split below awaits a nod)
+- **Status:** In progress: code done, verified 2026-10-21; final gates left (direction chosen by the maintainer 2026-10-17)
 - **Superseded in part** by Plan 0130 (deleted; `git log -- docs/design/plans/0130-*.md`) (2026-10-17): no default icons (replaces D1's "defaults come from the icons package" and D5), and examples use `<Icon name>` (replaces D15).
 - **Owner:** lead
 - **Created:** 2026-10-17 · **Target:** alpha
@@ -53,7 +53,9 @@ export const add: IconData = { shapes: [...] }
 ```tsx
 // react: registry entry widens, nothing is removed
 type IconRegistryEntry =
-  IconData | IconComponent | { component: IconComponent; mirrorInRtl?: boolean }
+  | IconData
+  | IconComponent
+  | { component: IconComponent; mirrorInRtl?: boolean }
 // defaults: packages/react/src/icon/default-icons.ts imports the 25 by name from '@kvirn-ui/icons'
 ```
 
@@ -73,7 +75,7 @@ None added. `icon-labels.test.ts` keeps catalog and locales in step.
 - [x] T2 (engineer B, after T1) react: render `IconData` into the `<svg>` (same attrs as `create-icon.ts` today), `default-icons.ts`, delete `built-in-icons.tsx`, widen `icon-registry.ts`, `use-icon.ts`, `package.json` dep on `@kvirn-ui/icons`, update `icon.test.tsx` (names, order, RTL set, types). Files: `packages/react/src/icon/**`, `packages/react/package.json`, `packages/react/src/index.ts`
 - [x] T3 (engineer C, after T2) Storybook: remove `BuiltInSet` story and `icon.fixture.tsx` built-in reads from `Components/Content/Icon`; Docs page points to Icons/Library (`icons-library--docs`). Files: `apps/storybook/src/components/icon/**`
 - [x] T4 (engineer D, after T2, parallel with T3) Docs site: delete `examples/icon/built-in-set.tsx`, change `icon-page.tsx:98-104` to link `/components/icons`. Files: `apps/docs/components/icon-page.tsx`, `apps/docs/examples/icon/**`, `apps/docs/app/(docs)/components/icon/page.tsx`
-- [~] T5 (lead; done 2026-10-17: `icon.md` supersession note, `docs-code.md:242`, `roadmap.md:148`; `architecture.md`/`api-conventions` done in T10; left alone: `CLAUDE.md:15`, `iconographer.md`, historical plans) Facts (also `icon.a11y.md`/`icon.md` describe `icon` as component only; stale `built-in-icons.tsx` mentions in `docs/design/docs-code.md:242`, `CLAUDE.md:15`, `.claude/agents/iconographer.md:23,32,38`: the last two are the maintainer's files, flag only): `docs/architecture.md:15,20,92-103`, `api-conventions` skill (Registries), `regulations` skill (workspace dependency, no external), plan 0124 lines 23/33/46, `docs/design/icon.md` (§6.1 built-ins), `docs/roadmap.md`
+- [x] T5 (lead; done 2026-10-17; 2026-10-21 `icon.md:10` note aligned with Plan 0130 (no `default-icons.ts`, no `BuiltInIconName`), `CLAUDE.md` and `iconographer.md` no longer mention built-ins: `icon.md` supersession note, `docs-code.md:242`, `roadmap.md:148`; `architecture.md`/`api-conventions` done in T10; left alone: `CLAUDE.md:15`, `iconographer.md`, historical plans) Facts (also `icon.a11y.md`/`icon.md` describe `icon` as component only; stale `built-in-icons.tsx` mentions in `docs/design/docs-code.md:242`, `CLAUDE.md:15`, `.claude/agents/iconographer.md:23,32,38`: the last two are the maintainer's files, flag only): `docs/architecture.md:15,20,92-103`, `api-conventions` skill (Registries), `regulations` skill (workspace dependency, no external), plan 0124 lines 23/33/46, `docs/design/icon.md` (§6.1 built-ins), `docs/roadmap.md`
 - [x] T6 (engineer E) tree-shaking proof: a test that bundles `import { add } from '@kvirn-ui/icons'` with the toolchain already in the repo and asserts a different icon is absent; no new dependency (stop and ask if one is needed)
 - [x] T8 (engineer F) icons stands alone (D12): `IconData`/`IconShape` defined in `packages/icons/src/icon-data.ts` and exported from `.`; no `@kvirn-ui/*` import anywhere in `packages/icons` src, scripts output or built `.d.ts`; `package.json` has no `dependencies` and no `@kvirn-ui/*` anywhere; new subpath `./react` (`src/react.ts`) exporting `SvgIcon` (a server-component-safe function component, no hooks, no `'use client'`) and `createIconComponent(data)`; `react` is an optional peer only for that subpath. Files: `packages/icons/**`
 - [x] T9 (engineer G, after T8) react imports `IconData` types and the svg renderer from `@kvirn-ui/icons` (`/react` for the renderer, no duplicate); delete `packages/core/src/icon/` and its export; update tests. Files: `packages/react/src/icon/**`, `packages/core/src/index.ts`, `packages/core/src/icon/**`
@@ -81,9 +83,10 @@ None added. `icon-labels.test.ts` keeps catalog and locales in step.
 - [x] T11 (engineer H; 14 files, `vp check` and story tests green) Storybook stories and fixtures outside `icon/`, `icons/`, `map/` use explicit imports: `import { add } from '@kvirn-ui/icons'` + `<Icon icon={add} />`, no `name="…"` strings. Files: `apps/storybook/src/components/{alert,autocomplete,breadcrumb,button,combobox,input-group,link,listbox,navigation,toggle,tooltip,patterns}/**`
 - [x] T12 (engineer I; 13 files, icon 42/42 and map 10/10 green; `vp fmt` may have reformatted others' dirty files in apps/docs/components and apps/docs/app, formatting only) (engineer I) Storybook `icon/` and `map/` (drop `BuiltInIconName`/`builtInIconNames` types in the Icon story and fixture, keep the lucide/heroicons/phosphor interop demo, the library icons are the primary examples), `foundation/dev-warnings.mdx:165` wording; docs-site chrome (`home/hero|start|contact`, `back-to-top`, `code-block`, `docs-disclosure`, reference site `feedback-form`, `apply-parts`, `sign-in/page`) to explicit imports
 - [x] T13 (docs-writer; 34 files + new `examples/icon/by-name.tsx`; `vp check` green; unproven: `icon={arrowForward}` mirrors, `icon` route without provider → test added by engineer J) (docs-writer) docs-site component pages and examples (icon, kvirn-provider, breadcrumb, button, field, input-group, link, listbox, map, toggle, tooltip, visually-hidden), `content/icon.api.ts` and `breadcrumb.api.ts` wording, and package docs (`icon.md`, `kvirn-provider.md:453`, `link.md:50`, `toolbar.md`, `alert.md`): no "built-in", examples import from `@kvirn-ui/icons`
-- [ ] T7 follow-up: scout which `map-icons.tsx` / rich-text `icons.tsx` names the catalog covers; plan the rest (iconographer for gaps)
+- [x] T7 (done with Plan 0129, verified 2026-10-21): `packages/map/src/map-icons.ts:1-11` imports all 7 from `@kvirn-ui/icons`; `packages/rich-text/src/rich-text-editor/icons.tsx:1-47` imports all 20; both depend on `@kvirn-ui/icons`. No gaps, no iconographer work
 - [x] Gates (lead, 2026-10-17, scoped to T11–T13): `vp check` 0 errors; react icon/breadcrumb/provider 251 tests; storybook 27 files / 376 tests; i18n, theme. `accessibility-reviewer`: CHANGES (D18), all findings fixed, gates re-run green; no second pass (fixes were test dedupe, Show code and import aliases)
-- [ ] T14 (maintainer call) widen `packages/map/src/map-controls.tsx:23` `icon` to `IconRegistryEntry`; commit with Plan 0129
+- [x] Gates (lead, 2026-10-21, scoped to icons, react icon, map icons and controls, rich-text icons): `vp check` 439 files clean; `vp test run packages/icons/src packages/react/src/icon` 7 files / 152 tests; i18n 484 keys; theme 690 pairs. Whole tree: the maintainer's run has 1 failure, in `address-search.test.tsx:657` (Plan 0117, not this plan), being triaged
+- [x] T14 (done with Plan 0129, verified 2026-10-21): `packages/map/src/map-controls.tsx:19` types `icon: IconName | IconRegistryEntry`
 
 ## Decisions
 
@@ -107,7 +110,8 @@ None added. `icon-labels.test.ts` keeps catalog and locales in step.
 - D17 (engineer I): the Icon story controls drive `icon` via `libraryIconChoices`; the `name` + `defineIcons` demos keep registering Lucide/Heroicons/Phosphor (a `{component, mirrorInRtl}` entry needs a component); `UnknownName` stays.
 - Follow-up T14 (found by engineer I): `packages/map/src/map-controls.tsx:23` types `icon: IconName | IconComponent`, so library `IconData` isn't accepted by map controls. Widen to `IconRegistryEntry` (public API change, maintainer call).
 - D18 (review 2026-10-17, lead): `accessibility-reviewer` returned CHANGES (one rule-13 duplicate test, now merged into "an icon renders a component or data"; non-blocking: Show code for IconData args, Icon control key, unaliased `document` imports: fixed). `icon-page.tsx:145,163` claim map and rich-text icons come from the library: true only with the uncommitted Plan 0129 work (`packages/map/src/map-icons.ts`); commit them together. `icon-library-page.tsx:31-36` "What is not done yet" is honest, kept.
-- Open for the maintainer: `SvgIcon` `size` writes width/height (rule 14: no theme in this package); CLAUDE.md:15 and `.claude/agents/iconographer.md` mention the deleted `built-in-icons.tsx`.
+- Open for the maintainer: `SvgIcon` `size` writes width/height (rule 14: no theme in this package). (The CLAUDE.md and `iconographer.md` mentions are gone, checked 2026-10-21.)
+- D19 (lead, 2026-10-21): verified against the code: no `built-in-icons`, `builtInIconNames` or `BuiltInSet` outside the historical note at `docs-code.md:242`; `packages/core/src/icon/` gone; `packages/icons` has no `dependencies` and imports no `@kvirn-ui/*`; `src/react.ts` exports `SvgIcon` and `createIconComponent`; `tree-shaking.test.ts` exists. `default-icons.ts` and `BuiltInIconName` don't exist, as Plan 0130 intended (D1 and D5 superseded).
 
 ## Risks & open questions
 
