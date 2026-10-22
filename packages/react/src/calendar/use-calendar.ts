@@ -378,15 +378,17 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
   const isControlled = isRange ? rangeValue !== undefined : value !== undefined
   const hasProviderTimeZone = useContext(KvirnConfigContext).timeZone !== undefined
   const isBrowserZone = todayOption === undefined && !hasProviderTimeZone
-  // Hydration renders the server snapshot (the UTC date, like the server's HTML), then the client
-  // one; a Calendar mounted after hydration reads the browser's date at once and never switches.
-  const browserToday = useSyncExternalStore(
+  const providerZone = hasProviderTimeZone ? timeZone : undefined
+  // Hydration renders the server snapshot (the provider's zone, or else the UTC date, like the
+  // server's HTML), then the client one; a Calendar mounted after hydration reads the browser's
+  // date at once and never switches. Reading the clock here keeps render pure.
+  const clockToday = useSyncExternalStore(
     subscribeNever,
-    () => getTodayIsoDate(Intl.DateTimeFormat().resolvedOptions().timeZone, new Date()),
-    () => getTodayIsoDate('UTC', new Date()),
+    () =>
+      getTodayIsoDate(providerZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone, new Date()),
+    () => getTodayIsoDate(providerZone ?? 'UTC', new Date()),
   )
-  const today =
-    todayOption ?? (isBrowserZone ? browserToday : getTodayIsoDate(timeZone, new Date()))
+  const today = todayOption ?? clockToday
   const storeTodayRef = useRef(today)
 
   const reportedRangeRef = useRef<DateRange | undefined>(undefined)

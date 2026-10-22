@@ -72,7 +72,7 @@ export function leaflet(options: LeafletOptions): MapProvider {
   return {
     baseMaps: baseMaps.map(({ id, label, attribution }) => ({
       id,
-      label,
+      ...(label === undefined ? {} : { label }),
       ...(attribution === undefined ? {} : { attribution }),
     })),
     ...(defaultBaseMap === undefined ? {} : { defaultBaseMap }),

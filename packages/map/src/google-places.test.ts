@@ -152,11 +152,14 @@ describe('googlePlaces', () => {
     const search = googlePlaces({ loader: async () => fake.api }).search('drott', {
       signal: controller.signal,
     })
-    const settled = expect(search).rejects.toMatchObject({ name: 'AbortError' })
+    const settled = search.then(
+      () => undefined,
+      (error: unknown) => error,
+    )
     await vi.waitFor(() => expect(fake.requests).toHaveLength(1))
     controller.abort()
     release()
-    await settled
+    expect(await settled).toMatchObject({ name: 'AbortError' })
   })
 
   test('an SDK rejection rejects with Address search failed', async () => {
