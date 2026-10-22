@@ -535,6 +535,27 @@ export const nn = {
     pickedFilled: ({ label }) =>
       `Vald: ${label}. Adressa er fylt ut nedanfor. Sjekk ho før du held fram.`,
   },
+  addressInput: {
+    lookupHelpSuggest: ({ min }, format) =>
+      `Adresser blir føreslåtte etter ${format.number(min)} teikn. Vel ei for å fylle ut postnummer og stad, eller hald fram å skrive.`,
+    lookupHelpRequest:
+      'Trykk på Søk for å slå opp gata di og fylle ut postnummer og stad, eller hald fram å skrive.',
+    lookupScope: ({ country }) => `Føreslår adresser i ${country}.`,
+    lookupNoResults: ({ query }) =>
+      `Fann inga adresse for «${query}». Hald fram å skrive: adressa di treng ikkje stå i lista.`,
+    lookupError: 'Adressesøket fungerer ikkje akkurat no. Hald fram å skrive adressa di.',
+    lookupOffline: 'Du er fråkopla. Hald fram å skrive adressa di.',
+    noAddressDetails:
+      'Denne staden har inga postadresse. Vel ein annan, eller hald fram å skrive adressa di.',
+    filledNote: 'Fylt ut frå adressesøket. Sjekk adressa.',
+    filledPostalCodeAndCity: 'Postnummer og stad fylt ut frå adressesøket. Sjekk adressa.',
+    filledPostalCode: 'Postnummer fylt ut frå adressesøket. Sjekk adressa.',
+    filledCity: 'Stad fylt ut frå adressesøket. Sjekk adressa.',
+    missingPostalCode: 'Legg til postnummeret: søket hadde det ikkje.',
+    missingCity: 'Legg til staden: søket hadde han ikkje.',
+    missingHouseNumber: 'Skriv husnummeret ditt etter gatenamnet.',
+    countryChanged: ({ country }) => `Landet er no ${country}.`,
+  },
   icons: {
     attention: 'Krev handling frå deg',
     blocked: 'Blokkert',

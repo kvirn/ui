@@ -12,16 +12,16 @@ import type {
   FieldLabelProps,
   FieldRootProps,
 } from '@kvirn-ui/react'
-import { ComboboxProviders } from '@kvirn-ui/react/internal'
+import {
+  ComboboxProviders,
+  useAddressLookupEngine,
+  useAddressLookupField,
+} from '@kvirn-ui/react/internal'
+import type { AddressLookupEngine } from '@kvirn-ui/react/internal'
 import { createContext, useContext } from 'react'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { joinClassNames } from './class-names.ts'
-import { useAddressSearchEngine, useAddressSearchField } from './use-address-search.ts'
-import type {
-  AddressSearchEngine,
-  UseAddressSearchOptions,
-  UseAddressSearchResult,
-} from './use-address-search.ts'
+import type { UseAddressSearchOptions, UseAddressSearchResult } from './use-address-search.ts'
 
 const AddressSearchContext = createContext<UseAddressSearchResult | null>(null)
 
@@ -37,10 +37,10 @@ function AddressSearchField({
   engine,
   children,
 }: {
-  engine: AddressSearchEngine
+  engine: AddressLookupEngine
   children?: ReactNode
 }): ReactElement {
-  const search = useAddressSearchField(engine)
+  const search = useAddressLookupField(engine)
   return (
     <AddressSearchContext.Provider value={search}>
       <ComboboxProviders combobox={search}>{children}</ComboboxProviders>
@@ -70,7 +70,7 @@ export function AddressSearchRoot({
   children,
   ...fieldProps
 }: AddressSearchRootProps): ReactElement {
-  const engine = useAddressSearchEngine({
+  const engine = useAddressLookupEngine({
     geocoder,
     onResult,
     minLength,
@@ -185,7 +185,7 @@ export function AddressSearchNotice({
 }: AddressSearchNoticeProps): ReactElement {
   const search = useAddressSearchContext('Notice')
   return (
-    <Field.HelpText {...props} className={joinClassNames('kv-address-search-notice', className)}>
+    <Field.HelpText {...props} className={joinClassNames('kv-address-lookup-notice', className)}>
       {children ?? (
         <>
           {search.noticeText}

@@ -715,6 +715,7 @@ export type {
 export {
   AddressInput,
   AddressInputCity,
+  AddressInputCountry,
   AddressInputLine1,
   AddressInputLine2,
   AddressInputPostalCode,
@@ -722,9 +723,11 @@ export {
 } from './address-input/address-input.tsx'
 export type {
   AddressInputCityProps,
+  AddressInputCountryProps,
   AddressInputLine1Props,
   AddressInputLine2Props,
   AddressInputLineProps,
+  AddressInputLine1Messages,
   AddressInputPart,
   AddressInputPostalCodeProps,
   AddressInputRootProps,

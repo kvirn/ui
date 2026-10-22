@@ -534,6 +534,27 @@ export const nb = {
     pickedFilled: ({ label }) =>
       `Valgt: ${label}. Adressen er fylt ut nedenfor. Sjekk den før du fortsetter.`,
   },
+  addressInput: {
+    lookupHelpSuggest: ({ min }, format) =>
+      `Adresser foreslås etter ${format.number(min)} tegn. Velg en for å fylle ut postnummer og sted, eller fortsett å skrive.`,
+    lookupHelpRequest:
+      'Trykk på Søk for å slå opp gaten din og fylle ut postnummer og sted, eller fortsett å skrive.',
+    lookupScope: ({ country }) => `Foreslår adresser i ${country}.`,
+    lookupNoResults: ({ query }) =>
+      `Fant ingen adresse for «${query}». Fortsett å skrive: adressen din trenger ikke å stå i listen.`,
+    lookupError: 'Adressesøket fungerer ikke akkurat nå. Fortsett å skrive adressen din.',
+    lookupOffline: 'Du er frakoblet. Fortsett å skrive adressen din.',
+    noAddressDetails:
+      'Dette stedet har ingen postadresse. Velg et annet, eller fortsett å skrive adressen din.',
+    filledNote: 'Fylt ut fra adressesøket. Sjekk adressen.',
+    filledPostalCodeAndCity: 'Postnummer og sted fylt ut fra adressesøket. Sjekk adressen.',
+    filledPostalCode: 'Postnummer fylt ut fra adressesøket. Sjekk adressen.',
+    filledCity: 'Sted fylt ut fra adressesøket. Sjekk adressen.',
+    missingPostalCode: 'Legg til postnummeret: søket hadde det ikke.',
+    missingCity: 'Legg til stedet: søket hadde det ikke.',
+    missingHouseNumber: 'Skriv husnummeret ditt etter gatenavnet.',
+    countryChanged: ({ country }) => `Landet er nå ${country}.`,
+  },
   icons: {
     attention: 'Krever handling fra deg',
     blocked: 'Blokkert',

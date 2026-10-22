@@ -45,7 +45,7 @@ With a map, `useMapState().show(result)` centres the map (or fits `bounds`), dra
 | --------------- | ---- | -------------------------------------------------------------------------------------- |
 | `data-status`   | Root | `idle`, `too-short`, `searching`, `results`, `empty`, `error`, `offline` or `selected` |
 
-Stable classes: `kv-address-search`, `kv-address-search-submit`, `kv-address-search-status`, `kv-address-search-notice`, and the Autocomplete's. There are no variation classes. Your `className` joins the part's.
+Stable classes: `kv-address-search`, `kv-address-lookup-submit`, `kv-address-lookup-status`, `kv-address-lookup-notice`, and the Autocomplete's. There are no variation classes. Your `className` joins the part's.
 
 Messages (`messages`, per instance, or the provider's `addressSearch` catalog): `label`, `helpSuggest`, `helpRequest`, `submit`, `privacy`, `privacyUnnamed`, `tooShort`, `searching`, `resultCount`, `noResults`, `error`, `offline`, `picked` and `pickedFilled` (the text to pass as `picked` when a form is filled in).
 

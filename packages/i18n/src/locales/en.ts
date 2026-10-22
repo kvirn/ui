@@ -524,6 +524,28 @@ export const en = {
     pickedFilled: ({ label }) =>
       `Chosen: ${label}. The address is filled in below. Check it before you continue.`,
   },
+  addressInput: {
+    lookupHelpSuggest: ({ min }, format) =>
+      `Addresses are suggested after ${format.number(min)} characters. Choose one to fill in the postal code and town, or keep typing.`,
+    lookupHelpRequest:
+      'Press Search to look up your street and fill in the postal code and town, or keep typing.',
+    lookupScope: ({ country }) => `Suggests addresses in ${country}.`,
+    lookupNoResults: ({ query }) =>
+      `No address found for “${query}”. Keep typing: your address doesn’t have to be in the list.`,
+    lookupError: 'The address search isn’t working right now. Keep typing your address.',
+    lookupOffline: 'You’re offline. Keep typing your address.',
+    noAddressDetails:
+      'This place has no postal address. Choose another, or keep typing your address.',
+    filledNote: 'Filled in from the address search. Check the address.',
+    filledPostalCodeAndCity:
+      'Postal code and town filled in from the address search. Check the address.',
+    filledPostalCode: 'Postal code filled in from the address search. Check the address.',
+    filledCity: 'Town filled in from the address search. Check the address.',
+    missingPostalCode: 'Add the postal code: the search didn’t have it.',
+    missingCity: 'Add the town or city: the search didn’t have it.',
+    missingHouseNumber: 'Type your house number after the street name.',
+    countryChanged: ({ country }) => `The country is now ${country}.`,
+  },
   icons: {
     attention: 'Needs your action',
     blocked: 'Blocked',

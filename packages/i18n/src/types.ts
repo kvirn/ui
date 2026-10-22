@@ -806,6 +806,37 @@ export interface KvirnMessages {
     /** The same when a form is filled in from the pick. A form passes it as `messages.picked`. */
     pickedFilled: MessageFunction<{ label: string }>
   }
+  /**
+   * AddressInput's street lookup (`AddressInput.Line1` with a `geocoder`), on top of the `addressSearch` messages it
+   * reuses (`submit`, `privacy`, `tooShort`, `searching`, `resultCount`, `pickedFilled`). The
+   * country names come from `Intl.DisplayNames`, not from here.
+   */
+  addressInput: {
+    /** Help text in as-you-type mode. `min` is the shortest text that is searched. */
+    lookupHelpSuggest: MessageFunction<{ min: number }>
+    /** Help text in on-request mode. */
+    lookupHelpRequest: TextMessage
+    /** Ends the help text. `country` is the country's name in the page's language. */
+    lookupScope: MessageFunction<{ country: string }>
+    /** `query` is the text that was searched. Not an error. */
+    lookupNoResults: MessageFunction<{ query: string }>
+    /** The search failed or timed out. Points to the boxes. */
+    lookupError: TextMessage
+    lookupOffline: TextMessage
+    /** A pick of a place with no postal address: nothing is filled in. */
+    noAddressDetails: TextMessage
+    /** The visible note after a pick. It names no address, so an edit never makes it stale. */
+    filledNote: TextMessage
+    filledPostalCodeAndCity: TextMessage
+    filledPostalCode: TextMessage
+    filledCity: TextMessage
+    missingPostalCode: TextMessage
+    missingCity: TextMessage
+    /** The pick is a street without a house number. */
+    missingHouseNumber: TextMessage
+    /** A pick in another country switched the Country part. `country` is its name. */
+    countryChanged: MessageFunction<{ country: string }>
+  }
   /** The accessible name of an icon that stands alone, by catalogue `label` (`icons.<key>`). Icons beside visible text have none (Plan 0124). */
   icons: {
     /** Always shown with words: the status that needs the user to act. */

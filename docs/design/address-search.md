@@ -133,10 +133,10 @@ In a form: inside the address `Fieldset`, before the AddressInput lines: legend 
 | Part                                         | Tokens / style                                                                                                                                                                                        |
 | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Field, Control, Input, Clear                 | Autocomplete's exactly (`kv-autocomplete-*`): `border-control`, `md`, 44px, no Toggle (combobox.md D6)                                                                                                |
-| Submit `kv-address-search-submit`            | The input group's button look inside the Control (divider, `primary-subtle` hover, `text` label, 44px), not icon-only                                                                                 |
-| Help text, Notice `kv-address-search-notice` | `Field.HelpText` look: `body-small` in `text`, never `text-muted`. The notice may hold the geocoder's attribution link (`link`)                                                                       |
+| Submit `kv-address-lookup-submit`            | The input group's button look inside the Control (divider, `primary-subtle` hover, `text` label, 44px), not icon-only                                                                                 |
+| Help text, Notice `kv-address-lookup-notice` | `Field.HelpText` look: `body-small` in `text`, never `text-muted`. The notice may hold the geocoder's attribution link (`link`)                                                                       |
 | Popup, options                               | The Listbox popup: level 3, 6.5-row limit, bar + fill for active. The adapter's default `limit` is 6, so all show without scrolling                                                                   |
-| Status line `kv-address-search-status`       | `kv-listbox-empty` (`body` in `text`) with a 1rem library icon: `spinner` (crawl class under no-preference motion), `error`, `info` (offline), all `aria-hidden`                                      |
+| Status line `kv-address-lookup-status`       | `kv-listbox-empty` (`body` in `text`) with a 1rem library icon: `spinner` (crawl class under no-preference motion), `error`, `info` (offline), all `aria-hidden`                                      |
 | Result pin `kv-map-search-result`            | On the map: the library `pin`, 2.25rem, `text` fill with a `canvas` dot in the head, the halo (`--kv-map-halo`). Not interactive, `aria-hidden`, `pointer-events: none`, below the markers in z-order |
 | `kv-map-location` (Locate, not built)        | Reserved for "you are here": a disc, never a pin, so the two differ by shape. Specified with Locate                                                                                                   |
 
@@ -144,7 +144,7 @@ In a form: inside the address `Fieldset`, before the AddressInput lines: legend 
 
 **Modes:** dark and contrast themes use the same tokens (all measured pairs). Forced colours: the pin `CanvasText` with a `Canvas` dot and edge (`forced-color-adjust: none`); status icons `currentColor`; Submit `ButtonText` on `ButtonFace` with a `ButtonBorder` divider. RTL: Clear and Submit at the inline end, in that order; no icon to mirror. Motion: the spinner crawls only under no-preference; the map jumps (D7 of map.md). 320px / 400% / 1.4.12: the label, help and notice wrap; Submit keeps its word and the input shrinks to at least 10 characters, then Submit wraps below the Control (no clipping).
 
-**New tokens or colour pairs:** none. Needed CSS (engineering, `map.css`): `kv-address-search-submit`, `-status`, `-notice`, `kv-map-search-result`.
+**New tokens or colour pairs:** none. Needed CSS (engineering): `kv-address-lookup-submit`, `-status`, `-notice` (in `theme.css`, shared with AddressInput), `kv-map-search-result` (`map.css`).
 
 ## 7. Accessibility annotations and draft contract
 

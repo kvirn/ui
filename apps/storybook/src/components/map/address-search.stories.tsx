@@ -14,7 +14,7 @@ import {
 import type { AddressSearchDemoProps } from './address-search.fixture.tsx'
 
 // AddressSearch: a text field that looks an address up with a geocoder you choose (contract:
-// address-search.a11y.md). The geocoder here is a fake in memory, so no story calls a third party.
+// address-search.a11y.md). The geocoder here is a fake in memory, so tests send nothing. LiveWithMap calls Kvirn's map service.
 // Try these texts: "Storgatan" finds three addresses, "nowhere" none, "error" fails, "slow" never
 // answers. The keyboard rows are tested in address-search.test.tsx.
 
@@ -169,6 +169,17 @@ export const WithMap: StoryObj<Pick<AddressSearchDemoProps, 'suggest'>> = {
 }
 
 /**
+ * The search and the map on real data: both call Kvirn's map service (geo.kvirn.com), which
+ * receives what you type and the area you view, so it is not run in tests. Do not type a real
+ * address.
+ */
+export const LiveWithMap: StoryObj = {
+  render: () => <AddressSearchWithMapDemo live suggest />,
+  parameters: source('AddressSearchWithMapDemo'),
+  tags: ['!test'],
+}
+
+/**
  * In a form, above the address boxes. A pick fills street, postal code and city; the boxes stay
  * editable and nothing is asked twice. Enter in the search looks up and never sends the form: the
  * Send button does that.
@@ -234,20 +245,21 @@ export const Failed: Story = {
 }
 
 /** The browser is offline: nothing is sent, and the line says to connect and search again. */
+// The fake goes in play, not beforeEach: the Docs page mounts every story at once and never runs a
+// beforeEach cleanup, so a page-wide `navigator.onLine = false` would put every story offline.
 export const Offline: Story = {
-  beforeEach: () => {
+  play: async ({ canvas }) => {
     const descriptor = Object.getOwnPropertyDescriptor(Navigator.prototype, 'onLine')
     Object.defineProperty(navigator, 'onLine', { configurable: true, get: () => false })
-    return () => {
+    try {
+      await searchFor(canvas, 'Storgatan')
+      await canvas.findByText('You’re offline. Connect to the internet, then search again.')
+    } finally {
       Reflect.deleteProperty(navigator, 'onLine')
       if (descriptor) {
         Object.defineProperty(Navigator.prototype, 'onLine', descriptor)
       }
     }
-  },
-  play: async ({ canvas }) => {
-    await searchFor(canvas, 'Storgatan')
-    await canvas.findByText('You’re offline. Connect to the internet, then search again.')
   },
 }
 

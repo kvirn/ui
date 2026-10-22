@@ -1430,62 +1430,12 @@
   }
 
   /* 15b. Address search ------------------------------------------------------------------------
-   * kv-address-search-*: the Search button, the status line and the privacy notice of
-   * @kvirn-ui/map's AddressSearch. The field, its Clear button and the popup are the Autocomplete's
-   * (kv-autocomplete-*, kv-listbox-*), and the help text is a kv-field-help-text. No new colour
-   * pair: every colour is a token used elsewhere.
+   * AddressSearch's Search button, status line and privacy notice are kv-address-lookup-* in
+   * theme.css. The field, its Clear button and the popup are the Autocomplete's (kv-autocomplete-*,
+   * kv-listbox-*), and the help text is a kv-field-help-text.
    * kv-map-search-result is the pin that Map.show(address) draws: the library pin in the text
    * colour with a canvas dot in its head and the halo, so it reads on any tile and differs from a
    * place's primary pin by colour and by the dot (WCAG 1.4.11). It is not interactive. */
-  .kv-address-search-submit {
-    position: relative;
-    display: grid;
-    flex: none;
-    align-self: stretch;
-    place-items: center;
-    box-sizing: border-box;
-    min-block-size: 0;
-    min-inline-size: var(--kv-control-min-block-size);
-    margin: 0;
-    padding-block: 0;
-    padding-inline: var(--kv-space-4);
-    border: 0;
-    border-start-end-radius: var(--kv-radius-md);
-    border-end-end-radius: var(--kv-radius-md);
-    background-color: transparent;
-    color: var(--kv-color-text);
-    cursor: pointer;
-    font-family: inherit;
-    font-size: var(--kv-font-label-size);
-    font-weight: var(--kv-font-label-weight);
-    line-height: var(--kv-font-label-line-height);
-    white-space: nowrap;
-    overflow-wrap: normal;
-  }
-
-  .kv-address-search-submit::before {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: var(--kv-border-width);
-    background-color: var(--kv-color-border-control);
-  }
-
-  .kv-address-search-submit:not(:disabled):is(:hover, :active) {
-    background-color: var(--kv-color-primary-subtle);
-  }
-
-  .kv-address-search-submit:focus-visible {
-    outline: var(--kv-focus-ring-width) solid var(--kv-color-focus-ring);
-    outline-offset: calc(-1 * var(--kv-focus-ring-width));
-  }
-
-  .kv-address-search-submit:disabled {
-    color: var(--kv-color-text-muted);
-    cursor: not-allowed;
-  }
-
   /* At 320px the input keeps at least 10 characters, then Search wraps below the field. */
   .kv-address-search .kv-autocomplete-control {
     flex-wrap: wrap;
@@ -1493,20 +1443,6 @@
 
   .kv-address-search .kv-autocomplete-control > .kv-autocomplete-input {
     min-inline-size: 10ch;
-  }
-
-  .kv-address-search-status {
-    display: flex;
-    align-items: center;
-    gap: var(--kv-space-2);
-  }
-
-  .kv-address-search-status > .kv-icon {
-    flex: none;
-  }
-
-  .kv-address-search-notice {
-    margin-block-start: var(--kv-space-1);
   }
 
   .kv-map-search-result {
@@ -1547,19 +1483,6 @@
   }
 
   @media (forced-colors: active) {
-    .kv-address-search-submit {
-      background-color: ButtonFace;
-      color: ButtonText;
-    }
-
-    .kv-address-search-submit::before {
-      background-color: ButtonBorder;
-    }
-
-    .kv-address-search-submit:disabled {
-      color: GrayText;
-    }
-
     .kv-map-search-result {
       color: CanvasText;
       forced-color-adjust: none;

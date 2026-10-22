@@ -541,6 +541,28 @@ export const fi = {
     pickedFilled: ({ label }) =>
       `Valittu: ${label}. Osoite on täytetty alle. Tarkista se ennen kuin jatkat.`,
   },
+  addressInput: {
+    lookupHelpSuggest: ({ min }, format) =>
+      `Osoitteita ehdotetaan ${format.number(min)} merkin jälkeen. Valitse yksi täyttääksesi postinumeron ja postitoimipaikan tai jatka kirjoittamista.`,
+    lookupHelpRequest:
+      'Paina Hae hakeaksesi katusi ja täyttääksesi postinumeron ja postitoimipaikan tai jatka kirjoittamista.',
+    lookupScope: ({ country }) => `Ehdottaa osoitteita maasta ${country}.`,
+    lookupNoResults: ({ query }) =>
+      `Osoitetta ”${query}” ei löytynyt. Jatka kirjoittamista: osoitteesi ei tarvitse olla luettelossa.`,
+    lookupError: 'Osoitehaku ei toimi juuri nyt. Jatka osoitteesi kirjoittamista.',
+    lookupOffline: 'Olet offline-tilassa. Jatka osoitteesi kirjoittamista.',
+    noAddressDetails:
+      'Tällä paikalla ei ole postiosoitetta. Valitse toinen tai jatka osoitteesi kirjoittamista.',
+    filledNote: 'Täytetty osoitehaun perusteella. Tarkista osoite.',
+    filledPostalCodeAndCity:
+      'Postinumero ja postitoimipaikka täytetty osoitehaun perusteella. Tarkista osoite.',
+    filledPostalCode: 'Postinumero täytetty osoitehaun perusteella. Tarkista osoite.',
+    filledCity: 'Postitoimipaikka täytetty osoitehaun perusteella. Tarkista osoite.',
+    missingPostalCode: 'Lisää postinumero: haku ei löytänyt sitä.',
+    missingCity: 'Lisää postitoimipaikka: haku ei löytänyt sitä.',
+    missingHouseNumber: 'Kirjoita talon numero kadun nimen perään.',
+    countryChanged: ({ country }) => `Maa on nyt ${country}.`,
+  },
   icons: {
     attention: 'Vaatii toimenpiteitäsi',
     blocked: 'Estetty',

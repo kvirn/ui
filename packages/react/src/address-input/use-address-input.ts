@@ -1,7 +1,7 @@
 import type { MaskCountry, MaskInput } from '@kvirn-ui/core'
 import { useLocale } from '../provider/use-locale.ts'
 
-export type AddressInputPart = 'line1' | 'line2' | 'postalCode' | 'city'
+export type AddressInputPart = 'line1' | 'line2' | 'postalCode' | 'city' | 'country'
 
 export interface UseAddressInputOptions {
   /**
@@ -29,7 +29,7 @@ export interface AddressInputRootPartProps {
 
 /** Spread on the `<input>` of one part, next to the Field's `controlProps`. */
 export interface AddressInputInputPartProps {
-  /** `kv-address-input-line1`, `-line2`, `-postal-code` or `-city`, and the postal code's width class. */
+  /** `kv-address-input-line1`, `-line2`, `-postal-code`, `-city` or `-country`, and the postal code's width class. */
   className: string
   /** The part's token, with the Root's prefix, or `off`. */
   autoComplete: string
@@ -63,6 +63,7 @@ const tokens = {
   line2: 'address-line2',
   postalCode: 'postal-code',
   city: 'address-level2',
+  country: 'country',
 } as const
 
 const classNames = {
@@ -70,6 +71,7 @@ const classNames = {
   line2: 'kv-address-input-line2',
   postalCode: 'kv-address-input-postal-code',
   city: 'kv-address-input-city',
+  country: 'kv-address-input-country',
 } as const
 
 /** The box is the format hint: the characters of the longest postal code the country writes. */
@@ -114,6 +116,9 @@ export function useAddressInput({
         : autoComplete === undefined
           ? token
           : `${autoComplete} ${token}`
+    if (part === 'country') {
+      return { className: classNames.country, autoComplete: autoCompleteValue }
+    }
     if (part !== 'postalCode') {
       return {
         className: classNames[part],

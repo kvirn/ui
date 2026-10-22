@@ -533,6 +533,28 @@ export const sv = {
     pickedFilled: ({ label }) =>
       `Vald: ${label}. Adressen är ifylld nedan. Kontrollera den innan du fortsätter.`,
   },
+  addressInput: {
+    lookupHelpSuggest: ({ min }, format) =>
+      `Adresser föreslås efter ${format.number(min)} tecken. Välj en för att fylla i postnummer och ort, eller fortsätt skriva.`,
+    lookupHelpRequest:
+      'Tryck på Sök för att slå upp din gata och fylla i postnummer och ort, eller fortsätt skriva.',
+    lookupScope: ({ country }) => `Föreslår adresser i ${country}.`,
+    lookupNoResults: ({ query }) =>
+      `Ingen adress hittades för ”${query}”. Fortsätt skriva: din adress behöver inte finnas i listan.`,
+    lookupError: 'Adresssökningen fungerar inte just nu. Fortsätt skriva din adress.',
+    lookupOffline: 'Du är offline. Fortsätt skriva din adress.',
+    noAddressDetails:
+      'Den här platsen har ingen postadress. Välj en annan eller fortsätt skriva din adress.',
+    filledNote: 'Ifylld från adresssökningen. Kontrollera adressen.',
+    filledPostalCodeAndCity:
+      'Postnummer och ort ifyllda från adresssökningen. Kontrollera adressen.',
+    filledPostalCode: 'Postnummer ifyllt från adresssökningen. Kontrollera adressen.',
+    filledCity: 'Ort ifylld från adresssökningen. Kontrollera adressen.',
+    missingPostalCode: 'Lägg till postnumret: det fanns inte i sökningen.',
+    missingCity: 'Lägg till orten: den fanns inte i sökningen.',
+    missingHouseNumber: 'Skriv ditt husnummer efter gatunamnet.',
+    countryChanged: ({ country }) => `Landet är nu ${country}.`,
+  },
   icons: {
     attention: 'Kräver din åtgärd',
     blocked: 'Blockerad',

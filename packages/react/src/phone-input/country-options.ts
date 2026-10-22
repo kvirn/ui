@@ -19,6 +19,28 @@ function regionName(names: Intl.DisplayNames | undefined, country: string): stri
  * emoji only.
  */
 export function countryOptions(locale: string, first: string | undefined): CountryOption[] {
+  return sortedCountries(locale, first, (name, country) => `${name} (+${callingCodeFor(country)})`)
+}
+
+/** The same list without the calling codes, for an address's country. */
+export function countryNameOptions(locale: string, first: string | undefined): CountryOption[] {
+  return sortedCountries(locale, first, (name) => name)
+}
+
+/** One country's name in the locale's language, or its ISO code. */
+export function countryName(locale: string, country: string): string {
+  try {
+    return regionName(new Intl.DisplayNames(locale, { type: 'region' }), country)
+  } catch {
+    return country
+  }
+}
+
+function sortedCountries(
+  locale: string,
+  first: string | undefined,
+  labelOf: (name: string, country: string) => string,
+): CountryOption[] {
   let names: Intl.DisplayNames | undefined
   let collator: Intl.Collator
   try {
@@ -29,7 +51,7 @@ export function countryOptions(locale: string, first: string | undefined): Count
   }
   const options = callingCodeCountries.map((country) => ({
     country,
-    label: `${regionName(names, country)} (+${callingCodeFor(country)})`,
+    label: labelOf(regionName(names, country), country),
   }))
   options.sort((left, right) => {
     if (left.country === first || right.country === first) {

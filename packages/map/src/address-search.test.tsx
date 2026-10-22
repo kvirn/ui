@@ -97,7 +97,7 @@ function createFakeGeocoder(fake: FakeGeocoderOptions = {}) {
 }
 
 const fixtureStyle = `
-  .kv-address-search-submit, .kv-autocomplete-clear { min-block-size: 2rem; min-inline-size: 2rem; }
+  .kv-address-lookup-submit, .kv-autocomplete-clear { min-block-size: 2rem; min-inline-size: 2rem; }
   .fixture-viewport { position: relative; inline-size: 800px; block-size: 400px; }
   .kv-map-search-result { position: absolute; inset-inline-start: var(--kv-map-x); inset-block-start: var(--kv-map-y); }
 `
@@ -123,7 +123,7 @@ function Harness({ inForm = false, onSubmit, swedish = false, ...searchProps }: 
   const search = <AddressSearch debounce={20} {...searchProps} />
   return (
     <KvirnProvider locale={swedish ? 'sv-SE' : 'en'} messages={swedish ? sv : undefined}>
-      <button type="button" className="kv-address-search-submit">
+      <button type="button" className="kv-address-lookup-submit">
         Before
       </button>
       {inForm ? (
@@ -134,7 +134,7 @@ function Harness({ inForm = false, onSubmit, swedish = false, ...searchProps }: 
           }}
         >
           {search}
-          <button type="submit" className="kv-address-search-submit">
+          <button type="submit" className="kv-address-lookup-submit">
             Send
           </button>
         </form>

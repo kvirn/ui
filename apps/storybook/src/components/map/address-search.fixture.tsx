@@ -1,6 +1,7 @@
 // kv-lang-ok-file: the fake geocoder holds Swedish, Finnish and Norwegian addresses
 import { en } from '@kvirn-ui/i18n/en'
 import { AddressSearch, Map, useMapState } from '@kvirn-ui/map'
+import { kvirnGeocoder } from '@kvirn-ui/map/kvirn'
 import type {
   AddressResult,
   AddressSearchProps,
@@ -163,6 +164,12 @@ export function AddressSearchDemo({
   )
 }
 
+const liveGeocoder = kvirnGeocoder({
+  url: 'https://geo.kvirn.com',
+  name: 'Kvirn’s map service',
+  countries: ['se', 'fi', 'no'],
+})
+
 function MapAddressSearch({ geocoder }: { geocoder: GeocoderProvider }) {
   const map = useMapState()
   return (
@@ -181,8 +188,10 @@ export function AddressSearchWithMapDemo({
   suggest,
   delayMilliseconds,
   needsResolve,
-}: FakeGeocoderOptions) {
-  const provider = useProvider(true)
+  offline = false,
+  live = false,
+}: FakeGeocoderOptions & { offline?: boolean; live?: boolean }) {
+  const provider = useProvider(offline)
   const geocoder = useMemo(
     () => createFakeGeocoder({ suggest, delayMilliseconds, needsResolve }),
     [suggest, delayMilliseconds, needsResolve],
@@ -194,7 +203,7 @@ export function AddressSearchWithMapDemo({
       initialView={initialView}
       places={places}
     >
-      <MapAddressSearch geocoder={geocoder} />
+      <MapAddressSearch geocoder={live ? liveGeocoder : geocoder} />
       <Map.Skip />
       <Map.Viewport>
         <Map.Markers />

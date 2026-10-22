@@ -14,6 +14,21 @@ export {
 } from './focus-visible/use-focus-visible.ts'
 export type { FocusVisibleProps, UseFocusVisibleResult } from './focus-visible/use-focus-visible.ts'
 export { useQuietAnnouncer, warnAnnouncerMissing } from './announcer/use-announcer.ts'
+export {
+  useAddressLookup,
+  useAddressLookupEngine,
+  useAddressLookupField,
+} from './address-lookup/use-address-lookup.ts'
+export type {
+  AddressLookupEngine,
+  AddressLookupMessages,
+  AddressLookupPickOutcome,
+  AddressLookupState,
+  AddressLookupStatusPartProps,
+  AddressLookupSubmitPartProps,
+  UseAddressLookupOptions,
+  UseAddressLookupResult,
+} from './address-lookup/use-address-lookup.ts'
 export { ComboboxProviders } from './combobox/combobox.tsx'
 export { FieldContext } from './field/field-context.ts'
 export type { FieldContextValue } from './field/field-context.ts'

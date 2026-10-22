@@ -1,17 +1,27 @@
 'use client'
-import type { MaskInput } from '@kvirn-ui/core'
-import { createContext, useContext, useEffect, useRef } from 'react'
+import type { AddressResult, GeocoderProvider, MaskInput } from '@kvirn-ui/core'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import type { ComponentPropsWithRef, ReactElement } from 'react'
 import { warnOnce } from '../dev/dev-warning.ts'
 import { FieldGroupContext, FieldTextHostContext } from '../field/field-context.ts'
 import { mergeProps } from '../merge-props/merge-props.ts'
 import { useMergedRef } from '../merge-props/use-merged-ref.ts'
+import { useLocale } from '../provider/use-locale.ts'
 import { TextInput } from '../text-input/text-input.tsx'
 import type { TextInputProps } from '../text-input/text-input.tsx'
+import { AddressInputContext } from './address-input-context.ts'
+import type { AddressInputContextValue } from './address-input-context.ts'
+import { AddressInputCountry } from './address-input-country.tsx'
+import { AddressInputLine1Lookup } from './address-input-line1-lookup.tsx'
+import type { AddressInputLine1Messages } from './address-input-line1-lookup.tsx'
+import { useAddressFill } from './use-address-fill.ts'
 import { useAddressInput } from './use-address-input.ts'
-import type { AddressInputPart, UseAddressInputResult } from './use-address-input.ts'
+import type { AddressInputPart } from './use-address-input.ts'
 
 export type { AddressInputPart, UseAddressInputOptions } from './use-address-input.ts'
+export { AddressInputCountry } from './address-input-country.tsx'
+export type { AddressInputCountryProps } from './address-input-country.tsx'
+export type { AddressInputLine1Messages } from './address-input-line1-lookup.tsx'
 
 export interface AddressInputRootProps extends ComponentPropsWithRef<'div'> {
   /**
@@ -26,6 +36,14 @@ export interface AddressInputRootProps extends ComponentPropsWithRef<'div'> {
    * `autoComplete` wins.
    */
   autoComplete?: string | undefined
+  /**
+   * Turns on the address lookup: `AddressInput.Line1` becomes a combobox that suggests addresses
+   * from this geocoder as the visitor types, and stays free text. What is typed in Line 1 is sent
+   * to it. Geocoders live in `@kvirn-ui/map` (`kvirnGeocoder`, `nominatim`, `googlePlaces`).
+   */
+  geocoder?: GeocoderProvider | undefined
+  /** A pick that filled the boxes, with its position and id. Nothing is called when the text is cleared. */
+  onLookupResult?: ((result: AddressResult) => void) | undefined
 }
 
 export interface AddressInputLineProps extends Omit<
@@ -33,7 +51,16 @@ export interface AddressInputLineProps extends Omit<
   'type' | 'mask' | 'announceRejections' | 'messages'
 > {}
 
-export type AddressInputLine1Props = AddressInputLineProps
+export interface AddressInputLine1Props extends AddressInputLineProps {
+  /** With a `geocoder` on the Root: per-instance overrides for the lookup's strings. */
+  messages?: AddressInputLine1Messages | undefined
+  /** With a `geocoder`: the fewest characters, trimmed, before a search is sent. Default 3. */
+  minLength?: number | undefined
+  /** With a `geocoder`: milliseconds of no typing before a search as you type, default 400; `false` searches on request. */
+  debounce?: number | false | undefined
+  /** With a `geocoder`: how long to wait for an answer, in milliseconds. Default 10 000. */
+  timeoutMilliseconds?: number | undefined
+}
 export type AddressInputLine2Props = AddressInputLineProps
 export type AddressInputCityProps = AddressInputLineProps
 
@@ -45,17 +72,13 @@ export interface AddressInputPostalCodeProps extends Omit<TextInputProps, 'type'
   mask?: MaskInput | false | undefined
 }
 
-type AddressInputContextValue = Pick<UseAddressInputResult, 'getInputProps' | 'postalCodeMask'>
-
-const AddressInputContext = createContext<AddressInputContextValue | null>(null)
-
 /**
  * An address of one text box per line (contract: address-input.a11y.md). Put it in a plain
  * `Fieldset.Root` whose `Fieldset.Legend` names the address, and each part in its own
  * `Field.Root` with a `Field.Label`, so a line has its own help text and error. It holds no form
- * state, never looks an address up, never moves focus when a box is full and never rewrites a
- * typed value when `country` changes. It has no text of its own: every label, help text and
- * error is yours.
+ * state, never moves focus when a box is full and never rewrites a typed value when `country`
+ * changes. It looks an address up only when you give the Root a `geocoder`: `AddressInput.Line1` then suggests addresses.
+ * The boxes have no text of its own: every label, help text and error is yours.
  *
  * @example
  * <Fieldset.Root>
@@ -76,11 +99,26 @@ const AddressInputContext = createContext<AddressInputContextValue | null>(null)
 export function AddressInputRoot({
   country,
   autoComplete,
+  geocoder,
+  onLookupResult,
   children,
   ref,
   ...otherProps
 }: AddressInputRootProps): ReactElement {
-  const address = useAddressInput({ country, autoComplete })
+  const { country: providerCountry } = useLocale()
+  const [chosenCountry, setChosenCountry] = useState<string | undefined>(undefined)
+  const [countryPartCount, setCountryPartCount] = useState(0)
+  const hasCountryPart = countryPartCount > 0
+  const address = useAddressInput({
+    country: hasCountryPart ? (chosenCountry ?? country) : country,
+    autoComplete,
+  })
+  const fill = useAddressFill()
+  const registerCountryPart = useCallback(() => {
+    setCountryPartCount((count) => count + 1)
+    return () => setCountryPartCount((count) => count - 1)
+  }, [])
+  const selectCountry = useCallback((next: string) => setChosenCountry(next.toUpperCase()), [])
   const host = useContext(FieldTextHostContext)
   const isInGroup = useContext(FieldGroupContext)
   const elementRef = useRef<HTMLDivElement | null>(null)
@@ -108,6 +146,14 @@ export function AddressInputRoot({
   const contextValue: AddressInputContextValue = {
     getInputProps: address.getInputProps,
     postalCodeMask: address.postalCodeMask,
+    country: address.country,
+    defaultCountry: country?.toUpperCase() ?? providerCountry,
+    geocoder,
+    onLookupResult,
+    hasCountryPart,
+    registerCountryPart,
+    selectCountry,
+    fill,
   }
 
   return (
@@ -121,7 +167,7 @@ export function AddressInputRoot({
 AddressInputRoot.displayName = 'AddressInput.Root'
 
 interface AddressInputBoxProps extends Omit<TextInputProps, 'type' | 'mask'> {
-  part: AddressInputPart
+  part: Exclude<AddressInputPart, 'country'>
   mask?: MaskInput | false | undefined
 }
 
@@ -130,6 +176,17 @@ function AddressInputBox({ part, mask, ref, ...inputProps }: AddressInputBoxProp
   // Outside a Root the part still has its token and keyboard, with the locale's country.
   const fallback = useAddressInput()
   const address = root ?? fallback
+  const elementRef = useRef<HTMLInputElement | null>(null)
+  const mergedRef = useMergedRef(ref, elementRef)
+  const registerBox = root?.fill.registerBox
+
+  useEffect(() => {
+    const element = elementRef.current
+    if (part === 'line2' || registerBox === undefined || element === null) {
+      return undefined
+    }
+    return registerBox(part, element)
+  }, [part, registerBox])
 
   useEffect(() => {
     if (root === null) {
@@ -150,12 +207,37 @@ function AddressInputBox({ part, mask, ref, ...inputProps }: AddressInputBoxProp
   const resolvedMask =
     part !== 'postalCode' || mask === false ? undefined : (mask ?? address.postalCodeMask)
 
-  return <TextInput {...mergeProps(ownProps, inputProps)} mask={resolvedMask} ref={ref} />
+  return <TextInput {...mergeProps(ownProps, inputProps)} mask={resolvedMask} ref={mergedRef} />
 }
 
-/** The street address: `autocomplete="address-line1"`, no spell-check and no autocorrect. */
-export function AddressInputLine1(props: AddressInputLine1Props): ReactElement {
-  return <AddressInputBox {...props} part="line1" />
+/**
+ * The street address: `autocomplete="address-line1"`, no spell-check and no autocorrect. With a
+ * `geocoder` on the Root it is also the address lookup: a combobox that suggests addresses as the
+ * visitor types, still free text. A pick puts the street here and fills the postal code and the
+ * city; focus stays here, so a missing house number is typed straight after.
+ */
+export function AddressInputLine1({
+  messages,
+  minLength,
+  debounce,
+  timeoutMilliseconds,
+  ...boxProps
+}: AddressInputLine1Props): ReactElement {
+  const root = useContext(AddressInputContext)
+  if (root?.geocoder !== undefined) {
+    return (
+      <AddressInputLine1Lookup
+        {...boxProps}
+        root={root}
+        geocoder={root.geocoder}
+        messages={messages}
+        minLength={minLength}
+        debounce={debounce}
+        timeoutMilliseconds={timeoutMilliseconds}
+      />
+    )
+  }
+  return <AddressInputBox {...boxProps} part="line1" />
 }
 AddressInputLine1.displayName = 'AddressInput.Line1'
 
@@ -182,10 +264,12 @@ AddressInputCity.displayName = 'AddressInput.City'
 
 /**
  * An address of one text box per line: `AddressInput.Root` is the layout, with `.Line1`, `.Line2`,
- * `.PostalCode` and `.City` inside it, each in your own Field.
+ * `.PostalCode` and `.City` inside it, each in your own Field. `.Country` (first) is optional;
+ * `geocoder` on the Root turns `.Line1` into an address lookup.
  */
 export const AddressInput = {
   Root: AddressInputRoot,
+  Country: AddressInputCountry,
   Line1: AddressInputLine1,
   Line2: AddressInputLine2,
   PostalCode: AddressInputPostalCode,

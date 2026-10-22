@@ -3,17 +3,18 @@ import { AddressInput, ErrorSummary, Field, Fieldset } from '@kvirn-ui/react'
 import contract from '../../../../../packages/react/src/address-input/address-input.a11y.md?raw'
 import guide from '../../../../../packages/react/src/address-input/address-input.md?raw'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { expect, userEvent } from 'storybook/test'
+import { expect, userEvent, waitFor } from 'storybook/test'
 import { showSource, usageGuide } from '../../docs-source.ts'
 import { withFormLocale } from '../form/form.fixture.tsx'
 import { expectMinimumTargetSize } from '../theme-story-assertions.ts'
-import { AddressStates, KeyboardAddress } from './address-input.fixture.tsx'
+import { AddressLookup, AddressStates, KeyboardAddress } from './address-input.fixture.tsx'
 
 // Components/Forms/AddressInput: an address of one text box per line, each in the consumer's own
-// Field inside a plain fieldset (docs/design/phone-and-address-inputs.md §6.2). The component holds
-// no text, no form state and no lookup: the labels, help texts and errors below are written here as
-// a service would. Autofill tokens, the postal code's mask and width follow `country`, and nothing
-// moves focus when a box is full.
+// Field inside a plain fieldset (docs/design/phone-and-address-inputs.md §6.2). The boxes hold no
+// text and no form state: the labels, help texts and errors below are written here as a service
+// would. Autofill tokens, the postal code's mask and width follow `country`, and nothing moves focus
+// when a box is full. The lookup stories (AddressInput.Line1 with a geocoder and .Country, docs/design/address-input-autocomplete.md)
+// use a fake geocoder in memory, so tests send nothing. LiveLookup is the one that calls Kvirn's map service.
 
 const meta = {
   title: 'Components/Forms/AddressInput',
@@ -497,5 +498,358 @@ export const Keyboard: Story = {
     await expect(postalCode).toHaveFocus()
     await userEvent.type(canvas.getByRole('textbox', { name: /^Town or city/ }), 'Kvirnby{Enter}')
     await expect(canvas.getByTestId('submits')).toHaveTextContent('Sent: 1')
+  },
+}
+
+type Canvas = Parameters<NonNullable<Story['play']>>[0]['canvas']
+
+const lookupInput = (canvas: Canvas) => canvas.getByRole('combobox', { name: /^Street address/ })
+
+// The Country select's own options are `option`s too: wait for the suggestions in the listbox.
+async function findSuggestions(canvas: Canvas) {
+  await waitFor(() =>
+    expect(canvas.getByRole('listbox').querySelectorAll('[role="option"]').length).toBeGreaterThan(
+      0,
+    ),
+  )
+}
+
+async function searchFor(canvas: Canvas, text: string) {
+  await userEvent.click(lookupInput(canvas))
+  await userEvent.keyboard(`${text}{Enter}`)
+}
+
+async function pick(canvas: Canvas, text: string, position = 1) {
+  await searchFor(canvas, text)
+  await findSuggestions(canvas)
+  await userEvent.keyboard('{ArrowDown}'.repeat(position) + '{Enter}')
+}
+
+const lookupStory = (name: string) => showSource('address-input/address-input.fixture.tsx', name)
+
+/**
+ * The street autocomplete on real addresses: with a country list and a geocoder, `AddressInput.Line1`
+ * suggests addresses as you type and a pick fills the postal code and the city. It calls Kvirn's
+ * map service (geo.kvirn.com), which receives what you type, so it is not run in tests. Do not type
+ * a real address.
+ */
+export const LiveLookup: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup live withCountry suggest />,
+  tags: ['!test'],
+}
+
+/**
+ * With a `geocoder` on the Root, `AddressInput.Line1` is the lookup: type a street, press Enter
+ * (or let it suggest as you type), and pick. A pick puts the street in Line 1, fills the postal code
+ * and the city, never line 2, and keeps focus in Line 1 with the caret at the end. Line 1 stays
+ * free text with its label, name and autofill token.
+ * Try `Storgatan`, `Postgatan`, `Gatugatan`, `Platsgatan`, `nowhere`, `error` and `slow`.
+ */
+export const Lookup: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    const input = lookupInput(canvas)
+    await expect(input).toHaveAttribute('autocomplete', 'address-line1')
+    await expect(input).toHaveAttribute('name', 'line1')
+  },
+}
+
+/** On request, Enter or Search with fewer than 3 characters says what is missing and sends nothing. */
+export const LookupTooShort: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    await searchFor(canvas, 'St')
+    await canvas.findByText('Type at least 3 characters to search.')
+  },
+}
+
+/** The answer is on its way: a spinner and "Searching for addresses". */
+export const LookupSearching: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    await searchFor(canvas, 'slow')
+    await canvas.findByText('Searching for addresses')
+  },
+}
+
+/** An answer with addresses: the list opens, nothing is active, and the count is announced once. */
+export const LookupResults: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    await searchFor(canvas, 'Postgatan')
+    await findSuggestions(canvas)
+  },
+}
+
+/** No address found is not an error: it says what to check and points to the boxes. */
+export const LookupNoResults: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    await searchFor(canvas, 'nowhere')
+    await canvas.findByText(/No address found for/)
+  },
+}
+
+/** The service fails or does not answer: the text stays and the line points to the boxes. */
+export const LookupFailed: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    await searchFor(canvas, 'error')
+    await canvas.findByText('The address search isn’t working right now. Keep typing your address.')
+  },
+}
+
+/** Offline: nothing is sent, and the line points to the boxes. */
+// The fake goes in play, not beforeEach: the Docs page mounts every story at once and never runs a
+// beforeEach cleanup, so a page-wide `navigator.onLine = false` would put every story offline.
+export const LookupOffline: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    const descriptor = Object.getOwnPropertyDescriptor(Navigator.prototype, 'onLine')
+    Object.defineProperty(navigator, 'onLine', { configurable: true, get: () => false })
+    try {
+      await searchFor(canvas, 'Storgatan')
+      await canvas.findByText('You’re offline. Keep typing your address.')
+    } finally {
+      Reflect.deleteProperty(navigator, 'onLine')
+      if (descriptor) {
+        Object.defineProperty(Navigator.prototype, 'onLine', descriptor)
+      }
+    }
+  },
+}
+
+/** A place with no postal address fills nothing; the line says so, the typed text comes back and the list stays open. */
+export const LookupNoPostalAddress: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    await pick(canvas, 'Platsgatan')
+    await canvas.findByText(/This place has no postal address/)
+    await expect(canvas.getByRole('combobox', { name: /^Street address/ })).toHaveValue(
+      'Platsgatan',
+    )
+  },
+}
+
+/** A pick fills the street, the postal code and the city, and a note under the lookup says to check them. Focus stays in the lookup. */
+export const LookupFilled: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    await pick(canvas, 'Storgatan')
+    await waitFor(() =>
+      expect(canvas.getByRole('combobox', { name: /^Street address/ })).toHaveValue('Storgatan 1'),
+    )
+    await expect(canvas.getByRole('textbox', { name: /^Postal code/ })).toHaveValue('211 22')
+    await expect(canvas.getByRole('textbox', { name: /^Town or city/ })).toHaveValue('Malmö')
+    await canvas.findByText('Filled in from the address search. Check the address.')
+    await expect(lookupInput(canvas)).toHaveFocus()
+  },
+}
+
+/** The result has no postal code: the note and the announcement ask for it, and the box is left empty. */
+export const LookupFilledMissingPostalCode: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    await pick(canvas, 'Postgatan')
+    await canvas.findByText(/Add the postal code: the search didn’t have it\./)
+    await expect(canvas.getByRole('textbox', { name: /^Postal code/ })).toHaveValue('')
+  },
+}
+
+/** The result is a street without a number: the street is filled and the note asks for the number. */
+export const LookupFilledStreetOnly: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    await pick(canvas, 'Gatugatan')
+    await canvas.findByText(/Type your house number after the street name\./)
+  },
+}
+
+/** After picking a street, the house number typed after it is looked up and the postal code and the city are filled; Line 1 stays as typed. */
+export const LookupHouseNumber: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    await pick(canvas, 'Gatugatan')
+    const street = lookupInput(canvas)
+    await waitFor(() => expect(street).toHaveValue('Gatugatan'))
+    await userEvent.type(street, ' 12')
+    await waitFor(() =>
+      expect(canvas.getByRole('textbox', { name: /^Postal code/ })).toHaveValue('211 24'),
+    )
+    await expect(street).toHaveValue('Gatugatan 12')
+    await expect(street).toHaveFocus()
+  },
+}
+
+/** After a pick the boxes are edited: nothing is re-searched or announced, and the note stays. */
+export const LookupEditedAfterFill: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    await pick(canvas, 'Storgatan')
+    const street = canvas.getByRole('combobox', { name: /^Street address/ })
+    await waitFor(() => expect(street).toHaveValue('Storgatan 1'))
+    await userEvent.type(street, '2')
+    await expect(street).toHaveValue('Storgatan 12')
+    await canvas.findByText('Filled in from the address search. Check the address.')
+  },
+}
+
+/** The browser filled the boxes: the lookup is not used, nothing is sent and nothing is announced. */
+export const LookupAutofilled: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup autofilled />,
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('combobox', { name: /^Street address/ })).toHaveValue(
+      'Storgatan 12',
+    )
+    await expect(canvas.queryByText(/^Filled in from/)).toBeNull()
+  },
+}
+
+/**
+ * `AddressInput.Country`, first in the Root: the country the lookup searches in and the postal
+ * code's format. Without it the lookup offers only the Root's country. With it every country is
+ * listed, the selected one first.
+ */
+export const WithCountry: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup withCountry />,
+  play: async ({ canvas }) => {
+    const country = canvas.getByRole('combobox', { name: /^Country/ })
+    await expect(country).toHaveValue('SE')
+    await expect(country).toHaveAttribute('autocomplete', 'country')
+    await canvas.findByText(/Suggests addresses in Sweden\./)
+  },
+}
+
+/** The visitor changes the country: the postal code is 6 wide for Finland and the help says Finland. */
+export const CountryChangedByUser: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup withCountry />,
+  play: async ({ canvas }) => {
+    await userEvent.selectOptions(canvas.getByRole('combobox', { name: /^Country/ }), 'Finland')
+    await canvas.findByText(/Suggests addresses in Finland\./)
+    const postalCode = canvas.getByRole('textbox', { name: /^Postal code/ })
+    await userEvent.type(postalCode, '001009')
+    await expect(postalCode).toHaveValue('00100')
+  },
+}
+
+/** A pick in another country, with the Country part: the select is set first, the mask follows, and the note says the country is now Finland. */
+export const FilledOtherCountry: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup withCountry />,
+  play: async ({ canvas }) => {
+    await pick(canvas, 'Storgatan', 3)
+    await waitFor(() =>
+      expect(canvas.getByRole('combobox', { name: /^Country/ })).toHaveValue('FI'),
+    )
+    await canvas.findByText(/The country is now Finland\./)
+    await expect(canvas.getByRole('textbox', { name: /^Postal code/ })).toHaveValue('00100')
+  },
+}
+
+/** Without the Country part an address in another country is not listed: the form can't record it. */
+export const ForeignResultNotListed: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup />,
+  play: async ({ canvas }) => {
+    await searchFor(canvas, 'Storgatan')
+    await waitFor(() =>
+      expect(canvas.getByRole('listbox').querySelectorAll('[role="option"]')).toHaveLength(2),
+    )
+  },
+}
+
+/** The whole address disabled: the lookup and its Search button are skipped by Tab. */
+export const LookupDisabled: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup disabled />,
+  play: async ({ canvas }) => {
+    await expect(lookupInput(canvas)).toBeDisabled()
+  },
+}
+
+/** Compact density: 32px controls from 64rem; Search and Clear stay at least 24px. */
+export const LookupCompact: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup compact withCountry />,
+  play: async ({ canvas }) => {
+    await pick(canvas, 'Storgatan')
+    await canvas.findByText('Filled in from the address search. Check the address.')
+    await expectMinimumTargetSize(canvas.getByRole('button', { name: 'Search' }))
+    await expectMinimumTargetSize(canvas.getByRole('button', { name: 'Clear' }))
+  },
+}
+
+/** Right to left: Clear then Search sit at the inline end, the postal code stays left to right, and the check is not mirrored. */
+export const LookupRTL: Story = {
+  globals: { dir: 'rtl', locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup withCountry />,
+  play: async ({ canvas }) => {
+    await pick(canvas, 'Storgatan')
+    await canvas.findByText('Filled in from the address search. Check the address.')
+  },
+}
+
+/** In forced colours the status line, the note and the active suggestion stay visible: icons are `currentColor`, Search is `ButtonText` on `ButtonFace`. */
+export const LookupForcedColors: Story = {
+  globals: { forcedColors: 'active', locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup withCountry />,
+  play: async ({ canvas }) => {
+    await searchFor(canvas, 'Storgatan')
+    await findSuggestions(canvas)
+    await userEvent.keyboard('{ArrowDown}')
+  },
+}
+
+/** The fixture the lookup's keyboard tests drive: every key is in the contract's Keyboard table. */
+export const LookupKeyboard: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup withCountry />,
+  play: async ({ canvas }) => {
+    await searchFor(canvas, 'Postgatan')
+    await findSuggestions(canvas)
+    await userEvent.keyboard('{ArrowDown}{Enter}')
+    await expect(lookupInput(canvas)).toHaveFocus()
+    await expect(canvas.getByTestId('submits')).toHaveTextContent('Sent: 0')
   },
 }
