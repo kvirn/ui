@@ -53,6 +53,11 @@ export async function expectNoA11yViolationsInEveryTheme(
   element: Element,
   { themeStore, themes = everyA11yTheme }: ExpectNoA11yViolationsInEveryThemeOptions,
 ): Promise<void> {
+  if (themes.length === 0) {
+    throw new Error(
+      'expectNoA11yViolationsInEveryTheme: `themes` is empty, so nothing would be checked.',
+    )
+  }
   const root = document.documentElement
   const previousPreference = themeStore.getState().preference
   const previousAttributes = themeAttributes.map((name) => [name, root.getAttribute(name)] as const)

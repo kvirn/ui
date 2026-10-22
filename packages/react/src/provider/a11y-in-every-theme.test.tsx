@@ -29,6 +29,18 @@ afterEach(() => {
 })
 
 describe('expectNoA11yViolationsInEveryTheme', () => {
+  it('rejects an empty theme list instead of passing without a check', async () => {
+    const element = document.createElement('div')
+    document.body.append(element)
+    await expect(
+      expectNoA11yViolationsInEveryTheme(element, {
+        themeStore: getThemeStore(getDefaultEnv()),
+        themes: [],
+      }),
+    ).rejects.toThrow('`themes` is empty')
+    element.remove()
+  })
+
   it('rejects a colour-contrast failure that only the dark theme has, while light/standard passes', async () => {
     const container = mount(lowContrastUnder('[data-kv-color-scheme="dark"]'))
     await expect(
