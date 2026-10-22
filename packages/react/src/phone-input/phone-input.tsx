@@ -248,8 +248,9 @@ export function PhoneInputCountry({
       ref: mergedRef,
     },
     hasCountry ? null : createElement('option', { value: '', disabled: true }),
+    // Server and browser ICU can name a country differently; the server's name stays until the next render.
     options.map((option) => (
-      <option key={option.country} value={option.country}>
+      <option key={option.country} value={option.country} suppressHydrationWarning>
         {option.label}
       </option>
     )),

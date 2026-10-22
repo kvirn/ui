@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
+import { hydrateRoot } from 'react-dom/client'
+import { renderToString } from 'react-dom/server'
 import { render } from 'vitest-browser-react'
 import { resetDevWarnings } from '../dev/dev-warning.ts'
 import { Field } from '../field/field.tsx'
@@ -245,5 +247,49 @@ describe('PhoneInput.Root and PhoneInput.Country', () => {
       expect(consoleWarn).toHaveBeenCalledTimes(1)
     })
     expect(String(consoleWarn.mock.calls[0]?.[0])).toContain('4.1.2')
+  })
+})
+
+describe('PhoneInput.Country hydration', () => {
+  test('hydrates without a mismatch when the server\u2019s ICU names a country differently', async () => {
+    const RealDisplayNames = Intl.DisplayNames
+    class ServerDisplayNames extends RealDisplayNames {
+      override of(code: string) {
+        return code === 'FK' ? 'Falkland Islands (Islas Malvinas)' : super.of(code)
+      }
+    }
+    Object.defineProperty(Intl, 'DisplayNames', { value: ServerDisplayNames, configurable: true })
+    let html: string
+    try {
+      html = renderToString(
+        <PhoneInput.Root>
+          <PhoneInput.Country aria-label="Country" />
+        </PhoneInput.Root>,
+      )
+    } finally {
+      Object.defineProperty(Intl, 'DisplayNames', { value: RealDisplayNames, configurable: true })
+    }
+    const container = document.createElement('div')
+    document.body.append(container)
+    container.innerHTML = html
+    const recoverable = vi.fn<() => void>()
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const root = hydrateRoot(
+      container,
+      <PhoneInput.Root>
+        <PhoneInput.Country aria-label="Country" />
+      </PhoneInput.Root>,
+      { onRecoverableError: recoverable },
+    )
+    await vi.waitFor(() => expect(container.querySelector('select')).not.toBeNull())
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(recoverable).not.toHaveBeenCalled()
+    expect(consoleError).not.toHaveBeenCalled()
+    expect(container.querySelector('option[value="FK"]')).not.toBeNull()
+    await userEvent.selectOptions(page.getByRole('combobox', { name: 'Country' }), 'FK')
+    expect(container.querySelector('select')?.value).toBe('FK')
+    consoleError.mockRestore()
+    root.unmount()
+    container.remove()
   })
 })
