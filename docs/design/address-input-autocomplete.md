@@ -3,7 +3,7 @@
 <!-- kv-lang-ok-file: a sample Swedish address (Storgatan, Malmö) and a Finnish town name in the examples -->
 
 - **Status:** Draft · **Designer:** ux-designer agent · **Date:** 2026-10-22 (revised the same day: model (a))
-- **Plan:** [0149](plans/0149-address-input-lookup.md). The lookup lives in `AddressInput` (`@kvirn-ui/react`), opt-in with `geocoder` on `AddressInput.Root`; geocoders (`kvirnGeocoder`, …) come from `@kvirn-ui/map`; the decisions are in §9.
+- **Plan:** 0149 (done, deleted; see `git log`). The lookup lives in `AddressInput` (`@kvirn-ui/react`), opt-in with `geocoder` on `AddressInput.Root`; geocoders (`kvirnGeocoder`, …) come from `@kvirn-ui/map`; the decisions are in §9.
 - **Type:** component flow, content and default styling (`theme.css`)
 - **Builds on:** [address-search.md](address-search.md) (states, strings, Enter deviation D1, privacy notice), [phone-and-address-inputs.md](phone-and-address-inputs.md), [geocoder-providers.md](geocoder-providers.md), `address-input.a11y.md`, `address-search.a11y.md`.
 

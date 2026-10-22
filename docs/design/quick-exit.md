@@ -2,7 +2,7 @@
 
 - **Status:** Approved (maintainer, 2026-10-15). Amended 2026-10-16: visible shortcut hint (§9.8)
 - **Designer:** ux-designer agent · **Date:** 2026-10-15
-- **Plan:** [0122](plans/0122-quick-exit.md)
+- **Plan:** 0122 (done, deleted; see `git log`)
 - **Type:** component default styling + behaviour
 
 ## 1. Brief
