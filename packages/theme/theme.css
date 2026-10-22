@@ -6453,12 +6453,13 @@
     }
   }
 
-  /* A fieldset and a date input space their own fields (the gap, and the 24px below), so a field
-   * or a group inside one has no block margin of its own: the options of a group are one gap
-   * apart. */
+  /* A fieldset, a date input and an address input space their own fields (the gap, and the 24px
+   * below), so a field or a group inside one has no block margin of its own: the options of a group
+   * are one gap apart. */
   .kv-fieldset > .kv-field,
   .kv-fieldset > :is(.kv-radio-group, .kv-checkbox-group),
-  .kv-date-input > .kv-field {
+  .kv-date-input > .kv-field,
+  .kv-address-input > .kv-field {
     margin-block: 0;
   }
 
