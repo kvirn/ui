@@ -1,6 +1,6 @@
 import type { NextConfig } from 'next'
 
-// No third-party requests from the docs site (AGENTS.md, hard rule 7): no remote fonts, images or analytics. The one exception is the Map examples, which load the map from geo.kvirn.com, Kvirn's own map service.
+// No third-party requests from the docs site (AGENTS.md, hard rule 7): no remote fonts, images or analytics. The one exception is geo.kvirn.com, Kvirn's own map service: the Map examples load the map from it, and the address examples look up what a visitor types there.
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: { unoptimized: true },

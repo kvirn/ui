@@ -11,6 +11,8 @@ import { UseCase } from './use-case.tsx'
 import {
   addressInputCityAttributes,
   addressInputCityRows,
+  addressInputCountryAttributes,
+  addressInputCountryRows,
   addressInputLine1Attributes,
   addressInputLine1Rows,
   addressInputLine2Attributes,
@@ -22,6 +24,7 @@ import {
   useAddressInputHook,
 } from '../content/address-input.api.ts'
 import { AddressAbroad } from '../examples/address-input/address-abroad.tsx'
+import { AddressLookup } from '../examples/address-input/address-lookup.tsx'
 import { AddressNotFound } from '../examples/address-input/address-not-found.tsx'
 import { DefaultAddressInput } from '../examples/address-input/default.tsx'
 import { ErrorsPerBox } from '../examples/address-input/errors-per-box.tsx'
@@ -29,7 +32,12 @@ import { KnownAddress } from '../examples/address-input/known-address.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
 export type AddressInputExampleSources = Record<
-  'default' | 'errors-per-box' | 'address-not-found' | 'address-abroad' | 'known-address',
+  | 'default'
+  | 'errors-per-box'
+  | 'address-lookup'
+  | 'address-not-found'
+  | 'address-abroad'
+  | 'known-address',
   string
 >
 
@@ -39,8 +47,9 @@ const boxRenders = (what: ReactNode) => (
     <code>textbox</code>. Put it in its own <code>Field</code> with a visible{' '}
     <code>Field.Label</code>: the label, help text and error are wired to it. It takes the props of
     a <Link href="/components/text-input">TextInput</Link> and passes <code>ref</code> to it. You
-    cannot set <code>type</code>. The street, line 2 and city boxes also take no <code>mask</code>,{' '}
-    <code>announceRejections</code> or <code>messages</code>.
+    cannot set <code>type</code>. The street, line 2 and city boxes also take no <code>mask</code>{' '}
+    or <code>announceRejections</code>. Only the street box takes <code>messages</code>, to change
+    the texts of the lookup.
   </>
 )
 
@@ -49,19 +58,44 @@ const parts: ApiPart[] = [
     name: 'AddressInput.Root',
     renders: (
       <>
-        <code>&lt;div&gt;</code> with no role. It holds the boxes and the country they share. Put it
-        in a plain <code>Fieldset</code> (not a <code>group</code> one) whose legend names the
-        address. It takes every attribute of a <code>&lt;div&gt;</code> and passes <code>ref</code>{' '}
-        to it. Also exported as <code>AddressInputRoot</code>. The default theme is described on{' '}
-        <Link href="/foundation/theming">Theming</Link>.
+        <code>&lt;div&gt;</code> with no role. It holds the boxes, the country they share and the
+        address lookup. Put it in a plain <code>Fieldset</code> (not a <code>group</code> one) whose
+        legend names the address. It takes every attribute of a <code>&lt;div&gt;</code> and passes{' '}
+        <code>ref</code> to it. Also exported as <code>AddressInputRoot</code>. The default theme is
+        described on <Link href="/foundation/theming">Theming</Link>.
       </>
     ),
     props: addressInputRootRows,
     attributes: addressInputRootAttributes,
   },
   {
+    name: 'AddressInput.Country',
+    renders: (
+      <>
+        A native <code>&lt;select&gt;</code> (role <code>combobox</code>) of every country, named in
+        the language of the page, with the Root’s country first. Put it first in the Root, in its
+        own <code>Field</code> with a visible <code>Field.Label</code> and a <code>name</code>. It
+        sets the shape of the postal code and the country the lookup searches in. A suggestion in
+        another country sets it too. It never changes what the user typed. It takes every attribute
+        of a <code>&lt;select&gt;</code> except <code>children</code> and passes <code>ref</code> to
+        it. Also exported as AddressInputCountry.
+      </>
+    ),
+    props: addressInputCountryRows,
+    attributes: addressInputCountryAttributes,
+  },
+  {
     name: 'AddressInput.Line1',
-    renders: boxRenders('The street address. Also exported as AddressInputLine1.'),
+    renders: (
+      <>
+        {boxRenders('The street address. Also exported as AddressInputLine1.')} With a{' '}
+        <code>geocoder</code> on the Root it is an <code>&lt;input&gt;</code> with the role{' '}
+        <code>combobox</code> instead, and it stays free text. It comes with a privacy notice above
+        it, a Clear button, a Search button when the search runs on request, the list of
+        suggestions, a help text and, after a choice, a note. It keeps your <code>Field.Label</code>
+        , its <code>name</code> and its autofill purpose.
+      </>
+    ),
     props: addressInputLine1Rows,
     attributes: addressInputLine1Attributes,
   },
@@ -76,7 +110,7 @@ const parts: ApiPart[] = [
   {
     name: 'AddressInput.PostalCode',
     renders: boxRenders(
-      'The postal code. It follows the Root’s country: SE, FI and NO get a mask, a number keypad and a box as wide as the code. Any other country gets no mask: the box takes what is typed, asks phone keyboards for capital letters and is ten characters wide. Also exported as AddressInputPostalCode.',
+      'The postal code. It follows the country: the Root’s, or the one in AddressInput.Country when there is one. SE, FI and NO get a mask, a number keypad and a box as wide as the code. Any other country gets no mask: the box takes what is typed, asks phone keyboards for capital letters and is ten characters wide. Also exported as AddressInputPostalCode.',
     ),
     props: addressInputPostalCodeRows,
     attributes: addressInputPostalCodeAttributes,
@@ -101,21 +135,34 @@ export function AddressInputPage({
   return (
     <ComponentPage
       title="AddressInput"
-      lead="The postal code takes its shape from the country, such as Sweden or Norway. AddressInput looks nothing up and never moves focus by itself when a box is full."
+      lead="The postal code takes its shape from the country, such as Sweden or Norway. Give the Root a geocoder (a service that finds addresses) and the street box suggests addresses, still as free text. AddressInput never moves focus by itself when a box is full."
       whenToUse={
         <ul>
           <li>
             Use it to ask for a postal address in separate boxes: street, line 2, postal code and
             city, in the Nordic order. Each box says what it is for, so a browser can fill in the
-            whole address in one step (autofill).
+            whole address in one step (autofill). Put the boxes in a plain{' '}
+            <Link href="/components/fieldset">Fieldset</Link> with a legend such as “Your address”,
+            and each box in its own <Link href="/components/field">Field</Link> with a visible
+            label.
           </li>
           <li>
-            Put the boxes in a plain <Link href="/components/fieldset">Fieldset</Link> with a legend
-            such as “Your address”, and each box in its own{' '}
-            <Link href="/components/field">Field</Link> with a visible label.
+            Set the <code>country</code>. It decides the shape of the postal code. Add{' '}
+            <code>AddressInput.Country</code>, first in the Root, when the service takes addresses
+            outside that country: the person picks the country, and the postal code and the search
+            follow it. Without it, the suggestions offer only the Root’s country.
           </li>
           <li>
-            Set the <code>country</code>. It decides the shape of the postal code.
+            Give the Root a <code>geocoder</code> when a choice from a list should fill in the
+            postal code and city, for example in a change-of-address form. The street box stays free
+            text, so a resident can ignore the list or add a house number that it does not have.
+            Geocoders come from <code>@kvirn-ui/map</code>. <code>kvirnGeocoder</code> is built for
+            the Kvirn map service, which Kvirn hosts in the EU.
+          </li>
+          <li>
+            Leave the <code>geocoder</code> out when you have no address service that you can name
+            in your privacy notice: the text typed in the street box is sent to it. A choice from
+            the list is not a check, so validate the address as you would without it.
           </li>
           <li>
             Not for an address the service already holds: use a{' '}
@@ -161,19 +208,54 @@ export function AddressInputPage({
             <ErrorsPerBox />
           </UseCase>
           <UseCase
-            id="address-not-found"
-            title="The service can’t find the address"
-            why="Every box is filled in, but the address is not found. This is one error about the whole address: it goes on the Fieldset, and the summary links to the first box."
-            code={sources['address-not-found']}
+            id="address-lookup"
+            title="Report a change of address"
+            why={
+              <>
+                A resident reports a new address. They type part of the street and choose a
+                suggestion. The street, postal code and city are filled in. Try “Storgatan”, or
+                “Hamngatan”, a street with no house numbers on the map. Line 2 is never filled in.
+                The street box stays free text, so the resident can type the house number straight
+                after the street. Enter in the street box searches and never sends the form. After a
+                choice, a screen reader says one polite message, such as “Chosen: Storgatan 12, 123
+                45 Kvirnby. The address is filled in below. Check it before you continue.” All the
+                messages are in <Link href="#announcements">Announcements</Link>.
+              </>
+            }
+            code={sources['address-lookup']}
+            propsUsed={[
+              { part: 'AddressInput.Root', prop: 'geocoder' },
+              { part: 'AddressInput.Root', prop: 'country' },
+            ]}
+            note={
+              <Note kind="reminder">
+                Name the address service in your privacy notice: the text typed in the street box
+                and the visitor’s IP address reach it. If it handles that data for you, GDPR Article
+                28 needs a written agreement with its operator. The notice above the street box says
+                where the text goes, and it is read before anyone types.
+              </Note>
+            }
           >
-            <AddressNotFound />
+            <AddressLookup />
           </UseCase>
           <UseCase
             id="address-abroad"
             title="An address in another country"
-            why="Ask for the country in a Field of your own and pass its value as the Root’s country. A country with no mask takes letters and digits."
+            why={
+              <>
+                Add <code>AddressInput.Country</code> first in the Root, in a Field of its own. The
+                postal code and the search follow the country. A suggestion in another country sets
+                the country box and says so (try “Kirk”). A country other than SE, FI and NO has no
+                mask, so the postal code box takes letters and digits.
+              </>
+            }
             code={sources['address-abroad']}
-            propsUsed={[{ part: 'AddressInput.Root', prop: 'country' }]}
+            propsUsed={[
+              { part: 'AddressInput.Root', prop: 'geocoder' },
+              { part: 'AddressInput.Root', prop: 'country' },
+              { part: 'AddressInput.Country', prop: 'value' },
+              { part: 'AddressInput.Country', prop: 'onChange' },
+            ]}
             note={
               <Note kind="tip">
                 Ask for the country first, and preselect your service’s own country. If the country
@@ -183,6 +265,14 @@ export function AddressInputPage({
             }
           >
             <AddressAbroad />
+          </UseCase>
+          <UseCase
+            id="address-not-found"
+            title="The service can’t find the address"
+            why="Every box is filled in, but the address is not found. This is one error about the whole address: it goes on the Fieldset, and the summary links to the first box. A choice from the suggestions is not a check either: validate the address in the same way."
+            code={sources['address-not-found']}
+          >
+            <AddressNotFound />
           </UseCase>
           <UseCase
             id="known-address"
@@ -213,6 +303,13 @@ export function AddressInputPage({
                 3.3.2 Labels or Instructions, both Level A).
               </Note>
             ),
+            keyboard: (
+              <Note kind="tip">
+                With a geocoder, Enter in the street box searches and does not send the form. In the
+                other boxes Enter sends it as usual. Keep a visible submit button, so the form can
+                always be sent with the keyboard.
+              </Note>
+            ),
             focus: (
               <Note kind="reminder">
                 If your site has a sticky header, add <code>scroll-padding</code> so a focused box
@@ -232,34 +329,152 @@ export function AddressInputPage({
       contractSections={contractSectionList(contract)}
       api={
         <ApiBlock
-          importLine="import { AddressInput, useAddressInput } from '@kvirn-ui/react'"
+          importLine={`import { AddressInput, useAddressInput } from '@kvirn-ui/react'
+import { kvirnGeocoder } from '@kvirn-ui/map/kvirn' // only for the address lookup`}
           parts={parts}
           hook={useAddressInputHook}
           strings={
-            <StringsBlock
-              namespace="mask"
-              component="AddressInput"
-              keys={[
-                {
-                  key: 'characterNotAllowed',
-                  meaning: 'Announced when the postal code mask leaves out a character.',
-                  values: { allowed: 'digits' },
-                },
-                {
-                  key: 'maximumLength',
-                  meaning:
-                    'Announced when the postal code mask leaves out a character because the box is full.',
-                  values: { length: 5 },
-                },
-              ]}
-            >
-              <p>
-                AddressInput has no strings of its own, and no keys. The postal code announces the
-                mask’s strings, and <code>messages</code> on <code>AddressInput.PostalCode</code>{' '}
-                replaces them for one box. The labels, help texts and errors are yours, in your own
-                translations.
-              </p>
-            </StringsBlock>
+            <>
+              <StringsBlock
+                namespace="addressInput"
+                component="AddressInput"
+                keys={[
+                  {
+                    key: 'lookupHelpSuggest',
+                    meaning:
+                      'The help text under the street box when the search runs as you type. The line about the country follows it.',
+                    values: { min: 3 },
+                  },
+                  {
+                    key: 'lookupHelpRequest',
+                    meaning:
+                      'The help text when the search runs on request (Enter or Search). The line about the country follows it.',
+                  },
+                  {
+                    key: 'lookupScope',
+                    meaning: 'The country that is searched, added after the help text.',
+                    values: { country: 'Sweden' },
+                  },
+                  {
+                    key: 'lookupNoResults',
+                    meaning: 'Shown in the list and announced when nothing is found.',
+                    values: { query: 'Storgatn' },
+                  },
+                  {
+                    key: 'lookupError',
+                    meaning: 'Shown and announced when the search fails or takes too long.',
+                  },
+                  {
+                    key: 'lookupOffline',
+                    meaning: 'Shown and announced when the visitor is offline. No request is sent.',
+                  },
+                  {
+                    key: 'noAddressDetails',
+                    meaning:
+                      'Shown and announced when a choice has no postal address, such as a park. Nothing is filled in.',
+                  },
+                  {
+                    key: 'filledNote',
+                    meaning:
+                      'The note under the street box after a choice that filled in the boxes.',
+                  },
+                  {
+                    key: 'missingPostalCode',
+                    meaning:
+                      'Added to the note and the announcement when the choice has no postal code.',
+                  },
+                  {
+                    key: 'missingCity',
+                    meaning: 'Added to the note and the announcement when the choice has no town.',
+                  },
+                  {
+                    key: 'missingHouseNumber',
+                    meaning:
+                      'Added to the note and the announcement when the choice is a street with no house number.',
+                  },
+                  {
+                    key: 'countryChanged',
+                    meaning:
+                      'Added to the note and the announcement when a choice is in another country than the country box showed.',
+                    values: { country: 'Finland' },
+                  },
+                ]}
+              >
+                <p>
+                  The boxes hold no text: the labels, help texts and errors are yours, in your own
+                  translations. The lookup has the texts below, and <code>messages</code> on{' '}
+                  <code>AddressInput.Line1</code> replaces them for one box.
+                </p>
+              </StringsBlock>
+              <StringsBlock
+                namespace="addressSearch"
+                keys={[
+                  {
+                    key: 'submit',
+                    meaning:
+                      'The name of the Search button, which shows only when the search runs on request.',
+                  },
+                  {
+                    key: 'privacy',
+                    meaning: 'The notice above the street box, with the name of the service.',
+                    values: { service: 'the Kvirn map service' },
+                  },
+                  {
+                    key: 'privacyUnnamed',
+                    meaning: 'The notice when the geocoder has no name.',
+                  },
+                  {
+                    key: 'tooShort',
+                    meaning:
+                      'Shown and announced when the search runs on request and the text is too short.',
+                    values: { min: 3 },
+                  },
+                  {
+                    key: 'searching',
+                    meaning:
+                      'Shown and announced when a request is on its way. It is left out when the answer is quick.',
+                  },
+                  {
+                    key: 'resultCount',
+                    meaning: 'Announced with the number of addresses found.',
+                    values: { count: 2 },
+                  },
+                  {
+                    key: 'pickedFilled',
+                    meaning:
+                      'Announced after a choice, with the sentences for what is missing after it.',
+                    values: { label: 'Storgatan 12, 123 45 Kvirnby' },
+                  },
+                ]}
+              >
+                <p>
+                  These texts belong to the address search that AddressInput shares with
+                  AddressSearch, so the same keys work on <code>AddressInput.Line1</code>’s{' '}
+                  <code>messages</code> and on <code>KvirnProvider</code>.
+                </p>
+              </StringsBlock>
+              <StringsBlock
+                namespace="mask"
+                keys={[
+                  {
+                    key: 'characterNotAllowed',
+                    meaning: 'Announced when the postal code mask leaves out a character.',
+                    values: { allowed: 'digits' },
+                  },
+                  {
+                    key: 'maximumLength',
+                    meaning:
+                      'Announced when the postal code mask leaves out a character because the box is full.',
+                    values: { length: 5 },
+                  },
+                ]}
+              >
+                <p>
+                  The postal code announces the mask’s strings, and <code>messages</code> on{' '}
+                  <code>AddressInput.PostalCode</code> replaces them for one box.
+                </p>
+              </StringsBlock>
+            </>
           }
         />
       }

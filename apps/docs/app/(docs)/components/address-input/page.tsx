@@ -13,6 +13,7 @@ export default function Page() {
       sources={{
         default: readExampleSource('address-input/default.tsx'),
         'errors-per-box': readExampleSource('address-input/errors-per-box.tsx'),
+        'address-lookup': readExampleSource('address-input/address-lookup.tsx'),
         'address-not-found': readExampleSource('address-input/address-not-found.tsx'),
         'address-abroad': readExampleSource('address-input/address-abroad.tsx'),
         'known-address': readExampleSource('address-input/known-address.tsx'),

@@ -655,7 +655,7 @@ export const messages = {
       },
       doesNot: {
         label: 'What this site does not do',
-        body: 'It sets no cookies. It has no analytics. Your browser makes no requests to other companies. The one exception is the Map page, which loads its map from geo.kvirn.com, Kvirn’s own map service (see Map pictures). The fonts are served from this site.',
+        body: 'It sets no cookies. It has no analytics. Your browser makes no requests to other companies. The one exception is geo.kvirn.com, Kvirn’s own map service: the Map page loads its map from it, and the address examples look up what you type there (see Map pictures and address lookups). The fonts are served from this site.',
       },
       device: {
         label: 'What is stored on your device',
@@ -679,8 +679,8 @@ export const messages = {
         linkHref: 'https://resend.com/legal/privacy-policy',
       },
       maps: {
-        label: 'Map pictures',
-        body: 'The examples on the Map page load their map from geo.kvirn.com, Kvirn’s own map service, hosted in the EU. It sets no cookies. When a map is shown, your browser asks it for the map style, pictures, fonts and icons. It receives your IP address, your browser details and the area you view. The map data is from OpenStreetMap.',
+        label: 'Map pictures and address lookups',
+        body: 'The examples on the Map page load their map from geo.kvirn.com, Kvirn’s own map service, hosted in the EU. It sets no cookies. When a map is shown, your browser asks it for the map style, pictures, fonts and icons. It receives your IP address, your browser details and the area you view. The map data is from OpenStreetMap. The address examples on the Address input, Address search and Map pages send the text you type in their address boxes to the same service to find matching addresses, only once you type, and receive the same details. Do not type a real address in an example.',
       },
       email: {
         label: 'When you email us or use the contact form',

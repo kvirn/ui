@@ -1,33 +1,27 @@
 'use client'
-import { AddressInput, Field, Fieldset, Listbox } from '@kvirn-ui/react'
+import { AddressInput, Field, Fieldset } from '@kvirn-ui/react'
 import { useState } from 'react'
+import { addressGeocoder } from './geocoder.ts'
 import { addressCountries, useAddressInputTexts } from './texts.ts'
 
 export function AddressAbroad() {
   const { texts } = useAddressInputTexts()
   const [country, setCountry] = useState('SE')
+  // The select changes when the user picks a country and when a suggestion is in another country.
   const postalCodeHelp =
-    addressCountries.find((candidate) => candidate.code === country)?.postalCodeHelp ?? ''
+    addressCountries.find((candidate) => candidate.code === country)?.postalCodeHelp ??
+    texts.postalCodeHelpOther
 
   return (
     <Fieldset.Root>
       <Fieldset.Legend>{texts.legend}</Fieldset.Legend>
-      <AddressInput.Root country={country}>
+      <AddressInput.Root country="SE" geocoder={addressGeocoder}>
         <Field.Root required>
           <Field.Label>{texts.country}</Field.Label>
-          <Listbox.Root
-            native="always"
-            items={addressCountries}
-            itemToString={(item) => item.name}
-            itemToKey={(item) => item.code}
+          <AddressInput.Country
             name="country"
-            autoComplete="country"
             value={country}
-            onValueChange={(value) => {
-              if (typeof value === 'string') {
-                setCountry(value)
-              }
-            }}
+            onChange={(event) => setCountry(event.currentTarget.value)}
           />
         </Field.Root>
         <Field.Root required>
