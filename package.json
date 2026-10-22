@@ -13,7 +13,9 @@
     "ci:docker": "node tooling/ci/docker-ci.ts",
     "i18n:check": "node packages/i18n/scripts/i18n-check.ts",
     "theme:check": "node packages/theme/scripts/theme-check.ts",
-    "changeset": "changeset"
+    "changeset": "changeset",
+    "format": "vp fmt",
+    "lint": "vp lint"
   },
   "devDependencies": {
     "@changesets/cli": "catalog:",
