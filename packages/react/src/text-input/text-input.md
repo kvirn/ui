@@ -66,7 +66,7 @@ TanStack Form owns the value, the validity and the errors. TextInput and Field s
 <form.Field name="email">
   {(field) => (
     <Field.Root invalid={!field.state.meta.isValid} required>
-      <Field.Label>E-postadress</Field.Label>
+      <Field.Label>Email address</Field.Label>
       <TextInput
         type="email"
         autoComplete="email"
@@ -101,7 +101,7 @@ No `value`, no handlers: each TextInput is uncontrolled, and the form's `FormDat
     <TextInput name="name" autoComplete="name" />
   </Field.Root>
   <Field.Root required>
-    <Field.Label>E-postadress</Field.Label>
+    <Field.Label>Email address</Field.Label>
     <TextInput name="email" type="email" autoComplete="email" />
   </Field.Root>
   <Button type="submit">Send</Button>

@@ -1012,7 +1012,7 @@ describe('mask by name (Plan 0039)', () => {
           <TextInput mask="personal-identity-number" />
         </Field.Root>
         <TextInput aria-label="Email" type="email" mask="digits" />
-        <TextInput aria-label="E-postadress" type="email" mask="email" />
+        <TextInput aria-label="Email address" type="email" mask="email" />
       </KvirnProvider>,
     )
     await vi.waitFor(() => {
