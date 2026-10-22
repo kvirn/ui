@@ -450,6 +450,19 @@ describe('SkipPanel keyboard', () => {
     expect(withCtrl.defaultPrevented || withMeta.defaultPrevented).toBe(false)
   })
 
+  test('a keydown that is a plain Event, as browser autofill dispatches, is ignored and shortcuts still work', async () => {
+    const onSearch = vi.fn<() => void>()
+    const onError = vi.fn<(event: ErrorEvent) => void>((event) => event.preventDefault())
+    window.addEventListener('error', onError)
+    await render(<Page onSearch={onSearch} />)
+    document.body.dispatchEvent(new Event('keydown', { bubbles: true }))
+    window.removeEventListener('error', onError)
+    expect(onError).not.toHaveBeenCalled()
+    expect(onSearch).not.toHaveBeenCalled()
+    dispatchKey({ key: 'S', code: 'KeyS', altKey: true, shiftKey: true })
+    expect(onSearch).toHaveBeenCalledTimes(1)
+  })
+
   test('no chord is handled while shortcutsEnabled is false', async () => {
     const onSearch = vi.fn<() => void>()
     await render(

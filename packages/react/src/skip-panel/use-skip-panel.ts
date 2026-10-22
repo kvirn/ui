@@ -322,6 +322,10 @@ export function useSkipPanel({
       return
     }
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
+      // Chrome's autofill dispatches a plain Event named keydown, with no key or getModifierState.
+      if (typeof event.getModifierState !== 'function') {
+        return
+      }
       if (event.repeat) {
         return
       }
