@@ -211,7 +211,8 @@ export function createAddressGeocoder(suggest = false): GeocoderProvider {
 const liveGeocoder = kvirnGeocoder({
   url: 'https://geo.kvirn.com',
   name: 'Kvirn’s map service',
-  countries: ['se', 'fi', 'no', 'de'],
+  attribution: null,
+  countries: ['se', 'no'],
 })
 
 export interface AddressLookupProps {
@@ -229,6 +230,8 @@ export interface AddressLookupProps {
   autofilled?: boolean
   /** The geocoder declares `suggest: true`: a search per pause in typing. */
   suggest?: boolean
+  /** `false` leaves out Line 1's privacy notice; the street box's help text says where the text goes instead. */
+  privacyNotice?: boolean
 }
 
 /**
@@ -244,6 +247,7 @@ export function AddressLookup({
   autofilled = false,
   suggest = false,
   live = false,
+  privacyNotice = true,
 }: AddressLookupProps) {
   const [fakeGeocoder] = useState(() => createAddressGeocoder(suggest))
   const geocoder = live ? liveGeocoder : fakeGeocoder
@@ -269,7 +273,16 @@ export function AddressLookup({
             ) : null}
             <Field.Root required>
               <Field.Label>Street address</Field.Label>
-              <AddressInput.Line1 name="line1" defaultValue={autofilled ? 'Storgatan 12' : ''} />
+              <AddressInput.Line1
+                name="line1"
+                defaultValue={autofilled ? 'Storgatan 12' : ''}
+                privacyNotice={privacyNotice}
+              />
+              {privacyNotice ? null : (
+                <Field.HelpText>
+                  What you type is sent to the address service to find it.
+                </Field.HelpText>
+              )}
             </Field.Root>
             <Field.Root>
               <Field.Label>Address line 2</Field.Label>
@@ -298,6 +311,7 @@ export function AddressLookup({
         <p className="kv-story-form-output" data-testid="submits">
           Sent: {submits}
         </p>
+        {live ? <p>Address data © OpenStreetMap contributors</p> : null}
       </form>
     </InLanguage>
   )

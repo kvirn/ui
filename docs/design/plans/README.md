@@ -10,11 +10,12 @@ Plans describe **how** we will build something. Decisions live in the skills and
 
 ## Index
 
-| #                                               | Title                                                            | Status      |
-| ----------------------------------------------- | ---------------------------------------------------------------- | ----------- |
-| [0117](0117-map-and-address-search.md)          | Map, layers and AddressSearch                                    | In progress |
-| [0088](0088-read-aloud.md)                      | ReadAloud (text to speech player and selection reader)           | Draft (1.2) |
-| [0128](0128-icons-replace-built-ins.md)         | Default icons come from `@kvirn-ui/icons`, no built-ins in react | In progress |
-| [0141](0141-sweeps-in-ci-and-testing-upkeep.md) | Display-mode sweeps in CI; Testing upkeep in the docs workflow   | Approved    |
-| [0147](0147-kvirn-map-service.md)               | AddressSearch and base maps on the Kvirn map service             | In progress |
-| [0148](0148-one-storybook-server.md)            | Storybook tests in serial batches; an every-theme axe helper     | In progress |
+| #                                                | Title                                                                 | Status      |
+| ------------------------------------------------ | --------------------------------------------------------------------- | ----------- |
+| [0117](0117-map-and-address-search.md)           | Map, layers and AddressSearch                                         | In progress |
+| [0088](0088-read-aloud.md)                       | ReadAloud (text to speech player and selection reader)                | Draft (1.2) |
+| [0128](0128-icons-replace-built-ins.md)          | Default icons come from `@kvirn-ui/icons`, no built-ins in react      | In progress |
+| [0141](0141-sweeps-in-ci-and-testing-upkeep.md)  | Display-mode sweeps in CI; Testing upkeep in the docs workflow        | Approved    |
+| [0147](0147-kvirn-map-service.md)                | AddressSearch and base maps on the Kvirn map service                  | In progress |
+| [0148](0148-one-storybook-server.md)             | Storybook tests in serial batches; an every-theme axe helper          | In progress |
+| [0150](0150-geocoder-country-and-smoke-tests.md) | Geocoder per-search country; live smoke tests for geo.kvirn.com in CI | Done        |

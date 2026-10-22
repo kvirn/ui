@@ -1,4 +1,4 @@
-import { Link } from '@kvirn-ui/react'
+import { AlertBody, AlertInfo, AlertTitle, Link } from '@kvirn-ui/react'
 import type { ReactNode } from 'react'
 import { ApiBlock } from './api-block.tsx'
 import type { ApiPart } from './api-block.tsx'
@@ -24,6 +24,7 @@ import {
   useAddressInputHook,
 } from '../content/address-input.api.ts'
 import { AddressAbroad } from '../examples/address-input/address-abroad.tsx'
+import { AddressInPostalArea } from '../examples/address-input/address-in-postal-area.tsx'
 import { AddressLookup } from '../examples/address-input/address-lookup.tsx'
 import { AddressNotFound } from '../examples/address-input/address-not-found.tsx'
 import { DefaultAddressInput } from '../examples/address-input/default.tsx'
@@ -35,11 +36,19 @@ export type AddressInputExampleSources = Record<
   | 'default'
   | 'errors-per-box'
   | 'address-lookup'
+  | 'address-in-postal-area'
   | 'address-not-found'
   | 'address-abroad'
   | 'known-address',
   string
 >
+
+const lookupNotice = (
+  <AlertInfo>
+    <AlertTitle as="p">Good to know</AlertTitle>
+    <AlertBody>What you type is sent to Kvirn’s map service to find the address.</AlertBody>
+  </AlertInfo>
+)
 
 const boxRenders = (what: ReactNode) => (
   <>
@@ -90,10 +99,10 @@ const parts: ApiPart[] = [
       <>
         {boxRenders('The street address. Also exported as AddressInputLine1.')} With a{' '}
         <code>geocoder</code> on the Root it is an <code>&lt;input&gt;</code> with the role{' '}
-        <code>combobox</code> instead, and it stays free text. It comes with a privacy notice above
-        it, a Clear button, a Search button when the search runs on request, the list of
-        suggestions, a help text and, after a choice, a note. It keeps your <code>Field.Label</code>
-        , its <code>name</code> and its autofill purpose.
+        <code>combobox</code> instead, and it stays free text. By default it comes with a privacy
+        notice above it, a Clear button, a Search button when the search runs on request, the list
+        of suggestions, a help text and, after a choice, a note. It keeps your{' '}
+        <code>Field.Label</code>, its <code>name</code> and its autofill purpose.
       </>
     ),
     props: addressInputLine1Rows,
@@ -179,8 +188,8 @@ export function AddressInputPage({
             <DefaultAddressInput />
           </ExampleFrame>
           <Note kind="tip">
-            The examples set <code>country=&quot;SE&quot;</code> on the Root. English implies no
-            country, so without one the postal code box has no mask.
+            The examples set <code>country</code> on the Root, such as <code>&quot;SE&quot;</code>.
+            English implies no country, so without one the postal code box has no mask.
           </Note>
         </>
       }
@@ -209,43 +218,103 @@ export function AddressInputPage({
           </UseCase>
           <UseCase
             id="address-lookup"
-            title="Report a change of address"
+            notice={lookupNotice}
+            title="Report a change of address with address autocomplete"
             why={
               <>
-                A resident reports a new address. They type part of the street and choose a
-                suggestion. The street, postal code and city are filled in. Try “Storgatan”, or
-                “Hamngatan”, a street with no house numbers on the map. Line 2 is never filled in.
-                The street box stays free text, so the resident can type the house number straight
-                after the street. Enter in the street box searches and never sends the form. After a
-                choice, a screen reader says one polite message, such as “Chosen: Storgatan 12, 123
-                45 Kvirnby. The address is filled in below. Check it before you continue.” All the
-                messages are in <Link href="#announcements">Announcements</Link>.
+                A resident in Sweden reports a new address. They start typing their street, and the
+                address service autocompletes the address. Type “Drottninggatan 6, Stockholm” in the
+                street box. Suggestions appear as you type, and the first is “Drottninggatan 6, 111
+                51 Stockholm”. Choose it, and the street, postal code and town are filled in. Line 2
+                is never filled in. Type the town too: “Drottninggatan 6” alone matches that address
+                in many towns. The street box stays free text, so the resident can ignore the list
+                and type on. Enter, with no suggestion chosen, searches for the whole text and never
+                sends the form. After a choice, a screen reader says one polite message, such as
+                “Chosen: Drottninggatan 6, 111 51 Stockholm. The address is filled in below. Check
+                it before you continue.” All the messages are in{' '}
+                <Link href="#announcements">Announcements</Link>. In this example, the text you type
+                in the street box goes to Kvirn’s map service. The suggested addresses come from
+                OpenStreetMap: ©{' '}
+                <Link href="https://www.openstreetmap.org/copyright">
+                  OpenStreetMap contributors
+                </Link>
+                .
               </>
             }
             code={sources['address-lookup']}
             propsUsed={[
               { part: 'AddressInput.Root', prop: 'geocoder' },
               { part: 'AddressInput.Root', prop: 'country' },
+              { part: 'AddressInput.Line1', prop: 'privacyNotice' },
             ]}
             note={
               <Note kind="reminder">
                 Name the address service in your privacy notice: the text typed in the street box
                 and the visitor’s IP address reach it. If it handles that data for you, GDPR Article
-                28 needs a written agreement with its operator. The notice above the street box says
-                where the text goes, and it is read before anyone types.
+                28 needs a written agreement with its operator. By default, the notice above the
+                street box says where the text goes, and it is read before anyone types. These
+                examples turn off the notice above the street box (
+                <code>privacyNotice={'{false}'}</code>) and the credit (
+                <code>attribution: null</code>). If you do, add both yourself: say where the text
+                goes in the street box’s help text, so it’s still read when the box gets focus, and
+                credit the address data, such as © OpenStreetMap contributors, on the page.
               </Note>
             }
           >
             <AddressLookup />
           </UseCase>
           <UseCase
-            id="address-abroad"
-            title="An address in another country"
+            id="address-in-postal-area"
+            notice={lookupNotice}
+            title="Autocomplete a street inside a postal code"
             why={
               <>
-                Add <code>AddressInput.Country</code> first in the Root, in a Field of its own. The
-                postal code and the search follow the country. A suggestion in another country sets
-                the country box and says so (try “Kirk”). A country other than SE, FI and NO has no
+                A resident knows the postal code and the town, and is not sure how the street is
+                spelled. They start typing the street, and the address service autocompletes it
+                inside that postal code and town. Type 66530 in Postal code (it shows as 665 30) and
+                Kil in Town. Then type “Storg” in the street box. The list shows only addresses in
+                that postal code and town, such as “Storgatan 41, 665 30 Kil”. Empty the two boxes
+                and type “Storgatan”: the list now shows Storgatan in towns all over Sweden. Filling
+                in the two boxes starts no search. The street box sends their values with its next
+                search. Enter, with no suggestion chosen, searches the same way. If the resident
+                picks a street that has no house numbers, the box asks for the number. The resident
+                types it after the street, and the box asks the service for that exact house and
+                fills in what it finds.
+              </>
+            }
+            code={sources['address-in-postal-area']}
+            propsUsed={[
+              { part: 'AddressInput.Root', prop: 'geocoder' },
+              { part: 'AddressInput.Root', prop: 'country' },
+              { part: 'AddressInput.Line1', prop: 'privacyNotice' },
+            ]}
+            note={
+              <Note kind="reminder">
+                These examples turn off the notice and the credit: see{' '}
+                <Link href="#address-lookup">
+                  Report a change of address with address autocomplete
+                </Link>{' '}
+                for what to add instead.
+              </Note>
+            }
+          >
+            <AddressInPostalArea />
+          </UseCase>
+          <UseCase
+            id="address-abroad"
+            notice={lookupNotice}
+            title="Register a move to another Nordic country with address autocomplete"
+            why={
+              <>
+                A resident registers a move to Norway. They start typing their street, and the
+                address service autocompletes the address in the country they chose. The form starts
+                with Norway. Add <code>AddressInput.Country</code> first in the Root, in a Field of
+                its own. The postal code and the search follow the country. Type “Karl Johans gate
+                14”: the first suggestion is “Karl Johans gate 14, 0154 Oslo”. Change the country to
+                Sweden, and the postal code box takes the Swedish shape, like 123 45. Or leave
+                Norway chosen and type “Storgatan 8”. The first suggestion is in Sweden, and
+                choosing it sets the country box to Sweden and says so. The service in this example
+                holds addresses in Sweden and Norway. A country other than SE, FI and NO has no
                 mask, so the postal code box takes letters and digits.
               </>
             }
@@ -253,15 +322,25 @@ export function AddressInputPage({
             propsUsed={[
               { part: 'AddressInput.Root', prop: 'geocoder' },
               { part: 'AddressInput.Root', prop: 'country' },
+              { part: 'AddressInput.Line1', prop: 'privacyNotice' },
               { part: 'AddressInput.Country', prop: 'value' },
               { part: 'AddressInput.Country', prop: 'onChange' },
             ]}
             note={
-              <Note kind="tip">
-                Ask for the country first, and preselect your service’s own country. If the country
-                changes after a postal code is typed, the code is kept as typed: check it when the
-                form is sent.
-              </Note>
+              <>
+                <Note kind="tip">
+                  Ask for the country first, and preselect your service’s own country. If the
+                  country changes after a postal code is typed, the code is kept as typed: check it
+                  when the form is sent.
+                </Note>
+                <Note kind="reminder">
+                  These examples turn off the notice and the credit: see{' '}
+                  <Link href="#address-lookup">
+                    Report a change of address with address autocomplete
+                  </Link>{' '}
+                  for what to add instead.
+                </Note>
+              </>
             }
           >
             <AddressAbroad />
@@ -443,7 +522,7 @@ import { kvirnGeocoder } from '@kvirn-ui/map/kvirn' // only for the address look
                     key: 'pickedFilled',
                     meaning:
                       'Announced after a choice, with the sentences for what is missing after it.',
-                    values: { label: 'Storgatan 12, 123 45 Kvirnby' },
+                    values: { label: 'Drottninggatan 6, 111 51 Stockholm' },
                   },
                 ]}
               >

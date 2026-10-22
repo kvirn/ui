@@ -7,6 +7,7 @@ export const useAddressInputTexts = defineExampleTexts({
     legend: 'Your address',
     street: 'Street address',
     line2: 'Address line 2',
+    lookupPrivacy: 'What you type is sent to Kvirn’s map service to find the address.',
     line2Help: 'For example c/o and a name',
     postalCode: 'Postal code',
     postalCodeHelp: 'For example 123 45',
@@ -45,6 +46,6 @@ export interface AddressCountry {
 export const addressCountries: readonly AddressCountry[] = [
   { code: 'SE', name: 'Sweden', postalCodeHelp: 'For example 123 45' },
   { code: 'FI', name: 'Finland', postalCodeHelp: 'For example 00100' },
-  { code: 'NO', name: 'Norway', postalCodeHelp: 'For example 1234' },
+  { code: 'NO', name: 'Norway', postalCodeHelp: 'For example 0154' },
   { code: 'DE', name: 'Germany', postalCodeHelp: 'For example 12345' },
 ]

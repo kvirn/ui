@@ -70,7 +70,7 @@ Nothing is done until all of these pass. The orchestrator runs them, once, at th
 5. `accessibility-reviewer` returns APPROVE.
 6. Every Automated row of the AT matrix (`docs/accessibility.md`) is `pass` or `n/a` with a reason the reviewer agrees with (agent check only), and every Core row passes before `beta`: an agent check proved by tests that re-run, **and** a human check on the real AT. **Agents never write or claim a human check.**
 
-Forced colours, reduced motion and 320px reflow are not gated per change. Four projects sweep the stories of the components in `sweepComponents` in `vite.config.ts` (`vp test run --project storybook-forced-colors | -reduced-motion | -reflow | -text-spacing`). CI runs them in one serial step after `vp run test`; they are not part of `vp run test`, and components outside the list are not swept (`testing` skill).
+Forced colours, reduced motion and 320px reflow are not gated per change. Four projects sweep the stories of the components in `sweepComponents` in `vite.config.ts` (`vp test run --project storybook-forced-colors | -reduced-motion | -reflow | -text-spacing`). CI runs them in one serial step after `vp run test`; they are not part of `vp run test`, and components outside the list are not swept (`testing` skill). CI also runs `vp test run --project smoke`: a few live requests to geo.kvirn.com (HTTP 200, the JSON parses, every geocoder's `countries` is in the service's `/health` list). It is the only test that uses the network, and it's never part of `vp run test`.
 
 ## Hard rules
 

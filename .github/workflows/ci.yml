@@ -52,6 +52,8 @@ jobs:
       - run: vp fmt --check
         continue-on-error: true
       - run: vp run test
+      # Live requests to geo.kvirn.com, so a broken request fails CI. Never part of `vp run test`.
+      - run: vp test run --project smoke
       - run: node tooling/storybook-run/storybook-run.ts storybook-forced-colors storybook-reduced-motion storybook-reflow storybook-text-spacing
       - run: vp run i18n:check
       - run: vp run theme:check

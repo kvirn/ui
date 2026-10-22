@@ -24,6 +24,7 @@ export function UseCase({
   why,
   code,
   propsUsed = [],
+  notice,
   note,
   children,
 }: {
@@ -33,6 +34,8 @@ export function UseCase({
   /** The example file's own text, from `readExampleSource`. */
   code: string
   propsUsed?: readonly PropUsed[]
+  /** Shown between `why` and the example, outside its frame. */
+  notice?: ReactNode
   note?: ReactNode
   children: ReactNode
 }) {
@@ -42,6 +45,7 @@ export function UseCase({
         {title}
       </Heading>
       <p>{why}</p>
+      {notice}
       <ExampleFrame headingId={id} code={code}>
         {children}
       </ExampleFrame>

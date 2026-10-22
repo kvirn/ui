@@ -314,6 +314,7 @@ interface LookupAddressProps {
   swedish?: boolean
   providerCountry?: 'SE' | 'FI' | 'NO'
   beforeLookup?: ReactNode
+  line1Help?: ReactNode
 }
 
 function LookupAddress({
@@ -327,6 +328,7 @@ function LookupAddress({
   swedish = false,
   providerCountry = 'SE',
   beforeLookup,
+  line1Help,
 }: LookupAddressProps) {
   const address = (
     <Fieldset.Root>
@@ -342,6 +344,7 @@ function LookupAddress({
         <Field.Root>
           <Field.Label>Street address</Field.Label>
           <AddressInput.Line1 name="line1" debounce={20} {...line1Props} />
+          {line1Help === undefined ? null : <Field.HelpText>{line1Help}</Field.HelpText>}
         </Field.Root>
         <Field.Root>
           <Field.Label>Address line 2</Field.Label>
@@ -459,6 +462,25 @@ describe('AddressInput.Line1 lookup structure', () => {
         notice !== undefined &&
         Boolean(notice.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING),
     ).toBe(true)
+  })
+
+  test('privacyNotice false renders no notice, and the consumer’s help text still describes Line1', async () => {
+    const { geocoder } = createFakeGeocoder({ name: 'Test service', attribution: '© Test data' })
+    await render(
+      <LookupAddress
+        geocoder={geocoder}
+        line1Props={{ privacyNotice: false }}
+        line1Help="What you type is sent to Test service."
+      />,
+    )
+    const described = (lookup().element().getAttribute('aria-describedby') ?? '')
+      .split(' ')
+      .map((id) => document.getElementById(id)?.textContent)
+    expect(described).toEqual([
+      'Press Search to look up your street and fill in the postal code and town, or keep typing. Suggests addresses in Sweden.',
+      'What you type is sent to Test service.',
+    ])
+    expect(document.querySelector('.kv-address-lookup-notice')?.textContent).toBe('© Test data')
   })
 
   test('without a geocoder Line1 is today’s plain textbox, with no combobox and no lookup text', async () => {

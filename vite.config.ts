@@ -351,6 +351,15 @@ export default defineConfig({
       },
       {
         resolve,
+        test: {
+          name: 'smoke',
+          maxWorkers,
+          environment: 'node',
+          include: ['tooling/geo-smoke/**/*.smoke.ts'],
+        },
+      },
+      {
+        resolve,
         plugins: [cspFixturePlugin()],
         test: {
           name: 'browser',

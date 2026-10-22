@@ -186,6 +186,52 @@ describe('kvirnGeocoder', () => {
     expect(searchParams.get('postcode')).toBe('111 22')
   })
 
+  test('the search country is sent first and the other countries follow in order', async () => {
+    const fetchMock = stubFetch()
+    await create({ countries: ['no', 'se', 'fi'] }).search('stor', {
+      country: 'SE',
+      postalCode: '111 22',
+    })
+    expect(lastRequest(fetchMock).url.searchParams.get('country')).toBe('se,no,fi')
+  })
+
+  test('a search country already first in countries is not repeated', async () => {
+    const fetchMock = stubFetch()
+    await create({ countries: ['NO', 'se'] }).search('stor', { country: 'no' })
+    expect(lastRequest(fetchMock).url.searchParams.get('country')).toBe('no,se')
+  })
+
+  test('a search country outside a set countries list is not added', async () => {
+    const fetchMock = stubFetch()
+    await create({ countries: ['no', 'se'] }).search('stor', { country: 'DK' })
+    expect(lastRequest(fetchMock).url.searchParams.get('country')).toBe('no,se')
+  })
+
+  test('a postal code is left out when the search country is outside the countries list', async () => {
+    const fetchMock = stubFetch()
+    await create({ countries: ['no', 'se'] }).search('stor', {
+      country: 'FI',
+      city: 'Helsinki',
+      postalCode: '00100',
+    })
+    const { searchParams } = lastRequest(fetchMock).url
+    expect(searchParams.get('country')).toBe('no,se')
+    expect(searchParams.has('postcode')).toBe(false)
+    expect(searchParams.get('city')).toBe('Helsinki')
+  })
+
+  test('without countries the search country is sent alone when a postal code is sent', async () => {
+    const fetchMock = stubFetch()
+    await create().search('stor', { country: 'NO', postalCode: '0154' })
+    expect(lastRequest(fetchMock).url.searchParams.get('country')).toBe('no')
+  })
+
+  test('without countries and without a postal code no country is sent', async () => {
+    const fetchMock = stubFetch()
+    await create().search('stor', { country: 'NO' })
+    expect(lastRequest(fetchMock).url.searchParams.has('country')).toBe(false)
+  })
+
   test('structured sends street, number, postcode, city, country and lang and maps the result', async () => {
     const fetchMock = stubFetch({ results: [{ ...place, precision: 'address' }] })
     const { signal } = new AbortController()
@@ -249,6 +295,11 @@ describe('kvirnGeocoder', () => {
       name: 'Maps',
       attribution: 'Credit',
     })
+  })
+
+  test('attribution null leaves the credit out', () => {
+    stubFetch()
+    expect('attribution' in create({ attribution: null })).toBe(false)
   })
 })
 

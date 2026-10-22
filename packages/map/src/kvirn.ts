@@ -12,11 +12,11 @@ export interface KvirnGeocoderOptions {
   url: string | URL
   /** Who receives the typed text, named in the privacy notice. Default: the host name. */
   name?: string | undefined
-  /** Credit text. Default '© OpenStreetMap contributors'; `/v1/attribution` gives the exact text per country. */
-  attribution?: string | undefined
+  /** Credit text. Default '© OpenStreetMap contributors'; `/v1/attribution` gives the exact text per country. `null` leaves the credit out of the geocoder: credit the data yourself. */
+  attribution?: string | null | undefined
   /** Most results asked for, 1 to 50 (clamped). Default 6, so all of them show without scrolling. */
   limit?: number | undefined
-  /** Restricts the search to these countries (ISO 3166-1 alpha-2), for example `['se']`. */
+  /** Restricts the search to these countries (ISO 3166-1 alpha-2), for example `['se']`. The country chosen in the form is searched first, so a postal code is read in it. */
   countries?: readonly string[] | undefined
   /** Ranks ties nearer this point higher, never filters. */
   focus?: LngLat | undefined
@@ -84,7 +84,7 @@ export function kvirnGeocoder({
   const cache = new Map<string, AddressResult[]>()
   return {
     name: name ?? base.hostname,
-    attribution,
+    ...(attribution === null ? {} : { attribution }),
     suggest: true,
     async search(query, { signal, locale, intent, country, city, postalCode }) {
       const text = query.trim()
@@ -103,13 +103,27 @@ export function kvirnGeocoder({
         'limit',
         String(Math.min(MAX_LIMIT, Math.max(MIN_LIMIT, Math.round(limit)))),
       )
-      if (countries !== undefined && countries.length > 0) {
-        endpoint.searchParams.set('country', countries.map((code) => code.toLowerCase()).join(','))
+      const hasPostalCode = postalCode !== undefined && postalCode.trim() !== ''
+      const chosen = country?.toLowerCase()
+      const listed = countries?.map((code) => code.toLowerCase()) ?? []
+      // The service reads a postcode in the first country listed, so the chosen one goes first.
+      const sent =
+        listed.length === 0
+          ? hasPostalCode && chosen !== undefined
+            ? [chosen]
+            : []
+          : chosen !== undefined && listed.includes(chosen)
+            ? [chosen, ...listed.filter((code) => code !== chosen)]
+            : listed
+      if (sent.length > 0) {
+        endpoint.searchParams.set('country', [...new Set(sent)].join(','))
       }
       if (city !== undefined && city.trim() !== '') {
         endpoint.searchParams.set('city', city.trim())
       }
-      if (postalCode !== undefined && postalCode.trim() !== '') {
+      // A postcode of a country the service isn't limited to would be read in the wrong one: a 400.
+      const outsideList = chosen !== undefined && listed.length > 0 && !listed.includes(chosen)
+      if (hasPostalCode && !outsideList) {
         endpoint.searchParams.set('postcode', postalCode.trim())
       }
       if (focus !== undefined) {

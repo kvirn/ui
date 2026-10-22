@@ -60,6 +60,8 @@ export interface AddressInputLine1Props extends AddressInputLineProps {
   debounce?: number | false | undefined
   /** With a `geocoder`: how long to wait for an answer, in milliseconds. Default 10 000. */
   timeoutMilliseconds?: number | undefined
+  /** With a `geocoder`: `false` leaves out the privacy notice above Line 1. Say where the text goes in the Field's help text instead. Default `true`. */
+  privacyNotice?: boolean | undefined
 }
 export type AddressInputLine2Props = AddressInputLineProps
 export type AddressInputCityProps = AddressInputLineProps
@@ -221,6 +223,7 @@ export function AddressInputLine1({
   minLength,
   debounce,
   timeoutMilliseconds,
+  privacyNotice,
   ...boxProps
 }: AddressInputLine1Props): ReactElement {
   const root = useContext(AddressInputContext)
@@ -234,6 +237,7 @@ export function AddressInputLine1({
         minLength={minLength}
         debounce={debounce}
         timeoutMilliseconds={timeoutMilliseconds}
+        privacyNotice={privacyNotice}
       />
     )
   }

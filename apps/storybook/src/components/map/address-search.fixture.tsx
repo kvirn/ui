@@ -167,7 +167,8 @@ export function AddressSearchDemo({
 const liveGeocoder = kvirnGeocoder({
   url: 'https://geo.kvirn.com',
   name: 'Kvirn’s map service',
-  countries: ['se', 'fi', 'no'],
+  attribution: null,
+  countries: ['se', 'no'],
 })
 
 function MapAddressSearch({ geocoder }: { geocoder: GeocoderProvider }) {
@@ -197,22 +198,25 @@ export function AddressSearchWithMapDemo({
     [suggest, delayMilliseconds, needsResolve],
   )
   return (
-    <Map.Root
-      provider={provider}
-      label="Map of preschools"
-      initialView={initialView}
-      places={places}
-    >
-      <MapAddressSearch geocoder={live ? liveGeocoder : geocoder} />
-      <Map.Skip />
-      <Map.Viewport>
-        <Map.Markers />
-        <Map.Controls />
-        <Map.Attribution />
-      </Map.Viewport>
-      <Map.List />
-      <Map.Details />
-    </Map.Root>
+    <>
+      <Map.Root
+        provider={provider}
+        label="Map of preschools"
+        initialView={initialView}
+        places={places}
+      >
+        <MapAddressSearch geocoder={live ? liveGeocoder : geocoder} />
+        <Map.Skip />
+        <Map.Viewport>
+          <Map.Markers />
+          <Map.Controls />
+          <Map.Attribution />
+        </Map.Viewport>
+        <Map.List />
+        <Map.Details />
+      </Map.Root>
+      {live ? <p>Address data © OpenStreetMap contributors</p> : null}
+    </>
   )
 }
 

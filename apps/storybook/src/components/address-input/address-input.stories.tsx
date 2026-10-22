@@ -558,6 +558,18 @@ export const Lookup: Story = {
   },
 }
 
+/** The consumer turns the privacy notice off and says where the text goes in the street box's help text. */
+export const LookupOwnPrivacyNotice: Story = {
+  globals: { locale: 'en' },
+  parameters: lookupStory('AddressLookup'),
+  render: () => <AddressLookup privacyNotice={false} />,
+  play: async ({ canvas }) => {
+    const input = lookupInput(canvas)
+    await expect(input).toHaveAccessibleDescription(/sent to the address service/)
+    await expect(canvas.queryByText(/sent to .* to find the address/)).toBeNull()
+  },
+}
+
 /** On request, Enter or Search with fewer than 3 characters says what is missing and sends nothing. */
 export const LookupTooShort: Story = {
   globals: { locale: 'en' },

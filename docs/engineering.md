@@ -26,7 +26,7 @@ Config lives in the root `vite.config.ts` (fmt, lint, test projects). Each packa
   - `core` imports no React and uses no `window`, `document`, `navigator`, `localStorage`, `sessionStorage` or `matchMedia` outside `core/src/env/`.
   - `.only`, `.skip`, `any` and `@ts-ignore` / `@ts-expect-error` are errors.
 - **Telemetry is off:** Storybook (`core.disableTelemetry`) and Next.js (`NEXT_TELEMETRY_DISABLED=1` in every script). Vite+ and Playwright send none.
-- **Browser tests run in Chromium only.** It is a floor for development, not a browser-support claim: a support claim needs a run with those browsers or the manual AT matrix. The WCAG display-mode sweep (forced colours, reduced motion, 320px reflow) is not built yet: it will be Vitest browser projects with Playwright context options (see the roadmap). There is no e2e layer and no `@playwright/test` or `@axe-core/playwright`: `playwright` is a dev dependency in the pnpm catalog only because `@vitest/browser-playwright` peers on it (Apache-2.0, no install script).
+- **Browser tests run in Chromium only.** It is a floor for development, not a browser-support claim: a support claim needs a run with those browsers or the manual AT matrix. The WCAG display-mode sweep (forced colours, reduced motion, 320px reflow, text spacing) is four Vitest browser projects with Playwright context options, run by CI after `vp run test` (`testing` skill). There is no e2e layer and no `@playwright/test` or `@axe-core/playwright`: `playwright` is a dev dependency in the pnpm catalog only because `@vitest/browser-playwright` peers on it (Apache-2.0, no install script).
 - **Worker caps.** Vitest `maxWorkers` is 2 per project (set in each project because it isn't inherited), and `VITEST_MAX_WORKERS` overrides it for a one-off. These are politeness for the machine, not gates: no test, threshold or timeout changes. A full run can still reach about 12 Vitest workers. For a whole-tree local run, run the Storybook projects one at a time.
 - **Formatting is advisory.** CI runs `vp check --no-fmt`, and `vp fmt --check` only warns (`continue-on-error`). Run `vp fmt <files>` on what you commit. The edit hook formats each edited file.
 - **Commits.** Every commit follows Conventional Commits 1.0.0, and `tooling/commit-message/check-commit-message.ts` holds the rules:
@@ -70,9 +70,9 @@ The whole tree runs through `vp run test`, which runs the four Storybook project
 `.github/workflows/ci.yml` pins Actions to commit SHAs, uses read-only `contents` permission and installs Chromium only (add browsers to the `playwright install` line to widen it). It runs:
 
 - `commits`: every PR commit and the PR title against the Conventional Commits rules.
-- `gates`: `vp check --no-fmt`, `vp fmt --check` (advisory), `vp run test`, `i18n:check`, `theme:check` and `vp run build` (every package, the Storybook build and the docs site).
+- `gates`: `vp check --no-fmt`, `vp fmt --check` (advisory), `vp run test`, `i18n:check`, `theme:check` and `vp run build` (every package, the Storybook build and the docs site), then the `smoke` project (`vp test run --project smoke`: a few live requests to geo.kvirn.com, CI only, outside `vp run test`) and the four display-mode sweep projects.
 
-These are the [AGENTS.md quality gates](../AGENTS.md#quality-gates) 1 to 3. The WCAG display-mode sweep isn't run by any workflow yet, and neither are core coverage nor per-component bundle budgets: see the roadmap, "Engineering".
+These are the [AGENTS.md quality gates](../AGENTS.md#quality-gates) 1 to 3. Core coverage and per-component bundle budgets are not run by any workflow yet: see the roadmap, "Engineering".
 
 ## Release
 

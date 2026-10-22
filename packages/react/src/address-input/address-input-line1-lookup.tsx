@@ -54,6 +54,7 @@ export interface AddressInputLine1LookupProps extends Omit<
   minLength?: UseAddressLookupOptions['minLength']
   debounce?: UseAddressLookupOptions['debounce']
   timeoutMilliseconds?: UseAddressLookupOptions['timeoutMilliseconds']
+  privacyNotice?: boolean | undefined
 }
 
 /**
@@ -68,6 +69,7 @@ export function AddressInputLine1Lookup({
   minLength,
   debounce,
   timeoutMilliseconds,
+  privacyNotice = true,
   disabled,
   value,
   defaultValue,
@@ -235,6 +237,7 @@ export function AddressInputLine1Lookup({
       engine={engine}
       root={root}
       note={note}
+      privacyNotice={privacyNotice}
       onTyped={handleTyped}
       value={value}
       inputProps={inputProps}
@@ -246,6 +249,7 @@ function AddressInputLine1Field({
   engine,
   root,
   note,
+  privacyNotice,
   onTyped,
   value,
   inputProps,
@@ -253,6 +257,7 @@ function AddressInputLine1Field({
   engine: AddressLookupEngine
   root: AddressInputContextValue
   note: string | undefined
+  privacyNotice: boolean
   onTyped: (value: string) => void
   value: string | undefined
   inputProps: Omit<
@@ -263,6 +268,7 @@ function AddressInputLine1Field({
     | 'minLength'
     | 'debounce'
     | 'timeoutMilliseconds'
+    | 'privacyNotice'
     | 'disabled'
     | 'value'
     | 'defaultValue'
@@ -292,7 +298,9 @@ function AddressInputLine1Field({
 
   return (
     <ComboboxProviders combobox={lookup}>
-      <Field.Prose className="kv-address-lookup-notice">{lookup.noticeText}</Field.Prose>
+      {privacyNotice ? (
+        <Field.Prose className="kv-address-lookup-notice">{lookup.noticeText}</Field.Prose>
+      ) : null}
       {lookup.attribution === undefined ? null : (
         <p className="kv-address-lookup-notice">{lookup.attribution}</p>
       )}

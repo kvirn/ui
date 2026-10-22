@@ -80,6 +80,7 @@ export const addressInputLine1Rows = propRows<
     | 'minLength'
     | 'debounce'
     | 'timeoutMilliseconds'
+    | 'privacyNotice'
   >
 >({
   ...lineRows,
@@ -100,6 +101,12 @@ export const addressInputLine1Rows = propRows<
     default: '400',
     description:
       'With a geocoder that suggests as you type: the milliseconds of no typing before a search. false: search only when the user presses Enter or Search. A geocoder that does not allow search as you type is always searched on request.',
+  },
+  privacyNotice: {
+    type: 'boolean',
+    default: 'true',
+    description:
+      'Shows where the typed text goes above the street box. Turn it off only if you say it in the street box’s help text.',
   },
   timeoutMilliseconds: {
     type: 'number',
@@ -232,7 +239,7 @@ export const addressInputLine1Attributes: readonly AttributeRow[] = [
     name: 'aria-describedby',
     values: 'with a geocoder',
     meaning:
-      'Lists, in this order: the privacy notice above the box, the lookup’s help text (with the country searched), the note after a choice, your help text, then the error.',
+      'Lists, in this order: the privacy notice above the box (unless privacyNotice is false), the lookup’s help text (with the country searched), the note after a choice, your help text, then the error.',
   },
   {
     name: 'kv-address-lookup-notice, kv-address-lookup-status, kv-address-lookup-submit, kv-address-input-lookup-note',
