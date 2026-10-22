@@ -1,6 +1,6 @@
 // kv-lang-ok-file: the day names, range hints and announcements are asserted in the sv locale (Intl dates and the sv catalog)
 import { sv } from '@kvirn-ui/i18n/sv'
-import { act, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
 import type { MockInstance } from 'vite-plus/test'
 import { page, userEvent } from 'vite-plus/test/browser'
@@ -471,7 +471,7 @@ describe('focus when the view changes', () => {
     }
     await render(<Outside />)
     starts('fredag 16 oktober 2026').element().focus()
-    await act(async () => control.change())
+    control.change()
     await expect.element(starts('torsdag 3 december 2026')).toHaveFocus()
   })
 })
