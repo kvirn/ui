@@ -2,7 +2,7 @@
 
 - **Status:** Draft
 - **Designer:** ux-designer agent · **Date:** 2026-10-21
-- **Plan:** [0147](plans/0147-kvirn-map-service.md) T3 (`kvirnBaseMaps`) and T4 (docs site), waiting on S1
+- **Plan:** 0147 (done, deleted; see `git log`) T3 (`kvirnBaseMaps`) and T4 (docs site), waiting on S1
 - **Type:** component default behaviour (`@kvirn-ui/map/kvirn`) and docs page
 
 ## 1. Brief
