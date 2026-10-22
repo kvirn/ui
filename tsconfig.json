@@ -11,6 +11,7 @@
     "tooling/keyboard-docs",
     "tooling/props-used",
     "tooling/raw-colours",
+    "tooling/storybook-run",
     "apps/storybook/.storybook",
     "apps/storybook/src"
   ],

@@ -52,6 +52,6 @@ jobs:
       - run: vp fmt --check
         continue-on-error: true
       - run: vp run test
-      - run: vp test run --project storybook-forced-colors && vp test run --project storybook-reduced-motion && vp test run --project storybook-reflow && vp test run --project storybook-text-spacing
+      - run: node tooling/storybook-run/storybook-run.ts storybook-forced-colors storybook-reduced-motion storybook-reflow storybook-text-spacing
       - run: vp run i18n:check
       - run: vp run theme:check

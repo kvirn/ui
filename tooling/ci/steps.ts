@@ -18,7 +18,7 @@ export const ciSteps: CiStep[] = [
   {
     name: 'sweep',
     command:
-      'vp test run --project storybook-forced-colors && vp test run --project storybook-reduced-motion && vp test run --project storybook-reflow && vp test run --project storybook-text-spacing',
+      'node tooling/storybook-run/storybook-run.ts storybook-forced-colors storybook-reduced-motion storybook-reflow storybook-text-spacing',
   },
   { name: 'i18n:check', command: 'vp run i18n:check' },
   { name: 'theme:check', command: 'vp run theme:check' },
@@ -45,10 +45,7 @@ export const hostSteps: HostStep[] = [
   {
     name: 'storybook',
     commands: [
-      'vp test run --project storybook',
-      'vp test run --project storybook-dark',
-      'vp test run --project storybook-light-contrast',
-      'vp test run --project storybook-dark-contrast',
+      'node tooling/storybook-run/storybook-run.ts storybook storybook-dark storybook-light-contrast storybook-dark-contrast',
     ],
   },
   {

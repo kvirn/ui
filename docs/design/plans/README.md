@@ -19,3 +19,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0141](0141-sweeps-in-ci-and-testing-upkeep.md) | Display-mode sweeps in CI; Testing upkeep in the docs workflow   | Approved    |
 | [0143](0143-status-badge.md)                    | A coloured testing status badge on component pages               | In progress |
 | [0147](0147-kvirn-map-service.md)               | AddressSearch and base maps on the Kvirn map service             | In progress |
+| [0148](0148-one-storybook-server.md)            | Storybook tests in serial batches; an every-theme axe helper     | In progress |
