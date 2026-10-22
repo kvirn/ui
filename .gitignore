@@ -39,7 +39,8 @@ next-env.d.ts
 *.tsbuildinfo
 __screenshots__
 
-# Declaration files emitted next to the sources by a tsc run without noEmit
+# Declaration files `vp pack`'s tsgo step leaves next to the sources; each build removes them first
+# (tooling/clean-src-dts)
 packages/core/src/**/*.d.ts
 packages/i18n/src/**/*.d.ts
 packages/icons/src/**/*.d.ts

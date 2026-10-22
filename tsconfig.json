@@ -12,6 +12,7 @@
     "tooling/props-used",
     "tooling/raw-colours",
     "tooling/storybook-run",
+    "tooling/clean-src-dts",
     "apps/storybook/.storybook",
     "apps/storybook/src"
   ],

@@ -51,7 +51,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "vp pack",
+    "build": "node ../../tooling/clean-src-dts/clean-src-dts.ts && vp pack",
     "generate": "node scripts/generate.mjs"
   },
   "devDependencies": {
