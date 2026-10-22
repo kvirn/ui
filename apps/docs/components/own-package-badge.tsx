@@ -36,8 +36,7 @@ export function OwnPackageNote({
   const Tag = inList ? 'li' : 'p'
   return (
     <Tag className="docs-own-package-note">
-      <Divider role='presentation' />
-      * {text.ownPackage}. {text.ownPackageNote}{' '}
+      <Divider role="presentation" />* {text.ownPackage}. {text.ownPackageNote}{' '}
       <Link href="/docs#packages">
         {text.ownPackageReadMore} <VisuallyHidden>{text.ownPackageReadMoreHidden}</VisuallyHidden>
       </Link>
