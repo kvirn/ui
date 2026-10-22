@@ -19,6 +19,7 @@ interface NominatimPlace {
   display_name: string
   lat: string
   lon: string
+  addresstype?: string
   boundingbox?: [string, string, string, string]
   address?: {
     house_number?: string
@@ -33,6 +34,19 @@ interface NominatimPlace {
   }
 }
 
+const ROAD_TYPES = new Set(['road', 'street', 'residential', 'pedestrian', 'footway'])
+const BUILDING_TYPES = new Set(['house', 'building'])
+
+function precisionOf(place: NominatimPlace): AddressResult['precision'] {
+  if (place.address?.house_number !== undefined || BUILDING_TYPES.has(place.addresstype ?? '')) {
+    return 'address'
+  }
+  if (ROAD_TYPES.has(place.addresstype ?? '')) {
+    return 'street'
+  }
+  return place.addresstype === undefined ? undefined : 'place'
+}
+
 function toResult(place: NominatimPlace): AddressResult {
   const { address } = place
   const city =
@@ -43,6 +57,7 @@ function toResult(place: NominatimPlace): AddressResult {
     ? `${line1}, ${[address.postcode, city].filter(Boolean).join(' ')}`
     : place.display_name
   const [south, north, west, east] = (place.boundingbox ?? []).map(Number)
+  const precision = precisionOf(place)
   return {
     id: String(place.place_id),
     label,
@@ -50,6 +65,7 @@ function toResult(place: NominatimPlace): AddressResult {
     ...(south === undefined || north === undefined || west === undefined || east === undefined
       ? {}
       : { bounds: { south, north, west, east } }),
+    ...(precision === undefined ? {} : { precision }),
     ...(hasStreet
       ? {
           address: {
@@ -86,8 +102,8 @@ export function nominatim({
     name: name ?? endpoint.hostname,
     attribution: '© OpenStreetMap contributors',
     suggest: false,
-    async search(query, { signal, locale }) {
-      const key = `${locale ?? ''}\n${query}`
+    async search(query, { signal, locale, country }) {
+      const key = `${locale ?? ''}\n${country ?? ''}\n${query}`
       const cached = cache.get(key)
       if (cached !== undefined) {
         return cached
@@ -109,7 +125,12 @@ export function nominatim({
       if (!response.ok) {
         throw new Error(`Address search failed (${response.status})`)
       }
-      const results = ((await response.json()) as NominatimPlace[]).map(toResult)
+      const places = (await response.json()) as NominatimPlace[]
+      const inCountry = (place: NominatimPlace) =>
+        Number(country !== undefined && place.address?.country_code?.toUpperCase() === country)
+      const results = (
+        country === undefined ? places : places.toSorted((a, b) => inCountry(b) - inCountry(a))
+      ).map(toResult)
       if (cache.size >= CACHE_SIZE) {
         cache.delete(cache.keys().next().value as string)
       }

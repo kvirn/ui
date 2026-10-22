@@ -34,7 +34,11 @@ export interface GooglePlacesApi {
   AutocompleteSuggestion: {
     fetchAutocompleteSuggestions: (request: Record<string, unknown>) => Promise<{
       suggestions: {
-        placePrediction?: { placeId: string; text: { text: string } } | null
+        placePrediction?: {
+          placeId: string
+          text: { text: string }
+          types?: string[]
+        } | null
       }[]
     }>
   }
@@ -109,6 +113,18 @@ function addressOf(place: GooglePlace): AddressDetails | undefined {
   }
 }
 
+const ADDRESS_TYPES = new Set(['street_address', 'premise', 'subpremise'])
+
+function precisionOf(types: readonly string[] | undefined): AddressResult['precision'] {
+  if (types === undefined || types.length === 0) {
+    return undefined
+  }
+  if (types.some((type) => ADDRESS_TYPES.has(type))) {
+    return 'address'
+  }
+  return types.includes('route') ? 'street' : 'place'
+}
+
 const abortError = () => new DOMException('Aborted', 'AbortError')
 
 /**
@@ -153,7 +169,7 @@ export function googlePlaces({
     name,
     attribution,
     suggest: true,
-    async search(query, { signal, locale }) {
+    async search(query, { signal, locale, country }) {
       const text = query.trim()
       if (text.length < MIN_QUERY_LENGTH) {
         return []
@@ -168,17 +184,26 @@ export function googlePlaces({
           ...(countries !== undefined && countries.length > 0
             ? { includedRegionCodes: countries.map((code) => code.toLowerCase()) }
             : {}),
+          ...(country === undefined ? {} : { regionCode: country.toLowerCase() }),
           ...(bounds === undefined ? {} : { locationRestriction: bounds }),
           ...(language ? { language } : {}),
         })
         if (signal?.aborted) {
           throw abortError()
         }
-        return suggestions.flatMap(({ placePrediction }): AddressSuggestion[] =>
-          placePrediction
-            ? [{ id: placePrediction.placeId, label: placePrediction.text.text }]
-            : [],
-        )
+        return suggestions.flatMap(({ placePrediction }): AddressSuggestion[] => {
+          if (!placePrediction) {
+            return []
+          }
+          const precision = precisionOf(placePrediction.types)
+          return [
+            {
+              id: placePrediction.placeId,
+              label: placePrediction.text.text,
+              ...(precision === undefined ? {} : { precision }),
+            },
+          ]
+        })
       } catch (error) {
         if (signal?.aborted) {
           throw abortError()
@@ -220,6 +245,7 @@ export function googlePlaces({
               }
             : {}),
           ...(address === undefined ? {} : { address }),
+          ...(suggestion.precision === undefined ? {} : { precision: suggestion.precision }),
         } satisfies AddressResult
       } catch (error) {
         if (signal?.aborted) {

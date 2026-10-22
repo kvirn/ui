@@ -29,6 +29,7 @@ interface KvirnPlace {
   label: string
   position: { lat: number; lon: number }
   bbox?: [number, number, number, number] | null
+  precision?: 'address' | 'street'
   address?: {
     line1: string
     postalCode: string | null
@@ -46,6 +47,7 @@ function toResult(place: KvirnPlace): AddressResult {
     ...(bbox === undefined || bbox === null
       ? {}
       : { bounds: { west: bbox[0], south: bbox[1], east: bbox[2], north: bbox[3] } }),
+    ...(place.precision === undefined ? {} : { precision: place.precision }),
     ...(address === undefined || address === null
       ? {}
       : {
@@ -84,12 +86,12 @@ export function kvirnGeocoder({
     name: name ?? base.hostname,
     attribution,
     suggest: true,
-    async search(query, { signal, locale, intent }) {
+    async search(query, { signal, locale, intent, country, city, postalCode }) {
       const text = query.trim()
       if (text.length < MIN_QUERY_LENGTH) {
         return []
       }
-      const key = `${intent ?? 'submit'}\n${locale ?? ''}\n${text}`
+      const key = `${intent ?? 'submit'}\n${locale ?? ''}\n${country ?? ''}\n${city ?? ''}\n${postalCode ?? ''}\n${text}`
       const cached = cache.get(key)
       if (cached !== undefined) {
         return cached
@@ -103,6 +105,12 @@ export function kvirnGeocoder({
       )
       if (countries !== undefined && countries.length > 0) {
         endpoint.searchParams.set('country', countries.map((code) => code.toLowerCase()).join(','))
+      }
+      if (city !== undefined && city.trim() !== '') {
+        endpoint.searchParams.set('city', city.trim())
+      }
+      if (postalCode !== undefined && postalCode.trim() !== '') {
+        endpoint.searchParams.set('postcode', postalCode.trim())
       }
       if (focus !== undefined) {
         endpoint.searchParams.set('focus', `${focus.longitude},${focus.latitude}`)
@@ -127,11 +135,48 @@ export function kvirnGeocoder({
       }
       const { results } = (await response.json()) as { results: KvirnPlace[] }
       const mapped = results.map(toResult)
+      if (country !== undefined) {
+        mapped.sort(
+          (a, b) => Number(b.address?.country === country) - Number(a.address?.country === country),
+        )
+      }
       if (cache.size >= CACHE_SIZE) {
         cache.delete(cache.keys().next().value as string)
       }
       cache.set(key, mapped)
       return mapped
+    },
+    async structured(parts, { signal, locale }) {
+      const structuredCountry = parts.country ?? countries?.[0]
+      if (structuredCountry === undefined) {
+        return null
+      }
+      const endpoint = new URL(base)
+      endpoint.pathname = `${basePath}/v1/geocode/structured`
+      endpoint.searchParams.set('street', parts.street.trim())
+      endpoint.searchParams.set('number', parts.number.trim())
+      if (parts.postalCode !== undefined && parts.postalCode.trim() !== '') {
+        endpoint.searchParams.set('postcode', parts.postalCode.trim())
+      }
+      if (parts.city !== undefined && parts.city.trim() !== '') {
+        endpoint.searchParams.set('city', parts.city.trim())
+      }
+      endpoint.searchParams.set('country', structuredCountry.toLowerCase())
+      const language = locale?.split('-')[0]?.toLowerCase()
+      if (language) {
+        endpoint.searchParams.set('lang', language)
+      }
+      const response = await fetch(endpoint, {
+        signal,
+        credentials: 'omit',
+        referrerPolicy: 'strict-origin-when-cross-origin',
+      })
+      if (!response.ok) {
+        throw new Error(`Address lookup failed (${response.status})`)
+      }
+      const { results } = (await response.json()) as { results: KvirnPlace[] }
+      const [first] = results
+      return first === undefined ? null : toResult(first)
     },
   }
 }

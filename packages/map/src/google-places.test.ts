@@ -96,6 +96,50 @@ describe('googlePlaces', () => {
     expect(suggestions).toEqual([{ id: 'p1', label: 'Drottninggatan 1, Stockholm' }])
   })
 
+  test('precision is mapped from the prediction types: address, street and place', async () => {
+    const fake = createFakePlaces()
+    fake.pending.answer = async () => ({
+      suggestions: [
+        {
+          placePrediction: {
+            placeId: 'a',
+            text: { text: 'a' },
+            types: ['street_address', 'geocode'],
+          },
+        },
+        { placePrediction: { placeId: 'b', text: { text: 'b' }, types: ['premise'] } },
+        { placePrediction: { placeId: 'c', text: { text: 'c' }, types: ['route', 'geocode'] } },
+        {
+          placePrediction: { placeId: 'd', text: { text: 'd' }, types: ['locality', 'political'] },
+        },
+      ],
+    })
+    const suggestions = await googlePlaces({ loader: async () => fake.api }).search('drott', {})
+    expect(suggestions.map((suggestion) => suggestion.precision)).toEqual([
+      'address',
+      'address',
+      'street',
+      'place',
+    ])
+  })
+
+  test('precision is left out when the prediction has no types, and resolve keeps the suggestion precision', async () => {
+    const fake = createFakePlaces()
+    const geocoder = googlePlaces({ loader: async () => fake.api })
+    const [suggestion] = await geocoder.search('drott', {})
+    expect(suggestion).not.toHaveProperty('precision')
+    const result = await geocoder.resolve!({ id: 'p1', label: 'x', precision: 'street' }, {})
+    expect(result.precision).toBe('street')
+  })
+
+  test('the country option is sent as the region code and does not restrict', async () => {
+    const fake = createFakePlaces()
+    await googlePlaces({ loader: async () => fake.api, countries: ['SE', 'NO'] }).search('drott', {
+      country: 'SE',
+    })
+    expect(fake.requests[0]).toMatchObject({ regionCode: 'se', includedRegionCodes: ['se', 'no'] })
+  })
+
   test('a query under two characters sends nothing', async () => {
     const fake = createFakePlaces()
     const loader = vi.fn<() => Promise<GooglePlacesApi>>(async () => fake.api)

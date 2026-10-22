@@ -91,6 +91,8 @@ export interface AddressResult {
   position: LngLat
   bounds?: MapBounds
   address?: AddressDetails
+  /** How exact the result is. `'address'`: has a house number. `'street'`: a street without one. `'place'`: a locality, postal area or point of interest. Left out when the geocoder can't tell. */
+  precision?: 'address' | 'street' | 'place'
 }
 
 /** What a geocoder lists. A service that answers with text only leaves out `position`, and `resolve` adds it on a pick. */
@@ -104,6 +106,12 @@ export interface GeocoderSearchOptions {
   /** The provider's BCP 47 locale. */
   locale?: string
   intent?: GeocoderIntent
+  /** ISO 3166-1 alpha-2, upper case: rank results in this country first; results elsewhere are still listed. */
+  country?: string
+  /** Narrow to this town when the service can; results without a town may still come, ranked lower. */
+  city?: string
+  /** Narrow to this postal code when the service can; results without one may still come, ranked lower. */
+  postalCode?: string
 }
 
 export interface GeocoderProvider {
@@ -119,6 +127,11 @@ export interface GeocoderProvider {
     result: AddressSuggestion,
     options: { signal?: AbortSignal; locale?: string },
   ) => Promise<AddressResult>
+  /** Looks up an address whose parts are known. `null` when the service knows no such address. */
+  structured?: (
+    parts: { street: string; number: string; postalCode?: string; city?: string; country?: string },
+    options: { signal: AbortSignal; locale?: string },
+  ) => Promise<AddressResult | null>
 }
 
 export interface MapMountOptions {
