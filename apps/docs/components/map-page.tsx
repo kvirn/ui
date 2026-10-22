@@ -41,7 +41,6 @@ import { OwnListMap } from '../examples/map/own-list.tsx'
 import { PollingStationMap } from '../examples/map/clusters.tsx'
 import { RecyclingMap } from '../examples/map/default.tsx'
 import { WasteMap } from '../examples/map/layers.tsx'
-import { MapPicturesAlert } from '../examples/map/use-docs-provider.tsx'
 import { PreschoolMap } from '../examples/map/preschools.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
@@ -65,6 +64,24 @@ export const provider = maplibre({
     tiles: ['https://tiles.example.org/{z}/{x}/{y}.png'],
     attribution: '© Example municipality',
   }),
+})`
+
+const aerialMapLines = `import { maplibre, rasterStyle } from '@kvirn-ui/map/maplibre'
+import { kvirnBaseMap } from '@kvirn-ui/map/kvirn'
+
+export const provider = maplibre({
+  baseMaps: [
+    kvirnBaseMap({ url: 'https://geo.kvirn.com' }),
+    {
+      id: 'aerial',
+      label: 'Aerial photo',
+      attribution: '© Example municipality',
+      style: rasterStyle({
+        tiles: ['https://tiles.example.org/aerial/{z}/{x}/{y}.jpg'],
+        attribution: '© Example municipality',
+      }),
+    },
+  ],
 })`
 
 const importLines = `import { Map, createMemoryProvider, useMap, useMapState } from '@kvirn-ui/map'
@@ -350,7 +367,6 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
       pattern="None: there is no APG pattern for a map. The markers use the Toolbar’s arrow keys."
       whenToUse={
         <>
-          <MapPicturesAlert />
           <ul>
             <li>
               Use it when the question is where a place is: the nearest preschool, the recycling
@@ -389,10 +405,11 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
             <RecyclingMap />
           </ExampleFrame>
           <p>
-            The examples on this page start as a plain background and ask no map server for
-            anything. The “Map pictures on this page” box says where your IP address goes if you
-            press “Load map pictures”. Move the map with the mouse, the arrow keys or the buttons,
-            press a marker or a name in the list, and watch the list follow the view.
+            The examples on this page load their map from geo.kvirn.com, Kvirn’s own map service,
+            hosted in the EU and setting no cookies. Your browser asks it for the map as soon as a
+            map is shown, so it sees your IP address and the area you view. Move the map with the
+            mouse, the arrow keys or the buttons, press a marker or a name in the list, and watch
+            the list follow the view.
           </p>
         </>
       }
@@ -513,11 +530,17 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
             }
             code={sources['map-types']}
             note={
-              <Note kind="reminder">
-                Give each map type a clear label and its own attribution. The label names the choice
-                for a screen reader, and the attribution must change with the map type (1.1.1
-                Non-text Content).
-              </Note>
+              <>
+                <Note kind="reminder">
+                  Give each map type a clear label and its own attribution. The label names the
+                  choice for a screen reader, and the attribution must change with the map type
+                  (1.1.1 Non-text Content).
+                </Note>
+                <Note kind="recipe" more={<CodeBlock language="tsx" code={aerialMapLines} />}>
+                  Add your own map types, such as an aerial photo, from a tile host you have an
+                  agreement with. This example does not load one.
+                </Note>
+              </>
             }
           >
             <MapTypesMap />

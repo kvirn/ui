@@ -655,7 +655,7 @@ export const messages = {
       },
       doesNot: {
         label: 'What this site does not do',
-        body: 'It sets no cookies. It has no analytics. Your browser makes no requests to other companies, except when you press the button on the Map page that loads map pictures (see Map pictures). The fonts are served from this site.',
+        body: 'It sets no cookies. It has no analytics. Your browser makes no requests to other companies. The one exception is the Map page, which loads its map from geo.kvirn.com, Kvirn’s own map service (see Map pictures). The fonts are served from this site.',
       },
       device: {
         label: 'What is stored on your device',
@@ -680,7 +680,7 @@ export const messages = {
       },
       maps: {
         label: 'Map pictures',
-        body: 'The examples on the Map page show a plain background and make no request. When you press “Load map pictures”, your browser asks the OpenStreetMap tile servers (tile.openstreetmap.org, run by the OpenStreetMap Foundation) for the map pictures. They receive your IP address, your browser details and the area you view. If you then choose the Satellite map type, the same goes to Esri (server.arcgisonline.com), and for Terrain to OpenTopoMap (tile.opentopomap.org). Nothing is requested before you press the button, and we receive nothing from it.',
+        body: 'The examples on the Map page load their map from geo.kvirn.com, Kvirn’s own map service, hosted in the EU. It sets no cookies. When a map is shown, your browser asks it for the map style, pictures, fonts and icons. It receives your IP address, your browser details and the area you view. The map data is from OpenStreetMap.',
       },
       email: {
         label: 'When you email us or use the contact form',

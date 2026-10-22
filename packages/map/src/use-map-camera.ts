@@ -1,9 +1,17 @@
 import { MAX_ZOOM, MIN_ZOOM, panBy, zoomBy } from '@kvirn-ui/core'
-import type { MapBaseMap, MapBounds, MapHandle, MapProvider, MapView } from '@kvirn-ui/core'
+import type {
+  MapBaseMap,
+  MapBounds,
+  MapHandle,
+  MapProvider,
+  MapTheme,
+  MapView,
+} from '@kvirn-ui/core'
 import type { MapStore } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import type { ResolvedMessages } from '@kvirn-ui/core'
-import { useEffect, useRef, useState } from 'react'
+import { useTheme } from '@kvirn-ui/react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 export type MapPanDirection = 'north' | 'south' | 'east' | 'west'
 export type MapStatus = 'loading' | 'ready' | 'failed'
@@ -23,6 +31,9 @@ const SETTLE_MILLISECONDS = 500
 const MOVE_SYNC_MILLISECONDS = 150
 const noBaseMaps: readonly MapBaseMap[] = []
 
+/** A base map whose label is always set: the consumer's, else `map.defaultBaseMapLabel`. */
+export type MapNamedBaseMap = MapBaseMap & { label: string }
+
 export interface UseMapCameraOptions {
   store: MapStore
   view: MapView
@@ -33,7 +44,7 @@ export interface UseMapCameraOptions {
   defaultBaseMap: string | undefined
   onBaseMapChange: ((id: string) => void) | undefined
   messages: ResolvedMessages<KvirnMessages['map']>
-  say: (text: string, key: string) => void
+  say: (text: string, key: string, throttleMilliseconds?: number) => void
   baseId: string
   placesInViewCount: number
   visibleCount: number
@@ -57,7 +68,15 @@ export function useMapCamera({
   const [engineContainer, setEngineContainer] = useState<HTMLElement | null>(null)
   const [handle, setHandle] = useState<MapHandle | null>(null)
   const [status, setStatus] = useState<MapStatus>('loading')
-  const baseMaps = provider.baseMaps ?? noBaseMaps
+  const providerBaseMaps = provider.baseMaps ?? noBaseMaps
+  const baseMaps = useMemo(
+    (): readonly MapNamedBaseMap[] =>
+      providerBaseMaps.map((candidate) => ({
+        ...candidate,
+        label: candidate.label ?? messages.defaultBaseMapLabel,
+      })),
+    [providerBaseMaps, messages.defaultBaseMapLabel],
+  )
   const fallbackBaseMap = provider.defaultBaseMap ?? baseMaps[0]?.id ?? null
   const [ownBaseMap, setOwnBaseMap] = useState<string | null>(defaultBaseMap ?? null)
   const requestedBaseMap = baseMapProp ?? ownBaseMap
@@ -67,6 +86,13 @@ export function useMapCamera({
       : fallbackBaseMap
   const baseMapRef = useRef(baseMap)
   const appliedBaseMap = useRef(baseMap)
+  const { resolvedColorScheme, resolvedContrast, isForcedColors } = useTheme()
+  const themeContrast = resolvedContrast === 'more' || isForcedColors ? 'more' : 'standard'
+  const theme: MapTheme = { colorScheme: resolvedColorScheme, contrast: themeContrast }
+  const themeRef = useRef(theme)
+  useEffect(() => {
+    themeRef.current = theme
+  })
   const [gestureHint, setGestureHint] = useState<MapGestureHint | null>(null)
   const [isKeyboardHintDismissed, setKeyboardHintDismissed] = useState(false)
   const initialViewRef = useRef(initialView)
@@ -83,6 +109,7 @@ export function useMapCamera({
     const mounted = provider.mount(engineContainer, {
       view: store.getState().view,
       ...(baseMapRef.current === null ? {} : { baseMap: baseMapRef.current }),
+      theme: themeRef.current,
       signal: controller.signal,
     })
     const sync = (nextView: MapView) => {
@@ -140,7 +167,10 @@ export function useMapCamera({
           : messages.placesInView({ count: placesInViewCount })
       const prefix = settlePrefix.current
       settlePrefix.current = undefined
-      say(prefix === undefined ? count : `${prefix} ${count}`, `${baseId}-view`)
+      // A prefix is the answer to an explicit request, such as showing the same address again:
+      // the key's throttle is for camera chatter and must not swallow it.
+      if (prefix === undefined) say(count, `${baseId}-view`)
+      else say(`${prefix} ${count}`, `${baseId}-view`, 0)
     }, SETTLE_MILLISECONDS)
     return () => window.clearTimeout(timer)
   }, [view, bounds, placesInViewCount, visibleCount, messages, say, baseId, announceRequest])
@@ -150,6 +180,10 @@ export function useMapCamera({
       say(messages.tilesFailedTitle, `${baseId}-failed`)
     }
   }, [status, messages, say, baseId])
+
+  useEffect(() => {
+    handle?.setTheme?.({ colorScheme: resolvedColorScheme, contrast: themeContrast })
+  }, [handle, resolvedColorScheme, themeContrast])
 
   useEffect(() => {
     if (baseMap === null || baseMap === appliedBaseMap.current) {

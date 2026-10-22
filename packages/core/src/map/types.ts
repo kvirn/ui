@@ -29,10 +29,16 @@ export interface MapLayer {
   cluster?: boolean
 }
 
+/** The page theme a base map can follow: the resolved colour scheme and contrast, forced colours included as `more`. */
+export interface MapTheme {
+  colorScheme: 'light' | 'dark'
+  contrast: 'standard' | 'more'
+}
+
 export interface MapBaseMap {
   id: string
-  /** Shown in the map type switch. The consumer's text, in the consumer's language. */
-  label: string
+  /** Shown in the map type switch. The consumer's text, in the consumer's language. Default: `map.defaultBaseMapLabel`. */
+  label?: string
   /** Plain-text licence of this base map, shown by `Map.Attribution` while it is active. */
   attribution?: string
 }
@@ -119,6 +125,8 @@ export interface MapMountOptions {
   view: MapView
   /** The base map to start with. Default: the provider's `defaultBaseMap`. */
   baseMap?: string
+  /** The page theme to start with, for a base map that follows it. Default: light, standard contrast. */
+  theme?: MapTheme
   signal?: AbortSignal
 }
 
@@ -147,6 +155,8 @@ export interface MapHandle {
   fitBounds: (bounds: MapBounds, options?: { padding?: number }) => void
   /** Swaps the tiles and keeps the camera. An unknown id is ignored. */
   setBaseMap: (id: string) => void
+  /** Restyles a base map that follows the page theme and keeps the camera. Absent for an engine with no themed styles. */
+  setTheme?: (theme: MapTheme) => void
   project: (position: LngLat) => { x: number; y: number }
   unproject: (point: { x: number; y: number }) => LngLat
   on: <Name extends MapProviderEventName>(

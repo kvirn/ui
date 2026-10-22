@@ -5,7 +5,6 @@ import type {
   MapMarkerItem,
   AddressResult,
   ResolvedMessages,
-  MapBaseMap,
   MapBounds,
   MapHandle,
   MapPlace,
@@ -31,13 +30,18 @@ import {
 } from 'react'
 import type { ReactNode } from 'react'
 import { useMapCamera } from './use-map-camera.ts'
-import type { MapGestureHint, MapPanDirection, MapStatus } from './use-map-camera.ts'
+import type {
+  MapGestureHint,
+  MapNamedBaseMap,
+  MapPanDirection,
+  MapStatus,
+} from './use-map-camera.ts'
 import { useMapClearance } from './use-map-clearance.ts'
 import { useMapPopup } from './use-map-popup.ts'
 import { useMapPlaces } from './use-map-places.ts'
 import type { MapIndexer } from './use-map-places.ts'
 
-export type { MapGestureHint, MapIndexer, MapPanDirection, MapStatus }
+export type { MapGestureHint, MapIndexer, MapNamedBaseMap, MapPanDirection, MapStatus }
 
 const ADDRESS_ZOOM = 15
 // A cluster centre drifts toward its members, so a radius of 64 keeps two centres about 44px (one target) apart (WCAG 2.5.8).
@@ -101,10 +105,10 @@ export interface UseMapResult<Data = unknown> {
   /** Set while the engine's wheel or one-finger gesture was ignored, until the next move or Escape. */
   gestureHint: MapGestureHint | null
   /** The provider's base maps. Fewer than two: nothing to switch. */
-  baseMaps: readonly MapBaseMap[]
+  baseMaps: readonly MapNamedBaseMap[]
   /** The active base map's id, or `null` without base maps. */
   baseMap: string | null
-  activeBaseMap: MapBaseMap | null
+  activeBaseMap: MapNamedBaseMap | null
   isKeyboardHintDismissed: boolean
   /** The `places` array you gave: empty when you gave a `source`. */
   places: readonly MapPlace<Data>[]
@@ -277,12 +281,12 @@ export function useMap<Data = unknown>({
     ) ?? null
 
   const say = useCallback(
-    (text: string, key: string) => {
+    (text: string, key: string, throttleMilliseconds?: number) => {
       if (!isAvailable) {
         warnAnnouncerMissing()
         return
       }
-      announce(text, { key })
+      announce(text, { key, throttleMilliseconds })
     },
     [announce, isAvailable],
   )

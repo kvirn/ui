@@ -56,6 +56,16 @@
         "default": "./dist/google.cjs"
       }
     },
+    "./google-places": {
+      "import": {
+        "types": "./dist/google-places.d.mts",
+        "default": "./dist/google-places.mjs"
+      },
+      "require": {
+        "types": "./dist/google-places.d.cts",
+        "default": "./dist/google-places.cjs"
+      }
+    },
     "./nominatim": {
       "import": {
         "types": "./dist/nominatim.d.mts",
@@ -64,6 +74,16 @@
       "require": {
         "types": "./dist/nominatim.d.cts",
         "default": "./dist/nominatim.cjs"
+      }
+    },
+    "./kvirn": {
+      "import": {
+        "types": "./dist/kvirn.d.mts",
+        "default": "./dist/kvirn.mjs"
+      },
+      "require": {
+        "types": "./dist/kvirn.d.cts",
+        "default": "./dist/kvirn.cjs"
       }
     },
     "./worker": {

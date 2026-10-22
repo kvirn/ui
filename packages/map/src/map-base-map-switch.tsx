@@ -3,11 +3,12 @@ import { Field, Icon, Popover, RadioGroup } from '@kvirn-ui/react'
 import type { MapBaseMap } from '@kvirn-ui/core'
 import type { ComponentPropsWithRef, ReactElement, ReactNode } from 'react'
 import { joinClassNames } from './class-names.ts'
+import type { MapNamedBaseMap } from './use-map-camera.ts'
 import { useMapContext } from './map-context.ts'
 import { useMapOverlayRef } from './map-overlay.tsx'
 
 export interface MapBaseMapSwitchState {
-  baseMaps: readonly MapBaseMap[]
+  baseMaps: readonly MapNamedBaseMap[]
   baseMap: string
   setBaseMap: (id: string) => void
   /** The legend text, `map.baseMapLabel`, for a render function's own group name. */

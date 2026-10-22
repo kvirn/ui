@@ -257,6 +257,20 @@ describe('google adapter', () => {
     expect(provider.baseMaps?.map((baseMap) => baseMap.id)).toEqual(['map', 'aerial'])
   })
 
+  test('the links and buttons the SDK draws leave the Tab order, also when added later', async () => {
+    const fake = createFakeMaps()
+    const { container } = mountWith(fake)
+    await ready()
+    const logo = document.createElement('a')
+    logo.href = 'https://www.google.com/maps'
+    const report = document.createElement('button')
+    const focusTarget = document.createElement('div')
+    focusTarget.tabIndex = 0
+    container.append(logo, report, focusTarget)
+    await ready()
+    expect([logo, report, focusTarget].map((element) => element.tabIndex)).toEqual([-1, -1, -1])
+  })
+
   test('aborting the signal removes the engine listeners and ignores a late SDK', async () => {
     const fake = createFakeMaps()
     const { controller, handle } = mountWith(fake)

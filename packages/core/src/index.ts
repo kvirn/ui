@@ -494,6 +494,7 @@ export type {
   MapLayer,
   MapMarkerItem,
   MapMountOptions,
+  MapTheme,
   MapPlace,
   MapProvider,
   MapProviderEventName,

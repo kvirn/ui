@@ -1,12 +1,13 @@
-import { describe, expect, test, vi } from 'vite-plus/test'
-import { page, userEvent } from 'vite-plus/test/browser'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vite-plus/test'
+import { cdp, page, userEvent } from 'vite-plus/test/browser'
 import { render } from 'vitest-browser-react'
 import type { ComponentProps } from 'react'
 import { Icon, KvirnProvider } from '@kvirn-ui/react'
 import { Map } from './map.tsx'
 import { mapIcons } from './map-icons.ts'
 import { createMemoryProvider } from './memory-provider.ts'
-import type { MapPlace } from './index.ts'
+import type { MapBaseMap, MapPlace, MapTheme } from '@kvirn-ui/core'
+import type { Env } from '@kvirn-ui/core'
 
 // Contract: map.a11y.md. This file proves the focus-not-obscured row (WCAG 2.4.11). Component
 // tests load no theme, so the fixture positions the viewport, the markers and the chrome itself.
@@ -1106,5 +1107,169 @@ describe('Map keyboard: virtualized cluster popup', () => {
     await expect.element(clusterPlace(pageSize)).toHaveFocus()
     await userEvent.keyboard('{PageUp}')
     await expect.element(clusterPlace(0)).toHaveFocus()
+  })
+})
+
+async function emulateSystem(features: { name: string; value: string }[]) {
+  await cdp().send('Emulation.setEmulatedMedia', { features })
+}
+
+describe('Map theme and base map name', () => {
+  // The OS preference is emulated through Chromium's DevTools protocol, as in use-theme.test.tsx;
+  // a fresh document per test gives a fresh theme store.
+  const createEnv = (): Env => ({
+    window,
+    document: document.implementation.createHTMLDocument(''),
+  })
+
+  beforeEach(async () => {
+    localStorage.clear()
+    await emulateSystem([
+      { name: 'prefers-color-scheme', value: 'light' },
+      { name: 'prefers-contrast', value: 'no-preference' },
+    ])
+  })
+
+  afterEach(async () => {
+    await emulateSystem([
+      { name: 'prefers-color-scheme', value: 'light' },
+      { name: 'prefers-contrast', value: 'no-preference' },
+      { name: 'forced-colors', value: 'none' },
+    ])
+  })
+
+  function themed(baseMapList: MapBaseMap[] = [{ id: 'one' }, { id: 'two', label: 'Plan' }]) {
+    const provider = createMemoryProvider({ baseMaps: baseMapList })
+    const setTheme = vi.fn<(theme: MapTheme) => void>()
+    const mount = vi.fn<typeof provider.mount>((...args) => {
+      const handle = provider.mount(...args)
+      handle.setTheme = setTheme
+      return handle
+    })
+    return { setTheme, mount, memory: provider, provider: { ...provider, mount } }
+  }
+
+  const lastTheme = (setTheme: ReturnType<typeof themed>['setTheme']) =>
+    setTheme.mock.calls.at(-1)?.[0]
+
+  test('a theme change keeps focus on the open details, the popup and the view, and announces nothing', async () => {
+    const { provider, memory, setTheme, mount } = themed()
+    await render(
+      <KvirnProvider env={createEnv()}>
+        <style>{fixtureStyle}</style>
+        <Map.Root
+          provider={provider}
+          label="Map"
+          places={[placeAtPixelsEast(0)]}
+          initialView={{ center: centre, zoom }}
+        >
+          <Map.Viewport className="fixture-viewport">
+            <Map.Markers />
+            <Map.Details />
+          </Map.Viewport>
+        </Map.Root>
+      </KvirnProvider>,
+    )
+    await userEvent.click(marker())
+    const details = page.getByRole('dialog')
+    await expect.element(details).toBeVisible()
+    const focused = document.activeElement
+    const viewBefore = memory.handle!.getView()
+    await emulateSystem([{ name: 'prefers-color-scheme', value: 'dark' }])
+    await expect.poll(() => lastTheme(setTheme)?.colorScheme).toBe('dark')
+    expect(document.activeElement).toBe(focused)
+    await expect.element(details).toBeVisible()
+    expect(mount).toHaveBeenCalledTimes(1)
+    expect(memory.handle!.getView()).toEqual(viewBefore)
+    const announced = [...document.querySelectorAll('[aria-live]')]
+      .map((element) => element.textContent)
+      .join('')
+    expect(announced).toBe('')
+  })
+
+  test('a theme change keeps focus on a focused marker', async () => {
+    const { provider, setTheme } = themed()
+    await render(
+      <KvirnProvider env={createEnv()}>
+        <style>{fixtureStyle}</style>
+        <Map.Root
+          provider={provider}
+          label="Map"
+          places={[placeAtPixelsEast(0)]}
+          initialView={{ center: centre, zoom }}
+        >
+          <Map.Viewport className="fixture-viewport">
+            <Map.Markers />
+          </Map.Viewport>
+        </Map.Root>
+      </KvirnProvider>,
+    )
+    await tabToMarker()
+    await emulateSystem([{ name: 'prefers-color-scheme', value: 'dark' }])
+    await expect.poll(() => lastTheme(setTheme)?.colorScheme).toBe('dark')
+    await expect.element(marker()).toHaveFocus()
+  })
+
+  test('forced colours give setTheme contrast more', async () => {
+    const { provider, setTheme } = themed()
+    await render(
+      <KvirnProvider env={createEnv()}>
+        <Map.Root provider={provider} label="Map" initialView={{ center: centre, zoom }}>
+          <Map.Viewport className="fixture-viewport" />
+        </Map.Root>
+      </KvirnProvider>,
+    )
+    await emulateSystem([{ name: 'forced-colors', value: 'active' }])
+    await expect.poll(() => lastTheme(setTheme)?.contrast).toBe('more')
+  })
+
+  test('resolved contrast more gives setTheme contrast more', async () => {
+    const { provider, setTheme } = themed()
+    await render(
+      <KvirnProvider env={createEnv()}>
+        <Map.Root provider={provider} label="Map" initialView={{ center: centre, zoom }}>
+          <Map.Viewport className="fixture-viewport" />
+        </Map.Root>
+      </KvirnProvider>,
+    )
+    await emulateSystem([{ name: 'prefers-contrast', value: 'more' }])
+    await expect.poll(() => lastTheme(setTheme)?.contrast).toBe('more')
+  })
+
+  test('resolved contrast less gives setTheme contrast standard', async () => {
+    const { provider, setTheme } = themed()
+    await render(
+      <KvirnProvider env={createEnv()}>
+        <Map.Root provider={provider} label="Map" initialView={{ center: centre, zoom }}>
+          <Map.Viewport className="fixture-viewport" />
+        </Map.Root>
+      </KvirnProvider>,
+    )
+    await emulateSystem([{ name: 'prefers-contrast', value: 'less' }])
+    await expect.poll(() => setTheme.mock.calls.length).toBeGreaterThan(0)
+    expect(lastTheme(setTheme)?.contrast).toBe('standard')
+  })
+
+  test('a base map with no label is named Map in the switch and when picked', async () => {
+    const { provider } = themed([{ id: 'plan', label: 'Plan' }, { id: 'one' }])
+    await render(
+      <KvirnProvider>
+        <Map.Root provider={provider} label="Map" initialView={{ center: centre, zoom }}>
+          <Map.Viewport className="fixture-viewport">
+            <Map.BaseMapSwitch />
+          </Map.Viewport>
+        </Map.Root>
+      </KvirnProvider>,
+    )
+    await userEvent.click(page.getByRole('button', { name: 'Map type' }))
+    await expect.element(page.getByRole('radio', { name: 'Plan' })).toBeVisible()
+    await userEvent.click(page.getByRole('radio', { name: 'Map', exact: true }))
+    await expect
+      .poll(() =>
+        [...document.querySelectorAll('[aria-live]')]
+          .map((element) => element.textContent)
+          .join(''),
+      )
+      .toContain('Map type: Map.')
   })
 })

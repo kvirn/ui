@@ -95,6 +95,7 @@ export { useMap } from './use-map.ts'
 export type {
   MapGestureHint,
   MapIndexer,
+  MapNamedBaseMap,
   MapPanDirection,
   MapStatus,
   MapIconLayer,
@@ -118,6 +119,7 @@ export type {
   MapLayer,
   MapMarkerItem,
   MapMountOptions,
+  MapTheme,
   MapPlace,
   MapPlaceSource,
   MapProvider,

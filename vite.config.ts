@@ -113,6 +113,7 @@ type ContextOptions = NonNullable<PlaywrightProviderOptions['contextOptions']>
 // The components the display-mode sweeps cover: those whose stories pass all four.
 const sweepComponents = [
   'button',
+  'map',
   'skip-panel',
   'accordion',
   'address-input',

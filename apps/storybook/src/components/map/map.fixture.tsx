@@ -1,6 +1,7 @@
 import { Map, useMapState } from '@kvirn-ui/map'
 import type { MapPlace, MapProvider, MapRootProps, MapView } from '@kvirn-ui/map'
-import { maplibre, rasterStyle } from '@kvirn-ui/map/maplibre'
+import { kvirnBaseMap } from '@kvirn-ui/map/kvirn'
+import { maplibre } from '@kvirn-ui/map/maplibre'
 import { Field, Icon, Listbox } from '@kvirn-ui/react'
 import type { IconComponent, IconComponentProps } from '@kvirn-ui/react'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url'
@@ -106,36 +107,13 @@ export const layeredArgs = {
 
 export const initialView: MapView = { center: { longitude: 18.02, latitude: 59.322 }, zoom: 11 }
 
-// The URLs are the story's, not the library's. OpenStreetMap, Esri and OpenTopoMap each have usage
-// policies and terms for imagery: a real site uses its own or a licensed tile host, and the
-// consumer answers for those terms. Visitors' IP addresses reach each host, so only the stories that
-// are not `offline` request them (and they are tagged `!test`).
+// Offline stories draw flat colour for each map type, so they request nothing. The others use the
+// Kvirn map service, like the docs site, which loads its style, tiles, fonts and icons as soon as
+// the map is shown (hence the `!test` tag on those stories).
 const baseMapDefinitions = [
-  {
-    id: 'standard',
-    label: 'Standard',
-    attribution: '© OpenStreetMap contributors',
-    tiles: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    maxzoom: 19,
-    background: '#dfe6ea',
-  },
-  {
-    id: 'satellite',
-    label: 'Satellite',
-    attribution: 'Tiles © Esri',
-    tiles:
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    maxzoom: 19,
-    background: '#c9d3c4',
-  },
-  {
-    id: 'terrain',
-    label: 'Terrain',
-    attribution: '© OpenStreetMap contributors, SRTM | © OpenTopoMap (CC-BY-SA)',
-    tiles: 'https://tile.opentopomap.org/{z}/{x}/{y}.png',
-    maxzoom: 17,
-    background: '#e6dfc8',
-  },
+  { id: 'standard', label: 'Standard', background: '#dfe6ea' },
+  { id: 'satellite', label: 'Satellite', background: '#c9d3c4' },
+  { id: 'terrain', label: 'Terrain', background: '#e6dfc8' },
 ]
 
 export const baseMapPreview = (baseMap: { id: string }) => (
@@ -149,32 +127,42 @@ export function useProvider(offline: boolean): MapProvider {
     () =>
       maplibre({
         workerUrl,
-        baseMaps: baseMapDefinitions.map(
-          ({ id, label, attribution, tiles, maxzoom, background }) =>
-            offline
-              ? {
-                  id,
-                  label,
-                  attribution: 'Background only, no map data',
-                  style: {
-                    version: 8 as const,
-                    sources: {},
-                    layers: [
-                      {
-                        id: 'background',
-                        type: 'background' as const,
-                        paint: { 'background-color': background },
-                      },
-                    ],
+        baseMaps: offline
+          ? baseMapDefinitions.map(({ id, label, background }) => ({
+              id,
+              label,
+              attribution: 'Background only, no map data',
+              style: {
+                version: 8 as const,
+                sources: {},
+                layers: [
+                  {
+                    id: 'background',
+                    type: 'background' as const,
+                    paint: { 'background-color': background },
                   },
-                }
-              : {
-                  id,
-                  label,
-                  attribution,
-                  style: rasterStyle({ tiles: [tiles], maxzoom, attribution }),
+                ],
+              },
+            }))
+          : [
+              kvirnBaseMap({ url: 'https://geo.kvirn.com', id: 'standard' }),
+              {
+                id: 'plain',
+                label: 'Plain',
+                attribution: 'No map data',
+                style: {
+                  version: 8 as const,
+                  sources: {},
+                  layers: [
+                    {
+                      id: 'background',
+                      type: 'background' as const,
+                      paint: { 'background-opacity': 0 },
+                    },
+                  ],
                 },
-        ),
+              },
+            ],
       }),
     [offline],
   )

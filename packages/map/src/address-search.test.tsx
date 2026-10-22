@@ -779,6 +779,24 @@ describe('AddressSearch read aloud', () => {
     expect(phrases).toContain('button, Search')
   })
 
+  test('typing says nothing, and no request is sent', async () => {
+    const { geocoder, calls } = createFakeGeocoder()
+    const { container } = await render(<Harness geocoder={geocoder} />)
+    await expect(
+      readAnnouncements(container, () => typeInto('Storgatan'), { timeout: 1500 }),
+    ).rejects.toThrow('No live-region announcement')
+    expect(calls).toHaveLength(0)
+  })
+
+  test('a slow search says it is searching', async () => {
+    const { geocoder } = createFakeGeocoder({ delay: () => Number.POSITIVE_INFINITY })
+    const { container } = await render(<Harness geocoder={geocoder} />)
+    await typeInto('Storgatan')
+    expect(await readSpoken(container, () => userEvent.click(searchButton()))).toEqual([
+      'polite: Searching for addresses',
+    ])
+  })
+
   test('Search below minLength says what is missing', async () => {
     const { geocoder } = createFakeGeocoder()
     const { container } = await render(<Harness geocoder={geocoder} />)

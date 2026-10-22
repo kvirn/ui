@@ -485,6 +485,7 @@ export const en = {
     indexing: 'Loading the places',
     attributionLabel: 'Map data',
     baseMapLabel: 'Map type',
+    defaultBaseMapLabel: 'Map',
     baseMapChanged: ({ label }) => `Map type: ${label}.`,
     clusterLabel: ({ count }, format) =>
       format.plural(count, { one: '1 place', other: `${format.number(count)} places` }),

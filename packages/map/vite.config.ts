@@ -30,7 +30,9 @@ export default defineConfig({
         'src/maplibre.ts',
         'src/leaflet.ts',
         'src/google.ts',
+        'src/google-places.ts',
         'src/nominatim.ts',
+        'src/kvirn.ts',
       ],
       // The engine is a peer: the adopter owns the one copy and chooses whether to load it at all.
       deps: {

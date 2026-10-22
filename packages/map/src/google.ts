@@ -131,7 +131,7 @@ export function google(options: GoogleOptions): MapProvider {
   return {
     baseMaps: baseMaps.map(({ id, label, attribution }) => ({
       id,
-      label,
+      ...(label === undefined ? {} : { label }),
       ...(attribution === undefined ? {} : { attribution }),
     })),
     ...(defaultBaseMap === undefined ? {} : { defaultBaseMap }),
@@ -209,6 +209,22 @@ export function google(options: GoogleOptions): MapProvider {
       const onTouchEnd = (event: TouchEvent) => {
         if (event.touches.length === 0) touchAnnounced = false
       }
+      // Google draws its logo, Terms and error-report links inside the aria-hidden container, and adds
+      // them after the SDK loads: keep them out of the Tab order, as the other adapters do (2.1.1, 4.1.2).
+      // Only `tabindex` is watched and only a change is written: writing the same value still
+      // queues a mutation record, and the observer would call itself forever.
+      const leaveTabOrder = () => {
+        for (const element of container.querySelectorAll<HTMLElement>(
+          'a[href]:not([tabindex="-1"]), button:not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])',
+        ))
+          element.tabIndex = -1
+      }
+      const tabOrderObserver = new MutationObserver(leaveTabOrder)
+      tabOrderObserver.observe(container, {
+        childList: true,
+        subtree: true,
+        attributeFilter: ['tabindex'],
+      })
       container.addEventListener('wheel', onWheel, { passive: true })
       container.addEventListener('touchmove', onTouchMove, { passive: true })
       container.addEventListener('touchend', onTouchEnd)
@@ -275,6 +291,7 @@ export function google(options: GoogleOptions): MapProvider {
         destroy: () => {
           if (destroyed) return
           destroyed = true
+          tabOrderObserver.disconnect()
           container.removeEventListener('wheel', onWheel)
           container.removeEventListener('touchmove', onTouchMove)
           container.removeEventListener('touchend', onTouchEnd)

@@ -24,6 +24,7 @@
       "@kvirn-ui/read-aloud": ["./packages/read-aloud/src/index.ts"],
       "@kvirn-ui/map": ["./packages/map/src/index.ts"],
       "@kvirn-ui/map/maplibre": ["./packages/map/src/maplibre.ts"],
+      "@kvirn-ui/map/kvirn": ["./packages/map/src/kvirn.ts"],
       "@kvirn-ui/testing": ["./packages/testing/src/index.ts"],
       "@kvirn-ui/icons": ["./packages/icons/src/index.ts"],
       "@kvirn-ui/icons/all": ["./packages/icons/src/all.ts"],

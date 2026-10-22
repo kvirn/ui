@@ -754,6 +754,8 @@ export interface KvirnMessages {
     attributionLabel: TextMessage
     /** The legend of the map type switch: `Map type`. */
     baseMapLabel: TextMessage
+    /** The name of a base map the consumer gave no label: `Map`. */
+    defaultBaseMapLabel: TextMessage
     /** Announced after the visitor switches. `label` is the base map's name, the consumer's. */
     baseMapChanged: MessageFunction<{ label: string }>
     /** The cluster button's name: `12 places`. */

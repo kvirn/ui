@@ -1,6 +1,6 @@
 import type { NextConfig } from 'next'
 
-// No third-party requests from the docs site (AGENTS.md, hard rule 7): no remote fonts, images or analytics. The one opt-in is the Map examples, which ask OpenStreetMap, and after a map type choice Esri or OpenTopoMap, for tiles after a button press.
+// No third-party requests from the docs site (AGENTS.md, hard rule 7): no remote fonts, images or analytics. The one exception is the Map examples, which load the map from geo.kvirn.com, Kvirn's own map service.
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: { unoptimized: true },

@@ -29,7 +29,7 @@ import { withLibraryIcons } from '../../icons.tsx'
 
 // Map: the viewport, markers, controls and place list (contract: map.a11y.md). Default
 // is the plain map, like the docs site; each customization has its own story and Everything has
-// them all. Default and CustomBaseMapSwitch load real OpenStreetMap, Esri and OpenTopoMap tiles,
+// them all. Default and CustomBaseMapSwitch load the Kvirn map service (geo.kvirn.com),
 // so they are tagged `!test`. The other stories use a plain background style: no network call.
 
 const meta = {
@@ -192,8 +192,8 @@ function renderWith(Demo: typeof MapDemo) {
 
 /**
  * The plain map, as on the docs site: default markers, controls, attribution, the list and the
- * details, with real tiles (OpenStreetMap, Esri satellite, OpenTopoMap). Every option is a
- * control. It calls those third parties, so it is not run in tests: Offline covers the same map.
+ * details, with the Kvirn map service (geo.kvirn.com). Every option is a
+ * control. It calls that service, so it is not run in tests: Offline covers the same map.
  * The stories below add one customization each, and Everything adds them all.
  */
 export const Default: Story = { render: renderMap, tags: ['!test'] }
@@ -237,7 +237,7 @@ export const OwnList: Story = { render: renderWith(MapOwnListDemo), args: { offl
 
 /**
  * `Map.BaseMapSwitch` with a render function: a native select in a Field with a visible label. It
- * switches between real tiles, so it is not run in tests.
+ * switches between the Kvirn map and Plain, so it is not run in tests.
  */
 export const CustomBaseMapSwitch: Story = {
   render: renderWith(MapSelectSwitchDemo),

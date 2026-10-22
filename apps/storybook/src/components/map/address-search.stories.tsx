@@ -251,6 +251,14 @@ export const Offline: Story = {
   },
 }
 
+/** Disabled: the field and the Search button cannot be reached or used. */
+export const Disabled: Story = {
+  args: { disabled: true },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('combobox', { name: 'Find an address' })).toBeDisabled()
+  },
+}
+
 /**
  * Focus the field and drive it with the Keyboard table: type, then Enter or Tab to the Search
  * button; ArrowDown and ArrowUp move through the addresses; Enter or Alt+ArrowUp picks one;

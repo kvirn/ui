@@ -495,6 +495,7 @@ export const nn = {
     indexing: 'Lastar stadene',
     attributionLabel: 'Kartdata',
     baseMapLabel: 'Karttype',
+    defaultBaseMapLabel: 'Kart',
     baseMapChanged: ({ label }) => `Karttype: ${label}.`,
     clusterLabel: ({ count }, format) =>
       format.plural(count, { one: '1 stad', other: `${format.number(count)} stader` }),

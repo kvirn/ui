@@ -494,6 +494,7 @@ export const sv = {
     indexing: 'Platserna laddas',
     attributionLabel: 'Kartdata',
     baseMapLabel: 'Karttyp',
+    defaultBaseMapLabel: 'Karta',
     baseMapChanged: ({ label }) => `Karttyp: ${label}.`,
     clusterLabel: ({ count }, format) =>
       format.plural(count, { one: '1 plats', other: `${format.number(count)} platser` }),

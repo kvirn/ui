@@ -318,12 +318,6 @@ const familyHours: Readonly<Record<string, string>> = {
 
 export const useMapTexts = defineExampleTexts({
   en: {
-    picturesTitle: 'Map pictures on this page',
-    loadPictures: 'Load map pictures',
-    loadPicturesNote:
-      'The maps on this page start as a plain background and request nothing. Press the button to load their pictures for every map on the page. Your IP address and the area you view are then sent to OpenStreetMap, and to Esri or OpenTopoMap if you choose the Satellite or Terrain map type.',
-    picturesLoaded:
-      'The maps on this page now show OpenStreetMap pictures. Use the Map type button on a map to switch to Satellite (Esri) or Terrain (OpenTopoMap).',
     stationsLabel: 'Map of recycling stations',
     stations,
     preschoolsLabel: 'Map of preschools',
@@ -344,12 +338,9 @@ export const useMapTexts = defineExampleTexts({
     familyPlaces,
     familyHours,
     mapTypesLabel: 'Map of recycling stations with a choice of map type',
-    mapTypeStandard: 'Standard',
-    mapTypeSatellite: 'Satellite',
-    mapTypeTerrain: 'Terrain',
     mapTypePlain: 'Plain',
     mapTypesNote:
-      'Standard, Satellite and Terrain are listed once you have loaded the map pictures above. Choosing Satellite sends the viewed area to Esri, and Terrain to OpenTopoMap. Until then the map has one map type and no switch.',
+      'The Map type button lists Map, from geo.kvirn.com, and Plain, a background that requests nothing. A site adds its own map types, such as aerial photos, from a tile host it has an agreement with.',
     openingHours: 'Opening hours',
     directions: 'Get directions',
     ownListHeading: (shown: number, total: number) =>

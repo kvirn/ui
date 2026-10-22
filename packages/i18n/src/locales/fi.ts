@@ -501,6 +501,7 @@ export const fi = {
     indexing: 'Paikkoja ladataan',
     attributionLabel: 'Karttatiedot',
     baseMapLabel: 'Karttatyyppi',
+    defaultBaseMapLabel: 'Kartta',
     baseMapChanged: ({ label }) => `Karttatyyppi: ${label}.`,
     clusterLabel: ({ count }, format) =>
       format.plural(count, { one: '1 paikka', other: `${format.number(count)} paikkaa` }),

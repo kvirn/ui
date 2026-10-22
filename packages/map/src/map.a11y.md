@@ -103,7 +103,7 @@ The map takes no other key. Keys on the viewport are read only while the viewpor
 | The visitor changes the map type                                                                                   | `map.baseMapChanged` ("Map type: Satellite.")                            | polite     |
 | The index of a large source starts to build (once)                                                                 | `map.indexing` ("Loading the places")                                    | polite     |
 
-Not announced: the map loading, hover, highlight, a drag, and opening details or a popup (the focus move is the announcement).
+Not announced: the map loading, a page theme change (the base map restyles at once, and the camera, selection, open popup and focus stay), hover, highlight, a drag, and opening details or a popup (the focus move is the announcement).
 
 ## Consumer responsibilities
 

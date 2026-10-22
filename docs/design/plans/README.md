@@ -18,3 +18,4 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0128](0128-icons-replace-built-ins.md)         | Default icons come from `@kvirn-ui/icons`, no built-ins in react | In progress |
 | [0141](0141-sweeps-in-ci-and-testing-upkeep.md) | Display-mode sweeps in CI; Testing upkeep in the docs workflow   | Approved    |
 | [0143](0143-status-badge.md)                    | A coloured testing status badge on component pages               | In progress |
+| [0147](0147-kvirn-map-service.md)               | AddressSearch and base maps on the Kvirn map service             | In progress |
