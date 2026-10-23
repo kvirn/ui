@@ -6,7 +6,7 @@ import { Icon, KvirnProvider } from '@kvirn-ui/react'
 import { Map } from './map.tsx'
 import { mapIcons } from './map-icons.ts'
 import { createMemoryProvider } from './memory-provider.ts'
-import type { MapBaseMap, MapPlace, MapTheme } from '@kvirn-ui/core'
+import type { MapBaseMap, MapPlace, MapProvider, MapTheme } from '@kvirn-ui/core'
 import type { Env } from '@kvirn-ui/core'
 
 // Contract: map.a11y.md. This file proves the focus-not-obscured row (WCAG 2.4.11). Component
@@ -440,6 +440,40 @@ describe('Map with the memory provider', () => {
       </Map.Root>,
     )
     await expect.element(page.getByTestId('viewport')).toHaveAttribute('data-status', 'ready')
+  })
+
+  test('when the tiles fail the viewport says so and the list still opens a place', async () => {
+    const base = createMemoryProvider()
+    const failing: MapProvider = {
+      mount: (container, options) => {
+        const handle = base.mount(container, options)
+        return {
+          ...handle,
+          on: (name, listener) => {
+            if (name === 'error') {
+              queueMicrotask(() => (listener as (error: Error) => void)(new Error('tiles')))
+            }
+            return handle.on(name, listener)
+          },
+        }
+      },
+    }
+    await render(
+      <Map.Root
+        provider={failing}
+        label="Map"
+        places={[place]}
+        initialView={{ center: centre, zoom }}
+      >
+        <Map.Viewport data-testid="viewport" className="fixture-viewport" />
+        <Map.List />
+        <Map.Details />
+      </Map.Root>,
+    )
+    await expect.element(page.getByTestId('viewport')).toHaveAttribute('data-status', 'failed')
+    await expect.element(page.getByText("The map can't be shown right now")).toBeVisible()
+    await page.getByRole('button', { name: place.name }).click()
+    await expect.element(page.getByRole('dialog')).toBeVisible()
   })
 
   test('opening a place from the list logs no warning', async () => {

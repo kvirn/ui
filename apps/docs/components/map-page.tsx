@@ -387,8 +387,8 @@ export function MapPage({ contract, sources }: { contract: Contract; sources: Ma
             </li>
             <li>
               The map has no address search of its own. A visitor finds a place by the markers, the
-              list and the layers. To add address search, use a geocoding service (it turns a typed
-              address into a position) that you choose.
+              list and the layers. To let a visitor search for an address, put an{' '}
+              <Link href="/components/address-search">AddressSearch</Link> beside the map.
             </li>
             <li>
               It is its own package, <code>@kvirn-ui/map</code>. Its styles are an opt-in import,{' '}

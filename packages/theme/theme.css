@@ -9178,7 +9178,9 @@
     align-self: stretch;
     place-items: center;
     box-sizing: border-box;
-    min-block-size: 0;
+    min-block-size: calc(
+      var(--kv-control-min-block-size) - 2 * var(--kv-control-border-width-invalid)
+    );
     min-inline-size: var(--kv-control-min-block-size);
     margin: 0;
     padding-block: 0;

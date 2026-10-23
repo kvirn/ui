@@ -535,6 +535,9 @@ const hookResultRows = withDash(
       | 'status'
       | 'messages'
       | 'ids'
+      | 'show'
+      | 'searchResult'
+      | 'clearResult'
       | 'setHighlightedPlaceId'
     >
   >({
@@ -612,6 +615,19 @@ const hookResultRows = withDash(
       type: 'object',
       description:
         'The ids the parts use, such as details (for aria-controls) and listHeading (for your own list’s skip link).',
+    },
+    show: {
+      type: '(target: MapPlace | AddressResult) => void',
+      description:
+        'Centres the map on a place or an address, or fits the address’s bounds, without moving focus. A place also opens its details. An address draws the result pin and announces that the map shows it once the view settles.',
+    },
+    searchResult: {
+      type: 'AddressResult | null',
+      description: 'The address that show drew a pin for, until clearResult.',
+    },
+    clearResult: {
+      type: '() => void',
+      description: 'Removes the result pin. It announces nothing.',
     },
     setHighlightedPlaceId: {
       type: '(placeId: string | null) => void',

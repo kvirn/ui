@@ -244,6 +244,19 @@ export const Failed: Story = {
   },
 }
 
+/** `describePick` refuses a pick, such as a place with no postal address: the list stays open and the line says what to do. */
+export const Rejected: Story = {
+  args: {
+    describePick: () => ({ rejected: 'Choose an address with a street and a number.' }),
+  },
+  play: async ({ canvas }) => {
+    await searchFor(canvas, 'Storgatan')
+    await canvas.findAllByRole('option')
+    await userEvent.keyboard('{ArrowDown}{Enter}')
+    await canvas.findByText('Choose an address with a street and a number.')
+  },
+}
+
 /** The browser is offline: nothing is sent, and the line says to connect and search again. */
 // The fake goes in play, not beforeEach: the Docs page mounts every story at once and never runs a
 // beforeEach cleanup, so a page-wide `navigator.onLine = false` would put every story offline.

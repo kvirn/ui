@@ -738,6 +738,103 @@ describe('AddressSearch in a form', () => {
   })
 })
 
+describe('AddressSearch Root options', () => {
+  const root = () => document.querySelector('.kv-address-search')
+  const optionNames = ['country', 'limitToCountry', 'describePick', 'initialText']
+  const expectNoOptionAttributes = () =>
+    expect(
+      root()
+        ?.getAttributeNames()
+        .filter((name) =>
+          optionNames.some((option) => option.toLowerCase() === name.toLowerCase()),
+        ),
+    ).toEqual([])
+
+  test('country is sent to the geocoder and is not a DOM attribute', async () => {
+    const { geocoder, calls } = createFakeGeocoder()
+    await render(<Harness geocoder={geocoder} country="SE" />)
+    await type('Storgatan{Enter}')
+    await expect.poll(() => calls.length).toBe(1)
+    expect(calls[0]?.options.country).toBe('SE')
+    expectNoOptionAttributes()
+  })
+
+  test('limitToCountry drops the answers in another country and is not a DOM attribute', async () => {
+    const { geocoder } = createFakeGeocoder({ answers: { Storgatan: [malmo, helsinki] } })
+    await render(<Harness geocoder={geocoder} country="SE" limitToCountry />)
+    await type('Storgatan{Enter}')
+    await expect.poll(optionCount).toBe(1)
+    await expect.element(page.getByRole('option', { name: malmo.label })).toBeVisible()
+    expectNoOptionAttributes()
+  })
+
+  test('initialText is the text the input starts with and is not a DOM attribute', async () => {
+    const { geocoder } = createFakeGeocoder()
+    await render(<Harness geocoder={geocoder} initialText="Storgatan 1" />)
+    await expect.element(input()).toHaveValue('Storgatan 1')
+    expectNoOptionAttributes()
+  })
+})
+
+describe('AddressSearch status attributes', () => {
+  const rootStatus = () => document.querySelector('.kv-address-search')?.getAttribute('data-status')
+  const lineState = () =>
+    document.querySelector('.kv-address-lookup-status')?.getAttribute('data-state')
+
+  test('Root data-status follows the state, and Status data-state names the state its words describe', async () => {
+    const { geocoder } = createFakeGeocoder({
+      delay: (query) => (query === 'Storgatan 1' ? Number.POSITIVE_INFINITY : 0),
+    })
+    const onlineSpy = vi.spyOn(navigator, 'onLine', 'get')
+    await render(
+      <Harness
+        geocoder={geocoder}
+        describePick={(result) =>
+          result.id === 'malmo' ? { rejected: 'Choose a street address.' } : { announcement: 'ok' }
+        }
+      />,
+    )
+    expect(rootStatus()).toBe('idle')
+    expect(lineState()).toBeUndefined()
+
+    await type('St{Enter}')
+    await expect.poll(rootStatus).toBe('too-short')
+    expect(lineState()).toBe('too-short')
+
+    await userEvent.keyboard('orgatan{Enter}')
+    await expect.poll(rootStatus).toBe('results')
+    await expect.poll(optionCount).toBe(2)
+    expect(lineState()).toBeUndefined()
+
+    await userEvent.keyboard(' 1{Enter}')
+    await expect.poll(rootStatus).toBe('searching')
+    expect(lineState()).toBe('searching')
+
+    await userEvent.keyboard('{Backspace}{Backspace}{Enter}')
+    await expect.poll(rootStatus).toBe('results')
+    await userEvent.keyboard('{ArrowDown}{Enter}')
+    await expect.poll(rootStatus).toBe('rejected')
+    expect(lineState()).toBe('rejected')
+
+    await userEvent.keyboard('{ArrowDown}{ArrowDown}{Enter}')
+    await expect.poll(rootStatus).toBe('selected')
+    expect(lineState()).toBeUndefined()
+
+    await userEvent.keyboard('{Control>}a{/Control}nowhere{Enter}')
+    await expect.poll(rootStatus).toBe('empty')
+    expect(lineState()).toBe('empty')
+
+    await userEvent.keyboard('{Control>}a{/Control}broken{Enter}')
+    await expect.poll(rootStatus).toBe('error')
+    expect(lineState()).toBe('error')
+
+    onlineSpy.mockReturnValue(false)
+    await userEvent.keyboard('{Control>}a{/Control}Storgatan{Enter}')
+    await expect.poll(rootStatus).toBe('offline')
+    expect(lineState()).toBe('offline')
+  })
+})
+
 describe('AddressSearch strings', () => {
   test('every string comes from addressSearch.* and is overridable per instance', async () => {
     const { geocoder } = createFakeGeocoder()
@@ -874,5 +971,43 @@ describe('AddressSearch read aloud', () => {
     expect(
       await readSpoken(container, () => userEvent.keyboard('{ArrowDown}{ArrowDown}{Enter}')),
     ).toEqual([`polite: Chosen: ${goteborg.label}.`])
+  })
+
+  test('a pick that describePick rejects says the rejected text instead of choosing', async () => {
+    const { geocoder } = createFakeGeocoder()
+    const onResult = vi.fn<(result: AddressResult | null) => void>()
+    const { container } = await render(
+      <Harness
+        geocoder={geocoder}
+        onResult={onResult}
+        describePick={() => ({ rejected: 'Choose a street address.' })}
+      />,
+    )
+    await typeInto('Storgatan')
+    await userEvent.keyboard('{Enter}')
+    await expect.poll(optionCount).toBe(2)
+    await wait(900)
+    expect(await readSpoken(container, () => userEvent.keyboard('{ArrowDown}{Enter}'))).toEqual([
+      'polite: Choose a street address.',
+    ])
+    await expect.element(statusLine('Choose a street address.')).toBeVisible()
+    expect(onResult).not.toHaveBeenCalled()
+  })
+
+  test('a pick with describePick says its announcement in place of chosen', async () => {
+    const { geocoder } = createFakeGeocoder()
+    const { container } = await render(
+      <Harness
+        geocoder={geocoder}
+        describePick={(result) => ({ announcement: `Using ${result.label}.` })}
+      />,
+    )
+    await typeInto('Storgatan')
+    await userEvent.keyboard('{Enter}')
+    await expect.poll(optionCount).toBe(2)
+    await wait(900)
+    expect(
+      await readSpoken(container, () => userEvent.keyboard('{ArrowDown}{ArrowDown}{Enter}')),
+    ).toEqual([`polite: Using ${goteborg.label}.`])
   })
 })

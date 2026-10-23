@@ -63,6 +63,10 @@ export function AddressSearchRoot({
   minLength,
   debounce,
   timeoutMilliseconds,
+  country,
+  limitToCountry,
+  describePick,
+  initialText,
   disabled,
   id,
   messages,
@@ -76,6 +80,10 @@ export function AddressSearchRoot({
     minLength,
     debounce,
     timeoutMilliseconds,
+    country,
+    limitToCountry,
+    describePick,
+    initialText,
     disabled,
     id,
     messages,
@@ -208,7 +216,7 @@ AddressSearchPopup.displayName = 'AddressSearch.Popup'
 export type AddressSearchStatusProps = Omit<ComponentPropsWithRef<'div'>, 'children'>
 
 /**
- * The line above the suggestions: searching, too short, no result, error or offline. Plain text
+ * The line above the suggestions: searching, too short, no result, error, offline or a pick that `describePick` rejected. Plain text
  * with an icon, never a live region: the same words are announced through the Announcer.
  */
 export function AddressSearchStatus({

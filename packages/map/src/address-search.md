@@ -24,6 +24,10 @@ An AddressSearch looks an address up. The visitor types a street, a postal code 
 | `minLength`           | `3`                   | The fewest characters, trimmed, before a search is sent                                                                                                                                                                                                                                  |
 | `debounce`            | `400`                 | Milliseconds of no typing before a search as you type. `false`, or a geocoder without `suggest: true`, searches on request                                                                                                                                                               |
 | `timeoutMilliseconds` | `10000`               | How long to wait for an answer before it counts as failed                                                                                                                                                                                                                                |
+| `country`             | none                  | ISO 3166-1 alpha-2, such as `SE`: sent to the geocoder, which ranks that country first                                                                                                                                                                                                   |
+| `limitToCountry`      | `false`               | With `country`: drops the answers in another country                                                                                                                                                                                                                                     |
+| `describePick`        | none                  | `(result, messages) => { rejected } \| { announcement }`: decides what a pick means before `onResult`. `rejected` keeps the list open and says that text instead of choosing. `announcement` replaces the `picked` message                                                               |
+| `initialText`         | `''`                  | The text the input starts with, for a field that already holds a value                                                                                                                                                                                                                   |
 | `label`               | `addressSearch.label` | The visible label's text                                                                                                                                                                                                                                                                 |
 | `disabled`, `id`      | `false`               | Disables the field and the Search button; the input's id outside a Field                                                                                                                                                                                                                 |
 | `messages`            | provider's catalog    | Per-instance overrides of the `addressSearch` strings                                                                                                                                                                                                                                    |
@@ -41,9 +45,9 @@ With a map, `useMapState().show(result)` centres the map (or fits `bounds`), dra
 </search>
 ```
 
-| State attribute | On   | When                                                                                   |
-| --------------- | ---- | -------------------------------------------------------------------------------------- |
-| `data-status`   | Root | `idle`, `too-short`, `searching`, `results`, `empty`, `error`, `offline` or `selected` |
+| State attribute | On   | When                                                                                               |
+| --------------- | ---- | -------------------------------------------------------------------------------------------------- |
+| `data-status`   | Root | `idle`, `too-short`, `searching`, `results`, `empty`, `error`, `offline`, `selected` or `rejected` |
 
 Stable classes: `kv-address-search`, `kv-address-lookup-submit`, `kv-address-lookup-status`, `kv-address-lookup-notice`, and the Autocomplete's. There are no variation classes. Your `className` joins the part's.
 

@@ -424,12 +424,6 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'FocusScope and useFocus move focus into your own drawer or wizard step, can hold it there, and return it when the scope ends.',
       ),
       component(
-        'Map',
-        'map',
-        'Places on a map and the same places as a list, with the keyboard and a button for every gesture.',
-        '@kvirn-ui/map',
-      ),
-      component(
         'ReadAloud',
         'read-aloud',
         'A player that reads a region of the page aloud, one sentence at a time, with the browser’s own speech.',
@@ -440,6 +434,24 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'A hook that moves focus to the page title after a client-side navigation, so keyboard and screen reader users start at the top of the new page instead of on a link that may be gone.',
       ),
       component('Table', 'table', 'A data table built on the native table elements.'),
+    ],
+  },
+  {
+    id: 'maps-and-places',
+    label: groupText.mapsAndPlaces,
+    pages: [
+      component(
+        'AddressSearch',
+        'address-search',
+        'A search field that finds an address as you type or on Search, on its own or with a map.',
+        '@kvirn-ui/map',
+      ),
+      component(
+        'Map',
+        'map',
+        'Places on a map and the same places as a list, with the keyboard and a button for every gesture.',
+        '@kvirn-ui/map',
+      ),
     ],
   },
 ]

@@ -527,9 +527,10 @@ import { kvirnGeocoder } from '@kvirn-ui/map/kvirn' // only for the address look
                 ]}
               >
                 <p>
-                  These texts belong to the address search that AddressInput shares with
-                  AddressSearch, so the same keys work on <code>AddressInput.Line1</code>’s{' '}
-                  <code>messages</code> and on <code>KvirnProvider</code>.
+                  These texts belong to the address search that AddressInput shares with{' '}
+                  <Link href="/components/address-search">AddressSearch</Link>, so the same keys
+                  work on <code>AddressInput.Line1</code>’s <code>messages</code> and on{' '}
+                  <code>KvirnProvider</code>.
                 </p>
               </StringsBlock>
               <StringsBlock

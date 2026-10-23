@@ -33,8 +33,8 @@ These are the rules the map follows (the Keyboard table names the test for each 
 - **Focus.** Opening details or a cluster popup moves focus to its heading. Closing returns it to the opener (the marker, the cluster or the list row), else the list heading. Never `body` (2.4.3).
 - **Keys are taken only while the viewport has focus** and never with Control, Command or Alt, so browser zoom keeps working (1.4.4, 2.1.4).
 - **Pointer.** Drag pans, one finger scrolls the page on touch and two fingers pan, the wheel scrolls the page and zooms with Control or Command. A hint (`map.gestureTouch`, `map.gestureWheel`) shows until the next interaction. Every gesture has a button (2.5.1, 2.5.7). Buttons are at least 24 by 24 CSS px (2.5.8).
-- **Failure.** When tiles fail, `map.tilesFailedTitle` and `map.tilesFailedBody` show in the viewport and the list still works (3.3.1).
-- **WCAG SCs:** 1.1.1 Non-text Content (A), 1.3.1 Info and Relationships (A), 1.3.2 Meaningful Sequence (A), 1.4.1 Use of Color (A), 1.4.4 Resize Text (AA), 1.4.10 Reflow (AA), 1.4.11 Non-text Contrast (AA), 1.4.13 Content on Hover or Focus (AA), 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A), 2.1.4 Character Key Shortcuts (A), 2.4.1 Bypass Blocks (A), 2.4.3 Focus Order (A), 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (Minimum) (AA), 2.5.1 Pointer Gestures (A), 2.5.3 Label in Name (A), 2.5.7 Dragging Movements (AA), 2.5.8 Target Size (Minimum) (AA), 3.2.1 On Focus (A), 3.2.2 On Input (A), 4.1.2 Name, Role, Value (A) and 4.1.3 Status Messages (AA). Raster tile labels are images of text that do not follow the text size (1.4.4 Resize Text, 1.4.5 Images of Text, both AA): the tile source is yours, and vector tiles are advised.
+- **Failure.** When tiles fail, `map.tilesFailedTitle` and `map.tilesFailedBody` show in the viewport and the list still works (3.3.1). Test: `map.test.tsx › when the tiles fail the viewport says so and the list still opens a place`.
+- **WCAG SCs:** listed with their proof under WCAG SCs covered.
 
 ## Keyboard
 
@@ -120,6 +120,35 @@ Not announced: the map loading, a page theme change (the base map restyles at on
 - **Install the engine's CSS yourself** (`maplibre-gl/dist/maplibre-gl.css`), and under Vite pass `workerUrl`. The package ships neither.
 - **Keep clustering on for a large source.** With `cluster={false}`, every place in view is a button on the page.
 
+## Visual / modes
+
+- **Focus.** A keyboard-focused marker, control and list row show a ring in the focus colour with a `canvas` gap, so it reads on any tile. A focused marker under an overlay is panned clear of it (2.4.7, 2.4.11).
+- **Over imagery.** Anything drawn on the map has a `canvas` edge, then a 1px `text` edge (the halo), one of them light and one dark in every theme, so its edge is at least 3:1 on any tile (1.4.11). The pairs are the theme's, checked by `theme:check`; no new pair.
+- **Not colour alone.** The selected marker differs by shape as well as colour, a checked map type by a check, and a layer by its name and swatch (1.4.1).
+- **Target size.** Controls, markers, the Layers and Map type buttons and list rows are 44px (32px compact) with a mark of at least 24px (2.5.8).
+- **Reflow.** Below 40rem the chrome is a grid around the map: Layers, Map type, the map, Controls as a wrapping row, then Attribution. Nothing clips at 320px or at 400% zoom (1.4.10). The Controls stay the alternative to a two-finger pan (2.5.7).
+- **Forced colours.** The viewport, hint, status, attribution and control surfaces use `Canvas` with a `CanvasText` edge, markers use system colours with a different shape for the selected one, a checked tile is `Highlight` with `HighlightText` plus its check, and disabled is `GrayText`.
+- **Reduced motion.** Colour, background, border, shadow and opacity change only under `prefers-reduced-motion: no-preference`. Under reduced motion the camera jumps instead of easing. Nothing moves, scales or runs on exit.
+- **Right-to-left.** The chrome uses logical properties. The map and the pan buttons are physical, so the viewport arrows never flip, and the marker arrows flip (`map.test.tsx › the arrows pan the same way in RTL`, `map.test.tsx › the arrows move between the markers in RTL`).
+- **Raster tiles.** A raster tile's labels are an image of text that does not follow the text size (1.4.4 Resize Text, 1.4.5 Images of Text, both AA). The tile source is yours; vector tiles are advised.
+
+## WCAG SCs covered
+
+- 1.1.1 Non-text Content (A), 1.3.1 Info and Relationships (A), 1.3.2 Meaningful Sequence (A): the list holds every place and the viewport states the count; the canvas is `aria-hidden` (the Equivalent and Names rules, and `map.test.tsx › a marker with no children shows a decorative pin and keeps the place name`).
+- 1.4.1 Use of Color (A), 1.4.11 Non-text Contrast (AA): shapes and the halo, with the theme's pairs checked by `theme:check`. No unit test asserts the shapes.
+- 1.4.4 Resize Text (AA), 1.4.10 Reflow (AA): the `reflow` sweep project renders the stories at 320px, which is 400% zoom. `map` is in `sweepComponents` (vite.config.ts), but the map stories have not been swept yet, so this stays pending.
+- 1.4.13 Content on Hover or Focus (AA): nothing opens on hover or focus alone; a popup opens on Enter or Space and closes with Escape (`map.test.tsx › Escape closes the details and returns focus`).
+- 2.1.1 Keyboard (A), 2.1.2 No Keyboard Trap (A), 2.4.3 Focus Order (A): every row of the Keyboard table names a test.
+- 2.4.7 Focus Visible (AA): the focus-ring pair is checked by `theme:check`, and the `forced-colors` sweep runs the stories once the map stories are swept (pending). No keyboard test asserts the ring.
+- 2.1.4 Character Key Shortcuts (A): the keys are taken only while the viewport has focus and never with Control, Command or Alt (the viewport rows of the Keyboard table).
+- 2.4.1 Bypass Blocks (A): the skip link (`map.test.tsx › Tab reaches the skip link and the viewport`).
+- 2.4.11 Focus Not Obscured (Minimum) (AA): `map.test.tsx › a marker focused by keyboard under an overlay is panned clear of it`, `map.test.tsx › Map.Controls count as an overlay`.
+- 2.5.1 Pointer Gestures (A), 2.5.7 Dragging Movements (AA): every gesture has a button (`map.test.tsx › the control buttons zoom, pan and reset`).
+- 2.5.3 Label in Name (A): markers are named by the place and clusters by their count (the Names rules). 2.5.8 Target Size (Minimum) (AA): the theme sizes the targets; no test asserts it.
+- 3.2.1 On Focus (A), 3.2.2 On Input (A): the map never moves focus on its own (`address-search.test.tsx › show(result) fits the bounds or centres, draws the pin, keeps focus and announces addressShown once settled`).
+- 3.3.1 Error Identification (A): the tile failure message shows in the viewport, and the list still works (`map.test.tsx › when the tiles fail the viewport says so and the list still opens a place`).
+- 4.1.2 Name, Role, Value (A), 4.1.3 Status Messages (AA): the roles and names in the table above, and the announcements above.
+
 ## AT test record
 
 | AT + browser + OS                                                          | Agent check | Human check | Result  | Notes                                                                                            |
@@ -129,7 +158,7 @@ Not announced: the map loading, a page theme change (the base map restyles at on
 | Markup and ARIA (roles, names, ids, states)                                | pending     | n/a         | pending | the test has no axe check                                                                        |
 | Keyboard contract rows (Vitest browser)                                    | pass        | n/a         | pass    | 35 rows, each names a test (map.test.tsx › Tab reaches the skip link and the viewport)           |
 | Focus order and management                                                 | pass        | n/a         | pass    | map.test.tsx asserts focus (toHaveFocus); first rule: Tab reaches the skip link and the viewport |
-| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | not in `sweepComponents` (vite.config.ts), so the four sweep projects do not run its stories     |
+| Display modes (forced colours, 320px reflow, text spacing, reduced motion) | pending     | n/a         | pending | `map` is in `sweepComponents` (vite.config.ts), so the four sweep projects run its stories in CI |
 | **Core (required for beta)**                                               |             |             |         |                                                                                                  |
 | NVDA + Chrome + Windows                                                    | pending     | pending     | pending |                                                                                                  |
 | VoiceOver + Safari + iOS                                                   | pending     | pending     | pending |                                                                                                  |
@@ -145,4 +174,4 @@ Not announced: the map loading, a page theme change (the base map restyles at on
 - **Test with your users and their assistive technology.** A map is hard to make equal for everyone, so check the viewport, the layer checkboxes, the pan buttons and the list with the assistive technology your users have.
 - **Markers of different layers can touch.** Layers cluster separately, so a cluster of one layer can sit on a marker or cluster of another. Every place stays reachable from the keyboard (arrow keys between markers) and in the list.
 - **`cluster={false}` with a large source** puts every place in view on the page as a button. The map warns once in development past 2,000 markers, and does not cap them. Keep clustering on, or turn it off only for small layers.
-- **The map has no address search.** `GeocoderProvider` is a type only, and no part uses it; to offer address search, build it beside the map with a geocoding service you choose. A visitor finds a place by the markers, the list and the layers.
+- **The map has no address search of its own.** To let a visitor search for an address, put an AddressSearch beside the map (`address-search.a11y.md`). A visitor otherwise finds a place by the markers, the list and the layers.
