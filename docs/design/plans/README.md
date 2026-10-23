@@ -16,3 +16,5 @@ Plans describe **how** we will build something. Decisions live in the skills and
 | [0088](0088-read-aloud.md)                       | ReadAloud (text to speech player and selection reader)                | Draft (1.2) |
 | [0141](0141-sweeps-in-ci-and-testing-upkeep.md)  | Display-mode sweeps in CI; Testing upkeep in the docs workflow        | Approved    |
 | [0150](0150-geocoder-country-and-smoke-tests.md) | Geocoder per-search country; live smoke tests for geo.kvirn.com in CI | Done        |
+| [0151](0151-read-aloud-service.md)               | Kvirn read-aloud service (voice.kvirn.com) and `kvirnSpeechEngine`    | Approved    |
+| [0152](0152-dictation.md)                        | Dictation (speak a short query into a text field)                     | Approved    |

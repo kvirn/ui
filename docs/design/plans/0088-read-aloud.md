@@ -11,7 +11,7 @@ A reader can press **Listen** to hear a region of the page read aloud, pause, re
 
 ## Non-goals
 
-- Remote or neural voices, a self-hosted TTS server, audio file output (the engine is injectable, see Decisions D3, but no second engine ships).
+- Remote or neural voices, a self-hosted TTS server, audio file output in this plan (the engine is injectable, see Decisions D3). The server engine, `kvirnSpeechEngine` on voice.kvirn.com, is [Plan 0151](0151-read-aloud-service.md).
 - Word-level highlight, a persisted settings panel, reading several regions in sequence, click-to-read paragraphs (WebReader parity: later plans).
 - Replacing a screen reader. This is for sighted users with reading difficulties, not an AT substitute, and must not fight one (see contract).
 - A claim that this satisfies any legal requirement.
