@@ -1,6 +1,7 @@
 export {
   ReadAloud,
   ReadAloudNext,
+  ReadAloudNote,
   ReadAloudPlay,
   ReadAloudPrevious,
   ReadAloudRate,
@@ -12,6 +13,7 @@ export {
 } from './read-aloud.tsx'
 export type {
   ReadAloudButtonProps,
+  ReadAloudNoteProps,
   ReadAloudRootProps,
   ReadAloudSelectProps,
   ReadAloudStatusProps,
@@ -20,6 +22,7 @@ export { useReadAloud } from './use-read-aloud.ts'
 export type {
   ReadAloudButtonPartProps,
   ReadAloudLabelPartProps,
+  ReadAloudNotePartProps,
   ReadAloudOption,
   ReadAloudPlayPartProps,
   ReadAloudRootPartProps,

@@ -2,7 +2,7 @@
   "name": "@kvirn-ui/read-aloud",
   "version": "0.0.0",
   "private": true,
-  "description": "Read a region of the page aloud with the browser's own speech, in planning for 1.2.",
+  "description": "Read a region of the page aloud on the Kvirn voice service, in planning for 1.2.",
   "homepage": "https://ui.kvirn.com",
   "license": "BUSL-1.1",
   "author": "KvirnUI <magnus@vike.se> (https://ui.kvirn.com)",

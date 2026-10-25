@@ -354,10 +354,18 @@ export const sv = {
       `Mening ${format.number(current)} av ${format.number(total)}`,
     positionPaused: ({ current, total }, format) =>
       `Pausad vid mening ${format.number(current)} av ${format.number(total)}`,
-    noVoice: ({ language }) =>
-      `Den här enheten har ingen röst för ${language}. Du kan lägga till en i enhetens talinställningar.`,
-    speechError: 'Texten kunde inte läsas upp. Försök igen.',
-    unsupported: 'Den här webbläsaren kan inte läsa upp text.',
+    preparing: 'Hämtar ljudet …',
+    errorServiceBusy: 'Uppläsningstjänsten är upptagen. Tryck på Lyssna för att försöka igen.',
+    errorServiceUnavailable:
+      'Texten kan inte läsas upp just nu. Tryck på Lyssna för att försöka igen, eller fortsätt läsa.',
+    errorPlayback: 'Den här webbläsaren kunde inte spela upp ljudet.',
+    errorNoVoice: ({ language }) =>
+      `Det finns ännu ingen röst för ${language}, så den här sidan kan inte läsas upp.`,
+    partSkipped: 'En del av texten hoppades över.',
+    voicesLoading: 'Hämtar röster …',
+    note: ({ name }) =>
+      `Uppläsningen skickar texten till ${name} för att skapa ljudet. Texten och ljudet sparas inte.`,
+    howItWorks: 'Så fungerar uppläsningen',
   },
   errorSummary: { title: 'Det finns ett problem', titlePrefix: 'Fel:' },
   definitionList: { change: 'Ändra' },

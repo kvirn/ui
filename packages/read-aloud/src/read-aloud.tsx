@@ -28,6 +28,12 @@ export interface ReadAloudSelectProps extends Omit<ComponentPropsWithRef<'select
   label?: ReactNode
 }
 
+export interface ReadAloudNoteProps extends ComponentPropsWithRef<'p'> {
+  /** Shown as a `readAloud.howItWorks` link at the end of the note, pointing at your own page. Omit it for no link. */
+  howItWorksHref?: string | undefined
+  children?: ReactNode
+}
+
 /** `as` is `span` (default), `p` or `div`. Visible text, never a heading or a live region. */
 export type ReadAloudStatusProps = AsTag<(typeof statusTags)[number], 'span'>
 
@@ -39,11 +45,19 @@ function useReader(part: string): UseReadAloudResult {
   return reader
 }
 
-/** The group: `role="group"` named by `readAloud.label`. Put the player's parts in it. */
+/**
+ * The group: `role="group"` named by `readAloud.label`. Put the player's parts in it. Renders
+ * nothing once the voices have loaded and none serves the page's language (D9): a dead Listen
+ * button that always fails is worse than none.
+ */
 export function ReadAloudRoot({
   contentRef,
   engine,
-  allowRemoteVoices,
+  url,
+  store,
+  timeout,
+  voices,
+  name,
   highlight,
   scroll,
   messages,
@@ -51,17 +65,24 @@ export function ReadAloudRoot({
   ref,
   children,
   ...otherProps
-}: ReadAloudRootProps): ReactElement {
+}: ReadAloudRootProps): ReactElement | null {
   const reader = useReadAloud({
     contentRef,
     engine,
-    allowRemoteVoices,
+    url,
+    store,
+    timeout,
+    voices,
+    name,
     highlight,
     scroll,
     messages,
     onStatusChange,
   })
   const mergedRef = useMergedRef(ref, null)
+  if (reader.hasVoice === false) {
+    return null
+  }
   return (
     <ReadAloudContext.Provider value={reader}>
       {createElement(
@@ -84,16 +105,13 @@ function ReadAloudButton({
   part: string
   pick: (reader: UseReadAloudResult) => UseReadAloudResult['previousProps']
   label: (reader: UseReadAloudResult) => string
-}): ReactElement | null {
+}): ReactElement {
   const reader = useReader(part)
-  if (!reader.isSupported) {
-    return null
-  }
   return createElement('button', mergeProps(otherProps, pick(reader)), children ?? label(reader))
 }
 
-/** Listen, Listen to selected text or Pause. Space and Enter are the button's own. */
-export function ReadAloudPlay(props: ReadAloudButtonProps): ReactElement | null {
+/** Listen, Listen to selected text or Pause (also while fetching, so the wait can be stopped). Space and Enter are the button's own. */
+export function ReadAloudPlay(props: ReadAloudButtonProps): ReactElement {
   return (
     <ReadAloudButton
       {...props}
@@ -105,7 +123,7 @@ export function ReadAloudPlay(props: ReadAloudButtonProps): ReactElement | null 
 }
 ReadAloudPlay.displayName = 'ReadAloud.Play'
 
-export function ReadAloudPrevious(props: ReadAloudButtonProps): ReactElement | null {
+export function ReadAloudPrevious(props: ReadAloudButtonProps): ReactElement {
   return (
     <ReadAloudButton
       {...props}
@@ -117,7 +135,7 @@ export function ReadAloudPrevious(props: ReadAloudButtonProps): ReactElement | n
 }
 ReadAloudPrevious.displayName = 'ReadAloud.Previous'
 
-export function ReadAloudNext(props: ReadAloudButtonProps): ReactElement | null {
+export function ReadAloudNext(props: ReadAloudButtonProps): ReactElement {
   return (
     <ReadAloudButton
       {...props}
@@ -129,7 +147,7 @@ export function ReadAloudNext(props: ReadAloudButtonProps): ReactElement | null 
 }
 ReadAloudNext.displayName = 'ReadAloud.Next'
 
-export function ReadAloudStop(props: ReadAloudButtonProps): ReactElement | null {
+export function ReadAloudStop(props: ReadAloudButtonProps): ReactElement {
   return (
     <ReadAloudButton
       {...props}
@@ -142,14 +160,8 @@ export function ReadAloudStop(props: ReadAloudButtonProps): ReactElement | null 
 ReadAloudStop.displayName = 'ReadAloud.Stop'
 
 /** A native `<select>` of the speeds, with a visible `<label>`. */
-export function ReadAloudRate({
-  label,
-  ...selectProps
-}: ReadAloudSelectProps): ReactElement | null {
+export function ReadAloudRate({ label, ...selectProps }: ReadAloudSelectProps): ReactElement {
   const reader = useReader('Rate')
-  if (!reader.isSupported) {
-    return null
-  }
   return (
     <>
       <label {...reader.rateLabelProps}>{label ?? reader.rateLabel}</label>
@@ -165,13 +177,20 @@ export function ReadAloudRate({
 }
 ReadAloudRate.displayName = 'ReadAloud.Rate'
 
-/** A native `<select>` of the voices for the language. Rendered only when there are two or more. */
+/**
+ * A native `<select>` of the voices for the language. Rendered only when there are two or more;
+ * while the voice list has not arrived yet, shows `readAloud.voicesLoading` text instead. Not in
+ * the recommended composition (D8): the list only arrives after the first press.
+ */
 export function ReadAloudVoice({
   label,
   ...selectProps
 }: ReadAloudSelectProps): ReactElement | null {
   const reader = useReader('Voice')
-  if (!reader.isSupported || !reader.hasVoiceChoice) {
+  if (reader.voicesStatus === 'loading') {
+    return <span className="kv-read-aloud-voice-loading">{reader.voicesLoadingLabel}</span>
+  }
+  if (!reader.hasVoiceChoice) {
     return null
   }
   return (
@@ -198,7 +217,7 @@ export function ReadAloudSelectionTrigger({
   ...otherProps
 }: ReadAloudButtonProps): ReactElement | null {
   const reader = useReader('SelectionTrigger')
-  if (!reader.isSupported || !reader.isSelectionTriggerShown) {
+  if (!reader.isSelectionTriggerShown) {
     return null
   }
   return createElement(
@@ -230,6 +249,41 @@ export function ReadAloudStatus({
 }
 ReadAloudStatus.displayName = 'ReadAloud.Status'
 
+/**
+ * The privacy affordance: names who the text is sent to and that nothing is stored
+ * (`readAloud.note`), with an optional `howItWorks` link to your own page. Part of the
+ * recommended composition (D11). Renders nothing without `name` on `ReadAloud.Root`: there is no
+ * sensible text to show without knowing who receives it.
+ */
+export function ReadAloudNote({
+  howItWorksHref,
+  children,
+  ...otherProps
+}: ReadAloudNoteProps): ReactElement | null {
+  const reader = useReader('Note')
+  if (reader.noteText === null) {
+    return null
+  }
+  return (
+    <p {...mergeProps(otherProps, reader.noteProps)}>
+      {children ?? (
+        <>
+          {reader.noteText}
+          {howItWorksHref !== undefined ? (
+            <>
+              {' '}
+              <a className="kv-link" href={howItWorksHref}>
+                {reader.howItWorksLabel}
+              </a>
+            </>
+          ) : null}
+        </>
+      )}
+    </p>
+  )
+}
+ReadAloudNote.displayName = 'ReadAloud.Note'
+
 export const ReadAloud = {
   Root: ReadAloudRoot,
   Play: ReadAloudPlay,
@@ -239,5 +293,6 @@ export const ReadAloud = {
   Rate: ReadAloudRate,
   Voice: ReadAloudVoice,
   Status: ReadAloudStatus,
+  Note: ReadAloudNote,
   SelectionTrigger: ReadAloudSelectionTrigger,
 }

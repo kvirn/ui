@@ -351,8 +351,8 @@ export const fi = {
     play: 'Kuuntele',
     playSelection: 'Kuuntele valittu teksti',
     pause: 'Tauko',
-    previous: 'Edellinen lause',
-    next: 'Seuraava lause',
+    previous: 'Edellinen virke',
+    next: 'Seuraava virke',
     stop: 'Pysäytä',
     rate: 'Nopeus',
     voice: 'Ääni',
@@ -361,10 +361,18 @@ export const fi = {
       `Lause ${format.number(current)}/${format.number(total)}`,
     positionPaused: ({ current, total }, format) =>
       `Tauolla lauseessa ${format.number(current)}/${format.number(total)}`,
-    noVoice: ({ language }) =>
-      `Tällä laitteella ei ole ääntä kielelle ${language}. Voit lisätä sellaisen laitteen puheasetuksissa.`,
-    speechError: 'Tekstiä ei voitu lukea ääneen. Yritä uudelleen.',
-    unsupported: 'Tämä selain ei voi lukea tekstiä ääneen.',
+    preparing: 'Haetaan ääntä …',
+    errorServiceBusy: 'Kuunteluspalvelu on varattu. Paina Kuuntele ja yritä uudelleen.',
+    errorServiceUnavailable:
+      'Tekstiä ei voida lukea ääneen juuri nyt. Paina Kuuntele ja yritä uudelleen, tai jatka lukemista.',
+    errorPlayback: 'Tämä selain ei voinut toistaa äänitiedostoa.',
+    errorNoVoice: ({ language }) =>
+      `Kielelle ${language} ei ole vielä ääntä, joten tätä sivua ei voi lukea ääneen.`,
+    partSkipped: 'Osa tekstistä jätettiin lukematta.',
+    voicesLoading: 'Haetaan ääniä …',
+    note: ({ name }) =>
+      `Kuunteleminen lähettää tämän tekstin palvelulle ${name} äänen luomista varten. Tekstiä tai äänitiedostoa ei tallenneta.`,
+    howItWorks: 'Näin kuunteleminen toimii',
   },
   errorSummary: { title: 'Lomakkeessa on virheitä', titlePrefix: 'Virhe:' },
   definitionList: { change: 'Muuta' },

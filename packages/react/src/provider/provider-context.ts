@@ -3,6 +3,7 @@ import type {
   Env,
   MaskCountry,
   MessageFormatter,
+  ReadAloudEngine,
   ThemeStore,
   WeekStart,
 } from '@kvirn-ui/core'
@@ -38,6 +39,8 @@ export interface KvirnConfig {
   iconDefaults: IconDefaults
   /** Only an explicitly passed env. `useEnv` falls back to the page after mount. */
   env: Env | undefined
+  /** Set by `<KvirnProvider readAloud>`. One engine, shared by every `useReadAloud` below. */
+  readAloudEngine: ReadAloudEngine | undefined
 }
 
 /** What components get without a provider: `en`, `ltr`, UTC, `<a>`, no icons. */
@@ -53,6 +56,7 @@ export const defaultKvirnConfig: KvirnConfig = {
   icons: Object.freeze({}),
   iconDefaults: Object.freeze({}),
   env: undefined,
+  readAloudEngine: undefined,
 }
 
 export const KvirnConfigContext = createContext<KvirnConfig>(defaultKvirnConfig)

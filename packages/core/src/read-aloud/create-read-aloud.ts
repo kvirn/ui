@@ -1,19 +1,30 @@
 import { createComponentStore } from '../store/create-component-store.ts'
 import type { ComponentStore } from '../store/create-component-store.ts'
-import type { ReadAloudEngine, ReadAloudVoice } from './read-aloud-engine.ts'
+import type {
+  ReadAloudEngine,
+  ReadAloudError,
+  ReadAloudVoice,
+  SpeechHandle,
+} from './read-aloud-engine.ts'
 import { splitSentences } from './split-sentences.ts'
 import type { LanguageRun, SentenceChunk } from './split-sentences.ts'
 
-export type ReadAloudStatus = 'idle' | 'playing' | 'paused' | 'unsupported'
+export type { ReadAloudError } from './read-aloud-engine.ts'
+
+export type ReadAloudStatus = 'idle' | 'preparing' | 'playing' | 'paused'
 export type ReadAloudSource = 'content' | 'selection'
-export type ReadAloudError = 'no-voice' | 'speech-error'
+export type ReadAloudVoicesStatus = 'idle' | 'loading' | 'ready' | 'error'
 
 export const readAloudRates = [0.75, 1, 1.25, 1.5, 2] as const
 export type ReadAloudRate = (typeof readAloudRates)[number]
 
 export interface ReadAloudOptions {
   engine: ReadAloudEngine
-  /** The language when `play` isn't given one: the content's `lang`. Default `'en'`. */
+  /**
+   * The language when `play` isn't given one: the content's own declared `lang`, never the UI's
+   * (3.1.2). `@kvirn-ui/read-aloud` resolves it as content's `lang` → the provider's `locale` →
+   * `'en'`; `core` applies only the final `'en'`, for a caller with no locale of its own.
+   */
   getLanguage?: (() => string) | undefined
   /** Longest chunk in characters. Default 200. */
   maxChunkLength?: number | undefined
@@ -39,27 +50,44 @@ export interface ReadAloudState {
    * The voice the user chose, or `null` for the best one for `language`. A chosen voice of another
    * language than `language` is replaced by the best one for it, or by `null` when there is none.
    */
-  voiceURI: string | null
+  voiceId: string | null
   language: string
   error: ReadAloudError | null
   /** For `no-voice`: the language that no voice was found for. */
   errorLanguage: string | null
   source: ReadAloudSource
-  /** The voices the engine offers. */
+  voicesStatus: ReadAloudVoicesStatus
+  /** The voices the service offers, once `voicesStatus` is `'ready'`. */
   voices: ReadAloudVoice[]
+  /**
+   * Whether `language` has a voice, so the consumer can render no player at all for one that
+   * doesn't (D9). Resolves synchronously from `engine.getDefaultVoiceId` (D14): a chosen `voiceId`
+   * or a voice the fetched list carries wins once that list is `'ready'`. The type keeps `null`
+   * only for React's "no machine yet" moment before mount, never produced by `core` itself.
+   */
+  hasVoice: boolean | null
+  /** How many chunks were skipped this reading: too long for the service, or an inline language with no voice (D10). Reset by `play` and `stop`. */
+  skippedCount: number
 }
 
 export interface ReadAloudActions {
-  /** Starts reading, calling `engine.speak` before it returns. */
+  /** Starts reading: calls `engine.unlock()` before anything else. */
   play: (input: ReadAloudInput) => void
-  /** Stops speaking and remembers the chunk: `resume` restarts it, since native pause is unreliable. */
+  /** Pauses the audio in place, or aborts the in-flight request while `preparing`. */
   pause: () => void
+  /** Resumes mid-sentence, or restarts the request that was aborted. */
   resume: () => void
   stop: () => void
   next: () => void
   previous: () => void
   setRate: (rate: number) => void
-  setVoice: (voiceURI: string | null) => void
+  setVoice: (voiceId: string | null) => void
+  /**
+   * Fetches the voice list without playing, so `hasVoice` can resolve before the first press.
+   * Independent of `play`; idempotent while a request is already in flight or has already
+   * succeeded.
+   */
+  loadVoices: () => void
   destroy: () => void
 }
 
@@ -68,21 +96,40 @@ export type ReadAloud = ComponentStore<ReadAloudState, ReadAloudActions>
 const normalizeTag = (tag: string) => tag.toLowerCase().replaceAll('_', '-')
 const primarySubtag = (tag: string) => normalizeTag(tag).split('-')[0]
 
+function isAbortError(error: unknown): boolean {
+  return error instanceof Error && error.name === 'AbortError'
+}
+
+const readAloudErrors = [
+  'no-voice',
+  'speech-error',
+  'service-unavailable',
+  'service-busy',
+  'text-too-long',
+] as const satisfies readonly ReadAloudError[]
+
+function toReadAloudError(error: unknown): ReadAloudError {
+  const candidate = (error as { error?: unknown } | null)?.error
+  return (readAloudErrors as readonly unknown[]).includes(candidate)
+    ? (candidate as ReadAloudError)
+    : 'speech-error'
+}
+
 /**
  * The voice for a language: the chosen one if it speaks that language, else the exact tag, then
- * the same primary subtag. Never a voice of another language.
+ * the same primary subtag. Never a voice of another language. The service mixes granularity
+ * (`sv`, `en-GB`), so both the exact tag and the primary subtag are tried on each side.
  */
 export function pickVoice(
   voices: readonly ReadAloudVoice[],
   language: string,
-  voiceURI: string | null,
+  voiceId: string | null,
 ): ReadAloudVoice | undefined {
   const chosen =
-    voiceURI === null
+    voiceId === null
       ? undefined
       : voices.find(
-          (voice) =>
-            voice.voiceURI === voiceURI && primarySubtag(voice.lang) === primarySubtag(language),
+          (voice) => voice.id === voiceId && primarySubtag(voice.lang) === primarySubtag(language),
         )
   if (chosen !== undefined) {
     return chosen
@@ -95,27 +142,53 @@ export function pickVoice(
 }
 
 /**
- * The state behind ReadAloud (Plan 0088): one utterance per sentence, the next starting when one
- * ends. Pause cancels and remembers the sentence. Speech only starts from `play` and `resume`, never
- * by itself. Pure: the engine is injected.
+ * Resolves synchronously from `engine.getDefaultVoiceId` (D14), so `fi`/`nn` render no player from
+ * the first render rather than appearing then vanishing once the voice list arrives. Once the list
+ * is `'ready'` it takes over, since a chosen `voiceId` or a voice the list actually carries is the
+ * more precise answer.
+ */
+function computeHasVoice(
+  engine: ReadAloudEngine,
+  state: Pick<ReadAloudState, 'voicesStatus' | 'voices' | 'language' | 'voiceId'>,
+): boolean | null {
+  if (state.voicesStatus === 'ready') {
+    return pickVoice(state.voices, state.language, state.voiceId) !== undefined
+  }
+  // A chosen voice not yet validated against the fetched list is assumed to win, as it does once
+  // the list is ready: the list's arrival corrects this if it turns out not to speak `language`.
+  if (state.voiceId !== null) {
+    return true
+  }
+  return engine.getDefaultVoiceId(state.language) !== undefined
+}
+
+/**
+ * The state behind ReadAloud (Plan 0088, async per Plan 0153): one utterance per sentence, loaded
+ * then spoken, the next prefetched while the current one plays. Pause is real: `engine.pause()`
+ * keeps the position; resume continues it. Speech only starts from `play` and `resume`, never by
+ * itself. Pure: the engine is injected.
  */
 export function createReadAloud({
   engine,
   getLanguage,
   maxChunkLength,
 }: ReadAloudOptions): ReadAloud {
-  const supported = engine.isSupported()
+  const initialLanguage = getLanguage?.() ?? 'en'
   const initialState: ReadAloudState = {
-    status: supported ? 'idle' : 'unsupported',
+    status: 'idle',
     chunks: [],
     index: 0,
     rate: 1,
-    voiceURI: null,
-    language: getLanguage?.() ?? 'en',
+    voiceId: null,
+    language: initialLanguage,
     error: null,
     errorLanguage: null,
     source: 'content',
-    voices: supported ? engine.getVoices() : [],
+    voicesStatus: 'idle',
+    voices: [],
+    // Synchronous from the first render (D14): no network call.
+    hasVoice: engine.getDefaultVoiceId(initialLanguage) !== undefined,
+    skippedCount: 0,
   }
 
   return createComponentStore<ReadAloudState, ReadAloudActions>(
@@ -123,13 +196,40 @@ export function createReadAloud({
     ({ getState, update }) => {
       let generation = 0
       let destroyed = false
-      const unsubscribeVoices = supported
-        ? engine.onVoicesChanged(() => {
-            update((state) => ({ ...state, voices: engine.getVoices() }))
-          })
-        : () => {}
+      let currentController: AbortController | undefined
+      let currentHandle: SpeechHandle | undefined
+      let prefetch:
+        | { index: number; controller: AbortController; promise: Promise<SpeechHandle | undefined> }
+        | undefined
+      let voicesPromise: Promise<readonly ReadAloudVoice[]> | undefined
 
-      const active = () => supported && !destroyed
+      const withHasVoice = (state: ReadAloudState): ReadAloudState => ({
+        ...state,
+        hasVoice: computeHasVoice(engine, state),
+      })
+
+      const active = () => !destroyed
+
+      const releasePrefetch = () => {
+        if (prefetch === undefined) {
+          return
+        }
+        const stale = prefetch
+        prefetch = undefined
+        stale.controller.abort()
+        void stale.promise.then((handle) => handle?.release())
+      }
+
+      const dropCurrent = () => {
+        currentController?.abort()
+        currentController = undefined
+        if (currentHandle !== undefined) {
+          engine.cancel()
+          currentHandle.release()
+          currentHandle = undefined
+        }
+      }
+
       const finish = (error: ReadAloudError | null, errorLanguage: string | null = null) => {
         update((state) => ({
           ...state,
@@ -141,63 +241,212 @@ export function createReadAloud({
         }))
       }
 
-      const speakCurrent = () => {
-        const state = getState()
-        const chunk = state.chunks[state.index]
-        if (chunk === undefined) {
-          finish(null)
-          return
+      const ensureVoices = (): Promise<readonly ReadAloudVoice[]> => {
+        const ready = getState()
+        if (ready.voicesStatus === 'ready') {
+          return Promise.resolve(ready.voices)
         }
-        const language = chunk.language ?? state.language
-        const voice = pickVoice(state.voices, language, state.voiceURI)
-        const isContentLanguage = primarySubtag(language) === primarySubtag(state.language)
-        if (voice === undefined) {
-          engine.cancel()
-          if (isContentLanguage && state.voiceURI !== null) {
-            update((current) => ({ ...current, voiceURI: null }))
+        voicesPromise ??= (async () => {
+          update((state) => withHasVoice({ ...state, voicesStatus: 'loading' }))
+          try {
+            const controller = new AbortController()
+            const voices = await engine.getVoices(controller.signal)
+            update((state) =>
+              withHasVoice({ ...state, voices: [...voices], voicesStatus: 'ready' }),
+            )
+            return voices
+          } catch (error) {
+            // `hasVoice` still answers from `engine.getDefaultVoiceId` (D14), not from this
+            // failed list: a Voice picker has nothing to offer, but the player itself still shows.
+            update((state) => withHasVoice({ ...state, voicesStatus: 'error' }))
+            throw error
+          } finally {
+            voicesPromise = undefined
           }
-          finish('no-voice', language)
+        })()
+        return voicesPromise
+      }
+
+      const skipChunk = (index: number) => {
+        update((current) => ({ ...current, skippedCount: current.skippedCount + 1 }))
+        const { chunks } = getState()
+        if (index + 1 < chunks.length) {
+          update((current) => ({ ...current, index: index + 1 }))
+          playChunk(index + 1)
+        } else {
+          releasePrefetch()
+          finish(null)
+        }
+      }
+
+      const prefetchNext = (currentIndex: number) => {
+        const state = getState()
+        const nextIndex = currentIndex + 1
+        const nextChunk = state.chunks[nextIndex]
+        if (nextChunk === undefined || (prefetch !== undefined && prefetch.index === nextIndex)) {
           return
         }
-        if (isContentLanguage && state.voiceURI !== null && state.voiceURI !== voice.voiceURI) {
-          update((current) => ({ ...current, voiceURI: voice.voiceURI }))
+        releasePrefetch()
+        const language = nextChunk.language ?? state.language
+        const voice = pickVoice(state.voices, language, state.voiceId)
+        if (voice === undefined) {
+          return
         }
-        generation += 1
+        const controller = new AbortController()
+        const promise = engine
+          .load({ text: nextChunk.text, voiceId: voice.id }, controller.signal)
+          .catch(() => undefined)
+        prefetch = { index: nextIndex, controller, promise }
+      }
+
+      const handleChunkError = (error: ReadAloudError, index: number, language: string) => {
+        // A chunking bug, not the resident's problem (D10): skip the chunk and keep reading.
+        if (error === 'text-too-long') {
+          skipChunk(index)
+          return
+        }
+        releasePrefetch()
+        finish(error, error === 'no-voice' ? language : null)
+      }
+
+      function playChunk(index: number): void {
         const token = generation
-        engine.cancel()
-        engine.speak(
-          {
-            text: chunk.text,
-            language,
-            voiceURI: voice.voiceURI,
-            rate: state.rate,
-          },
-          {
+        // A newer attempt (token !== generation) or a pause taken before any request existed to
+        // abort (status turned 'paused' while still resolving the voice list) both mean: stop here
+        // without touching state again.
+        const cancelled = () => token !== generation || getState().status === 'paused'
+        void (async () => {
+          let voices: readonly ReadAloudVoice[]
+          try {
+            voices = await ensureVoices()
+          } catch {
+            if (cancelled()) {
+              return
+            }
+            finish('service-unavailable')
+            return
+          }
+          if (cancelled()) {
+            return
+          }
+          const state = getState()
+          const chunk = state.chunks[index]
+          if (chunk === undefined) {
+            finish(null)
+            return
+          }
+          const language = chunk.language ?? state.language
+          const voice = pickVoice(voices, language, state.voiceId)
+          const isContentLanguage = primarySubtag(language) === primarySubtag(state.language)
+          if (voice === undefined) {
+            if (isContentLanguage) {
+              // The reading's own language has no voice: a page-level problem, not one chunk's.
+              if (state.voiceId !== null) {
+                update((current) => ({ ...current, voiceId: null }))
+              }
+              releasePrefetch()
+              finish('no-voice', language)
+              return
+            }
+            // An inline, differently-languaged chunk with no voice: skip it, not the rest (D10).
+            skipChunk(index)
+            return
+          }
+          if (isContentLanguage && state.voiceId !== null && state.voiceId !== voice.id) {
+            update((current) => ({ ...current, voiceId: voice.id }))
+          }
+          update((current) => ({ ...current, status: 'preparing' }))
+
+          const loadFresh = async (): Promise<SpeechHandle | 'stale' | 'failed'> => {
+            const controller = new AbortController()
+            currentController = controller
+            try {
+              const loaded = await engine.load(
+                { text: chunk.text, voiceId: voice.id },
+                controller.signal,
+              )
+              currentController = undefined
+              return loaded
+            } catch (error) {
+              currentController = undefined
+              if (cancelled() || isAbortError(error)) {
+                return 'stale'
+              }
+              handleChunkError(toReadAloudError(error), index, language)
+              return 'failed'
+            }
+          }
+
+          let handle: SpeechHandle
+          if (prefetch !== undefined && prefetch.index === index) {
+            const pending = prefetch
+            prefetch = undefined
+            const prefetched = await pending.promise
+            if (cancelled()) {
+              prefetched?.release()
+              return
+            }
+            if (prefetched !== undefined) {
+              handle = prefetched
+            } else {
+              // The prefetch swallowed its own error so a fresh request can surface the real one.
+              const loaded = await loadFresh()
+              if (loaded === 'stale' || loaded === 'failed') {
+                return
+              }
+              handle = loaded
+            }
+          } else {
+            const loaded = await loadFresh()
+            if (loaded === 'stale' || loaded === 'failed') {
+              return
+            }
+            handle = loaded
+          }
+
+          if (cancelled()) {
+            handle.release()
+            return
+          }
+          currentHandle = handle
+          update((current) => ({ ...current, status: 'playing' }))
+          engine.speak(handle, {
             onEnd: () => {
               if (token !== generation) {
                 return
               }
-              const { index, chunks } = getState()
-              if (index + 1 < chunks.length) {
-                update((current) => ({ ...current, index: index + 1 }))
-                speakCurrent()
+              currentHandle = undefined
+              const { index: current, chunks } = getState()
+              if (current + 1 < chunks.length) {
+                update((state) => ({ ...state, index: current + 1 }))
+                playChunk(current + 1)
               } else {
+                releasePrefetch()
                 finish(null)
               }
             },
-            onError: () => {
-              if (token === generation) {
-                engine.cancel()
-                finish('speech-error')
+            onError: (error) => {
+              if (token !== generation) {
+                return
               }
+              currentHandle = undefined
+              handleChunkError(error, index, language)
             },
-          },
-        )
+          })
+          prefetchNext(index)
+        })()
       }
 
-      const silence = () => {
+      const jumpTo = (newIndex: number, status: ReadAloudStatus) => {
         generation += 1
-        engine.cancel()
+        dropCurrent()
+        if (prefetch !== undefined && prefetch.index !== newIndex) {
+          releasePrefetch()
+        }
+        update((state) => ({ ...state, index: newIndex }))
+        if (status === 'playing' || status === 'preparing') {
+          playChunk(newIndex)
+        }
       }
 
       return {
@@ -205,41 +454,69 @@ export function createReadAloud({
           if (!active()) {
             return
           }
-          silence()
-          update((state) => ({
-            ...state,
-            status: 'playing',
-            chunks: splitSentences(text, {
-              language: language ?? getLanguage?.() ?? state.language,
-              maxLength: maxChunkLength,
-              languageRuns,
+          generation += 1
+          dropCurrent()
+          releasePrefetch()
+          // Synchronous, first, before any await: iOS allows `play()` only inside this call's user
+          // gesture, so the unlock must happen before the machine does anything that awaits.
+          engine.unlock()
+          const resolvedLanguage = language ?? getLanguage?.() ?? getState().language
+          const chunks = splitSentences(text, {
+            language: resolvedLanguage,
+            maxLength: maxChunkLength,
+            languageRuns,
+          })
+          update((state) =>
+            withHasVoice({
+              ...state,
+              status: 'preparing',
+              chunks,
+              index: 0,
+              error: null,
+              errorLanguage: null,
+              source,
+              language: resolvedLanguage,
+              skippedCount: 0,
             }),
-            index: 0,
-            error: null,
-            errorLanguage: null,
-            source,
-            language: language ?? getLanguage?.() ?? state.language,
-            voices: engine.getVoices(),
-          }))
-          speakCurrent()
+          )
+          playChunk(0)
         },
         pause() {
-          if (active() && getState().status === 'playing') {
-            silence()
-            update((state) => ({ ...state, status: 'paused' }))
+          const { status } = getState()
+          if (!active() || (status !== 'playing' && status !== 'preparing')) {
+            return
           }
+          if (status === 'preparing') {
+            currentController?.abort()
+            currentController = undefined
+          } else {
+            engine.pause()
+          }
+          update((state) => ({ ...state, status: 'paused' }))
         },
         resume() {
-          if (active() && getState().status === 'paused') {
+          const { status, index } = getState()
+          if (!active() || status !== 'paused') {
+            return
+          }
+          engine.unlock()
+          if (currentHandle !== undefined) {
             update((state) => ({ ...state, status: 'playing' }))
-            speakCurrent()
+            engine.resume()
+          } else {
+            update((state) => ({ ...state, status: 'preparing' }))
+            playChunk(index)
           }
         },
         stop() {
-          if (active()) {
-            silence()
-            finish(null)
+          if (!active()) {
+            return
           }
+          generation += 1
+          dropCurrent()
+          releasePrefetch()
+          update((state) => ({ ...state, skippedCount: 0 }))
+          finish(null)
         },
         next() {
           const { status, index, chunks } = getState()
@@ -247,24 +524,20 @@ export function createReadAloud({
             return
           }
           if (index + 1 >= chunks.length) {
-            silence()
+            generation += 1
+            dropCurrent()
+            releasePrefetch()
             finish(null)
             return
           }
-          update((state) => ({ ...state, index: index + 1 }))
-          if (status === 'playing') {
-            speakCurrent()
-          }
+          jumpTo(index + 1, status)
         },
         previous() {
           const { status, index } = getState()
           if (!active() || status === 'idle') {
             return
           }
-          update((state) => ({ ...state, index: Math.max(0, index - 1) }))
-          if (status === 'playing') {
-            speakCurrent()
-          }
+          jumpTo(Math.max(0, index - 1), status)
         },
         setRate(rate) {
           const allowed = readAloudRates.find((item) => item === rate)
@@ -272,29 +545,38 @@ export function createReadAloud({
             return
           }
           update((state) => ({ ...state, rate: allowed }))
-          if (getState().status === 'playing') {
-            speakCurrent()
-          }
+          engine.setRate(allowed)
         },
-        setVoice(voiceURI) {
+        setVoice(voiceId) {
           if (!active()) {
             return
           }
-          update((state) => ({ ...state, voiceURI }))
-          if (getState().status === 'playing') {
-            speakCurrent()
+          update((state) => withHasVoice({ ...state, voiceId }))
+          releasePrefetch()
+          const { status, index } = getState()
+          if (status === 'playing' || status === 'preparing') {
+            generation += 1
+            dropCurrent()
+            update((state) => ({ ...state, status: 'preparing' }))
+            playChunk(index)
           }
+        },
+        loadVoices() {
+          if (!active()) {
+            return
+          }
+          void ensureVoices().catch(() => {})
         },
         destroy() {
           if (destroyed) {
             return
           }
           destroyed = true
-          unsubscribeVoices()
-          if (supported) {
-            silence()
-            finish(null)
-          }
+          generation += 1
+          dropCurrent()
+          releasePrefetch()
+          engine.destroy()
+          finish(null)
         },
       }
     },

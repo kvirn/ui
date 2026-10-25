@@ -345,10 +345,18 @@ export const en = {
       `Sentence ${format.number(current)} of ${format.number(total)}`,
     positionPaused: ({ current, total }, format) =>
       `Paused at sentence ${format.number(current)} of ${format.number(total)}`,
-    noVoice: ({ language }) =>
-      `This device has no voice for ${language}. You can add one in the device’s speech settings.`,
-    speechError: 'The text could not be read aloud. Try again.',
-    unsupported: 'This browser can’t read text aloud.',
+    preparing: 'Getting the audio…',
+    errorServiceBusy: 'The listening service is busy. Press Listen to try again.',
+    errorServiceUnavailable:
+      "The text can't be read aloud right now. Press Listen to try again, or read on.",
+    errorPlayback: "This browser couldn't play the audio.",
+    errorNoVoice: ({ language }) =>
+      `There is no voice for ${language} yet, so this page can't be read aloud.`,
+    partSkipped: 'One part of the text was skipped.',
+    voicesLoading: 'Loading voices…',
+    note: ({ name }) =>
+      `Listening sends this text to ${name} to make the audio. The text and the audio are not saved.`,
+    howItWorks: 'How listening works',
   },
   errorSummary: { title: 'There is a problem', titlePrefix: 'Error:' },
   definitionList: { change: 'Change' },

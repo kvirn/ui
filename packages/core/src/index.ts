@@ -426,14 +426,17 @@ export type {
   ReadAloudSource,
   ReadAloudState,
   ReadAloudStatus,
+  ReadAloudVoicesStatus,
 } from './read-aloud/create-read-aloud.ts'
-export { createSpeechEngine } from './read-aloud/create-speech-engine.ts'
-export type { SpeechEngineOptions } from './read-aloud/create-speech-engine.ts'
+export { kvirnSpeechEngine } from './read-aloud/kvirn-speech-engine.ts'
+export type { KvirnSpeechEngineOptions } from './read-aloud/kvirn-speech-engine.ts'
 export type {
   ReadAloudEngine,
   ReadAloudHandlers,
   ReadAloudUtterance,
   ReadAloudVoice,
+  ReadAloudVoiceMap,
+  SpeechHandle,
 } from './read-aloud/read-aloud-engine.ts'
 export { splitSentences } from './read-aloud/split-sentences.ts'
 export type {

@@ -1,5 +1,9 @@
 # Plan 0088: ReadAloud (text to speech player and selection reader)
 
+- **Engine superseded by [0153](0153-read-aloud-kvirn-only.md)** (2026-10-25): the browser's
+  `speechSynthesis` is removed and Kvirn's voice service is the only engine. **D4 is retired** (pause now
+  really pauses mid-sentence) and **D14 is retired** (`allowRemoteVoices` is gone; passing the service URL
+  is the opt-in). The player's parts, roles, keyboard contract and copy stand.
 - **Status:** Draft. Deferred to the 1.2 release (maintainer, 2026-10-20): the React parts live in the private `@kvirn-ui/read-aloud`, with one story and one docs example (Plan 0144). Before that: blocked (2026-10-09) on an npm package update and a re-test; open: the highlight, gates, reviewer, D6 and Q1.
 - **Owner:** lead (orchestrator) → component-engineer, ux-designer, accessibility-reviewer
 - **Created:** 2026-10-07 · **Target:** 1.2

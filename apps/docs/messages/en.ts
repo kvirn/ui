@@ -656,7 +656,7 @@ export const messages = {
       },
       doesNot: {
         label: 'What this site does not do',
-        body: 'It sets no cookies. It has no analytics. Your browser makes no requests to other companies. The one exception is geo.kvirn.com, Kvirn’s own map service: the Map page loads its map from it, and the address examples look up what you type there (see Map pictures and address lookups). The fonts are served from this site.',
+        body: 'It sets no cookies. It has no analytics. Your browser makes no requests to other companies. The one exception is Kvirn’s own services: geo.kvirn.com, which the Map page loads its map from, and whose address examples look up what you type (see Map pictures and address lookups); and voice.kvirn.com, which the ReadAloud examples send text to when you press Listen (see Listening to a page out loud). The fonts are served from this site.',
       },
       device: {
         label: 'What is stored on your device',
@@ -682,6 +682,10 @@ export const messages = {
       maps: {
         label: 'Map pictures and address lookups',
         body: 'The examples on the Map page load their map from geo.kvirn.com, Kvirn’s own map service, hosted in the EU. It sets no cookies. When a map is shown, your browser asks it for the map style, pictures, fonts and icons. It receives your IP address, your browser details and the area you view. The map data is from OpenStreetMap. The address examples on the Address input, Address search and Map pages send the text you type in their address boxes to the same service to find matching addresses, only once you type, and receive the same details. Do not type a real address in an example.',
+      },
+      voice: {
+        label: 'Listening to a page out loud',
+        body: 'The ReadAloud examples can read page text aloud using voice.kvirn.com, Kvirn’s own voice service, hosted in the EU. Nothing is sent until you press Listen (or Play). When you do, the text of that page is sent to the service to make the audio; it receives your IP address and your browser details along with the text. The service sets no cookies, keeps no log of your IP address, the text or the request, and does not save the text or the audio afterwards. Do not use ReadAloud on a page that shows your own personal details.',
       },
       email: {
         label: 'When you email us or use the contact form',

@@ -6,9 +6,18 @@ import {
   getThemeStore,
   isSameThemeConfiguration,
   isWeekStart,
+  kvirnSpeechEngine,
   resolveDirection,
 } from '@kvirn-ui/core'
-import type { Direction, Env, MaskCountry, ThemeOptions, WeekStart } from '@kvirn-ui/core'
+import type {
+  Direction,
+  Env,
+  MaskCountry,
+  ReadAloudEngine,
+  ReadAloudVoiceMap,
+  ThemeOptions,
+  WeekStart,
+} from '@kvirn-ui/core'
 import type { PartialMessages } from '@kvirn-ui/i18n'
 import {
   useContext,
@@ -48,6 +57,23 @@ export interface KvirnToastOptions {
    * time out what the user must act on. `0`, a negative number or `NaN` acts as `false` and warns in development.
    */
   autoDismiss?: false | number | undefined
+}
+
+/** `<KvirnProvider readAloud>`: the same shape `useReadAloud` takes directly for standalone use. */
+export interface ReadAloudConfig {
+  /** The voice service's base URL: an origin, or a path on your own proxy. The library names none. */
+  url: string | URL
+  /** Who receives the text, named by ReadAloud's Note part. Default: the host name. */
+  name?: string | undefined
+  /** Asks the service to cache the audio. Only for public page text. Default `false`. */
+  store?: boolean | undefined
+  /** Total budget per request. Default 10000 ms. */
+  timeout?: number | undefined
+  /**
+   * The language-to-voice map, resolved over the service's own: your entry for a language wins,
+   * any language you don't name keeps the service's voice, e.g. `{ sv: 'sv_SE-male-0-medium' }`.
+   */
+  voices?: ReadAloudVoiceMap | undefined
 }
 
 export interface KvirnProviderProps {
@@ -102,6 +128,13 @@ export interface KvirnProviderProps {
   toast?: KvirnToastOptions | undefined
   /** The window and document to use, for iframes, shadow roots and tests. */
   env?: Env | undefined
+  /**
+   * The read-aloud voice service. Builds and shares one engine for every `useReadAloud` below, so
+   * the single unlocked `<audio>` element (the iOS gesture) is reused by every player in the tree.
+   * Resolves over the parent provider's, like the other options; a `useReadAloud` with its own
+   * `url` or `engine` still wins over this.
+   */
+  readAloud?: ReadAloudConfig | undefined
 }
 
 const getNoHost = () => undefined
@@ -127,6 +160,7 @@ export function KvirnProvider({
   theme,
   toast,
   env: envProp,
+  readAloud,
 }: KvirnProviderProps) {
   const parentConfig = useContext(KvirnConfigContext)
   const parentThemeStore = useContext(ThemeStoreContext)
@@ -163,6 +197,46 @@ export function KvirnProvider({
         : Object.freeze({ size: iconDefaultsSize }),
     [iconDefaultsSize, parentIconDefaults],
   )
+  // Memoised on the config's own primitive values, not its object identity: an inline
+  // `readAloud={{ url }}` literal must not rebuild the engine, and with it the single unlocked
+  // `<audio>` element, on every render.
+  const readAloudUrl = readAloud?.url
+  const readAloudName = readAloud?.name
+  const readAloudStore = readAloud?.store
+  const readAloudTimeout = readAloud?.timeout
+  const readAloudVoicesKey =
+    readAloud?.voices === undefined ? undefined : JSON.stringify(readAloud.voices)
+  const readAloudUrlKey = readAloudUrl?.toString()
+  const ownsReadAloudEngine = readAloudUrl !== undefined
+  const readAloudEngine = useMemo<ReadAloudEngine | undefined>(() => {
+    if (readAloudUrl === undefined) {
+      return parentConfig.readAloudEngine
+    }
+    return kvirnSpeechEngine({
+      url: readAloudUrl,
+      name: readAloudName,
+      store: readAloudStore,
+      timeout: readAloudTimeout,
+      voices: readAloudVoicesKey === undefined ? undefined : JSON.parse(readAloudVoicesKey),
+    })
+    // `readAloudUrl` is read above only for its own identity; the memo keys on `readAloudUrlKey`,
+    // its stringified, primitive form, so an inline `new URL(...)` literal doesn't rebuild it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    readAloudUrlKey,
+    readAloudName,
+    readAloudStore,
+    readAloudTimeout,
+    readAloudVoicesKey,
+    parentConfig.readAloudEngine,
+  ])
+  // Only an engine this provider itself built is destroyed here: a shared parent engine outlives
+  // this provider, and is destroyed when the provider that built it unmounts.
+  useEffect(
+    () => (ownsReadAloudEngine ? () => readAloudEngine?.destroy() : undefined),
+    [ownsReadAloudEngine, readAloudEngine],
+  )
+
   const config = useMemo<KvirnConfig>(
     () => ({
       locale,
@@ -176,6 +250,7 @@ export function KvirnProvider({
       icons,
       iconDefaults,
       env: explicitEnv,
+      readAloudEngine,
     }),
     [
       locale,
@@ -189,6 +264,7 @@ export function KvirnProvider({
       icons,
       iconDefaults,
       explicitEnv,
+      readAloudEngine,
     ],
   )
 

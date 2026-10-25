@@ -557,14 +557,19 @@ export interface KvirnMessages {
     /** Announced (polite) on Shift press 1 and 2: how many more presses leave the page. */
     shortcutRemaining: MessageFunction<{ remaining: number }>
   }
+  /**
+   * Every visible, named and announced string of ReadAloud on the Kvirn voice service (Plan 0088,
+   * revised by Plan 0153, design spec `docs/design/read-aloud.md` §4). `{name}` and `{language}`
+   * are inserted as plain text.
+   */
   readAloud: {
-    /** The accessible name of the player group. Owned by ReadAloud (Plan 0088). */
+    /** The accessible name of the player group. */
     label: TextMessage
     /** The visible text and name of the button that reads the content. */
     play: TextMessage
     /** The same button's name while a selection is captured. */
     playSelection: TextMessage
-    /** The same button's name while reading. */
+    /** The same button's name while reading, and while fetching the audio (Pause also stops the wait). */
     pause: TextMessage
     previous: TextMessage
     next: TextMessage
@@ -579,12 +584,28 @@ export interface KvirnMessages {
     position: MessageFunction<{ current: number; total: number }>
     /** Visible status text while paused: where Listen continues. */
     positionPaused: MessageFunction<{ current: number; total: number }>
-    /** Shown and announced (polite) when no voice matches the content language: names it and the next step. */
-    noVoice: MessageFunction<{ language: string }>
-    /** Announced (polite) when the speech engine failed. */
-    speechError: TextMessage
-    /** Shown (not announced) when the browser has no speech synthesis: no control exists to attempt. */
-    unsupported: TextMessage
+    /**
+     * Shown past 300 ms, and announced (polite) past 1 s, once per press, while a chunk's audio
+     * is being fetched: the first press, a service retry or a mid-text buffering gap all share
+     * this one string, so no wait reads as an error.
+     */
+    preparing: TextMessage
+    /** Shown and announced (polite) after the service's one automatic retry still fails. Names the service, not the device. */
+    errorServiceBusy: TextMessage
+    /** Shown and announced (polite) when the service is down, times out or answers badly. The article itself is still readable. */
+    errorServiceUnavailable: TextMessage
+    /** Shown and announced (polite) when the browser could not play the fetched audio. */
+    errorPlayback: TextMessage
+    /** Shown and announced (polite) when the service has no voice for the content's language: names it and that the page can't be read. */
+    errorNoVoice: MessageFunction<{ language: string }>
+    /** Shown only (never announced) after a passage in a language with no voice, or an oversized chunk, is skipped: reading carries on. */
+    partSkipped: TextMessage
+    /** Shown only where the Voice select is rendered, while its options have not arrived yet. */
+    voicesLoading: TextMessage
+    /** The Note part's text: who the text is sent to, and that nothing is stored (GDPR art. 25). `name` is the engine's recipient. */
+    note: MessageFunction<{ name: string }>
+    /** The Note part's optional link text to the site's own explanation. */
+    howItWorks: TextMessage
   }
   toast: {
     /** The accessible name of the toast region, a landmark that exists while a toast is shown. Owned by Toast (Plan 0071). */

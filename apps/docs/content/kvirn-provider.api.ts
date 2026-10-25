@@ -48,6 +48,12 @@ export const providerRows = propRows<KvirnProviderProps>({
     description:
       'The first day of the week in Calendar and DatePicker. The first of these that applies is used: the Calendar’s own value, this prop, the locale’s, then Monday. Week numbers are ISO 8601 and only show with a Monday start. Set it for server rendering.',
   },
+  readAloud: {
+    type: 'ReadAloudConfig',
+    default: "the parent's",
+    description:
+      'The read-aloud voice service: { url, name, store, timeout, voices }. One engine is built and shared by every ReadAloud below, so the audio element unlocked by the first press is reused. The voice follows the content’s lang, falling back to locale.',
+  },
   linkComponent: {
     type: 'RegisteredLinkComponent',
     default: "'a', or the parent's",

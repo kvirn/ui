@@ -12,14 +12,21 @@
    * <ReadAloud.Root> renders <div class="kv-read-aloud" role="group">: controls in the flow, no fill,
    * edge or shadow, never sticky. A wrapping row of worded buttons (kv-button kv-read-aloud-button:
    * the secondary Button, never primary), then each select under its kv-read-aloud-label
-   * (kv-read-aloud-select takes the native listbox look), then kv-read-aloud-status as the last row.
-   * Below 40rem a select is a full row; from 40rem it is as wide as its content. Play keeps one
-   * width for its labels, so a second press never lands on Previous. Status reserves one line, in
-   * text colour, with figures that don't shift. An error's icon is the decorative warning, in text
-   * colour. Logical properties only, so right to left needs nothing. The selection trigger is a
-   * secondary Button in the top layer with the popup shadow. No ::highlight(kv-read-aloud) style
-   * ships while ReadAloud is blocked (waiting for an npm package update and a re-test). Zero
-   * specificity, so your own CSS wins. Design spec: docs/design/read-aloud.md. */
+   * (kv-read-aloud-select takes the native listbox look), then kv-read-aloud-status, then
+   * kv-read-aloud-note, each its own full row. Below 40rem a select is a full row; from 40rem it is
+   * as wide as its content. Play keeps one width for its labels, so a second press never lands on
+   * Previous, and while data-status="preparing" it carries the Button busy spinner (kv-spinner,
+   * currentColor, from the generic Button recipe: the 300 ms delay is the hook's, not the CSS's).
+   * Status reserves one line, in text colour, with figures that don't shift; a spinner (preparing)
+   * or the decorative warning icon (data-error, any value: one treatment for all three) sits first,
+   * also in text colour, so colour is never the only signal. kv-read-aloud-note is body-small help
+   * text under the controls, with its kv-link inline. Logical properties only, so right to left
+   * needs nothing. The selection trigger is a secondary Button in the top layer with the popup
+   * shadow. The current sentence is painted by ::highlight(kv-read-aloud), primary/on-primary,
+   * Highlight/HighlightText in forced colours (maintainer, 2026-10-25: the Custom Highlight API is
+   * approved; lightningcss 1.33.0 does not recognise the pseudo-element and warns on it, accepted
+   * and not worked around). Zero specificity elsewhere, so your own CSS wins. Design spec:
+   * docs/design/read-aloud.md. */
   :where(.kv-read-aloud) {
     display: flex;
     flex-wrap: wrap;
@@ -63,7 +70,9 @@
     hyphens: auto;
   }
 
-  :where(.kv-read-aloud-status[data-error]) {
+  /* Error (any data-error value, one treatment) and preparing (a spinner child) both put an icon
+   * first, --kv-space-2 away from the words: colour is never the only signal. */
+  :where(.kv-read-aloud-status):is([data-error], :has(> .kv-spinner)) {
     display: flex;
     align-items: flex-start;
     gap: var(--kv-space-2);
@@ -74,6 +83,35 @@
     color: currentColor;
   }
 
+  /* Text colour, not primary: the spinner is an instruction's icon here, not a brand accent.
+   * Centred on the first line, like the Progress spinner. */
+  :where(.kv-read-aloud-status) > .kv-spinner {
+    --kv-spinner-color: var(--kv-color-text);
+
+    margin-block-start: calc((1lh - var(--kv-spinner-size)) / 2);
+    font-size: var(--kv-font-body-size);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  :where(.kv-read-aloud-note) {
+    flex-basis: 100%;
+    margin: 0;
+    color: var(--kv-color-text);
+    font-size: var(--kv-font-body-small-size);
+    font-weight: var(--kv-font-body-small-weight);
+    line-height: var(--kv-font-body-small-line-height);
+    letter-spacing: var(--kv-font-body-small-letter-spacing);
+    font-feature-settings: var(--kv-font-body-small-feature-settings);
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  /* Speed is its own full-width row below 40rem, content-width from it (the next rule, in the
+   * existing 40rem block below). */
+  :where(.kv-read-aloud) > .kv-field {
+    flex-basis: 100%;
+  }
+
   :where(.kv-read-aloud-selection-trigger) {
     box-sizing: border-box;
     max-inline-size: min(20rem, calc(100vw - 2 * var(--kv-space-2)));
@@ -81,7 +119,31 @@
     overflow-wrap: break-word;
   }
 
+  /* The current-sentence highlight, painted by the CSS Custom Highlight API: the hook registers
+   * the range under the name "kv-read-aloud" only while a sentence is playing or paused, and
+   * clears it on stop and unmount (use-read-aloud.ts), so this rule never needs a :hover or
+   * :focus condition itself — there is no such thing to write for a Highlight pseudo, and the
+   * hook never registers one on hover or focus. primary/on-primary, already measured by
+   * theme:check (4.70 canvas light, 3.75 worst case dark surface-raised, 9.89/11.14 contrast
+   * themes). A browser that doesn't support the Custom Highlight API ignores the unknown
+   * pseudo-element, so this is pure enhancement: Status's position text is the fallback. */
+  ::highlight(kv-read-aloud) {
+    color: var(--kv-color-on-primary);
+    background-color: var(--kv-color-primary);
+  }
+
+  @media (forced-colors: active) {
+    ::highlight(kv-read-aloud) {
+      color: HighlightText;
+      background-color: Highlight;
+    }
+  }
+
   @media (width >= 40rem) {
+    :where(.kv-read-aloud) > .kv-field {
+      flex-basis: auto;
+    }
+
     :where(.kv-read-aloud-select) {
       inline-size: auto;
       max-inline-size: 100%;
@@ -89,7 +151,8 @@
   }
 
   @media (forced-colors: active) {
-    :where(.kv-read-aloud-status) {
+    :where(.kv-read-aloud-status),
+    :where(.kv-read-aloud-note) {
       color: CanvasText;
     }
 

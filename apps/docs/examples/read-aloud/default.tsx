@@ -1,31 +1,30 @@
 'use client'
-import { Checkbox, Field, Heading } from '@kvirn-ui/react'
+import { kvirnSpeechEngine } from '@kvirn-ui/core'
+import { Heading } from '@kvirn-ui/react'
 import { ReadAloud } from '@kvirn-ui/read-aloud'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
+import { voiceServiceUrl } from '../../lib/voice-service-url.ts'
 import { useReadAloudTexts } from './texts.ts'
+
+// Made once, outside the component, so the player gets the same engine on every render. `name` is
+// the recipient the Note part tells the reader about, so it is passed explicitly rather than left
+// to default to the URL's host.
+const voiceServiceName = 'Kvirn’s voice service'
+const engine = kvirnSpeechEngine({ url: voiceServiceUrl, name: voiceServiceName })
 
 export function Player() {
   const { texts } = useReadAloudTexts()
   const articleRef = useRef<HTMLElement>(null)
-  // Browsers such as Chrome offer mostly online voices, which may send the text to the voice's
-  // provider. The reader opts in: the default keeps the text on the device.
-  const [allowRemoteVoices, setAllowRemoteVoices] = useState(false)
   return (
     <>
-      <Field.Root>
-        <Checkbox checked={allowRemoteVoices} onCheckedChange={setAllowRemoteVoices} />
-        <Field.Label>{texts.allowRemoteVoices}</Field.Label>
-        <Field.HelpText>{texts.allowRemoteVoicesHelp}</Field.HelpText>
-      </Field.Root>
-      <ReadAloud.Root contentRef={articleRef} allowRemoteVoices={allowRemoteVoices}>
+      <ReadAloud.Root contentRef={articleRef} engine={engine} name={voiceServiceName}>
         <ReadAloud.Play />
         <ReadAloud.Previous />
         <ReadAloud.Next />
         <ReadAloud.Stop />
         <ReadAloud.Rate />
-        <ReadAloud.Voice />
         <ReadAloud.Status />
-        <ReadAloud.SelectionTrigger />
+        <ReadAloud.Note howItWorksHref="/privacy#voice" />
       </ReadAloud.Root>
       <article ref={articleRef}>
         <Heading as="h4">{texts.title}</Heading>

@@ -355,10 +355,18 @@ export const nn = {
       `Setning ${format.number(current)} av ${format.number(total)}`,
     positionPaused: ({ current, total }, format) =>
       `Pause ved setning ${format.number(current)} av ${format.number(total)}`,
-    noVoice: ({ language }) =>
-      `Denne eininga har inga stemme for ${language}. Du kan leggja til ei i taleinnstillingane på eininga.`,
-    speechError: 'Teksten kunne ikkje lesast opp. Prøv igjen.',
-    unsupported: 'Denne nettlesaren kan ikkje lesa opp tekst.',
+    preparing: 'Hentar lyden …',
+    errorServiceBusy: 'Opplesingstenesta er oppteken. Trykk på Lytt for å prøve igjen.',
+    errorServiceUnavailable:
+      'Teksten kan ikkje lesast opp no. Trykk på Lytt for å prøve igjen, eller hald på å lese.',
+    errorPlayback: 'Denne nettlesaren kunne ikkje spele lyden.',
+    errorNoVoice: ({ language }) =>
+      `Det finst ingen stemme for ${language} enno, så denne sida kan ikkje lesast opp.`,
+    partSkipped: 'Ein del av teksten blei hoppa over.',
+    voicesLoading: 'Hentar stemmer …',
+    note: ({ name }) =>
+      `Opplesinga sender denne teksten til ${name} for å laga lyden. Teksten og lyden blir ikkje lagra.`,
+    howItWorks: 'Slik fungerer opplesinga',
   },
   errorSummary: { title: 'Det er eit problem', titlePrefix: 'Feil:' },
   definitionList: { change: 'Endre' },

@@ -1,6 +1,10 @@
 # Plan 0151: Kvirn read-aloud service (voice.kvirn.com) and its engine
 
-- **Status:** Approved (maintainer, 2026-10-23). The service is phase 1 of `kvirn-voice-provider` (spike first); this plan is the KvirnUI side.
+- **Status:** Approved (maintainer, 2026-10-23). **Superseded in part by [0153](0153-read-aloud-kvirn-only.md)**
+  (2026-10-25): the Kvirn engine is now the *only* engine, so this plan's `allowRemoteVoices` opt-in, its
+  `localService` gating and the synchronous `ReadAloudEngine` it assumed are retired. Its service API,
+  D1–D7 and the §Gaps table stand.
+- **Was:** Approved (maintainer, 2026-10-23). The service is phase 1 of `kvirn-voice-provider` (spike first); this plan is the KvirnUI side.
 - **Owner:** lead (orchestrator) → component-engineer, ux-designer, accessibility-reviewer; user for the repo, the server and the listening panel
 - **Created:** 2026-10-23 · **Target:** 1.2, with ReadAloud (Plan 0088)
 - **Related:** [0088](0088-read-aloud.md) (the player and its `ReadAloudEngine`), [0150](0150-geocoder-country-and-smoke-tests.md) (smoke tests for geo.kvirn.com), research report `kvirn-voice-provider/docs/reports/Nordic TTS engines for read aloud.md` (2026-10-23), `kvirn-map-provider` (the stack copied)

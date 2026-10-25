@@ -60,6 +60,7 @@ export default function PrivacyPage() {
           ),
         },
         { id: 'maps', label: text.maps.label, content: <p>{text.maps.body}</p> },
+        { id: 'voice', label: text.voice.label, content: <p>{text.voice.body}</p> },
         {
           id: 'email',
           label: text.email.label,

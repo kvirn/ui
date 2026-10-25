@@ -2,16 +2,20 @@ import {
   collectText,
   computePlacement,
   createReadAloud,
-  createSpeechEngine,
+  kvirnSpeechEngine,
   readAloudRates,
 } from '@kvirn-ui/core'
 import type {
   CollectedText,
   ReadAloud,
   ReadAloudEngine,
+  ReadAloudError,
   ReadAloudState,
   ReadAloudStatus,
   ReadAloudVoice,
+  ReadAloudVoiceMap,
+  ReadAloudVoicesStatus,
+  ResolvedMessages,
 } from '@kvirn-ui/core'
 import type { KvirnMessages } from '@kvirn-ui/i18n'
 import {
@@ -19,6 +23,7 @@ import {
   useEffect,
   useId,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   useSyncExternalStore,
@@ -33,23 +38,36 @@ import type {
 } from 'react'
 import { useAnnouncer, useButton, useLocale } from '@kvirn-ui/react'
 import type { ButtonPartProps } from '@kvirn-ui/react'
-import { useEnv, useMessages, warnOnce } from '@kvirn-ui/react/internal'
+import { useEnv, useMessages, useReadAloudEngine, warnOnce } from '@kvirn-ui/react/internal'
 import { collectRangeText } from './collect-range-text.ts'
 
 const highlightName = 'kv-read-aloud'
+
+/** Past this wait, the spinner and the `preparing` text replace whatever Status showed before. */
+const preparingVisibleMilliseconds = 300
+/** Past this wait, `preparing` is announced once, and only for the first chunk of a press. */
+const preparingAnnounceMilliseconds = 1000
+/** How long `partSkipped` is shown before Status returns to the position it would otherwise show. */
+const partSkippedMilliseconds = 4000
 
 const stateBeforeMount: ReadAloudState = {
   status: 'idle',
   chunks: [],
   index: 0,
   rate: 1,
-  voiceURI: null,
+  voiceId: null,
   language: 'en',
   error: null,
   errorLanguage: null,
   source: 'content',
+  voicesStatus: 'idle',
   voices: [],
+  hasVoice: null,
+  skippedCount: 0,
 }
+
+/** No engine resolved at all (`engine`, `url` and `<KvirnProvider readAloud>` all absent): the only case `hasVoice` is a settled `false` rather than `null`, so the Root renders nothing. */
+const stateWithNoEngine: ReadAloudState = { ...stateBeforeMount, hasVoice: false }
 
 function applyPosition(element: HTMLElement, x: number, y: number) {
   element.style.cssText = `position: fixed; margin: 0; right: auto; bottom: auto; left: ${x}px; top: ${y}px;`
@@ -82,14 +100,39 @@ function selectedRangeWithin(content: Element, selection: Selection | null): Ran
   return clamped.toString().trim() === '' ? null : clamped
 }
 const getStateBeforeMount = () => stateBeforeMount
+const getStateWithNoEngine = () => stateWithNoEngine
 
 export interface UseReadAloudOptions {
   /** The element whose text is read. Resolved when Play is pressed. */
   contentRef: RefObject<Element | null>
-  /** Advanced, unstable: your own speech engine. Default: the browser's `speechSynthesis`. */
+  /**
+   * An already-built speech engine, used as-is: `url` and the options below it are then ignored.
+   * Wins over both `url` and `<KvirnProvider readAloud>` (Plan 0153 D13).
+   */
   engine?: ReadAloudEngine | undefined
-  /** Lets the browser pick voices that may send the text to a remote service. Default `false`. */
-  allowRemoteVoices?: boolean | undefined
+  /**
+   * Builds and memoises `kvirnSpeechEngine({ url, ... })` for this player alone. Ignored when
+   * `engine` is given. Wins over `<KvirnProvider readAloud>`, so the package keeps working with
+   * no provider at all. With none of `engine`, `url` or a provider config, the Root renders no
+   * player and a development warning names the three ways to give it one.
+   */
+  url?: string | URL | undefined
+  /** Asks the service to cache the audio. Only for public page text. Default `false`. Read only when `url` builds the engine. */
+  store?: boolean | undefined
+  /** Total budget per request. Default 10000 ms. Read only when `url` builds the engine. */
+  timeout?: number | undefined
+  /**
+   * The language-to-voice map, resolved over the service's own: your entry for a language wins,
+   * any language you don't name keeps the service's voice. Read only when `url` builds the engine.
+   */
+  voices?: ReadAloudVoiceMap | undefined
+  /**
+   * Who receives the text, named by the Note part (`readAloud.note`). Pass the same value you
+   * gave `kvirnSpeechEngine`'s `name` (or this `url`'s own `name`), since the engine itself has
+   * nowhere to carry it. Omit it and the Note renders nothing: there is no sensible default to
+   * show without it.
+   */
+  name?: string | undefined
   /** Highlights the sentence being read where the browser supports the CSS Custom Highlight API. Default `true`. */
   highlight?: boolean | undefined
   /** Scrolls the sentence into view when it is out of view, unless the user prefers reduced motion. Default `true`. */
@@ -111,6 +154,7 @@ export interface ReadAloudRootPartProps {
   'aria-label': string
   'data-kv-read-aloud-skip': ''
   'data-status': ReadAloudStatus
+  'data-error'?: ReadAloudError
   'data-source': ReadAloudState['source']
   onKeyDown: (event: KeyboardEvent<HTMLElement>) => void
   onFocus: (event: FocusEvent<HTMLElement>) => void
@@ -120,6 +164,8 @@ export interface ReadAloudRootPartProps {
 export interface ReadAloudPlayPartProps extends ReadAloudButtonPartProps {
   /** Present while it is reading. */
   'data-playing'?: ''
+  /** Present while the wait for the first or next chunk has passed 300 ms. Never disabled: it is the way to stop the wait. */
+  'data-busy'?: ''
 }
 
 /** Spread on a `<select>`. Its `<label>` takes the matching `...LabelProps`. */
@@ -140,7 +186,12 @@ export interface ReadAloudStatusPartProps {
   /** Findable by a screen reader, but silent: the speech is the feedback. */
   role: 'status'
   'aria-live': 'off'
-  'data-error'?: 'no-voice' | 'speech-error' | 'unsupported'
+  'data-error'?: ReadAloudError
+}
+
+/** Spread on the `<p>` of the Note part. */
+export interface ReadAloudNotePartProps {
+  className: 'kv-read-aloud-note'
 }
 
 /** Spread on the `<button>` that is shown next to a selection made with a pointer. */
@@ -162,9 +213,17 @@ export interface ReadAloudOption {
 
 export interface UseReadAloudResult {
   status: ReadAloudStatus
+  error: ReadAloudError | null
+  voicesStatus: ReadAloudVoicesStatus
   state: ReadAloudState
-  /** `false` when the browser has no speech synthesis: render only the group and the status. */
-  isSupported: boolean
+  /**
+   * Whether the resolved content language (never the UI's `locale`) has a voice: a synchronous
+   * lookup in the engine's voice map, true or false as soon as the machine exists (D14), so a
+   * consumer can render nothing for a language with none (D9) without a player that flashes then
+   * vanishes. `null` only before mount, or with no engine resolved at all (`false` there instead,
+   * once mounted: see `UseReadAloudOptions.engine`).
+   */
+  hasVoice: boolean | null
   /** A selection inside the content is captured: Play reads it. */
   hasSelection: boolean
   /** The voice select is only useful with two or more voices for the language. */
@@ -179,6 +238,9 @@ export interface UseReadAloudResult {
   voiceProps: ReadAloudSelectPartProps
   voiceLabelProps: ReadAloudLabelPartProps
   statusProps: ReadAloudStatusPartProps
+  noteProps: ReadAloudNotePartProps
+  /** `readAloud.note` with `{name}`, or `null` when `name` was not given: there is nothing sensible to show. */
+  noteText: string | null
   /** `true` after a pointer-made selection in the content, until it is dismissed. */
   isSelectionTriggerShown: boolean
   selectionTriggerProps: ReadAloudSelectionTriggerPartProps
@@ -191,7 +253,11 @@ export interface UseReadAloudResult {
   stopLabel: string
   rateLabel: string
   voiceLabel: string
-  /** Visible status text: the position, or the reason nothing is read. Empty when idle. */
+  /** The Note part's link text, for the consumer's own `howItWorksHref` link. */
+  howItWorksLabel: string
+  /** Shown only while the Voice select's options have not arrived yet. */
+  voicesLoadingLabel: string
+  /** Visible status text: the position, a wait, a skip or the reason reading stopped. Empty when idle. */
   statusText: string
   rateOptions: ReadAloudOption[]
   voiceOptions: ReadAloudOption[]
@@ -219,27 +285,55 @@ function languageName(tag: string, locale: string): string {
   }
 }
 
-function languageOf(element: Element | null, fallback: Document, locale: string): string {
-  return (
-    element?.closest('[lang]')?.getAttribute('lang') ||
-    fallback.documentElement.getAttribute('lang') ||
-    locale
-  )
+/**
+ * The content's own declared language, which picks its voice and must never be the UI's, else a
+ * page read in another UI language reads its own-language text in the wrong voice (3.1.2): a
+ * Finnish municipality's Swedish-UI page over Finnish content must still read Finnish, and an
+ * English-UI page over Swedish content must still read Swedish, not English. Only content with no
+ * declared language at all falls back to `locale`, the provider's own (D14); `core`'s own `'en'`
+ * is the last resort below that, for the rare `getLanguage` caller with no locale of its own.
+ */
+function languageOf(element: Element | null, locale: string): string {
+  return element?.closest('[lang]')?.getAttribute('lang') || locale
+}
+
+function errorStatusText(
+  error: ReadAloudError,
+  language: string,
+  messages: ResolvedMessages<KvirnMessages['readAloud']>,
+): string {
+  switch (error) {
+    case 'no-voice':
+      return messages.errorNoVoice({ language })
+    case 'speech-error':
+      return messages.errorPlayback
+    case 'service-busy':
+      return messages.errorServiceBusy
+    case 'service-unavailable':
+      return messages.errorServiceUnavailable
+    case 'text-too-long':
+      return messages.partSkipped
+  }
 }
 
 /**
  * A text-to-speech player's behaviour (contract: read-aloud.a11y.md): Play reads the captured
- * selection, else the content, sentence by sentence on the browser's `speechSynthesis`. Nothing
- * starts by itself and nothing but a failure is announced.
+ * selection, else the content, sentence by sentence, on the Kvirn voice service. Nothing starts
+ * by itself, Pause and Stop stay reachable while a chunk is being fetched, and nothing but a
+ * failure or a skipped part is ever announced.
  *
  * @example
- * const reader = useReadAloud({ contentRef })
+ * const reader = useReadAloud({ contentRef, engine: kvirnSpeechEngine({ url }) })
  * <button {...reader.playProps}>{reader.playLabel}</button>
  */
 export function useReadAloud({
   contentRef,
-  engine,
-  allowRemoteVoices = false,
+  engine: engineProp,
+  url,
+  store,
+  timeout,
+  voices: engineVoices,
+  name,
   highlight = true,
   scroll = true,
   messages,
@@ -250,7 +344,52 @@ export function useReadAloud({
   const readAloudMessages = useMessages('readAloud', messages)
   const { announce } = useAnnouncer()
   const rateId = useId()
-  const voiceId = useId()
+  const voiceSelectId = useId()
+  const providerEngine = useReadAloudEngine()
+
+  // Memoised on the primitive values, not `url`'s or `voices`' object identity, so an inline
+  // `url={new URL(...)}` literal doesn't rebuild the engine on every render.
+  const urlKey = url?.toString()
+  const voicesKey = engineVoices === undefined ? undefined : JSON.stringify(engineVoices)
+  const builtEngine = useMemo<ReadAloudEngine | undefined>(() => {
+    if (url === undefined) {
+      return undefined
+    }
+    return kvirnSpeechEngine({
+      url,
+      name,
+      store,
+      timeout,
+      voices: voicesKey === undefined ? undefined : JSON.parse(voicesKey),
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlKey, name, store, timeout, voicesKey])
+  const ownsBuiltEngine = engineProp === undefined && url !== undefined
+  useEffect(
+    () => (ownsBuiltEngine ? () => builtEngine?.destroy() : undefined),
+    [ownsBuiltEngine, builtEngine],
+  )
+
+  // Resolution order (Plan 0153 D13): the hook's own `engine` or `url`, then the provider's
+  // `readAloud`, then no player at all.
+  const resolvedEngine = engineProp ?? builtEngine ?? providerEngine
+  const resolvedFromProvider =
+    engineProp === undefined && builtEngine === undefined && providerEngine !== undefined
+  if (resolvedEngine === undefined) {
+    warnOnce(
+      'read-aloud-no-engine',
+      'useReadAloud has no speech engine: pass `engine`, pass `url`, or configure <KvirnProvider readAloud>. Rendering no player.',
+    )
+  }
+  // A provider's engine is shared by every player under it: only the provider may destroy it
+  // (on unmount or a config change), never one player's own lifecycle.
+  const machineEngine = useMemo(() => {
+    if (resolvedEngine === undefined) {
+      return undefined
+    }
+    return resolvedFromProvider ? { ...resolvedEngine, destroy: () => {} } : resolvedEngine
+  }, [resolvedEngine, resolvedFromProvider])
+  const hasEngine = machineEngine !== undefined
 
   const [machine, setMachine] = useState<ReadAloud | null>(null)
   const [captured, setCaptured] = useState<{ text: string; range: Range } | null>(null)
@@ -258,34 +397,34 @@ export function useReadAloud({
   const [triggerRect, setTriggerRect] = useState<DOMRect | null>(null)
   const [triggerElement, setTriggerElement] = useState<HTMLButtonElement | null>(null)
   const reading = useRef<CollectedText | null>(null)
-  const latest = useRef({ engine, allowRemoteVoices, onStatusChange })
-  const engineDiagnostics = useRef<{
-    engine: ReadAloudEngine
-    allowRemoteVoices: boolean
-    initialVoices: readonly ReadAloudVoice[]
-  } | null>(null)
-  const announcement = useRef({ announce, messages: readAloudMessages, noVoiceText: '' })
+  const latest = useRef({ engine: machineEngine, onStatusChange })
+  const announcement = useRef({ announce, messages: readAloudMessages })
+
+  // Kept in sync before the machine effect below, every render: that effect reads `latest.current`
+  // instead of `machineEngine` directly so an unmemoised engine never rebuilds the machine, but it
+  // must still see this render's engine the moment `hasEngine` itself is what triggers it.
+  useEffect(() => {
+    latest.current = { engine: machineEngine, onStatusChange }
+    announcement.current = { announce, messages: readAloudMessages }
+  })
 
   const resolveLanguage = useCallback(
-    (element: Element | null) => languageOf(element, (env ?? { document }).document, locale),
-    [env, locale],
+    (element: Element | null) => languageOf(element, locale),
+    [locale],
   )
 
   useEffect(() => {
-    if (env === undefined) {
+    if (env === undefined || latest.current.engine === undefined) {
       return undefined
     }
-    const speechEngine = latest.current.engine ?? createSpeechEngine(env, { allowRemoteVoices })
     const created = createReadAloud({
-      engine: speechEngine,
+      engine: latest.current.engine,
       getLanguage: () => resolveLanguage(contentRef.current),
     })
     setMachine(created)
-    engineDiagnostics.current = {
-      engine: speechEngine,
-      allowRemoteVoices,
-      initialVoices: created.getState().voices,
-    }
+    // Resolves `hasVoice` before the first press, so a site that declares its content language
+    // never shows a player that then disappears (D9).
+    created.actions.loadVoices()
     const stopOnHide = () => created.actions.destroy()
     env.window.addEventListener('pagehide', stopOnHide)
     return () => {
@@ -293,51 +432,15 @@ export function useReadAloud({
       created.actions.destroy()
       setMachine(null)
     }
-  }, [env, contentRef, resolveLanguage, allowRemoteVoices])
+  }, [env, contentRef, resolveLanguage, hasEngine])
 
   const state = useSyncExternalStore(
     machine?.subscribe ?? subscribeToNothing,
-    machine?.getState ?? getStateBeforeMount,
-    getStateBeforeMount,
+    machine?.getState ?? (hasEngine ? getStateBeforeMount : getStateWithNoEngine),
+    hasEngine ? getStateBeforeMount : getStateWithNoEngine,
   )
-  const { status, error, index, chunks } = state
-  const noVoiceLanguage = state.errorLanguage ?? state.language
-  useEffect(() => {
-    const diagnostics = engineDiagnostics.current
-    if (machine === null || diagnostics === null) {
-      return
-    }
-    if (status === 'unsupported') {
-      warnOnce(
-        'read-aloud-unsupported',
-        '<ReadAloud> renders only its unsupported text because this browser has no Web Speech API (speechSynthesis or SpeechSynthesisUtterance is missing).',
-      )
-      return
-    }
-    // Voices load late: an empty list counts once it has changed or Listen was pressed.
-    if (state.voices.length === 0) {
-      if (error === 'no-voice' || state.voices !== diagnostics.initialVoices) {
-        const total = diagnostics.engine.getAllVoiceCount?.()
-        warnOnce(
-          'read-aloud-no-usable-voice',
-          `<ReadAloud> has no usable voice: the browser reports ${total ?? 'an unknown number of'} voice(s), 0 are offered. Only local voices are used unless allowRemoteVoices is set (now ${diagnostics.allowRemoteVoices}). On Linux, install speech-dispatcher and espeak-ng.`,
-        )
-      }
-    } else if (error === 'no-voice') {
-      const languages = [...new Set(state.voices.map((voice) => voice.lang))].join(', ')
-      warnOnce(
-        `read-aloud-no-voice:${noVoiceLanguage}`,
-        `<ReadAloud> has no voice for the language "${noVoiceLanguage}". Available voice languages: ${languages}. Set lang on the content, or install a voice for it.`,
-      )
-    }
-  }, [machine, status, error, state.voices, noVoiceLanguage])
-  const noVoiceText = readAloudMessages.noVoice({
-    language: languageName(state.errorLanguage ?? state.language, locale),
-  })
-  useEffect(() => {
-    latest.current = { engine, allowRemoteVoices, onStatusChange }
-    announcement.current = { announce, messages: readAloudMessages, noVoiceText }
-  })
+  const { status, error, index, chunks, voicesStatus, hasVoice } = state
+  const errorLanguageName = languageName(state.errorLanguage ?? state.language, locale)
 
   useEffect(() => {
     if (env === undefined) {
@@ -384,8 +487,7 @@ export function useReadAloud({
     }
   }, [env, contentRef])
 
-  const isSelectionTriggerShown =
-    triggerRect !== null && captured !== null && status !== 'unsupported'
+  const isSelectionTriggerShown = triggerRect !== null && captured !== null
   useLayoutEffect(() => {
     if (env === undefined || triggerElement === null || triggerRect === null) {
       return
@@ -422,12 +524,84 @@ export function useReadAloud({
     }
   }, [status])
 
+  // The last chunk that actually reached `playing` this press, so a mid-text buffering gap can
+  // hold the highlight and the position there instead of jumping ahead to a chunk with no audio
+  // yet. `null` again once the press ends, so the next one starts honestly empty.
+  const lastPlayedIndex = useRef<number | null>(null)
+  const announcedPreparingThisPress = useRef(false)
   useEffect(() => {
-    if (error === 'no-voice') {
-      announcement.current.announce(announcement.current.noVoiceText)
-    } else if (error === 'speech-error') {
-      announcement.current.announce(announcement.current.messages.speechError)
+    if (status === 'playing') {
+      lastPlayedIndex.current = index
+    } else if (status === 'idle') {
+      lastPlayedIndex.current = null
+      announcedPreparingThisPress.current = false
     }
+  }, [status, index])
+
+  const [isPreparingVisible, setIsPreparingVisible] = useState(false)
+  useEffect(() => {
+    if (status !== 'preparing' || env === undefined) {
+      setIsPreparingVisible(false)
+      return undefined
+    }
+    const visibleTimer = env.window.setTimeout(
+      () => setIsPreparingVisible(true),
+      preparingVisibleMilliseconds,
+    )
+    // Only the first chunk's wait of a press is ever announced: a mid-text gap or a retry would
+    // otherwise narrate every pause in the reading.
+    const announceTimer =
+      lastPlayedIndex.current === null && !announcedPreparingThisPress.current
+        ? env.window.setTimeout(() => {
+            announcedPreparingThisPress.current = true
+            announcement.current.announce(announcement.current.messages.preparing)
+          }, preparingAnnounceMilliseconds)
+        : undefined
+    return () => {
+      env.window.clearTimeout(visibleTimer)
+      if (announceTimer !== undefined) {
+        env.window.clearTimeout(announceTimer)
+      }
+    }
+  }, [status, env])
+
+  const skippedCountSeen = useRef(state.skippedCount)
+  const [isPartSkippedVisible, setIsPartSkippedVisible] = useState(false)
+  useEffect(() => {
+    const grew = state.skippedCount > skippedCountSeen.current
+    skippedCountSeen.current = state.skippedCount
+    if (!grew) {
+      return undefined
+    }
+    setIsPartSkippedVisible(true)
+    if (env === undefined) {
+      return undefined
+    }
+    const timer = env.window.setTimeout(
+      () => setIsPartSkippedVisible(false),
+      partSkippedMilliseconds,
+    )
+    return () => env.window.clearTimeout(timer)
+  }, [state.skippedCount, env])
+
+  const announceSameError = (current: ReadAloud, errorBefore: ReadAloudError | null) => {
+    const after = current.getState()
+    if (after.error !== null && after.error === errorBefore) {
+      announce(
+        errorStatusText(
+          after.error,
+          languageName(after.errorLanguage ?? after.language, locale),
+          readAloudMessages,
+        ),
+      )
+    }
+  }
+
+  useEffect(() => {
+    if (error === null) {
+      return
+    }
+    announce(errorStatusText(error, errorLanguageName, readAloudMessages))
     // Once per occurrence: the message text is not a trigger.
   }, [error])
 
@@ -438,9 +612,13 @@ export function useReadAloud({
     if (env === undefined || registry === undefined || HighlightConstructor === undefined) {
       return undefined
     }
-    const chunk = chunks[index]
+    const displayIndex =
+      status === 'preparing' && lastPlayedIndex.current !== null ? lastPlayedIndex.current : index
+    const suppressed =
+      status === 'idle' || (status === 'preparing' && lastPlayedIndex.current === null)
+    const chunk = chunks[displayIndex]
     const collected = reading.current
-    if (!highlight || status === 'idle' || chunk === undefined || collected === null) {
+    if (!highlight || suppressed || chunk === undefined || collected === null) {
       registry.delete(highlightName)
       return undefined
     }
@@ -467,20 +645,8 @@ export function useReadAloud({
     }
   }, [env])
 
-  const isSupported = status !== 'unsupported'
-  const isActive = status === 'playing' || status === 'paused'
+  const isActive = status !== 'idle'
   const hasSelection = captured !== null
-
-  // A new no-voice error is announced by the effect above. A press that ends in the same error
-  // again changes nothing in the state, so it is announced here: the user asked and gets the reason.
-  const announceNoVoice = (current: ReadAloud, errorBefore: ReadAloudState['error']) => {
-    const { error: currentError, errorLanguage, language } = current.getState()
-    if (currentError === 'no-voice' && errorBefore === 'no-voice') {
-      announce(
-        readAloudMessages.noVoice({ language: languageName(errorLanguage ?? language, locale) }),
-      )
-    }
-  }
 
   const play = () => {
     setTriggerRect(null)
@@ -488,7 +654,7 @@ export function useReadAloud({
       return
     }
     const errorBefore = machine.getState().error
-    if (status === 'playing') {
+    if (status === 'playing' || status === 'preparing') {
       machine.actions.pause()
       return
     }
@@ -499,6 +665,7 @@ export function useReadAloud({
       })
       reading.current = collected
       setCaptured(null)
+      announcedPreparingThisPress.current = false
       // The browser paints a selection over the highlight, so the selection gives way to it.
       env.window.document.getSelection()?.removeAllRanges()
       machine.actions.play({
@@ -507,12 +674,12 @@ export function useReadAloud({
         languageRuns: collected.languageRuns,
         language: resolveLanguage(contentRef.current),
       })
-      announceNoVoice(machine, errorBefore)
+      announceSameError(machine, errorBefore)
       return
     }
     if (status === 'paused') {
       machine.actions.resume()
-      announceNoVoice(machine, errorBefore)
+      announceSameError(machine, errorBefore)
       return
     }
     const content = contentRef.current
@@ -521,13 +688,14 @@ export function useReadAloud({
     }
     const collected = collectText(content)
     reading.current = collected
+    announcedPreparingThisPress.current = false
     machine.actions.play({
       text: collected.text,
       source: 'content',
       languageRuns: collected.languageRuns,
       language: resolveLanguage(content),
     })
-    announceNoVoice(machine, errorBefore)
+    announceSameError(machine, errorBefore)
   }
 
   const playButton = useButton({ onClick: play })
@@ -552,26 +720,30 @@ export function useReadAloud({
   const buttonClass = 'kv-button kv-read-aloud-button' as const
 
   const voices = voicesForLanguage(state.voices, state.language)
-  const defaultVoice = voices.find((voice) => voice.voiceURI === state.voiceURI) ?? voices[0]
+  const defaultVoice = voices.find((voice) => voice.id === state.voiceId) ?? voices[0]
 
   const statusText =
-    status === 'unsupported'
-      ? readAloudMessages.unsupported
-      : error === 'no-voice'
-        ? noVoiceText
-        : error === 'speech-error'
-          ? readAloudMessages.speechError
-          : chunks.length > 0
-            ? (status === 'paused' ? readAloudMessages.positionPaused : readAloudMessages.position)(
-                {
-                  current: index + 1,
+    error !== null
+      ? errorStatusText(error, errorLanguageName, readAloudMessages)
+      : isPartSkippedVisible
+        ? readAloudMessages.partSkipped
+        : status === 'preparing'
+          ? isPreparingVisible
+            ? readAloudMessages.preparing
+            : lastPlayedIndex.current === null
+              ? ''
+              : readAloudMessages.position({
+                  current: lastPlayedIndex.current + 1,
                   total: chunks.length,
-                },
-              )
-            : ''
+                })
+          : chunks.length === 0
+            ? ''
+            : status === 'paused'
+              ? readAloudMessages.positionPaused({ current: index + 1, total: chunks.length })
+              : readAloudMessages.position({ current: index + 1, total: chunks.length })
 
   const playLabel =
-    status === 'playing'
+    status === 'playing' || status === 'preparing'
       ? readAloudMessages.pause
       : hasSelection
         ? readAloudMessages.playSelection
@@ -579,8 +751,10 @@ export function useReadAloud({
 
   return {
     status,
+    error,
+    voicesStatus,
+    hasVoice,
     state,
-    isSupported,
     hasSelection,
     hasVoiceChoice: voices.length >= 2,
     rootProps: {
@@ -589,6 +763,7 @@ export function useReadAloud({
       'aria-label': readAloudMessages.label,
       'data-kv-read-aloud-skip': '',
       'data-status': status,
+      ...(error === null ? {} : { 'data-error': error }),
       'data-source': state.source,
       onKeyDown(event) {
         if (event.key === 'Escape' && isActive && !event.defaultPrevented) {
@@ -609,6 +784,7 @@ export function useReadAloud({
       ...playButton.buttonProps,
       className: buttonClass,
       ...(status === 'playing' ? { 'data-playing': '' as const } : {}),
+      ...(status === 'preparing' && isPreparingVisible ? { 'data-busy': '' as const } : {}),
     },
     previousProps: { ...previous.buttonProps, className: buttonClass },
     nextProps: { ...next.buttonProps, className: buttonClass },
@@ -638,21 +814,19 @@ export function useReadAloud({
     rateLabelProps: { className: 'kv-read-aloud-label', htmlFor: rateId },
     voiceProps: {
       className: 'kv-read-aloud-select',
-      id: voiceId,
-      value: defaultVoice?.voiceURI ?? '',
+      id: voiceSelectId,
+      value: defaultVoice?.id ?? '',
       onChange: (event) => machine?.actions.setVoice(event.target.value),
     },
-    voiceLabelProps: { className: 'kv-read-aloud-label', htmlFor: voiceId },
+    voiceLabelProps: { className: 'kv-read-aloud-label', htmlFor: voiceSelectId },
     statusProps: {
       className: 'kv-read-aloud-status',
       role: 'status',
       'aria-live': 'off',
-      ...(status === 'unsupported'
-        ? { 'data-error': 'unsupported' as const }
-        : error === null
-          ? {}
-          : { 'data-error': error }),
+      ...(error === null ? {} : { 'data-error': error }),
     },
+    noteProps: { className: 'kv-read-aloud-note' },
+    noteText: name === undefined ? null : readAloudMessages.note({ name }),
     playLabel,
     selectionLabel: readAloudMessages.playSelection,
     previousLabel: readAloudMessages.previous,
@@ -660,11 +834,13 @@ export function useReadAloud({
     stopLabel: readAloudMessages.stop,
     rateLabel: readAloudMessages.rate,
     voiceLabel: readAloudMessages.voice,
+    howItWorksLabel: readAloudMessages.howItWorks,
+    voicesLoadingLabel: readAloudMessages.voicesLoading,
     statusText,
     rateOptions: readAloudRates.map((rate) => ({
       value: String(rate),
       label: readAloudMessages.rateOption({ rate }),
     })),
-    voiceOptions: voices.map((voice) => ({ value: voice.voiceURI, label: voice.name })),
+    voiceOptions: voices.map((voice) => ({ value: voice.id, label: voice.name })),
   }
 }

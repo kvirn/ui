@@ -1,10 +1,12 @@
 import type {
   ReadAloudButtonProps,
+  ReadAloudNoteProps,
   ReadAloudSelectProps,
   ReadAloudStatusProps,
   UseReadAloudOptions,
   UseReadAloudResult,
 } from '@kvirn-ui/read-aloud'
+import type { KvirnSpeechEngineOptions } from '@kvirn-ui/core'
 import { propRows } from '../components/api-block.tsx'
 import type { AttributeRow } from '../components/api-block.tsx'
 
@@ -15,15 +17,36 @@ export const useReadAloudRows = propRows<UseReadAloudOptions>({
   },
   engine: {
     type: 'ReadAloudEngine',
-    default: 'speechSynthesis',
     description:
-      'Advanced: your own speech engine, for tests or a self-hosted voice. Most players leave it out.',
+      'The speech engine: kvirnSpeechEngine({ url }) from @kvirn-ui/core, or a fake for tests.',
   },
-  allowRemoteVoices: {
+  name: {
+    type: 'string',
+    default: '–',
+    description:
+      'Who receives the text, named by the Note part. Pass the same value you gave kvirnSpeechEngine. Left out, the Note renders nothing.',
+  },
+  url: {
+    type: 'string | URL',
+    default: 'the provider’s readAloud.url',
+    description:
+      'Builds the engine for you instead of passing one. Ignored when you pass engine. Without either, and with no provider config, no player renders.',
+  },
+  store: {
     type: 'boolean',
     default: 'false',
+    description: 'Asks the service to cache the audio. Only for public page text. Used with url.',
+  },
+  timeout: {
+    type: 'number',
+    default: '10000',
+    description: 'Total budget per request, in milliseconds. Used with url.',
+  },
+  voices: {
+    type: 'Readonly<Record<string, string>>',
+    default: 'the provider’s readAloud.voices',
     description:
-      'Also offers browser voices that may send the text to a remote service. Leave it off for personal data.',
+      'Which voice reads each language, by BCP 47 tag. Your entries resolve over the service’s own map. The language comes from the content’s lang, then the provider’s locale.',
   },
   highlight: {
     type: 'boolean',
@@ -44,7 +67,7 @@ export const useReadAloudRows = propRows<UseReadAloudOptions>({
       'Overrides the readAloud messages for this player, such as { play: "Listen to the notice" }.',
   },
   onStatusChange: {
-    type: "(status: 'idle' | 'playing' | 'paused' | 'unsupported') => void",
+    type: "(status: 'idle' | 'preparing' | 'playing' | 'paused') => void",
     default: '–',
     description: 'Called when the status changes.',
   },
@@ -58,8 +81,13 @@ export const readAloudRootAttributes: readonly AttributeRow[] = [
   },
   {
     name: 'data-status',
-    values: 'idle, playing, paused, unsupported',
-    meaning: 'What the player is doing.',
+    values: 'idle, preparing, playing, paused',
+    meaning: 'What the player is doing. preparing covers the first press and a mid-text gap.',
+  },
+  {
+    name: 'data-error',
+    values: 'no-voice, speech-error, service-unavailable, service-busy, text-too-long',
+    meaning: 'Why reading stopped, or a part was skipped. Absent otherwise.',
   },
   {
     name: 'data-source',
@@ -88,6 +116,12 @@ export const readAloudPlayAttributes: readonly AttributeRow[] = [
     meaning: 'The part classes. Previous, Next, Stop and SelectionTrigger share the first.',
   },
   { name: 'data-playing', values: 'while reading', meaning: 'Play is showing Pause.' },
+  {
+    name: 'data-busy',
+    values: 'past 300 ms of preparing',
+    meaning:
+      'The wait for the first or next chunk has become visible. Play stays pressable: it is the way to stop the wait.',
+  },
 ]
 
 export const readAloudSelectRows = propRows<Pick<ReadAloudSelectProps, 'label'>>({
@@ -121,9 +155,27 @@ export const readAloudStatusAttributes: readonly AttributeRow[] = [
   { name: 'kv-read-aloud-status', values: 'always', meaning: 'The part class.' },
   {
     name: 'data-error',
-    values: 'no-voice, speech-error, unsupported',
+    values: 'no-voice, speech-error, service-unavailable, service-busy, text-too-long',
     meaning: 'Why nothing is read.',
   },
+]
+
+export const readAloudNoteRows = propRows<Pick<ReadAloudNoteProps, 'howItWorksHref' | 'children'>>({
+  howItWorksHref: {
+    type: 'string',
+    default: '–',
+    description:
+      'Shown as a readAloud.howItWorks link at the end of the note, pointing at your own page. Left out, no link is shown.',
+  },
+  children: {
+    type: 'ReactNode',
+    default: 'the note text',
+    description: 'Your own text. It replaces readAloud.note, so its language is yours to set.',
+  },
+})
+
+export const readAloudNoteAttributes: readonly AttributeRow[] = [
+  { name: 'kv-read-aloud-note', values: 'always', meaning: 'The part class.' },
 ]
 
 export const readAloudSelectionTriggerAttributes: readonly AttributeRow[] = [
@@ -141,20 +193,30 @@ export const readAloudSelectionTriggerAttributes: readonly AttributeRow[] = [
 
 export const useReadAloudResultRows = propRows<UseReadAloudResult>({
   status: {
-    type: "'idle' | 'playing' | 'paused' | 'unsupported'",
+    type: "'idle' | 'preparing' | 'playing' | 'paused'",
     default: '–',
     description: 'What the player is doing.',
+  },
+  error: {
+    type: "'no-voice' | 'speech-error' | 'service-unavailable' | 'service-busy' | 'text-too-long' | null",
+    default: '–',
+    description: 'Why reading stopped, or null.',
+  },
+  voicesStatus: {
+    type: "'idle' | 'loading' | 'ready' | 'error'",
+    default: '–',
+    description: 'Whether the voice list has arrived from the service.',
   },
   state: {
     type: 'ReadAloudState',
     default: '–',
     description: 'The full state of the reader.',
   },
-  isSupported: {
-    type: 'boolean',
+  hasVoice: {
+    type: 'boolean | null',
     default: '–',
     description:
-      'false when the browser has no speech synthesis: render only the group and the status.',
+      'Whether the content language has a voice on the service. null until the voice list has loaded, so a consumer can render no player for a language with none without flashing it first.',
   },
   hasSelection: {
     type: 'boolean',
@@ -217,6 +279,17 @@ export const useReadAloudResultRows = propRows<UseReadAloudResult>({
     default: '–',
     description: 'Spread on the status element.',
   },
+  noteProps: {
+    type: 'ReadAloudNotePartProps',
+    default: '–',
+    description: 'Spread on the Note’s <p>.',
+  },
+  noteText: {
+    type: 'string | null',
+    default: '–',
+    description:
+      'readAloud.note with the recipient’s name, or null when Root was given no name: there is nothing sensible to show without it.',
+  },
   isSelectionTriggerShown: {
     type: 'boolean',
     default: '–',
@@ -247,11 +320,21 @@ export const useReadAloudResultRows = propRows<UseReadAloudResult>({
   stopLabel: { type: 'string', default: '–', description: 'The Stop message.' },
   rateLabel: { type: 'string', default: '–', description: 'The speed label.' },
   voiceLabel: { type: 'string', default: '–', description: 'The voice label.' },
+  howItWorksLabel: {
+    type: 'string',
+    default: '–',
+    description: 'The Note part’s link text, for your own howItWorksHref link.',
+  },
+  voicesLoadingLabel: {
+    type: 'string',
+    default: '–',
+    description: 'Shown only while the Voice select’s options have not arrived yet.',
+  },
   statusText: {
     type: 'string',
     default: '–',
     description:
-      'The visible status: the position, or the reason nothing is read. Empty when idle.',
+      'The visible status: the position, a wait, a skipped part, or the reason reading stopped. Empty when idle.',
   },
   rateOptions: {
     type: 'ReadAloudOption[]',
@@ -262,5 +345,34 @@ export const useReadAloudResultRows = propRows<UseReadAloudResult>({
     type: 'ReadAloudOption[]',
     default: '–',
     description: 'The voices for the content language.',
+  },
+})
+
+export const kvirnSpeechEngineRows = propRows<KvirnSpeechEngineOptions>({
+  url: {
+    type: 'string | URL',
+    description: 'The service’s base URL: an origin, or a path on your own proxy. Named by none.',
+  },
+  name: {
+    type: 'string',
+    default: 'the URL’s host',
+    description:
+      'Who receives the text, named in the privacy notice. Pass the same value to useReadAloud’s name.',
+  },
+  store: {
+    type: 'boolean',
+    default: 'false',
+    description: 'Asks the service to cache the audio. Only for public page text.',
+  },
+  timeout: {
+    type: 'number',
+    default: '10000',
+    description: 'Total budget per request, in milliseconds.',
+  },
+  voices: {
+    type: 'Readonly<Record<string, string>>',
+    default: 'the service’s own map',
+    description:
+      'Which voice reads each language, by BCP 47 tag, such as { sv: sv_SE-male-0-medium }. Your entries resolve over the service’s own map. A language with no voice gets no player.',
   },
 })
