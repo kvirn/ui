@@ -7,6 +7,8 @@ import type { KvirnMessages } from '../types.ts'
 // Draft: errorSummary and definitionList (Plan 0063) need a native speaker's review.
 // displaySettings.* are drafts (Plan 0099): a native speaker should review them.
 // fi: quickExit.* is a draft (Plan 0122): a native speaker should review it.
+// fi: readAloud.noteStored and readAloud.toolbarLabel and readAloud.errorNoContent are machine
+// drafts (Plan 0154): a native speaker should review them.
 export const fi = {
   link: { newTabNotice: '(avautuu uuteen välilehteen)' },
   field: { optional: '(vapaaehtoinen)', errorPrefix: 'Virhe:' },
@@ -372,7 +374,14 @@ export const fi = {
     voicesLoading: 'Haetaan ääniä …',
     note: ({ name }) =>
       `Kuunteleminen lähettää tämän tekstin palvelulle ${name} äänen luomista varten. Tekstiä tai äänitiedostoa ei tallenneta.`,
+    noteStored: ({ name }) =>
+      `Kuunteleminen lähettää tämän tekstin palvelulle ${name} äänen luomista varten. Äänite voidaan tallentaa siellä uudelleenkäytettäväksi.`,
     howItWorks: 'Näin kuunteleminen toimii',
+    barLabel: 'Kuuntele tätä sivua',
+    toolbarLabel: 'Toistonhallinta',
+    settings: 'Kuunteluasetukset',
+    hide: 'Piilota kuuntelupalkki',
+    errorNoContent: 'Tässä ei ole mitään luettavaa ääneen.',
   },
   errorSummary: { title: 'Lomakkeessa on virheitä', titlePrefix: 'Virhe:' },
   definitionList: { change: 'Muuta' },

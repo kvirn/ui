@@ -1,15 +1,37 @@
 import type { ReadAloudEngine, ReadAloudError, ReadAloudVoice } from '@kvirn-ui/core'
-import { KvirnProvider } from '@kvirn-ui/react'
-import { ReadAloud } from '@kvirn-ui/read-aloud'
+import { pause, play, settings, stop } from '@kvirn-ui/icons'
+import {
+  Breadcrumb,
+  Container,
+  DefinitionList,
+  Icon,
+  KvirnProvider,
+  Popover,
+  Tooltip,
+} from '@kvirn-ui/react'
+import {
+  ApplicationLogo,
+  LanguageLinks,
+  MainMenu,
+  PageFrame,
+  PageHeader,
+  SiteHeader,
+  SiteSearch,
+} from '@kvirn-ui/patterns'
+import { kvirnbyMark } from '@kvirn-ui/patterns/fixtures'
+import { ReadAloud, useReadAloud } from '@kvirn-ui/read-aloud'
 import { en } from '@kvirn-ui/i18n/en'
 import { fi } from '@kvirn-ui/i18n/fi'
 import { sv } from '@kvirn-ui/i18n/sv'
 import type { Decorator } from '@storybook/react-vite'
+import type { ReactNode } from 'react'
 import { useMemo, useRef } from 'react'
+import { PlaceholderFooter } from '../../patterns/patterns-story-support.tsx'
 
 // Story fixture for Components/ReadAloud. The stories never speak: a fake engine stands in for
 // the Kvirn voice service, so the audio, the voices and the timing are the same in every browser
 // and in CI, and nothing ever reaches the network (D6).
+
 const catalogs = { sv, fi, en }
 
 export const withReadAloudMessages: Decorator = (Story, { globals }) => {
@@ -197,7 +219,7 @@ export function useFakeEngine(options: FakeEngineOptions = {}): ReadAloudEngine 
 export function Article({ ref }: { ref: React.Ref<HTMLElement> }) {
   return (
     <article ref={ref} lang="en" data-testid="article">
-      <h1>Applying for a building permit</h1>
+      <h2>Applying for a building permit</h2>
       <p>
         You apply for a building permit in the municipality where the building will stand. Start
         with the property designation and a short description of the work. Attach a site plan.
@@ -222,7 +244,7 @@ export function FinnishArticle({ ref }: { ref: React.Ref<HTMLElement> }) {
   return (
     <article ref={ref} lang="fi" data-testid="article">
       {/* kv-lang-ok: proves the no-voice case (D9) for a language the service doesn't support */}
-      <h1>Rakennusluvan hakeminen</h1>
+      <h2>Rakennusluvan hakeminen</h2>
       <p>Haet rakennuslupaa siitä kunnasta, johon rakennus tulee.</p>
       <p>Liitä hakemukseen asemapiirros ja lyhyt kuvaus työstä.</p>
     </article>
@@ -230,29 +252,126 @@ export function FinnishArticle({ ref }: { ref: React.Ref<HTMLElement> }) {
 }
 
 /**
- * No voice serves the page's language (D9, D14): the Root renders nothing, not a dead Listen
- * button, from the very first render.
+ * Filler below the article, long enough that the page scrolls at both chrome viewports: outside
+ * `contentRef`, so it is never read and never counted in a sentence assertion (0154 T8).
  */
-export function ArticleWithPlayerInFinnish({ engine }: { engine: ReadAloudEngine }) {
-  const articleRef = useRef<HTMLElement>(null)
+function PageFiller() {
   return (
     <>
-      <ReadAloud.Root contentRef={articleRef} engine={engine}>
-        <ReadAloud.Play />
-        <ReadAloud.Previous />
-        <ReadAloud.Next />
-        <ReadAloud.Stop />
-        <ReadAloud.Rate />
-        <ReadAloud.Status />
-      </ReadAloud.Root>
-      <FinnishArticle ref={articleRef} />
+      <h2>More about building permits</h2>
+      <p>
+        Most applications are handled by the same team that reviews site plans, so the officer who
+        answers your call usually already has your file open.
+      </p>
+      <p>
+        A neighbour can object during the review. If one does, you are told and get a chance to
+        reply before the decision is made.
+      </p>
+      <p>
+        The municipality keeps every decision on file for ten years, in case a later sale or
+        renovation needs to refer back to it.
+      </p>
+      <p>
+        If the work has already started without a permit, say so in the application: an after-the-
+        fact review follows the same ten-week clock.
+      </p>
     </>
   )
 }
 
 /**
- * The recommended composition (design spec §5): Play, Previous, Next, Stop, Rate, Status, Note.
- * `Voice` is deliberately left out (D8); see `ArticleWithVoice` for it on its own.
+ * The real site page every story runs in (0154 D27, D28): `PageFrame.Root` brings the skip link
+ * the Bar's tab order is specified against, `SiteHeader` and `PageHeader` are the shipped
+ * patterns, not transcribed prototype markup. `bar` sits first, before the header (D10); `inline`
+ * sits under the dateline, where the inline button row lives (D44). A story-only composition: it has no
+ * test of its own, the same as `site-alert.stories.tsx`'s frame.
+ */
+export function KvirnbyPage({
+  bar,
+  inline,
+  children,
+}: {
+  bar?: ReactNode
+  inline?: ReactNode
+  children: ReactNode
+}) {
+  return (
+    <PageFrame.Root>
+      {bar}
+      <SiteHeader.Root>
+        <SiteHeader.Masthead>
+          <ApplicationLogo.Root href="#start">
+            <ApplicationLogo.Logo src={kvirnbyMark} />
+            <ApplicationLogo.Name>Kvirnby municipality</ApplicationLogo.Name>
+          </ApplicationLogo.Root>
+          <LanguageLinks.Root label="Language">
+            <LanguageLinks.Link href="#sv" lang="sv" hrefLang="sv">
+              Svenska
+            </LanguageLinks.Link>
+            <LanguageLinks.Link href="#en" lang="en" hrefLang="en" current>
+              English
+            </LanguageLinks.Link>
+          </LanguageLinks.Root>
+          <SiteSearch action="#search" label="Search the site">
+            Search
+          </SiteSearch>
+        </SiteHeader.Masthead>
+        <SiteHeader.Menu>
+          <SiteHeader.MenuButton>Menu</SiteHeader.MenuButton>
+          <SiteHeader.MenuPanel>
+            <MainMenu.Root label="Main menu">
+              <MainMenu.Link href="#building">Building and housing</MainMenu.Link>
+              <MainMenu.Link href="#care">Care and support</MainMenu.Link>
+            </MainMenu.Root>
+          </SiteHeader.MenuPanel>
+        </SiteHeader.Menu>
+      </SiteHeader.Root>
+      <PageFrame.Main bleed>
+        <PageHeader.Root>
+          <Breadcrumb.Root>
+            <Breadcrumb.List>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link href="#home">Home</Breadcrumb.Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <Breadcrumb.Link href="#building">Building and housing</Breadcrumb.Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <Breadcrumb.Current>Permits</Breadcrumb.Current>
+              </Breadcrumb.Item>
+            </Breadcrumb.List>
+          </Breadcrumb.Root>
+          <PageHeader.Title>Building permit for a deck</PageHeader.Title>
+          <PageHeader.Facts>
+            <DefinitionList.Row>
+              <DefinitionList.Term>Updated</DefinitionList.Term>
+              <DefinitionList.Description>3 October 2026</DefinitionList.Description>
+            </DefinitionList.Row>
+          </PageHeader.Facts>
+        </PageHeader.Root>
+        <Container>
+          {inline}
+          {children}
+          <PageFiller />
+        </Container>
+      </PageFrame.Main>
+      <PlaceholderFooter>Kvirnby municipality</PlaceholderFooter>
+    </PageFrame.Root>
+  )
+}
+
+/**
+ * The recommended composition (0154 D44, corrected): a bare row, never a panel. Idle — including
+ * the idle a later Stop returns to — is one `Listen to this text` button and the Settings gear;
+ * while active (preparing, playing or paused) the row adds Stop and a Settings menu next to Play
+ * (now reading Pause), and nothing else — no card, no meter, no transport cluster, no position
+ * line. Previous and Next were offered and declined. Gated on `status`, not `hasEverPlayed`: the
+ * maintainer's own words were "just toggle Listen with Stop and a settings button … nothing
+ * else", and `hasEverPlayed`'s sticky "stays open" (D13) is exactly what D44 supersedes. Built
+ * from `useReadAloud` directly rather than `<ReadAloud.Root>`'s children, the one call this
+ * composition makes: rendering `<ReadAloud.Root>` as well would run a second machine against the
+ * same engine (D22's finding, the reason `ReadAloud.WhenStarted` exists for the sticky case this
+ * composition does not use).
  */
 export function ArticleWithPlayer({
   engine,
@@ -262,38 +381,145 @@ export function ArticleWithPlayer({
   name?: string | undefined
 }) {
   const articleRef = useRef<HTMLElement>(null)
+  const reader = useReadAloud({ contentRef: articleRef, engine, name })
+  if (reader.hasVoice === false) {
+    return null
+  }
+  const isActive = reader.status !== 'idle'
+  const isPlayingOrPreparing = reader.status === 'playing' || reader.status === 'preparing'
   return (
-    <>
-      <ReadAloud.Root contentRef={articleRef} engine={engine} name={name}>
-        <ReadAloud.Play />
-        <ReadAloud.Previous />
-        <ReadAloud.Next />
-        <ReadAloud.Stop />
-        <ReadAloud.Rate />
-        <ReadAloud.Status />
-        <ReadAloud.Note howItWorksHref="#how-listening-works" />
-        <ReadAloud.SelectionTrigger />
-      </ReadAloud.Root>
+    <KvirnbyPage
+      inline={
+        <div {...reader.rootProps}>
+          <button {...reader.playProps}>
+            <Icon
+              name={isPlayingOrPreparing ? 'pause' : 'play'}
+              icon={isPlayingOrPreparing ? pause : play}
+              size="20"
+            />
+            {reader.playLabel}
+          </button>
+          {isActive ? (
+            <button {...reader.stopProps}>
+              <Icon name="stop" icon={stop} size="20" />
+              {reader.stopLabel}
+            </button>
+          ) : null}
+          <Popover.Root>
+            <Tooltip.Root>
+              <Tooltip.Trigger
+                as={Popover.Trigger}
+                className="kv-button kv-button--icon-only kv-read-aloud-settings"
+                aria-label={reader.settingsLabel}
+              >
+                <Icon name="settings" icon={settings} size="20" />
+              </Tooltip.Trigger>
+              <Tooltip.Popup>
+                <Tooltip.Name>{reader.settingsLabel}</Tooltip.Name>
+              </Tooltip.Popup>
+            </Tooltip.Root>
+            <Popover.Popup
+              aria-label={reader.settingsLabel}
+              className="kv-read-aloud-settings-popup"
+            >
+              <label {...reader.rateLabelProps}>{reader.rateLabel}</label>
+              <select {...reader.rateProps}>
+                {reader.rateOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              {reader.hasVoiceChoice ? (
+                <>
+                  <label {...reader.voiceLabelProps}>{reader.voiceLabel}</label>
+                  <select {...reader.voiceProps}>
+                    {reader.voiceOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </>
+              ) : null}
+              {reader.noteText === null ? null : <p {...reader.noteProps}>{reader.noteText}</p>}
+            </Popover.Popup>
+          </Popover.Root>
+          {reader.isSelectionTriggerShown ? (
+            <button {...reader.selectionTriggerProps}>{reader.selectionLabel}</button>
+          ) : null}
+          <span {...reader.statusProps}>{reader.statusText}</span>
+        </div>
+      }
+    >
       <Article ref={articleRef} />
-    </>
+    </KvirnbyPage>
   )
 }
 
-/** `Voice` added to the composition, as its own labelled example: not the recommendation (D8). */
-export function ArticleWithVoice({ engine }: { engine: ReadAloudEngine }) {
+/**
+ * No voice serves the page's language (D9, D14): the player renders nothing, not a dead Listen
+ * button, from the very first render.
+ */
+export function ArticleWithPlayerInFinnish({ engine }: { engine: ReadAloudEngine }) {
   const articleRef = useRef<HTMLElement>(null)
+  const reader = useReadAloud({ contentRef: articleRef, engine })
+  if (reader.hasVoice === false) {
+    return null
+  }
+  const isPlayingOrPreparing = reader.status === 'playing' || reader.status === 'preparing'
   return (
-    <>
-      <ReadAloud.Root contentRef={articleRef} engine={engine}>
-        <ReadAloud.Play />
-        <ReadAloud.Previous />
-        <ReadAloud.Next />
-        <ReadAloud.Stop />
-        <ReadAloud.Rate />
-        <ReadAloud.Voice />
-        <ReadAloud.Status />
-      </ReadAloud.Root>
+    <KvirnbyPage
+      inline={
+        <div {...reader.rootProps}>
+          <button {...reader.playProps}>
+            <Icon
+              name={isPlayingOrPreparing ? 'pause' : 'play'}
+              icon={isPlayingOrPreparing ? pause : play}
+              size="20"
+            />
+            {reader.playLabel}
+          </button>
+          <span {...reader.statusProps}>{reader.statusText}</span>
+        </div>
+      }
+    >
+      <FinnishArticle ref={articleRef} />
+    </KvirnbyPage>
+  )
+}
+
+/**
+ * `ReadAloud.Bar` (0154, "concept J"): the site-wide player. Reads `contentRef` here, same as the
+ * other fixtures, for a deterministic story — a real page passes none and the Bar reads `scope`
+ * or `<main>` instead (D11, D15). `labelMode` applies the choice class that reveals or hides the
+ * icon-only words (D9, D17); the default, hybrid, needs no class at all.
+ */
+export function ArticleWithBar({
+  engine,
+  name = 'Kvirn',
+  labelMode,
+}: {
+  engine: ReadAloudEngine
+  name?: string | undefined
+  labelMode?: 'icons' | 'words' | undefined
+}) {
+  const articleRef = useRef<HTMLElement>(null)
+  const className =
+    labelMode === 'icons'
+      ? 'kv-read-aloud--icons'
+      : labelMode === 'words'
+        ? 'kv-read-aloud--words'
+        : undefined
+  return (
+    <KvirnbyPage
+      bar={
+        <ReadAloud.Root contentRef={articleRef} engine={engine} name={name} className={className}>
+          <ReadAloud.Bar />
+        </ReadAloud.Root>
+      }
+    >
       <Article ref={articleRef} />
-    </>
+    </KvirnbyPage>
   )
 }

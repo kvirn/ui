@@ -6,6 +6,8 @@ import type { KvirnMessages } from '../types.ts'
 // Draft: errorSummary and definitionList (Plan 0063) need a native speaker's review.
 // displaySettings.* are drafts (Plan 0099): a native speaker should review them.
 // nb: quickExit.* is a draft (Plan 0122): a native speaker should review it.
+// nb: readAloud.noteStored, readAloud.toolbarLabel and readAloud.errorNoContent are machine
+// drafts (Plan 0154): a native speaker should review them.
 export const nb = {
   link: { newTabNotice: '(åpnes i en ny fane)' },
   field: { optional: '(valgfritt)', errorPrefix: 'Feil:' },
@@ -366,7 +368,14 @@ export const nb = {
     voicesLoading: 'Henter stemmer …',
     note: ({ name }) =>
       `Opplesingen sender denne teksten til ${name} for å lage lyden. Teksten og lyden lagres ikke.`,
+    noteStored: ({ name }) =>
+      `Opplesingen sender denne teksten til ${name} for å lage lyden. Lyden kan bli lagret der for gjenbruk.`,
     howItWorks: 'Slik fungerer opplesingen',
+    barLabel: 'Lytt til denne siden',
+    toolbarLabel: 'Avspillingskontroller',
+    settings: 'Lytteinnstillinger',
+    hide: 'Skjul lyttefeltet',
+    errorNoContent: 'Det er ingenting her å lese opp.',
   },
   errorSummary: { title: 'Det er et problem', titlePrefix: 'Feil:' },
   definitionList: { change: 'Endre' },

@@ -602,10 +602,22 @@ export interface KvirnMessages {
     partSkipped: TextMessage
     /** Shown only where the Voice select is rendered, while its options have not arrived yet. */
     voicesLoading: TextMessage
-    /** The Note part's text: who the text is sent to, and that nothing is stored (GDPR art. 25). `name` is the engine's recipient. */
+    /** The Note part's text: who the text is sent to, and that nothing is stored (GDPR art. 25). `name` is the engine's recipient. Shown only when the engine's `stores` is falsy; `noteStored` otherwise. */
     note: MessageFunction<{ name: string }>
+    /** The Note part's text when the engine's `stores` is `true` (`store: true` was passed): says the audio may be kept, so the sentence is never false (rule 8). */
+    noteStored: MessageFunction<{ name: string }>
     /** The Note part's optional link text to the site's own explanation. */
     howItWorks: TextMessage
+    /** The accessible name of `ReadAloud.Bar` (Plan 0154), distinct from `label`'s group name. */
+    barLabel: TextMessage
+    /** The accessible name of the Bar's toolbar element, distinct from `barLabel` (the group's own name): without it, a screen reader announces the same phrase twice entering the Bar. */
+    toolbarLabel: TextMessage
+    /** Names both the Settings trigger and its popup (`ReadAloud.Settings`, Plan 0154). */
+    settings: TextMessage
+    /** The name of `ReadAloud.Hide`, idle only (Plan 0154). */
+    hide: TextMessage
+    /** Shown and announced (polite) when there is nothing resolved to read: a misconfigured `scope`, no `<main>`, or empty content (3.3.1). */
+    errorNoContent: TextMessage
   }
   toast: {
     /** The accessible name of the toast region, a landmark that exists while a toast is shown. Owned by Toast (Plan 0071). */

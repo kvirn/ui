@@ -6,25 +6,43 @@ import { ContractSectionsView, contractSectionList } from './contract-sections-v
 import { ExampleFrame } from './example-frame.tsx'
 import { Note } from './note.tsx'
 import { StringsBlock } from './strings-block.tsx'
+import { UseCase } from './use-case.tsx'
 import {
   kvirnSpeechEngineRows,
+  readAloudBarAttributes,
+  readAloudBarRows,
   readAloudButtonRows,
+  readAloudHideAttributes,
+  readAloudHideRows,
   readAloudNoteAttributes,
   readAloudNoteRows,
   readAloudPlayAttributes,
+  readAloudProgressAttributes,
   readAloudRootAttributes,
   readAloudSelectAttributes,
   readAloudSelectionTriggerAttributes,
   readAloudSelectRows,
+  readAloudSettingsAttributes,
+  readAloudSettingsRows,
   readAloudStatusAttributes,
   readAloudStatusRows,
+  readAloudTransportAttributes,
+  readAloudTransportRows,
+  readAloudWhenStartedRows,
   useReadAloudResultRows,
   useReadAloudRows,
 } from '../content/read-aloud.api.ts'
+import { BarLayout } from '../examples/read-aloud/bar.tsx'
+import { CmsMarkers } from '../examples/read-aloud/cms-markers.tsx'
 import { Player } from '../examples/read-aloud/default.tsx'
+import { IdlePanel } from '../examples/read-aloud/idle-panel.tsx'
+import { LanguageOfParts } from '../examples/read-aloud/language.tsx'
 import type { Contract } from '../lib/contract-parser.ts'
 
-export type ReadAloudExampleSources = Record<'default', string>
+export type ReadAloudExampleSources = Record<
+  'default' | 'bar' | 'cms-markers' | 'language' | 'idle-panel',
+  string
+>
 
 const importLines = `import { ReadAloud, useReadAloud } from '@kvirn-ui/read-aloud'
 import { kvirnSpeechEngine } from '@kvirn-ui/core'`
@@ -54,30 +72,57 @@ const parts: ApiPart[] = [
     attributes: readAloudRootAttributes,
   },
   {
+    name: 'ReadAloud.Progress',
+    renders: (
+      <>
+        <code>&lt;p aria-hidden=&quot;true&quot;&gt;</code> wrapping the fill: the sentence meter.
+        No <code>progressbar</code> or <code>slider</code> role, no handle, nothing to drag — it is
+        informative only, since <code>ReadAloud.Status</code> already carries the position in words.
+        Renders nothing while idle.
+      </>
+    ),
+    attributes: readAloudProgressAttributes,
+  },
+  {
     name: 'ReadAloud.Play',
     renders: buttonRenders(
-      ', named Listen, Listen to selected text while a selection is captured, or Pause while reading or getting the audio. It stays pressable while getting the audio, so pressing it is how you stop the wait',
+      ', named Listen, Listen to selected text while a selection is captured, or Pause while reading or getting the audio. It stays pressable while getting the audio, so pressing it is how you stop the wait. A play/pause icon sits before the word, decorative, and is replaced by a spinner past 300 ms of getting the audio',
     ),
     props: readAloudButtonRows,
     attributes: readAloudPlayAttributes,
   },
   {
+    name: 'ReadAloud.Transport',
+    renders: (
+      <>
+        <code>&lt;div&gt;</code> grouping <code>ReadAloud.Previous</code> and{' '}
+        <code>ReadAloud.Next</code>: the cluster, its gap, and Stop's separation from it. Adds no
+        Tab stop and no role. It takes every attribute of a <code>&lt;div&gt;</code> and passes{' '}
+        <code>ref</code> to it.
+      </>
+    ),
+    props: readAloudTransportRows,
+    attributes: readAloudTransportAttributes,
+  },
+  {
     name: 'ReadAloud.Previous',
     renders: buttonRenders(
-      ', named Previous sentence. It stays focusable with aria-disabled while idle',
+      ', named Previous sentence. It stays focusable with aria-disabled while idle. A decorative icon sits before the word',
     ),
     props: readAloudButtonRows,
   },
   {
     name: 'ReadAloud.Next',
     renders: buttonRenders(
-      ', named Next sentence. It stays focusable with aria-disabled while idle',
+      ', named Next sentence. It stays focusable with aria-disabled while idle. A decorative icon sits before the word',
     ),
     props: readAloudButtonRows,
   },
   {
     name: 'ReadAloud.Stop',
-    renders: buttonRenders(', named Stop. It stays focusable with aria-disabled while idle'),
+    renders: buttonRenders(
+      ', named Stop. It stays focusable with aria-disabled while idle. A decorative icon sits before the word',
+    ),
     props: readAloudButtonRows,
   },
   {
@@ -98,8 +143,8 @@ const parts: ApiPart[] = [
       <>
         A native <code>&lt;select&gt;</code> of the voices for the content language, with a visible{' '}
         <code>&lt;label&gt;</code>. It renders only when there are two or more; while the list has
-        not arrived from the service yet, it shows a loading message instead. Not in the recommended
-        composition below: today only English has more than one voice.
+        not arrived from the service yet, it shows a loading message instead. Not in any composition
+        on this page: today only English has more than one voice.
       </>
     ),
     props: readAloudSelectRows,
@@ -122,10 +167,11 @@ const parts: ApiPart[] = [
     name: 'ReadAloud.Note',
     renders: (
       <>
-        <code>&lt;p&gt;</code> naming who the text is sent to and that nothing is stored (
-        <code>readAloud.note</code>), with your <code>howItWorksHref</code> as a link at the end.
-        Renders nothing when <code>ReadAloud.Root</code> was given no <code>name</code>: there is no
-        sensible text to show without knowing the recipient.
+        <code>&lt;p&gt;</code> naming who the text is sent to, and saying that nothing is stored (
+        <code>readAloud.note</code>) or that the audio may be (<code>readAloud.noteStored</code>,
+        when you set <code>store: true</code>), with your <code>howItWorksHref</code> as a link at
+        the end. Renders nothing when <code>ReadAloud.Root</code> was given no <code>name</code>:
+        there is no sensible text to show without knowing the recipient.
       </>
     ),
     props: readAloudNoteRows,
@@ -143,6 +189,57 @@ const parts: ApiPart[] = [
     ),
     props: readAloudButtonRows,
     attributes: readAloudSelectionTriggerAttributes,
+  },
+  {
+    name: 'ReadAloud.Bar',
+    renders: (
+      <>
+        <code>&lt;div&gt;</code> with no role or name of its own: it sits inside{' '}
+        <code>ReadAloud.Root</code>'s own group, which is named <code>readAloud.barLabel</code>{' '}
+        while a Bar is mounted. Its default content is a <code>Toolbar</code> of Previous, Play,
+        Next, Stop and Settings (one Tab stop), a status count, and Hide. It takes every attribute
+        of a <code>&lt;div&gt;</code> and passes <code>ref</code> to it.
+      </>
+    ),
+    props: readAloudBarRows,
+    attributes: readAloudBarAttributes,
+  },
+  {
+    name: 'ReadAloud.Settings',
+    renders: (
+      <>
+        A <code>Popover</code> trigger button, icon-only and named by{' '}
+        <code>readAloud.settings</code>, opening a menu with Speed, Voice and the recipient note.
+        One part works both standalone in the panel and as a toolbar item in the Bar. It takes every
+        attribute of a <code>&lt;button&gt;</code> and passes <code>ref</code> to it.
+      </>
+    ),
+    props: readAloudSettingsRows,
+    attributes: readAloudSettingsAttributes,
+  },
+  {
+    name: 'ReadAloud.Hide',
+    renders: (
+      <>
+        <code>&lt;button type=&quot;button&quot;&gt;</code>, icon-only and named by{' '}
+        <code>readAloud.hide</code>. <code>ReadAloud.Bar</code> only. Collapses the Bar to its one
+        Play button and moves focus there. Renders nothing once reading has started: hiding the only
+        Pause would leave no way to stop it.
+      </>
+    ),
+    props: readAloudHideRows,
+    attributes: readAloudHideAttributes,
+  },
+  {
+    name: 'ReadAloud.WhenStarted',
+    renders: (
+      <>
+        Nothing of its own: its children only, once reading has started at least once, and nothing
+        before. It never goes back to showing nothing. It reads the <code>ReadAloud.Root</code> it
+        is inside, so there is still one engine, not a second one built separately.
+      </>
+    ),
+    props: readAloudWhenStartedRows,
   },
   {
     name: 'kvirnSpeechEngine',
@@ -167,14 +264,15 @@ export function ReadAloudPage({
   return (
     <ComponentPage
       title="ReadAloud"
-      pattern="APG Button (for the buttons)"
-      lead="ReadAloud reads a page's text aloud, sentence by sentence, with the sentence being read shown on screen. It is not a substitute for a screen reader (software that reads the whole screen aloud), and it never starts by itself."
+      pattern="APG Button (for the buttons), APG Toolbar (for the Bar's transport)"
+      lead="ReadAloud reads a page's text aloud, sentence by sentence, and shows which sentence in words. It is not a substitute for a screen reader (software that reads the whole screen aloud), and it never starts by itself."
       whenToUse={
         <ul>
           <li>
             Offer it on text people may prefer to hear: a long guidance page, a decision letter, a
-            notice. It helps a reader with dyslexia or low literacy, someone reading in their second
-            language, a visitor with low vision, or anyone who is simply tired of reading.
+            notice. It helps someone with dyslexia, low literacy or a cognitive disability, a reader
+            using their second language, a visitor with low vision, or anyone who is tired or doing
+            something else at the same time.
           </li>
           <li>
             It is not aimed at screen-reader users: they already have a better reader, and ReadAloud
@@ -182,8 +280,20 @@ export function ReadAloudPage({
             (software that people with disabilities use, such as a screen reader).
           </li>
           <li>
-            Put it before the text it reads, in the page, never floating or in a menu. Don&rsquo;t
-            start it automatically.
+            There are two ways to offer it. The panel sits beside one article, with full-word
+            buttons (<code>Listen</code>, <code>Previous sentence</code>, <code>Next sentence</code>
+            , <code>Stop</code>): add one wherever you have a long text. The{' '}
+            <code>ReadAloud.Bar</code> sits once in your page layout and reads whichever page the
+            visitor is on, with Previous, Next, Stop and Settings as icons and the word kept on
+            Play: choose it for listening everywhere without adding anything to each page. Both
+            share one Settings menu for speed and voice.
+          </li>
+          <li>
+            Put the panel directly before the text it reads, in the normal flow of the page — never
+            floating, never in a menu. The bar is different: it sits at the top of every page, above
+            the site&rsquo;s own navigation, and only becomes sticky while it is reading, so it
+            never covers anything before a visitor has pressed anything. Neither player starts by
+            itself.
           </li>
           <li>
             Listen reads the whole text, or only the text the reader has selected (select with Shift
@@ -191,17 +301,25 @@ export function ReadAloudPage({
             move one sentence at a time.
           </li>
           <li>
-            Pressing Listen sends that page's text to Kvirn's voice service, which makes the audio.
-            The service is Kvirn's own, hosted in the EU, sets no cookies and does not save the text
-            or the audio. Nothing is sent before the reader presses Listen. Name the service in your
-            own privacy notice, as the <code>Note</code> part already does on the page.
+            Pressing Listen sends that page's text to Kvirn's voice service, which turns it into
+            speech. The service is Kvirn's own, hosted in the EU, sets no cookies and, by default,
+            does not save the text or the audio — unless you opt in with <code>store: true</code>,
+            which is only for public page text, never for anything that could contain an identity
+            number. The player's recipient sentence changes its own wording to match. Nothing is
+            sent before the reader presses Listen. Each player already tells the visitor who
+            receives the text — the <code>Note</code> part in the panel, or the Settings menu in the
+            bar — but linking your own explanation of how listening works, and naming the service in
+            your privacy notice, is still your own job.
           </li>
           <li>
             Today the service has voices for Swedish, Norwegian (Bokmål) and English only. A page in
-            Finnish or Norwegian Nynorsk gets no player at all: there is no voice to read it with.
-            The voice list only arrives after the first press, so until your page declares its
-            content language, the player can briefly appear before it disappears for one of these
-            two languages.
+            Finnish or Norwegian Nynorsk gets no player at all, not even for a moment: the check
+            happens before anything is shown, so nothing flashes on screen.
+          </li>
+          <li>
+            The voice always follows the text's own declared language, never the page's interface
+            language. A Finnish municipality can run a Finnish interface around Swedish-language
+            content, and it still reads in Swedish.
           </li>
           <li>
             It is not for announcing a change in the page. Use the{' '}
@@ -213,13 +331,96 @@ export function ReadAloudPage({
         <>
           <p>
             Press Listen to hear the article. Previous and Next move one sentence; Speed changes how
-            fast it is read, without a new request. If the voice service at{' '}
-            <code>NEXT_PUBLIC_KVIRN_VOICE_URL</code> (the local dev edge by default) isn't running,
-            Status says the service can't be reached right now rather than the button doing nothing.
+            fast it is read, without a new request. If the voice service isn&rsquo;t running (it
+            reads the address from an environment variable, and uses a local address during
+            development), Status says it can&rsquo;t be reached right now, rather than the button
+            doing nothing.
           </p>
           <ExampleFrame headingId="example" code={sources['default']}>
             <Player />
           </ExampleFrame>
+        </>
+      }
+      useCases={
+        <>
+          <UseCase
+            id="idle-panel"
+            title="A quiet panel that only shows controls once you start listening"
+            why={
+              <>
+                At rest, show only Listen. A row of controls that do nothing yet — a disabled
+                Previous and Next, an empty progress bar — can look broken. Wrap the rest in{' '}
+                <code>ReadAloud.WhenStarted</code>: it appears once you press Listen, in the same
+                place, so the button under your finger does not move, and it never collapses back
+                once reading has started.
+              </>
+            }
+            code={sources['idle-panel']}
+          >
+            <IdlePanel />
+          </UseCase>
+          <UseCase
+            id="site-wide-bar"
+            title="A listening bar for the whole site"
+            why={
+              <>
+                Add <code>ReadAloud.Bar</code> once in your page layout, with a <code>scope</code>{' '}
+                selector, instead of placing a player on every page. It reads whichever part of the
+                page matches that selector, sits above the site&rsquo;s own navigation, and only
+                becomes sticky while it is reading.
+              </>
+            }
+            code={sources['bar']}
+            propsUsed={[{ part: 'ReadAloud.Root', prop: 'scope' }]}
+          >
+            <BarLayout />
+          </UseCase>
+          <UseCase
+            id="cms-markers"
+            title="Marking which part of a CMS page to read"
+            why={
+              <>
+                A content management system renders its own HTML, where React cannot write a
+                comment. Wrap the part a resident should hear in{' '}
+                <code>&lt;!-- KV:READ-ALOUD:START --&gt;</code> and{' '}
+                <code>&lt;!-- KV:READ-ALOUD:STOP --&gt;</code>, so the player skips things like a
+                related-links box around it.
+              </>
+            }
+            code={sources['cms-markers']}
+            propsUsed={[{ part: 'ReadAloud.Root', prop: 'contentRef' }]}
+            note={
+              <Note kind="tip">
+                Most HTML minifiers strip comments by default. Keep comments on in production, or
+                the markers disappear and the player reads everything instead.
+              </Note>
+            }
+          >
+            <CmsMarkers />
+          </UseCase>
+          <UseCase
+            id="different-language"
+            title="Content in a different language from the interface"
+            why={
+              <>
+                The voice follows the text&rsquo;s own declared language, never the page&rsquo;s
+                interface language. Here the page is in English, but the decision it quotes keeps
+                its original Swedish wording: Listen reads that part in Swedish. In English, the
+                quoted text says &ldquo;The decision becomes final three weeks after it is
+                announced.&rdquo;
+              </>
+            }
+            code={sources['language']}
+            note={
+              <Note kind="reminder">
+                Put <code>lang</code> on the content itself, not only on the page. Without it, this
+                part would be read with whatever language the page declares (3.1.2 Language of
+                Parts, level AA).
+              </Note>
+            }
+          >
+            <LanguageOfParts />
+          </UseCase>
         </>
       }
       contract={
@@ -342,6 +543,12 @@ export function ReadAloudPage({
                   values: { name: 'Kvirn’s voice service' },
                 },
                 { key: 'howItWorks', meaning: "The Note part's link text." },
+                {
+                  key: 'barLabel',
+                  meaning: "The group's name while a Bar is mounted, instead of label.",
+                },
+                { key: 'settings', meaning: 'Names the Settings button and its popup.' },
+                { key: 'hide', meaning: 'The name of the Hide button, Bar only.' },
               ]}
             />
           }

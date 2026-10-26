@@ -9,29 +9,33 @@
 
 @layer kv {
   /* 8k. Read aloud ----------------------------------------------------------------------------
-   * <ReadAloud.Root> renders <div class="kv-read-aloud" role="group">: controls in the flow, no fill,
-   * edge or shadow, never sticky. A wrapping row of worded buttons (kv-button kv-read-aloud-button:
-   * the secondary Button, never primary), then each select under its kv-read-aloud-label
-   * (kv-read-aloud-select takes the native listbox look), then kv-read-aloud-status, then
-   * kv-read-aloud-note, each its own full row. Below 40rem a select is a full row; from 40rem it is
-   * as wide as its content. Play keeps one width for its labels, so a second press never lands on
-   * Previous, and while data-status="preparing" it carries the Button busy spinner (kv-spinner,
-   * currentColor, from the generic Button recipe: the 300 ms delay is the hook's, not the CSS's).
-   * Status reserves one line, in text colour, with figures that don't shift; a spinner (preparing)
-   * or the decorative warning icon (data-error, any value: one treatment for all three) sits first,
-   * also in text colour, so colour is never the only signal. kv-read-aloud-note is body-small help
-   * text under the controls, with its kv-link inline. Logical properties only, so right to left
-   * needs nothing. The selection trigger is a secondary Button in the top layer with the popup
-   * shadow. The current sentence is painted by ::highlight(kv-read-aloud), primary/on-primary,
-   * Highlight/HighlightText in forced colours (maintainer, 2026-10-25: the Custom Highlight API is
-   * approved; lightningcss 1.33.0 does not recognise the pseudo-element and warns on it, accepted
-   * and not worked around). Zero specificity elsewhere, so your own CSS wins. Design spec:
-   * docs/design/read-aloud.md. */
+   * <ReadAloud.Root> renders <div class="kv-read-aloud" role="group">: a bare row of buttons in
+   * the content flow, never a card (D44) — no border, radius, fill or padding at any width, and
+   * Root itself is never sticky in this inline shape (the one sticky shape is Root containing a
+   * ReadAloud.Bar instead, section 8l below). Idle is one Listen button; once reading has
+   * started the same button reads Pause, next to Stop and Settings (D44) — three buttons, side
+   * by side, and nothing else: no meter, no transport cluster, no position line. Play's icon and
+   * its three possible words (Listen, Listen to selected text, Pause) share one grid cell each,
+   * so its size never changes with the label and a second press never lands on a neighbour
+   * (2.5.3); past 300 ms busy the spinner takes the icon's cell instead of the play/pause glyph,
+   * so nothing moves there either. Status renders only when it has something to say (preparing,
+   * or one of the five errors): in text colour, with figures that don't shift; a spinner or the
+   * decorative warning icon (data-error, any value: one treatment for all three) sits first, also
+   * in text colour, so colour is never the only signal. kv-read-aloud-note is body-small help
+   * text under the row, set apart by its own hairline, since there is no card to separate it
+   * from the buttons otherwise. Logical properties only, so right to left needs nothing. The
+   * selection trigger is a secondary Button in the top layer with the popup shadow. The current
+   * sentence is painted by ::highlight(kv-read-aloud), primary/on-primary, Highlight/HighlightText
+   * in forced colours (maintainer, 2026-10-25: the Custom Highlight API is approved; lightningcss
+   * 1.33.0 does not recognise the pseudo-element and warns on it, accepted and not worked
+   * around). Zero specificity elsewhere, so your own CSS wins. Design spec:
+   * docs/design/read-aloud.md (revision 3, §5-6; D44 supersedes the panel it describes). */
   :where(.kv-read-aloud) {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
-    gap: var(--kv-space-3) var(--kv-space-2);
+    gap: var(--kv-space-4) var(--kv-space-3);
+    box-sizing: border-box;
     font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
     font-size: var(--kv-font-body-size);
     line-height: var(--kv-font-body-line-height);
@@ -41,10 +45,95 @@
     display: none;
   }
 
-  /* Every button has the same minimum width, so Play's label change (Listen, Pause) doesn't move
-   * its neighbours. */
-  :where(.kv-read-aloud-button) {
-    min-inline-size: 8rem;
+  /* The sentence meter: informative only (D3, read-aloud.md §6) — aria-hidden, no progressbar or
+   * slider role, no handle, no hover or cursor change. A flat primary fill, never a gradient or a
+   * sheen (those read as a wait, this reads as a position), and no transition: the fraction
+   * jumps with the sentence, it never animates. --kv-read-aloud-progress (0 to 1) is set inline
+   * by the Progress part, a measured value, never a choice (rule 14). */
+  :where(.kv-read-aloud-progress) {
+    flex-basis: 100%;
+    box-sizing: border-box;
+    block-size: var(--kv-space-2);
+    margin: 0;
+    margin-block-end: var(--kv-space-1);
+    border: var(--kv-border-width) solid var(--kv-color-border-control);
+    border-radius: var(--kv-radius-sm);
+    background-color: var(--kv-color-canvas);
+    overflow: hidden;
+  }
+
+  :where(.kv-read-aloud-progress-fill) {
+    display: block;
+    inline-size: calc(var(--kv-read-aloud-progress, 0) * 100%);
+    block-size: 100%;
+    background-color: var(--kv-color-primary);
+  }
+
+  @media (forced-colors: active) {
+    :where(.kv-read-aloud-progress) {
+      border-color: CanvasText;
+      background-color: Canvas;
+    }
+
+    :where(.kv-read-aloud-progress-fill) {
+      background-color: Highlight;
+    }
+  }
+
+  /* Play is content width at every size (D51): the Listening settings button sits beside it on one
+   * line, phone included, and adding that button never stretches Play. The former full-width-below-
+   * 40rem rule is gone with the panel it belonged to; the label alone is far past the 2.5.8 target. */
+
+  /* The icon and the three possible words each sit in their own single-cell grid, so the button
+   * never resizes as the label or the icon changes (2.5.3): the inactive ones are aria-hidden
+   * and, by that same attribute, hidden here too, so no rule tracks state twice. */
+  :where(.kv-read-aloud-play-icon) {
+    display: grid;
+    flex: none;
+    justify-items: center;
+    align-items: center;
+  }
+
+  :where(.kv-read-aloud-play-icon) > * {
+    grid-area: 1 / 1;
+  }
+
+  :where(.kv-read-aloud-play-label) {
+    display: grid;
+  }
+
+  :where(.kv-read-aloud-play-label) > span {
+    grid-area: 1 / 1;
+    visibility: hidden;
+  }
+
+  :where(.kv-read-aloud-play-label) > span:not([aria-hidden]) {
+    visibility: visible;
+  }
+
+  /* The cluster: Previous and Next close enough to read as one group, far enough that a tremor
+   * misses neither (8px, two 44px targets). From 40rem, a trailing margin creates Stop's 36px
+   * separation together with the Root's own column gap (space-3, 12px); the margin alone
+   * disappears when Stop wraps, so no stray indent is left behind. Below 40rem the cluster is a
+   * full-width row and the two buttons are an equal 1fr 1fr grid, so neither ever wraps alone. */
+  :where(.kv-read-aloud-transport) {
+    display: flex;
+    flex-basis: 100%;
+    gap: var(--kv-space-2);
+  }
+
+  @media (width >= 40rem) {
+    :where(.kv-read-aloud-transport) {
+      flex-basis: auto;
+      margin-inline-end: var(--kv-space-6);
+    }
+  }
+
+  @media (width < 40rem) {
+    :where(.kv-read-aloud-transport) {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   :where(.kv-read-aloud-label) {
@@ -93,9 +182,14 @@
     line-height: var(--kv-font-body-line-height);
   }
 
+  /* The Note now renders only inside the Settings popup (D53), where this hairline separates the
+   * recipient sentence from the Rate and Voice selects above it. It was added for the inline row
+   * (D44), which no longer shows a Note at all. */
   :where(.kv-read-aloud-note) {
     flex-basis: 100%;
     margin: 0;
+    padding-block-start: var(--kv-space-3);
+    border-block-start: var(--kv-border-width) solid var(--kv-color-border-subtle);
     color: var(--kv-color-text);
     font-size: var(--kv-font-body-small-size);
     font-weight: var(--kv-font-body-small-weight);
@@ -104,12 +198,6 @@
     font-feature-settings: var(--kv-font-body-small-feature-settings);
     overflow-wrap: break-word;
     hyphens: auto;
-  }
-
-  /* Speed is its own full-width row below 40rem, content-width from it (the next rule, in the
-   * existing 40rem block below). */
-  :where(.kv-read-aloud) > .kv-field {
-    flex-basis: 100%;
   }
 
   :where(.kv-read-aloud-selection-trigger) {
@@ -140,10 +228,6 @@
   }
 
   @media (width >= 40rem) {
-    :where(.kv-read-aloud) > .kv-field {
-      flex-basis: auto;
-    }
-
     :where(.kv-read-aloud-select) {
       inline-size: auto;
       max-inline-size: 100%;
@@ -154,6 +238,10 @@
     :where(.kv-read-aloud-status),
     :where(.kv-read-aloud-note) {
       color: CanvasText;
+    }
+
+    :where(.kv-read-aloud-note) {
+      border-block-start-color: CanvasText;
     }
 
     :where(.kv-read-aloud-selection-trigger) {
@@ -301,6 +389,324 @@
 
       color: GrayText;
       -webkit-text-fill-color: GrayText;
+    }
+  }
+
+  /* 8l. Read aloud bar (Plan 0154, concept J) --------------------------------------------------
+   * <ReadAloud.Bar> renders <div class="kv-read-aloud-bar" role="group">, nested inside Root. A
+   * band, not a card: a border-subtle hairline under it and the surface fill, so it reads as a
+   * strip the page's own header sits below, never a floating card. Flex row, wrap, gap space-3
+   * column / space-2 row. The transport is a shipped Toolbar (kv-toolbar): Previous, Play, Next,
+   * Stop and Settings are one Tab stop, drawn as a round, borderless media-player transport (the
+   * signed-off prototype, docs/design/read-aloud-concepts.html, concept J) rather than the
+   * panel's worded Button recipe — see the transport pill rules below. The count reuses
+   * kv-read-aloud-status. Carries no lede and no meter (D12): Play's own word is the entry
+   * point. Static while idle; sticky only while playing, by the ancestor Root's own data-status,
+   * so the Bar needs no attribute of its own — and it un-sticks at (max-height: 30rem) rather
+   * than disappearing, so a magnifier user keeps it (D10, the DESIGN.md Layout amendment).
+   * Design spec: docs/design/read-aloud.md §5a.
+   *
+   * D38/D39: the Bar is always a full-width band. Root never carries the row layout the base
+   * rule (section 8k) sets up for its own button-row shape while a Bar is mounted in it, so this
+   * override switches it to a plain block, in source order after the base rule so :where() vs
+   * :where() resolves here. Root also carries the sticky instead of the Bar: the Bar's own
+   * containing block was Root, exactly one bar tall, so `position: sticky` on the Bar had a
+   * zero-height range and did nothing. `display: contents` on Root was considered and rejected —
+   * a known assistive-technology risk on the element carrying role="group" and the one
+   * aria-label (D19). Root's containing block is the page frame, so the range here is real. D45:
+   * `:not([hidden])` restates the base [hidden] rule's guard — an equal-specificity `display`
+   * override after it would otherwise win and show a hidden Root with a Bar inside it. */
+  :where(.kv-read-aloud:has(.kv-read-aloud-bar):not([hidden])) {
+    display: block;
+  }
+
+  :where(.kv-read-aloud[data-status='playing']:has(.kv-read-aloud-bar)),
+  :where(.kv-read-aloud[data-status='preparing']:has(.kv-read-aloud-bar)),
+  :where(.kv-read-aloud[data-status='paused']:has(.kv-read-aloud-bar)) {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+  }
+
+  @media (max-height: 30rem) {
+    :where(.kv-read-aloud:has(.kv-read-aloud-bar)) {
+      position: static;
+    }
+  }
+
+  :where(.kv-read-aloud-bar) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--kv-space-2) var(--kv-space-3);
+    box-sizing: border-box;
+    padding-block: var(--kv-space-2);
+    padding-inline: var(--kv-space-4);
+    border-block-end: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    background-color: var(--kv-color-surface);
+  }
+
+  @media (width >= 64rem) {
+    :where(.kv-read-aloud-bar) {
+      padding-inline: var(--kv-space-6);
+    }
+  }
+
+  :where(.kv-read-aloud-toolbar) {
+    flex: 1 0 auto;
+  }
+
+  /* The count: the Status part reused, flush with the toolbar instead of a full-width row. */
+  :where(.kv-read-aloud-bar .kv-read-aloud-status) {
+    flex: 0 1 auto;
+  }
+
+  /* A Shift+Tab target the browser scrolls to the top of the viewport must not land under the
+   * sticky Bar (2.4.11): the same precedent as .kv-quick-exit (theme.css). The Bar's height
+   * (control, space-2 padding-block twice, the border-block-end hairline) plus a space-4 buffer,
+   * in rem so it scales with text size, and only while the Bar is actually sticky — the same
+   * three data-status values the rule above uses, so the two can never disagree, and only above
+   * the (max-height: 30rem) breakpoint where the Bar has un-stuck. */
+  @media (min-height: 30rem) {
+    html:has(
+      .kv-read-aloud:is([data-status='playing'], [data-status='preparing'], [data-status='paused'])
+        .kv-read-aloud-bar
+    ) {
+      scroll-padding-block-start: calc(
+        2.75rem + 2 * var(--kv-space-2) + var(--kv-border-width) + var(--kv-space-4)
+      );
+    }
+  }
+
+  /* The transport pill (2.5.8, the signed-off prototype): Previous, Play, Next, Stop, Settings
+   * and Hide override the Button recipe's rectangle only here — the inline panel keeps the
+   * worded, rectangular look (D5), so every rule below is scoped to .kv-read-aloud-bar. Shape
+   * only, in both states: this applies whether disabled or not, so a dashed disabled edge from
+   * .kv-button stays round. */
+  .kv-read-aloud-bar
+    :is(
+      .kv-read-aloud-previous,
+      .kv-read-aloud-play,
+      .kv-read-aloud-next,
+      .kv-read-aloud-stop,
+      .kv-read-aloud-settings,
+      .kv-read-aloud-hide
+    ) {
+    min-block-size: 2.75rem;
+    min-inline-size: 2.75rem;
+    padding-block: 0;
+    padding-inline: var(--kv-space-3);
+    border-radius: var(--kv-radius-full);
+  }
+
+  /* Borderless at rest, the media-player convention: the icon itself is the affordance (1.4.11
+   * accepted). .kv-button's own disabled rule (dashed border-control edge, text-muted,
+   * untouched here) still applies, because this is guarded the same way. */
+  .kv-read-aloud-bar
+    :is(
+      .kv-read-aloud-previous,
+      .kv-read-aloud-play,
+      .kv-read-aloud-next,
+      .kv-read-aloud-stop,
+      .kv-read-aloud-settings,
+      .kv-read-aloud-hide
+    ):not(:disabled, [data-disabled]) {
+    border-color: transparent;
+    box-shadow: none;
+    background-color: transparent;
+    color: var(--kv-color-text);
+  }
+
+  /* Hover and press are unmistakable even without a resting edge: the surface lifts a step, the
+   * same elevation a card or popup uses. Keyboard focus keeps the ring .kv-button already draws
+   * on :focus-visible (section 6), never invented here. */
+  .kv-read-aloud-bar
+    :is(
+      .kv-read-aloud-previous,
+      .kv-read-aloud-play,
+      .kv-read-aloud-next,
+      .kv-read-aloud-stop,
+      .kv-read-aloud-settings,
+      .kv-read-aloud-hide
+    ):not(:disabled, [data-disabled]):is(:hover, :active) {
+    border-color: transparent;
+    box-shadow: none;
+    background-color: var(--kv-color-surface-raised);
+  }
+
+  /* Play is the one filled control, flat in every state (prototype .ctl--play:hover keeps the
+   * same fill, so Pause reads in the exact place Play was pressed). */
+  .kv-read-aloud-bar .kv-read-aloud-play:not(:disabled, [data-disabled]) {
+    border-color: var(--kv-color-primary);
+    background-color: var(--kv-color-primary);
+    color: var(--kv-color-on-primary);
+    font-weight: 600;
+  }
+
+  .kv-read-aloud-bar .kv-read-aloud-play:not(:disabled, [data-disabled]):is(:hover, :active) {
+    border-color: var(--kv-color-primary);
+    background-color: var(--kv-color-primary);
+  }
+
+  @media (forced-colors: active) {
+    /* Borderless breaks in forced colours, so every control keeps a visible ButtonText edge,
+     * the same as .kv-button's own forced-colours rule (section 6) but repeated here at equal
+     * specificity so it isn't lost to the rest-state rule above, which carries no media guard.
+     * Hover becomes Highlight, the same convention every button uses. */
+    .kv-read-aloud-bar
+      :is(
+        .kv-read-aloud-previous,
+        .kv-read-aloud-play,
+        .kv-read-aloud-next,
+        .kv-read-aloud-stop,
+        .kv-read-aloud-settings,
+        .kv-read-aloud-hide
+      ):not(:disabled, [data-disabled]) {
+      border-color: ButtonText;
+      background-color: ButtonFace;
+      color: ButtonText;
+    }
+
+    .kv-read-aloud-bar
+      :is(
+        .kv-read-aloud-previous,
+        .kv-read-aloud-play,
+        .kv-read-aloud-next,
+        .kv-read-aloud-stop,
+        .kv-read-aloud-settings,
+        .kv-read-aloud-hide
+      ):not(:disabled, [data-disabled]):is(:hover, :active) {
+      border-color: Highlight;
+      background-color: ButtonFace;
+    }
+
+    /* Play stays distinguishable as the one active control: a Highlight fill, a shape and
+     * colour change together, never colour alone (1.4.1). */
+    .kv-read-aloud-bar .kv-read-aloud-play:not(:disabled, [data-disabled]) {
+      border-color: ButtonText;
+      background-color: Highlight;
+      color: HighlightText;
+    }
+
+    .kv-read-aloud-bar .kv-read-aloud-play:not(:disabled, [data-disabled]):is(:hover, :active) {
+      border-color: Highlight;
+      background-color: Highlight;
+      color: HighlightText;
+    }
+  }
+
+  /* The round target (2.5.8), icon-only by default: these four keep their own class (the panel
+   * still shows their word), so the Bar sizes them itself. Not in kv-read-aloud--words, where
+   * the word returns and the button needs the room for it. */
+  :where(
+    .kv-read-aloud:not(.kv-read-aloud--words)
+      .kv-read-aloud-bar
+      :is(
+        .kv-read-aloud-previous,
+        .kv-read-aloud-next,
+        .kv-read-aloud-stop,
+        .kv-read-aloud-settings
+      )
+  ) {
+    padding-inline: 0;
+  }
+
+  /* kv-read-aloud--icons also drops Play's own padding, so it becomes a circle like the rest. */
+  :where(.kv-read-aloud--icons .kv-read-aloud-bar .kv-read-aloud-play) {
+    padding-inline: 0;
+  }
+
+  /* Hybrid labels, the default (D9, D14): the word stays on Play/Pause; Previous, Next, Stop
+   * and Settings are icon-only. Visually hidden, never aria-hidden, so the text stays the
+   * accessible name regardless of the class — only in the Bar: the panel keeps every word (D5). */
+  :where(
+    .kv-read-aloud-bar
+      :is(
+        .kv-read-aloud-previous,
+        .kv-read-aloud-next,
+        .kv-read-aloud-stop,
+        .kv-read-aloud-settings
+      )
+      .kv-read-aloud-button-label
+  ) {
+    position: absolute;
+    overflow: hidden;
+    clip-path: inset(50%);
+    inline-size: 1px;
+    block-size: 1px;
+    white-space: nowrap;
+  }
+
+  /* kv-read-aloud--icons on Root: Play's own word hides too, for a site that wants the Bar
+   * fully icon-only. Never on the panel, and never removes the accessible name. */
+  :where(.kv-read-aloud--icons .kv-read-aloud-bar .kv-read-aloud-play .kv-read-aloud-play-label) {
+    position: absolute;
+    overflow: hidden;
+    clip-path: inset(50%);
+    inline-size: 1px;
+    block-size: 1px;
+    white-space: nowrap;
+  }
+
+  /* kv-read-aloud--words on Root: every control's word shows, matching the panel's own look. */
+  :where(
+    .kv-read-aloud--words
+      .kv-read-aloud-bar
+      :is(
+        .kv-read-aloud-previous,
+        .kv-read-aloud-next,
+        .kv-read-aloud-stop,
+        .kv-read-aloud-settings
+      )
+      .kv-read-aloud-button-label
+  ) {
+    position: static;
+    overflow: visible;
+    clip-path: none;
+    inline-size: auto;
+    block-size: auto;
+    white-space: normal;
+  }
+
+  :where(.kv-read-aloud-hide) {
+    flex: none;
+  }
+
+  /* The Settings popup: elevation level 3 (DESIGN.md), the same recipe kv-listbox-popup uses —
+   * Popover itself ships no visual theme, so every rule here is this component's own. */
+  /* No author `display` on the closed popover: an author rule beats the UA's
+   * `display: none`, which would pin the menu permanently open. Same convention as
+   * `.kv-listbox-popup:popover-open` in theme.css. */
+  :where(.kv-read-aloud-settings-popup) {
+    box-sizing: border-box;
+    gap: var(--kv-space-4);
+    padding: var(--kv-space-4);
+    border: var(--kv-border-width) solid var(--kv-color-border-subtle);
+    border-radius: var(--kv-radius-md);
+    background-color: var(--kv-color-surface-raised);
+    box-shadow: var(--kv-shadow-popup);
+    color: var(--kv-color-text);
+    font-family: var(--kv-font-family-body, var(--kv-font-family-sans));
+    font-size: var(--kv-font-body-size);
+    line-height: var(--kv-font-body-line-height);
+  }
+
+  .kv-read-aloud-settings-popup:popover-open {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (forced-colors: active) {
+    :where(.kv-read-aloud-settings-popup) {
+      border-color: CanvasText;
+      background-color: Canvas;
+      box-shadow: none;
+      color: CanvasText;
+    }
+
+    :where(.kv-read-aloud-bar) {
+      border-block-end-color: CanvasText;
+      background-color: Canvas;
     }
   }
 }

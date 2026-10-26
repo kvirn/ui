@@ -1,8 +1,13 @@
 import type {
+  ReadAloudBarProps,
   ReadAloudButtonProps,
+  ReadAloudHideProps,
   ReadAloudNoteProps,
   ReadAloudSelectProps,
+  ReadAloudSettingsProps,
   ReadAloudStatusProps,
+  ReadAloudTransportProps,
+  ReadAloudWhenStartedProps,
   UseReadAloudOptions,
   UseReadAloudResult,
 } from '@kvirn-ui/read-aloud'
@@ -14,6 +19,12 @@ export const useReadAloudRows = propRows<UseReadAloudOptions>({
   contentRef: {
     type: 'RefObject<Element | null>',
     description: 'The element whose text is read. It is read when Play is pressed.',
+  },
+  scope: {
+    type: 'string',
+    default: '–',
+    description:
+      'A CSS selector for the element to read, used only while contentRef is not given (ReadAloud.Bar’s own default composition uses this). With neither, the page’s <main> is read. A selector that matches nothing, or no <main> at all, warns once in development and reads nothing.',
   },
   engine: {
     type: 'ReadAloudEngine',
@@ -77,7 +88,20 @@ export const readAloudRootAttributes: readonly AttributeRow[] = [
   {
     name: 'kv-read-aloud',
     values: 'always',
-    meaning: 'The part class. The default theme styles it.',
+    meaning:
+      'The part class. In the content flow it paints no panel: a bare row of buttons (D44). Inside a ReadAloud.Bar it is the full-width band instead.',
+  },
+  {
+    name: 'kv-read-aloud--icons',
+    values: 'your own class, on Root, with a Bar inside',
+    meaning:
+      'Hides every button’s word in the Bar, Play included, for the smallest possible bar. Each control keeps its name for assistive technology; only the visible text is hidden.',
+  },
+  {
+    name: 'kv-read-aloud--words',
+    values: 'your own class, on Root, with a Bar inside',
+    meaning:
+      'Shows every button’s word in the Bar, matching the inline row’s look. With neither class, the Bar shows the word on Play only and icons on the rest.',
   },
   {
     name: 'data-status',
@@ -111,16 +135,43 @@ export const readAloudButtonRows = propRows<Pick<ReadAloudButtonProps, 'children
 
 export const readAloudPlayAttributes: readonly AttributeRow[] = [
   {
-    name: 'kv-button kv-read-aloud-button',
+    name: 'kv-button kv-read-aloud-button kv-read-aloud-play',
     values: 'always',
-    meaning: 'The part classes. Previous, Next, Stop and SelectionTrigger share the first.',
+    meaning:
+      'The part classes. Previous, Next and Stop share the first two and add their own instead of the third (kv-read-aloud-previous, -next, -stop). SelectionTrigger has its own instead (kv-read-aloud-selection-trigger).',
   },
   { name: 'data-playing', values: 'while reading', meaning: 'Play is showing Pause.' },
   {
     name: 'data-busy',
     values: 'past 300 ms of preparing',
     meaning:
-      'The wait for the first or next chunk has become visible. Play stays pressable: it is the way to stop the wait.',
+      'The wait for the first or next chunk has become visible. Play stays pressable: it is the way to stop the wait. The play/pause icon is replaced by a spinner in the same cell, so nothing moves.',
+  },
+]
+
+export const readAloudProgressAttributes: readonly AttributeRow[] = [
+  {
+    name: 'kv-read-aloud-progress',
+    values: 'always',
+    meaning:
+      'The part class, on a decorative <p aria-hidden="true">. No progressbar or slider role, no handle: the position is in words, in Status.',
+  },
+]
+
+export const readAloudTransportRows = propRows<Pick<ReadAloudTransportProps, 'children'>>({
+  children: {
+    type: 'ReactNode',
+    default: '–',
+    description: 'Put ReadAloud.Previous and ReadAloud.Next here.',
+  },
+})
+
+export const readAloudTransportAttributes: readonly AttributeRow[] = [
+  {
+    name: 'kv-read-aloud-transport',
+    values: 'always',
+    meaning:
+      'The part class, on a plain <div>. Creates the cluster, its gap and the separation from Stop. Adds no Tab stop.',
   },
 ]
 
@@ -190,6 +241,88 @@ export const readAloudSelectionTriggerAttributes: readonly AttributeRow[] = [
     meaning: 'Puts the button in the top layer below the end of a selection made with a pointer.',
   },
 ]
+
+export const readAloudBarRows = propRows<Pick<ReadAloudBarProps, 'children'>>({
+  children: {
+    type: 'ReactNode',
+    default: 'the default toolbar, status count and Hide',
+    description:
+      'Your own markup instead of the default transport. Build it from the part props of useReadAloud.',
+  },
+})
+
+export const readAloudBarAttributes: readonly AttributeRow[] = [
+  {
+    name: 'kv-read-aloud-bar',
+    values: 'always',
+    meaning:
+      'The part class, on a plain <div> with no role or name of its own: ReadAloud.Root’s own group is the Bar’s group too. The default theme keeps it static while idle and makes it sticky only while playing.',
+  },
+]
+
+export const readAloudSettingsRows = propRows<
+  Pick<ReadAloudSettingsProps, 'howItWorksHref' | 'children'>
+>({
+  howItWorksHref: {
+    type: 'string',
+    default: '–',
+    description:
+      'Shown as a readAloud.howItWorks link after the recipient sentence, pointing at your own page. Left out, no link is shown and nothing warns: the destination is your own to write.',
+  },
+  children: {
+    type: 'ReactNode',
+    default: 'Speed, Voice, then the recipient note',
+    description: 'Your own content for the popup. The trigger button itself stays fixed.',
+  },
+})
+
+export const readAloudSettingsAttributes: readonly AttributeRow[] = [
+  {
+    name: 'kv-button kv-button--icon-only kv-read-aloud-settings',
+    values: 'always, on the trigger',
+    meaning: 'The classes of the icon-only button that opens the menu.',
+  },
+  {
+    name: 'kv-read-aloud-settings-popup',
+    values: 'always, on the popup',
+    meaning: 'The class of the menu itself: Speed, Voice, then the recipient note.',
+  },
+  {
+    name: 'aria-haspopup / aria-expanded',
+    values: '"dialog" / true or false',
+    meaning: 'Tells assistive technology the button opens a menu, and whether it is open.',
+  },
+]
+
+export const readAloudHideRows = propRows<Pick<ReadAloudHideProps, 'children'>>({
+  children: {
+    type: 'ReactNode',
+    default: 'a close icon',
+    description: 'Your own icon or text, named by readAloud.hide either way.',
+  },
+})
+
+export const readAloudHideAttributes: readonly AttributeRow[] = [
+  {
+    name: 'kv-button kv-button--icon-only kv-read-aloud-hide',
+    values: 'always',
+    meaning: 'The part classes.',
+  },
+  {
+    name: 'aria-label',
+    values: 'readAloud.hide',
+    meaning: 'Names the button, since its icon is the only visible content.',
+  },
+]
+
+export const readAloudWhenStartedRows = propRows<ReadAloudWhenStartedProps>({
+  children: {
+    type: 'ReactNode',
+    default: '–',
+    description:
+      "Shown only once reading has started at least once; nothing before that, and it never goes back to hidden. Not part of the recommended inline row (D44, D47, gated on `status` instead), kept for a consumer's own composition that wants a sticky reveal. Reads the ReadAloud.Root it is inside, so there is still one engine, not a second one.",
+  },
+})
 
 export const useReadAloudResultRows = propRows<UseReadAloudResult>({
   status: {
@@ -306,10 +439,21 @@ export const useReadAloudResultRows = propRows<UseReadAloudResult>({
     default: '–',
     description: 'The Play message: Listen, Listen to selected text or Pause.',
   },
+  playIdleLabel: {
+    type: 'string',
+    default: '–',
+    description: 'The Play message on its own, for building a custom idle label stack.',
+  },
   selectionLabel: {
     type: 'string',
     default: '–',
-    description: 'The selection trigger’s name.',
+    description:
+      'The selection trigger’s name, and the Play message while a selection is captured.',
+  },
+  pauseLabel: {
+    type: 'string',
+    default: '–',
+    description: 'The Play message on its own, for building a custom pause label stack.',
   },
   previousLabel: {
     type: 'string',
@@ -336,6 +480,12 @@ export const useReadAloudResultRows = propRows<UseReadAloudResult>({
     description:
       'The visible status: the position, a wait, a skipped part, or the reason reading stopped. Empty when idle.',
   },
+  progressFraction: {
+    type: 'number | null',
+    default: '–',
+    description:
+      'The sentence meter’s fill, 0 to 1. null while idle, so a custom Progress part can render nothing.',
+  },
   rateOptions: {
     type: 'ReadAloudOption[]',
     default: '–',
@@ -345,6 +495,33 @@ export const useReadAloudResultRows = propRows<UseReadAloudResult>({
     type: 'ReadAloudOption[]',
     default: '–',
     description: 'The voices for the content language.',
+  },
+  barLabel: {
+    type: 'string',
+    default: '–',
+    description:
+      'readAloud.barLabel: the Bar’s own name for the group, used instead of readAloud.label while a Bar is mounted.',
+  },
+  settingsLabel: {
+    type: 'string',
+    default: '–',
+    description: 'readAloud.settings: names the Settings button and its popup.',
+  },
+  hideProps: {
+    type: 'ReadAloudHidePartProps',
+    default: '–',
+    description: 'Spread on the Hide <button>.',
+  },
+  hideLabel: {
+    type: 'string',
+    default: '–',
+    description: 'The Hide message.',
+  },
+  hasEverPlayed: {
+    type: 'boolean',
+    default: '–',
+    description:
+      'true once reading has started at least once, and never resets. Lets a custom idle panel keep its transport open for the rest of the visit after the first press.',
   },
 })
 

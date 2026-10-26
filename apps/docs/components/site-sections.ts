@@ -424,11 +424,6 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'FocusScope and useFocus move focus into your own drawer or wizard step, can hold it there, and return it when the scope ends.',
       ),
       component(
-        'ReadAloud',
-        'read-aloud',
-        'A player that reads a region of the page aloud, one sentence at a time, with the browser’s own speech.',
-      ),
-      component(
         'Route focus',
         'route-focus',
         'A hook that moves focus to the page title after a client-side navigation, so keyboard and screen reader users start at the top of the new page instead of on a link that may be gone.',
@@ -451,6 +446,19 @@ const componentGroupList: readonly SummarisedGroup[] = [
         'map',
         'Places on a map and the same places as a list, with the keyboard and a button for every gesture.',
         '@kvirn-ui/map',
+      ),
+    ],
+  },
+  {
+    // Not `read-aloud`: that's the component's own slug (see the uniqueness note above).
+    id: 'reading-aloud',
+    label: groupText.readAloud,
+    pages: [
+      component(
+        'ReadAloud',
+        'read-aloud',
+        'A player that reads a region of the page aloud, one sentence at a time, with the browser’s own speech.',
+        '@kvirn-ui/read-aloud',
       ),
     ],
   },

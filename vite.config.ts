@@ -114,6 +114,9 @@ type ContextOptions = NonNullable<PlaywrightProviderOptions['contextOptions']>
 const sweepComponents = [
   'button',
   'map',
+  // Plan 0154 D26: the Bar is sticky-while-playing with round icon-only controls, so reflow,
+  // text spacing, 200% zoom and forced colours are exactly where it can break.
+  'read-aloud',
   'skip-panel',
   'accordion',
   'address-input',

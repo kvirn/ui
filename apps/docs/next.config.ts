@@ -3,6 +3,10 @@ import type { NextConfig } from 'next'
 // No third-party requests from the docs site (AGENTS.md, hard rule 7): no remote fonts, images or analytics. The one exception is geo.kvirn.com, Kvirn's own map service: the Map examples load the map from it, and the address examples look up what a visitor types there.
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Dev only: lets a phone or tablet on the LAN load `next dev`'s HMR resources, so ReadAloud's
+  // iOS audio unlock and the 320px layouts can be checked on a real device. Next blocks
+  // cross-origin dev requests by default; this never applies to a build.
+  allowedDevOrigins: ['192.168.1.217'],
   images: { unoptimized: true },
   // Without it `next dev` writes AGENTS.md and CLAUDE.md into the app.
   agentRules: false,

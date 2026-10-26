@@ -280,6 +280,7 @@ const preview: Preview = {
           'Icons',
           'Map',
           'Rich text editor',
+          'Read aloud',
           'Content types',
           '*',
         ],

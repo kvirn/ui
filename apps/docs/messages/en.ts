@@ -498,6 +498,7 @@ export const messages = {
         choiceAndOverlays: 'Choice and overlays',
         dataAndBehaviour: 'Data and behaviour',
         mapsAndPlaces: 'Maps and places',
+        readAloud: 'Read aloud',
       },
       contentTypeGroups: {
         pageTypes: 'Page types',

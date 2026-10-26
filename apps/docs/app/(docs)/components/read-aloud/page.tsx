@@ -13,6 +13,10 @@ export default function Page() {
       contract={readContract('read-aloud')}
       sources={{
         default: readExampleSource('read-aloud/default.tsx'),
+        bar: readExampleSource('read-aloud/bar.tsx'),
+        'cms-markers': readExampleSource('read-aloud/cms-markers.tsx'),
+        language: readExampleSource('read-aloud/language.tsx'),
+        'idle-panel': readExampleSource('read-aloud/idle-panel.tsx'),
       }}
     />
   )

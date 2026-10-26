@@ -18,8 +18,8 @@
       "Bash(git worktree list*)",
       "Bash(sed *)",
       "Bash(wc *)",
-      "Read(//home/magnus-vike/Sites/kvirn-*/**)",
-      "Edit(//home/magnus-vike/Sites/kvirn-*/**)"
+      "Read(//home/magnus-vike/Sites/kvirn/kvirn-*/**)",
+      "Edit(//home/magnus-vike/Sites/kvirn/kvirn-*/**)"
     ],
     "ask": [
       "Bash(git push*)",

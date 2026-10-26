@@ -51,6 +51,13 @@ export interface SpeechHandle {
  * be awaited freely.
  */
 export interface ReadAloudEngine {
+  /**
+   * Whether this engine was configured to ask the service to cache its audio (`store: true`),
+   * so the privacy note (`readAloud.note` / `readAloud.noteStored`) can say so accurately (rule
+   * 8): the sentence is false for a resident when the service actually retains the audio.
+   * Default (and a test fake's default) is `false`, the service's own default.
+   */
+  stores?: boolean | undefined
   /** Called synchronously inside the user's gesture, before any await. The iOS unlock. */
   unlock: () => void
   /**

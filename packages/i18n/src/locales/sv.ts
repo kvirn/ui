@@ -365,7 +365,14 @@ export const sv = {
     voicesLoading: 'Hämtar röster …',
     note: ({ name }) =>
       `Uppläsningen skickar texten till ${name} för att skapa ljudet. Texten och ljudet sparas inte.`,
+    noteStored: ({ name }) =>
+      `Uppläsningen skickar texten till ${name} för att skapa ljudet. Ljudet kan sparas där för återanvändning.`,
     howItWorks: 'Så fungerar uppläsningen',
+    barLabel: 'Lyssna på sidan',
+    toolbarLabel: 'Uppspelningskontroller',
+    settings: 'Uppläsningsinställningar',
+    hide: 'Dölj uppläsningsfältet',
+    errorNoContent: 'Det finns ingenting här att läsa upp.',
   },
   errorSummary: { title: 'Det finns ett problem', titlePrefix: 'Fel:' },
   definitionList: { change: 'Ändra' },

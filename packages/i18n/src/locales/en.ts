@@ -356,7 +356,14 @@ export const en = {
     voicesLoading: 'Loading voices…',
     note: ({ name }) =>
       `Listening sends this text to ${name} to make the audio. The text and the audio are not saved.`,
+    noteStored: ({ name }) =>
+      `Listening sends this text to ${name} to make the audio. The audio may be saved there for reuse.`,
     howItWorks: 'How listening works',
+    barLabel: 'Listen to this page',
+    toolbarLabel: 'Playback controls',
+    settings: 'Listening settings',
+    hide: 'Hide the listening bar',
+    errorNoContent: 'There is nothing here to read aloud.',
   },
   errorSummary: { title: 'There is a problem', titlePrefix: 'Error:' },
   definitionList: { change: 'Change' },

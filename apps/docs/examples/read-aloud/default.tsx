@@ -18,9 +18,12 @@ export function Player() {
   return (
     <>
       <ReadAloud.Root contentRef={articleRef} engine={engine} name={voiceServiceName}>
+        <ReadAloud.Progress />
         <ReadAloud.Play />
-        <ReadAloud.Previous />
-        <ReadAloud.Next />
+        <ReadAloud.Transport>
+          <ReadAloud.Previous />
+          <ReadAloud.Next />
+        </ReadAloud.Transport>
         <ReadAloud.Stop />
         <ReadAloud.Rate />
         <ReadAloud.Status />

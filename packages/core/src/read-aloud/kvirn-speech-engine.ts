@@ -160,6 +160,10 @@ export function kvirnSpeechEngine({
   let detachPlayback: (() => void) | undefined
   let voicesPromise: Promise<readonly ReadAloudVoice[]> | undefined
   const objectUrls = new Set<string>()
+  // `setRate` can run before `unlock` ever creates `audio` (Settings is chosen before the first
+  // Play): kept here and applied whenever an `<audio>` element exists or is created, so a rate
+  // chosen ahead of the first press is never silently dropped.
+  let currentRate = 1
 
   const endpoint = (path: string) => {
     const target = new URL(base)
@@ -186,6 +190,8 @@ export function kvirnSpeechEngine({
   }
 
   return {
+    stores: store,
+
     getDefaultVoiceId(language) {
       const tag = normalizeVoiceTag(language)
       return voiceIdsByTag[tag] ?? voiceIdsByTag[voicePrimarySubtag(language)]
@@ -296,6 +302,9 @@ export function kvirnSpeechEngine({
       audio ??= new Audio()
       audio.preload = 'auto'
       audio.preservesPitch = true
+      // A rate chosen before the first press, or while paused with no `<audio>` yet, is applied
+      // the moment there is one to speak with it.
+      audio.playbackRate = currentRate
       const element = audio
       detachPlayback?.()
       // A stale `ended`/`error` from a cancelled sentence must never reach a later one's handlers.
@@ -339,6 +348,7 @@ export function kvirnSpeechEngine({
     },
 
     setRate(rate) {
+      currentRate = rate
       if (audio !== undefined) {
         audio.playbackRate = rate
         audio.preservesPitch = true
