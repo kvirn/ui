@@ -24,6 +24,8 @@ export interface ContractKeyboardRow {
   action: string
   /** The test's name, as the contract writes it, with the file when the table header names it. */
   test: string
+  /** The test is named in the contract but not written yet. */
+  planned: boolean
 }
 
 export type ContractKeyboard =
@@ -53,6 +55,7 @@ export interface ContractReadAloudRow {
   phrases: string
   politeness: string
   test: string
+  planned: boolean
 }
 
 export type ContractAnnouncements =
@@ -165,14 +168,23 @@ const focusFactNames = [
 
 const noKeysStart = 'This component has no focusable parts and handles no keys'
 
+const plannedTestColumn = 'planned test (not yet written)'
+
 /** The header cells a pipe table may have, lower case, with a Test column's `(\`file ›\`)` removed. */
 const knownColumnSets = [
   ['part', 'element / role', 'aria', 'notes'],
   ['part', 'element / role', 'aria / state', 'notes'],
   ['key', 'context', 'action', 'test'],
+  ['key', 'context', 'action', plannedTestColumn],
   ['event', 'message key (i18n)', 'politeness'],
   ['event', 'message key (i18n)', 'politeness', 'test'],
   ['state or action', 'expected phrase(s) as read aloud', 'live region politeness', 'test'],
+  [
+    'state or action',
+    'expected phrase(s) as read aloud',
+    'live region politeness',
+    plannedTestColumn,
+  ],
   ['key', 'used by (owner)', 'en'],
   ['key', 'part', 'en', 'sv'],
   ['key', 'part', 'en', 'sv', 'fi'],
@@ -368,7 +380,11 @@ function parseKeyboard(lines: string[], file: string): ContractKeyboard {
     throw new ContractError(file, 'section "Keyboard" has no table')
   }
   const columns = table.columns.map(normalisedColumn)
-  if (columns.join('|') !== 'key|context|action|test') {
+  const planned = columns[3] === plannedTestColumn
+  if (
+    columns.slice(0, 3).join('|') !== 'key|context|action' ||
+    (columns[3] !== 'test' && !planned)
+  ) {
     throw new ContractError(file, `section "Keyboard" has the columns ${table.columns.join(' | ')}`)
   }
   // `Test (\`file.test.tsx ›\`)`: the names in the column name their file once.
@@ -404,6 +420,7 @@ function parseKeyboard(lines: string[], file: string): ContractKeyboard {
         where,
         action,
         test: testFile === undefined ? name : `${testFile} › ${name}`,
+        planned,
       }
     }),
     after: rest.slice(tablePosition + 1),
@@ -455,6 +472,7 @@ function parseReadAloud(lines: string[], file: string): ContractReadAloudRow[] {
           phrases,
           politeness,
           test,
+          planned: normalisedColumn(block.columns[3] ?? '') === plannedTestColumn,
         }))
       : [],
   )

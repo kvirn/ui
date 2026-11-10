@@ -272,7 +272,7 @@ function KeyboardTable({ rows }: { rows: readonly ContractKeyboardRow[] }) {
           <>
             <Inline source={row.action} />
             <br />
-            {text.keyboard.test} <code>{row.test}</code>
+            {row.planned ? text.keyboard.plannedTest : text.keyboard.test} <code>{row.test}</code>
           </>,
         ),
       )}
@@ -539,7 +539,9 @@ export function ContractSectionsView({
                   text.announcements.readAloudState,
                   text.announcements.readAloudPhrases,
                   text.announcements.politeness,
-                  text.announcements.readAloudTest,
+                  contract.readAloud.every((row) => row.planned)
+                    ? text.announcements.readAloudPlannedTest
+                    : text.announcements.readAloudTest,
                 ]}
                 rows={contract.readAloud.map((row) =>
                   cells(

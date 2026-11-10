@@ -105,6 +105,9 @@ behaviour:
 - [x] T13 `component-engineer`: the inline stories rebuilt for the button row; `InlineFullTransport` and the
       meter/transport stories retired.
 - [ ] T14 `lead`: gates, the four sweeps, `accessibility-reviewer`, roadmap, commit.
+- [ ] T15 `component-engineer`: move the `### Read aloud` table in `read-aloud.a11y.md` from "Roles, states,
+      properties" to "Announcements" (`contract-template.md:41-46`), so the docs page shows it as the Read aloud
+      table (reviewer note, Plan 0156, 2026-11-10).
 
 ## Decisions
 
@@ -450,10 +453,10 @@ behaviour:
 - **D51 The inline row is `Listen` + `Listening settings`, side by side, Settings icon-only with a Tooltip
   (maintainer, 2026-10-26).** Three parts to the instruction. **(a) Settings is present at idle**, not only
   while playing: the button's accessible name is literally "Listening settings", and the maintainer named the
-  pair, so a resident can set the voice and speed *before* pressing Listen rather than having to start the
+  pair, so a resident can set the voice and speed _before_ pressing Listen rather than having to start the
   audio to reach them. Stop remains gated on `status !== 'idle'` (D44). **(b) The text is dropped from
   Settings; it is icon-only with a visible Tooltip.** This needs no approval and no deviation: DESIGN.md's
-  icon-only amendment requires exactly an accessible name from i18n *plus* a visible Tooltip with the same
+  icon-only amendment requires exactly an accessible name from i18n _plus_ a visible Tooltip with the same
   text, and D25's tooltip exemption was written for the Bar only — hover-firing tooltips across every page of
   a site, and absent on touch — none of which applies to one control in an article. The string exists in all
   five locales already, so no new copy. **(c) Play is content width at every size:** the
@@ -475,7 +478,7 @@ behaviour:
   already built (`howItWorksHref` on `Note`, `Settings` and `Bar`; the popup renders it at
   `read-aloud.tsx:481`).
   - **The consequence, stated once and accepted by the maintainer:** a resident who presses Listen without
-    opening Settings never sees the disclosure *before* their text is sent to the voice service. The
+    opening Settings never sees the disclosure _before_ their text is sent to the voice service. The
     recipient is named one press away, not on the surface that sends it. D21's reasoning is what carries this
     — the disclosure is present, not absent — and hard rule 8 still binds: nothing here claims the
     arrangement satisfies any law. **GDPR transparency for the destination page remains the consumer's**

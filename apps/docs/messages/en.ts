@@ -609,6 +609,7 @@ export const messages = {
         where: 'Where',
         whatHappens: 'What happens',
         test: 'Test:',
+        plannedTest: 'Planned test:',
         noKey: 'No key',
       },
       announcements: {
@@ -626,6 +627,7 @@ export const messages = {
         readAloudState: 'State or action',
         readAloudPhrases: 'Read aloud',
         readAloudTest: 'Test',
+        readAloudPlannedTest: 'Planned test',
         overrideHeading: 'Change the text',
         overrideWholeApp: 'For your whole app, pass',
         overrideTo: 'to',

@@ -340,6 +340,12 @@ export const useReadAloudResultRows = propRows<UseReadAloudResult>({
     default: '–',
     description: 'Whether the voice list has arrived from the service.',
   },
+  loadVoices: {
+    type: '() => void',
+    default: '–',
+    description:
+      'Fetches the voice list without playing, for a part that needs it before the first press (ReadAloud.Voice calls it on mount). Calling it again does nothing new.',
+  },
   state: {
     type: 'ReadAloudState',
     default: '–',
@@ -501,6 +507,12 @@ export const useReadAloudResultRows = propRows<UseReadAloudResult>({
     default: '–',
     description:
       'readAloud.barLabel: the Bar’s own name for the group, used instead of readAloud.label while a Bar is mounted.',
+  },
+  toolbarLabel: {
+    type: 'string',
+    default: '–',
+    description:
+      'readAloud.toolbarLabel: the name of the Bar’s own toolbar, different from barLabel so a screen reader never hears the same phrase twice on entering the Bar.',
   },
   settingsLabel: {
     type: 'string',
