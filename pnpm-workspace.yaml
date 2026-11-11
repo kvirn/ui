@@ -16,8 +16,8 @@ catalog:
   '@tanstack/table-core': 9.2.6
   '@tanstack/virtual-core': 3.17.11
   # React 19+ only (docs/vision.md)
-  react: ^19.3.0
-  react-dom: ^19.3.0
+  react: ^19.3.1
+  react-dom: ^19.3.1
   '@types/react': ^19.3.0
   '@types/react-dom': ^19.3.0
   vitest-browser-react: ^2.3.0
@@ -54,7 +54,7 @@ catalog:
   '@storybook/addon-vitest': 10.6.2
   # Tables in MDX pages: a Storybook build dependency only
   remark-gfm: 4.0.1
-  next: 16.3.8
+  next: 16.4.6
   '@changesets/cli': 3.0.3
 
 overrides:
@@ -73,14 +73,3 @@ allowBuilds:
 
 # One Vitest copy for vite-plus and Storybook (different optional peer sets otherwise split it)
 dedupePeers: true
-minimumReleaseAgeExclude:
-  - '@next/env@16.3.8'
-  - '@next/swc-darwin-arm64@16.3.8'
-  - '@next/swc-darwin-x64@16.3.8'
-  - '@next/swc-linux-arm64-gnu@16.3.8'
-  - '@next/swc-linux-arm64-musl@16.3.8'
-  - '@next/swc-linux-x64-gnu@16.3.8'
-  - '@next/swc-linux-x64-musl@16.3.8'
-  - '@next/swc-win32-arm64-msvc@16.3.8'
-  - '@next/swc-win32-x64-msvc@16.3.8'
-  - next@16.3.8
